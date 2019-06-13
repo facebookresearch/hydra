@@ -1,24 +1,17 @@
 # Hydra
 Hydra is a generic experimentation framework for scientific computing and machine learning
 
-WIP
-
-
-hydra init imageclassify
-
-```
-imageclassify/
-    conf/
-        imageclassify.yaml
-        logging.yaml      
-imageclassify/imageclassify.py
-```
+# Installing
+See developing for now.
 
 # Single job runs
-hydra run mbrl -p env=cartpole dynamics_model=pe optimizer=random -o training.batch_size=32
+The demo project can be anywhere in your file system as long as you have hydra installed.
+```
+hydra run demo_project.discombobulator.Task1 -p env=cartpole -o training.batch_size=32
+hydra run demo_project.discombobulator.Task1 -p env=cartpole dynamics=pe 
+```
 
-
-# Multi job runs (typically to slurm)
+# Multi job runs (typically to slurm) (TODO)
 hydra multi -p env=cartpole dynamics=pe -o training.batch_size=32
 10 random seeds.
 

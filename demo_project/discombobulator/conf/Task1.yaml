@@ -1,0 +1,9 @@
+logging:
+  dir: logs
+  config: logging.yaml
+
+
+presets:
+  env: ???
+  dynamics: pe
+task1: true
