@@ -5,19 +5,31 @@ Hydra is a generic experimentation framework for scientific computing and machin
 See developing for now.
 
 # Single job runs
-The demo project can be anywhere in your file system as long as you have hydra installed.
+Run with all the default options
 ```
-hydra run demo_project.discombobulator.Task1 -p env=cartpole -o training.batch_size=32
-hydra run demo_project.discombobulator.Task1 -p env=cartpole dynamics=pe 
+hydra run demos.obj_classify.Classify
 ```
 
+Override model:
+```
+hydra run demos.obj_classify.Classify -p model=resent
+```
+
+Override model and optimizer
+```
+hydra run demos.obj_classify.Classify -p model=resent optimizer=adam
+```
+
+
 # Multi job runs (typically to slurm) (TODO)
-hydra multi -p env=cartpole dynamics=pe -o training.batch_size=32
+
+hydra multi demos.obj_classify.Classify -p model=resent
 10 random seeds.
 
 hydra multi -p env=cartpole dynamics_model=pe,de optimizer=random -o training.batch_size=32,64,128
-==> 1 * 2 * 1 * 3 runs == 6 * 10 random seeds = 60 jobs.
+hydra multi demos.obj_classify.Classify -p model=resent,alexnet optimizer=nesterov,adam
 
+will spawn 4 jobs, each one will run with 10 random seeds (40 jobs total)
 
 # How to debug in pycharm
 Run hydra as a module, and pass in your arguments. see screen shot. (TODO)

@@ -18,11 +18,6 @@ log = None
 
 
 def configure_log(cfg_dir, cfg, verbose=None):
-    """
-    :param cfg:
-    :param verbose: all or root to activate verbose logging for all modules, otherwise a comma separated list of modules
-    :return:
-    """
     # configure target directory for all logs files (binary, text. models etc)
     log_dir_suffix = cfg.log_dir_suffix or strftime("%Y-%m-%d_%H-%M-%S", localtime())
     log_dir = os.path.join(cfg.log_dir or "logs", log_dir_suffix)
@@ -95,30 +90,58 @@ def find_cfg_dir(task_class):
 
 
 def create_task_cfg(cfg_dir, args):
+    loaded_configs = []
+    all_config_checked = []
+
+    def load_config(filename, required=False):
+        found = os.path.exists(filename)
+        if not found and required:
+            raise FileNotFoundError("Missing required config '{}'".format(filename))
+
+        loaded_cfg = None
+        if found:
+            loaded_cfg = OmegaConf.from_filename(filename)
+            loaded_configs.append(filename)
+            all_config_checked.append((filename, True))
+        else:
+            all_config_checked.append((filename, False))
+        return loaded_cfg
+
+    def merge_config(filename, base_conf, required):
+        loaded_cfg1 = load_config(filename, required=required)
+        if loaded_cfg1 is not None:
+            base_conf = OmegaConf.merge(base_conf, loaded_cfg1)
+        return base_conf
+
     task_name = args.task.split('.')[-1]
-    cfg = OmegaConf.from_filename(os.path.join(cfg_dir, "{}.yaml".format(task_name)))
+    main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
+    cfg = load_config(main_conf, required=True)
 
     for preset in args.presets or {}:
         key, value = preset.split('=')
         cfg.presets[key] = value
 
     presets_list = cfg.get('presets', {}).items()
+    for family, name in presets_list:
+        path = os.path.join(cfg_dir, family, name) + '.yaml'
+        cfg = merge_config(path, cfg, required=True)
+
     for combo in list(itertools.product(presets_list, presets_list)):
         if combo[0] != combo[1]:
             path = os.path.join(cfg_dir, combo[0][0], combo[0][1], combo[1][0], combo[1][1]) + '.yaml'
-            if os.path.exists(path):
-                cfg = OmegaConf.merge(cfg, OmegaConf.from_filename(path))
+            cfg = merge_config(path, cfg, required=False)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(args.overrides or []))
-    return cfg
+    return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
 def main():
     args = get_args()
-    print(args)
     if args.command == 'run':
         cfg_dir = find_cfg_dir(args.task)
-        cfg = create_task_cfg(cfg_dir, args)
+        task_cfg = create_task_cfg(cfg_dir, args)
+        cfg = task_cfg['cfg']
+        # TODO: debug option to show loaded configuration snippets
         configure_log(cfg_dir, cfg, args.verbose)
 
         task = find_task(args.task)

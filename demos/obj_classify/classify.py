@@ -1,7 +1,7 @@
 from hydra import Task
 
 
-class Task1(Task):
+class Classify(Task):
     def __init__(self):
         self.log = None
         self.cfg = None
