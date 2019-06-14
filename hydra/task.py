@@ -9,7 +9,7 @@ class Task:
         the behavior of the task.
     """
 
-    def setup(self, log, cfg):
+    def setup(self, cfg):
         """
         Setup your Task object, initialize various members etc
         :param cfg OmegaConf configuration object

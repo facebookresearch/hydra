@@ -158,8 +158,8 @@ def main():
         configure_log(cfg_dir, cfg, args.verbose)
         task = find_task(args.task)
         assert isinstance(task, Task)
-        task.setup(cfg=cfg, log=log)
-        task.run(cfg=cfg)
+        task.setup(cfg)
+        task.run(cfg)
     elif args.command == 'cfg':
         cfg_dir = find_cfg_dir(args.task)
         task_cfg = create_task_cfg(cfg_dir, args)

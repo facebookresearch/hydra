@@ -1,15 +1,14 @@
+import logging
+
 from hydra import Task
+
+log = logging.getLogger(__name__)
 
 
 class Classify(Task):
-    def __init__(self):
-        self.log = None
-        self.cfg = None
-
-    def setup(self, log, cfg):
-        self.log = log
-        self.log.info("Task1 setup")
+    def setup(self, cfg):
+        # Setup your experiment here, creating all members
+        log.info("Classify.setup")
 
     def run(self, cfg):
-        self.log.info("Task1 run")
-        self.log.info("Config:\n{}".format(cfg.pretty()))
+        log.info("Classify.run, config:\n\n{}".format(cfg.pretty()))
