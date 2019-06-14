@@ -2,7 +2,7 @@ logging:
   dir: logs
   config: logging.yaml
 
-presets:
+defaults:
   dataset: imagenet
   model: alexnet
   optimizer: nesterov

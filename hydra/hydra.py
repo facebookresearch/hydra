@@ -59,15 +59,14 @@ def get_args():
         dest="task"
     )
 
-    # parser.add_argument('--log_config', '-l', help='Log configuration file', default=None)
     parser.add_argument('--verbose', '-v',
                         help='Activate debug logging, otherwise takes a '
                              'comma separated list of loggers ("root" for root logger)',
                         nargs='?',
                         default='')
 
-    run_parser.add_argument('--presets', '-p', nargs='*')
-    run_parser.add_argument('--overrides', '-o', nargs='*')
+    run_parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
+                                                         "(use dots for.nested=overrides)")
 
     return parser.parse_args()
 
@@ -117,21 +116,28 @@ def create_task_cfg(cfg_dir, args):
     main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
     cfg = load_config(main_conf, required=True)
 
-    for preset in args.presets or {}:
-        key, value = preset.split('=')
-        cfg.presets[key] = value
+    # split overrides into defaults (which cause additional configs to be loaded)
+    # and overrides which triggers overriding of specific nodes in the config tree
+    overrides = []
+    for override in args.overrides:
+        key, value = override.split('=')
+        path = os.path.join(cfg_dir, key)
+        if os.path.exists(path):
+            cfg.defaults[key] = value
+        else:
+            overrides.append(override)
 
-    presets_list = cfg.get('presets', {}).items()
-    for family, name in presets_list:
+    defaults_list = cfg.get('defaults', {}).items()
+    for family, name in defaults_list:
         path = os.path.join(cfg_dir, family, name) + '.yaml'
         cfg = merge_config(path, cfg, required=True)
 
-    for combo in list(itertools.product(presets_list, presets_list)):
+    for combo in list(itertools.product(defaults_list, defaults_list)):
         if combo[0] != combo[1]:
             path = os.path.join(cfg_dir, combo[0][0], combo[0][1], combo[1][0], combo[1][1]) + '.yaml'
             cfg = merge_config(path, cfg, required=False)
 
-    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(args.overrides or []))
+    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides or []))
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 

@@ -12,26 +12,29 @@ hydra run demos.obj_classify.Classify
 
 Override model:
 ```
-hydra run demos.obj_classify.Classify -p model=resent
+hydra run demos.obj_classify.Classify model=resent
 ```
 
 Override model and optimizer
 ```
-hydra run demos.obj_classify.Classify -p model=resent optimizer=adam
+hydra run demos.obj_classify.Classify model=resent optimizer=adam optimizer.lr=0.001
 ```
 
 
 # Multi job runs (typically to slurm) (TODO)
 
-hydra multi demos.obj_classify.Classify -p model=resent
-10 random seeds.
+To run a job with 10 random seeds:
+```
+hydra multi demos.obj_classify.Classify model=resent
+```
 
-hydra multi -p env=cartpole dynamics_model=pe,de optimizer=random -o training.batch_size=32,64,128
+
+To run a the greed of (resnet,alexnet) X (nesterov,adam), which is 4 different experiments - each with 10 random seeds:
+```
 hydra multi demos.obj_classify.Classify -p model=resent,alexnet optimizer=nesterov,adam
+```
 
-will spawn 4 jobs, each one will run with 10 random seeds (40 jobs total)
-
-# How to debug in pycharm
+# Debugging in pycharm
 Run hydra as a module, and pass in your arguments. see screen shot. (TODO)
 
 # Developing
