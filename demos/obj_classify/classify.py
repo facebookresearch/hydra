@@ -12,3 +12,4 @@ class Classify(Task):
 
     def run(self, cfg):
         log.info("Classify.run, config:\n\n{}".format(cfg.pretty()))
+
