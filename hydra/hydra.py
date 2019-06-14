@@ -43,8 +43,6 @@ def configure_log(cfg_dir, cfg, verbose=None):
         for logger in verbose.split(','):
             logging.getLogger(logger).setLevel(logging.DEBUG)
 
-    log.info(f"Saving logs to {cfg.full_log_dir}")
-
 
 def get_args():
     parser = argparse.ArgumentParser(description='Hydra experimentation framework')
@@ -52,19 +50,28 @@ def get_args():
     parser.add_argument('--version', action='version', version=f"hydra {version}")
 
     subparsers = parser.add_subparsers(help="sub-command help", dest="command")
-    run_parser = subparsers.add_parser("run", help="Run a task")
-    run_parser.add_argument(
-        help="Task directory or name",
-        type=str,
-        dest="task"
-    )
-
     parser.add_argument('--verbose', '-v',
                         help='Activate debug logging, otherwise takes a '
                              'comma separated list of loggers ("root" for root logger)',
                         nargs='?',
                         default='')
 
+    cfg_parser = subparsers.add_parser("cfg", help="Show generated cfg")
+    cfg_parser.add_argument(
+        help="Task directory or name",
+        type=str,
+        dest="task"
+    )
+    cfg_parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
+                                                         "(use dots for.nested=overrides)")
+    cfg_parser.add_argument('--debug', '-d', action="store_true", default=False)
+
+    run_parser = subparsers.add_parser("run", help="Run a task")
+    run_parser.add_argument(
+        help="Task directory or name",
+        type=str,
+        dest="task"
+    )
     run_parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
                                                          "(use dots for.nested=overrides)")
 
@@ -92,13 +99,9 @@ def create_task_cfg(cfg_dir, args):
     loaded_configs = []
     all_config_checked = []
 
-    def load_config(filename, required=False):
-        found = os.path.exists(filename)
-        if not found and required:
-            raise FileNotFoundError("Missing required config '{}'".format(filename))
-
+    def load_config(filename):
         loaded_cfg = None
-        if found:
+        if os.path.exists(filename):
             loaded_cfg = OmegaConf.from_filename(filename)
             loaded_configs.append(filename)
             all_config_checked.append((filename, True))
@@ -106,15 +109,11 @@ def create_task_cfg(cfg_dir, args):
             all_config_checked.append((filename, False))
         return loaded_cfg
 
-    def merge_config(filename, base_conf, required):
-        loaded_cfg1 = load_config(filename, required=required)
-        if loaded_cfg1 is not None:
-            base_conf = OmegaConf.merge(base_conf, loaded_cfg1)
-        return base_conf
-
     task_name = args.task.split('.')[-1]
     main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
-    cfg = load_config(main_conf, required=True)
+    cfg = load_config(main_conf)
+    if cfg is None:
+        raise FileNotFoundError("Could not load {}".format(main_conf))
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
@@ -129,13 +128,21 @@ def create_task_cfg(cfg_dir, args):
 
     defaults_list = cfg.get('defaults', {}).items()
     for family, name in defaults_list:
-        path = os.path.join(cfg_dir, family, name) + '.yaml'
-        cfg = merge_config(path, cfg, required=True)
+        family_dir = os.path.join(cfg_dir, family)
+        path = os.path.join(family_dir, name) + '.yaml'
+        new_cfg = load_config(path)
+        if new_cfg is None:
+            options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
+                       os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
+            raise FileNotFoundError("Could not load {}, valid options : {}".format(path, ",".join(options)))
+        cfg = OmegaConf.merge(cfg, new_cfg)
 
     for combo in list(itertools.product(defaults_list, defaults_list)):
         if combo[0] != combo[1]:
             path = os.path.join(cfg_dir, combo[0][0], combo[0][1], combo[1][0], combo[1][1]) + '.yaml'
-            cfg = merge_config(path, cfg, required=False)
+            new_cfg = load_config(path)
+            if new_cfg is not None:
+                cfg = OmegaConf.merge(cfg, new_cfg)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides or []))
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
@@ -143,18 +150,28 @@ def create_task_cfg(cfg_dir, args):
 
 def main():
     args = get_args()
+
     if args.command == 'run':
         cfg_dir = find_cfg_dir(args.task)
         task_cfg = create_task_cfg(cfg_dir, args)
         cfg = task_cfg['cfg']
-        # TODO: debug option to show loaded configuration snippets
         configure_log(cfg_dir, cfg, args.verbose)
-
         task = find_task(args.task)
         assert isinstance(task, Task)
-
         task.setup(cfg=cfg, log=log)
         task.run(cfg=cfg)
+    elif args.command == 'cfg':
+        cfg_dir = find_cfg_dir(args.task)
+        task_cfg = create_task_cfg(cfg_dir, args)
+        cfg = task_cfg['cfg']
+        configure_log(cfg_dir, cfg, args.verbose)
+        if args.debug:
+            for file, loaded in task_cfg['checked']:
+                if loaded:
+                    print("Loaded: {}".format(file))
+                else:
+                    print("Not found: {}".format(file))
+        print(cfg.pretty())
 
 
 if __name__ == '__main__':
