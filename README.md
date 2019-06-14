@@ -29,7 +29,7 @@ hydra multi demos.obj_classify.Classify model=resent
 ```
 
 
-To run a the greed of (resnet,alexnet) X (nesterov,adam), which is 4 different experiments - each with 10 random seeds:
+To run a the grid of (resnet,alexnet) X (nesterov,adam), which is 4 different experiments - each with 10 random seeds:
 ```
 hydra multi demos.obj_classify.Classify -p model=resent,alexnet optimizer=nesterov,adam
 ```
