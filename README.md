@@ -25,17 +25,31 @@ hydra run demos.obj_classify.Classify model=resent optimizer=adam optimizer.lr=0
 
 To run a job with 10 random seeds:
 ```
-hydra multi demos.obj_classify.Classify model=resent
+hydra sweep demos.obj_classify.Classify model=resent
 ```
 
 
 To run a the grid of (resnet,alexnet) X (nesterov,adam), which is 4 different experiments - each with 10 random seeds:
 ```
-hydra multi demos.obj_classify.Classify -p model=resent,alexnet optimizer=nesterov,adam
+hydra sweep demos.obj_classify.Classify model=resent,alexnet optimizer=nesterov,adam
 ```
 
-# Debugging in pycharm
+# Debugging
+## Running/debugging under pycharm
 Run hydra as a module, and pass in your arguments. see screen shot. (TODO)
+
+## Getting debug information about config composition:
+If your configuration does not compose to what you want, you can use this command
+to get information about what files were used to compose it and at what order.
+```
+hydra cfg demos.obj_classify.Classify optimizer=adam --debug
+Loaded: /private/home/omry/dev/hydra/demos/obj_classify/conf/Classify.yaml
+Loaded: /private/home/omry/dev/hydra/demos/obj_classify/conf/dataset/imagenet.yaml
+Loaded: /private/home/omry/dev/hydra/demos/obj_classify/conf/model/alexnet.yaml
+Loaded: /private/home/omry/dev/hydra/demos/obj_classify/conf/optimizer/adam.yaml
+Not found: /private/home/omry/dev/hydra/demos/obj_classify/conf/optimizer/dataset/adam_imagenet.yaml
+...
+```
 
 # Developing
 ## Install:
