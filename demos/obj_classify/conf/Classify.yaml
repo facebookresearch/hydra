@@ -6,3 +6,11 @@ defaults:
   dataset: imagenet
   model: alexnet
   optimizer: nesterov
+
+# lets say if we are using nesterov, then we want to use different momentum for imagenet and cifar.
+# we can achieve this by adding a file who'se name depends on the current optimizer and the current dataset.
+# those files should contain just the what makes nesterov different in imagenet and what makes it different cifar
+# this goes under optional because we are knowingly missing adam_cifar10 and adam_imagenet,
+# and we don't want to get an error when we try to load them.
+optional:
+  optimizer/dataset: ${defaults.optimizer}_${defaults.dataset}

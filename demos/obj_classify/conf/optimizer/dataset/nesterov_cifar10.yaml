@@ -1,0 +1,3 @@
+optimizer:
+  # specialized momentum for nesterov + cifar
+  momentum: 0.99

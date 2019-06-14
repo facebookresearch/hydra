@@ -110,6 +110,20 @@ def create_task_cfg(cfg_dir, args):
             all_config_checked.append((filename, False))
         return loaded_cfg
 
+    def merge_config(cfg, family, name, required):
+        family_dir = os.path.join(cfg_dir, family)
+        path = os.path.join(family_dir, name) + '.yaml'
+        new_cfg = load_config(path)
+        if new_cfg is None:
+            if required:
+                options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
+                           os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
+                raise FileNotFoundError("Could not load {}, available options : {}".format(path, ",".join(options)))
+            else:
+                return cfg
+        else:
+            return OmegaConf.merge(cfg, new_cfg)
+
     task_name = args.task.split('.')[-1]
     main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
     cfg = load_config(main_conf)
@@ -127,16 +141,11 @@ def create_task_cfg(cfg_dir, args):
         else:
             overrides.append(override)
 
-    defaults_list = cfg.get('defaults', {}).items()
-    for family, name in defaults_list:
-        family_dir = os.path.join(cfg_dir, family)
-        path = os.path.join(family_dir, name) + '.yaml'
-        new_cfg = load_config(path)
-        if new_cfg is None:
-            options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
-                       os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-            raise FileNotFoundError("Could not load {}, available options : {}".format(path, ",".join(options)))
-        cfg = OmegaConf.merge(cfg, new_cfg)
+    for family, name in cfg.get('defaults', {}).items():
+        cfg = merge_config(cfg, family, name, required=True)
+
+    for family, name in cfg.get('optional', {}).items():
+        cfg = merge_config(cfg, family, name, required=False)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides or []))
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
