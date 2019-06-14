@@ -1,3 +1,6 @@
+import hydra
+print(hydra)
+print(hydra.__file__)
 import argparse
 import itertools
 import logging
@@ -9,7 +12,8 @@ from time import strftime, localtime
 import pkg_resources
 from omegaconf import OmegaConf
 
-from hydra import utils, Task
+from .task import Task
+import utils as utils
 
 # add cwd to path to allow running directly from the repo top level directory
 sys.path.append(os.getcwd())
@@ -47,7 +51,7 @@ def configure_log(cfg_dir, cfg, verbose=None):
 def get_args():
     parser = argparse.ArgumentParser(description='Hydra experimentation framework')
     version = pkg_resources.require("hydra")[0].version
-    parser.add_argument('--version', action='version', version=f"hydra {version}")
+    parser.add_argument('--version', action='version', version="hydra {}".format(version))
 
     def add_default_switches(prs):
         prs.add_argument(
@@ -119,7 +123,7 @@ def create_task_cfg(cfg_dir, args):
             if required:
                 options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
                            os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-                raise FileNotFoundError("Could not load {}, available options : {}".format(path, ",".join(options)))
+                raise IOError("Could not load {}, available options : {}".format(path, ",".join(options)))
             else:
                 return cfg
         else:
@@ -129,7 +133,7 @@ def create_task_cfg(cfg_dir, args):
     main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
     cfg = load_config(main_conf)
     if cfg is None:
-        raise FileNotFoundError("Could not load {}".format(main_conf))
+        raise IOError("Could not load {}".format(main_conf))
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
@@ -181,7 +185,7 @@ def get_sweep(overrides):
     lists = []
     for s in overrides:
         key, value = s.split('=')
-        lists.append([f"{key}={value}" for value in value.split(',')])
+        lists.append(["{}={}".format(key, value) for value in value.split(',')])
 
     return list(itertools.product(*lists))
 
@@ -192,9 +196,8 @@ def sweep(args):
     # cfg = task_cfg['cfg']
     # configure_log(cfg_dir, cfg, args.verbose)
 
-    print("Sweep:")
-    sweep = get_sweep(args.overrides)
-    for s in sweep:
+    sweep_configs = get_sweep(args.overrides)
+    for s in sweep_configs:
         print(s)
 
 

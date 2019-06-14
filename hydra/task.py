@@ -1,4 +1,8 @@
 class Task:
+
+    def __init__(self):
+        pass
+
     """
     A high level task, for example Object classification or Language modeling.
     Anything that has configuration needs ranging from trivial to extremely complex

@@ -31,7 +31,7 @@ def get_static_method(full_method_name):
         clz = get_class(class_name)
         return getattr(clz, method_name)
     except Exception as e:
-        log.error(f"Error getting static method {full_method_name} : {e}")
+        log.error("Error getting static method {} : {}".format(full_method_name, e))
         raise e
 
 
@@ -40,5 +40,5 @@ def instantiate(config, *args):
         clazz = get_class(config['class'])
         return clazz(*args, **(config.params or {}))
     except Exception as e:
-        log.error(f"Error instantiating {config.clazz} : {e}")
+        log.error("Error instantiating {config.clazz} : {e}")
         raise e
