@@ -1,12 +1,7 @@
 class Task:
     """
-    A task represents a high level task, that can be broken down into subtasks.
-    Examples:
-        for a task of model based reinforcement learning, subtasks can be cartpole and halfcheetah
-        For a task of image classification, subtasks can be imagenet and cifar10.
-
-        The task code is expected to be able to deal with all the subtasks. the configuration passed will configure
-        the behavior of the task.
+    A high level task, for example Object classification or Language modeling.
+    Anything that has configuration needs ranging from trivial to extremely complex
     """
 
     def setup(self, cfg):
