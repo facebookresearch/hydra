@@ -64,7 +64,8 @@ def get_args():
     )
     cfg_parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
                                                          "(use dots for.nested=overrides)")
-    cfg_parser.add_argument('--debug', '-d', action="store_true", default=False)
+    cfg_parser.add_argument('--debug', '-d', action="store_true", default=False,
+                            help="Show how the config was generated")
 
     run_parser = subparsers.add_parser("run", help="Run a task")
     run_parser.add_argument(
@@ -134,15 +135,8 @@ def create_task_cfg(cfg_dir, args):
         if new_cfg is None:
             options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
                        os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-            raise FileNotFoundError("Could not load {}, valid options : {}".format(path, ",".join(options)))
+            raise FileNotFoundError("Could not load {}, available options : {}".format(path, ",".join(options)))
         cfg = OmegaConf.merge(cfg, new_cfg)
-
-    for combo in list(itertools.product(defaults_list, defaults_list)):
-        if combo[0] != combo[1]:
-            path = os.path.join(cfg_dir, combo[0][0], combo[0][1], combo[1][0], combo[1][1]) + '.yaml'
-            new_cfg = load_config(path)
-            if new_cfg is not None:
-                cfg = OmegaConf.merge(cfg, new_cfg)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides or []))
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
