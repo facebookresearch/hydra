@@ -1,6 +1,3 @@
-import hydra
-print(hydra)
-print(hydra.__file__)
 import argparse
 import itertools
 import logging
@@ -13,7 +10,8 @@ import pkg_resources
 from omegaconf import OmegaConf
 
 from .task import Task
-import utils as utils
+from .fairtask_launcher import FAIRTaskLauncher
+from . import utils
 
 # add cwd to path to allow running directly from the repo top level directory
 sys.path.append(os.getcwd())
@@ -191,14 +189,14 @@ def get_sweep(overrides):
 
 
 def sweep(args):
-    # cfg_dir = find_cfg_dir(args.task)
+    cfg_dir = find_cfg_dir(args.task)
     # task_cfg = create_task_cfg(cfg_dir, args)
     # cfg = task_cfg['cfg']
     # configure_log(cfg_dir, cfg, args.verbose)
 
     sweep_configs = get_sweep(args.overrides)
-    for s in sweep_configs:
-        print(s)
+    launcher = FAIRTaskLauncher(cfg_dir)
+    launcher.launch(sweep_configs)
 
 
 def main():

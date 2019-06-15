@@ -15,10 +15,7 @@ with open("README.md", "r") as fh:
         keywords='experimentation',
         packages=setuptools.find_packages(),
         classifiers=[
-            "Programming Language :: Python :: 2.7",
-            "Programming Language :: Python :: 3.5",
-            "Programming Language :: Python :: 3.6",
-            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3",
             "Operating System :: OS Independent",
         ],
         install_requires=[
