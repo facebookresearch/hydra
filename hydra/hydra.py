@@ -12,6 +12,7 @@ from omegaconf import OmegaConf
 from .task import Task
 from .fairtask_launcher import FAIRTaskLauncher
 from . import utils
+from collections import OrderedDict
 
 # add cwd to path to allow running directly from the repo top level directory
 sys.path.append(os.getcwd())
@@ -30,7 +31,7 @@ def configure_log(cfg_dir, cfg, verbose=None):
     if not os.path.isabs(logging_config):
         logging_config = os.path.join(cfg_dir, logging_config)
 
-    logcfg = OmegaConf.from_filename(logging_config)
+    logcfg = OmegaConf.load(logging_config)
     log_name = logcfg.handlers.file.filename
     if not os.path.isabs(log_name):
         logcfg.handlers.file.filename = os.path.join(cfg.full_log_dir, log_name)
@@ -99,6 +100,24 @@ def find_cfg_dir(task_class):
             return path
 
 
+# def to_ordered_dict(cfg, key_name):
+#     lst = cfg[key_name]
+#     if lst is None:
+#         return OrderedDict()
+#     if not lst.is_sequence():
+#         raise ValueError("{} must be a list because loading is order sensitive".format(key_name))
+#     ret = []
+#     for d in lst:
+#         ret.extend([(k, v) for k, v in d.items()])
+#     return OrderedDict(ret)
+
+def validate_hydra_cfg(hydra_cfg):
+    order = hydra_cfg.load_order or []
+    for key in (hydra_cfg.configs or {}):
+        if key not in order:
+            raise RuntimeError("'{}' load order is not specified in load_order".format(key))
+
+
 def create_task_cfg(cfg_dir, args):
     loaded_configs = []
     all_config_checked = []
@@ -106,16 +125,16 @@ def create_task_cfg(cfg_dir, args):
     def load_config(filename):
         loaded_cfg = None
         if os.path.exists(filename):
-            loaded_cfg = OmegaConf.from_filename(filename)
+            loaded_cfg = OmegaConf.load(filename)
             loaded_configs.append(filename)
             all_config_checked.append((filename, True))
         else:
             all_config_checked.append((filename, False))
         return loaded_cfg
 
-    def merge_config(cfg, family, name, required):
-        family_dir = os.path.join(cfg_dir, family)
-        path = os.path.join(family_dir, name) + '.yaml'
+    def merge_config(cfg_, family_, name_, required):
+        family_dir = os.path.join(cfg_dir, family_)
+        path = os.path.join(family_dir, name_) + '.yaml'
         new_cfg = load_config(path)
         if new_cfg is None:
             if required:
@@ -123,15 +142,13 @@ def create_task_cfg(cfg_dir, args):
                            os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
                 raise IOError("Could not load {}, available options : {}".format(path, ",".join(options)))
             else:
-                return cfg
+                return cfg_
         else:
-            return OmegaConf.merge(cfg, new_cfg)
+            return OmegaConf.merge(cfg_, new_cfg)
 
     task_name = args.task.split('.')[-1]
-    main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
-    cfg = load_config(main_conf)
-    if cfg is None:
-        raise IOError("Could not load {}".format(main_conf))
+    hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
+    hydra_cfg = OmegaConf.load(hydra_cfg_path)
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
@@ -140,17 +157,22 @@ def create_task_cfg(cfg_dir, args):
         key, value = override.split('=')
         path = os.path.join(cfg_dir, key)
         if os.path.exists(path):
-            cfg.defaults[key] = value
+            hydra_cfg.configs[key] = value
         else:
             overrides.append(override)
 
-    for family, name in cfg.get('defaults', {}).items():
-        cfg = merge_config(cfg, family, name, required=True)
+    validate_hydra_cfg(hydra_cfg)
 
-    for family, name in cfg.get('optional', {}).items():
-        cfg = merge_config(cfg, family, name, required=False)
+    main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
+    cfg = load_config(main_conf)
+    if cfg is None:
+        raise IOError("Could not load {}".format(main_conf))
+    for family in hydra_cfg.load_order:
+        name = hydra_cfg.configs[family]
+        is_optional = family in (hydra_cfg.optional or [])
+        cfg = merge_config(cfg, family, name, required=not is_optional)
 
-    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides or []))
+    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
