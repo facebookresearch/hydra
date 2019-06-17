@@ -2,22 +2,36 @@ import asyncio
 import os
 
 from fairtask import TaskQueues, gatherl
-from omegaconf import OmegaConf
 
 from hydra import utils
+from omegaconf import OmegaConf
 from .launcher import Launcher
-
+from .task import Task
 
 
 class FAIRTaskLauncher(Launcher):
-    def __init__(self, conf_dir):
-        self.cfg = OmegaConf.from_filename(os.path.join(conf_dir, "fairtask.yaml"))
+    def __init__(self, conf_dir, task):
+        self.task = task
+        self.cfg = OmegaConf.load(os.path.join(conf_dir, "fairtask.yaml"))
 
-    async def get_runs(self, sweep_configs):
-        gatherl
-        pass
+    def launch_job(self, sweep_instance):
+        cfg_dir = utils.find_cfg_dir(self.task)
+        task_cfg = utils.create_task_cfg(cfg_dir, self.task, sweep_instance)
+        cfg = task_cfg['cfg']
+        6# TODO: control verbose
+        utils.configure_log(cfg_dir, cfg, verbose=False)
+        task = utils.create_task(self.task)
+        assert isinstance(task, Task)
+        task.setup(cfg)
+        task.run(cfg)
 
-    def create_queue(self, cfg, num_jobs):
+    async def run_sweep(self, queue, sweep_configs):
+        queue = queue.task(self.cfg.launcher.queue)
+        runs = [queue(self.launch_job)(sweep_instance) for sweep_instance in sweep_configs]
+        return await gatherl(runs)
+
+    @staticmethod
+    def create_queue(cfg, num_jobs):
         assert num_jobs > 0
         cfg.concurrent = num_jobs
         queues = {}
@@ -30,42 +44,6 @@ class FAIRTaskLauncher(Launcher):
         return TaskQueues(queues, no_workers=no_workers)
 
     def launch(self, sweep_configs):
-        for s in sweep_configs:
-            print(s)
-
-        queue = self.create_queue(self.cfg.launcher, len(s))
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.get_runs())
-    #
-    # def launch_jobs(self, cfg,, queue, sweep_config):
-    #     log.info(f"Launching {len(sweep_config)} jobs")
-    #     if sweep_config is not None:
-    #         os.makedirs(log_dir, exist_ok=True)
-    #         with open(os.path.join(log_dir, 'sweep-config.yaml'), 'w') as file:
-    #             file.write(sweep_config.pretty())
-    #
-    #     overrides = []
-    #     for instance in range(cfg.launcher.instances):
-    #         override = OmegaConf.empty()
-    #         instance_id = f"{instance}"
-    #         override.instance_id = instance_id
-    #         override.log_dir = log_dir
-    #         override.random_seed = cfg.launcher.random_seed + instance
-    #         override.log_dir_suffix = instance_id
-    #         override.log_config = cfg.launcher.log.config
-    #
-    #         if sweep_config is not None:
-    #             override.merge_from(sweep_config)
-    #
-    #         # Put user provided parameters into spec for easy access (used for visualizing etc)
-    #         override_list = list(filter(lambda s: not s.startswith("launcher."), args.overrides))
-    #         override.spec = OmegaConf.merge(sweep_config or OmegaConf.empty(), OmegaConf.from_cli(override_list))
-    #         if args.presets is not None:
-    #             for p in args.presets.split(','):
-    #                 p = p.split('=')
-    #                 override.spec.presets[p[0]] = p[1]
-    #
-    #         overrides.append(override)
-    #
-    #     return [queue.task(cfg.launcher.queue)(launch)(sys.argv, cfg.target, override) for override in overrides]
-    #
+        queue = self.create_queue(self.cfg.launcher, len(sweep_configs))
+        loop.run_until_complete(self.run_sweep(queue, sweep_configs))

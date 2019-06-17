@@ -1,5 +1,11 @@
-import logging
 import inspect
+import logging
+import logging.config
+import os
+
+from time import strftime, localtime
+
+from omegaconf import OmegaConf
 
 log = logging.getLogger(__name__)
 
@@ -42,3 +48,109 @@ def instantiate(config, *args):
     except Exception as e:
         log.error("Error instantiating {config.clazz} : {e}")
         raise e
+
+
+def create_task(task_class):
+    return get_class(task_class)()
+
+
+def find_cfg_dir(task_class):
+    path = os.getcwd()
+    paths = [path]
+    for p in task_class.split('.'):
+        path = os.path.realpath(os.path.join(path, p))
+        paths.append(path)
+
+    for p in reversed(paths):
+        path = os.path.join(p, 'conf')
+        if os.path.exists(p) and os.path.isdir(path):
+            return path
+
+
+def validate_hydra_cfg(hydra_cfg):
+    order = hydra_cfg.load_order or []
+    for key in (hydra_cfg.configs or {}):
+        if key not in order:
+            raise RuntimeError("'{}' load order is not specified in load_order".format(key))
+
+
+def create_task_cfg(cfg_dir, task, cli_overrides=[]):
+    loaded_configs = []
+    all_config_checked = []
+
+    def load_config(filename):
+        loaded_cfg = None
+        if os.path.exists(filename):
+            loaded_cfg = OmegaConf.load(filename)
+            loaded_configs.append(filename)
+            all_config_checked.append((filename, True))
+        else:
+            all_config_checked.append((filename, False))
+        return loaded_cfg
+
+    def merge_config(cfg_, family_, name_, required):
+        family_dir = os.path.join(cfg_dir, family_)
+        cfg_path = os.path.join(family_dir, name_) + '.yaml'
+        new_cfg = load_config(cfg_path)
+        if new_cfg is None:
+            if required:
+                options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
+                           os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
+                raise IOError("Could not load {}, available options : {}".format(cfg_path, ",".join(options)))
+            else:
+                return cfg_
+        else:
+            return OmegaConf.merge(cfg_, new_cfg)
+
+    task_name = task.split('.')[-1]
+    hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
+    hydra_cfg = OmegaConf.load(hydra_cfg_path)
+
+    # split overrides into defaults (which cause additional configs to be loaded)
+    # and overrides which triggers overriding of specific nodes in the config tree
+    overrides = []
+    for override in cli_overrides:
+        key, value = override.split('=')
+        path = os.path.join(cfg_dir, key)
+        if os.path.exists(path):
+            hydra_cfg.configs[key] = value
+        else:
+            overrides.append(override)
+
+    validate_hydra_cfg(hydra_cfg)
+
+    main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
+    cfg = load_config(main_conf)
+    if cfg is None:
+        raise IOError("Could not load {}".format(main_conf))
+    for family in hydra_cfg.load_order:
+        name = hydra_cfg.configs[family]
+        is_optional = family in (hydra_cfg.optional or [])
+        cfg = merge_config(cfg, family, name, required=not is_optional)
+
+    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
+    return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
+
+
+def configure_log(cfg_dir, cfg, verbose=None):
+    # configure target directory for all logs files (binary, text. models etc)
+    log_dir_suffix = cfg.log_dir_suffix or strftime("%Y-%m-%d_%H-%M-%S", localtime())
+    log_dir = os.path.join(cfg.log_dir or "logs", log_dir_suffix)
+    cfg.full_log_dir = log_dir
+    os.makedirs(cfg.full_log_dir, exist_ok=True)
+
+    logging_config = cfg.logging.config
+    if not os.path.isabs(logging_config):
+        logging_config = os.path.join(cfg_dir, logging_config)
+
+    logcfg = OmegaConf.load(logging_config)
+    log_name = logcfg.handlers.file.filename
+    if not os.path.isabs(log_name):
+        logcfg.handlers.file.filename = os.path.join(cfg.full_log_dir, log_name)
+    logging.config.dictConfig(logcfg.to_dict())
+
+    if verbose:
+        if verbose == 'root':
+            logging.getLogger().setLevel(logging.DEBUG)
+        for logger in verbose.split(','):
+            logging.getLogger(logger).setLevel(logging.DEBUG)

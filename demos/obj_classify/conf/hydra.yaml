@@ -2,15 +2,17 @@ configs:
   dataset: imagenet
   model: alexnet
   optimizer: nesterov
-  # lets say if we are using nesterov, then we want to use different momentum for imagenet and cifar.
-  # we can achieve this by adding a file who'se name depends on the current optimizer and the current dataset.
-  # those files should contain just the what makes nesterov different in imagenet and what makes it different cifar
+  # In some cases you want have specialized configuration that depends on the selection of two or more
+  # other configurations.
+  # In this example we want to have different momentum value depending on the selected dataset - imagenet or cifar10.
+  # To achieve that, we are trying to load a file who's name depend on the selected optimizer and dataset
+  # The directory optimizer/dataset will only contain nesterov_imagenet and nesterov_cifar10 files.
+  # In order to avoid an error when we try to load a missing adam_imagenet file, we flag the optimizer/dataset
+  # as optional below
   optimizer/dataset: ${configs.optimizer}_${configs.dataset}
 
 # optional configurations
 optional:
-# this goes under optional because we are knowingly missing adam_cifar10 and adam_imagenet,
-# and we don't want to get an error when we try to load them.
   - optimizer/dataset
 
 # Configuration load order (later overriding earlier)

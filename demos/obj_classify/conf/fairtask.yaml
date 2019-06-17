@@ -4,11 +4,11 @@ launcher:
   concurrent: ???
   queues:
     local:
-      clazz: fairtask.local.LocalQueueConfig
+      class: fairtask.local.LocalQueueConfig
       params:
         num_workers: 2
     slurm:
-      clazz: fairtask_slurm.slurm.SLURMQueueConfig
+      class: fairtask_slurm.slurm.SLURMQueueConfig
       params:
         num_jobs: ${launcher.concurrent}
         num_nodes_per_job: 1
@@ -19,8 +19,8 @@ launcher:
         cpus_per_worker: 10
         mem_gb_per_worker: 64
         gres: 'gpu:1'
-        logdir: /checkpoint/${env:user}/fairtask/${launcher.queues.slurm.params.name}'
+        logdir: /checkpoint/${env:USER}/fairtask/${launcher.queues.slurm.params.name}'
         output: 'slurm-%j.out'
         error: 'slurm-%j.err'
-
-foo:
+  # debug launching issues, set to true to run workers in the same process.
+  no_workers: false
