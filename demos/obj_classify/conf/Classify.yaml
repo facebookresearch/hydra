@@ -1,3 +1,0 @@
-logging:
-  dir: logs
-  config: logging.yaml

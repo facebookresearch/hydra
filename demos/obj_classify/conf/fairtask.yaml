@@ -1,4 +1,5 @@
 launcher:
+  jobs_dir: /checkpoint/${env:USER}/hydra/${now:%Y-%m-%d_%H-%M-%S}
   queue: slurm
   # number of concurrent jobs
   concurrent: ???
@@ -19,8 +20,8 @@ launcher:
         cpus_per_worker: 10
         mem_gb_per_worker: 64
         gres: 'gpu:1'
-        logdir: /checkpoint/${env:USER}/fairtask/${launcher.queues.slurm.params.name}'
-        output: 'slurm-%j.out'
-        error: 'slurm-%j.err'
+        logdir: /checkpoint/${env:USER}/fairtask/${launcher.queues.slurm.params.name}
+        output: slurm-%j.out
+        error: slurm-%j.err
   # debug launching issues, set to true to run workers in the same process.
   no_workers: false

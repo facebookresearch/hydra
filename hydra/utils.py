@@ -6,6 +6,7 @@ import os
 from time import strftime, localtime
 
 from omegaconf import OmegaConf
+from hydra.task import Task
 
 log = logging.getLogger(__name__)
 
@@ -129,28 +130,45 @@ def create_task_cfg(cfg_dir, task, cli_overrides=[]):
         cfg = merge_config(cfg, family, name, required=not is_optional)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
-    return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
+    return dict(hydra_cfg=hydra_cfg, cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
 def configure_log(cfg_dir, cfg, verbose=None):
     # configure target directory for all logs files (binary, text. models etc)
-    log_dir_suffix = cfg.log_dir_suffix or strftime("%Y-%m-%d_%H-%M-%S", localtime())
-    log_dir = os.path.join(cfg.log_dir or "logs", log_dir_suffix)
-    cfg.full_log_dir = log_dir
-    os.makedirs(cfg.full_log_dir, exist_ok=True)
+    log_config = cfg.log_config
+    if not os.path.isabs(log_config):
+        log_config = os.path.join(cfg_dir, log_config)
 
-    logging_config = cfg.logging.config
-    if not os.path.isabs(logging_config):
-        logging_config = os.path.join(cfg_dir, logging_config)
-
-    logcfg = OmegaConf.load(logging_config)
-    log_name = logcfg.handlers.file.filename
-    if not os.path.isabs(log_name):
-        logcfg.handlers.file.filename = os.path.join(cfg.full_log_dir, log_name)
-    logging.config.dictConfig(logcfg.to_dict())
+    logging.config.dictConfig(OmegaConf.load(log_config).to_dict())
 
     if verbose:
         if verbose == 'root':
             logging.getLogger().setLevel(logging.DEBUG)
         for logger in verbose.split(','):
             logging.getLogger(logger).setLevel(logging.DEBUG)
+
+
+def save_config(cfg, filename):
+    with open(os.path.join(filename), 'w') as file:
+        file.write(cfg.pretty())
+
+
+def run_job(task, overrides, verbose, working_directory):
+    cfg_dir = find_cfg_dir(task)
+    task_cfg = create_task_cfg(cfg_dir, task, overrides)
+    cfg = task_cfg['cfg']
+    hydra_cfg = task_cfg['hydra_cfg']
+    old_cwd = os.getcwd()
+    try:
+        job_wd = hydra_cfg.working_directory[working_directory]
+        assert job_wd is not None
+        os.makedirs(job_wd)
+        os.chdir(job_wd)
+        configure_log(cfg_dir, hydra_cfg, verbose)
+        task = create_task(task)
+        assert isinstance(task, Task)
+        save_config(cfg, 'config.yaml')
+        task.setup(cfg)
+        task.run(cfg)
+    finally:
+        os.chdir(old_cwd)

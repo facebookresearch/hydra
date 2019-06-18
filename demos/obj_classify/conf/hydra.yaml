@@ -21,3 +21,9 @@ load_order:
   - model
   - optimizer
   - optimizer/dataset
+
+working_directory:
+  run: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep: /checkpoints/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/${sweep_id}
+
+log_config: logging.yaml

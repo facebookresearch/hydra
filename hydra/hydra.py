@@ -4,10 +4,11 @@ import sys
 import argparse
 import itertools
 import pkg_resources
+from time import localtime, strftime
 
+from omegaconf import OmegaConf
 from . import utils
 from .fairtask_launcher import FAIRTaskLauncher
-from .task import Task
 
 # add cwd to path to allow running directly from the repo top level directory
 sys.path.append(os.getcwd())
@@ -80,17 +81,11 @@ def sweep_cmd(args):
 
 
 def run_cmd(args):
-    cfg_dir = utils.find_cfg_dir(args.task)
-    task_cfg = utils.create_task_cfg(cfg_dir, args.task, args.overrides)
-    cfg = task_cfg['cfg']
-    utils.configure_log(cfg_dir, cfg, args.verbose)
-    task = utils.create_task(args.task)
-    assert isinstance(task, Task)
-    task.setup(cfg)
-    task.run(cfg)
+    utils.run_job(task=args.task, overrides=args.overrides, verbose=args.verbose, working_directory = 'run')
 
 
 def main():
+    OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
     args = get_args()
     if args.command == 'run':
         run_cmd(args)

@@ -6,7 +6,6 @@ from fairtask import TaskQueues, gatherl
 from hydra import utils
 from omegaconf import OmegaConf
 from .launcher import Launcher
-from .task import Task
 
 
 class FAIRTaskLauncher(Launcher):
@@ -15,15 +14,8 @@ class FAIRTaskLauncher(Launcher):
         self.cfg = OmegaConf.load(os.path.join(conf_dir, "fairtask.yaml"))
 
     def launch_job(self, sweep_instance):
-        cfg_dir = utils.find_cfg_dir(self.task)
-        task_cfg = utils.create_task_cfg(cfg_dir, self.task, sweep_instance)
-        cfg = task_cfg['cfg']
-        6# TODO: control verbose
-        utils.configure_log(cfg_dir, cfg, verbose=False)
-        task = utils.create_task(self.task)
-        assert isinstance(task, Task)
-        task.setup(cfg)
-        task.run(cfg)
+        # TODO: control verbose
+        utils.run_job(task=self.task, overrides=sweep_instance, verbose=False, working_directory='sweep')
 
     async def run_sweep(self, queue, sweep_configs):
         queue = queue.task(self.cfg.launcher.queue)
