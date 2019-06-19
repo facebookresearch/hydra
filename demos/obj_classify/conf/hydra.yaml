@@ -1,55 +1,33 @@
-configs:
-  dataset: imagenet
-  model: alexnet
-  optimizer: nesterov
-  # In some cases you want have specialized configuration that depends on the selection of two or more
-  # other configurations.
-  # In this example we want to have different momentum value depending on the selected dataset - imagenet or cifar10.
-  # To achieve that, we are trying to load a file who's name depend on the selected optimizer and dataset
-  # The directory optimizer/dataset will only contain nesterov_imagenet and nesterov_cifar10 files.
-  # In order to avoid an error when we try to load a missing adam_imagenet file, we flag the optimizer/dataset
-  # as optional below
-  optimizer/dataset: ${configs.optimizer}_${configs.dataset}
+hydra:
+  log_config: logging.yaml
+  run_dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep_dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/
 
-# optional configurations
-optional:
-  - optimizer/dataset
-
-# Configuration load order (later overriding earlier)
-load_order:
-  - dataset
-  - model
-  - optimizer
-  - optimizer/dataset
-
-run_dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
-sweep_dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/
-
-log_config: logging.yaml
-
-launcher:
-  queue: slurm
-  # number of concurrent jobs
-  concurrent: ???
-  queues:
-    local:
-      class: fairtask.local.LocalQueueConfig
-      params:
-        num_workers: 2
-    slurm:
-      class: fairtask_slurm.slurm.SLURMQueueConfig
-      params:
-        num_jobs: ${launcher.concurrent}
-        num_nodes_per_job: 1
-        num_workers_per_node: 1
-        name: hydra
-        maxtime_mins: 4320
-        partition: learnfair
-        cpus_per_worker: 10
-        mem_gb_per_worker: 64
-        gres: 'gpu:1'
-        logdir: /checkpoint/${env:USER}/fairtask/${launcher.queues.slurm.params.name}
-        output: slurm-%j.out
-        error: slurm-%j.err
-  # debug launching issues, set to true to run workers in the same process.
-  no_workers: false
+  launcher:
+    queue: slurm
+    # number of concurrent jobs
+    concurrent: ???
+    # job name
+    name: hydra
+    queues:
+      local:
+        class: fairtask.local.LocalQueueConfig
+        params:
+          num_workers: 2
+      slurm:
+        class: fairtask_slurm.slurm.SLURMQueueConfig
+        params:
+          num_jobs: ${hydra.launcher.concurrent}
+          num_nodes_per_job: 1
+          num_workers_per_node: 1
+          name: ${hydra.launcher.name}
+          maxtime_mins: 4320
+          partition: learnfair
+          cpus_per_worker: 10
+          mem_gb_per_worker: 64
+          gres: 'gpu:1'
+          logdir: /checkpoint/${env:USER}/fairtask/${hydra.launcher.name}
+          output: slurm-%j.out
+          error: slurm-%j.err
+    # debug launching issues, set to true to run workers in the same process.
+    no_workers: false

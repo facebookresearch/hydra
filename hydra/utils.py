@@ -68,7 +68,7 @@ def find_cfg_dir(task_class):
             return path
 
 
-def validate_hydra_cfg(hydra_cfg):
+def validate_config(hydra_cfg):
     order = hydra_cfg.load_order or []
     for key in (hydra_cfg.configs or {}):
         if key not in order:
@@ -80,7 +80,7 @@ def create_hydra_cfg(cfg_dir):
     return OmegaConf.load(hydra_cfg_path)
 
 
-def create_task_cfg(hydra_cfg, cfg_dir, task, cli_overrides=[]):
+def create_task_cfg(cfg_dir, task, cli_overrides=[]):
     loaded_configs = []
     all_config_checked = []
 
@@ -109,6 +109,13 @@ def create_task_cfg(hydra_cfg, cfg_dir, task, cli_overrides=[]):
             return OmegaConf.merge(cfg_, new_cfg)
 
     task_name = task.split('.')[-1]
+    main_cfg_file = os.path.join(cfg_dir, "{}.yaml".format(task_name))
+    main_cfg = load_config(main_cfg_file)
+    if main_cfg is None:
+        raise IOError("Could not load {}".format(main_cfg_file))
+    validate_config(main_cfg.config)
+
+    cfg = main_cfg
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
@@ -117,28 +124,21 @@ def create_task_cfg(hydra_cfg, cfg_dir, task, cli_overrides=[]):
         key, value = override.split('=')
         path = os.path.join(cfg_dir, key)
         if os.path.exists(path):
-            hydra_cfg.configs[key] = value
+            main_cfg.config.defaults[key] = value
         else:
             overrides.append(override)
 
-    validate_hydra_cfg(hydra_cfg)
-
-    main_conf = os.path.join(cfg_dir, "{}.yaml".format(task_name))
-    cfg = load_config(main_conf)
-    if cfg is None:
-        raise IOError("Could not load {}".format(main_conf))
-    for family in hydra_cfg.load_order:
-        name = hydra_cfg.configs[family]
-        is_optional = family in (hydra_cfg.optional or [])
+    for family in main_cfg.config.order:
+        name = main_cfg.config.defaults[family]
+        is_optional = family in (main_cfg.config.optional or [])
         cfg = merge_config(cfg, family, name, required=not is_optional)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
-    return dict(hydra_cfg=hydra_cfg, cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
+    return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
-def configure_log(cfg_dir, cfg, verbose=None):
+def configure_log(cfg_dir, log_config, verbose=None):
     # configure target directory for all logs files (binary, text. models etc)
-    log_config = cfg.log_config
     if not os.path.isabs(log_config):
         log_config = os.path.join(cfg_dir, log_config)
 
@@ -158,16 +158,15 @@ def save_config(cfg, filename):
 
 def run_job(hydra_cfg, task, overrides, verbose, workdir):
     cfg_dir = find_cfg_dir(task)
-    task_cfg = create_task_cfg(hydra_cfg, cfg_dir, task, overrides)
+    task_cfg = create_task_cfg(cfg_dir, task, overrides)
     cfg = task_cfg['cfg']
-    hydra_cfg = task_cfg['hydra_cfg']
     if cfg.sweep_id is not None:
         hydra_cfg.sweep_id = cfg.sweep_id
     old_cwd = os.getcwd()
     try:
         os.makedirs(workdir)
         os.chdir(workdir)
-        configure_log(cfg_dir, hydra_cfg, verbose)
+        configure_log(cfg_dir, hydra_cfg.hydra.log_config, verbose)
         task = create_task(task)
         assert isinstance(task, Task)
         save_config(cfg, 'config.yaml')

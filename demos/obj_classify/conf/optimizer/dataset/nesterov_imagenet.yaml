@@ -1,3 +1,0 @@
-optimizer:
-  # specialized momentum for nesterov + imagenet
-  momentum: 0.95

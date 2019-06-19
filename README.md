@@ -22,14 +22,18 @@ hydra run demos.obj_classify.Classify model=resent optimizer=adam optimizer.lr=0
 
 
 # Multi job runs
-
 ```
-hydra sweep demos.obj_classify.Classify
-```
-
-To run a the grid of (resnet,alexnet) X (nesterov,adam), 4 different runs:
-```
-hydra sweep demos.obj_classify.Classify model=resent,alexnet optimizer=nesterov,adam
+$ hydra sweep demos.obj_classify.Classify  model=alexnet,resnet optimizer=adam,nesterov something=one,two
+Sweep output dir : /checkpoint/omry/outputs/2019-06-19_12-58-56/
+Launching 8 jobs to slurm queue
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/0 : demos.obj_classify.Classify model=alexnet optimizer=adam something=one
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/1 : demos.obj_classify.Classify model=alexnet optimizer=adam something=two
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/2 : demos.obj_classify.Classify model=alexnet optimizer=nesterov something=one
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/3 : demos.obj_classify.Classify model=alexnet optimizer=nesterov something=two
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/4 : demos.obj_classify.Classify model=resnet optimizer=adam something=one
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/5 : demos.obj_classify.Classify model=resnet optimizer=adam something=two
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/6 : demos.obj_classify.Classify model=resnet optimizer=nesterov something=one
+        Workdir /checkpoint/omry/outputs/2019-06-19_12-58-56/7 : demos.obj_classify.Classify model=resnet optimizer=nesterov something=two
 ```
 
 # Debugging

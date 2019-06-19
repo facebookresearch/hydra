@@ -85,7 +85,7 @@ def run_cmd(args):
                   task=args.task,
                   overrides=args.overrides,
                   verbose=args.verbose,
-                  workdir=hydra_cfg.run_dir)
+                  workdir=hydra_cfg.hydra.run_dir)
 
 
 def main():
