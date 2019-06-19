@@ -2,7 +2,6 @@ import os
 import sys
 
 import argparse
-import itertools
 import pkg_resources
 
 from . import utils
@@ -62,25 +61,17 @@ def cfg_cmd(args):
     print(cfg.pretty())
 
 
-def get_sweep(overrides):
-    lists = []
-    for s in overrides:
-        key, value = s.split('=')
-        lists.append(["{}={}".format(key, value) for value in value.split(',')])
-
-    return list(itertools.product(*lists))
-
-
 def sweep_cmd(args):
     cfg_dir = utils.find_cfg_dir(args.task)
-    sweep_configs = get_sweep(args.overrides)
-    launcher = FAIRTaskLauncher(cfg_dir, args.task)
-    launcher.launch(sweep_configs)
+    hydra_cfg = utils.create_hydra_cfg(cfg_dir, args.overrides)
+
+    launcher = FAIRTaskLauncher(hydra_cfg, args.task, args.overrides)
+    launcher.launch()
 
 
 def run_cmd(args):
     cfg_dir = utils.find_cfg_dir(args.task)
-    hydra_cfg = utils.create_hydra_cfg(cfg_dir)
+    hydra_cfg = utils.create_hydra_cfg(cfg_dir=cfg_dir, overrides=args.overrides)
     utils.run_job(hydra_cfg=hydra_cfg,
                   task=args.task,
                   overrides=args.overrides,

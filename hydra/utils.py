@@ -75,9 +75,15 @@ def validate_config(hydra_cfg):
             raise RuntimeError("'{}' load order is not specified in load_order".format(key))
 
 
-def create_hydra_cfg(cfg_dir):
+def create_hydra_cfg(cfg_dir, overrides):
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
-    return OmegaConf.load(hydra_cfg_path)
+    hydra_cfg = OmegaConf.load(hydra_cfg_path)
+    hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
+    # remove all matching overrides from overrides list
+    for override in hydra_overrides:
+        overrides.remove(override)
+    overrides_cfg = OmegaConf.from_dotlist(hydra_overrides)
+    return OmegaConf.merge(hydra_cfg, overrides_cfg)
 
 
 def create_task_cfg(cfg_dir, task, cli_overrides=[]):
