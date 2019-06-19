@@ -3,6 +3,7 @@ import sys
 
 import argparse
 import pkg_resources
+from omegaconf import OmegaConf
 
 from . import utils
 from .fairtask_launcher import FAIRTaskLauncher
@@ -35,6 +36,11 @@ def get_args():
     cfg_parser = subparsers.add_parser("cfg", help="Show generated cfg")
     add_default_switches(cfg_parser)
 
+    cfg_parser.add_argument('--config', '-c',
+                            help='type of config',
+                            choices=['job', 'hydra', 'both'],
+                            default='job')
+
     cfg_parser.add_argument('--debug', '-d', action="store_true", default=False,
                             help="Show how the config was generated")
 
@@ -49,9 +55,18 @@ def get_args():
 
 def cfg_cmd(args):
     cfg_dir = utils.find_cfg_dir(args.task)
-    task_cfg = utils.create_task_cfg(cfg_dir, args)
-    cfg = task_cfg['cfg']
-    utils.configure_log(cfg_dir, cfg, args.verbose)
+    hydra_cfg = utils.create_hydra_cfg(cfg_dir=cfg_dir, overrides=args.overrides)
+    task_cfg = utils.create_task_cfg(cfg_dir, task=args.task, cli_overrides=args.overrides)
+    job_cfg = task_cfg['cfg']
+    if args.config == 'job':
+        cfg = job_cfg
+    elif args.config == 'hydra':
+        cfg = hydra_cfg
+    elif args.config == 'both':
+        cfg = OmegaConf.merge(hydra_cfg, job_cfg)
+    else:
+        assert False
+
     if args.debug:
         for file, loaded in task_cfg['checked']:
             if loaded:

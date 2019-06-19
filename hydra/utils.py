@@ -169,6 +169,7 @@ def run_job(hydra_cfg, task, overrides, verbose, workdir):
     if cfg.sweep_id is not None:
         hydra_cfg.sweep_id = cfg.sweep_id
     old_cwd = os.getcwd()
+    hydra_cfg.hydra.job_cwd = workdir
     try:
         os.makedirs(workdir)
         os.chdir(workdir)

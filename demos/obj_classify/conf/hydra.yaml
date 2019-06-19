@@ -2,6 +2,10 @@ hydra:
   log_config: logging.yaml
   run_dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
   sweep_dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/
+  # populated by hydra at runtime
+  # for run, this will be ${hydra.run_dir}
+  # for sweep, it will be ${hydra.sweep_dir}
+  job_cwd: ???
   # job name
   name: hydra
   launcher:
@@ -25,7 +29,7 @@ hydra:
           cpus_per_worker: 10
           mem_gb_per_worker: 64
           gres: 'gpu:1'
-          logdir: /checkpoint/${env:USER}/fairtask/${hydra.name}
+          logdir1: ${hydra.job_cwd}
           output: slurm-%j.out
           error: slurm-%j.err
     # debug launching issues, set to true to run workers in the same process.
