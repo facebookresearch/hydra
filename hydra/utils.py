@@ -3,9 +3,9 @@ import logging
 import logging.config
 import os
 
+from omegaconf import OmegaConf
 from time import strftime, localtime
 
-from omegaconf import OmegaConf
 from hydra.task import Task
 
 log = logging.getLogger(__name__)
@@ -75,7 +75,12 @@ def validate_hydra_cfg(hydra_cfg):
             raise RuntimeError("'{}' load order is not specified in load_order".format(key))
 
 
-def create_task_cfg(cfg_dir, task, cli_overrides=[]):
+def create_hydra_cfg(cfg_dir):
+    hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
+    return OmegaConf.load(hydra_cfg_path)
+
+
+def create_task_cfg(hydra_cfg, cfg_dir, task, cli_overrides=[]):
     loaded_configs = []
     all_config_checked = []
 
@@ -104,8 +109,6 @@ def create_task_cfg(cfg_dir, task, cli_overrides=[]):
             return OmegaConf.merge(cfg_, new_cfg)
 
     task_name = task.split('.')[-1]
-    hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
-    hydra_cfg = OmegaConf.load(hydra_cfg_path)
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
@@ -153,17 +156,17 @@ def save_config(cfg, filename):
         file.write(cfg.pretty())
 
 
-def run_job(task, overrides, verbose, working_directory):
+def run_job(hydra_cfg, task, overrides, verbose, workdir):
     cfg_dir = find_cfg_dir(task)
-    task_cfg = create_task_cfg(cfg_dir, task, overrides)
+    task_cfg = create_task_cfg(hydra_cfg, cfg_dir, task, overrides)
     cfg = task_cfg['cfg']
     hydra_cfg = task_cfg['hydra_cfg']
+    if cfg.sweep_id is not None:
+        hydra_cfg.sweep_id = cfg.sweep_id
     old_cwd = os.getcwd()
     try:
-        job_wd = hydra_cfg.working_directory[working_directory]
-        assert job_wd is not None
-        os.makedirs(job_wd)
-        os.chdir(job_wd)
+        os.makedirs(workdir)
+        os.chdir(workdir)
         configure_log(cfg_dir, hydra_cfg, verbose)
         task = create_task(task)
         assert isinstance(task, Task)
@@ -172,3 +175,7 @@ def run_job(task, overrides, verbose, working_directory):
         task.run(cfg)
     finally:
         os.chdir(old_cwd)
+
+
+def setup_globals():
+    OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))

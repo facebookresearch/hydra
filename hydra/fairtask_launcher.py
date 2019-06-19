@@ -1,25 +1,32 @@
 import asyncio
-import os
 
 from fairtask import TaskQueues, gatherl
 
 from hydra import utils
-from omegaconf import OmegaConf
 from .launcher import Launcher
+import os
 
 
 class FAIRTaskLauncher(Launcher):
-    def __init__(self, conf_dir, task):
+    def __init__(self, cfg_dir, task):
         self.task = task
-        self.cfg = OmegaConf.load(os.path.join(conf_dir, "fairtask.yaml"))
+        self.hydra_cfg = utils.create_hydra_cfg(cfg_dir)
 
-    def launch_job(self, sweep_instance):
-        # TODO: control verbose
-        utils.run_job(task=self.task, overrides=sweep_instance, verbose=False, working_directory='sweep')
+    def launch_job(self, sweep_instance, workdir):
+        utils.setup_globals()
+        utils.run_job(hydra_cfg=self.hydra_cfg,
+                      task=self.task,
+                      overrides=sweep_instance,
+                      verbose=False,
+                      workdir=workdir)
 
     async def run_sweep(self, queue, sweep_configs):
-        queue = queue.task(self.cfg.launcher.queue)
-        runs = [queue(self.launch_job)(sweep_instance) for sweep_instance in sweep_configs]
+        queue = queue.task(self.hydra_cfg.launcher.queue)
+        runs = []
+        for i in range(len(sweep_configs)):
+            sweep_override = list(sweep_configs[i])
+            workdir = os.path.join(self.hydra_cfg.sweep_dir, str(i))
+            runs.append(queue(self.launch_job)(sweep_override, workdir))
         return await gatherl(runs)
 
     @staticmethod
@@ -36,6 +43,7 @@ class FAIRTaskLauncher(Launcher):
         return TaskQueues(queues, no_workers=no_workers)
 
     def launch(self, sweep_configs):
+        print("Sweep output dir : {}".format(self.hydra_cfg.sweep_dir))
         loop = asyncio.get_event_loop()
-        queue = self.create_queue(self.cfg.launcher, len(sweep_configs))
+        queue = self.create_queue(self.hydra_cfg.launcher, len(sweep_configs))
         loop.run_until_complete(self.run_sweep(queue, sweep_configs))

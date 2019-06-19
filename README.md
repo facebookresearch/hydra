@@ -21,15 +21,13 @@ hydra run demos.obj_classify.Classify model=resent optimizer=adam optimizer.lr=0
 ```
 
 
-# Multi job runs (typically to slurm) (TODO)
+# Multi job runs
 
-To run a job with 10 random seeds:
 ```
-hydra sweep demos.obj_classify.Classify model=resent
+hydra sweep demos.obj_classify.Classify
 ```
 
-
-To run a the grid of (resnet,alexnet) X (nesterov,adam), which is 4 different experiments - each with 10 random seeds:
+To run a the grid of (resnet,alexnet) X (nesterov,adam), 4 different runs:
 ```
 hydra sweep demos.obj_classify.Classify model=resent,alexnet optimizer=nesterov,adam
 ```

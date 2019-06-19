@@ -4,9 +4,7 @@ import sys
 import argparse
 import itertools
 import pkg_resources
-from time import localtime, strftime
 
-from omegaconf import OmegaConf
 from . import utils
 from .fairtask_launcher import FAIRTaskLauncher
 
@@ -81,11 +79,17 @@ def sweep_cmd(args):
 
 
 def run_cmd(args):
-    utils.run_job(task=args.task, overrides=args.overrides, verbose=args.verbose, working_directory = 'run')
+    cfg_dir = utils.find_cfg_dir(args.task)
+    hydra_cfg = utils.create_hydra_cfg(cfg_dir)
+    utils.run_job(hydra_cfg=hydra_cfg,
+                  task=args.task,
+                  overrides=args.overrides,
+                  verbose=args.verbose,
+                  workdir=hydra_cfg.run_dir)
 
 
 def main():
-    OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
+    utils.setup_globals()
     args = get_args()
     if args.command == 'run':
         run_cmd(args)
