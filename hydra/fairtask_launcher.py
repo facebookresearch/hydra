@@ -38,8 +38,8 @@ class FAIRTaskLauncher(Launcher):
         assert num_jobs > 0
         cfg.concurrent = num_jobs
         queues = {}
-        for k, v in cfg.queues.items():
-            queues[k] = utils.instantiate(v)
+        for queue_name, queue_conf in cfg.queues.items():
+            queues[queue_name] = utils.instantiate(queue_conf)
 
         # if no_workers == True, then turn off all queue functionality
         # and run everything synchronously (good for debugging)

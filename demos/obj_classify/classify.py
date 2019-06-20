@@ -16,3 +16,4 @@ class Classify(Task):
     def run(self, cfg):
         # run your actual code
         pass
+
