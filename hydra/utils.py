@@ -86,7 +86,7 @@ def create_hydra_cfg(cfg_dir, overrides):
     return OmegaConf.merge(hydra_cfg, overrides_cfg)
 
 
-def create_task_cfg(cfg_dir, task, cli_overrides=[]):
+def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
     loaded_configs = []
     all_config_checked = []
 
@@ -114,8 +114,7 @@ def create_task_cfg(cfg_dir, task, cli_overrides=[]):
         else:
             return OmegaConf.merge(cfg_, new_cfg)
 
-    task_name = task.split('.')[-1]
-    main_cfg_file = os.path.join(cfg_dir, "{}.yaml".format(task_name))
+    main_cfg_file = os.path.join(cfg_dir, cfg_filename)
     main_cfg = load_config(main_cfg_file)
     if main_cfg is None:
         raise IOError("Could not load {}".format(main_cfg_file))
@@ -140,6 +139,8 @@ def create_task_cfg(cfg_dir, task, cli_overrides=[]):
         cfg = merge_config(cfg, family, name, required=not is_optional)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
+    # remove config block from resulting cfg.
+    del cfg['config']
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
@@ -162,9 +163,8 @@ def save_config(cfg, filename):
         file.write(cfg.pretty())
 
 
-def run_job(hydra_cfg, task, overrides, verbose, workdir):
-    cfg_dir = find_cfg_dir(task)
-    task_cfg = create_task_cfg(cfg_dir, task, overrides)
+def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, workdir):
+    task_cfg = create_task_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
     if cfg.sweep_id is not None:
         hydra_cfg.sweep_id = cfg.sweep_id
@@ -174,11 +174,8 @@ def run_job(hydra_cfg, task, overrides, verbose, workdir):
         os.makedirs(workdir)
         os.chdir(workdir)
         configure_log(cfg_dir, hydra_cfg.hydra.log_config, verbose)
-        task = create_task(task)
-        assert isinstance(task, Task)
         save_config(cfg, 'config.yaml')
-        task.setup(cfg)
-        task.run(cfg)
+        task_function(cfg)
     finally:
         os.chdir(old_cwd)
 

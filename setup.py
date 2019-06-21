@@ -4,7 +4,6 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setuptools.setup(
         name="hydra",
-        scripts=['bin/hydra'],
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",

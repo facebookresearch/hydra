@@ -1,0 +1,14 @@
+config:
+  defaults:
+    dataset: imagenet
+    model: alexnet
+    optimizer: nesterov
+
+  order:
+    - dataset
+    - model
+    - optimizer
+
+# Additional global config for your task goes here
+
+hello: world

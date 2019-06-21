@@ -9,17 +9,22 @@ from .launcher import Launcher
 
 
 class FAIRTaskLauncher(Launcher):
-    def __init__(self, hydra_cfg, task, overrides):
+    def __init__(self, cfg_dir, cfg_filename, hydra_cfg, task_function, overrides):
+        self.cfg_dir = cfg_dir
+        self.cfg_filename = cfg_filename
         self.hydra_cfg = hydra_cfg
-        self.task = task
+        self.task_function = task_function
         self.sweep_configs = FAIRTaskLauncher.get_sweep(overrides)
 
-    def launch_job(self, sweep_instance, workdir):
+    def launch_job(self, sweep_overrides, workdir):
         utils.setup_globals()
-        utils.run_job(hydra_cfg=self.hydra_cfg,
-                      task=self.task,
-                      overrides=sweep_instance,
-                      verbose=False, workdir=workdir)
+        utils.run_job(self.cfg_dir,
+                      self.cfg_filename,
+                      hydra_cfg=self.hydra_cfg,
+                      task_function=self.task_function,
+                      overrides=sweep_overrides,
+                      verbose=False,
+                      workdir=workdir)
 
     async def run_sweep(self, queue, sweep_configs):
         queue_name = self.hydra_cfg.hydra.launcher.queue
@@ -29,7 +34,7 @@ class FAIRTaskLauncher(Launcher):
         for i in range(len(sweep_configs)):
             sweep_override = list(sweep_configs[i])
             workdir = os.path.join(self.hydra_cfg.hydra.sweep_dir, str(i))
-            print("\tWorkdir {} : {} {}".format(workdir, self.task, " ".join(sweep_override)))
+            print("\tWorkdir {} : {}".format(workdir, " ".join(sweep_override)))
             runs.append(queue(self.launch_job)(sweep_override, workdir))
         return await gatherl(runs)
 
