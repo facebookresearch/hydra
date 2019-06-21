@@ -10,5 +10,3 @@ config:
     - optimizer
 
 # Additional global config for your task goes here
-
-hello: world

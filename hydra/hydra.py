@@ -5,13 +5,10 @@ import traceback
 
 import argparse
 import pkg_resources
-
-from . import utils
-from hydra.fairtask_launcher import FAIRTaskLauncher
 from omegaconf import OmegaConf
 
-# add cwd to path to allow running directly from the repo top level directory
-sys.path.append(os.getcwd())
+from hydra.fairtask_launcher import FAIRTaskLauncher
+from . import utils
 
 
 def get_args():
@@ -50,38 +47,6 @@ def get_args():
 
     return parser.parse_args()
 
-
-# def sweep_cmd(args):
-#     cfg_dir = utils.find_cfg_dir(args.task)
-#     hydra_cfg = utils.create_hydra_cfg(cfg_dir, args.overrides)
-#
-#     launcher = FAIRTaskLauncher(hydra_cfg, args.task, args.overrides)
-#     launcher.launch()
-#
-#
-# def run_cmd(args):
-#     cfg_dir = utils.find_cfg_dir(args.task)
-#     hydra_cfg = utils.create_hydra_cfg(cfg_dir=cfg_dir, overrides=args.overrides)
-#     utils.run_job(hydra_cfg=hydra_cfg,
-#                   task=args.task,
-#                   overrides=args.overrides,
-#                   verbose=args.verbose,
-#                   workdir=hydra_cfg.hydra.run_dir)
-
-
-# def main():
-#     utils.setup_globals()
-#     args = get_args()
-#     if args.command == 'run':
-#         run_cmd(args)
-#     elif args.command == 'cfg':
-#         cfg_cmd(args)
-#     elif args.command == 'sweep':
-#         sweep_cmd(args)
-#
-#
-# if __name__ == '__main__':
-#     main()
 
 def run_hydra(task_function, config_path):
     stack = inspect.stack()
