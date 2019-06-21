@@ -1,0 +1,4 @@
+* Try to incorporate user config families into help dynamically.
+* Simplest demo
+* Demo with instantiating classes from config
+* Flow to create an empty hydra app for quick start

@@ -6,8 +6,6 @@ import os
 from omegaconf import OmegaConf
 from time import strftime, localtime
 
-from hydra.task import Task
-
 log = logging.getLogger(__name__)
 
 
@@ -75,15 +73,16 @@ def validate_config(hydra_cfg):
             raise RuntimeError("'{}' load order is not specified in load_order".format(key))
 
 
-def create_hydra_cfg(cfg_dir, overrides):
+def create_hydra_cfg(target_file, cfg_dir, overrides):
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     hydra_cfg = OmegaConf.load(hydra_cfg_path)
     hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
     # remove all matching overrides from overrides list
     for override in hydra_overrides:
         overrides.remove(override)
-    overrides_cfg = OmegaConf.from_dotlist(hydra_overrides)
-    return OmegaConf.merge(hydra_cfg, overrides_cfg)
+    hydra_cfg.merge_with_dotlist(hydra_overrides)
+    hydra_cfg.hydra.name = os.path.splitext(os.path.basename(target_file))[0] # TODO: this should onlly replace name if it's '???'
+    return hydra_cfg
 
 
 def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
@@ -144,12 +143,8 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
-def configure_log(cfg_dir, log_config, verbose=None):
-    # configure target directory for all logs files (binary, text. models etc)
-    if not os.path.isabs(log_config):
-        log_config = os.path.join(cfg_dir, log_config)
-
-    logging.config.dictConfig(OmegaConf.load(log_config).to_dict())
+def configure_log(log_config, verbose=None):
+    logging.config.dictConfig(log_config.to_dict())
 
     if verbose:
         if verbose == 'root':
@@ -173,7 +168,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
     try:
         os.makedirs(workdir)
         os.chdir(workdir)
-        configure_log(cfg_dir, hydra_cfg.hydra.log_config, verbose)
+        configure_log(hydra_cfg.hydra.logging, verbose)
         save_config(cfg, 'config.yaml')
         task_function(cfg)
     finally:

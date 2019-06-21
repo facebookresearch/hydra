@@ -6,6 +6,32 @@ See developing for now.
 
 # Basic usage
 You can run the classify demo with the default arguments:
+
+This is what the demo code looks like:
+```python
+import logging
+import os
+import sys
+
+import socket
+
+import hydra
+
+log = logging.getLogger(__name__)
+
+@hydra.main(config_path='conf/config.yaml')
+def experiment(cfg):
+    log.info("Running on: {}".format(socket.gethostname()))
+    log.info("CWD: {}".format(os.path.realpath(os.getcwd())))
+    log.info("Configuration:\n{}".format(cfg.pretty()))
+
+
+if __name__ == "__main__":
+    sys.exit(experiment())
+
+```
+It just prints a few things like the configuration object, the current working directory and the hostname.
+
 ```
 $ python demos/classify/classify.py run
 [2019-06-20 18:13:09,117][__main__][INFO] - Running on: devfair0260
@@ -43,11 +69,10 @@ demos/classify
 ├── classify.py
 └── conf
     ├── config.yaml
+    ├── hydra.yaml
     ├── dataset
     │   ├── cifar10.yaml
     │   └── imagenet.yaml
-    ├── hydra.yaml
-    ├── logging.yaml
     ├── model
     │   ├── alexnet.yaml
     │   └── resnet.yaml

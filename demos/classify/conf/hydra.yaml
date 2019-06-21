@@ -1,11 +1,10 @@
 hydra:
-  log_config: logging.yaml
   run_dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
   sweep_dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/
   # populated by hydra at runtime
   job_cwd: ???
-  # job name
-  name: hydra
+  # job name, populated by hydra at runtime based on the filename of the hydra.main()
+  name: hydra # TODO: this sholud be ??? but OmegaConf bug prevents it.
   launcher:
     queue: slurm
     # number of concurrent jobs
@@ -32,3 +31,25 @@ hydra:
           error: slurm-%j.err
     # debug launching issues, set to true to run workers in the same process.
     no_workers: false
+
+  # python logging configuration
+  logging:
+    version: 1
+    formatters:
+      simple:
+        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: simple
+        # relative to the job log directory
+        filename: $(hydra.name).log
+    root:
+      level: INFO
+      handlers: [console, file]
+
+    disable_existing_loggers: False

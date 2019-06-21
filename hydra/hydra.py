@@ -61,7 +61,7 @@ def run_hydra(task_function, config_path):
     conf_filename = os.path.basename(conf_file)
 
     if args.command == 'run':
-        hydra_cfg = utils.create_hydra_cfg(cfg_dir=conf_dir, overrides=args.overrides)
+        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
         utils.run_job(cfg_dir=conf_dir,
                       cfg_filename=conf_filename,
                       hydra_cfg=hydra_cfg,
@@ -70,7 +70,7 @@ def run_hydra(task_function, config_path):
                       verbose=args.verbose,
                       workdir=hydra_cfg.hydra.run_dir)
     elif args.command == 'cfg':
-        hydra_cfg = utils.create_hydra_cfg(cfg_dir=conf_dir, overrides=args.overrides)
+        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
         task_cfg = utils.create_task_cfg(cfg_dir=conf_dir,
                                          cfg_filename=conf_filename,
                                          cli_overrides=args.overrides)
@@ -92,7 +92,7 @@ def run_hydra(task_function, config_path):
                     print("Not found: {}".format(file))
         print(cfg.pretty())
     elif args.command == 'sweep':
-        hydra_cfg = utils.create_hydra_cfg(cfg_dir=conf_dir, overrides=args.overrides)
+        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
         launcher = FAIRTaskLauncher(cfg_dir=conf_dir,
                                     cfg_filename=conf_filename,
                                     hydra_cfg=hydra_cfg,
