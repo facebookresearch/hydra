@@ -35,7 +35,7 @@ optimizer:
   type: nesterov
 ```
 
-## composing configurations
+## Composing configurations
 under demos/classify/conf, we have subdirectories for dataset, model and optimizer.
 ```
 $ tree demos/classify
