@@ -23,5 +23,4 @@ python setup.py develop
 ## Uninstall
 ```
 python setup.py develop --uninstall
-rm $(which hydra)
 ```
