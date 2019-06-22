@@ -1,6 +1,5 @@
 # Hydra
-Hydra is a generic experimentation framework for scientific computing and machine learning
-It provides:
+Hydra is a experimentation framework providing the following:
  * A unified interface to run experiments locally or remotely
  * Ability compose configuration dynamically from your own configuration primitives
  * Ability to override values in composed configurations from the command line
