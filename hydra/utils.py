@@ -68,6 +68,8 @@ def find_cfg_dir(task_class):
 
 
 def validate_config(cfg):
+    if cfg.defaults is None:
+        return
     valid_example = """
     Example of a valid defaults:
     defaults:
@@ -94,6 +96,14 @@ def update_defaults(cfg, defaults_changes):
             if key != 'optional':
                 if key in defaults_changes:
                     default[key] = defaults_changes[key]
+                    del defaults_changes[key]
+    # unmatched new defaults, put at end of list
+    for key, value in defaults_changes.items():
+        # TODO:
+        # Change to
+        # cfg.defaults.append({key: value})
+        # once cfg.defaults.content.append(OmegaConf.create({key: value})) is resolved.
+        cfg.defaults.content.append(OmegaConf.create({key: value}))
 
 
 def create_hydra_cfg(target_file, cfg_dir, overrides):
@@ -139,19 +149,21 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
             if required:
                 options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
                            os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-                raise IOError("Could not load {}, available options : {}".format(cfg_path, ",".join(options)))
+                raise IOError(
+                    "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family_, "\n\t".join(options)))
             else:
                 return cfg_
         else:
             return OmegaConf.merge(cfg_, new_cfg)
 
-    main_cfg_file = os.path.join(cfg_dir, cfg_filename)
-    if os.path.exists(main_cfg_file):
+    main_cfg_file = os.path.join(cfg_dir, cfg_filename) if cfg_filename is not None else None
+    if main_cfg_file is not None and os.path.exists(main_cfg_file):
         main_cfg = load_config(main_cfg_file)
     else:
-        main_cfg = OmegaConf.create(dict(defaults={}))
+        main_cfg = OmegaConf.create(dict(defaults=[]))
     if main_cfg.defaults is None:
-        main_cfg.defaults = []
+        # TODO: Change to main_cfg.defaults = [] after https://github.com/omry/omegaconf/issues/11 is fixed.
+        main_cfg.defaults = OmegaConf.create([])
     validate_config(main_cfg)
 
     # split overrides into defaults (which cause additional configs to be loaded)

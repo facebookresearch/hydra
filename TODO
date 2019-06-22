@@ -1,3 +1,4 @@
+* add unit testing to ensure behavior described in demos is preserved
 * simplify the config for composing config.
 * Try to incorporate user config families into help dynamically.
 * Simplest demo
