@@ -1,6 +1,10 @@
 # Hydra
 Hydra is a generic experimentation framework for scientific computing and machine learning
-
+It provides:
+ * A unified interface to run experiments locally or remotely
+ * Ability to override parameters, compose configuration dynamically from configuration primitives you define
+ * Creating a unique working directory for each run (local or remote)
+ * Configures python logger for your experiments
 # Installing
 See developing for now.
 

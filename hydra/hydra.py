@@ -104,7 +104,7 @@ def run_hydra(task_function, config_path):
         print("Command not specified")
 
 
-def main(config_path):
+def main(config_path='conf/config.yaml'):
     def main_decorator(task_function):
         def decorated_main():
             try:

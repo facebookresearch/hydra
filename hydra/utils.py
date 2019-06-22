@@ -2,6 +2,7 @@ import inspect
 import logging
 import logging.config
 import os
+import sys
 
 from omegaconf import OmegaConf
 from time import strftime, localtime
@@ -66,22 +67,31 @@ def find_cfg_dir(task_class):
             return path
 
 
-def validate_config(hydra_cfg):
-    order = hydra_cfg.load_order or []
-    for key in (hydra_cfg.configs or {}):
+def validate_config(cfg):
+    order = cfg.load_order or []
+    for key in (cfg.configs or {}):
         if key not in order:
             raise RuntimeError("'{}' load order is not specified in load_order".format(key))
 
 
 def create_hydra_cfg(target_file, cfg_dir, overrides):
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
-    hydra_cfg = OmegaConf.load(hydra_cfg_path)
+    if os.path.exists(hydra_cfg_path):
+        hydra_cfg = OmegaConf.load(hydra_cfg_path)
+    else:
+        hydra_cfg = OmegaConf.create(dict(
+            hydra=dict(
+                run_dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}',
+                sweep_dir='???'
+            ))
+        )
     hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
     # remove all matching overrides from overrides list
     for override in hydra_overrides:
         overrides.remove(override)
     hydra_cfg.merge_with_dotlist(hydra_overrides)
-    hydra_cfg.hydra.name = os.path.splitext(os.path.basename(target_file))[0] # TODO: this should onlly replace name if it's '???'
+    target_file = os.path.basename(target_file)
+    hydra_cfg.hydra.name = os.path.splitext(target_file)[0]  # TODO: this should only replace name if it's '???'
     return hydra_cfg
 
 
@@ -114,11 +124,14 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
             return OmegaConf.merge(cfg_, new_cfg)
 
     main_cfg_file = os.path.join(cfg_dir, cfg_filename)
-    main_cfg = load_config(main_cfg_file)
-    if main_cfg is None:
-        raise IOError("Could not load {}".format(main_cfg_file))
+    if os.path.exists(main_cfg_file):
+        main_cfg = load_config(main_cfg_file)
+    else:
+        main_cfg = OmegaConf.create(dict(config={}))
+    if main_cfg.config is None:
+        main_cfg.config = {}
+        main_cfg.config.load_order = []
     validate_config(main_cfg.config)
-
     cfg = main_cfg
 
     # split overrides into defaults (which cause additional configs to be loaded)
@@ -132,7 +145,7 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         else:
             overrides.append(override)
 
-    for family in main_cfg.config.order:
+    for family in main_cfg.config.order or []:
         name = main_cfg.config.defaults[family]
         is_optional = family in (main_cfg.config.optional or [])
         cfg = merge_config(cfg, family, name, required=not is_optional)
@@ -144,7 +157,17 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
 
 
 def configure_log(log_config, verbose=None):
-    logging.config.dictConfig(log_config.to_dict())
+    if log_config is not None:
+        logging.config.dictConfig(log_config.to_dict())
+    else:
+        # default logging to stdout
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] - %(message)s')
+        handler.setFormatter(formatter)
+        root.addHandler(handler)
 
     if verbose:
         if verbose == 'root':
