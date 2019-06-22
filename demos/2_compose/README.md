@@ -63,5 +63,5 @@ optimizer:
   type: adam
 ```
 
-Repeating this every time you want to run get get annoying.
+Repeating this every time you want to run can get annoying.
 Time for the next demo.
