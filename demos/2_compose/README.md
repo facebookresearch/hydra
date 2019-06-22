@@ -10,9 +10,9 @@ demos/2_compose/
 ├── model
 │   ├── alexnet.yaml
 │   └── resnet.yaml
-├── optimizer
-│   ├── adam.yaml
-│   └── nesterov.yaml
+└── optimizer
+    ├── adam.yaml
+    └── nesterov.yaml
 ```
 
 To tell hydra our config is in conf:
