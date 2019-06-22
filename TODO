@@ -1,7 +1,10 @@
 * add unit testing to ensure behavior described in demos is preserved
-* simplify the config for composing config.
 * Try to incorporate user config families into help dynamically.
-* Simplest demo
-* Demo with instantiating classes from config
 * Flow to create an empty hydra app for quick start
 * consider xar integration: https://github.com/facebookincubator/xar and https://pypi.org/project/pex/
+* Create additional demos:
+  * Sweep demo
+  * Demo with instantiating classes from config
+  * Demo for specializing configuration depending on multiple selected config families
+DONE:
+* simplify the config for composing config.
