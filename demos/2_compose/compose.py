@@ -8,7 +8,7 @@ import hydra
 
 log = logging.getLogger(__name__)
 
-@hydra.main(config_path='conf/')
+@hydra.main(config_path='conf')
 def experiment(cfg):
     log.info("Running on: {}".format(socket.gethostname()))
     log.info("CWD: {}".format(os.path.realpath(os.getcwd())))
