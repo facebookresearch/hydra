@@ -1,11 +1,10 @@
 ## Config file
-The example introduces a config file that is loaded automatically for your function.
+This example introduces a config file that is loaded automatically for your function.
 
 ```python
 @hydra.main(config_path='config.yaml')
 def experiment(cfg):
-    log.info("CWD: {}".format(os.path.realpath(os.getcwd())))
-    log.info("Configuration:\n{}".format(cfg.pretty()))
+    ...
 ```
 
 ```text

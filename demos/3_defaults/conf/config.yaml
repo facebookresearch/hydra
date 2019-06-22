@@ -1,0 +1,4 @@
+defaults:
+  - dataset: imagenet
+  - model: alexnet
+  - optimizer: nesterov

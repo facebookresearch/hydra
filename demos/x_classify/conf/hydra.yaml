@@ -4,7 +4,7 @@ hydra:
   # populated by hydra at runtime
   job_cwd: ???
   # job name, populated by hydra at runtime based on the filename of the hydra.main()
-  name: hydra # TODO: this sholud be ??? but OmegaConf bug prevents it.
+  name: hydra # TODO: this should be ??? but OmegaConf bug prevents it.
   launcher:
     queue: slurm
     # number of concurrent jobs
