@@ -68,10 +68,32 @@ def find_cfg_dir(task_class):
 
 
 def validate_config(cfg):
-    order = cfg.load_order or []
-    for key in (cfg.configs or {}):
-        if key not in order:
-            raise RuntimeError("'{}' load order is not specified in load_order".format(key))
+    valid_example = """
+    Example of a valid defaults:
+    defaults:
+      - dataset: imagenet
+      - model: alexnet
+        optional: true
+      - optimizer: nesterov
+    """
+    assert cfg.defaults.is_sequence(), \
+        "defaults must be a list because composition is order sensitive : " + valid_example
+    for default in cfg.defaults:
+        assert default.is_dict()
+        assert len(default) in (1, 2)
+        if len(default) == 2:
+            assert default.optional is not None and type(default.optional) == bool
+        else:
+            # optional can't be the only config key in a default
+            assert default.optional is None, "Missing config key"
+
+
+def update_defaults(cfg, defaults_changes):
+    for default in cfg.defaults:
+        for key in default.keys():
+            if key != 'optional':
+                if key in defaults_changes:
+                    default[key] = defaults_changes[key]
 
 
 def create_hydra_cfg(target_file, cfg_dir, overrides):
@@ -127,32 +149,38 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
     if os.path.exists(main_cfg_file):
         main_cfg = load_config(main_cfg_file)
     else:
-        main_cfg = OmegaConf.create(dict(config={}))
-    if main_cfg.config is None:
-        main_cfg.config = {}
-        main_cfg.config.load_order = []
-    validate_config(main_cfg.config)
-    cfg = main_cfg
+        main_cfg = OmegaConf.create(dict(defaults={}))
+    if main_cfg.defaults is None:
+        main_cfg.defaults = []
+    validate_config(main_cfg)
 
     # split overrides into defaults (which cause additional configs to be loaded)
     # and overrides which triggers overriding of specific nodes in the config tree
     overrides = []
+    defaults_changes = {}
     for override in cli_overrides:
         key, value = override.split('=')
+        assert key != 'optional', "optional is a reserved keyword and cannot be used as a config group name"
         path = os.path.join(cfg_dir, key)
         if os.path.exists(path):
-            main_cfg.config.defaults[key] = value
+            defaults_changes[key] = value
         else:
             overrides.append(override)
 
-    for family in main_cfg.config.order or []:
-        name = main_cfg.config.defaults[family]
-        is_optional = family in (main_cfg.config.optional or [])
+    update_defaults(main_cfg, defaults_changes)
+
+    cfg = main_cfg
+    for default in main_cfg.defaults:
+        is_optional = False
+        if default.optional is not None:
+            is_optional = default.optional
+            del default['optional']
+        family, name = next(iter(default.items()))
         cfg = merge_config(cfg, family, name, required=not is_optional)
 
     cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
     # remove config block from resulting cfg.
-    del cfg['config']
+    del cfg['defaults']
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
 
 
