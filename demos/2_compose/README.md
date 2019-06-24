@@ -1,8 +1,8 @@
 ## Composing configuration
 This example introduces the concept of composing configurations.
 ```bash
-$ tree demos/2_compose/
-demos/2_compose/
+$ tree demos/2_compose/conf
+demos/2_compose/conf
 ├── compose.py
 ├── dataset
 │   ├── cifar10.yaml
@@ -22,7 +22,7 @@ def experiment(cfg):
     ...
 ```
 
-We have 3 configuration families, a single run would include a combination of dataset, model and optimizer.
+We have 3 configuration families, a single run cab include a combination of dataset, model and optimizer.
 
 If we just run compose nothing new is loaded:
 ```text
