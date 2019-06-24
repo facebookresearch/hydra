@@ -8,6 +8,7 @@ from omegaconf import OmegaConf
 from time import strftime, localtime
 
 log = logging.getLogger(__name__)
+from collections import Sequence
 
 
 def fullname(o):
@@ -78,7 +79,7 @@ def validate_config(cfg):
         optional: true
       - optimizer: nesterov
     """
-    assert cfg.defaults.is_sequence(), \
+    assert isinstance(cfg.defaults, Sequence), \
         "defaults must be a list because composition is order sensitive : " + valid_example
     for default in cfg.defaults:
         assert default.is_dict()
@@ -99,11 +100,7 @@ def update_defaults(cfg, defaults_changes):
                     del defaults_changes[key]
     # unmatched new defaults, put at end of list
     for key, value in defaults_changes.items():
-        # TODO:
-        # Change to
-        # cfg.defaults.append({key: value})
-        # once cfg.defaults.content.append(OmegaConf.create({key: value})) is resolved.
-        cfg.defaults.content.append(OmegaConf.create({key: value}))
+        cfg.defaults.append({key: value})
 
 
 def create_hydra_cfg(target_file, cfg_dir, overrides):
@@ -162,8 +159,7 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
     else:
         main_cfg = OmegaConf.create(dict(defaults=[]))
     if main_cfg.defaults is None:
-        # TODO: Change to main_cfg.defaults = [] after https://github.com/omry/omegaconf/issues/11 is fixed.
-        main_cfg.defaults = OmegaConf.create([])
+        main_cfg.defaults = []
     validate_config(main_cfg)
 
     # split overrides into defaults (which cause additional configs to be loaded)
@@ -239,4 +235,8 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
 
 
 def setup_globals():
-    OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
+    try:
+        OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
+    except AssertionError:
+        # calling it again in no_workers mode will throw. safe to ignore.
+        pass

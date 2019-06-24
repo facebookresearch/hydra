@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=[
-            'omegaconf>=1.1.9',
+            'omegaconf>=1.2.0',
             'setuptools',
         ]
     )

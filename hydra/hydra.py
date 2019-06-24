@@ -57,6 +57,8 @@ def run_hydra(task_function, config_path):
     if os.path.isabs(config_path):
         raise RuntimeError("Config path should be relative")
     abs_config_path = os.path.realpath(os.path.join(os.path.dirname(calling_file), config_path))
+    if not os.path.exists(abs_config_path):
+        raise RuntimeError("Config path '{}' does not exist".format(abs_config_path))
     if os.path.isfile(abs_config_path):
         conf_dir = os.path.dirname(abs_config_path)
         conf_filename = os.path.basename(abs_config_path)
