@@ -1,10 +1,13 @@
+* add --run, --cfg, --sweep mutually exclusive flags to control behavior. default --run.
 * add unit testing to ensure behavior described in demos is preserved
-* Try to incorporate user config families into help dynamically.
+* Try to incorporate user config families into --help dynamically.
 * Flow to create an empty hydra app for quick start
 * consider xar integration: https://github.com/facebookincubator/xar and https://pypi.org/project/pex/
 * Create additional demos:
   * Sweep demo
   * Demo with instantiating classes from config
   * Demo for specializing configuration depending on multiple selected config families
+* pass in an  explicit name instead of deducing from calling filename
+
 DONE:
 * simplify the config for composing config.

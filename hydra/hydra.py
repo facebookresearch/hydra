@@ -2,7 +2,7 @@ import inspect
 import os
 import sys
 import traceback
-
+import copy
 import argparse
 import pkg_resources
 from omegaconf import OmegaConf
@@ -48,6 +48,56 @@ def get_args():
     return parser.parse_args()
 
 
+class Hydra:
+
+    def __init__(self, calling_file, conf_dir, conf_filename, task_function, verbose):
+        self.calling_file = calling_file
+        self.conf_dir = conf_dir
+        self.conf_filename = conf_filename
+        self.task_function = task_function
+        self.verbose = verbose
+
+    def run(self, overrides):
+        overrides = copy.deepcopy(overrides)
+        hydra_cfg = utils.create_hydra_cfg(
+            target_file=self.calling_file,
+            cfg_dir=self.conf_dir,
+            overrides=overrides)
+        utils.run_job(cfg_dir=self.conf_dir,
+                      cfg_filename=self.conf_filename,
+                      hydra_cfg=hydra_cfg,
+                      task_function=self.task_function,
+                      overrides=overrides,
+                      verbose=self.verbose,
+                      workdir=hydra_cfg.hydra.run_dir)
+
+    def sweep(self, overrides):
+        hydra_cfg = utils.create_hydra_cfg(
+            target_file=self.calling_file,
+            cfg_dir=self.conf_dir,
+            overrides=overrides)
+
+        launcher = FAIRTaskLauncher(cfg_dir=self.conf_dir,
+                                    cfg_filename=self.conf_filename,
+                                    hydra_cfg=hydra_cfg,
+                                    task_function=self.task_function,
+                                    overrides=overrides)
+
+        launcher.launch()
+
+    def get_cfg(self, overrides):
+        overrides = copy.deepcopy(overrides)
+        hydra_cfg = utils.create_hydra_cfg(
+            target_file=self.calling_file,
+            cfg_dir=self.conf_dir,
+            overrides=overrides)
+        ret = utils.create_task_cfg(cfg_dir=self.conf_dir,
+                                    cfg_filename=self.conf_filename,
+                                    cli_overrides=overrides)
+        ret['hydra_cfg'] = hydra_cfg
+        return ret
+
+
 def run_hydra(task_function, config_path):
     stack = inspect.stack()
     calling_file = stack[2][0].f_locals['__file__']
@@ -66,51 +116,40 @@ def run_hydra(task_function, config_path):
         conf_dir = abs_config_path
         conf_filename = None
 
+    hydra = Hydra(calling_file=calling_file,
+                  conf_dir=conf_dir,
+                  conf_filename=conf_filename,
+                  task_function=task_function,
+                  verbose=args.verbose)
+
     if args.command == 'run':
-        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
-        utils.run_job(cfg_dir=conf_dir,
-                      cfg_filename=conf_filename,
-                      hydra_cfg=hydra_cfg,
-                      task_function=task_function,
-                      overrides=args.overrides,
-                      verbose=args.verbose,
-                      workdir=hydra_cfg.hydra.run_dir)
+        hydra.run(overrides=args.overrides)
     elif args.command == 'cfg':
-        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
-        task_cfg = utils.create_task_cfg(cfg_dir=conf_dir,
-                                         cfg_filename=conf_filename,
-                                         cli_overrides=args.overrides)
+        task_cfg = hydra.get_cfg(overrides=args.overrides)
         job_cfg = task_cfg['cfg']
         if args.config == 'job':
             cfg = job_cfg
         elif args.config == 'hydra':
-            cfg = hydra_cfg
+            cfg = task_cfg['hydra_cfg']
         elif args.config == 'both':
-            cfg = OmegaConf.merge(hydra_cfg, job_cfg)
+            cfg = OmegaConf.merge(task_cfg['hydra_cfg'], job_cfg)
         else:
             assert False
-
         if args.debug:
             for file, loaded in task_cfg['checked']:
                 if loaded:
                     print("Loaded: {}".format(file))
                 else:
                     print("Not found: {}".format(file))
+
         print(cfg.pretty())
     elif args.command == 'sweep':
-        hydra_cfg = utils.create_hydra_cfg(target_file=calling_file, cfg_dir=conf_dir, overrides=args.overrides)
-        launcher = FAIRTaskLauncher(cfg_dir=conf_dir,
-                                    cfg_filename=conf_filename,
-                                    hydra_cfg=hydra_cfg,
-                                    task_function=task_function,
-                                    overrides=args.overrides)
-        launcher.launch()
-
+        hydra.sweep(overrides=args.overrides)
     else:
         print("Command not specified")
 
 
-def main(config_path='conf/config.yaml'):
+def main(config_path="."):
     def main_decorator(task_function):
         def decorated_main():
             try:
