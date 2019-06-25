@@ -1,4 +1,4 @@
 best_app:
-  name: minimal
+  name: with_config_file
   model: foo
   dataset: bar

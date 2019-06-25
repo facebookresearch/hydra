@@ -4,6 +4,7 @@ import logging.config
 import os
 import sys
 
+import re
 from omegaconf import OmegaConf
 from time import strftime, localtime
 
@@ -103,7 +104,7 @@ def update_defaults(cfg, defaults_changes):
         cfg.defaults.append({key: value})
 
 
-def create_hydra_cfg(target_file, cfg_dir, overrides):
+def create_hydra_cfg(task_name, cfg_dir, overrides):
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
         hydra_cfg = OmegaConf.load(hydra_cfg_path)
@@ -119,8 +120,7 @@ def create_hydra_cfg(target_file, cfg_dir, overrides):
     for override in hydra_overrides:
         overrides.remove(override)
     hydra_cfg.merge_with_dotlist(hydra_overrides)
-    target_file = os.path.basename(target_file)
-    hydra_cfg.hydra.name = os.path.splitext(target_file)[0]  # TODO: this should only replace name if it's '???'
+    hydra_cfg.hydra.name = task_name
     return hydra_cfg
 
 
@@ -153,8 +153,9 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         else:
             return OmegaConf.merge(cfg_, new_cfg)
 
-    main_cfg_file = os.path.join(cfg_dir, cfg_filename) if cfg_filename is not None else None
-    if main_cfg_file is not None and os.path.exists(main_cfg_file):
+    if cfg_filename is not None:
+        main_cfg_file = os.path.join(cfg_dir, cfg_filename)
+        assert os.path.exists(main_cfg_file), "Config file not found : {}".format(os.path.realpath(main_cfg_file))
         main_cfg = load_config(main_cfg_file)
     else:
         main_cfg = OmegaConf.create(dict(defaults=[]))
@@ -225,7 +226,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
     old_cwd = os.getcwd()
     hydra_cfg.hydra.job_cwd = workdir
     try:
-        os.makedirs(workdir)
+        os.makedirs(workdir, exist_ok=True)
         os.chdir(workdir)
         configure_log(hydra_cfg.hydra.logging, verbose)
         save_config(cfg, 'config.yaml')
@@ -240,3 +241,8 @@ def setup_globals():
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.
         pass
+
+
+def get_valid_filename(s):
+    s = str(s).strip().replace(' ', '_')
+    return re.sub(r'(?u)[^-\w.]', '', s)

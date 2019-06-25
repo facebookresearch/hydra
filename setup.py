@@ -20,5 +20,7 @@ with open("README.md", "r") as fh:
         install_requires=[
             'omegaconf>=1.2.0',
             'setuptools',
+            'coverage',
+            'pytest-cov'
         ]
     )

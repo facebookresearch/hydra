@@ -1,1 +1,1 @@
-from .hydra import main, run_hydra
+from .hydra import main, Hydra

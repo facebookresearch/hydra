@@ -1,10 +1,12 @@
+import copy
 import inspect
 import os
 import sys
 import traceback
-import copy
+
 import argparse
 import pkg_resources
+import re
 from omegaconf import OmegaConf
 
 from hydra.fairtask_launcher import FAIRTaskLauncher
@@ -50,8 +52,16 @@ def get_args():
 
 class Hydra:
 
-    def __init__(self, calling_file, conf_dir, conf_filename, task_function, verbose):
-        self.calling_file = calling_file
+    def __init__(self,
+                 task_name,
+                 conf_dir,
+                 conf_filename,
+                 task_function,
+                 verbose):
+        # clear the resolvers cache. this is useful for unit tests
+        OmegaConf.clear_resolvers()
+        utils.setup_globals()
+        self.task_name = utils.get_valid_filename(task_name)
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
@@ -60,7 +70,7 @@ class Hydra:
     def run(self, overrides):
         overrides = copy.deepcopy(overrides)
         hydra_cfg = utils.create_hydra_cfg(
-            target_file=self.calling_file,
+            task_name=self.task_name,
             cfg_dir=self.conf_dir,
             overrides=overrides)
         utils.run_job(cfg_dir=self.conf_dir,
@@ -73,7 +83,7 @@ class Hydra:
 
     def sweep(self, overrides):
         hydra_cfg = utils.create_hydra_cfg(
-            target_file=self.calling_file,
+            task_name=self.task_name,
             cfg_dir=self.conf_dir,
             overrides=overrides)
 
@@ -88,7 +98,7 @@ class Hydra:
     def get_cfg(self, overrides):
         overrides = copy.deepcopy(overrides)
         hydra_cfg = utils.create_hydra_cfg(
-            target_file=self.calling_file,
+            task_name=self.task_name,
             cfg_dir=self.conf_dir,
             overrides=overrides)
         ret = utils.create_task_cfg(cfg_dir=self.conf_dir,
@@ -101,7 +111,10 @@ class Hydra:
 def run_hydra(task_function, config_path):
     stack = inspect.stack()
     calling_file = stack[2][0].f_locals['__file__']
-    utils.setup_globals()
+
+    target_file = os.path.basename(calling_file)
+    task_name = os.path.splitext(target_file)[0]  # TODO: this should only replace hydra.name if it's '???'
+
     args = get_args()
 
     if os.path.isabs(config_path):
@@ -116,7 +129,7 @@ def run_hydra(task_function, config_path):
         conf_dir = abs_config_path
         conf_filename = None
 
-    hydra = Hydra(calling_file=calling_file,
+    hydra = Hydra(task_name=task_name,
                   conf_dir=conf_dir,
                   conf_filename=conf_filename,
                   task_function=task_function,

@@ -1,0 +1,11 @@
+[run]
+omit = *tests*,demos/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+    raise TypeError
+    @deprecated
