@@ -1,5 +1,12 @@
 * add --run, --cfg, --sweep mutually exclusive flags to control behavior. default --run.
 * add unit testing to ensure behavior described in demos is preserved
+* create a singleton containing hydra specific variables that are potentially only known at runtime
+    hydra:workdir
+    hydra:task_name
+    hydra:job_id
+    hydra:hostname
+    hydra:task_hostname
+    etc
 * Try to incorporate user config families into --help dynamically.
 * Flow to create an empty hydra app for quick start
 * consider xar integration: https://github.com/facebookincubator/xar and https://pypi.org/project/pex/
@@ -8,6 +15,39 @@
   * Demo with instantiating classes from config
   * Demo for specializing configuration depending on multiple selected config families
 * pass in an  explicit name instead of deducing from calling filename
+* allow overriding environment variables for jobs?
+* integrate with bash-completion (see mbrl for example)
+* improve test coverage
+* integrate with tox and travis (or circleci)
+
+
 
 DONE:
 * simplify the config for composing config.
+
+
+========================= Material for presentation:
+
+# Example of sweep code using submitit
+https://github.com/fairinternal/torchbeast/blob/master/slurm/slurm_atari.py
+
+# An example of a directory with tons of sbatch scripts:
+https://github.com/fairinternal/fasttext-shards/tree/98f4bebc8adf8550e012a81c9c31943ea627e846/scripts
+
+Over 4K imports of argparse.
+Typical example:
+https://github.com/fairinternal/deepcluster2/blob/master/eval_linear.py
+
+1. Logs of argparse.
+2. Lots of hard coded specialization:
+        if arch == "vgg16":
+            if conv < 3:
+                av = 18
+                s = 9216
+            elif conv < 5:
+                av = 14
+                s = 8192
+            elif conv < 8:
+                av = 9
+                s = 9216
+            ...

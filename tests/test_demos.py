@@ -1,10 +1,20 @@
-# noinspection PyUnresolvedReferences
-import os
-
 import pytest
 
 from hydra import MissingConfigException
-from tests.utils import task_runner
+# noinspection PyUnresolvedReferences
+from tests.utils import task_runner, sweep_runner
+
+
+def test_missing_conf_dir(task_runner):
+    with pytest.raises(IOError):
+        with task_runner(conf_dir='not_found'):
+            pass
+
+
+def test_missing_conf_file(task_runner):
+    with pytest.raises(IOError):
+        with task_runner(conf_dir='.', conf_filename='not_found'):
+            pass
 
 
 def test_demos_0_minimal__no_overrides(task_runner):
@@ -123,15 +133,12 @@ def test_demos_3_compose__override_all_configs_and_overrides(task_runner):
                 lr=0.001,
             ),
         )
-
-
-def test_missing_conf_dir(task_runner):
-    with pytest.raises(IOError):
-        with task_runner(conf_dir='not_found'):
-            pass
-
-
-def test_missing_conf_file(task_runner):
-    with pytest.raises(IOError):
-        with task_runner(conf_dir='.', conf_filename='not_found'):
-            pass
+#
+def test_demos_4_sweep(sweep_runner):
+    sweep = sweep_runner(conf_dir='demos/4_sweep/conf/',
+                         conf_filename='config.yaml',
+                         overrides=['hydra.launcher.queue=local', 'hydra.no_workers=false'])
+    with sweep:
+        # TODO: improve tesing of sweep.
+        # 1. are all sweeps executed (and once)?
+        pass
