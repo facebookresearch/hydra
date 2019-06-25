@@ -201,7 +201,8 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
 
 def configure_log(log_config, verbose=None):
     if log_config is not None:
-        logging.config.dictConfig(log_config.to_dict())
+        conf = log_config.to_container(resolve=True)
+        logging.config.dictConfig(conf)
     else:
         # default logging to stdout
         root = logging.getLogger()

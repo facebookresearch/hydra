@@ -171,12 +171,6 @@ def main(config_path="."):
                 sys.exit(-1)
             except SystemExit:
                 pass
-            # noinspection PyBroadException
-            except Exception:
-                cla, exc, trbk = sys.exc_info()
-                sys.stderr.write(
-                    "Caught Exception:\n%s:%s\n%s" % (cla.__name__, str(exc), ''.join(traceback.format_tb(trbk, 5))))
-                sys.exit(-1)
 
         return decorated_main
 

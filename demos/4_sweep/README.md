@@ -1,9 +1,9 @@
 # Parameter sweeps
-Hydra supports running jobs against a distributed system like slurm using fairtask.
+Hydra supports running using fairtask.
 To use it, you need to drop in a hydra.yaml file into your config directory.
 
 Among other things, hydra.yaml is configuring the fairtask launcher.
-It also controls the job output directory when running normally or on the cluster.
+It also controls the job output directory when running normally or on the cluster, the logging configuration and more.
 
 ```yaml
 hydra:
@@ -12,7 +12,7 @@ hydra:
   # populated by hydra at runtime
   job_cwd: ???
   # job name, populated by hydra at runtime based on the filename of the hydra.main()
-  name: hydra # TODO: this should be ??? but OmegaConf bug prevents it.
+  name: $(hydra:auto_name)
   launcher:
     queue: slurm
     # number of concurrent jobs
@@ -44,10 +44,12 @@ hydra:
 Running parameter sweeps is easy, just swap run with sweep as the first command:
 ```text
 $ python demos/4_sweep/sweep_example.py sweep
-Sweep output dir : /checkpoint/omry/outputs/2019-06-21_20-20-21/
+Sweep output dir : /checkpoint/omry/outputs/2019-06-25_13-49-01/
 Launching 1 jobs to slurm queue
-        Workdir /checkpoint/omry/outputs/2019-06-21_20-20-21/0 :
-Dask dashboard for "slurm" at http://localhost:8002.
+        Workdir /checkpoint/omry/outputs/2019-06-25_13-49-01/0 :
+Dask dashboard for "slurm" at http://localhost:8001.
 ```
 
 This runs a single job with the default config, but on slurm.
+
+TODO: continue documenting sweep.

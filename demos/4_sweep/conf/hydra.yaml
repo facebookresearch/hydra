@@ -5,6 +5,10 @@ hydra:
   job_cwd: ???
   # job name, populated by hydra at runtime based on the filename of the hydra.main()
   name: hydra # TODO: this should be ??? but OmegaConf bug prevents it.
+
+  # debug launching issues, set to true to run workers in the same process.
+  no_workers: false
+
   launcher:
     queue: slurm
     # number of concurrent jobs
@@ -29,8 +33,6 @@ hydra:
           log_directory: ${hydra.job_cwd}/.slurm
           output: slurm-%j.out
           error: slurm-%j.err
-    # debug launching issues, set to true to run workers in the same process.
-    no_workers: false
 
   # python logging configuration
   logging:

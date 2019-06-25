@@ -41,9 +41,9 @@ class FAIRTaskLauncher(Launcher):
     @staticmethod
     def create_queue(cfg, num_jobs):
         assert num_jobs > 0
-        cfg.concurrent = num_jobs
+        cfg.launcher.concurrent = num_jobs
         queues = {}
-        for queue_name, queue_conf in cfg.queues.items():
+        for queue_name, queue_conf in cfg.launcher.queues.items():
             queues[queue_name] = utils.instantiate(queue_conf)
 
         # if no_workers == True, then turn off all queue functionality
@@ -66,5 +66,5 @@ class FAIRTaskLauncher(Launcher):
         os.makedirs(self.hydra_cfg.hydra.sweep_dir)
         self.hydra_cfg.hydra.job_cwd = self.hydra_cfg.hydra.sweep_dir
         loop = asyncio.get_event_loop()
-        queue = self.create_queue(self.hydra_cfg.hydra.launcher, len(self.sweep_configs))
+        queue = self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs))
         loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))
