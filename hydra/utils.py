@@ -2,14 +2,14 @@ import inspect
 import logging
 import logging.config
 import os
-import sys
-
 import re
-from omegaconf import OmegaConf
+import sys
 from time import strftime, localtime
 
+from hydra.errors import MissingConfigException
+from omegaconf import OmegaConf, DictConfig, ListConfig
+
 log = logging.getLogger(__name__)
-from collections import Sequence
 
 
 def fullname(o):
@@ -80,10 +80,10 @@ def validate_config(cfg):
         optional: true
       - optimizer: nesterov
     """
-    assert isinstance(cfg.defaults, Sequence), \
-        "defaults must be a list because composition is order sensitive : " + valid_example
+    assert isinstance(cfg.defaults,
+                      ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
     for default in cfg.defaults:
-        assert default.is_dict()
+        assert isinstance(default, DictConfig), "elements of defaults list must be dictionaries"
         assert len(default) in (1, 2)
         if len(default) == 2:
             assert default.optional is not None and type(default.optional) == bool
@@ -105,6 +105,11 @@ def update_defaults(cfg, defaults_changes):
 
 
 def create_hydra_cfg(task_name, cfg_dir, overrides):
+    if not os.path.exists(cfg_dir):
+        raise IOError("conf_dir not found : {}".format(cfg_dir))
+    if not os.path.isdir(cfg_dir):
+        raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
+
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
         hydra_cfg = OmegaConf.load(hydra_cfg_path)
@@ -146,8 +151,8 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
             if required:
                 options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
                            os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-                raise IOError(
-                    "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family_, "\n\t".join(options)))
+                msg = "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family_, "\n\t".join(options))
+                raise MissingConfigException(msg, cfg_path, options)
             else:
                 return cfg_
         else:
@@ -155,7 +160,8 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
 
     if cfg_filename is not None:
         main_cfg_file = os.path.join(cfg_dir, cfg_filename)
-        assert os.path.exists(main_cfg_file), "Config file not found : {}".format(os.path.realpath(main_cfg_file))
+        if not os.path.exists(main_cfg_file):
+            raise IOError("Config file not found : {}".format(os.path.realpath(main_cfg_file)))
         main_cfg = load_config(main_cfg_file)
     else:
         main_cfg = OmegaConf.create(dict(defaults=[]))
