@@ -17,35 +17,23 @@ def get_args():
     parser = argparse.ArgumentParser(description='Hydra experimentation framework')
     version = pkg_resources.require("hydra")[0].version
     parser.add_argument('--version', action='version', version="hydra {}".format(version))
-
-    def add_default_switches(prs):
-        prs.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
-                                                      "(use dots for.nested=overrides)")
-
-    subparsers = parser.add_subparsers(help="sub-command help", dest="command")
-
+    parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
+                                                     "(use dots for.nested=overrides)")
     parser.add_argument('--verbose', '-v',
                         help='Activate debug logging, otherwise takes a '
                              'comma separated list of loggers ("root" for root logger)',
                         nargs='?',
                         default='')
 
-    cfg_parser = subparsers.add_parser("cfg", help="Show generated cfg")
-    add_default_switches(cfg_parser)
+    parser.add_argument('--cfg', '-c', action='store_true', help='Show config')
+    parser.add_argument('--cfg_type', '-t',
+                        help='Config type to show',
+                        choices=['job', 'hydra', 'both'],
+                        default='job')
 
-    cfg_parser.add_argument('--config', '-c',
-                            help='type of config',
-                            choices=['job', 'hydra', 'both'],
-                            default='job')
-
-    cfg_parser.add_argument('--debug', '-d', action="store_true", default=False,
-                            help="Show how the config was generated")
-
-    run_parser = subparsers.add_parser("run", help="Run a task")
-    add_default_switches(run_parser)
-
-    sweep_parser = subparsers.add_parser("sweep", help="Run a parameter sweep")
-    add_default_switches(sweep_parser)
+    parser.add_argument('--run', '-r', action='store_true', help='Run a job')
+    parser.add_argument('--sweep', '-s', action='store_true', help='Perform a sweep')
+    parser.add_argument('--debug', '-d', action="store_true", help="Enable debug output in --cfg command")
 
     return parser.parse_args()
 
@@ -135,16 +123,30 @@ def run_hydra(task_function, config_path):
                   task_function=task_function,
                   verbose=args.verbose)
 
-    if args.command == 'run':
+    if args.run + args.cfg + args.sweep > 1:
+        raise ValueError("Only one of --run, --sweep and --cfg can be specified")
+    if args.run + args.cfg + args.sweep == 0:
+        args.run = True
+
+    if args.run:
+        command = "run"
+    elif args.sweep:
+        command = "sweep"
+    elif args.cfg:
+        command = "cfg"
+
+    if command == 'run':
         hydra.run(overrides=args.overrides)
-    elif args.command == 'cfg':
+    elif command == 'sweep':
+        hydra.sweep(overrides=args.overrides)
+    elif command == 'cfg':
         task_cfg = hydra.get_cfg(overrides=args.overrides)
         job_cfg = task_cfg['cfg']
-        if args.config == 'job':
+        if args.cfg_type == 'job':
             cfg = job_cfg
-        elif args.config == 'hydra':
+        elif args.cfg_type == 'hydra':
             cfg = task_cfg['hydra_cfg']
-        elif args.config == 'both':
+        elif args.cfg_type == 'both':
             cfg = OmegaConf.merge(task_cfg['hydra_cfg'], job_cfg)
         else:
             assert False
@@ -156,8 +158,6 @@ def run_hydra(task_function, config_path):
                     print("Not found: {}".format(file))
 
         print(cfg.pretty())
-    elif args.command == 'sweep':
-        hydra.sweep(overrides=args.overrides)
     else:
         print("Command not specified")
 

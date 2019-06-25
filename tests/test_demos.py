@@ -139,6 +139,6 @@ def test_demos_4_sweep(sweep_runner):
                          conf_filename='config.yaml',
                          overrides=['hydra.launcher.queue=local', 'hydra.no_workers=false'])
     with sweep:
-        # TODO: improve tesing of sweep.
+        # TODO: improve testing of sweep.
         # 1. are all sweeps executed (and once)?
         pass

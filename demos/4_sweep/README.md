@@ -10,7 +10,7 @@ See the example [hydra.yaml](conf/hydra.yaml) in this demo.
 
 Running parameter sweeps is easy, just swap run with sweep as the first command:
 ```text
-$ python demos/4_sweep/sweep_example.py sweep
+$ python demos/4_sweep/sweep_example.py --sweep
 Sweep output dir : /checkpoint/omry/outputs/2019-06-25_13-49-01/
 Launching 1 jobs to slurm queue
         Workdir /checkpoint/omry/outputs/2019-06-25_13-49-01/0 :
@@ -20,7 +20,7 @@ This runs a single job with the default config, but on slurm.
 
 You can also sweep an arbitrary number of dimensions:
 ```text
-$ python demos/4_sweep/sweep_example.py sweep dataset=imagenet,cifar10 model=alexnet,resnet random_seed=0,1,3
+$ python demos/4_sweep/sweep_example.py --sweep dataset=imagenet,cifar10 model=alexnet,resnet random_seed=0,1,3
 Sweep output dir : /checkpoint/omry/outputs/2019-06-25_15-07-11/
 Launching 12 jobs to slurm queue
         Workdir /checkpoint/omry/outputs/2019-06-25_15-07-11/0 : dataset=imagenet model=alexnet random_seed=0

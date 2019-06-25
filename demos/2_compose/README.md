@@ -26,7 +26,7 @@ We have 3 configuration families, a single run cab include a combination of data
 
 If we just run compose nothing new is loaded:
 ```text
-$ python demos/2_compose/compose.py run
+$ python demos/2_compose/compose.py
 [2019-06-21 19:45:19,661][__main__][INFO] - Running on: devfair0260
 [2019-06-21 19:45:19,662][__main__][INFO] - CWD: /private/home/omry/dev/hydra/outputs/2019-06-21_19-45-19
 [2019-06-21 19:45:19,662][__main__][INFO] - Configuration:
@@ -35,7 +35,7 @@ $ python demos/2_compose/compose.py run
 
 But we can tell Hydra to load the config for imagenet like this:
 ```text
-$ python demos/2_compose/compose.py run dataset=imagenet
+$ python demos/2_compose/compose.py dataset=imagenet
 [2019-06-21 19:46:20,296][__main__][INFO] - Running on: devfair0260
 [2019-06-21 19:46:20,296][__main__][INFO] - CWD: /private/home/omry/dev/hydra/outputs/2019-06-21_19-46-20
 [2019-06-21 19:46:20,296][__main__][INFO] - Configuration:
