@@ -49,7 +49,7 @@ hydra:
         class: logging.FileHandler
         formatter: simple
         # relative to the job log directory
-        filename: $(hydra.name).log
+        filename: ${hydra.name}.log
     root:
       level: INFO
       handlers: [console, file]
