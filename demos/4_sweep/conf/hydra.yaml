@@ -1,8 +1,10 @@
 hydra:
-  run_dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
-  sweep_dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}/
-  # populated by hydra at runtime
-  job_cwd: ???
+  run:
+    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${job:num}_${job:id}
+
   # job name, populated by hydra at runtime based on the filename of the hydra.main()
   name: hydra # TODO: this should be ??? but OmegaConf bug prevents it.
 
@@ -30,7 +32,7 @@ hydra:
           cpus_per_worker: 10
           mem_gb_per_worker: 64
           gres: 'gpu:1'
-          log_directory: ${hydra.job_cwd}/.slurm
+          log_directory: ${hydra.sweep.dir}/.slurm
           output: slurm-%j.out
           error: slurm-%j.err
 

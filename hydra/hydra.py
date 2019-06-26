@@ -1,15 +1,14 @@
+import argparse
 import copy
 import inspect
+import logging
 import os
 import sys
-import traceback
 
-import argparse
 import pkg_resources
-import re
-from omegaconf import OmegaConf
 
 from hydra.fairtask_launcher import FAIRTaskLauncher
+from omegaconf import OmegaConf
 from . import utils
 
 
@@ -33,7 +32,6 @@ def get_args():
 
     parser.add_argument('--run', '-r', action='store_true', help='Run a job')
     parser.add_argument('--sweep', '-s', action='store_true', help='Perform a sweep')
-    parser.add_argument('--debug', '-d', action="store_true", help="Enable debug output in --cfg command")
 
     return parser.parse_args()
 
@@ -46,8 +44,6 @@ class Hydra:
                  conf_filename,
                  task_function,
                  verbose):
-        # clear the resolvers cache. this is useful for unit tests
-        OmegaConf.clear_resolvers()
         utils.setup_globals()
         self.task_name = utils.get_valid_filename(task_name)
         self.conf_dir = conf_dir
@@ -67,7 +63,8 @@ class Hydra:
                       task_function=self.task_function,
                       overrides=overrides,
                       verbose=self.verbose,
-                      workdir=hydra_cfg.hydra.run_dir)
+                      job_dir=hydra_cfg.hydra.run.dir,
+                      job_subdir_key=None)
 
     def sweep(self, overrides):
         hydra_cfg = utils.create_hydra_cfg(
@@ -79,6 +76,7 @@ class Hydra:
                                     cfg_filename=self.conf_filename,
                                     hydra_cfg=hydra_cfg,
                                     task_function=self.task_function,
+                                    verbose=self.verbose,
                                     overrides=overrides)
 
         launcher.launch()
@@ -102,8 +100,11 @@ def run_hydra(task_function, config_path):
 
     target_file = os.path.basename(calling_file)
     task_name = os.path.splitext(target_file)[0]  # TODO: this should only replace hydra.name if it's '???'
-
     args = get_args()
+    utils.configure_log(None, args.verbose)
+
+    global log
+    log = logging.getLogger(__name__)
 
     if os.path.isabs(config_path):
         raise RuntimeError("Config path should be relative")

@@ -7,9 +7,33 @@ import sys
 from time import strftime, localtime
 
 from hydra.errors import MissingConfigException
-from omegaconf import OmegaConf, DictConfig, ListConfig
+from omegaconf import OmegaConf, ListConfig, DictConfig
 
 log = logging.getLogger(__name__)
+
+
+def singleton(class_):
+    instances = {}
+
+    def instance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+
+    return instance
+
+
+@singleton
+class JobRuntime:
+    def __init__(self):
+        self.conf = OmegaConf.create()
+
+    def get(self, key):
+        return self.conf.select(key)
+
+    def set(self, key, value):
+        log.info("Setting job:{}={}".format(key, value))
+        self.conf[key] = value
 
 
 def fullname(o):
@@ -48,7 +72,7 @@ def instantiate(config, *args):
         clazz = get_class(config['class'])
         return clazz(*args, **(config.params or {}))
     except Exception as e:
-        log.error("Error instantiating {config.clazz} : {e}")
+        log.error("Error instantiating {} : {}".format(clazz, e))
         raise e
 
 
@@ -116,8 +140,13 @@ def create_hydra_cfg(task_name, cfg_dir, overrides):
     else:
         hydra_cfg = OmegaConf.create(dict(
             hydra=dict(
-                run_dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}',
-                sweep_dir='???'
+                run=dict(
+                    dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}'
+                ),
+                sweep=dict(
+                    dir='/checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}',
+                    subdir='${job:num}_${job:id}'
+                )
             ))
         )
     hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
@@ -206,9 +235,7 @@ def configure_log(log_config, verbose=None):
     else:
         # default logging to stdout
         root = logging.getLogger()
-        root.setLevel(logging.DEBUG)
         handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
         formatter = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] - %(message)s')
         handler.setFormatter(formatter)
         root.addHandler(handler)
@@ -225,13 +252,16 @@ def save_config(cfg, filename):
         file.write(cfg.pretty())
 
 
-def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, workdir):
+def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
     task_cfg = create_task_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
     if cfg.sweep_id is not None:
         hydra_cfg.sweep_id = cfg.sweep_id
     old_cwd = os.getcwd()
-    hydra_cfg.hydra.job_cwd = workdir
+    workdir = job_dir
+    if job_subdir_key is not None:
+        workdir = os.path.join(workdir, hydra_cfg.select(job_subdir_key))
+    JobRuntime().set('cwd', workdir)
     try:
         os.makedirs(workdir, exist_ok=True)
         os.chdir(workdir)
@@ -245,6 +275,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
 def setup_globals():
     try:
         OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
+        OmegaConf.register_resolver("job", JobRuntime().get)
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.
         pass
