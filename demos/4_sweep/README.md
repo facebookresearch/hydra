@@ -8,7 +8,7 @@ the logging configuration and more.
 
 See the example [hydra.yaml](conf/hydra.yaml) in this demo.
 
-Running parameter sweeps is easy, just swap run with sweep as the first command:
+Running parameter sweeps is easy, just add --sweep:
 ```text
 $ python demos/4_sweep/sweep_example.py --sweep
 Sweep output dir : /checkpoint/omry/outputs/2019-06-25_13-49-01/

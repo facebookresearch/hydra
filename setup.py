@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
         long_description_content_type="text/markdown",
         url="https://github.com/fairinternal/hydra",
         keywords='experimentation',
-        packages=setuptools.find_packages(),
+        packages=['hydra'],
         classifiers=[
             "Programming Language :: Python :: 3",
             "Operating System :: OS Independent",
