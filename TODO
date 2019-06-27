@@ -1,35 +1,3 @@
-# test for demos/4_sweep WIP
-* Try to incorporate user config families into --help dynamically.
-* Flow to create an empty hydra app for quick start
-* consider xar integration: https://github.com/facebookincubator/xar and https://pypi.org/project/pex/
-* Create additional demos:
-  * Demo with instantiating classes from config
-  * Demo for specializing configuration depending on multiple selected config families
-  * Demo on debugging configuration composition (or just a few words somewhere?)
-* pass in an  explicit name instead of deducing from calling filename
-* allow overriding environment variables for jobs?
-* integrate with bash-completion (see mbrl for example)
-* improve test coverage
-* integrate with tox and travis (or circleci)
-
-
-
-DONE:
-* create a singleton containing hydra specific variables that are potentially only known at runtime
-    job:id : System agnostic job ID
-    job:num : Job number is the current sweep
-
-* add --run, --cfg, --sweep mutually exclusive flags to control behavior. default --run.
-* simplify the config for composing config.
-* add unit testing to ensure behavior described in demos is preserved
-    * test for demos/0_minimal
-    * test for demos/1_config
-    * test for demos/2_compose
-    * test for demos/3_default
-* Sweep demo
-
-
-
 ========================= Material for presentation:
 
 # Example of sweep code using submitit
