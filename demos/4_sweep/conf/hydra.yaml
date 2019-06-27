@@ -5,8 +5,9 @@ hydra:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
     subdir: ${job:num}_${job:id}
 
-  # job name, populated by hydra at runtime based on the filename of the hydra.main()
-  name: hydra # TODO: this should be ??? but OmegaConf bug prevents it.
+  # job name.
+  # by default populated based on your entry point filename but can be overridden here to something else.
+  #name: custom_name
 
   # debug launching issues, set to true to run workers in the same process.
   no_workers: false

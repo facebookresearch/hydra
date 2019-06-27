@@ -29,7 +29,10 @@ class JobRuntime:
         self.conf = OmegaConf.create()
 
     def get(self, key):
-        return self.conf.select(key)
+        ret = self.conf.select(key)
+        if ret is None:
+            raise KeyError("Key not found in JobRuntime: {}".format(key))
+        return ret
 
     def set(self, key, value):
         log.info("Setting job:{}={}".format(key, value))
@@ -128,33 +131,26 @@ def update_defaults(cfg, defaults_changes):
         cfg.defaults.append({key: value})
 
 
-def create_hydra_cfg(task_name, cfg_dir, overrides):
+def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
     if not os.path.exists(cfg_dir):
         raise IOError("conf_dir not found : {}".format(cfg_dir))
     if not os.path.isdir(cfg_dir):
         raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
 
+    if hydra_cfg_defaults is None:
+        hydra_cfg_defaults = OmegaConf.create()
+
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
         hydra_cfg = OmegaConf.load(hydra_cfg_path)
     else:
-        hydra_cfg = OmegaConf.create(dict(
-            hydra=dict(
-                run=dict(
-                    dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}'
-                ),
-                sweep=dict(
-                    dir='/checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}',
-                    subdir='${job:num}_${job:id}'
-                )
-            ))
-        )
+        hydra_cfg = OmegaConf.create()
+    hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
     hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
     # remove all matching overrides from overrides list
     for override in hydra_overrides:
         overrides.remove(override)
     hydra_cfg.merge_with_dotlist(hydra_overrides)
-    hydra_cfg.hydra.name = task_name
     return hydra_cfg
 
 
@@ -255,16 +251,19 @@ def save_config(cfg, filename):
 def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
     task_cfg = create_task_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
-    if cfg.sweep_id is not None:
-        hydra_cfg.sweep_id = cfg.sweep_id
+
     old_cwd = os.getcwd()
-    workdir = job_dir
+    working_dir = job_dir
     if job_subdir_key is not None:
-        workdir = os.path.join(workdir, hydra_cfg.select(job_subdir_key))
-    JobRuntime().set('cwd', workdir)
+        # evaluate job_subdir_key lazily.
+        # this is running on the client side in sweep and contains things such as job:id which
+        # are only available there.
+        subdir = hydra_cfg.select(job_subdir_key)
+        working_dir = os.path.join(working_dir, subdir)
+
     try:
-        os.makedirs(workdir, exist_ok=True)
-        os.chdir(workdir)
+        os.makedirs(working_dir, exist_ok=True)
+        os.chdir(working_dir)
         configure_log(hydra_cfg.hydra.logging, verbose)
         save_config(cfg, 'config.yaml')
         task_function(cfg)

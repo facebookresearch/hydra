@@ -51,12 +51,23 @@ class Hydra:
         self.task_function = task_function
         self.verbose = verbose
 
+    def _create_hydra_cfg(self, overrides):
+        defaults = OmegaConf.create(dict(
+            hydra=dict(
+                name=self.task_name,
+                run=dict(
+                    dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}'
+                ),
+                sweep=dict(
+                    dir='/checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}',
+                    subdir='${job:num}_${job:id}'
+                )
+            ),
+        ))
+        return utils.create_hydra_cfg(cfg_dir=self.conf_dir, hydra_cfg_defaults=defaults, overrides=overrides)
+
     def run(self, overrides):
-        overrides = copy.deepcopy(overrides)
-        hydra_cfg = utils.create_hydra_cfg(
-            task_name=self.task_name,
-            cfg_dir=self.conf_dir,
-            overrides=overrides)
+        hydra_cfg = self._create_hydra_cfg(overrides)
         utils.run_job(cfg_dir=self.conf_dir,
                       cfg_filename=self.conf_filename,
                       hydra_cfg=hydra_cfg,
@@ -67,11 +78,7 @@ class Hydra:
                       job_subdir_key=None)
 
     def sweep(self, overrides):
-        hydra_cfg = utils.create_hydra_cfg(
-            task_name=self.task_name,
-            cfg_dir=self.conf_dir,
-            overrides=overrides)
-
+        hydra_cfg = self._create_hydra_cfg(overrides)
         launcher = FAIRTaskLauncher(cfg_dir=self.conf_dir,
                                     cfg_filename=self.conf_filename,
                                     hydra_cfg=hydra_cfg,
@@ -82,11 +89,7 @@ class Hydra:
         launcher.launch()
 
     def get_cfg(self, overrides):
-        overrides = copy.deepcopy(overrides)
-        hydra_cfg = utils.create_hydra_cfg(
-            task_name=self.task_name,
-            cfg_dir=self.conf_dir,
-            overrides=overrides)
+        hydra_cfg = self._create_hydra_cfg(overrides)
         ret = utils.create_task_cfg(cfg_dir=self.conf_dir,
                                     cfg_filename=self.conf_filename,
                                     cli_overrides=overrides)
@@ -99,7 +102,7 @@ def run_hydra(task_function, config_path):
     calling_file = stack[2][0].f_locals['__file__']
 
     target_file = os.path.basename(calling_file)
-    task_name = os.path.splitext(target_file)[0]  # TODO: this should only replace hydra.name if it's '???'
+    task_name = os.path.splitext(target_file)[0]
     args = get_args()
     utils.configure_log(None, args.verbose)
 

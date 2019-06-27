@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=[
-            'omegaconf>=1.2.0',
+            'omegaconf>=1.2.1',
             'setuptools',
             'coverage',
             'pytest-cov'

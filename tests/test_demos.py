@@ -133,6 +133,8 @@ def test_demos_3_compose__override_all_configs_and_overrides(task_runner):
                 lr=0.001,
             ),
         )
+
+
 #
 def test_demos_4_sweep(sweep_runner):
     sweep = sweep_runner(conf_dir='demos/4_sweep/conf/',

@@ -24,6 +24,8 @@ class FAIRTaskLauncher(Launcher):
         utils.JobRuntime().set('num', job_num)
         if 'SLURM_JOB_ID' in os.environ:
             utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
+        else:
+            utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
 
         utils.run_job(self.cfg_dir,

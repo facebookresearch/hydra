@@ -1,11 +1,4 @@
 # test for demos/4_sweep WIP
-* create a singleton containing hydra specific variables that are potentially only known at runtime
-    hydra:workdir
-    hydra:task_name
-    hydra:job_id
-    hydra:hostname
-    hydra:task_hostname
-    etc
 * Try to incorporate user config families into --help dynamically.
 * Flow to create an empty hydra app for quick start
 * consider xar integration: https://github.com/facebookincubator/xar and https://pypi.org/project/pex/
@@ -22,6 +15,10 @@
 
 
 DONE:
+* create a singleton containing hydra specific variables that are potentially only known at runtime
+    job:id : System agnostic job ID
+    job:num : Job number is the current sweep
+
 * add --run, --cfg, --sweep mutually exclusive flags to control behavior. default --run.
 * simplify the config for composing config.
 * add unit testing to ensure behavior described in demos is preserved
