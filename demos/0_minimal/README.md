@@ -17,21 +17,15 @@ if __name__ == "__main__":
 ```
 
 Hydra will construct the configuration object for you, in this example there is no input to construct it from, so it's empty.
-```bash
-$ python demos/0_minimal/minimal.py
-```
-Output
 ```yaml
+$ python demos/0_minimal/minimal.py
 {}
 ```
 
 You can pass in arbitrary configuration from the command line and it will be converted to a tree
 structure for you:
-```bash
-$ python demos/0_minimal/minimal.py abc=123 hello.a=456 hello.b=5671
-```
-Output:
 ```yaml
+$ python demos/0_minimal/minimal.py abc=123 hello.a=456 hello.b=5671
 abc: 123
 hello:
   a: 456
