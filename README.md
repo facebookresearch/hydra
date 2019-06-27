@@ -11,7 +11,7 @@ Hydra is a experimentation framework providing the following:
 See developing for now.
 
 # Basic usage
-Please go over demos directory to get a gentle incremental intruduction, starting from the basic and working up to increasingly useful features.
+Go through the [demos](demos/README.md) to get a gentle incremental intruduction, starting from the most basic.
 
 # Developing
 ## Install:
