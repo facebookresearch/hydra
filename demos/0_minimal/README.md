@@ -17,8 +17,11 @@ if __name__ == "__main__":
 ```
 
 Hydra will construct the configuration object for you, in this example there is no input to construct it from, so it's empty.
-```text
+```bash
 $ python demos/0_minimal/minimal.py
+```
+Output
+```yaml
 {}
 ```
 
