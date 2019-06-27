@@ -21,7 +21,7 @@ app:
   name: the nameless one
 ```
 
-As before, You can pass in arbitrary configuration from the command line. they will override the values from the config.yaml file.
+As before, You can pass in arbitrary configuration from the command line, which will override the values from the config file.
 ```text
 $ python demos/3_config_file/config_file.py app.name=morte
 Configuration:
