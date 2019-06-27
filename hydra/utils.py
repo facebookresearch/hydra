@@ -75,7 +75,7 @@ def instantiate(config, *args):
         clazz = get_class(config['class'])
         return clazz(*args, **(config.params or {}))
     except Exception as e:
-        log.error("Error instantiating {} : {}".format(clazz, e))
+        log.error("Error instantiating {} : {}".format(config['class'], e))
         raise e
 
 
@@ -237,7 +237,7 @@ def configure_log(log_config, verbose=None):
         handler.setFormatter(formatter)
         root.addHandler(handler)
 
-    if verbose:
+    if verbose is not None:
         if verbose == 'root':
             logging.getLogger().setLevel(logging.DEBUG)
         for logger in verbose.split(','):

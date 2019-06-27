@@ -21,7 +21,7 @@ def get_args():
                         help='Activate debug logging, otherwise takes a '
                              'comma separated list of loggers ("root" for root logger)',
                         nargs='?',
-                        default='')
+                        default=None)
 
     parser.add_argument('--cfg', '-c', action='store_true', help='Show config')
     parser.add_argument('--cfg_type', '-t',

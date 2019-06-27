@@ -1,9 +1,6 @@
-import logging
 import sys
 
 import hydra
-
-log = logging.getLogger(__name__)
 
 
 class Model:
@@ -16,26 +13,26 @@ class Model:
 
 class Alexnet(Model):
     def __init__(self, num_layers):
-        log.info(f"Alexnet : num_layers={num_layers}")
+        print(f"Alexnet: num_layers={num_layers}")
         self.num_layers = num_layers
 
     def forward(self, x):
-        log.info(f"Alexnet forward({x})")
+        print(f"Alexnet: forward({x})")
 
 
 class Resnet(Model):
     def __init__(self, num_layers, width):
-        log.info(f"Resnet : num_layers={num_layers}, width={width}")
+        print(f"Resnet: num_layers={num_layers}, width={width}")
         self.num_layers = num_layers
         self.width = width
 
     def forward(self, x):
-        log.info(f"Resnet : forward({x})")
+        print(f"Resnet: forward({x})")
 
 
 @hydra.main(config_path='conf/config.yaml')
 def objects(cfg):
-    log.info("Configuration:\n{}".format(cfg.pretty()))
+    print(cfg.pretty())
     model = hydra.utils.instantiate(cfg.model)
     model.forward(10)
 

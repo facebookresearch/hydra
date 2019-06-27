@@ -17,49 +17,45 @@ def test_missing_conf_file(task_runner):
             pass
 
 
-def test_demos_0_minimal__no_overrides(task_runner):
+def test_demos_minimal__no_overrides(task_runner):
     with task_runner(conf_dir='demos/0_minimal/') as task:
         assert task.cfg == {}
 
 
-def test_demos_0_minimal__with_overrides(task_runner):
+def test_demos_minimal__with_overrides(task_runner):
     with task_runner(conf_dir='demos/0_minimal/',
                      overrides=['abc=123', 'a.b=1', 'a.a=2']) as task:
         assert task.cfg == dict(abc=123, a=dict(b=1, a=2))
 
 
-def test_demos_1_config_file__no_overrides(task_runner):
-    with task_runner(conf_dir='demos/1_config_file/',
+def test_demos_config_file__no_overrides(task_runner):
+    with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml') as task:
         assert task.cfg == dict(
-            best_app=dict(
-                name='with_config_file',
-                model='foo',
-                dataset='bar'
+            app=dict(
+                name='the nameless one',
             )
         )
 
 
-def test_demos_1_config_file__with_overide(task_runner):
-    with task_runner(conf_dir='demos/1_config_file/',
+def test_demos_config_file__with_overide(task_runner):
+    with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml',
-                     overrides=['best_app.name=and_with_overrides!']) as task:
+                     overrides=['app.name=morte']) as task:
         assert task.cfg == dict(
-            best_app=dict(
-                name='and_with_overrides!',
-                model='foo',
-                dataset='bar'
+            app=dict(
+                name='morte',
             )
         )
 
 
-def test_demos_2_compose__no_override(task_runner):
-    with task_runner(conf_dir='demos/2_compose/conf') as task:
+def test_demos_compose__no_override(task_runner):
+    with task_runner(conf_dir='demos/4_compose/conf') as task:
         assert task.cfg == {}
 
 
-def test_demos_2_compose__override_dataset(task_runner):
-    with task_runner(conf_dir='demos/2_compose/conf',
+def test_demos_compose__override_dataset(task_runner):
+    with task_runner(conf_dir='demos/4_compose/conf',
                      overrides=['dataset=imagenet']) as task:
         assert task.cfg == dict(
             dataset=dict(
@@ -69,14 +65,14 @@ def test_demos_2_compose__override_dataset(task_runner):
         )
 
 
-def test_demos_2_compose__override_dataset__wrong(task_runner):
+def test_demos_compose__override_dataset__wrong(task_runner):
     with pytest.raises(MissingConfigException) as ex:
-        with task_runner(conf_dir='demos/2_compose/conf', overrides=['dataset=wrong_name']):
+        with task_runner(conf_dir='demos/4_compose/conf', overrides=['dataset=wrong_name']):
             pass
     assert sorted(ex.value.options) == sorted(['imagenet', 'cifar10'])
 
 
-def test_demos_2_compose__override_all_configs(task_runner):
+def test_demos_compose__override_all_configs(task_runner):
     with task_runner(conf_dir='demos/2_compose/conf',
                      overrides=['dataset=imagenet', 'model=resnet', 'optimizer=adam']) as task:
         assert task.cfg == dict(
@@ -97,8 +93,8 @@ def test_demos_2_compose__override_all_configs(task_runner):
         )
 
 
-def test_demos_3_compose__override_all_configs(task_runner):
-    with task_runner(conf_dir='demos/3_defaults/conf/', conf_filename='config.yaml') as task:
+def test_demos_compose__override_all_configs(task_runner):
+    with task_runner(conf_dir='demos/5_defaults/conf/', conf_filename='config.yaml') as task:
         assert task.cfg == dict(
             dataset=dict(
                 name='imagenet',
@@ -115,8 +111,8 @@ def test_demos_3_compose__override_all_configs(task_runner):
         )
 
 
-def test_demos_3_compose__override_all_configs_and_overrides(task_runner):
-    with task_runner(conf_dir='demos/3_defaults/conf/',
+def test_demos_defaults__override_all_configs_and_overrides(task_runner):
+    with task_runner(conf_dir='demos/5_defaults/conf/',
                      conf_filename='config.yaml',
                      overrides=["dataset.name=foobar"]) as task:
         assert task.cfg == dict(
@@ -135,9 +131,8 @@ def test_demos_3_compose__override_all_configs_and_overrides(task_runner):
         )
 
 
-#
-def test_demos_4_sweep(sweep_runner):
-    sweep = sweep_runner(conf_dir='demos/4_sweep/conf/',
+def test_demos_sweep(sweep_runner):
+    sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
                          conf_filename='config.yaml',
                          overrides=['hydra.launcher.queue=local', 'hydra.no_workers=false'])
     with sweep:

@@ -1,14 +1,15 @@
 ## Default configuration
-This example re-introduces the config.yaml file, and adds a default section into it that tells
-Hydra what to load by default and at what order:
+In the last example we had to specify one of each config family to get everything.
+This can get annoying, let's fix it:
 
 ```python
 @hydra.main(config_path='conf/config.yaml')
 def experiment(cfg):
-    ...
+    print("Configuration:\n{}".format(cfg.pretty()))
 ```
+Configuration files will be relative to conf, which is the parent directory of config.yaml.
 
-conf/config.yaml:
+This is conf/config.yaml:
 ```yaml
 defaults:
   - dataset: imagenet
@@ -16,12 +17,13 @@ defaults:
   - optimizer: nesterov
 ```
 
-When we run the new file, it loads all the defaults:
-```text
-$ python demos/3_defaults/defaults.py
-[2019-06-21 20:03:20,049][__main__][INFO] - Running on: devfair0260
-[2019-06-21 20:03:20,049][__main__][INFO] - CWD: /private/home/omry/dev/hydra/outputs/2019-06-21_20-03-20
-[2019-06-21 20:03:20,050][__main__][INFO] - Configuration:
+We have a new special section in there called defaults, and it indicates what configurations to load by default.
+Note that it's a list, this means it's order sensitive. we will see cases where it comes in handy later.
+
+As expected - running defaults.py without specifying anything will load the defaults:
+```yaml
+$ python demos/5_defaults/defaults.py
+Configuration:
 dataset:
   name: imagenet
   path: /datasets/imagenet
@@ -32,6 +34,7 @@ optimizer:
   lr: 0.001
   type: nesterov
 ```
+ 
 
 We can of course still choose to combine different members of each config family:
 ```text
@@ -49,3 +52,5 @@ optimizer:
   lr: 0.001
   type: nesterov
 ```
+
+[Prev](../4_compose/README.md) [Up](../README.md) [Next](../6_sweep/README.md)

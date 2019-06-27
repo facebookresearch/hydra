@@ -1,6 +1,5 @@
 ## Objects
-A common pattern is to want to instantiate different types of objects based on the configuration,
-maybe passing different arguments to each of the different objects.
+A common pattern is to instantiate different types of objects based on the configuration, potentially passing different arguments to object.
 For example, we may have a hierarchy of models, where two different classes implement the same model interface,
 but taking different arguments in the initialization.
 
@@ -61,34 +60,34 @@ Finally, out code instantiate the object from the configuraiton in just 1 line o
 ```python
 @hydra.main(config_path='conf/config.yaml')
 def objects(cfg):
-    log.info("Configuration:\n{}".format(cfg.pretty()))
+    print(cfg.pretty())
     model = hydra.utils.instantiate(cfg.model)
     model.forward(10)
 ```
 
 As before, you can override parameters in the config:
-```text
-$ python demos/5_objects/objects.py
-[2019-06-26 19:23:00,239][__main__][INFO] - Configuration:
+```yaml
+$ python demos/7_objects/objects.py
 model:
-  class: demos.5_objects.objects.Alexnet
+  class: demos.7_objects.objects.Alexnet
   params:
     num_layers: 7
 
-[2019-06-26 19:23:00,241][demos.5_objects.objects][INFO] - Alexnet : num_layers=7
-[2019-06-26 19:23:00,241][demos.5_objects.objects][INFO] - Alexnet forward(10)
+Alexnet: num_layers=7
+Alexnet: forward(10)
 ```
 
 Or combine composition and overriding:
-```text
-$ python demos/5_objects/objects.py  model=resnet model.params.num_layers=100
-[2019-06-26 19:23:29,354][__main__][INFO] - Configuration:
+```yaml
+$ python demos/7_objects/objects.py  model=resnet model.params.num_layers=100
 model:
-  class: demos.5_objects.objects.Resnet
+  class: demos.7_objects.objects.Resnet
   params:
     num_layers: 100
     width: 10
 
-[2019-06-26 19:23:29,356][demos.5_objects.objects][INFO] - Resnet : num_layers=100, width=10
-[2019-06-26 19:23:29,356][demos.5_objects.objects][INFO] - Resnet : forward(10)
+Resnet: num_layers=100, width=10
+Resnet: forward(10)
 ```
+
+[Prev](../6_sweep/README.md) [Up](../README.md)
