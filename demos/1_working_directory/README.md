@@ -21,4 +21,4 @@ $ tree /private/home/omry/dev/hydra/outputs/2019-06-27_00-47-26
 └── config.yaml
 ```
 
-[Prev](../0_minimal/README.md) [Up](../README.md) [Next](../2_logging/README.md)
+[[Prev](../0_minimal)] [[Up](../README.md)] [[Next](../2_logging)]

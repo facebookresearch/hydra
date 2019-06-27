@@ -59,4 +59,4 @@ In the example above, we combine sweeping on two datasets, two models and 3 rand
 
 Sweep support is currently very basic and this area will improve further.
 
-[Prev](../5_defaults/README.md) [Up](../README.md) [Next](../7_objects/README.md)
+[[Prev](../5_defaults)] [[Up](../README.md)] [[Next](../7_objects)]

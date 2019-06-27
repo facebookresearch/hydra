@@ -53,4 +53,4 @@ optimizer:
   type: nesterov
 ```
 
-[Prev](../4_compose/README.md) [Up](../README.md) [Next](../6_sweep/README.md)
+[[Prev](../4_compose)] [[Up](../README.md)] [[Next](../6_sweep)]

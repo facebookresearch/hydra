@@ -2,23 +2,13 @@
 Hydra configures python logging for your job.
 
 ```python
-import logging
-import sys
-
-import hydra
-
 # A logger for this file
 log = logging.getLogger(__name__)
-
 
 @hydra.main()
 def experiment(cfg):
     log.info("Info level message")
     log.debug("Debug level message")
-
-
-if __name__ == "__main__":
-    sys.exit(experiment())
 ```
 
 ```text
@@ -45,4 +35,4 @@ $ python demos/2_logging/logging_example.py -v __main__
 
 Logging can be configured using hydra.yaml, more on hydra.yaml later.
 
-[Prev](../1_working_directory/README.md) [Up](../README.md) [Next](../3_config_file/README.md)
+[[Prev](../1_working_directory)] [[Up](../README.md)] [[Next](../3_config_file)]

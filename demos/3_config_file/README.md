@@ -29,4 +29,4 @@ app:
   name: morte
 ```
 
-[Prev](../2_logging/README.md) [Up](../README.md) [Next](../4_compose/README.md)
+[[Prev](../2_logging)] [[Up](../README.md)] [[Next](../4_compose)]

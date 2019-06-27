@@ -10,8 +10,15 @@ def experiment(cfg):
     print("Configuration:\n{}".format(cfg.pretty()))
 ```
 
-Note how config_path here is just the path conf (again, relative to the location of the python file you are running).
-We will add 6 config files here, so it's nice to put them in a subdirectory and not with the rest of the code.
+Note how config_path points to the directory conf. This directory is relative to the python file containing @hydra.main()
+This example will use 6 config files, so it's nice to put them in a subdirectory and not with the rest of the code.
+
+The configuraiton tree contains 3 directories:
+ - dataset
+ - model
+ - optimizer
+
+Each is a family of configurations, and we have two of each family:
 
 ```text
 $ tree demos/4_compose/conf/
@@ -26,13 +33,7 @@ demos/4_compose/conf/
     ├── adam.yaml
     └── nesterov.yaml
 ```
-
-The configuraiton tree contains 3 directories:
- - dataset
- - model
- - optimizer
  
-Each is a family of configurations, and we have two of each family.
 At this point, nothing is loaded by default:
 ```text
 $ python demos/4_compose/compose.py
@@ -48,9 +49,9 @@ dataset:
   name: imagenet
   path: /datasets/imagenet
 ```
-This is the content of conf/dataset/imagenet.yaml!
+This is the content of [conf/dataset/imagenet.yaml](conf/dataset/imagenet.yaml)!
 
-We can also load one of each:
+We can load at most one config file from each family, let's load exactly one of each:
 ```yaml
 $ python demos/4_compose/compose.py dataset=imagenet optimizer=adam model=resnet
 Configuration:
@@ -84,4 +85,4 @@ optimizer:
   type: adam
 ```
 
-[Prev](../3_config_file/README.md) [Up](../README.md) [Next](../5_defaults/README.md)
+[[Prev](../3_config_file)] [[Up](../README.md)] [[Next](../5_defaults)]

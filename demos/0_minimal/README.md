@@ -1,11 +1,8 @@
 ## Minimal example
-A very simple example.
 
 ```python
 import sys
-
 import hydra
-
 
 @hydra.main()
 def experiment(cfg):
@@ -32,4 +29,4 @@ hello:
   b: 5671
 ```
 
-[Up](../README.md) [Next](../1_working_directory/README.md)
+[[Up](../README.md)] [[Next](../1_working_directory)]
