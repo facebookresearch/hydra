@@ -75,7 +75,7 @@ class FAIRTaskLauncher(Launcher):
         print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         loop = asyncio.get_event_loop()
-        queue = self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs))
-        loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))
+        with self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs)) as queue:
+            loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))
 
         return self.sweep_configs
