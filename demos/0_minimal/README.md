@@ -23,7 +23,7 @@ $ python demos/0_minimal/minimal.py
 ```
 
 You can pass in arbitrary configuration from the command line and it will be converted to a tree
-structure for you:
+structure:
 ```yaml
 $ python demos/0_minimal/minimal.py abc=123 hello.a=456 hello.b=5671
 abc: 123
