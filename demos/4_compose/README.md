@@ -67,7 +67,7 @@ optimizer:
   type: adam
 ```
 
-It will not surprise you that you can also override things here from the command line:
+It will not surprise you that you can also override the generated config from the command line:
 ```yaml
 $ python demos/4_compose/compose.py dataset=imagenet optimizer=adam model=resnet dataset.path=/datasets/new-imagenet
 Configuration:
