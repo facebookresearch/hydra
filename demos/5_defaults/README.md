@@ -17,7 +17,7 @@ defaults:
   - optimizer: nesterov
 ```
 
-We have a new special section in there called defaults, and it indicates what configurations to load by default.
+We have a new special section in there called defaults, and it indicates which configurations to load by default.
 Note that it's a list, this means it's order sensitive. we will see cases where it comes in handy later.
 
 As expected - running defaults.py without specifying anything will load the defaults:
