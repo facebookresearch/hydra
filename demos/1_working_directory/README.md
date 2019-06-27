@@ -4,7 +4,8 @@
 def experiment(cfg):
     print(f"Working directory : {os.getcwd()}")
 ```
-Hydra will change the working directory for you automatically. if you have any outputs you should just write them into
+Hydra will change the working directory of your job automatically.
+If your job produces outputs it should just write them into
 the current working directory.
 
 ```text
