@@ -1,5 +1,5 @@
 ## Logging
-Hydra configures python logging for you.
+Hydra configures python logging for your job.
 
 ```python
 import logging
