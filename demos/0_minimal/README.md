@@ -1,20 +1,34 @@
 ## Minimal example
-The simplest possible example.
+A very simple example.
 
-By default, the configuraiton object you will receive here is empty:
+```python
+import sys
+
+import hydra
+
+
+@hydra.main()
+def experiment(cfg):
+    print(cfg.pretty())
+
+
+if __name__ == "__main__":
+    sys.exit(experiment())
+```
+
+Hydra will construct the configuration object for you, in this example there is no input to construct it from, so it's empty.
 ```text
 $ python demos/0_minimal/minimal.py
-[2019-06-24 18:33:02,542][__main__][INFO] - CWD: /private/home/omry/dev/hydra/outputs/2019-06-24_18-33-02
-[2019-06-24 18:33:02,542][__main__][INFO] - Configuration:
 {}
 ```
 
-But you can pass in arbitrary configuration from the command line and it will be converted to a tree
+You can pass in arbitrary configuration from the command line and it will be converted to a tree
 structure for you:
-```text
+```bash
 $ python demos/0_minimal/minimal.py abc=123 hello.a=456 hello.b=5671
-[2019-06-21 17:55:46,231][__main__][INFO] - CWD: /private/home/omry/dev/hydra/outputs/2019-06-21_17-55-46
-[2019-06-21 17:55:46,231][__main__][INFO] - Configuration:
+```
+Output:
+```yaml
 abc: 123
 hello:
   a: 456
