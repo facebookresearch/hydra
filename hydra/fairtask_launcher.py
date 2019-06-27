@@ -77,5 +77,6 @@ class FAIRTaskLauncher(Launcher):
         loop = asyncio.get_event_loop()
         queue = self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs))
         loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))
+        queue.close()
 
         return self.sweep_configs
