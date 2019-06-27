@@ -1,14 +1,13 @@
 import argparse
-import copy
 import inspect
 import logging
 import os
 import sys
 
 import pkg_resources
+from omegaconf import OmegaConf
 
 from hydra.fairtask_launcher import FAIRTaskLauncher
-from omegaconf import OmegaConf
 from . import utils
 
 
@@ -79,6 +78,7 @@ class Hydra:
 
     def sweep(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
+        utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
         launcher = FAIRTaskLauncher(cfg_dir=self.conf_dir,
                                     cfg_filename=self.conf_filename,
                                     hydra_cfg=hydra_cfg,
@@ -104,7 +104,6 @@ def run_hydra(task_function, config_path):
     target_file = os.path.basename(calling_file)
     task_name = os.path.splitext(target_file)[0]
     args = get_args()
-    utils.configure_log(None, args.verbose)
 
     global log
     log = logging.getLogger(__name__)

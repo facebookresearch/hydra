@@ -231,6 +231,7 @@ def configure_log(log_config, verbose=None):
     else:
         # default logging to stdout
         root = logging.getLogger()
+        root.setLevel(logging.INFO)
         handler = logging.StreamHandler(sys.stdout)
         formatter = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] - %(message)s')
         handler.setFormatter(formatter)

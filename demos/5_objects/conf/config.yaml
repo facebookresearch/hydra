@@ -1,0 +1,2 @@
+defaults:
+  - model: alexnet

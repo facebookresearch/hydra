@@ -1,0 +1,5 @@
+model:
+  class: demos.5_objects.objects.Resnet
+  params:
+    num_layers: 50
+    width: 10
