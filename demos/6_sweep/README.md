@@ -44,15 +44,16 @@ In addition, there is a hidden .slurm sub directory that keeps stdout and stderr
 
 You can also sweep an arbitrary number of dimensions:
 ```text
-$ python demos/4_sweep/sweep_example.py -s dataset=imagenet,cifar10 model=alexnet,resnet random_seed=0,1,3
-Sweep output dir : /checkpoint/omry/outputs/2019-06-25_15-07-11/
-Launching 12 jobs to slurm queue
-        Workdir /checkpoint/omry/outputs/2019-06-25_15-07-11/0 : dataset=imagenet model=alexnet random_seed=0
-        Workdir /checkpoint/omry/outputs/2019-06-25_15-07-11/1 : dataset=imagenet model=alexnet random_seed=1
-        ...
-        Workdir /checkpoint/omry/outputs/2019-06-25_15-07-11/10 : dataset=cifar10 model=resnet random_seed=1
-        Workdir /checkpoint/omry/outputs/2019-06-25_15-07-11/11 : dataset=cifar10 model=resnet random_seed=3
-Dask dashboard for "slurm" at http://localhost:8002.
+$ python demos/6_sweep/sweep_example.py -s model=alexnet,resnet random_seed=0,1,3
+Sweep output dir : /checkpoint/omry/outputs/2019-06-28_12-19-33
+Launching 6 jobs to slurm queue
+        #0 : model=alexnet random_seed=0
+        #1 : model=alexnet random_seed=1
+        #2 : model=alexnet random_seed=3
+        #3 : model=resnet random_seed=0
+        #4 : model=resnet random_seed=1
+        #5 : model=resnet random_seed=3
+Dask dashboard for "slurm" at http://localhost:8001.
 ```
 
 In the example above, we combine sweeping on two datasets, two models and 3 random sees, for a total of 12 jobs.
