@@ -1,7 +1,7 @@
 # Hydra
 Hydra is a experimentation framework providing the following:
  * A unified interface to run experiments locally or remotely
- * Ability compose configuration dynamically from your own configuration primitives
+ * Dynamically composes a configuration from your own configuration primitives
  * Ability to override values in composed configurations from the command line
  * Creates a working directory per job run for you
  * Provides an ability to sweep on multiple dimensions from the command line
