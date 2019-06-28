@@ -37,7 +37,7 @@ optimizer:
  
 
 We can of course still choose to combine different members of each config family:
-```text
+```yaml
 $ python demos/3_defaults/defaults.py dataset=cifar10
 Configuration:
 dataset:
