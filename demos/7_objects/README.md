@@ -47,7 +47,7 @@ model:
   params:
     num_layers: 7
 ```
-model/resenet.yaml:
+model/resnet.yaml:
 ```yaml
 model:
   class: demos.5_objects.objects.Resnet
