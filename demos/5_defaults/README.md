@@ -39,7 +39,7 @@ optimizer:
 We can of course still choose to combine different members of each config family:
 ```text
 $ python demos/3_defaults/defaults.py dataset=cifar10
-[2019-06-21 20:04:55,590][__main__][INFO] - Configuration:
+Configuration:
 dataset:
   name: cifar10
   path: /datasets/cifar10
