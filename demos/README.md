@@ -8,7 +8,7 @@ It is recommended to go through it in order.
 - [3_config_file](3_config_file/README.md) : How to automatically load a config file
 - [4_compose](4_compose/README.md) : Composing configuration dynamically
 - [5_defaults](5_defaults/README.md) : Choosing which configurations will be composed by default
-- [6_sweeps](6_sweeps/README.md) : Running jobs on the slurm cluster
+- [6_sweep](6_sweep/README.md) : Running jobs on the slurm cluster
 - [7_objects](7_objects/README.md) : Instantiating objects based on configuration
 
 
