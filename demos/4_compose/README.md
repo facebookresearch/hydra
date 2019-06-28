@@ -70,15 +70,11 @@ optimizer:
 
 It will not surprise you that you can also override the generated config from the command line:
 ```yaml
-$ python demos/4_compose/compose.py dataset=imagenet optimizer=adam model=resnet dataset.path=/datasets/new-imagenet
+$ python demos/4_compose/compose.py dataset=imagenet optimizer=adam dataset.path=/datasets/new-imagenet
 Configuration:
 dataset:
   name: imagenet
   path: /datasets/new-imagenet
-model:
-  num_layers: 50
-  type: resnet
-  width: 10
 optimizer:
   beta: 0.01
   lr: 0.1
