@@ -153,12 +153,12 @@ def run_hydra(task_function, config_path):
             cfg = OmegaConf.merge(task_cfg['hydra_cfg'], job_cfg)
         else:
             assert False
-        if args.debug:
-            for file, loaded in task_cfg['checked']:
-                if loaded:
-                    print("Loaded: {}".format(file))
-                else:
-                    print("Not found: {}".format(file))
+        # if args.debug:
+        #     for file, loaded in task_cfg['checked']:
+        #         if loaded:
+        #             print("Loaded: {}".format(file))
+        #         else:
+        #             print("Not found: {}".format(file))
 
         print(cfg.pretty())
     else:
