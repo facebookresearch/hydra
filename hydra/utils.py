@@ -142,7 +142,10 @@ def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
 
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
-        hydra_cfg = OmegaConf.load(hydra_cfg_path)
+        # TODO: simpify this function by integrating defaults into create_task_cfg?
+        hydra_cfg_out = create_task_cfg(cfg_dir, "hydra.yaml", [])
+        hydra_cfg = hydra_cfg_out['cfg']
+        # TODO: potentially allow debugging hydra config construction
     else:
         hydra_cfg = OmegaConf.create()
     hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)

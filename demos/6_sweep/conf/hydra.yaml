@@ -1,3 +1,6 @@
+defaults:
+  - .hydra: logging
+
 hydra:
   run:
     dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
@@ -6,7 +9,7 @@ hydra:
     subdir: ${job:num}_${job:id}
 
   # job name.
-  # by default populated based on your entry point filename but can be overridden here to something else.
+  # by default populated based on your entry point filename but can be overridden to something else.
   #name: custom_name
 
   # debug launching issues, set to true to run workers in the same process.
@@ -38,23 +41,4 @@ hydra:
           error: slurm-%j.err
 
   # python logging configuration
-  logging:
-    version: 1
-    formatters:
-      simple:
-        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
-    handlers:
-      console:
-        class: logging.StreamHandler
-        formatter: simple
-        stream: ext://sys.stdout
-      file:
-        class: logging.FileHandler
-        formatter: simple
-        # relative to the job log directory
-        filename: ${hydra.name}.log
-    root:
-      level: INFO
-      handlers: [console, file]
-
-    disable_existing_loggers: False
+  logging: ???
