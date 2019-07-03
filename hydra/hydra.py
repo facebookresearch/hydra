@@ -58,14 +58,14 @@ class Hydra:
 
     def run(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
-        utils.run_job(cfg_dir=self.conf_dir,
-                      cfg_filename=self.conf_filename,
-                      hydra_cfg=hydra_cfg,
-                      task_function=self.task_function,
-                      overrides=overrides,
-                      verbose=self.verbose,
-                      job_dir=hydra_cfg.hydra.run.dir,
-                      job_subdir_key=None)
+        return utils.run_job(cfg_dir=self.conf_dir,
+                             cfg_filename=self.conf_filename,
+                             hydra_cfg=hydra_cfg,
+                             task_function=self.task_function,
+                             overrides=overrides,
+                             verbose=self.verbose,
+                             job_dir=hydra_cfg.hydra.run.dir,
+                             job_subdir_key=None)
 
     def sweep(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
@@ -77,7 +77,7 @@ class Hydra:
                                     verbose=self.verbose,
                                     overrides=overrides)
 
-        launcher.launch()
+        return launcher.launch()
 
     def get_cfg(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)

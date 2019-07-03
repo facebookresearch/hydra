@@ -29,14 +29,14 @@ class FAIRTaskLauncher(Launcher):
             utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
 
-        utils.run_job(self.cfg_dir,
-                      self.cfg_filename,
-                      hydra_cfg=self.hydra_cfg,
-                      task_function=self.task_function,
-                      overrides=sweep_overrides,
-                      verbose=self.verbose,
-                      job_dir=workdir,
-                      job_subdir_key='hydra.sweep.subdir')
+        return utils.run_job(self.cfg_dir,
+                             self.cfg_filename,
+                             hydra_cfg=self.hydra_cfg,
+                             task_function=self.task_function,
+                             overrides=sweep_overrides,
+                             verbose=self.verbose,
+                             job_dir=workdir,
+                             job_subdir_key='hydra.sweep.subdir')
 
     async def run_sweep(self, queue, sweep_configs):
         queue_name = self.hydra_cfg.hydra.launcher.queue
@@ -81,6 +81,4 @@ class FAIRTaskLauncher(Launcher):
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         loop = asyncio.get_event_loop()
         with self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs)) as queue:
-            loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))
-
-        return self.sweep_configs
+            return loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))

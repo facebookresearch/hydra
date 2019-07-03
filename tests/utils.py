@@ -4,6 +4,7 @@ from hydra import Hydra
 import shutil
 import copy
 import logging
+import os
 
 log = logging.getLogger(__name__)
 
@@ -13,19 +14,20 @@ def task_runner():
     class TaskTestFunction:
         def __init__(self):
             self.temp_dir = None
-            self.cfg = None
             self.overrides = None
             self.hydra = None
+            self.job_ret = None
 
         def __call__(self, cfg):
             # executed by hydra
-            self.cfg = cfg
+            # arbitrary return value
+            return 100
 
         def __enter__(self):
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             overrides.append(f"hydra.run_dir={self.temp_dir}")
-            self.hydra.run(overrides=overrides)
+            self.job_ret = self.hydra.run(overrides=overrides)
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
@@ -60,12 +62,14 @@ def sweep_runner():
 
         def __call__(self, cfg):
             log.info("Hello from sweep")
+            # arbitrary return value
+            return 100
 
         def __enter__(self):
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
-            overrides.append(f"hydra.sweep_dir={self.temp_dir}")
-            self.sweeps = self.hydra.sweep(overrides=overrides)
+            overrides.append(f"hydra.sweep.dir={self.temp_dir}")
+            self.returns = self.hydra.sweep(overrides=overrides)
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
@@ -84,3 +88,15 @@ def sweep_runner():
         return sweep
 
     return _
+
+
+def chdir_hydra_root():
+    cur = os.getcwd()
+    max_up = 3
+    target = 'setup.py'
+    while not os.path.exists(os.path.join(cur, target)) and max_up > 0:
+        cur = os.path.relpath(os.path.join(cur, ".."))
+        max_up = max_up - 1
+    if max_up == 0:
+        raise IOError("Could not find {} in parents of {}".format(target, os.getcwd()))
+    os.chdir(cur)

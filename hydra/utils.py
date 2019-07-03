@@ -41,6 +41,14 @@ class JobRuntime:
         self.conf[key] = value
 
 
+class JobReturn:
+    def __init__(self):
+        self.overrides = None
+        self.return_value = None
+        self.cfg = None
+        self.working_dir = None
+
+
 def fullname(o):
     if inspect.isclass(o):
         return o.__module__ + "." + o.__qualname__
@@ -287,11 +295,16 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
         working_dir = os.path.join(working_dir, subdir)
 
     try:
+        ret = JobReturn()
+        ret.working_dir = working_dir
+        ret.cfg = cfg
+        ret.overrides = overrides
         os.makedirs(working_dir, exist_ok=True)
         os.chdir(working_dir)
         configure_log(hydra_cfg.hydra.logging, verbose)
         save_config(cfg, 'config.yaml')
-        task_function(cfg)
+        ret.return_value = task_function(cfg)
+        return ret
     finally:
         os.chdir(old_cwd)
 
