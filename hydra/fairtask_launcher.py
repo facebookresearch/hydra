@@ -17,11 +17,12 @@ class FAIRTaskLauncher(Launcher):
         self.verbose = verbose
         self.sweep_configs = FAIRTaskLauncher.get_sweep(overrides)
 
-    def launch_job(self, sweep_overrides, workdir, job_num):
+    def launch_job(self, sweep_overrides, workdir, job_num, job_name):
         # stdout logging until we get the file logging going.
         # logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
         utils.JobRuntime().set('num', job_num)
+        utils.JobRuntime().set('name', job_name)
         if 'SLURM_JOB_ID' in os.environ:
             utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
         else:
@@ -45,7 +46,11 @@ class FAIRTaskLauncher(Launcher):
         for job_num in range(len(sweep_configs)):
             sweep_override = list(sweep_configs[job_num])
             print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
-            runs.append(queue(self.launch_job)(sweep_override, self.hydra_cfg.hydra.sweep.dir, job_num))
+            runs.append(queue(self.launch_job)(
+                sweep_override,
+                self.hydra_cfg.hydra.sweep.dir,
+                job_num,
+                utils.JobRuntime().get('name')))
         return await gatherl(runs)
 
     @staticmethod

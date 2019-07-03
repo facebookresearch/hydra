@@ -13,6 +13,7 @@ with open("README.md", "r") as fh:
         url="https://github.com/fairinternal/hydra",
         keywords='experimentation',
         packages=['hydra'],
+        package_data={'': ['*.yaml']},
         classifiers=[
             "Programming Language :: Python :: 3",
             "Operating System :: OS Independent",

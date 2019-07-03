@@ -44,26 +44,17 @@ class Hydra:
                  task_function,
                  verbose):
         utils.setup_globals()
-        self.task_name = utils.get_valid_filename(task_name)
+        utils.JobRuntime().set('name', utils.get_valid_filename(task_name))
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
         self.verbose = verbose
 
     def _create_hydra_cfg(self, overrides):
-        defaults = OmegaConf.create(dict(
-            hydra=dict(
-                name=self.task_name,
-                run=dict(
-                    dir='./outputs/${now:%Y-%m-%d_%H-%M-%S}'
-                ),
-                sweep=dict(
-                    dir='/checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}',
-                    subdir='${job:num}_${job:id}'
-                )
-            ),
-        ))
-        return utils.create_hydra_cfg(cfg_dir=self.conf_dir, hydra_cfg_defaults=defaults, overrides=overrides)
+        defaults_res = utils.create_cfg(cfg_dir='pkg://hydra.default_conf', cfg_filename='hydra.yaml')
+        return utils.create_hydra_cfg(cfg_dir=self.conf_dir,
+                                      hydra_cfg_defaults=defaults_res['cfg'],
+                                      overrides=overrides)
 
     def run(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
@@ -90,9 +81,9 @@ class Hydra:
 
     def get_cfg(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
-        ret = utils.create_task_cfg(cfg_dir=self.conf_dir,
-                                    cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides)
+        ret = utils.create_cfg(cfg_dir=self.conf_dir,
+                               cfg_filename=self.conf_filename,
+                               cli_overrides=overrides)
         ret['hydra_cfg'] = hydra_cfg
         return ret
 

@@ -1,3 +1,4 @@
+from pkg_resources import resource_stream, resource_exists
 import inspect
 import logging
 import logging.config
@@ -6,8 +7,9 @@ import re
 import sys
 from time import strftime, localtime
 
-from hydra.errors import MissingConfigException
 from omegaconf import OmegaConf, ListConfig, DictConfig
+
+from hydra.errors import MissingConfigException
 
 log = logging.getLogger(__name__)
 
@@ -143,7 +145,7 @@ def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
         # TODO: simpify this function by integrating defaults into create_task_cfg?
-        hydra_cfg_out = create_task_cfg(cfg_dir, "hydra.yaml", [])
+        hydra_cfg_out = create_cfg(cfg_dir, "hydra.yaml", [])
         hydra_cfg = hydra_cfg_out['cfg']
         # TODO: potentially allow debugging hydra config construction
     else:
@@ -157,13 +159,20 @@ def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
     return hydra_cfg
 
 
-def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
+def create_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
+    is_pkg = cfg_dir.startswith('pkg://')
+    if is_pkg:
+        cfg_dir = cfg_dir[len('pkg://'):]
     loaded_configs = []
     all_config_checked = []
 
     def load_config(filename):
         loaded_cfg = None
-        if os.path.exists(filename):
+        if is_pkg:
+            res_base = os.path.dirname(filename)
+            res_file = os.path.basename(filename)
+            loaded_cfg = OmegaConf.load(resource_stream(res_base, res_file))
+        elif os.path.exists(filename):
             loaded_cfg = OmegaConf.load(filename)
             loaded_configs.append(filename)
             all_config_checked.append((filename, True))
@@ -172,7 +181,10 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         return loaded_cfg
 
     def merge_config(cfg_, family_, name_, required):
-        family_dir = os.path.join(cfg_dir, family_)
+        if family_ != '.':
+            family_dir = os.path.join(cfg_dir, family_)
+        else:
+            family_dir = cfg_dir
         cfg_path = os.path.join(family_dir, name_) + '.yaml'
         new_cfg = load_config(cfg_path)
         if new_cfg is None:
@@ -186,10 +198,19 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         else:
             return OmegaConf.merge(cfg_, new_cfg)
 
+    def exists(filename):
+        if is_pkg:
+            res_base = os.path.dirname(filename)
+            res_file = os.path.basename(filename)
+            return resource_exists(res_base, res_file)
+        else:
+            return os.path.exists(filename)
+
     if cfg_filename is not None:
         main_cfg_file = os.path.join(cfg_dir, cfg_filename)
-        if not os.path.exists(main_cfg_file):
+        if not exists(main_cfg_file):
             raise IOError("Config file not found : {}".format(os.path.realpath(main_cfg_file)))
+
         main_cfg = load_config(main_cfg_file)
     else:
         main_cfg = OmegaConf.create(dict(defaults=[]))
@@ -205,7 +226,7 @@ def create_task_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         key, value = override.split('=')
         assert key != 'optional', "optional is a reserved keyword and cannot be used as a config group name"
         path = os.path.join(cfg_dir, key)
-        if os.path.exists(path):
+        if exists(path):
             defaults_changes[key] = value
         else:
             overrides.append(override)
@@ -253,7 +274,7 @@ def save_config(cfg, filename):
 
 
 def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
-    task_cfg = create_task_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
+    task_cfg = create_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
 
     old_cwd = os.getcwd()

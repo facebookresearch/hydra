@@ -1,0 +1,12 @@
+defaults:
+  - .: logging
+
+hydra:
+  # job name.
+  # by default populated based on your entry point filename but can be overridden to something else.
+  name: ${job:name}
+  run:
+    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${job:num}_${job:id}
