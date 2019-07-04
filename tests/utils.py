@@ -19,14 +19,13 @@ def task_runner():
             self.job_ret = None
 
         def __call__(self, cfg):
-            # executed by hydra
-            # arbitrary return value
+            log.info("Hello from run")
             return 100
 
         def __enter__(self):
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
-            overrides.append(f"hydra.run_dir={self.temp_dir}")
+            overrides.append(f"hydra.run.dir={self.temp_dir}")
             self.job_ret = self.hydra.run(overrides=overrides)
             return self
 
@@ -35,7 +34,7 @@ def task_runner():
 
     def _(conf_dir, conf_filename=None, overrides=[]):
         task = TaskTestFunction()
-        hydra = Hydra(task_name="test-task",
+        hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
                       conf_filename=conf_filename,
                       task_function=task,
@@ -62,7 +61,6 @@ def sweep_runner():
 
         def __call__(self, cfg):
             log.info("Hello from sweep")
-            # arbitrary return value
             return 100
 
         def __enter__(self):
@@ -77,7 +75,7 @@ def sweep_runner():
 
     def _(conf_dir, conf_filename=None, overrides=[]):
         sweep = SweepTaskFunction()
-        hydra = Hydra(task_name="test-sweep",
+        hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
                       conf_filename=conf_filename,
                       task_function=sweep,

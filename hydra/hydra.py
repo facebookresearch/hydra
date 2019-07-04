@@ -7,7 +7,6 @@ import sys
 import pkg_resources
 from omegaconf import OmegaConf
 
-from hydra.fairtask_launcher import FAIRTaskLauncher
 from . import utils
 
 
@@ -15,6 +14,8 @@ def get_args():
     parser = argparse.ArgumentParser(description='Hydra experimentation framework')
     version = pkg_resources.require("hydra")[0].version
     parser.add_argument('--version', action='version', version="hydra {}".format(version))
+    parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
+                                                     "(use dots for.nested=overrides)")
     parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
                                                      "(use dots for.nested=overrides)")
     parser.add_argument('--verbose', '-v',

@@ -1,5 +1,8 @@
+import os
+
 import pytest
 from omegaconf import OmegaConf
+
 from hydra import MissingConfigException
 # noinspection PyUnresolvedReferences
 from tests.utils import task_runner, sweep_runner, chdir_hydra_root
@@ -28,6 +31,8 @@ def test_demos_minimal__with_overrides(task_runner):
     with task_runner(conf_dir='demos/0_minimal/',
                      overrides=['abc=123', 'a.b=1', 'a.a=2']) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
+        assert os.path.exists(os.path.join(task.job_ret.working_dir, 'task.log'))
+        assert os.path.exists(os.path.join(task.job_ret.working_dir, 'config.yaml'))
 
 
 def test_demos_config_file__no_overrides(task_runner):
@@ -187,5 +192,8 @@ def test_demos_sweep_2_jobs(sweep_runner):
         for i in range(2):
             expected = OmegaConf.merge(base)
             expected.a = i
-            assert sweep.returns[i].overrides == ['a={}'.format(i)]
-            assert sweep.returns[i].cfg == expected
+            job_ret = sweep.returns[i]
+            assert job_ret.overrides == ['a={}'.format(i)]
+            assert job_ret.cfg == expected
+            assert os.path.exists(os.path.join(job_ret.working_dir, 'task.log'))
+            assert os.path.exists(os.path.join(job_ret.working_dir, 'config.yaml'))

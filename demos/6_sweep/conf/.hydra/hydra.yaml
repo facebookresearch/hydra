@@ -1,5 +1,4 @@
 defaults:
-  - logging: logging
   - launcher: fairtask
 
 hydra:
@@ -7,6 +6,3 @@ hydra:
   no_workers: false
 
   launcher: ???
-
-  # python logging configuration
-  logging: ???
