@@ -1,5 +1,4 @@
 import asyncio
-import itertools
 import os
 
 from fairtask import TaskQueues, gatherl
@@ -25,7 +24,7 @@ class FAIRTaskLauncher(Launcher):
         self.hydra_cfg = hydra_cfg
         self.task_function = task_function
         self.verbose = verbose
-        self.sweep_configs = FAIRTaskLauncher.get_sweep(overrides)
+        self.sweep_configs = utils.get_sweep(overrides)
 
     def launch_job(self, sweep_overrides, workdir, job_num, job_name):
         # stdout logging until we get the file logging going.
@@ -74,15 +73,6 @@ class FAIRTaskLauncher(Launcher):
         # and run everything synchronously (good for debugging)
         no_workers = False if self.hydra_cfg.hydra.no_workers is None else self.hydra_cfg.hydra.no_workers
         return TaskQueues(queues, no_workers=no_workers)
-
-    @staticmethod
-    def get_sweep(overrides):
-        lists = []
-        for s in overrides:
-            key, value = s.split('=')
-            lists.append(["{}={}".format(key, value) for value in value.split(',')])
-
-        return list(itertools.product(*lists))
 
     def launch(self):
         # TODO: use logger

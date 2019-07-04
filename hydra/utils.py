@@ -1,5 +1,5 @@
-from pkg_resources import resource_stream, resource_exists
 import inspect
+import itertools
 import logging
 import logging.config
 import os
@@ -8,6 +8,7 @@ import sys
 from time import strftime, localtime
 
 from omegaconf import OmegaConf, ListConfig, DictConfig
+from pkg_resources import resource_stream, resource_exists
 
 from hydra.errors import MissingConfigException
 
@@ -242,6 +243,7 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
         path = os.path.join(cfg_dir, key)
         if exists(path):
             defaults_changes[key] = value
+            cli_overrides.remove(override)
         else:
             overrides.append(override)
 
@@ -329,3 +331,12 @@ def setup_globals():
 def get_valid_filename(s):
     s = str(s).strip().replace(' ', '_')
     return re.sub(r'(?u)[^-\w.]', '', s)
+
+
+def get_sweep(overrides):
+    lists = []
+    for s in overrides:
+        key, value = s.split('=')
+        lists.append(["{}={}".format(key, value) for value in value.split(',')])
+
+    return list(itertools.product(*lists))

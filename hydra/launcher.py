@@ -8,5 +8,5 @@ class Launcher:
         raise NotImplemented()
 
     @abstractmethod
-    def launch(self, sweep_configs):
+    def launch(self):
         raise NotImplemented()
