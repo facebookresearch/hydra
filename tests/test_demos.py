@@ -147,13 +147,18 @@ def test_demos_defaults__override_all_configs_and_overrides(task_runner):
         )
 
 
-def test_demos_sweep_1_job(sweep_runner):
+@pytest.mark.parametrize(
+    'overrides',
+    [
+        ['launcher=fairtask', 'hydra.launcher.queue=local', 'hydra.no_workers=true'],
+        # submitit local queue is broken. re-enable once fixed. https://github.com/fairinternal/submitit/issues/121
+        # ['launcher=submitit', 'hydra.launcher.queue=local'],
+    ]
+)
+def test_demos_sweep_1_job(sweep_runner, overrides):
     sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
                          conf_filename='config.yaml',
-                         overrides=[
-                             'hydra.launcher.queue=local',
-                             'hydra.no_workers=true'
-                         ])
+                         overrides=overrides)
     with sweep:
         assert len(sweep.returns) == 1
         assert sweep.returns[0].overrides == []

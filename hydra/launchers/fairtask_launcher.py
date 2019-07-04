@@ -1,16 +1,16 @@
+import asyncio
 import os
 
-import submitit
+from fairtask import TaskQueues, gatherl
 
 from hydra import utils
-from .launcher import Launcher
+from hydra import Launcher
 
 
-class SubmititLauncher(Launcher):
-
-    def __init__(self, queue, folder):
-        self.queue = queue
-        self.folder = folder
+class FAIRTaskLauncher(Launcher):
+    def __init__(self, queue, queues):
+        self.queue_name = queue
+        self.queues = queues
         self.cfg_dir = None
         self.cfg_filename = None
         self.hydra_cfg = None
@@ -47,29 +47,37 @@ class SubmititLauncher(Launcher):
                              job_dir=workdir,
                              job_subdir_key='hydra.sweep.subdir')
 
-    def launch(self):
-        if self.queue == 'slurm':
-            executor = submitit.SlurmExecutor(folder=self.folder)
-        elif self.queue == 'chronos':
-            executor = submitit.ChronosExecutor(folder=self.folder)
-        elif self.queue == 'local':
-            executor = submitit.LocalExecutor(folder=self.folder)
-        else:
-            raise RuntimeError('Unsupported queue type {}'.format(self.queue))
+    async def run_sweep(self, queue, sweep_configs):
+        print("Launching {} jobs to {} queue".format(len(sweep_configs), self.queue_name))
+        queue = queue.task(self.queue_name)
+        runs = []
+        for job_num in range(len(sweep_configs)):
+            sweep_override = list(sweep_configs[job_num])
+            print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
+            runs.append(queue(self.launch_job)(
+                sweep_override,
+                self.hydra_cfg.hydra.sweep.dir,
+                job_num,
+                utils.JobRuntime().get('name')))
+        return await gatherl(runs)
 
+    def create_queue(self):
+        num_jobs = len(self.sweep_configs)
+        assert num_jobs > 0
+        self.hydra_cfg.hydra.launcher.concurrent = num_jobs
+        queues = {}
+        for queue_name, queue_conf in self.queues.items():
+            queues[queue_name] = utils.instantiate(queue_conf)
+
+        # if no_workers == True, then turn off all queue functionality
+        # and run everything synchronously (good for debugging)
+        no_workers = False if self.hydra_cfg.hydra.no_workers is None else self.hydra_cfg.hydra.no_workers
+        return TaskQueues(queues, no_workers=no_workers)
+
+    def launch(self):
         # TODO: use logger
         print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
-        jobs = []
-        for job_num in range(len(self.sweep_configs)):
-            sweep_override = list(self.sweep_configs[job_num])
-            print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
-            job = executor.submit(self.launch_job,
-                                  sweep_override,
-                                  self.hydra_cfg.hydra.sweep.dir,
-                                  job_num,
-                                  utils.JobRuntime().get('name'))
-            jobs.append(job)
-
-        outputs = [job.result() for job in jobs]
-
+        loop = asyncio.get_event_loop()
+        with self.create_queue() as queue:
+            return loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))

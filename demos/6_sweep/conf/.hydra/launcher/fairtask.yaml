@@ -1,6 +1,6 @@
 hydra:
   launcher:
-    class: hydra.fairtask_launcher.FAIRTaskLauncher
+    class: hydra.launchers.FAIRTaskLauncher
     params:
       queue: slurm
       queues:
