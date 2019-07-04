@@ -142,9 +142,8 @@ def update_defaults(cfg, defaults_changes):
 
 
 def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
-    if not os.path.exists(cfg_dir):
-        raise IOError("conf_dir not found : {}".format(cfg_dir))
-    if not os.path.isdir(cfg_dir):
+    cfg_dir = os.path.join(cfg_dir, '.hydra')
+    if os.path.exists(cfg_dir) and not os.path.isdir(cfg_dir):
         raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
 
     if hydra_cfg_defaults is None:
@@ -173,6 +172,10 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         cfg_dir = cfg_dir[len('pkg://'):]
     loaded_configs = []
     all_config_checked = []
+
+    if not is_pkg:
+        if not os.path.exists(cfg_dir):
+            raise IOError("conf_dir not found : {}".format(cfg_dir))
 
     def load_config(filename):
         loaded_cfg = None

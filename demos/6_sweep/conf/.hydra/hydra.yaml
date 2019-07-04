@@ -1,6 +1,6 @@
 defaults:
-  - .hydra: logging
-  - .hydra/launcher: fairtask
+  - logging: logging
+  - launcher: fairtask
 
 hydra:
   # debug launching issues, set to true to run workers in the same process.

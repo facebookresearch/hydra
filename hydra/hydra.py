@@ -70,6 +70,8 @@ class Hydra:
     def sweep(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
         utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
+        if hydra_cfg.hydra.launcher is None:
+            raise RuntimeError("Hydra launcher is not configured")
         launcher = utils.instantiate(hydra_cfg.hydra.launcher)
         launcher.setup(cfg_dir=self.conf_dir,
                        cfg_filename=self.conf_filename,
