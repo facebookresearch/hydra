@@ -9,7 +9,17 @@ from .launcher import Launcher
 
 
 class FAIRTaskLauncher(Launcher):
-    def __init__(self, cfg_dir, cfg_filename, hydra_cfg, task_function, verbose, overrides):
+    def __init__(self, queue, queues):
+        self.queue_name = queue
+        self.queues = queues
+        self.cfg_dir = None
+        self.cfg_filename = None
+        self.hydra_cfg = None
+        self.task_function = None
+        self.verbose = None
+        self.sweep_configs = None
+
+    def setup(self, cfg_dir, cfg_filename, hydra_cfg, task_function, verbose, overrides):
         self.cfg_dir = cfg_dir
         self.cfg_filename = cfg_filename
         self.hydra_cfg = hydra_cfg
@@ -39,9 +49,8 @@ class FAIRTaskLauncher(Launcher):
                              job_subdir_key='hydra.sweep.subdir')
 
     async def run_sweep(self, queue, sweep_configs):
-        queue_name = self.hydra_cfg.hydra.launcher.queue
-        print("Launching {} jobs to {} queue".format(len(sweep_configs), queue_name))
-        queue = queue.task(queue_name)
+        print("Launching {} jobs to {} queue".format(len(sweep_configs), self.queue_name))
+        queue = queue.task(self.queue_name)
         runs = []
         for job_num in range(len(sweep_configs)):
             sweep_override = list(sweep_configs[job_num])
@@ -53,17 +62,17 @@ class FAIRTaskLauncher(Launcher):
                 utils.JobRuntime().get('name')))
         return await gatherl(runs)
 
-    @staticmethod
-    def create_queue(cfg, num_jobs):
+    def create_queue(self):
+        num_jobs = len(self.sweep_configs)
         assert num_jobs > 0
-        cfg.launcher.concurrent = num_jobs
+        self.hydra_cfg.hydra.launcher.concurrent = num_jobs
         queues = {}
-        for queue_name, queue_conf in cfg.launcher.queues.items():
+        for queue_name, queue_conf in self.queues.items():
             queues[queue_name] = utils.instantiate(queue_conf)
 
         # if no_workers == True, then turn off all queue functionality
         # and run everything synchronously (good for debugging)
-        no_workers = False if cfg.no_workers is None else cfg.no_workers
+        no_workers = False if self.hydra_cfg.hydra.no_workers is None else self.hydra_cfg.hydra.no_workers
         return TaskQueues(queues, no_workers=no_workers)
 
     @staticmethod
@@ -80,5 +89,5 @@ class FAIRTaskLauncher(Launcher):
         print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         loop = asyncio.get_event_loop()
-        with self.create_queue(self.hydra_cfg.hydra, len(self.sweep_configs)) as queue:
+        with self.create_queue() as queue:
             return loop.run_until_complete(self.run_sweep(queue, self.sweep_configs))

@@ -70,12 +70,13 @@ class Hydra:
     def sweep(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
         utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
-        launcher = FAIRTaskLauncher(cfg_dir=self.conf_dir,
-                                    cfg_filename=self.conf_filename,
-                                    hydra_cfg=hydra_cfg,
-                                    task_function=self.task_function,
-                                    verbose=self.verbose,
-                                    overrides=overrides)
+        launcher = utils.instantiate(hydra_cfg.hydra.launcher)
+        launcher.setup(cfg_dir=self.conf_dir,
+                       cfg_filename=self.conf_filename,
+                       hydra_cfg=hydra_cfg,
+                       task_function=self.task_function,
+                       verbose=self.verbose,
+                       overrides=overrides)
 
         return launcher.launch()
 
