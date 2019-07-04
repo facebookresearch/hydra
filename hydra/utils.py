@@ -151,22 +151,25 @@ def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
 
     hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
     if os.path.exists(hydra_cfg_path):
-        # TODO: simpify this function by integrating defaults into create_task_cfg?
-        hydra_cfg_out = create_cfg(cfg_dir, "hydra.yaml", [])
+        hydra_cfg_out = create_cfg(cfg_dir, "hydra.yaml", overrides)
         hydra_cfg = hydra_cfg_out['cfg']
         # TODO: potentially allow debugging hydra config construction
     else:
         hydra_cfg = OmegaConf.create()
+
     hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
+    clean = OmegaConf.create()
+    clean.hydra = hydra_cfg.hydra
+    hydra_cfg = clean
+
     hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
     # remove all matching overrides from overrides list
     for override in hydra_overrides:
         overrides.remove(override)
-    hydra_cfg.merge_with_dotlist(hydra_overrides)
     return hydra_cfg
 
 
-def create_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
+def create_cfg(cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
     is_pkg = cfg_dir.startswith('pkg://')
     if is_pkg:
         cfg_dir = cfg_dir[len('pkg://'):]
@@ -253,7 +256,9 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[]):
         family, name = next(iter(default.items()))
         cfg = merge_config(cfg, family, name, required=not is_optional)
 
-    cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
+    if not defaults_only:
+        # merge in remaining overrides
+        cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
     # remove config block from resulting cfg.
     del cfg['defaults']
     return dict(cfg=cfg, loaded=loaded_configs, checked=all_config_checked)
