@@ -10,6 +10,11 @@ from tests.utils import task_runner, sweep_runner, chdir_hydra_root
 chdir_hydra_root()
 
 
+def verify_dir_outputs(d):
+    assert os.path.exists(os.path.join(d, 'task.log'))
+    assert os.path.exists(os.path.join(d, 'config.yaml'))
+
+
 def test_missing_conf_dir(task_runner):
     with pytest.raises(IOError):
         with task_runner(conf_dir='not_found'):
@@ -31,8 +36,7 @@ def test_demos_minimal__with_overrides(task_runner):
     with task_runner(conf_dir='demos/0_minimal/',
                      overrides=['abc=123', 'a.b=1', 'a.a=2']) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
-        assert os.path.exists(os.path.join(task.job_ret.working_dir, 'task.log'))
-        assert os.path.exists(os.path.join(task.job_ret.working_dir, 'config.yaml'))
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_config_file__no_overrides(task_runner):
@@ -43,6 +47,7 @@ def test_demos_config_file__no_overrides(task_runner):
                 name='the nameless one',
             )
         )
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_config_file__with_overide(task_runner):
@@ -54,6 +59,7 @@ def test_demos_config_file__with_overide(task_runner):
                 name='morte',
             )
         )
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_compose__no_override(task_runner):
@@ -70,6 +76,7 @@ def test_demos_compose__override_dataset(task_runner):
                 path='/datasets/imagenet'
             )
         )
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_compose__override_dataset__wrong(task_runner):
@@ -98,6 +105,7 @@ def test_demos_compose__override_all_configs(task_runner):
                 beta=0.01
             ),
         )
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_compose__override_all_configs(task_runner):
@@ -116,6 +124,7 @@ def test_demos_compose__override_all_configs(task_runner):
                 lr=0.001,
             ),
         )
+        verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_defaults__override_all_configs_and_overrides(task_runner):
@@ -162,6 +171,7 @@ def test_demos_sweep_1_job(sweep_runner):
                 lr=0.001,
             ),
         )
+        verify_dir_outputs(sweep.returns[0].working_dir)
 
 
 def test_demos_sweep_2_jobs(sweep_runner):
@@ -195,5 +205,4 @@ def test_demos_sweep_2_jobs(sweep_runner):
             job_ret = sweep.returns[i]
             assert job_ret.overrides == ['a={}'.format(i)]
             assert job_ret.cfg == expected
-            assert os.path.exists(os.path.join(job_ret.working_dir, 'task.log'))
-            assert os.path.exists(os.path.join(job_ret.working_dir, 'config.yaml'))
+            verify_dir_outputs(job_ret.working_dir)
