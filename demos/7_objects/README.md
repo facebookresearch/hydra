@@ -67,13 +67,13 @@ def objects(cfg):
 
 As before, you can override parameters in the config:
 ```yaml
-$ python demos/7_objects/objects.py
+$ python demos/7_objects/objects.py model.params.num_layers=8
 model:
   class: demos.7_objects.objects.Alexnet
   params:
-    num_layers: 7
+    num_layers: 8
 
-Alexnet: num_layers=7
+Alexnet: num_layers=8
 Alexnet: forward(10)
 ```
 
