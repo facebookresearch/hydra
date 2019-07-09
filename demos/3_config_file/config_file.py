@@ -5,7 +5,7 @@ import hydra
 
 @hydra.main(config_path='config.yaml')
 def experiment(cfg):
-    print("Configuration:\n{}".format(cfg.pretty()))
+    print(cfg.pretty())
 
 
 if __name__ == "__main__":

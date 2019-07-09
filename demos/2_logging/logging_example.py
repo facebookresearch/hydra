@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 @hydra.main()
-def experiment(cfg):
+def experiment(_cfg):
     log.info("Info level message")
     log.debug("Debug level message")
 

@@ -5,9 +5,10 @@ import hydra
 
 log = logging.getLogger(__name__)
 
+
 @hydra.main(config_path='conf')
 def experiment(cfg):
-    print("Configuration:\n{}".format(cfg.pretty()))
+    print(cfg.pretty())
 
 
 if __name__ == "__main__":
