@@ -1,5 +1,5 @@
 defaults:
-  - .: logging
+  - logging
 
 hydra:
   # job name.

@@ -121,22 +121,29 @@ def validate_config(cfg):
     assert isinstance(cfg.defaults,
                       ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
     for default in cfg.defaults:
-        assert isinstance(default, DictConfig), "elements of defaults list must be dictionaries"
-        assert len(default) in (1, 2)
-        if len(default) == 2:
-            assert default.optional is not None and type(default.optional) == bool
+        if isinstance(default, DictConfig):
+            assert len(default) in (1, 2)
+            if len(default) == 2:
+                assert default.optional is not None and type(default.optional) == bool
+            else:
+                # optional can't be the only config key in a default
+                assert default.optional is None, "Missing config key"
+        elif isinstance(default, str):
+            # single file to load
+            pass
         else:
-            # optional can't be the only config key in a default
-            assert default.optional is None, "Missing config key"
+            raise RuntimeError(
+                "defaults elements value should be either a dict or an str, got {}".format(type(default).__name__))
 
 
 def update_defaults(cfg, defaults_changes):
     for default in cfg.defaults:
-        for key in default.keys():
-            if key != 'optional':
-                if key in defaults_changes:
-                    default[key] = defaults_changes[key]
-                    del defaults_changes[key]
+        if isinstance(default, DictConfig):
+            for key in default.keys():
+                if key != 'optional':
+                    if key in defaults_changes:
+                        default[key] = defaults_changes[key]
+                        del defaults_changes[key]
     # unmatched new defaults, put at end of list
     for key, value in defaults_changes.items():
         cfg.defaults.append({key: value})
@@ -251,12 +258,16 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
 
     cfg = main_cfg
     for default in main_cfg.defaults:
-        is_optional = False
-        if default.optional is not None:
-            is_optional = default.optional
-            del default['optional']
-        family, name = next(iter(default.items()))
-        cfg = merge_config(cfg, family, name, required=not is_optional)
+        if isinstance(default, DictConfig):
+            is_optional = False
+            if default.optional is not None:
+                is_optional = default.optional
+                del default['optional']
+            family, name = next(iter(default.items()))
+            cfg = merge_config(cfg, family, name, required=not is_optional)
+        else:
+            assert isinstance(default, str)
+            cfg = merge_config(cfg, ".", default, required=True)
 
     if not defaults_only:
         # merge in remaining overrides
