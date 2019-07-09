@@ -313,6 +313,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
         os.chdir(working_dir)
         configure_log(hydra_cfg.hydra.logging, verbose)
         save_config(cfg, 'config.yaml')
+        save_config(OmegaConf.from_dotlist(overrides), 'overrides.yaml')
         ret.return_value = task_function(cfg)
         return ret
     finally:
@@ -321,6 +322,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
 
 def setup_globals():
     try:
+        OmegaConf.clear_resolvers()
         OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
         OmegaConf.register_resolver("job", JobRuntime().get)
     except AssertionError:

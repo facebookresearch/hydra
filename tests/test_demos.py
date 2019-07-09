@@ -10,9 +10,11 @@ from tests.utils import task_runner, sweep_runner, chdir_hydra_root
 chdir_hydra_root()
 
 
-def verify_dir_outputs(d):
+def verify_dir_outputs(d, overrides=[]):
     assert os.path.exists(os.path.join(d, 'task.log'))
     assert os.path.exists(os.path.join(d, 'config.yaml'))
+    assert os.path.exists(os.path.join(d, 'overrides.yaml'))
+    assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.from_dotlist(overrides)
 
 
 def test_missing_conf_dir(task_runner):
@@ -36,7 +38,7 @@ def test_demos_minimal__with_overrides(task_runner):
     with task_runner(conf_dir='demos/0_minimal/',
                      overrides=['abc=123', 'a.b=1', 'a.a=2']) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
-        verify_dir_outputs(task.job_ret.working_dir)
+        verify_dir_outputs(task.job_ret.working_dir, task.overrides)
 
 
 def test_demos_config_file__no_overrides(task_runner):
@@ -59,7 +61,7 @@ def test_demos_config_file__with_overide(task_runner):
                 name='morte',
             )
         )
-        verify_dir_outputs(task.job_ret.working_dir)
+        verify_dir_outputs(task.job_ret.working_dir, task.overrides)
 
 
 def test_demos_compose__no_override(task_runner):
@@ -205,9 +207,8 @@ def test_demos_sweep_2_jobs(sweep_runner):
     with sweep:
         assert len(sweep.returns) == 2
         for i in range(2):
-            expected = OmegaConf.merge(base)
-            expected.a = i
             job_ret = sweep.returns[i]
+            expected_conf = OmegaConf.merge(OmegaConf.merge(base), OmegaConf.from_dotlist(job_ret.overrides))
             assert job_ret.overrides == ['a={}'.format(i)]
-            assert job_ret.cfg == expected
-            verify_dir_outputs(job_ret.working_dir)
+            assert job_ret.cfg == expected_conf
+            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
