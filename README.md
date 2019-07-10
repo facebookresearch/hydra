@@ -13,7 +13,8 @@ A proper pip package will be available after Hydra is open sourced.
 
 You can install/upgrade by running the following command:
 ```
-python3 -m pip install --upgrade --upgrade-strategy=eager git+ssh://git@github.com/fairinternal/hydra.git@master
+python3 -m pip install --upgrade --upgrade-strategy=eager \
+git+ssh://git@github.com/fairinternal/hydra.git@master
 ```
 ## Uninstall
 ```
@@ -29,7 +30,7 @@ The following variables can be used in hydra config or job config
 | function   | arguments        | description                                                                                | Example                       | Example output      |
 | ---------- |------------------| ------------------------------------------------------------------------------------------ | ------------------------------|---------------------|
 | now        | strftime pattern | date/time pattern                                                                          | ${now:%Y-%m-%d_%H-%M-%S}      | 2019-07-10_11-47-35 |
-| job        | name             | Job name, defaults to python file name without suffix. Used for log filename, job name etc | ${job:name                    | example_sweep       |
+| job        | name             | Job name, defaults to python file name without suffix. Used for log filename, job name etc | ${job:name}                   | example_sweep       |
 |            | override_dirname | Pathname derived from the overrides for this job                                           | /path/${job:override_dirname} | /path/a:1,b:I       |
 |            | num              | job serial number in sweep                                                                 | ${job:num}                    | 0                   |
 |            | id               | Job ID in the underlying jobs system (slurm, chronos etc)                                  | ${job:id}                     | 14445406            |
