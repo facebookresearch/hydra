@@ -13,7 +13,8 @@ A proper pip package will be available after Hydra is open sourced.
 
 You can install/upgrade by running the following command:
 ```
-python3 -m pip install --upgrade --upgrade-strategy=eager git+ssh://git@github.com/fairinternal/hydra.git@master
+python3 -m pip install --upgrade --upgrade-strategy=eager \
+git+ssh://git@github.com/fairinternal/hydra.git@master
 ```
 ## Uninstall
 ```
