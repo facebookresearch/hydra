@@ -35,6 +35,8 @@ class SubmititLauncher(Launcher):
         utils.JobRuntime().set('name', job_name)
         if 'SLURM_JOB_ID' in os.environ:
             utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
+        elif 'CHRONOS_JOB_ID' in os.environ:
+            utils.JobRuntime().set('id', '${env:CHRONOS_JOB_ID}')
         else:
             utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
