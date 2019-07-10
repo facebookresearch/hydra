@@ -10,3 +10,5 @@ It is recommended to go through it in order.
 - [5_defaults](5_defaults/README.md) : Choosing which configurations will be composed by default
 - [6_sweep](6_sweep/README.md) : Running jobs on the slurm cluster
 - [7_objects](7_objects/README.md) : Instantiating objects based on configuration
+
+- [99_hydra_configuration](99_hydra_configuration/README.md) : How to configure hydra
