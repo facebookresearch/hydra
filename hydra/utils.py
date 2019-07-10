@@ -302,10 +302,16 @@ def save_config(cfg, filename):
         file.write(cfg.pretty())
 
 
+def get_overrides_dirname(lst):
+    lst.sort()
+    lststr = ",".join(lst)
+    return re.sub('[=]', ':', lststr)
+
+
 def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
+    JobRuntime().set('override_dirname', get_overrides_dirname(overrides))
     task_cfg = create_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
-
 
     old_cwd = os.getcwd()
     working_dir = job_dir
