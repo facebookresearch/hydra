@@ -306,6 +306,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
     task_cfg = create_cfg(cfg_dir=cfg_dir, cfg_filename=cfg_filename, cli_overrides=overrides)
     cfg = task_cfg['cfg']
 
+
     old_cwd = os.getcwd()
     working_dir = job_dir
     if job_subdir_key is not None:
@@ -333,6 +334,7 @@ def run_job(cfg_dir, cfg_filename, hydra_cfg, task_function, overrides, verbose,
 
 def setup_globals():
     try:
+        # clear resolvers. this is important to flush the resolvers cache (specifically needed for unit tests)
         OmegaConf.clear_resolvers()
         OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
         OmegaConf.register_resolver("job", JobRuntime().get)

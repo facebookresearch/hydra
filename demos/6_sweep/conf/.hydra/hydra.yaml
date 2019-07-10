@@ -2,7 +2,4 @@ defaults:
   - launcher: fairtask
 
 hydra:
-  # debug launching issues, set to true to run workers in the same process.
-  no_workers: false
-
   launcher: ???

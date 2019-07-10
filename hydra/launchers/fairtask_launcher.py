@@ -8,7 +8,7 @@ from hydra import Launcher
 
 
 class FAIRTaskLauncher(Launcher):
-    def __init__(self, queue, queues):
+    def __init__(self, queue, queues, no_workers=False):
         self.queue_name = queue
         self.queues = queues
         self.cfg_dir = None
@@ -17,6 +17,7 @@ class FAIRTaskLauncher(Launcher):
         self.task_function = None
         self.verbose = None
         self.sweep_configs = None
+        self.no_workers = no_workers
 
     def setup(self, cfg_dir, cfg_filename, hydra_cfg, task_function, verbose, overrides):
         self.cfg_dir = cfg_dir
@@ -71,8 +72,7 @@ class FAIRTaskLauncher(Launcher):
 
         # if no_workers == True, then turn off all queue functionality
         # and run everything synchronously (good for debugging)
-        no_workers = False if self.hydra_cfg.hydra.no_workers is None else self.hydra_cfg.hydra.no_workers
-        return TaskQueues(queues, no_workers=no_workers)
+        return TaskQueues(queues, no_workers=self.no_workers)
 
     def launch(self):
         # TODO: use logger
