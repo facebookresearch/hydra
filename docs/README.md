@@ -42,3 +42,8 @@ Check the [workdir configuration](../demos/99_hydra_configuration/workdir) demo.
 the logging in your own project. 
 If you want something different check the [logging config](../demos/99_hydra_configuration/logging) demo.
 
+## Cluster launches
+ * See the [fairtask customization demo](../demos/99_hydra_configuration/sweep_fairtask) for details on how to customize
+fairtask.
+ * See the [submitit customization demo](../demos/99_hydra_configuration/sweep_submitit) for details on how to customize
+submitit.

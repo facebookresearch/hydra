@@ -39,7 +39,7 @@ hydra:
 ```
 You can override hydra related parameters from the command line, for example this would switch fairtask
 to use the local queue.
-```bash
+```text
 python demos/99_hydra_configuration/sweep_fairtask/main.py -s param=1,2 hydra.launcher.params.queue=local
 Sweep output dir : /checkpoint/omry/outputs/2019-07-10_18-40-35
 Launching 2 jobs to local queue
