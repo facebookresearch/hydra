@@ -1,0 +1,35 @@
+hydra:
+  launcher:
+    # one of auto,local,slurm and chronos
+    queue: slurm
+    class: hydra.launchers.SubmititLauncher
+    params:
+      queue: ${hydra.launcher.queue}
+      folder: ${hydra.sweep.dir}/.${hydra.launcher.params.queue}
+      queue_parameters:
+        # slrum queue parameters
+        slurm:
+          nodes: 1
+          num_gpus: 1
+          ntasks_per_node: 1
+          mem: ${hydra.launcher.mem_limit}GB
+          cpus_per_task: 10
+          time: 60
+          partition: learnfair
+          signal_delay_s: 120
+        # chronos queue parameters
+        chronos:
+          # See crun documentation for most parameters
+          # https://our.internmc.facebook.com/intern/wiki/Chronos-c-binaries/crun/
+          hostgroup: blearner_ash_bigsur_fair
+          cpu: 10
+          mem: ${hydra.launcher.mem_limit}
+          gpu: 1
+        # local queue parameters
+        local:
+          gpus_per_node: 1
+          tasks_per_node: 1
+          timeout_min: 60
+
+    # variables used by various queues above
+    mem_limit: 24
