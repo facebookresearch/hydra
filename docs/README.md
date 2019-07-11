@@ -25,38 +25,16 @@ The following variables can be used in hydra config or the job config:
 | function   | arguments        | description                                                                                | Example                       | Example output      |
 | ---------- |------------------| ------------------------------------------------------------------------------------------ | ------------------------------|---------------------|
 | now        | strftime pattern | date/time pattern                                                                          | ${now:%Y-%m-%d_%H-%M-%S}      | 2019-07-10_11-47-35 |
+| hydra      | num_jobs         | Number of jobs the launcher is starting in this sweep                                      | ${hydra:num_jobs}             | 2                   |
 | job        | name             | Job name, defaults to python file name without suffix. Used for log filename, job name etc | ${job:name}                   | example_sweep       |
 |            | override_dirname | Pathname derived from the overrides for this job                                           | /path/${job:override_dirname} | /path/a:1,b:I       |
 |            | num              | job serial number in sweep                                                                 | ${job:num}                    | 0                   |
 |            | id               | Job ID in the underlying jobs system (slurm, chronos etc)                                  | ${job:id}                     | 14445406            |
-|            |                  |                                                                                            |                               |                     |
+
 
 ## Working directories
-This is the default configuration for hydra config (from [default_conf/hydra.yaml](../hydra/default_conf/hydra.yaml))
-Hydra separate the config for the working directory into run and sweep.
-Run is for local runs, and sweep is from cluster runs (Slurm, Chronos etc).
-
-### Run:
-Just the run directory, typically timestamped and relative to your current working directory.
-
-### Sweep:
-Divided into dir and subdir.
-Dir is the parent dir for all the swipe job working directories and subdir is the dir for each job.
-
-```yaml
-hydra:
-  run:
-    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
-  sweep:
-    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
-    # you can also use ${job:override_dirname} to have a directory name with job sweep arguments
-    subdir: ${job:num}_${job:id}
-```
-
-Those can be customized in the job .hydra/hydra.yaml config.
-
-Check the [workdir config](../demos/99_hydra_configuration/workdir) demo.
-
+Output directories can be customized both for local and for cluster (sweep) runs.
+Check the [workdir configuration](../demos/99_hydra_configuration/workdir) demo.
 
 
 ## Logging

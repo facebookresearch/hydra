@@ -1,10 +1,11 @@
 hydra:
   launcher:
+    queue: slurm
     class: hydra.launchers.FAIRTaskLauncher
     params:
       # debug launching issues, set to true to run workers in the same process.
       no_workers: false
-      queue: slurm
+      queue: ${hydra.launcher.queue}
       queues:
         local:
           class: fairtask.local.LocalQueueConfig

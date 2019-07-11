@@ -51,6 +51,10 @@ class SubmititLauncher(Launcher):
                              job_subdir_key='hydra.sweep.subdir')
 
     def launch(self):
+        num_jobs = len(self.sweep_configs)
+        assert num_jobs > 0
+        utils.HydraRuntime().set('num_jobs', num_jobs)
+
         if self.queue == 'auto':
             executor = submitit.AutoExecutor(folder=self.folder)
         elif self.queue == 'slurm':
@@ -68,7 +72,7 @@ class SubmititLauncher(Launcher):
         print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         jobs = []
-        for job_num in range(len(self.sweep_configs)):
+        for job_num in range(num_jobs):
             sweep_override = list(self.sweep_configs[job_num])
             print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             job = executor.submit(self.launch_job,

@@ -50,9 +50,11 @@ class FAIRTaskLauncher(Launcher):
 
     async def run_sweep(self, queue, sweep_configs):
         print("Launching {} jobs to {} queue".format(len(sweep_configs), self.queue_name))
+        num_jobs = len(sweep_configs)
+        utils.HydraRuntime().set('num_jobs', num_jobs)
         queue = queue.task(self.queue_name)
         runs = []
-        for job_num in range(len(sweep_configs)):
+        for job_num in range(num_jobs):
             sweep_override = list(sweep_configs[job_num])
             print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             runs.append(queue(self.launch_job)(
@@ -65,6 +67,7 @@ class FAIRTaskLauncher(Launcher):
     def create_queue(self):
         num_jobs = len(self.sweep_configs)
         assert num_jobs > 0
+        utils.HydraRuntime().set('num_jobs', num_jobs)
         self.hydra_cfg.hydra.launcher.concurrent = num_jobs
         queues = {}
         for queue_name, queue_conf in self.queues.items():

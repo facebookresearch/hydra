@@ -26,20 +26,29 @@ def singleton(class_):
     return instance
 
 
-@singleton
-class JobRuntime:
+class RuntimeVariables:
     def __init__(self):
         self.conf = OmegaConf.create()
 
     def get(self, key):
         ret = self.conf.select(key)
         if ret is None:
-            raise KeyError("Key not found in JobRuntime: {}".format(key))
+            raise KeyError("Key not found in {}: {}".format(type(self).__name__, key))
         return ret
 
     def set(self, key, value):
-        log.info("Setting job:{}={}".format(key, value))
+        log.info("Setting {}:{}={}".format(type(self).__name__, key, value))
         self.conf[key] = value
+
+
+@singleton
+class JobRuntime(RuntimeVariables):
+    pass
+
+
+@singleton
+class HydraRuntime(RuntimeVariables):
+    pass
 
 
 class JobReturn:
@@ -344,6 +353,8 @@ def setup_globals():
         OmegaConf.clear_resolvers()
         OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
         OmegaConf.register_resolver("job", JobRuntime().get)
+        OmegaConf.register_resolver("hydra", HydraRuntime().get)
+
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.
         pass
