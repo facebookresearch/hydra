@@ -4,7 +4,7 @@ import hydra
 
 
 @hydra.main()
-def experiment(cfg):
+def experiment(_cfg):
     print(f"Working directory : {os.getcwd()}")
 
 
