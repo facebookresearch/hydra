@@ -90,4 +90,4 @@ Resnet: num_layers=100, width=10
 Resnet: forward(10)
 ```
 
-[[Prev](../6_sweep/README.md)] [[Up](../README.md)]
+[[Prev](../6_sweep/README.md)] [[Up](../README.md)] [[Next](../8_specialzing_config)]

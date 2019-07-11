@@ -170,7 +170,6 @@ def create_hydra_cfg(cfg_dir, hydra_cfg_defaults, overrides):
     if os.path.exists(hydra_cfg_path):
         hydra_cfg_out = create_cfg(cfg_dir, "hydra.yaml", overrides)
         hydra_cfg = hydra_cfg_out['cfg']
-        # TODO: potentially allow debugging hydra config construction
     else:
         hydra_cfg = OmegaConf.create()
 
@@ -203,6 +202,7 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
             res_base = os.path.dirname(filename)
             res_file = os.path.basename(filename)
             loaded_cfg = OmegaConf.load(resource_stream(res_base, res_file))
+            all_config_checked.append((filename, True))
         elif os.path.exists(filename):
             loaded_cfg = OmegaConf.load(filename)
             loaded_configs.append(filename)
@@ -272,7 +272,8 @@ def create_cfg(cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
             if default.optional is not None:
                 is_optional = default.optional
                 del default['optional']
-            family, name = next(iter(default.items()))
+            family = next(iter(default.keys()))
+            name = default[family]
             cfg = merge_config(cfg, family, name, required=not is_optional)
         else:
             assert isinstance(default, str)

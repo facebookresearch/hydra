@@ -83,6 +83,7 @@ class Hydra:
 
     def get_cfg(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
+        utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
         ret = utils.create_cfg(cfg_dir=self.conf_dir,
                                cfg_filename=self.conf_filename,
                                cli_overrides=overrides)
@@ -146,12 +147,11 @@ def run_hydra(task_function, config_path):
             cfg = OmegaConf.merge(task_cfg['hydra_cfg'], job_cfg)
         else:
             assert False
-        # if args.debug:
-        #     for file, loaded in task_cfg['checked']:
-        #         if loaded:
-        #             print("Loaded: {}".format(file))
-        #         else:
-        #             print("Not found: {}".format(file))
+        for file, loaded in task_cfg['checked']:
+            if loaded:
+                log.debug("Loaded: {}".format(file))
+            else:
+                log.debug("Not found: {}".format(file))
 
         print(cfg.pretty())
     else:

@@ -1,4 +1,5 @@
 # Hydra config
+
 Hydra is very flexible and can be customized.
 
 ## Anatomy of a Hydra run
