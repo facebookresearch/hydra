@@ -3,10 +3,9 @@ import inspect
 import logging
 import os
 import sys
-
 import pkg_resources
 from omegaconf import OmegaConf
-
+from .config_loader import ConfigLoader
 from . import utils
 
 
@@ -137,23 +136,22 @@ def run_hydra(task_function, config_path):
     elif command == 'sweep':
         hydra.sweep(overrides=args.overrides)
     elif command == 'cfg':
-        task_cfg = hydra.get_cfg(overrides=args.overrides)
-        job_cfg = task_cfg['cfg']
+        loader = ConfigLoader(conf_dir=conf_dir, conf_filename=conf_filename)
+        configs = loader.load_configuration(overrides=args.overrides)
+        task_cfg = configs['task_cfg']
+        hydra_cfg = configs['hydra_cfg']
+        utils.configure_log(hydra_cfg.hydra.logging, args.verbose)
+        loader.print_loading_info()
         if args.cfg_type == 'job':
-            cfg = job_cfg
+            cfg = task_cfg
         elif args.cfg_type == 'hydra':
-            cfg = task_cfg['hydra_cfg']
+            cfg = hydra_cfg
         elif args.cfg_type == 'both':
-            cfg = OmegaConf.merge(task_cfg['hydra_cfg'], job_cfg)
+            cfg = OmegaConf.merge(hydra_cfg, task_cfg)
         else:
             assert False
-        for file, loaded in task_cfg['checked']:
-            if loaded:
-                log.debug("Loaded: {}".format(file))
-            else:
-                log.debug("Not found: {}".format(file))
 
-        print(cfg.pretty())
+        log.info(cfg.pretty())
     else:
         print("Command not specified")
 
