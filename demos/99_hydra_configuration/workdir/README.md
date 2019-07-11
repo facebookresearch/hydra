@@ -17,9 +17,6 @@ In addition, for sweep the directory name would reflect the sweep parameters.
 ```bash
 $ python demos/99_hydra_configuration/workdir/main.py
 Working directory : /private/home/omry/dev/hydra/outputs/2019-07-10/15-50-36
-$
-$ python demos/99_hydra_configuration/workdir/main.py
-Working directory : /private/home/omry/dev/hydra/outputs/2019-07-10/15-50-42
 ```
 
 ```bash
