@@ -11,17 +11,15 @@ class FAIRTaskLauncher(Launcher):
     def __init__(self, queue, queues, no_workers=False):
         self.queue_name = queue
         self.queues = queues
-        self.cfg_dir = None
-        self.cfg_filename = None
         self.hydra_cfg = None
         self.task_function = None
         self.verbose = None
         self.sweep_configs = None
+        self.config_loader = None
         self.no_workers = no_workers
 
-    def setup(self, cfg_dir, cfg_filename, hydra_cfg, task_function, verbose, overrides):
-        self.cfg_dir = cfg_dir
-        self.cfg_filename = cfg_filename
+    def setup(self, config_loader, hydra_cfg, task_function, verbose, overrides):
+        self.config_loader = config_loader
         self.hydra_cfg = hydra_cfg
         self.task_function = task_function
         self.verbose = verbose
@@ -39,8 +37,7 @@ class FAIRTaskLauncher(Launcher):
             utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
 
-        return utils.run_job(self.cfg_dir,
-                             self.cfg_filename,
+        return utils.run_job(config_loader=self.config_loader,
                              hydra_cfg=self.hydra_cfg,
                              task_function=self.task_function,
                              overrides=sweep_overrides,

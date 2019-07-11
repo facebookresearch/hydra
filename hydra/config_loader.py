@@ -22,19 +22,9 @@ class ConfigLoader:
             else:
                 log.debug("Not found: {}".format(file))
 
-    def load_configuration(self, overrides):
-        overrides = copy.deepcopy(overrides)
-
-        defaults_res = self._create_cfg(cfg_dir='pkg://hydra.default_conf',
-                                        cfg_filename='hydra.yaml')
-        hydra_cfg = self._create_hydra_cfg(hydra_cfg_defaults=defaults_res,
-                                           overrides=overrides)
-        task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
-                                    cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides)
-        return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
-
-    def _create_hydra_cfg(self, hydra_cfg_defaults, overrides):
+    def load_hydra_cfg(self, overrides):
+        hydra_cfg_defaults = self._create_cfg(cfg_dir='pkg://hydra.default_conf',
+                                              cfg_filename='hydra.yaml')
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
         if os.path.exists(cfg_dir) and not os.path.isdir(cfg_dir):
             raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
@@ -58,6 +48,18 @@ class ConfigLoader:
         for override in hydra_overrides:
             overrides.remove(override)
         return hydra_cfg
+
+    def load_task_cfg(self, cli_overrides=[]):
+        return self._create_cfg(self.cfg_dir, self.conf_filename, cli_overrides)
+
+    def load_configuration(self, overrides):
+
+        hydra_cfg = self.load_hydra_cfg(overrides)
+
+        task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
+                                    cfg_filename=self.conf_filename,
+                                    cli_overrides=overrides)
+        return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
 
     def _load_config_impl(self, is_pkg, filename):
         loaded_cfg = None
@@ -102,6 +104,9 @@ class ConfigLoader:
             return os.path.exists(filename)
 
     def _create_cfg(self, cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
+        # TODO: can we cleanup defaults_only
+        assert defaults_only == False
+
         is_pkg = cfg_dir.startswith('pkg://')
         if is_pkg:
             cfg_dir = cfg_dir[len('pkg://'):]

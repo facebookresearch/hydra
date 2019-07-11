@@ -17,11 +17,11 @@ class SubmititLauncher(Launcher):
         self.hydra_cfg = None
         self.task_function = None
         self.verbose = None
+        self.config_loader = None
         self.sweep_configs = None
 
-    def setup(self, cfg_dir, cfg_filename, hydra_cfg, task_function, verbose, overrides):
-        self.cfg_dir = cfg_dir
-        self.cfg_filename = cfg_filename
+    def setup(self, config_loader, hydra_cfg, task_function, verbose, overrides):
+        self.config_loader = config_loader
         self.hydra_cfg = hydra_cfg
         self.task_function = task_function
         self.verbose = verbose
@@ -41,8 +41,7 @@ class SubmititLauncher(Launcher):
             utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
 
-        return utils.run_job(self.cfg_dir,
-                             self.cfg_filename,
+        return utils.run_job(config_loader=self.config_loader,
                              hydra_cfg=self.hydra_cfg,
                              task_function=self.task_function,
                              overrides=sweep_overrides,

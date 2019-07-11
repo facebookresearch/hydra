@@ -46,18 +46,12 @@ class Hydra:
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
+        self.config_loader = ConfigLoader(conf_dir=self.conf_dir, conf_filename=self.conf_filename)
         self.verbose = verbose
 
-    def _create_hydra_cfg(self, overrides):
-        defaults_res = utils.create_cfg(cfg_dir='pkg://hydra.default_conf', cfg_filename='hydra.yaml')
-        return utils.create_hydra_cfg(cfg_dir=self.conf_dir,
-                                      hydra_cfg_defaults=defaults_res['cfg'],
-                                      overrides=overrides)
-
     def run(self, overrides):
-        hydra_cfg = self._create_hydra_cfg(overrides)
-        return utils.run_job(cfg_dir=self.conf_dir,
-                             cfg_filename=self.conf_filename,
+        hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
+        return utils.run_job(config_loader=self.config_loader,
                              hydra_cfg=hydra_cfg,
                              task_function=self.task_function,
                              overrides=overrides,
@@ -66,13 +60,12 @@ class Hydra:
                              job_subdir_key=None)
 
     def sweep(self, overrides):
-        hydra_cfg = self._create_hydra_cfg(overrides)
+        hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
         utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
         if hydra_cfg.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         launcher = utils.instantiate(hydra_cfg.hydra.launcher)
-        launcher.setup(cfg_dir=self.conf_dir,
-                       cfg_filename=self.conf_filename,
+        launcher.setup(config_loader=self.config_loader,
                        hydra_cfg=hydra_cfg,
                        task_function=self.task_function,
                        verbose=self.verbose,
