@@ -15,12 +15,12 @@ This cause output jobs to be grouped by day.
 In addition, for sweep the directory name would reflect the sweep parameters.
 
 ```bash
-$ python demos/99_hydra_configuration/workdir/main.py
+$ python demos/99_hydra_configuration/workdir/custom_workdir.py
 Working directory : /private/home/omry/dev/hydra/outputs/2019-07-10/15-50-36
 ```
 
 ```bash
-python demos/99_hydra_configuration/workdir/main.py -s a=1,2 b=10,20
+python demos/99_hydra_configuration/workdir/custom_workdir.py -s a=1,2 b=10,20
 Sweep output dir : /checkpoint/omry/outputs/2019-07-10/17-07-58
         #0 : a=1 b=10
         #1 : a=1 b=20

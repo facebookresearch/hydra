@@ -1,3 +1,4 @@
+import logging
 import os
 
 import submitit
@@ -5,6 +6,7 @@ import submitit
 from hydra import Launcher
 from hydra import utils
 
+log = logging.getLogger(__name__)
 
 class SubmititLauncher(Launcher):
 
@@ -67,13 +69,12 @@ class SubmititLauncher(Launcher):
 
         executor.update_parameters(**self.queue_parameters[self.queue])
 
-        # TODO: use logger
-        print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
+        log.info("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         jobs = []
         for job_num in range(num_jobs):
             sweep_override = list(self.sweep_configs[job_num])
-            print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
+            log.info("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             job = executor.submit(self.launch_job,
                                   sweep_override,
                                   self.hydra_cfg.hydra.sweep.dir,

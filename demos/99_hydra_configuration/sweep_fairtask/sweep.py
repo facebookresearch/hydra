@@ -1,14 +1,15 @@
 import logging
 import sys
-import os
+import socket
 import hydra
 
 log = logging.getLogger(__name__)
 
 
 @hydra.main()
-def experiment(_cfg):
-    print(f"Working directory : {os.getcwd()}")
+def experiment(cfg):
+    log.info("Running on: {}".format(socket.gethostname()))
+    log.info(cfg.pretty())
 
 
 if __name__ == "__main__":

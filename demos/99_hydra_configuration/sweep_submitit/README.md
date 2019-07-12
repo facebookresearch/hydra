@@ -44,7 +44,7 @@ hydra:
 ```
 
 ```text
-$ python demos/99_hydra_configuration/sweep_submitit/main.py -s param=1,2
+$ python demos/99_hydra_configuration/sweep_submitit/sweep.py -s param=1,2
 [2019-07-10 19:59:42,613][hydra.utils][INFO] - Setting HydraRuntime:num_jobs=2
 Sweep output dir : /checkpoint/omry/outputs/2019-07-10_19-59-42
         #0 : param=1

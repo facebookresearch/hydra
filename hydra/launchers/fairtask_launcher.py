@@ -1,10 +1,13 @@
 import asyncio
+import logging
 import os
 
 from fairtask import TaskQueues, gatherl
 
-from hydra import utils
 from hydra import Launcher
+from hydra import utils
+
+log = logging.getLogger(__name__)
 
 
 class FAIRTaskLauncher(Launcher):
@@ -46,14 +49,14 @@ class FAIRTaskLauncher(Launcher):
                              job_subdir_key='hydra.sweep.subdir')
 
     async def run_sweep(self, queue, sweep_configs):
-        print("Launching {} jobs to {} queue".format(len(sweep_configs), self.queue_name))
+        log.info("Launching {} jobs to {} queue".format(len(sweep_configs), self.queue_name))
         num_jobs = len(sweep_configs)
         utils.HydraRuntime().set('num_jobs', num_jobs)
         queue = queue.task(self.queue_name)
         runs = []
         for job_num in range(num_jobs):
             sweep_override = list(sweep_configs[job_num])
-            print("\t#{} : {}".format(job_num, " ".join(sweep_override)))
+            log.info("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             runs.append(queue(self.launch_job)(
                 sweep_override,
                 self.hydra_cfg.hydra.sweep.dir,
@@ -75,8 +78,7 @@ class FAIRTaskLauncher(Launcher):
         return TaskQueues(queues, no_workers=self.no_workers)
 
     def launch(self):
-        # TODO: use logger
-        print("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
+        log.info("Sweep output dir : {}".format(self.hydra_cfg.hydra.sweep.dir))
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         loop = asyncio.get_event_loop()
         with self.create_queue() as queue:
