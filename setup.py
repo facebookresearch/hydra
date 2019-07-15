@@ -21,7 +21,17 @@ with open("README.md", "r") as fh:
         install_requires=[
             'omegaconf>=1.2.1',
             'setuptools',
-            'coverage',
-            'pytest-cov'
-        ]
+        ],
+
+        # Install development dependencies with
+        # pip install -e .[dev]
+        extras_require={
+            'dev': [
+                'coverage',
+                'pytest',
+                'tox',
+                'twine',
+                'six'
+            ]
+        }
     )
