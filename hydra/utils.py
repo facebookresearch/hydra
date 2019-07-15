@@ -5,12 +5,9 @@ import logging.config
 import os
 import re
 import sys
+
+from omegaconf import OmegaConf
 from time import strftime, localtime
-
-from omegaconf import OmegaConf, ListConfig, DictConfig
-from pkg_resources import resource_stream, resource_exists
-
-from hydra.errors import MissingConfigException
 
 log = logging.getLogger(__name__)
 
