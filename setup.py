@@ -1,8 +1,8 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
-    setuptools.setup(
+    setup(
         name="hydra",
         version="0.1.0",
         author="Omry Yadan",
@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
         url="https://github.com/fairinternal/hydra",
         keywords='experimentation',
         packages=['hydra'],
-        package_data={'': ['*.yaml']},
+        include_package_data=True,
         classifiers=[
             "Programming Language :: Python :: 3",
             "Operating System :: OS Independent",
