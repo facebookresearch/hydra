@@ -10,12 +10,8 @@ Hydra is a experimentation framework providing the following:
 # Using
 ## Install
 A proper pip package will be available after Hydra is open sourced.
+for now see follow the instructions in the Developing section.
 
-You can install/upgrade by running the following command:
-```
-python3 -m pip install --upgrade --upgrade-strategy=eager \
-git+ssh://git@github.com/fairinternal/hydra.git@master
-```
 ## Uninstall
 ```
 python3 -m pip uninstall hydra -y
