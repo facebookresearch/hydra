@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/hydra
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.7.4
     steps:
       - add_ssh_keys:
           fingerprints:
