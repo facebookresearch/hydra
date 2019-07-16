@@ -7,6 +7,7 @@ jobs:
       - image: circleci/python:3.7.4
     steps:
       - checkout
+      - run: pip install tox
       - run: tox
 
 
