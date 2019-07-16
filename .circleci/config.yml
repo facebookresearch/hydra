@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/hydra
     docker:
-      - image: circleci/python:3.7.4
+      - image: circleci/python:3.6.9
     steps:
       - checkout
       - run: sudo pip install tox
