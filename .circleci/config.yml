@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/hydra
     docker:
-      - image: themattrix/tox
+      - image: circleci/python
     steps:
       - checkout
       - run: tox
