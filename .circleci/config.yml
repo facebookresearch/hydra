@@ -6,12 +6,9 @@ orbs:
 workflows:
     "Hello Workflow":
         jobs:
-          - hello/hello-build
-
-jobs:
-  build:
-    docker:
-      - image: circleci/python:3.7.4
-    steps:
-      - checkout
-      - run: tox
+          build:
+            docker:
+              - image: circleci/python:3.7.4
+            steps:
+              - checkout
+              - run: tox
