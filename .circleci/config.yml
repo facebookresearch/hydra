@@ -6,16 +6,6 @@ jobs:
     docker:
       - image: circleci/python:3.7.4
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            # hydra
-            - 'f9:a5:9c:82:89:ac:da:cf:6e:e1:8b:85:f0:41:ec:74'
-            # submitit
-            - 'd4:d2:b2:8f:78:b9:02:43:59:99:e3:87:42:fc:ba:03'
-            # fairtask
-            - '3d:11:f9:f0:79:5e:f2:7a:2f:e8:d6:ac:96:2a:a6:cb'
-            # fairtask-slurm
-            - '63:d7:e7:a7:fc:b0:45:0c:78:c7:9d:11:43:c0:ab:09'
       - checkout
       - run: tox
 
