@@ -6,9 +6,6 @@ jobs:
     docker:
       - image: circleci/python:3.6.9
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "3d:11:f9:f0:79:5e:f2:7a:2f:e8:d6:ac:96:2a:a6:cb"
       - checkout
       - run: sudo pip install tox
       - run: tox
