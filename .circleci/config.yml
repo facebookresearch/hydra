@@ -14,4 +14,4 @@ jobs:
       - image: circleci/python:3.7.4
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: tox
