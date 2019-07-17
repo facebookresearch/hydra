@@ -1,2 +1,9 @@
 .idea
 outputs
+dist
+build
+__pycache__
+*.pyc
+*.egg-info
+.nox
+report.json

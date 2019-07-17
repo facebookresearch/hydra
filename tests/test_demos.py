@@ -1,20 +1,12 @@
-import os
-
 import pytest
-from omegaconf import OmegaConf
+
 
 from hydra import MissingConfigException
 # noinspection PyUnresolvedReferences
-from tests.utils import task_runner, sweep_runner, chdir_hydra_root
+from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
 
 chdir_hydra_root()
 
-
-def verify_dir_outputs(d, overrides=[]):
-    assert os.path.exists(os.path.join(d, 'task.log'))
-    assert os.path.exists(os.path.join(d, 'config.yaml'))
-    assert os.path.exists(os.path.join(d, 'overrides.yaml'))
-    assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.from_dotlist(overrides)
 
 
 def test_missing_conf_dir(task_runner):
@@ -149,66 +141,4 @@ def test_demos_defaults__override_all_configs_and_overrides(task_runner):
         )
 
 
-@pytest.mark.parametrize(
-    'overrides',
-    [
-        ['launcher=fairtask', 'hydra.launcher.queue=local', 'hydra.launcher.params.no_workers=true'],
-        # submitit local queue is broken. re-enable once fixed. https://github.com/fairinternal/submitit/issues/121
-        # ['launcher=submitit', 'hydra.launcher.queue=local'],
-    ]
-)
-def test_demos_sweep_1_job(sweep_runner, overrides):
-    sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
-                         conf_filename='config.yaml',
-                         overrides=overrides)
-    with sweep:
-        assert len(sweep.returns) == 1
-        assert sweep.returns[0].overrides == []
-        assert sweep.returns[0].cfg == dict(
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet'
-            ),
-            model=dict(
-                type='alexnet',
-                num_layers=7
-            ),
-            optimizer=dict(
-                type='nesterov',
-                lr=0.001,
-            ),
-        )
-        verify_dir_outputs(sweep.returns[0].working_dir)
 
-
-def test_demos_sweep_2_jobs(sweep_runner):
-    sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
-                         conf_filename='config.yaml',
-                         overrides=[
-                             'hydra.launcher.queue=local',
-                             'hydra.launcher.params.no_workers=true',
-                             'a=0,1'
-                         ])
-    base = OmegaConf.create(dict(
-        dataset=dict(
-            name='imagenet',
-            path='/datasets/imagenet'
-        ),
-        model=dict(
-            type='alexnet',
-            num_layers=7
-        ),
-        optimizer=dict(
-            type='nesterov',
-            lr=0.001,
-        ),
-    ))
-
-    with sweep:
-        assert len(sweep.returns) == 2
-        for i in range(2):
-            job_ret = sweep.returns[i]
-            expected_conf = OmegaConf.merge(OmegaConf.merge(base), OmegaConf.from_dotlist(job_ret.overrides))
-            assert job_ret.overrides == ['a={}'.format(i)]
-            assert job_ret.cfg == expected_conf
-            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)

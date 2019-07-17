@@ -1,0 +1,1 @@
+# Hydra fairtask plugin

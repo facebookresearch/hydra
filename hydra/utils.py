@@ -164,7 +164,8 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
         ret.working_dir = working_dir
         ret.cfg = task_cfg
         ret.overrides = overrides
-        os.makedirs(working_dir, exist_ok=True)
+        if not os.path.exists(working_dir):
+            os.makedirs(working_dir)
         os.chdir(working_dir)
         configure_log(hydra_and_task_cfg.hydra.logging, verbose)
         save_config(task_cfg, 'config.yaml')

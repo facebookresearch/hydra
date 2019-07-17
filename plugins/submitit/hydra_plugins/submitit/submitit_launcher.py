@@ -8,6 +8,7 @@ from hydra import utils
 
 log = logging.getLogger(__name__)
 
+
 class SubmititLauncher(Launcher):
 
     def __init__(self, queue, folder, queue_parameters):

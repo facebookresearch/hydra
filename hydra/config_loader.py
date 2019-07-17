@@ -1,11 +1,10 @@
-import copy
 import logging.config
 import os
 
 from omegaconf import OmegaConf, DictConfig, ListConfig
-from pkg_resources import resource_stream, resource_exists
 
-from hydra.errors import MissingConfigException
+from pkg_resources import resource_stream, resource_exists
+from .errors import MissingConfigException
 
 
 class ConfigLoader:
@@ -23,8 +22,7 @@ class ConfigLoader:
                 log.debug("Not found: {}".format(file))
 
     def load_hydra_cfg(self, overrides):
-        hydra_cfg_defaults = self._create_cfg(cfg_dir='pkg://hydra.default_conf',
-                                              cfg_filename='hydra.yaml')
+        hydra_cfg_defaults = self._create_cfg(cfg_dir='pkg://hydra.default_conf', cfg_filename='hydra.yaml')
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
         if os.path.exists(cfg_dir) and not os.path.isdir(cfg_dir):
             raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
@@ -37,7 +35,7 @@ class ConfigLoader:
             hydra_cfg = self._create_cfg(cfg_dir, "hydra.yaml", overrides)
         else:
             hydra_cfg = OmegaConf.create()
-
+        # strip everything outside of the hydra tree from the hydra config
         hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
         clean = OmegaConf.create()
         clean.hydra = hydra_cfg.hydra
@@ -103,10 +101,7 @@ class ConfigLoader:
         else:
             return os.path.exists(filename)
 
-    def _create_cfg(self, cfg_dir, cfg_filename, cli_overrides=[], defaults_only=False):
-        # TODO: can we cleanup defaults_only
-        assert defaults_only == False
-
+    def _create_cfg(self, cfg_dir, cfg_filename, cli_overrides=[]):
         is_pkg = cfg_dir.startswith('pkg://')
         if is_pkg:
             cfg_dir = cfg_dir[len('pkg://'):]
@@ -167,9 +162,8 @@ class ConfigLoader:
                                          name=default,
                                          required=True)
 
-        if not defaults_only:
-            # merge in remaining overrides
-            cfg = OmegaConf.merge(cfg, OmegaConf.from_cli(overrides))
+        # merge in remaining overrides
+        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(overrides))
         # remove config block from resulting cfg.
         del cfg['defaults']
         return cfg

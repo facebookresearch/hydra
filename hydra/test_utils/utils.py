@@ -1,10 +1,13 @@
-import pytest
-import tempfile
-from hydra import Hydra
-import shutil
 import copy
 import logging
 import os
+import tempfile
+
+import pytest
+import shutil
+from omegaconf import OmegaConf
+
+from hydra import Hydra
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +28,7 @@ def task_runner():
         def __enter__(self):
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
-            overrides.append(f"hydra.run.dir={self.temp_dir}")
+            overrides.append("hydra.run.dir={}".format(self.temp_dir))
             self.job_ret = self.hydra.run(overrides=overrides)
             return self
 
@@ -66,7 +69,7 @@ def sweep_runner():
         def __enter__(self):
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
-            overrides.append(f"hydra.sweep.dir={self.temp_dir}")
+            overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
             self.returns = self.hydra.sweep(overrides=overrides)
             return self
 
@@ -90,11 +93,20 @@ def sweep_runner():
 
 def chdir_hydra_root():
     cur = os.getcwd()
-    max_up = 3
-    target = 'setup.py'
+    max_up = 4
+    target = 'ATTRIBUTION'
     while not os.path.exists(os.path.join(cur, target)) and max_up > 0:
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1
     if max_up == 0:
         raise IOError("Could not find {} in parents of {}".format(target, os.getcwd()))
     os.chdir(cur)
+
+
+def verify_dir_outputs(d, overrides=[]):
+    assert os.path.exists(os.path.join(d, 'task.log'))
+    assert os.path.exists(os.path.join(d, 'config.yaml'))
+    assert os.path.exists(os.path.join(d, 'overrides.yaml'))
+    # TODO: reactivate after OmegaConf but is fixed:
+    # https://github.com/omry/omegaconf/issues/25
+    # assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.from_dotlist(overrides)

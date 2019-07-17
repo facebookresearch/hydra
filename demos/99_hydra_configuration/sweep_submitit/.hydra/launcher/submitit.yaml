@@ -2,7 +2,7 @@ hydra:
   launcher:
     # one of auto,local,slurm and chronos
     queue: slurm
-    class: hydra.launchers.SubmititLauncher
+    class: hydra_plugins.launchers.SubmititLauncher
     params:
       queue: ${hydra.launcher.queue}
       folder: ${hydra.sweep.dir}/.${hydra.launcher.params.queue}
