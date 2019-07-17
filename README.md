@@ -1,3 +1,4 @@
+[![CircleCI](https://circleci.com/gh/fairinternal/hydra.svg?style=svg&circle-token=af199cd2deca9e70e53776f9ded96284b10687e9)](https://circleci.com/gh/fairinternal/hydra)
 # Hydra
 Hydra is a experimentation framework providing the following:
  * A unified interface to run experiments locally or remotely
