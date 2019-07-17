@@ -21,7 +21,20 @@ with open("README.md", "r") as fh:
         install_requires=[
             'omegaconf>=1.2.1',
             'setuptools',
-            'coverage',
-            'pytest-cov'
-        ]
+            'fairtask@git+ssh://git@github.com/fairinternal/fairtask.git@master',
+            'fairtask-slurm@git+ssh://git@github.com/fairinternal/fairtask-slurm.git@master',
+            'submitit@git+ssh://git@github.com/fairinternal/submitit@master#egg=submitit'
+        ],
+
+        # Install development dependencies with
+        # pip install -e .[dev]
+        extras_require={
+            'dev': [
+                'coverage',
+                'pytest',
+                'tox',
+                'twine',
+                'six'
+            ]
+        }
     )
