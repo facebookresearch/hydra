@@ -46,33 +46,29 @@ def nox_test_plugins():
         ('pip', 'install', '-e', '.'),
     )
 
-    def install_all_plugins(session, all_plugins, install_cmd):
+    @nox.session(python=python_versions)
+    @nox.parametrize('plugin_name', plugin_names())
+    @nox.parametrize('install_cmd', plugins_install_commands)
+    def test_plugins(session, plugin_name, install_cmd):
+        session.install('--upgrade', 'setuptools', 'pip')
+        clean_and_install_hydra(session)
+
+        all_plugins = [(plugin, 'hydra_plugins.' + plugin) for plugin in plugin_names()]
+        # Install all plugins in session
         for plugin in all_plugins:
             session.chdir(os.path.join(BASE, "plugins", plugin[0]))
             session.run(*install_cmd)
 
-    def test_plugin(session, plugin_name, all_plugins):
-        # test that hydra imports
+        # Test that we can import Hydra
         session.run('python', '-c', 'from hydra import Hydra')
         # Test that we can import all installed plugins
         for plugin in all_plugins:
             session.run('python', '-c', 'import {}'.format(plugin[1]))
 
-        # Verify plugin tests are passing
-        # clean_all(session)
+        # Run tests for current plugin
         session.chdir(os.path.join(BASE, "plugins", plugin_name))
         session.install('pytest')
         session.run('pytest')
-
-    @nox.session(python=python_versions)
-    @nox.parametrize('plugin_name', plugin_names())
-    @nox.parametrize('install_cmd', plugins_install_commands)
-    def test_plugins(session, plugin_name, install_cmd):
-        all_plugins = [(plugin, 'hydra_plugins.' + plugin) for plugin in plugin_names()]
-        session.install('--upgrade', 'setuptools', 'pip')
-        clean_and_install_hydra(session)
-        install_all_plugins(session, all_plugins, install_cmd)
-        test_plugin(session, plugin_name, all_plugins)
 
 
 nox_test_hydra_core()
