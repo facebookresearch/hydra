@@ -7,8 +7,8 @@ jobs:
       - image: circleci/python:3.6.9
     steps:
       - checkout
-      - run: sudo pip install tox
-      - run: tox
+      - run: sudo pip install nox
+      - run: nox
 
 
 
