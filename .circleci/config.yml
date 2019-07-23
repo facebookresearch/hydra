@@ -3,7 +3,8 @@ version: 2.0
 jobs:
   python27:
     docker:
-      - image: circleci/python:2.7
+      # nox got issues with python 2.7 but it can still be used ot test 2.7
+      - image: circleci/python:3.6
     steps:
       - checkout
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
