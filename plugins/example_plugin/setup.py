@@ -13,8 +13,10 @@ with open("README.md", "r") as fh:
         url="https://github.com/fairinternal/hydra/",
         packages=find_packages(exclude=['tests']),
         classifiers=[
-            "Programming Language :: Python :: 2.7",
+            # Python versions are used by noxfile in hydra to determine which python versions
+            # to install and test this plugin with
             "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
         install_requires=[

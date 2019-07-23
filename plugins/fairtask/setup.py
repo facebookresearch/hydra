@@ -14,6 +14,7 @@ with open("README.md", "r") as fh:
         packages=find_packages(exclude=['tests']),
         classifiers=[
             "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
         install_requires=[
