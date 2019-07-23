@@ -9,10 +9,10 @@ Hydra is a experimentation framework providing the following:
  * Configures python logger for your experiments
 
 # Using
-## Install
+## Install/upgrade
 A proper pip package will be available after Hydra is open sourced.
 
-You can install/upgrade by running the following command:
+Install/upgrade Hydra and it's plugins by running the following command:
 ```
 python3 -m pip install --upgrade --upgrade-strategy=eager \
 'git+ssh://git@github.com/fairinternal/hydra.git@master' \
@@ -21,8 +21,9 @@ python3 -m pip install --upgrade --upgrade-strategy=eager \
 ```
 
 ## Uninstall
+Uninstall Hydra and it's plugins with:
 ```
-python3 -m pip uninstall hydra -y
+python3 -m pip uninstall hydra hydra-submitit hydra-fairtask -y
 ```
 
 # Basic usage
@@ -42,5 +43,6 @@ pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip i
 Uninstall Hydra and all the included plugins with:
 ```
 # Uninstall Hydra and plugins
-pip uninstall -y hydra && find ./plugins/ -name setup.py | xargs -i python {}  --name | xargs pip uninstall  -y
+pip uninstall -y hydra && find ./plugins/ -name setup.py |\
+xargs -i python {}  --name | xargs pip uninstall  -y
 ```
