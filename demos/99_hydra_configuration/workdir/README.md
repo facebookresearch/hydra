@@ -51,3 +51,7 @@ $ tree /checkpoint/omry/outputs/2019-07-10/17-07-58
     ├── main.log
     └── overrides.yaml
 ```
+
+### Grouping by script name
+You can group by script name by using the ${job:name} variable name in the config, for example: 
+```/outputs/${job:name}/${now:%Y-%m-%d-%H-%M-%S}```
