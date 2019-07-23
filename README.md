@@ -15,7 +15,9 @@ A proper pip package will be available after Hydra is open sourced.
 You can install/upgrade by running the following command:
 ```
 python3 -m pip install --upgrade --upgrade-strategy=eager \
-git+ssh://git@github.com/fairinternal/hydra.git@master
+'git+ssh://git@github.com/fairinternal/hydra.git@master' \
+'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/hydra-fairtask' \
+'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/hydra-submitit' 
 ```
 
 ## Uninstall
@@ -29,12 +31,16 @@ Go through the [demos](demos/README.md) to get a gentle incremental intruduction
 
 # Developing
 ## Install:
-Checkout this repository, run the following and start hacking:
+Checkout this repository, Install Hydra and all the included plugins in development mode with:
 ```
-python setup.py develop
+# install Hydra and plugins
+pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
+
 ```
 
-## Uninstall
+## Uninstall 
+Uninstall Hydra and all the included plugins with:
 ```
-python setup.py develop --uninstall
+# Uninstall Hydra and plugins
+pip uninstall -y hydra && find ./plugins/ -name setup.py | xargs -i python {}  --name | xargs pip uninstall  -y
 ```

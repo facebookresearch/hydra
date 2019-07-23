@@ -68,7 +68,10 @@ def get_class(path):
         from importlib import import_module
         module_path, _, class_name = path.rpartition('.')
         mod = import_module(module_path)
-        klass = getattr(mod, class_name)
+        try:
+            klass = getattr(mod, class_name)
+        except AttributeError:
+            raise ImportError("Class {} is not in module {}".format(class_name, module_path))
         return klass
     except ValueError as e:
         print("Error initializing class " + path)
@@ -87,10 +90,21 @@ def get_static_method(full_method_name):
         raise e
 
 
+def instantiate_plugin(config, *args):
+    if not config['class'].startswith('hydra_plugins.'):
+        # prevent loading plugins in invalid package. this is an indication that it's not a proper plugin
+        # and is probably due to pre-plugins config lying around.
+        # his also gives us an opportunity confirm that the plugin version is compatible with Hydra's version.
+        raise RuntimeError(
+            "Invalid plugin '{}': not in hydra_plugins package, ".format(config['class']))
+    return instantiate(config, *args)
+
+
 def instantiate(config, *args):
     try:
         clazz = get_class(config['class'])
-        return clazz(*args, **(config.params or {}))
+        params = config.params or {}
+        return clazz(*args, **params)
     except Exception as e:
         log.error("Error instantiating {} : {}".format(config['class'], e))
         raise e
@@ -164,7 +178,8 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
         ret.working_dir = working_dir
         ret.cfg = task_cfg
         ret.overrides = overrides
-        os.makedirs(working_dir, exist_ok=True)
+        if not os.path.exists(working_dir):
+            os.makedirs(working_dir)
         os.chdir(working_dir)
         configure_log(hydra_and_task_cfg.hydra.logging, verbose)
         save_config(task_cfg, 'config.yaml')

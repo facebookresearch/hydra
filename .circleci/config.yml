@@ -1,14 +1,28 @@
 version: 2.0
 
 jobs:
-  build:
-    working_directory: ~/hydra
+  python27:
     docker:
-      - image: circleci/python:3.6.9
+      # nox got issues with python 2.7 but it can still be used ot test 2.7
+      - image: circleci/python:3.6
     steps:
       - checkout
-      - run: sudo pip install tox
-      - run: tox
+      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
+      - run: sudo pip install nox
+      - run: nox
+  python36:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
+      - run: sudo pip install nox
+      - run: nox
 
 
-
+workflows:
+  version: 2
+  build:
+    jobs:
+      - python27
+      - python36 
