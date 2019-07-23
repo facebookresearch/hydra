@@ -65,11 +65,12 @@ class Hydra:
         if hydra_cfg.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         try:
-            launcher = utils.instantiate(hydra_cfg.hydra.launcher)
+            launcher = utils.instantiate_plugin(hydra_cfg.hydra.launcher)
         except ImportError as e:
-            raise ImportError("Could not instantiate launcher {} : {}\n\n\tIS THE LAUNCHER PLUGIN INSTALLED?\n\n".format(
-                hydra_cfg.hydra.launcher['class'], str(e)
-            ))
+            raise ImportError(
+                "Could not instantiate launcher {} : {}\n\n\tIS THE LAUNCHER PLUGIN INSTALLED?\n\n".format(
+                    hydra_cfg.hydra.launcher['class'], str(e)
+                ))
         launcher.setup(config_loader=self.config_loader,
                        hydra_cfg=hydra_cfg,
                        task_function=self.task_function,
