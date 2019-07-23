@@ -1,6 +1,8 @@
 # Parameter sweeps
-Hydra supports running jobs on Slurm or in a local queue using [fairtask](https://github.com/fairinternal/fairtask).
+Hydra supports running jobs on Slurm or in a local queue using [fairtask](https://github.com/fairinternal/fairtask)
+and [submitit](https://github.com/fairinternal/submitit)
 
+Both launchers are Hydra plugins.
 To use it, you need to drop in a hydra.yaml file into your config directory.
 
 Among other things, hydra.yaml is configuring the fairtask launcher.
@@ -57,6 +59,15 @@ Dask dashboard for "slurm" at http://localhost:8001.
 ```
 
 In the example above, we combine sweeping on two datasets, two models and 3 random sees, for a total of 12 jobs.
+
+You can switch between fairtask and submitit by overriding launcher to fairtask or submitit, for example:
+
+```text
+$ python demos/6_sweep/sweep_example.py --sweep  launcher=submitit
+[2019-07-23 14:56:40,526][hydra.utils][INFO] - Setting HydraRuntime:num_jobs=1
+[2019-07-23 14:56:40,528][hydra_plugins.submitit.submitit_launcher][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-07-23_14-56-40
+[2019-07-23 14:56:40,530][hydra_plugins.submitit.submitit_launcher][INFO] -     #0 :
+```
 
 Sweep support is currently very basic and this area will improve further.
 

@@ -1,6 +1,6 @@
 ## Customized workdir
 
-This example customizes the working directroy in both run and sweeps using the following config snippet:
+This example customizes the working directory in both run and sweeps using the following config snippet:
 
 ```yaml
 hydra:
