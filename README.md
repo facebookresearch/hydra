@@ -16,8 +16,8 @@ You can install/upgrade by running the following command:
 ```
 python3 -m pip install --upgrade --upgrade-strategy=eager \
 'git+ssh://git@github.com/fairinternal/hydra.git@master' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/hydra-fairtask' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/hydra-submitit' 
+'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/fairtask' \
+'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/submitit' 
 ```
 
 ## Uninstall
