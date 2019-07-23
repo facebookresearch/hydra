@@ -27,8 +27,9 @@ def plugin_names():
 def nox_test_hydra_core(session):
     session.install('--upgrade', 'setuptools', 'pip')
     session.install('pytest')
-    session.run('python', 'setup.py', 'clean', 'install')
-    session.run('pytest')
+    session.chdir(BASE)
+    session.run('pip', 'install', '.', silent=True)
+    session.run('pytest', silent=True)
 
 
 def get_python_versions(session, setup_py):
@@ -55,16 +56,17 @@ def test_plugin(session, plugin_name, install_cmd):
         )
     # clean install hydra
     session.chdir(BASE)
-    session.run('python', 'setup.py', 'clean', 'install')
+    session.run('python', 'setup.py', 'clean', silent=True)
+    session.run('pip', 'install', '.', silent=True)
 
     all_plugins = [(plugin, 'hydra_plugins.' + plugin) for plugin in plugin_names()]
     # Install all plugins in session
     for plugin in all_plugins:
         session.chdir(os.path.join(BASE, "plugins", plugin[0]))
-        session.run(*install_cmd)
+        session.run(*install_cmd, silent=True)
 
     # Test that we can import Hydra
-    session.run('python', '-c', 'from hydra import Hydra')
+    session.run('python', '-c', 'from hydra import Hydra', silent=True)
     # Test that we can import all installed plugins
     for plugin in all_plugins:
         session.run('python', '-c', 'import {}'.format(plugin[1]))
@@ -72,4 +74,4 @@ def test_plugin(session, plugin_name, install_cmd):
     # Run tests for current plugin
     session.chdir(os.path.join(BASE, "plugins", plugin_name))
     session.install('pytest')
-    session.run('pytest')
+    session.run('pytest', silent=True)
