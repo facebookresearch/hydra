@@ -17,3 +17,11 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - python27
+      - python36 
