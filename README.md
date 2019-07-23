@@ -31,14 +31,16 @@ Go through the [demos](demos/README.md) to get a gentle incremental intruduction
 
 # Developing
 ## Install:
-Checkout this repository, run the following and start hacking:
-The following command will install hydra and all the included plugins in editable (development) mode:
+Checkout this repository, Install Hydra and all the included plugins in development mode with:
 ```
-find -name setup.py  | xargs dirname | xargs pip install  -e
+# install Hydra and plugins
+pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
+
 ```
 
 ## Uninstall 
-The following command will uninstall hydra and all the included plugins:
+Uninstall Hydra and all the included plugins with:
 ```
-find -name setup.py  | xargs -i python {}  --name | xargs pip uninstall  -y
+# Uninstall Hydra and plugins
+pip uninstall -y hydra && find ./plugins/ -name setup.py | xargs -i python {}  --name | xargs pip uninstall  -y
 ```
