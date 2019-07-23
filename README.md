@@ -34,15 +34,12 @@ Go through the [demos](demos/README.md) to get a gentle incremental intruduction
 ## Install:
 Checkout this repository, Install Hydra and all the included plugins in development mode with:
 ```
-# install Hydra and plugins
 pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
-
 ```
 
 ## Uninstall 
 Uninstall Hydra and all the included plugins with:
 ```
-# Uninstall Hydra and plugins
 pip uninstall -y hydra && find ./plugins/ -name setup.py |\
 xargs -i python {}  --name | xargs pip uninstall  -y
 ```
