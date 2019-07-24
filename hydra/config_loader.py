@@ -1,9 +1,10 @@
+import copy
 import logging.config
 import os
 
 from omegaconf import OmegaConf, DictConfig, ListConfig
-
 from pkg_resources import resource_stream, resource_exists
+
 from .errors import MissingConfigException
 
 
@@ -126,7 +127,7 @@ class ConfigLoader:
         # and overrides which triggers overriding of specific nodes in the config tree
         overrides = []
         defaults_changes = {}
-        for override in cli_overrides:
+        for override in copy.deepcopy(cli_overrides):
             key, value = override.split('=')
             assert key != 'optional', "optional is a reserved keyword and cannot be used as a config group name"
             path = os.path.join(cfg_dir, key)
