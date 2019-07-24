@@ -23,7 +23,6 @@ Note that it's a list, this means it's order sensitive. we will see cases where 
 As expected - running defaults.py without specifying anything will load the defaults:
 ```yaml
 $ python demos/5_defaults/defaults.py
-Configuration:
 dataset:
   name: imagenet
   path: /datasets/imagenet
@@ -39,7 +38,6 @@ optimizer:
 We can of course still choose to combine different members of each config family:
 ```yaml
 $ python demos/5_defaults/defaults.py dataset=cifar10
-Configuration:
 dataset:
   name: cifar10
   path: /datasets/cifar10

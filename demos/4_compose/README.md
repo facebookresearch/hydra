@@ -54,7 +54,6 @@ This is the content of [conf/dataset/imagenet.yaml](conf/dataset/imagenet.yaml)!
 We can load at most one config file from each family, let's load exactly one of each:
 ```yaml
 $ python demos/4_compose/compose.py dataset=imagenet optimizer=adam model=resnet
-Configuration:
 dataset:
   name: imagenet
   path: /datasets/imagenet
@@ -71,7 +70,6 @@ optimizer:
 It will not surprise you that you can also override the generated config from the command line:
 ```yaml
 $ python demos/4_compose/compose.py dataset=imagenet optimizer=adam dataset.path=/imagenet2
-Configuration:
 dataset:
   name: imagenet
   path: /imagenet2

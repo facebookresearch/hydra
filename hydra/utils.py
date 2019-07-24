@@ -171,7 +171,7 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
         subdir = hydra_and_task_cfg.select(job_subdir_key)
-        working_dir = os.path.join(working_dir, subdir)
+        working_dir = os.path.join(working_dir, str(subdir))
 
     try:
         ret = JobReturn()
