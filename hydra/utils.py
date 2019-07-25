@@ -181,7 +181,7 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)
         os.chdir(working_dir)
-        configure_log(hydra_and_task_cfg.hydra.logging, verbose)
+        configure_log(hydra_and_task_cfg.hydra.task_logging, verbose)
         save_config(task_cfg, 'config.yaml')
         save_config(OmegaConf.from_dotlist(overrides), 'overrides.yaml')
         ret.return_value = task_function(task_cfg)

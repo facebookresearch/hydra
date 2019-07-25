@@ -1,6 +1,6 @@
 hydra:
-  # python logging configuration
-  logging:
+  # python logging configuration for tasks
+  task_logging:
     version: 1
     formatters:
       simple:

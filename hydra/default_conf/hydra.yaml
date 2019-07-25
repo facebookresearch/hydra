@@ -1,5 +1,6 @@
 defaults:
-  - logging
+  - hydra_logging
+  - task_logging
 
 hydra:
   # job name.
