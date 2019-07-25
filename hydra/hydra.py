@@ -61,7 +61,7 @@ class Hydra:
 
     def sweep(self, overrides):
         hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
-        utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
+        utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
         if hydra_cfg.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         try:
@@ -81,7 +81,7 @@ class Hydra:
 
     def get_cfg(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
-        utils.configure_log(hydra_cfg.hydra.logging, self.verbose)
+        utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
         ret = utils.create_cfg(cfg_dir=self.conf_dir,
                                cfg_filename=self.conf_filename,
                                cli_overrides=overrides)
@@ -139,7 +139,7 @@ def run_hydra(task_function, config_path):
         configs = loader.load_configuration(overrides=args.overrides)
         task_cfg = configs['task_cfg']
         hydra_cfg = configs['hydra_cfg']
-        utils.configure_log(hydra_cfg.hydra.logging, args.verbose)
+        utils.configure_log(hydra_cfg.hydra.hydra_logging, args.verbose)
 
         for file, loaded in loader.get_load_history():
             if loaded:

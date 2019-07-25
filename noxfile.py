@@ -88,7 +88,6 @@ def coverage(session):
     """Coverage analysis."""
     session.install('coverage', 'pytest')
     session.run('python', 'setup.py', 'clean')
-    session.run('pwd')
     all_plugins = get_all_plugins()
 
     session.run('pip', 'install', '-e', '.', silent=True)
@@ -97,7 +96,7 @@ def coverage(session):
         session.run('pip', 'install', '-e', os.path.join('plugins', plugin[0]), silent=True)
 
     session.run("coverage", "erase")
-    session.run('coverage', 'run', '--append', '-m', 'pytest')
+    session.run('coverage', 'run', '--append', '-m', 'pytest', silent=True)
     for plugin in plugin_names():
         session.run('coverage', 'run', '--append', '-m', 'pytest', os.path.join('plugins', plugin), silent=True)
 
