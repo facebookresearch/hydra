@@ -1,5 +1,4 @@
 import copy
-import logging.config
 import os
 
 from omegaconf import OmegaConf, DictConfig, ListConfig
@@ -14,22 +13,14 @@ class ConfigLoader:
         self.conf_filename = conf_filename
         self.all_config_checked = []
 
-    def print_loading_info(self):
-        log = logging.getLogger(__name__)
-        for file, loaded in self.all_config_checked:
-            if loaded:
-                log.debug("Loaded: {}".format(file))
-            else:
-                log.debug("Not found: {}".format(file))
+    def get_load_history(self):
+        return copy.deepcopy(self.all_config_checked)
 
-    def load_hydra_cfg(self, overrides):
+    def load_hydra_cfg(self, overrides=[]):
         hydra_cfg_defaults = self._create_cfg(cfg_dir='pkg://hydra.default_conf', cfg_filename='hydra.yaml')
+        if os.path.exists(self.cfg_dir) and not os.path.isdir(self.cfg_dir):
+            raise IOError("conf_dir is not a directory : {}".format(self.cfg_dir))
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
-        if os.path.exists(cfg_dir) and not os.path.isdir(cfg_dir):
-            raise IOError("conf_dir is not a directory : {}".format(cfg_dir))
-
-        if hydra_cfg_defaults is None:
-            hydra_cfg_defaults = OmegaConf.create()
 
         hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
         if os.path.exists(hydra_cfg_path):
@@ -51,7 +42,8 @@ class ConfigLoader:
     def load_task_cfg(self, cli_overrides=[]):
         return self._create_cfg(self.cfg_dir, self.conf_filename, cli_overrides)
 
-    def load_configuration(self, overrides):
+    def load_configuration(self, overrides=[]):
+        assert isinstance(overrides, list)
 
         hydra_cfg = self.load_hydra_cfg(overrides)
 
@@ -83,10 +75,14 @@ class ConfigLoader:
         new_cfg = self._load_config_impl(is_pkg, cfg_path)
         if new_cfg is None:
             if required:
-                options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
-                           os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-                msg = "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family,
-                                                                                "\n\t".join(options))
+                if self._exists(is_pkg, family_dir):
+                    options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
+                               os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
+                    msg = "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family,
+                                                                                    "\n\t".join(options))
+                else:
+                    options = None
+                    msg = "Could not load {}, directory not found".format(cfg_path, family)
                 raise MissingConfigException(msg, cfg_path, options)
             else:
                 return cfg
@@ -171,8 +167,6 @@ class ConfigLoader:
 
     @staticmethod
     def _validate_config(cfg):
-        if cfg.defaults is None:
-            return
         valid_example = """
         Example of a valid defaults:
         defaults:
@@ -184,6 +178,7 @@ class ConfigLoader:
         assert isinstance(cfg.defaults,
                           ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
         for default in cfg.defaults:
+            assert isinstance(default, DictConfig) or isinstance(default, str)
             if isinstance(default, DictConfig):
                 assert len(default) in (1, 2)
                 if len(default) == 2:
@@ -194,9 +189,6 @@ class ConfigLoader:
             elif isinstance(default, str):
                 # single file to load
                 pass
-            else:
-                raise RuntimeError(
-                    "defaults elements value should be either a dict or an str, got {}".format(type(default).__name__))
 
     @staticmethod
     def _update_defaults(cfg, defaults_changes):
@@ -207,6 +199,6 @@ class ConfigLoader:
                         if key in defaults_changes:
                             default[key] = defaults_changes[key]
                             del defaults_changes[key]
-        # unmatched new defaults, put at end of list
+        # unmatched new defaults, put at end of list to be loaded normally
         for key, value in defaults_changes.items():
             cfg.defaults.append({key: value})

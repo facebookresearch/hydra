@@ -140,7 +140,13 @@ def run_hydra(task_function, config_path):
         task_cfg = configs['task_cfg']
         hydra_cfg = configs['hydra_cfg']
         utils.configure_log(hydra_cfg.hydra.logging, args.verbose)
-        loader.print_loading_info()
+
+        for file, loaded in loader.get_load_history():
+            if loaded:
+                log.debug("Loaded: {}".format(file))
+            else:
+                log.debug("Not found: {}".format(file))
+
         if args.cfg_type == 'job':
             cfg = task_cfg
         elif args.cfg_type == 'hydra':
