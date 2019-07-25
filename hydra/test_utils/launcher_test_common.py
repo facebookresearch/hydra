@@ -1,10 +1,35 @@
 """
 Common test functions testing launchers
 """
+
+import shutil
+import subprocess
+import sys
+import tempfile
+
 from omegaconf import OmegaConf
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
+from hydra.test_utils.utils import verify_dir_outputs
+
+
+def demo_6_sweep_test_impl(overrides):
+    cmd = [sys.executable, 'demos/6_sweep/sweep_example.py']
+    try:
+        tempdir = tempfile.mkdtemp()
+        cmd.extend([
+            '--sweep',
+            'hydra.launcher.params.queue=local',
+            'hydra.sweep.dir={}'.format(tempdir),
+            'hydra.sweep.subdir=${job:num}'
+        ])
+        cmd.extend(overrides)
+        result = subprocess.check_output(cmd)
+        lines = str.splitlines(result.decode('utf-8'))
+        print(lines)
+    finally:
+        shutil.rmtree(tempdir)
 
 
 def demos_sweep_1_job_test_impl(sweep_runner, overrides):

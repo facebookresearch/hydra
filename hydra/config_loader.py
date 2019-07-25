@@ -35,7 +35,7 @@ class ConfigLoader:
         if os.path.exists(hydra_cfg_path):
             hydra_cfg = self._create_cfg(cfg_dir, "hydra.yaml", overrides)
         else:
-            hydra_cfg = OmegaConf.create()
+            hydra_cfg = OmegaConf.from_dotlist(overrides)
         # strip everything outside of the hydra tree from the hydra config
         hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
         clean = OmegaConf.create()

@@ -1,12 +1,15 @@
+import subprocess
+import sys
+import tempfile
+import shutil
 import pytest
-
-
+from omegaconf import OmegaConf
+import re
 from hydra import MissingConfigException
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
 
 chdir_hydra_root()
-
 
 
 def test_missing_conf_dir(task_runner):
@@ -141,4 +144,89 @@ def test_demos_defaults__override_all_configs_and_overrides(task_runner):
         )
 
 
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create()),
+    (['abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(dict(abc=123, hello=dict(a=456, b=5671)))),
+])
+def test_demo_0_minimal(args, output_conf):
+    cmd = [sys.executable, 'demos/0_minimal/minimal.py']
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert result.decode('utf-8') == output_conf.pretty() + "\n"
 
+
+def test_demo_1_workdir():
+    cmd = [sys.executable, 'demos/1_working_directory/working_directory.py']
+    try:
+        tempdir = tempfile.mkdtemp()
+        cmd.extend(['hydra.run.dir={}'.format(tempdir)])
+        result = subprocess.check_output(cmd)
+        assert result.decode('utf-8') == "Working directory : {}\n".format(tempdir)
+    finally:
+        shutil.rmtree(tempdir)
+
+
+@pytest.mark.parametrize('args,expected', [
+    ([], ['Info level message']),
+    (['-v' '__main__'], ['Info level message', 'Debug level message']),
+])
+def test_demo_2_logging(args, expected):
+    cmd = [sys.executable, 'demos/2_logging/logging_example.py']
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    lines = result.decode('utf-8').splitlines()
+    assert len(lines) == len(expected)
+    for i in range(len(lines)):
+        assert re.findall(expected[i], lines[i])
+
+
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create(dict(app=dict(name='the nameless one')))),
+    (['app.name=morte'], OmegaConf.create(dict(app=dict(name='morte')))),
+])
+def test_demo_3_config_file(args, output_conf):
+    cmd = [sys.executable, 'demos/3_config_file/config_file.py']
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert result.decode('utf-8') == output_conf.pretty() + "\n"
+
+
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create()),
+    (['dataset=imagenet'], OmegaConf.create(dict(dataset=dict(name='imagenet', path='/datasets/imagenet')))),
+    (['dataset=imagenet', 'optimizer=adam', 'model=resnet'],
+     OmegaConf.create(dict(
+         dataset=dict(name='imagenet', path='/datasets/imagenet'),
+         optimizer=dict(type='adam', lr=0.1, beta=0.01),
+         model=dict(num_layers=50, type='resnet', width=10))
+     )),
+    (['dataset=imagenet', 'optimizer=adam', 'dataset.path=/imagenet2'],
+     OmegaConf.create(dict(
+         dataset=dict(name='imagenet', path='/imagenet2'),
+         optimizer=dict(beta=0.01, lr=0.1, type='adam')
+     )))
+])
+def test_demo_4_compose(args, output_conf):
+    cmd = [sys.executable, 'demos/4_compose/compose.py']
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert result.decode('utf-8') == output_conf.pretty() + "\n"
+
+
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create(dict(
+        dataset=dict(name='imagenet', path='/datasets/imagenet'),
+        optimizer=dict(type='nesterov', lr=0.001),
+        model=dict(type='alexnet', num_layers=7),
+    ))),
+    (['dataset=cifar10'], OmegaConf.create(dict(
+        dataset=dict(name='cifar10', path='/datasets/cifar10'),
+        optimizer=dict(type='nesterov', lr=0.001),
+        model=dict(type='alexnet', num_layers=7),
+    )))
+])
+def test_demo_5_defaults(args, output_conf):
+    cmd = [sys.executable, 'demos/5_defaults/defaults.py']
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert result.decode('utf-8') == output_conf.pretty() + "\n"
