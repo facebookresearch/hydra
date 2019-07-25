@@ -87,7 +87,7 @@ def coverage(session):
     session.install('--upgrade', 'setuptools', 'pip')
     """Coverage analysis."""
     session.install('coverage', 'pytest')
-    session.run('python', 'setup.py', 'clean')
+    session.run('python', 'setup.py', 'clean', silent=True)
     all_plugins = get_all_plugins()
 
     session.run('pip', 'install', '-e', '.', silent=True)
