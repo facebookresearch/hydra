@@ -67,7 +67,7 @@ def test_plugin(session, plugin_name, install_cmd):
     all_plugins = get_all_plugins()
     # Install all plugins in session
     for plugin in all_plugins:
-        cmd = install_cmd + os.path.join('plugins', plugin[0]) 
+        cmd = list(install_cmd) + [os.path.join('plugins', plugin[0])]
         session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
