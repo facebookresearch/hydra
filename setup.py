@@ -40,7 +40,6 @@ class CleanCommand(distutils.cmd.Command):
 
     def run(self):
         delete_patterns = [
-            '.coverage',
             '.eggs',
             '.egg-info',
             '.pytest_cache',
@@ -91,9 +90,6 @@ with open("README.md", "r") as fh:
                 'pytest',
                 'setuptools',
                 'coverage',
-                'setuptools',
-                'virtualenv',
-                'nox',
             ]
         }
     )

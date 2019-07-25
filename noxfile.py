@@ -1,6 +1,7 @@
 import os
 
 import nox
+import copy
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,6 +22,10 @@ PLUGINS_INSTALL_COMMANDS = (
 
 def plugin_names():
     return sorted(os.listdir(os.path.join(BASE, 'plugins')))
+
+
+def get_all_plugins():
+    return [(plugin, 'hydra_plugins.' + plugin) for plugin in plugin_names()]
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -59,11 +64,11 @@ def test_plugin(session, plugin_name, install_cmd):
     session.run('python', 'setup.py', 'clean', silent=True)
     session.run('pip', 'install', '.', silent=True)
 
-    all_plugins = [(plugin, 'hydra_plugins.' + plugin) for plugin in plugin_names()]
+    all_plugins = get_all_plugins()
     # Install all plugins in session
     for plugin in all_plugins:
-        session.chdir(os.path.join(BASE, "plugins", plugin[0]))
-        session.run(*install_cmd, silent=True)
+        cmd = install_cmd + os.path.join('plugins', plugin[0]) 
+        session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
     session.run('python', '-c', 'from hydra import Hydra', silent=True)
@@ -75,3 +80,28 @@ def test_plugin(session, plugin_name, install_cmd):
     session.chdir(os.path.join(BASE, "plugins", plugin_name))
     session.install('pytest')
     session.run('pytest', silent=True)
+
+
+@nox.session
+def coverage(session):
+    session.install('--upgrade', 'setuptools', 'pip')
+    """Coverage analysis."""
+    session.install('coverage', 'pytest')
+    session.run('python', 'setup.py', 'clean')
+    session.run('pwd')
+    all_plugins = get_all_plugins()
+
+    session.run('pip', 'install', '-e', '.', silent=True)
+    # Install all plugins in session
+    for plugin in all_plugins:
+        session.run('pip', 'install', '-e', os.path.join('plugins', plugin[0]), silent=True)
+
+    session.run("coverage", "erase")
+    session.run('coverage', 'run', '--append', '-m', 'pytest')
+    for plugin in plugin_names():
+        session.run('coverage', 'run', '--append', '-m', 'pytest', os.path.join('plugins', plugin), silent=True)
+
+    # Increase the fail_under as coverage improves
+    session.run('coverage', 'report', '--fail-under=80')
+
+    session.run('coverage', 'erase')
