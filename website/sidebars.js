@@ -6,7 +6,15 @@
  */
 
 module.exports = {
-  docs: {
-    'About': ['doc1', 'getting_started'],
-  },
+    docs: {
+        'About': [
+            'intro',
+            'getting_started',
+            
+        ],
+        'Examples': [
+            'examples/minimal/example'
+        ],
+        
+    },
 };
