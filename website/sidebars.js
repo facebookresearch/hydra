@@ -14,7 +14,8 @@ module.exports = {
         ],
         'Examples': [
             'examples/0_minimal/example',
-            'examples/1_working_directory/example'
+            'examples/1_working_directory/example',
+            'examples/2_logging/example',
         ],
 
     },
