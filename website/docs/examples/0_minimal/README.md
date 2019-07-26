@@ -1,7 +1,7 @@
 ---
 id: example
 title: Minimal example
-sidebar_label: Minimal
+sidebar_label: Minimal example
 ---
 
 This is a minimal example of a Hydra app.
