@@ -1,3 +1,8 @@
+---
+id: example
+title: Minimal example
+sidebar_label: Minimal
+---
 ## Minimal example
 
 ```python
@@ -29,7 +34,5 @@ hello:
   b: 5671
 ```
 
-The configuration object you receive is an OmegaConf config, please read about [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html) to learn how to best use it.
+The cfg argument passed into experiment() is an OmegaConf object, please read about [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) to learn how to best use it.
 
-
-[[Up](../README.md)] [[Next](../1_working_directory)]
