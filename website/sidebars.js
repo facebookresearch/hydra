@@ -6,13 +6,7 @@
  */
 
 module.exports = {
-    docs: {
-        'Getting started': [
-            'example-docs/doc10'
-        ],
-        'Getting started with docusaurus': [
-            'doc1', 'doc2', 'doc3'
-        ],
-        Features: ['mdx'],
-    },
+  docs: {
+    'About': ['doc1'],
+  },
 };
