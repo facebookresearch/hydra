@@ -10,11 +10,12 @@ module.exports = {
         'About': [
             'intro',
             'getting_started',
-            
+
         ],
         'Examples': [
-            'examples/minimal/example'
+            'examples/0_minimal/example',
+            'examples/1_working_directory/example'
         ],
-        
+
     },
 };
