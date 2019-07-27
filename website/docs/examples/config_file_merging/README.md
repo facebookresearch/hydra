@@ -58,7 +58,7 @@ defaults:
 batch_size: 256
 ```
 This functionality is similar to including files, but it's actually quite different:
-The configs are merged into a single namespace. In this case they do not specify the same things so the
+The configs are merged into a single namespace. In this case they do not share any nodes so the
 merge result looks like an include.
 
 As before, we just tell Hydra what is the name of the main config:

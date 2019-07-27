@@ -30,7 +30,7 @@ dataset:
 
 ### Output
 The config gets loaded automatically:
-```text
+```yaml
 $ python experiment.py
 dataset:
   name: imagenet
@@ -38,7 +38,7 @@ dataset:
 ```
 
 You can override the loaded config from the command line:
-```text
+```yaml
 $ python experiment.py dataset.path=/datasets/new_imagenet
 dataset:
   name: imagenet
