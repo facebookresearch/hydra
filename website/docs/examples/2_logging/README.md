@@ -5,7 +5,7 @@ sidebar_label: Python logging
 ---
 
 Hydra configures Python logging for your job.
-
+#### logging_example.py
 ```python
 import logging
 
@@ -25,6 +25,7 @@ if __name__ == "__main__":
     experiment()
 ```
 
+#### Output
 When you run  your app, by default only INFO and higher (WARN, ERROR) would be logged.
 Logging is sent to stdout and a file logger by default.
 ```text

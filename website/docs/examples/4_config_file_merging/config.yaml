@@ -1,0 +1,7 @@
+defaults:
+  - imagenet
+  - nesterov
+
+# You can also add additional and defaults to your main config.
+# Those will be merged with the configs specified in the defaults section.
+batch_size: 256
