@@ -7,12 +7,12 @@ sidebar_label: Working directory
 Hydra manages the working directory for your app.
 The following basic Hydra app prints the current working directory, and then create a file containing the current time
 in it:
+
 ### experiment.py
 ```python
 import os
 import hydra
 import datetime
-
 
 @hydra.main()
 def experiment(_cfg):
