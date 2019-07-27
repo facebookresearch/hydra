@@ -9,7 +9,7 @@ Note that the annotated function takes a cfg object as an argument. that cfg obj
 The configuration is an OmegaConf object, please read about
 [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) to learn how to best use it.
 
-#### minimal.py
+### minimal.py
 ```python
 import hydra
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     experiment()
 ```
 
-#### Output
+### Output
 By default, Hydra will just pass in an empty configuraiton object:
 ```yaml
 $ python demos/0_minimal/minimal.py
