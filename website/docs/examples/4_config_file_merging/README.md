@@ -3,15 +3,41 @@ id: example
 title: Config file merging
 sidebar_label: Config file merging
 ---
-As your configuration becomes more complex, you may want to split it into multiple files:
+As your configuration becomes more complex, you may want to split it into multiple files.
 
-#### imagenet.yaml:
+Our config structure is getting a bit complex, so let's stash everything inside a config sub directory:
+```text
+$ tree 4_config_file_merging/
+4_config_file_merging/
+├── conf
+│   ├── config.yaml
+│   ├── imagenet.yaml
+│   └── nesterov.yaml
+├── README.md
+└── experiment.py
+```
+
+### experiment.py
+Note the small change in config_path, all config files are relative to the location of the primary config.yaml:
+```python
+import hydra
+
+
+@hydra.main(config_path='conf/config.yaml')
+def experiment(cfg):
+    print(cfg.pretty())
+
+
+if __name__ == "__main__":
+    experiment()
+```
+### imagenet.yaml:
 ```yaml
 dataset:
   name: imagenet
   path: /datasets/imagenet
 ```
-#### nesterov.yaml:
+### nesterov.yaml:
 ```yaml
 optimizer:
   type: nesterov
@@ -21,7 +47,7 @@ optimizer:
 However, you still want your code to operate on a single configuration object:
 To support it, add a defaults block to the primary config file:
 
-#### config.yaml
+### config.yaml
 ```yaml
 defaults:
   - imagenet
@@ -36,7 +62,7 @@ The configs are merged into a single namespace. in this case they do not specify
 merge result looks like an include.
 
 As before, we just tell Hydra what is the name of the main config:
-#### config_file.py
+### experiment.py
 ```python
 import hydra
 
@@ -51,9 +77,9 @@ if __name__ == "__main__":
 
 ```
 
-#### Output
+### Output
 ```yaml
-$ python website/docs/examples/4_config_file_merging/config_file.py
+$ python experiment.py
 batch_size: 256
 dataset:
   name: imagenet

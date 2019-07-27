@@ -8,7 +8,7 @@ Hydra manages the working directory for your app.
 The following basic Hydra app prints the current working directory, and then create a file containing the current time
 in it:
 
-#### working_directory.py
+### working_directory.py
 ```python
 import os
 import hydra
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     experiment()
 ```
 
-#### Output
+### Output
 Every time you run the app, a new working directory is automatically created:
 ```text
 $ python working_directory.py

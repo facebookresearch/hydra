@@ -12,13 +12,13 @@ module.exports = {
             'getting_started',
 
         ],
-        'Examples': [
+        'Tutorial': [
             'examples/0_minimal/example',
             'examples/1_working_directory/example',
             'examples/2_logging/example',
             'examples/3_config_file/example',
             'examples/4_config_file_merging/example',
+            'examples/5_config_family/example',
         ],
-
     },
 };

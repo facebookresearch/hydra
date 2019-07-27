@@ -7,7 +7,7 @@ sidebar_label: Config file
 You can pass in a config file for your job.
 This file is relative to your python file.
 
-#### config_file.py
+### config_file.py
 ```python
 import hydra
 
@@ -21,17 +21,17 @@ if __name__ == "__main__":
     experiment()
 ```
 
-#### config.yaml
+### config.yaml
 ```yaml
 dataset:
   name: imagenet
   path: /datasets/imagenet
 ```
 
-#### Output
+### Output
 Running, the config gets loaded automatically:
 ```text
-$ python demos/3_config_file/config_file.py
+$ python experiment.py
 dataset:
   name: imagenet
   path: /datasets/imagenet
@@ -39,7 +39,7 @@ dataset:
 
 You can override the loaded config from the command line:
 ```text
-$ python demos/3_config_file/config_file.py dataset.path=/datasets/new_imagenet
+$ python experiment.py dataset.path=/datasets/new_imagenet
 dataset:
   name: imagenet
   path: /datasets/new_imagenet
