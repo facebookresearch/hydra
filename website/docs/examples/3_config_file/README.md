@@ -5,7 +5,7 @@ sidebar_label: Config file
 ---
 
 You can pass in a config file for your job.
-This file is relative to your python file.
+This file location is relative to your Python file location.
 
 ### config_file.py
 ```python
@@ -29,7 +29,7 @@ dataset:
 ```
 
 ### Output
-Running, the config gets loaded automatically:
+The config gets loaded automatically:
 ```text
 $ python experiment.py
 dataset:
