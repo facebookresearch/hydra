@@ -33,15 +33,15 @@ $ python demos/2_logging/logging_example.py
 [2019-06-27 00:52:46,653][__main__][INFO] - Info level message
 ```
 
-You can enable debug logging from the command line with the -v flag.
--v takes as an argument a comma separated list of loggers.
+You can enable DEBUG level logging from the command line with the `-v` flag.
+`-v` takes as an argument a comma separated list of loggers.
 ```text
 $ python demos/2_logging/logging_example.py -v __main__
 [2019-06-27 00:54:39,440][__main__][INFO] - Info level message
 [2019-06-27 00:54:39,441][__main__][DEBUG] - Debug level message
 ```
-The root logger is a special logger is the parent of all loggers. by using -v root you get verbose logging from
-all python loggers, even from libraries.
+The root logger is a special logger, it is the parent of all loggers. By using `-v root` you get verbose logging from
+all Python loggers, even from libraries.
 
 ```text
 $ python demos/2_logging/logging_example.py -v root

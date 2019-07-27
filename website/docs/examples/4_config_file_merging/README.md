@@ -5,7 +5,7 @@ sidebar_label: Config file merging
 ---
 As your configuration becomes more complex, you may want to split it into multiple files.
 
-Our config structure is getting a bit complex, so let's stash everything inside a config sub directory:
+Our config structure is getting a bit complex, so let's put everything into a config subdirectory:
 ```text
 $ tree 4_config_file_merging/
 4_config_file_merging/
@@ -57,8 +57,8 @@ defaults:
 # Those will be merged with the configs specified in the defaults section.
 batch_size: 256
 ```
-This functionality is similar to including files, but but it's actually quiet different:
-The configs are merged into a single namespace. in this case they do not specify the same things so the
+This functionality is similar to including files, but it's actually quite different:
+The configs are merged into a single namespace. In this case they do not specify the same things so the
 merge result looks like an include.
 
 As before, we just tell Hydra what is the name of the main config:
