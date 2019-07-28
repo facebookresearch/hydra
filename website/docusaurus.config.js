@@ -8,8 +8,8 @@
 module.exports = {
     title: 'Hydra',
     tagline: 'Flexible experimentation framework',
-    url: 'https://your-docusaurus-test-site.com',
-    baseUrl: '/',
+    url: 'https://fairinternal.github.io/',
+    baseUrl: '/hydra',
     favicon: 'img/favicon.ico',
     organizationName: 'fairinternal', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
