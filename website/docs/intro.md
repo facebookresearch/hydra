@@ -3,25 +3,12 @@ id: intro
 title: Introduction
 sidebar_label: Introduction
 ---
-Hydra is an experimentation framework, this means it can help write
-flexible code before you are sure what exactly you want to be doing.
-It is particularly well suited for research code, but is generic enough that it would 
-fit many other use cases.
+Hydra is an experimentation framework.
 
-## Hydra's main features
-* A unified interface to run experiments (*) locally or remotely
-* Dynamically composes a configuration from your own configuration primitives 
-* Tweaking the composed configuration using arbitrary command line arguments
-* Manages the working directory for your runs
-* Configures Python logger for your experiments
-* Provides an ability to sweep on multiple dimensions from the command line
+Its mission is to make experimentation great again.
 
-## Plugins
-Hydra has a plugins architecture, allowing extending it to integrate with various systems without pulling 
-in unnecessary dependencies into the core framework.
+Hydra provides a unified command line interface to run your experiments locally or remotely.
+it can compose the configuration for your experiment dynamically, while allowing free overriding of the config 
+from the command line without writing a line of code.
 
-The following plugins are implemented: 
-### Launchers
-* hydra-submitit: A plugin that allow launching jobs to a cluster using (Submitit)[https://github.com/fairinternal/submitit]
-* hydra-fairtask: A plugin that allow launching jobs to a cluster using (Fairtask)[https://github.com/fairinternal/fairtask]
-
+The best way to understand what Hydra is good for is to go through some examples.

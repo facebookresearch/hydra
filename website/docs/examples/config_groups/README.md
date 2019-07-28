@@ -1,7 +1,7 @@
 ---
 id: example
-title: Config family
-sidebar_label: Config family
+title: Config groups
+sidebar_label: Config groups
 ---
 As you continue experimenting, you realize you want to try several different optimizers.
 Let's add a second optimizer, `adam.yaml` and put both `nesterov.yaml` and `adam.yaml` in an optimizer subdirectory:
@@ -70,3 +70,7 @@ optimizer:
   lr: 0.1
   type: adam
 ```
+<div class="alert alert--info" role="alert">
+<strong>NOTE</strong>: This example shows a single config group, but you can easily add as many as you want and load any combination 
+of them at the same time.
+</div>
