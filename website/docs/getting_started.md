@@ -18,9 +18,3 @@ pip install --upgrade --upgrade-strategy=eager \
 'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/fairtask' \
 'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/submitit' 
 ```
-
-## Uninstall
-Uninstall Hydra and its plugins with:
-```
-pip uninstall hydra hydra-submitit hydra-fairtask -y
-```

@@ -1,0 +1,8 @@
+hydra:
+  # python logging configuration for the tasks
+  task_logging:
+    formatters:
+      simple:
+        format: '[%(levelname)s] - %(message)s'
+    root:
+      handlers: [console]
