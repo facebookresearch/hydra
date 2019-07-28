@@ -9,7 +9,7 @@ module.exports = {
     title: 'Hydra',
     tagline: 'Flexible experimentation framework',
     url: 'https://fairinternal.github.io/',
-    baseUrl: '/hydra',
+    baseUrl: '/hydra/',
     favicon: 'img/favicon.ico',
     organizationName: 'fairinternal', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
