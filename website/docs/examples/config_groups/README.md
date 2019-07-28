@@ -39,7 +39,7 @@ defaults:
 ```
 Running with this configuration, `nesterov.yaml` is loaded:
 ```yaml
-python experiment.py
+$ python experiment.py
 optimizer:
   lr: 0.001
   type: nesterov

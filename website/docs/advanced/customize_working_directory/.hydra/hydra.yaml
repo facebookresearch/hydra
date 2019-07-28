@@ -1,0 +1,9 @@
+defaults:
+  - launcher: fairtask
+
+hydra:
+  run:
+    dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${job:num}_${job:id}_${job:override_dirname}
