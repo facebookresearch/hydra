@@ -14,7 +14,7 @@ When Hydra runs your code, the following things happen:
         * @hydra.main() : the directory of your python file
         * @hydra.main(config_path='conf/') : conf relative to your python file
         * @hydra.main(config_path='conf/config.yaml') : conf relative to your python file
-    * It config_path is a file, it's loaded as the base, otherwise an empty config is created
+    * If config_path is a file, it's loaded as the base, otherwise an empty config is created
     * If the config contains a defaults block, anything from it is merged into the config
     * command line overrides are merged with the config
     
