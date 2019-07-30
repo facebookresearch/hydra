@@ -37,9 +37,10 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides):
                          conf_filename='config.yaml',
                          overrides=overrides)
     with sweep:
-        assert len(sweep.returns) == 1
-        assert sweep.returns[0].overrides == []
-        assert sweep.returns[0].cfg == dict(
+        job_ret = sweep.returns[0]
+        assert len(job_ret) == 1
+        assert job_ret[0].overrides == []
+        assert job_ret[0].cfg == dict(
             dataset=dict(
                 name='imagenet',
                 path='/datasets/imagenet'
@@ -53,7 +54,7 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides):
                 lr=0.001,
             ),
         )
-        verify_dir_outputs(sweep.returns[0].working_dir)
+        verify_dir_outputs(sweep.returns[0][0].working_dir)
 
 
 def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
@@ -77,9 +78,9 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
     ))
 
     with sweep:
-        assert len(sweep.returns) == 2
+        assert len(sweep.returns[0]) == 2
         for i in range(2):
-            job_ret = sweep.returns[i]
+            job_ret = sweep.returns[0][i]
             expected_conf = OmegaConf.merge(base, OmegaConf.from_dotlist(job_ret.overrides))
             assert job_ret.overrides == ['a={}'.format(i)]
             assert job_ret.cfg == expected_conf

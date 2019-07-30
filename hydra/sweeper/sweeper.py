@@ -12,6 +12,6 @@ class Sweeper:
         Execute a sweep
         :param arguments: list of strings describing what this sweeper should do.
         exact structure is determine by the concrete Sweeper class.
+        :return: the return objects of all thy launched jobs. structure depends on the Sweeper implementation.
         """
         raise NotImplementedError()
-

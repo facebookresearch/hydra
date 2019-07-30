@@ -34,7 +34,7 @@ class RuntimeVariables:
         return ret
 
     def set(self, key, value):
-        log.info("Setting {}:{}={}".format(type(self).__name__, key, value))
+        log.debug("Setting {}:{}={}".format(type(self).__name__, key, value))
         self.conf[key] = value
 
 
