@@ -90,16 +90,6 @@ def get_static_method(full_method_name):
         raise e
 
 
-def instantiate_plugin(config, *args):
-    if not config['class'].startswith('hydra_plugins.'):
-        # prevent loading plugins in invalid package. this is an indication that it's not a proper plugin
-        # and is probably due to pre-plugins config lying around.
-        # his also gives us an opportunity confirm that the plugin version is compatible with Hydra's version.
-        raise RuntimeError(
-            "Invalid plugin '{}': not in hydra_plugins package, ".format(config['class']))
-    return instantiate(config, *args)
-
-
 def instantiate(config, *args):
     try:
         clazz = get_class(config['class'])

@@ -6,7 +6,7 @@ import sys
 import pkg_resources
 from omegaconf import OmegaConf
 from .config_loader import ConfigLoader
-from .basic_sweeper import BasicSweeper
+from .sweeper import BasicSweeper
 from . import utils
 from .plugins import Plugins
 
@@ -62,12 +62,9 @@ class Hydra:
                              job_subdir_key=None)
 
     def sweep(self, overrides):
-        # instantiate_launcher(hydra_cfg, config_loader, task_function, verbose, launcher_cfg=None
-
         hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
         utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
-        sweeper = BasicSweeper()
-        sweeper.setup(
+        sweeper = Plugins.instantiate_sweeper(
             hydra_cfg=hydra_cfg,
             config_loader=self.config_loader,
             task_function=self.task_function,

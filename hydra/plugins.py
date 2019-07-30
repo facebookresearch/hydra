@@ -4,13 +4,20 @@ from . import utils
 class Plugins:
 
     @staticmethod
-    def _instantiate(cfg):
+    def _instantiate(config):
+        clazz = config['class']
         try:
-            plugin = utils.instantiate_plugin(cfg)
+            if not clazz.startswith('hydra_plugins.') and not clazz.startswith('hydra.sweeper'):
+                # prevent loading plugins in invalid package. this is an indication that it's not a proper plugin
+                # and is probably due to pre-plugins config lying around.
+                # his also gives us an opportunity confirm that the plugin version is compatible with Hydra's version.
+                raise RuntimeError(
+                    "Invalid plugin '{}': not in hydra_plugins package, ".format(config['class']))
+            plugin = utils.instantiate(config)
         except ImportError as e:
             raise ImportError(
                 "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(
-                    cfg['class'], str(e)
+                    config['class'], str(e)
                 ))
 
         return plugin

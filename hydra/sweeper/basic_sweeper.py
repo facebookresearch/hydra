@@ -1,7 +1,7 @@
 import copy
 
-from . import utils
-from .sweeper import StepSweeper
+from hydra import utils
+from .step_sweeper import StepSweeper
 
 
 class BasicSweeper(StepSweeper):
