@@ -153,9 +153,13 @@ def save_config(cfg, filename):
 
 
 def get_overrides_dirname(lst):
+    assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
     lst.sort()
-    lststr = ",".join(lst)
-    return re.sub('[=]', ':', lststr)
+    return re.sub(
+        pattern='[=]',
+        repl=':',
+        string=",".join(lst)
+    )
 
 
 def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):

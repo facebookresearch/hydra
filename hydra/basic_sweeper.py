@@ -1,22 +1,13 @@
 import copy
 
 from . import utils
-from .sweeper import Sweeper
+from .sweeper import StepSweeper
 
 
-class BasicSweeper(Sweeper):
+class BasicSweeper(StepSweeper):
 
     def __init__(self):
-        self.arguments = None
         self.job_results = None
-
-    def setup(self, hydra_cfg, arguments):
-        """
-        :param hydra_cfg: hydra configuration object
-        :param arguments: +
-        :return: 
-        """
-        self.arguments = arguments
 
     def get_job_batch(self):
         """

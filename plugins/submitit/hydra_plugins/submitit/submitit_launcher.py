@@ -73,7 +73,7 @@ class SubmititLauncher(Launcher):
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         jobs = []
         for job_num in range(num_jobs):
-            sweep_override = job_overrides[job_num]
+            sweep_override = list(job_overrides[job_num])
             log.info("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             job = executor.submit(self.launch_job,
                                   sweep_override,
