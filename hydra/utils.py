@@ -34,7 +34,7 @@ class RuntimeVariables:
         return ret
 
     def set(self, key, value):
-        log.info("Setting {}:{}={}".format(type(self).__name__, key, value))
+        log.debug("Setting {}:{}={}".format(type(self).__name__, key, value))
         self.conf[key] = value
 
 
@@ -90,16 +90,6 @@ def get_static_method(full_method_name):
         raise e
 
 
-def instantiate_plugin(config, *args):
-    if not config['class'].startswith('hydra_plugins.'):
-        # prevent loading plugins in invalid package. this is an indication that it's not a proper plugin
-        # and is probably due to pre-plugins config lying around.
-        # his also gives us an opportunity confirm that the plugin version is compatible with Hydra's version.
-        raise RuntimeError(
-            "Invalid plugin '{}': not in hydra_plugins package, ".format(config['class']))
-    return instantiate(config, *args)
-
-
 def instantiate(config, *args):
     try:
         clazz = get_class(config['class'])
@@ -153,9 +143,13 @@ def save_config(cfg, filename):
 
 
 def get_overrides_dirname(lst):
+    assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
     lst.sort()
-    lststr = ",".join(lst)
-    return re.sub('[=]', ':', lststr)
+    return re.sub(
+        pattern='[=]',
+        repl=':',
+        string=",".join(lst)
+    )
 
 
 def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
