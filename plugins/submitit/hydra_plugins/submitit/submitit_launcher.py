@@ -23,12 +23,11 @@ class SubmititLauncher(Launcher):
         self.config_loader = None
         self.sweep_configs = None
 
-    def setup(self, config_loader, hydra_cfg, task_function, verbose, overrides):
+    def setup(self, config_loader, hydra_cfg, task_function, verbose):
         self.config_loader = config_loader
         self.hydra_cfg = hydra_cfg
         self.task_function = task_function
         self.verbose = verbose
-        self.sweep_configs = utils.get_sweep(overrides)
 
     def launch_job(self, sweep_overrides, workdir, job_num, job_name):
         # stdout logging until we get the file logging going.
@@ -52,8 +51,8 @@ class SubmititLauncher(Launcher):
                              job_dir=workdir,
                              job_subdir_key='hydra.sweep.subdir')
 
-    def launch(self):
-        num_jobs = len(self.sweep_configs)
+    def launch(self, job_overrides):
+        num_jobs = len(job_overrides)
         assert num_jobs > 0
         utils.HydraRuntime().set('num_jobs', num_jobs)
 
@@ -74,7 +73,7 @@ class SubmititLauncher(Launcher):
         os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
         jobs = []
         for job_num in range(num_jobs):
-            sweep_override = list(self.sweep_configs[job_num])
+            sweep_override = job_overrides[job_num]
             log.info("\t#{} : {}".format(job_num, " ".join(sweep_override)))
             job = executor.submit(self.launch_job,
                                   sweep_override,
