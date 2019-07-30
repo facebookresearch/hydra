@@ -6,7 +6,9 @@ import sys
 import pkg_resources
 from omegaconf import OmegaConf
 from .config_loader import ConfigLoader
+from .sweeper import BasicSweeper
 from . import utils
+from .plugins import Plugins
 
 
 def get_args():
@@ -62,22 +64,12 @@ class Hydra:
     def sweep(self, overrides):
         hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
         utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
-        if hydra_cfg.hydra.launcher is None:
-            raise RuntimeError("Hydra launcher is not configured")
-        try:
-            launcher = utils.instantiate_plugin(hydra_cfg.hydra.launcher)
-        except ImportError as e:
-            raise ImportError(
-                "Could not instantiate launcher {} : {}\n\n\tIS THE LAUNCHER PLUGIN INSTALLED?\n\n".format(
-                    hydra_cfg.hydra.launcher['class'], str(e)
-                ))
-        launcher.setup(config_loader=self.config_loader,
-                       hydra_cfg=hydra_cfg,
-                       task_function=self.task_function,
-                       verbose=self.verbose,
-                       overrides=overrides)
-
-        return launcher.launch()
+        sweeper = Plugins.instantiate_sweeper(
+            hydra_cfg=hydra_cfg,
+            config_loader=self.config_loader,
+            task_function=self.task_function,
+            verbose=self.verbose)
+        return sweeper.sweep(arguments=overrides)
 
     def get_cfg(self, overrides):
         hydra_cfg = self._create_hydra_cfg(overrides)
