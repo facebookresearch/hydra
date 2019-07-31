@@ -16,7 +16,7 @@ The default logging should be sufficient for most use cases but you can [customi
 the logging in your own project 
 
 ## Plugins
-Many plugins requires their some configuration via the .hydra directory in your job configuration path.
+Many plugins requires configuration via the .hydra directory.
 
 ## Runtime config variables
 The following variables can be used in the Hydra configuration files and in the job configuration files:
