@@ -17,6 +17,7 @@ the logging in your own project
 
 ## Plugins
 Many plugins requires configuration via the .hydra directory.
+See the documentation of individual plugins for more information about how to configure them.
 
 ## Runtime config variables
 The following variables can be used in the Hydra configuration files and in the job configuration files:
