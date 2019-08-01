@@ -25,7 +25,7 @@ if __name__ == "__main__":
 ### Output
 By default, Hydra will just pass in an empty configuration object:
 ```yaml
-$ python demos/0_minimal/minimal.py
+$ python experiment.py
 {}
 ```
 
@@ -38,4 +38,4 @@ hello:
   b: 5671
 ```
 
-
+Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/0_minimal/minimal.py).

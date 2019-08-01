@@ -1,5 +1,3 @@
-import sys
-
 import hydra
 
 
@@ -9,4 +7,4 @@ def experiment(cfg):
 
 
 if __name__ == "__main__":
-    sys.exit(experiment())
+    experiment()

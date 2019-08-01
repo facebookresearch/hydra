@@ -1,5 +1,5 @@
 # Demos
-This folder contains multiple demos.
+This folder contains multiple runnable demos.
 It is recommended to go through it in order.
 
 - [0_minimal](0_minimal/README.md) : A minimal example

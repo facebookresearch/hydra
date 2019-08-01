@@ -9,7 +9,7 @@ module.exports = {
             'examples/working_directory/example',
             'examples/logging/example',
             'examples/config_file/example',
-            'examples/config_file_merging/example',
+            'examples/config_splitting/example',
             'examples/config_groups/example',
             'examples/sweep/example',
             {
