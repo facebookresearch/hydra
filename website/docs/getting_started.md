@@ -3,10 +3,8 @@ id: getting_started
 title: Getting started
 sidebar_label: Getting started
 ---
-## Requirements
 The core Hydra framework supports Python 2.7 and modern Python 3.
-Specific plugins may have stricter Python requirements, for example both hydra-submitit and hydra-fairtask 
-only support Python 3.6 or newer.
+Individual Hydra plugins may have stricter Python requirements.
 
 ## Install/upgrade
 A proper pip package will be available after Hydra is open sourced.

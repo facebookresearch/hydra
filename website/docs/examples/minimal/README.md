@@ -5,9 +5,8 @@ sidebar_label: Minimal example
 ---
 
 This is a minimal example of a Hydra app.
-Note that the annotated function takes a `cfg` object as an argument. This `cfg` object is created and passed in by Hydra.
-The configuration is an `OmegaConf` object, please read about
-[OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) to learn how to best use it.
+Note that the annotated function takes a `cfg` argument. This `cfg` is an OmegaConf object created and passed in by Hydra.
+Please read about [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) to learn how to best use it.
 
 ### minimal.py
 ```python

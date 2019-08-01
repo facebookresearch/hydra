@@ -5,8 +5,11 @@ class Launcher:
 
     @abstractmethod
     def setup(self, config_loader, hydra_cfg, task_function, verbose):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     @abstractmethod
     def launch(self, job_overrides):
-        raise NotImplemented()
+        """
+        :param job_overrides: a batch of job arguments (list<list<string>>)
+        """
+        raise NotImplementedError()
