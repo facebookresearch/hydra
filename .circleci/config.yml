@@ -30,6 +30,7 @@ jobs:
   deploy-website:
     docker:
       - image: circleci/node:12
+    steps:
       - run:
           name: Install node_modules
           command: |
