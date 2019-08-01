@@ -1,8 +1,8 @@
 ## Minimal example
 
 ```python
-import sys
 import hydra
+
 
 @hydra.main()
 def experiment(cfg):
@@ -10,7 +10,7 @@ def experiment(cfg):
 
 
 if __name__ == "__main__":
-    sys.exit(experiment())
+    experiment()
 ```
 
 Hydra will construct the configuration object for you, in this example there is no input to construct it from, so it's empty.

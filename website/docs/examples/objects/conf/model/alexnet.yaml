@@ -1,0 +1,4 @@
+model:
+  class: demos.7_objects.objects.Alexnet
+  params:
+    num_layers: 7
