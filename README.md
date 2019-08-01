@@ -1,43 +1,20 @@
 [![CircleCI](https://circleci.com/gh/fairinternal/hydra.svg?style=svg&circle-token=af199cd2deca9e70e53776f9ded96284b10687e9)](https://circleci.com/gh/fairinternal/hydra)
 # Hydra
-Hydra is a experimentation framework providing the following:
- * A unified interface to run experiments locally or remotely
- * Dynamically composes a configuration from your own configuration primitives
- * Ability to override values in composed configurations from the command line
- * Creates a working directory per job run for you
- * Provides an ability to sweep on multiple dimensions from the command line
- * Configures python logger for your experiments
+Hydra is an experimentation framework.
 
-# Using
-## Install/upgrade
-A proper pip package will be available after Hydra is open sourced.
+Its mission is to make experimentation great again.
 
-Install/upgrade Hydra and it's plugins by running the following command:
-```
-python3 -m pip install --upgrade --upgrade-strategy=eager \
-'git+ssh://git@github.com/fairinternal/hydra.git@master' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/fairtask' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/submitit' 
-```
-
-## Uninstall
-Uninstall Hydra and it's plugins with:
-```
-python3 -m pip uninstall hydra hydra-submitit hydra-fairtask -y
-```
-
-# Basic usage
-Go through the [demos](demos/README.md) to get a gentle incremental intruduction, starting from the most basic.
+The the [web site](https://fairinternal.github.io/hydra/) for more information.
 
 
-# Developing
-## Install:
+## Developing
+### Install:
 Checkout this repository, Install Hydra and all the included plugins in development mode with:
 ```
 pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
 ```
 
-## Uninstall 
+### Uninstall 
 Uninstall Hydra and all the included plugins with:
 ```
 pip uninstall -y hydra && find ./plugins/ -name setup.py |\

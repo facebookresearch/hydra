@@ -73,3 +73,5 @@ model:
   num_layers: 5
   type: alexnet
 ```
+
+Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/8_specializing_config).
