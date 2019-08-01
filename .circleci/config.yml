@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Install node_modules
           command: |
-            cd website
+            cd hydra/website
             yarn --no-progress
       - deploy:
           name: Publish gh-pages
