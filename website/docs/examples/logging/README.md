@@ -49,4 +49,4 @@ $ python experiment.py -v root
 [2019-06-27 00:53:24,346][__main__][DEBUG] - Debug level message
 ```
 
-Logging can be customized (TODO: link to customization doc)
+Logging can be [customized](../../configure_hydra/customize_working_directory/example)

@@ -1,21 +1,20 @@
 ---
 id: intro
-title: Introduction
+title: Customizing Hydra
 sidebar_label: Introduction
 ---
 
 Hydra comes pre-packages with sensible default configuration that covers the basic use cases.
 You can customize that behavior by creating a .hydra/hydra.yaml file under your job config path.
 
-## Working directories
-Job output directory can be customized both for local and for cluster (sweep) runs.
-Check the [workdir configuration](customize_working_directory/example) example.
+### Working directories
+Job output directory can be [customized](customize_working_directory/example) both for local and for cluster (sweep) runs.
 
-## Logging
+### Logging
 The default logging should be sufficient for most use cases but you can [customize](customize_logging/example) 
 the logging in your own project 
 
-## Plugins
+### Plugins
 Many plugins requires configuration via the .hydra directory.
 See the documentation of individual plugins for more information about how to configure them.
 
