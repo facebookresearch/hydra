@@ -23,8 +23,8 @@ optimizer:
 To reduce the number of configuration files scattered in your code directory, you can put them all inside a `conf` subdirectory.
 
 ```text
-$ tree 4_config_file_merging/
-4_config_file_merging/
+$ tree config_splitting/
+config_splitting/
 ├── conf
 │   ├── config.yaml
 │   ├── imagenet.yaml

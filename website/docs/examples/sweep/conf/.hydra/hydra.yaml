@@ -1,5 +1,0 @@
-defaults:
-  - launcher: fairtask
-
-hydra:
-  launcher: ???

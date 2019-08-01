@@ -11,47 +11,26 @@ Both launchers are Hydra plugins, and each takes some specific configuration for
 See [this](https://github.com/fairinternal/hydra/tree/master/demos/6_sweep/conf/.hydra) for an example Hydra
 configuration that can run on Slurm and submitit.
 
-#### experiment.py:
-There is nothing special about code that can run on the cluster:
-```python
-import logging
-
-import hydra
-
-log = logging.getLogger(__name__)
-
-
-@hydra.main(config_path='conf/config.yaml')
-def experiment(cfg):
-    log.info(cfg.pretty())
-
-
-if __name__ == "__main__":
-    experiment()
-
-```
-
-Running parameter sweeps is easy, just add --sweep or -s.
+Running parameter sweeps is easy, just add --sweep or -s to your your app execution.
 The following command would run a single job on Slurm, with all your default options:
 ```text
-$ python experiment.py  -s
-[2019-07-27 22:35:50,755][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-07-27_22-35-50
-[2019-07-27 22:35:50,807][INFO] - Launching 1 jobs to slurm queue
-[2019-07-27 22:35:50,807][INFO] -       #0 :
-Dask dashboard for "slurm" at http://localhost:8008.
+$ python demos/6_sweep/experiment.py  -s
+[2019-08-01 16:24:36,851][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-08-01_16-24-36
+[2019-08-01 16:24:36,899][INFO] - Launching 1 jobs to slurm queue
+[2019-08-01 16:24:36,899][INFO] -       #0 :
 ```
 
 Let's take a peak at the output:
 ```text
-$ tree /checkpoint/omry/outputs/2019-07-27_22-35-50 -a
-/checkpoint/omry/outputs/2019-07-27_22-35-50
-├── 0_15818167
+$ tree -a  /checkpoint/omry/outputs/2019-08-01_16-24-36
+/checkpoint/omry/outputs/2019-08-01_16-24-36
+├── 0_16248207
 │   ├── config.yaml
 │   ├── experiment.log
 │   └── overrides.yaml
 └── .slurm
-    ├── slurm-15818167.err
-    └── slurm-15818167.out
+    ├── slurm-16248207.err
+    └── slurm-16248207.out
 ```
 
 * `config.yaml` holds the composed config for this job.
@@ -88,3 +67,5 @@ $ experiment.py  -s   launcher=submitit
 ```
 
 Sweep support is currently very basic and this area will improve further.
+
+Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/6_sweep).

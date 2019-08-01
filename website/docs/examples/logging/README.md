@@ -7,7 +7,6 @@ sidebar_label: Python logging
 Hydra configures Python logging for your app.
 ```python
 import logging
-import sys
 
 import hydra
 
@@ -22,7 +21,7 @@ def experiment(_cfg):
 
 
 if __name__ == "__main__":
-    sys.exit(experiment())
+    experiment()
 ```
 
 When you run  your app, by default only INFO and higher (WARN, ERROR) would be logged.
