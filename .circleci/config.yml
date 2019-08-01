@@ -31,6 +31,7 @@ jobs:
     docker:
       - image: circleci/node:12
     steps:
+      - checkout
       - run:
           name: Install node_modules
           command: |
