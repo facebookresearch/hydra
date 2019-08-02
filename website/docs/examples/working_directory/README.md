@@ -5,14 +5,14 @@ sidebar_label: Working directory
 ---
 
 Hydra manages the working directory for your app.
-The following basic Hydra app prints the current working directory, and then create a file containing the current time
+The following app prints the current working directory and create a file containing the current time
 in it:
 
-### experiment.py
 ```python
 import os
 import hydra
 import datetime
+
 
 @hydra.main()
 def experiment(_cfg):
@@ -25,7 +25,6 @@ if __name__ == "__main__":
     experiment()
 ```
 
-### Output
 Every time you run the app, a new working directory is automatically created:
 ```text
 $ python experiment.py
@@ -50,3 +49,5 @@ We have 4 files there:
 * `output.txt`: The file created by the app
 * `overrides.yaml`: A configuration constructed from the passed in command line arguments
 * `experiment.log`: A log file created for this job. Since we did not log anything it's empty.
+
+Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/1_working_directory/working_directory.py).

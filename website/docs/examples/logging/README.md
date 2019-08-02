@@ -4,8 +4,7 @@ title: Python logging
 sidebar_label: Python logging
 ---
 
-Hydra configures Python logging for your job.
-### experiment.py
+Hydra configures Python logging for your app.
 ```python
 import logging
 
@@ -25,7 +24,6 @@ if __name__ == "__main__":
     experiment()
 ```
 
-### Output
 When you run  your app, by default only INFO and higher (WARN, ERROR) would be logged.
 Logging is sent to stdout and a file logger by default.
 ```text
@@ -50,3 +48,7 @@ $ python experiment.py -v root
 ```
 
 Logging can be [customized](../../configure_hydra/customize_working_directory/example)
+
+
+Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/2_logging/logging_example.py).
+

@@ -82,3 +82,5 @@ $ python experiment.py model=resnet model.params.num_layers=100
 Resnet: num_layers=100, width=10
 Resnet: forward(10)
 ```
+
+Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/7_objects).

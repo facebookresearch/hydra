@@ -1,6 +1,2 @@
 defaults:
-  - dataset: imagenet
-  - model: alexnet
   - optimizer: nesterov
-
-# Additional global config for your task goes here

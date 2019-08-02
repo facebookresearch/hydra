@@ -32,7 +32,7 @@ def test_conf_dir_not_directory():
 def test_load_configuration():
     config_loader = ConfigLoader(conf_dir='demos/3_config_file', conf_filename='config.yaml')
     cfg = config_loader.load_configuration(overrides=['abc=123'])
-    assert cfg['task_cfg'] == OmegaConf.create(dict(abc=123, app=dict(name='the nameless one')))
+    assert cfg['task_cfg'] == OmegaConf.create(dict(abc=123, dataset=dict(name='imagenet', path='/datasets/imagenet')))
 
 
 def test_load_with_missing_default():

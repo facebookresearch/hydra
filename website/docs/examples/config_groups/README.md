@@ -4,7 +4,7 @@ title: Config groups
 sidebar_label: Config groups
 ---
 As you continue experimenting, you realize you want to try several different optimizers.
-Let's add a second optimizer, `adam.yaml` and put both `nesterov.yaml` and `adam.yaml` in an optimizer subdirectory:
+Let's add configuration for a second optimizer, `adam.yaml` and put both it and `nesterov.yaml` in an optimizer sub-directory:
 ```text
 $ tree 5_config_family/
 examples/5_config_family/
@@ -17,21 +17,20 @@ examples/5_config_family/
 └── experiment.py
 ```
 
-### optimizer/adam.yaml
+`optimizer/adam.yaml`:
 ```yaml
 optimizer:
   type: adam
   lr: 0.1
   beta: 0.01
 ```
-### optimizer/nesterov.yaml
+`optimizer/nesterov.yaml`:
 ```yaml
 optimizer:
   type: nesterov
   lr: 0.001
 ```
 
-### config.yaml
 To load `nesterov.yaml` we can do as we did before:
 ```yaml
 defaults:
@@ -45,14 +44,13 @@ optimizer:
   type: nesterov
 ```
 
-
-But we can also do:
+We can also do the this:
 ```yaml
 defaults:
   - optimizer: nesterov
 ```
 
-Very similar, but it allows us to do something quite nice:
+Which is very similar, but allows us to do something quite nice:
 ```yaml
 $ python experiment.py optimizer=adam
 optimizer:
@@ -70,7 +68,10 @@ optimizer:
   lr: 0.1
   type: adam
 ```
+
+Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/5_config_groups).
+
 <div class="alert alert--info" role="alert">
-<strong>NOTE</strong>: This example shows a single config group, but you can easily add as many as you want and load any combination 
-of them at the same time.
+<strong>NOTE</strong>: This example shows a single config group, but you can easily add as many as you want.
 </div>
+

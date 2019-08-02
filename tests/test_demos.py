@@ -1,11 +1,12 @@
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
-import shutil
+
 import pytest
 from omegaconf import OmegaConf
-import re
-from hydra import MissingConfigException
+from hydra.errors import MissingConfigException
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
 
@@ -40,108 +41,62 @@ def test_demos_config_file__no_overrides(task_runner):
     with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml') as task:
         assert task.job_ret.cfg == dict(
-            app=dict(
-                name='the nameless one',
+            dataset=dict(
+                name='imagenet',
+                path='/datasets/imagenet'
             )
         )
+
         verify_dir_outputs(task.job_ret.working_dir)
 
 
 def test_demos_config_file__with_overide(task_runner):
     with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml',
-                     overrides=['app.name=morte']) as task:
+                     overrides=['dataset.path=/datasets/imagenet2']) as task:
         assert task.job_ret.cfg == dict(
-            app=dict(
-                name='morte',
+            dataset=dict(
+                name='imagenet',
+                path='/datasets/imagenet2'
             )
         )
         verify_dir_outputs(task.job_ret.working_dir, task.overrides)
 
 
-def test_demos_compose__no_override(task_runner):
-    with task_runner(conf_dir='demos/4_compose/conf') as task:
-        assert task.job_ret.cfg == {}
-
-
-def test_demos_compose__override_dataset(task_runner):
-    with task_runner(conf_dir='demos/4_compose/conf',
-                     overrides=['dataset=imagenet']) as task:
+def test_demos_config_splitting(task_runner):
+    with task_runner(conf_dir='demos/4_config_splitting/conf',
+                     conf_filename='config.yaml') as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(
                 name='imagenet',
                 path='/datasets/imagenet'
+            ),
+            optimizer=dict(
+                lr=0.001,
+                type='nesterov'
             )
         )
         verify_dir_outputs(task.job_ret.working_dir)
 
 
-def test_demos_compose__override_dataset__wrong(task_runner):
+def test_demos_config_groups__override_dataset__wrong(task_runner):
     with pytest.raises(MissingConfigException) as ex:
-        with task_runner(conf_dir='demos/4_compose/conf', overrides=['dataset=wrong_name']):
+        with task_runner(conf_dir='demos/5_config_groups/conf', overrides=['optimizer=wrong_name']):
             pass
-    assert sorted(ex.value.options) == sorted(['imagenet', 'cifar10'])
+    assert sorted(ex.value.options) == sorted(['adam', 'nesterov'])
 
 
-def test_demos_compose__override_all_configs(task_runner):
-    with task_runner(conf_dir='demos/2_compose/conf',
-                     overrides=['dataset=imagenet', 'model=resnet', 'optimizer=adam']) as task:
+def test_demos_config_groups__override_all_configs(task_runner):
+    with task_runner(conf_dir='demos/5_config_groups/conf',
+                     overrides=['optimizer=adam', 'optimizer.lr=10']) as task:
         assert task.job_ret.cfg == dict(
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet'
-            ),
-            model=dict(
-                type='resnet',
-                num_layers=50,
-                width=10
-            ),
             optimizer=dict(
                 type='adam',
-                lr=0.1,
+                lr=10,
                 beta=0.01
             ),
         )
         verify_dir_outputs(task.job_ret.working_dir)
-
-
-def test_demos_compose__override_all_configs(task_runner):
-    with task_runner(conf_dir='demos/5_defaults/conf/', conf_filename='config.yaml') as task:
-        assert task.job_ret.cfg == dict(
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet'
-            ),
-            model=dict(
-                type='alexnet',
-                num_layers=7
-            ),
-            optimizer=dict(
-                type='nesterov',
-                lr=0.001,
-            ),
-        )
-        verify_dir_outputs(task.job_ret.working_dir)
-
-
-def test_demos_defaults__override_all_configs_and_overrides(task_runner):
-    with task_runner(conf_dir='demos/5_defaults/conf/',
-                     conf_filename='config.yaml',
-                     overrides=["dataset.name=foobar"]) as task:
-        assert task.job_ret.cfg == dict(
-            dataset=dict(
-                name='foobar',
-                path='/datasets/imagenet'
-            ),
-            model=dict(
-                type='alexnet',
-                num_layers=7
-            ),
-            optimizer=dict(
-                type='nesterov',
-                lr=0.001,
-            ),
-        )
 
 
 @pytest.mark.parametrize('args,output_conf', [
@@ -181,52 +136,11 @@ def test_demo_2_logging(args, expected):
 
 
 @pytest.mark.parametrize('args,output_conf', [
-    ([], OmegaConf.create(dict(app=dict(name='the nameless one')))),
-    (['app.name=morte'], OmegaConf.create(dict(app=dict(name='morte')))),
+    ([], OmegaConf.create(dict(dataset=dict(name='imagenet', path='/datasets/imagenet')))),
+    (['dataset.path=abc'], OmegaConf.create(dict(dataset=dict(name='imagenet', path='abc')))),
 ])
 def test_demo_3_config_file(args, output_conf):
     cmd = [sys.executable, 'demos/3_config_file/config_file.py']
-    cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == output_conf.pretty() + "\n"
-
-
-@pytest.mark.parametrize('args,output_conf', [
-    ([], OmegaConf.create()),
-    (['dataset=imagenet'], OmegaConf.create(dict(dataset=dict(name='imagenet', path='/datasets/imagenet')))),
-    (['dataset=imagenet', 'optimizer=adam', 'model=resnet'],
-     OmegaConf.create(dict(
-         dataset=dict(name='imagenet', path='/datasets/imagenet'),
-         optimizer=dict(type='adam', lr=0.1, beta=0.01),
-         model=dict(num_layers=50, type='resnet', width=10))
-     )),
-    (['dataset=imagenet', 'optimizer=adam', 'dataset.path=/imagenet2'],
-     OmegaConf.create(dict(
-         dataset=dict(name='imagenet', path='/imagenet2'),
-         optimizer=dict(beta=0.01, lr=0.1, type='adam')
-     )))
-])
-def test_demo_4_compose(args, output_conf):
-    cmd = [sys.executable, 'demos/4_compose/compose.py']
-    cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == output_conf.pretty() + "\n"
-
-
-@pytest.mark.parametrize('args,output_conf', [
-    ([], OmegaConf.create(dict(
-        dataset=dict(name='imagenet', path='/datasets/imagenet'),
-        optimizer=dict(type='nesterov', lr=0.001),
-        model=dict(type='alexnet', num_layers=7),
-    ))),
-    (['dataset=cifar10'], OmegaConf.create(dict(
-        dataset=dict(name='cifar10', path='/datasets/cifar10'),
-        optimizer=dict(type='nesterov', lr=0.001),
-        model=dict(type='alexnet', num_layers=7),
-    )))
-])
-def test_demo_5_defaults(args, output_conf):
-    cmd = [sys.executable, 'demos/5_defaults/defaults.py']
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == output_conf.pretty() + "\n"

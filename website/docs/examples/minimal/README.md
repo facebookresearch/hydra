@@ -4,7 +4,7 @@ title: Minimal example
 sidebar_label: Minimal example
 ---
 
-This is a minimal example of a Hydra app.
+This is a minimal example of a Hydra app. we will evolve it slowly to show-case more Hydra features.
 Note that the annotated function takes a `cfg` argument. This `cfg` is an OmegaConf object created and passed in by Hydra.
 Please read about [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) to learn how to best use it.
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 ### Output
 By default, Hydra will just pass in an empty configuration object:
 ```yaml
-$ python demos/0_minimal/minimal.py
+$ python experiment.py
 {}
 ```
 
@@ -38,4 +38,4 @@ hello:
   b: 5671
 ```
 
-
+Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/0_minimal/minimal.py).
