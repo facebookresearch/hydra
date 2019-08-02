@@ -26,6 +26,13 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.7' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
+  coverage:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: sudo pip install nox
+      - run: nox -s coverage
   
   deploy-website:
     docker:
