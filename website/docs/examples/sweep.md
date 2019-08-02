@@ -1,14 +1,14 @@
 ---
-id: example
+id: sweep
 title: Sweep example
 sidebar_label: Sweep example
 ---
 
-Hydra supports running jobs on Slurm and Chronos using [fairtask](https://github.com/fairinternal/fairtask)
-and [submitit](https://github.com/fairinternal/submitit)
+Hydra supports running jobs on Slurm and Chronos using [fairtask](https://github.com/facebookresearch/fairtask)
+and [submitit](https://github.com/facebookresearch/submitit)
 
 Both launchers are Hydra plugins, and each takes some specific configuration for things like how many GPUs to use etc.
-See [this](https://github.com/fairinternal/hydra/tree/master/demos/6_sweep/conf/.hydra) for an example Hydra
+See [this](https://github.com/facebookresearch/hydra/tree/master/demos/6_sweep/conf/.hydra) for an example Hydra
 configuration that can run on Slurm and submitit.
 
 Running parameter sweeps is easy, just add --sweep or -s to your your app execution.
@@ -61,11 +61,11 @@ default in the .hydra/hydra.yaml config file.
 
 For example:
 ```text
-$ experiment.py  -s   launcher=submitit
+$ python experiment.py  -s launcher=submitit
 [2019-07-27 22:42:48,060][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-07-27_22-42-48
 [2019-07-27 22:42:48,062][INFO] -       #0 :
 ```
 
 Sweep support is currently very basic and this area will improve further.
 
-Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/6_sweep).
+Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/6_sweep).

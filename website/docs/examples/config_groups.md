@@ -1,5 +1,5 @@
 ---
-id: example
+id: config_groups
 title: Config groups
 sidebar_label: Config groups
 ---
@@ -69,7 +69,7 @@ optimizer:
   type: adam
 ```
 
-Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/5_config_groups).
+Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/5_config_groups).
 
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>: This example shows a single config group, but you can easily add as many as you want.

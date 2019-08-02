@@ -1,6 +1,6 @@
 ---
 id: intro
-title: Customizing Hydra
+title: Configuring  Hydra
 sidebar_label: Introduction
 ---
 

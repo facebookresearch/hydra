@@ -71,3 +71,5 @@ configuration:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
     subdir: ${job:num}_${job:id}_${job:override_dirname}/${random_seed}
 ```
+
+Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/99_hydra_configuration/workdir).

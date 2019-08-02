@@ -1,5 +1,5 @@
 ---
-id: example
+id: working_directory
 title: Working directory
 sidebar_label: Working directory
 ---
@@ -50,4 +50,4 @@ We have 4 files there:
 * `overrides.yaml`: A configuration constructed from the passed in command line arguments
 * `experiment.log`: A log file created for this job. Since we did not log anything it's empty.
 
-Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/1_working_directory/working_directory.py).
+Check the [runnable example](https://github.com/facebookresearch/hydra/blob/master/demos/1_working_directory/working_directory.py).

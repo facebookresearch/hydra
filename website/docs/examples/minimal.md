@@ -1,5 +1,5 @@
 ---
-id: example
+id: minimal
 title: Minimal example
 sidebar_label: Minimal example
 ---
@@ -38,4 +38,4 @@ hello:
   b: 5671
 ```
 
-Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/0_minimal/minimal.py).
+Check the [runnable example](https://github.com/facebookresearch/hydra/blob/master/demos/0_minimal/minimal.py).

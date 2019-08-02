@@ -12,9 +12,9 @@ A proper pip package will be available after Hydra is open sourced.
 Install/upgrade Hydra and its plugins by running the following command:
 ```
 pip install --upgrade --upgrade-strategy=eager \
-'git+ssh://git@github.com/fairinternal/hydra.git@master' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/fairtask' \
-'git+ssh://git@github.com/fairinternal/hydra.git@master#subdirectory=plugins/submitit' 
+'git+ssh://git@github.com/facebookresearch/hydra.git@master' \
+'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fairtask' \
+'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/submitit' 
 ```
 
 ### Uninstalling

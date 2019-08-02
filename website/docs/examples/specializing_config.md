@@ -1,5 +1,5 @@
 ---
-id: example
+id: specializing_config
 title: Specializing configuration
 sidebar_label: Specializing configuration
 ---
@@ -74,4 +74,4 @@ model:
   type: alexnet
 ```
 
-Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/8_specializing_config).
+Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/8_specializing_config).

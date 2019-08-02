@@ -1,5 +1,5 @@
 ---
-id: example
+id: logging
 title: Python logging
 sidebar_label: Python logging
 ---
@@ -50,5 +50,5 @@ $ python experiment.py -v root
 Logging can be [customized](../../configure_hydra/customize_working_directory/example)
 
 
-Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/2_logging/logging_example.py).
+Check the [runnable example](https://github.com/facebookresearch/hydra/blob/master/demos/2_logging/logging_example.py).
 

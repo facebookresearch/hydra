@@ -1,5 +1,5 @@
 ---
-id: example
+id: config_file
 title: Config file
 sidebar_label: Config file
 ---
@@ -46,5 +46,5 @@ dataset:
   path: /datasets/new_imagenet
 ```
 
-Check the [runnable example](https://github.com/fairinternal/hydra/blob/master/demos/3_config_file).
+Check the [runnable example](https://github.com/facebookresearch/hydra/blob/master/demos/3_config_file).
 

@@ -1,5 +1,5 @@
 ---
-id: example
+id: config_splitting
 title: Splitting a configuration file
 sidebar_label: Splitting a configuration file
 ---
@@ -72,4 +72,4 @@ optimizer:
   type: nesterov
 ```
 
-Check the [runnable example](https://github.com/fairinternal/hydra/tree/master/demos/4_config_splitting).
+Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/4_config_splitting).
