@@ -15,7 +15,7 @@ from hydra.test_utils.utils import verify_dir_outputs
 
 
 def demo_6_sweep_test_impl(overrides):
-    cmd = [sys.executable, 'demos/6_sweep/sweep_example.py']
+    cmd = [sys.executable, 'demos/6_sweep/experiment.py']
     try:
         tempdir = tempfile.mkdtemp()
         cmd.extend([
@@ -41,14 +41,6 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides):
         assert len(job_ret) == 1
         assert job_ret[0].overrides == []
         assert job_ret[0].cfg == dict(
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet'
-            ),
-            model=dict(
-                type='alexnet',
-                num_layers=7
-            ),
             optimizer=dict(
                 type='nesterov',
                 lr=0.001,
@@ -63,14 +55,6 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
                          conf_filename='config.yaml',
                          overrides=overrides)
     base = OmegaConf.create(dict(
-        dataset=dict(
-            name='imagenet',
-            path='/datasets/imagenet'
-        ),
-        model=dict(
-            type='alexnet',
-            num_layers=7
-        ),
         optimizer=dict(
             type='nesterov',
             lr=0.001,
