@@ -8,10 +8,10 @@
 module.exports = {
     title: 'Hydra',
     tagline: 'Flexible experimentation framework',
-    url: 'https://fairinternal.github.io/',
+    url: 'https://facebookresearch.github.io/',
     baseUrl: '/hydra/',
     favicon: 'img/favicon.ico',
-    organizationName: 'fairinternal', // Usually your GitHub org/user name.
+    organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
     themeConfig: {
         navbar: {
