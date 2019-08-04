@@ -4,7 +4,7 @@ Hydra is an experimentation framework.
 
 Its mission is to make experimentation great again.
 
-The the [web site](https://facebookresearch.github.io/hydra/) for more information.
+Check the [web site](https://facebookresearch.github.io/hydra/) for more information.
 
 ## License
 Hydra is licensed under [MIT License](LICENSE).
