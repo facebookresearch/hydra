@@ -81,12 +81,13 @@ class Hydra:
         return ret
 
 
-def run_hydra(task_function, config_path):
+def run_hydra(task_function, config_path, task_name=None):
     stack = inspect.stack()
     calling_file = stack[2][0].f_locals['__file__']
 
     target_file = os.path.basename(calling_file)
-    task_name = os.path.splitext(target_file)[0]
+    if task_name is None:
+        task_name = os.path.splitext(target_file)[0]
     args = get_args()
 
     global log
@@ -153,11 +154,11 @@ def run_hydra(task_function, config_path):
         print("Command not specified")
 
 
-def main(config_path="."):
+def main(config_path=".", task_name=None):
     def main_decorator(task_function):
         def decorated_main():
             try:
-                run_hydra(task_function, config_path)
+                run_hydra(task_function, config_path, task_name)
             except KeyboardInterrupt:
                 sys.exit(-1)
             except SystemExit:
