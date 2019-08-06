@@ -86,6 +86,9 @@ def test_load_strict():
     with pytest.raises(KeyError):
         cfg1.not_here
 
+    with pytest.raises(KeyError):
+        cfg1.dataset.not_here
+
     config_loader = ConfigLoader(conf_dir='demos/3_config_file', conf_filename='config.yaml', strict_task_cfg=True)
     with pytest.raises(KeyError):
         config_loader.load_task_cfg(cli_overrides=['dataset.bad_key=foobar'])
