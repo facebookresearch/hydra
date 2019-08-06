@@ -5,9 +5,11 @@ import tempfile
 
 import pytest
 import shutil
-from omegaconf import OmegaConf
-
+import os
 from hydra import Hydra
+
+# CircleCI does not have the environment variable USER, breaking the tests.
+os.environ['USER'] = 'test_user'
 
 log = logging.getLogger(__name__)
 

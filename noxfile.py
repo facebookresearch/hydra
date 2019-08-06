@@ -1,7 +1,6 @@
 import os
 
 import nox
-import copy
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,7 +28,7 @@ def get_all_plugins():
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def nox_test_hydra_core(session):
+def test_core(session):
     session.install('--upgrade', 'setuptools', 'pip')
     session.install('pytest')
     session.chdir(BASE)
