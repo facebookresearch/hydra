@@ -49,6 +49,7 @@ dataset:
 
 
 ### Strict mode
+>>>>>>> 52a84403953036f59f7c956d5c9233afa262ee7e
 OmegaConf supports [various flags](https://omegaconf.readthedocs.io/en/latest/usage.html#configuration-flags) that are changing the behavior of your configuration object.
 One of those flags is the `struct` flag , which cause any attempt to access or set a key that is not already in the config to result in an exception
 This is useful if you want to get an error when you have a typo in your command line.
