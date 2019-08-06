@@ -84,7 +84,7 @@ class ConfigLoader:
             family_dir = os.path.join(cfg_dir, family)
         else:
             family_dir = cfg_dir
-        cfg_path = os.path.join(family_dir, name) + '.yaml'
+        cfg_path = os.path.join(family_dir, str(name)) + '.yaml'
         new_cfg = self._load_config_impl(is_pkg, cfg_path)
         if new_cfg is None:
             if required:
