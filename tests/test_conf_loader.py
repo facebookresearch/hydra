@@ -78,7 +78,7 @@ def test_load_history():
 def test_load_strict():
     """
     Ensure that in strict mode we can override only things that are already in the config
-    :return: 
+    :return:
     """
     config_loader = ConfigLoader(conf_dir='demos/3_config_file', conf_filename='config.yaml', strict_task_cfg=True)
     cfg1 = config_loader.load_task_cfg(cli_overrides=['dataset.name=foobar'])

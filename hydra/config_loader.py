@@ -174,7 +174,7 @@ class ConfigLoader:
         if strict:
             OmegaConf.set_struct(cfg, True)
         # merge in remaining overrides
-        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(overrides))
+        cfg.merge_with_dotlist(overrides)
         # remove config block from resulting cfg.
         del cfg['defaults']
         return cfg
