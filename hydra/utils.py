@@ -157,7 +157,7 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
     task_cfg = config_loader.load_task_cfg(overrides)
     # merge with task to allow user to change the behavior of the working directory/subdir from the task itself.
     # this can be useful for having output subdir that depends on random_seed, for example.
-    hydra_and_task_cfg = OmegaConf.merge(task_cfg, hydra_cfg)
+    hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
     old_cwd = os.getcwd()
     working_dir = job_dir
     if job_subdir_key is not None:

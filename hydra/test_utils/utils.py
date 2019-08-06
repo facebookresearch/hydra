@@ -35,13 +35,14 @@ def task_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=[]):
+    def _(conf_dir, conf_filename=None, overrides=[], strict=False):
         task = TaskTestFunction()
         hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
                       conf_filename=conf_filename,
                       task_function=task,
-                      verbose=None)
+                      verbose=None,
+                      strict=strict)
 
         task.hydra = hydra
         task.overrides = overrides
@@ -76,13 +77,14 @@ def sweep_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=[]):
+    def _(conf_dir, conf_filename=None, overrides=[], strict=False):
         sweep = SweepTaskFunction()
         hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
                       conf_filename=conf_filename,
                       task_function=sweep,
-                      verbose=None)
+                      verbose=None,
+                      strict=strict)
 
         sweep.hydra = hydra
         sweep.overrides = overrides

@@ -3,11 +3,12 @@ import inspect
 import logging
 import os
 import sys
+
 import pkg_resources
+
 from omegaconf import OmegaConf
-from .config_loader import ConfigLoader
-from .sweeper import BasicSweeper
 from . import utils
+from .config_loader import ConfigLoader
 from .plugins import Plugins
 
 
@@ -42,13 +43,14 @@ class Hydra:
                  conf_dir,
                  conf_filename,
                  task_function,
-                 verbose):
+                 verbose,
+                 strict):
         utils.setup_globals()
         utils.JobRuntime().set('name', utils.get_valid_filename(task_name))
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
-        self.config_loader = ConfigLoader(conf_dir=self.conf_dir, conf_filename=self.conf_filename)
+        self.config_loader = ConfigLoader(conf_dir=self.conf_dir, conf_filename=self.conf_filename, strict_task_cfg=strict)
         self.verbose = verbose
 
     def run(self, overrides):
@@ -81,7 +83,7 @@ class Hydra:
         return ret
 
 
-def run_hydra(task_function, config_path):
+def run_hydra(task_function, config_path, strict):
     stack = inspect.stack()
     calling_file = stack[2][0].f_locals['__file__']
 
@@ -108,7 +110,8 @@ def run_hydra(task_function, config_path):
                   conf_dir=conf_dir,
                   conf_filename=conf_filename,
                   task_function=task_function,
-                  verbose=args.verbose)
+                  verbose=args.verbose,
+                  strict=strict)
 
     if args.run + args.cfg + args.sweep > 1:
         raise ValueError("Only one of --run, --sweep and --cfg can be specified")
@@ -153,11 +156,17 @@ def run_hydra(task_function, config_path):
         print("Command not specified")
 
 
-def main(config_path="."):
+def main(config_path=".", strict=False):
+    """
+    :param config_path: the config path, can be a directory in which it's used as the config root or a file to load 
+    :param strict: strict mode, will throw an error if command line overrides are not changing an existing key or 
+           if the code is accessing a non existent key
+    """
+
     def main_decorator(task_function):
         def decorated_main():
             try:
-                run_hydra(task_function, config_path)
+                run_hydra(task_function, config_path, strict)
             except KeyboardInterrupt:
                 sys.exit(-1)
             except SystemExit:
