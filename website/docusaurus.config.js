@@ -22,17 +22,25 @@ module.exports = {
             },
             links: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
+                {to: 'https://github.com/facebookresearch/hydra', label: 'Github', position: 'left'},
             ],
         },
         footer: {
             style: 'dark',
             links: [
                 {
-                    title: 'Docs',
                     items: [
                         {
                             label: 'Docs',
                             to: 'docs/intro',
+                        },
+                        {
+                            label: 'Github',
+                            to: 'https://github.com/facebookresearch/hydra',
+                        },
+                        {
+                            label: 'OmegaConf',
+                            to: 'https://github.com/omry/omegaconf',
                         },
                     ],
                 },

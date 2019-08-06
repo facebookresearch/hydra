@@ -19,8 +19,8 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+          Hydra was designed from the ground up to be easy to use and allow you to skip the boilerplate code and jump
+          straight into the code you are actually interested in writing.
       </>
     ),
   },
@@ -29,18 +29,23 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+          Hydra lets you focus on your Experiment, and reduces the boilerplate code you need to write.
+          For example:
+          <li>Command line flags</li>
+           <li>Loading configuration files</li>
+          <li>Output directory management</li>
+          <li>Logging configuration</li>
+          <li>Launching to a cluster</li>
       </>
     ),
   },
   {
-    title: <>Powered by React</>,
+    title: <>Plugable architecture</>,
     imageUrl: 'img/undraw_docusaurus_react.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+          Hydra has a Pluggable architecture, allowing it to be extended to integrate with your own infrastructure
+          while maintaining the rest of the flexibility and power it provides.
       </>
     ),
   },
@@ -51,8 +56,8 @@ function Home() {
   const {siteConfig = {}} = context;
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`${siteConfig.title}`}
+      description="Flexible experimentation framework">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>
