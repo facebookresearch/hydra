@@ -8,23 +8,31 @@ from .errors import MissingConfigException
 
 
 class ConfigLoader:
-    def __init__(self, conf_dir, conf_filename):
+    def __init__(self, conf_dir, conf_filename, strict_task_cfg=False):
         self.cfg_dir = conf_dir
         self.conf_filename = conf_filename
         self.all_config_checked = []
+        self.strict_task_cfg = strict_task_cfg
 
     def get_load_history(self):
         return copy.deepcopy(self.all_config_checked)
 
     def load_hydra_cfg(self, overrides=[]):
-        hydra_cfg_defaults = self._create_cfg(cfg_dir='pkg://hydra.default_conf', cfg_filename='hydra.yaml')
+        hydra_cfg_defaults = self._create_cfg(
+            cfg_dir='pkg://hydra.default_conf',
+            cfg_filename='hydra.yaml',
+            strict=False)
         if os.path.exists(self.cfg_dir) and not os.path.isdir(self.cfg_dir):
             raise IOError("conf_dir is not a directory : {}".format(self.cfg_dir))
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
 
         hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
         if os.path.exists(hydra_cfg_path):
-            hydra_cfg = self._create_cfg(cfg_dir, "hydra.yaml", overrides)
+            hydra_cfg = self._create_cfg(
+                cfg_dir=cfg_dir,
+                cfg_filename="hydra.yaml",
+                strict=False,
+                cli_overrides=overrides)
         else:
             hydra_cfg = OmegaConf.from_dotlist(overrides)
         # strip everything outside of the hydra tree from the hydra config
@@ -40,7 +48,11 @@ class ConfigLoader:
         return hydra_cfg
 
     def load_task_cfg(self, cli_overrides=[]):
-        return self._create_cfg(self.cfg_dir, self.conf_filename, cli_overrides)
+        return self._create_cfg(
+            cfg_dir=self.cfg_dir,
+            cfg_filename=self.conf_filename,
+            cli_overrides=cli_overrides,
+            strict=self.strict_task_cfg)
 
     def load_configuration(self, overrides=[]):
         assert isinstance(overrides, list)
@@ -49,7 +61,8 @@ class ConfigLoader:
 
         task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
                                     cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides)
+                                    cli_overrides=overrides,
+                                    strict=self.strict_task_cfg)
         return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
 
     def _load_config_impl(self, is_pkg, filename):
@@ -98,7 +111,7 @@ class ConfigLoader:
         else:
             return os.path.exists(filename)
 
-    def _create_cfg(self, cfg_dir, cfg_filename, cli_overrides=[]):
+    def _create_cfg(self, cfg_dir, cfg_filename, strict, cli_overrides=[]):
         is_pkg = cfg_dir.startswith('pkg://')
         if is_pkg:
             cfg_dir = cfg_dir[len('pkg://'):]
@@ -158,7 +171,8 @@ class ConfigLoader:
                                          family='.',
                                          name=default,
                                          required=True)
-
+        if strict:
+            OmegaConf.set_struct(cfg, True)
         # merge in remaining overrides
         cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(overrides))
         # remove config block from resulting cfg.
