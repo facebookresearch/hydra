@@ -23,8 +23,9 @@ module.exports = {
         ],
         'Configuring Hydra': [
             'configure_hydra/intro',
-            'configure_hydra/customize_logging/example',
-            'configure_hydra/customize_working_directory/example',
+            'configure_hydra/logging',
+            'configure_hydra/workdir',
+            'configure_hydra/task_name',
         ],
 
     }

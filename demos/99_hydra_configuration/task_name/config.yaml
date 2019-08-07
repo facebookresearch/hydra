@@ -1,0 +1,2 @@
+hydra:
+  name: name_from_config_file

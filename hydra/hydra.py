@@ -50,7 +50,9 @@ class Hydra:
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
-        self.config_loader = ConfigLoader(conf_dir=self.conf_dir, conf_filename=self.conf_filename, strict_task_cfg=strict)
+        self.config_loader = ConfigLoader(conf_dir=self.conf_dir,
+                                          conf_filename=self.conf_filename,
+                                          strict_task_cfg=strict)
         self.verbose = verbose
 
     def run(self, overrides):

@@ -1,5 +1,5 @@
 ---
-id: example
+id: logging
 title: Customizing logging
 sidebar_label: Customizing logging
 ---
