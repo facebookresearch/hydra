@@ -1,6 +1,6 @@
 hydra:
   launcher:
-    class: hydra_plugins.launchers.SubmititLauncher
+    class: hydra_plugins.submitit.SubmititLauncher
     params:
       # one of auto,local,slurm and chronos
       queue: slurm
