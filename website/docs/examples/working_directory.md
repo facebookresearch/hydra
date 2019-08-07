@@ -50,4 +50,6 @@ We have 4 files there:
 * `overrides.yaml`: A configuration constructed from the passed in command line arguments
 * `experiment.log`: A log file created for this job. Since we did not log anything it's empty.
 
+Working directory can be [customized](../configure_hydra/workdir).
+
 Check the [runnable example](https://github.com/facebookresearch/hydra/blob/master/demos/1_working_directory/working_directory.py).
