@@ -40,15 +40,6 @@ class ConfigLoader:
         clean = OmegaConf.create()
         clean.hydra = hydra_cfg.hydra
         hydra_cfg = clean
-        # the following keys are not stripped from the override.
-        # this means that we allow client code to get those overrides.
-        # this supports the use case of specifying - for example - hydra.name in the task configuration file
-        # and allowing the command line to override it.
-        whitelisted = ['hydra.name']
-        hydra_overrides = [x for x in overrides if x.startswith("hydra.") and x.split('=')[0] not in whitelisted]
-        # remove all matching overrides from overrides list
-        for override in hydra_overrides:
-            overrides.remove(override)
         return hydra_cfg
 
     def load_task_cfg(self, cli_overrides=[]):

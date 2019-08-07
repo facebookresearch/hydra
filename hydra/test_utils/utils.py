@@ -14,6 +14,18 @@ os.environ['USER'] = 'test_user'
 log = logging.getLogger(__name__)
 
 
+def strip_node(cfg, key):
+    fragments = key.split('.')
+    while cfg.select(key) is not None:
+        c = cfg
+        for f in fragments[0:-1]:
+            c = c[f]
+        del c[fragments.pop(-1)]
+        if len(c) > 0:
+            break
+        key = '.'.join(fragments)
+
+
 @pytest.fixture(scope="function")
 def task_runner():
     class TaskTestFunction:
@@ -32,6 +44,7 @@ def task_runner():
             overrides = copy.deepcopy(self.overrides)
             overrides.append("hydra.run.dir={}".format(self.temp_dir))
             self.job_ret = self.hydra.run(overrides=overrides)
+            strip_node(self.job_ret.cfg, 'hydra.run.dir')
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
@@ -74,6 +87,10 @@ def sweep_runner():
             overrides = copy.deepcopy(self.overrides)
             overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
             self.returns = self.hydra.sweep(overrides=overrides)
+            flat = [item for sublist in self.returns for item in sublist]
+            for ret in flat:
+                strip_node(ret.cfg, 'hydra.sweep.dir')
+
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):

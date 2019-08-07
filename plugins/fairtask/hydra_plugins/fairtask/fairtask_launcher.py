@@ -55,7 +55,7 @@ class FAIRTaskLauncher(Launcher):
         runs = []
         for job_num in range(num_jobs):
             sweep_override = list(job_overrides[job_num])
-            log.info("\t#{} : {}".format(job_num, " ".join(sweep_override)))
+            log.info("\t#{} : {}".format(job_num, " ".join(utils.filter_overrides(sweep_override))))
             runs.append(queue(self.launch_job)(
                 sweep_override,
                 self.hydra_cfg.hydra.sweep.dir,
