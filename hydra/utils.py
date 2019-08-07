@@ -148,6 +148,7 @@ def save_config(cfg, filename):
 
 def get_overrides_dirname(lst):
     assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
+    lst = [x for x in lst if not x.startswith('hydra.')]
     lst.sort()
     return re.sub(
         pattern='[=]',
