@@ -148,7 +148,6 @@ def save_config(cfg, filename):
 
 def get_overrides_dirname(lst):
     assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
-    lst = [x for x in lst if not x.startswith('hydra.')]
     lst.sort()
     return re.sub(
         pattern='[=]',
@@ -157,8 +156,16 @@ def get_overrides_dirname(lst):
     )
 
 
+def filter_overrides(overrides):
+    """
+    :param overrides: overrides list
+    :return: returning a new overrides list with all the keys starting with hydra. fitlered. 
+    """
+    return [x for x in overrides if not x.startswith('hydra.')]
+
+
 def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
-    JobRuntime().set('override_dirname', get_overrides_dirname(overrides))
+    JobRuntime().set('override_dirname', get_overrides_dirname(filter_overrides(overrides)))
     task_cfg = config_loader.load_task_cfg(overrides)
     # merge with task to allow user to change the behavior of the working directory/subdir from the task itself.
     # this can be useful for having output subdir that depends on random_seed, for example.

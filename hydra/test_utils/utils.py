@@ -32,6 +32,12 @@ def task_runner():
             overrides = copy.deepcopy(self.overrides)
             overrides.append("hydra.run.dir={}".format(self.temp_dir))
             self.job_ret = self.hydra.run(overrides=overrides)
+            # strip the test-added hydra.run.dir
+            del self.job_ret.cfg['hydra']['run']['dir']
+            if len(self.job_ret.cfg.hydra.run) == 0:
+                del self.job_ret.cfg['hydra']['run']
+            if len(self.job_ret.cfg.hydra) == 0:
+                del self.job_ret.cfg['hydra']
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
