@@ -63,6 +63,10 @@ def fullname(o):
         return o.__module__ + "." + o.__class__.__qualname__
 
 
+def get_method(path):
+    return get_class(path)
+
+
 def get_class(path):
     try:
         from importlib import import_module
