@@ -1,5 +1,5 @@
 ---
-id: example
+id: workdir
 title: Customizing working directory pattern
 sidebar_label: Customizing working directory pattern
 ---
