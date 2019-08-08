@@ -1,3 +1,6 @@
+"""
+A sweeper that operates on generational batches of jobs
+"""
 from abc import abstractmethod
 
 from hydra.plugins import Plugins

@@ -1,3 +1,16 @@
+"""
+Basic sweeper can generate cartesian products of multiple input commands, each with a
+comma separated list of values.
+for example, for:
+python foo.py a=1,2,3 b=10,20
+Basic Sweeper would generate 6 jobs:
+1,10
+1,20
+2,10
+2,20
+3,10
+3,20
+"""
 import copy
 
 from hydra import utils
@@ -5,8 +18,15 @@ from .step_sweeper import StepSweeper
 
 
 class BasicSweeper(StepSweeper):
+    """
+    Basic sweeper
+    """
 
     def __init__(self):
+        """
+        Instantiates
+        """
+        super(BasicSweeper, self).__init__()
         self.job_results = None
 
     def get_job_batch(self):
