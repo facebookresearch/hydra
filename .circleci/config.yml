@@ -50,6 +50,7 @@ jobs:
             git config --global user.email omry@users.noreply.github.com
             git config --global user.name omry
             echo "machine github.com login docusaurus-bot password $GITHUB_TOKEN" > ~/.netrc
+            echo "The token is $GITHUB_TOKEN"
             cd website && yarn install && GIT_USER=docusaurus-bot yarn deploy
 
 workflows:
