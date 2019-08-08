@@ -48,7 +48,8 @@ class CleanCommand(distutils.cmd.Command):
             '__pycache__',
             '.pyc',
         ]
-        deletion_list = CleanCommand.find('.', includes=delete_patterns, excludes=['\\.nox/.*'])
+        deletion_list = CleanCommand.find(
+            '.', includes=delete_patterns, excludes=['\\.nox/.*'])
 
         for f in deletion_list:
             if exists(f):

@@ -67,7 +67,9 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
-            expected_conf = OmegaConf.merge(base, OmegaConf.from_dotlist(job_ret.overrides))
+            expected_conf = OmegaConf.merge(
+                base, OmegaConf.from_dotlist(
+                    job_ret.overrides))
             assert job_ret.overrides == ['a={}'.format(i)]
             del job_ret.cfg['hydra']
             assert job_ret.cfg == expected_conf

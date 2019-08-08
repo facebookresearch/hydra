@@ -11,7 +11,9 @@ DEFAULT_PYTHON_VERSIONS = [
     '3.7',
 ]
 
-PYTHON_VERSIONS = os.environ.get("NOX_PYTHON_VERSIONS", ','.join(DEFAULT_PYTHON_VERSIONS)).split(',')
+PYTHON_VERSIONS = os.environ.get(
+    "NOX_PYTHON_VERSIONS",
+    ','.join(DEFAULT_PYTHON_VERSIONS)).split(',')
 
 PLUGINS_INSTALL_COMMANDS = (
     ('pip', 'install', '.'),
@@ -37,19 +39,26 @@ def test_core(session):
 
 
 def get_python_versions(session, setup_py):
-    out = session.run('python', setup_py, '--classifiers', silent=True).split('\n')
-    pythons = filter(lambda line: 'Programming Language :: Python' in line, out)
+    out = session.run(
+        'python',
+        setup_py,
+        '--classifiers',
+        silent=True).split('\n')
+    pythons = filter(
+        lambda line: 'Programming Language :: Python' in line, out)
     return [p[len('Programming Language :: Python :: '):] for p in pythons]
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize('install_cmd', PLUGINS_INSTALL_COMMANDS, ids=[' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
+@nox.parametrize('install_cmd', PLUGINS_INSTALL_COMMANDS, ids=[
+                 ' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
 @nox.parametrize('plugin_name', plugin_names(), ids=plugin_names())
 def test_plugin(session, plugin_name, install_cmd):
     session.install('--upgrade', 'setuptools', 'pip')
 
     # Verify this plugin supports the python we are testing on, skip otherwise
-    plugin_python_versions = get_python_versions(session, os.path.join(BASE, "plugins", plugin_name, 'setup.py'))
+    plugin_python_versions = get_python_versions(
+        session, os.path.join(BASE, "plugins", plugin_name, 'setup.py'))
     if session.python not in plugin_python_versions:
         session.skip(
             "Not testing {} on Python {}, supports [{}]".format(
@@ -92,12 +101,28 @@ def coverage(session):
     session.run('pip', 'install', '-e', '.', silent=True)
     # Install all plugins in session
     for plugin in all_plugins:
-        session.run('pip', 'install', '-e', os.path.join('plugins', plugin[0]), silent=True)
+        session.run(
+            'pip',
+            'install',
+            '-e',
+            os.path.join(
+                'plugins',
+                plugin[0]),
+            silent=True)
 
     session.run("coverage", "erase")
     session.run('coverage', 'run', '--append', '-m', 'pytest', silent=True)
     for plugin in plugin_names():
-        session.run('coverage', 'run', '--append', '-m', 'pytest', os.path.join('plugins', plugin), silent=True)
+        session.run(
+            'coverage',
+            'run',
+            '--append',
+            '-m',
+            'pytest',
+            os.path.join(
+                'plugins',
+                plugin),
+            silent=True)
 
     # Increase the fail_under as coverage improves
     session.run('coverage', 'report', '--fail-under=80')

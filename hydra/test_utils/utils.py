@@ -120,7 +120,9 @@ def chdir_hydra_root():
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1
     if max_up == 0:
-        raise IOError("Could not find {} in parents of {}".format(target, os.getcwd()))
+        raise IOError(
+            "Could not find {} in parents of {}".format(
+                target, os.getcwd()))
     os.chdir(cur)
 
 

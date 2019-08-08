@@ -23,7 +23,9 @@ class ConfigLoader:
             cfg_filename='hydra.yaml',
             strict=False)
         if os.path.exists(self.cfg_dir) and not os.path.isdir(self.cfg_dir):
-            raise IOError("conf_dir is not a directory : {}".format(self.cfg_dir))
+            raise IOError(
+                "conf_dir is not a directory : {}".format(
+                    self.cfg_dir))
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
 
         hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
@@ -86,11 +88,12 @@ class ConfigLoader:
                 if self._exists(is_pkg, family_dir):
                     options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
                                os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
-                    msg = "Could not load {}, available options:\n{}:\n\t{}".format(cfg_path, family,
-                                                                                    "\n\t".join(options))
+                    msg = "Could not load {}, available options:\n{}:\n\t{}".format(
+                        cfg_path, family, "\n\t".join(options))
                 else:
                     options = None
-                    msg = "Could not load {}, directory not found".format(cfg_path, family)
+                    msg = "Could not load {}, directory not found".format(
+                        cfg_path, family)
                 raise MissingConfigException(msg, cfg_path, options)
             else:
                 return cfg
@@ -118,7 +121,9 @@ class ConfigLoader:
         if cfg_filename is not None:
             main_cfg_file = os.path.join(cfg_dir, cfg_filename)
             if not ConfigLoader._exists(is_pkg, main_cfg_file):
-                raise IOError("Config file not found : {}".format(os.path.realpath(main_cfg_file)))
+                raise IOError(
+                    "Config file not found : {}".format(
+                        os.path.realpath(main_cfg_file)))
 
             main_cfg = self._load_config_impl(is_pkg, main_cfg_file)
         else:
@@ -128,7 +133,8 @@ class ConfigLoader:
         ConfigLoader._validate_config(main_cfg)
 
         # split overrides into defaults (which cause additional configs to be loaded)
-        # and overrides which triggers overriding of specific nodes in the config tree
+        # and overrides which triggers overriding of specific nodes in the
+        # config tree
         overrides = []
         defaults_changes = {}
         for override in copy.deepcopy(cli_overrides):
@@ -184,14 +190,15 @@ class ConfigLoader:
             optional: true
           - optimizer: nesterov
         """
-        assert isinstance(cfg.defaults,
-                          ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
+        assert isinstance(
+            cfg.defaults, ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
         for default in cfg.defaults:
             assert isinstance(default, DictConfig) or isinstance(default, str)
             if isinstance(default, DictConfig):
                 assert len(default) in (1, 2)
                 if len(default) == 2:
-                    assert default.optional is not None and type(default.optional) == bool
+                    assert default.optional is not None and isinstance(
+                        default.optional, bool)
                 else:
                     # optional can't be the only config key in a default
                     assert default.optional is None, "Missing config key"

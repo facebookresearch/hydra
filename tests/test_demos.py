@@ -99,10 +99,13 @@ def test_demos_config_groups__override_all_configs(task_runner):
         verify_dir_outputs(task.job_ret.working_dir)
 
 
-@pytest.mark.parametrize('args,output_conf', [
-    ([], OmegaConf.create()),
-    (['abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(dict(abc=123, hello=dict(a=456, b=5671)))),
-])
+@pytest.mark.parametrize(
+    'args,output_conf', [
+        ([], OmegaConf.create()), ([
+            'abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
+                dict(
+                    abc=123, hello=dict(
+                        a=456, b=5671)))), ])
 def test_demo_0_minimal(args, output_conf):
     cmd = [sys.executable, 'demos/0_minimal/minimal.py']
     cmd.extend(args)
@@ -116,7 +119,8 @@ def test_demo_1_workdir():
         tempdir = tempfile.mkdtemp()
         cmd.extend(['hydra.run.dir={}'.format(tempdir)])
         result = subprocess.check_output(cmd)
-        assert result.decode('utf-8') == "Working directory : {}\n".format(tempdir)
+        assert result.decode(
+            'utf-8') == "Working directory : {}\n".format(tempdir)
     finally:
         shutil.rmtree(tempdir)
 
@@ -153,7 +157,10 @@ def test_demo_3_config_file(args, output_conf):
     ('with_config_file_override.py', ['hydra.name=overridden_name'], 'overridden_name'),
 ])
 def test_demo_99_task_name(filename, args, expected_name):
-    cmd = [sys.executable, 'demos/99_hydra_configuration/task_name/' + filename]
+    cmd = [
+        sys.executable,
+        'demos/99_hydra_configuration/task_name/' +
+        filename]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == expected_name + "\n"

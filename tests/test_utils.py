@@ -54,12 +54,12 @@ def test_get_static_method(path, return_value):
 
 @pytest.mark.parametrize('conf, expected', [
     ({
-         'class': 'tests.test_utils.Foo',
-         'params': {
-             'a': 10,
-             'b': 20
-         }
-     }, Foo(10, 20))
+        'class': 'tests.test_utils.Foo',
+        'params': {
+            'a': 10,
+            'b': 20
+        }
+    }, Foo(10, 20))
 ])
 def test_class_instantiate(conf, expected):
     conf = OmegaConf.create(conf)

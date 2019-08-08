@@ -34,7 +34,7 @@ class StepSweeper(Sweeper):
     @abstractmethod
     def is_done(self):
         """
-        :return: True if no more batch of jobs should be executed 
+        :return: True if no more batch of jobs should be executed
         """
         raise NotImplementedError()
 

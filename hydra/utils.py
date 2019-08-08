@@ -30,7 +30,9 @@ class RuntimeVariables:
     def get(self, key):
         ret = self.conf.select(key)
         if ret is None:
-            raise KeyError("Key not found in {}: {}".format(type(self).__name__, key))
+            raise KeyError(
+                "Key not found in {}: {}".format(
+                    type(self).__name__, key))
         return ret
 
     def set(self, key, value):
@@ -75,7 +77,9 @@ def get_class(path):
         try:
             klass = getattr(mod, class_name)
         except AttributeError:
-            raise ImportError("Class {} is not in module {}".format(class_name, module_path))
+            raise ImportError(
+                "Class {} is not in module {}".format(
+                    class_name, module_path))
         return klass
     except ValueError as e:
         print("Error initializing class " + path)
@@ -90,7 +94,9 @@ def get_static_method(full_method_name):
         clz = get_class(class_name)
         return getattr(clz, method_name)
     except Exception as e:
-        log.error("Error getting static method {} : {}".format(full_method_name, e))
+        log.error(
+            "Error getting static method {} : {}".format(
+                full_method_name, e))
         raise e
 
 
@@ -130,7 +136,8 @@ def configure_log(log_config, verbose=None):
         root = logging.getLogger()
         root.setLevel(logging.INFO)
         handler = logging.StreamHandler(sys.stdout)
-        formatter = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] - %(message)s')
+        formatter = logging.Formatter(
+            '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s')
         handler.setFormatter(formatter)
         root.addHandler(handler)
 
@@ -159,17 +166,25 @@ def get_overrides_dirname(lst):
 def filter_overrides(overrides):
     """
     :param overrides: overrides list
-    :return: returning a new overrides list with all the keys starting with hydra. fitlered. 
+    :return: returning a new overrides list with all the keys starting with hydra. fitlered.
     """
     return [x for x in overrides if not x.startswith('hydra.')]
 
 
-def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir, job_subdir_key):
+def run_job(
+        config_loader,
+        hydra_cfg,
+        task_function,
+        overrides,
+        verbose,
+        job_dir,
+        job_subdir_key):
     filtered_overrides = filter_overrides(overrides)
     JobRuntime().set('override_dirname', get_overrides_dirname(filtered_overrides))
     task_cfg = config_loader.load_task_cfg(overrides)
     # merge with task to allow user to change the behavior of the working directory/subdir from the task itself.
-    # this can be useful for having output subdir that depends on random_seed, for example.
+    # this can be useful for having output subdir that depends on random_seed,
+    # for example.
     hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
     JobRuntime().set('name', hydra_and_task_cfg.hydra.name)
     old_cwd = os.getcwd()
@@ -200,9 +215,12 @@ def run_job(config_loader, hydra_cfg, task_function, overrides, verbose, job_dir
 
 def setup_globals():
     try:
-        # clear resolvers. this is important to flush the resolvers cache (specifically needed for unit tests)
+        # clear resolvers. this is important to flush the resolvers cache
+        # (specifically needed for unit tests)
         OmegaConf.clear_resolvers()
-        OmegaConf.register_resolver("now", lambda pattern: strftime(pattern, localtime()))
+        OmegaConf.register_resolver(
+            "now", lambda pattern: strftime(
+                pattern, localtime()))
         OmegaConf.register_resolver("job", JobRuntime().get)
         OmegaConf.register_resolver("hydra", HydraRuntime().get)
 
@@ -220,6 +238,7 @@ def get_sweep(overrides):
     lists = []
     for s in overrides:
         key, value = s.split('=')
-        lists.append(["{}={}".format(key, value) for value in value.split(',')])
+        lists.append(["{}={}".format(key, value)
+                      for value in value.split(',')])
 
     return list(itertools.product(*lists))
