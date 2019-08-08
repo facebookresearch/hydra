@@ -3,8 +3,9 @@ id: getting_started
 title: Getting started
 sidebar_label: Getting started
 ---
-The core Hydra framework supports Python 2.7 and modern Python 3.
-Individual Hydra plugins may have stricter Python requirements.
+Hydra itself supports Python 2.7 and on Python >= 3.5.
+Individual Hydra plugins may have stricter Python requirements, for example
+hydra-fairtask and hydra-submitit requires Python 3.6 or newer.
 
 ### Install/upgrade
 A proper pip package will be available after Hydra is open sourced.
@@ -20,18 +21,6 @@ pip install --upgrade --upgrade-strategy=eager \
 ### Uninstalling
 pip uninstall -y hydra hydra-submitit hydra-fairtask
 
-## Developing
-If you want to hack Hydra, you can install it in editable mode:
 
-### Install:
-Checkout this repository, Install Hydra and all the included plugins in development mode with:
-```
-pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
-```
-
-### Uninstall 
-Uninstall Hydra and all the included plugins with:
-```
-pip uninstall -y hydra && find ./plugins/ -name setup.py |\
-xargs -i python {}  --name | xargs pip uninstall  -y
-```
+### Contributing
+Check [this](https://github.com/facebookresearch/hydra/blob/master/CONTRIBUTING.md) If you want to be Hercules and hack Hydra.

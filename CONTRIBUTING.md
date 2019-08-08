@@ -2,6 +2,20 @@
 We want to make contributing to this project as easy and transparent as
 possible.
 
+
+## Getting started
+Checkout this repository, Install Hydra and all the included plugins in development mode with:
+```
+pip install -e . && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e 
+```
+
+
+You can uninstall Hydra and all the included plugins with:
+```
+pip uninstall -y hydra && find ./plugins/ -name setup.py |\
+xargs -i python {}  --name | xargs pip uninstall  -y
+```
+
 ## Pull Requests
 We actively welcome your pull requests.
 

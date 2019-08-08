@@ -49,9 +49,14 @@ dataset:
 
 
 ### Strict mode
-OmegaConf supports [various flags](https://omegaconf.readthedocs.io/en/latest/usage.html#configuration-flags) that are changing the behavior of your configuration object.
-One of those flags is the `struct` flag , which cause any attempt to access or set a key that is not already in the config to result in an exception
-This is useful if you want to get an error when you have a typo in your command line.
+Enabling strict mode will change the behavior of the `cfg` object in the following way:
+* Reading a key that is not there will result in a KeyError instead of returning None
+* Writing key that is not there would result in a KeyError instead of inserting the key
+This effects also command line overrides.
+
+This is useful for catching mistakes in the code or in the command line earlier.
+
+You can learn more about this OmegaConf functionality here [here](https://omegaconf.readthedocs.io/en/latest/usage.html#configuration-flags)
 
 This can be turned on via a `strict=True` in your hydra.main decorator:
 
