@@ -33,7 +33,7 @@ jobs:
       - checkout
       - run: sudo pip install nox
       - run: nox -s coverage
-  
+
   deploy-website:
     docker:
       - image: circleci/node:12

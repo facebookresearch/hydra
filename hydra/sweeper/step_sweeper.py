@@ -1,3 +1,7 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+"""
+A sweeper that operates on generational batches of jobs
+"""
 from abc import abstractmethod
 
 from hydra.plugins import Plugins
@@ -6,8 +10,9 @@ from .sweeper import Sweeper
 
 class StepSweeper(Sweeper):
     """
-    A sweeper that support base implementation for sweepers that operates on batches of jobs for every generation.
-    This may not be flexible enough for all use cases, but probably covers 90% of the sweeping algorithms.
+    A sweeper that support base implementation for sweepers that operates on batches
+    of jobs for every generation. This may not be flexible enough for all use cases, but probably
+    covers 90% of the sweeping algorithms.
     It's using an internal launcher instance to launch each batch.
     """
 
@@ -34,15 +39,15 @@ class StepSweeper(Sweeper):
     @abstractmethod
     def is_done(self):
         """
-        :return: True if no more batch of jobs should be executed 
+        :return: True if no more batch of jobs should be executed
         """
         raise NotImplementedError()
 
     @abstractmethod
     def update_results(self, job_results):
         """
-        Update the sweeper with the outputs from the last batch of jobs.
-        This is useful for sweepers that determine the next batch of jobs based on the results of the last batch
+        Update the sweeper with the outputs from the last batch of jobs. This is useful for sweepers that
+        determine the next batch of jobs based on the results of the last batch
         :param job_results: the outputs from the last batch of jobs.
         """
         raise NotImplementedError()

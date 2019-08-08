@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import argparse
 import inspect
 import logging
@@ -13,16 +14,25 @@ from .plugins import Plugins
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Hydra experimentation framework')
+    parser = argparse.ArgumentParser(
+        description='Hydra experimentation framework')
     version = pkg_resources.require("hydra")[0].version
-    parser.add_argument('--version', action='version', version="hydra {}".format(version))
-    parser.add_argument('overrides', nargs='*', help="Any key=value arguments to override config values "
-                                                     "(use dots for.nested=overrides)")
-    parser.add_argument('--verbose', '-v',
-                        help='Activate debug logging, otherwise takes a '
-                             'comma separated list of loggers ("root" for root logger)',
-                        nargs='?',
-                        default=None)
+    parser.add_argument(
+        '--version',
+        action='version',
+        version="hydra {}".format(version))
+    parser.add_argument(
+        'overrides',
+        nargs='*',
+        help="Any key=value arguments to override config values "
+             "(use dots for.nested=overrides)")
+    parser.add_argument(
+        '--verbose',
+        '-v',
+        help='Activate debug logging, otherwise takes a '
+             'comma separated list of loggers ("root" for root logger)',
+        nargs='?',
+        default=None)
 
     parser.add_argument('--cfg', '-c', action='store_true', help='Show config')
     parser.add_argument('--cfg_type', '-t',
@@ -31,7 +41,11 @@ def get_args():
                         default='job')
 
     parser.add_argument('--run', '-r', action='store_true', help='Run a job')
-    parser.add_argument('--sweep', '-s', action='store_true', help='Perform a sweep')
+    parser.add_argument(
+        '--sweep',
+        '-s',
+        action='store_true',
+        help='Perform a sweep')
 
     return parser.parse_args()
 
@@ -98,9 +112,11 @@ def run_hydra(task_function, config_path, strict):
 
     if os.path.isabs(config_path):
         raise RuntimeError("Config path should be relative")
-    abs_config_path = os.path.realpath(os.path.join(os.path.dirname(calling_file), config_path))
+    abs_config_path = os.path.realpath(os.path.join(
+        os.path.dirname(calling_file), config_path))
     if not os.path.exists(abs_config_path):
-        raise RuntimeError("Config path '{}' does not exist".format(abs_config_path))
+        raise RuntimeError(
+            "Config path '{}' does not exist".format(abs_config_path))
     if os.path.isfile(abs_config_path):
         conf_dir = os.path.dirname(abs_config_path)
         conf_filename = os.path.basename(abs_config_path)
@@ -116,7 +132,8 @@ def run_hydra(task_function, config_path, strict):
                   strict=strict)
 
     if args.run + args.cfg + args.sweep > 1:
-        raise ValueError("Only one of --run, --sweep and --cfg can be specified")
+        raise ValueError(
+            "Only one of --run, --sweep and --cfg can be specified")
     if args.run + args.cfg + args.sweep == 0:
         args.run = True
 
@@ -160,8 +177,8 @@ def run_hydra(task_function, config_path, strict):
 
 def main(config_path=".", strict=False):
     """
-    :param config_path: the config path, can be a directory in which it's used as the config root or a file to load 
-    :param strict: strict mode, will throw an error if command line overrides are not changing an existing key or 
+    :param config_path: the config path, can be a directory in which it's used as the config root or a file to load
+    :param strict: strict mode, will throw an error if command line overrides are not changing an existing key or
            if the code is accessing a non existent key
     """
 

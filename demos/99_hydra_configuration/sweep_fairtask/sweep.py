@@ -1,8 +1,11 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import sys
 import socket
+import sys
+
 import hydra
 
+# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 

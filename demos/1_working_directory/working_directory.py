@@ -1,6 +1,8 @@
-import os
-import hydra
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import datetime
+import os
+
+import hydra
 
 
 @hydra.main()
@@ -12,4 +14,3 @@ def experiment(_cfg):
 
 if __name__ == "__main__":
     experiment()
-

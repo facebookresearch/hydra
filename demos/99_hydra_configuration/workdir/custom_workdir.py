@@ -1,6 +1,8 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import sys
 import os
+import sys
+
 import hydra
 
 log = logging.getLogger(__name__)
@@ -8,7 +10,7 @@ log = logging.getLogger(__name__)
 
 @hydra.main()
 def experiment(_cfg):
-    log.info(f"Working directory : {os.getcwd()}")
+    log.info("Working directory : {}".format(os.getcwd()))
 
 
 if __name__ == "__main__":

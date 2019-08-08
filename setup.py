@@ -1,10 +1,11 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import distutils
 import os
-from os.path import *
-
-import shutil
-from setuptools import setup, find_packages
 import re
+import shutil
+from os.path import join, exists, isdir
+
+from setuptools import setup, find_packages
 
 
 class CleanCommand(distutils.cmd.Command):
@@ -48,7 +49,8 @@ class CleanCommand(distutils.cmd.Command):
             '__pycache__',
             '.pyc',
         ]
-        deletion_list = CleanCommand.find('.', includes=delete_patterns, excludes=['\\.nox/.*'])
+        deletion_list = CleanCommand.find(
+            '.', includes=delete_patterns, excludes=['\\.nox/.*'])
 
         for f in deletion_list:
             if exists(f):
@@ -68,7 +70,8 @@ with open("README.md", "r") as fh:
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Hydra is a generic experimentation framework for scientific computing and machine learning",
+        description="Hydra is a generic experimentation framework for scientific computing and "
+                    "machine learning",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/fairinternal/hydra",
