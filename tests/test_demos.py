@@ -1,14 +1,9 @@
 import re
-import shutil
 import subprocess
 import sys
-import tempfile
 
-import pytest
-from omegaconf import OmegaConf
 from hydra.errors import MissingConfigException
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
+from hydra.test_utils.test_utils import *
 
 chdir_hydra_root()
 
@@ -96,16 +91,16 @@ def test_demos_config_groups__override_all_configs(task_runner):
                 beta=0.01
             ),
         )
-        verify_dir_outputs(task.job_ret.working_dir)
+        verify_dir_outputs(task.job_ret.working_dir, overrides=task.overrides)
 
 
 @pytest.mark.parametrize(
     'args,output_conf', [
         ([], OmegaConf.create()), ([
-            'abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
-                dict(
-                    abc=123, hello=dict(
-                        a=456, b=5671)))), ])
+                                       'abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
+            dict(
+                abc=123, hello=dict(
+                    a=456, b=5671)))), ])
 def test_demo_0_minimal(args, output_conf):
     cmd = [sys.executable, 'demos/0_minimal/minimal.py']
     cmd.extend(args)

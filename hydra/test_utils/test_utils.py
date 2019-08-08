@@ -7,6 +7,7 @@ import tempfile
 import pytest
 
 from hydra import Hydra
+from omegaconf import OmegaConf
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ['USER'] = 'test_user'
@@ -130,6 +131,4 @@ def verify_dir_outputs(d, overrides=[]):
     assert os.path.exists(os.path.join(d, 'task.log'))
     assert os.path.exists(os.path.join(d, 'config.yaml'))
     assert os.path.exists(os.path.join(d, 'overrides.yaml'))
-    # TODO: reactivate after OmegaConf but is fixed:
-    # https://github.com/omry/omegaconf/issues/25
-    # assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.from_dotlist(overrides)
+    assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.create(overrides)

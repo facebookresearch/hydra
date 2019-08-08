@@ -1,3 +1,4 @@
+import copy
 import inspect
 import itertools
 import logging
@@ -155,6 +156,7 @@ def save_config(cfg, filename):
 
 def get_overrides_dirname(lst):
     assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
+    lst = copy.deepcopy(lst)
     lst.sort()
     return re.sub(
         pattern='[=]',
@@ -182,8 +184,8 @@ def run_job(
     filtered_overrides = filter_overrides(overrides)
     JobRuntime().set('override_dirname', get_overrides_dirname(filtered_overrides))
     task_cfg = config_loader.load_task_cfg(overrides)
-    # merge with task to allow user to change the behavior of the working directory/subdir from the task itself.
-    # this can be useful for having output subdir that depends on random_seed,
+    # merge with task to allow user to change the behavior of the working directory/subdir from
+    # the task itself. this can be useful for having output subdir that depends on random_seed,
     # for example.
     hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
     JobRuntime().set('name', hydra_and_task_cfg.hydra.name)
@@ -206,7 +208,7 @@ def run_job(
         os.chdir(working_dir)
         configure_log(hydra_and_task_cfg.hydra.task_logging, verbose)
         save_config(task_cfg, 'config.yaml')
-        save_config(OmegaConf.from_dotlist(overrides), 'overrides.yaml')
+        save_config(OmegaConf.create(filtered_overrides), 'overrides.yaml')
         ret.return_value = task_function(task_cfg)
         return ret
     finally:

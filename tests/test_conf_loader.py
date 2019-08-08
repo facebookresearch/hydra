@@ -1,11 +1,6 @@
-import tempfile
-
-import pytest
-from omegaconf import OmegaConf
-
 from hydra import ConfigLoader
-from hydra.test_utils.utils import chdir_hydra_root
 from hydra.errors import MissingConfigException
+from hydra.test_utils.test_utils import *
 
 chdir_hydra_root()
 
