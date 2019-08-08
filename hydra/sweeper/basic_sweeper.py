@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 """
 Basic sweeper can generate cartesian products of multiple input commands, each with a
 comma separated list of values.

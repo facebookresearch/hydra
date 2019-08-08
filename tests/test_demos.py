@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 import shutil
 import subprocess
@@ -101,8 +102,7 @@ def test_demos_config_groups__override_all_configs(task_runner):
 
 @pytest.mark.parametrize(
     'args,output_conf', [
-        ([], OmegaConf.create()), ([
-                                       'abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
+        ([], OmegaConf.create()), (['abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
             dict(
                 abc=123, hello=dict(
                     a=456, b=5671)))), ])
@@ -159,8 +159,8 @@ def test_demo_3_config_file(args, output_conf):
 def test_demo_99_task_name(filename, args, expected_name):
     cmd = [
         sys.executable,
-        'demos/99_hydra_configuration/task_name/' +
-        filename]
+        'demos/99_hydra_configuration/task_name/' + filename
+    ]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == expected_name + "\n"

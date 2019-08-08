@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.test_utils.launcher_test_common import demos_sweep_1_job_test_impl, \
     demos_sweep_2_jobs_test_impl, demo_6_sweep_test_impl
 # noinspection PyUnresolvedReferences

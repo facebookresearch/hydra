@@ -1,9 +1,10 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
 
 
 # Put the configuration into strict mode before merging it with the command line overrides.
-# This will result with a KeyError if a key that does not already exist in the configuration is being accessed.
-# This applies both for read (using the config) and for write (overriding
+# This will result with a KeyError if a key that does not already exist in the configuration is
+# being accessed. This applies both for read (using the config) and for write (overriding
 # the config from the command line)
 @hydra.main(config_path='config.yaml', strict=True)
 def experiment(cfg):

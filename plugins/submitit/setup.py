@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:

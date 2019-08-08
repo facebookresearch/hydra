@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 from hydra import utils
 from omegaconf import OmegaConf

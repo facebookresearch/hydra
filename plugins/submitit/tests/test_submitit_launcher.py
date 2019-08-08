@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 
 from hydra.test_utils.launcher_test_common import demo_6_sweep_test_impl, \
