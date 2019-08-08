@@ -24,12 +24,12 @@ def get_args():
         'overrides',
         nargs='*',
         help="Any key=value arguments to override config values "
-        "(use dots for.nested=overrides)")
+             "(use dots for.nested=overrides)")
     parser.add_argument(
         '--verbose',
         '-v',
         help='Activate debug logging, otherwise takes a '
-        'comma separated list of loggers ("root" for root logger)',
+             'comma separated list of loggers ("root" for root logger)',
         nargs='?',
         default=None)
 

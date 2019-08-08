@@ -1,9 +1,9 @@
 import copy
 import os
 
-from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import resource_stream, resource_exists
 
+from omegaconf import OmegaConf, DictConfig, ListConfig
 from .errors import MissingConfigException
 
 
@@ -191,7 +191,8 @@ class ConfigLoader:
           - optimizer: nesterov
         """
         assert isinstance(
-            cfg.defaults, ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
+            cfg.defaults,
+            ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
         for default in cfg.defaults:
             assert isinstance(default, DictConfig) or isinstance(default, str)
             if isinstance(default, DictConfig):

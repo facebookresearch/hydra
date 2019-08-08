@@ -7,11 +7,10 @@ import subprocess
 import sys
 import tempfile
 
-from omegaconf import OmegaConf
-
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
 from hydra.test_utils.utils import verify_dir_outputs
+from omegaconf import OmegaConf
 
 
 def demo_6_sweep_test_impl(overrides):

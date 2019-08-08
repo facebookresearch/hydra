@@ -1,10 +1,10 @@
 import distutils
 import os
+import re
+import shutil
 from os.path import *
 
-import shutil
 from setuptools import setup, find_packages
-import re
 
 
 class CleanCommand(distutils.cmd.Command):

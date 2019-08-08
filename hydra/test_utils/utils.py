@@ -1,11 +1,11 @@
 import copy
 import logging
 import os
+import shutil
 import tempfile
 
 import pytest
-import shutil
-import os
+
 from hydra import Hydra
 
 # CircleCI does not have the environment variable USER, breaking the tests.

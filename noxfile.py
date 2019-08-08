@@ -51,7 +51,7 @@ def get_python_versions(session, setup_py):
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize('install_cmd', PLUGINS_INSTALL_COMMANDS, ids=[
-                 ' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
+    ' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
 @nox.parametrize('plugin_name', plugin_names(), ids=plugin_names())
 def test_plugin(session, plugin_name, install_cmd):
     session.install('--upgrade', 'setuptools', 'pip')

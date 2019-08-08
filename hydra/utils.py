@@ -5,9 +5,9 @@ import logging.config
 import os
 import re
 import sys
+from time import strftime, localtime
 
 from omegaconf import OmegaConf
-from time import strftime, localtime
 
 log = logging.getLogger(__name__)
 
