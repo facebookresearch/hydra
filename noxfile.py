@@ -133,10 +133,8 @@ def coverage(session):
 @nox.session
 def lint(session):
     session.install('--upgrade', 'setuptools', 'pip')
-    session.install('pylint')
+    session.install('flake8')
     session.run('pip', 'install', '-e', '.')
     session.run(
-        'pylint',
-        '--rcfile=.pylintrc',
-        'hydra'
+        'flake8',
     )

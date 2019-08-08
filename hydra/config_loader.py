@@ -1,13 +1,21 @@
+"""
+Configuration loader
+"""
+
 import copy
 import os
 
+from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import resource_stream, resource_exists
 
-from omegaconf import OmegaConf, DictConfig, ListConfig
 from .errors import MissingConfigException
 
 
 class ConfigLoader:
+    """
+    Configuration loader
+    """
+
     def __init__(self, conf_dir, conf_filename, strict_task_cfg=False):
         self.cfg_dir = conf_dir
         self.conf_filename = conf_filename
@@ -15,9 +23,18 @@ class ConfigLoader:
         self.strict_task_cfg = strict_task_cfg
 
     def get_load_history(self):
+        """
+        returns the load history (which configs were attempted to load, and if they
+        were loaded successfully or not.
+        """
         return copy.deepcopy(self.all_config_checked)
 
-    def load_hydra_cfg(self, overrides=[]):
+    def load_hydra_cfg(self, overrides):
+        """
+        Loads Hydra configuraiton
+        :param overrides: overrides from command line.
+        :return:
+        """
         hydra_cfg_defaults = self._create_cfg(
             cfg_dir='pkg://hydra.default_conf',
             cfg_filename='hydra.yaml',
@@ -44,21 +61,30 @@ class ConfigLoader:
         hydra_cfg = clean
         return hydra_cfg
 
-    def load_task_cfg(self, cli_overrides=[]):
+    def load_task_cfg(self, cli_overrides):
+        """
+        Loads the task configuration
+        :param cli_overrides: config overrides from CLI
+        """
         return self._create_cfg(
             cfg_dir=self.cfg_dir,
             cfg_filename=self.conf_filename,
             cli_overrides=cli_overrides,
             strict=self.strict_task_cfg)
 
-    def load_configuration(self, overrides=[]):
-        assert isinstance(overrides, list)
+    def load_configuration(self, overrides=None):
+        """
+        Load both the Hydra and the task configuraitons
+        :param overrides:
+        :return: a dictionary with both configs
+        """
+        assert overrides is None or isinstance(overrides, list)
 
-        hydra_cfg = self.load_hydra_cfg(overrides)
+        hydra_cfg = self.load_hydra_cfg(overrides or [])
 
         task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
                                     cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides,
+                                    cli_overrides=overrides or [],
                                     strict=self.strict_task_cfg)
         return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
 
@@ -139,7 +165,8 @@ class ConfigLoader:
         defaults_changes = {}
         for override in copy.deepcopy(cli_overrides):
             key, value = override.split('=')
-            assert key != 'optional', "optional is a reserved keyword and cannot be used as a config group name"
+            assert key != 'optional', "optional is a reserved keyword and cannot be used as a " \
+                                      "config group name"
             path = os.path.join(cfg_dir, key)
             if ConfigLoader._exists(is_pkg, path):
                 defaults_changes[key] = value
@@ -192,7 +219,8 @@ class ConfigLoader:
         """
         assert isinstance(
             cfg.defaults,
-            ListConfig), "defaults must be a list because composition is order sensitive : " + valid_example
+            ListConfig), "defaults must be a list because composition is order sensitive : " + \
+                         valid_example
         for default in cfg.defaults:
             assert isinstance(default, DictConfig) or isinstance(default, str)
             if isinstance(default, DictConfig):

@@ -5,3 +5,14 @@ from .hydra import main, Hydra
 from .launcher import Launcher
 from .plugins import Plugins
 from .sweeper import Sweeper
+
+__all__ = [
+    'Hydra',
+    'utils',
+    'ConfigLoader',
+    'MissingConfigException',
+    'main',
+    'Launcher',
+    'Plugins',
+    'Sweeper',
+]

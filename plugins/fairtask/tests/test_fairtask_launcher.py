@@ -1,6 +1,7 @@
-from hydra.test_utils.launcher_test_common import *
+from hydra.test_utils.launcher_test_common import demos_sweep_1_job_test_impl, \
+    demos_sweep_2_jobs_test_impl, demo_6_sweep_test_impl
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.utils import chdir_hydra_root, sweep_runner
+from hydra.test_utils.test_utils import chdir_hydra_root, sweep_runner  # noqa: F401
 
 chdir_hydra_root()
 
@@ -13,7 +14,7 @@ def test_demo_6():
     ])
 
 
-def test_fairtask_sweep_1_job(sweep_runner):
+def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
     demos_sweep_1_job_test_impl(sweep_runner, overrides=[
         'launcher=fairtask',
         'hydra.launcher.params.queue=local',
@@ -21,7 +22,7 @@ def test_fairtask_sweep_1_job(sweep_runner):
     ])
 
 
-def test_fairtask_sweep_2_jobs(sweep_runner):
+def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
     demos_sweep_2_jobs_test_impl(sweep_runner, overrides=[
         'launcher=fairtask',
         'hydra.launcher.params.queue=local',

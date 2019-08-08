@@ -2,7 +2,7 @@ import distutils
 import os
 import re
 import shutil
-from os.path import *
+from os.path import join, exists, isdir
 
 from setuptools import setup, find_packages
 
@@ -69,7 +69,8 @@ with open("README.md", "r") as fh:
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Hydra is a generic experimentation framework for scientific computing and machine learning",
+        description="Hydra is a generic experimentation framework for scientific computing and "
+                    "machine learning",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/fairinternal/hydra",
