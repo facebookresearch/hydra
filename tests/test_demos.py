@@ -10,35 +10,37 @@ from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
+# noinspection PyUnresolvedReferences
+from hydra.test_utils.test_utils import task_runner  # noqa: F401
 
 chdir_hydra_root()
 
 
-def test_missing_conf_dir(task_runner):
+def test_missing_conf_dir(task_runner):  # noqa: F811
     with pytest.raises(IOError):
         with task_runner(conf_dir='not_found'):
             pass
 
 
-def test_missing_conf_file(task_runner):
+def test_missing_conf_file(task_runner):  # noqa: F811
     with pytest.raises(IOError):
         with task_runner(conf_dir='.', conf_filename='not_found'):
             pass
 
 
-def test_demos_minimal__no_overrides(task_runner):
+def test_demos_minimal__no_overrides(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/0_minimal/') as task:
         assert task.job_ret.cfg == {}
 
 
-def test_demos_minimal__with_overrides(task_runner):
+def test_demos_minimal__with_overrides(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/0_minimal/',
                      overrides=['abc=123', 'a.b=1', 'a.a=2']) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
         verify_dir_outputs(task.job_ret.working_dir, task.overrides)
 
 
-def test_demos_config_file__no_overrides(task_runner):
+def test_demos_config_file__no_overrides(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml') as task:
         assert task.job_ret.cfg == dict(
@@ -51,7 +53,7 @@ def test_demos_config_file__no_overrides(task_runner):
         verify_dir_outputs(task.job_ret.working_dir)
 
 
-def test_demos_config_file__with_overide(task_runner):
+def test_demos_config_file__with_overide(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/3_config_file/',
                      conf_filename='config.yaml',
                      overrides=['dataset.path=/datasets/imagenet2']) as task:
@@ -64,7 +66,7 @@ def test_demos_config_file__with_overide(task_runner):
         verify_dir_outputs(task.job_ret.working_dir, task.overrides)
 
 
-def test_demos_config_splitting(task_runner):
+def test_demos_config_splitting(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/4_config_splitting/conf',
                      conf_filename='config.yaml') as task:
         assert task.job_ret.cfg == dict(
@@ -80,14 +82,14 @@ def test_demos_config_splitting(task_runner):
         verify_dir_outputs(task.job_ret.working_dir)
 
 
-def test_demos_config_groups__override_dataset__wrong(task_runner):
+def test_demos_config_groups__override_dataset__wrong(task_runner):  # noqa: F811
     with pytest.raises(MissingConfigException) as ex:
         with task_runner(conf_dir='demos/5_config_groups/conf', overrides=['optimizer=wrong_name']):
             pass
     assert sorted(ex.value.options) == sorted(['adam', 'nesterov'])
 
 
-def test_demos_config_groups__override_all_configs(task_runner):
+def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
     with task_runner(conf_dir='demos/5_config_groups/conf',
                      overrides=['optimizer=adam', 'optimizer.lr=10']) as task:
         assert task.job_ret.cfg == dict(

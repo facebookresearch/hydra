@@ -242,7 +242,7 @@ def get_sweep(overrides):
     lists = []
     for s in overrides:
         key, value = s.split('=')
-        lists.append(["{}={}".format(key, value)
-                      for value in value.split(',')])
+        lists.append(["{}={}".format(key, val)
+                      for val in value.split(',')])
 
     return list(itertools.product(*lists))

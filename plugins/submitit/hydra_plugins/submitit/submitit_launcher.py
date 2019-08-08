@@ -89,4 +89,4 @@ class SubmititLauncher(Launcher):
                                   utils.JobRuntime().get('name'))
             jobs.append(job)
 
-        return [job.results() for job in jobs]
+        return [j.results() for j in jobs]
