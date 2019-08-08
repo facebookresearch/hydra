@@ -103,3 +103,15 @@ def coverage(session):
     session.run('coverage', 'report', '--fail-under=80')
 
     session.run('coverage', 'erase')
+
+
+@nox.session
+def lint(session):
+    session.install('--upgrade', 'setuptools', 'pip')
+    session.install('pylint')
+    session.run('pip', 'install', '-e', '.')
+    session.run(
+        'pylint',
+        '--rcfile=.pylintrc',
+        'hydra'
+    )
