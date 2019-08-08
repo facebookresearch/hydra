@@ -60,7 +60,7 @@ workflows:
       - python27
       - python36
       - python37
-      - deploy-website:
-          filters:
-            branches:
-              only: master  
+      - deploy-website
+#          filters:
+#            branches:
+#              only: master  
