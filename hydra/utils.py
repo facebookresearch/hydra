@@ -10,6 +10,7 @@ from time import strftime, localtime
 
 from omegaconf import OmegaConf
 
+# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 

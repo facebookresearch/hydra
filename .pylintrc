@@ -410,6 +410,7 @@ function-naming-style=snake_case
 # naming-style.
 #function-rgx=
 
+
 # Good variable names which should always be accepted, separated by a comma.
 good-names=i,
            j,
@@ -456,11 +457,11 @@ no-docstring-rgx=^_
 property-classes=abc.abstractproperty
 
 # Naming style matching correct variable names.
-variable-naming-style=snake_case
+#variable-naming-style=snake_case
 
 # Regular expression matching correct variable names. Overrides variable-
 # naming-style.
-#variable-rgx=
+variable-rgx=^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$
 
 
 [IMPORTS]

@@ -1,3 +1,6 @@
+"""
+Utilities used by tests
+"""
 import copy
 import logging
 import os
@@ -5,31 +8,46 @@ import shutil
 import tempfile
 
 import pytest
+from omegaconf import OmegaConf
 
 from hydra import Hydra
-from omegaconf import OmegaConf
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ['USER'] = 'test_user'
 
+# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
 def strip_node(cfg, key):
+    """
+    Removes a key from a config, key is in dot.notation.
+    Nodes that are becoming empty after removing the element inside them will also be removed.
+    :param cfg: config node
+    :param key: key to strip
+    """
     fragments = key.split('.')
     while cfg.select(key) is not None:
         c = cfg
         for f in fragments[0:-1]:
             c = c[f]
         del c[fragments.pop(-1)]
-        if len(c) > 0:
+        if c:
             break
         key = '.'.join(fragments)
 
 
 @pytest.fixture(scope="function")
 def task_runner():
+    """
+    Task runner fixture
+    """
+
     class TaskTestFunction:
+        """
+        Context function
+        """
+
         def __init__(self):
             self.temp_dir = None
             self.overrides = None
@@ -37,6 +55,10 @@ def task_runner():
             self.job_ret = None
 
         def __call__(self, cfg):
+            """
+            Actual function being exectured by Hydra
+            """
+
             log.info("Hello from run")
             return 100
 
@@ -51,7 +73,7 @@ def task_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=[], strict=False):
+    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
         task = TaskTestFunction()
         hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
@@ -61,7 +83,7 @@ def task_runner():
                       strict=strict)
 
         task.hydra = hydra
-        task.overrides = overrides
+        task.overrides = overrides or []
         return task
 
     return _
@@ -69,17 +91,29 @@ def task_runner():
 
 @pytest.fixture(scope="function")
 def sweep_runner():
+    """
+    Sweep runner fixture
+    """
+
     class SweepTaskFunction:
+        """
+        Context function
+        """
+
         def __init__(self):
             self.temp_dir = None
             self.cfg = None
             self.overrides = None
             self.hydra = None
             self.sweeps = None
+            self.returns = None
 
             self.all_configs = None
 
         def __call__(self, cfg):
+            """
+            Actual function being exectured by Hydra
+            """
             log.info("Hello from sweep")
             return 100
 
@@ -97,7 +131,7 @@ def sweep_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=[], strict=False):
+    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
         sweep = SweepTaskFunction()
         hydra = Hydra(task_name="task",
                       conf_dir=conf_dir,
@@ -107,13 +141,17 @@ def sweep_runner():
                       strict=strict)
 
         sweep.hydra = hydra
-        sweep.overrides = overrides
+        sweep.overrides = overrides or []
         return sweep
 
     return _
 
 
 def chdir_hydra_root():
+    """
+    Chage the cwd to the root of the hydra project.
+    used from unit tests to make them runnable from anywhere in the tree.
+    """
     cur = os.getcwd()
     max_up = 4
     target = 'ATTRIBUTION'
@@ -127,8 +165,11 @@ def chdir_hydra_root():
     os.chdir(cur)
 
 
-def verify_dir_outputs(d, overrides=[]):
+def verify_dir_outputs(d, overrides=None):
+    """
+    Verify that directory output makes sense
+    """
     assert os.path.exists(os.path.join(d, 'task.log'))
     assert os.path.exists(os.path.join(d, 'config.yaml'))
     assert os.path.exists(os.path.join(d, 'overrides.yaml'))
-    assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.create(overrides)
+    assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.create(overrides or [])

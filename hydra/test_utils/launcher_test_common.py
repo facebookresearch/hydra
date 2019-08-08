@@ -7,13 +7,15 @@ import subprocess
 import sys
 import tempfile
 
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.utils import task_runner, sweep_runner, chdir_hydra_root, verify_dir_outputs
-from hydra.test_utils.utils import verify_dir_outputs
 from omegaconf import OmegaConf
+
+from hydra.test_utils.test_utils import verify_dir_outputs
 
 
 def demo_6_sweep_test_impl(overrides):
+    """
+    Runs a sweep with the config from demo 6
+    """
     cmd = [sys.executable, 'demos/6_sweep/experiment.py']
     try:
         tempdir = tempfile.mkdtemp()
@@ -32,6 +34,9 @@ def demo_6_sweep_test_impl(overrides):
 
 
 def demos_sweep_1_job_test_impl(sweep_runner, overrides):
+    """
+    Runs a sweep with one job
+    """
     sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
                          conf_filename='config.yaml',
                          overrides=overrides)
@@ -51,6 +56,9 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides):
 
 
 def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
+    """
+    Runs a sweep with two jobs
+    """
     overrides.append('a=0,1')
     sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
                          conf_filename='config.yaml',
