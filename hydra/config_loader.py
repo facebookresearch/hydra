@@ -89,6 +89,23 @@ class ConfigLoader:
                                     strict=self.strict_task_cfg)
         return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
 
+    def load_configuration2(self, overrides=None):
+        assert overrides is None or isinstance(overrides, list)
+
+        overrides = overrides or []
+        hydra_cfg = self.load_hydra_cfg(overrides)
+
+        task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
+                                    cfg_filename=self.conf_filename,
+                                    cli_overrides=overrides or [],
+                                    strict=self.strict_task_cfg)
+        cfg = OmegaConf.merge(hydra_cfg, task_cfg)
+        cfg.hydra.overrides = {}
+        cfg.hydra.overrides.task = [x for x in overrides if not x.startswith('hydra.')]
+        cfg.hydra.overrides.hydra = [x for x in overrides if x.startswith('hydra.')]
+
+        return cfg
+
     def _load_config_impl(self, is_pkg, filename):
         loaded_cfg = None
         if is_pkg:
@@ -171,7 +188,6 @@ class ConfigLoader:
             path = os.path.join(cfg_dir, key)
             if ConfigLoader._exists(is_pkg, path):
                 defaults_changes[key] = value
-                cli_overrides.remove(override)
             else:
                 overrides.append(override)
 

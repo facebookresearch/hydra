@@ -3,8 +3,9 @@ import os
 import re
 import subprocess
 import sys
-import six
+
 import pytest
+import six
 from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException

@@ -1,15 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import inspect
-import itertools
 import logging
 import logging.config
 import os
 import re
 import sys
-from time import strftime, localtime
 
+import itertools
 from omegaconf import OmegaConf
+from time import strftime, localtime
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -157,7 +157,6 @@ def save_config(cfg, filename):
 
 
 def get_overrides_dirname(lst):
-    assert isinstance(lst, list), "{} is not a list".format(type(lst).__name__)
     lst = copy.deepcopy(lst)
     lst.sort()
     return re.sub(
@@ -217,6 +216,40 @@ def run_job(
         os.chdir(old_cwd)
 
 
+def run_job2(
+        config,
+        task_function,
+        verbose,
+        job_dir_key,
+        job_subdir_key):
+    old_cwd = os.getcwd()
+    working_dir = str(config.select(job_dir_key))
+    if job_subdir_key is not None:
+        # evaluate job_subdir_key lazily.
+        # this is running on the client side in sweep and contains things such as job:id which
+        # are only available there.
+        subdir = str(config.select(job_subdir_key))
+        working_dir = os.path.join(working_dir, subdir)
+
+    try:
+        ret = JobReturn()
+        ret.working_dir = working_dir
+        task_cfg = copy.deepcopy(config)
+        del task_cfg['hydra']
+        ret.cfg = task_cfg
+        ret.overrides = config.task_overrides
+        if not os.path.exists(working_dir):
+            os.makedirs(working_dir)
+        os.chdir(working_dir)
+        configure_log(config.hydra.task_logging, verbose)
+        save_config(task_cfg, 'config.yaml')
+        save_config(config.hydra.overrides.task, 'overrides.yaml')
+        ret.return_value = task_function(task_cfg)
+        return ret
+    finally:
+        os.chdir(old_cwd)
+
+
 def setup_globals():
     try:
         # clear resolvers. this is important to flush the resolvers cache
@@ -231,6 +264,11 @@ def setup_globals():
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.
         pass
+
+
+def update_job_runtime(cfg):
+    JobRuntime().set('name', cfg.hydra.name)
+    JobRuntime().set('override_dirname', get_overrides_dirname(cfg.hydra.overrides.task))
 
 
 def get_valid_filename(s):
