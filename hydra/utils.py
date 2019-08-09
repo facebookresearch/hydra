@@ -181,7 +181,7 @@ def run_job(
         task_function,
         overrides,
         verbose,
-        job_dir,
+        job_dir_key,
         job_subdir_key):
     filtered_overrides = filter_overrides(overrides)
     JobRuntime().set('override_dirname', get_overrides_dirname(filtered_overrides))
@@ -192,13 +192,13 @@ def run_job(
     hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
     JobRuntime().set('name', hydra_and_task_cfg.hydra.name)
     old_cwd = os.getcwd()
-    working_dir = job_dir
+    working_dir = str(hydra_and_task_cfg.select(job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
-        subdir = hydra_and_task_cfg.select(job_subdir_key)
-        working_dir = os.path.join(working_dir, str(subdir))
+        subdir = str(hydra_and_task_cfg.select(job_subdir_key))
+        working_dir = os.path.join(working_dir, subdir)
 
     try:
         ret = JobReturn()

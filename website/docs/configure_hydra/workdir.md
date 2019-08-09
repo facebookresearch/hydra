@@ -5,8 +5,8 @@ sidebar_label: Customizing working directory pattern
 ---
 
 This example customizes the working directory in both run and sweeps using the following config snippet:
-
-`.hydra/hydra.yaml:`
+You can put that snippet either in `.hydra/hydra.yaml` or in your own task
+configuration (e.g. `conf/config.yaml`)
 ```yaml
 hydra:
   run:
