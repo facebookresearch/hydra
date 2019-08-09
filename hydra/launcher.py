@@ -10,8 +10,11 @@ class Launcher:
     Abstract launcher
     """
 
+    def __init__(self):
+        raise NotImplementedError()
+
     @abstractmethod
-    def setup(self, config_loader, hydra_cfg, task_function, verbose):
+    def setup(self, config, task_function, verbose):
         """
         Sets this launcher instance up.
         """

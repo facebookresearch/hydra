@@ -17,17 +17,15 @@ class SubmititLauncher(Launcher):
         self.queue = queue
         self.queue_parameters = queue_parameters
         self.folder = folder
-        self.cfg_dir = None
-        self.cfg_filename = None
-        self.hydra_cfg = None
+        self.config = None
         self.task_function = None
         self.verbose = None
-        self.config_loader = None
         self.sweep_configs = None
+        self.config_loader = None
 
-    def setup(self, config_loader, hydra_cfg, task_function, verbose):
+    def setup(self, config, config_loader, task_function, verbose):
+        self.config = config
         self.config_loader = config_loader
-        self.hydra_cfg = hydra_cfg
         self.task_function = task_function
         self.verbose = verbose
 
@@ -45,13 +43,13 @@ class SubmititLauncher(Launcher):
             utils.JobRuntime().set('id', 'unknown')
         utils.setup_globals()
 
-        return utils.run_job(config_loader=self.config_loader,
-                             hydra_cfg=self.hydra_cfg,
-                             task_function=self.task_function,
-                             overrides=sweep_overrides,
-                             verbose=self.verbose,
-                             job_dir_key=job_dir_key,
-                             job_subdir_key='hydra.sweep.subdir')
+        # Recreate the config for this sweep instance with the appropriate overrides
+        sweep_config = self.config_loader.load_configuration2(sweep_overrides)
+        return utils.run_job2(config=sweep_config,
+                              task_function=self.task_function,
+                              verbose=self.verbose,
+                              job_dir_key=job_dir_key,
+                              job_subdir_key='hydra.sweep.subdir')
 
     def launch(self, job_overrides):
         num_jobs = len(job_overrides)
@@ -73,8 +71,8 @@ class SubmititLauncher(Launcher):
 
         log.info(
             "Sweep output dir : {}".format(
-                self.hydra_cfg.hydra.sweep.dir))
-        os.makedirs(self.hydra_cfg.hydra.sweep.dir, exist_ok=True)
+                self.config.hydra.sweep.dir))
+        os.makedirs(self.config.hydra.sweep.dir, exist_ok=True)
         jobs = []
         for job_num in range(num_jobs):
             sweep_override = list(job_overrides[job_num])

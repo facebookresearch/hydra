@@ -20,9 +20,9 @@ class StepSweeper(Sweeper):
         self.arguments = None
         self.launcher = None
 
-    def setup(self, config_loader, hydra_cfg, task_function, verbose):
+    def setup(self, config, config_loader, task_function, verbose):
         self.launcher = Plugins.instantiate_launcher(
-            hydra_cfg=hydra_cfg,
+            config=config,
             config_loader=config_loader,
             task_function=task_function,
             verbose=verbose
@@ -46,7 +46,8 @@ class StepSweeper(Sweeper):
     @abstractmethod
     def update_results(self, job_results):
         """
-        Update the sweeper with the outputs from the last batch of jobs. This is useful for sweepers that
+        Update the sweeper with the outputs from the last batch of jobs. This is useful for
+        sweepers that
         determine the next batch of jobs based on the results of the last batch
         :param job_results: the outputs from the last batch of jobs.
         """

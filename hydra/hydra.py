@@ -79,10 +79,11 @@ class Hydra:
                               job_subdir_key=None)
 
     def sweep(self, overrides):
-        hydra_cfg = self.config_loader.load_hydra_cfg(overrides)
-        utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
+        cfg = self.config_loader.load_configuration2(overrides)
+        utils.update_job_runtime(cfg)
+        utils.configure_log(cfg.hydra.hydra_logging, self.verbose)
         sweeper = Plugins.instantiate_sweeper(
-            hydra_cfg=hydra_cfg,
+            config=cfg,
             config_loader=self.config_loader,
             task_function=self.task_function,
             verbose=self.verbose)

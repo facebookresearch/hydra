@@ -13,15 +13,7 @@ class Sweeper:
     """
 
     @abstractmethod
-    def setup(self, config_loader, hydra_cfg, task_function, verbose):
-        """
-        Setup the sweeper instance.
-        :param config_loader:
-        :param hydra_cfg:
-        :param task_function:
-        :param verbose:
-        :return:
-        """
+    def setup(self, config, config_loader, task_function, verbose):
         raise NotImplementedError()
 
     @abstractmethod

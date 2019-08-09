@@ -36,7 +36,7 @@ class ConfigLoader:
         :param overrides: overrides from command line.
         :return:
         """
-        hydra_cfg_defaults = self._create_cfg(
+        hydra_cfg_defaults, _ = self._create_cfg(
             cfg_dir='pkg://hydra.default_conf',
             cfg_filename='hydra.yaml',
             strict=False)
@@ -47,8 +47,9 @@ class ConfigLoader:
         cfg_dir = os.path.join(self.cfg_dir, '.hydra')
 
         hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
+        consumed_defaults = []
         if os.path.exists(hydra_cfg_path):
-            hydra_cfg = self._create_cfg(
+            hydra_cfg, consumed_defaults = self._create_cfg(
                 cfg_dir=cfg_dir,
                 cfg_filename="hydra.yaml",
                 strict=False,
@@ -57,6 +58,10 @@ class ConfigLoader:
             hydra_cfg = OmegaConf.from_dotlist(overrides)
         # strip everything outside of the hydra tree from the hydra config
         hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
+        for consumed in consumed_defaults:
+            hydra_cfg.hydra.overrides.hydra.append(consumed)
+            overrides.remove(consumed)
+
         clean = OmegaConf.create()
         clean.hydra = hydra_cfg.hydra
         hydra_cfg = clean
@@ -73,6 +78,7 @@ class ConfigLoader:
             cli_overrides=cli_overrides,
             strict=self.strict_task_cfg)
 
+    # TODO: remove this and rename load_configuration2
     def load_configuration(self, overrides=None):
         """
         Load both the Hydra and the task configuraitons
@@ -95,14 +101,15 @@ class ConfigLoader:
         overrides = overrides or []
         hydra_cfg = self.load_hydra_cfg(overrides)
 
-        task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
-                                    cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides or [],
-                                    strict=self.strict_task_cfg)
+        task_cfg, consumed_defaults = self._create_cfg(cfg_dir=self.cfg_dir,
+                                                       cfg_filename=self.conf_filename,
+                                                       cli_overrides=overrides or [],
+                                                       strict=self.strict_task_cfg)
         cfg = OmegaConf.merge(hydra_cfg, task_cfg)
-        cfg.hydra.overrides = {}
-        cfg.hydra.overrides.task = [x for x in overrides if not x.startswith('hydra.')]
-        cfg.hydra.overrides.hydra = [x for x in overrides if x.startswith('hydra.')]
+        for item in [x for x in overrides if not x.startswith('hydra.')]:
+            cfg.hydra.overrides.task.append(item)
+        for item in [x for x in overrides if x.startswith('hydra.')]:
+            cfg.hydra.overrides.hydra.append(item)
 
         return cfg
 
@@ -181,6 +188,7 @@ class ConfigLoader:
         # config tree
         overrides = []
         defaults_changes = {}
+        consumed_defaults = []
         for override in copy.deepcopy(cli_overrides):
             key, value = override.split('=')
             assert key != 'optional', "optional is a reserved keyword and cannot be used as a " \
@@ -188,6 +196,7 @@ class ConfigLoader:
             path = os.path.join(cfg_dir, key)
             if ConfigLoader._exists(is_pkg, path):
                 defaults_changes[key] = value
+                consumed_defaults.append(override)
             else:
                 overrides.append(override)
 
@@ -222,7 +231,7 @@ class ConfigLoader:
         cfg.merge_with_dotlist(overrides)
         # remove config block from resulting cfg.
         del cfg['defaults']
-        return cfg
+        return cfg, consumed_defaults
 
     @staticmethod
     def _validate_config(cfg):

@@ -45,8 +45,6 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides):
         job_ret = sweep.returns[0]
         assert len(job_ret) == 1
         assert job_ret[0].overrides == []
-        # delete the hydra node added by the sweep tester
-        del job_ret[0].cfg['hydra']
         assert job_ret[0].cfg == dict(
             optimizer=dict(
                 type='nesterov',
@@ -79,6 +77,5 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
                 base, OmegaConf.from_dotlist(
                     job_ret.overrides))
             assert job_ret.overrides == ['a={}'.format(i)]
-            del job_ret.cfg['hydra']
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret.working_dir, job_ret.overrides)

@@ -174,47 +174,48 @@ def filter_overrides(overrides):
     return [x for x in overrides if not x.startswith('hydra.')]
 
 
-def run_job(
-        config_loader,
-        hydra_cfg,
-        task_function,
-        overrides,
-        verbose,
-        job_dir_key,
-        job_subdir_key):
-    filtered_overrides = filter_overrides(overrides)
-    JobRuntime().set('override_dirname', get_overrides_dirname(filtered_overrides))
-    task_cfg = config_loader.load_task_cfg(overrides)
-    # merge with task to allow user to change the behavior of the working directory/subdir from
-    # the task itself. this can be useful for having output subdir that depends on random_seed,
-    # for example.
-    hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
-    JobRuntime().set('name', hydra_and_task_cfg.hydra.name)
-    old_cwd = os.getcwd()
-    working_dir = str(hydra_and_task_cfg.select(job_dir_key))
-    if job_subdir_key is not None:
-        # evaluate job_subdir_key lazily.
-        # this is running on the client side in sweep and contains things such as job:id which
-        # are only available there.
-        subdir = str(hydra_and_task_cfg.select(job_subdir_key))
-        working_dir = os.path.join(working_dir, subdir)
-
-    try:
-        ret = JobReturn()
-        ret.working_dir = working_dir
-        ret.cfg = task_cfg
-        ret.overrides = filtered_overrides
-        if not os.path.exists(working_dir):
-            os.makedirs(working_dir)
-        os.chdir(working_dir)
-        configure_log(hydra_and_task_cfg.hydra.task_logging, verbose)
-        save_config(task_cfg, 'config.yaml')
-        save_config(OmegaConf.create(filtered_overrides), 'overrides.yaml')
-        ret.return_value = task_function(task_cfg)
-        return ret
-    finally:
-        os.chdir(old_cwd)
-
+#
+# def run_job(
+#         config_loader,
+#         hydra_cfg,
+#         task_function,
+#         overrides,
+#         verbose,
+#         job_dir_key,
+#         job_subdir_key):
+#     filtered_overrides = filter_overrides(overrides)
+#     JobRuntime().set('override_dirname', get_overrides_dirname(filtered_overrides))
+#     task_cfg = config_loader.load_task_cfg(overrides)
+#     # merge with task to allow user to change the behavior of the working directory/subdir from
+#     # the task itself. this can be useful for having output subdir that depends on random_seed,
+#     # for example.
+#     hydra_and_task_cfg = OmegaConf.merge(hydra_cfg, task_cfg)
+#     JobRuntime().set('name', hydra_and_task_cfg.hydra.name)
+#     old_cwd = os.getcwd()
+#     working_dir = str(hydra_and_task_cfg.select(job_dir_key))
+#     if job_subdir_key is not None:
+#         # evaluate job_subdir_key lazily.
+#         # this is running on the client side in sweep and contains things such as job:id which
+#         # are only available there.
+#         subdir = str(hydra_and_task_cfg.select(job_subdir_key))
+#         working_dir = os.path.join(working_dir, subdir)
+#
+#     try:
+#         ret = JobReturn()
+#         ret.working_dir = working_dir
+#         ret.cfg = task_cfg
+#         ret.overrides = filtered_overrides
+#         if not os.path.exists(working_dir):
+#             os.makedirs(working_dir)
+#         os.chdir(working_dir)
+#         configure_log(hydra_and_task_cfg.hydra.task_logging, verbose)
+#         save_config(task_cfg, 'config.yaml')
+#         save_config(OmegaConf.create(filtered_overrides), 'overrides.yaml')
+#         ret.return_value = task_function(task_cfg)
+#         return ret
+#     finally:
+#         os.chdir(old_cwd)
+#
 
 def run_job2(
         config,
@@ -237,7 +238,7 @@ def run_job2(
         task_cfg = copy.deepcopy(config)
         del task_cfg['hydra']
         ret.cfg = task_cfg
-        ret.overrides = config.task_overrides
+        ret.overrides = config.hydra.overrides.task.to_container()
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)
         os.chdir(working_dir)

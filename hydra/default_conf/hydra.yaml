@@ -16,3 +16,10 @@ hydra:
   # default sweeper implementation
   sweeper:
     class: hydra.sweeper.BasicSweeper
+
+  # Those lists will contain runtime overrides
+  overrides:
+    # Overrides for the hydra configuration
+    hydra: []
+    # Overrides for the task configuration
+    task: []

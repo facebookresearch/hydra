@@ -36,13 +36,14 @@ def test_load_configuration():
     config_loader = ConfigLoader(
         conf_dir='demos/3_config_file',
         conf_filename='config.yaml')
-    cfg = config_loader.load_configuration(overrides=['abc=123'])
-    assert cfg['task_cfg'] == OmegaConf.create(
-        dict(
-            abc=123,
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet')))
+    cfg = config_loader.load_configuration2(overrides=['abc=123'])
+    del cfg['hydra']
+    assert cfg == OmegaConf.create(dict(
+        abc=123,
+        dataset=dict(
+            name='imagenet',
+            path='/datasets/imagenet')
+    ))
 
 
 def test_load_with_missing_default():
@@ -57,32 +58,36 @@ def test_load_with_missing_optional_default():
     config_loader = ConfigLoader(
         conf_dir='tests/configs',
         conf_filename='missing-optional-default.yaml')
-    cfg = config_loader.load_configuration()
-    assert cfg['task_cfg'] == {}
+    cfg = config_loader.load_configuration2()
+    del cfg['hydra']
+    assert cfg == {}
 
 
 def test_load_with_optional_default():
     config_loader = ConfigLoader(
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
-    cfg = config_loader.load_configuration()
-    assert cfg['task_cfg'] == dict(foo=10)
+    cfg = config_loader.load_configuration2()
+    del cfg['hydra']
+    assert cfg == dict(foo=10)
 
 
 def test_load_changing_group_in_default():
     config_loader = ConfigLoader(
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
-    cfg = config_loader.load_configuration(['group1=file2'])
-    assert cfg['task_cfg'] == dict(foo=20)
+    cfg = config_loader.load_configuration2(['group1=file2'])
+    del cfg['hydra']
+    assert cfg == dict(foo=20)
 
 
 def test_load_adding_group_not_in_default():
     config_loader = ConfigLoader(
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
-    cfg = config_loader.load_configuration(['group2=file1'])
-    assert cfg['task_cfg'] == dict(foo=10, bar=100)
+    cfg = config_loader.load_configuration2(['group2=file1'])
+    del cfg['hydra']
+    assert cfg == dict(foo=10, bar=100)
 
 
 def test_load_history():
@@ -112,7 +117,7 @@ def test_load_strict():
         conf_dir='demos/3_config_file',
         conf_filename='config.yaml',
         strict_task_cfg=True)
-    cfg1 = config_loader.load_task_cfg(cli_overrides=['dataset.name=foobar'])
+    cfg1, _ = config_loader.load_task_cfg(cli_overrides=['dataset.name=foobar'])
     assert cfg1 == dict(dataset=dict(name='foobar', path='/datasets/imagenet'))
     with pytest.raises(KeyError):
         cfg1.not_here
