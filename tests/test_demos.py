@@ -3,7 +3,7 @@ import os
 import re
 import subprocess
 import sys
-
+import six
 import pytest
 from omegaconf import OmegaConf
 
@@ -192,13 +192,13 @@ if __name__ == "__main__":
     experiment()
     """
     task_file = tmpdir / "task.py"
-    task_file.write_text(code, encoding='utf-8')
+    task_file.write_text(six.u(str(code)), encoding='utf-8')
     cmd = [
         sys.executable,
-        task_file
+        str(task_file)
     ]
     try:
-        os.chdir(tmpdir)
+        os.chdir(str(tmpdir))
         result = subprocess.check_output(cmd)
         assert result.decode('utf-8') == tmpdir / 'foo' + "\n"
     finally:
@@ -206,12 +206,11 @@ if __name__ == "__main__":
 
     cmd = [
         sys.executable,
-        task_file,
+        str(task_file),
         'hydra.run.dir=foobar'
     ]
     try:
-        os.chdir(tmpdir)
-
+        os.chdir(str(tmpdir))
         result = subprocess.check_output(cmd)
         assert result.decode('utf-8') == tmpdir / 'foobar' + "\n"
     finally:
