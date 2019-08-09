@@ -1,10 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import re
-import shutil
 import subprocess
 import sys
-import tempfile
-
+import six
 import pytest
 from omegaconf import OmegaConf
 
@@ -14,6 +13,7 @@ from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 from hydra.test_utils.test_utils import task_runner  # noqa: F401
 
 chdir_hydra_root()
+base_dir = os.getcwd()
 
 
 def test_missing_conf_dir(task_runner):  # noqa: F811
@@ -115,16 +115,11 @@ def test_demo_0_minimal(args, output_conf):
     assert result.decode('utf-8') == output_conf.pretty() + "\n"
 
 
-def test_demo_1_workdir():
+def test_demo_1_workdir(tmpdir):
     cmd = [sys.executable, 'demos/1_working_directory/working_directory.py']
-    try:
-        tempdir = tempfile.mkdtemp()
-        cmd.extend(['hydra.run.dir={}'.format(tempdir)])
-        result = subprocess.check_output(cmd)
-        assert result.decode(
-            'utf-8') == "Working directory : {}\n".format(tempdir)
-    finally:
-        shutil.rmtree(tempdir)
+    cmd.extend(['hydra.run.dir={}'.format(tmpdir)])
+    result = subprocess.check_output(cmd)
+    assert result.decode('utf-8') == "Working directory : {}\n".format(tmpdir)
 
 
 @pytest.mark.parametrize('args,expected', [
@@ -166,3 +161,57 @@ def test_demo_99_task_name(filename, args, expected_name):
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == expected_name + "\n"
+
+
+def test_customize_workdir_from_task_config(tmpdir):
+    """
+    Tests that:
+    Given a task configuration that contains hydra.run.dir override, it overrides
+    the default hydra.run.dir
+
+    And also that changing the work dir from the command line overrides that task config file.
+    """
+
+    task_cfg = OmegaConf.create(dict(
+        hydra=dict(
+            run=dict(
+                dir='foo'
+            )
+        )
+    ))
+    task_cfg.save(str(tmpdir / "config.yaml"))
+    code = """
+import hydra
+import os
+
+@hydra.main(config_path='config.yaml')
+def experiment(_cfg):
+    print(os.getcwd())
+
+if __name__ == "__main__":
+    experiment()
+    """
+    task_file = tmpdir / "task.py"
+    task_file.write_text(six.u(str(code)), encoding='utf-8')
+    cmd = [
+        sys.executable,
+        str(task_file)
+    ]
+    try:
+        os.chdir(str(tmpdir))
+        result = subprocess.check_output(cmd)
+        assert result.decode('utf-8') == tmpdir / 'foo' + "\n"
+    finally:
+        os.chdir(base_dir)
+
+    cmd = [
+        sys.executable,
+        str(task_file),
+        'hydra.run.dir=foobar'
+    ]
+    try:
+        os.chdir(str(tmpdir))
+        result = subprocess.check_output(cmd)
+        assert result.decode('utf-8') == tmpdir / 'foobar' + "\n"
+    finally:
+        os.chdir(base_dir)

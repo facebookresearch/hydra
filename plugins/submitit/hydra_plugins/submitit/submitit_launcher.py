@@ -31,7 +31,7 @@ class SubmititLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    def launch_job(self, sweep_overrides, workdir, job_num, job_name):
+    def launch_job(self, sweep_overrides, job_dir_key, job_num, job_name):
         # stdout logging until we get the file logging going.
         # logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
@@ -50,7 +50,7 @@ class SubmititLauncher(Launcher):
                              task_function=self.task_function,
                              overrides=sweep_overrides,
                              verbose=self.verbose,
-                             job_dir=workdir,
+                             job_dir_key=job_dir_key,
                              job_subdir_key='hydra.sweep.subdir')
 
     def launch(self, job_overrides):
@@ -84,7 +84,7 @@ class SubmititLauncher(Launcher):
                         utils.filter_overrides(sweep_override))))
             job = executor.submit(self.launch_job,
                                   sweep_override,
-                                  self.hydra_cfg.hydra.sweep.dir,
+                                  'hydra.sweep.dir',
                                   job_num,
                                   utils.JobRuntime().get('name'))
             jobs.append(job)
