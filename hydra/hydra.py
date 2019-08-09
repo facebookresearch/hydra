@@ -175,7 +175,7 @@ def run_hydra(task_function, config_path, strict):
         print("Command not specified")
 
 
-def main(confi_path=".", strict=False):
+def main(config_path=".", strict=False):
     """
     :param config_path: the config path, can be a directory in which it's used as the config root or a file to load
     :param strict: strict mode, will throw an error if command line overrides are not changing an existing key or
