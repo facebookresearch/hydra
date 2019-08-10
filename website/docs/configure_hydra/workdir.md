@@ -13,7 +13,7 @@ hydra:
     dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${job:num}_${job:id}_${job:override_dirname}
+    subdir: ${hydra.job.num}_${hydra.job.id}_${hydra.job.override_dirname}
 ```
 
 
@@ -58,8 +58,8 @@ $ tree /checkpoint/omry/outputs/2019-07-10/17-07-58
 
 ### Using job name
 You can use the job name as a part of the output directory pattern.
-The folloing example will group your output directories by the name of the job: 
-```/outputs/${job:name}/${now:%Y-%m-%d-%H-%M-%S}```
+The following example will group your output directories by the name of the job: 
+```/outputs/${hydra.job.name}/${now:%Y-%m-%d-%H-%M-%S}```
 
 ### Using job configuration variables
 You can use any configuration variable from your job configuration as a part of the output directory.
@@ -69,7 +69,7 @@ configuration:
 ```yaml
   sweep:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${job:num}_${job:id}_${job:override_dirname}/${random_seed}
+    subdir: ${hydra.job.num}_${hydra.job.id}/${random_seed}
 ```
 
 Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/99_hydra_configuration/workdir).

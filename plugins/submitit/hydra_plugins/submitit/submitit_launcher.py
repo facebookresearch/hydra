@@ -43,7 +43,10 @@ class SubmititLauncher(Launcher):
         utils.setup_globals()
         # Recreate the config for this sweep instance with the appropriate overrides
         sweep_config = self.config_loader.load_configuration(sweep_overrides)
-        utils.update_job_runtime(sweep_config)
+        # Populate new job variables
+        sweep_config.hydra.job.id = '${env:SLURM_JOB_ID}' if 'SLURM_JOB_ID' in os.environ else '_UNKNOWN_SLURM_ID_'
+        sweep_config.hydra.job.num = job_num
+        sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(sweep_config.hydra.overrides.task)
 
         return utils.run_job(config=sweep_config,
                              task_function=self.task_function,
@@ -54,7 +57,7 @@ class SubmititLauncher(Launcher):
     def launch(self, job_overrides):
         num_jobs = len(job_overrides)
         assert num_jobs > 0
-        utils.HydraRuntime().set('num_jobs', num_jobs)
+        self.config.hydra.job.num_jobs = num_jobs
 
         if self.queue == 'auto':
             executor = submitit.AutoExecutor(folder=self.folder)

@@ -22,7 +22,7 @@ def demo_6_sweep_test_impl(tmpdir, overrides):
         '--sweep',
         'hydra.launcher.params.queue=local',
         'hydra.sweep.dir={}'.format(str(tmpdir)),
-        'hydra.sweep.subdir=${job:num}',
+        'hydra.sweep.subdir=${hydra.job.num}',
     ])
     cmd.extend(overrides)
     subprocess.check_call(cmd)
