@@ -29,18 +29,18 @@ class FAIRTaskLauncher(Launcher):
         self.verbose = verbose
 
     # TODO: cleanup job_name
-    def launch_job(self, sweep_overrides, job_dir_key, job_num, job_name):
+    def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
         utils.JobRuntime().set('num', job_num)
-        utils.JobRuntime().set('name', job_name)
         if 'SLURM_JOB_ID' in os.environ:
             utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
         else:
-            utils.JobRuntime().set('id', 'unknown')
+            utils.JobRuntime().set('id', '_UNKNOWN_SLURM_ID_')
         utils.setup_globals()
         # Recreate the config for this sweep instance with the appropriate overrides
         sweep_config = self.config_loader.load_configuration(sweep_overrides)
+        utils.update_job_runtime(sweep_config)
         return utils.run_job(config=sweep_config,
                              task_function=self.task_function,
                              verbose=self.verbose,
@@ -62,11 +62,10 @@ class FAIRTaskLauncher(Launcher):
                 "\t#{} : {}".format(
                     job_num, " ".join(
                         utils.filter_overrides(sweep_override))))
-            runs.append(queue(self.launch_job)(
-                sweep_override,
-                'hydra.sweep.dir',
-                job_num,
-                utils.JobRuntime().get('name')))
+            runs.append(queue(self.launch_job)(sweep_override,
+                                               'hydra.sweep.dir',
+                                               job_num))
+
         return await gatherl(runs)
 
     def create_queue(self, num_jobs):
