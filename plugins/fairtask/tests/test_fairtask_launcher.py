@@ -33,4 +33,3 @@ def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
         'hydra.launcher.params.queue=local',
         'hydra.launcher.params.no_workers=true'
     ])
-
