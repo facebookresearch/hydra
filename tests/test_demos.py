@@ -1,20 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
 import re
 import subprocess
 import sys
 
 import pytest
-import six
 from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
-from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
+from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs, integration_test
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import task_runner  # noqa: F401
 
 chdir_hydra_root()
-base_dir = os.getcwd()
 
 
 def test_missing_conf_dir(task_runner):  # noqa: F811
@@ -171,47 +168,25 @@ def test_customize_workdir_from_task_config(tmpdir):
 
     And also that changing the work dir from the command line overrides that task config file.
     """
-
-    task_cfg = OmegaConf.create(dict(
+    task_config = OmegaConf.create(dict(
         hydra=dict(
             run=dict(
                 dir='foo'
             )
         )
     ))
-    task_cfg.save(str(tmpdir / "config.yaml"))
-    code = """
-import hydra
-import os
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=task_config,
+        overrides=[],
+        prints=['os.getcwd()'],
+        expected_outputs=[str(tmpdir / 'foo')]
+    )
 
-@hydra.main(config_path='config.yaml')
-def experiment(_cfg):
-    print(os.getcwd())
-
-if __name__ == "__main__":
-    experiment()
-    """
-    task_file = tmpdir / "task.py"
-    task_file.write_text(six.u(str(code)), encoding='utf-8')
-    cmd = [
-        sys.executable,
-        str(task_file)
-    ]
-    try:
-        os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        assert result.decode('utf-8') == tmpdir / 'foo' + "\n"
-    finally:
-        os.chdir(base_dir)
-
-    cmd = [
-        sys.executable,
-        str(task_file),
-        'hydra.run.dir=foobar'
-    ]
-    try:
-        os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        assert result.decode('utf-8') == tmpdir / 'foobar' + "\n"
-    finally:
-        os.chdir(base_dir)
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=task_config,
+        overrides=['hydra.run.dir=foobar'],
+        prints=['os.getcwd()'],
+        expected_outputs=[str(tmpdir / 'foobar')]
+    )

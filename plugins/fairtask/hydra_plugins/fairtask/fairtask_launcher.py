@@ -82,7 +82,7 @@ class FAIRTaskLauncher(Launcher):
 
     def launch(self, job_overrides):
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
-        os.makedirs(self.config.hydra.sweep.dir, exist_ok=True)
+        os.makedirs(str(self.config.hydra.sweep.dir), exist_ok=True)
         loop = asyncio.get_event_loop()
         with self.create_queue(num_jobs=len(job_overrides)) as queue:
             return loop.run_until_complete(

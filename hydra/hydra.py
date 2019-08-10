@@ -6,7 +6,6 @@ import os
 import sys
 
 import pkg_resources
-from omegaconf import OmegaConf
 
 from . import utils
 from .config_loader import ConfigLoader
@@ -35,10 +34,6 @@ def get_args():
         default=None)
 
     parser.add_argument('--cfg', '-c', action='store_true', help='Show config')
-    parser.add_argument('--cfg_type', '-t',
-                        help='Config type to show',
-                        choices=['job', 'hydra', 'both'],
-                        default='job')
 
     parser.add_argument('--run', '-r', action='store_true', help='Run a job')
     parser.add_argument(
@@ -150,10 +145,8 @@ def run_hydra(task_function, config_path, strict):
         hydra.sweep(overrides=args.overrides)
     elif command == 'cfg':
         loader = ConfigLoader(conf_dir=conf_dir, conf_filename=conf_filename)
-        configs = loader.load_configuration(overrides=args.overrides)
-        task_cfg = configs['task_cfg']
-        hydra_cfg = configs['hydra_cfg']
-        utils.configure_log(hydra_cfg.hydra.hydra_logging, args.verbose)
+        config = loader.load_configuration(overrides=args.overrides)
+        utils.configure_log(config.hydra.hydra_logging, args.verbose)
 
         for file, loaded in loader.get_load_history():
             if loaded:
@@ -161,16 +154,7 @@ def run_hydra(task_function, config_path, strict):
             else:
                 log.debug("Not found: {}".format(file))
 
-        if args.cfg_type == 'job':
-            cfg = task_cfg
-        elif args.cfg_type == 'hydra':
-            cfg = hydra_cfg
-        elif args.cfg_type == 'both':
-            cfg = OmegaConf.merge(hydra_cfg, task_cfg)
-        else:
-            assert False
-
-        log.info(cfg.pretty())
+        log.info('\n' + config.pretty())
     else:
         print("Command not specified")
 

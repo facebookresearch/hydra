@@ -6,9 +6,13 @@ import copy
 import logging
 import os
 import shutil
+import string
+import subprocess
+import sys
 import tempfile
 
 import pytest
+import six
 from omegaconf import OmegaConf
 
 from hydra import Hydra
@@ -174,3 +178,47 @@ def verify_dir_outputs(d, overrides=None):
     assert os.path.exists(os.path.join(d, 'config.yaml'))
     assert os.path.exists(os.path.join(d, 'overrides.yaml'))
     assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.create(overrides or [])
+
+
+def integration_test(tmpdir, task_config, overrides, prints, expected_outputs):
+    s = string.Template("""
+import hydra
+import os
+
+@hydra.main($CONFIG_PATH)
+def experiment(_cfg):
+    $PRINTS
+
+if __name__ == "__main__":
+    experiment()
+""")
+
+    print_code = ''
+    for p in prints:
+        print_code += "print({});".format(p)
+
+    config_path = ''
+    if task_config is not None:
+        cfg_file = str(tmpdir / 'config.yaml')
+        task_config.save(cfg_file)
+        config_path = "config_path='{}'".format('config.yaml')
+
+    code = s.substitute(PRINTS=print_code, CONFIG_PATH=config_path)
+
+    task_file = tmpdir / "task.py"
+    task_file.write_text(six.u(str(code)), encoding='utf-8')
+    cmd = [
+        sys.executable,
+        str(task_file)
+    ]
+    cmd.extend(overrides)
+    orig_dir = os.getcwd()
+    try:
+        os.chdir(str(tmpdir))
+        result = subprocess.check_output(cmd)
+        outputs = str.splitlines(result.decode('utf-8'))
+        assert (len(outputs) == len(expected_outputs))
+        for idx in range(len(outputs)):
+            assert outputs[idx] == expected_outputs[idx]
+    finally:
+        os.chdir(orig_dir)

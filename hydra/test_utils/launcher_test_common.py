@@ -3,35 +3,27 @@
 Common test functions testing launchers
 """
 
-import shutil
 import subprocess
 import sys
-import tempfile
 
 from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import verify_dir_outputs
 
 
-def demo_6_sweep_test_impl(overrides):
+def demo_6_sweep_test_impl(tmpdir, overrides):
     """
     Runs a sweep with the config from demo 6
     """
     cmd = [sys.executable, 'demos/6_sweep/experiment.py']
-    try:
-        tempdir = tempfile.mkdtemp()
-        cmd.extend([
-            '--sweep',
-            'hydra.launcher.params.queue=local',
-            'hydra.sweep.dir={}'.format(tempdir),
-            'hydra.sweep.subdir=${job:num}',
-        ])
-        cmd.extend(overrides)
-        result = subprocess.check_output(cmd)
-        lines = str.splitlines(result.decode('utf-8'))
-        print(lines)
-    finally:
-        shutil.rmtree(tempdir)
+    cmd.extend([
+        '--sweep',
+        'hydra.launcher.params.queue=local',
+        'hydra.sweep.dir={}'.format(str(tmpdir)),
+        'hydra.sweep.subdir=${job:num}',
+    ])
+    cmd.extend(overrides)
+    subprocess.check_call(cmd)
 
 
 def demos_sweep_1_job_test_impl(sweep_runner, overrides):
@@ -79,3 +71,19 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
             assert job_ret.overrides == ['a={}'.format(i)]
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
+
+
+def demo_99_task_name_impl(sweep_runner, config_dir, config_file, args, expected_name, overrides):
+    overrides.extend(args)
+    sweep = sweep_runner(
+        conf_dir=config_dir,
+        conf_filename=config_file,
+        overrides=overrides
+    )
+
+    with sweep:
+        assert len(sweep.returns[0]) == 2
+        for i in range(2):
+            job_ret = sweep.returns[0][i]
+            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
+

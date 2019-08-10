@@ -12,11 +12,12 @@ chdir_hydra_root()
 @pytest.mark.skip(
     reason="submitit local queue is broken. re-enable once fixed. "
            "https://github.com/fairinternal/submitit/issues/121")
-def test_demo_6():
-    demo_6_sweep_test_impl(overrides=[
-        'launcher=submitit',
-        'hydra.launcher.params.queue=local'
-    ])
+def test_demo_6(tmpdir):
+    demo_6_sweep_test_impl(
+        tmpdir, overrides=[
+            'launcher=submitit',
+            'hydra.launcher.params.queue=local'
+        ])
 
 
 @pytest.mark.skip(
