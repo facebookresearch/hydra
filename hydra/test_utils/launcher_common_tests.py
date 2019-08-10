@@ -11,6 +11,8 @@ from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import verify_dir_outputs, integration_test
 
+additional_overrides = ['foo=bar']
+
 
 def demo_6_sweep_test_impl(tmpdir, overrides):
     """
@@ -72,28 +74,3 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
             assert job_ret.overrides == ['a={}'.format(i)]
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
-
-
-@pytest.mark.parametrize('task_config, overrides, filename, expected_name', [
-    (None, [], 'no_config.py', 'no_config'),
-    (None, ['hydra.name=overridden_name'], 'no_config.py', 'overridden_name'),
-    (
-            OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
-            [],
-            'with_config.py',
-            'name_from_config_file'
-    ),
-    (
-            OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
-            ['hydra.name=overridden_name'],
-            'with_config.py',
-            'overridden_name'
-    ),
-])
-def test_task_name(tmpdir, task_config, overrides, filename, expected_name):
-    integration_test(tmpdir,
-                     task_config=task_config,
-                     overrides=overrides,
-                     prints="JobRuntime().get('name')",
-                     expected_outputs=expected_name,
-                     filename=filename)

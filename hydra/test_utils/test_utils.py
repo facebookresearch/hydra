@@ -186,7 +186,8 @@ def integration_test(
         overrides,
         prints,
         expected_outputs,
-        filename='task.py'
+        filename='task.py',
+        command='run'
 
 ):
     if isinstance(prints, str):
@@ -206,7 +207,6 @@ def experiment(_cfg):
 if __name__ == "__main__":
     experiment()
 """)
-
     print_code = ''
     for p in prints:
         print_code += "print({});".format(p)
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     task_file.write_text(six.u(str(code)), encoding='utf-8')
     cmd = [
         sys.executable,
-        str(task_file)
+        str(task_file),
     ]
     cmd.extend(overrides)
     orig_dir = os.getcwd()

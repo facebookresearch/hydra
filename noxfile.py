@@ -51,8 +51,9 @@ def get_python_versions(session, setup_py):
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize('install_cmd', PLUGINS_INSTALL_COMMANDS, ids=[
-    ' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
+@nox.parametrize('install_cmd',
+                 PLUGINS_INSTALL_COMMANDS,
+                 ids=[' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
 @nox.parametrize('plugin_name', plugin_names(), ids=plugin_names())
 def test_plugin(session, plugin_name, install_cmd):
     session.install('--upgrade', 'setuptools', 'pip')
@@ -70,8 +71,11 @@ def test_plugin(session, plugin_name, install_cmd):
         )
     # clean install hydra
     session.chdir(BASE)
+    # TODO: test if this clean is really needed
     session.run('python', 'setup.py', 'clean', silent=True)
-    session.run('pip', 'install', '.', silent=True)
+    # This would better be pip install . , but until https://github.com/pypa/pip/pull/6770
+    # is public this is too slow.
+    session.run('pip', 'install', '-e', '.', silent=True)
 
     all_plugins = get_all_plugins()
     # Install all plugins in session
@@ -81,13 +85,18 @@ def test_plugin(session, plugin_name, install_cmd):
 
     # Test that we can import Hydra
     session.run('python', '-c', 'from hydra import Hydra', silent=True)
+
     # Test that we can import all installed plugins
     for plugin in all_plugins:
         session.run('python', '-c', 'import {}'.format(plugin[1]))
 
+    session.install('pytest')
+
+    # Run Hydra tests
+    session.run('pytest', silent=False)
+
     # Run tests for current plugin
     session.chdir(os.path.join(BASE, "plugins", plugin_name))
-    session.install('pytest')
     session.run('pytest', silent=True)
 
 

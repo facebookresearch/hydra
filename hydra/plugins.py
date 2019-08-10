@@ -8,6 +8,9 @@ class Plugins:
     def _instantiate(config):
         clazz = config['class']
         try:
+            if clazz is None:
+                raise ImportError("class not configured")
+
             if not clazz.startswith(
                     'hydra_plugins.') and not clazz.startswith('hydra.sweeper'):
                 # prevent loading plugins in invalid package. this is an indication that it's not
