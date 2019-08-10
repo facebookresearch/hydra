@@ -183,6 +183,7 @@ def verify_dir_outputs(d, overrides=None):
 def integration_test(
         tmpdir,
         task_config,
+        hydra_config,
         overrides,
         prints,
         expected_outputs,
@@ -191,6 +192,10 @@ def integration_test(
         prints = [prints]
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
+    if isinstance(task_config, (list, dict)):
+        task_config = OmegaConf.create(task_config)
+    if isinstance(hydra_config, (list, dict)):
+        hydra_config = OmegaConf.create(hydra_config)
 
     s = string.Template("""
 import hydra
@@ -213,6 +218,11 @@ if __name__ == "__main__":
         cfg_file = str(tmpdir / 'config.yaml')
         task_config.save(cfg_file)
         config_path = "config_path='{}'".format('config.yaml')
+
+    if hydra_config is not None:
+        cfg_file = tmpdir / '.hydra'
+        cfg_file.mkdir()
+        hydra_config.save(str(cfg_file / 'hydra.yaml'))
 
     code = s.substitute(PRINTS=print_code, CONFIG_PATH=config_path)
 
