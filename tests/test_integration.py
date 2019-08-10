@@ -209,8 +209,3 @@ def test_custom_sweeper_run_workdir(tmpdir,
                      overrides=overrides,
                      prints="os.getcwd()",
                      expected_outputs=str(expected_dir1))
-
-# TODO:
-# Port more tests to integration tests.
-# Maybe making integration tests more comprehensive (testing output directory content fo
-#
