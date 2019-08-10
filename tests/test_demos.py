@@ -7,7 +7,7 @@ import pytest
 from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
-from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs, integration_test
+from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import task_runner  # noqa: F401
 
@@ -142,36 +142,3 @@ def test_demo_3_config_file(args, output_conf):
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == output_conf.pretty() + "\n"
-
-
-
-def test_customize_workdir_from_task_config(tmpdir):
-    """
-    Tests that:
-    Given a task configuration that contains hydra.run.dir override, it overrides
-    the default hydra.run.dir
-
-    And also that changing the work dir from the command line overrides that task config file.
-    """
-    task_config = OmegaConf.create(dict(
-        hydra=dict(
-            run=dict(
-                dir='foo'
-            )
-        )
-    ))
-    integration_test(
-        tmpdir=tmpdir,
-        task_config=task_config,
-        overrides=[],
-        prints=['os.getcwd()'],
-        expected_outputs=[str(tmpdir / 'foo')]
-    )
-
-    integration_test(
-        tmpdir=tmpdir,
-        task_config=task_config,
-        overrides=['hydra.run.dir=foobar'],
-        prints=['os.getcwd()'],
-        expected_outputs=[str(tmpdir / 'foobar')]
-    )
