@@ -199,7 +199,7 @@ def integration_test(
 
     s = string.Template("""
 import hydra
-from hydra.utils import JobRuntime
+from hydra import HydraConfig
 import os
 
 @hydra.main($CONFIG_PATH)

@@ -31,15 +31,15 @@ class FAIRTaskLauncher(Launcher):
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
-        utils.JobRuntime().set('num', job_num)
-        if 'SLURM_JOB_ID' in os.environ:
-            utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
-        else:
-            utils.JobRuntime().set('id', '_UNKNOWN_SLURM_ID_')
         utils.setup_globals()
+
         # Recreate the config for this sweep instance with the appropriate overrides
         sweep_config = self.config_loader.load_configuration(sweep_overrides)
-        utils.update_job_runtime(sweep_config)
+        # Populate new job variables
+        sweep_config.hydra.job.id = '${env:SLURM_JOB_ID}' if 'SLURM_JOB_ID' in os.environ else '_UNKNOWN_SLURM_ID_'
+        sweep_config.hydra.job.num = job_num
+        sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(sweep_config.hydra.overrides.task)
+
         return utils.run_job(config=sweep_config,
                              task_function=self.task_function,
                              verbose=self.verbose,
@@ -52,7 +52,6 @@ class FAIRTaskLauncher(Launcher):
                 len(job_overrides),
                 self.queue_name))
         num_jobs = len(job_overrides)
-        utils.HydraRuntime().set('num_jobs', num_jobs)
         queue = queue.task(self.queue_name)
         runs = []
         for job_num in range(num_jobs):
@@ -69,8 +68,7 @@ class FAIRTaskLauncher(Launcher):
 
     def create_queue(self, num_jobs):
         assert num_jobs > 0
-        utils.HydraRuntime().set('num_jobs', num_jobs)
-        self.config.hydra.launcher.concurrent = num_jobs
+        self.config.hydra.job.num_jobs = num_jobs
         queues = {}
         for queue_name, queue_conf in self.queues.items():
             queues[queue_name] = utils.instantiate(queue_conf)

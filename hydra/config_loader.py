@@ -10,6 +10,7 @@ from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import resource_stream, resource_exists
 
 from .errors import MissingConfigException
+from .utils import JobRuntime
 
 
 class ConfigLoader:
@@ -82,6 +83,11 @@ class ConfigLoader:
             cfg.hydra.overrides.task.append(item)
         for item in [x for x in overrides if x.startswith('hydra.')]:
             cfg.hydra.overrides.hydra.append(item)
+
+        job = OmegaConf.create(dict(
+            name=JobRuntime().get('name')
+        ))
+        cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
 
         OmegaConf.set_struct(cfg, self.strict_task_cfg)
         return cfg

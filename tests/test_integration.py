@@ -67,14 +67,14 @@ def create_submitit_launcher_local_config():
 
 @pytest.mark.parametrize('task_config, overrides, filename, expected_name', [
     (None, [], 'no_config.py', 'no_config'),
-    (None, ['hydra.name=overridden_name'], 'no_config.py', 'overridden_name'),
-    (OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
+    (None, ['hydra.job.name=overridden_name'], 'no_config.py', 'overridden_name'),
+    (OmegaConf.create({'hydra': {'job': {'name': 'name_from_config_file'}}}),
      [],
      'with_config.py',
      'name_from_config_file'
      ),
     (OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
-     ['hydra.name=overridden_name'],
+     ['hydra.job.name=overridden_name'],
      'with_config.py',
      'overridden_name'
      ),
@@ -82,11 +82,11 @@ def create_submitit_launcher_local_config():
 @pytest.mark.parametrize('hydra_config, extra_flags, plugin_module', [
     (None, [], None),
     (create_fairtask_launcher_local_config(), ['-s', 'hydra.sweep.dir=.'], 'hydra_plugins.fairtask'),
-    # TODO: re-enable after submitit local queue is fixed
-    pytest.param(
-        create_submitit_launcher_local_config(), ['-s'], 'hydra_plugins.submitit',
-        marks=[pytest.mark.skip]
-    ),
+    # # TODO: re-enable after submitit local queue is fixed
+    # pytest.param(
+    #     create_submitit_launcher_local_config(), ['-s'], 'hydra_plugins.submitit',
+    #     marks=[pytest.mark.skip]
+    # ),
 ])
 def test_custom_task_name(tmpdir,
                           task_config,
@@ -103,7 +103,7 @@ def test_custom_task_name(tmpdir,
                      task_config=cfg,
                      hydra_config=None,
                      overrides=overrides,
-                     prints="JobRuntime().get('name')",
+                     prints="HydraConfig().hydra.job.name",
                      expected_outputs=expected_name,
                      filename=filename)
 
@@ -144,39 +144,39 @@ def test_custom_local_run_workdir(tmpdir,
 
 
 @pytest.mark.parametrize('task_config, hydra_cfg, overrides, expected_dir', [
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${job:num}'}}}),
+    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
      {},
      [],
      'task_cfg/task_cfg_0'
      ),
     ({},
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${job:num}'}}}),
+     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
      [],
      'hydra_cfg/hydra_cfg_0'
      ),
     ({},
      {},
-     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${job:num}'],
+     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${job:num}'}}}),
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${job:num}'}}}),
+    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
+     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
      [],
      'task_cfg/task_cfg_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${job:num}'}}}),
+    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
      {},
-     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${job:num}'],
+     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
     ({},
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${job:num}'}}}),
-     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${job:num}'],
+     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${job:num}'}}}),
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${job:num}'}}}),
-     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${job:num}'],
+    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
+     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+     ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
 

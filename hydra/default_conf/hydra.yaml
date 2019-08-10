@@ -5,13 +5,13 @@ defaults:
 hydra:
   # job name.
   # by default populated based on your entry point filename but can be overridden to something else.
-  name: ${job:name}
+  name: ${hydra.job.name}
   run:
     dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
   sweep:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
     # you can also use ${job:override_dirname} to have a directory name with job sweep arguments
-    subdir: ${job:num}_${job:id}
+    subdir: ${hydra.job.num}_${hydra.job.id}
 
   # default sweeper implementation
   sweeper:
@@ -23,3 +23,6 @@ hydra:
     hydra: []
     # Overrides for the task configuration
     task: []
+
+  # job runtime information will be populated here
+  job: {}

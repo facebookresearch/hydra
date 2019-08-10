@@ -7,28 +7,29 @@ import logging.config
 import os
 import re
 import sys
+import six
 from time import strftime, localtime
 
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
-def singleton(class_):
-    instances = {}
+class Singleton(type):
+    _instances = {}
 
-    def instance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return instance
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
 
-class RuntimeVariables:
+@six.add_metaclass(Singleton)
+class JobRuntime:
     def __init__(self):
         self.conf = OmegaConf.create()
+        self.set('name', 'UNKNOWN_NAME')
 
     def get(self, key):
         ret = self.conf.select(key)
@@ -43,14 +44,19 @@ class RuntimeVariables:
         self.conf[key] = value
 
 
-@singleton
-class JobRuntime(RuntimeVariables):
-    pass
+@six.add_metaclass(Singleton)
+class HydraConfig(DictConfig):
 
+    def __init__(self):
+        super(HydraConfig, self).__init__(content={})
+        self.hydra = None
 
-@singleton
-class HydraRuntime(RuntimeVariables):
-    pass
+    def set_config(self, cfg):
+        try:
+            OmegaConf.set_readonly(self, False)
+            self.hydra = copy.deepcopy(cfg.hydra)
+        finally:
+            OmegaConf.set_readonly(self, True)
 
 
 class JobReturn:
@@ -156,8 +162,8 @@ def save_config(cfg, filename):
         file.write(cfg.pretty())
 
 
-def get_overrides_dirname(lst):
-    lst = copy.deepcopy(lst)
+def get_overrides_dirname(lst, exclude_keys=[]):
+    lst = [x for x in lst if x not in exclude_keys]
     lst.sort()
     return re.sub(
         pattern='[=]',
@@ -216,17 +222,16 @@ def setup_globals():
         OmegaConf.register_resolver(
             "now", lambda pattern: strftime(
                 pattern, localtime()))
-        OmegaConf.register_resolver("job", JobRuntime().get)
-        OmegaConf.register_resolver("hydra", HydraRuntime().get)
+
+        def job_error(x):
+            raise Exception("job:{} is no longer available. use hydra.job.{}".format(x, x))
+
+        OmegaConf.register_resolver("job", job_error)
+        # OmegaConf.register_resolver("hydra", HydraRuntime().get)
 
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.
         pass
-
-
-def update_job_runtime(cfg):
-    JobRuntime().set('name', cfg.hydra.name)
-    JobRuntime().set('override_dirname', get_overrides_dirname(cfg.hydra.overrides.task))
 
 
 def get_valid_filename(s):

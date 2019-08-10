@@ -10,6 +10,7 @@ import pkg_resources
 from . import utils
 from .config_loader import ConfigLoader
 from .plugins import Plugins
+from .utils import JobRuntime, HydraConfig
 
 
 def get_args():
@@ -63,7 +64,8 @@ class Hydra:
                  verbose,
                  strict):
         utils.setup_globals()
-        utils.JobRuntime().set('name', utils.get_valid_filename(task_name))
+        JobRuntime().set('name', utils.get_valid_filename(task_name))
+        self.task_name = task_name
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
@@ -74,7 +76,7 @@ class Hydra:
 
     def run(self, overrides):
         cfg = self.load_config(overrides)
-        utils.update_job_runtime(cfg)
+        HydraConfig().set_config(cfg)
         return utils.run_job(config=cfg,
                              task_function=self.task_function,
                              verbose=self.verbose,
@@ -83,7 +85,7 @@ class Hydra:
 
     def sweep(self, overrides):
         cfg = self.load_config(overrides)
-        utils.update_job_runtime(cfg)
+        HydraConfig().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
             config=cfg,
             config_loader=self.config_loader,
