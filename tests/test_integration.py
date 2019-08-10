@@ -65,7 +65,7 @@ def test_task_name(tmpdir,
     if plugin_module is not None:
         try:
             importlib.import_module(plugin_module)
-        except ModuleNotFoundError:
+        except ImportError:
             pytest.skip("Plugin {} not installed".format(plugin_module))
 
     overrides = extra_flags + overrides
@@ -76,3 +76,9 @@ def test_task_name(tmpdir,
                      prints="JobRuntime().get('name')",
                      expected_outputs=expected_name,
                      filename=filename)
+
+# TODO:
+# Add tests for customizing workdir
+# Port more tests to integration tests.
+# Maybe making integration tests more comprehensive (testing output directory content fo
+#

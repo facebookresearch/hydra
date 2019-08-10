@@ -186,10 +186,7 @@ def integration_test(
         overrides,
         prints,
         expected_outputs,
-        filename='task.py',
-        command='run'
-
-):
+        filename='task.py'):
     if isinstance(prints, str):
         prints = [prints]
     if isinstance(expected_outputs, str):
@@ -230,7 +227,7 @@ if __name__ == "__main__":
     try:
         os.chdir(str(tmpdir))
         result = subprocess.check_output(cmd)
-        outputs = str.splitlines(result.decode('utf-8'))
+        outputs = result.decode('utf-8').splitlines()
         assert (len(outputs) == len(expected_outputs))
         for idx in range(len(outputs)):
             assert outputs[idx] == expected_outputs[idx]
