@@ -67,35 +67,7 @@ class ConfigLoader:
         hydra_cfg = clean
         return hydra_cfg
 
-    def load_task_cfg(self, cli_overrides):
-        """
-        Loads the task configuration
-        :param cli_overrides: config overrides from CLI
-        """
-        return self._create_cfg(
-            cfg_dir=self.cfg_dir,
-            cfg_filename=self.conf_filename,
-            cli_overrides=cli_overrides,
-            strict=self.strict_task_cfg)
-
-    # TODO: remove this and rename load_configuration2
     def load_configuration(self, overrides=None):
-        """
-        Load both the Hydra and the task configuraitons
-        :param overrides:
-        :return: a dictionary with both configs
-        """
-        assert overrides is None or isinstance(overrides, list)
-
-        hydra_cfg = self.load_hydra_cfg(overrides or [])
-
-        task_cfg = self._create_cfg(cfg_dir=self.cfg_dir,
-                                    cfg_filename=self.conf_filename,
-                                    cli_overrides=overrides or [],
-                                    strict=self.strict_task_cfg)
-        return dict(hydra_cfg=hydra_cfg, task_cfg=task_cfg)
-
-    def load_configuration2(self, overrides=None):
         assert overrides is None or isinstance(overrides, list)
 
         overrides = overrides or []
@@ -111,6 +83,7 @@ class ConfigLoader:
         for item in [x for x in overrides if x.startswith('hydra.')]:
             cfg.hydra.overrides.hydra.append(item)
 
+        OmegaConf.set_struct(cfg, self.strict_task_cfg)
         return cfg
 
     def _load_config_impl(self, is_pkg, filename):

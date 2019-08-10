@@ -70,16 +70,16 @@ class Hydra:
         self.verbose = verbose
 
     def run(self, overrides):
-        cfg = self.config_loader.load_configuration2(overrides)
+        cfg = self.config_loader.load_configuration(overrides)
         utils.update_job_runtime(cfg)
-        return utils.run_job2(config=cfg,
-                              task_function=self.task_function,
-                              verbose=self.verbose,
-                              job_dir_key='hydra.run.dir',
-                              job_subdir_key=None)
+        return utils.run_job(config=cfg,
+                             task_function=self.task_function,
+                             verbose=self.verbose,
+                             job_dir_key='hydra.run.dir',
+                             job_subdir_key=None)
 
     def sweep(self, overrides):
-        cfg = self.config_loader.load_configuration2(overrides)
+        cfg = self.config_loader.load_configuration(overrides)
         utils.update_job_runtime(cfg)
         utils.configure_log(cfg.hydra.hydra_logging, self.verbose)
         sweeper = Plugins.instantiate_sweeper(

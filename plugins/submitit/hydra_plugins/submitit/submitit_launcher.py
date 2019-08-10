@@ -44,12 +44,12 @@ class SubmititLauncher(Launcher):
         utils.setup_globals()
 
         # Recreate the config for this sweep instance with the appropriate overrides
-        sweep_config = self.config_loader.load_configuration2(sweep_overrides)
-        return utils.run_job2(config=sweep_config,
-                              task_function=self.task_function,
-                              verbose=self.verbose,
-                              job_dir_key=job_dir_key,
-                              job_subdir_key='hydra.sweep.subdir')
+        sweep_config = self.config_loader.load_configuration(sweep_overrides)
+        return utils.run_job(config=sweep_config,
+                             task_function=self.task_function,
+                             verbose=self.verbose,
+                             job_dir_key=job_dir_key,
+                             job_subdir_key='hydra.sweep.subdir')
 
     def launch(self, job_overrides):
         num_jobs = len(job_overrides)
