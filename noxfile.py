@@ -140,9 +140,9 @@ def coverage(session):
     session.run('coverage', 'erase')
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def lint(session):
-    py_ver = session.python.split('.')[0]
+@nox.session
+@nox.parametrize('py_ver', [2, 3])
+def lint(session, py_ver):
     session.install('--upgrade', 'setuptools', 'pip')
     session.install('flake8')
     session.run('pip', 'install', '-e', '.', silent=True)
