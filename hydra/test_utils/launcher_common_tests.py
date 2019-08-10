@@ -6,10 +6,9 @@ Common test functions testing launchers
 import subprocess
 import sys
 
-import pytest
 from omegaconf import OmegaConf
 
-from hydra.test_utils.test_utils import verify_dir_outputs, integration_test
+from hydra.test_utils.test_utils import verify_dir_outputs
 
 additional_overrides = ['foo=bar']
 
