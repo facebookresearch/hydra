@@ -83,7 +83,7 @@ def create_submitit_launcher_local_config():
 ])
 @pytest.mark.parametrize('hydra_config, extra_flags, plugin_module', [
     (None, [], None),
-    (create_fairtask_launcher_local_config(), ['-s'], 'hydra_plugins.fairtask'),
+    (create_fairtask_launcher_local_config(), ['-s', 'hydra.sweep.dir=.'], 'hydra_plugins.fairtask'),
     # TODO: re-enable after submitit local queue is fixed
     pytest.param(
         create_submitit_launcher_local_config(), ['-s'], 'hydra_plugins.submitit',
