@@ -28,7 +28,6 @@ class FAIRTaskLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    # TODO: cleanup job_name
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)

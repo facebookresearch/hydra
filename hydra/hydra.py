@@ -45,6 +45,14 @@ def get_args():
     return parser.parse_args()
 
 
+def print_load_history(loader):
+    for file, loaded in loader.get_load_history():
+        if loaded:
+            log.debug("Loaded: {}".format(file))
+        else:
+            log.debug("Not found: {}".format(file))
+
+
 class Hydra:
 
     def __init__(self,
@@ -65,7 +73,7 @@ class Hydra:
         self.verbose = verbose
 
     def run(self, overrides):
-        cfg = self.config_loader.load_configuration(overrides)
+        cfg = self.load_config(overrides)
         utils.update_job_runtime(cfg)
         return utils.run_job(config=cfg,
                              task_function=self.task_function,
@@ -74,9 +82,8 @@ class Hydra:
                              job_subdir_key=None)
 
     def sweep(self, overrides):
-        cfg = self.config_loader.load_configuration(overrides)
+        cfg = self.load_config(overrides)
         utils.update_job_runtime(cfg)
-        utils.configure_log(cfg.hydra.hydra_logging, self.verbose)
         sweeper = Plugins.instantiate_sweeper(
             config=cfg,
             config_loader=self.config_loader,
@@ -84,14 +91,13 @@ class Hydra:
             verbose=self.verbose)
         return sweeper.sweep(arguments=overrides)
 
-    def get_cfg(self, overrides):
-        hydra_cfg = self._create_hydra_cfg(overrides)
-        utils.configure_log(hydra_cfg.hydra.hydra_logging, self.verbose)
-        ret = utils.create_cfg(cfg_dir=self.conf_dir,
-                               cfg_filename=self.conf_filename,
-                               cli_overrides=overrides)
-        ret['hydra_cfg'] = hydra_cfg
-        return ret
+    def load_config(self, overrides):
+        cfg = self.config_loader.load_configuration(overrides)
+        utils.configure_log(cfg.hydra.hydra_logging, self.verbose)
+        global log
+        log = logging.getLogger(__name__)
+        print_load_history(self.config_loader)
+        return cfg
 
 
 def run_hydra(task_function, config_path, strict):
@@ -101,9 +107,6 @@ def run_hydra(task_function, config_path, strict):
     target_file = os.path.basename(calling_file)
     task_name = os.path.splitext(target_file)[0]
     args = get_args()
-
-    global log
-    log = logging.getLogger(__name__)
 
     if os.path.isabs(config_path):
         raise RuntimeError("Config path should be relative")
@@ -144,16 +147,7 @@ def run_hydra(task_function, config_path, strict):
     elif command == 'sweep':
         hydra.sweep(overrides=args.overrides)
     elif command == 'cfg':
-        loader = ConfigLoader(conf_dir=conf_dir, conf_filename=conf_filename)
-        config = loader.load_configuration(overrides=args.overrides)
-        utils.configure_log(config.hydra.hydra_logging, args.verbose)
-
-        for file, loaded in loader.get_load_history():
-            if loaded:
-                log.debug("Loaded: {}".format(file))
-            else:
-                log.debug("Not found: {}".format(file))
-
+        config = hydra.load_config(args.overrides)
         log.info('\n' + config.pretty())
     else:
         print("Command not specified")
