@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 
-from hydra.test_utils.launcher_test_common import demo_6_sweep_test_impl, \
+from hydra.test_utils.common_tests import demo_6_sweep_test_impl, \
     demos_sweep_1_job_test_impl, demos_sweep_2_jobs_test_impl
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import chdir_hydra_root, sweep_runner  # noqa: F401

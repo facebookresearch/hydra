@@ -6,9 +6,10 @@ Common test functions testing launchers
 import subprocess
 import sys
 
+import pytest
 from omegaconf import OmegaConf
 
-from hydra.test_utils.test_utils import verify_dir_outputs
+from hydra.test_utils.test_utils import verify_dir_outputs, integration_test
 
 
 def demo_6_sweep_test_impl(tmpdir, overrides):
@@ -73,17 +74,26 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
             verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
 
 
-def demo_99_task_name_impl(sweep_runner, config_dir, config_file, args, expected_name, overrides):
-    overrides.extend(args)
-    sweep = sweep_runner(
-        conf_dir=config_dir,
-        conf_filename=config_file,
-        overrides=overrides
-    )
-
-    with sweep:
-        assert len(sweep.returns[0]) == 2
-        for i in range(2):
-            job_ret = sweep.returns[0][i]
-            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
-
+@pytest.mark.parametrize('task_config, overrides, filename, expected_name', [
+    (None, [], 'no_config.py', 'no_config'),
+    (None, ['hydra.name=overridden_name'], 'no_config.py', 'overridden_name'),
+    (
+            OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
+            [],
+            'with_config.py',
+            'name_from_config_file'
+    ),
+    (
+            OmegaConf.create(dict(hydra=dict(name='name_from_config_file'))),
+            ['hydra.name=overridden_name'],
+            'with_config.py',
+            'overridden_name'
+    ),
+])
+def test_task_name(tmpdir, task_config, overrides, filename, expected_name):
+    integration_test(tmpdir,
+                     task_config=task_config,
+                     overrides=overrides,
+                     prints="JobRuntime().get('name')",
+                     expected_outputs=expected_name,
+                     filename=filename)

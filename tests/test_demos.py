@@ -144,21 +144,6 @@ def test_demo_3_config_file(args, output_conf):
     assert result.decode('utf-8') == output_conf.pretty() + "\n"
 
 
-@pytest.mark.parametrize('filename, args, expected_name', [
-    ('no_config_file_override.py', [], 'no_config_file_override'),
-    ('no_config_file_override.py', ['hydra.name=overridden_name'], 'overridden_name'),
-    ('with_config_file_override.py', [], 'name_from_config_file'),
-    ('with_config_file_override.py', ['hydra.name=overridden_name'], 'overridden_name'),
-])
-def test_demo_99_task_name(filename, args, expected_name):
-    cmd = [
-        sys.executable,
-        'demos/99_hydra_configuration/task_name/' + filename
-    ]
-    cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == expected_name + "\n"
-
 
 def test_customize_workdir_from_task_config(tmpdir):
     """

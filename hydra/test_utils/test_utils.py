@@ -180,9 +180,23 @@ def verify_dir_outputs(d, overrides=None):
     assert OmegaConf.load(os.path.join(d, 'overrides.yaml')) == OmegaConf.create(overrides or [])
 
 
-def integration_test(tmpdir, task_config, overrides, prints, expected_outputs):
+def integration_test(
+        tmpdir,
+        task_config,
+        overrides,
+        prints,
+        expected_outputs,
+        filename='task.py'
+
+):
+    if isinstance(prints, str):
+        prints = [prints]
+    if isinstance(expected_outputs, str):
+        expected_outputs = [expected_outputs]
+
     s = string.Template("""
 import hydra
+from hydra.utils import JobRuntime
 import os
 
 @hydra.main($CONFIG_PATH)
@@ -205,7 +219,7 @@ if __name__ == "__main__":
 
     code = s.substitute(PRINTS=print_code, CONFIG_PATH=config_path)
 
-    task_file = tmpdir / "task.py"
+    task_file = tmpdir / filename
     task_file.write_text(six.u(str(code)), encoding='utf-8')
     cmd = [
         sys.executable,
