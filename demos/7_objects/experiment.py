@@ -30,7 +30,7 @@ class Resnet(Model):
         print("Resnet: forward({})".format(x))
 
 
-@hydra.main(config_path='conf/config.yaml')
+@hydra.main(config_path="conf/config.yaml")
 def experiment(cfg):
     model = hydra.utils.instantiate(cfg.model)
     model.forward(10)

@@ -8,7 +8,7 @@ import hydra
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path='conf/config.yaml')
+@hydra.main(config_path="conf/config.yaml")
 def experiment(cfg):
     print(cfg.pretty())
 

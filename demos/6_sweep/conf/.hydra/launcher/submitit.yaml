@@ -31,5 +31,5 @@ hydra:
           tasks_per_node: 1
           timeout_min: 60
 
-    # variables used queues above
+    # variables used by queues above
     mem_limit: 24

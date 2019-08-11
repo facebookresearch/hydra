@@ -9,13 +9,13 @@ from .sweeper import Sweeper
 from .utils import HydraConfig
 
 __all__ = [
-    'Hydra',
-    'utils',
-    'ConfigLoader',
-    'MissingConfigException',
-    'main',
-    'Launcher',
-    'Plugins',
-    'Sweeper',
-    'HydraConfig'
+    "Hydra",
+    "utils",
+    "ConfigLoader",
+    "MissingConfigException",
+    "main",
+    "Launcher",
+    "Plugins",
+    "Sweeper",
+    "HydraConfig",
 ]

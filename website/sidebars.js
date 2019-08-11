@@ -4,6 +4,7 @@ module.exports = {
         About: [
             'intro',
             'getting_started',
+            'contributing'
         ],
         'Basic usage': [
             'examples/minimal',

@@ -2,7 +2,7 @@
 import hydra
 
 
-@hydra.main(config_path='conf/config.yaml')
+@hydra.main(config_path="conf/config.yaml")
 def experiment(cfg):
     print(cfg.pretty())
 

@@ -38,14 +38,11 @@ class ConfigLoader:
         :return:
         """
         hydra_cfg_defaults, _ = self._create_cfg(
-            cfg_dir='pkg://hydra.default_conf',
-            cfg_filename='hydra.yaml',
-            strict=False)
+            cfg_dir="pkg://hydra.default_conf", cfg_filename="hydra.yaml", strict=False
+        )
         if os.path.exists(self.cfg_dir) and not os.path.isdir(self.cfg_dir):
-            raise IOError(
-                "conf_dir is not a directory : {}".format(
-                    self.cfg_dir))
-        cfg_dir = os.path.join(self.cfg_dir, '.hydra')
+            raise IOError("conf_dir is not a directory : {}".format(self.cfg_dir))
+        cfg_dir = os.path.join(self.cfg_dir, ".hydra")
 
         hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
         consumed_defaults = []
@@ -54,7 +51,8 @@ class ConfigLoader:
                 cfg_dir=cfg_dir,
                 cfg_filename="hydra.yaml",
                 strict=False,
-                cli_overrides=overrides)
+                cli_overrides=overrides,
+            )
         else:
             hydra_cfg = OmegaConf.from_dotlist(overrides)
         # strip everything outside of the hydra tree from the hydra config
@@ -74,26 +72,28 @@ class ConfigLoader:
         overrides = overrides or []
         hydra_cfg = self.load_hydra_cfg(overrides)
 
-        task_cfg, consumed_defaults = self._create_cfg(cfg_dir=self.cfg_dir,
-                                                       cfg_filename=self.conf_filename,
-                                                       cli_overrides=overrides or [],
-                                                       strict=self.strict_task_cfg)
+        task_cfg, consumed_defaults = self._create_cfg(
+            cfg_dir=self.cfg_dir,
+            cfg_filename=self.conf_filename,
+            cli_overrides=overrides or [],
+            strict=self.strict_task_cfg,
+        )
         cfg = OmegaConf.merge(hydra_cfg, task_cfg)
-        for item in [x for x in overrides if not x.startswith('hydra.')]:
+        for item in [x for x in overrides if not x.startswith("hydra.")]:
             cfg.hydra.overrides.task.append(item)
-        for item in [x for x in overrides if x.startswith('hydra.')]:
+        for item in [x for x in overrides if x.startswith("hydra.")]:
             cfg.hydra.overrides.hydra.append(item)
 
-        job = OmegaConf.create(dict(
-            name=JobRuntime().get('name')
-        ))
+        job = OmegaConf.create(dict(name=JobRuntime().get("name")))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
         OmegaConf.set_struct(cfg, self.strict_task_cfg)
         return cfg
 
     def load_sweep_config(self, master_config, sweep_overrides):
         # Recreate the config for this sweep instance with the appropriate overrides
-        sweep_config = self.load_configuration(master_config.hydra.overrides.hydra.to_container() + sweep_overrides)
+        sweep_config = self.load_configuration(
+            master_config.hydra.overrides.hydra.to_container() + sweep_overrides
+        )
 
         # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
         OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
@@ -106,7 +106,7 @@ class ConfigLoader:
             res_base = os.path.dirname(filename)
             res_file = os.path.basename(filename)
             loaded_cfg = OmegaConf.load(resource_stream(res_base, res_file))
-            self.all_config_checked.append(('pkg://' + filename, True))
+            self.all_config_checked.append(("pkg://" + filename, True))
         elif os.path.exists(filename):
             loaded_cfg = OmegaConf.load(filename)
             self.all_config_checked.append((filename, True))
@@ -115,23 +115,29 @@ class ConfigLoader:
         return loaded_cfg
 
     def _merge_config(self, cfg_dir, is_pkg, cfg, family, name, required):
-        if family != '.':
+        if family != ".":
             family_dir = os.path.join(cfg_dir, family)
         else:
             family_dir = cfg_dir
-        cfg_path = os.path.join(family_dir, str(name)) + '.yaml'
+        cfg_path = os.path.join(family_dir, str(name)) + ".yaml"
         new_cfg = self._load_config_impl(is_pkg, cfg_path)
         if new_cfg is None:
             if required:
                 if self._exists(is_pkg, family_dir):
-                    options = [f[0:-len('.yaml')] for f in os.listdir(family_dir) if
-                               os.path.isfile(os.path.join(family_dir, f)) and f.endswith(".yaml")]
+                    options = [
+                        f[0 : -len(".yaml")]
+                        for f in os.listdir(family_dir)
+                        if os.path.isfile(os.path.join(family_dir, f))
+                        and f.endswith(".yaml")
+                    ]
                     msg = "Could not load {}, available options:\n{}:\n\t{}".format(
-                        cfg_path, family, "\n\t".join(options))
+                        cfg_path, family, "\n\t".join(options)
+                    )
                 else:
                     options = None
                     msg = "Could not load {}, directory not found".format(
-                        cfg_path, family)
+                        cfg_path, family
+                    )
                 raise MissingConfigException(msg, cfg_path, options)
             else:
                 return cfg
@@ -148,9 +154,9 @@ class ConfigLoader:
             return os.path.exists(filename)
 
     def _create_cfg(self, cfg_dir, cfg_filename, strict, cli_overrides=[]):
-        is_pkg = cfg_dir.startswith('pkg://')
+        is_pkg = cfg_dir.startswith("pkg://")
         if is_pkg:
-            cfg_dir = cfg_dir[len('pkg://'):]
+            cfg_dir = cfg_dir[len("pkg://") :]
 
         if not is_pkg:
             if not os.path.exists(cfg_dir):
@@ -160,8 +166,8 @@ class ConfigLoader:
             main_cfg_file = os.path.join(cfg_dir, cfg_filename)
             if not ConfigLoader._exists(is_pkg, main_cfg_file):
                 raise IOError(
-                    "Config file not found : {}".format(
-                        os.path.realpath(main_cfg_file)))
+                    "Config file not found : {}".format(os.path.realpath(main_cfg_file))
+                )
 
             main_cfg = self._load_config_impl(is_pkg, main_cfg_file)
         else:
@@ -177,9 +183,11 @@ class ConfigLoader:
         defaults_changes = {}
         consumed_defaults = []
         for override in copy.deepcopy(cli_overrides):
-            key, value = override.split('=')
-            assert key != 'optional', "optional is a reserved keyword and cannot be used as a " \
-                                      "config group name"
+            key, value = override.split("=")
+            assert key != "optional", (
+                "optional is a reserved keyword and cannot be used as a "
+                "config group name"
+            )
             path = os.path.join(cfg_dir, key)
             if ConfigLoader._exists(is_pkg, path):
                 defaults_changes[key] = value
@@ -195,29 +203,33 @@ class ConfigLoader:
                 is_optional = False
                 if default.optional is not None:
                     is_optional = default.optional
-                    del default['optional']
+                    del default["optional"]
                 family = next(iter(default.keys()))
                 name = default[family]
-                cfg = self._merge_config(cfg=cfg,
-                                         cfg_dir=cfg_dir,
-                                         is_pkg=is_pkg,
-                                         family=family,
-                                         name=name,
-                                         required=not is_optional)
+                cfg = self._merge_config(
+                    cfg=cfg,
+                    cfg_dir=cfg_dir,
+                    is_pkg=is_pkg,
+                    family=family,
+                    name=name,
+                    required=not is_optional,
+                )
             else:
                 assert isinstance(default, str)
-                cfg = self._merge_config(cfg=cfg,
-                                         cfg_dir=cfg_dir,
-                                         is_pkg=is_pkg,
-                                         family='.',
-                                         name=default,
-                                         required=True)
+                cfg = self._merge_config(
+                    cfg=cfg,
+                    cfg_dir=cfg_dir,
+                    is_pkg=is_pkg,
+                    family=".",
+                    name=default,
+                    required=True,
+                )
         if strict:
             OmegaConf.set_struct(cfg, True)
         # merge in remaining overrides
         cfg.merge_with_dotlist(overrides)
         # remove config block from resulting cfg.
-        del cfg['defaults']
+        del cfg["defaults"]
         return cfg, consumed_defaults
 
     @staticmethod
@@ -230,17 +242,18 @@ class ConfigLoader:
             optional: true
           - optimizer: nesterov
         """
-        assert isinstance(
-            cfg.defaults,
-            ListConfig), "defaults must be a list because composition is order sensitive : " + \
-                         valid_example
+        assert isinstance(cfg.defaults, ListConfig), (
+            "defaults must be a list because composition is order sensitive : "
+            + valid_example
+        )
         for default in cfg.defaults:
             assert isinstance(default, DictConfig) or isinstance(default, str)
             if isinstance(default, DictConfig):
                 assert len(default) in (1, 2)
                 if len(default) == 2:
                     assert default.optional is not None and isinstance(
-                        default.optional, bool)
+                        default.optional, bool
+                    )
                 else:
                     # optional can't be the only config key in a default
                     assert default.optional is None, "Missing config key"
@@ -253,7 +266,7 @@ class ConfigLoader:
         for default in cfg.defaults:
             if isinstance(default, DictConfig):
                 for key in default.keys():
-                    if key != 'optional':
+                    if key != "optional":
                         if key in defaults_changes:
                             default[key] = defaults_changes[key]
                             del defaults_changes[key]
