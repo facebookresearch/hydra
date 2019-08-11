@@ -98,7 +98,7 @@ def test_load_history():
     assert config_loader.get_load_history() == [
         ('pkg://hydra.default_conf/hydra.yaml', True),
         ('pkg://hydra.default_conf/hydra_logging.yaml', True),
-        ('pkg://hydra.default_conf/task_logging.yaml', True),
+        ('pkg://hydra.default_conf/job_logging.yaml', True),
         ('tests/configs/missing-optional-default.yaml', True),
         ('tests/configs/foo/missing.yaml', False)]
 

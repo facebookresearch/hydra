@@ -1,12 +1,34 @@
 ---
 id: intro
-title: Configuring  Hydra
+title: Overview
 sidebar_label: Introduction
 ---
 
-Hydra comes pre-packages with sensible default configuration that covers the basic use cases.
-You can customize that behavior by creating a `.hydra/hydra.yaml` file under your job config path.
+## Hydra config
+Hydra is highly customizable, and is composed in the following order:
 
+### default configuration in package
+This configuration comes with the Hydra code, and it not directly changeable by the end user.
+
+*Scope*: global, this is effecting all Hydra runs and is the first thing that is used
+to compose the Hydra configuration.
+
+### Project config (`.hydra/hydra.yaml`)
+`.hydra/hydra.yaml` in your `config_path` directory.
+
+*Scope*: Hydra project (a collection of applications sharing the same config directory).
+
+### Job config (`config.yaml`)
+You can configure Hydra directly through your job config.
+
+*Scope*: Hydra application
+
+### Command line arguments
+Command line arguments can override Hydra configs.
+
+*Scope*: Single app run
+
+## Customization examples
 ### Working directories
 Job output directory can be [customized](workdir) both for local and for cluster (sweep) runs.
 
@@ -14,11 +36,9 @@ Job output directory can be [customized](workdir) both for local and for cluster
 The default logging should be sufficient for most use cases but you can [customize](logging) 
 the logging in your own project 
 
-### Task name
-By default, the task name is simply the name of the python file without the .py extension.
-In some cases you may want to [customize](task_name) it.
-
 ### Plugins
 Many plugins requires configuration via the .hydra directory.
 See the documentation of individual plugins for more information about how to configure them.
+
+TODO: Document plugins
 

@@ -5,5 +5,5 @@ hydra:
   run:
     dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
-    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${hydra.name}
+    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${hydra.job.name}
     subdir: ${hydra.job.num}_${hydra.job.num}_${hydra.job.override_dirname}
