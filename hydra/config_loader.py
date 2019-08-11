@@ -91,6 +91,15 @@ class ConfigLoader:
         OmegaConf.set_struct(cfg, self.strict_task_cfg)
         return cfg
 
+    def load_sweep_config(self, master_config, sweep_overrides):
+        # Recreate the config for this sweep instance with the appropriate overrides
+        sweep_config = self.load_configuration(master_config.hydra.overrides.hydra.to_container() + sweep_overrides)
+
+        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
+        OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
+
+        return sweep_config
+
     def _load_config_impl(self, is_pkg, filename):
         loaded_cfg = None
         if is_pkg:
