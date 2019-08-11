@@ -21,6 +21,3 @@ pip install --upgrade --upgrade-strategy=eager \
 ### Uninstalling
 pip uninstall -y hydra hydra-submitit hydra-fairtask
 
-
-### Contributing
-Check [this](https://github.com/facebookresearch/hydra/blob/master/CONTRIBUTING.md) If you want to be Hercules and hack Hydra.
