@@ -6,9 +6,8 @@ Common test functions testing launchers
 import subprocess
 import sys
 
-from omegaconf import OmegaConf
-
 from hydra.test_utils.test_utils import verify_dir_outputs
+from omegaconf import OmegaConf
 
 additional_overrides = ['foo=bar']
 
@@ -53,6 +52,33 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
     Runs a sweep with two jobs
     """
     overrides.append('a=0,1')
+    sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
+                         conf_filename='config.yaml',
+                         overrides=overrides)
+    base = OmegaConf.create(dict(
+        optimizer=dict(
+            type='nesterov',
+            lr=0.001,
+        ),
+    ))
+
+    with sweep:
+        assert len(sweep.returns[0]) == 2
+        for i in range(2):
+            job_ret = sweep.returns[0][i]
+            expected_conf = OmegaConf.merge(
+                base, OmegaConf.from_dotlist(
+                    job_ret.overrides))
+            assert job_ret.overrides == ['a={}'.format(i)]
+            assert job_ret.cfg == expected_conf
+            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
+
+
+def not_sweeping_hydra_overrides(sweep_runner, overrides):
+    """
+    Runs a sweep with two jobs
+    """
+    overrides.extend(['a=0,1', 'hydra.foo=1,2,3'])
     sweep = sweep_runner(conf_dir='demos/6_sweep/conf/',
                          conf_filename='config.yaml',
                          overrides=overrides)

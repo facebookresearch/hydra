@@ -91,7 +91,7 @@ class Hydra:
             config_loader=self.config_loader,
             task_function=self.task_function,
             verbose=self.verbose)
-        return sweeper.sweep(arguments=overrides)
+        return sweeper.sweep(arguments=cfg.hydra.overrides.task)
 
     def load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
