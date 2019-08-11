@@ -22,6 +22,28 @@ PLUGINS_INSTALL_COMMANDS = (
 )
 
 
+def install_hydra(session):
+    # clean install hydra
+    session.chdir(BASE)
+    # TODO: This would better be 'pip install .'
+    # but until https://github.com/pypa/pip/pull/6770 is public this is too slow.
+    session.run('pip', 'install', '-e', '.', silent=True)
+
+
+def install_pytest(session):
+    if session.python == '2.7':
+        session.install('pytest')
+    else:
+        session.install('pytest', 'pytest_parallel')
+
+
+def run_pytest(session):
+    if session.python == '2.7':
+        session.run('pytest', silent=False)
+    else:
+        session.run('pytest', '--workers=30', silent=False)
+
+
 def plugin_names():
     return sorted(os.listdir(os.path.join(BASE, 'plugins')))
 
@@ -33,10 +55,9 @@ def get_all_plugins():
 @nox.session(python=PYTHON_VERSIONS)
 def test_core(session):
     session.install('--upgrade', 'setuptools', 'pip')
-    session.install('pytest')
-    session.chdir(BASE)
-    session.run('pip', 'install', '.', silent=True)
-    session.run('pytest', silent=True)
+    install_hydra(session)
+    install_pytest(session)
+    run_pytest(session)
 
 
 def get_python_versions(session, setup_py):
@@ -51,8 +72,9 @@ def get_python_versions(session, setup_py):
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize('install_cmd', PLUGINS_INSTALL_COMMANDS, ids=[
-    ' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
+@nox.parametrize('install_cmd',
+                 PLUGINS_INSTALL_COMMANDS,
+                 ids=[' '.join(x) for x in PLUGINS_INSTALL_COMMANDS])
 @nox.parametrize('plugin_name', plugin_names(), ids=plugin_names())
 def test_plugin(session, plugin_name, install_cmd):
     session.install('--upgrade', 'setuptools', 'pip')
@@ -68,10 +90,8 @@ def test_plugin(session, plugin_name, install_cmd):
                 ','.join(plugin_python_versions)
             )
         )
-    # clean install hydra
-    session.chdir(BASE)
-    session.run('python', 'setup.py', 'clean', silent=True)
-    session.run('pip', 'install', '.', silent=True)
+
+    install_hydra(session)
 
     all_plugins = get_all_plugins()
     # Install all plugins in session
@@ -81,14 +101,19 @@ def test_plugin(session, plugin_name, install_cmd):
 
     # Test that we can import Hydra
     session.run('python', '-c', 'from hydra import Hydra', silent=True)
+
     # Test that we can import all installed plugins
     for plugin in all_plugins:
         session.run('python', '-c', 'import {}'.format(plugin[1]))
 
+    install_pytest(session)
+
+    # Run Hydra tests
+    run_pytest(session)
+
     # Run tests for current plugin
     session.chdir(os.path.join(BASE, "plugins", plugin_name))
-    session.install('pytest')
-    session.run('pytest', silent=True)
+    run_pytest(session)
 
 
 @nox.session
@@ -131,9 +156,9 @@ def coverage(session):
     session.run('coverage', 'erase')
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def lint(session):
-    py_ver = session.python.split('.')[0]
+@nox.session
+@nox.parametrize('py_ver', [2, 3])
+def lint(session, py_ver):
     session.install('--upgrade', 'setuptools', 'pip')
     session.install('flake8')
     session.run('pip', 'install', '-e', '.', silent=True)

@@ -62,4 +62,4 @@ workflows:
       - deploy-website:
           filters:
             branches:
-              only: master  
+              only: master

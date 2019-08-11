@@ -84,7 +84,7 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=[
-            'omegaconf>=1.3.0rc7',
+            'omegaconf>=1.3.0rc8',
         ],
         # Install development dependencies with
         # pip install -e .[dev]

@@ -6,6 +6,7 @@ from .hydra import main, Hydra
 from .launcher import Launcher
 from .plugins import Plugins
 from .sweeper import Sweeper
+from .utils import HydraConfig
 
 __all__ = [
     'Hydra',
@@ -16,4 +17,5 @@ __all__ = [
     'Launcher',
     'Plugins',
     'Sweeper',
+    'HydraConfig'
 ]

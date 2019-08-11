@@ -1,19 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
 import re
 import subprocess
 import sys
-import six
+
 import pytest
-from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import task_runner  # noqa: F401
+from omegaconf import OmegaConf
 
 chdir_hydra_root()
-base_dir = os.getcwd()
 
 
 def test_missing_conf_dir(task_runner):  # noqa: F811
@@ -102,22 +100,20 @@ def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
         verify_dir_outputs(task.job_ret.working_dir, overrides=task.overrides)
 
 
-@pytest.mark.parametrize(
-    'args,output_conf', [
-        ([], OmegaConf.create()), (['abc=123', 'hello.a=456', 'hello.b=5671'], OmegaConf.create(
-            dict(
-                abc=123, hello=dict(
-                    a=456, b=5671)))), ])
-def test_demo_0_minimal(args, output_conf):
-    cmd = [sys.executable, 'demos/0_minimal/minimal.py']
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create()),
+    (['abc=123', 'hello.a=456', 'hello.b=5671'],
+     OmegaConf.create(dict(abc=123, hello=dict(a=456, b=5671)))),
+])
+def test_demo_0_minimal(tmpdir, args, output_conf):
+    cmd = [sys.executable, 'demos/0_minimal/minimal.py', 'hydra.run.dir=' + str(tmpdir)]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == output_conf.pretty() + "\n"
+    assert OmegaConf.create(str(result.decode('utf-8'))) == output_conf
 
 
 def test_demo_1_workdir(tmpdir):
-    cmd = [sys.executable, 'demos/1_working_directory/working_directory.py']
-    cmd.extend(['hydra.run.dir={}'.format(tmpdir)])
+    cmd = [sys.executable, 'demos/1_working_directory/working_directory.py', 'hydra.run.dir=' + str(tmpdir)]
     result = subprocess.check_output(cmd)
     assert result.decode('utf-8') == "Working directory : {}\n".format(tmpdir)
 
@@ -126,8 +122,8 @@ def test_demo_1_workdir(tmpdir):
     ([], ['Info level message']),
     (['-v' '__main__'], ['Info level message', 'Debug level message']),
 ])
-def test_demo_2_logging(args, expected):
-    cmd = [sys.executable, 'demos/2_logging/logging_example.py']
+def test_demo_2_logging(tmpdir, args, expected):
+    cmd = [sys.executable, 'demos/2_logging/logging_example.py', 'hydra.run.dir=' + str(tmpdir)]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     lines = result.decode('utf-8').splitlines()
@@ -140,78 +136,33 @@ def test_demo_2_logging(args, expected):
     ([], OmegaConf.create(dict(dataset=dict(name='imagenet', path='/datasets/imagenet')))),
     (['dataset.path=abc'], OmegaConf.create(dict(dataset=dict(name='imagenet', path='abc')))),
 ])
-def test_demo_3_config_file(args, output_conf):
-    cmd = [sys.executable, 'demos/3_config_file/config_file.py']
+def test_demo_3_config_file(tmpdir, args, output_conf):
+    cmd = [sys.executable, 'demos/3_config_file/config_file.py', 'hydra.run.dir=' + str(tmpdir)]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == output_conf.pretty() + "\n"
+    assert OmegaConf.create(str(result.decode('utf-8'))) == output_conf
 
 
-@pytest.mark.parametrize('filename, args, expected_name', [
-    ('no_config_file_override.py', [], 'no_config_file_override'),
-    ('no_config_file_override.py', ['hydra.name=overridden_name'], 'overridden_name'),
-    ('with_config_file_override.py', [], 'name_from_config_file'),
-    ('with_config_file_override.py', ['hydra.name=overridden_name'], 'overridden_name'),
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create({'dataset': {'name': 'imagenet', 'path': '/datasets/imagenet'},
+                           'optimizer': {'lr': 0.001, 'type': 'nesterov'}})),
+    (['dataset.path=foo'], OmegaConf.create({'dataset': {'name': 'imagenet', 'path': 'foo'},
+                                             'optimizer': {'lr': 0.001, 'type': 'nesterov'}}))
 ])
-def test_demo_99_task_name(filename, args, expected_name):
-    cmd = [
-        sys.executable,
-        'demos/99_hydra_configuration/task_name/' + filename
-    ]
+def test_demo_4_config_slitting(tmpdir, args, output_conf):
+    cmd = [sys.executable, 'demos/4_config_splitting/experiment.py', 'hydra.run.dir=' + str(tmpdir)]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
-    assert result.decode('utf-8') == expected_name + "\n"
+    assert OmegaConf.create(str(result.decode('utf-8'))) == output_conf
 
 
-def test_customize_workdir_from_task_config(tmpdir):
-    """
-    Tests that:
-    Given a task configuration that contains hydra.run.dir override, it overrides
-    the default hydra.run.dir
+@pytest.mark.parametrize('args,output_conf', [
+    ([], OmegaConf.create({'optimizer': {'lr': 0.001, 'type': 'nesterov'}})),
+    (['optimizer=adam'], OmegaConf.create({'optimizer': {'beta': 0.01, 'lr': 0.1, 'type': 'adam'}})),
 
-    And also that changing the work dir from the command line overrides that task config file.
-    """
-
-    task_cfg = OmegaConf.create(dict(
-        hydra=dict(
-            run=dict(
-                dir='foo'
-            )
-        )
-    ))
-    task_cfg.save(str(tmpdir / "config.yaml"))
-    code = """
-import hydra
-import os
-
-@hydra.main(config_path='config.yaml')
-def experiment(_cfg):
-    print(os.getcwd())
-
-if __name__ == "__main__":
-    experiment()
-    """
-    task_file = tmpdir / "task.py"
-    task_file.write_text(six.u(str(code)), encoding='utf-8')
-    cmd = [
-        sys.executable,
-        str(task_file)
-    ]
-    try:
-        os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        assert result.decode('utf-8') == tmpdir / 'foo' + "\n"
-    finally:
-        os.chdir(base_dir)
-
-    cmd = [
-        sys.executable,
-        str(task_file),
-        'hydra.run.dir=foobar'
-    ]
-    try:
-        os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        assert result.decode('utf-8') == tmpdir / 'foobar' + "\n"
-    finally:
-        os.chdir(base_dir)
+])
+def test_demo_5_config_groups(tmpdir, args, output_conf):
+    cmd = [sys.executable, 'demos/5_config_groups/experiment.py', 'hydra.run.dir=' + str(tmpdir)]
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert OmegaConf.create(str(result.decode('utf-8'))) == output_conf

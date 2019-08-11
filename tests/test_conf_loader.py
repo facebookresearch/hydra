@@ -37,12 +37,13 @@ def test_load_configuration():
         conf_dir='demos/3_config_file',
         conf_filename='config.yaml')
     cfg = config_loader.load_configuration(overrides=['abc=123'])
-    assert cfg['task_cfg'] == OmegaConf.create(
-        dict(
-            abc=123,
-            dataset=dict(
-                name='imagenet',
-                path='/datasets/imagenet')))
+    del cfg['hydra']
+    assert cfg == OmegaConf.create(dict(
+        abc=123,
+        dataset=dict(
+            name='imagenet',
+            path='/datasets/imagenet')
+    ))
 
 
 def test_load_with_missing_default():
@@ -58,7 +59,8 @@ def test_load_with_missing_optional_default():
         conf_dir='tests/configs',
         conf_filename='missing-optional-default.yaml')
     cfg = config_loader.load_configuration()
-    assert cfg['task_cfg'] == {}
+    del cfg['hydra']
+    assert cfg == {}
 
 
 def test_load_with_optional_default():
@@ -66,7 +68,8 @@ def test_load_with_optional_default():
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
     cfg = config_loader.load_configuration()
-    assert cfg['task_cfg'] == dict(foo=10)
+    del cfg['hydra']
+    assert cfg == dict(foo=10)
 
 
 def test_load_changing_group_in_default():
@@ -74,7 +77,8 @@ def test_load_changing_group_in_default():
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
     cfg = config_loader.load_configuration(['group1=file2'])
-    assert cfg['task_cfg'] == dict(foo=20)
+    del cfg['hydra']
+    assert cfg == dict(foo=20)
 
 
 def test_load_adding_group_not_in_default():
@@ -82,7 +86,8 @@ def test_load_adding_group_not_in_default():
         conf_dir='tests/configs',
         conf_filename='optional-default.yaml')
     cfg = config_loader.load_configuration(['group2=file1'])
-    assert cfg['task_cfg'] == dict(foo=10, bar=100)
+    del cfg['hydra']
+    assert cfg == dict(foo=10, bar=100)
 
 
 def test_load_history():
@@ -91,16 +96,11 @@ def test_load_history():
         conf_filename='missing-optional-default.yaml')
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
-        ('pkg://hydra.default_conf/hydra.yaml',
-         True),
-        ('pkg://hydra.default_conf/hydra_logging.yaml',
-         True),
-        ('pkg://hydra.default_conf/task_logging.yaml',
-         True),
-        ('tests/configs/missing-optional-default.yaml',
-         True),
-        ('tests/configs/foo/missing.yaml',
-         False)]
+        ('pkg://hydra.default_conf/hydra.yaml', True),
+        ('pkg://hydra.default_conf/hydra_logging.yaml', True),
+        ('pkg://hydra.default_conf/job_logging.yaml', True),
+        ('tests/configs/missing-optional-default.yaml', True),
+        ('tests/configs/foo/missing.yaml', False)]
 
 
 def test_load_strict():
@@ -112,17 +112,18 @@ def test_load_strict():
         conf_dir='demos/3_config_file',
         conf_filename='config.yaml',
         strict_task_cfg=True)
-    cfg1 = config_loader.load_task_cfg(cli_overrides=['dataset.name=foobar'])
-    assert cfg1 == dict(dataset=dict(name='foobar', path='/datasets/imagenet'))
+    cfg = config_loader.load_configuration(overrides=['dataset.name=foobar'])
+    del cfg['hydra']
+    assert cfg == dict(dataset=dict(name='foobar', path='/datasets/imagenet'))
     with pytest.raises(KeyError):
-        cfg1.not_here
+        cfg.not_here
 
     with pytest.raises(KeyError):
-        cfg1.dataset.not_here
+        cfg.dataset.not_here
 
     config_loader = ConfigLoader(
         conf_dir='demos/3_config_file',
         conf_filename='config.yaml',
         strict_task_cfg=True)
     with pytest.raises(KeyError):
-        config_loader.load_task_cfg(cli_overrides=['dataset.bad_key=foobar'])
+        config_loader.load_configuration(overrides=['dataset.bad_key=foobar'])

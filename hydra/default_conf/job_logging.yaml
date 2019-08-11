@@ -1,6 +1,6 @@
 hydra:
   # python logging configuration for tasks
-  task_logging:
+  job_logging:
     version: 1
     formatters:
       simple:
@@ -14,7 +14,7 @@ hydra:
         class: logging.FileHandler
         formatter: simple
         # relative to the job log directory
-        filename: ${hydra.name}.log
+        filename: ${hydra.job.name}.log
     root:
       level: INFO
       handlers: [console, file]
