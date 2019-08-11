@@ -22,6 +22,14 @@ PLUGINS_INSTALL_COMMANDS = (
 )
 
 
+def install_hydra(session):
+    # clean install hydra
+    session.chdir(BASE)
+    # TODO: This would better be 'pip install .'
+    # but until https://github.com/pypa/pip/pull/6770 is public this is too slow.
+    session.run('pip', 'install', '-e', '.', silent=True)
+
+
 def install_pytest(session):
     if session.python == '2.7':
         session.install('pytest')
@@ -47,8 +55,7 @@ def get_all_plugins():
 @nox.session(python=PYTHON_VERSIONS)
 def test_core(session):
     session.install('--upgrade', 'setuptools', 'pip')
-    session.chdir(BASE)
-    session.run('pip', 'install', '.', silent=True)
+    install_hydra(session)
     install_pytest(session)
     run_pytest(session)
 
@@ -83,11 +90,8 @@ def test_plugin(session, plugin_name, install_cmd):
                 ','.join(plugin_python_versions)
             )
         )
-    # clean install hydra
-    session.chdir(BASE)
-    # TODO: This would better be 'pip install .'
-    # but until https://github.com/pypa/pip/pull/6770 is public this is too slow.
-    session.run('pip', 'install', '-e', '.', silent=True)
+
+    install_hydra(session)
 
     all_plugins = get_all_plugins()
     # Install all plugins in session
