@@ -145,3 +145,7 @@ def lint(session, py_ver):
     session.install("flake8")
     session.run("pip", "install", "-e", ".", silent=True)
     session.run("flake8", "--config", ".circleci/flake8_py{}.cfg".format(py_ver))
+
+    session.install("black")
+    # if this fails you need to format your code with black
+    session.run("black", "--check", ".")
