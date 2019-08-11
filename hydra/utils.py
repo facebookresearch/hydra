@@ -7,8 +7,9 @@ import logging.config
 import os
 import re
 import sys
-import six
 from time import strftime, localtime
+
+import six
 
 from omegaconf import OmegaConf, DictConfig
 
@@ -216,9 +217,6 @@ def run_job(
 
 def setup_globals():
     try:
-        # clear resolvers. this is important to flush the resolvers cache
-        # (specifically needed for unit tests)
-        OmegaConf.clear_resolvers()
         OmegaConf.register_resolver(
             "now", lambda pattern: strftime(
                 pattern, localtime()))
@@ -227,7 +225,6 @@ def setup_globals():
             raise Exception("job:{} is no longer available. use hydra.job.{}".format(x, x))
 
         OmegaConf.register_resolver("job", job_error)
-        # OmegaConf.register_resolver("hydra", HydraRuntime().get)
 
     except AssertionError:
         # calling it again in no_workers mode will throw. safe to ignore.

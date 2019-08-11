@@ -144,13 +144,13 @@ def test_custom_local_run_workdir(tmpdir,
 
 
 @pytest.mark.parametrize('task_config, hydra_cfg, overrides, expected_dir', [
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
+    ({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}},
      {},
      [],
      'task_cfg/task_cfg_0'
      ),
     ({},
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+     {'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}},
      [],
      'hydra_cfg/hydra_cfg_0'
      ),
@@ -159,23 +159,23 @@ def test_custom_local_run_workdir(tmpdir,
      ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+    ({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}},
+     {'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}},
      [],
      'task_cfg/task_cfg_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
+    ({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}},
      {},
      ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
     ({},
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+     {'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}},
      ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
-    (OmegaConf.create({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}}),
-     OmegaConf.create({'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}}),
+    ({'hydra': {'sweep': {'dir': 'task_cfg', 'subdir': 'task_cfg_${hydra.job.num}'}}},
+     {'hydra': {'sweep': {'dir': 'hydra_cfg', 'subdir': 'hydra_cfg_${hydra.job.num}'}}},
      ['hydra.sweep.dir=cli_dir', 'hydra.sweep.subdir=cli_dir_${hydra.job.num}'],
      'cli_dir/cli_dir_0'
      ),
@@ -198,14 +198,17 @@ def test_custom_sweeper_run_workdir(tmpdir,
                                     extra_flags,
                                     plugin_module):
     verify_plugin(plugin_module)
-    overrides = extra_flags + overrides
-    cfg = OmegaConf.merge(task_launcher_cfg or OmegaConf.create(),
-                          task_config or OmegaConf.create())
+    if task_config is not None:
+        task_config = OmegaConf.create(task_config)
+    if hydra_cfg is not None:
+        hydra_cfg = OmegaConf.create(hydra_cfg)
 
-    expected_dir1 = tmpdir / expected_dir
+    overrides = extra_flags + overrides
+    cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+
     integration_test(tmpdir,
                      task_config=cfg,
                      hydra_config=hydra_cfg,
                      overrides=overrides,
                      prints="os.getcwd()",
-                     expected_outputs=str(expected_dir1))
+                     expected_outputs=str(tmpdir / expected_dir))

@@ -7,6 +7,7 @@ from fairtask import TaskQueues, gatherl
 
 from hydra import Launcher
 from hydra import utils
+from omegaconf import OmegaConf
 
 log = logging.getLogger(__name__)
 
@@ -28,13 +29,16 @@ class FAIRTaskLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    def launch_job(self, sweep_overrides, job_dir_key, job_num):
+    def launch_job(self, config, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
         utils.setup_globals()
 
         # Recreate the config for this sweep instance with the appropriate overrides
         sweep_config = self.config_loader.load_configuration(sweep_overrides)
+        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
+        OmegaConf.copy_cache(self.config, sweep_config)
+
         # Populate new job variables
         sweep_config.hydra.job.id = '${env:SLURM_JOB_ID}' if 'SLURM_JOB_ID' in os.environ else '_UNKNOWN_SLURM_ID_'
         sweep_config.hydra.job.num = job_num
@@ -60,7 +64,8 @@ class FAIRTaskLauncher(Launcher):
                 "\t#{} : {}".format(
                     job_num, " ".join(
                         utils.filter_overrides(sweep_override))))
-            runs.append(queue(self.launch_job)(sweep_override,
+            runs.append(queue(self.launch_job)(self.config,
+                                               sweep_override,
                                                'hydra.sweep.dir',
                                                job_num))
 

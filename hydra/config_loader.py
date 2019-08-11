@@ -6,9 +6,9 @@ Configuration loader
 import copy
 import os
 
-from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import resource_stream, resource_exists
 
+from omegaconf import OmegaConf, DictConfig, ListConfig
 from .errors import MissingConfigException
 from .utils import JobRuntime
 
@@ -68,7 +68,7 @@ class ConfigLoader:
         hydra_cfg = clean
         return hydra_cfg
 
-    def load_configuration(self, overrides=None):
+    def load_configuration(self, overrides=[]):
         assert overrides is None or isinstance(overrides, list)
 
         overrides = overrides or []
@@ -88,7 +88,6 @@ class ConfigLoader:
             name=JobRuntime().get('name')
         ))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
-
         OmegaConf.set_struct(cfg, self.strict_task_cfg)
         return cfg
 

@@ -6,6 +6,7 @@ import submitit
 
 from hydra import Launcher
 from hydra import utils
+from omegaconf import OmegaConf
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -43,6 +44,8 @@ class SubmititLauncher(Launcher):
         utils.setup_globals()
         # Recreate the config for this sweep instance with the appropriate overrides
         sweep_config = self.config_loader.load_configuration(sweep_overrides)
+        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
+        OmegaConf.copy_cache(self.config, sweep_config)
         # Populate new job variables
         sweep_config.hydra.job.id = '${env:SLURM_JOB_ID}' if 'SLURM_JOB_ID' in os.environ else '_UNKNOWN_SLURM_ID_'
         sweep_config.hydra.job.num = job_num
