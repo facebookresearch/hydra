@@ -12,7 +12,6 @@ log = logging.getLogger(__name__)
 
 
 class SubmititLauncher(Launcher):
-
     def __init__(self, queue, folder, queue_parameters):
         self.queue = queue
         self.queue_parameters = queue_parameters
@@ -33,42 +32,52 @@ class SubmititLauncher(Launcher):
         # stdout logging until we get the file logging going.
         # logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
-        utils.JobRuntime().set('num', job_num)
-        if 'SLURM_JOB_ID' in os.environ:
-            utils.JobRuntime().set('id', '${env:SLURM_JOB_ID}')
-        elif 'CHRONOS_JOB_ID' in os.environ:
-            utils.JobRuntime().set('id', '${env:CHRONOS_JOB_ID}')
+        utils.JobRuntime().set("num", job_num)
+        if "SLURM_JOB_ID" in os.environ:
+            utils.JobRuntime().set("id", "${env:SLURM_JOB_ID}")
+        elif "CHRONOS_JOB_ID" in os.environ:
+            utils.JobRuntime().set("id", "${env:CHRONOS_JOB_ID}")
         else:
-            utils.JobRuntime().set('id', 'unknown')
+            utils.JobRuntime().set("id", "unknown")
         utils.setup_globals()
-        sweep_config = self.config_loader.load_sweep_config(self.config, sweep_overrides)
+        sweep_config = self.config_loader.load_sweep_config(
+            self.config, sweep_overrides
+        )
 
         # Populate new job variables
-        sweep_config.hydra.job.id = '${env:SLURM_JOB_ID}' if 'SLURM_JOB_ID' in os.environ else '_UNKNOWN_SLURM_ID_'
+        sweep_config.hydra.job.id = (
+            "${env:SLURM_JOB_ID}"
+            if "SLURM_JOB_ID" in os.environ
+            else "_UNKNOWN_SLURM_ID_"
+        )
         sweep_config.hydra.job.num = job_num
-        sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(sweep_config.hydra.overrides.task)
+        sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(
+            sweep_config.hydra.overrides.task
+        )
 
-        return utils.run_job(config=sweep_config,
-                             task_function=self.task_function,
-                             verbose=self.verbose,
-                             job_dir_key=job_dir_key,
-                             job_subdir_key='hydra.sweep.subdir')
+        return utils.run_job(
+            config=sweep_config,
+            task_function=self.task_function,
+            verbose=self.verbose,
+            job_dir_key=job_dir_key,
+            job_subdir_key="hydra.sweep.subdir",
+        )
 
     def launch(self, job_overrides):
         num_jobs = len(job_overrides)
         assert num_jobs > 0
         self.config.hydra.job.num_jobs = num_jobs
 
-        if self.queue == 'auto':
+        if self.queue == "auto":
             executor = submitit.AutoExecutor(folder=self.folder)
-        elif self.queue == 'slurm':
+        elif self.queue == "slurm":
             executor = submitit.SlurmExecutor(folder=self.folder)
-        elif self.queue == 'chronos':
+        elif self.queue == "chronos":
             executor = submitit.ChronosExecutor(folder=self.folder)
-        elif self.queue == 'local':
+        elif self.queue == "local":
             executor = submitit.LocalExecutor(folder=self.folder)
         else:
-            raise RuntimeError('Unsupported queue type {}'.format(self.queue))
+            raise RuntimeError("Unsupported queue type {}".format(self.queue))
 
         executor.update_parameters(**self.queue_parameters[self.queue])
 
@@ -77,8 +86,14 @@ class SubmititLauncher(Launcher):
         jobs = []
         for job_num in range(num_jobs):
             sweep_override = list(job_overrides[job_num])
-            log.info("\t#{} : {}".format(job_num, " ".join(utils.filter_overrides(sweep_override))))
-            job = executor.submit(self.launch_job, sweep_override, 'hydra.sweep.dir', job_num)
+            log.info(
+                "\t#{} : {}".format(
+                    job_num, " ".join(utils.filter_overrides(sweep_override))
+                )
+            )
+            job = executor.submit(
+                self.launch_job, sweep_override, "hydra.sweep.dir", job_num
+            )
             jobs.append(job)
 
         return [j.results() for j in jobs]

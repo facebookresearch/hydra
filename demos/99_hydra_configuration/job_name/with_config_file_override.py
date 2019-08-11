@@ -3,7 +3,7 @@ import hydra
 from hydra import HydraConfig
 
 
-@hydra.main(config_path='config.yaml')
+@hydra.main(config_path="config.yaml")
 def experiment(_cfg):
     print(HydraConfig().hydra.job.name)
 

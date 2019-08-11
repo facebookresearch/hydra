@@ -25,7 +25,7 @@ class StepSweeper(Sweeper):
             config=config,
             config_loader=config_loader,
             task_function=task_function,
-            verbose=verbose
+            verbose=verbose,
         )
 
     @abstractmethod

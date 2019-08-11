@@ -3,28 +3,32 @@ from . import utils
 
 
 class Plugins:
-
     @staticmethod
     def _instantiate(config):
-        clazz = config['class']
+        clazz = config["class"]
         try:
             if clazz is None:
                 raise ImportError("class not configured")
 
-            if not clazz.startswith(
-                    'hydra_plugins.') and not clazz.startswith('hydra.sweeper'):
+            if not clazz.startswith("hydra_plugins.") and not clazz.startswith(
+                "hydra.sweeper"
+            ):
                 # prevent loading plugins in invalid package. this is an indication that it's not
                 # a proper plugin and is probably due to pre-plugins config lying around.
                 # his also gives us an opportunity confirm that the plugin
                 # version is compatible with Hydra's version.
                 raise RuntimeError(
                     "Invalid plugin '{}': not in hydra_plugins package, ".format(
-                        config['class']))
+                        config["class"]
+                    )
+                )
             plugin = utils.instantiate(config)
         except ImportError as e:
             raise ImportError(
                 "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(
-                    config['class'], str(e)))
+                    config["class"], str(e)
+                )
+            )
 
         return plugin
 
@@ -33,10 +37,12 @@ class Plugins:
         if config.hydra.sweeper is None:
             raise RuntimeError("Hydra sweeper is not configured")
         sweeper = Plugins._instantiate(config.hydra.sweeper)
-        sweeper.setup(config=config,
-                      config_loader=config_loader,
-                      task_function=task_function,
-                      verbose=verbose)
+        sweeper.setup(
+            config=config,
+            config_loader=config_loader,
+            task_function=task_function,
+            verbose=verbose,
+        )
         return sweeper
 
     @staticmethod
@@ -44,8 +50,10 @@ class Plugins:
         if config.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         launcher = Plugins._instantiate(config.hydra.launcher)
-        launcher.setup(config=config,
-                       config_loader=config_loader,
-                       task_function=task_function,
-                       verbose=verbose)
+        launcher.setup(
+            config=config,
+            config_loader=config_loader,
+            task_function=task_function,
+            verbose=verbose,
+        )
         return launcher

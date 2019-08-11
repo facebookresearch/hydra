@@ -6,7 +6,7 @@ import hydra
 # This will result with a KeyError if a key that does not already exist in the configuration is
 # being accessed. This applies both for read (using the config) and for write (overriding
 # the config from the command line)
-@hydra.main(config_path='config.yaml', strict=True)
+@hydra.main(config_path="config.yaml", strict=True)
 def experiment(cfg):
     # this would result in an exception
     if cfg.bad_key:

@@ -12,13 +12,13 @@ with open("README.md", "r") as fh:
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/fairinternal/hydra",
-        packages=find_packages(exclude=['tests']),
+        packages=find_packages(exclude=["tests"]),
         classifiers=[
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
         install_requires=[
-            'submitit@git+ssh://git@github.com/fairinternal/submitit.git@master',
+            "submitit@git+ssh://git@github.com/fairinternal/submitit.git@master"
         ],
     )
