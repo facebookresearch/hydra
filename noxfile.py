@@ -31,9 +31,9 @@ def install_pytest(session):
 
 def run_pytest(session):
     if session.python == "2.7":
-        session.run("pytest", silent=False)
+        session.run("pytest", silent=True)
     else:
-        session.run("pytest", "--workers=30", silent=False)
+        session.run("pytest", "--workers=30", silent=True)
 
 
 def plugin_names():
