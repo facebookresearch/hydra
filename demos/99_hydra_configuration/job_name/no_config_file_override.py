@@ -5,7 +5,7 @@ from hydra import HydraConfig
 
 @hydra.main()
 def experiment(_cfg):
-    print(HydraConfig.get().hydra.job.name)
+    print(HydraConfig().hydra.job.name)
 
 
 if __name__ == "__main__":
