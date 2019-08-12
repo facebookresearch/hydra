@@ -10,7 +10,8 @@ jobs:
       - run: bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
       - run: ~/miniconda3/bin/conda init bash
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
-      - run: ~/miniconda3/bin/conda create -n hydra27 python=2.7 nox -q -y
+      - run: ~/miniconda3/bin/conda create -n hydra27 python=2.7 -q -y
+      - run: ~/miniconda3/bin/conda run hydra27 pip install nox
       - run: ~/miniconda3/bin/conda run hydra27 nox
   python27:
     docker:
