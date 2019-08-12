@@ -5,11 +5,12 @@ sidebar_label: Contributing
 ---
 
 ## Getting started
-Checkout this repository.
+Checkout [this](https://github.com/facebookresearch/hydra) repository.
+
 ### Installing Hydra and plugins
 It is recommended that you install Hydra in a virtual environment like conda or virtualenv.
 
-Install Hydra and all the included plugins in development mode with the following commands:
+Install Hydra and all the included plugins in development mode with the following command:
 ```
 pip install -e .[dev] && find ./plugins/ -name setup.py | xargs dirname | xargs pip install  -e
 ```
