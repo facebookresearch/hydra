@@ -33,7 +33,7 @@ class ConfigLoader:
 
     def load_hydra_cfg(self, overrides):
         """
-        Loads Hydra configuraiton
+        Loads Hydra configuration
         :param overrides: overrides from command line.
         :return:
         """
@@ -55,15 +55,16 @@ class ConfigLoader:
             )
         else:
             hydra_cfg = OmegaConf.from_dotlist(overrides)
-        # strip everything outside of the hydra tree from the hydra config
         hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
         for consumed in consumed_defaults:
             hydra_cfg.hydra.overrides.hydra.append(consumed)
             overrides.remove(consumed)
 
+        # strip everything outside of the hydra tree from the hydra config
         clean = OmegaConf.create()
         clean.hydra = hydra_cfg.hydra
         hydra_cfg = clean
+
         return hydra_cfg
 
     def load_configuration(self, overrides=[]):

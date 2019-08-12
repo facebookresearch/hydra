@@ -1,15 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import inspect
-import itertools
 import logging
 import logging.config
 import os
 import re
 import sys
-from time import strftime, localtime
 
+import itertools
 import six
+from time import strftime, localtime
 
 from omegaconf import OmegaConf, DictConfig
 
@@ -109,7 +109,7 @@ def get_static_method(full_method_name):
 def instantiate(config, *args):
     try:
         clazz = get_class(config["class"])
-        params = config.params or {}
+        params = config.params if "params" in config else {}
         return clazz(*args, **params)
     except Exception as e:
         log.error("Error instantiating {} : {}".format(config["class"], e))
