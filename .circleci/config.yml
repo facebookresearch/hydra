@@ -6,8 +6,6 @@ jobs:
       xcode: "10.0.0"
     steps:
       - checkout
-      - run: brew upgrade
-      - run: brew install python@2 python@3
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip3 install nox
       - run: python3 -m nox
