@@ -6,9 +6,14 @@ jobs:
       xcode: "10.0.0"
     steps:
       - checkout
+      - run: curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+      - run: bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+      - which conda
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
-      - run: sudo pip3 install nox
-      - run: python3 -m nox
+      - run: ~/miniconda3/bin/conda create -n hydra27 python=2.7 -q -y
+      - run: ~/miniconda3/bin/conda activate hydra27
+      - run: sudo pip install nox
+      - run: nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
