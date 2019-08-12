@@ -1,6 +1,38 @@
 version: 2.0
 
 jobs:
+  mac_python27:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
+      - run: sudo pip3 install nox
+      - run: python3 -m nox
+  mac_python36:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+      - run: bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+      - run: ~/miniconda3/bin/conda init bash
+      - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
+      - run: ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
+      - run: ~/miniconda3/bin/conda run -n hydra36 pip install nox
+      - run: ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
+  mac_python37:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+      - run: bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+      - run: ~/miniconda3/bin/conda init bash
+      - run: echo 'export NOX_PYTHON_VERSIONS=3.7' >> $BASH_ENV
+      - run: ~/miniconda3/bin/conda create -n hydra37 python=3.7 -q -y
+      - run: ~/miniconda3/bin/conda run -n hydra37 pip install nox
+      - run: ~/miniconda3/bin/conda run -n hydra37 python3 -m nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
@@ -59,6 +91,9 @@ workflows:
       - python27
       - python36
       - python37
+      - mac_python27
+      - mac_python36
+      - mac_python37
       - deploy-website:
           filters:
             branches:
