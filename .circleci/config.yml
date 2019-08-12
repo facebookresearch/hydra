@@ -5,10 +5,12 @@ jobs:
     macos:
       xcode: "10.0.0"
     steps:
+      - brew install python@2
+      - brew install python@3
       - checkout
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
-      - run: sudo pip install nox
-      - run: nox
+      - run: sudo pip3 install nox
+      - run: python3 -m nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
