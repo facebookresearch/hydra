@@ -2,8 +2,9 @@ version: 2.0
 
 jobs:
   mac_python27:
-    macos:
+    - macos:
       xcode: "10.0.0"
+    - steps:
       - checkout
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip install nox
