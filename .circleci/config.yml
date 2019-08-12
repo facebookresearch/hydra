@@ -1,6 +1,13 @@
 version: 2.0
 
 jobs:
+  mac_python27:
+    macos:
+      xcode: "10.0.0"
+      - checkout
+      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
+      - run: sudo pip install nox
+      - run: nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
@@ -59,6 +66,7 @@ workflows:
       - python27
       - python36
       - python37
+      - mac_python27
       - deploy-website:
           filters:
             branches:
