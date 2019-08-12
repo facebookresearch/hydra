@@ -11,8 +11,8 @@ jobs:
       - run: ~/miniconda3/bin/conda init bash
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: ~/miniconda3/bin/conda create -n hydra27 python=2.7 -q -y
-      - run: ~/miniconda3/bin/conda run hydra27 pip install nox
-      - run: ~/miniconda3/bin/conda run hydra27 nox
+      - run: ~/miniconda3/bin/conda run -n hydra27 pip install nox
+      - run: ~/miniconda3/bin/conda run -n hydra27 nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
