@@ -20,7 +20,7 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.5' >> $BASH_ENV
       - run: ~/miniconda3/bin/conda create -n hydra35 python=3.5 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra35 pip install nox
-      - run: ~/miniconda3/bin/conda run -n hydra35 nox
+      - run: ~/miniconda3/bin/conda run -n hydra35 python3 -m nox
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
