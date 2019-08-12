@@ -8,6 +8,7 @@ jobs:
       - checkout
       - run: curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
       - run: bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+      - run: ~/miniconda3/bin/conda init
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: ~/miniconda3/bin/conda create -n hydra27 python=2.7 -q -y
       - run: ~/miniconda3/bin/conda activate hydra27
