@@ -1,0 +1,3 @@
+hydra:
+  sweeper:
+    class: hydra.sweeper.BasicSweeper

@@ -110,9 +110,9 @@ class ConfigLoader:
     def _load_config_impl(self, is_pkg, filename):
         loaded_cfg = None
         if is_pkg:
-            res_base = os.path.dirname(filename)
+            res_path = os.path.dirname(filename).replace("/", ".").replace("\\", ".")
             res_file = os.path.basename(filename)
-            loaded_cfg = OmegaConf.load(resource_stream(res_base, res_file))
+            loaded_cfg = OmegaConf.load(resource_stream(res_path, res_file))
             self.all_config_checked.append(("pkg://" + filename, True))
         elif os.path.exists(filename):
             loaded_cfg = OmegaConf.load(filename)
@@ -166,6 +166,7 @@ class ConfigLoader:
         is_pkg = cfg_dir.startswith("pkg://")
         if is_pkg:
             cfg_dir = cfg_dir[len("pkg://") :]
+            cfg_dir = cfg_dir.replace("/", ".").replace("\\", ".")
 
         if not is_pkg:
             if not os.path.exists(cfg_dir):

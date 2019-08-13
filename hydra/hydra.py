@@ -1,10 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import argparse
 import inspect
 import logging
 import os
 import sys
+import warnings
 
-import argparse
 import pkg_resources
 
 from . import utils
@@ -35,7 +36,18 @@ def get_args():
     parser.add_argument("--cfg", "-c", action="store_true", help="Show config")
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")
-    parser.add_argument("--sweep", "-s", action="store_true", help="Perform a sweep")
+    parser.add_argument(
+        "--multirun",
+        "-m",
+        action="store_true",
+        help="Run multiple jobs with the configured launcher",
+    )
+    parser.add_argument(
+        "--sweep",
+        "-s",
+        action="store_true",
+        help="Perform a sweep (deprecated, use --multirun|-m)",
+    )
 
     return parser.parse_args()
 
@@ -75,6 +87,17 @@ class Hydra:
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
         )
+
+    def multirun(self, overrides):
+        cfg = self.load_config(overrides)
+        HydraConfig().set_config(cfg)
+        sweeper = Plugins.instantiate_sweeper(
+            config=cfg,
+            config_loader=self.config_loader,
+            task_function=self.task_function,
+            verbose=self.verbose,
+        )
+        return sweeper.sweep(arguments=cfg.hydra.overrides.task)
 
     def sweep(self, overrides):
         cfg = self.load_config(overrides)
@@ -127,21 +150,28 @@ def run_hydra(task_function, config_path, strict):
         strict=strict,
     )
 
-    if args.run + args.cfg + args.sweep > 1:
+    if args.run + args.sweep + args.multirun > 1:
         raise ValueError("Only one of --run, --sweep and --cfg can be specified")
-    if args.run + args.cfg + args.sweep == 0:
+    if args.run + args.cfg + args.sweep + args.multirun == 0:
         args.run = True
 
     if args.run:
         command = "run"
     elif args.sweep:
         command = "sweep"
+    elif args.multirun:
+        command = "multirun"
     elif args.cfg:
         command = "cfg"
 
     if command == "run":
         hydra.run(overrides=args.overrides)
+    elif command == "multirun":
+        hydra.multirun(overrides=args.overrides)
     elif command == "sweep":
+        warnings.warn(
+            "--sweep is deprecated, use --multirun", DeprecationWarning, stacklevel=2
+        )
         hydra.sweep(overrides=args.overrides)
     elif command == "cfg":
         config = hydra.load_config(args.overrides)

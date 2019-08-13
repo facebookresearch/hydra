@@ -10,9 +10,7 @@ class Plugins:
             if clazz is None:
                 raise ImportError("class not configured")
 
-            if not clazz.startswith("hydra_plugins.") and not clazz.startswith(
-                "hydra.sweeper"
-            ):
+            if not Plugins.is_plugin(clazz):
                 # prevent loading plugins in invalid package. this is an indication that it's not
                 # a proper plugin and is probably due to pre-plugins config lying around.
                 # his also gives us an opportunity confirm that the plugin
@@ -31,6 +29,14 @@ class Plugins:
             )
 
         return plugin
+
+    @staticmethod
+    def is_plugin(clazz):
+
+        return clazz.startswith("hydra_plugins.") or clazz in [
+            "hydra.launcher.BasicLauncher",
+            "hydra.sweeper.BasicSweeper",
+        ]
 
     @staticmethod
     def instantiate_sweeper(config, config_loader, task_function, verbose):

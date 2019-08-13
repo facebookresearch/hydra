@@ -1,4 +1,6 @@
 defaults:
+  - launcher: basic_launcher
+  - sweeper: basic_sweeper
   - hydra_logging
   - job_logging
 
@@ -15,9 +17,9 @@ hydra:
   # Logging configuration for the job
   job_logging: ???
 
-  # default sweeper implementation
-  sweeper:
-    class: hydra.sweeper.BasicSweeper
+  sweeper: ???
+
+  launcher: ???
 
   # Those lists will contain runtime overrides
   overrides:
