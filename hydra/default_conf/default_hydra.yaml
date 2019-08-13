@@ -1,8 +1,8 @@
 defaults:
-  - launcher: basic_launcher
-  - sweeper: basic_sweeper
   - hydra_logging
   - job_logging
+  - launcher: basic
+  - sweeper: basic
 
 hydra:
   run:

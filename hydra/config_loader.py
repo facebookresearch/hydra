@@ -8,6 +8,7 @@ import os
 
 from pkg_resources import resource_stream, resource_exists
 
+# resource_listdir('hydra.default_conf','launcher')
 from omegaconf import OmegaConf, DictConfig, ListConfig
 from .errors import MissingConfigException
 from .utils import JobRuntime
@@ -18,8 +19,9 @@ class ConfigLoader:
     Configuration loader
     """
 
-    def __init__(self, conf_dir, conf_filename, strict_task_cfg=False):
-        self.cfg_dir = conf_dir
+    # TODO: rename strict_task_cfg to strict_cfg
+    def __init__(self, conf_filename, strict_task_cfg, config_path=[]):
+        self.config_path = config_path
         self.conf_filename = conf_filename
         self.all_config_checked = []
         self.strict_task_cfg = strict_task_cfg
@@ -31,6 +33,29 @@ class ConfigLoader:
         """
         return copy.deepcopy(self.all_config_checked)
 
+    def find_config(self, filepath):
+        for path in self.config_path:
+            is_pkg = path.startswith("pkg://")
+            prefix = ""
+            if is_pkg:
+                prefix = "pkg://"
+                path = path[len(prefix) :]
+                config_file = os.path.join(path, filepath)
+                res_path = (
+                    os.path.dirname(config_file).replace("/", ".").replace("\\", ".")
+                )
+                res_file = os.path.basename(config_file)
+                config_file = os.path.join(res_path, res_file)
+            else:
+                config_file = os.path.join(path, filepath)
+
+            if not config_file.endswith(".yaml"):
+                config_file = config_file + ".yaml"
+
+            if self._exists(is_pkg, config_file):
+                return prefix + config_file
+        return None
+
     def load_configuration(self, overrides=[]):
         assert overrides is None or isinstance(overrides, list)
 
@@ -39,12 +64,16 @@ class ConfigLoader:
 
         job_overrides = [x for x in overrides if not x.startswith("hydra.")]
         hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
-        task_cfg, consumed_defaults = self._create_cfg(
-            cfg_dir=self.cfg_dir,
-            cfg_filename=self.conf_filename,
-            cli_overrides=job_overrides,
-            strict=self.strict_task_cfg,
-        )
+        if self.conf_filename is None:
+            task_cfg = OmegaConf.create()
+        else:
+            if self.find_config(self.conf_filename) is None:
+                raise MissingConfigException(self.conf_filename)
+            task_cfg, _consumed_defaults = self._create_cfg(
+                cfg_filename=self.conf_filename,
+                cli_overrides=job_overrides,
+                strict=self.strict_task_cfg,
+            )
         cfg = OmegaConf.merge(hydra_cfg, task_cfg)
 
         for item in job_overrides:
@@ -77,18 +106,13 @@ class ConfigLoader:
         :return:
         """
         hydra_cfg_defaults, _ = self._create_cfg(
-            cfg_dir="pkg://hydra.default_conf", cfg_filename="hydra.yaml", strict=False
+            cfg_filename="default_hydra.yaml", strict=False
         )
-        if os.path.exists(self.cfg_dir) and not os.path.isdir(self.cfg_dir):
-            raise IOError("conf_dir is not a directory : {}".format(self.cfg_dir))
-        cfg_dir = os.path.join(self.cfg_dir, ".hydra")
-
-        hydra_cfg_path = os.path.join(cfg_dir, "hydra.yaml")
+        dot_hydra = self.find_config(".hydra/hydra.yaml")
         consumed_defaults = []
-        if os.path.exists(hydra_cfg_path):
+        if dot_hydra is not None:
             hydra_cfg, consumed_defaults = self._create_cfg(
-                cfg_dir=cfg_dir,
-                cfg_filename="hydra.yaml",
+                cfg_filename=".hydra/hydra.yaml",
                 strict=False,
                 cli_overrides=overrides,
                 defaults_only=True,
@@ -107,81 +131,88 @@ class ConfigLoader:
 
         return hydra_cfg
 
-    def _load_config_impl(self, is_pkg, filename):
+    def _load_config_impl(self, input_file):
         loaded_cfg = None
-        if is_pkg:
-            res_path = os.path.dirname(filename).replace("/", ".").replace("\\", ".")
-            res_file = os.path.basename(filename)
-            loaded_cfg = OmegaConf.load(resource_stream(res_path, res_file))
-            self.all_config_checked.append(("pkg://" + filename, True))
-        elif os.path.exists(filename):
-            loaded_cfg = OmegaConf.load(filename)
-            self.all_config_checked.append((filename, True))
+        filename = self.find_config(input_file)
+        if filename is None:
+            self.all_config_checked.append((input_file, False))
         else:
-            self.all_config_checked.append((filename, False))
+            is_pkg = filename.startswith("pkg://")
+            if is_pkg:
+                filename = filename[len("pkg://") :]
+                res_path = os.path.dirname(
+                    filename
+                )  # .replace("/", ".").replace("\\", ".")
+                res_file = os.path.basename(filename)
+                loaded_cfg = OmegaConf.load(resource_stream(res_path, res_file))
+                self.all_config_checked.append(("pkg://" + filename, True))
+            elif os.path.exists(filename):
+                loaded_cfg = OmegaConf.load(filename)
+                self.all_config_checked.append((filename, True))
+            else:
+                assert False
+
         return loaded_cfg
 
-    def _merge_config(self, cfg_dir, is_pkg, cfg, family, name, required):
+    def _merge_config(self, cfg, family, name, required):
         if family != ".":
-            family_dir = os.path.join(cfg_dir, family)
+            new_cfg = os.path.join(family, name)
         else:
-            family_dir = cfg_dir
-        cfg_path = os.path.join(family_dir, str(name)) + ".yaml"
-        new_cfg = self._load_config_impl(is_pkg, cfg_path)
-        if new_cfg is None:
+            new_cfg = name
+
+        loaded_cfg = self._load_config_impl(new_cfg)
+        if loaded_cfg is None:
+            # TODO: output possibilities
             if required:
-                if self._exists(is_pkg, family_dir):
-                    options = [
-                        f[0 : -len(".yaml")]
-                        for f in os.listdir(family_dir)
-                        if os.path.isfile(os.path.join(family_dir, f))
-                        and f.endswith(".yaml")
-                    ]
-                    msg = "Could not load {}, available options:\n{}:\n\t{}".format(
-                        cfg_path, family, "\n\t".join(options)
-                    )
-                else:
-                    options = None
-                    msg = "Could not load {}, directory not found".format(
-                        cfg_path, family
-                    )
-                raise MissingConfigException(msg, cfg_path, options)
+                raise IOError("config not found " + new_cfg)
             else:
                 return cfg
+
+            # if self._exists(is_pkg, family_dir):
+            #     options = [
+            #         f[0: -len(".yaml")]
+            #         for f in os.listdir(family_dir)
+            #         if os.path.isfile(os.path.join(family_dir, f))
+            #            and f.endswith(".yaml")
+            #     ]
+            #     msg = "Could not load {}, available options:\n{}:\n\t{}".format(
+            #         cfg_path, family, "\n\t".join(options)
+            #     )
+            # else:
+            #     options = None
+            #     msg = "Could not load {}, directory not found".format(
+            #         cfg_path, family
+            #     )
+            # raise MissingConfigException(msg, cfg_path, options)
         else:
-            return OmegaConf.merge(cfg, new_cfg)
+            return OmegaConf.merge(cfg, loaded_cfg)
 
     @staticmethod
     def _exists(is_pkg, filename):
         if is_pkg:
             res_base = os.path.dirname(filename)
             res_file = os.path.basename(filename)
-            return resource_exists(res_base, res_file)
+            try:
+                return resource_exists(res_base, res_file)
+            except ImportError:
+                return False
         else:
             return os.path.exists(filename)
 
-    def _create_cfg(
-        self, cfg_dir, cfg_filename, strict, cli_overrides=[], defaults_only=False
-    ):
-        is_pkg = cfg_dir.startswith("pkg://")
-        if is_pkg:
-            cfg_dir = cfg_dir[len("pkg://") :]
-            cfg_dir = cfg_dir.replace("/", ".").replace("\\", ".")
+    def _create_cfg(self, cfg_filename, strict, cli_overrides=[], defaults_only=False):
+        if cfg_filename is None:
+            return OmegaConf.create(), []
 
-        if not is_pkg:
-            if not os.path.exists(cfg_dir):
-                raise IOError("conf_dir not found : {}".format(cfg_dir))
-
-        if cfg_filename is not None:
-            main_cfg_file = os.path.join(cfg_dir, cfg_filename)
-            if not ConfigLoader._exists(is_pkg, main_cfg_file):
-                raise IOError(
-                    "Config file not found : {}".format(os.path.realpath(main_cfg_file))
+        main_cfg = self._load_config_impl(cfg_filename)
+        if main_cfg is None:
+            raise IOError(
+                "could not find {}, config path:\n\t".format(
+                    cfg_filename, "\n\t".join(self.config_path)
                 )
+            )
 
-            main_cfg = self._load_config_impl(is_pkg, main_cfg_file)
-        else:
-            main_cfg = OmegaConf.create(dict(defaults=[]))
+        conf_dirname = os.path.dirname(cfg_filename)
+
         if main_cfg.defaults is None:
             main_cfg.defaults = []
         ConfigLoader._validate_config(main_cfg)
@@ -198,8 +229,8 @@ class ConfigLoader:
                 "optional is a reserved keyword and cannot be used as a "
                 "config group name"
             )
-            path = os.path.join(cfg_dir, key)
-            if ConfigLoader._exists(is_pkg, path):
+
+            if self.find_config(os.path.join(key, value)) is not None:
                 defaults_changes[key] = value
                 consumed_defaults.append(override)
             else:
@@ -218,24 +249,19 @@ class ConfigLoader:
                 name = default[family]
                 cfg = self._merge_config(
                     cfg=cfg,
-                    cfg_dir=cfg_dir,
-                    is_pkg=is_pkg,
-                    family=family,
+                    family=os.path.join(conf_dirname, family),
                     name=name,
                     required=not is_optional,
                 )
             else:
                 assert isinstance(default, str)
                 cfg = self._merge_config(
-                    cfg=cfg,
-                    cfg_dir=cfg_dir,
-                    is_pkg=is_pkg,
-                    family=".",
-                    name=default,
-                    required=True,
+                    cfg=cfg, family=conf_dirname, name=default, required=True
                 )
+
         if strict:
             OmegaConf.set_struct(cfg, True)
+
         # merge in remaining overrides
         if not defaults_only:
             cfg.merge_with_dotlist(overrides)

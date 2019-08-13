@@ -71,9 +71,9 @@ class Hydra:
         self.conf_filename = conf_filename
         self.task_function = task_function
         self.config_loader = ConfigLoader(
-            conf_dir=self.conf_dir,
             conf_filename=self.conf_filename,
             strict_task_cfg=strict,
+            config_path=["pkg://hydra.default_conf", self.conf_dir],
         )
         self.verbose = verbose
 
