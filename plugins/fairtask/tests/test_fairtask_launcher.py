@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import pytest
 
 from hydra.test_utils.launcher_common_tests import (
     demos_sweep_1_job_test_impl,
@@ -56,3 +57,29 @@ def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
             "hydra.launcher.params.no_workers=true",
         ],
     )
+
+
+def test_fairtask_sweep_1_job_strict(sweep_runner):  # noqa: F811
+    demos_sweep_1_job_test_impl(
+        sweep_runner,
+        strict=True,
+        overrides=[
+            "launcher=fairtask",
+            "hydra.launcher.params.queue=local",
+            "hydra.launcher.params.no_workers=true",
+        ],
+    )
+
+
+def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
+    with pytest.raises(KeyError):
+        demos_sweep_1_job_test_impl(
+            sweep_runner,
+            strict=True,
+            overrides=[
+                "launcher=fairtask",
+                "hydra.launcher.params.queue=local",
+                "hydra.launcher.params.no_workers=true",
+                "hydra.foo=bar",
+            ],
+        )

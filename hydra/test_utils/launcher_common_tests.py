@@ -29,12 +29,15 @@ def demo_6_sweep_test_impl(tmpdir, overrides):
     subprocess.check_call(cmd)
 
 
-def demos_sweep_1_job_test_impl(sweep_runner, overrides):
+def demos_sweep_1_job_test_impl(sweep_runner, overrides, strict=False):
     """
     Runs a sweep with one job
     """
     sweep = sweep_runner(
-        conf_dir="demos/6_sweep/conf/", conf_filename="config.yaml", overrides=overrides
+        conf_dir="demos/6_sweep/conf/",
+        conf_filename="config.yaml",
+        overrides=overrides,
+        strict=strict,
     )
     with sweep:
         job_ret = sweep.returns[0]

@@ -28,7 +28,7 @@ class FAIRTaskLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    def launch_job(self, config, sweep_overrides, job_dir_key, job_num):
+    def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
         utils.setup_globals()
@@ -70,9 +70,7 @@ class FAIRTaskLauncher(Launcher):
                 )
             )
             runs.append(
-                queue(self.launch_job)(
-                    self.config, sweep_override, "hydra.sweep.dir", job_num
-                )
+                queue(self.launch_job)(sweep_override, "hydra.sweep.dir", job_num)
             )
 
         return await gatherl(runs)

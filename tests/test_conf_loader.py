@@ -2,34 +2,34 @@
 import tempfile
 
 import pytest
-from omegaconf import OmegaConf
 
 from hydra import ConfigLoader
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
+from omegaconf import OmegaConf
 
 chdir_hydra_root()
 
 
 def test_override_run_dir_without_hydra_cfg():
     config_loader = ConfigLoader(conf_dir=".", conf_filename=None)
-    hydra_cfg = config_loader.load_hydra_cfg(overrides=["hydra.run.dir=abc"])
-    assert hydra_cfg.hydra.run.dir == "abc"
+    cfg = config_loader.load_configuration(overrides=["hydra.run.dir=abc"])
+    assert cfg.hydra.run.dir == "abc"
 
 
 def test_override_run_dir_with_hydra_cfg():
     config_loader = ConfigLoader(
         conf_dir="demos/99_hydra_configuration/workdir/", conf_filename=None
     )
-    hydra_cfg = config_loader.load_hydra_cfg(overrides=["hydra.run.dir=abc"])
-    assert hydra_cfg.hydra.run.dir == "abc"
+    cfg = config_loader.load_configuration(overrides=["hydra.run.dir=abc"])
+    assert cfg.hydra.run.dir == "abc"
 
 
 def test_conf_dir_not_directory():
     with tempfile.NamedTemporaryFile() as f:
         config_loader = ConfigLoader(conf_dir=f.name, conf_filename=None)
         with pytest.raises(IOError):
-            config_loader.load_hydra_cfg(overrides=[])
+            config_loader.load_configuration(overrides=[])
 
 
 def test_load_configuration():
