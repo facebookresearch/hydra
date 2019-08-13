@@ -110,3 +110,6 @@ workflows:
           filters:
             branches:
               only: master
+
+orbs:
+  win: circleci/windows@1.0.0
