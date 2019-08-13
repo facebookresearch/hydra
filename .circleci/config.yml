@@ -1,6 +1,7 @@
-version: 2.0
+version: 2.1
 
 jobs:
+  # Mac
   mac_python27:
     macos:
       xcode: "10.0.0"
@@ -33,6 +34,8 @@ jobs:
       - run: ~/miniconda3/bin/conda create -n hydra37 python=3.7 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra37 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra37 python3 -m nox
+
+  # Linux
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
@@ -66,6 +69,17 @@ jobs:
       - run: sudo pip install nox
       - run: nox -s coverage
 
+  # Windows
+  windows_python27:
+    executor: win/default
+    steps:
+      - checkout
+      - run: Invoke-WebRequest -OutFile Miniconda3-latest-Windows-x86_64.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
+#      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
+#      - run: sudo pip install nox
+#      - run: nox
+
+  # Misc
   deploy-website:
     docker:
       - image: circleci/node:12
@@ -94,7 +108,11 @@ workflows:
       - mac_python27
       - mac_python36
       - mac_python37
+      - windows_python27
       - deploy-website:
           filters:
             branches:
               only: master
+
+orbs:
+  win: circleci/windows@1.0.0
