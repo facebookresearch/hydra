@@ -7,6 +7,7 @@ defaults:
 hydra:
   run:
     dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${hydra.job.num}
   sweep:
     dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
     # you can also use ${job:override_dirname} to have a directory name with job sweep arguments
