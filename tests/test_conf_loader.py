@@ -3,6 +3,7 @@
 import pytest
 
 from hydra import ConfigLoader
+from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 from omegaconf import OmegaConf
 
@@ -14,6 +15,7 @@ def test_override_run_dir_without_hydra_cfg():
         config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename=None,
+        conf_dir=None,
     )
     cfg = config_loader.load_configuration(overrides=["hydra.run.dir=abc"])
     assert cfg.hydra.run.dir == "abc"
@@ -21,10 +23,8 @@ def test_override_run_dir_without_hydra_cfg():
 
 def test_override_run_dir_with_hydra_cfg():
     config_loader = ConfigLoader(
-        config_path=[
-            "pkg://hydra.default_conf",
-            "demos/99_hydra_configuration/workdir/",
-        ],
+        config_path=["pkg://hydra.default_conf"],
+        conf_dir="demos/99_hydra_configuration/workdir/",
         strict_task_cfg=False,
         conf_filename=None,
     )
@@ -34,9 +34,10 @@ def test_override_run_dir_with_hydra_cfg():
 
 def test_load_configuration():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "demos/3_config_file"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="config.yaml",
+        conf_dir="demos/3_config_file",
     )
     cfg = config_loader.load_configuration(overrides=["abc=123"])
     del cfg["hydra"]
@@ -47,19 +48,21 @@ def test_load_configuration():
 
 def test_load_with_missing_default():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="missing-default.yaml",
+        conf_dir="tests/configs",
     )
-    with pytest.raises(IOError):
+    with pytest.raises(MissingConfigException):
         config_loader.load_configuration()
 
 
 def test_load_with_missing_optional_default():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="missing-optional-default.yaml",
+        conf_dir="tests/configs",
     )
     cfg = config_loader.load_configuration()
     del cfg["hydra"]
@@ -68,9 +71,10 @@ def test_load_with_missing_optional_default():
 
 def test_load_with_optional_default():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="optional-default.yaml",
+        conf_dir="tests/configs",
     )
     cfg = config_loader.load_configuration()
     del cfg["hydra"]
@@ -79,8 +83,9 @@ def test_load_with_optional_default():
 
 def test_load_changing_group_in_default():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
+        conf_dir="tests/configs",
         conf_filename="optional-default.yaml",
     )
     cfg = config_loader.load_configuration(["group1=file2"])
@@ -90,9 +95,10 @@ def test_load_changing_group_in_default():
 
 def test_load_adding_group_not_in_default():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="optional-default.yaml",
+        conf_dir="tests/configs",
     )
     cfg = config_loader.load_configuration(["group2=file1"])
     del cfg["hydra"]
@@ -101,9 +107,10 @@ def test_load_adding_group_not_in_default():
 
 def test_load_history():
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "tests/configs"],
+        config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="missing-optional-default.yaml",
+        conf_dir="tests/configs",
     )
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
@@ -123,9 +130,10 @@ def test_load_strict():
     :return:
     """
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "demos/3_config_file"],
+        config_path=["pkg://hydra.default_conf"],
         conf_filename="config.yaml",
         strict_task_cfg=True,
+        conf_dir="demos/3_config_file",
     )
     cfg = config_loader.load_configuration(overrides=["dataset.name=foobar"])
     del cfg["hydra"]
@@ -137,8 +145,9 @@ def test_load_strict():
         cfg.dataset.not_here
 
     config_loader = ConfigLoader(
-        config_path=["pkg://hydra.default_conf", "demos/3_config_file"],
+        config_path=["pkg://hydra.default_conf"],
         conf_filename="config.yaml",
+        conf_dir="demos/3_config_file",
         strict_task_cfg=True,
     )
     with pytest.raises(KeyError):

@@ -70,10 +70,16 @@ class Hydra:
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.task_function = task_function
+        if not os.path.exists(self.conf_dir):
+            raise IOError("Config directory '{}' not found".format(self.conf_dir))
+        if self.conf_filename is not None:
+            if not os.path.exists(os.path.join(self.conf_dir, self.conf_filename)):
+                raise IOError("Config directory '{}' not found".format(self.conf_dir))
         self.config_loader = ConfigLoader(
             conf_filename=self.conf_filename,
+            conf_dir=self.conf_dir,
             strict_task_cfg=strict,
-            config_path=["pkg://hydra.default_conf", self.conf_dir],
+            config_path=["pkg://hydra.default_conf"],
         )
         self.verbose = verbose
 
