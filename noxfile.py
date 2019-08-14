@@ -88,16 +88,16 @@ def test_plugin(session, plugin, install_cmd):
 
     all_plugins = get_all_plugins()
     # Install all plugins in session
-    for plugin in all_plugins:
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin[0])]
+    for a_plugin in all_plugins:
+        cmd = list(install_cmd) + [os.path.join("plugins", a_plugin[0])]
         session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import Hydra", silent=True)
 
     # Test that we can import all installed plugins
-    for plugin in all_plugins:
-        session.run("python", "-c", "import {}".format(plugin[1]))
+    for a_plugin in all_plugins:
+        session.run("python", "-c", "import {}".format(a_plugin[1]))
 
     install_pytest(session)
 
