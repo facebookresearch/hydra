@@ -11,11 +11,11 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = [
+PLUGINS_INSTALL_COMMANDS = (
     # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
-    # ("pip", "install", "."),
-    ("pip", "install", "-e", ".")
-]
+    # ["pip", "install", "."],
+    ["pip", "install", "-e", "."],
+)
 
 
 def install_hydra(session):
@@ -34,10 +34,11 @@ def install_pytest(session):
 
 
 def run_pytest(session):
-    if session.python == "2.7":
-        session.run("pytest", silent=True)
-    else:
-        session.run("pytest", "--workers=30", silent=True)
+    session.run("pytest", silent=True)
+    # if session.python == "2.7":
+    #     session.run("pytest", silent=True)
+    # else:
+    #     session.run("pytest", "--workers=30", silent=True)
 
 
 def plugin_names():

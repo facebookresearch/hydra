@@ -86,5 +86,7 @@ with open("README.md", "r") as fh:
         install_requires=["omegaconf>=1.3.0rc10"],
         # Install development dependencies with
         # pip install -e .[dev]
-        extras_require={"dev": ["pytest", "setuptools", "coverage", "pre-commit"]},
+        extras_require={
+            "dev": ["pytest", "setuptools", "coverage", "pre-commit", "nox"]
+        },
     )
