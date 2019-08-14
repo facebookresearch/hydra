@@ -38,7 +38,7 @@ jobs:
   # Linux
   python27:
     docker:
-      # nox got issues with python 2.7 but it can still be used ot test 2.7
+      # nox is not compatible with python 2.7 but it can still be used ot test 2.7
       - image: circleci/python:3.6
     steps:
       - checkout
@@ -77,12 +77,13 @@ jobs:
       - run:
           command: |
             Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-            choco install miniconda3 -y
-            $Env:path += ";c:/tools/miniconda3/scripts/"
-            conda create -n hydra27 python=2.7 -q -y
-            conda run -n hydra27 pip install nox
+            choco install miniconda3 python2 -y
+            $Env:path += ";c:/Python27;c:/tools/miniconda3/scripts/"
+            # nox is not compatible with python 2.7 but it can still be used ot test 2.7
+            conda create -n hydra python=3.6 -q -y
+            conda run -n hydra pip install nox
             $Env:NOX_PYTHON_VERSIONS=2.7
-            conda run -n hydra27 nox
+            conda run -n hydra nox
 
   # Misc
   deploy-website:
