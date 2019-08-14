@@ -74,9 +74,11 @@ jobs:
     executor: win/default
     steps:
       - checkout
-      - run: $progressPreference = 'silentlyContinue'
-      - run: Invoke-WebRequest -OutFile Miniconda3-latest-Windows-x86_64.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
-        
+      - run:
+          command: |
+            $progressPreference = 'silentlyContinue'
+            Invoke-WebRequest -OutFile Miniconda3-latest-Windows-x86_64.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
+
 #      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
 #      - run: sudo pip install nox
 #      - run: nox
