@@ -91,7 +91,7 @@ jobs:
 
   # Windows
   windows_python27:
-    executor: windows_server
+    executor: win/default
     steps:
       - checkout
       - run: Write-Host 'Hello, Windows'
