@@ -76,12 +76,13 @@ jobs:
       - checkout
       - run:
           command: |
-            $progressPreference = 'silentlyContinue'
-            Invoke-WebRequest -OutFile Miniconda3-latest-Windows-x86_64.exe https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe
-
-#      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
-#      - run: sudo pip install nox
-#      - run: nox
+            Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+            choco install miniconda3 -y
+            $Env:path += ";c:/tools/miniconda3/scripts/"
+            conda create -n hydra36 python=3.6 -q -y
+            conda run -n hydra37 pip install nox
+            $Env:NOX_PYTHON_VERSIONS=2.7
+            conda run -n hydra37 pip install pytest
 
   # Misc
   deploy-website:
