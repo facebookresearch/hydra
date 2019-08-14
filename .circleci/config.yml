@@ -79,10 +79,10 @@ jobs:
             Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
             choco install miniconda3 -y
             $Env:path += ";c:/tools/miniconda3/scripts/"
-            conda create -n hydra36 python=3.6 -q -y
-            conda run -n hydra37 pip install nox
+            conda create -n hydra27 python=2.7 -q -y
+            conda run -n hydra27 pip install nox
             $Env:NOX_PYTHON_VERSIONS=2.7
-            conda run -n hydra37 pip install pytest
+            conda run -n hydra27 nox
 
   # Misc
   deploy-website:
