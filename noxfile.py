@@ -11,7 +11,11 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = (("pip", "install", "."), ("pip", "install", "-e", "."))
+PLUGINS_INSTALL_COMMANDS = [
+    # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
+    # ("pip", "install", "."),
+    ("pip", "install", "-e", ".")
+]
 
 
 def install_hydra(session):
