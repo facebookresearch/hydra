@@ -108,14 +108,10 @@ def test_plugin(session, plugin, install_cmd):
 @nox.session(python="3.6")
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
-    """Coverage analysis."""
     session.install("coverage", "pytest")
-    session.run("python", "setup.py", "clean", silent=True)
-    all_plugins = get_all_plugins()
-
     session.run("pip", "install", "-e", ".", silent=True)
     # Install all plugins in session
-    for plugin in all_plugins:
+    for plugin in get_all_plugins():
         session.run(
             "pip", "install", "-e", os.path.join("plugins", plugin[0]), silent=True
         )
