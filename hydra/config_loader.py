@@ -289,10 +289,12 @@ class ConfigLoader:
                 conf_dirname = ""
         cfg_defaults = cfg.defaults.to_container()
         for default in cfg.defaults:
+            default_copy = copy.deepcopy(default)
             if isinstance(default, DictConfig):
                 is_optional = False
                 if default.optional is not None:
                     is_optional = default.optional
+                    del default["optional"]
                 family = next(iter(default.keys()))
                 name = default[family]
                 # Name is none if default value is removed
@@ -304,7 +306,7 @@ class ConfigLoader:
                         required=not is_optional,
                         including_config_dir=True,
                     )
-                cfg_defaults.remove(default)
+                cfg_defaults.remove(default_copy)
             else:
                 assert isinstance(default, str)
                 cfg = self._merge_config(
