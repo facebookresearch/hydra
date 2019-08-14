@@ -73,7 +73,9 @@ jobs:
   windows_python27:
     executor: win/vs2019
     machine:
+      image: "windows-server-2019-vs2019:<< parameters.version >>"
       resource_class: windows.medium
+      shell: << parameters.shell >>
     steps:
       - checkout
       - run: Write-Host 'Hello, Windows'
