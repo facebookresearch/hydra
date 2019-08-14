@@ -88,6 +88,7 @@ jobs:
       - run:
           name: Running nox
           command: |
+            $Env:path += ";c:/Python27;c:/tools/miniconda3/scripts/"
             $Env:NOX_PYTHON_VERSIONS=2.7
             conda run -n hydra nox
 
