@@ -1,7 +1,7 @@
 import logging
 import os
 
-from hydra.utils import (
+from .utils import (
     get_valid_filename,
     JobRuntime,
     HydraConfig,
