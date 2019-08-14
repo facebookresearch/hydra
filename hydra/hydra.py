@@ -79,7 +79,10 @@ class Hydra:
             conf_filename=self.conf_filename,
             conf_dir=self.conf_dir,
             strict_task_cfg=strict,
-            config_path=["pkg://hydra.default_conf"],
+            config_path=[
+                "pkg://hydra.default_conf",
+                os.path.join(self.conf_dir, ".hydra"),
+            ],
         )
         self.verbose = verbose
 

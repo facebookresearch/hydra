@@ -1,12 +1,12 @@
 import importlib
 
 import pytest
-from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import integration_test
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
+from omegaconf import OmegaConf
 
 
 def verify_plugin(plugin_module):
@@ -20,8 +20,8 @@ def verify_plugin(plugin_module):
 def create_fairtask_launcher_local_config():
     return OmegaConf.create(
         {
+            "defaults": [{"launcher": None}, {"hydra_logging": "disable"}],
             "hydra": {
-                "hydra_logging": {"root": {"level": "ERROR"}},
                 "launcher": {
                     "class": "hydra_plugins.fairtask.FAIRTaskLauncher",
                     "params": {
@@ -34,8 +34,8 @@ def create_fairtask_launcher_local_config():
                             }
                         },
                     },
-                },
-            }
+                }
+            },
         }
     )
 
@@ -43,8 +43,8 @@ def create_fairtask_launcher_local_config():
 def create_submitit_launcher_local_config():
     return OmegaConf.create(
         {
+            "defaults": [{"launcher": None}, {"job_logging": "disable"}],
             "hydra": {
-                "hydra_logging": {"root": {"level": "ERROR"}},
                 "launcher": {
                     "class": "hydra_plugins.submitit.SubmititLauncher",
                     "params": {
@@ -58,8 +58,8 @@ def create_submitit_launcher_local_config():
                             }
                         },
                     },
-                },
-            }
+                }
+            },
         }
     )
 

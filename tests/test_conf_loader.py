@@ -1,5 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
+import os
+
 import pytest
 
 from hydra import ConfigLoader
@@ -106,22 +108,50 @@ def test_load_adding_group_not_in_default():
 
 
 def test_load_history():
+    conf_dir = "tests/configs"
     config_loader = ConfigLoader(
         config_path=["pkg://hydra.default_conf"],
         strict_task_cfg=False,
         conf_filename="missing-optional-default.yaml",
-        conf_dir="tests/configs",
+        conf_dir=conf_dir,
     )
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
         ("pkg://hydra.default_conf/default_hydra.yaml", True),
-        ("pkg://hydra.default_conf/hydra_logging.yaml", True),
-        ("pkg://hydra.default_conf/job_logging.yaml", True),
+        ("tests/configs/missing-optional-default.yaml", True),
+        ("pkg://hydra.default_conf.hydra_logging/default.yaml", True),
+        ("pkg://hydra.default_conf.job_logging/default.yaml", True),
         ("pkg://hydra.default_conf.launcher/basic.yaml", True),
         ("pkg://hydra.default_conf.sweeper/basic.yaml", True),
-        ("tests/configs/missing-optional-default.yaml", True),
         ("foo/missing", False),
     ]
+
+
+def test_load_history_with_basic_launcher():
+    conf_dir = "demos/6_sweep/conf"
+    config_loader = ConfigLoader(
+        config_path=["pkg://hydra.default_conf", os.path.join(conf_dir, ".hydra")],
+        strict_task_cfg=False,
+        conf_filename="config.yaml",
+        conf_dir=conf_dir,
+    )
+    config_loader.load_configuration(overrides=["launcher=basic"])
+
+    assert config_loader.get_load_history() == [
+        ("pkg://hydra.default_conf/default_hydra.yaml", True),
+        ("demos/6_sweep/conf/.hydra/hydra.yaml", True),
+        ("demos/6_sweep/conf/config.yaml", True),
+        ("pkg://hydra.default_conf.hydra_logging/default.yaml", True),
+        ("pkg://hydra.default_conf.job_logging/default.yaml", True),
+        ("pkg://hydra.default_conf.launcher/basic.yaml", True),
+        ("pkg://hydra.default_conf.sweeper/basic.yaml", True),
+        ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
+    ]
+
+
+# TODO: add testiing of load order verifying that when overriding sweeper back
+#  to basic (from sometrhing else) the sweeper is loaded in the order
+# it's declared in the hydra defaults file.
 
 
 def test_load_strict():

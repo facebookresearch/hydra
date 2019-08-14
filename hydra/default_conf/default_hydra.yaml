@@ -1,6 +1,6 @@
 defaults:
-  - hydra_logging
-  - job_logging
+  - hydra_logging : default
+  - job_logging : default
   - launcher: basic
   - sweeper: basic
 

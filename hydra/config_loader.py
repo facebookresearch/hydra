@@ -83,6 +83,42 @@ class ConfigLoader:
                 return prefix + config_file
         return None
 
+    @staticmethod
+    def _merge_default_lists(primary, merged_list):
+        if isinstance(primary, ListConfig):
+            primary = primary.to_container()
+        if isinstance(merged_list, ListConfig):
+            merged_list = merged_list.to_container()
+        key_to_idx = {}
+        for idx, d in enumerate(primary):
+            if isinstance(d, dict):
+                key = next(iter(d.keys()))
+                key_to_idx[key] = idx
+        result = copy.deepcopy(primary)
+        for d in copy.deepcopy(merged_list):
+            if isinstance(d, dict):
+                key = next(iter(d.keys()))
+                if key in key_to_idx.keys():
+                    idx = key_to_idx[key]
+                    result[idx] = d
+                    merged_list.remove(d)
+            else:
+                result.append(d)
+
+        for d in merged_list:
+            result.append(d)
+
+        return result
+
+    @staticmethod
+    def _merge_configs(c1, c2):
+        merged_defaults = ConfigLoader._merge_default_lists(
+            c1.defaults or [], c2.defaults or []
+        )
+        c3 = OmegaConf.merge(c1, c2)
+        c3.defaults = merged_defaults
+        return c3
+
     def load_configuration(self, overrides=[]):
         assert overrides is None or isinstance(overrides, list)
 
@@ -91,17 +127,19 @@ class ConfigLoader:
 
         job_overrides = [x for x in overrides if not x.startswith("hydra.")]
         hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
-        # if self.conf_filename is not None and self._find_config(self.conf_filename) is None:
-        #     raise MissingConfigException("Can't config file {}".format(self.conf_filename), self.conf_filename)
-        task_cfg, _consumed_defaults = self._create_cfg(
+        task_cfg, consumed_job_defaults = self._create_cfg(
             cfg_filename=self.conf_filename,
             strict=self.strict_task_cfg,
             open_defaults=True,
             including_config_dir=True,
             cli_overrides=job_overrides,
+            defaults_only=True,  # TODO: eliminate defaults only logic (AGAIN!)
         )
-        cfg = OmegaConf.merge(hydra_cfg, task_cfg)
 
+        cfg = self._merge_configs(hydra_cfg, task_cfg)
+        cfg = self._merge_defaults(cfg, self.conf_filename)
+
+        # TODO: use extend after OmegaConf ListConfig supports it
         for item in job_overrides:
             cfg.hydra.overrides.task.append(item)
         for item in hydra_overrides:
@@ -110,8 +148,14 @@ class ConfigLoader:
         job = OmegaConf.create(dict(name=JobRuntime().get("name")))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
         OmegaConf.set_struct(cfg, self.strict_task_cfg)
-        # Merge hydra overrides after combining both configs and applying the strict flag.
+
+        # Merge all command line overrides after enabling strict flag
         cfg.merge_with_dotlist(hydra_overrides)
+        value_overrides = []
+        for jo in job_overrides:
+            if jo not in consumed_job_defaults:
+                value_overrides.append(jo)
+        cfg.merge_with_dotlist(value_overrides)
         return cfg
 
     def load_sweep_config(self, master_config, sweep_overrides):
@@ -135,25 +179,21 @@ class ConfigLoader:
             cfg_filename="default_hydra.yaml",
             strict=False,
             including_config_dir=False,
+            defaults_only=True,
             open_defaults=False,
         )
         hydra_cfg, consumed_defaults = self._create_cfg(
-            cfg_filename=".hydra/hydra.yaml",
+            cfg_filename="hydra.yaml",
             strict=False,
             including_config_dir=True,
             cli_overrides=overrides,
             defaults_only=True,
             open_defaults=False,
         )
-        hydra_cfg = OmegaConf.merge(hydra_cfg_defaults, hydra_cfg)
+        hydra_cfg = self._merge_configs(hydra_cfg_defaults, hydra_cfg)
         for consumed in consumed_defaults:
             hydra_cfg.hydra.overrides.hydra.append(consumed)
             overrides.remove(consumed)
-
-        # strip everything outside of the hydra tree from the hydra config
-        clean = OmegaConf.create()
-        clean.hydra = hydra_cfg.hydra
-        hydra_cfg = clean
 
         return hydra_cfg
 
@@ -240,6 +280,47 @@ class ConfigLoader:
         else:
             return os.path.exists(filename)
 
+    def _merge_defaults(self, cfg, cfg_filename):
+        if cfg_filename is None:
+            conf_dirname = ""
+        else:
+            conf_dirname = os.path.dirname(cfg_filename)
+            if conf_dirname == ".":
+                conf_dirname = ""
+        cfg_defaults = cfg.defaults.to_container()
+        for default in cfg.defaults:
+            if isinstance(default, DictConfig):
+                is_optional = False
+                if default.optional is not None:
+                    is_optional = default.optional
+                family = next(iter(default.keys()))
+                name = default[family]
+                # Name is none if default value is removed
+                if name is not None:
+                    cfg = self._merge_config(
+                        cfg=cfg,
+                        family=os.path.join(conf_dirname, family),
+                        name=name,
+                        required=not is_optional,
+                        including_config_dir=True,
+                    )
+                cfg_defaults.remove(default)
+            else:
+                assert isinstance(default, str)
+                cfg = self._merge_config(
+                    cfg=cfg,
+                    family=conf_dirname,
+                    name=default,
+                    required=True,
+                    including_config_dir=True,
+                )
+                cfg_defaults.remove(default)
+        cfg.defaults = cfg_defaults
+        # remove config block from resulting cfg.
+        if len(cfg.defaults) == 0:
+            del cfg["defaults"]
+        return cfg
+
     def _create_cfg(
         self,
         cfg_filename,
@@ -265,11 +346,9 @@ class ConfigLoader:
         )
         if resolved_cfg_filename is None:
             main_cfg = OmegaConf.create()
-            conf_dirname = "."
         else:
             # TODO: pass resolved_cfg_filename to load?
             main_cfg = self._load_config_impl(cfg_filename, including_config_dir)
-            conf_dirname = os.path.dirname(cfg_filename)
             if main_cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
@@ -307,43 +386,14 @@ class ConfigLoader:
             else:
                 overrides.append(override)
 
-        ConfigLoader._update_defaults(main_cfg, defaults_changes)
-
-        cfg = main_cfg
-        for default in main_cfg.defaults:
-            if isinstance(default, DictConfig):
-                is_optional = False
-                if default.optional is not None:
-                    is_optional = default.optional
-                    del default["optional"]
-                family = next(iter(default.keys()))
-                name = default[family]
-                cfg = self._merge_config(
-                    cfg=cfg,
-                    family=os.path.join(conf_dirname, family),
-                    name=name,
-                    required=not is_optional,
-                    including_config_dir=including_config_dir,
-                )
-            else:
-                assert isinstance(default, str)
-                cfg = self._merge_config(
-                    cfg=cfg,
-                    family=conf_dirname,
-                    name=default,
-                    required=True,
-                    including_config_dir=including_config_dir,
-                )
-
+        self._update_defaults(main_cfg, defaults_changes)
         if strict:
-            OmegaConf.set_struct(cfg, True)
+            OmegaConf.set_struct(main_cfg, True)
 
         # merge in remaining overrides
         if not defaults_only:
-            cfg.merge_with_dotlist(overrides)
-        # remove config block from resulting cfg.
-        del cfg["defaults"]
-        return cfg, consumed_defaults
+            main_cfg.merge_with_dotlist(overrides)
+        return main_cfg, consumed_defaults
 
     @staticmethod
     def _validate_config(cfg):
@@ -376,7 +426,7 @@ class ConfigLoader:
 
     @staticmethod
     def _update_defaults(cfg, defaults_changes):
-        for default in cfg.defaults:
+        for default in cfg.defaults or []:
             if isinstance(default, DictConfig):
                 for key in default.keys():
                     if key != "optional":

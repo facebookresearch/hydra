@@ -92,6 +92,17 @@ def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
         verify_dir_outputs(task.job_ret.working_dir, overrides=task.overrides)
 
 
+def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
+    with task_runner(
+        conf_dir="demos/6_sweep/conf", overrides=["launcher=basic"]
+    ) as task:
+        assert (
+            task.job_ret.hydra_cfg.hydra.launcher["class"]
+            == "hydra.launcher.BasicLauncher"
+        )
+        assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
+
+
 @pytest.mark.parametrize(
     "args,output_conf",
     [
