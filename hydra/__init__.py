@@ -2,14 +2,14 @@
 from . import utils
 from .config_loader import ConfigLoader
 from .errors import MissingConfigException
-from .hydra import main, Hydra
+from .main import main
+from .hydra import Hydra
 from .launcher import Launcher
 from .plugins import Plugins
 from .sweeper import Sweeper
 from .utils import HydraConfig
 
 __all__ = [
-    "Hydra",
     "utils",
     "ConfigLoader",
     "MissingConfigException",
@@ -17,5 +17,6 @@ __all__ = [
     "Launcher",
     "Plugins",
     "Sweeper",
+    "Hydra",
     "HydraConfig",
 ]
