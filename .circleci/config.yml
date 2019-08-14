@@ -1,5 +1,25 @@
 version: 2.1
 
+executors:
+  windows_server:
+    description: >
+      A bare bones windows executor.
+    parameters:
+      version:
+        type: string
+        description: The image to use when executing. Defaults to "201908-06"
+        default: "201908-06"
+      shell:
+        type: string
+        description: >
+          The shell to use.
+          Defaults to `powershell.exe -ExecutionPolicy Bypass`
+        default: powershell.exe -ExecutionPolicy Bypass
+    machine:
+      image: "windows-server-2019:<< parameters.version >>"
+      resource_class: windows.medium
+      shell: << parameters.shell >>
+
 jobs:
   # Mac
   mac_python27:
@@ -71,11 +91,7 @@ jobs:
 
   # Windows
   windows_python27:
-    executor: win/vs2019
-    machine:
-      image: "windows-server-2019-vs2019:<< parameters.version >>"
-      resource_class: windows.medium
-      shell: << parameters.shell >>
+    executor: windows_server
     steps:
       - checkout
       - run: Write-Host 'Hello, Windows'
