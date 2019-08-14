@@ -83,7 +83,7 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.6",
             "Operating System :: OS Independent",
         ],
-        install_requires=["omegaconf>=1.3.0rc8"],
+        install_requires=["omegaconf>=1.3.0rc10"],
         # Install development dependencies with
         # pip install -e .[dev]
         extras_require={"dev": ["pytest", "setuptools", "coverage", "pre-commit"]},

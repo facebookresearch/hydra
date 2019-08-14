@@ -64,18 +64,18 @@ def get_python_versions(session, setup_py):
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("plugin_name", plugin_names(), ids=plugin_names())
-def test_plugin(session, plugin_name, install_cmd):
+@nox.parametrize("plugin", plugin_names(), ids=plugin_names())
+def test_plugin(session, plugin, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
 
     # Verify this plugin supports the python we are testing on, skip otherwise
     plugin_python_versions = get_python_versions(
-        session, os.path.join(BASE, "plugins", plugin_name, "setup.py")
+        session, os.path.join(BASE, "plugins", plugin, "setup.py")
     )
     if session.python not in plugin_python_versions:
         session.skip(
             "Not testing {} on Python {}, supports [{}]".format(
-                plugin_name, session.python, ",".join(plugin_python_versions)
+                plugin, session.python, ",".join(plugin_python_versions)
             )
         )
 
@@ -100,11 +100,12 @@ def test_plugin(session, plugin_name, install_cmd):
     run_pytest(session)
 
     # Run tests for current plugin
-    session.chdir(os.path.join(BASE, "plugins", plugin_name))
+    session.chdir(os.path.join(BASE, "plugins", plugin))
     run_pytest(session)
 
 
-@nox.session
+# code coverage runs with python 3 only to get the full picture.
+@nox.session(python="3.6")
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     """Coverage analysis."""
