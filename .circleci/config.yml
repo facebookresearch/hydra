@@ -80,10 +80,9 @@ jobs:
             Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
             choco install miniconda3 python2 -y --no-progress
       - run:
-          - name: Preparing environment
-          - command: |
+          name: Preparing environment
+          command: |
             $Env:path += ";c:/Python27;c:/tools/miniconda3/scripts/"
-            # nox is not compatible with python 2.7 but it can still be used ot test 2.7
             conda create -n hydra python=3.6 -q -y
             conda run -n hydra pip install nox
       - run:
