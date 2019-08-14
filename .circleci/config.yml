@@ -17,7 +17,7 @@ executors:
         default: powershell.exe -ExecutionPolicy Bypass
     machine:
       image: "windows-server-2019:<< parameters.version >>"
-      resource_class: windows.medium
+      resource_class: windows.large
       shell: << parameters.shell >>
 
 jobs:
