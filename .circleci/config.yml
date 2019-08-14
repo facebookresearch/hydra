@@ -72,6 +72,7 @@ jobs:
   # Windows
   windows_python27:
     executor: win/vs2019
+    resource_class: large
     steps:
       - checkout
       - run: Write-Host 'Hello, Windows'
