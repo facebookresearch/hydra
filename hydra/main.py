@@ -32,6 +32,7 @@ def get_args():
     parser.add_argument("--cfg", "-c", action="store_true", help="Show config")
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")
+
     parser.add_argument(
         "--multirun",
         "-m",
@@ -79,15 +80,15 @@ def run_hydra(task_function, config_path, strict):
         strict=strict,
     )
 
-    if args.run + args.sweep + args.multirun > 1:
+    if args.run + args.cfg + args.multirun > 1:
         raise ValueError("Only one of --run, --sweep and --cfg can be specified")
-    if args.run + args.cfg + args.sweep + args.multirun == 0:
+    if args.run + args.cfg + args.multirun == 0:
         args.run = True
 
     if args.run:
         command = "run"
     elif args.sweep:
-        command = "sweep"
+        raise RuntimeError("-s|--sweep is no longer supported, please us -m|--multirun")
     elif args.multirun:
         command = "multirun"
     elif args.cfg:
@@ -97,11 +98,6 @@ def run_hydra(task_function, config_path, strict):
         hydra.run(overrides=args.overrides)
     elif command == "multirun":
         hydra.multirun(overrides=args.overrides)
-    elif command == "sweep":
-        warnings.warn(
-            "--sweep is deprecated, use --multirun", DeprecationWarning, stacklevel=2
-        )
-        hydra.sweep(overrides=args.overrides)
     elif command == "cfg":
         hydra.show_cfg(overrides=args.overrides)
     else:

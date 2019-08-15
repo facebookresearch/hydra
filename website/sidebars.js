@@ -13,7 +13,7 @@ module.exports = {
             'examples/config_file',
             'examples/config_splitting',
             'examples/config_groups',
-            'examples/sweep',
+            'examples/multi-run',
             {
                 type: 'category',
                 label: 'Advanced',

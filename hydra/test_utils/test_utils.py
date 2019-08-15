@@ -128,7 +128,7 @@ def sweep_runner():
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
-            self.returns = self.hydra.sweep(overrides=overrides)
+            self.returns = self.hydra.multirun(overrides=overrides)
             flat = [item for sublist in self.returns for item in sublist]
             for ret in flat:
                 strip_node(ret.cfg, "hydra.sweep.dir")

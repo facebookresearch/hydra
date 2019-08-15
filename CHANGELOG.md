@@ -33,7 +33,7 @@ $ python demos/6_sweep/experiment.py -m launcher=fairtask a=1,2 b=10,20
 This is implemented and used internally but is not yet available to the end user.
 More on this in a followup update.
 
-### disabled logging
+#### disabled logging
 Introduced a method for disabling hydra and/or the job logging completely:
 ```
 $ python demos/2_logging/logging_example.py -m a=1,2 hydra_logging=disabled job_logging=disabled
@@ -41,7 +41,7 @@ $ python demos/2_logging/logging_example.py -m a=1,2 hydra_logging=disabled job_
 Another change to logging is that if you are cusotmizng it you will now need to specify a complete logging
 config snippet for your job (Your logging could would replace, not merge with the default one)
 
-### Config load tracing
+#### Config load tracing
 You can now see how your config is composed by activating verbose logging for hydra:
 ```text
 $ python demos/6_sweep/experiment.py -v hydra
@@ -57,6 +57,10 @@ $ python demos/6_sweep/experiment.py -v hydra
   lr: 0.001
   type: nesterov
 ```
+####
+Official Mac OS support.
+Hydra is now tested on Mac OS in the continuous integration (CircleCI)
+If you are using it on Mac and it's misbehaving please file an issue.
 
 ### 08/10/2019
 Reworked internal configuration loading to make Hydra more consistent and flexible.

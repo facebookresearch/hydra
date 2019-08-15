@@ -6,6 +6,7 @@ from hydra.test_utils.launcher_common_tests import (
     demos_sweep_2_jobs_test_impl,
     demo_6_sweep_test_impl,
     not_sweeping_hydra_overrides,
+    sweep_over_two_optimizers,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -83,3 +84,14 @@ def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
                 "hydra.foo=bar",
             ],
         )
+
+
+def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
+    sweep_over_two_optimizers(
+        sweep_runner,
+        overrides=[
+            "launcher=fairtask",
+            "hydra.launcher.params.queue=local",
+            "hydra.launcher.params.no_workers=true",
+        ],
+    )

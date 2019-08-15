@@ -4,6 +4,7 @@ import six
 
 from hydra import utils
 from .launcher import Launcher
+from omegaconf import open_dict
 
 if six.PY2:
     from pathlib2 import Path
@@ -42,11 +43,12 @@ class BasicLauncher(Launcher):
             sweep_config = self.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
-            sweep_config.hydra.job.id = idx
-            sweep_config.hydra.job.num = idx
-            sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(
-                sweep_config.hydra.overrides.task
-            )
+            with open_dict(sweep_config):
+                sweep_config.hydra.job.id = idx
+                sweep_config.hydra.job.num = idx
+                sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(
+                    sweep_config.hydra.overrides.task
+                )
             utils.HydraConfig().set_config(sweep_config)
 
             runs.append(

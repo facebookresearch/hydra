@@ -89,3 +89,25 @@ def not_sweeping_hydra_overrides(sweep_runner, overrides):
             assert job_ret.overrides == ["a={}".format(i)]
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret.working_dir, job_ret.overrides)
+
+
+def sweep_over_two_optimizers(sweep_runner, overrides):
+    """
+    Make sure that optimizers=adam,nesterov is interpreted correctly
+    """
+    overrides.extend(["optimizer=adam,nesterov"])
+    sweep = sweep_runner(
+        conf_dir="demos/6_sweep/conf/", conf_filename="config.yaml", overrides=overrides
+    )
+    expected_overrides = [["optimizer=adam"], ["optimizer=nesterov"]]
+    expected_conf = [
+        OmegaConf.create(dict(optimizer=dict(type="adam", lr=0.1, beta=0.01))),
+        OmegaConf.create(dict(optimizer=dict(type="nesterov", lr=0.001))),
+    ]
+    with sweep:
+        assert len(sweep.returns[0]) == 2
+        for i in range(2):
+            job_ret = sweep.returns[0][i]
+            assert job_ret.overrides == expected_overrides[i]
+            assert job_ret.cfg == expected_conf[i]
+            verify_dir_outputs(job_ret.working_dir, job_ret.overrides)

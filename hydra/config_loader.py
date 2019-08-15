@@ -376,13 +376,17 @@ class ConfigLoader:
                 "optional is a reserved keyword and cannot be used as a "
                 "config group name"
             )
-            can_add = (
-                open_defaults
-                or key in main_cfg.defaults
-                or {key: value} in main_cfg.defaults
-            )
+
+            can_add = open_defaults
+            for d in main_cfg.defaults:
+                if isinstance(d, DictConfig) and key in d:
+                    can_add = True
+                    break
+            # Do not add sweep configs into defaults, those will be added to the sweep config
+            # after the list is broken into items
+            if "," in value:
+                can_add = False
             if can_add and self._is_group(key, including_config_dir):
-                # if self.find_config(os.path.join(key, value)) is not None:
                 defaults_changes[key] = value
                 consumed_defaults.append(override)
             else:

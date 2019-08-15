@@ -1,12 +1,12 @@
 import importlib
 
 import pytest
+from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import integration_test
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
-from omegaconf import OmegaConf
 
 
 def verify_plugin(plugin_module):
@@ -15,6 +15,10 @@ def verify_plugin(plugin_module):
             importlib.import_module(plugin_module)
         except ImportError:
             pytest.skip("Plugin {} not installed".format(plugin_module))
+
+
+def create_disable_logging_connfig():
+    return OmegaConf.create({"defaults": [{"hydra_logging": "disabled"}]})
 
 
 def create_fairtask_launcher_local_config():
@@ -86,15 +90,15 @@ def create_submitit_launcher_local_config():
 @pytest.mark.parametrize(
     "hydra_config, extra_flags, plugin_module",
     [
-        (None, [], None),
+        (create_disable_logging_connfig(), ["-m", "hydra.sweep.dir=."], None),
         (
             create_fairtask_launcher_local_config(),
-            ["-s", "hydra.sweep.dir=."],
+            ["-m", "hydra.sweep.dir=."],
             "hydra_plugins.fairtask",
         ),
         # # TODO: re-enable after submitit local queue is fixed
         # pytest.param(
-        #     create_submitit_launcher_local_config(), ['-s'], 'hydra_plugins.submitit',
+        #     create_submitit_launcher_local_config(), ['-m'], 'hydra_plugins.submitit',
         #     marks=[pytest.mark.skip]
         # ),
     ],
@@ -273,11 +277,11 @@ def test_custom_local_run_workdir(
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags, plugin_module",
     [
-        (create_fairtask_launcher_local_config(), ["-s"], "hydra_plugins.fairtask"),
+        (create_fairtask_launcher_local_config(), ["-m"], None),
         # TODO: re-enable after submitit local queue is fixed
         pytest.param(
             create_submitit_launcher_local_config(),
-            ["-s"],
+            ["-m"],
             "hydra_plugins.submitit",
             marks=[pytest.mark.skip],
         ),

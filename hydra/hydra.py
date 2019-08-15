@@ -1,6 +1,8 @@
 import logging
 import os
 
+from .config_loader import ConfigLoader
+from .plugins import Plugins
 from .utils import (
     get_valid_filename,
     JobRuntime,
@@ -9,8 +11,6 @@ from .utils import (
     run_job,
     configure_log,
 )
-from .config_loader import ConfigLoader
-from .plugins import Plugins
 
 log = None
 
@@ -53,17 +53,6 @@ class Hydra:
         )
 
     def multirun(self, overrides):
-        cfg = self._load_config(overrides)
-        HydraConfig().set_config(cfg)
-        sweeper = Plugins.instantiate_sweeper(
-            config=cfg,
-            config_loader=self.config_loader,
-            task_function=self.task_function,
-            verbose=self.verbose,
-        )
-        return sweeper.sweep(arguments=cfg.hydra.overrides.task)
-
-    def sweep(self, overrides):
         cfg = self._load_config(overrides)
         HydraConfig().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(

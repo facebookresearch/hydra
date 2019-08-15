@@ -6,6 +6,7 @@ from hydra.test_utils.launcher_common_tests import (
     demos_sweep_1_job_test_impl,
     demos_sweep_2_jobs_test_impl,
     not_sweeping_hydra_overrides,
+    sweep_over_two_optimizers,
 )
 
 # noinspection PyUnresolvedReferences
@@ -53,9 +54,12 @@ def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
 def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
     not_sweeping_hydra_overrides(
         sweep_runner,
-        overrides=[
-            "launcher=fairtask",
-            "hydra.launcher.params.queue=local",
-            "hydra.launcher.params.no_workers=true",
-        ],
+        overrides=["launcher=submitit", "hydra.launcher.params.queue=local"],
+    )
+
+
+def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
+    sweep_over_two_optimizers(
+        sweep_runner,
+        overrides=["launcher=submitit", "hydra.launcher.params.queue=local"],
     )
