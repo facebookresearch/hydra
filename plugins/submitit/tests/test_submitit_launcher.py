@@ -58,6 +58,10 @@ def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
     )
 
 
+@pytest.mark.skip(
+    reason="submitit local queue is broken. re-enable once fixed. "
+    "https://github.com/fairinternal/submitit/issues/121"
+)
 def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
     sweep_over_two_optimizers(
         sweep_runner,
