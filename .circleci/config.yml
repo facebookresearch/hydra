@@ -10,6 +10,7 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip3 install nox
       - run: python3 -m nox
+
   mac_python36:
     macos:
       xcode: "10.0.0"
@@ -22,6 +23,7 @@ jobs:
       - run: ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra36 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
+
   mac_python37:
     macos:
       xcode: "10.0.0"
@@ -34,6 +36,7 @@ jobs:
       - run: ~/miniconda3/bin/conda create -n hydra37 python=3.7 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra37 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra37 python3 -m nox
+
   # Linux
   python27:
     docker:
@@ -44,6 +47,7 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
+
   python36:
     docker:
       - image: circleci/python:3.6
@@ -52,6 +56,7 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
+
   python37:
     docker:
       - image: circleci/python:3.7
@@ -60,9 +65,11 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.7' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
+
+  # Misc
   coverage:
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.6
     steps:
       - checkout
       - run: sudo pip install nox

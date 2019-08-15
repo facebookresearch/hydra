@@ -109,8 +109,8 @@ def test_plugin(session, plugin, install_cmd):
     run_pytest(session)
 
 
-# code coverage runs with python 3 only to get the full picture.
-@nox.session(python="3.7")
+# code coverage runs with python 3.6
+@nox.session(python="3.6")
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
@@ -124,6 +124,12 @@ def coverage(session):
     session.run("coverage", "erase")
     session.run("coverage", "run", "--append", "-m", "pytest", silent=True)
     for plugin in plugin_names():
+        plugin_python_versions = get_python_versions(
+            session, os.path.join(BASE, "plugins", plugin, "setup.py")
+        )
+        if session.python not in plugin_python_versions:
+            continue
+
         session.run(
             "coverage",
             "run",
