@@ -1,4 +1,4 @@
-version: 2.0
+version: 2.1
 
 jobs:
   # Mac
@@ -10,7 +10,6 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip3 install nox
       - run: python3 -m nox
-
   mac_python36:
     macos:
       xcode: "10.0.0"
@@ -23,7 +22,6 @@ jobs:
       - run: ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra36 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
-
   mac_python37:
     macos:
       xcode: "10.0.0"
@@ -40,14 +38,13 @@ jobs:
   # Linux
   python27:
     docker:
-      # nox got issues with python 2.7 but it can still be used ot test 2.7
+      # nox is not compatible with python 2.7 but it can still be used ot test 2.7
       - image: circleci/python:3.6
     steps:
       - checkout
       - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
-
   python36:
     docker:
       - image: circleci/python:3.6
@@ -56,7 +53,6 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
-
   python37:
     docker:
       - image: circleci/python:3.7
@@ -65,16 +61,38 @@ jobs:
       - run: echo 'export NOX_PYTHON_VERSIONS=3.7' >> $BASH_ENV
       - run: sudo pip install nox
       - run: nox
-
-  # Misc
   coverage:
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.7
     steps:
       - checkout
       - run: sudo pip install nox
       - run: nox -s coverage
 
+  # Windows
+  windows_python27:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Installing Conda
+          command: |
+            Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+            choco install miniconda3 python2 -y --no-progress
+      - run:
+          name: Preparing environment
+          command: |
+            $Env:path += ";c:/Python27;c:/tools/miniconda3/scripts/"
+            conda create -n hydra python=3.6 -q -y
+            conda run -n hydra pip install nox
+      - run:
+          name: Running nox
+          command: |
+            $Env:path += ";c:/Python27;c:/tools/miniconda3/scripts/"
+            $Env:NOX_PYTHON_VERSIONS=2.7
+            conda run -n hydra nox
+
+  # Misc
   deploy-website:
     docker:
       - image: circleci/node:12
@@ -103,7 +121,11 @@ workflows:
       - mac_python27
       - mac_python36
       - mac_python37
+      - windows_python27
       - deploy-website:
           filters:
             branches:
               only: master
+
+orbs:
+  win: circleci/windows@1.0.0
