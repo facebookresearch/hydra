@@ -4,6 +4,8 @@ title: Customizing logging
 sidebar_label: Customizing logging
 ---
 Hydra is configuring Python standard logging library with the dictConfig method. You can learn more about it [here](https://docs.python.org/3/howto/logging.html).
+There are actually two logging configurations, one for Hydra itself and one for the executed jobs.
+
  
 This example demonstrates how to to customize the logging behavior of your Hydra app, by making the following changes
 to the default logging behavior:
@@ -17,14 +19,14 @@ With your specification overriding the default.
 .hydra/hydra.yaml
 ```yaml
 defaults:
-  - logging
+  - job_logging : logging
 ```
 
-.hydra/logging.yaml
+.hydra/job_logging/logging.yaml
 ```yaml
 hydra:
   # python logging configuration
-  logging:
+  job_logging:
     formatters:
       simple:
         format: '[%(levelname)s] - %(message)s'
@@ -35,7 +37,9 @@ hydra:
 Output:
 
 ```bash
-$ python example.py
+$ python demos/99_hydra_configuration/logging/main.py job_logging=default
+[2019-08-14 21:07:31,382][__main__][INFO] - Info level message
+$ python demos/99_hydra_configuration/logging/main.py
 [INFO] - Info level message
 ```
 

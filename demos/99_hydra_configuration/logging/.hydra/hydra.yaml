@@ -1,2 +1,2 @@
 defaults:
-  - job_logging
+  - job_logging: custom

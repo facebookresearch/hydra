@@ -1,3 +1,5 @@
+import logging
+
 import six
 
 from hydra import utils
@@ -7,6 +9,8 @@ if six.PY2:
     from pathlib2 import Path
 else:
     from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 
 class BasicLauncher(Launcher):
@@ -23,14 +27,18 @@ class BasicLauncher(Launcher):
         self.verbose = verbose
 
     def launch(self, job_overrides):
-        utils.configure_log(None, self.verbose)
         utils.setup_globals()
-
-        Path(str(self.config.hydra.run.dir)).mkdir(parents=True, exist_ok=True)
-
+        utils.configure_log(self.config.hydra.hydra_logging, self.verbose)
+        sweep_dir = self.config.hydra.run.dir
+        Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
+        log.info("Launching {} jobs locally".format(len(job_overrides)))
+        log.info("Sweep output dir : {}".format(sweep_dir))
         runs = []
 
         for idx, overrides in enumerate(job_overrides):
+            log.info(
+                "\t#{} : {}".format(idx, " ".join(utils.filter_overrides(overrides)))
+            )
             sweep_config = self.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
@@ -40,6 +48,7 @@ class BasicLauncher(Launcher):
                 sweep_config.hydra.overrides.task
             )
             utils.HydraConfig().set_config(sweep_config)
+
             runs.append(
                 utils.run_job(
                     config=sweep_config,
@@ -49,4 +58,5 @@ class BasicLauncher(Launcher):
                     job_subdir_key="hydra.run.subdir",
                 )
             )
+            utils.configure_log(self.config.hydra.hydra_logging, self.verbose)
         return runs

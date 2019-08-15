@@ -1,0 +1,16 @@
+hydra:
+  # python logging configuration for tasks
+  job_logging:
+    version: 1
+    formatters:
+      simple:
+        format: '[%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      handlers: [console]
+
+    disable_existing_loggers: False
