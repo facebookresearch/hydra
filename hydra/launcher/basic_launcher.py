@@ -1,10 +1,10 @@
 import logging
 
 import six
+from omegaconf import open_dict
 
 from hydra import utils
 from .launcher import Launcher
-from omegaconf import open_dict
 
 if six.PY2:
     from pathlib2 import Path
@@ -30,7 +30,7 @@ class BasicLauncher(Launcher):
     def launch(self, job_overrides):
         utils.setup_globals()
         utils.configure_log(self.config.hydra.hydra_logging, self.verbose)
-        sweep_dir = self.config.hydra.run.dir
+        sweep_dir = self.config.hydra.sweep.dir
         Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
         log.info("Launching {} jobs locally".format(len(job_overrides)))
         log.info("Sweep output dir : {}".format(sweep_dir))
@@ -56,8 +56,8 @@ class BasicLauncher(Launcher):
                     config=sweep_config,
                     task_function=self.task_function,
                     verbose=self.verbose,
-                    job_dir_key="hydra.run.dir",
-                    job_subdir_key="hydra.run.subdir",
+                    job_dir_key="hydra.sweep.dir",
+                    job_subdir_key="hydra.sweep.subdir",
                 )
             )
             utils.configure_log(self.config.hydra.hydra_logging, self.verbose)
