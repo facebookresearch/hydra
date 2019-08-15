@@ -4,19 +4,13 @@ hydra:
     version: 1
     formatters:
       simple:
-        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+        format: '[%(levelname)s] - %(message)s'
     handlers:
       console:
         class: logging.StreamHandler
         formatter: simple
         stream: ext://sys.stdout
-      file:
-        class: logging.FileHandler
-        formatter: simple
-        # relative to the job log directory
-        filename: ${hydra.job.name}.log
     root:
-      level: INFO
-      handlers: [console, file]
+      handlers: [console]
 
     disable_existing_loggers: False

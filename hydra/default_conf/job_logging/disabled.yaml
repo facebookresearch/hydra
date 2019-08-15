@@ -1,0 +1,6 @@
+hydra:
+  job_logging:
+    version: 1
+    root:
+      level: ERROR
+    disable_existing_loggers: True

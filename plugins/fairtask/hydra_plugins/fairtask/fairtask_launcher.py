@@ -7,6 +7,7 @@ from fairtask import TaskQueues, gatherl
 
 from hydra import Launcher
 from hydra import utils
+from omegaconf import open_dict
 
 log = logging.getLogger(__name__)
 
@@ -36,16 +37,17 @@ class FAIRTaskLauncher(Launcher):
             self.config, sweep_overrides
         )
 
-        # Populate new job variables
-        sweep_config.hydra.job.id = (
-            "${env:SLURM_JOB_ID}"
-            if "SLURM_JOB_ID" in os.environ
-            else "_UNKNOWN_SLURM_ID_"
-        )
-        sweep_config.hydra.job.num = job_num
-        sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(
-            sweep_config.hydra.overrides.task
-        )
+        with open_dict(sweep_config):
+            # Populate new job variables
+            sweep_config.hydra.job.id = (
+                "${env:SLURM_JOB_ID}"
+                if "SLURM_JOB_ID" in os.environ
+                else "_UNKNOWN_SLURM_ID_"
+            )
+            sweep_config.hydra.job.num = job_num
+            sweep_config.hydra.job.override_dirname = utils.get_overrides_dirname(
+                sweep_config.hydra.overrides.task
+            )
 
         return utils.run_job(
             config=sweep_config,
@@ -77,7 +79,9 @@ class FAIRTaskLauncher(Launcher):
 
     def create_queue(self, num_jobs):
         assert num_jobs > 0
-        self.config.hydra.job.num_jobs = num_jobs
+        # num_jobs is needed to instantiate the queue below
+        with open_dict(self.config):
+            self.config.hydra.job.num_jobs = num_jobs
         queues = {}
         for queue_name, queue_conf in self.queues.items():
             queues[queue_name] = utils.instantiate(queue_conf)

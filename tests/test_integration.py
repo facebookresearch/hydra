@@ -17,11 +17,17 @@ def verify_plugin(plugin_module):
             pytest.skip("Plugin {} not installed".format(plugin_module))
 
 
+def create_basic_launcher_config():
+    return OmegaConf.create(
+        {"defaults": [{"hydra_logging": "disabled"}, {"launcher": "basic"}]}
+    )
+
+
 def create_fairtask_launcher_local_config():
     return OmegaConf.create(
         {
+            "defaults": [{"launcher": None}, {"hydra_logging": "disabled"}],
             "hydra": {
-                "hydra_logging": {"root": {"level": "ERROR"}},
                 "launcher": {
                     "class": "hydra_plugins.fairtask.FAIRTaskLauncher",
                     "params": {
@@ -34,8 +40,8 @@ def create_fairtask_launcher_local_config():
                             }
                         },
                     },
-                },
-            }
+                }
+            },
         }
     )
 
@@ -43,8 +49,8 @@ def create_fairtask_launcher_local_config():
 def create_submitit_launcher_local_config():
     return OmegaConf.create(
         {
+            "defaults": [{"launcher": None}, {"job_logging": "disabled"}],
             "hydra": {
-                "hydra_logging": {"root": {"level": "ERROR"}},
                 "launcher": {
                     "class": "hydra_plugins.submitit.SubmititLauncher",
                     "params": {
@@ -58,8 +64,8 @@ def create_submitit_launcher_local_config():
                             }
                         },
                     },
-                },
-            }
+                }
+            },
         }
     )
 
@@ -86,15 +92,15 @@ def create_submitit_launcher_local_config():
 @pytest.mark.parametrize(
     "hydra_config, extra_flags, plugin_module",
     [
-        (None, [], None),
+        (create_basic_launcher_config(), ["-m", "hydra.sweep.dir=."], None),
         (
             create_fairtask_launcher_local_config(),
-            ["-s", "hydra.sweep.dir=."],
+            ["-m", "hydra.sweep.dir=."],
             "hydra_plugins.fairtask",
         ),
         # # TODO: re-enable after submitit local queue is fixed
         # pytest.param(
-        #     create_submitit_launcher_local_config(), ['-s'], 'hydra_plugins.submitit',
+        #     create_submitit_launcher_local_config(), ['-m'], 'hydra_plugins.submitit',
         #     marks=[pytest.mark.skip]
         # ),
     ],
@@ -115,7 +121,7 @@ def test_custom_task_name(
         hydra_config or OmegaConf.create(), task_config or OmegaConf.create()
     )
     integration_test(
-        tmpdir,
+        tmpdir=tmpdir,
         task_config=cfg,
         hydra_config=None,
         overrides=overrides,
@@ -170,7 +176,7 @@ def test_custom_local_run_workdir(
 
     expected_dir1 = tmpdir / expected_dir
     integration_test(
-        tmpdir,
+        tmpdir=tmpdir,
         task_config=cfg,
         hydra_config=hydra_cfg,
         overrides=overrides,
@@ -273,11 +279,12 @@ def test_custom_local_run_workdir(
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags, plugin_module",
     [
-        (create_fairtask_launcher_local_config(), ["-s"], "hydra_plugins.fairtask"),
+        (create_basic_launcher_config(), ["-m"], None),
+        (create_fairtask_launcher_local_config(), ["-m"], "hydra_plugins.fairtask"),
         # TODO: re-enable after submitit local queue is fixed
         pytest.param(
             create_submitit_launcher_local_config(),
-            ["-s"],
+            ["-m"],
             "hydra_plugins.submitit",
             marks=[pytest.mark.skip],
         ),
@@ -303,7 +310,7 @@ def test_custom_sweeper_run_workdir(
     cfg = OmegaConf.merge(task_launcher_cfg, task_config)
 
     integration_test(
-        tmpdir,
+        tmpdir=tmpdir,
         task_config=cfg,
         hydra_config=hydra_cfg,
         overrides=overrides,

@@ -5,12 +5,16 @@ Sweeper plugin interface
 from abc import abstractmethod
 
 
-class Sweeper:
+class Sweeper(object):
     """
     An abstract sweeper interface
     Sweeper takes the command line arguments, generates a and launches jobs
     (where each job typically takes a different command line arguments)
     """
+
+    def __init__(self):
+        if type(self) == Sweeper:
+            raise NotImplementedError
 
     @abstractmethod
     def setup(self, config, config_loader, task_function, verbose):

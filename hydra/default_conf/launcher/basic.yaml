@@ -1,0 +1,3 @@
+hydra:
+  launcher:
+    class: hydra.launcher.BasicLauncher

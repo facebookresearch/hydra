@@ -62,6 +62,7 @@ class JobReturn:
         self.overrides = None
         self.return_value = None
         self.cfg = None
+        self.hydra_cfg = None
         self.working_dir = None
 
 
@@ -190,6 +191,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         task_cfg = copy.deepcopy(config)
         del task_cfg["hydra"]
         ret.cfg = task_cfg
+        ret.hydra_cfg = copy.deepcopy(HydraConfig())
         ret.overrides = config.hydra.overrides.task.to_container()
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)

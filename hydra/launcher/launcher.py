@@ -14,7 +14,7 @@ class Launcher:
         raise NotImplementedError()
 
     @abstractmethod
-    def setup(self, config, task_function, verbose):
+    def setup(self, config, config_loader, task_function, verbose):
         """
         Sets this launcher instance up.
         """

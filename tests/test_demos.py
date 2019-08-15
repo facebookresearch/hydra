@@ -4,13 +4,20 @@ import subprocess
 import sys
 
 import pytest
+from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
+from hydra.test_utils.launcher_common_tests import (
+    demos_sweep_1_job_test_impl,
+    demos_sweep_2_jobs_test_impl,
+    demo_6_sweep_test_impl,
+    not_sweeping_hydra_overrides,
+    sweep_over_two_optimizers,
+)
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import task_runner  # noqa: F401
-from omegaconf import OmegaConf
+from hydra.test_utils.test_utils import task_runner, sweep_runner  # noqa: F401
 
 chdir_hydra_root()
 
@@ -90,6 +97,17 @@ def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
     ) as task:
         assert task.job_ret.cfg == dict(optimizer=dict(type="adam", lr=10, beta=0.01))
         verify_dir_outputs(task.job_ret.working_dir, overrides=task.overrides)
+
+
+def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
+    with task_runner(
+        conf_dir="demos/6_sweep/conf", overrides=["launcher=basic"]
+    ) as task:
+        assert (
+            task.job_ret.hydra_cfg.hydra.launcher["class"]
+            == "hydra.launcher.BasicLauncher"
+        )
+        assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
 
 
 @pytest.mark.parametrize(
@@ -219,3 +237,34 @@ def test_demo_5_config_groups(tmpdir, args, output_conf):
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+
+
+def test_demo_6(tmpdir):
+    demo_6_sweep_test_impl(tmpdir, overrides=["launcher=basic"])
+
+
+def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
+    demos_sweep_1_job_test_impl(sweep_runner, overrides=["launcher=basic"])
+
+
+def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
+    demos_sweep_2_jobs_test_impl(sweep_runner, overrides=["launcher=basic"])
+
+
+def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
+    not_sweeping_hydra_overrides(sweep_runner, overrides=["launcher=basic"])
+
+
+def test_fairtask_sweep_1_job_strict(sweep_runner):  # noqa: F811
+    demos_sweep_1_job_test_impl(sweep_runner, strict=True, overrides=["launcher=basic"])
+
+
+def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
+    with pytest.raises(KeyError):
+        demos_sweep_1_job_test_impl(
+            sweep_runner, strict=True, overrides=["launcher=basic", "hydra.foo=bar"]
+        )
+
+
+def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
+    sweep_over_two_optimizers(sweep_runner, overrides=["launcher=basic"])

@@ -11,7 +11,11 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = (("pip", "install", "."), ("pip", "install", "-e", "."))
+PLUGINS_INSTALL_COMMANDS = (
+    # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
+    # ["pip", "install", "."],
+    ["pip", "install", "-e", "."],
+)
 
 
 def install_hydra(session):
@@ -30,10 +34,11 @@ def install_pytest(session):
 
 
 def run_pytest(session):
-    if session.python == "2.7":
-        session.run("pytest", silent=True)
-    else:
-        session.run("pytest", "--workers=30", silent=True)
+    session.run("pytest", silent=True)
+    # if session.python == "2.7":
+    #     session.run("pytest", silent=True)
+    # else:
+    #     session.run("pytest", "--workers=30", silent=True)
 
 
 def plugin_names():
@@ -64,18 +69,18 @@ def get_python_versions(session, setup_py):
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("plugin_name", plugin_names(), ids=plugin_names())
-def test_plugin(session, plugin_name, install_cmd):
+@nox.parametrize("plugin", plugin_names(), ids=plugin_names())
+def test_plugin(session, plugin, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
 
     # Verify this plugin supports the python we are testing on, skip otherwise
     plugin_python_versions = get_python_versions(
-        session, os.path.join(BASE, "plugins", plugin_name, "setup.py")
+        session, os.path.join(BASE, "plugins", plugin, "setup.py")
     )
     if session.python not in plugin_python_versions:
         session.skip(
             "Not testing {} on Python {}, supports [{}]".format(
-                plugin_name, session.python, ",".join(plugin_python_versions)
+                plugin, session.python, ",".join(plugin_python_versions)
             )
         )
 
@@ -83,16 +88,16 @@ def test_plugin(session, plugin_name, install_cmd):
 
     all_plugins = get_all_plugins()
     # Install all plugins in session
-    for plugin in all_plugins:
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin[0])]
+    for a_plugin in all_plugins:
+        cmd = list(install_cmd) + [os.path.join("plugins", a_plugin[0])]
         session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import Hydra", silent=True)
 
     # Test that we can import all installed plugins
-    for plugin in all_plugins:
-        session.run("python", "-c", "import {}".format(plugin[1]))
+    for a_plugin in all_plugins:
+        session.run("python", "-c", "import {}".format(a_plugin[1]))
 
     install_pytest(session)
 
@@ -100,21 +105,18 @@ def test_plugin(session, plugin_name, install_cmd):
     run_pytest(session)
 
     # Run tests for current plugin
-    session.chdir(os.path.join(BASE, "plugins", plugin_name))
+    session.chdir(os.path.join(BASE, "plugins", plugin))
     run_pytest(session)
 
 
-@nox.session
+# code coverage runs with python 3.6
+@nox.session(python="3.6")
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
-    """Coverage analysis."""
     session.install("coverage", "pytest")
-    session.run("python", "setup.py", "clean", silent=True)
-    all_plugins = get_all_plugins()
-
     session.run("pip", "install", "-e", ".", silent=True)
     # Install all plugins in session
-    for plugin in all_plugins:
+    for plugin in get_all_plugins():
         session.run(
             "pip", "install", "-e", os.path.join("plugins", plugin[0]), silent=True
         )
@@ -122,6 +124,12 @@ def coverage(session):
     session.run("coverage", "erase")
     session.run("coverage", "run", "--append", "-m", "pytest", silent=True)
     for plugin in plugin_names():
+        plugin_python_versions = get_python_versions(
+            session, os.path.join(BASE, "plugins", plugin, "setup.py")
+        )
+        if session.python not in plugin_python_versions:
+            continue
+
         session.run(
             "coverage",
             "run",
