@@ -11,7 +11,7 @@ from .hydra import Hydra
 
 def get_args():
     parser = argparse.ArgumentParser(description="Hydra experimentation framework")
-    version = pkg_resources.require("hydra")[0].version
+    version = pkg_resources.get_distribution("hydra").version
     parser.add_argument(
         "--version", action="version", version="hydra {}".format(version)
     )

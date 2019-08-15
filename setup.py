@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import codecs
 import distutils
 import os
 import re
@@ -6,6 +7,21 @@ import shutil
 from os.path import join, exists, isdir
 
 from setuptools import setup, find_packages
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+
+def read(*parts):
+    with codecs.open(os.path.join(here, *parts), "r") as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 
 class CleanCommand(distutils.cmd.Command):
@@ -67,7 +83,7 @@ with open("README.md", "r") as fh:
     setup(
         cmdclass={"clean": CleanCommand},
         name="hydra",
-        version="0.1.0",
+        version=find_version("hydra", "__init__.py"),
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="Hydra is a generic experimentation framework for scientific computing and "
