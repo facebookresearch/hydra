@@ -6,6 +6,7 @@ Configuration loader
 import copy
 import os
 
+from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import (
     resource_stream,
     resource_exists,
@@ -13,7 +14,6 @@ from pkg_resources import (
     resource_isdir,
 )
 
-from omegaconf import OmegaConf, DictConfig, ListConfig
 from .errors import MissingConfigException
 from .utils import JobRuntime
 
@@ -23,13 +23,12 @@ class ConfigLoader:
     Configuration loader
     """
 
-    # TODO: rename strict_task_cfg to strict_cfg
-    def __init__(self, conf_filename, conf_dir, strict_task_cfg, config_path=[]):
+    def __init__(self, conf_filename, conf_dir, strict_cfg, config_path=[]):
         self.config_path = config_path
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.all_config_checked = []
-        self.strict_task_cfg = strict_task_cfg
+        self.strict_task_cfg = strict_cfg
 
     def get_load_history(self):
         """
@@ -133,17 +132,13 @@ class ConfigLoader:
             open_defaults=True,
             including_config_dir=True,
             cli_overrides=job_overrides,
-            defaults_only=True,  # TODO: eliminate defaults only logic (AGAIN!)
         )
 
         cfg = self._merge_configs(hydra_cfg, task_cfg)
         cfg = self._merge_defaults(cfg, self.conf_filename)
 
-        # TODO: use extend after OmegaConf ListConfig supports it
-        for item in job_overrides:
-            cfg.hydra.overrides.task.append(item)
-        for item in hydra_overrides:
-            cfg.hydra.overrides.hydra.append(item)
+        cfg.hydra.overrides.task.extend(job_overrides)
+        cfg.hydra.overrides.hydra.extend(hydra_overrides)
 
         job = OmegaConf.create(dict(name=JobRuntime().get("name")))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
@@ -179,7 +174,6 @@ class ConfigLoader:
             cfg_filename="default_hydra.yaml",
             strict=False,
             including_config_dir=False,
-            defaults_only=True,
             open_defaults=False,
         )
         hydra_cfg, consumed_defaults = self._create_cfg(
@@ -187,7 +181,6 @@ class ConfigLoader:
             strict=False,
             including_config_dir=True,
             cli_overrides=overrides,
-            defaults_only=True,
             open_defaults=False,
         )
         hydra_cfg = self._merge_configs(hydra_cfg_defaults, hydra_cfg)
@@ -329,7 +322,6 @@ class ConfigLoader:
         strict,
         including_config_dir,
         cli_overrides=[],
-        defaults_only=False,
         open_defaults=True,
     ):
         """
@@ -337,7 +329,6 @@ class ConfigLoader:
         :param strict:
         :param including_config_dir:
         :param cli_overrides:
-        :param defaults_only:
         :param open_defaults: Allow adding loading additional keys to defaults.
         :return:
         """
@@ -349,7 +340,6 @@ class ConfigLoader:
         if resolved_cfg_filename is None:
             main_cfg = OmegaConf.create()
         else:
-            # TODO: pass resolved_cfg_filename to load?
             main_cfg = self._load_config_impl(cfg_filename, including_config_dir)
             if main_cfg is None:
                 raise IOError(
@@ -396,9 +386,6 @@ class ConfigLoader:
         if strict:
             OmegaConf.set_struct(main_cfg, True)
 
-        # merge in remaining overrides
-        if not defaults_only:
-            main_cfg.merge_with_dotlist(overrides)
         return main_cfg, consumed_defaults
 
     @staticmethod
