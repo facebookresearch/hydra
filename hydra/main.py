@@ -3,7 +3,6 @@ import argparse
 import inspect
 import os
 import sys
-import warnings
 
 import pkg_resources
 
