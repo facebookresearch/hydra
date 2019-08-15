@@ -1,6 +1,7 @@
 version: 2.0
 
 jobs:
+  # Mac
   mac_python27:
     macos:
       xcode: "10.0.0"
@@ -33,6 +34,7 @@ jobs:
       - run: ~/miniconda3/bin/conda create -n hydra37 python=3.7 -q -y
       - run: ~/miniconda3/bin/conda run -n hydra37 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra37 python3 -m nox
+  # Linux
   python27:
     docker:
       # nox got issues with python 2.7 but it can still be used ot test 2.7
