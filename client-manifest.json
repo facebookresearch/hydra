@@ -57,13 +57,13 @@
     "@site/docs/examples/minimal.md": [
       13
     ],
-    "@site/docs/examples/objects.md": [
+    "@site/docs/examples/multirun.md": [
       14
     ],
-    "@site/docs/examples/specializing_config.md": [
+    "@site/docs/examples/objects.md": [
       15
     ],
-    "@site/docs/examples/sweep.md": [
+    "@site/docs/examples/specializing_config.md": [
       16
     ],
     "@site/docs/examples/working_directory.md": [
@@ -112,13 +112,13 @@
     "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-minimal-c01.json": [
       31
     ],
-    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-objects-647.json": [
+    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-multi-run-b5c.json": [
       32
     ],
-    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-specializing-config-f8c.json": [
+    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-objects-647.json": [
       33
     ],
-    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-sweep-99b.json": [
+    "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-specializing-config-f8c.json": [
       34
     ],
     "/home/circleci/project/website/.docusaurus/docusaurus-plugin-content-docs/hydra-docs-examples-working-directory-e71.json": [
@@ -224,18 +224,18 @@
     "6": {
       "js": [
         {
-          "file": "content---hydra-docs-configure-hydra-loggingd-7-e-784.ff03197f6eec1f0a860b.js",
-          "hash": "6b1dbc236133b76d5d2b",
-          "publicPath": "/hydra/content---hydra-docs-configure-hydra-loggingd-7-e-784.ff03197f6eec1f0a860b.js"
+          "file": "content---hydra-docs-configure-hydra-loggingd-7-e-784.546a6acea4ba47e70124.js",
+          "hash": "36d27461327b6540006c",
+          "publicPath": "/hydra/content---hydra-docs-configure-hydra-loggingd-7-e-784.546a6acea4ba47e70124.js"
         }
       ]
     },
     "7": {
       "js": [
         {
-          "file": "content---hydra-docs-configure-hydra-workdirdd-8-8e3.1c02bb73429aaa8f4d0e.js",
-          "hash": "71dd640fa769a16cddf2",
-          "publicPath": "/hydra/content---hydra-docs-configure-hydra-workdirdd-8-8e3.1c02bb73429aaa8f4d0e.js"
+          "file": "content---hydra-docs-configure-hydra-workdirdd-8-8e3.8b417e3b389461b21c69.js",
+          "hash": "b72f0b5d72292dbbd298",
+          "publicPath": "/hydra/content---hydra-docs-configure-hydra-workdirdd-8-8e3.8b417e3b389461b21c69.js"
         }
       ]
     },
@@ -251,9 +251,9 @@
     "9": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-config-file-6-e-9-e75.6a7813e3e4e1a935d9db.js",
-          "hash": "61c64abf041f49db1fdc",
-          "publicPath": "/hydra/content---hydra-docs-examples-config-file-6-e-9-e75.6a7813e3e4e1a935d9db.js"
+          "file": "content---hydra-docs-examples-config-file-6-e-9-e75.d682f52ec66b560a3cef.js",
+          "hash": "3c5e1b5d2212c963d4b7",
+          "publicPath": "/hydra/content---hydra-docs-examples-config-file-6-e-9-e75.d682f52ec66b560a3cef.js"
         }
       ]
     },
@@ -278,45 +278,45 @@
     "12": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-loggingac-2-4e6.513c0d83d4d8931dfe50.js",
-          "hash": "902d5eaa94ad48592a60",
-          "publicPath": "/hydra/content---hydra-docs-examples-loggingac-2-4e6.513c0d83d4d8931dfe50.js"
+          "file": "content---hydra-docs-examples-loggingac-2-4e6.8fe508c67f923abe6258.js",
+          "hash": "3a48445b59e60a9cbcda",
+          "publicPath": "/hydra/content---hydra-docs-examples-loggingac-2-4e6.8fe508c67f923abe6258.js"
         }
       ]
     },
     "13": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-minimald-36-584.ae7c86d885756b7715a2.js",
-          "hash": "452c704c996401fbe2dd",
-          "publicPath": "/hydra/content---hydra-docs-examples-minimald-36-584.ae7c86d885756b7715a2.js"
+          "file": "content---hydra-docs-examples-minimald-36-584.dd7faaa09e69aa8f613d.js",
+          "hash": "65522b1b67dc1dea4011",
+          "publicPath": "/hydra/content---hydra-docs-examples-minimald-36-584.dd7faaa09e69aa8f613d.js"
         }
       ]
     },
     "14": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-objects-5-ce-877.484ba5a9f10a544cc2d3.js",
-          "hash": "151fec42825c4ba67a49",
-          "publicPath": "/hydra/content---hydra-docs-examples-objects-5-ce-877.484ba5a9f10a544cc2d3.js"
+          "file": "content---hydra-docs-examples-multi-runcef-f2c.15b06c2c57f64f003467.js",
+          "hash": "dd414b2d32dc693120a2",
+          "publicPath": "/hydra/content---hydra-docs-examples-multi-runcef-f2c.15b06c2c57f64f003467.js"
         }
       ]
     },
     "15": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-specializing-config-79-e-47c.c659a5cd4095a571b56a.js",
-          "hash": "083e4c8328af42f2c195",
-          "publicPath": "/hydra/content---hydra-docs-examples-specializing-config-79-e-47c.c659a5cd4095a571b56a.js"
+          "file": "content---hydra-docs-examples-objects-5-ce-877.25c9459b9b8abb73c3ac.js",
+          "hash": "684d14a2ef30be1e3b4a",
+          "publicPath": "/hydra/content---hydra-docs-examples-objects-5-ce-877.25c9459b9b8abb73c3ac.js"
         }
       ]
     },
     "16": {
       "js": [
         {
-          "file": "content---hydra-docs-examples-sweep-6-e-2-dc9.7d0560fda7aaa8f6151d.js",
-          "hash": "ed779305c6141a3a8759",
-          "publicPath": "/hydra/content---hydra-docs-examples-sweep-6-e-2-dc9.7d0560fda7aaa8f6151d.js"
+          "file": "content---hydra-docs-examples-specializing-config-79-e-47c.dd420322054bf2dd6142.js",
+          "hash": "8ab6299fb73383570ed6",
+          "publicPath": "/hydra/content---hydra-docs-examples-specializing-config-79-e-47c.dd420322054bf2dd6142.js"
         }
       ]
     },
@@ -350,9 +350,9 @@
     "20": {
       "js": [
         {
-          "file": "docsMetadata---hydra-docsaf-2-2df.0467a4d4363ae900db1b.js",
-          "hash": "d85b59910c7cf6ea3837",
-          "publicPath": "/hydra/docsMetadata---hydra-docsaf-2-2df.0467a4d4363ae900db1b.js"
+          "file": "docsMetadata---hydra-docsaf-2-2df.b2cfb0058c29da73f3e8.js",
+          "hash": "2bc85fb4564477f62156",
+          "publicPath": "/hydra/docsMetadata---hydra-docsaf-2-2df.b2cfb0058c29da73f3e8.js"
         }
       ]
     },
@@ -360,15 +360,15 @@
       "css": [
         {
           "file": "main.cf96eb97e7d5d7563dca.css",
-          "hash": "69715f2fb3753e5eb16d",
+          "hash": "3b8cd9e02dabd1b912b0",
           "publicPath": "/hydra/main.cf96eb97e7d5d7563dca.css"
         }
       ],
       "js": [
         {
-          "file": "main.559985d2971fba729473.js",
-          "hash": "69715f2fb3753e5eb16d",
-          "publicPath": "/hydra/main.559985d2971fba729473.js"
+          "file": "main.4bee5508d9f06bb029e5.js",
+          "hash": "3b8cd9e02dabd1b912b0",
+          "publicPath": "/hydra/main.4bee5508d9f06bb029e5.js"
         }
       ]
     },
@@ -402,9 +402,9 @@
     "25": {
       "js": [
         {
-          "file": "metadata---hydra-docs-configure-hydra-workdir-34-c-d92.3d43bff0a2d4c72aa534.js",
-          "hash": "d413ca3ce98428ccb325",
-          "publicPath": "/hydra/metadata---hydra-docs-configure-hydra-workdir-34-c-d92.3d43bff0a2d4c72aa534.js"
+          "file": "metadata---hydra-docs-configure-hydra-workdir-34-c-d92.63519ffafb280ad3a99b.js",
+          "hash": "07a0e5099cfc0ef25250",
+          "publicPath": "/hydra/metadata---hydra-docs-configure-hydra-workdir-34-c-d92.63519ffafb280ad3a99b.js"
         }
       ]
     },
@@ -420,18 +420,18 @@
     "27": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-config-file-1-c-3-023.d40abeea96a8084090ea.js",
-          "hash": "22b31cb54ef249e6f675",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-config-file-1-c-3-023.d40abeea96a8084090ea.js"
+          "file": "metadata---hydra-docs-examples-config-file-1-c-3-023.f28eb7224aa3cf27a142.js",
+          "hash": "7aa260f204adf7b3045a",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-config-file-1-c-3-023.f28eb7224aa3cf27a142.js"
         }
       ]
     },
     "28": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-config-groups-483-03d.e5f66f1e7baef60af954.js",
-          "hash": "750492dbcb2213b5d32b",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-config-groups-483-03d.e5f66f1e7baef60af954.js"
+          "file": "metadata---hydra-docs-examples-config-groups-483-03d.04ea7070b797894cd7f6.js",
+          "hash": "cb0d764647870dc3f375",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-config-groups-483-03d.04ea7070b797894cd7f6.js"
         }
       ]
     },
@@ -447,45 +447,45 @@
     "30": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-loggingebe-cee.7a6c6dd8dbb341686b13.js",
-          "hash": "8c9626f7a4f96a2beab3",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-loggingebe-cee.7a6c6dd8dbb341686b13.js"
+          "file": "metadata---hydra-docs-examples-loggingebe-cee.c927ad5514725072a713.js",
+          "hash": "6ba6edc7f66f716a89f9",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-loggingebe-cee.c927ad5514725072a713.js"
         }
       ]
     },
     "31": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-minimalb-15-186.fdf2ee609b92cfca50b6.js",
-          "hash": "f2c270a7bcf1752e594e",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-minimalb-15-186.fdf2ee609b92cfca50b6.js"
+          "file": "metadata---hydra-docs-examples-minimalb-15-186.ad85b721aaa605cfda7d.js",
+          "hash": "3261fbe5dc50e3ef04c3",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-minimalb-15-186.ad85b721aaa605cfda7d.js"
         }
       ]
     },
     "32": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-objects-8-e-7-822.d0964c5e481e32d5970a.js",
-          "hash": "f8e7055f4b24b91a2360",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-objects-8-e-7-822.d0964c5e481e32d5970a.js"
+          "file": "metadata---hydra-docs-examples-multi-run-2-e-8-def.df35b909a38e718304b1.js",
+          "hash": "1b5cda2d3c5824e6fc8a",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-multi-run-2-e-8-def.df35b909a38e718304b1.js"
         }
       ]
     },
     "33": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-specializing-config-76-b-51a.bff5ea4e3a5fe341fab1.js",
-          "hash": "9771726c5b6fcb0765d9",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-specializing-config-76-b-51a.bff5ea4e3a5fe341fab1.js"
+          "file": "metadata---hydra-docs-examples-objects-8-e-7-822.1745cc964b0c09df7e00.js",
+          "hash": "f30d15f4d27937bebd29",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-objects-8-e-7-822.1745cc964b0c09df7e00.js"
         }
       ]
     },
     "34": {
       "js": [
         {
-          "file": "metadata---hydra-docs-examples-sweepb-15-9bc.20987436b52453f59d1f.js",
-          "hash": "04d276c61730a9b6357c",
-          "publicPath": "/hydra/metadata---hydra-docs-examples-sweepb-15-9bc.20987436b52453f59d1f.js"
+          "file": "metadata---hydra-docs-examples-specializing-config-76-b-51a.0c27b54d7f9581f49596.js",
+          "hash": "fbc610cce27a37b6cebf",
+          "publicPath": "/hydra/metadata---hydra-docs-examples-specializing-config-76-b-51a.0c27b54d7f9581f49596.js"
         }
       ]
     },
@@ -519,9 +519,9 @@
     "38": {
       "js": [
         {
-          "file": "runtime~main.4aae3c456094cdb83bf3.js",
-          "hash": "39b56f420e5554a8f645",
-          "publicPath": "/hydra/runtime~main.4aae3c456094cdb83bf3.js"
+          "file": "runtime~main.74889da257d354b3c30d.js",
+          "hash": "ec982622043b7f7db6c1",
+          "publicPath": "/hydra/runtime~main.74889da257d354b3c30d.js"
         }
       ]
     },
