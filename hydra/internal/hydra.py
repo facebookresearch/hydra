@@ -2,11 +2,16 @@
 import logging
 import os
 
-from ..utils import JobRuntime, HydraConfig, run_job, configure_log
-from .utils import setup_globals
 from .config_loader import ConfigLoader
 from .plugins import Plugins
-from .utils import Utils
+from .utils import (
+    run_job,
+    configure_log,
+    get_valid_filename,
+    setup_globals,
+    JobRuntime,
+    HydraConfig,
+)
 
 log = None
 
@@ -16,7 +21,7 @@ class Hydra:
         self, task_name, conf_dir, conf_filename, task_function, verbose, strict
     ):
         setup_globals()
-        JobRuntime().set("name", Utils.get_valid_filename(task_name))
+        JobRuntime().set("name", get_valid_filename(task_name))
         self.task_name = task_name
         self.conf_dir = conf_dir
         self.conf_filename = conf_filename

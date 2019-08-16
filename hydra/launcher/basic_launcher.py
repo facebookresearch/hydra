@@ -1,10 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import logging
 
 from omegaconf import open_dict
 
 from hydra.internal.pathlib import Path
-from hydra.internal.utils import setup_globals
-from hydra.utils import *
+from hydra.internal.utils import HydraConfig
+from hydra.internal.utils import (
+    setup_globals,
+    run_job,
+    filter_overrides,
+    get_overrides_dirname,
+    configure_log,
+)
 from .launcher import Launcher
 
 log = logging.getLogger(__name__)
