@@ -15,7 +15,7 @@ import pytest
 import six
 from omegaconf import OmegaConf
 
-from hydra.internal.hydra import Hydra
+from hydra._internal.hydra import Hydra
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"

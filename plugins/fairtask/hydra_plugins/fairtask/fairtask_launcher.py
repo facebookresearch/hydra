@@ -5,7 +5,7 @@ import os
 
 from fairtask import TaskQueues, gatherl
 
-import hydra.internal.utils
+import hydra._internal.utils
 from hydra.launcher import Launcher
 from hydra import utils
 from omegaconf import open_dict
@@ -32,8 +32,8 @@ class FAIRTaskLauncher(Launcher):
 
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
-        hydra.internal.utils.configure_log(None, self.verbose)
-        hydra.internal.utils.setup_globals()
+        hydra._internal.utils.configure_log(None, self.verbose)
+        hydra._internal.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
@@ -46,11 +46,11 @@ class FAIRTaskLauncher(Launcher):
                 else "_UNKNOWN_SLURM_ID_"
             )
             sweep_config.hydra.job.num = job_num
-            sweep_config.hydra.job.override_dirname = hydra.internal.utils.get_overrides_dirname(
+            sweep_config.hydra.job.override_dirname = hydra._internal.utils.get_overrides_dirname(
                 sweep_config.hydra.overrides.task
             )
 
-        return hydra.internal.utils.run_job(
+        return hydra._internal.utils.run_job(
             config=sweep_config,
             task_function=self.task_function,
             verbose=self.verbose,
@@ -70,7 +70,7 @@ class FAIRTaskLauncher(Launcher):
             log.info(
                 "\t#{} : {}".format(
                     job_num,
-                    " ".join(hydra.internal.utils.filter_overrides(sweep_override)),
+                    " ".join(hydra._internal.utils.filter_overrides(sweep_override)),
                 )
             )
             runs.append(

@@ -3,9 +3,9 @@ import logging
 
 from omegaconf import open_dict
 
-from hydra.internal.pathlib import Path
-from hydra.internal.utils import HydraConfig
-from hydra.internal.utils import (
+from hydra._internal.pathlib import Path
+from hydra._internal.utils import HydraConfig
+from hydra._internal.utils import (
     setup_globals,
     run_job,
     filter_overrides,
