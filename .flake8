@@ -1,0 +1,7 @@
+[flake8]
+exclude = .git,.nox
+max-line-length = 119
+copyright-check = True
+select = E,F,W,C
+copyright-regexp=Copyright \(c\) Facebook, Inc. and its affiliates. All Rights Reserved
+ignore=W503,E203
