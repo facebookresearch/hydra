@@ -86,7 +86,7 @@ def test_class_instantiate(conf, expected):
     "conf, expected",
     [({"class": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}}, Bar(10, 20, 30, 40))],
 )
-def test_class_instantiate(conf, expected):
+def test_class_instantiate_passthrough(conf, expected):
     conf = OmegaConf.create(conf)
     obj = utils.instantiate(conf, 10, d=40)
     assert obj == expected
