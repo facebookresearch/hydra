@@ -2,7 +2,7 @@
 import logging
 import os
 
-from .config_loader import ConfigLoader
+from .internal.config_loader import ConfigLoader
 from .plugins import Plugins
 from .utils import (
     get_valid_filename,

@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from .config_loader import ConfigLoader
 from .errors import MissingConfigException
 from .main import main
 from .hydra import Hydra
@@ -14,7 +13,6 @@ __version__ = "0.1.1"
 
 __all__ = [
     "__version__",
-    "ConfigLoader",
     "MissingConfigException",
     "main",
     "Launcher",

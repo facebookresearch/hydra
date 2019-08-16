@@ -14,8 +14,8 @@ from pkg_resources import (
     resource_isdir,
 )
 
-from .errors import MissingConfigException
-from .utils import JobRuntime
+from hydra.errors import MissingConfigException
+from hydra.utils import JobRuntime
 
 
 class ConfigLoader:
