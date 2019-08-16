@@ -5,6 +5,7 @@ import os
 
 from fairtask import TaskQueues, gatherl
 
+import hydra.internal.utils
 from hydra.launcher import Launcher
 from hydra import utils
 from omegaconf import open_dict
@@ -32,7 +33,7 @@ class FAIRTaskLauncher(Launcher):
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         utils.configure_log(None, self.verbose)
-        utils.setup_globals()
+        hydra.internal.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )

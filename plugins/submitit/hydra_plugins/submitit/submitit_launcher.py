@@ -4,6 +4,7 @@ import os
 
 import submitit
 
+import hydra.internal.utils
 from hydra import utils
 from hydra.launcher import Launcher
 
@@ -39,7 +40,7 @@ class SubmititLauncher(Launcher):
             utils.JobRuntime().set("id", "${env:CHRONOS_JOB_ID}")
         else:
             utils.JobRuntime().set("id", "unknown")
-        utils.setup_globals()
+        hydra.internal.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )

@@ -19,7 +19,7 @@ class Plugins:
                         config["class"]
                     )
                 )
-            from hydra.utils import instantiate
+            from ..utils import instantiate
 
             plugin = instantiate(config)
         except ImportError as e:

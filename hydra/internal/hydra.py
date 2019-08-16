@@ -2,7 +2,8 @@
 import logging
 import os
 
-from ..utils import JobRuntime, HydraConfig, setup_globals, run_job, configure_log
+from ..utils import JobRuntime, HydraConfig, run_job, configure_log
+from .utils import setup_globals
 from .config_loader import ConfigLoader
 from .plugins import Plugins
 from .utils import Utils

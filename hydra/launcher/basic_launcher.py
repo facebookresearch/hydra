@@ -3,6 +3,7 @@
 from omegaconf import open_dict
 
 from hydra.internal.pathlib import Path
+from hydra.internal.utils import setup_globals
 from hydra.utils import *
 from .launcher import Launcher
 
