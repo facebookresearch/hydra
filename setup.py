@@ -110,6 +110,7 @@ with open("README.md", "r") as fh:
                 "pre-commit",
                 "nox",
                 "towncrier",
+                "flake8",
             ]
         },
     )
