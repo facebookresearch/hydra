@@ -6,8 +6,6 @@ import sys
 
 import pkg_resources
 
-from .hydra import Hydra
-
 
 def get_args():
     parser = argparse.ArgumentParser(description="Hydra experimentation framework")
@@ -69,6 +67,8 @@ def run_hydra(task_function, config_path, strict):
     else:
         conf_dir = abs_config_path
         conf_filename = None
+
+    from hydra.internal.hydra import Hydra
 
     hydra = Hydra(
         task_name=task_name,

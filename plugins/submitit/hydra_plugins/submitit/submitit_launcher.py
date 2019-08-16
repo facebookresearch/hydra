@@ -4,8 +4,8 @@ import os
 
 import submitit
 
-from hydra import Launcher
 from hydra import utils
+from hydra.launcher import Launcher
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)

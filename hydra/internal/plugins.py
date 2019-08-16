@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from . import utils
 
 
 class Plugins:
@@ -20,7 +19,9 @@ class Plugins:
                         config["class"]
                     )
                 )
-            plugin = utils.instantiate(config)
+            from hydra.utils import instantiate
+
+            plugin = instantiate(config)
         except ImportError as e:
             raise ImportError(
                 "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(

@@ -4,7 +4,7 @@ A sweeper that operates on generational batches of jobs
 """
 from abc import abstractmethod
 
-from hydra.plugins import Plugins
+from hydra.internal.plugins import Plugins
 from .sweeper import Sweeper
 
 

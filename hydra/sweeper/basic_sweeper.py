@@ -14,8 +14,8 @@ Basic Sweeper would generate 6 jobs:
 3,20
 """
 import copy
+import itertools
 
-from hydra import utils
 from .step_sweeper import StepSweeper
 
 
@@ -36,7 +36,12 @@ class BasicSweeper(StepSweeper):
         :return: A list of lists of strings, each inner list is the overrides for a single job
         that should be executed.
         """
-        return utils.get_sweep(self.arguments)
+        lists = []
+        for s in self.arguments:
+            key, value = s.split("=")
+            lists.append(["{}={}".format(key, val) for val in value.split(",")])
+
+        return list(itertools.product(*lists))
 
     def is_done(self):
         # just one batch
