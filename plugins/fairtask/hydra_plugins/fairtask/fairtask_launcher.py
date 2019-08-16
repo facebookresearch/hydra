@@ -4,11 +4,11 @@ import logging
 import os
 
 from fairtask import TaskQueues, gatherl
+from omegaconf import open_dict
 
 import hydra._internal.utils
-from hydra.launcher import Launcher
 from hydra import utils
-from omegaconf import open_dict
+from hydra.plugins import Launcher
 
 log = logging.getLogger(__name__)
 

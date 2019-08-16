@@ -4,6 +4,6 @@ Sweeper package
 """
 from .basic_sweeper import BasicSweeper
 from .step_sweeper import StepSweeper
-from .sweeper import Sweeper
+from hydra.plugins.sweeper import Sweeper
 
 __all__ = ["BasicSweeper", "StepSweeper", "Sweeper"]

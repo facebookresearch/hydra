@@ -12,7 +12,7 @@ from hydra._internal.utils import (
     get_overrides_dirname,
     configure_log,
 )
-from .launcher import Launcher
+from hydra.plugins import Launcher
 
 log = logging.getLogger(__name__)
 

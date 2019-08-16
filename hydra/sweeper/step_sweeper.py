@@ -5,7 +5,7 @@ A sweeper that operates on generational batches of jobs
 from abc import abstractmethod
 
 from hydra._internal.plugins import Plugins
-from .sweeper import Sweeper
+from hydra.plugins.sweeper import Sweeper
 
 
 class StepSweeper(Sweeper):

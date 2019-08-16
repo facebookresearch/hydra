@@ -205,7 +205,7 @@ def integration_test(
     s = string.Template(
         """
 import hydra
-from hydra.internal.utils import HydraConfig
+from hydra._internal.utils import HydraConfig
 import os
 
 @hydra.main($CONFIG_PATH)
