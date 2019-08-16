@@ -103,6 +103,13 @@ with open("README.md", "r") as fh:
         # Install development dependencies with
         # pip install -e .[dev]
         extras_require={
-            "dev": ["pytest", "setuptools", "coverage", "pre-commit", "nox"]
+            "dev": [
+                "pytest",
+                "setuptools",
+                "coverage",
+                "pre-commit",
+                "nox",
+                "towncrier",
+            ]
         },
     )
