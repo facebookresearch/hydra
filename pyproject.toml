@@ -1,0 +1,38 @@
+[tool.towncrier]
+    package = "hydra"
+    package_dir = ""
+    filename = "NEWS.rst"
+    directory = "news/"
+    title_format = "{version} ({project_date})"
+    template = "news/_template.rst"
+
+
+  [[tool.towncrier.type]]
+  directory = "removal"
+  name = "Deprecations and Removals"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "feature"
+  name = "Features"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "bugfix"
+  name = "Bug Fixes"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "plugin"
+  name = "Plugins"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "docs"
+  name = "Improved Documentation"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "trivial"
+  name = "Trivial Changes"
+  showcontent = false

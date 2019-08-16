@@ -9,7 +9,11 @@ from .sweeper import Sweeper
 from .utils import HydraConfig
 from . import utils
 
+# Source of truth for Hydra's version
+__version__ = "0.1.1"
+
 __all__ = [
+    "__version__",
     "ConfigLoader",
     "MissingConfigException",
     "main",
