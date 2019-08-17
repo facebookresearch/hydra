@@ -1,16 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import inspect
 import logging.config
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
-
-
-def fullname(o):
-    if inspect.isclass(o):
-        return o.__module__ + "." + o.__qualname__
-    else:
-        return o.__module__ + "." + o.__class__.__qualname__
 
 
 def get_method(path):

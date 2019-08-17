@@ -34,10 +34,9 @@ class Plugins:
     @staticmethod
     def is_plugin(clazz):
 
-        return clazz.startswith("hydra_plugins.") or clazz in [
-            "hydra.launcher.BasicLauncher",
-            "hydra.sweeper.BasicSweeper",
-        ]
+        return clazz.startswith("hydra_plugins.") or clazz.startswith(
+            "hydra._internal.core_plugins."
+        )
 
     @staticmethod
     def instantiate_sweeper(config, config_loader, task_function, verbose):

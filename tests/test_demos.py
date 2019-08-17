@@ -6,6 +6,7 @@ import sys
 import pytest
 from omegaconf import OmegaConf
 
+from hydra._internal.core_plugins import BasicLauncher
 from hydra.errors import MissingConfigException
 from hydra.test_utils.launcher_common_tests import (
     demos_sweep_1_job_test_impl,
@@ -105,7 +106,7 @@ def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
     ) as task:
         assert (
             task.job_ret.hydra_cfg.hydra.launcher["class"]
-            == "hydra.launcher.BasicLauncher"
+            == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
 
