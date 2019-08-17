@@ -3,11 +3,11 @@
 import os
 
 import pytest
+from omegaconf import OmegaConf
 
 from hydra._internal.config_loader import ConfigLoader
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
-from omegaconf import OmegaConf
 
 chdir_hydra_root()
 
@@ -123,7 +123,7 @@ def test_load_history():
         ("pkg://hydra.default_conf.job_logging/default.yaml", True),
         ("pkg://hydra.default_conf.launcher/basic.yaml", True),
         ("pkg://hydra.default_conf.sweeper/basic.yaml", True),
-        ("foo/missing", False),
+        ("foo/missing.yaml", False),
     ]
 
 
@@ -177,3 +177,15 @@ def test_load_strict():
     )
     with pytest.raises(KeyError):
         config_loader.load_configuration(overrides=["dataset.bad_key=foobar"])
+
+
+def test_load_yml_file():
+    config_loader = ConfigLoader(
+        config_path=["pkg://hydra.default_conf"],
+        strict_cfg=False,
+        conf_filename="config.yml",
+        conf_dir="tests/configs",
+    )
+    cfg = config_loader.load_configuration()
+    del cfg["hydra"]
+    assert cfg == dict(yml_file_here=True)
