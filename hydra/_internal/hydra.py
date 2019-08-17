@@ -2,6 +2,8 @@
 import logging
 import os
 
+from omegaconf import open_dict
+
 from .config_loader import ConfigLoader
 from .plugins import Plugins
 from ..plugins.common.utils import (
@@ -11,6 +13,7 @@ from ..plugins.common.utils import (
     JobRuntime,
     HydraConfig,
     setup_globals,
+    get_overrides_dirname,
 )
 
 log = None
@@ -45,6 +48,11 @@ class Hydra:
     def run(self, overrides):
         cfg = self._load_config(overrides)
         HydraConfig().set_config(cfg)
+        with open_dict(cfg):
+            cfg.hydra.job.override_dirname = get_overrides_dirname(
+                cfg.hydra.overrides.task
+            )
+
         return run_job(
             config=cfg,
             task_function=self.task_function,

@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import copy
 import logging
 import os
@@ -62,7 +64,6 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         # are only available there.
         subdir = str(config.select(job_subdir_key))
         working_dir = os.path.join(working_dir, subdir)
-
     try:
         ret = JobReturn()
         ret.working_dir = working_dir
