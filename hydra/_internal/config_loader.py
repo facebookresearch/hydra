@@ -72,9 +72,6 @@ class ConfigLoader:
             else:
                 config_file = os.path.join(path, filepath)
 
-            if not config_file.endswith(".yaml"):
-                config_file = config_file + ".yaml"
-
             if self._exists(is_pkg, config_file):
                 return prefix + config_file
         return None
@@ -296,7 +293,7 @@ class ConfigLoader:
                     cfg = self._merge_config(
                         cfg=cfg,
                         family=os.path.join(conf_dirname, family),
-                        name=name,
+                        name="{}.yaml".format(name),
                         required=not is_optional,
                         including_config_dir=True,
                     )
@@ -306,7 +303,7 @@ class ConfigLoader:
                 cfg = self._merge_config(
                     cfg=cfg,
                     family=conf_dirname,
-                    name=default,
+                    name="{}.yaml".format(default),
                     required=True,
                     including_config_dir=True,
                 )
