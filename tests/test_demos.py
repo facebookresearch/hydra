@@ -105,7 +105,7 @@ def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
     ) as task:
         assert (
             task.job_ret.hydra_cfg.hydra.launcher["class"]
-            == "hydra.launcher.BasicLauncher"
+            == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
 

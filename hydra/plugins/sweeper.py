@@ -1,11 +1,42 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 """
-A sweeper that operates on generational batches of jobs
+Sweeper plugin interface
 """
 from abc import abstractmethod
 
-from hydra.plugins import Plugins
-from .sweeper import Sweeper
+from .._internal.plugins import Plugins
+
+
+class Sweeper(object):
+    """
+    An abstract sweeper interface
+    Sweeper takes the command line arguments, generates a and launches jobs
+    (where each job typically takes a different command line arguments)
+    """
+
+    def __init__(self):
+        if type(self) == Sweeper:
+            raise NotImplementedError
+
+    @abstractmethod
+    def setup(self, config, config_loader, task_function, verbose):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def sweep(self, arguments):
+        """
+        Execute a sweep
+        :param arguments: list of strings describing what this sweeper should do.
+        exact structure is determine by the concrete Sweeper class.
+        :return: the return objects of all thy launched jobs. structure depends on the Sweeper
+        implementation.
+        """
+        raise NotImplementedError()
+
+
+"""
+A sweeper that operates on generational batches of jobs
+"""
 
 
 class StepSweeper(Sweeper):
@@ -17,6 +48,7 @@ class StepSweeper(Sweeper):
     """
 
     def __init__(self):
+        super(StepSweeper, self).__init__()
         self.arguments = None
         self.launcher = None
 

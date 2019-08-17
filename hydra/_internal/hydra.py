@@ -4,13 +4,13 @@ import os
 
 from .config_loader import ConfigLoader
 from .plugins import Plugins
-from .utils import (
+from ..plugins.common.utils import (
+    configure_log,
+    run_job,
     get_valid_filename,
     JobRuntime,
     HydraConfig,
     setup_globals,
-    run_job,
-    configure_log,
 )
 
 log = None

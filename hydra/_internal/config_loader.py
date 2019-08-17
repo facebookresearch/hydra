@@ -14,9 +14,6 @@ from pkg_resources import (
     resource_isdir,
 )
 
-from .errors import MissingConfigException
-from .utils import JobRuntime
-
 
 class ConfigLoader:
     """
@@ -119,6 +116,8 @@ class ConfigLoader:
         return c3
 
     def load_configuration(self, overrides=[]):
+        from ..plugins.common.utils import JobRuntime
+
         assert overrides is None or isinstance(overrides, list)
 
         overrides = overrides or []
@@ -230,6 +229,8 @@ class ConfigLoader:
         return options
 
     def _merge_config(self, cfg, family, name, required, including_config_dir):
+        from ..errors import MissingConfigException
+
         if family != ".":
             new_cfg = os.path.join(family, name)
         else:

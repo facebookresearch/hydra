@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from hydra import ConfigLoader
+from hydra._internal.config_loader import ConfigLoader
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 from omegaconf import OmegaConf

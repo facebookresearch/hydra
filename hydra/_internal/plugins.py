@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from . import utils
 
 
 class Plugins:
@@ -20,7 +19,9 @@ class Plugins:
                         config["class"]
                     )
                 )
-            plugin = utils.instantiate(config)
+            from ..utils import instantiate
+
+            plugin = instantiate(config)
         except ImportError as e:
             raise ImportError(
                 "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(
@@ -33,10 +34,9 @@ class Plugins:
     @staticmethod
     def is_plugin(clazz):
 
-        return clazz.startswith("hydra_plugins.") or clazz in [
-            "hydra.launcher.BasicLauncher",
-            "hydra.sweeper.BasicSweeper",
-        ]
+        return clazz.startswith("hydra_plugins.") or clazz.startswith(
+            "hydra._internal.core_plugins."
+        )
 
     @staticmethod
     def instantiate_sweeper(config, config_loader, task_function, verbose):
