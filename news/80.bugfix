@@ -1,0 +1,1 @@
+fixed a bug that caused an empty config to be returned if specifed config file did not have a .yaml extension.
