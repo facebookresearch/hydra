@@ -8,3 +8,4 @@ __pycache__
 .nox
 report.json
 .coverage
+pip-wheel-metadata

@@ -1,0 +1,1 @@
+Hydra is now compatible with Windows

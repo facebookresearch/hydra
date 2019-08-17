@@ -44,7 +44,7 @@ def save_config(cfg, filename):
 def get_overrides_dirname(lst, exclude_keys=[]):
     lst = [x for x in lst if x not in exclude_keys]
     lst.sort()
-    return re.sub(pattern="[=]", repl=":", string=",".join(lst))
+    return re.sub(pattern="[=]", repl="=", string=",".join(lst))
 
 
 def filter_overrides(overrides):

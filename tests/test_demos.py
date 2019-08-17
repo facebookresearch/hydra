@@ -134,7 +134,7 @@ def test_demo_1_workdir(tmpdir):
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
-    assert result.decode("utf-8") == "Working directory : {}\n".format(tmpdir)
+    assert result.decode("utf-8").rstrip() == "Working directory : {}".format(tmpdir)
 
 
 @pytest.mark.parametrize(
