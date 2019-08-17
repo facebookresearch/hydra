@@ -41,8 +41,8 @@ def get_static_method(full_method_name):
 def instantiate(config, *args, **kwargs):
     try:
         clazz = get_class(config["class"])
-        params = dict(config.params) if "params" in config else {}
-        params.update(kwargs)
+        params = config.params if "params" in config else OmegaConf.create()
+        params = OmegaConf.merge(params, OmegaConf.create(kwargs))
         return clazz(*args, **params)
     except Exception as e:
         log.error("Error instantiating {} : {}".format(config["class"], e))
