@@ -72,6 +72,7 @@ class ConfigLoader:
             else:
                 config_file = os.path.join(path, filepath)
 
+            config_file = config_file.replace('\\', '/')
             if self._exists(is_pkg, config_file):
                 return prefix + config_file
         return None
@@ -190,7 +191,7 @@ class ConfigLoader:
         loaded_cfg = None
         filename = self._find_config(input_file, including_config_dir)
         if filename is None:
-            self.all_config_checked.append((input_file, False))
+            self.all_config_checked.append((input_file.replace('\\', '/'), False))
         else:
             is_pkg = filename.startswith("pkg://")
             if is_pkg:

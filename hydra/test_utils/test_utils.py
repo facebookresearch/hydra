@@ -10,7 +10,7 @@ import string
 import subprocess
 import sys
 import tempfile
-
+import logging
 import pytest
 import six
 from omegaconf import OmegaConf
@@ -76,6 +76,8 @@ def task_runner():
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
+            # release log file handles
+            logging.shutdown()
             shutil.rmtree(self.temp_dir)
 
     def _(conf_dir, conf_filename=None, overrides=None, strict=False):

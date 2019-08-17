@@ -174,7 +174,7 @@ def test_custom_task_name(
             ),
             {},
             ["a=1", "b=2"],
-            "foo-a:1,b:2",
+            "foo-a=1,b=2",
         ),
     ],
 )
@@ -294,7 +294,7 @@ def test_custom_local_run_workdir(
             },
             {},
             ["a=1", "b=2"],
-            "hydra_cfg/a:1,b:2",
+            "hydra_cfg/a=1,b=2",
         ),
     ],
 )
