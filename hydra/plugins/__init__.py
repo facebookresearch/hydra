@@ -6,4 +6,4 @@ Plugins API package
 from .launcher import Launcher
 from .sweeper import Sweeper, StepSweeper
 
-__all__ = ["Launcher", "Sweeper"]
+__all__ = ["Launcher", "Sweeper", "StepSweeper"]
