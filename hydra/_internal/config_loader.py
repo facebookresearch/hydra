@@ -116,7 +116,7 @@ class ConfigLoader:
         return c3
 
     def load_configuration(self, overrides=[]):
-        from .utils import JobRuntime
+        from ..plugins.common.utils import JobRuntime
 
         assert overrides is None or isinstance(overrides, list)
 

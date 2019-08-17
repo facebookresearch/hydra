@@ -5,6 +5,7 @@ import os
 import submitit
 
 import hydra._internal.utils
+import hydra.plugins.common.utils
 from hydra.plugins import Launcher
 
 # pylint: disable=C0103
@@ -31,15 +32,15 @@ class SubmititLauncher(Launcher):
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
         # stdout logging until we get the file logging going.
         # logs will be in slurm job log files
-        hydra._internal.utils.configure_log(None, self.verbose)
-        hydra._internal.utils.JobRuntime().set("num", job_num)
+        hydra.plugins.common.utils.configure_log(None, self.verbose)
+        hydra.plugins.common.utils.JobRuntime().set("num", job_num)
         if "SLURM_JOB_ID" in os.environ:
-            hydra._internal.utils.JobRuntime().set("id", "${env:SLURM_JOB_ID}")
+            hydra.plugins.common.utils.JobRuntime().set("id", "${env:SLURM_JOB_ID}")
         elif "CHRONOS_JOB_ID" in os.environ:
-            hydra._internal.utils.JobRuntime().set("id", "${env:CHRONOS_JOB_ID}")
+            hydra.plugins.common.utils.JobRuntime().set("id", "${env:CHRONOS_JOB_ID}")
         else:
-            hydra._internal.utils.JobRuntime().set("id", "unknown")
-        hydra._internal.utils.setup_globals()
+            hydra.plugins.common.utils.JobRuntime().set("id", "unknown")
+        hydra.plugins.common.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
@@ -51,11 +52,11 @@ class SubmititLauncher(Launcher):
             else "_UNKNOWN_SLURM_ID_"
         )
         sweep_config.hydra.job.num = job_num
-        sweep_config.hydra.job.override_dirname = hydra._internal.utils.get_overrides_dirname(
+        sweep_config.hydra.job.override_dirname = hydra.plugins.common.utils.get_overrides_dirname(
             sweep_config.hydra.overrides.task
         )
 
-        return hydra._internal.utils.run_job(
+        return hydra.plugins.common.utils.run_job(
             config=sweep_config,
             task_function=self.task_function,
             verbose=self.verbose,
@@ -89,7 +90,9 @@ class SubmititLauncher(Launcher):
             log.info(
                 "\t#{} : {}".format(
                     job_num,
-                    " ".join(hydra._internal.utils.filter_overrides(sweep_override)),
+                    " ".join(
+                        hydra.plugins.common.utils.filter_overrides(sweep_override)
+                    ),
                 )
             )
             job = executor.submit(

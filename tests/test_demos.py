@@ -6,7 +6,6 @@ import sys
 import pytest
 from omegaconf import OmegaConf
 
-from hydra._internal.core_plugins import BasicLauncher
 from hydra.errors import MissingConfigException
 from hydra.test_utils.launcher_common_tests import (
     demos_sweep_1_job_test_impl,

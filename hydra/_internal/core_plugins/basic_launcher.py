@@ -4,13 +4,13 @@ import logging
 from omegaconf import open_dict
 
 from hydra._internal.pathlib import Path
-from hydra._internal.utils import HydraConfig
-from hydra._internal.utils import (
-    setup_globals,
-    run_job,
-    filter_overrides,
-    get_overrides_dirname,
+from hydra.plugins.common.utils import (
     configure_log,
+    get_overrides_dirname,
+    filter_overrides,
+    run_job,
+    setup_globals,
+    HydraConfig,
 )
 from hydra.plugins import Launcher
 
