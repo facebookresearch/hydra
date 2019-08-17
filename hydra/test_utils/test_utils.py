@@ -10,7 +10,7 @@ import string
 import subprocess
 import sys
 import tempfile
-import logging
+
 import pytest
 import six
 from omegaconf import OmegaConf
