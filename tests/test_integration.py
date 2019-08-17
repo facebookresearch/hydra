@@ -168,6 +168,14 @@ def test_custom_task_name(
             ["hydra.run.dir=boom"],
             "boom",
         ),
+        (
+            OmegaConf.create(
+                {"hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}}}
+            ),
+            {},
+            ["a=1", "b=2"],
+            "foo-a:1,b:2",
+        ),
     ],
 )
 def test_custom_local_run_workdir(
@@ -274,6 +282,19 @@ def test_custom_local_run_workdir(
             },
             ["hydra.sweep.dir=cli_dir", "hydra.sweep.subdir=cli_dir_${hydra.job.num}"],
             "cli_dir/cli_dir_0",
+        ),
+        (
+            {
+                "hydra": {
+                    "sweep": {
+                        "dir": "hydra_cfg",
+                        "subdir": "${hydra.job.override_dirname}",
+                    }
+                }
+            },
+            {},
+            ["a=1", "b=2"],
+            "hydra_cfg/a:1,b:2",
         ),
     ],
 )
