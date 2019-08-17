@@ -4,7 +4,7 @@ import sys
 
 import pkg_resources
 
-from hydra._internal.utils import run_hydra
+from ._internal.utils import run_hydra
 
 
 def get_args():

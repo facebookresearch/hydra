@@ -93,7 +93,7 @@ def test_plugin(session, plugin, install_cmd):
         session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
-    session.run("python", "-c", "from hydra import Hydra", silent=True)
+    session.run("python", "-c", "from hydra import main", silent=True)
 
     # Test that we can import all installed plugins
     for a_plugin in all_plugins:
