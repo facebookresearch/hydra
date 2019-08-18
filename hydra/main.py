@@ -2,16 +2,15 @@
 import argparse
 import sys
 
-import pkg_resources
-
+import hydra
 from ._internal.utils import run_hydra
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Hydra experimentation framework")
-    version = pkg_resources.get_distribution("hydra").version
+    parser = argparse.ArgumentParser(description="Hydra")
+    version = hydra.__version__
     parser.add_argument(
-        "--version", action="version", version="hydra {}".format(version)
+        "--version", action="version", version="Hydra {}".format(version)
     )
     parser.add_argument(
         "overrides",
