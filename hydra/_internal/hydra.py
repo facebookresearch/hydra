@@ -26,21 +26,19 @@ class Hydra:
         setup_globals()
         JobRuntime().set("name", get_valid_filename(task_name))
         self.task_name = task_name
-        self.conf_dir = conf_dir
-        self.conf_filename = conf_filename
         self.task_function = task_function
-        if not os.path.exists(self.conf_dir):
-            raise IOError("Config directory '{}' not found".format(self.conf_dir))
-        if self.conf_filename is not None:
-            if not os.path.exists(os.path.join(self.conf_dir, self.conf_filename)):
-                raise IOError("Config directory '{}' not found".format(self.conf_dir))
+        if not os.path.exists(conf_dir):
+            raise IOError("Config directory '{}' not found".format(conf_dir))
+        if conf_filename is not None:
+            if not os.path.exists(os.path.join(conf_dir, conf_filename)):
+                raise IOError("Config directory '{}' not found".format(conf_dir))
         self.config_loader = ConfigLoader(
-            conf_filename=self.conf_filename,
-            conf_dir=self.conf_dir,
+            conf_filename=conf_filename,
             strict_cfg=strict,
             config_path=[
+                conf_dir,
+                os.path.join(conf_dir, ".hydra"),
                 "pkg://hydra.default_conf",
-                os.path.join(self.conf_dir, ".hydra"),
             ],
         )
         self.verbose = verbose

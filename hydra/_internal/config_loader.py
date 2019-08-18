@@ -20,9 +20,8 @@ class ConfigLoader:
     Configuration loader
     """
 
-    def __init__(self, conf_filename, conf_dir, strict_cfg, config_path=[]):
+    def __init__(self, conf_filename, strict_cfg, config_path=[]):
         self.config_path = config_path
-        self.conf_dir = conf_dir
         self.conf_filename = conf_filename
         self.all_config_checked = []
         self.strict_task_cfg = strict_cfg
@@ -34,8 +33,8 @@ class ConfigLoader:
         """
         return copy.deepcopy(self.all_config_checked)
 
-    def _is_group(self, group_name, including_config_dir):
-        for path in self._get_config_path(including_config_dir):
+    def _is_group(self, group_name):
+        for path in self.config_path:
             is_pkg = path.startswith("pkg://")
             if is_pkg:
                 prefix = "pkg://"
@@ -49,14 +48,8 @@ class ConfigLoader:
                 return True
         return False
 
-    def _get_config_path(self, including_config_dir):
-        config_path = copy.deepcopy(self.config_path)
-        if including_config_dir and self.conf_dir is not None:
-            config_path.append(self.conf_dir)
-        return config_path
-
-    def _find_config(self, filepath, including_config_dir):
-        config_path = self._get_config_path(including_config_dir)
+    def _find_config(self, filepath):
+        config_path = self.config_path
         for path in config_path:
             is_pkg = path.startswith("pkg://")
             prefix = ""
@@ -127,7 +120,6 @@ class ConfigLoader:
             cfg_filename=self.conf_filename,
             strict=self.strict_task_cfg,
             open_defaults=True,
-            including_config_dir=True,
             cli_overrides=job_overrides,
         )
 
@@ -168,15 +160,11 @@ class ConfigLoader:
         :return:
         """
         hydra_cfg_defaults, _ = self._create_cfg(
-            cfg_filename="default_hydra.yaml",
-            strict=False,
-            including_config_dir=False,
-            open_defaults=False,
+            cfg_filename="default_hydra.yaml", strict=False
         )
         hydra_cfg, consumed_defaults = self._create_cfg(
             cfg_filename="hydra.yaml",
             strict=False,
-            including_config_dir=True,
             cli_overrides=overrides,
             open_defaults=False,
         )
@@ -187,9 +175,9 @@ class ConfigLoader:
 
         return hydra_cfg
 
-    def _load_config_impl(self, input_file, including_config_dir):
+    def _load_config_impl(self, input_file):
         loaded_cfg = None
-        filename = self._find_config(input_file, including_config_dir)
+        filename = self._find_config(input_file)
         if filename is None:
             self.all_config_checked.append((input_file.replace("\\", "/"), False))
         else:
@@ -209,9 +197,9 @@ class ConfigLoader:
 
         return loaded_cfg
 
-    def _get_group_options(self, group_name, including_config_dir):
+    def _get_group_options(self, group_name):
         options = []
-        for path in self._get_config_path(including_config_dir):
+        for path in self.config_path:
             is_pkg = path.startswith("pkg://")
             files = []
             if is_pkg:
@@ -227,7 +215,7 @@ class ConfigLoader:
             options.extend(files)
         return options
 
-    def _merge_config(self, cfg, family, name, required, including_config_dir):
+    def _merge_config(self, cfg, family, name, required):
         from ..errors import MissingConfigException
 
         if family != ".":
@@ -235,14 +223,14 @@ class ConfigLoader:
         else:
             new_cfg = name
 
-        loaded_cfg = self._load_config_impl(new_cfg, including_config_dir)
+        loaded_cfg = self._load_config_impl(new_cfg)
         if loaded_cfg is None:
             if required:
                 if family == "":
                     msg = "Could not load {}".format(new_cfg)
                     raise MissingConfigException(msg, new_cfg)
                 else:
-                    options = self._get_group_options(family, including_config_dir)
+                    options = self._get_group_options(family)
                     if options:
                         msg = "Could not load {}, available options:\n{}:\n\t{}".format(
                             new_cfg, family, "\n\t".join(options)
@@ -297,7 +285,6 @@ class ConfigLoader:
                         family=os.path.join(conf_dirname, family),
                         name="{}.yaml".format(name),
                         required=not is_optional,
-                        including_config_dir=True,
                     )
                 cfg_defaults.remove(default_copy)
             else:
@@ -307,7 +294,6 @@ class ConfigLoader:
                     family=conf_dirname,
                     name="{}.yaml".format(default),
                     required=True,
-                    including_config_dir=True,
                 )
                 cfg_defaults.remove(default)
         cfg.defaults = cfg_defaults
@@ -316,36 +302,25 @@ class ConfigLoader:
             del cfg["defaults"]
         return cfg
 
-    def _create_cfg(
-        self,
-        cfg_filename,
-        strict,
-        including_config_dir,
-        cli_overrides=[],
-        open_defaults=True,
-    ):
+    def _create_cfg(self, cfg_filename, strict, cli_overrides=[], open_defaults=True):
         """
         :param cfg_filename:
         :param strict:
-        :param including_config_dir:
         :param cli_overrides:
         :param open_defaults: Allow adding loading additional keys to defaults.
         :return:
         """
         resolved_cfg_filename = (
-            self._find_config(cfg_filename, including_config_dir)
-            if cfg_filename is not None
-            else None
+            self._find_config(cfg_filename) if cfg_filename is not None else None
         )
         if resolved_cfg_filename is None:
             main_cfg = OmegaConf.create()
         else:
-            main_cfg = self._load_config_impl(cfg_filename, including_config_dir)
+            main_cfg = self._load_config_impl(cfg_filename)
             if main_cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
-                        cfg_filename,
-                        "\n\t".join(self._get_config_path(including_config_dir)),
+                        cfg_filename, "\n\t".join(self.config_path)
                     )
                 )
         assert main_cfg is not None
@@ -376,7 +351,7 @@ class ConfigLoader:
             # after the list is broken into items
             if "," in value:
                 can_add = False
-            if can_add and self._is_group(key, including_config_dir):
+            if can_add and self._is_group(key):
                 defaults_changes[key] = value
                 consumed_defaults.append(override)
             else:
