@@ -198,7 +198,8 @@ class ConfigLoader:
                 filename = filename[len("pkg://") :]
                 res_path = os.path.dirname(filename)
                 res_file = os.path.basename(filename)
-                loaded_cfg = OmegaConf.load(resource_stream(res_path, res_file))
+                with resource_stream(res_path, res_file) as stream:
+                    loaded_cfg = OmegaConf.load(stream)
                 self.all_config_checked.append(("pkg://" + filename, True))
             elif os.path.exists(filename):
                 loaded_cfg = OmegaConf.load(filename)
