@@ -23,7 +23,6 @@ class ConfigLoader:
     Configuration loader
     """
 
-    # TODO : remove config_dir
     def __init__(
         self, config_file, strict_cfg, hydra_search_path=[], job_search_path=[]
     ):
@@ -123,7 +122,7 @@ class ConfigLoader:
                 job_overrides.remove(override)
 
         merged = self._merge_default_lists(hydra_overrides, move_list)
-        hydra_overrides.clear()
+        del hydra_overrides[:]
         hydra_overrides.extend(merged)
 
     def load_configuration(self, overrides=[]):

@@ -41,7 +41,7 @@ class Hydra:
 
         abs_config_dir = join(abs_base_dir, config_dir)
         job_search_path = [abs_config_dir]
-        hydra_search_path = [join(config_dir, ".hydra"), "pkg://hydra.default_conf"]
+        hydra_search_path = [join(abs_config_dir, ".hydra"), "pkg://hydra.default_conf"]
 
         self.config_loader = ConfigLoader(
             config_file=config_file,
