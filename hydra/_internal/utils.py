@@ -2,6 +2,9 @@
 
 import inspect
 import os
+from os.path import realpath, dirname
+
+from .hydra import Hydra
 
 
 def run_hydra(args, task_function, config_path, strict):
@@ -11,26 +14,11 @@ def run_hydra(args, task_function, config_path, strict):
     target_file = os.path.basename(calling_file)
     task_name = os.path.splitext(target_file)[0]
 
-    if os.path.isabs(config_path):
-        raise RuntimeError("Config path should be relative")
-    abs_config_path = os.path.realpath(
-        os.path.join(os.path.dirname(calling_file), config_path)
-    )
-    if not os.path.exists(abs_config_path):
-        raise RuntimeError("Config path '{}' does not exist".format(abs_config_path))
-    if os.path.isfile(abs_config_path):
-        conf_dir = os.path.dirname(abs_config_path)
-        conf_filename = os.path.basename(abs_config_path)
-    else:
-        conf_dir = abs_config_path
-        conf_filename = None
-
-    from .hydra import Hydra
-
+    abs_base_dir = realpath(dirname(calling_file))
     hydra = Hydra(
+        abs_base_dir=abs_base_dir,
         task_name=task_name,
-        conf_dir=conf_dir,
-        conf_filename=conf_filename,
+        config_path=config_path,
         task_function=task_function,
         verbose=args.verbose,
         strict=strict,

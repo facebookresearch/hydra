@@ -80,12 +80,12 @@ def task_runner():
             logging.shutdown()
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
+    def _(abs_base_dir, config_path, overrides=None, strict=False):
         task = TaskTestFunction()
         hydra = Hydra(
+            abs_base_dir=abs_base_dir,
             task_name="task",
-            conf_dir=conf_dir,
-            conf_filename=conf_filename,
+            config_path=config_path,
             task_function=task,
             verbose=None,
             strict=strict,
@@ -140,12 +140,12 @@ def sweep_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
+    def _(abs_base_dir, config_path, overrides=None, strict=False):
         sweep = SweepTaskFunction()
         hydra = Hydra(
+            abs_base_dir=abs_base_dir,
             task_name="task",
-            conf_dir=conf_dir,
-            conf_filename=conf_filename,
+            config_path=config_path,
             task_function=sweep,
             verbose=None,
             strict=strict,

@@ -1,11 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import os
+from os.path import splitext, basename, dirname, join, isdir, realpath
 
 from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
 from .plugins import Plugins
+from ..errors import MissingConfigException
 from ..plugins.common.utils import (
     configure_log,
     run_job,
@@ -21,26 +22,51 @@ log = None
 
 class Hydra:
     def __init__(
-        self, task_name, conf_dir, conf_filename, task_function, verbose, strict
+        self, abs_base_dir, task_name, config_path, task_function, verbose, strict
     ):
         setup_globals()
         JobRuntime().set("name", get_valid_filename(task_name))
         self.task_name = task_name
         self.task_function = task_function
-        if not os.path.exists(conf_dir):
-            raise IOError("Config directory '{}' not found".format(conf_dir))
-        if conf_filename is not None:
-            if not os.path.exists(os.path.join(conf_dir, conf_filename)):
-                raise IOError("Config directory '{}' not found".format(conf_dir))
+
+        split_file = splitext(config_path)
+        if split_file[1] in (".yaml", ".yml"):
+            # assuming dir/config.yaml form
+            config_file = basename(config_path)
+            config_dir = dirname(config_path)
+        else:
+            # assuming dir form without a config file.
+            config_file = None
+            config_dir = config_path
+
+        abs_config_dir = join(abs_base_dir, config_dir)
+        job_search_path = [abs_config_dir]
+        hydra_search_path = [join(config_dir, ".hydra"), "pkg://hydra.default_conf"]
+
         self.config_loader = ConfigLoader(
-            conf_filename=conf_filename,
+            config_file=config_file,
+            job_search_path=job_search_path,
+            hydra_search_path=hydra_search_path,
             strict_cfg=strict,
-            config_path=[
-                conf_dir,
-                os.path.join(conf_dir, ".hydra"),
-                "pkg://hydra.default_conf",
-            ],
         )
+
+        if not isdir(abs_config_dir):
+            raise MissingConfigException(
+                missing_cfg_file=abs_config_dir,
+                message="Primary config dir not found: {}".format(
+                    realpath(abs_config_dir)
+                ),
+            )
+        if (
+            config_file is not None
+            and self.config_loader._find_config(config_file) is None
+        ):
+            raise MissingConfigException(
+                missing_cfg_file=config_file,
+                message="Cannot find primary config file: {}".format(
+                    realpath(config_file)
+                ),
+            )
         self.verbose = verbose
 
     def run(self, overrides):

@@ -14,17 +14,25 @@ from pkg_resources import (
     resource_isdir,
 )
 
+from ..errors import MissingConfigException
+from ..plugins.common.utils import JobRuntime
+
 
 class ConfigLoader:
     """
     Configuration loader
     """
 
-    def __init__(self, conf_filename, strict_cfg, config_path=[]):
-        self.config_path = config_path
-        self.conf_filename = conf_filename
+    # TODO : remove config_dir
+    def __init__(
+        self, config_file, strict_cfg, hydra_search_path=[], job_search_path=[]
+    ):
+        self.config_file = config_file
+        self.job_search_path = job_search_path
+        self.hydra_search_path = hydra_search_path
+        self.full_search_path = self.job_search_path + self.hydra_search_path
         self.all_config_checked = []
-        self.strict_task_cfg = strict_cfg
+        self.strict_cfg = strict_cfg
 
     def get_load_history(self):
         """
@@ -33,8 +41,8 @@ class ConfigLoader:
         """
         return copy.deepcopy(self.all_config_checked)
 
-    def _is_group(self, group_name):
-        for path in self.config_path:
+    def _is_group(self, group_name, search_path):
+        for path in search_path:
             is_pkg = path.startswith("pkg://")
             if is_pkg:
                 prefix = "pkg://"
@@ -49,8 +57,7 @@ class ConfigLoader:
         return False
 
     def _find_config(self, filepath):
-        config_path = self.config_path
-        for path in config_path:
+        for path in self.full_search_path:
             is_pkg = path.startswith("pkg://")
             prefix = ""
             if is_pkg:
@@ -91,6 +98,7 @@ class ConfigLoader:
                     merged_list.remove(d)
             else:
                 result.append(d)
+                merged_list.remove(d)
 
         for d in merged_list:
             result.append(d)
@@ -106,37 +114,51 @@ class ConfigLoader:
         c3.defaults = merged_defaults
         return c3
 
+    def _move_hydra_overrides(self, job_overrides, hydra_overrides):
+        move_list = []
+        for override in job_overrides:
+            key, value = override.split("=")
+            if self._is_group(key, self.hydra_search_path):
+                move_list.append(override)
+                job_overrides.remove(override)
+
+        merged = self._merge_default_lists(hydra_overrides, move_list)
+        hydra_overrides.clear()
+        hydra_overrides.extend(merged)
+
     def load_configuration(self, overrides=[]):
-        from ..plugins.common.utils import JobRuntime
-
         assert overrides is None or isinstance(overrides, list)
-
         overrides = overrides or []
+
+        # Load hydra config
         hydra_cfg = self._load_hydra_cfg(overrides)
 
         job_overrides = [x for x in overrides if not x.startswith("hydra.")]
         hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
-        task_cfg, consumed_job_defaults = self._create_cfg(
-            cfg_filename=self.conf_filename,
-            strict=self.strict_task_cfg,
+
+        # Load job config
+        job_cfg, consumed_job_defaults = self._create_cfg(
+            cfg_filename=self.config_file,
+            strict=self.strict_cfg,
             open_defaults=True,
             cli_overrides=job_overrides,
         )
 
-        cfg = self._merge_configs(hydra_cfg, task_cfg)
-        cfg = self._merge_defaults(cfg, self.conf_filename)
+        cfg = self._merge_configs(hydra_cfg, job_cfg)
+        cfg = self._merge_defaults(cfg)
+
+        self._move_hydra_overrides(job_overrides, hydra_overrides)
 
         cfg.hydra.overrides.task.extend(job_overrides)
         cfg.hydra.overrides.hydra.extend(hydra_overrides)
 
         job = OmegaConf.create(dict(name=JobRuntime().get("name")))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
-        OmegaConf.set_struct(cfg, self.strict_task_cfg)
+        OmegaConf.set_struct(cfg, self.strict_cfg)
 
         # Merge all command line overrides after enabling strict flag
-        cfg.merge_with_dotlist(hydra_overrides)
         value_overrides = []
-        for jo in job_overrides:
+        for jo in job_overrides + hydra_overrides:
             if jo not in consumed_job_defaults:
                 value_overrides.append(jo)
         cfg.merge_with_dotlist(value_overrides)
@@ -199,7 +221,7 @@ class ConfigLoader:
 
     def _get_group_options(self, group_name):
         options = []
-        for path in self.config_path:
+        for path in self.full_search_path:
             is_pkg = path.startswith("pkg://")
             files = []
             if is_pkg:
@@ -216,7 +238,6 @@ class ConfigLoader:
         return options
 
     def _merge_config(self, cfg, family, name, required):
-        from ..errors import MissingConfigException
 
         if family != ".":
             new_cfg = os.path.join(family, name)
@@ -261,13 +282,7 @@ class ConfigLoader:
         else:
             return os.path.exists(filename)
 
-    def _merge_defaults(self, cfg, cfg_filename):
-        if cfg_filename is None:
-            conf_dirname = ""
-        else:
-            conf_dirname = os.path.dirname(cfg_filename)
-            if conf_dirname == ".":
-                conf_dirname = ""
+    def _merge_defaults(self, cfg):
         cfg_defaults = cfg.defaults.to_container()
         for default in cfg.defaults:
             default_copy = copy.deepcopy(default)
@@ -282,7 +297,7 @@ class ConfigLoader:
                 if name is not None:
                     cfg = self._merge_config(
                         cfg=cfg,
-                        family=os.path.join(conf_dirname, family),
+                        family=family,
                         name="{}.yaml".format(name),
                         required=not is_optional,
                     )
@@ -290,10 +305,7 @@ class ConfigLoader:
             else:
                 assert isinstance(default, str)
                 cfg = self._merge_config(
-                    cfg=cfg,
-                    family=conf_dirname,
-                    name="{}.yaml".format(default),
-                    required=True,
+                    cfg=cfg, family="", name="{}.yaml".format(default), required=True
                 )
                 cfg_defaults.remove(default)
         cfg.defaults = cfg_defaults
@@ -320,7 +332,7 @@ class ConfigLoader:
             if main_cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
-                        cfg_filename, "\n\t".join(self.config_path)
+                        cfg_filename, "\n\t".join(self.full_search_path)
                     )
                 )
         assert main_cfg is not None
@@ -351,7 +363,7 @@ class ConfigLoader:
             # after the list is broken into items
             if "," in value:
                 can_add = False
-            if can_add and self._is_group(key):
+            if can_add and self._is_group(key, self.full_search_path):
                 defaults_changes[key] = value
                 consumed_defaults.append(override)
             else:

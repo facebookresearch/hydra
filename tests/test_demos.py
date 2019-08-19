@@ -23,25 +23,27 @@ chdir_hydra_root()
 
 
 def test_missing_conf_dir(task_runner):  # noqa: F811
-    with pytest.raises(IOError):
-        with task_runner(conf_dir="not_found"):
+    with pytest.raises(MissingConfigException):
+        with task_runner(abs_base_dir=".", config_path="dir_not_found"):
             pass
 
 
 def test_missing_conf_file(task_runner):  # noqa: F811
-    with pytest.raises(IOError):
-        with task_runner(conf_dir=".", conf_filename="not_found"):
+    with pytest.raises(MissingConfigException):
+        with task_runner(abs_base_dir=".", config_path="not_found.yaml"):
             pass
 
 
 def test_demos_minimal__no_overrides(task_runner):  # noqa: F811
-    with task_runner(conf_dir="demos/0_minimal/") as task:
+    with task_runner(abs_base_dir="demos/0_minimal/", config_path="") as task:
         assert task.job_ret.cfg == {}
 
 
 def test_demos_minimal__with_overrides(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/0_minimal/", overrides=["abc=123", "a.b=1", "a.a=2"]
+        abs_base_dir="demos/0_minimal/",
+        config_path="",
+        overrides=["abc=123", "a.b=1", "a.a=2"],
     ) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
         verify_dir_outputs(task.job_ret.working_dir, task.overrides)
@@ -49,7 +51,7 @@ def test_demos_minimal__with_overrides(task_runner):  # noqa: F811
 
 def test_demos_config_file__no_overrides(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/3_config_file/", conf_filename="config.yaml"
+        abs_base_dir="demos/3_config_file/", config_path="config.yaml"
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet")
@@ -60,8 +62,8 @@ def test_demos_config_file__no_overrides(task_runner):  # noqa: F811
 
 def test_demos_config_file__with_overide(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/3_config_file/",
-        conf_filename="config.yaml",
+        abs_base_dir="demos/3_config_file",
+        config_path="config.yaml",
         overrides=["dataset.path=/datasets/imagenet2"],
     ) as task:
         assert task.job_ret.cfg == dict(
@@ -72,7 +74,7 @@ def test_demos_config_file__with_overide(task_runner):  # noqa: F811
 
 def test_demos_config_splitting(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/4_config_splitting/conf", conf_filename="config.yaml"
+        abs_base_dir="demos/4_config_splitting/", config_path="conf/config.yaml"
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet"),
@@ -84,7 +86,9 @@ def test_demos_config_splitting(task_runner):  # noqa: F811
 def test_demos_config_groups__override_dataset__wrong(task_runner):  # noqa: F811
     with pytest.raises(MissingConfigException) as ex:
         with task_runner(
-            conf_dir="demos/5_config_groups/conf", overrides=["optimizer=wrong_name"]
+            abs_base_dir="demos/5_config_groups/conf",
+            config_path="",
+            overrides=["optimizer=wrong_name"],
         ):
             pass
     assert sorted(ex.value.options) == sorted(["adam", "nesterov"])
@@ -92,7 +96,8 @@ def test_demos_config_groups__override_dataset__wrong(task_runner):  # noqa: F81
 
 def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/5_config_groups/conf",
+        abs_base_dir=".",
+        config_path="demos/5_config_groups/conf",
         overrides=["optimizer=adam", "optimizer.lr=10"],
     ) as task:
         assert task.job_ret.cfg == dict(optimizer=dict(type="adam", lr=10, beta=0.01))
@@ -101,7 +106,7 @@ def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
 
 def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
     with task_runner(
-        conf_dir="demos/6_sweep/conf", overrides=["launcher=basic"]
+        abs_base_dir=".", config_path="demos/6_sweep/conf", overrides=["launcher=basic"]
     ) as task:
         assert (
             task.job_ret.hydra_cfg.hydra.launcher["class"]
@@ -207,7 +212,7 @@ def test_demo_3_config_file(tmpdir, args, output_conf):
         ),
     ],
 )
-def test_demo_4_config_slitting(tmpdir, args, output_conf):
+def test_demo_4_config_splitting(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
         "demos/4_config_splitting/experiment.py",
