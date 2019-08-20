@@ -20,14 +20,24 @@ def verify_plugin(plugin_module):
 
 def create_basic_launcher_config():
     return OmegaConf.create(
-        {"defaults": [{"hydra_logging": "disabled"}, {"launcher": "basic"}]}
+        {
+            "defaults": [
+                {"hydra_logging": "hydra_debug"},
+                {"job_logging": "disabled"},
+                {"launcher": "basic"},
+            ]
+        }
     )
 
 
 def create_fairtask_launcher_local_config():
     return OmegaConf.create(
         {
-            "defaults": [{"launcher": None}, {"hydra_logging": "disabled"}],
+            "defaults": [
+                {"launcher": None},
+                {"hydra_logging": "hydra_debug"},
+                {"job_logging": "disabled"},
+            ],
             "hydra": {
                 "launcher": {
                     "class": "hydra_plugins.fairtask.FAIRTaskLauncher",
@@ -50,7 +60,11 @@ def create_fairtask_launcher_local_config():
 def create_submitit_launcher_local_config():
     return OmegaConf.create(
         {
-            "defaults": [{"launcher": None}, {"job_logging": "disabled"}],
+            "defaults": [
+                {"launcher": None},
+                {"hydra_logging": "hydra_debug"},
+                {"job_logging": "disabled"},
+            ],
             "hydra": {
                 "launcher": {
                     "class": "hydra_plugins.submitit.SubmititLauncher",

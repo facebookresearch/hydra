@@ -33,6 +33,12 @@ class ConfigLoader:
         self.all_config_checked = []
         self.strict_cfg = strict_cfg
 
+    def get_job_search_path(self):
+        return self.job_search_path
+
+    def get_hydra_search_path(self):
+        return self.hydra_search_path
+
     def get_load_history(self):
         """
         returns the load history (which configs were attempted to load, and if they
@@ -215,7 +221,6 @@ class ConfigLoader:
                 self.all_config_checked.append((filename, True))
             else:
                 assert False
-
         return loaded_cfg
 
     def _get_group_options(self, group_name):

@@ -242,8 +242,8 @@ if __name__ == "__main__":
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        outputs = result.decode("utf-8").splitlines()
+        result = subprocess.check_output(cmd).decode("utf-8")
+        outputs = result.splitlines()
         assert len(outputs) == len(expected_outputs)
         for idx in range(len(outputs)):
             assert outputs[idx] == expected_outputs[idx]

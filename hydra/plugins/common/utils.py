@@ -68,6 +68,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         ret = JobReturn()
         ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
+        hydra_cfg = task_cfg["hydra"]
         del task_cfg["hydra"]
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
@@ -78,6 +79,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         configure_log(config.hydra.job_logging, verbose)
 
         save_config(task_cfg, "config.yaml")
+        save_config(hydra_cfg, "hydra.yaml")
         save_config(config.hydra.overrides.task, "overrides.yaml")
         ret.return_value = task_function(task_cfg)
         return ret

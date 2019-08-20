@@ -94,7 +94,8 @@ class Hydra:
             task_function=self.task_function,
             verbose=self.verbose,
         )
-        return sweeper.sweep(arguments=cfg.hydra.overrides.task)
+        task_overrides = cfg.hydra.overrides.task
+        return sweeper.sweep(arguments=task_overrides)
 
     def show_cfg(self, overrides):
         config = self._load_config(overrides)
@@ -105,13 +106,20 @@ class Hydra:
         configure_log(cfg.hydra.hydra_logging, self.verbose)
         global log
         log = logging.getLogger(__name__)
-        _print_load_history(self.config_loader)
+        self._print_debug_info(cfg)
         return cfg
 
-
-def _print_load_history(loader):
-    for file, loaded in loader.get_load_history():
-        if loaded:
-            log.debug("Loaded: {}".format(file))
-        else:
-            log.debug("Not found: {}".format(file))
+    def _print_debug_info(self, cfg):
+        log.debug("Hydra config search path:")
+        for path in self.config_loader.get_hydra_search_path():
+            log.debug("\t" + path)
+        log.debug("")
+        log.debug("Job config search path:")
+        for path in self.config_loader.get_job_search_path():
+            log.debug("\t" + path)
+        log.debug("")
+        for file, loaded in self.config_loader.get_load_history():
+            if loaded:
+                log.debug("Loaded: {}".format(file))
+            else:
+                log.debug("Not found: {}".format(file))
