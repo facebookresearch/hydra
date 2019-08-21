@@ -1,12 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from os.path import splitext, basename, dirname, join, isdir, realpath
+from os.path import splitext, basename, dirname, join
 
 from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
 from .plugins import Plugins
-from ..errors import MissingConfigException
 from ..plugins.common.utils import (
     configure_log,
     run_job,
@@ -39,34 +38,39 @@ class Hydra:
             config_file = None
             config_dir = config_path
 
-        abs_config_dir = join(abs_base_dir, config_dir)
-        job_search_path = [abs_config_dir]
-        hydra_search_path = [join(abs_config_dir, ".hydra"), "pkg://hydra.default_conf"]
+        if config_dir == "":
+            abs_config_dir = abs_base_dir
+        else:
+            abs_config_dir = join(abs_base_dir, config_dir)
 
+        hydra_search_path = [join(abs_config_dir, ".hydra"), "pkg://hydra.default_conf"]
         self.config_loader = ConfigLoader(
             config_file=config_file,
-            job_search_path=job_search_path,
+            job_search_path=[abs_config_dir],
             hydra_search_path=hydra_search_path,
             strict_cfg=strict,
         )
 
-        if not isdir(abs_config_dir):
-            raise MissingConfigException(
-                missing_cfg_file=abs_config_dir,
-                message="Primary config dir not found: {}".format(
-                    realpath(abs_config_dir)
-                ),
-            )
-        if (
-            config_file is not None
-            and self.config_loader._find_config(config_file) is None
-        ):
-            raise MissingConfigException(
-                missing_cfg_file=config_file,
-                message="Cannot find primary config file: {}".format(
-                    realpath(config_file)
-                ),
-            )
+        # TODO: fix those two for both loading from path and from pkg
+        # TODO: test for error message if a resource is not found in pkg path making sure it's a good error
+        # if not isdir(abs_config_dir):
+        #     raise MissingConfigException(
+        #         missing_cfg_file=abs_config_dir,
+        #         message="Primary config dir not found: {}".format(
+        #             realpath(abs_config_dir)
+        #         ),
+        #     )
+        #
+        # if (
+        #     config_file is not None
+        #     and self.config_loader._find_config(config_file) is None
+        # ):
+        #     raise MissingConfigException(
+        #         missing_cfg_file=config_file,
+        #         message="Cannot find primary config file: {}".format(
+        #             realpath(config_file)
+        #         ),
+        #     )
         self.verbose = verbose
 
     def run(self, overrides):

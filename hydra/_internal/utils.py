@@ -22,9 +22,6 @@ def run_hydra(args, task_function, config_path, strict):
     except KeyError:
         pass
 
-    # print("calling module", calling__module)
-    # print("calling file", calling_file)
-
     if calling__module is None:
         # executed with python file.py
         abs_base_dir = realpath(dirname(calling_file))
@@ -32,6 +29,9 @@ def run_hydra(args, task_function, config_path, strict):
         task_name = os.path.splitext(target_file)[0]
     else:
         # module is installed, use pkg:// access to get configs
+        last_dot = calling__module.rfind(".")
+        if last_dot != -1:
+            calling__module = calling__module[0:last_dot]
         abs_base_dir = "pkg://" + calling__module
         task_name = "TODO"
     hydra = Hydra(
