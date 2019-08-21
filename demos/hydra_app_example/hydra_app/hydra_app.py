@@ -8,5 +8,11 @@ def main(cfg):
     print(cfg.pretty())
 
 
+# this function is required to allow automatic detection of the module name when running
+# from a binary script.
+def entry():
+    main()
+
+
 if __name__ == "__main__":
     main()

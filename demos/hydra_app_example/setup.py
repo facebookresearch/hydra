@@ -7,5 +7,9 @@ setup(
     name="hydra_app",
     version="0.1",
     packages=["hydra_app"],
-    scripts=["hydra_app/hydra_app.py"],
+    scripts=["bin/hydra_app"],
+    author="you!",
+    author_email="your_email@example.com",
+    url="http://hydra_app.example.com",
+    # TODO: add hydra dependency
 )
