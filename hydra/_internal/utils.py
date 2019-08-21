@@ -9,12 +9,31 @@ from .hydra import Hydra
 
 def run_hydra(args, task_function, config_path, strict):
     stack = inspect.stack()
-    calling_file = stack[2][0].f_locals["__file__"]
+    frame = stack[2]
 
-    target_file = os.path.basename(calling_file)
-    task_name = os.path.splitext(target_file)[0]
+    calling_file = None
+    calling__module = None
+    try:
+        calling_file = frame[0].f_locals["__file__"]
+    except KeyError:
+        pass
+    try:
+        calling__module = frame[0].f_globals[frame[3]].__module__
+    except KeyError:
+        pass
 
-    abs_base_dir = realpath(dirname(calling_file))
+    # print("calling module", calling__module)
+    # print("calling file", calling_file)
+
+    if calling__module is None:
+        # executed with python file.py
+        abs_base_dir = realpath(dirname(calling_file))
+        target_file = os.path.basename(calling_file)
+        task_name = os.path.splitext(target_file)[0]
+    else:
+        # module is installed, use pkg:// access to get configs
+        abs_base_dir = "pkg://" + calling__module
+        task_name = "TODO"
     hydra = Hydra(
         abs_base_dir=abs_base_dir,
         task_name=task_name,
