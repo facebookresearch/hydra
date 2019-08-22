@@ -34,7 +34,7 @@ def test_missing_conf_dir(task_runner, calling_file, calling_module):  # noqa: F
 
 
 @pytest.mark.parametrize(
-    "calling_file, calling_module", [("hydra", None), (None, "hydra")]
+    "calling_file, calling_module", [("hydra/app.py", None), (None, "hydra.app")]
 )
 def test_missing_conf_file(task_runner, calling_file, calling_module):  # noqa: F811
     with pytest.raises(MissingConfigException):

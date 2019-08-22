@@ -300,6 +300,8 @@ class ConfigLoader:
                 return resource_exists(res_base, res_file)
             except ImportError:
                 return False
+            except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
+                return False
         else:
             return os.path.exists(filename)
 
