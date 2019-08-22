@@ -57,11 +57,20 @@ def get_all_plugins():
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def test_core(session):
+@nox.parametrize(
+    "install_cmd",
+    PLUGINS_INSTALL_COMMANDS,
+    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+)
+def test_core(session, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
-    install_hydra(session, PLUGINS_INSTALL_COMMANDS[0])
+    install_hydra(session, install_cmd)
     install_pytest(session)
     run_pytest(session)
+
+    # Install and test example app
+    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
+    session.run("pytest", "demos/hydra_app_example", silent=True)
 
 
 def get_python_versions(session, setup_py):
