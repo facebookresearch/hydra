@@ -82,6 +82,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         save_config(hydra_cfg, "hydra.yaml")
         save_config(config.hydra.overrides.task, "overrides.yaml")
         ret.return_value = task_function(task_cfg)
+        ret.task_name = JobRuntime().get("name")
         return ret
     finally:
         os.chdir(old_cwd)
@@ -117,6 +118,7 @@ class JobReturn:
         self.cfg = None
         self.hydra_cfg = None
         self.working_dir = None
+        self.task_name = None
 
 
 class Singleton(type):

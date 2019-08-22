@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import inspect
-import os
-from os.path import realpath, dirname
 
 from .hydra import Hydra
 
@@ -22,21 +20,9 @@ def run_hydra(args, task_function, config_path, strict):
     except KeyError:
         pass
 
-    if calling__module is None:
-        # executed with python file.py
-        abs_base_dir = realpath(dirname(calling_file))
-        target_file = os.path.basename(calling_file)
-        task_name = os.path.splitext(target_file)[0]
-    else:
-        # module is installed, use pkg:// access to get configs
-        last_dot = calling__module.rfind(".")
-        if last_dot != -1:
-            calling__module = calling__module[0:last_dot]
-        abs_base_dir = "pkg://" + calling__module
-        task_name = "TODO"
     hydra = Hydra(
-        abs_base_dir=abs_base_dir,
-        task_name=task_name,
+        calling_file=calling_file,
+        calling_module=calling__module,
         config_path=config_path,
         task_function=task_function,
         verbose=args.verbose,

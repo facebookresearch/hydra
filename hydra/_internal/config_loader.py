@@ -46,8 +46,18 @@ class ConfigLoader:
         """
         return copy.deepcopy(self.all_config_checked)
 
+    @staticmethod
+    def _split_path(path):
+        prefix = "pkg://"
+        is_pkg = path.startswith(prefix)
+        if is_pkg:
+            path = path[len(prefix) :]
+            path = path.replace("/", ".").replace("\\", ".")
+        return is_pkg, path
+
     def _is_group(self, group_name, search_path):
         for path in search_path:
+            # TODO: use split_path
             is_pkg = path.startswith("pkg://")
             if is_pkg:
                 prefix = "pkg://"
@@ -63,6 +73,7 @@ class ConfigLoader:
 
     def _find_config(self, filepath):
         for path in self.full_search_path:
+            # TODO: use split_path
             is_pkg = path.startswith("pkg://")
             prefix = ""
             if is_pkg:
@@ -225,12 +236,11 @@ class ConfigLoader:
 
     def _get_group_options(self, group_name):
         options = []
-        for path in self.full_search_path:
-            is_pkg = path.startswith("pkg://")
+        for search_path in self.full_search_path:
+            is_pkg, path = self._split_path(search_path)
             files = []
             if is_pkg:
-                path = path[len("pkg://") :].replace("/", ".").replace("\\", ".")
-                if resource_isdir(path, group_name):
+                if self.exists(search_path) and resource_isdir(path, group_name):
                     files = resource_listdir(path, group_name)
             else:
                 group_path = os.path.join(path, group_name)
@@ -270,6 +280,13 @@ class ConfigLoader:
             return OmegaConf.merge(cfg, loaded_cfg)
 
         assert False
+
+    def exists_in_search_path(self, filepath):
+        return self._find_config(filepath) is not None
+
+    def exists(self, filename):
+        is_pkg, path = self._split_path(filename)
+        return ConfigLoader._exists(is_pkg, path)
 
     @staticmethod
     def _exists(is_pkg, filename):
