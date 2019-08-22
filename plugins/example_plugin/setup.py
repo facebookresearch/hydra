@@ -20,7 +20,5 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
-        install_requires=[
-            "submitit@git+ssh://git@github.com/fairinternal/submitit.git@master"
-        ],
+        install_requires=[],
     )

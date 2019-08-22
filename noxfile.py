@@ -13,28 +13,31 @@ PYTHON_VERSIONS = os.environ.get(
 
 PLUGINS_INSTALL_COMMANDS = (
     # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
-    # ["pip", "install", "."],
-    ["pip", "install", "-e", "."],
+    # ["pip", "install"],
+    ["pip", "install", "-e"],
 )
 
+# Allow limiting testing to specific plugins
+# The list ['ALL'] indicates all plugins
+PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
-def install_hydra(session):
+
+def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
-    # TODO: This would better be 'pip install .'
-    # but until https://github.com/pypa/pip/pull/6770 is public this is too slow.
-    session.run("pip", "install", "-e", ".", silent=True)
+    session.run(*cmd, ".", silent=True)
 
 
 def install_pytest(session):
-    if session.python == "2.7":
-        session.install("pytest")
-    else:
-        session.install("pytest", "pytest_parallel")
+    session.install("pytest")
+    # if session.python == "2.7":
+    #     session.install("pytest")
+    # else:
+    #     session.install("pytest", "pytest_parallel")
 
 
 def run_pytest(session):
-    session.run("pytest", silent=True)
+    session.run("pytest", silent=False, *session.posargs)
     # if session.python == "2.7":
     #     session.run("pytest", silent=True)
     # else:
@@ -46,15 +49,28 @@ def plugin_names():
 
 
 def get_all_plugins():
-    return [(plugin, "hydra_plugins." + plugin) for plugin in plugin_names()]
+    return [
+        (plugin, "hydra_plugins." + plugin)
+        for plugin in plugin_names()
+        if plugin in PLUGINS or PLUGINS == ["ALL"]
+    ]
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def test_core(session):
+@nox.parametrize(
+    "install_cmd",
+    PLUGINS_INSTALL_COMMANDS,
+    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+)
+def test_core(session, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
-    install_hydra(session)
+    install_hydra(session, install_cmd)
     install_pytest(session)
     run_pytest(session)
+
+    # Install and test example app
+    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
+    session.run("pytest", "demos/hydra_app_example", silent=True)
 
 
 def get_python_versions(session, setup_py):
@@ -84,7 +100,7 @@ def test_plugin(session, plugin, install_cmd):
             )
         )
 
-    install_hydra(session)
+    install_hydra(session, install_cmd)
 
     all_plugins = get_all_plugins()
     # Install all plugins in session

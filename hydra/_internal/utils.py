@@ -1,36 +1,29 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import inspect
-import os
+
+from .hydra import Hydra
 
 
 def run_hydra(args, task_function, config_path, strict):
     stack = inspect.stack()
-    calling_file = stack[2][0].f_locals["__file__"]
+    frame = stack[2]
 
-    target_file = os.path.basename(calling_file)
-    task_name = os.path.splitext(target_file)[0]
-
-    if os.path.isabs(config_path):
-        raise RuntimeError("Config path should be relative")
-    abs_config_path = os.path.realpath(
-        os.path.join(os.path.dirname(calling_file), config_path)
-    )
-    if not os.path.exists(abs_config_path):
-        raise RuntimeError("Config path '{}' does not exist".format(abs_config_path))
-    if os.path.isfile(abs_config_path):
-        conf_dir = os.path.dirname(abs_config_path)
-        conf_filename = os.path.basename(abs_config_path)
-    else:
-        conf_dir = abs_config_path
-        conf_filename = None
-
-    from .hydra import Hydra
+    calling_file = None
+    calling__module = None
+    try:
+        calling_file = frame[0].f_locals["__file__"]
+    except KeyError:
+        pass
+    try:
+        calling__module = frame[0].f_globals[frame[3]].__module__
+    except KeyError:
+        pass
 
     hydra = Hydra(
-        task_name=task_name,
-        conf_dir=conf_dir,
-        conf_filename=conf_filename,
+        calling_file=calling_file,
+        calling_module=calling__module,
+        config_path=config_path,
         task_function=task_function,
         verbose=args.verbose,
         strict=strict,

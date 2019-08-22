@@ -16,6 +16,7 @@ import six
 from omegaconf import OmegaConf
 
 from hydra._internal.hydra import Hydra
+from hydra.plugins.common.utils import JobReturn
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
@@ -80,12 +81,12 @@ def task_runner():
             logging.shutdown()
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
+    def _(calling_file, calling_module, config_path, overrides=None, strict=False):
         task = TaskTestFunction()
         hydra = Hydra(
-            task_name="task",
-            conf_dir=conf_dir,
-            conf_filename=conf_filename,
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path=config_path,
             task_function=task,
             verbose=None,
             strict=strict,
@@ -140,12 +141,12 @@ def sweep_runner():
         def __exit__(self, exc_type, exc_val, exc_tb):
             shutil.rmtree(self.temp_dir)
 
-    def _(conf_dir, conf_filename=None, overrides=None, strict=False):
+    def _(calling_file, calling_module, config_path, overrides=None, strict=False):
         sweep = SweepTaskFunction()
         hydra = Hydra(
-            task_name="task",
-            conf_dir=conf_dir,
-            conf_filename=conf_filename,
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path=config_path,
             task_function=sweep,
             verbose=None,
             strict=strict,
@@ -174,16 +175,19 @@ def chdir_hydra_root():
     os.chdir(cur)
 
 
-def verify_dir_outputs(d, overrides=None):
+def verify_dir_outputs(job_return, overrides=None):
     """
     Verify that directory output makes sense
     """
-    assert os.path.exists(os.path.join(d, "task.log"))
-    assert os.path.exists(os.path.join(d, "config.yaml"))
-    assert os.path.exists(os.path.join(d, "overrides.yaml"))
-    assert OmegaConf.load(os.path.join(d, "overrides.yaml")) == OmegaConf.create(
-        overrides or []
+    assert isinstance(job_return, JobReturn)
+    assert os.path.exists(
+        os.path.join(job_return.working_dir, job_return.task_name + ".log")
     )
+    assert os.path.exists(os.path.join(job_return.working_dir, "config.yaml"))
+    assert os.path.exists(os.path.join(job_return.working_dir, "overrides.yaml"))
+    assert OmegaConf.load(
+        os.path.join(job_return.working_dir, "overrides.yaml")
+    ) == OmegaConf.create(overrides or [])
 
 
 def integration_test(
@@ -242,8 +246,8 @@ if __name__ == "__main__":
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd)
-        outputs = result.decode("utf-8").splitlines()
+        result = subprocess.check_output(cmd).decode("utf-8")
+        outputs = result.splitlines()
         assert len(outputs) == len(expected_outputs)
         for idx in range(len(outputs)):
             assert outputs[idx] == expected_outputs[idx]

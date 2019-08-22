@@ -14,15 +14,18 @@ module.exports = {
             'examples/config_splitting',
             'examples/config_groups',
             'examples/multi-run',
-            {
-                type: 'category',
-                label: 'Advanced',
-                items: [
-                    'examples/objects',
-                    'examples/specializing_config',
-                ],
-            },
         ],
+
+        'Common patterns': [
+            'examples/objects',
+            'examples/specializing_config',
+        ],
+
+        'Deployment': [
+            'deployment/app_packaging',
+        ],
+
+
         'Configuring Hydra': [
             'configure_hydra/intro',
             'configure_hydra/hydra_config',

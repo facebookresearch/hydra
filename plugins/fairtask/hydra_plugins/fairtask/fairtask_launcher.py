@@ -1,17 +1,20 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import asyncio
 import logging
 import os
 
-from fairtask import TaskQueues, gatherl
 from omegaconf import open_dict
 
-import hydra._internal.utils
 import hydra.plugins.common.utils
 from hydra import utils
 from hydra.plugins import Launcher
 
-log = logging.getLogger(__name__)
+# TODO: initialize logger before importing fairtask until comments at
+# https://github.com/fairinternal/fairtask/pull/23 are addressed
+log = logging.getLogger(__name__)  # noqa: E402
+
+from fairtask import TaskQueues, gatherl
 
 
 class FAIRTaskLauncher(Launcher):

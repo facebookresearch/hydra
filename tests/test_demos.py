@@ -22,89 +22,166 @@ from hydra.test_utils.test_utils import task_runner, sweep_runner  # noqa: F401
 chdir_hydra_root()
 
 
-def test_missing_conf_dir(task_runner):  # noqa: F811
-    with pytest.raises(IOError):
-        with task_runner(conf_dir="not_found"):
+@pytest.mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
+def test_missing_conf_dir(task_runner, calling_file, calling_module):  # noqa: F811
+    with pytest.raises(MissingConfigException):
+        with task_runner(
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path="dir_not_found",
+        ):
             pass
 
 
-def test_missing_conf_file(task_runner):  # noqa: F811
-    with pytest.raises(IOError):
-        with task_runner(conf_dir=".", conf_filename="not_found"):
+@pytest.mark.parametrize(
+    "calling_file, calling_module", [("hydra/app.py", None), (None, "hydra.app")]
+)
+def test_missing_conf_file(task_runner, calling_file, calling_module):  # noqa: F811
+    with pytest.raises(MissingConfigException):
+        with task_runner(
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path="not_found.yaml",
+        ):
             pass
 
 
-def test_demos_minimal__no_overrides(task_runner):  # noqa: F811
-    with task_runner(conf_dir="demos/0_minimal/") as task:
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app.py", None), (None, "tests.test_app.app")],
+)
+def test_app_without_config___no_overrides(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
+    with task_runner(
+        calling_file=calling_file, calling_module=calling_module, config_path=""
+    ) as task:
         assert task.job_ret.cfg == {}
 
 
-def test_demos_minimal__with_overrides(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app.py", None), (None, "tests.test_app.app")],
+)
+def test_app_without_config__with_overrides(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with task_runner(
-        conf_dir="demos/0_minimal/", overrides=["abc=123", "a.b=1", "a.a=2"]
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="",
+        overrides=["abc=123", "a.b=1", "a.a=2"],
     ) as task:
         assert task.job_ret.cfg == dict(abc=123, a=dict(b=1, a=2))
-        verify_dir_outputs(task.job_ret.working_dir, task.overrides)
+        verify_dir_outputs(task.job_ret, task.overrides)
 
 
-def test_demos_config_file__no_overrides(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_config_file__no_overrides(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with task_runner(
-        conf_dir="demos/3_config_file/", conf_filename="config.yaml"
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="config.yaml",
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet")
         )
 
-        verify_dir_outputs(task.job_ret.working_dir)
+        verify_dir_outputs(task.job_ret)
 
 
-def test_demos_config_file__with_overide(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_config_file__with_overide(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with task_runner(
-        conf_dir="demos/3_config_file/",
-        conf_filename="config.yaml",
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="config.yaml",
         overrides=["dataset.path=/datasets/imagenet2"],
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet2")
         )
-        verify_dir_outputs(task.job_ret.working_dir, task.overrides)
+        verify_dir_outputs(task.job_ret, task.overrides)
 
 
-def test_demos_config_splitting(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_split_config(task_runner, calling_file, calling_module):  # noqa: F811
     with task_runner(
-        conf_dir="demos/4_config_splitting/conf", conf_filename="config.yaml"
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="split_cfg/config.yaml",
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet"),
             optimizer=dict(lr=0.001, type="nesterov"),
         )
-        verify_dir_outputs(task.job_ret.working_dir)
+        verify_dir_outputs(task.job_ret)
 
 
-def test_demos_config_groups__override_dataset__wrong(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_config_groups__override_dataset__wrong(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with pytest.raises(MissingConfigException) as ex:
         with task_runner(
-            conf_dir="demos/5_config_groups/conf", overrides=["optimizer=wrong_name"]
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path="cfg_groups",
+            overrides=["optimizer=wrong_name"],
         ):
             pass
     assert sorted(ex.value.options) == sorted(["adam", "nesterov"])
 
 
-def test_demos_config_groups__override_all_configs(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_config_groups__override_all_configs(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with task_runner(
-        conf_dir="demos/5_config_groups/conf",
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="cfg_groups",
         overrides=["optimizer=adam", "optimizer.lr=10"],
     ) as task:
         assert task.job_ret.cfg == dict(optimizer=dict(type="adam", lr=10, beta=0.01))
-        verify_dir_outputs(task.job_ret.working_dir, overrides=task.overrides)
+        verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_demos_sweep__override_launcher_basic(task_runner):  # noqa: F811
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+def test_app_with_sweep_cfg__override_to_basic_launcher(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
     with task_runner(
-        conf_dir="demos/6_sweep/conf", overrides=["launcher=basic"]
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="sweep_cfg/config.yaml",
+        overrides=["launcher=basic"],
     ) as task:
+        hydra_cfg = task.job_ret.hydra_cfg
         assert (
-            task.job_ret.hydra_cfg.hydra.launcher["class"]
+            hydra_cfg.hydra.launcher["class"]
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
@@ -207,7 +284,7 @@ def test_demo_3_config_file(tmpdir, args, output_conf):
         ),
     ],
 )
-def test_demo_4_config_slitting(tmpdir, args, output_conf):
+def test_demo_4_config_splitting(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
         "demos/4_config_splitting/experiment.py",

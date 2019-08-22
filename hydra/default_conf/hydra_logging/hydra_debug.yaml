@@ -1,3 +1,4 @@
+# A loggger config that directs hydra verbose logging to a file
 hydra:
   # python logging configuration for tasks
   hydra_logging:
@@ -6,16 +7,19 @@ hydra:
       simple:
         format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
     handlers:
-      console:
-        class: logging.StreamHandler
+      file:
+        class: logging.FileHandler
+        mode: w
         formatter: simple
-        stream: ext://sys.stdout
+        # relative to the job log directory
+        filename: hydra-${hydra.job.name}.log
+        delay: true
     root:
-      level: INFO
-      handlers: [console]
+      level: ERROR
+      handlers: [file]
 
     loggers:
-      logging_example:
+      hydra:
         level: DEBUG
 
     disable_existing_loggers: False

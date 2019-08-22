@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import argparse
+import functools
 import sys
 
 import hydra
@@ -55,6 +56,7 @@ def main(config_path=".", strict=False):
     """
 
     def main_decorator(task_function):
+        @functools.wraps(task_function)
         def decorated_main():
             try:
                 run_hydra(get_args(), task_function, config_path, strict)

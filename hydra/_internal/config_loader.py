@@ -14,18 +14,30 @@ from pkg_resources import (
     resource_isdir,
 )
 
+from ..errors import MissingConfigException
+from ..plugins.common.utils import JobRuntime
+
 
 class ConfigLoader:
     """
     Configuration loader
     """
 
-    def __init__(self, conf_filename, conf_dir, strict_cfg, config_path=[]):
-        self.config_path = config_path
-        self.conf_dir = conf_dir
-        self.conf_filename = conf_filename
+    def __init__(
+        self, config_file, strict_cfg, hydra_search_path=[], job_search_path=[]
+    ):
+        self.config_file = config_file
+        self.job_search_path = job_search_path
+        self.hydra_search_path = hydra_search_path
+        self.full_search_path = self.job_search_path + self.hydra_search_path
         self.all_config_checked = []
-        self.strict_task_cfg = strict_cfg
+        self.strict_cfg = strict_cfg
+
+    def get_job_search_path(self):
+        return self.job_search_path
+
+    def get_hydra_search_path(self):
+        return self.hydra_search_path
 
     def get_load_history(self):
         """
@@ -34,47 +46,41 @@ class ConfigLoader:
         """
         return copy.deepcopy(self.all_config_checked)
 
-    def _is_group(self, group_name, including_config_dir):
-        for path in self._get_config_path(including_config_dir):
-            is_pkg = path.startswith("pkg://")
-            if is_pkg:
-                prefix = "pkg://"
-                path = path[len(prefix) :]
-                full_group_name = os.path.join(path, group_name)
-                full_group_name = full_group_name.replace("/", ".").replace("\\", ".")
-            else:
-                full_group_name = os.path.join(path, group_name)
+    @staticmethod
+    def _split_path(path):
+        prefix = "pkg://"
+        is_pkg = path.startswith(prefix)
+        if is_pkg:
+            path = path[len(prefix) :]
+            path = path.replace("/", ".").replace("\\", ".")
+        return is_pkg, path
 
-            if self._exists(is_pkg, full_group_name) is True:
+    def _is_group(self, group_name, search_path):
+        for search_path in search_path:
+            is_pkg, path = self._split_path(search_path)
+            if self._exists(is_pkg, os.path.join(path, group_name)) is True:
                 return True
         return False
 
-    def _get_config_path(self, including_config_dir):
-        config_path = copy.deepcopy(self.config_path)
-        if including_config_dir and self.conf_dir is not None:
-            config_path.append(self.conf_dir)
-        return config_path
-
-    def _find_config(self, filepath, including_config_dir):
-        config_path = self._get_config_path(including_config_dir)
-        for path in config_path:
-            is_pkg = path.startswith("pkg://")
-            prefix = ""
+    def _find_config(self, filepath):
+        for search_path in self.full_search_path:
+            is_pkg, path = self._split_path(search_path)
             if is_pkg:
-                prefix = "pkg://"
-                path = path[len(prefix) :]
-                config_file = os.path.join(path, filepath)
-                res_path = (
-                    os.path.dirname(config_file).replace("/", ".").replace("\\", ".")
-                )
-                res_file = os.path.basename(config_file)
-                config_file = os.path.join(res_path, res_file)
+                dirname = os.path.dirname(filepath).replace("/", ".").replace("\\", ".")
+                basename = os.path.basename(filepath)
+                if dirname != "":
+                    config_dir = "{}.{}".format(path, dirname)
+                else:
+                    config_dir = path
+                config_file = os.path.join(config_dir, basename)
             else:
-                config_file = os.path.join(path, filepath)
+                config_file = os.path.join(search_path, filepath)
 
             config_file = config_file.replace("\\", "/")
             if self._exists(is_pkg, config_file):
-                return prefix + config_file
+                if is_pkg:
+                    config_file = "pkg://" + config_file
+                return config_file
         return None
 
     @staticmethod
@@ -98,6 +104,7 @@ class ConfigLoader:
                     merged_list.remove(d)
             else:
                 result.append(d)
+                merged_list.remove(d)
 
         for d in merged_list:
             result.append(d)
@@ -113,38 +120,51 @@ class ConfigLoader:
         c3.defaults = merged_defaults
         return c3
 
+    def _move_hydra_overrides(self, job_overrides, hydra_overrides):
+        move_list = []
+        for override in job_overrides:
+            key, value = override.split("=")
+            if self._is_group(key, self.hydra_search_path):
+                move_list.append(override)
+                job_overrides.remove(override)
+
+        merged = self._merge_default_lists(hydra_overrides, move_list)
+        del hydra_overrides[:]
+        hydra_overrides.extend(merged)
+
     def load_configuration(self, overrides=[]):
-        from ..plugins.common.utils import JobRuntime
-
         assert overrides is None or isinstance(overrides, list)
-
         overrides = overrides or []
+
+        # Load hydra config
         hydra_cfg = self._load_hydra_cfg(overrides)
 
         job_overrides = [x for x in overrides if not x.startswith("hydra.")]
         hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
-        task_cfg, consumed_job_defaults = self._create_cfg(
-            cfg_filename=self.conf_filename,
-            strict=self.strict_task_cfg,
+
+        # Load job config
+        job_cfg, consumed_job_defaults = self._create_cfg(
+            cfg_filename=self.config_file,
+            strict=self.strict_cfg,
             open_defaults=True,
-            including_config_dir=True,
             cli_overrides=job_overrides,
         )
 
-        cfg = self._merge_configs(hydra_cfg, task_cfg)
-        cfg = self._merge_defaults(cfg, self.conf_filename)
+        cfg = self._merge_configs(hydra_cfg, job_cfg)
+        cfg = self._merge_defaults(cfg)
+
+        self._move_hydra_overrides(job_overrides, hydra_overrides)
 
         cfg.hydra.overrides.task.extend(job_overrides)
         cfg.hydra.overrides.hydra.extend(hydra_overrides)
 
         job = OmegaConf.create(dict(name=JobRuntime().get("name")))
         cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
-        OmegaConf.set_struct(cfg, self.strict_task_cfg)
+        OmegaConf.set_struct(cfg, self.strict_cfg)
 
         # Merge all command line overrides after enabling strict flag
-        cfg.merge_with_dotlist(hydra_overrides)
         value_overrides = []
-        for jo in job_overrides:
+        for jo in job_overrides + hydra_overrides:
             if jo not in consumed_job_defaults:
                 value_overrides.append(jo)
         cfg.merge_with_dotlist(value_overrides)
@@ -168,15 +188,11 @@ class ConfigLoader:
         :return:
         """
         hydra_cfg_defaults, _ = self._create_cfg(
-            cfg_filename="default_hydra.yaml",
-            strict=False,
-            including_config_dir=False,
-            open_defaults=False,
+            cfg_filename="default_hydra.yaml", strict=False
         )
         hydra_cfg, consumed_defaults = self._create_cfg(
             cfg_filename="hydra.yaml",
             strict=False,
-            including_config_dir=True,
             cli_overrides=overrides,
             open_defaults=False,
         )
@@ -187,9 +203,9 @@ class ConfigLoader:
 
         return hydra_cfg
 
-    def _load_config_impl(self, input_file, including_config_dir):
+    def _load_config_impl(self, input_file):
         loaded_cfg = None
-        filename = self._find_config(input_file, including_config_dir)
+        filename = self._find_config(input_file)
         if filename is None:
             self.all_config_checked.append((input_file.replace("\\", "/"), False))
         else:
@@ -206,17 +222,15 @@ class ConfigLoader:
                 self.all_config_checked.append((filename, True))
             else:
                 assert False
-
         return loaded_cfg
 
-    def _get_group_options(self, group_name, including_config_dir):
+    def _get_group_options(self, group_name):
         options = []
-        for path in self._get_config_path(including_config_dir):
-            is_pkg = path.startswith("pkg://")
+        for search_path in self.full_search_path:
+            is_pkg, path = self._split_path(search_path)
             files = []
             if is_pkg:
-                path = path[len("pkg://") :].replace("/", ".").replace("\\", ".")
-                if resource_isdir(path, group_name):
+                if self.exists(search_path) and resource_isdir(path, group_name):
                     files = resource_listdir(path, group_name)
             else:
                 group_path = os.path.join(path, group_name)
@@ -227,22 +241,21 @@ class ConfigLoader:
             options.extend(files)
         return options
 
-    def _merge_config(self, cfg, family, name, required, including_config_dir):
-        from ..errors import MissingConfigException
+    def _merge_config(self, cfg, family, name, required):
 
         if family != ".":
             new_cfg = os.path.join(family, name)
         else:
             new_cfg = name
 
-        loaded_cfg = self._load_config_impl(new_cfg, including_config_dir)
+        loaded_cfg = self._load_config_impl(new_cfg)
         if loaded_cfg is None:
             if required:
                 if family == "":
                     msg = "Could not load {}".format(new_cfg)
                     raise MissingConfigException(msg, new_cfg)
                 else:
-                    options = self._get_group_options(family, including_config_dir)
+                    options = self._get_group_options(family)
                     if options:
                         msg = "Could not load {}, available options:\n{}:\n\t{}".format(
                             new_cfg, family, "\n\t".join(options)
@@ -258,6 +271,13 @@ class ConfigLoader:
 
         assert False
 
+    def exists_in_search_path(self, filepath):
+        return self._find_config(filepath) is not None
+
+    def exists(self, filename):
+        is_pkg, path = self._split_path(filename)
+        return ConfigLoader._exists(is_pkg, path)
+
     @staticmethod
     def _exists(is_pkg, filename):
         if is_pkg:
@@ -270,16 +290,12 @@ class ConfigLoader:
                 return resource_exists(res_base, res_file)
             except ImportError:
                 return False
+            except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
+                return False
         else:
             return os.path.exists(filename)
 
-    def _merge_defaults(self, cfg, cfg_filename):
-        if cfg_filename is None:
-            conf_dirname = ""
-        else:
-            conf_dirname = os.path.dirname(cfg_filename)
-            if conf_dirname == ".":
-                conf_dirname = ""
+    def _merge_defaults(self, cfg):
         cfg_defaults = cfg.defaults.to_container()
         for default in cfg.defaults:
             default_copy = copy.deepcopy(default)
@@ -294,20 +310,15 @@ class ConfigLoader:
                 if name is not None:
                     cfg = self._merge_config(
                         cfg=cfg,
-                        family=os.path.join(conf_dirname, family),
+                        family=family,
                         name="{}.yaml".format(name),
                         required=not is_optional,
-                        including_config_dir=True,
                     )
                 cfg_defaults.remove(default_copy)
             else:
                 assert isinstance(default, str)
                 cfg = self._merge_config(
-                    cfg=cfg,
-                    family=conf_dirname,
-                    name="{}.yaml".format(default),
-                    required=True,
-                    including_config_dir=True,
+                    cfg=cfg, family="", name="{}.yaml".format(default), required=True
                 )
                 cfg_defaults.remove(default)
         cfg.defaults = cfg_defaults
@@ -316,36 +327,25 @@ class ConfigLoader:
             del cfg["defaults"]
         return cfg
 
-    def _create_cfg(
-        self,
-        cfg_filename,
-        strict,
-        including_config_dir,
-        cli_overrides=[],
-        open_defaults=True,
-    ):
+    def _create_cfg(self, cfg_filename, strict, cli_overrides=[], open_defaults=True):
         """
         :param cfg_filename:
         :param strict:
-        :param including_config_dir:
         :param cli_overrides:
         :param open_defaults: Allow adding loading additional keys to defaults.
         :return:
         """
         resolved_cfg_filename = (
-            self._find_config(cfg_filename, including_config_dir)
-            if cfg_filename is not None
-            else None
+            self._find_config(cfg_filename) if cfg_filename is not None else None
         )
         if resolved_cfg_filename is None:
             main_cfg = OmegaConf.create()
         else:
-            main_cfg = self._load_config_impl(cfg_filename, including_config_dir)
+            main_cfg = self._load_config_impl(cfg_filename)
             if main_cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
-                        cfg_filename,
-                        "\n\t".join(self._get_config_path(including_config_dir)),
+                        cfg_filename, "\n\t".join(self.full_search_path)
                     )
                 )
         assert main_cfg is not None
@@ -376,7 +376,7 @@ class ConfigLoader:
             # after the list is broken into items
             if "," in value:
                 can_add = False
-            if can_add and self._is_group(key, including_config_dir):
+            if can_add and self._is_group(key, self.full_search_path):
                 defaults_changes[key] = value
                 consumed_defaults.append(override)
             else:
