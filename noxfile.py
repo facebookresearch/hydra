@@ -25,7 +25,7 @@ PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
-    session.run(*cmd, ".", silent=False)
+    session.run(*cmd, ".", silent=True)
 
 
 def install_pytest(session):
