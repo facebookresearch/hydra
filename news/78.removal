@@ -1,4 +1,0 @@
-Move non-public APIs into hydra._internal:
-  - Moved non-API code into hydra._interanl to flag it as private.
-  - Moved plugin interfaces into hydra.plugins.
-  - Moved code meant to be used by plugins to hydra.plugins.common.
