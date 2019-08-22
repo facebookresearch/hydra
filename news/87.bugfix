@@ -1,5 +1,6 @@
-* Logging config search path in verbose logging to assist debugging of config load issues
-* Saving hydra.yaml into the job dir to assist debugging hydra issues
-* Fixed a bug caused by fairtask logging change
-* Improved integration tests debuggability by switching hydra to debug logging in them
-* Added selective plugin testing to nox using env, for example PLUGINS=fairtask would only test fairtask.
+Multi change diff:
+  - Logging config search path in verbose logging to assist debugging of config load issues
+  - Saving hydra.yaml into the job dir to assist debugging hydra issues
+  - Fixed a bug caused by fairtask logging change
+  - Improved integration-tests debuggability by switching hydra to debug logging in them
+  - Added selective plugin testing to nox using env, for example PLUGINS=fairtask would only test fairtask.

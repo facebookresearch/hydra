@@ -1,0 +1,1 @@
+Hydra apps can now be packaged and installed along with their configuration files.

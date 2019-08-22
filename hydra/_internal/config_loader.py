@@ -56,41 +56,31 @@ class ConfigLoader:
         return is_pkg, path
 
     def _is_group(self, group_name, search_path):
-        for path in search_path:
-            # TODO: use split_path
-            is_pkg = path.startswith("pkg://")
-            if is_pkg:
-                prefix = "pkg://"
-                path = path[len(prefix) :]
-                full_group_name = os.path.join(path, group_name)
-                full_group_name = full_group_name.replace("/", ".").replace("\\", ".")
-            else:
-                full_group_name = os.path.join(path, group_name)
-
-            if self._exists(is_pkg, full_group_name) is True:
+        for search_path in search_path:
+            is_pkg, path = self._split_path(search_path)
+            if self._exists(is_pkg, os.path.join(path, group_name)) is True:
                 return True
         return False
 
     def _find_config(self, filepath):
-        for path in self.full_search_path:
-            # TODO: use split_path
-            is_pkg = path.startswith("pkg://")
-            prefix = ""
+        for search_path in self.full_search_path:
+            is_pkg, path = self._split_path(search_path)
             if is_pkg:
-                prefix = "pkg://"
-                path = path[len(prefix) :]
-                config_file = os.path.join(path, filepath)
-                res_path = (
-                    os.path.dirname(config_file).replace("/", ".").replace("\\", ".")
-                )
-                res_file = os.path.basename(config_file)
-                config_file = os.path.join(res_path, res_file)
+                dirname = os.path.dirname(filepath).replace("/", ".").replace("\\", ".")
+                basename = os.path.basename(filepath)
+                if dirname != "":
+                    config_dir = "{}.{}".format(path, dirname)
+                else:
+                    config_dir = path
+                config_file = os.path.join(config_dir, basename)
             else:
-                config_file = os.path.join(path, filepath)
+                config_file = os.path.join(search_path, filepath)
 
             config_file = config_file.replace("\\", "/")
             if self._exists(is_pkg, config_file):
-                return prefix + config_file
+                if is_pkg:
+                    config_file = "pkg://" + config_file
+                return config_file
         return None
 
     @staticmethod
