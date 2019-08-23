@@ -56,6 +56,12 @@ def get_all_plugins():
     ]
 
 
+def test_example_app(session, install_cmd):
+    # Install and test example app
+    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
+    session.run("pytest", "demos/hydra_app_example", silent=True)
+
+
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
@@ -68,9 +74,7 @@ def test_core(session, install_cmd):
     install_pytest(session)
     run_pytest(session)
 
-    # Install and test example app
-    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
-    session.run("pytest", "demos/hydra_app_example", silent=True)
+    test_example_app(session, install_cmd)
 
 
 def get_python_versions(session, setup_py):

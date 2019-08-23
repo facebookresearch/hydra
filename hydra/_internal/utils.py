@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import inspect
+import os
 
 from .hydra import Hydra
 
@@ -16,7 +17,14 @@ def run_hydra(args, task_function, config_path, strict):
     except KeyError:
         pass
     try:
-        calling__module = frame[0].f_globals[frame[3]].__module__
+        module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE"]
+        for module_env in module_envs:
+            if module_env in os.environ:
+                calling__module = os.environ[module_env]
+                break
+
+        if calling__module is None:
+            calling__module = frame[0].f_globals[frame[3]].__module__
     except KeyError:
         pass
 
