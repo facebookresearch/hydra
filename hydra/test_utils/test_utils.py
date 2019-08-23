@@ -10,6 +10,7 @@ import string
 import subprocess
 import sys
 import tempfile
+from contextlib import contextmanager
 
 import pytest
 import six
@@ -23,6 +24,11 @@ os.environ["USER"] = "test_user"
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
+
+
+@contextmanager
+def does_not_raise(enter_result=None):
+    yield enter_result
 
 
 def strip_node(cfg, key):
