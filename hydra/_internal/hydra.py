@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-from os.path import realpath, dirname, splitext, basename, join
+from os.path import realpath, dirname, splitext, basename, join, normpath
 
 from omegaconf import open_dict
 
@@ -28,7 +28,7 @@ class Hydra:
         setup_globals()
 
         assert calling_module is not None or calling_file is not None
-
+        basedir_prefix = ""
         if calling_module is None:
             # executed with python file.py
             abs_base_dir = realpath(dirname(calling_file))
@@ -44,7 +44,8 @@ class Hydra:
                 # TODO: test this branch
                 task_name = calling_module
 
-            abs_base_dir = "pkg://" + calling_module
+            basedir_prefix = "pkg://"
+            abs_base_dir = calling_module
 
         JobRuntime().set("name", get_valid_filename(task_name))
         self.task_name = task_name
@@ -60,11 +61,7 @@ class Hydra:
             config_file = None
             config_dir = config_path
 
-        if config_dir == "":
-            abs_config_dir = abs_base_dir
-        else:
-            abs_config_dir = join(abs_base_dir, config_dir)
-
+        abs_config_dir = basedir_prefix + normpath(join(abs_base_dir, config_dir))
         hydra_search_path = [join(abs_config_dir, ".hydra"), "pkg://hydra.default_conf"]
         self.config_loader = ConfigLoader(
             config_file=config_file,
