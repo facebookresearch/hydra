@@ -68,10 +68,9 @@ def task_runner():
 
         def __call__(self, cfg):
             """
-            Actual function being exectured by Hydra
+            Actual function being executed by Hydra
             """
 
-            log.info("Hello from run")
             return 100
 
         def __enter__(self):
@@ -128,9 +127,8 @@ def sweep_runner():
 
         def __call__(self, cfg):
             """
-            Actual function being exectured by Hydra
+            Actual function being executed by Hydra
             """
-            log.info("Hello from sweep")
             return 100
 
         def __enter__(self):
