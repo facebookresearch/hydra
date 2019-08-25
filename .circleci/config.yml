@@ -1,8 +1,8 @@
-version: 2.0
+version: 2.1
 
 jobs:
   # Mac
-  mac_python27:
+  py27_mac:
     macos:
       xcode: "10.0.0"
     steps:
@@ -11,7 +11,7 @@ jobs:
       - run: sudo pip3 install nox
       - run: python3 -m nox
 
-  mac_python36:
+  py36_mac:
     macos:
       xcode: "10.0.0"
     steps:
@@ -24,7 +24,7 @@ jobs:
       - run: ~/miniconda3/bin/conda run -n hydra36 pip install nox
       - run: ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
 
-  mac_python37:
+  py37_mac:
     macos:
       xcode: "10.0.0"
     steps:
@@ -38,9 +38,9 @@ jobs:
       - run: ~/miniconda3/bin/conda run -n hydra37 python3 -m nox
 
   # Linux
-  python27:
+  py27_linux:
     docker:
-      # nox got issues with python 2.7 but it can still be used ot test 2.7
+      # nox got requires python 3 but it can test 2.7
       - image: circleci/python:3.6
     steps:
       - checkout
@@ -48,7 +48,7 @@ jobs:
       - run: sudo pip install nox
       - run: nox
 
-  python36:
+  py36_linux:
     docker:
       - image: circleci/python:3.6
     steps:
@@ -57,7 +57,7 @@ jobs:
       - run: sudo pip install nox
       - run: nox
 
-  python37:
+  py37_linux:
     docker:
       - image: circleci/python:3.7
     steps:
@@ -75,6 +75,80 @@ jobs:
       - run: sudo pip install nox
       - run: nox -s coverage
 
+## TODO: fix windows_python27. this is currently not running the python2.7 tests on Windows
+#  # Windows
+#  py27_win:
+#    executor: win/default
+#    steps:
+#      - checkout
+#      - run:
+#          name: Installing Conda
+#          command: |
+#            choco install miniconda3 -y
+#            choco install python2 -y
+#            C:\tools\miniconda3\Scripts\conda.exe init powershell
+#      - run:
+#          name: Preparing conda environment
+#          command: |
+#            conda create -n hydra python=3.7 -q -y
+#            conda run -n hydra pip install nox
+#      - run:
+#          name: Testing Hydra
+#          # because nox is not able to find python 2.7
+#          command: |
+#            $env:NOX_PYTHON_VERSIONS=2.7
+#            $env:PYTHONIOENCODING="utf_8"
+#            conda activate hydra
+#            nox
+#            exit $LASTEXITCODE
+
+  py36_win:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Installing Conda
+          command: |
+            choco install miniconda3 -y
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+      - run:
+          name: Preparing conda environment
+          command: |
+            conda create -n hydra python=3.6 -q -y
+            conda run -n hydra pip install nox
+      - run:
+          name: Testing Hydra
+          command: |
+            $env:NOX_PYTHON_VERSIONS=3.6
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox
+            exit $LASTEXITCODE
+
+  py37_win:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Installing Conda
+          command: |
+            choco install miniconda3 -y
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+      - run:
+          name: Preparing conda environment
+          command: |
+            conda create -n hydra python=3.7 -q -y
+            conda run -n hydra pip install nox
+      - run:
+          name: Testing Hydra
+          command: |
+            $env:NOX_PYTHON_VERSIONS=3.7
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox
+            exit $LASTEXITCODE
+
+  # Misc
   deploy-website:
     docker:
       - image: circleci/node:12
@@ -97,13 +171,19 @@ workflows:
   version: 2
   build:
     jobs:
-      - python27
-      - python36
-      - python37
-      - mac_python27
-      - mac_python36
-      - mac_python37
+      - py27_linux
+      - py36_linux
+      - py37_linux
+      - py27_mac
+      - py36_mac
+      - py37_mac
+#      - py27_win
+      - py36_win
+      - py37_win
       - deploy-website:
           filters:
             branches:
               only: master
+
+orbs:
+  win: circleci/windows@1.0.0
