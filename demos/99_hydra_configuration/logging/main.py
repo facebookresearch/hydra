@@ -7,7 +7,7 @@ import hydra
 log = logging.getLogger(__name__)
 
 
-@hydra.main()
+@hydra.main(config_path="conf/config.yaml")
 def experiment(_cfg):
     log.info("Info level message")
 

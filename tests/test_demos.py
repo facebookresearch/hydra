@@ -177,7 +177,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
         calling_file=calling_file,
         calling_module=calling_module,
         config_path="sweep_cfg/config.yaml",
-        overrides=["launcher=basic"],
+        overrides=["hydra/launcher=basic"],
     ) as task:
         hydra_cfg = task.job_ret.hydra_cfg
         assert (
@@ -317,31 +317,35 @@ def test_demo_5_config_groups(tmpdir, args, output_conf):
 
 
 def test_demo_6(tmpdir):
-    demo_6_sweep_test_impl(tmpdir, overrides=["launcher=basic"])
+    demo_6_sweep_test_impl(tmpdir, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
-    demos_sweep_1_job_test_impl(sweep_runner, overrides=["launcher=basic"])
+    demos_sweep_1_job_test_impl(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
-    demos_sweep_2_jobs_test_impl(sweep_runner, overrides=["launcher=basic"])
+    demos_sweep_2_jobs_test_impl(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
-    not_sweeping_hydra_overrides(sweep_runner, overrides=["launcher=basic"])
+    not_sweeping_hydra_overrides(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_1_job_strict(sweep_runner):  # noqa: F811
-    demos_sweep_1_job_test_impl(sweep_runner, strict=True, overrides=["launcher=basic"])
+    demos_sweep_1_job_test_impl(
+        sweep_runner, strict=True, overrides=["hydra/launcher=basic"]
+    )
 
 
 def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
     with pytest.raises(KeyError):
         demos_sweep_1_job_test_impl(
-            sweep_runner, strict=True, overrides=["launcher=basic", "hydra.foo=bar"]
+            sweep_runner,
+            strict=True,
+            overrides=["hydra/launcher=basic", "hydra.foo=bar"],
         )
 
 
 def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
-    sweep_over_two_optimizers(sweep_runner, overrides=["launcher=basic"])
+    sweep_over_two_optimizers(sweep_runner, overrides=["hydra/launcher=basic"])

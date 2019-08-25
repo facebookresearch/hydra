@@ -32,7 +32,7 @@ The default launcher runs the jobs locally and serially, but you can switch to o
 
 For example:
 ```text
-$ python demos/6_sweep/experiment.py -m optimizer=nesterov,adam launcher=fairtask
+$ python demos/6_sweep/experiment.py -m optimizer=nesterov,adam hydra/launcher=fairtask
 [2019-08-14 23:39:49,372][fairtask_launcher][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-08-14_23-39-49
 [2019-08-14 23:39:49,534][fairtask_launcher][INFO] - Launching 2 jobs to slurm queue
 [2019-08-14 23:39:49,534][fairtask_launcher][INFO] -    #0 : optimizer=nesterov
