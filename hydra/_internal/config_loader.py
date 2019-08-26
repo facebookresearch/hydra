@@ -33,6 +33,61 @@ class ConfigLoader:
         self.all_config_checked = []
         self.strict_cfg = strict_cfg
 
+    def load_configuration(self, overrides=[]):
+        assert overrides is None or isinstance(overrides, list)
+        overrides = overrides or []
+
+        # Load hydra config
+        hydra_cfg = self._create_cfg(cfg_filename="hydra.yaml")
+
+        # Load job config
+        job_cfg = self._create_cfg(cfg_filename=self.config_file)
+
+        cfg = self._merge_configs(hydra_cfg, job_cfg)
+        consumed_defaults = self._apply_defaults_overrides(cfg, overrides)
+        consumed_free_defaults = self._apply_free_defaults(cfg, overrides)
+        self._validate_config(cfg)
+        cfg = self._merge_defaults(cfg)
+
+        job = OmegaConf.create(dict(name=JobRuntime().get("name")))
+        cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
+
+        OmegaConf.set_struct(cfg, self.strict_cfg)
+
+        # Merge all command line overrides after enabling strict flag
+        all_consumed = consumed_defaults + consumed_free_defaults
+        remaining_overrides = [x for x in overrides if x not in all_consumed]
+        cfg.merge_with_dotlist(remaining_overrides)
+
+        remaining = consumed_defaults + consumed_free_defaults + remaining_overrides
+
+        def is_hydra(x):
+            return x.startswith("hydra.") or x.startswith("hydra/")
+
+        job_overrides = [x for x in remaining if not is_hydra(x)]
+        hydra_overrides = [x for x in remaining if is_hydra(x)]
+        cfg.hydra.overrides.task.extend(job_overrides)
+        cfg.hydra.overrides.hydra.extend(hydra_overrides)
+
+        return cfg
+
+    def load_sweep_config(self, master_config, sweep_overrides):
+        # Recreate the config for this sweep instance with the appropriate overrides
+        overrides = master_config.hydra.overrides.hydra.to_container() + sweep_overrides
+        sweep_config = self.load_configuration(overrides)
+
+        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
+        OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
+
+        return sweep_config
+
+    def exists_in_search_path(self, filepath):
+        return self._find_config(filepath) is not None
+
+    def exists(self, filename):
+        is_pkg, path = self._split_path(filename)
+        return ConfigLoader._exists(is_pkg, path)
+
     def get_job_search_path(self):
         return self.job_search_path
 
@@ -112,6 +167,39 @@ class ConfigLoader:
         return result
 
     @staticmethod
+    def _apply_defaults_overrides(cfg, overrides):
+        consumed = []
+        cfg_defaults = cfg.defaults.to_container()
+        key_to_idx = {}
+        for idx, d in enumerate(cfg_defaults):
+            if isinstance(d, dict):
+                key = next(iter(d.keys()))
+                key_to_idx[key] = idx
+        for override in overrides:
+            key, value = override.split("=")
+            if key in key_to_idx:
+                # Do not add sweep configs into defaults, those will be added to the sweep config
+                # after the list is broken into items
+                if "," not in value:
+                    cfg.defaults[key_to_idx[key]][key] = value
+                    overrides.remove(override)
+                    consumed.append(override)
+        return consumed
+
+    def _apply_free_defaults(self, cfg, overrides):
+        consumed = []
+        for override in overrides:
+            key, value = override.split("=")
+            if self.exists_in_search_path(key):
+                # Do not add sweep configs into defaults, those will be added to the defaults
+                # during sweep when after list is broken into items
+                if "," not in value:
+                    cfg.defaults.append({key: value})
+                    consumed.append(override)
+
+        return consumed
+
+    @staticmethod
     def _merge_configs(c1, c2):
         merged_defaults = ConfigLoader._merge_default_lists(
             c1.defaults or [], c2.defaults or []
@@ -119,89 +207,6 @@ class ConfigLoader:
         c3 = OmegaConf.merge(c1, c2)
         c3.defaults = merged_defaults
         return c3
-
-    def _move_hydra_overrides(self, job_overrides, hydra_overrides):
-        move_list = []
-        for override in job_overrides:
-            key, value = override.split("=")
-            if self._is_group(key, self.hydra_search_path):
-                move_list.append(override)
-                job_overrides.remove(override)
-
-        merged = self._merge_default_lists(hydra_overrides, move_list)
-        del hydra_overrides[:]
-        hydra_overrides.extend(merged)
-
-    def load_configuration(self, overrides=[]):
-        assert overrides is None or isinstance(overrides, list)
-        overrides = overrides or []
-
-        # Load hydra config
-        hydra_cfg = self._load_hydra_cfg(overrides)
-
-        job_overrides = [x for x in overrides if not x.startswith("hydra.")]
-        hydra_overrides = [x for x in overrides if x.startswith("hydra.")]
-
-        # Load job config
-        job_cfg, consumed_job_defaults = self._create_cfg(
-            cfg_filename=self.config_file,
-            strict=self.strict_cfg,
-            open_defaults=True,
-            cli_overrides=job_overrides,
-        )
-
-        cfg = self._merge_configs(hydra_cfg, job_cfg)
-        cfg = self._merge_defaults(cfg)
-
-        self._move_hydra_overrides(job_overrides, hydra_overrides)
-
-        cfg.hydra.overrides.task.extend(job_overrides)
-        cfg.hydra.overrides.hydra.extend(hydra_overrides)
-
-        job = OmegaConf.create(dict(name=JobRuntime().get("name")))
-        cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
-        OmegaConf.set_struct(cfg, self.strict_cfg)
-
-        # Merge all command line overrides after enabling strict flag
-        value_overrides = []
-        for jo in job_overrides + hydra_overrides:
-            if jo not in consumed_job_defaults:
-                value_overrides.append(jo)
-        cfg.merge_with_dotlist(value_overrides)
-        return cfg
-
-    def load_sweep_config(self, master_config, sweep_overrides):
-        # Recreate the config for this sweep instance with the appropriate overrides
-        sweep_config = self.load_configuration(
-            master_config.hydra.overrides.hydra.to_container() + sweep_overrides
-        )
-
-        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
-        OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
-
-        return sweep_config
-
-    def _load_hydra_cfg(self, overrides):
-        """
-        Loads Hydra configuration
-        :param overrides: overrides from command line.
-        :return:
-        """
-        hydra_cfg_defaults, _ = self._create_cfg(
-            cfg_filename="default_hydra.yaml", strict=False
-        )
-        hydra_cfg, consumed_defaults = self._create_cfg(
-            cfg_filename="hydra.yaml",
-            strict=False,
-            cli_overrides=overrides,
-            open_defaults=False,
-        )
-        hydra_cfg = self._merge_configs(hydra_cfg_defaults, hydra_cfg)
-        for consumed in consumed_defaults:
-            hydra_cfg.hydra.overrides.hydra.append(consumed)
-            overrides.remove(consumed)
-
-        return hydra_cfg
 
     def _load_config_impl(self, input_file):
         loaded_cfg = None
@@ -271,13 +276,6 @@ class ConfigLoader:
 
         assert False
 
-    def exists_in_search_path(self, filepath):
-        return self._find_config(filepath) is not None
-
-    def exists(self, filename):
-        is_pkg, path = self._split_path(filename)
-        return ConfigLoader._exists(is_pkg, path)
-
     @staticmethod
     def _exists(is_pkg, filename):
         if is_pkg:
@@ -292,6 +290,12 @@ class ConfigLoader:
                 return False
             except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
                 return False
+            except NotImplementedError:
+                raise NotImplementedError(
+                    "Unable to load {}/{}, are you missing an __init__.py?".format(
+                        res_base, res_file
+                    )
+                )
         else:
             return os.path.exists(filename)
 
@@ -327,17 +331,15 @@ class ConfigLoader:
             del cfg["defaults"]
         return cfg
 
-    def _create_cfg(self, cfg_filename, strict, cli_overrides=[], open_defaults=True):
+    def _create_cfg(self, cfg_filename):
         """
         :param cfg_filename:
-        :param strict:
-        :param cli_overrides:
-        :param open_defaults: Allow adding loading additional keys to defaults.
         :return:
         """
         resolved_cfg_filename = (
             self._find_config(cfg_filename) if cfg_filename is not None else None
         )
+
         if resolved_cfg_filename is None:
             main_cfg = OmegaConf.create()
         else:
@@ -352,41 +354,8 @@ class ConfigLoader:
 
         if main_cfg.defaults is None:
             main_cfg.defaults = []
-        ConfigLoader._validate_config(main_cfg)
 
-        # split overrides into defaults (which cause additional configs to be loaded)
-        # and overrides which triggers overriding of specific nodes in the
-        # config tree
-        overrides = []
-        defaults_changes = {}
-        consumed_defaults = []
-        for override in copy.deepcopy(cli_overrides):
-            key, value = override.split("=")
-            assert key != "optional", (
-                "optional is a reserved keyword and cannot be used as a "
-                "config group name"
-            )
-
-            can_add = open_defaults
-            for d in main_cfg.defaults:
-                if isinstance(d, DictConfig) and key in d:
-                    can_add = True
-                    break
-            # Do not add sweep configs into defaults, those will be added to the sweep config
-            # after the list is broken into items
-            if "," in value:
-                can_add = False
-            if can_add and self._is_group(key, self.full_search_path):
-                defaults_changes[key] = value
-                consumed_defaults.append(override)
-            else:
-                overrides.append(override)
-
-        self._update_defaults(main_cfg, defaults_changes)
-        if strict:
-            OmegaConf.set_struct(main_cfg, True)
-
-        return main_cfg, consumed_defaults
+        return main_cfg
 
     @staticmethod
     def _validate_config(cfg):

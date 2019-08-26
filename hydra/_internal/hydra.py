@@ -62,11 +62,10 @@ class Hydra:
             config_dir = config_path
 
         abs_config_dir = basedir_prefix + normpath(join(abs_base_dir, config_dir))
-        hydra_search_path = [join(abs_config_dir, ".hydra"), "pkg://hydra.default_conf"]
         self.config_loader = ConfigLoader(
             config_file=config_file,
             job_search_path=[abs_config_dir],
-            hydra_search_path=hydra_search_path,
+            hydra_search_path=["pkg://hydra.conf"],
             strict_cfg=strict,
         )
 

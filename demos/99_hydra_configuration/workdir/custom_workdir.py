@@ -5,7 +5,7 @@ import sys
 import hydra
 
 
-@hydra.main()
+@hydra.main(config_path="conf/config.yaml")
 def experiment(_cfg):
     print(os.getcwd())
 

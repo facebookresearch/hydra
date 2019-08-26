@@ -16,13 +16,13 @@ to the default logging behavior:
 Note that the resulting config will be a combination of the default logging config and your specification,
 With your specification overriding the default.
 
-.hydra/hydra.yaml
+conf/config.yaml
 ```yaml
 defaults:
-  - job_logging : logging
+  - hydra/job_logging : logging
 ```
 
-.hydra/job_logging/logging.yaml
+conf/hydra/job_logging/logging.yaml
 ```yaml
 hydra:
   # python logging configuration
@@ -37,7 +37,7 @@ hydra:
 Output:
 
 ```bash
-$ python demos/99_hydra_configuration/logging/main.py job_logging=default
+$ python demos/99_hydra_configuration/logging/main.py hydra/job_logging=logging
 [2019-08-14 21:07:31,382][__main__][INFO] - Info level message
 $ python demos/99_hydra_configuration/logging/main.py
 [INFO] - Info level message

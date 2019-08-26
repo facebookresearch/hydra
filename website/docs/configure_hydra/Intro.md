@@ -13,11 +13,6 @@ This configuration comes with the Hydra code, and it not directly changeable by 
 *Scope*: global, this is effecting all Hydra runs and is the first thing that is used
 to compose the Hydra configuration.
 
-### Project config (`.hydra/hydra.yaml`)
-`.hydra/hydra.yaml` in your `config_path` directory.
-
-*Scope*: Hydra project (a collection of applications sharing the same config directory).
-
 ### Job config (`config.yaml`)
 You can configure Hydra directly through your job config.
 
@@ -37,8 +32,7 @@ The default logging should be sufficient for most use cases but you can [customi
 the logging in your own project 
 
 ### Plugins
-Many plugins requires configuration via the .hydra directory.
-See the documentation of individual plugins for more information about how to configure them.
+Many plugins requires configuration, see the documentation of individual plugins for more information about how to configure them.
 
 TODO: Document plugins
 

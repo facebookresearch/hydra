@@ -1,3 +1,18 @@
+0.1.2 (2019-08-26)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- Hydra config groups were moved to the hydra/namespace (#101)
+- Removed support for .hydra directory, Hydra can be configured directly from the job config. (#91)
+
+Bug Fixes
+---------
+
+- Config loading rewrite fixed #88 (#88)
+
+
 0.1.1 (2019-08-22)
 ==================
 
