@@ -1,1 +1,0 @@
-Removed support for .hydra directory, Hydra can be configured directly from the job config.
