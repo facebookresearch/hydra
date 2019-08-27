@@ -13,10 +13,12 @@ log = logging.getLogger(__name__)
 
 
 class SubmititLauncher(Launcher):
-    def __init__(self, queue, folder, queue_parameters):
+    def __init__(self, queue, folder, queue_parameters, conda_file=None, par_file=None):
         self.queue = queue
         self.queue_parameters = queue_parameters
         self.folder = folder
+        self.conda_file = conda_file
+        self.par_file = par_file
         self.config = None
         self.task_function = None
         self.verbose = None
@@ -70,11 +72,15 @@ class SubmititLauncher(Launcher):
         self.config.hydra.job.num_jobs = num_jobs
 
         if self.queue == "auto":
-            executor = submitit.AutoExecutor(folder=self.folder)
+            executor = submitit.AutoExecutor(
+                folder=self.folder, conda_file=self.conda_file, par_file=self.par_file
+            )
         elif self.queue == "slurm":
             executor = submitit.SlurmExecutor(folder=self.folder)
         elif self.queue == "chronos":
-            executor = submitit.ChronosExecutor(folder=self.folder)
+            executor = submitit.ChronosExecutor(
+                folder=self.folder, conda_file=self.conda_file, par_file=self.par_file
+            )
         elif self.queue == "local":
             executor = submitit.LocalExecutor(folder=self.folder)
         else:
