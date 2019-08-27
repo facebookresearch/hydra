@@ -21,7 +21,7 @@ hydra:
         chronos:
           # See crun documentation for most parameters
           # https://our.internmc.facebook.com/intern/wiki/Chronos-c-binaries/crun/
-          hostgroup: blearner_ash_bigsur_fair
+          hostgroup: fblearner_ash_bigsur_fair
           cpu: 10
           mem: ${hydra.launcher.mem_limit}
           gpu: 1
