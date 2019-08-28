@@ -69,6 +69,12 @@ optimizer:
   type: adam
 ```
 
+If at any point you would like to prevent a default from being loaded, you can assign null to it:
+```yaml
+$ python experiment.py optimizer=null
+{}
+```
+
 Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/5_config_groups).
 
 <div class="alert alert--info" role="alert">
