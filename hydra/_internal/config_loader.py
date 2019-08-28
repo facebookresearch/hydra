@@ -370,10 +370,12 @@ class ConfigLoader:
                         cfg_filename, "\n\t".join(self.full_search_path)
                     )
                 )
+        if cfg.defaults is not None:
+            self._validate_defaults(cfg.defaults)
         return cfg
 
     @staticmethod
-    def _validate_config(cfg):
+    def _validate_defaults(defaults):
         valid_example = """
         Example of a valid defaults:
         defaults:
@@ -382,26 +384,33 @@ class ConfigLoader:
             optional: true
           - optimizer: nesterov
         """
-        assert isinstance(cfg.all_defaults, DictConfig)
-        for _, defaults in cfg.all_defaults.items():
-            assert isinstance(defaults, ListConfig), (
-                "defaults must be a list because composition is order sensitive : "
+        if not isinstance(defaults, ListConfig):
+            raise ValueError(
+                "defaults must be a list because composition is order sensitive, "
                 + valid_example
             )
-            for default in defaults:
-                assert isinstance(default, DictConfig) or isinstance(default, str)
-                if isinstance(default, DictConfig):
-                    assert len(default) in (1, 2)
-                    if len(default) == 2:
-                        assert default.optional is not None and isinstance(
-                            default.optional, bool
-                        )
-                    else:
-                        # optional can't be the only config key in a default
-                        assert default.optional is None, "Missing config key"
-                elif isinstance(default, str):
-                    # single file to load
-                    pass
+
+        for default in defaults:
+            assert isinstance(default, DictConfig) or isinstance(default, str)
+            if isinstance(default, DictConfig):
+                assert len(default) in (1, 2)
+                if len(default) == 2:
+                    assert default.optional is not None and isinstance(
+                        default.optional, bool
+                    )
+                else:
+                    # optional can't be the only config key in a default
+                    assert default.optional is None, "Missing config key"
+            elif isinstance(default, str):
+                # single file to load
+                pass
+
+    @staticmethod
+    def _validate_config(cfg):
+
+        assert isinstance(cfg.all_defaults, DictConfig)
+        for _, defaults in cfg.all_defaults.items():
+            ConfigLoader._validate_defaults(defaults)
 
     @staticmethod
     def _update_defaults(cfg, defaults_changes):

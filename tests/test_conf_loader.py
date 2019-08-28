@@ -239,3 +239,14 @@ def test_default_removal(config_file, overrides):
         ("pkg://hydra.conf.hydra.job_logging/default.yaml", True),
         ("pkg://hydra.conf.hydra.sweeper/basic.yaml", True),
     ]
+
+
+def test_defaults_not_list_exception():
+    config_loader = ConfigLoader(
+        job_search_path=["tests/configs"],
+        hydra_search_path=["pkg://hydra.conf"],
+        strict_cfg=False,
+        config_file="defaults_not_list.yaml",
+    )
+    with pytest.raises(ValueError):
+        config_loader.load_configuration(overrides=[])
