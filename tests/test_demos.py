@@ -349,3 +349,17 @@ def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
 
 def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
     sweep_over_two_optimizers(sweep_runner, overrides=["hydra/launcher=basic"])
+
+
+def test_specializing_configs_demo(task_runner):  # noqa: F811
+    with task_runner(
+        calling_file="demos/8_specializing_config/example.py",
+        calling_module=None,
+        config_path="conf/config.yaml",
+        overrides=["dataset=cifar10"],
+    ) as task:
+        assert task.job_ret.cfg == dict(
+            dataset=dict(name="cifar10", path="/datasets/cifar10"),
+            model=dict(num_layers=5, type="alexnet"),
+        )
+        verify_dir_outputs(task.job_ret, overrides=task.overrides)

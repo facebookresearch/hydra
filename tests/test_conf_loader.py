@@ -207,8 +207,5 @@ def test_load_yml_file():
     ],
 )
 def test_merge_default_lists(primary, merged, result):
-    assert ConfigLoader._merge_default_lists(primary, merged) == result
-
-
-# TODO: test exists on file in a module when there are missing __init__.py proudces a good error.
-# in partcular for primary config and for included configs. (primary should error, included should skip)
+    ConfigLoader._merge_default_lists(primary, merged)
+    assert primary == result
