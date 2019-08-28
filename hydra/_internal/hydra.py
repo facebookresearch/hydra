@@ -7,6 +7,7 @@ from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
 from .plugins import Plugins
+from .config_search_path import ConfigSearchPath
 from ..errors import MissingConfigException
 from ..plugins.common.utils import (
     configure_log,
@@ -64,11 +65,12 @@ class Hydra:
             abs_config_dir = abs_base_dir
 
         abs_config_dir = basedir_prefix + abs_config_dir
+
+        search_path = ConfigSearchPath()
+        search_path.append("hydra", "pkg://hydra.conf")
+        search_path.append(task_name, abs_config_dir)
         self.config_loader = ConfigLoader(
-            config_file=config_file,
-            job_search_path=[abs_config_dir],
-            hydra_search_path=["pkg://hydra.conf"],
-            strict_cfg=strict,
+            config_file=config_file, config_search_path=search_path, strict_cfg=strict
         )
 
         if not self.config_loader.exists(abs_config_dir):
@@ -123,20 +125,18 @@ class Hydra:
         configure_log(cfg.hydra.hydra_logging, self.verbose)
         global log
         log = logging.getLogger(__name__)
-        self._print_debug_info(cfg)
-        return cfg
 
-    def _print_debug_info(self, cfg):
         log.debug("Hydra config search path:")
-        for path in self.config_loader.get_hydra_search_path():
-            log.debug("\t" + path)
-        log.debug("")
-        log.debug("Job config search path:")
-        for path in self.config_loader.get_job_search_path():
-            log.debug("\t" + path)
-        log.debug("")
+        pad = 15
+        log.debug("\t{}: {}".format("provider".ljust(pad), "path".ljust(pad)))
+        log.debug("\t---------------------")
+        for sp in self.config_loader.config_search_path.config_search_path:
+            log.debug("\t{}: {}".format(sp.provider.ljust(pad), sp.path.ljust(pad)))
+
         for file, loaded in self.config_loader.get_load_history():
             if loaded:
                 log.debug("Loaded: {}".format(file))
             else:
                 log.debug("Not found: {}".format(file))
+
+        return cfg

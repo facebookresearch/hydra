@@ -16,6 +16,7 @@ from pkg_resources import (
 
 from ..errors import MissingConfigException
 from ..plugins.common.utils import JobRuntime
+from .config_search_path import ConfigSearchPath
 
 
 class ConfigLoader:
@@ -23,13 +24,10 @@ class ConfigLoader:
     Configuration loader
     """
 
-    def __init__(
-        self, config_file, strict_cfg, hydra_search_path=[], job_search_path=[]
-    ):
+    def __init__(self, config_file, strict_cfg, config_search_path):
+        assert isinstance(config_search_path, ConfigSearchPath)
         self.config_file = config_file
-        self.job_search_path = job_search_path
-        self.hydra_search_path = hydra_search_path
-        self.full_search_path = self.job_search_path + self.hydra_search_path
+        self.config_search_path = config_search_path
         self.all_config_checked = []
         self.strict_cfg = strict_cfg
 
@@ -98,11 +96,8 @@ class ConfigLoader:
         is_pkg, path = self._split_path(filename)
         return ConfigLoader._exists(is_pkg, path)
 
-    def get_job_search_path(self):
-        return self.job_search_path
-
-    def get_hydra_search_path(self):
-        return self.hydra_search_path
+    def get_search_path(self):
+        return self.config_search_path
 
     def get_load_history(self):
         """
@@ -119,15 +114,9 @@ class ConfigLoader:
             path = path[len(prefix) :]
         return is_pkg, path
 
-    def _is_group(self, group_name, search_path):
-        for search_path in search_path:
-            is_pkg, path = self._split_path(search_path)
-            if self._exists(is_pkg, "{}/{}".format(path, group_name)) is True:
-                return True
-        return False
-
     def _find_config(self, filepath):
-        for search_path in self.full_search_path:
+        for search_path in self.config_search_path.config_search_path:
+            search_path = search_path.path
             is_pkg, path = self._split_path(search_path)
             config_file = "{}/{}".format(path, filepath)
             if self._exists(is_pkg, config_file):
@@ -245,7 +234,8 @@ class ConfigLoader:
 
     def _get_group_options(self, group_name):
         options = []
-        for search_path in self.full_search_path:
+        for search_path in self.config_search_path.config_search_path:
+            search_path = search_path.path
             is_pkg, path = self._split_path(search_path)
             files = []
             if is_pkg:
@@ -375,7 +365,8 @@ class ConfigLoader:
             if cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
-                        cfg_filename, "\n\t".join(self.full_search_path)
+                        cfg_filename,
+                        "\n\t".join(self.config_search_path.config_search_path),
                     )
                 )
         if cfg.defaults is not None:

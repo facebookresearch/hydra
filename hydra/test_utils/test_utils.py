@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import contextmanager
+from hydra._internal.config_search_path import ConfigSearchPath
 
 import pytest
 import six
@@ -244,3 +245,11 @@ if __name__ == "__main__":
             assert outputs[idx] == expected_outputs[idx]
     finally:
         os.chdir(orig_dir)
+
+
+def create_search_path(search_path=[]):
+    csp = ConfigSearchPath()
+    csp.append("hydra", "pkg://hydra.conf")
+    for sp in search_path:
+        csp.append("test", sp)
+    return csp
