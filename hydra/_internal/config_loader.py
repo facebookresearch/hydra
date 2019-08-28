@@ -44,8 +44,13 @@ class ConfigLoader:
         job_cfg = self._create_cfg(cfg_filename=self.config_file)
 
         cfg = self._merge_configs(hydra_cfg, job_cfg)
-        consumed_defaults = self._apply_defaults_overrides(cfg, overrides)
-        consumed_free_defaults = self._apply_free_defaults(cfg, overrides)
+        consumed_hydra_defaults = self._apply_defaults_overrides(
+            cfg, overrides, "all_defaults.hydra"
+        )
+        consumed_job_defaults = self._apply_defaults_overrides(
+            cfg, overrides, "all_defaults.job"
+        )
+        consumed_free_job_defaults = self._apply_free_defaults(cfg, overrides)
         self._validate_config(cfg)
         cfg = self._merge_defaults(cfg)
 
@@ -55,11 +60,16 @@ class ConfigLoader:
         OmegaConf.set_struct(cfg, self.strict_cfg)
 
         # Merge all command line overrides after enabling strict flag
-        all_consumed = consumed_defaults + consumed_free_defaults
+        all_consumed = consumed_hydra_defaults + consumed_free_job_defaults
         remaining_overrides = [x for x in overrides if x not in all_consumed]
         cfg.merge_with_dotlist(remaining_overrides)
 
-        remaining = consumed_defaults + consumed_free_defaults + remaining_overrides
+        remaining = (
+            consumed_hydra_defaults
+            + consumed_job_defaults
+            + consumed_free_job_defaults
+            + remaining_overrides
+        )
 
         def is_hydra(x):
             return x.startswith("hydra.") or x.startswith("hydra/")
@@ -139,40 +149,12 @@ class ConfigLoader:
         return None
 
     @staticmethod
-    def _merge_default_lists(primary, merged_list):
-        if isinstance(primary, ListConfig):
-            primary = primary.to_container()
-        if isinstance(merged_list, ListConfig):
-            merged_list = merged_list.to_container()
-        key_to_idx = {}
-        for idx, d in enumerate(primary):
-            if isinstance(d, dict):
-                key = next(iter(d.keys()))
-                key_to_idx[key] = idx
-        result = copy.deepcopy(primary)
-        for d in copy.deepcopy(merged_list):
-            if isinstance(d, dict):
-                key = next(iter(d.keys()))
-                if key in key_to_idx.keys():
-                    idx = key_to_idx[key]
-                    result[idx] = d
-                    merged_list.remove(d)
-            else:
-                result.append(d)
-                merged_list.remove(d)
-
-        for d in merged_list:
-            result.append(d)
-
-        return result
-
-    @staticmethod
-    def _apply_defaults_overrides(cfg, overrides):
+    def _apply_defaults_overrides(cfg, overrides, defaults_key):
         consumed = []
-        cfg_defaults = cfg.defaults.to_container()
         key_to_idx = {}
-        for idx, d in enumerate(cfg_defaults):
-            if isinstance(d, dict):
+        defaults = cfg.select(defaults_key)
+        for idx, d in enumerate(defaults):
+            if isinstance(d, DictConfig):
                 key = next(iter(d.keys()))
                 key_to_idx[key] = idx
         for override in overrides:
@@ -181,7 +163,7 @@ class ConfigLoader:
                 # Do not add sweep configs into defaults, those will be added to the sweep config
                 # after the list is broken into items
                 if "," not in value:
-                    cfg.defaults[key_to_idx[key]][key] = value
+                    defaults[key_to_idx[key]][key] = value
                     overrides.remove(override)
                     consumed.append(override)
         return consumed
@@ -194,19 +176,59 @@ class ConfigLoader:
                 # Do not add sweep configs into defaults, those will be added to the defaults
                 # during sweep when after list is broken into items
                 if "," not in value:
-                    cfg.defaults.append({key: value})
+                    cfg.all_defaults.job.append({key: value})
                     consumed.append(override)
 
         return consumed
 
     @staticmethod
-    def _merge_configs(c1, c2):
-        merged_defaults = ConfigLoader._merge_default_lists(
-            c1.defaults or [], c2.defaults or []
+    def _merge_default_lists(primary, merged_list):
+        def get_key(d1):
+            keys_iter = iter(d1.keys())
+            key1 = next(keys_iter)
+            if key1 == "optional":
+                key1 = next(keys_iter)
+            return key1
+
+        key_to_idx = {}
+        for idx, d in enumerate(primary):
+            if isinstance(d, (dict, DictConfig)):
+                key = get_key(d)
+                key_to_idx[key] = idx
+        for d in merged_list:
+            if isinstance(d, (dict, DictConfig)):
+                key = get_key(d)
+                if key in key_to_idx.keys():
+                    idx = key_to_idx[key]
+                    primary[idx] = d
+                    merged_list.remove(d)
+            else:
+                primary.append(d)
+                merged_list.remove(d)
+
+        for d in merged_list:
+            primary.append(d)
+
+    @staticmethod
+    def _merge_configs(hydra_cfg, job_cfg):
+        cfg = OmegaConf.merge(hydra_cfg, job_cfg)
+        cfg.all_defaults = dict(
+            hydra=hydra_cfg.defaults or [], job=job_cfg.defaults or []
         )
-        c3 = OmegaConf.merge(c1, c2)
-        c3.defaults = merged_defaults
-        return c3
+        del cfg["defaults"]
+        # Use hydra/ overrides from job defaults to override hydra.defaults
+        merge_to_hydra = []
+        for default in cfg.all_defaults.job:
+            if isinstance(default, DictConfig):
+                keys_iter = iter(default.keys())
+                key = next(keys_iter)
+                if key == "optional":
+                    key = next(keys_iter)
+                if key.startswith("hydra/"):
+                    merge_to_hydra.append(default)
+                    cfg.all_defaults.job.remove(default)
+        ConfigLoader._merge_default_lists(cfg.all_defaults.hydra, merge_to_hydra)
+        return cfg
 
     def _load_config_impl(self, input_file):
         loaded_cfg = None
@@ -300,62 +322,52 @@ class ConfigLoader:
             return os.path.exists(filename)
 
     def _merge_defaults(self, cfg):
-        cfg_defaults = cfg.defaults.to_container()
-        for default in cfg.defaults:
-            default_copy = copy.deepcopy(default)
-            if isinstance(default, DictConfig):
-                is_optional = False
-                if default.optional is not None:
-                    is_optional = default.optional
-                    del default["optional"]
-                family = next(iter(default.keys()))
-                name = default[family]
-                # Name is none if default value is removed
-                if name is not None:
-                    cfg = self._merge_config(
-                        cfg=cfg,
-                        family=family,
-                        name="{}.yaml".format(name),
-                        required=not is_optional,
+        def merge_defaults(cfg2, defaults_to_merge):
+            cfg2.defaults = defaults_to_merge
+            for default in cfg2.defaults:
+                if isinstance(default, DictConfig):
+                    is_optional = False
+                    if default.optional is not None:
+                        is_optional = default.optional
+                        del default["optional"]
+                    family = next(iter(default.keys()))
+                    name = default[family]
+                    # Name is none if default value is removed
+                    if name is not None:
+                        cfg2 = self._merge_config(
+                            cfg=cfg2,
+                            family=family,
+                            name="{}.yaml".format(name),
+                            required=not is_optional,
+                        )
+                else:
+                    assert isinstance(default, str)
+                    cfg2 = self._merge_config(
+                        cfg=cfg2,
+                        family="",
+                        name="{}.yaml".format(default),
+                        required=True,
                     )
-                cfg_defaults.remove(default_copy)
-            else:
-                assert isinstance(default, str)
-                cfg = self._merge_config(
-                    cfg=cfg, family="", name="{}.yaml".format(default), required=True
-                )
-                cfg_defaults.remove(default)
-        cfg.defaults = cfg_defaults
-        # remove config block from resulting cfg.
-        if len(cfg.defaults) == 0:
-            del cfg["defaults"]
+            return cfg2
+
+        for _, defaults in cfg.all_defaults.items():
+            cfg = merge_defaults(cfg, defaults)
+        del cfg["all_defaults"]
+        del cfg["defaults"]
         return cfg
 
     def _create_cfg(self, cfg_filename):
-        """
-        :param cfg_filename:
-        :return:
-        """
-        resolved_cfg_filename = (
-            self._find_config(cfg_filename) if cfg_filename is not None else None
-        )
-
-        if resolved_cfg_filename is None:
-            main_cfg = OmegaConf.create()
+        if cfg_filename is None:
+            cfg = OmegaConf.create()
         else:
-            main_cfg = self._load_config_impl(cfg_filename)
-            if main_cfg is None:
+            cfg = self._load_config_impl(cfg_filename)
+            if cfg is None:
                 raise IOError(
                     "could not find {}, config path:\n\t".format(
                         cfg_filename, "\n\t".join(self.full_search_path)
                     )
                 )
-        assert main_cfg is not None
-
-        if main_cfg.defaults is None:
-            main_cfg.defaults = []
-
-        return main_cfg
+        return cfg
 
     @staticmethod
     def _validate_config(cfg):
@@ -367,24 +379,26 @@ class ConfigLoader:
             optional: true
           - optimizer: nesterov
         """
-        assert isinstance(cfg.defaults, ListConfig), (
-            "defaults must be a list because composition is order sensitive : "
-            + valid_example
-        )
-        for default in cfg.defaults:
-            assert isinstance(default, DictConfig) or isinstance(default, str)
-            if isinstance(default, DictConfig):
-                assert len(default) in (1, 2)
-                if len(default) == 2:
-                    assert default.optional is not None and isinstance(
-                        default.optional, bool
-                    )
-                else:
-                    # optional can't be the only config key in a default
-                    assert default.optional is None, "Missing config key"
-            elif isinstance(default, str):
-                # single file to load
-                pass
+        assert isinstance(cfg.all_defaults, DictConfig)
+        for _, defaults in cfg.all_defaults.items():
+            assert isinstance(defaults, ListConfig), (
+                "defaults must be a list because composition is order sensitive : "
+                + valid_example
+            )
+            for default in defaults:
+                assert isinstance(default, DictConfig) or isinstance(default, str)
+                if isinstance(default, DictConfig):
+                    assert len(default) in (1, 2)
+                    if len(default) == 2:
+                        assert default.optional is not None and isinstance(
+                            default.optional, bool
+                        )
+                    else:
+                        # optional can't be the only config key in a default
+                        assert default.optional is None, "Missing config key"
+                elif isinstance(default, str):
+                    # single file to load
+                    pass
 
     @staticmethod
     def _update_defaults(cfg, defaults_changes):
