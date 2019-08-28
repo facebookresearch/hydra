@@ -209,3 +209,33 @@ def test_load_yml_file():
 def test_merge_default_lists(primary, merged, result):
     ConfigLoader._merge_default_lists(primary, merged)
     assert primary == result
+
+
+@pytest.mark.parametrize(
+    "config_file, overrides",
+    [
+        # remove from config
+        ("removing-hydra-launcher-default.yaml", []),
+        # remove from override
+        ("config.yaml", ["hydra/launcher=null"]),
+        # remove from both
+        ("removing-hydra-launcher-default.yaml", ["hydra/launcher=null"]),
+        # second overrides removes
+        ("config.yaml", ["hydra/launcher=submitit", "hydra/launcher=null"]),
+    ],
+)
+def test_default_removal(config_file, overrides):
+    config_loader = ConfigLoader(
+        job_search_path=["tests/configs"],
+        hydra_search_path=["pkg://hydra.conf"],
+        strict_cfg=False,
+        config_file=config_file,
+    )
+    config_loader.load_configuration(overrides=overrides)
+    assert config_loader.get_load_history() == [
+        ("pkg://hydra.conf/hydra.yaml", True),
+        ("tests/configs/" + config_file, True),
+        ("pkg://hydra.conf.hydra.hydra_logging/default.yaml", True),
+        ("pkg://hydra.conf.hydra.job_logging/default.yaml", True),
+        ("pkg://hydra.conf.hydra.sweeper/basic.yaml", True),
+    ]
