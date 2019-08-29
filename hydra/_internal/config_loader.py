@@ -117,7 +117,6 @@ class ConfigLoader:
         is_pkg = path.startswith(prefix)
         if is_pkg:
             path = path[len(prefix) :]
-            path = path.replace("/", ".").replace("\\", ".")
         return is_pkg, path
 
     def _is_group(self, group_name, search_path):
@@ -130,18 +129,7 @@ class ConfigLoader:
     def _find_config(self, filepath):
         for search_path in self.full_search_path:
             is_pkg, path = self._split_path(search_path)
-            if is_pkg:
-                dirname = os.path.dirname(filepath).replace("/", ".").replace("\\", ".")
-                basename = os.path.basename(filepath)
-                if dirname != "":
-                    config_dir = "{}.{}".format(path, dirname)
-                else:
-                    config_dir = path
-                config_file = os.path.join(config_dir, basename)
-            else:
-                config_file = os.path.join(search_path, filepath)
-
-            config_file = config_file.replace("\\", "/")
+            config_file = os.path.join(path, filepath)
             if self._exists(is_pkg, config_file):
                 if is_pkg:
                     config_file = "pkg://" + config_file
@@ -242,9 +230,10 @@ class ConfigLoader:
             is_pkg = filename.startswith("pkg://")
             if is_pkg:
                 filename = filename[len("pkg://") :]
-                res_path = os.path.dirname(filename)
-                res_file = os.path.basename(filename)
-                with resource_stream(res_path, res_file) as stream:
+                module_name, resource_name = ConfigLoader._split_module_and_resource(
+                    filename
+                )
+                with resource_stream(module_name, resource_name) as stream:
                     loaded_cfg = OmegaConf.load(stream)
                 self.all_config_checked.append(("pkg://" + filename, True))
             elif os.path.exists(filename):
@@ -260,8 +249,13 @@ class ConfigLoader:
             is_pkg, path = self._split_path(search_path)
             files = []
             if is_pkg:
-                if self.exists(search_path) and resource_isdir(path, group_name):
-                    files = resource_listdir(path, group_name)
+                module_name, resource_name = ConfigLoader._split_module_and_resource(
+                    os.path.join(path, group_name)
+                )
+                if self._exists(is_pkg, path) and resource_isdir(
+                    module_name, resource_name
+                ):
+                    files = resource_listdir(module_name, resource_name)
             else:
                 group_path = os.path.join(path, group_name)
                 if os.path.isdir(group_path):
@@ -302,14 +296,27 @@ class ConfigLoader:
         assert False
 
     @staticmethod
+    def _split_module_and_resource(filename):
+        sep = filename.find("/")
+        if sep == -1:
+            module_name = filename
+            resource_name = ""
+        else:
+            module_name = filename[0:sep]
+            resource_name = filename[sep + 1 :]
+        if module_name == "":
+            # if we have a module a module only, dirname would return nothing and basename would return the module.
+            module_name = resource_name
+            resource_name = ""
+
+        return module_name, resource_name
+
+    @staticmethod
     def _exists(is_pkg, filename):
         if is_pkg:
-            module_name = os.path.dirname(filename)
-            resource_name = os.path.basename(filename)
-            if module_name == "":
-                # if we have a module a module only, dirname would return nothing and basename would return the module.
-                module_name = resource_name
-                resource_name = ""
+            module_name, resource_name = ConfigLoader._split_module_and_resource(
+                filename
+            )
             try:
                 return resource_exists(module_name, resource_name)
             except ImportError:
