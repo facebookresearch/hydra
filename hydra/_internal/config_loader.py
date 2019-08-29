@@ -304,13 +304,14 @@ class ConfigLoader:
     @staticmethod
     def _exists(is_pkg, filename):
         if is_pkg:
-            res_base = os.path.dirname(filename)
-            res_file = os.path.basename(filename)
-            if res_base == "":
-                res_base = res_file
-                res_file = ""
+            module_name = os.path.dirname(filename)
+            resource_name = os.path.basename(filename)
+            if module_name == "":
+                # if we have a module a module only, dirname would return nothing and basename would return the module.
+                module_name = resource_name
+                resource_name = ""
             try:
-                return resource_exists(res_base, res_file)
+                return resource_exists(module_name, resource_name)
             except ImportError:
                 return False
             except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
@@ -318,7 +319,7 @@ class ConfigLoader:
             except NotImplementedError:
                 raise NotImplementedError(
                     "Unable to load {}/{}, are you missing an __init__.py?".format(
-                        res_base, res_file
+                        module_name, resource_name
                     )
                 )
         else:

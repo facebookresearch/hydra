@@ -41,7 +41,6 @@ class Hydra:
                 task_name = calling_module[last_dot + 1 :]
                 calling_module = calling_module[0:last_dot]
             else:
-                # TODO: test this branch
                 task_name = calling_module
 
             basedir_prefix = "pkg://"

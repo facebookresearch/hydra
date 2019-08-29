@@ -17,7 +17,7 @@ def run_hydra(args, task_function, config_path, strict):
     except KeyError:
         pass
     try:
-        module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE"]
+        module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
         for module_env in module_envs:
             if module_env in os.environ:
                 calling__module = os.environ[module_env]
