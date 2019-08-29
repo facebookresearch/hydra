@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-from os.path import realpath, dirname, splitext, basename, join, normpath
+from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict
 
@@ -60,7 +60,7 @@ class Hydra:
             config_file = None
             config_dir = config_path
 
-        abs_config_dir = basedir_prefix + normpath(join(abs_base_dir, config_dir))
+        abs_config_dir = basedir_prefix + "{}/{}".format(abs_base_dir, config_dir)
         self.config_loader = ConfigLoader(
             config_file=config_file,
             job_search_path=[abs_config_dir],

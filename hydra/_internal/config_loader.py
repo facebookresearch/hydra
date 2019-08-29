@@ -122,14 +122,14 @@ class ConfigLoader:
     def _is_group(self, group_name, search_path):
         for search_path in search_path:
             is_pkg, path = self._split_path(search_path)
-            if self._exists(is_pkg, os.path.join(path, group_name)) is True:
+            if self._exists(is_pkg, "{}/{}".format(path, group_name)) is True:
                 return True
         return False
 
     def _find_config(self, filepath):
         for search_path in self.full_search_path:
             is_pkg, path = self._split_path(search_path)
-            config_file = os.path.join(path, filepath)
+            config_file = "{}/{}".format(path, filepath)
             if self._exists(is_pkg, config_file):
                 if is_pkg:
                     config_file = "pkg://" + config_file
@@ -250,14 +250,14 @@ class ConfigLoader:
             files = []
             if is_pkg:
                 module_name, resource_name = ConfigLoader._split_module_and_resource(
-                    os.path.join(path, group_name)
+                    "{}/{}".format(path, group_name)
                 )
                 if self._exists(is_pkg, path) and resource_isdir(
                     module_name, resource_name
                 ):
                     files = resource_listdir(module_name, resource_name)
             else:
-                group_path = os.path.join(path, group_name)
+                group_path = "{}/{}".format(path, group_name)
                 if os.path.isdir(group_path):
                     files = os.listdir(group_path)
             files = [f for f in files if f.endswith(".yaml")]
@@ -268,7 +268,7 @@ class ConfigLoader:
     def _merge_config(self, cfg, family, name, required):
 
         if family != ".":
-            new_cfg = os.path.join(family, name)
+            new_cfg = "{}/{}".format(family, name)
         else:
             new_cfg = name
 
