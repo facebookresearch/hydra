@@ -113,10 +113,10 @@ def test_load_history():
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
         ("tests/configs/missing-optional-default.yaml", True),
-        ("pkg://hydra.conf.hydra.hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.job_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.launcher/basic.yaml", True),
-        ("pkg://hydra.conf.hydra.sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
         ("foo/missing.yaml", False),
     ]
 
@@ -133,10 +133,10 @@ def test_load_history_with_basic_launcher():
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
         ("demos/6_sweep/conf/config.yaml", True),
-        ("pkg://hydra.conf.hydra.hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.job_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.launcher/basic.yaml", True),
-        ("pkg://hydra.conf.hydra.sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
         ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
     ]
 
@@ -236,9 +236,9 @@ def test_default_removal(config_file, overrides):
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
         ("tests/configs/" + config_file, True),
-        ("pkg://hydra.conf.hydra.hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.job_logging/default.yaml", True),
-        ("pkg://hydra.conf.hydra.sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
+        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
     ]
 
 
