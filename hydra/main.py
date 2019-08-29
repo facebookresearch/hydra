@@ -46,7 +46,7 @@ def get_args():
     return parser.parse_args()
 
 
-def main(config_path=".", strict=False):
+def main(config_path="", strict=False):
     """
     :param config_path: the config path, can be a directory in which it's used as the config root
     or a file to load

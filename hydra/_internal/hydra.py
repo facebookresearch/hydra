@@ -39,10 +39,8 @@ class Hydra:
             last_dot = calling_module.rfind(".")
             if last_dot != -1:
                 task_name = calling_module[last_dot + 1 :]
-                calling_module = calling_module[0:last_dot]
             else:
                 task_name = calling_module
-
             basedir_prefix = "pkg://"
             abs_base_dir = calling_module
 
@@ -60,7 +58,12 @@ class Hydra:
             config_file = None
             config_dir = config_path
 
-        abs_config_dir = basedir_prefix + "{}/{}".format(abs_base_dir, config_dir)
+        if config_dir != "":
+            abs_config_dir = "{}/{}".format(abs_base_dir, config_dir)
+        else:
+            abs_config_dir = abs_base_dir
+
+        abs_config_dir = basedir_prefix + abs_config_dir
         self.config_loader = ConfigLoader(
             config_file=config_file,
             job_search_path=[abs_config_dir],
