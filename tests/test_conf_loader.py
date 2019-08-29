@@ -6,6 +6,7 @@ from omegaconf import OmegaConf
 from hydra._internal.config_loader import ConfigLoader
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
+import pkg_resources
 
 chdir_hydra_root()
 
@@ -250,3 +251,20 @@ def test_defaults_not_list_exception():
     )
     with pytest.raises(ValueError):
         config_loader.load_configuration(overrides=[])
+
+
+@pytest.mark.parametrize(
+    "module_name, resource_name",
+    [
+        ("tests", ""),
+        ("tests", "__init__.py"),
+        ("tests", "configs"),
+        ("tests", "configs/config.yaml"),
+        ("tests.configs", ""),
+        ("tests.configs", "config.yaml"),
+        ("tests.configs", "group1"),
+        ("tests.configs", "group1/file1.yaml"),
+    ],
+)
+def test_resource_exists(module_name, resource_name):
+    assert pkg_resources.resource_exists(module_name, resource_name) is True

@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
+import os
 import subprocess
 import sys
 
@@ -363,3 +364,16 @@ def test_specializing_configs_demo(task_runner):  # noqa: F811
             model=dict(num_layers=5, type="alexnet"),
         )
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+@pytest.mark.skip(reason="Issues on Windows, need to investigate.")
+def test_short_module_name():
+    try:
+        os.chdir("demos/3_config_file")
+        cmd = [sys.executable, "config_file.py"]
+        result = subprocess.check_output(cmd, env={"HYDRA_MAIN_MODULE": "config_file"})
+        assert OmegaConf.create(str(result.decode("utf-8"))) == dict(
+            dataset=dict(name="imagenet", path="/datasets/imagenet")
+        )
+    finally:
+        chdir_hydra_root()
