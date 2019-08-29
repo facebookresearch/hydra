@@ -370,7 +370,9 @@ def test_short_module_name():
     try:
         os.chdir("demos/3_config_file")
         cmd = [sys.executable, "config_file.py"]
-        result = subprocess.check_output(cmd, env={"HYDRA_MAIN_MODULE": "config_file"})
+        modified_env = os.environ.copy()
+        modified_env["HYDRA_MAIN_MODULE"] = "config_file"
+        result = subprocess.check_output(cmd, env=modified_env)
         assert OmegaConf.create(str(result.decode("utf-8"))) == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet")
         )
