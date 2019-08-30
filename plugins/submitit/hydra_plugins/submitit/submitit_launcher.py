@@ -2,11 +2,12 @@
 import logging
 import os
 
-import submitit
-
 import hydra._internal.utils
 import hydra.plugins.common.utils
+import submitit
 from hydra.plugins import Launcher
+
+from omegaconf import open_dict
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -32,45 +33,37 @@ class SubmititLauncher(Launcher):
         self.verbose = verbose
 
     def launch_job(self, sweep_overrides, job_dir_key, job_num):
-        # stdout logging until we get the file logging going.
-        # logs will be in slurm job log files
         hydra.plugins.common.utils.configure_log(None, self.verbose)
-        hydra.plugins.common.utils.JobRuntime().set("num", job_num)
-        if "SLURM_JOB_ID" in os.environ:
-            hydra.plugins.common.utils.JobRuntime().set("id", "${env:SLURM_JOB_ID}")
-        elif "CHRONOS_JOB_ID" in os.environ:
-            hydra.plugins.common.utils.JobRuntime().set("id", "${env:CHRONOS_JOB_ID}")
-        else:
-            hydra.plugins.common.utils.JobRuntime().set("id", "unknown")
         hydra.plugins.common.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
+        with open_dict(sweep_config):
+            # Populate new job variables
+            if "SLURM_JOB_ID" in os.environ:
+                sweep_config.hydra.job.id = os.environ["SLURM_JOB_ID"]
+            elif "CHRONOS_JOB_ID" in os.environ:
+                sweep_config.hydra.job.id = os.environ["CHRONOS_JOB_ID"]
+            else:
+                sweep_config.hydra.job.id = "unknown"
 
-        # Populate new job variables
-        sweep_config.hydra.job.id = (
-            "${env:SLURM_JOB_ID}"
-            if "SLURM_JOB_ID" in os.environ
-            else "_UNKNOWN_SLURM_ID_"
-        )
-        sweep_config.hydra.job.num = job_num
-        sweep_config.hydra.job.override_dirname = hydra.plugins.common.utils.get_overrides_dirname(
-            sweep_config.hydra.overrides.task
-        )
+            sweep_config.hydra.job.num = job_num
+            sweep_config.hydra.job.override_dirname = hydra.plugins.common.utils.get_overrides_dirname(
+                sweep_config.hydra.overrides.task
+            )
 
         return hydra.plugins.common.utils.run_job(
             config=sweep_config,
             task_function=self.task_function,
             verbose=self.verbose,
             job_dir_key=job_dir_key,
-            job_subdir_key="hydra.sweep.subdir",
+            job_subdir_key="ll hydra.sweep.subdir",
         )
 
     def launch(self, job_overrides):
         num_jobs = len(job_overrides)
         assert num_jobs > 0
         self.config.hydra.job.num_jobs = num_jobs
-
         if self.queue == "auto":
             executor = submitit.AutoExecutor(
                 folder=self.folder, conda_file=self.conda_file, par_file=self.par_file
@@ -89,7 +82,12 @@ class SubmititLauncher(Launcher):
         executor.update_parameters(**self.queue_parameters[self.queue])
 
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
-        os.makedirs(str(self.config.hydra.sweep.dir), exist_ok=True)
+        path_str = str(self.config.hydra.sweep.dir)
+        os.makedirs(path_str, exist_ok=True)
+        if self.config.hydra.sweep.mode is not None:
+            mode = int(str(self.config.hydra.sweep.mode), 8)
+            os.chmod(path_str, mode=mode)
+
         jobs = []
         for job_num in range(num_jobs):
             sweep_override = list(job_overrides[job_num])
