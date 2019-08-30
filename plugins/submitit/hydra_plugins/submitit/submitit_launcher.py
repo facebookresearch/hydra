@@ -57,7 +57,7 @@ class SubmititLauncher(Launcher):
             task_function=self.task_function,
             verbose=self.verbose,
             job_dir_key=job_dir_key,
-            job_subdir_key="ll hydra.sweep.subdir",
+            job_subdir_key="hydra.sweep.subdir",
         )
 
     def launch(self, job_overrides):
