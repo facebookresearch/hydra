@@ -6,6 +6,7 @@ Plugins API package
 from .launcher import Launcher
 from .plugin import Plugin
 from .search_path_plugin import SearchPathPlugin
-from .sweeper import Sweeper, StepSweeper
+from .sweeper import Sweeper
+from .step_sweeper import StepSweeper
 
 __all__ = ["Plugin", "Launcher", "Sweeper", "StepSweeper", "SearchPathPlugin"]

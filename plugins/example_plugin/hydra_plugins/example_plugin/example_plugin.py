@@ -1,5 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-class ExamplePlugin:
+from hydra.plugins import Plugin
+
+
+class ExamplePlugin(Plugin):
     def __init__(self, v):
         self.v = v
 

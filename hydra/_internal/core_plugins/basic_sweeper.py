@@ -16,7 +16,7 @@ Basic Sweeper would generate 6 jobs:
 import copy
 import itertools
 
-from hydra.plugins.sweeper import StepSweeper
+from hydra.plugins.step_sweeper import StepSweeper
 
 
 class BasicSweeper(StepSweeper):

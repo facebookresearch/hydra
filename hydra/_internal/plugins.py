@@ -1,9 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import inspect
 import pkgutil
+from ..plugins import Plugin
 
 
 class Plugins:
+    def __init__(self):
+        raise NotImplementedError("Plugins is a static class, do not instantiate")
+
     @staticmethod
     def _instantiate(config):
         clazz = config["class"]
@@ -73,7 +77,7 @@ class Plugins:
         :param supertype: look for subclasses of this type, if None return all classes
         :return: a set of all classes found
         """
-        ret = set()
+        ret = {}
         for mdl in modules:
             for importer, modname, ispkg in pkgutil.walk_packages(
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
@@ -86,9 +90,9 @@ class Plugins:
                             or issubclass(obj, supertype)
                             and not inspect.isabstract(obj)
                         ):
-                            ret.add(obj)
+                            ret[obj.__name__] = obj
 
-        return ret
+        return list(ret.values())
 
     @staticmethod
     def discover(plugin_type=None):
@@ -97,14 +101,18 @@ class Plugins:
         :param plugin_type: class of plugin to discover, None for all
         :return: a list of plugins implementing the plugin type (or all if plugin type is None)
         """
-        from hydra.plugins.plugin import Plugin
-
         assert plugin_type is None or issubclass(plugin_type, Plugin)
+        top_level = []
+        try:
+            import hydra_plugins
+        except ImportError:
+            hydra_plugins = None
+            # If no plugins are installed the hydra_plugins package does not exist.
+            pass
+        from . import core_plugins
 
-        import hydra_plugins
-        import hydra._internal.core_plugins
-
-        ret = Plugins._get_all_subclasses_in(
-            [hydra_plugins, hydra._internal.core_plugins], plugin_type
-        )
+        if hydra_plugins is not None:
+            top_level.append(hydra_plugins)
+        top_level.append(core_plugins)
+        ret = Plugins._get_all_subclasses_in(top_level, plugin_type)
         return ret

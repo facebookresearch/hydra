@@ -1,19 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
-import inspect
 
 log = logging.getLogger(__name__)
 
 
 def get_method(path):
     return get_class(path)
-
-
-def fullname(o):
-    if inspect.isclass(o):
-        return o.__module__ + "." + o.__qualname__
-    else:
-        return o.__module__ + "." + o.__class__.__qualname__
 
 
 def get_class(path):

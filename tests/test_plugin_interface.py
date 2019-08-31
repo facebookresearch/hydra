@@ -1,18 +1,13 @@
 import pytest
-from hydra.utils import fullname
-from hydra._internal import Plugins
+from hydra._internal.plugins import Plugins
 from hydra.plugins import Plugin, Launcher, Sweeper, SearchPathPlugin
 from hydra.utils import get_class
 
-launchers = [
-    "hydra._internal.core_plugins.basic_launcher.BasicLauncher",
-    "hydra_plugins.fairtask.fairtask_launcher.FAIRTaskLauncher",
-    "hydra_plugins.submitit.submitit_launcher.SubmititLauncher",
-]
+# This only test core plugins.
+# Individual plugins are responsible to test that they are discoverable.
+launchers = ["hydra._internal.core_plugins.basic_launcher.BasicLauncher"]
 sweepers = ["hydra._internal.core_plugins.basic_sweeper.BasicSweeper"]
-search_path_plugins = [
-    "hydra_plugins.fair_cluster.fair_cluster_defaults.FAIRClusterDefaults"
-]
+search_path_plugins = []
 
 
 @pytest.mark.parametrize(
@@ -26,6 +21,6 @@ search_path_plugins = [
 )
 def test_discover(plugin_type, expected):
     plugins = Plugins.discover(plugin_type)
-    plugins = sorted(plugins, key=lambda x: fullname(x))
-    expected_classes = [get_class(x) for x in sorted(expected)]
-    assert plugins == expected_classes
+    expected_classes = [get_class(c) for c in sorted(expected)]
+    for ex in expected_classes:
+        assert ex in plugins
