@@ -11,19 +11,18 @@ import subprocess
 import sys
 import tempfile
 from contextlib import contextmanager
-from hydra._internal.config_search_path import ConfigSearchPath
 
 import pytest
 import six
 from omegaconf import OmegaConf
 
+from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.hydra import Hydra
 from hydra.plugins.common.utils import JobReturn
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
 
-# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 

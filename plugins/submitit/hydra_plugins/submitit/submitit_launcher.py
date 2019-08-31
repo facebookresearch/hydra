@@ -4,7 +4,6 @@ import os
 
 import hydra._internal.utils
 import hydra.plugins.common.utils
-import submitit
 from hydra.plugins import Launcher
 
 from omegaconf import open_dict
@@ -61,6 +60,8 @@ class SubmititLauncher(Launcher):
         )
 
     def launch(self, job_overrides):
+        import submitit
+
         num_jobs = len(job_overrides)
         assert num_jobs > 0
         self.config.hydra.job.num_jobs = num_jobs

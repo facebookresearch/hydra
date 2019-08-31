@@ -4,10 +4,11 @@ Sweeper plugin interface
 """
 from abc import abstractmethod
 
+from .plugin import Plugin
 from .._internal.plugins import Plugins
 
 
-class Sweeper(object):
+class Sweeper(Plugin):
     """
     An abstract sweeper interface
     Sweeper takes the command line arguments, generates a and launches jobs

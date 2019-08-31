@@ -97,6 +97,7 @@ with open("README.md", "r") as fh:
         classifiers=[
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
         install_requires=["omegaconf>=1.3.0"],

@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import inspect
+import pkgutil
 
 
 class Plugins:
@@ -63,3 +65,46 @@ class Plugins:
             verbose=verbose,
         )
         return launcher
+
+    @staticmethod
+    def _get_all_subclasses_in(modules, supertype=None):
+        """
+        :param modules: a list of top level modules to look in
+        :param supertype: look for subclasses of this type, if None return all classes
+        :return: a set of all classes found
+        """
+        ret = set()
+        for mdl in modules:
+            for importer, modname, ispkg in pkgutil.walk_packages(
+                path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
+            ):
+                loaded_mod = importer.find_module(modname).load_module(modname)
+                for name, obj in inspect.getmembers(loaded_mod):
+                    if inspect.isclass(obj):
+                        if (
+                            supertype is None
+                            or issubclass(obj, supertype)
+                            and not inspect.isabstract(obj)
+                        ):
+                            ret.add(obj)
+
+        return ret
+
+    @staticmethod
+    def discover(plugin_type=None):
+
+        """
+        :param plugin_type: class of plugin to discover, None for all
+        :return: a list of plugins implementing the plugin type (or all if plugin type is None)
+        """
+        from hydra.plugins.plugin import Plugin
+
+        assert plugin_type is None or issubclass(plugin_type, Plugin)
+
+        import hydra_plugins
+        import hydra._internal.core_plugins
+
+        ret = Plugins._get_all_subclasses_in(
+            [hydra_plugins, hydra._internal.core_plugins], plugin_type
+        )
+        return ret

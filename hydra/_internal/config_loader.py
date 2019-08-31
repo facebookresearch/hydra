@@ -257,7 +257,7 @@ class ConfigLoader:
 
     def _merge_config(self, cfg, family, name, required):
 
-        if family != ".":
+        if family != "":
             new_cfg = "{}/{}".format(family, name)
         else:
             new_cfg = name

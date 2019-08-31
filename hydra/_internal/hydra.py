@@ -69,6 +69,7 @@ class Hydra:
         search_path = ConfigSearchPath()
         search_path.append("hydra", "pkg://hydra.conf")
         search_path.append(task_name, abs_config_dir)
+
         self.config_loader = ConfigLoader(
             config_file=config_file, config_search_path=search_path, strict_cfg=strict
         )
