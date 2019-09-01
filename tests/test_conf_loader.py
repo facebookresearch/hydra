@@ -113,6 +113,7 @@ def test_load_history():
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/output/default.yaml", True),
         ("foo/missing.yaml", False),
     ]
 
@@ -132,6 +133,7 @@ def test_load_history_with_basic_launcher():
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/output/default.yaml", True),
         ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
     ]
 
@@ -230,6 +232,7 @@ def test_default_removal(config_file, overrides):
         ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
+        ("pkg://hydra.conf/hydra/output/default.yaml", True),
     ]
 
 

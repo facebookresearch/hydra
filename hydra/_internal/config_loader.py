@@ -50,6 +50,8 @@ class ConfigLoader:
         )
         consumed_free_job_defaults = self._apply_free_defaults(cfg, overrides)
         self._validate_config(cfg)
+
+        # Load and defaults and merge them into cfg
         cfg = self._merge_defaults(cfg)
 
         job = OmegaConf.create(dict(name=JobRuntime().get("name")))
