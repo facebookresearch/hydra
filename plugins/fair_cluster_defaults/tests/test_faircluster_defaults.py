@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin
-from hydra_plugins.fair_cluster.fair_cluster_defaults import FAIRClusterDefaults
+from hydra_plugins.fair_cluster_defaults import FAIRClusterDefaults
 
 
 def test_discovery():
