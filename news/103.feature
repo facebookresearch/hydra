@@ -1,1 +1,0 @@
-Implemented a plugin that can change Hydra defaults to appropriate defaults for the FAIR cluster
