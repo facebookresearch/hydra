@@ -108,12 +108,12 @@ def test_load_history():
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
-        ("tests/configs/missing-optional-default.yaml", True),
         ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
         ("pkg://hydra.conf/hydra/output/default.yaml", True),
+        ("tests/configs/missing-optional-default.yaml", True),
         ("foo/missing.yaml", False),
     ]
 
@@ -128,12 +128,12 @@ def test_load_history_with_basic_launcher():
 
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
-        ("demos/6_sweep/conf/config.yaml", True),
         ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
         ("pkg://hydra.conf/hydra/output/default.yaml", True),
+        ("demos/6_sweep/conf/config.yaml", True),
         ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
     ]
 
@@ -228,11 +228,11 @@ def test_default_removal(config_file, overrides):
     config_loader.load_configuration(overrides=overrides)
     assert config_loader.get_load_history() == [
         ("pkg://hydra.conf/hydra.yaml", True),
-        ("tests/configs/" + config_file, True),
         ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
         ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
         ("pkg://hydra.conf/hydra/output/default.yaml", True),
+        ("tests/configs/" + config_file, True),
     ]
 
 
@@ -261,3 +261,14 @@ def test_defaults_not_list_exception():
 )
 def test_resource_exists(module_name, resource_name):
     assert pkg_resources.resource_exists(module_name, resource_name) is True
+
+
+def test_override_hydra_config_group_from_config_file():
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["tests/configs"]),
+        strict_cfg=False,
+        config_file="overriding_output_dir.yaml",
+    )
+
+    cfg = config_loader.load_configuration(overrides=[])
+    assert cfg.hydra.run.dir == "foo"

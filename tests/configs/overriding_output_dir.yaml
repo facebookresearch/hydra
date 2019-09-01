@@ -1,0 +1,3 @@
+hydra:
+  run:
+    dir: foo
