@@ -69,7 +69,7 @@ class Hydra:
 
         search_path = ConfigSearchPath()
         search_path.append("hydra", "pkg://hydra.conf")
-        search_path.append(task_name, abs_config_dir)
+        search_path.append("main", abs_config_dir)
 
         search_path_plugins = Plugins.discover(SearchPathPlugin)
         for spp in search_path_plugins:
