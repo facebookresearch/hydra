@@ -7,6 +7,7 @@ from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
 from .plugins import Plugins
+from ..plugins import SearchPathPlugin
 from .config_search_path import ConfigSearchPath
 from ..errors import MissingConfigException
 from ..plugins.common.utils import (
@@ -69,6 +70,11 @@ class Hydra:
         search_path = ConfigSearchPath()
         search_path.append("hydra", "pkg://hydra.conf")
         search_path.append(task_name, abs_config_dir)
+
+        search_path_plugins = Plugins.discover(SearchPathPlugin)
+        for spp in search_path_plugins:
+            plugin = spp()
+            plugin.manipulate_search_path(search_path)
 
         self.config_loader = ConfigLoader(
             config_file=config_file, config_search_path=search_path, strict_cfg=strict

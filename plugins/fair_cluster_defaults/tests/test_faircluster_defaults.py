@@ -11,4 +11,5 @@ def test_discovery():
 
 
 def test_fair_cluster_defaults():
+    # TODO: validate defaults are loaded, need testing both in pip install and pip install -e
     pass

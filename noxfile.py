@@ -13,7 +13,7 @@ PYTHON_VERSIONS = os.environ.get(
 
 PLUGINS_INSTALL_COMMANDS = (
     # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
-    # ["pip", "install"],
+    ["pip", "install"],
     ["pip", "install", "-e"],
 )
 

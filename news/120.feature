@@ -1,1 +1,1 @@
-Implemented an API to programatically manipulate the config search path
+Implemented an API to for manipulating the config search path

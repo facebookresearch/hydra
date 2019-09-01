@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
-        name="hydra-fair-cluster",
+        name="hydra-fair-cluster-defaults",
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
@@ -20,4 +20,5 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=[],
+        include_package_data=True,
     )
