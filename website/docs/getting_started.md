@@ -10,12 +10,20 @@ hydra-fairtask and hydra-submitit requires Python 3.6 or newer.
 ### Install/upgrade
 A proper pip package will be available after Hydra is open sourced.
 
-Install/upgrade Hydra and its plugins by running the following command:
+### General use 
+Install/upgrade Hydra:
+```
+pip install --upgrade --upgrade-strategy=eager git+ssh://git@github.com/facebookresearch/hydra.git@master'
+```
+
+### Using on the FAIR cluster
+For use on the FAIR cluster, please install with the following command:
 ```
 pip install --upgrade --upgrade-strategy=eager \
 'git+ssh://git@github.com/facebookresearch/hydra.git@master' \
 'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fairtask' \
-'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/submitit' 
+'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/submitit' \
+'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fair_cluster_defaults'
 ```
 
 ### Uninstalling
