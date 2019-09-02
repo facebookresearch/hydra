@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra_plugins.fair_cluster_defaults import FAIRClusterDefaults
+from hydra_plugins.fair_cluster import FAIRClusterDefaults
 from omegaconf import OmegaConf, DictConfig, ListConfig, Config, BaseNode
 
 from hydra._internal.plugins import Plugins
@@ -50,7 +50,7 @@ def overlaps(query, cfg):
     return True
 
 
-def test_fair_cluster_defaults(tmpdir):
+def test_fair_cluster(tmpdir):
     task_config = OmegaConf.create()
     overrides = []
     prints = "HydraConfig().pretty()"
@@ -58,7 +58,7 @@ def test_fair_cluster_defaults(tmpdir):
     output = integration_test(tmpdir, task_config, overrides, prints, expected_outputs)
     path = (
         pathlib.Path(__file__)
-        / "../../hydra_plugins/fair_cluster_defaults/conf/hydra/output/default.yaml"
+        / "../../hydra_plugins/fair_cluster/conf/hydra/output/default.yaml"
     )
     expected = OmegaConf.load(str(path))
 

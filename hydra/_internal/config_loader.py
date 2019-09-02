@@ -298,7 +298,7 @@ class ConfigLoader:
                     )
                 )
             # Uncomment to debug issues with configs not getting loaded.
-            # WARNING: breaks integraiton tests that relies on specified output from the process.
+            # WARNING: breaks integration tests that relies on specified output from the process.
             # print("_exists? {}, {} == {}".format(module_name, resource_name, ret))
             return ret
         else:

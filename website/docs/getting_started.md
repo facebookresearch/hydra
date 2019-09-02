@@ -23,7 +23,7 @@ pip install --upgrade --upgrade-strategy=eager \
 'git+ssh://git@github.com/facebookresearch/hydra.git@master' \
 'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fairtask' \
 'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/submitit' \
-'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fair_cluster_defaults'
+'git+ssh://git@github.com/facebookresearch/hydra.git@master#subdirectory=plugins/fair_cluster'
 ```
 
 ### Uninstalling
