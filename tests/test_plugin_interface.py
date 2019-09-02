@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 from hydra._internal.plugins import Plugins
 from hydra.plugins import Plugin, Launcher, Sweeper, SearchPathPlugin

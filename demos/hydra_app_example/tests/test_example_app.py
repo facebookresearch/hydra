@@ -1,3 +1,9 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+"""
+The following tests are testing that the app actually runs as expected
+when installed and executed from the command line.
+You don't need to repeat those tests in your own app.
+"""
 import subprocess
 import sys
 

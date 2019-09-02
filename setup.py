@@ -112,6 +112,7 @@ with open("README.md", "r") as fh:
                 "nox",
                 "towncrier",
                 "flake8",
+                "flake8-copyright",
             ]
         },
     )

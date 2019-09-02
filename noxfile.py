@@ -176,7 +176,7 @@ def coverage(session):
 @nox.parametrize("py_ver", [2, 3])
 def lint(session, py_ver):
     session.install("--upgrade", "setuptools", "pip")
-    session.install("flake8")
+    session.install("flake8", "flake8-copyright")
     session.run("pip", "install", "-e", ".", silent=True)
     session.run("flake8", "--config", ".circleci/flake8_py{}.cfg".format(py_ver))
 

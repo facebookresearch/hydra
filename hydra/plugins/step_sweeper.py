@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 """
 A sweeper that operates on generational batches of jobs
 """
