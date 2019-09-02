@@ -6,10 +6,10 @@ from os.path import realpath, dirname, splitext, basename
 from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
-from .plugins import Plugins
-from ..plugins import SearchPathPlugin
 from .config_search_path import ConfigSearchPath
+from .plugins import Plugins
 from ..errors import MissingConfigException
+from ..plugins import SearchPathPlugin
 from ..plugins.common.utils import (
     configure_log,
     run_job,
@@ -134,16 +134,43 @@ class Hydra:
         log = logging.getLogger(__name__)
 
         log.debug("Hydra config search path:")
-        pad = 15
-        log.debug("\t{}: {}".format("provider".ljust(pad), "path".ljust(pad)))
-        log.debug("\t---------------------")
+        provider_pad = 0
+        search_path_pad = 0
         for sp in self.config_loader.config_search_path.config_search_path:
-            log.debug("\t{}: {}".format(sp.provider.ljust(pad), sp.path.ljust(pad)))
+            provider_pad = max(provider_pad, len(sp.provider))
+            search_path_pad = max(search_path_pad, len(sp.path))
+        provider_pad += 1
+        search_path_pad += 1
 
-        for file, loaded in self.config_loader.get_load_history():
-            if loaded:
-                log.debug("Loaded: {}".format(file))
+        header = "{}: {}".format("Provider".ljust(provider_pad), "Search path")
+        log.debug(header)
+        log.debug("".ljust(len(header), "-"))
+
+        for sp in self.config_loader.config_search_path.config_search_path:
+            log.debug(
+                "{}: {}".format(
+                    sp.provider.ljust(provider_pad), sp.path.ljust(provider_pad)
+                )
+            )
+
+        log.debug("")
+        log.debug("Configurations loaded:")
+        header = "{}: {}".format(
+            "Provider".ljust(provider_pad), "Search path".ljust(search_path_pad)
+        )
+        log.debug(header)
+        log.debug("".ljust(len(header), "-"))
+
+        for file, search_path, provider in self.config_loader.get_load_history():
+            if search_path is not None:
+                log.debug(
+                    "{} : {} : {}".format(
+                        provider.ljust(provider_pad),
+                        search_path.ljust(search_path_pad),
+                        file,
+                    )
+                )
             else:
-                log.debug("Not found: {}".format(file))
+                log.debug("{} : NOT FOUND".format(file))
 
         return cfg

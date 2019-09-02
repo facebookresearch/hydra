@@ -107,14 +107,14 @@ def test_load_history():
     )
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/output/default.yaml", True),
-        ("tests/configs/missing-optional-default.yaml", True),
-        ("foo/missing.yaml", False),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("missing-optional-default.yaml", "tests/configs", "test"),
+        ("foo/missing.yaml", None, None),
     ]
 
 
@@ -127,14 +127,14 @@ def test_load_history_with_basic_launcher():
     config_loader.load_configuration(overrides=["hydra/launcher=basic"])
 
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/output/default.yaml", True),
-        ("demos/6_sweep/conf/config.yaml", True),
-        ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("config.yaml", "demos/6_sweep/conf", "test"),
+        ("optimizer/nesterov.yaml", "demos/6_sweep/conf", "test"),
     ]
 
 
@@ -227,12 +227,12 @@ def test_default_removal(config_file, overrides):
     )
     config_loader.load_configuration(overrides=overrides)
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/output/default.yaml", True),
-        ("tests/configs/" + config_file, True),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        (config_file, "tests/configs", "test"),
     ]
 
 

@@ -88,7 +88,8 @@ class ConfigLoader:
         return sweep_config
 
     def exists_in_search_path(self, filepath):
-        return self._find_config(filepath) is not None
+        _filename, search_path = self._find_config(filepath)
+        return search_path is not None
 
     def exists(self, filename):
         is_pkg, path = self._split_path(filename)
@@ -113,15 +114,14 @@ class ConfigLoader:
         return is_pkg, path
 
     def _find_config(self, filepath):
+        found_search_path = None
         for search_path in self.config_search_path.config_search_path:
-            search_path = search_path.path
-            is_pkg, path = self._split_path(search_path)
+            is_pkg, path = self._split_path(search_path.path)
             config_file = "{}/{}".format(path, filepath)
             if self._exists(is_pkg, config_file):
-                if is_pkg:
-                    config_file = "pkg://" + config_file
-                return config_file
-        return None
+                found_search_path = search_path
+                break
+        return filepath, found_search_path
 
     @staticmethod
     def _apply_defaults_overrides(overrides, defaults):
@@ -188,26 +188,33 @@ class ConfigLoader:
 
     def _load_config_impl(self, input_file, record_load=True):
         loaded_cfg = None
-        filename = self._find_config(input_file)
-        if filename is None and record_load:
-            self.all_config_checked.append((input_file.replace("\\", "/"), False))
+        filename, search_path = self._find_config(input_file)
+        if search_path is None and record_load:
+            assert search_path is None
+            self.all_config_checked.append((filename, None, None))
         else:
-            is_pkg = filename.startswith("pkg://")
+            fullpath = "{}/{}".format(search_path.path, filename)
+            is_pkg = search_path.path.startswith("pkg://")
             if is_pkg:
-                filename = filename[len("pkg://") :]
+                fullpath = fullpath[len("pkg://") :]
                 module_name, resource_name = ConfigLoader._split_module_and_resource(
-                    filename
+                    fullpath
                 )
                 with resource_stream(module_name, resource_name) as stream:
                     loaded_cfg = OmegaConf.load(stream)
                 if record_load:
-                    self.all_config_checked.append(("pkg://" + filename, True))
-            elif os.path.exists(filename):
-                loaded_cfg = OmegaConf.load(filename)
+                    self.all_config_checked.append(
+                        (filename, search_path.path, search_path.provider)
+                    )
+            elif os.path.exists(fullpath):
+                loaded_cfg = OmegaConf.load(fullpath)
                 if record_load:
-                    self.all_config_checked.append((filename, True))
+                    self.all_config_checked.append(
+                        (filename, search_path.path, search_path.provider)
+                    )
             else:
-                assert False
+                # This should never happen because we just searched for it and found it
+                assert False, "'{}' not found".format(fullpath)
         return loaded_cfg
 
     def _get_group_options(self, group_name):
