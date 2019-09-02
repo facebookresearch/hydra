@@ -286,17 +286,21 @@ class ConfigLoader:
                 filename
             )
             try:
-                return resource_exists(module_name, resource_name)
+                ret = resource_exists(module_name, resource_name)
             except ImportError:
-                return False
+                ret = False
             except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
-                return False
+                ret = False
             except NotImplementedError:
                 raise NotImplementedError(
                     "Unable to load {}/{}, are you missing an __init__.py?".format(
                         module_name, resource_name
                     )
                 )
+            # Uncomment to debug issues with configs not getting loaded.
+            # WARNING: breaks integraiton tests that relies on specified output from the process.
+            # print("_exists? {}, {} == {}".format(module_name, resource_name, ret))
+            return ret
         else:
             return os.path.exists(filename)
 
