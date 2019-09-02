@@ -33,5 +33,10 @@ module.exports = {
             'configure_hydra/workdir',
         ],
 
+
+        'Advanced': [
+            'advanced/search_path',
+            'advanced/plugins',
+        ],
     }
 }
