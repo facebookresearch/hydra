@@ -219,8 +219,11 @@ if __name__ == "__main__":
 """
     )
     print_code = ""
-    for p in prints:
-        print_code += "print({});".format(p)
+    if prints is None or len(prints) == 0:
+        print_code = "pass"
+    else:
+        for p in prints:
+            print_code += "print({});".format(p)
 
     config_path = ""
     if task_config is not None:
@@ -239,9 +242,11 @@ if __name__ == "__main__":
         os.chdir(str(tmpdir))
         result = subprocess.check_output(cmd).decode("utf-8")
         outputs = result.splitlines()
-        assert len(outputs) == len(expected_outputs)
-        for idx in range(len(outputs)):
-            assert outputs[idx] == expected_outputs[idx]
+        if expected_outputs is not None:
+            assert len(outputs) == len(expected_outputs)
+            for idx in range(len(outputs)):
+                assert outputs[idx] == expected_outputs[idx]
+        return result
     finally:
         os.chdir(orig_dir)
 
