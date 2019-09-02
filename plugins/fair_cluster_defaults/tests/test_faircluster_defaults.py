@@ -4,6 +4,7 @@ from omegaconf import OmegaConf, DictConfig, ListConfig, Config, BaseNode
 
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin
+from hydra._internal import pathlib
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import integration_test
@@ -55,10 +56,11 @@ def test_fair_cluster_defaults(tmpdir):
     prints = "HydraConfig().pretty()"
     expected_outputs = None
     output = integration_test(tmpdir, task_config, overrides, prints, expected_outputs)
-
-    expected = OmegaConf.load(
-        "../hydra_plugins/fair_cluster_defaults/conf/hydra/output/default.yaml"
+    path = (
+        pathlib.Path(__file__)
+        / "../../hydra_plugins/fair_cluster_defaults/conf/hydra/output/default.yaml"
     )
+    expected = OmegaConf.load(str(path))
 
-    actual = OmegaConf.create(output)
+    actual = OmegaConf.create(str(output))
     assert overlaps(expected, actual)
