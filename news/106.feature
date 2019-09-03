@@ -1,1 +1,0 @@
-Added the ability to prevent a default from being merged it by assigning null to it (hydra/launcher=null)

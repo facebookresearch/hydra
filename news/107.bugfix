@@ -1,1 +1,0 @@
-Fixed error message when the user config contains defaults that is a mapping and not a list
