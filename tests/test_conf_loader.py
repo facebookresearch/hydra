@@ -263,7 +263,7 @@ def test_resource_exists(module_name, resource_name):
     assert pkg_resources.resource_exists(module_name, resource_name) is True
 
 
-def test_override_hydra_config_group_from_config_file():
+def test_override_hydra_config_value_from_config_file():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
@@ -272,3 +272,21 @@ def test_override_hydra_config_group_from_config_file():
 
     cfg = config_loader.load_configuration(overrides=[])
     assert cfg.hydra.run.dir == "foo"
+
+
+def test_override_hydra_config_group_from_config_file():
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["tests/configs"]),
+        strict_cfg=False,
+        config_file="overriding_logging_default.yaml",
+    )
+
+    config_loader.load_configuration(overrides=[])
+    assert config_loader.get_load_history() == [
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/hydra_debug.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/disabled.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("overriding_logging_default.yaml", "tests/configs", "test"),
+    ]

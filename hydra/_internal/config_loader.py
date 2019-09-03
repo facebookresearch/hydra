@@ -172,7 +172,7 @@ class ConfigLoader:
             if isinstance(d, (dict, DictConfig)):
                 key = get_key(d)
                 key_to_idx[key] = idx
-        for d in merged_list:
+        for d in copy.deepcopy(merged_list):
             if isinstance(d, (dict, DictConfig)):
                 key = get_key(d)
                 if key in key_to_idx.keys():
@@ -406,16 +406,3 @@ class ConfigLoader:
             elif isinstance(default, str):
                 # single file to load
                 pass
-
-    @staticmethod
-    def _update_defaults(cfg, defaults_changes):
-        for default in cfg.defaults or []:
-            if isinstance(default, DictConfig):
-                for key in default.keys():
-                    if key != "optional":
-                        if key in defaults_changes:
-                            default[key] = defaults_changes[key]
-                            del defaults_changes[key]
-        # unmatched new defaults, put at end of list to be loaded normally
-        for key, value in defaults_changes.items():
-            cfg.defaults.append({key: value})
