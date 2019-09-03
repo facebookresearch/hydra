@@ -25,7 +25,7 @@ conda activate hydra37
 ```
 Install Hydra and all the included plugins in development mode with the following command:
 ```
-pip install -e .[dev] -e . && find ./plugins/ -name setup.py | xargs dirname | xargs -i pip install -e {}
+pip install -e .[dev] -e . && find ./plugins/ -name setup.py | xargs -i dirname {} | xargs -i pip install -e {}
 ```
 
 ### Pre commit hooks

@@ -3,6 +3,7 @@
 import pytest
 from omegaconf import OmegaConf
 
+from hydra.test_utils.test_utils import create_search_path
 from hydra._internal.config_loader import ConfigLoader
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -13,7 +14,7 @@ chdir_hydra_root()
 
 def test_override_run_dir_without_hydra_cfg():
     config_loader = ConfigLoader(
-        hydra_search_path=["pkg://hydra.conf"], strict_cfg=False, config_file=None
+        config_search_path=create_search_path(), strict_cfg=False, config_file=None
     )
     cfg = config_loader.load_configuration(overrides=["hydra.run.dir=abc"])
     assert cfg.hydra.run.dir == "abc"
@@ -21,8 +22,9 @@ def test_override_run_dir_without_hydra_cfg():
 
 def test_override_run_dir_with_hydra_cfg():
     config_loader = ConfigLoader(
-        job_search_path=["demos/99_hydra_configuration/workdir/"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(
+            ["demos/99_hydra_configuration/workdir/"]
+        ),
         strict_cfg=False,
         config_file=None,
     )
@@ -32,8 +34,7 @@ def test_override_run_dir_with_hydra_cfg():
 
 def test_load_configuration():
     config_loader = ConfigLoader(
-        job_search_path=["demos/3_config_file"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["demos/3_config_file"]),
         strict_cfg=False,
         config_file="config.yaml",
     )
@@ -46,8 +47,7 @@ def test_load_configuration():
 
 def test_load_with_missing_default():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="missing-default.yaml",
     )
@@ -57,8 +57,7 @@ def test_load_with_missing_default():
 
 def test_load_with_missing_optional_default():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="missing-optional-default.yaml",
     )
@@ -69,7 +68,7 @@ def test_load_with_missing_optional_default():
 
 def test_load_with_optional_default():
     config_loader = ConfigLoader(
-        job_search_path=["pkg://hydra.conf", "tests/configs"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="optional-default.yaml",
     )
@@ -80,8 +79,7 @@ def test_load_with_optional_default():
 
 def test_load_changing_group_in_default():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="optional-default.yaml",
     )
@@ -92,8 +90,7 @@ def test_load_changing_group_in_default():
 
 def test_load_adding_group_not_in_default():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="optional-default.yaml",
     )
@@ -104,40 +101,40 @@ def test_load_adding_group_not_in_default():
 
 def test_load_history():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="missing-optional-default.yaml",
     )
     config_loader.load_configuration()
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("tests/configs/missing-optional-default.yaml", True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
-        ("foo/missing.yaml", False),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("missing-optional-default.yaml", "tests/configs", "test"),
+        ("foo/missing.yaml", None, None),
     ]
 
 
 def test_load_history_with_basic_launcher():
     config_loader = ConfigLoader(
-        job_search_path=["demos/6_sweep/conf"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["demos/6_sweep/conf"]),
         strict_cfg=False,
         config_file="config.yaml",
     )
     config_loader.load_configuration(overrides=["hydra/launcher=basic"])
 
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("demos/6_sweep/conf/config.yaml", True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/launcher/basic.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
-        ("demos/6_sweep/conf/optimizer/nesterov.yaml", True),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("config.yaml", "demos/6_sweep/conf", "test"),
+        ("optimizer/nesterov.yaml", "demos/6_sweep/conf", "test"),
     ]
 
 
@@ -147,8 +144,7 @@ def test_load_strict():
     :return:
     """
     config_loader = ConfigLoader(
-        job_search_path=["demos/3_config_file"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["demos/3_config_file"]),
         config_file="config.yaml",
         strict_cfg=True,
     )
@@ -162,8 +158,7 @@ def test_load_strict():
         cfg.dataset.not_here
 
     config_loader = ConfigLoader(
-        job_search_path=["demos/3_config_file"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["demos/3_config_file"]),
         config_file="config.yaml",
         strict_cfg=True,
     )
@@ -173,8 +168,7 @@ def test_load_strict():
 
 def test_load_yml_file():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="config.yml",
     )
@@ -227,25 +221,24 @@ def test_merge_default_lists(primary, merged, result):
 )
 def test_default_removal(config_file, overrides):
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file=config_file,
     )
     config_loader.load_configuration(overrides=overrides)
     assert config_loader.get_load_history() == [
-        ("pkg://hydra.conf/hydra.yaml", True),
-        ("tests/configs/" + config_file, True),
-        ("pkg://hydra.conf/hydra/hydra_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/job_logging/default.yaml", True),
-        ("pkg://hydra.conf/hydra/sweeper/basic.yaml", True),
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        (config_file, "tests/configs", "test"),
     ]
 
 
 def test_defaults_not_list_exception():
     config_loader = ConfigLoader(
-        job_search_path=["tests/configs"],
-        hydra_search_path=["pkg://hydra.conf"],
+        config_search_path=create_search_path(["tests/configs"]),
         strict_cfg=False,
         config_file="defaults_not_list.yaml",
     )
@@ -268,3 +261,14 @@ def test_defaults_not_list_exception():
 )
 def test_resource_exists(module_name, resource_name):
     assert pkg_resources.resource_exists(module_name, resource_name) is True
+
+
+def test_override_hydra_config_group_from_config_file():
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["tests/configs"]),
+        strict_cfg=False,
+        config_file="overriding_output_dir.yaml",
+    )
+
+    cfg = config_loader.load_configuration(overrides=[])
+    assert cfg.hydra.run.dir == "foo"

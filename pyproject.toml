@@ -13,6 +13,11 @@
   showcontent = true
 
   [[tool.towncrier.type]]
+  directory = "config"
+  name = "Configuration structure changes"
+  showcontent = true
+
+  [[tool.towncrier.type]]
   directory = "feature"
   name = "Features"
   showcontent = true

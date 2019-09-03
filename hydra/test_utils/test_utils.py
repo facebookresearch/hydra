@@ -16,13 +16,13 @@ import pytest
 import six
 from omegaconf import OmegaConf
 
+from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.hydra import Hydra
 from hydra.plugins.common.utils import JobReturn
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
 
-# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
@@ -219,8 +219,11 @@ if __name__ == "__main__":
 """
     )
     print_code = ""
-    for p in prints:
-        print_code += "print({});".format(p)
+    if prints is None or len(prints) == 0:
+        print_code = "pass"
+    else:
+        for p in prints:
+            print_code += "print({});".format(p)
 
     config_path = ""
     if task_config is not None:
@@ -239,8 +242,18 @@ if __name__ == "__main__":
         os.chdir(str(tmpdir))
         result = subprocess.check_output(cmd).decode("utf-8")
         outputs = result.splitlines()
-        assert len(outputs) == len(expected_outputs)
-        for idx in range(len(outputs)):
-            assert outputs[idx] == expected_outputs[idx]
+        if expected_outputs is not None:
+            assert len(outputs) == len(expected_outputs)
+            for idx in range(len(outputs)):
+                assert outputs[idx] == expected_outputs[idx]
+        return result
     finally:
         os.chdir(orig_dir)
+
+
+def create_search_path(search_path=[]):
+    csp = ConfigSearchPath()
+    csp.append("hydra", "pkg://hydra.conf")
+    for sp in search_path:
+        csp.append("test", sp)
+    return csp

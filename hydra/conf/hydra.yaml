@@ -3,15 +3,13 @@ defaults:
   - hydra/job_logging : default
   - hydra/launcher: basic
   - hydra/sweeper: basic
+  - hydra/output: default
 
 hydra:
-  run:
-    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
-    subdir: ${hydra.job.num}
-  sweep:
-    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
-    # you can also use ${job:override_dirname} to have a directory name with job sweep arguments
-    subdir: ${hydra.job.num}_${hydra.job.id}
+  # Normal run output configuration
+  run: ???
+  # Multi-run output configuration
+  sweep: ???
 
   # Logging configuration for Hydra
   hydra_logging: ???

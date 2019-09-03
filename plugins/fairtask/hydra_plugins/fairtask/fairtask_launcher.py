@@ -14,8 +14,6 @@ from hydra.plugins import Launcher
 # https://github.com/fairinternal/fairtask/pull/23 are addressed
 log = logging.getLogger(__name__)  # noqa: E402
 
-from fairtask import TaskQueues, gatherl
-
 
 class FAIRTaskLauncher(Launcher):
     def __init__(self, queue, queues, no_workers=False):
@@ -63,6 +61,9 @@ class FAIRTaskLauncher(Launcher):
         )
 
     async def run_sweep(self, queue, job_overrides):
+        # load lazily to ensure plugin discovery is fast.
+        from fairtask import gatherl
+
         log.info(
             "Launching {} jobs to {} queue".format(len(job_overrides), self.queue_name)
         )
@@ -82,10 +83,12 @@ class FAIRTaskLauncher(Launcher):
             runs.append(
                 queue(self.launch_job)(sweep_override, "hydra.sweep.dir", job_num)
             )
-
         return await gatherl(runs)
 
     def create_queue(self, num_jobs):
+        # load lazily to ensure plugin discovery is fast.
+        from fairtask import TaskQueues
+
         assert num_jobs > 0
         # num_jobs is needed to instantiate the queue below
         with open_dict(self.config):

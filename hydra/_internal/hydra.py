@@ -6,8 +6,10 @@ from os.path import realpath, dirname, splitext, basename
 from omegaconf import open_dict
 
 from .config_loader import ConfigLoader
+from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from ..errors import MissingConfigException
+from ..plugins import SearchPathPlugin, Launcher, Sweeper
 from ..plugins.common.utils import (
     configure_log,
     run_job,
@@ -64,11 +66,18 @@ class Hydra:
             abs_config_dir = abs_base_dir
 
         abs_config_dir = basedir_prefix + abs_config_dir
+
+        search_path = ConfigSearchPath()
+        search_path.append("hydra", "pkg://hydra.conf")
+        search_path.append("main", abs_config_dir)
+
+        search_path_plugins = Plugins.discover(SearchPathPlugin)
+        for spp in search_path_plugins:
+            plugin = spp()
+            plugin.manipulate_search_path(search_path)
+
         self.config_loader = ConfigLoader(
-            config_file=config_file,
-            job_search_path=[abs_config_dir],
-            hydra_search_path=["pkg://hydra.conf"],
-            strict_cfg=strict,
+            config_file=config_file, config_search_path=search_path, strict_cfg=strict
         )
 
         if not self.config_loader.exists(abs_config_dir):
@@ -118,25 +127,89 @@ class Hydra:
         config = self._load_config(overrides)
         log.info("\n" + config.pretty())
 
+    @staticmethod
+    def _log_header(header, prefix="", filler="-"):
+        log.debug(prefix + header)
+        log.debug(prefix + "".ljust(len(header), filler))
+
+    def _print_plugins(self):
+        self._log_header(header="Installed Hydra Plugins", filler="*")
+        for plugin_type in [SearchPathPlugin, Sweeper, Launcher]:
+            Hydra._log_header(
+                header="{}:".format(plugin_type.__name__), prefix="\t", filler="-"
+            )
+            for plugin in Plugins.discover(plugin_type):
+                log.debug("\t\t{}".format(plugin.__name__))
+
+    def _get_padding(self):
+        provider_pad = 0
+        search_path_pad = 0
+        file_pad = 0
+        for sp in self.config_loader.config_search_path.config_search_path:
+            provider_pad = max(provider_pad, len(sp.provider))
+            search_path_pad = max(search_path_pad, len(sp.path))
+        for file, _, _ in self.config_loader.get_load_history():
+            file_pad = max(file_pad, len(file))
+
+        provider_pad += 1
+        search_path_pad += 1
+        file_pad += 1
+        return provider_pad, search_path_pad, file_pad
+
+    def _print_search_path(self):
+        log.debug("")
+        self._log_header(header="Hydra config search path", filler="*")
+
+        provider_pad, search_path_pad, file_pad = self._get_padding()
+        self._log_header(
+            "| {} | {} |".format(
+                "Provider".ljust(provider_pad), "Search path".ljust(search_path_pad)
+            ),
+            filler="-",
+        )
+
+        for sp in self.config_loader.config_search_path.config_search_path:
+            log.debug(
+                "| {} | {} |".format(
+                    sp.provider.ljust(provider_pad), sp.path.ljust(search_path_pad)
+                )
+            )
+
+    def _print_composition_trace(self):
+        # Print configurations used to compose the config object
+        provider_pad, search_path_pad, file_pad = self._get_padding()
+        log.debug("")
+        self._log_header("Composition trace", filler="*")
+        self._log_header(
+            "| {} | {} | {} |".format(
+                "Provider".ljust(provider_pad),
+                "Search path".ljust(search_path_pad),
+                "File".ljust(file_pad),
+            ),
+            filler="-",
+        )
+
+        for file, search_path, provider in self.config_loader.get_load_history():
+            if search_path is not None:
+                log.debug(
+                    "| {} | {} | {} |".format(
+                        provider.ljust(provider_pad),
+                        search_path.ljust(search_path_pad),
+                        file.ljust(file_pad),
+                    )
+                )
+            else:
+                log.debug("{} : NOT FOUND".format(file))
+
+    def _print_debug_info(self):
+        self._print_plugins()
+        self._print_search_path()
+        self._print_composition_trace()
+
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
         configure_log(cfg.hydra.hydra_logging, self.verbose)
         global log
         log = logging.getLogger(__name__)
-        self._print_debug_info(cfg)
+        self._print_debug_info()
         return cfg
-
-    def _print_debug_info(self, cfg):
-        log.debug("Hydra config search path:")
-        for path in self.config_loader.get_hydra_search_path():
-            log.debug("\t" + path)
-        log.debug("")
-        log.debug("Job config search path:")
-        for path in self.config_loader.get_job_search_path():
-            log.debug("\t" + path)
-        log.debug("")
-        for file, loaded in self.config_loader.get_load_history():
-            if loaded:
-                log.debug("Loaded: {}".format(file))
-            else:
-                log.debug("Not found: {}".format(file))

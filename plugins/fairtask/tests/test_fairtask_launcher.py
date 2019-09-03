@@ -12,8 +12,17 @@ from hydra.test_utils.test_utils import chdir_hydra_root
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
+from hydra._internal.plugins import Plugins
+from hydra.plugins import Launcher
+from hydra_plugins.fairtask.fairtask_launcher import FAIRTaskLauncher
 
 chdir_hydra_root()
+
+
+def test_discovery():
+    launchers = Plugins.discover(Launcher)
+    # discovered plugins are actually different class objects, compare by name
+    assert FAIRTaskLauncher.__name__ in [x.__name__ for x in launchers]
 
 
 def test_demo_6(tmpdir):

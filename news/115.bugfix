@@ -1,0 +1,1 @@
+Fixed config loading order to allow properly overriding Hydra config groups from user config
