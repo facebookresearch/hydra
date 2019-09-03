@@ -5,7 +5,7 @@
     directory = "news/"
     title_format = "{version} ({project_date})"
     template = "news/_template.rst"
-
+    issue_format = "`#{issue} <https://github.com/facebookresearch/hydra/issues/{issue}>`_"
 
   [[tool.towncrier.type]]
   directory = "removal"
