@@ -1,3 +1,38 @@
+0.1.3 (2019-09-02)
+==================
+
+Configuration structure changes
+-------------------------------
+
+- Changed Hydra core defaults to be more appropriate for open source use. To get the FAIR cluster defaults install fair_cluster plugin (#103)
+- Changed output directories default to group by day (output/DAY/TIME instead of output/DAY_TIME) (#121)
+
+Features
+--------
+
+- Added the ability to prevent a default from being merged it by assigning null to it (hydra/launcher=null) (#106)
+- Implemented Plugin discovery mechanism, this can be used to find all installed plugins that implement a specific interface (#119)
+- Implemented an API to for manipulating the config search path (#120)
+
+Bug Fixes
+---------
+
+- Fixed config loading to properly support the use case in demos/8_specializing_config (#104)
+- Fixed error message when the user config contains defaults that is a mapping and not a list (#107)
+- Fixed config loading order to allow properly overriding Hydra config groups from user config (#115)
+
+Plugins
+-------
+
+- New plugin: fair_cluster
+  Change Hydra defaults to be appropriate for the FAIR cluster
+
+Improved Documentation
+----------------------
+
+- Initial search path and plugins documentation (#103)
+
+
 0.1.2 (2019-08-26)
 ==================
 
