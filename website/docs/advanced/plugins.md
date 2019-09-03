@@ -8,18 +8,18 @@ Hydra has a plugin architecture.
 Plugin types includes:
 
 ## Sweeper
-A sweeper is responsible for convert a command line into multiple jobs.
+A sweeper is responsible for converting command line arguments list into multiple jobs.
 For example, the basic built-in sweeper takes arguments like:
 ```
-hydra/launcher=fairtask optimizer=nesterov,adam learning_rate=0.01,0.1 
+batch_size=128 optimizer=nesterov,adam learning_rate=0.01,0.1 
 ```
 
-And launches 4 jobs with the following parameters:
+And creates 4 jobs with the following parameters:
 ```
-hydra/launcher=fairtask optimizer=nesterov learning_rate=0.01
-hydra/launcher=fairtask optimizer=nesterov learning_rate=0.1
-hydra/launcher=fairtask optimizer=adam learning_rate=0.01
-hydra/launcher=fairtask optimizer=adam learning_rate=0.1
+batch_size=128 optimizer=nesterov learning_rate=0.01
+batch_size=128 optimizer=nesterov learning_rate=0.1
+batch_size=128 optimizer=adam learning_rate=0.01
+batch_size=128 optimizer=adam learning_rate=0.1
 ```
 
 
