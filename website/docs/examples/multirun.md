@@ -8,35 +8,34 @@ Hydra can run the same job multiple time with different arguments in each run us
 To turn on multi-run, use -m or --multirun and pass comma separated list for each value you want
 to sweep over, for example:
 ```text
-$ python demos/0_minimal/minimal.py --multirun x=1,2 b=x,y
-[2019-08-14 23:39:30,808][basic_launcher][INFO] - Launching 4 jobs locally
-[2019-08-14 23:39:30,808][basic_launcher][INFO] - Sweep output dir : ./outputs/2019-08-14_23-39-30
-[2019-08-14 23:39:30,808][basic_launcher][INFO] -       #0 : x=1 b=x
-b: x
-x: 1
+$ python demos/5_config_groups/experiment.py -m optimizer=adam,nesterov
+[2019-09-03 17:47:21,646] - Launching 2 jobs locally
+[2019-09-03 17:47:21,646] - Sweep output dir : multirun/2019-09-03/17-47-21
+[2019-09-03 17:47:21,646] -     #0 : optimizer=adam
+optimizer:
+  beta: 0.01
+  lr: 0.1
+  type: adam
 
-[2019-08-14 23:39:30,860][basic_launcher][INFO] -       #1 : x=1 b=y
-b: y
-x: 1
-
-[2019-08-14 23:39:30,916][basic_launcher][INFO] -       #2 : x=2 b=x
-b: x
-x: 2
-
-[2019-08-14 23:39:30,976][basic_launcher][INFO] -       #3 : x=2 b=y
-b: y
-x: 2
+[2019-09-03 17:47:21,720] -     #1 : optimizer=nesterov
+optimizer:
+  lr: 0.001
+  type: nesterov
 ```
 
 The default launcher runs the jobs locally and serially, but you can switch to other launchers like fairtask and submitit:
 
 For example:
 ```text
-$ python demos/6_sweep/experiment.py -m optimizer=nesterov,adam hydra/launcher=fairtask
-[2019-08-14 23:39:49,372][fairtask_launcher][INFO] - Sweep output dir : /checkpoint/omry/outputs/2019-08-14_23-39-49
-[2019-08-14 23:39:49,534][fairtask_launcher][INFO] - Launching 2 jobs to slurm queue
-[2019-08-14 23:39:49,534][fairtask_launcher][INFO] -    #0 : optimizer=nesterov
-[2019-08-14 23:39:49,534][fairtask_launcher][INFO] -    #1 : optimizer=adam
+> python demos/6_sweep/experiment.py -m optimizer=nesterov,adam random_seed=1,2,3 hydra/launcher=fairtask
+[2019-09-03 17:58:19,452] - Sweep output dir : multirun/2019-09-03/17-58-19
+[2019-09-03 17:58:19,775] - Launching 6 jobs to slurm queue
+[2019-09-03 17:58:19,776] -     #0 : optimizer=nesterov random_seed=1
+[2019-09-03 17:58:19,776] -     #1 : optimizer=nesterov random_seed=2
+[2019-09-03 17:58:19,776] -     #2 : optimizer=nesterov random_seed=3
+[2019-09-03 17:58:19,776] -     #3 : optimizer=adam random_seed=1
+[2019-09-03 17:58:19,776] -     #4 : optimizer=adam random_seed=2
+[2019-09-03 17:58:19,776] -     #5 : optimizer=adam random_seed=3
 ```
 
 Sweep support is currently very basic and this area will improve further.

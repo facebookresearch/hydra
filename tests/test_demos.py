@@ -299,17 +299,30 @@ def test_demo_4_config_splitting(tmpdir, args, output_conf):
 @pytest.mark.parametrize(
     "args,output_conf",
     [
-        ([], OmegaConf.create({"optimizer": {"lr": 0.001, "type": "nesterov"}})),
+        (
+            [],
+            OmegaConf.create(
+                {
+                    "optimizer": {"lr": 0.001, "type": "nesterov"},
+                    "dataset": {"name": "imagenet", "path": "/datasets/imagenet"},
+                }
+            ),
+        ),
         (
             ["optimizer=adam"],
-            OmegaConf.create({"optimizer": {"beta": 0.01, "lr": 0.1, "type": "adam"}}),
+            OmegaConf.create(
+                {
+                    "optimizer": {"beta": 0.01, "lr": 0.1, "type": "adam"},
+                    "dataset": {"name": "imagenet", "path": "/datasets/imagenet"},
+                }
+            ),
         ),
     ],
 )
 def test_demo_5_config_groups(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "demos/5_config_groups/experiment.py",
+        "demos/5_config_groups/defaults.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
