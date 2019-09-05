@@ -6,7 +6,7 @@ import hydra
 # A logger for this file
 log = logging.getLogger(__name__)
 
-# TODO: investigate -v logging_example
+
 @hydra.main()
 def experiment(_cfg):
     log.info("Info level message")

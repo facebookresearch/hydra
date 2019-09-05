@@ -3,11 +3,10 @@ id: intro
 title: Introduction
 sidebar_label: Introduction
 ---
-Hydra is an experimentation framework, with the mission is to make writing, maintaining and
-running experiments in Python a joyful experience.
+Hydra is a Python library that help you write flexible command line applications, without all the boilerplate code.
 
-Hydra provides a unified command line interface to run your experiments locally or remotely.
-it can compose the configuration for your experiment dynamically, while allowing free overriding of the config 
-from the command line without writing a line of code.
+Hydra provides a unified command line interface to run your application locally or remotely.
+it can compose the configuration for your application dynamically, while allowing free overriding of everything in the config 
+from the command line.
 
 The best way to understand what Hydra is good for is to go through some examples.
