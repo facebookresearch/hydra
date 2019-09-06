@@ -36,11 +36,12 @@ def get_args():
         action="store_true",
         help="Run multiple jobs with the configured launcher",
     )
+
     parser.add_argument(
-        "--sweep",
-        "-s",
+        "--shell_completion",
+        "-sc",
         action="store_true",
-        help="Perform a sweep (deprecated, use --multirun|-m)",
+        help="Install/Uninstall shell completion",
     )
 
     return parser.parse_args()

@@ -2,7 +2,7 @@
 
 import inspect
 import os
-
+import sys
 from .hydra import Hydra
 
 
@@ -37,25 +37,22 @@ def run_hydra(args, task_function, config_path, strict):
         strict=strict,
     )
 
-    if args.run + args.cfg + args.multirun > 1:
-        raise ValueError("Only one of --run, --sweep and --cfg can be specified")
-    if args.run + args.cfg + args.multirun == 0:
+    num_commands = args.run + args.cfg + args.multirun + args.shell_completion
+    if num_commands > 1:
+        raise ValueError(
+            "Only one of --run, --sweep and --cfg  --completion can be specified"
+        )
+    if num_commands == 0:
         args.run = True
 
     if args.run:
-        command = "run"
-    elif args.sweep:
-        raise RuntimeError("-s|--sweep is no longer supported, please us -m|--multirun")
-    elif args.multirun:
-        command = "multirun"
-    elif args.cfg:
-        command = "cfg"
-
-    if command == "run":
         hydra.run(overrides=args.overrides)
-    elif command == "multirun":
+    elif args.multirun:
         hydra.multirun(overrides=args.overrides)
-    elif command == "cfg":
+    elif args.cfg:
         hydra.show_cfg(overrides=args.overrides)
+    elif args.shell_completion:
+        hydra.shell_completion(overrides=args.overrides)
     else:
         print("Command not specified")
+        sys.exit(1)
