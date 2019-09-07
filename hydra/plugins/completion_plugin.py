@@ -22,3 +22,7 @@ class CompletionPlugin(Plugin):
         :return: the name of the shell this plugin provides completion for
         """
         raise NotImplementedError()
+
+    @abstractmethod
+    def query(self, config_loader, cfg):
+        raise NotImplementedError()
