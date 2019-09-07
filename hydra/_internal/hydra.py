@@ -129,8 +129,7 @@ class Hydra:
 
     def shell_completion(self, overrides):
         config = self._load_config(overrides)
-        log.info("Hydra completion")
-        subcommands = ["install", "uninstall"]
+        subcommands = ["install", "uninstall", "query"]
         found = False
         for sc in subcommands:
             if sc in config:
@@ -140,6 +139,7 @@ class Hydra:
             log.error(
                 "No completion subcommand specified ({})".format(",".join(subcommands))
             )
+
         shell_to_plugin = defaultdict(list)
         for clazz in Plugins.discover(CompletionPlugin):
             plugin = clazz()
@@ -160,9 +160,12 @@ class Hydra:
         if config.install:
             plugin = find_plugin(config.install)
             plugin.install()
-        if config.uninstall:
+        elif config.uninstall:
             plugin = find_plugin(config.uninstall)
             plugin.uninstall()
+        elif config.query:
+            plugin = find_plugin(config.query)
+            plugin.query(self.config_loader, config)
 
     @staticmethod
     def _log_header(header, prefix="", filler="-"):
