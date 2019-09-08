@@ -77,8 +77,12 @@ complete -r """
         index = os.environ["COMP_INDEX"] if "COMP_INDEX" in os.environ else len(line)
         if index == "":
             index = 0
+        if isinstance(index, str):
+            index = int(index)
+        # print("line={},index{}".format(line.replace(" ", "_"), index))
         line, index = self.strip_python_or_app_name(line, index)
-        suggestions = CompletionPlugin._complete(config_loader, line, index)
+
+        suggestions = CompletionPlugin._complxete(config_loader, line, index)
         print(" ".join(suggestions))
 
     @staticmethod
