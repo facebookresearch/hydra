@@ -165,7 +165,7 @@ class Hydra:
             plugin.uninstall()
         elif config.query:
             plugin = find_plugin(config.query)
-            plugin.query(self.config_loader, config)
+            plugin.query(self.config_loader)
 
     @staticmethod
     def _log_header(header, prefix="", filler="-"):
