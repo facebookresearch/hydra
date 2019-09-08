@@ -53,4 +53,4 @@ class CompletionPlugin(Plugin):
             return [".{}".format(i) for i in range(len(value))]
         else:
             # primitive
-            return ["={}".format(str(value))]
+            return ["{}".format(str(value))]

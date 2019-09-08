@@ -45,11 +45,12 @@ def test_completion(line, index, expected):
 @pytest.mark.parametrize(
     "app_prefix",
     [
-        "python foo.py",
-        "hydra_app",
-        "hydra_app  ",
-        "python  foo.py",
-        "/miniconda3/envs/hydra36/bin/python foo.py",
+        # "python foo.py",
+        # "hydra_app",
+        # "hydra_app  ",
+        # "python  foo.py",
+        "python demos/hydra_app/example/hydra_app/main.py",
+        # "/miniconda3/envs/hydra36/bin/python foo.py",
     ],
 )
 @pytest.mark.parametrize(
