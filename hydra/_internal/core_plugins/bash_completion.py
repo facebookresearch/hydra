@@ -3,11 +3,14 @@ from hydra.plugins.completion_plugin import CompletionPlugin
 import logging
 import sys
 import os
+import re
 
 log = logging.getLogger(__name__)
 
 # TODO:
 # Add testing and integration testing
+# Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
+# Proper testing for logic of query (stripping python foo.py or foo from line)
 
 
 class BashCompletion(CompletionPlugin):
@@ -36,7 +39,7 @@ class BashCompletion(CompletionPlugin):
     COMPREPLY=($( compgen -W '$options' -- "$word" ));
 }
 
-complete -F hydra_bash_completion """
+complete -o nospace -F hydra_bash_completion """
         print(script + self._get_exec())
 
     def uninstall(self):
@@ -50,10 +53,33 @@ complete -r """
     def provides(self):
         return "bash"
 
-    def query(self, config_loader, cfg):
-        # line = os.environ["COMP_LINE"]
-        # index = os.environ["COMP_INDEX"]
-        print("10 20 30")
+    @staticmethod
+    def strip_python_or_app_name(line, index):
+        """
+        :param line: input line, may contain python file.py followed=by_args..
+        :param index: index of cursor in input line
+        :return: tuple(args line, index of cursor in args line)
+        """
+        match = re.match(r"^[\\/\w]*python\s+\w+.py\s*(.*)", line)
+        if match:
+            ret_index = index - match.start(1) if index is not None else None
+            return match.group(1), ret_index
+        else:
+            match = re.match(r"^[\w-]+\s*(.*)", line)
+            if match:
+                ret_index = index - match.start(1) if index is not None else None
+                return match.group(1), ret_index
+            else:
+                raise RuntimeError("Error parsing line '{}'".format(line))
+
+    def query(self, config_loader):
+        line = os.environ["COMP_LINE"]
+        index = os.environ["COMP_INDEX"] if "COMP_INDEX" in os.environ else len(line)
+        if index == "":
+            index = 0
+        line, index = self.strip_python_or_app_name(line, index)
+        suggestions = CompletionPlugin._complete(config_loader, line, index)
+        print(" ".join(suggestions))
 
     @staticmethod
     def _get_exec():
