@@ -32,11 +32,24 @@ class BashCompletion(CompletionPlugin):
         helper="${words[0]}"
         true
     fi
+
     if [ $? == 0 ]; then
-        options=$( COMP_INDEX=$COMP_INDEX COMP_LINE=$COMP_LINE $helper --shell_completion query=bash)
+        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper --shell_completion query=bash)
+        word=${words[$COMP_CWORD]}
+
+        if [ $HYDRA_COMP_DEBUG == 1 ]; then
+            printf "\n"
+            printf "COMP_LINE='$COMP_LINE'\n"
+            printf "COMP_POINT='$COMP_POINT'\n"
+            printf "Word='$word'\n"
+            printf "Output suggestions:\n"
+            printf "\t%s\n" ${options[@]}
+            return
+        fi
+
+        COMPREPLY=($( compgen -W '$options' -- "$word" ));
+
     fi
-    word=${words[$COMP_CWORD]}
-    COMPREPLY=($( compgen -W '$options' -- "$word" ));
 }
 
 complete -o nospace -F hydra_bash_completion """
@@ -56,11 +69,14 @@ complete -r """
     @staticmethod
     def strip_python_or_app_name(line, index):
         """
+        Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
+        which could be at the form of python script.py or some_app.
+        it also corrects the index (COMP_INDEX) to reflect the same location in the striped command line.
         :param line: input line, may contain python file.py followed=by_args..
         :param index: index of cursor in input line
         :return: tuple(args line, index of cursor in args line)
         """
-        match = re.match(r"^[\\/\w]*python\s+\w+.py\s*(.*)", line)
+        match = re.match(r"^[\\/\w]*python\s+[\\/\w]+.py\s*(.*)", line)
         if match:
             ret_index = index - match.start(1) if index is not None else None
             return match.group(1), ret_index
@@ -68,21 +84,28 @@ complete -r """
             match = re.match(r"^[\w-]+\s*(.*)", line)
             if match:
                 ret_index = index - match.start(1) if index is not None else None
+                assert ret_index is None or ret_index >= 0, (
+                    "Invalid index calculated:\n"
+                    "\tinput line : '{}'\n"
+                    "\tinput index={}\n"
+                    "\toutput_line='{}'\n"
+                    "\toutput_index={}".format(line, index, match.group(1), ret_index)
+                )
                 return match.group(1), ret_index
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
     def query(self, config_loader):
         line = os.environ["COMP_LINE"]
-        index = os.environ["COMP_INDEX"] if "COMP_INDEX" in os.environ else len(line)
+        index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
+
         if index == "":
             index = 0
         if isinstance(index, str):
             index = int(index)
-        # print("line={},index{}".format(line.replace(" ", "_"), index))
         line, index = self.strip_python_or_app_name(line, index)
 
-        suggestions = CompletionPlugin._complxete(config_loader, line, index)
+        suggestions = CompletionPlugin._complete(config_loader, line, index)
         print(" ".join(suggestions))
 
     @staticmethod

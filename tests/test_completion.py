@@ -13,14 +13,16 @@ chdir_hydra_root()
 @pytest.mark.parametrize(
     "line, index, expected",
     [
-        ("", None, ["dict", "hydra", "list1"]),
-        ("dict", None, [".key1", ".key2"]),
-        ("dict ", None, [".key1", ".key2"]),
-        ("dict.key1", None, ["=val1"]),
-        ("dict.key2", None, ["=val2"]),
-        ("list1", None, [".0", ".1"]),
-        ("list1.0", None, ["=aa"]),
-        ("list1.1", None, ["=bb"]),
+        ("", None, ["dict.", "dict_prefix=", "hydra.", "list.", "list_prefix="]),
+        ("dict", None, ["dict.", "dict_prefix="]),
+        ("dict.", None, ["dict.key1=", "dict.key2="]),
+        ("dict.key", None, ["dict.key1=", "dict.key2="]),
+        ("dict.key1=", None, ["dict.key1=val1"])
+        # ("dict.key1", None, ["=val1"]),
+        # ("dict.key2", None, ["=val2"]),
+        # ("list1", None, [".0", ".1"]),
+        # ("list1.0", None, ["=aa"]),
+        # ("list1.1", None, ["=bb"]),
         # test completion of:
         # list
         # dict
@@ -42,15 +44,15 @@ def test_completion(line, index, expected):
     assert ret == expected
 
 
+@pytest.mark.parametrize("app_suffix", ["", " "])
 @pytest.mark.parametrize(
     "app_prefix",
     [
-        # "python foo.py",
-        # "hydra_app",
-        # "hydra_app  ",
-        # "python  foo.py",
+        "python foo.py",
+        "hydra_app",
+        "python  foo.py",
         "python demos/hydra_app/example/hydra_app/main.py",
-        # "/miniconda3/envs/hydra36/bin/python foo.py",
+        "/miniconda3/envs/hydra36/bin/python foo.py",
     ],
 )
 @pytest.mark.parametrize(
@@ -62,11 +64,14 @@ def test_completion(line, index, expected):
         ("", 0),
         ("foo=bar", 3),
         ("foo=bar bar=baz0", 3),
+        ("dict.", 0),
+        ("dict.", 5),
     ],
 )
-def test_strip(app_prefix, args_line, args_line_index):
+def test_strip(app_prefix, app_suffix, args_line, args_line_index):
     if args_line:
         app_prefix = app_prefix + " "
+    app_prefix = app_prefix + app_suffix
     line = "{}{}".format(app_prefix, args_line)
     index = len(app_prefix) + args_line_index if args_line_index is not None else None
     result_line, result_index = BashCompletion.strip_python_or_app_name(line, index)
