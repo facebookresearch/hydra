@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABCMeta
 from abc import abstractmethod
-from omegaconf import DictConfig, ListConfig
+from omegaconf import DictConfig, ListConfig, Config
 import six
 
 from hydra.plugins import Plugin
@@ -29,8 +29,50 @@ class CompletionPlugin(Plugin):
         raise NotImplementedError()
 
     @staticmethod
+    def _get_matches(config, word):
+        def str_rep(in_key, in_value):
+            if isinstance(in_value, Config):
+                return "{}.".format(in_key)
+            else:
+                return "{}=".format(in_key)
+
+        matches = []
+        if isinstance(config, DictConfig):
+            if word.endswith(".") or word.endswith("="):
+                exact_key = word[0:-1]
+                conf_node = config.select(exact_key)
+
+                if isinstance(conf_node, Config):
+                    key_matches = CompletionPlugin._get_matches(conf_node, "")
+                else:
+                    # primitive
+                    key_matches = [conf_node]
+
+                matches.extend(["{}{}".format(word, match) for match in key_matches])
+            else:
+                last_dot = word.rfind(".")
+                if last_dot != -1:
+                    base_key = word[0:last_dot]
+                    partial_key = word[last_dot + 1 :]
+                    conf_node = config.select(base_key)
+                    key_matches = CompletionPlugin._get_matches(conf_node, partial_key)
+                    matches.extend(
+                        ["{}.{}".format(base_key, match) for match in key_matches]
+                    )
+                else:
+                    for key, value in config.items():
+                        if key.startswith(word):
+                            matches.append(str_rep(key, value))
+        elif isinstance(config, ListConfig):
+            # TODO
+            matches = []
+        else:
+            assert False
+
+        return sorted(matches)
+
+    @staticmethod
     def _complete(config_loader, line, index):
-        # print("line=|{}|,index={}".format(line.replace(" ", "_"), index))
         line = line.rstrip()
         if index is None:
             index = len(line)
@@ -38,19 +80,5 @@ class CompletionPlugin(Plugin):
             line = line[0:index]
         words = line.split(" ")
         config = config_loader.load_configuration(words[0:-1])
-        cur_word = words[-1]
 
-        value = config.select(cur_word) if cur_word != "" else config
-        if isinstance(value, DictConfig):
-            # dict
-            if value is config:
-                # top level, do not prepend .
-                return sorted(value.keys())
-            else:
-                return [".{}".format(key) for key in sorted(value.keys())]
-        elif isinstance(value, ListConfig):
-            # list
-            return [".{}".format(i) for i in range(len(value))]
-        else:
-            # primitive
-            return ["{}".format(str(value))]
+        return CompletionPlugin._get_matches(config, words[-1])
