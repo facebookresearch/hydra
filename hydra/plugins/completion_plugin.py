@@ -73,16 +73,13 @@ class CompletionPlugin(Plugin):
         return suggestions
 
     def _query(self, line, index):
-        line = line.rstrip()
+        # if index is None:
+        #     index = len(line)
 
-        if index is None:
-            index = len(line)
-
-        args = [x for x in line[0:index].split(" ") if x != ""]
+        args = line.split(" ")
         words = []
-        word = ""
-        if len(args) > 0:
-            word = args[-1]
+        word = args[-1]
+        if len(args) > 1:
             words = args[0:-1]
 
         config = self.config_loader.load_configuration(words)

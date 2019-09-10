@@ -9,7 +9,8 @@ from hydra.test_utils.test_utils import create_search_path
 
 chdir_hydra_root()
 
-
+# TODO: decide if to filter items added in cuurrent line from completion suggestions
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
     "line, index, expected",
     [
@@ -17,9 +18,7 @@ chdir_hydra_root()
         ("dict", None, ["dict.", "dict_prefix="]),
         ("dict.", None, ["dict.key1=", "dict.key2="]),
         ("dict.key", None, ["dict.key1=", "dict.key2="]),
-        ("dict.key1=", None, ["dict.key1=val1"])
-        # ("dict.key1", None, ["=val1"]),
-        # ("dict.key2", None, ["=val2"]),
+        ("dict.key1=", None, ["dict.key1=val1"]),
         # ("list1", None, [".0", ".1"]),
         # ("list1.0", None, ["=aa"]),
         # ("list1.1", None, ["=bb"]),
@@ -31,14 +30,16 @@ chdir_hydra_root()
         # all of the above with an index of a word one before last.
     ],
 )
-def test_completion(line, index, expected):
+def test_completion(line_prefix, line, index, expected):
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["tests/configs/completion_test"]),
         strict_cfg=False,
         config_file="config.yaml",
     )
+    if index is not None:
+        index += len(line_prefix)
     bc = CompletionPlugin(config_loader)
-    ret = bc._query(line=line, index=index)
+    ret = bc._query(line=line_prefix + line, index=index)
     assert ret == expected
 
 
