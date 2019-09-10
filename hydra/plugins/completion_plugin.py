@@ -69,7 +69,7 @@ class CompletionPlugin(Plugin):
 
         return sorted(matches)
 
-    def _post_process_suggestions(self, suggestions):
+    def _post_process_suggestions(self, suggestions, word):
         return suggestions
 
     def _query(self, line, index):
@@ -87,4 +87,4 @@ class CompletionPlugin(Plugin):
 
         config = self.config_loader.load_configuration(words)
         suggestions = CompletionPlugin._get_matches(config, word)
-        return self._post_process_suggestions(suggestions)
+        return self._post_process_suggestions(suggestions, word)

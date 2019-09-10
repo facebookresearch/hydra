@@ -10,6 +10,7 @@ log = logging.getLogger(__name__)
 # TODO:
 # Add testing and integration testing
 # Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
+# Test handling of errors loading config from command line during completion
 
 
 class BashCompletion(CompletionPlugin):
@@ -46,11 +47,11 @@ class BashCompletion(CompletionPlugin):
             printf "\\t%s\\n" ${options[@]}
             return
         fi
-        COMPREPLY=($( compgen -W '$options' -- "$word" ));
+        COMPREPLY=($( compgen -o nospace -o default -W '$options' -- "$word" ));
     fi
 }
 
-complete -o default -o nospace -F hydra_bash_completion """
+complete -o nospace -o default -F hydra_bash_completion """
         print(script + self._get_exec())
 
     def uninstall(self):
@@ -93,16 +94,13 @@ complete -r """
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
-    def _post_process_suggestions(self, suggestions):
-        # bash does not handle suggestions that has key=value in them. strip the value
-        ret = []
-        for suggestion in suggestions:
-            split = suggestion.split("=")
-            if len(split) == 1:
-                ret.append(split[0])
-            else:
-                ret.append(split[0] + "=")
-        return ret
+    def _post_process_suggestions(self, suggestions, word):
+        # bash has issues with the case when completion is done on a word ending with =
+        # do not suggest in this case
+        if len(suggestions) == 1 and word.endswith("="):
+            return []
+        else:
+            return suggestions
 
     def query(self):
         line = os.environ["COMP_LINE"]
