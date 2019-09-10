@@ -142,7 +142,7 @@ class Hydra:
 
         shell_to_plugin = defaultdict(list)
         for clazz in Plugins.discover(CompletionPlugin):
-            plugin = clazz()
+            plugin = clazz(self.config_loader)
             shell_to_plugin[plugin.provides()].append(plugin)
         for shell, plugins in shell_to_plugin.items():
             if len(plugins) > 1:
@@ -165,7 +165,7 @@ class Hydra:
             plugin.uninstall()
         elif config.query:
             plugin = find_plugin(config.query)
-            plugin.query(self.config_loader)
+            plugin.query()
 
     @staticmethod
     def _log_header(header, prefix="", filler="-"):

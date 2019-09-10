@@ -37,10 +37,8 @@ def test_completion(line, index, expected):
         strict_cfg=False,
         config_file="config.yaml",
     )
-
-    ret = CompletionPlugin._complete(
-        config_loader=config_loader, line=line, index=index
-    )
+    bc = CompletionPlugin(config_loader)
+    ret = bc._query(line=line, index=index)
     assert ret == expected
 
 
@@ -77,3 +75,17 @@ def test_strip(app_prefix, app_suffix, args_line, args_line_index):
     result_line, result_index = BashCompletion.strip_python_or_app_name(line, index)
     assert result_line == args_line
     assert result_index == args_line_index
+
+
+@pytest.mark.parametrize(
+    "line, index, expected", [("dict.key1=", None, ["dict.key1="])]
+)
+def test_bash_completion(line, index, expected):
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["tests/configs/completion_test"]),
+        strict_cfg=False,
+        config_file="config.yaml",
+    )
+    bc = BashCompletion(config_loader)
+    ret = bc._query(line=line, index=index)
+    assert ret == expected
