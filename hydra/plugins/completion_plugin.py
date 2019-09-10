@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABCMeta
-from abc import abstractmethod
 from omegaconf import DictConfig, ListConfig, Config
 import six
 
@@ -9,23 +8,22 @@ from hydra.plugins import Plugin
 
 @six.add_metaclass(ABCMeta)
 class CompletionPlugin(Plugin):
-    @abstractmethod
+    def __init__(self, config_loader):
+        self.config_loader = config_loader
+
     def install(self):
         raise NotImplementedError()
 
-    @abstractmethod
     def uninstall(self):
         raise NotImplementedError()
 
-    @abstractmethod
     def provides(self):
         """
         :return: the name of the shell this plugin provides completion for
         """
-        raise NotImplementedError()
+        return None
 
-    @abstractmethod
-    def query(self, config_loader, cfg):
+    def query(self):
         raise NotImplementedError()
 
     @staticmethod
@@ -71,14 +69,22 @@ class CompletionPlugin(Plugin):
 
         return sorted(matches)
 
-    @staticmethod
-    def _complete(config_loader, line, index):
+    def _post_process_suggestions(self, suggestions):
+        return suggestions
+
+    def _query(self, line, index):
         line = line.rstrip()
+
         if index is None:
             index = len(line)
-        if len(line) > 0:
-            line = line[0:index]
-        words = line.split(" ")
-        config = config_loader.load_configuration(words[0:-1])
 
-        return CompletionPlugin._get_matches(config, words[-1])
+        args = [x for x in line[0:index].split(" ") if x != ""]
+        words = []
+        word = ""
+        if len(args) > 0:
+            word = args[-1]
+            words = args[0:-1]
+
+        config = self.config_loader.load_configuration(words)
+        suggestions = CompletionPlugin._get_matches(config, word)
+        return self._post_process_suggestions(suggestions)

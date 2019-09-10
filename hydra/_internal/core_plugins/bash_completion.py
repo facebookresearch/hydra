@@ -10,15 +10,15 @@ log = logging.getLogger(__name__)
 # TODO:
 # Add testing and integration testing
 # Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
-# Proper testing for logic of query (stripping python foo.py or foo from line)
 
 
 class BashCompletion(CompletionPlugin):
+    # TODO: detect python with path like /foo/bar/python
     def install(self):
         script = """hydra_bash_completion()
 {
     words=($COMP_LINE)
-    if [ ${words[0]} == "python" ]; then
+    if [ "${words[0]}" == "python" ]; then
         if (( ${#words[@]} < 2 )); then
             return
         fi
@@ -38,21 +38,19 @@ class BashCompletion(CompletionPlugin):
         word=${words[$COMP_CWORD]}
 
         if [ $HYDRA_COMP_DEBUG == 1 ]; then
-            printf "\n"
-            printf "COMP_LINE='$COMP_LINE'\n"
-            printf "COMP_POINT='$COMP_POINT'\n"
-            printf "Word='$word'\n"
-            printf "Output suggestions:\n"
-            printf "\t%s\n" ${options[@]}
+            printf "\\n"
+            printf "COMP_LINE='$COMP_LINE'\\n"
+            printf "COMP_POINT='$COMP_POINT'\\n"
+            printf "Word='$word'\\n"
+            printf "Output suggestions:\\n"
+            printf "\\t%s\\n" ${options[@]}
             return
         fi
-
         COMPREPLY=($( compgen -W '$options' -- "$word" ));
-
     fi
 }
 
-complete -o nospace -F hydra_bash_completion """
+complete -o default -o nospace -F hydra_bash_completion """
         print(script + self._get_exec())
 
     def uninstall(self):
@@ -95,7 +93,18 @@ complete -r """
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
-    def query(self, config_loader):
+    def _post_process_suggestions(self, suggestions):
+        # bash does not handle suggestions that has key=value in them. strip the value
+        ret = []
+        for suggestion in suggestions:
+            split = suggestion.split("=")
+            if len(split) == 1:
+                ret.append(split[0])
+            else:
+                ret.append(split[0] + "=")
+        return ret
+
+    def query(self):
         line = os.environ["COMP_LINE"]
         index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 
@@ -104,9 +113,7 @@ complete -r """
         if isinstance(index, str):
             index = int(index)
         line, index = self.strip_python_or_app_name(line, index)
-
-        suggestions = CompletionPlugin._complete(config_loader, line, index)
-        print(" ".join(suggestions))
+        print(" ".join(self._query(line, index)))
 
     @staticmethod
     def _get_exec():
