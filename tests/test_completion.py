@@ -77,9 +77,7 @@ def test_strip(app_prefix, app_suffix, args_line, args_line_index):
     assert result_index == args_line_index
 
 
-@pytest.mark.parametrize(
-    "line, index, expected", [("dict.key1=", None, ["dict.key1="])]
-)
+@pytest.mark.parametrize("line, index, expected", [("dict.key1=", None, [])])
 def test_bash_completion(line, index, expected):
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["tests/configs/completion_test"]),
