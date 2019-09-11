@@ -290,3 +290,25 @@ def test_override_hydra_config_group_from_config_file():
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
         ("overriding_logging_default.yaml", "tests/configs", "test"),
     ]
+
+
+def test_list_groups():
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["tests/configs"]),
+        strict_cfg=False,
+        config_file="overriding_output_dir.yaml",
+    )
+    assert sorted(config_loader.list_groups("")) == [
+        "completion_test",
+        "group1",
+        "group2",
+        "hydra",
+    ]
+
+    assert sorted(config_loader.list_groups("hydra")) == [
+        "hydra_logging",
+        "job_logging",
+        "launcher",
+        "output",
+        "sweeper",
+    ]
