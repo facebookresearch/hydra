@@ -217,7 +217,12 @@ class ConfigLoader:
                 assert False, "'{}' not found".format(fullpath)
         return loaded_cfg
 
-    def _get_group_options(self, group_name):
+    # def list_groups(self):
+    #     groups = []
+    #     for search_path in self.config_search_path.config_search_path:
+    #         pass
+
+    def get_group_options(self, group_name):
         options = []
         for search_path in self.config_search_path.config_search_path:
             search_path = search_path.path
@@ -254,7 +259,7 @@ class ConfigLoader:
                     msg = "Could not load {}".format(new_cfg)
                     raise MissingConfigException(msg, new_cfg)
                 else:
-                    options = self._get_group_options(family)
+                    options = self.get_group_options(family)
                     if options:
                         msg = "Could not load {}, available options:\n{}:\n\t{}".format(
                             new_cfg, family, "\n\t".join(options)
