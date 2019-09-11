@@ -33,12 +33,11 @@ class BashCompletion(CompletionPlugin):
         helper="${words[0]}"
         true
     fi
-
     if [ $? == 0 ]; then
         options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper --shell_completion query=bash)
         word=${words[$COMP_CWORD]}
 
-        if [ $HYDRA_COMP_DEBUG == 1 ]; then
+        if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
             printf "\\n"
             printf "COMP_LINE='$COMP_LINE'\\n"
             printf "COMP_POINT='$COMP_POINT'\\n"
@@ -51,7 +50,8 @@ class BashCompletion(CompletionPlugin):
     fi
 }
 
-complete -o nospace -o default -F hydra_bash_completion """
+COMP_WORDBREAKS=${COMP_WORDBREAKS//=}
+COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_completion """
         print(script + self._get_exec())
 
     def uninstall(self):
@@ -94,14 +94,6 @@ complete -r """
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
-    def _post_process_suggestions(self, suggestions, word):
-        # bash has issues with the case when completion is done on a word ending with =
-        # do not suggest in this case
-        if len(suggestions) == 1 and word.endswith("="):
-            return []
-        else:
-            return suggestions
-
     def query(self):
         line = os.environ["COMP_LINE"]
         index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
@@ -110,8 +102,10 @@ complete -r """
             index = 0
         if isinstance(index, str):
             index = int(index)
+
+        # currently index is ignored.
         line, index = self.strip_python_or_app_name(line, index)
-        print(" ".join(self._query(line, index)))
+        print(" ".join(self._query(line)))
 
     @staticmethod
     def _get_exec():

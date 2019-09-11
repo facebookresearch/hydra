@@ -35,7 +35,7 @@ class CompletionPlugin(Plugin):
                 return "{}=".format(in_key)
 
         matches = []
-        if isinstance(config, DictConfig):
+        if isinstance(config, Config):
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 conf_node = config.select(exact_key)
@@ -58,24 +58,22 @@ class CompletionPlugin(Plugin):
                         ["{}.{}".format(base_key, match) for match in key_matches]
                     )
                 else:
-                    for key, value in config.items():
-                        if key.startswith(word):
-                            matches.append(str_rep(key, value))
-        elif isinstance(config, ListConfig):
-            # TODO
-            matches = []
+                    if isinstance(config, DictConfig):
+                        for key, value in config.items():
+                            if key.startswith(word):
+                                matches.append(str_rep(key, value))
+                    elif isinstance(config, ListConfig):
+                        for idx, value in enumerate(config):
+                            if str(idx).startswith(word):
+                                matches.append(str_rep(idx, value))
         else:
-            assert False
+            assert False, "Object is not an instance of config : {}".format(
+                type(config)
+            )
 
         return sorted(matches)
 
-    def _post_process_suggestions(self, suggestions, word):
-        return suggestions
-
-    def _query(self, line, index):
-        # if index is None:
-        #     index = len(line)
-
+    def _query(self, line):
         args = line.split(" ")
         words = []
         word = args[-1]
@@ -83,5 +81,4 @@ class CompletionPlugin(Plugin):
             words = args[0:-1]
 
         config = self.config_loader.load_configuration(words)
-        suggestions = CompletionPlugin._get_matches(config, word)
-        return self._post_process_suggestions(suggestions, word)
+        return CompletionPlugin._get_matches(config, word)
