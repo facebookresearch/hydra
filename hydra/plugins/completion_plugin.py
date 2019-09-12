@@ -35,7 +35,9 @@ class CompletionPlugin(Plugin):
                 return "{}=".format(in_key)
 
         matches = []
-        if isinstance(config, Config):
+        if config is None:
+            return matches
+        elif isinstance(config, Config):
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 conf_node = config.select(exact_key)
