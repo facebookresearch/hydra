@@ -254,7 +254,11 @@ class ConfigLoader:
                     files = []
                     for file in all_files:
                         full_path = os.path.join(group_path, group_name, file)
-                        if file_type == "dir" and os.path.isdir(full_path):
+                        if (
+                            file_type == "dir"
+                            and os.path.isdir(full_path)
+                            and file != "__pycache__"
+                        ):
                             files.append(file)
                         elif file_type == "file" and file.endswith(".yaml"):
                             files.append(file[0 : -len(".yaml")])

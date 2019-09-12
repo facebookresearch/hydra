@@ -15,7 +15,9 @@ chdir_hydra_root()
 
 def create_config_loader():
     return ConfigLoader(
-        config_search_path=create_search_path(["tests/configs/completion_test"]),
+        config_search_path=create_search_path(
+            ["tests/configs/completion_test"], abspath=True
+        ),
         strict_cfg=False,
         config_file="config.yaml",
     )

@@ -251,9 +251,9 @@ if __name__ == "__main__":
         os.chdir(orig_dir)
 
 
-def create_search_path(search_path=[]):
+def create_search_path(search_path=[], abspath=False):
     csp = ConfigSearchPath()
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:
-        csp.append("test", os.path.realpath(sp))
+        csp.append("test", sp if not abspath else os.path.realpath(sp))
     return csp
