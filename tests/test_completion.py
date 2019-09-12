@@ -78,18 +78,20 @@ def test_completion(line_prefix, line, index, expected):
 
 
 @pytest.mark.parametrize("relative", [True, False])
-@pytest.mark.parametrize("line_prefix", ["abc=", "dict.key1=val1 abc="])
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
-    "line, files, expected",
+    "key_eq, fname_prefix, files, expected",
     [
-        ("", ["foo.txt"], ["foo.txt"]),
-        ("fo", ["foo.txt"], ["foo.txt"]),
-        ("foo.txt", ["foo.txt"], ["foo.txt"]),
-        ("foo", ["foo1.txt", "foo2.txt"], ["foo1.txt", "foo2.txt"]),
-        ("foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
+        ("abc=", "", ["foo.txt"], ["foo.txt"]),
+        ("abc=", "fo", ["foo.txt"], ["foo.txt"]),
+        ("abc=", "foo.txt", ["foo.txt"], ["foo.txt"]),
+        ("abc=", "foo", ["foo1.txt", "foo2.txt"], ["foo1.txt", "foo2.txt"]),
+        ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
     ],
 )
-def test_file_completion(tmpdir, files, line_prefix, line, expected, relative):
+def test_file_completion(
+    tmpdir, files, line_prefix, key_eq, fname_prefix, expected, relative
+):
     def create_files(in_files):
         for f in in_files:
             dirname = os.path.dirname(f)
@@ -103,18 +105,18 @@ def test_file_completion(tmpdir, files, line_prefix, line, expected, relative):
         os.chdir(str(tmpdir))
         create_files(files)
         bc = CompletionPlugin(config_loader)
-        probe = line_prefix
+        probe = line_prefix + key_eq
         if relative:
             prefix = "./"
-            probe += prefix + line
+            probe += prefix + fname_prefix
         else:
             prefix = os.path.realpath(".")
-            probe += os.path.join(prefix, line)
+            probe += os.path.join(prefix, fname_prefix)
 
         ret = bc._query(line=probe)
         assert len(expected) == len(ret)
         for idx, file in enumerate(expected):
-            assert os.path.join(prefix, file) == ret[idx]
+            assert key_eq + os.path.join(prefix, file) == ret[idx]
     finally:
         os.chdir(pwd)
 

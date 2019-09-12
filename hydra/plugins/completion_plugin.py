@@ -29,17 +29,18 @@ class CompletionPlugin(Plugin):
         raise NotImplementedError()
 
     @staticmethod
-    def _get_filename(s):
-        last = s.rfind("=")
+    def _get_filename(fname):
+        last = fname.rfind("=")
         if last != -1:
-            s = s[last + 1 :]
+            key_eq = fname[0 : last + 1]
+            fname = fname[last + 1 :]
             prefixes = [".", "/", "\\", "./", ".\\"]
-            if not s:
-                return None
+            if not fname:
+                return None, None
             for prefix in prefixes:
-                if s.startswith(prefix):
-                    return s
-        return None
+                if fname.startswith(prefix):
+                    return key_eq, fname
+        return None, None
 
     @staticmethod
     def complete_files(word):
@@ -158,9 +159,10 @@ class CompletionPlugin(Plugin):
 
         config = self.config_loader.load_configuration(words)
 
-        filename = CompletionPlugin._get_filename(word)
+        fname_prefix, filename = CompletionPlugin._get_filename(word)
         if filename is not None:
             result = CompletionPlugin.complete_files(filename)
+            result = [fname_prefix + file for file in result]
         else:
             config_matches = CompletionPlugin._get_matches(config, word)
             matched_groups = self._query_config_groups(word)
