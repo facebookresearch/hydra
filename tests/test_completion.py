@@ -50,6 +50,7 @@ chdir_hydra_root()
         ("hydra/lau", None, ["hydra/launcher="]),
         ("hydra/launcher=", None, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
         ("hydra/launcher=ba", None, ["hydra/launcher=basic"]),
+        ("./", None, []),
         # TODO: handle case of common prefix in groups and config like in optimizer
         # in demos/5_config_groups/defaults.py
     ],
