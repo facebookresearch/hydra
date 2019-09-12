@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 from abc import ABCMeta
-from omegaconf import DictConfig, ListConfig, Config
+
 import six
+from omegaconf import DictConfig, ListConfig, Config
 
 from hydra.plugins import Plugin
 
@@ -27,6 +29,36 @@ class CompletionPlugin(Plugin):
         raise NotImplementedError()
 
     @staticmethod
+    def _get_filename(s):
+        last = s.rfind("=")
+        if last != -1:
+            s = s[last + 1 :]
+            prefixes = [".", "/", "\\", "./", ".\\"]
+            if not s:
+                return None
+            for prefix in prefixes:
+                if s.startswith(prefix):
+                    return s
+        return None
+
+    @staticmethod
+    def complete_files(word):
+        if os.path.isdir(word):
+            dirname = word
+            files = os.listdir(word)
+            file_prefix = ""
+
+        else:
+            dirname = os.path.dirname(word)
+            files = os.listdir(dirname)
+            file_prefix = os.path.basename(word)
+        ret = []
+        for file in files:
+            if file.startswith(file_prefix):
+                ret.append(os.path.join(dirname, file))
+        return ret
+
+    @staticmethod
     def _get_matches(config, word):
         def str_rep(in_key, in_value):
             if isinstance(in_value, Config):
@@ -34,10 +66,10 @@ class CompletionPlugin(Plugin):
             else:
                 return "{}=".format(in_key)
 
-        matches = []
         if config is None:
-            return matches
+            return []
         elif isinstance(config, Config):
+            matches = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 conf_node = config.select(exact_key)
@@ -125,7 +157,13 @@ class CompletionPlugin(Plugin):
             words = args[0:-1]
 
         config = self.config_loader.load_configuration(words)
-        config_matches = CompletionPlugin._get_matches(config, word)
-        matched_groups = self._query_config_groups(word)
 
-        return sorted(list(set(matched_groups + config_matches)))
+        filename = CompletionPlugin._get_filename(word)
+        if filename is not None:
+            result = CompletionPlugin.complete_files(filename)
+        else:
+            config_matches = CompletionPlugin._get_matches(config, word)
+            matched_groups = self._query_config_groups(word)
+            result = list(set(matched_groups + config_matches))
+
+        return sorted(result)
