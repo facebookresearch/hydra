@@ -39,12 +39,14 @@ class CompletionPlugin(Plugin):
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 conf_node = config.select(exact_key)
-
-                if isinstance(conf_node, Config):
-                    key_matches = CompletionPlugin._get_matches(conf_node, "")
+                if conf_node is not None:
+                    if isinstance(conf_node, Config):
+                        key_matches = CompletionPlugin._get_matches(conf_node, "")
+                    else:
+                        # primitive
+                        key_matches = [conf_node]
                 else:
-                    # primitive
-                    key_matches = [conf_node]
+                    key_matches = []
 
                 matches.extend(["{}{}".format(word, match) for match in key_matches])
             else:
@@ -71,7 +73,47 @@ class CompletionPlugin(Plugin):
                 type(config)
             )
 
-        return sorted(matches)
+        return matches
+
+    def _query_config_groups(self, word):
+        last_eq_index = word.rfind("=")
+        last_slash_index = word.rfind("/")
+        if last_eq_index != -1:
+            parent_group = word[0:last_eq_index]
+            file_type = "file"
+        else:
+            file_type = "dir"
+            if last_slash_index == -1:
+                parent_group = ""
+            else:
+                parent_group = word[0:last_slash_index]
+
+        all_matched_groups = self.config_loader.get_group_options(
+            parent_group, file_type=file_type
+        )
+        matched_groups = []
+        if file_type == "file":
+            for match in all_matched_groups:
+                name = (
+                    "{}={}".format(parent_group, match) if parent_group != "" else match
+                )
+                if name.startswith(word):
+                    matched_groups.append(name)
+        elif file_type == "dir":
+            for match in all_matched_groups:
+                name = (
+                    "{}/{}".format(parent_group, match) if parent_group != "" else match
+                )
+                if name.startswith(word):
+                    files = self.config_loader.get_group_options(name, file_type="file")
+                    dirs = self.config_loader.get_group_options(name, file_type="dir")
+                    if len(dirs) == 0 and len(files) > 0:
+                        name = name + "="
+                    elif len(dirs) > 0 and len(files) == 0:
+                        name = name + "/"
+                    matched_groups.append(name)
+
+        return matched_groups
 
     def _query(self, line):
         args = line.split(" ")
@@ -81,4 +123,7 @@ class CompletionPlugin(Plugin):
             words = args[0:-1]
 
         config = self.config_loader.load_configuration(words)
-        return CompletionPlugin._get_matches(config, word)
+        config_matches = CompletionPlugin._get_matches(config, word)
+        matched_groups = self._query_config_groups(word)
+
+        return sorted(list(set(matched_groups + config_matches)))

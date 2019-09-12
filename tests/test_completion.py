@@ -16,14 +16,42 @@ chdir_hydra_root()
 @pytest.mark.parametrize(
     "line, index, expected",
     [
-        ("", None, ["dict.", "dict_prefix=", "hydra.", "list.", "list_prefix="]),
+        (
+            "",
+            None,
+            [
+                "dict.",
+                "dict_prefix=",
+                "group=",
+                "hydra.",
+                "hydra/",
+                "list.",
+                "list_prefix=",
+            ],
+        ),
         ("dict", None, ["dict.", "dict_prefix="]),
         ("dict.", None, ["dict.key1=", "dict.key2="]),
         ("dict.key", None, ["dict.key1=", "dict.key2="]),
         ("dict.key1=", None, ["dict.key1=val1"]),
         ("list", None, ["list.", "list_prefix="]),
         ("list.", None, ["list.0=", "list.1="]),
-        # ("gro", None, ["group="]),
+        ("gro", None, ["group="]),
+        (
+            "hydra/",
+            None,
+            [
+                "hydra/hydra_logging=",
+                "hydra/job_logging=",
+                "hydra/launcher=",
+                "hydra/output=",
+                "hydra/sweeper=",
+            ],
+        ),
+        ("hydra/lau", None, ["hydra/launcher="]),
+        ("hydra/launcher=", None, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
+        ("hydra/launcher=ba", None, ["hydra/launcher=basic"]),
+        # TODO: handle case of common prefix in groups and config like in optimizer
+        # in demos/5_config_groups/defaults.py
     ],
 )
 def test_completion(line_prefix, line, index, expected):
