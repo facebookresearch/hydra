@@ -255,5 +255,5 @@ def create_search_path(search_path=[]):
     csp = ConfigSearchPath()
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:
-        csp.append("test", sp)
+        csp.append("test", os.path.realpath(sp))
     return csp
