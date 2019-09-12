@@ -219,10 +219,9 @@ class ConfigLoader:
 
     def list_groups(self, parent_name):
         ret = list(set(self.get_group_options(parent_name, file_type="dir")))
-        ret.remove("__pycache__")
         return ret
 
-    def get_group_options(self, group_name, file_type="conf"):
+    def get_group_options(self, group_name, file_type="file"):
         options = []
         for search_path in self.config_search_path.config_search_path:
             search_path = search_path.path
@@ -238,11 +237,15 @@ class ConfigLoader:
                     all_files = resource_listdir(module_name, resource_name)
                     files = []
                     for file in all_files:
-                        if file_type == "dir" and resource_isdir(
-                            module_name, os.path.join(group_name, file)
+                        if (
+                            file_type == "dir"
+                            and resource_isdir(
+                                module_name, os.path.join(group_name, file)
+                            )
+                            and file != "__pycache__"
                         ):
                             files.append(file)
-                        elif file_type == "conf" and file.endswith(".yaml"):
+                        elif file_type == "file" and file.endswith(".yaml"):
                             files.append(file[0 : -len(".yaml")])
             else:
                 group_path = "{}/{}".format(path, group_name)
@@ -253,7 +256,7 @@ class ConfigLoader:
                         full_path = os.path.join(group_path, group_name, file)
                         if file_type == "dir" and os.path.isdir(full_path):
                             files.append(file)
-                        elif file_type == "conf" and file.endswith(".yaml"):
+                        elif file_type == "file" and file.endswith(".yaml"):
                             files.append(file[0 : -len(".yaml")])
 
             options.extend(files)
