@@ -44,7 +44,6 @@ class BashCompletion(CompletionPlugin):
             printf "Word='$word'\\n"
             printf "Output suggestions:\\n"
             printf "\\t%s\\n" ${options[@]}
-            return
         fi
         COMPREPLY=($( compgen -o nospace -o default -W '$options' -- "$word" ));
     fi

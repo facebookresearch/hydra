@@ -49,7 +49,6 @@ def create_config_loader():
         ("dict.key1=", None, ["dict.key1=val1"]),
         ("list", None, ["list.", "list_prefix="]),
         ("list.", None, ["list.0=", "list.1="]),
-        ("gro", None, ["group="]),
         (
             "hydra/",
             None,
@@ -64,8 +63,27 @@ def create_config_loader():
         ("hydra/lau", None, ["hydra/launcher="]),
         ("hydra/launcher=", None, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
         ("hydra/launcher=ba", None, ["hydra/launcher=basic"]),
-        # TODO: handle case of common prefix in groups and config like in optimizer
-        # in demos/5_config_groups/defaults.py
+        # loading groups
+        ("gro", None, ["group="]),
+        ("group=di", None, ["group=dict"]),
+        (
+            "group=dict ",
+            None,
+            [
+                "dict.",
+                "dict_prefix=",
+                "group.",
+                "group=",
+                "hydra.",
+                "hydra/",
+                "list.",
+                "list_prefix=",
+                "toys.",
+            ],
+        ),
+        ("group=", None, ["group=dict", "group=list"]),
+        ("group=dict group.dict=", None, ["group.dict=true"]),
+        ("group=dict group=", None, ["group=dict", "group=list"]),
     ],
 )
 def test_completion(line_prefix, line, index, expected):
