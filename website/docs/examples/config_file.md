@@ -56,7 +56,7 @@ This effects also command line overrides.
 
 This is useful for catching mistakes in the code or in the command line earlier.
 
-You can learn more about this OmegaConf functionality here [here](https://omegaconf.readthedocs.io/en/latest/usage.html#configuration-flags)
+You can learn more about this OmegaConf functionality [here](https://omegaconf.readthedocs.io/en/latest/usage.html#configuration-flags)
 
 This can be turned on via a `strict=True` in your hydra.main decorator:
 
@@ -66,7 +66,7 @@ def experiment(cfg):
     # this would result in an exception
     if cfg.bad_key:
         pass
-    # this would also result in an aception
+    # this would also result in an exception
     cfg.bad_key = True
 ```
 

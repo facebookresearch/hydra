@@ -79,6 +79,8 @@ class CompletionPlugin(Plugin):
                         key_matches = CompletionPlugin._get_matches(conf_node, "")
                     else:
                         # primitive
+                        if isinstance(conf_node, bool):
+                            conf_node = str(conf_node).lower()
                         key_matches = [conf_node]
                 else:
                     key_matches = []
@@ -113,6 +115,7 @@ class CompletionPlugin(Plugin):
     def _query_config_groups(self, word):
         last_eq_index = word.rfind("=")
         last_slash_index = word.rfind("/")
+        exact_match = False
         if last_eq_index != -1:
             parent_group = word[0:last_eq_index]
             file_type = "file"
@@ -134,6 +137,7 @@ class CompletionPlugin(Plugin):
                 )
                 if name.startswith(word):
                     matched_groups.append(name)
+                exact_match = True
         elif file_type == "dir":
             for match in all_matched_groups:
                 name = (
@@ -148,7 +152,7 @@ class CompletionPlugin(Plugin):
                         name = name + "/"
                     matched_groups.append(name)
 
-        return matched_groups
+        return matched_groups, exact_match
 
     def _query(self, line):
         args = line.split(" ")
@@ -164,8 +168,10 @@ class CompletionPlugin(Plugin):
             result = CompletionPlugin.complete_files(filename)
             result = [fname_prefix + file for file in result]
         else:
-            config_matches = CompletionPlugin._get_matches(config, word)
-            matched_groups = self._query_config_groups(word)
+            matched_groups, exact_match = self._query_config_groups(word)
+            config_matches = []
+            if not exact_match:
+                config_matches = CompletionPlugin._get_matches(config, word)
             result = list(set(matched_groups + config_matches))
 
         return sorted(result)
