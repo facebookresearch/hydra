@@ -7,7 +7,7 @@ hydra:
 
       folder: ${hydra.sweep.dir}/.${hydra.launcher.params.queue}
       queue_parameters:
-        # slrum queue parameters
+        # slurm queue parameters
         slurm:
           nodes: 1
           num_gpus: 1
@@ -17,6 +17,7 @@ hydra:
           time: 60
           partition: learnfair
           signal_delay_s: 120
+          job_name: ${hydra.job.name}
         # chronos queue parameters
         chronos:
           # See crun documentation for most parameters
