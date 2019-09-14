@@ -28,11 +28,10 @@ def create_config_loader():
 # TODO: document: (How to activate, basic functionality. how to match against files)
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
-    "line, index, expected",
+    "line, expected",
     [
         (
             "",
-            None,
             [
                 "dict.",
                 "dict_prefix=",
@@ -43,15 +42,14 @@ def create_config_loader():
                 "list_prefix=",
             ],
         ),
-        ("dict", None, ["dict.", "dict_prefix="]),
-        ("dict.", None, ["dict.key1=", "dict.key2="]),
-        ("dict.key", None, ["dict.key1=", "dict.key2="]),
-        ("dict.key1=", None, ["dict.key1=val1"]),
-        ("list", None, ["list.", "list_prefix="]),
-        ("list.", None, ["list.0=", "list.1="]),
+        ("dict", ["dict.", "dict_prefix="]),
+        ("dict.", ["dict.key1=", "dict.key2="]),
+        ("dict.key", ["dict.key1=", "dict.key2="]),
+        ("dict.key1=", ["dict.key1=val1"]),
+        ("list", ["list.", "list_prefix="]),
+        ("list.", ["list.0=", "list.1="]),
         (
             "hydra/",
-            None,
             [
                 "hydra/hydra_logging=",
                 "hydra/job_logging=",
@@ -60,15 +58,14 @@ def create_config_loader():
                 "hydra/sweeper=",
             ],
         ),
-        ("hydra/lau", None, ["hydra/launcher="]),
-        ("hydra/launcher=", None, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
-        ("hydra/launcher=ba", None, ["hydra/launcher=basic"]),
+        ("hydra/lau", ["hydra/launcher="]),
+        ("hydra/launcher=", ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
+        ("hydra/launcher=ba", ["hydra/launcher=basic"]),
         # loading groups
-        ("gro", None, ["group="]),
-        ("group=di", None, ["group=dict"]),
+        ("gro", ["group="]),
+        ("group=di", ["group=dict"]),
         (
             "group=dict ",
-            None,
             [
                 "dict.",
                 "dict_prefix=",
@@ -81,18 +78,21 @@ def create_config_loader():
                 "toys.",
             ],
         ),
-        ("group=", None, ["group=dict", "group=list"]),
-        ("group=dict group.dict=", None, ["group.dict=true"]),
-        ("group=dict group=", None, ["group=dict", "group=list"]),
+        ("group=", ["group=dict", "group=list"]),
+        ("group=dict group.dict=", ["group.dict=true"]),
+        ("group=dict group=", ["group=dict", "group=list"]),
     ],
 )
-def test_completion(line_prefix, line, index, expected):
-    config_loader = create_config_loader()
-    if index is not None:
-        index += len(line_prefix)
-    bc = CompletionPlugin(config_loader)
-    ret = bc._query(line=line_prefix + line)
-    assert ret == expected
+class TestCompletion:
+    def test_completion_plugin(self, line_prefix, line, expected):
+        config_loader = create_config_loader()
+        bc = CompletionPlugin(config_loader)
+        ret = bc._query(line=line_prefix + line)
+        assert ret == expected
+
+    @pytest.mark.parametrize("shell", ["bash"])
+    def test_shell_integration(self, shell, line_prefix, line, expected):
+        pass
 
 
 @pytest.mark.parametrize("relative", [True, False])
