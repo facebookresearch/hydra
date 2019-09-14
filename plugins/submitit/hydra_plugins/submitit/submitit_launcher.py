@@ -59,11 +59,14 @@ class SubmititLauncher(Launcher):
         )
 
     def launch(self, job_overrides):
+        # lazy import to ensurue plugin discovery remains fast
         import submitit
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
-        self.config.hydra.job.num_jobs = num_jobs
+        with open_dict(self.config):
+            self.config.hydra.job.num_jobs = num_jobs
+
         if self.queue == "auto":
             executor = submitit.AutoExecutor(
                 folder=self.folder, conda_file=self.conda_file
@@ -84,7 +87,7 @@ class SubmititLauncher(Launcher):
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
         path_str = str(self.config.hydra.sweep.dir)
         os.makedirs(path_str, exist_ok=True)
-        if self.config.hydra.sweep.mode is not None:
+        if "mode" in self.config.hydra.sweep:
             mode = int(str(self.config.hydra.sweep.mode), 8)
             os.chmod(path_str, mode=mode)
 
