@@ -17,6 +17,7 @@ hydra:
           time: 60
           partition: learnfair
           signal_delay_s: 120
+          job_name: ${hydra.job.name}
         # chronos queue parameters
         chronos:
           # See crun documentation for most parameters
