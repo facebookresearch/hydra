@@ -1,5 +1,5 @@
 log_user 0
-set timeout 5
+set timeout 2
 set env(PS1) >
 spawn bash --norc
 expect >
@@ -8,6 +8,9 @@ set in_line [lindex $argv 1]
 set len [expr [string length $in_line] - 1]
 set line [string range $in_line 5 $len]
 set num_tabs [lindex $argv 2]
+puts "input line: '$line'"
+puts "num_tabs: $num_tabs"
+
 send "eval \"\$([lindex $argv 0] -sc install=bash)\"\r"
 expect >
 
@@ -17,10 +20,14 @@ while {$num_tabs > 0} {
     append command "\t"
 }
 
+puts "command: '$command'"
+
 send $command
+
+puts "\nMatching:\n"
 foreach arg [lrange $argv 3 end] {
     expect {
-        "$arg" {continue}
-        timeout {puts "error matching $arg"; exit 1}
+        "$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
+        timeout {puts "Error matching $arg"; exit 1}
     }
 }

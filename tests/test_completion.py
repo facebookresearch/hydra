@@ -45,14 +45,14 @@ def create_config_loader():
             ],
         ),
         ("dict", 2, ["dict.", "dict_prefix="]),
-        ("dict.", 2, ["dict.key1=", "dict.key2="]),
+        ("dict.", 3, ["dict.key1=", "dict.key2="]),
         ("dict.key", 2, ["dict.key1=", "dict.key2="]),
         ("dict.key1=", 2, ["dict.key1=val1"]),
         ("list", 2, ["list.", "list_prefix="]),
         ("list.", 2, ["list.0=", "list.1="]),
         (
             "hydra/",
-            2,
+            3,
             [
                 "hydra/hydra_logging=",
                 "hydra/job_logging=",
@@ -69,7 +69,7 @@ def create_config_loader():
         ("group=di", 2, ["group=dict"]),
         (
             "group=dict ",
-            2,
+            3,
             [
                 "dict.",
                 "dict_prefix=",
