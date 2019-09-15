@@ -9,6 +9,7 @@ from hydra.test_utils.test_utils import create_search_path
 import hydra
 import os
 from hydra._internal.pathlib import Path
+import subprocess
 
 chdir_hydra_root()
 
@@ -28,10 +29,11 @@ def create_config_loader():
 # TODO: document: (How to activate, basic functionality. how to match against files)
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
-    "line, expected",
+    "line,num_tabs,expected",
     [
         (
             "",
+            2,
             [
                 "dict.",
                 "dict_prefix=",
@@ -42,14 +44,15 @@ def create_config_loader():
                 "list_prefix=",
             ],
         ),
-        ("dict", ["dict.", "dict_prefix="]),
-        ("dict.", ["dict.key1=", "dict.key2="]),
-        ("dict.key", ["dict.key1=", "dict.key2="]),
-        ("dict.key1=", ["dict.key1=val1"]),
-        ("list", ["list.", "list_prefix="]),
-        ("list.", ["list.0=", "list.1="]),
+        ("dict", 2, ["dict.", "dict_prefix="]),
+        ("dict.", 2, ["dict.key1=", "dict.key2="]),
+        ("dict.key", 2, ["dict.key1=", "dict.key2="]),
+        ("dict.key1=", 2, ["dict.key1=val1"]),
+        ("list", 2, ["list.", "list_prefix="]),
+        ("list.", 2, ["list.0=", "list.1="]),
         (
             "hydra/",
+            2,
             [
                 "hydra/hydra_logging=",
                 "hydra/job_logging=",
@@ -58,14 +61,15 @@ def create_config_loader():
                 "hydra/sweeper=",
             ],
         ),
-        ("hydra/lau", ["hydra/launcher="]),
-        ("hydra/launcher=", ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
-        ("hydra/launcher=ba", ["hydra/launcher=basic"]),
+        ("hydra/lau", 2, ["hydra/launcher="]),
+        ("hydra/launcher=", 2, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
+        ("hydra/launcher=ba", 2, ["hydra/launcher=basic"]),
         # loading groups
-        ("gro", ["group="]),
-        ("group=di", ["group=dict"]),
+        ("gro", 2, ["group="]),
+        ("group=di", 2, ["group=dict"]),
         (
             "group=dict ",
+            2,
             [
                 "dict.",
                 "dict_prefix=",
@@ -78,21 +82,34 @@ def create_config_loader():
                 "toys.",
             ],
         ),
-        ("group=", ["group=dict", "group=list"]),
-        ("group=dict group.dict=", ["group.dict=true"]),
-        ("group=dict group=", ["group=dict", "group=list"]),
+        ("group=", 2, ["group=dict", "group=list"]),
+        ("group=dict group.dict=", 2, ["group.dict=true"]),
+        ("group=dict group=", 2, ["group=dict", "group=list"]),
     ],
 )
 class TestCompletion:
-    def test_completion_plugin(self, line_prefix, line, expected):
+    def test_completion_plugin(self, line_prefix, num_tabs, line, expected):
         config_loader = create_config_loader()
         bc = CompletionPlugin(config_loader)
         ret = bc._query(line=line_prefix + line)
         assert ret == expected
 
+    @pytest.mark.parametrize("prog", ["python tests/test_completion.py"])
     @pytest.mark.parametrize("shell", ["bash"])
-    def test_shell_integration(self, shell, line_prefix, line, expected):
-        pass
+    def test_shell_integration(
+        self, shell, prog, num_tabs, line_prefix, line, expected
+    ):
+        line1 = "line={}".format(line_prefix + line)
+        cmd = [
+            "expect",
+            "tests/expect/test_{}_completion.exp".format(shell),
+            prog,
+            line1,
+            str(num_tabs),
+        ]
+        cmd.extend(expected)
+        print(" ".join(["'{}'".format(x) for x in cmd]))
+        subprocess.check_call(cmd)
 
 
 @pytest.mark.parametrize("relative", [True, False])
@@ -104,7 +121,7 @@ class TestCompletion:
         ("abc=", "fo", ["foo.txt"], ["foo.txt"]),
         ("abc=", "foo.txt", ["foo.txt"], ["foo.txt"]),
         ("abc=", "foo", ["foo1.txt", "foo2.txt"], ["foo1.txt", "foo2.txt"]),
-        ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
+        # ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
     ],
 )
 def test_file_completion(
