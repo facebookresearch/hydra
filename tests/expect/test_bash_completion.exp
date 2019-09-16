@@ -1,7 +1,16 @@
 log_user 0
 set timeout 2
 set env(PS1) >
-spawn bash --norc
+
+# Under pycharm, for some unknown reason readline displays
+# the suggestions in a different order, breaking the test.
+# This enables debug output from Hydra which is easier to test
+set env(HYDRA_COMP_DEBUG) 1
+set env(INPUTRC) /dev/null
+
+# parray env
+
+spawn bash --norc --noprofile
 expect >
 
 set in_line [lindex $argv 1]
