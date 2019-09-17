@@ -24,6 +24,8 @@ def create_config_loader():
     )
 
 
+# TODO: Error handling
+# TODO: Handle switches in comp line (-m, -c)
 # TODO: decide if to filter items added in current line from completion suggestions
 # TODO: document: (How to activate, basic functionality. how to match against files)
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
@@ -115,11 +117,6 @@ class TestCompletion:
         subprocess.check_call(cmd)
 
 
-# This could probably be made to work on Windows but it's not worth the time right now. Bash on Windows i
-@pytest.mark.skipif(
-    sys.platform.startswith("win"),
-    reason="test_file_completion tests are disabled on Windows",
-)
 @pytest.mark.parametrize("relative", [True, False])
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
@@ -129,7 +126,7 @@ class TestCompletion:
         ("abc=", "fo", ["foo.txt"], ["foo.txt"]),
         ("abc=", "foo.txt", ["foo.txt"], ["foo.txt"]),
         ("abc=", "foo", ["foo1.txt", "foo2.txt"], ["foo1.txt", "foo2.txt"]),
-        # ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
+        ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
     ],
 )
 def test_file_completion(
@@ -150,7 +147,7 @@ def test_file_completion(
         bc = CompletionPlugin(config_loader)
         probe = line_prefix + key_eq
         if relative:
-            prefix = "./"
+            prefix = "." + os.path.sep
             probe += prefix + fname_prefix
         else:
             prefix = os.path.realpath(".")

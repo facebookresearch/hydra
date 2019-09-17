@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+import sys
 from abc import ABCMeta
 
 import six
@@ -35,10 +36,15 @@ class CompletionPlugin(Plugin):
             key_eq = fname[0 : last + 1]
             fname = fname[last + 1 :]
             prefixes = [".", "/", "\\", "./", ".\\"]
+            if sys.platform.startswith("win"):
+                for drive in range(ord("a"), ord("z")):
+                    prefixes.append("{}:".format(chr(drive)))
+
             if not fname:
                 return None, None
+            lowerfilename = fname.lower()
             for prefix in prefixes:
-                if fname.startswith(prefix):
+                if lowerfilename.startswith(prefix):
                     return key_eq, fname
         return None, None
 
