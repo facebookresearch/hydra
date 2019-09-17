@@ -31,17 +31,17 @@ def create_config_loader():
     "line,num_tabs,expected",
     [
         (
-            "",
-            2,
-            [
-                "dict.",
-                "dict_prefix=",
-                "group=",
-                "hydra.",
-                "hydra/",
-                "list.",
-                "list_prefix=",
-            ],
+                "",
+                2,
+                [
+                    "dict.",
+                    "dict_prefix=",
+                    "group=",
+                    "hydra.",
+                    "hydra/",
+                    "list.",
+                    "list_prefix=",
+                ],
         ),
         ("dict", 2, ["dict.", "dict_prefix="]),
         ("dict.", 3, ["dict.key1=", "dict.key2="]),
@@ -50,15 +50,15 @@ def create_config_loader():
         ("list", 2, ["list.", "list_prefix="]),
         ("list.", 2, ["list.0=", "list.1="]),
         (
-            "hydra/",
-            3,
-            [
-                "hydra/hydra_logging=",
-                "hydra/job_logging=",
-                "hydra/launcher=",
-                "hydra/output=",
-                "hydra/sweeper=",
-            ],
+                "hydra/",
+                3,
+                [
+                    "hydra/hydra_logging=",
+                    "hydra/job_logging=",
+                    "hydra/launcher=",
+                    "hydra/output=",
+                    "hydra/sweeper=",
+                ],
         ),
         ("hydra/lau", 2, ["hydra/launcher="]),
         ("hydra/launcher=", 2, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
@@ -67,19 +67,19 @@ def create_config_loader():
         ("gro", 2, ["group="]),
         ("group=di", 2, ["group=dict"]),
         (
-            "group=dict ",
-            3,
-            [
-                "dict.",
-                "dict_prefix=",
-                "group.",
-                "group=",
-                "hydra.",
-                "hydra/",
-                "list.",
-                "list_prefix=",
-                "toys.",
-            ],
+                "group=dict ",
+                3,
+                [
+                    "dict.",
+                    "dict_prefix=",
+                    "group.",
+                    "group=",
+                    "hydra.",
+                    "hydra/",
+                    "list.",
+                    "list_prefix=",
+                    "toys.",
+                ],
         ),
         ("group=", 2, ["group=dict", "group=list"]),
         ("group=dict group.dict=", 2, ["group.dict=true"]),
@@ -97,7 +97,7 @@ class TestCompletion:
     @pytest.mark.parametrize("prog", ["python tests/test_completion.py"])
     @pytest.mark.parametrize("shell", ["bash"])
     def test_shell_integration(
-        self, shell, prog, num_tabs, line_prefix, line, expected
+            self, shell, prog, num_tabs, line_prefix, line, expected
     ):
         line1 = "line={}".format(line_prefix + line)
         cmd = [
@@ -112,6 +112,8 @@ class TestCompletion:
         subprocess.check_call(cmd)
 
 
+# This could probably be made to work on Windows but it's not worth the time right now. Bash on Windows is low pri.
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="test_file_completion tests are disabled on Windows")
 @pytest.mark.parametrize("relative", [True, False])
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
@@ -125,7 +127,7 @@ class TestCompletion:
     ],
 )
 def test_file_completion(
-    tmpdir, files, line_prefix, key_eq, fname_prefix, expected, relative
+        tmpdir, files, line_prefix, key_eq, fname_prefix, expected, relative
 ):
     def create_files(in_files):
         for f in in_files:
