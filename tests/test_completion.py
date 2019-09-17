@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
-
+import sys
 from hydra._internal.config_loader import ConfigLoader
 from hydra.plugins import CompletionPlugin
 from hydra._internal.core_plugins import BashCompletion
@@ -25,7 +25,6 @@ def create_config_loader():
 
 
 # TODO: decide if to filter items added in current line from completion suggestions
-# TODO: integration test with expect?
 # TODO: document: (How to activate, basic functionality. how to match against files)
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
@@ -94,6 +93,7 @@ class TestCompletion:
         ret = bc._query(line=line_prefix + line)
         assert ret == expected
 
+    @pytest.mark.skipif(sys.platform.startswith("win"), reason="Completion integration tests are disabled on Windows")
     @pytest.mark.parametrize("prog", ["python tests/test_completion.py"])
     @pytest.mark.parametrize("shell", ["bash"])
     def test_shell_integration(
