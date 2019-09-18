@@ -79,12 +79,14 @@ def get_args(args=None, version=None):
     parser.add_argument(
         "overrides",
         nargs="*",
-        help="Any key=value arguments to override config values (use dots for.nested=overrides)",
+        help="""Any key=value arguments to override config values
+(use dots for.nested=overrides)""",
     )
     parser.add_argument(
         "--verbose",
         "-v",
-        help="Activate debug logging, otherwise takes a comma separated list of loggers ('root' for root logger)",
+        help="""Activate debug logging, otherwise takes a comma"
+separated list of loggers ('root' for root logger)""",
         nargs="?",
         default=None,
     )
@@ -109,10 +111,10 @@ def get_args(args=None, version=None):
         action="store_true",
         help="""Install or Uninstall shell completion:
 Install:
-  {}
+{}
 
 Uninstall:
-  {}
+{}
 """.format(
             install_cmd, uninstall_cmd
         ),
