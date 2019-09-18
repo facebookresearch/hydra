@@ -161,11 +161,17 @@ class CompletionPlugin(Plugin):
         return matched_groups, exact_match
 
     def _query(self, line):
-        args = line.split(" ")
-        words = []
-        word = args[-1]
-        if len(args) > 1:
+        from .._internal.utils import get_args
+
+        split = line.split(" ")
+        parsed_args = get_args(split)
+        args = parsed_args.overrides
+        if len(args) > 0:
+            word = args[-1]
             words = args[0:-1]
+        else:
+            word = ""
+            words = []
 
         config = self.config_loader.load_configuration(words)
 

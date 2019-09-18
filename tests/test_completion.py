@@ -24,27 +24,25 @@ def create_config_loader():
     )
 
 
+base_completion_list = [
+    "dict.",
+    "dict_prefix=",
+    "group=",
+    "hydra.",
+    "hydra/",
+    "list.",
+    "list_prefix=",
+]
+
 # TODO: Error handling
 # TODO: Handle switches in comp line (-m, -c)
 # TODO: decide if to filter items added in current line from completion suggestions
 # TODO: document: (How to activate, basic functionality. how to match against files)
-@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 ", "-r "])
 @pytest.mark.parametrize(
     "line,num_tabs,expected",
     [
-        (
-            "",
-            2,
-            [
-                "dict.",
-                "dict_prefix=",
-                "group=",
-                "hydra.",
-                "hydra/",
-                "list.",
-                "list_prefix=",
-            ],
-        ),
+        ("", 2, base_completion_list),
         ("dict", 2, ["dict.", "dict_prefix="]),
         ("dict.", 3, ["dict.key1=", "dict.key2="]),
         ("dict.key", 2, ["dict.key1=", "dict.key2="]),
@@ -115,6 +113,16 @@ class TestCompletion:
         cmd.extend(expected)
         print(" ".join(["'{}'".format(x) for x in cmd]))
         subprocess.check_call(cmd)
+
+
+@pytest.mark.parametrize(
+    "line,expected", [("-c", base_completion_list), ("-c ", base_completion_list)]
+)
+def test_with_flags(line, expected):
+    config_loader = create_config_loader()
+    bc = CompletionPlugin(config_loader)
+    ret = bc._query(line=line)
+    assert ret == expected
 
 
 @pytest.mark.parametrize("relative", [True, False])

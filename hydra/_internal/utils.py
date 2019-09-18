@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import inspect
 import os
 import sys
 from .hydra import Hydra
+import argparse
+import hydra
 
 
 def run_hydra(args, task_function, config_path, strict):
@@ -56,3 +57,43 @@ def run_hydra(args, task_function, config_path, strict):
     else:
         print("Command not specified")
         sys.exit(1)
+
+
+def get_args(args=None):
+    parser = argparse.ArgumentParser(description="Hydra")
+    version = hydra.__version__
+    parser.add_argument(
+        "--version", action="version", version="Hydra {}".format(version)
+    )
+    parser.add_argument(
+        "overrides",
+        nargs="*",
+        help="Any key=value arguments to override config values (use dots for.nested=overrides)",
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        help="Activate debug logging, otherwise takes a comma separated list of loggers ('root' for root logger)",
+        nargs="?",
+        default=None,
+    )
+
+    parser.add_argument("--cfg", "-c", action="store_true", help="Show config")
+
+    parser.add_argument("--run", "-r", action="store_true", help="Run a job")
+
+    parser.add_argument(
+        "--multirun",
+        "-m",
+        action="store_true",
+        help="Run multiple jobs with the configured launcher",
+    )
+
+    parser.add_argument(
+        "--shell_completion",
+        "-sc",
+        action="store_true",
+        help="Install/Uninstall shell completion",
+    )
+
+    return parser.parse_args(args)
