@@ -55,10 +55,12 @@ class CompletionPlugin(Plugin):
             dirname = word
             files = os.listdir(word)
             file_prefix = ""
-
         else:
             dirname = os.path.dirname(word)
-            files = os.listdir(dirname)
+            if os.path.isdir(dirname):
+                files = os.listdir(dirname)
+            else:
+                files = []
             file_prefix = os.path.basename(word)
         ret = []
         for file in files:

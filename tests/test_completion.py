@@ -34,7 +34,7 @@ base_completion_list = [
     "list_prefix=",
 ]
 
-# TODO: Error handling
+
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 ", "-r "])
 @pytest.mark.parametrize(
     "line,num_tabs,expected",
@@ -132,6 +132,7 @@ def test_with_flags(line, expected):
         ("abc=", "foo.txt", ["foo.txt"], ["foo.txt"]),
         ("abc=", "foo", ["foo1.txt", "foo2.txt"], ["foo1.txt", "foo2.txt"]),
         ("abc=", "foo1", ["foo1.txt", "foo2.txt"], ["foo1.txt"]),
+        ("abc=", "foo/bar", [], []),
     ],
 )
 def test_file_completion(
