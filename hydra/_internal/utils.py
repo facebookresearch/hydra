@@ -58,13 +58,12 @@ def run_hydra(args, task_function, config_path, strict):
         sys.exit(1)
 
 
-def get_args(args=None):
-    from hydra import __version__
-
+def get_args(args=None, version=None):
     parser = argparse.ArgumentParser(description="Hydra")
-    parser.add_argument(
-        "--version", action="version", version="Hydra {}".format(__version__)
-    )
+    if version is not None:
+        parser.add_argument(
+            "--version", action="version", version="Hydra {}".format(version)
+        )
     parser.add_argument(
         "overrides",
         nargs="*",

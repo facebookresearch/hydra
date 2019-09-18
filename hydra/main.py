@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
 import sys
-
+import hydra
 from ._internal.utils import run_hydra, get_args
 
 
@@ -18,7 +18,12 @@ def main(config_path="", strict=False):
         @functools.wraps(task_function)
         def decorated_main():
             try:
-                run_hydra(get_args(), task_function, config_path, strict)
+                run_hydra(
+                    get_args(version=hydra.__version__),
+                    task_function,
+                    config_path,
+                    strict,
+                )
             except KeyboardInterrupt:
                 sys.exit(-1)
             except SystemExit:
