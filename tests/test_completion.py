@@ -35,9 +35,6 @@ base_completion_list = [
 ]
 
 # TODO: Error handling
-# TODO: Handle switches in comp line (-m, -c)
-# TODO: decide if to filter items added in current line from completion suggestions
-# TODO: document: (How to activate, basic functionality. how to match against files)
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 ", "-r "])
 @pytest.mark.parametrize(
     "line,num_tabs,expected",
