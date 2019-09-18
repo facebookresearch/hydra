@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: "Testing Hydra"
-          no_output_timeout: 30m
+          no_output_timeout: 60m
           command: |
             export NOX_PYTHON_VERSIONS=2.7
             sudo pip3 install nox
@@ -28,7 +28,7 @@ jobs:
             ~/miniconda3/bin/conda init bash
       - run:
           name: "Testing Hydra"
-          no_output_timeout: 30m
+          no_output_timeout: 60m
           command: |
             export NOX_PYTHON_VERSIONS=3.6
             ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
@@ -48,7 +48,7 @@ jobs:
             ~/miniconda3/bin/conda init bash
       - run:
           name: "Testing Hydra"
-          no_output_timeout: 30m
+          no_output_timeout: 60m
           command: |
             export NOX_PYTHON_VERSIONS=3.7
             ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
