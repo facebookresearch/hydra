@@ -35,6 +35,7 @@ module.exports = {
 
 
         'Advanced': [
+            'advanced/tab_completion',
             'advanced/search_path',
             'advanced/plugins',
         ],
