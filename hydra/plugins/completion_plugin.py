@@ -188,3 +188,13 @@ class CompletionPlugin(Plugin):
             result = list(set(matched_groups + config_matches))
 
         return sorted(result)
+
+
+@six.add_metaclass(ABCMeta)
+class DefaultCompletionPlugin(CompletionPlugin):
+    """
+    A concrete instance of CompletionPlugin that is used for testing.
+    """
+
+    def provides(self):
+        return None

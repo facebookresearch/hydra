@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
 `config.yaml` gets loaded automatically when you run the app.
 ```yaml
-$ python experiment.py
+python experiment.py
 dataset:
   name: imagenet
   path: /datasets/imagenet
@@ -41,7 +41,7 @@ dataset:
 
 You can override values in the loaded config from the command line:
 ```yaml
-$ python experiment.py dataset.path=/datasets/new_imagenet
+python experiment.py
 dataset:
   name: imagenet
   path: /datasets/new_imagenet

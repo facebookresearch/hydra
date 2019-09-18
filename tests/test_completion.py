@@ -2,7 +2,7 @@
 import pytest
 import sys
 from hydra._internal.config_loader import ConfigLoader
-from hydra.plugins import CompletionPlugin
+from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra._internal.core_plugins import BashCompletion
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.test_utils.test_utils import create_search_path
@@ -86,7 +86,7 @@ base_completion_list = [
 class TestCompletion:
     def test_completion_plugin(self, line_prefix, num_tabs, line, expected):
         config_loader = create_config_loader()
-        bc = CompletionPlugin(config_loader)
+        bc = DefaultCompletionPlugin(config_loader)
         ret = bc._query(line=line_prefix + line)
         assert ret == expected
 
@@ -117,7 +117,7 @@ class TestCompletion:
 )
 def test_with_flags(line, expected):
     config_loader = create_config_loader()
-    bc = CompletionPlugin(config_loader)
+    bc = DefaultCompletionPlugin(config_loader)
     ret = bc._query(line=line)
     assert ret == expected
 
@@ -149,7 +149,7 @@ def test_file_completion(
         pwd = os.getcwd()
         os.chdir(str(tmpdir))
         create_files(files)
-        bc = CompletionPlugin(config_loader)
+        bc = DefaultCompletionPlugin(config_loader)
         probe = line_prefix + key_eq
         if relative:
             prefix = "." + os.path.sep

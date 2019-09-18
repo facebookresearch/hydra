@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
 Running the app, we get a single config object that combines the input configuration files:
 ```yaml
-$ python experiment.py
+python experiment.py
 dataset:
   name: imagenet
   path: /datasets/imagenet
