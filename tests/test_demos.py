@@ -391,3 +391,19 @@ def test_short_module_name():
         )
     finally:
         chdir_hydra_root()
+
+
+def test_objects_demo(task_runner):  # noqa: F811
+    with task_runner(
+        calling_file="demos/7_objects/experiment.py",
+        calling_module=None,
+        config_path="conf/config.yaml",
+        overrides=[],
+    ) as task:
+        assert task.job_ret.cfg == {
+            "model": {
+                "class": "demos.7_objects.objects.Alexnet",
+                "params": {"num_layers": 7},
+            }
+        }
+        verify_dir_outputs(task.job_ret, overrides=task.overrides)
