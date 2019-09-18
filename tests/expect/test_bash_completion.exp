@@ -1,5 +1,5 @@
 log_user 0
-set timeout 2
+set timeout 4
 set env(PS1) >
 
 # Under pycharm, for some unknown reason readline displays
