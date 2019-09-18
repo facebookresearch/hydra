@@ -59,6 +59,15 @@ def run_hydra(args, task_function, config_path, strict):
         sys.exit(1)
 
 
+def _get_exec_command():
+    if sys.argv[0].endswith(".py"):
+        return "python {}".format(sys.argv[0])
+    else:
+        # Running as an installed app (setuptools entry point)
+        executable = os.path.basename(sys.argv[0])
+        return executable
+
+
 def get_args(args=None, version=None):
     parser = argparse.ArgumentParser(
         description="Hydra", formatter_class=RawTextHelpFormatter
@@ -91,11 +100,22 @@ def get_args(args=None, version=None):
         help="Run multiple jobs with the configured launcher",
     )
 
+    shell = "SHELL_NAME"
+    install_cmd = 'eval "$({} --sc install={})"'.format(_get_exec_command(), shell)
+    uninstall_cmd = 'eval "$({} --sc uninstall={})"'.format(_get_exec_command(), shell)
     parser.add_argument(
         "--shell_completion",
         "-sc",
         action="store_true",
-        help="Install/Uninstall/Query shell completion\nfoo bar",
+        help="""Install or Uninstall shell completion:
+Install:
+  {}
+
+Uninstall:
+  {}
+""".format(
+            install_cmd, uninstall_cmd
+        ),
     )
 
     return parser.parse_args(args)

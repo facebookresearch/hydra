@@ -127,6 +127,23 @@ class Hydra:
         config = self._load_config(overrides)
         log.info("\n" + config.pretty())
 
+    @staticmethod
+    def get_shell_to_plugin_map(config_loader):
+        shell_to_plugin = defaultdict(list)
+        for clazz in Plugins.discover(CompletionPlugin):
+            plugin = clazz(config_loader)
+            shell_to_plugin[plugin.provides()].append(plugin)
+
+        for shell, plugins in shell_to_plugin.items():
+            if len(plugins) > 1:
+                raise ValueError(
+                    "Multiple plugins installed for {} : {}".format(
+                        shell, ",".join([type(plugin).__name__ for plugin in plugins])
+                    )
+                )
+
+        return shell_to_plugin
+
     def shell_completion(self, overrides):
         config = self._load_config(overrides)
         subcommands = ["install", "uninstall", "query"]
@@ -140,17 +157,7 @@ class Hydra:
                 "No completion subcommand specified ({})".format(",".join(subcommands))
             )
 
-        shell_to_plugin = defaultdict(list)
-        for clazz in Plugins.discover(CompletionPlugin):
-            plugin = clazz(self.config_loader)
-            shell_to_plugin[plugin.provides()].append(plugin)
-        for shell, plugins in shell_to_plugin.items():
-            if len(plugins) > 1:
-                raise ValueError(
-                    "Multiple plugins installed for {} : {}".format(
-                        shell, ",".join([type(plugin).__name__ for plugin in plugins])
-                    )
-                )
+        shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
         def find_plugin(cmd):
             if not shell_to_plugin[cmd]:
