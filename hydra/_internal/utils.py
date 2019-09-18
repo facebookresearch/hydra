@@ -4,6 +4,7 @@ import os
 import sys
 from .hydra import Hydra
 import argparse
+from argparse import RawTextHelpFormatter
 
 
 def run_hydra(args, task_function, config_path, strict):
@@ -59,7 +60,9 @@ def run_hydra(args, task_function, config_path, strict):
 
 
 def get_args(args=None, version=None):
-    parser = argparse.ArgumentParser(description="Hydra")
+    parser = argparse.ArgumentParser(
+        description="Hydra", formatter_class=RawTextHelpFormatter
+    )
     if version is not None:
         parser.add_argument(
             "--version", action="version", version="Hydra {}".format(version)
@@ -92,7 +95,7 @@ def get_args(args=None, version=None):
         "--shell_completion",
         "-sc",
         action="store_true",
-        help="Install/Uninstall shell completion",
+        help="Install/Uninstall/Query shell completion\nfoo bar",
     )
 
     return parser.parse_args(args)
