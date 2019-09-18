@@ -160,8 +160,12 @@ class Hydra:
         shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
         def find_plugin(cmd):
-            if not shell_to_plugin[cmd]:
-                raise ValueError("No completion plugin for '{}' found".format(cmd))
+            if cmd not in shell_to_plugin:
+                raise ValueError(
+                    "No completion plugin for '{}' found, available : \n{}".format(
+                        cmd, "\n".join(["\t" + x for x in shell_to_plugin.keys()])
+                    )
+                )
             return shell_to_plugin[cmd][0]
 
         if config.install:

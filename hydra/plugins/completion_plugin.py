@@ -2,7 +2,7 @@
 import os
 import sys
 from abc import ABCMeta
-
+from abc import abstractmethod
 import six
 from omegaconf import DictConfig, ListConfig, Config
 
@@ -20,6 +20,7 @@ class CompletionPlugin(Plugin):
     def uninstall(self):
         raise NotImplementedError()
 
+    @abstractmethod
     def provides(self):
         """
         :return: the name of the shell this plugin provides completion for
