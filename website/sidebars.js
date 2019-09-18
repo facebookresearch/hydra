@@ -14,6 +14,7 @@ module.exports = {
             'examples/config_splitting',
             'examples/config_groups',
             'examples/multi-run',
+            'examples/tab_completion',
         ],
 
         'Common patterns': [
@@ -35,7 +36,6 @@ module.exports = {
 
 
         'Advanced': [
-            'advanced/tab_completion',
             'advanced/search_path',
             'advanced/plugins',
         ],
