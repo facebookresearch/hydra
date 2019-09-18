@@ -4,7 +4,6 @@ import os
 import sys
 from .hydra import Hydra
 import argparse
-import hydra
 
 
 def run_hydra(args, task_function, config_path, strict):
@@ -60,10 +59,11 @@ def run_hydra(args, task_function, config_path, strict):
 
 
 def get_args(args=None):
+    from hydra import __version__
+
     parser = argparse.ArgumentParser(description="Hydra")
-    version = hydra.__version__
     parser.add_argument(
-        "--version", action="version", version="Hydra {}".format(version)
+        "--version", action="version", version="Hydra {}".format(__version__)
     )
     parser.add_argument(
         "overrides",
