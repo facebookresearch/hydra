@@ -44,6 +44,7 @@ def demos_sweep_1_job_test_impl(sweep_runner, overrides, strict=False):
         assert len(job_ret) == 1
         assert job_ret[0].overrides == []
         assert job_ret[0].cfg == dict(optimizer=dict(type="nesterov", lr=0.001))
+        assert job_ret[0].hydra_cfg.hydra.job.name == "experiment"
         verify_dir_outputs(sweep.returns[0][0])
 
 
@@ -69,6 +70,7 @@ def demos_sweep_2_jobs_test_impl(sweep_runner, overrides):
             )
             assert job_ret.overrides == ["a={}".format(i)]
             assert job_ret.cfg == expected_conf
+            assert job_ret.hydra_cfg.hydra.job.name == "experiment"
             verify_dir_outputs(job_ret, job_ret.overrides)
 
 

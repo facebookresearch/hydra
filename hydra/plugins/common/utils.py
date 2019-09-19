@@ -129,6 +129,14 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+    @staticmethod
+    def get_state():
+        return Singleton._instances
+
+    @staticmethod
+    def set_state(instances):
+        Singleton._instances = instances
+
 
 @six.add_metaclass(Singleton)
 class JobRuntime:
