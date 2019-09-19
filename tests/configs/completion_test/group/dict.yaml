@@ -1,0 +1,9 @@
+# top level dict
+group:
+  dict: true
+toys:
+  andy: davis
+  slinky: dog
+  list:
+    - aa
+    - bb

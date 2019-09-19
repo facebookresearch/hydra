@@ -36,8 +36,8 @@ def install_pytest(session):
     #     session.install("pytest", "pytest_parallel")
 
 
-def run_pytest(session):
-    session.run("pytest", silent=False, *session.posargs)
+def run_pytest(session, directory="."):
+    session.run("pytest", directory, silent=True, *session.posargs)
     # if session.python == "2.7":
     #     session.run("pytest", silent=True)
     # else:
@@ -59,7 +59,7 @@ def get_all_plugins():
 def test_example_app(session, install_cmd):
     # Install and test example app
     session.run(*install_cmd, "demos/hydra_app_example", silent=True)
-    session.run("pytest", "demos/hydra_app_example", silent=False, *session.posargs)
+    session.run("pytest", "demos/hydra_app_example", silent=True, *session.posargs)
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -72,7 +72,7 @@ def test_core(session, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
     install_hydra(session, install_cmd)
     install_pytest(session)
-    run_pytest(session)
+    run_pytest(session, "tests")
 
     test_example_app(session, install_cmd)
 
@@ -130,7 +130,7 @@ def test_plugin(session, plugin, install_cmd):
     install_pytest(session)
 
     # Run Hydra tests
-    run_pytest(session)
+    run_pytest(session, "tests")
 
     # Run tests for current plugin
     session.chdir(os.path.join(BASE, "plugins", plugin))

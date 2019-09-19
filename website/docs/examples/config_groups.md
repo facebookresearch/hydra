@@ -38,7 +38,7 @@ defaults:
 ```
 Running with this configuration, `nesterov.yaml` is loaded:
 ```yaml
-$ python experiment.py
+python experiment.py
 optimizer:
   lr: 0.001
   type: nesterov
@@ -71,7 +71,7 @@ optimizer:
 
 If at any point you would like to prevent a default from being loaded, you can assign null to it:
 ```yaml
-$ python experiment.py optimizer=null
+python experiment.py
 {}
 ```
 

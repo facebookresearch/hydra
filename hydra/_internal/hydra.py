@@ -4,12 +4,12 @@ import os
 from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict
-
+from collections import defaultdict
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from ..errors import MissingConfigException
-from ..plugins import SearchPathPlugin, Launcher, Sweeper
+from ..plugins import SearchPathPlugin, Launcher, Sweeper, CompletionPlugin
 from ..plugins.common.utils import (
     configure_log,
     run_job,
@@ -126,6 +126,57 @@ class Hydra:
     def show_cfg(self, overrides):
         config = self._load_config(overrides)
         log.info("\n" + config.pretty())
+
+    @staticmethod
+    def get_shell_to_plugin_map(config_loader):
+        shell_to_plugin = defaultdict(list)
+        for clazz in Plugins.discover(CompletionPlugin):
+            plugin = clazz(config_loader)
+            shell_to_plugin[plugin.provides()].append(plugin)
+
+        for shell, plugins in shell_to_plugin.items():
+            if len(plugins) > 1:
+                raise ValueError(
+                    "Multiple plugins installed for {} : {}".format(
+                        shell, ",".join([type(plugin).__name__ for plugin in plugins])
+                    )
+                )
+
+        return shell_to_plugin
+
+    def shell_completion(self, overrides):
+        config = self._load_config(overrides)
+        subcommands = ["install", "uninstall", "query"]
+        found = False
+        for sc in subcommands:
+            if sc in config:
+                found = True
+                break
+        if not found:
+            log.error(
+                "No completion subcommand specified ({})".format(",".join(subcommands))
+            )
+
+        shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
+
+        def find_plugin(cmd):
+            if cmd not in shell_to_plugin:
+                raise ValueError(
+                    "No completion plugin for '{}' found, available : \n{}".format(
+                        cmd, "\n".join(["\t" + x for x in shell_to_plugin.keys()])
+                    )
+                )
+            return shell_to_plugin[cmd][0]
+
+        if config.install:
+            plugin = find_plugin(config.install)
+            plugin.install()
+        elif config.uninstall:
+            plugin = find_plugin(config.uninstall)
+            plugin.uninstall()
+        elif config.query:
+            plugin = find_plugin(config.query)
+            plugin.query()
 
     @staticmethod
     def _log_header(header, prefix="", filler="-"):

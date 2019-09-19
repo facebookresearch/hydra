@@ -1,0 +1,1 @@
+Initial support for bash completion, see documentation for details

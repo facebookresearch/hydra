@@ -105,14 +105,14 @@ with open("README.md", "r") as fh:
         # pip install -e .[dev]
         extras_require={
             "dev": [
-                "pytest",
-                "setuptools",
                 "coverage",
-                "pre-commit",
-                "nox",
-                "towncrier",
                 "flake8",
                 "flake8-copyright",
+                "nox",
+                "pre-commit",
+                "pytest",
+                "setuptools",
+                "towncrier",
             ]
         },
     )

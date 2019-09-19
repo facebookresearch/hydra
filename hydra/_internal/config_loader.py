@@ -217,7 +217,11 @@ class ConfigLoader:
                 assert False, "'{}' not found".format(fullpath)
         return loaded_cfg
 
-    def _get_group_options(self, group_name):
+    def list_groups(self, parent_name):
+        ret = list(set(self.get_group_options(parent_name, file_type="dir")))
+        return ret
+
+    def get_group_options(self, group_name, file_type="file"):
         options = []
         for search_path in self.config_search_path.config_search_path:
             search_path = search_path.path
@@ -230,13 +234,35 @@ class ConfigLoader:
                 if self._exists(is_pkg, path) and resource_isdir(
                     module_name, resource_name
                 ):
-                    files = resource_listdir(module_name, resource_name)
+                    all_files = resource_listdir(module_name, resource_name)
+                    files = []
+                    for file in all_files:
+                        if (
+                            file_type == "dir"
+                            and resource_isdir(
+                                module_name, os.path.join(group_name, file)
+                            )
+                            and file != "__pycache__"
+                        ):
+                            files.append(file)
+                        elif file_type == "file" and file.endswith(".yaml"):
+                            files.append(file[0 : -len(".yaml")])
             else:
                 group_path = "{}/{}".format(path, group_name)
                 if os.path.isdir(group_path):
-                    files = os.listdir(group_path)
-            files = [f for f in files if f.endswith(".yaml")]
-            files = [f[0 : -len(".yaml")] for f in files]
+                    all_files = os.listdir(group_path)
+                    files = []
+                    for file in all_files:
+                        full_path = os.path.join(group_path, group_name, file)
+                        if (
+                            file_type == "dir"
+                            and os.path.isdir(full_path)
+                            and file != "__pycache__"
+                        ):
+                            files.append(file)
+                        elif file_type == "file" and file.endswith(".yaml"):
+                            files.append(file[0 : -len(".yaml")])
+
             options.extend(files)
         return options
 
@@ -254,7 +280,7 @@ class ConfigLoader:
                     msg = "Could not load {}".format(new_cfg)
                     raise MissingConfigException(msg, new_cfg)
                 else:
-                    options = self._get_group_options(family)
+                    options = self.get_group_options(family)
                     if options:
                         msg = "Could not load {}, available options:\n{}:\n\t{}".format(
                             new_cfg, family, "\n\t".join(options)
