@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import OmegaConf
 import logging.config
 
 log = logging.getLogger(__name__)
@@ -38,11 +39,13 @@ def get_static_method(full_method_name):
         raise e
 
 
-def instantiate(config, *args):
+def instantiate(config, *args, **kwargs):
     try:
         clazz = get_class(config["class"])
-        params = config.params if "params" in config else {}
-        return clazz(*args, **params)
+        params = config.params if "params" in config else OmegaConf.create()
+        merged_params = OmegaConf.merge(params, OmegaConf.create(kwargs))
+        merged_params.__dict__['parent'] = params.__dict__['parent']
+        return clazz(*args, **merged_params)
     except Exception as e:
         log.error("Error instantiating {} : {}".format(config["class"], e))
         raise e
