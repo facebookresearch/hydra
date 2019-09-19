@@ -4,11 +4,10 @@ import asyncio
 import logging
 import os
 
-from omegaconf import open_dict
-
 import hydra.plugins.common.utils
 from hydra import utils
 from hydra.plugins import Launcher
+from omegaconf import open_dict
 
 # TODO: initialize logger before importing fairtask until comments at
 # https://github.com/fairinternal/fairtask/pull/23 are addressed
@@ -32,7 +31,9 @@ class FAIRTaskLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    def launch_job(self, sweep_overrides, job_dir_key, job_num):
+    def launch_job(self, sweep_overrides, job_dir_key, job_num, singleton_state):
+        hydra.plugins.common.utils.Singleton.set_state(singleton_state)
+
         # stdout logging until we get the file logging going, logs will be in slurm job log files
         hydra.plugins.common.utils.configure_log(None, self.verbose)
         hydra.plugins.common.utils.setup_globals()
@@ -81,7 +82,12 @@ class FAIRTaskLauncher(Launcher):
                 )
             )
             runs.append(
-                queue(self.launch_job)(sweep_override, "hydra.sweep.dir", job_num)
+                queue(self.launch_job)(
+                    sweep_override,
+                    "hydra.sweep.dir",
+                    job_num,
+                    hydra.plugins.common.utils.Singleton.get_state(),
+                )
             )
         return await gatherl(runs)
 

@@ -15,7 +15,7 @@ conda create -n hydra37 python=3.7 -y
 
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>: 
-The core Hydra framework supports Python 2.7. You may need to create additional environments for different Python versions if
+The core Hydra framework supports Python 2.7 or newer. You may need to create additional environments for different Python versions if
 CI detect issues on supported version of Python.
 </div>
 
