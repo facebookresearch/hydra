@@ -8,9 +8,6 @@ Individual Hydra plugins may have stricter Python requirements, for example
 hydra-fairtask and hydra-submitit requires Python 3.6 or newer.
 
 ### Install/upgrade
-A proper pip package will be available after Hydra is open sourced.
-
-### General use 
 Install/upgrade Hydra:
 ```
 pip install --upgrade hydra-core
