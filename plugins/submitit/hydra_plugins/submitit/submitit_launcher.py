@@ -30,7 +30,8 @@ class SubmititLauncher(Launcher):
         self.task_function = task_function
         self.verbose = verbose
 
-    def launch_job(self, sweep_overrides, job_dir_key, job_num):
+    def launch_job(self, sweep_overrides, job_dir_key, job_num, singleton_state):
+        hydra.plugins.common.utils.Singleton.set_state(singleton_state)
         hydra.plugins.common.utils.configure_log(None, self.verbose)
         hydra.plugins.common.utils.setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
@@ -103,7 +104,11 @@ class SubmititLauncher(Launcher):
                 )
             )
             job = executor.submit(
-                self.launch_job, sweep_override, "hydra.sweep.dir", job_num
+                self.launch_job,
+                sweep_override,
+                "hydra.sweep.dir",
+                job_num,
+                hydra.plugins.common.utils.Singleton.get_state(),
             )
             jobs.append(job)
 
