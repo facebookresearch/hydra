@@ -104,3 +104,21 @@ def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
             "hydra.launcher.params.no_workers=true",
         ],
     )
+
+
+def test_pickle_job_runtime():
+    import cloudpickle
+    import pickle
+    from hydra.plugins.common.utils import JobRuntime
+
+    JobRuntime().set("foo", "bar")
+
+    def function():
+        return JobRuntime().get("foo")
+
+    assert function() == "bar"
+    dump = cloudpickle.dumps(function)
+    JobRuntime().set("foo", "nope")
+
+    function2 = pickle.loads(dump)
+    assert function2() == "bar"
