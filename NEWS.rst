@@ -1,3 +1,22 @@
+0.1.4 (2019-09-18)
+==================
+
+Features
+--------
+
+- hydra.utils.instantiate() can now take an additional optional kwargs dictionary to pass to constructor of the instantiated object (`#142 <https://github.com/facebookresearch/hydra/issues/142>`_)
+- Initial support for bash completion, see documentation for details (`#8 <https://github.com/facebookresearch/hydra/issues/8>`_)
+
+Bug Fixes
+---------
+
+- Fixed Town Crier to generate correct links to issues in generated news file. (`#122 <https://github.com/facebookresearch/hydra/issues/122>`_)
+- Fixed bug with overriding hydra defaults from user config file. (`#123 <https://github.com/facebookresearch/hydra/issues/123>`_)
+- Fixed Singletons not getting serialized to remote jobs. (`#128 <https://github.com/facebookresearch/hydra/issues/128>`_)
+- Fixed a bug that prevented using submitit in strict mode (`#129 <https://github.com/facebookresearch/hydra/issues/129>`_)
+- Fixed example submitit config to set the job name (`#133 <https://github.com/facebookresearch/hydra/issues/133>`_)
+
+
 0.1.3 (2019-09-02)
 ==================
 
