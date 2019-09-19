@@ -10,7 +10,7 @@ import React, {useEffect, useRef} from 'react';
 export default function Script(props) {
   const instance = useRef(null);
 const script = useRef(
-    window.document ? window.document.createElement('script') : null,
+    window ? window.document.createElement('script') : null,
   );
 
   useEffect(() => {
