@@ -30,6 +30,7 @@ class Foo:
             return not x
         return NotImplemented
 
+
 class Bar:
     def __init__(self, a, b, c, d):
         self.a = a
@@ -44,8 +45,12 @@ class Bar:
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Bar):
-            return self.a == other.a and self.b == other.b and \
-              self.c == other.c and self.d == other.d
+            return (
+                self.a == other.a
+                and self.b == other.b
+                and self.c == other.c
+                and self.d == other.d
+            )
         return NotImplemented
 
     def __ne__(self, other):
@@ -82,9 +87,19 @@ def test_class_instantiate(conf, expected):
     obj = utils.instantiate(conf)
     assert obj == expected
 
+
 @pytest.mark.parametrize(
     "conf, expected",
-    [({"class": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}}, Bar(10, 20, 30, 40))],
+    [
+        (
+            {"class": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}},
+            Bar(10, 20, 30, 40),
+        ),
+        (
+            {"class": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
+            Bar(10, 200, 200, 40),
+        ),
+    ],
 )
 def test_class_instantiate_passthrough(conf, expected):
     conf = OmegaConf.create(conf)
