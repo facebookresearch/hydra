@@ -60,7 +60,7 @@ class SubmititLauncher(Launcher):
         )
 
     def launch(self, job_overrides):
-        # lazy import to ensurue plugin discovery remains fast
+        # lazy import to ensure plugin discovery remains fast
         import submitit
 
         num_jobs = len(job_overrides)
@@ -112,4 +112,4 @@ class SubmititLauncher(Launcher):
             )
             jobs.append(job)
 
-        return [j.results() for j in jobs]
+        return [j.results()[0] for j in jobs]
