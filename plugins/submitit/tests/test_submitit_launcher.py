@@ -1,21 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
+from hydra_plugins.submitit import SubmititLauncher
 
 from hydra._internal.plugins import Plugins
 from hydra.plugins import Launcher
-from hydra_plugins.submitit import SubmititLauncher
-
-
-from hydra.test_utils.launcher_common_tests import (
-    demo_6_sweep_test_impl,
-    demos_sweep_1_job_test_impl,
-    demos_sweep_2_jobs_test_impl,
-    not_sweeping_hydra_overrides,
-    sweep_over_two_optimizers,
-)
+from hydra.test_utils.launcher_common_tests import LauncherTestSuite
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import chdir_hydra_root, sweep_runner  # noqa: F401
+from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 
 chdir_hydra_root()
 
@@ -26,56 +19,8 @@ def test_discovery():
     assert SubmititLauncher.__name__ in [x.__name__ for x in launchers]
 
 
-@pytest.mark.skip(
-    reason="submitit local queue is broken. re-enable once fixed. "
-    "https://github.com/fairinternal/submitit/issues/121"
+@pytest.mark.parametrize(
+    "launcher_name, overrides", [("submitit", ["hydra.launcher.params.queue=local"])]
 )
-def test_demo_6(tmpdir):
-    demo_6_sweep_test_impl(
-        tmpdir,
-        overrides=["hydra/launcher=submitit", "hydra.launcher.params.queue=local"],
-    )
-
-
-@pytest.mark.skip(
-    reason="submitit local queue is broken. re-enable once fixed. "
-    "https://github.com/fairinternal/submitit/issues/121"
-)
-def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
-    demos_sweep_1_job_test_impl(
-        sweep_runner,
-        overrides=["hydra/launcher=submitit", "hydra.launcher.params.queue=local"],
-    )
-
-
-@pytest.mark.skip(
-    reason="submitit local queue is broken. re-enable once fixed. "
-    "https://github.com/fairinternal/submitit/issues/121"
-)
-def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
-    demos_sweep_2_jobs_test_impl(
-        sweep_runner,
-        overrides=["hydra/launcher=submitit", "hydra.launcher.params.queue=local"],
-    )
-
-
-@pytest.mark.skip(
-    reason="submitit local queue is broken. re-enable once fixed. "
-    "https://github.com/fairinternal/submitit/issues/121"
-)
-def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
-    not_sweeping_hydra_overrides(
-        sweep_runner,
-        overrides=["hydra/launcher=submitit", "hydra.launcher.params.queue=local"],
-    )
-
-
-@pytest.mark.skip(
-    reason="submitit local queue is broken. re-enable once fixed. "
-    "https://github.com/fairinternal/submitit/issues/121"
-)
-def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
-    sweep_over_two_optimizers(
-        sweep_runner,
-        overrides=["hydra/launcher=submitit", "hydra.launcher.params.queue=local"],
-    )
+class TestSubmititLauncher(LauncherTestSuite):
+    pass
