@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import asyncio
 import logging
 import os
 
@@ -104,6 +103,7 @@ class FAIRTaskLauncher(Launcher):
     def launch(self, job_overrides):
         # load lazily to ensure plugin discovery is fast.
         from fairtask import gatherl
+        import asyncio
 
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
         os.makedirs(str(self.config.hydra.sweep.dir), exist_ok=True)
