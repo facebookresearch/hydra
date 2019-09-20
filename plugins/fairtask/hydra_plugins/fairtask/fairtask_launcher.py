@@ -111,6 +111,8 @@ class FAIRTaskLauncher(Launcher):
         with self.create_queue(num_jobs=len(job_overrides)) as queue:
             sweep_tasks = self.get_sweep_tasks(queue, job_overrides)
             log.info(
-                "Launching {} jobs to {} queue".format(len(job_overrides), self.queue_name)
+                "Launching {} jobs to {} queue".format(
+                    len(job_overrides), self.queue_name
+                )
             )
             return loop.run_until_complete(gatherl(sweep_tasks))
