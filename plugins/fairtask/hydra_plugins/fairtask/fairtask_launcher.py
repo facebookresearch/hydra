@@ -61,16 +61,10 @@ class FAIRTaskLauncher(Launcher):
             job_subdir_key="hydra.sweep.subdir",
         )
 
-    async def run_sweep(self, queue, job_overrides):
-        # load lazily to ensure plugin discovery is fast.
-        from fairtask import gatherl
-
-        log.info(
-            "Launching {} jobs to {} queue".format(len(job_overrides), self.queue_name)
-        )
+    def get_sweep_tasks(self, queue, job_overrides):
         num_jobs = len(job_overrides)
         queue = queue.task(self.queue_name)
-        runs = []
+        tasks = []
         for job_num in range(num_jobs):
             sweep_override = list(job_overrides[job_num])
             log.info(
@@ -81,7 +75,7 @@ class FAIRTaskLauncher(Launcher):
                     ),
                 )
             )
-            runs.append(
+            tasks.append(
                 queue(self.launch_job)(
                     sweep_override,
                     "hydra.sweep.dir",
@@ -89,7 +83,7 @@ class FAIRTaskLauncher(Launcher):
                     hydra.plugins.common.utils.Singleton.get_state(),
                 )
             )
-        return await gatherl(runs)
+        return tasks
 
     def create_queue(self, num_jobs):
         # load lazily to ensure plugin discovery is fast.
@@ -108,8 +102,15 @@ class FAIRTaskLauncher(Launcher):
         return TaskQueues(queues, no_workers=self.no_workers)
 
     def launch(self, job_overrides):
+        # load lazily to ensure plugin discovery is fast.
+        from fairtask import gatherl
+
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
         os.makedirs(str(self.config.hydra.sweep.dir), exist_ok=True)
         loop = asyncio.get_event_loop()
         with self.create_queue(num_jobs=len(job_overrides)) as queue:
-            return loop.run_until_complete(self.run_sweep(queue, job_overrides))
+            sweep_tasks = self.get_sweep_tasks(queue, job_overrides)
+            log.info(
+                "Launching {} jobs to {} queue".format(len(job_overrides), self.queue_name)
+            )
+            return loop.run_until_complete(gatherl(sweep_tasks))
