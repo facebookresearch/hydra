@@ -91,7 +91,7 @@ with open("README.md", "r") as fh:
         long_description_content_type="text/markdown",
         url="https://github.com/fairinternal/hydra",
         keywords="command-line configuration yaml tab-completion",
-        packages=find_packages(exclude=["tests"]),
+        packages=find_packages(),
         include_package_data=True,
         classifiers=[
             "Development Status :: 4 - Beta",

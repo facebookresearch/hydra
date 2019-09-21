@@ -9,11 +9,11 @@ from omegaconf import OmegaConf
 
 from hydra.errors import MissingConfigException
 from hydra.test_utils.launcher_common_tests import (
-    demos_sweep_1_job_test_impl,
-    demos_sweep_2_jobs_test_impl,
+    sweep_1_job,
+    sweep_2_jobs,
     demo_6_sweep_test_impl,
     not_sweeping_hydra_overrides,
-    sweep_over_two_optimizers,
+    sweep_two_config_groups,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
@@ -335,11 +335,11 @@ def test_demo_6(tmpdir):
 
 
 def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
-    demos_sweep_1_job_test_impl(sweep_runner, overrides=["hydra/launcher=basic"])
+    sweep_1_job(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
-    demos_sweep_2_jobs_test_impl(sweep_runner, overrides=["hydra/launcher=basic"])
+    sweep_2_jobs(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
@@ -347,14 +347,12 @@ def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
 
 
 def test_fairtask_sweep_1_job_strict(sweep_runner):  # noqa: F811
-    demos_sweep_1_job_test_impl(
-        sweep_runner, strict=True, overrides=["hydra/launcher=basic"]
-    )
+    sweep_1_job(sweep_runner, strict=True, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
     with pytest.raises(KeyError):
-        demos_sweep_1_job_test_impl(
+        sweep_1_job(
             sweep_runner,
             strict=True,
             overrides=["hydra/launcher=basic", "hydra.foo=bar"],
@@ -362,7 +360,7 @@ def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
 
 
 def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
-    sweep_over_two_optimizers(sweep_runner, overrides=["hydra/launcher=basic"])
+    sweep_two_config_groups(sweep_runner, overrides=["hydra/launcher=basic"])
 
 
 def test_specializing_configs_demo(task_runner):  # noqa: F811
