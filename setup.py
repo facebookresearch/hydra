@@ -89,7 +89,7 @@ with open("README.md", "r") as fh:
         description="Hydra is a library for writing flexible command line applications",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
-        url="https://github.com/fairinternal/hydra",
+        url="https://github.com/facebookresearch/hydra",
         keywords="command-line configuration yaml tab-completion",
         packages=find_packages(),
         include_package_data=True,
