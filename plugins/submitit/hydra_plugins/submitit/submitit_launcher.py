@@ -2,14 +2,22 @@
 import logging
 import os
 
+from omegaconf import open_dict
+
 import hydra._internal.utils
 import hydra.plugins.common.utils
+from hydra._internal.config_search_path import ConfigSearchPath
 from hydra.plugins import Launcher
-
-from omegaconf import open_dict
+from hydra.plugins import SearchPathPlugin
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
+
+
+class SubmititLauncherDefaults(SearchPathPlugin):
+    def manipulate_search_path(self, search_path):
+        assert isinstance(search_path, ConfigSearchPath)
+        search_path.append("submitit", "pkg://hydra_plugins.submitit.conf")
 
 
 class SubmititLauncher(Launcher):

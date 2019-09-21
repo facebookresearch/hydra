@@ -21,4 +21,5 @@ with open("README.md", "r") as fh:
         install_requires=[
             "submitit@git+ssh://git@github.com/fairinternal/submitit.git@master"
         ],
+        include_package_data=True,
     )
