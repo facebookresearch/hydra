@@ -1,6 +1,6 @@
 log_user 0
 set timeout 4
-set env(PS1) >
+set env(PS1) >>
 
 # Under pycharm, for some unknown reason readline displays
 # the suggestions in a different order, breaking the test.
@@ -11,7 +11,7 @@ set env(INPUTRC) /dev/null
 # parray env
 
 spawn bash --norc --noprofile
-expect >
+expect >>
 
 set in_line [lindex $argv 1]
 set len [expr [string length $in_line] - 1]
@@ -21,7 +21,7 @@ puts "input line: '$line'"
 puts "num_tabs: $num_tabs"
 
 send "eval \"\$([lindex $argv 0] -sc install=bash)\"\r"
-expect >
+expect >>
 
 set command "[lindex $argv 0] $line"
 while {$num_tabs > 0} {

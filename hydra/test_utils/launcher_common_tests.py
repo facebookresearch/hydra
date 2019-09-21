@@ -58,7 +58,7 @@ def sweep_1_job(sweep_runner, overrides, strict=False):
     """
     sweep = sweep_runner(
         calling_file=None,
-        calling_module="tests.a_module",
+        calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=overrides,
         strict=strict,
@@ -79,7 +79,7 @@ def sweep_2_jobs(sweep_runner, overrides):
     overrides.append("a=0,1")
     sweep = sweep_runner(
         calling_file=None,
-        calling_module="tests.a_module",
+        calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=overrides,
     )
@@ -105,7 +105,7 @@ def not_sweeping_hydra_overrides(sweep_runner, overrides):
     overrides.extend(["a=0,1", "hydra.foo=1,2,3"])
     sweep = sweep_runner(
         calling_file=None,
-        calling_module="tests.a_module",
+        calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=overrides,
     )
@@ -130,7 +130,7 @@ def sweep_two_config_groups(sweep_runner, overrides):
     overrides.extend(["group1=file1,file2"])
     sweep = sweep_runner(
         calling_file=None,
-        calling_module="tests.a_module",
+        calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=overrides,
     )
