@@ -11,7 +11,6 @@ from hydra.errors import MissingConfigException
 from hydra.test_utils.launcher_common_tests import (
     sweep_1_job,
     sweep_2_jobs,
-    demo_6_sweep_test_impl,
     not_sweeping_hydra_overrides,
     sweep_two_config_groups,
 )
@@ -328,10 +327,6 @@ def test_demo_5_config_groups(tmpdir, args, output_conf):
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
-
-
-def test_demo_6(tmpdir):
-    demo_6_sweep_test_impl(tmpdir, overrides=["hydra/launcher=basic"])
 
 
 def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
