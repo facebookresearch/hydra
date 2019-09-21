@@ -1,4 +1,4 @@
 global-exclude *.pyc
 global-exclude __pycache__
 recursive-include hydra/conf *
-recursive-include tests/config *
+recursive-include hydra/test_utils/configs *
