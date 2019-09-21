@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 log_user 0
 set timeout 4
 set env(PS1) >>
