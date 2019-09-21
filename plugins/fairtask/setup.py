@@ -22,4 +22,5 @@ with open("README.md", "r") as fh:
             "fairtask@git+ssh://git@github.com/fairinternal/fairtask.git@master",
             "fairtask-slurm@git+ssh://git@github.com/fairinternal/fairtask-slurm.git@master",
         ],
+        include_package_data=True,
     )

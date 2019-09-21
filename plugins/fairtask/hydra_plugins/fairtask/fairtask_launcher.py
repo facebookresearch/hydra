@@ -13,6 +13,16 @@ from omegaconf import open_dict
 log = logging.getLogger(__name__)  # noqa: E402
 
 
+from hydra.plugins import SearchPathPlugin
+from hydra._internal.config_search_path import ConfigSearchPath
+
+
+class FAIRTaskLauncherDefaults(SearchPathPlugin):
+    def manipulate_search_path(self, search_path):
+        assert isinstance(search_path, ConfigSearchPath)
+        search_path.append("fairtask", "pkg://hydra_plugins.fairtask.conf")
+
+
 class FAIRTaskLauncher(Launcher):
     def __init__(self, queue, queues, no_workers=False):
         self.queue_name = queue
