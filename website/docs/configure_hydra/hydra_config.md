@@ -4,7 +4,7 @@ title: Hydra configuration
 sidebar_label: Hydra configuration
 ---
 
-Anything under the hydra branch of the config can be overriden in various ways.
+Anything under the hydra branch of the config can be overridden in various ways.
 See the [intro](intro) for details about how to apply the customization.
 
 ```yaml
@@ -23,10 +23,8 @@ hydra:
 The following variables are populated at runtime.
 You can access them as config variables.
 
-You can also override hydra.job.name from your own config or command line.
-
 - *hydra.job.name* : Job name, defaults to python file name without suffix. can be overridden.
 - *hydra.job.override_dirname* : Pathname derived from the overrides for this job
 - *hydra.job.num* : job serial number in sweep
-- *hydra.job.id* : Job ID in the underlying jobs system (slurm, chronos etc) 
+- *hydra.job.id* : Job ID in the underlying jobs system (Slurm etc) 
 - *hydra.job.num_jobs*: Number of jobs the launcher is starting in this sweep
