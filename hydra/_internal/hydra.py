@@ -28,7 +28,6 @@ class Hydra:
         self, calling_file, calling_module, config_path, task_function, verbose, strict
     ):
         setup_globals()
-
         assert calling_module is not None or calling_file is not None
         basedir_prefix = ""
         if calling_module is None:
@@ -79,7 +78,6 @@ class Hydra:
         self.config_loader = ConfigLoader(
             config_file=config_file, config_search_path=search_path, strict_cfg=strict
         )
-
         if not self.config_loader.exists(abs_config_dir):
             raise MissingConfigException(
                 missing_cfg_file=abs_config_dir,

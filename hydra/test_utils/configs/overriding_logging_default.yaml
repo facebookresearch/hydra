@@ -1,0 +1,4 @@
+defaults:
+  - hydra/launcher: null
+  - hydra/hydra_logging: hydra_debug
+  - hydra/job_logging: disabled

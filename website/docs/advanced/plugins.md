@@ -24,7 +24,8 @@ batch_size=128 optimizer=adam learning_rate=0.1
 
 
 ## Launcher
-A launcher is taking a batch of argument lists like the one above and launches a job for each one.
+Launchers are responsible for launching a job to a specific environment.
+A Launcher is taking a batch of argument lists like the one above and launches a job for each one.
 The job uses those arguments to compose a it's configuration.
 The basic launcher simply launches the job locally 
 
@@ -35,3 +36,5 @@ or just add new entries to the search path to make more configurations available
 
 SearchPathPlugin plugins are discovered automatically by Hydra and are being called to manipulate the search path before
 the configuration is composed.
+
+Many other plugins also implement SearchPathPlugin to add their configuration to the config search path once they are installed. 

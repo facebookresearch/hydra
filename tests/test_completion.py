@@ -6,7 +6,6 @@ from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra._internal.core_plugins import BashCompletion
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.test_utils.test_utils import create_search_path
-import hydra
 import os
 from hydra._internal.pathlib import Path
 import subprocess
@@ -17,7 +16,7 @@ chdir_hydra_root()
 def create_config_loader():
     return ConfigLoader(
         config_search_path=create_search_path(
-            ["tests/configs/completion_test"], abspath=True
+            ["hydra/test_utils/configs/completion_test"], abspath=True
         ),
         strict_cfg=False,
         config_file="config.yaml",
@@ -94,7 +93,7 @@ class TestCompletion:
         sys.platform.startswith("win"),
         reason="Completion integration tests are disabled on Windows",
     )
-    @pytest.mark.parametrize("prog", ["python tests/test_completion.py"])
+    @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])
     @pytest.mark.parametrize("shell", ["bash"])
     def test_shell_integration(
         self, shell, prog, num_tabs, line_prefix, line, expected
@@ -102,6 +101,7 @@ class TestCompletion:
         line1 = "line={}".format(line_prefix + line)
         cmd = [
             "expect",
+            "-d",
             "tests/expect/test_{}_completion.exp".format(shell),
             prog,
             line1,
@@ -198,12 +198,3 @@ def test_strip(app_prefix, args_line, args_line_index):
     result_line, result_index = BashCompletion.strip_python_or_app_name(line, index)
     assert result_line == args_line
     assert result_index == args_line_index
-
-
-@hydra.main(config_path="configs/completion_test/config.yaml")
-def run_cli(cfg):
-    print(cfg.pretty())
-
-
-if __name__ == "__main__":
-    run_cli()

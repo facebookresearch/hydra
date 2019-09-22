@@ -82,23 +82,25 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         cmdclass={"clean": CleanCommand},
-        name="hydra",
+        name="hydra-core",
         version=find_version("hydra", "__init__.py"),
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Hydra is a generic experimentation framework for scientific computing and "
-        "machine learning",
+        description="Hydra is a library for writing flexible command line applications",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
-        url="https://github.com/fairinternal/hydra",
-        keywords="experimentation",
-        packages=find_packages(exclude=["tests"]),
+        url="https://github.com/facebookresearch/hydra",
+        keywords="command-line configuration yaml tab-completion",
+        packages=find_packages(),
         include_package_data=True,
         classifiers=[
+            "Development Status :: 4 - Beta",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
-            "Operating System :: OS Independent",
+            "Operating System :: POSIX :: Linux",
+            "Operating System :: MacOS",
+            "Operating System :: Microsoft :: Windows",
         ],
         install_requires=["omegaconf>=1.3.0"],
         # Install development dependencies with
@@ -113,6 +115,7 @@ with open("README.md", "r") as fh:
                 "pytest",
                 "setuptools",
                 "towncrier",
+                "twine",
             ]
         },
     )

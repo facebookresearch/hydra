@@ -15,27 +15,24 @@ import styles from './styles.module.css';
 
 const features = [
   {
-    title: <>Easy to Use</>,
+    title: <>No boilerplate</>,
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-          Hydra was designed from the ground up to be easy to use and allow you to skip the boilerplate code and jump
-          straight into the code you are actually interested in writing.
+        Hydra let's you focus on the problem at hand, and not on boilerplate code like command line flags,
+        Loading configuration files, logging etc.
       </>
     ),
   },
   {
-    title: <>Focus on What Matters</>,
+    title: <>Powerful configuration</>,
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-          Hydra lets you focus on your Experiment, and reduces the boilerplate code you need to write.
-          For example:
-          <li>Command line flags</li>
-           <li>Loading configuration files</li>
-          <li>Output directory management</li>
-          <li>Logging configuration</li>
-          <li>Launching to a cluster</li>
+        With Hydra, you can compose your configuration dynamically, allowing you to easily
+        get the perfect configuration for each run.
+        You can override everything from the command line, which means you no longer need to maintain 10
+        almost identical copies of your configuration file.
       </>
     ),
   },
@@ -44,8 +41,8 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_react.svg',
     description: (
       <>
-          Hydra has a Pluggable architecture, allowing it to be extended to integrate with your own infrastructure
-          while maintaining the rest of the flexibility and power it provides.
+          Hydra has a Pluggable architecture, allowing it to be to integrate with your own infrastructure.
+          Future plugins will allow launching your code to AWS or other cloud providers directly from the command line.
       </>
     ),
   },
@@ -71,6 +68,7 @@ function Home() {
               to={withBaseUrl('docs/intro')}>
               Get Started
             </Link>
+            <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
           </div>
         </div>
       </header>
