@@ -7,7 +7,7 @@
 
 module.exports = {
     title: 'Hydra',
-    tagline: 'Flexible experimentation framework',
+    tagline: 'A Framework for flexible command line applications',
     url: 'https://facebookresearch.github.io/',
     baseUrl: '/hydra/',
     favicon: 'img/favicon.ico',
@@ -49,7 +49,7 @@ module.exports = {
                 alt: 'Facebook Open Source Logo',
                 src: 'https://docusaurus.io/img/oss_logo.png',
             },
-            copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
+            copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
         },
     },
     presets: [

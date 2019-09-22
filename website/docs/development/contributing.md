@@ -23,9 +23,9 @@ Activate the environment:
 ```
 conda activate hydra37  
 ```
-Install Hydra and all the included plugins in development mode with the following command:
+From the source tree, install Hydra in development mode with the following command:
 ```
-pip install -e .[dev] -e . && find ./plugins/ -name setup.py | xargs -i dirname {} | xargs -i pip install --upgrade --upgrade-strategy=eager -e {}
+pip install -e .[dev] -e .
 ```
 
 ### Pre commit hooks
@@ -99,11 +99,3 @@ summary line in an imperative tone followed by a blank line separating it
 from a description of the feature/change in one or more paragraphs, each wrapped
 at 80 characters. Remember that a news entry is meant for end users and should
 only contain details relevant to an end user.
-
-#### Uninstalling
-
-You can uninstall Hydra and all the included plugins from your environment with:
-```
-pip uninstall -y hydra && find ./plugins/ -name setup.py |\
-xargs -i python {}  --name | xargs pip uninstall  -y
-```

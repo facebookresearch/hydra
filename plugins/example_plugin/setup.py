@@ -11,7 +11,7 @@ with open("README.md", "r") as fh:
         description="Example plugin for hydra",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
-        url="https://github.com/fairinternal/hydra/",
+        url="https://github.com/facebookresearch/hydra/",
         packages=find_packages(exclude=["tests"]),
         classifiers=[
             # Python versions are used by noxfile in hydra to determine which python versions
