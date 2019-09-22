@@ -38,7 +38,7 @@ const features = [
   },
   {
     title: <>Plugable architecture</>,
-    imageUrl: 'img/undraw_docusaurus_react.svg',
+    imageUrl: 'img/Hydra-plugins.svg',
     description: (
       <>
           Hydra has a Pluggable architecture, allowing it to be to integrate with your own infrastructure.
