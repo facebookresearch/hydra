@@ -5,7 +5,7 @@ sidebar_label: Application packaging
 ---
 
 You can package your Hydra app along with your configuration.
-There is a working example [here](https://github.com/facebookresearch/hydra/tree/config_from_package/demos/hydra_app_example).
+There is a working example [here](https://github.com/facebookresearch/hydra/tree/master/demos/hydra_app_example).
 
 To install it, check-out the Hydra repo.
 You can run it with:
