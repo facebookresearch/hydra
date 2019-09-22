@@ -1,3 +1,24 @@
+0.1.5 (2019-09-22)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- Move FAIRTask, Submititit and FAIR-cluster-defaults plugins to fairinternal/hydra-fair-plugins repository (`#138 <https://github.com/facebookresearch/hydra/issues/138>`_)
+- Remove Fairtask and Submitit example configs from demos as they are no longer needed (`#146 <https://github.com/facebookresearch/hydra/issues/146>`_)
+
+Features
+--------
+
+- Created hydra-core pip package, Hydra can now installed with 'pip install hydra-core' (`#143 <https://github.com/facebookresearch/hydra/issues/143>`_)
+- Finalized submitit support (`#18 <https://github.com/facebookresearch/hydra/issues/18>`_)
+
+Plugins
+-------
+
+- Add default launcher config for Fairtask and Submitit launcher plugins
+
+
 0.1.4 (2019-09-18)
 ==================
 
