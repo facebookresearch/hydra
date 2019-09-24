@@ -60,6 +60,7 @@ function Home() {
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
           <div className={styles.buttons}>
+            <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',
@@ -68,7 +69,6 @@ function Home() {
               to={withBaseUrl('docs/intro')}>
               Get Started
             </Link>
-            <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
           </div>
         </div>
       </header>
