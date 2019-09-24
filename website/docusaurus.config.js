@@ -9,7 +9,7 @@ module.exports = {
     title: 'Hydra',
     tagline: 'A Framework for flexible command line applications',
     url: 'https://cli.dev/',
-    baseUrl: '/',
+    baseUrl: '/hydra/',
     favicon: 'img/favicon.ico',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
