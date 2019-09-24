@@ -3,7 +3,7 @@
 # Hydra
 Hydra is a framework for writing flexible command line applications.
 
-Check the [web site](https://facebookresearch.github.io/hydra/) for more information.
+Check [cli.dev](https://cli.dev/) for more information.
 
 ## License
 Hydra is licensed under [MIT License](LICENSE).

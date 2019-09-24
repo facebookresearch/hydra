@@ -2,7 +2,7 @@
 We want to make contributing to this project as easy and transparent as
 possible.
 
-Please see the (guide)[https://facebookresearch.github.io/hydra/docs/development/contributing] in the website.
+Please see the [guide](https://facebookresearch.github.io/hydra/docs/development/contributing) in the website.
 
 ## Pull Requests
 We actively welcome your pull requests.
