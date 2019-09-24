@@ -1,25 +1,41 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: "[BUG]"
-labels: ''
+name: "\U0001F41B Bug report"
+about: Create a bug report to help us improve BoTorch
+title: "[Bug]"
+labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+# 🐛 Bug
 
-**To Reproduce**
-Steps to reproduce the behavior.
-Preferably with a small code / config example that demonstrates the issue.
+<!-- A clear and concise description of what the bug is. -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## To reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-You can also record a short video with https://asciinema.org
+** Minimal Code/Config snippet to reproduce **
+```python
+# Your code goes here
+# Please make sure it does not require any external dependencies
+```
 
-**Additional context**
+** Stack trace/error message **
+```
+// Paste the bad output here!
+```
+**Optional video**
+If applicable, record a short [video](https://asciinema.org) with to help explain your problem.
+You can also 
+
+## Expected Behavior
+<!-- A clear and concise description of what you expected to happen. -->
+
+## System information
+
+**Please complete the following information:**
+- <!-- Hydra Version -->
+- <!-- Operating system -->
+- <!-- List of installed Hydra plugins -->
+
+## Additional context
 Add any other context about the problem here.
