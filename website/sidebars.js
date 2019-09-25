@@ -21,6 +21,7 @@ module.exports = {
             'tutorial/config_file',
             'tutorial/config_groups',
             'tutorial/defaults',
+            'tutorial/multi-run',
             'tutorial/working_directory',
             'tutorial/logging',
         ],

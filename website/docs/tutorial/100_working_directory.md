@@ -38,7 +38,7 @@ $ tree outputs/2019-07-26_13-49-27
 outputs/2019-07-26_13-49-27
 ├── config.yaml
 ├── overrides.yaml
-└── experiment.log
+└── my_app.log
 ```
 
 We have 4 files there:
