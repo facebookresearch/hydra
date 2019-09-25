@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug report"
-about: Create a bug report to help us improve BoTorch
+about: Create a bug report to help us improve Hydra
 title: "[Bug]"
 labels: bug
 assignees: ''
