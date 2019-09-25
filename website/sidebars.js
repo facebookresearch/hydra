@@ -16,6 +16,15 @@ module.exports = {
             'examples/tab_completion',
         ],
 
+        'Tutorial': [
+            'tutorial/simple_cli',
+            'tutorial/config_file',
+            'tutorial/config_groups',
+            'tutorial/defaults',
+            'tutorial/working_directory',
+            'tutorial/logging',
+        ],
+
         'Common patterns': [
             'examples/objects',
             'examples/specializing_config',
@@ -43,5 +52,6 @@ module.exports = {
             'development/contributing',
             'development/release',
         ]
+
     }
 }
