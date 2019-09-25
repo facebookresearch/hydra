@@ -19,8 +19,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        Hydra let's you focus on the problem at hand, and not on boilerplate code like command line flags,
-        Loading configuration files, logging etc.
+        Hydra lets you focus on the problem at hand instead of spending time on boilerplate code like command line flags, loading configuration files, logging etc.
       </>
     ),
   },
@@ -31,18 +30,17 @@ const features = [
       <>
         With Hydra, you can compose your configuration dynamically, allowing you to easily
         get the perfect configuration for each run.
-        You can override everything from the command line, which means you no longer need to maintain 10
-        almost identical copies of your configuration file.
+        You can override everything from the command line, which makes experimentation fast, and removes the need to maintain multiple similar configuration files.
       </>
     ),
   },
   {
-    title: <>Plugable architecture</>,
+    title: <>Pluggable architecture</>,
     imageUrl: 'img/Hydra-plugins.svg',
     description: (
       <>
-          Hydra has a Pluggable architecture, allowing it to be to integrate with your own infrastructure.
-          Future plugins will allow launching your code to AWS or other cloud providers directly from the command line.
+          Hydra has a pluggable architecture, allowing it to easily integrate with your infrastructure.
+          Future plugins will allow launching your code on AWS or other cloud providers directly from the command line.
       </>
     ),
   },
@@ -60,6 +58,7 @@ function Home() {
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
           <div className={styles.buttons}>
+          <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',
@@ -68,7 +67,6 @@ function Home() {
               to={withBaseUrl('docs/intro')}>
               Get Started
             </Link>
-            <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
           </div>
         </div>
       </header>
