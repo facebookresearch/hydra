@@ -5,13 +5,13 @@ sidebar_label: Config groups
 ---
 This is the most important concept in Hydra.
 
-After a while, you decide that it's time to add PostgreSQL support for your app.
-At any single run of the application, you will need either MySQL or PostgreSQL - but not both.
+After a while, you decide that it's time to add PostgreSQL support for your application.
+When running of the application, you will need either MySQL or PostgreSQL - but not both.
 
-The best way to represent this with Hydra is to create a directory under your configuration directory that will hold
+The best way to represent this with Hydra is to create a directory - `db` - that will hold
 a file for each database configuration alternative. 
 We call this directory a config group.
-To reduce clutter, we will also move all the config files into a conf subdirectory next to the python file.
+To reduce clutter, we will also move `db` directory into `conf` - next to the Python file.
 config_path specifies only the directory to find the configs.
 
 Python file (`my_app.py`):
@@ -21,11 +21,9 @@ def my_app(cfg):
     print(cfg.pretty())
 ```
 
-Note that in this example we do not have an actual config file, only a snippet for each database.
+Note that in this example the `config_path` is a directory and not a config file like before.
 This is the directory structure:
 ```text
-$ tree
-.
 ├── conf
 │   └── db
 │       ├── mysql.yaml
@@ -39,7 +37,7 @@ $ python my_app.py
 {}
 ```
 
-But you can now choose which database snippet to merge in from the command line:
+But you can now choose which database snippet to merge into the `cfg` from the command line:
 ```yaml
 $ python my_app.py db=mysql
 db:
@@ -68,4 +66,4 @@ db:
 ```
 
 This simple example demonstrated a very powerful feature of Hydra:
-You can compose your configuration file from multiple configuration snippets.
+You can compose your configuration object from multiple configuration snippets.

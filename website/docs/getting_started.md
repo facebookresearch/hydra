@@ -15,7 +15,6 @@ sidebar_label: Getting started
 
 
 ### Install/upgrade
-Install/upgrade Hydra:
 ```
 pip install --upgrade hydra-core
 ```
