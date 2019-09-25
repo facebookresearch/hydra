@@ -1,11 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
+
 import hydra
 
 
 @hydra.main()
-def experiment(cfg):
-    print(cfg.pretty())
+def my_app(_cfg):
+    print("Working directory : {}".format(os.getcwd()))
 
 
 if __name__ == "__main__":
-    experiment()
+    my_app()
