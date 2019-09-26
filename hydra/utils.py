@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from omegaconf import OmegaConf
 import logging.config
 
+from omegaconf import OmegaConf
+
+# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 

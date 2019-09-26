@@ -11,7 +11,7 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 0.5rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -42,6 +42,10 @@
 }
 
 .imageLogo {
-  height: 300px;
+  height: 200px;
   width: 300px;
 }
+
+/*h3 {*/
+/*    text-transform: capitalize;*/
+/*}*/

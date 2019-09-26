@@ -7,7 +7,7 @@
 
 module.exports = {
     title: 'Hydra',
-    tagline: 'A Framework for flexible command line applications',
+    tagline: 'A framework for elegantly configuring complex applications',
     url: 'https://cli.dev',
     baseUrl: '/',
     favicon: 'img/favicon.ico',
@@ -22,7 +22,7 @@ module.exports = {
             },
             links: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
-                {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@Github', position: 'left'},
+                {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
             ],
         },
         footer: {
@@ -35,7 +35,7 @@ module.exports = {
                             to: 'docs/intro',
                         },
                         {
-                            label: 'Hydra@Github',
+                            label: 'Hydra@GitHub',
                             to: 'https://github.com/facebookresearch/hydra',
                         },
                         {

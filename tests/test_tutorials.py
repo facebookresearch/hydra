@@ -197,17 +197,21 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
         ),
     ],
 )
-def test_demo_0_minimal(tmpdir, args, output_conf):
-    cmd = [sys.executable, "demos/0_minimal/minimal.py", "hydra.run.dir=" + str(tmpdir)]
+def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
+    cmd = [
+        sys.executable,
+        "tutorial/simple_cli_app/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
 
 
-def test_demo_1_workdir(tmpdir):
+def test_tutorial_working_directory(tmpdir):
     cmd = [
         sys.executable,
-        "demos/1_working_directory/working_directory.py",
+        "tutorial/working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
@@ -221,12 +225,8 @@ def test_demo_1_workdir(tmpdir):
         (["-v" "__main__"], ["Info level message", "Debug level message"]),
     ],
 )
-def test_demo_2_logging(tmpdir, args, expected):
-    cmd = [
-        sys.executable,
-        "demos/2_logging/logging_example.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
+def test_tutorial_logging(tmpdir, args, expected):
+    cmd = [sys.executable, "tutorial/logging/my_app.py", "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     lines = result.decode("utf-8").splitlines()
@@ -241,19 +241,24 @@ def test_demo_2_logging(tmpdir, args, expected):
         (
             [],
             OmegaConf.create(
-                dict(dataset=dict(name="imagenet", path="/datasets/imagenet"))
+                {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}
             ),
         ),
         (
             ["dataset.path=abc"],
-            OmegaConf.create(dict(dataset=dict(name="imagenet", path="abc"))),
+            OmegaConf.create(
+                {
+                    "dataset": {"path": "abc"},
+                    "db": {"driver": "mysql", "pass": "secret", "user": "omry"},
+                }
+            ),
         ),
     ],
 )
-def test_demo_3_config_file(tmpdir, args, output_conf):
+def test_tutorial_config_file(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "demos/3_config_file/config_file.py",
+        "tutorial/config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -372,16 +377,16 @@ def test_specializing_configs_demo(task_runner):  # noqa: F811
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_short_module_name():
+def test_short_module_name(tmpdir):
     try:
-        os.chdir("demos/3_config_file")
-        cmd = [sys.executable, "config_file.py"]
+        os.chdir("tutorial/config_file")
+        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         modified_env = os.environ.copy()
-        modified_env["HYDRA_MAIN_MODULE"] = "config_file"
+        modified_env["HYDRA_MAIN_MODULE"] = "my_app"
         result = subprocess.check_output(cmd, env=modified_env)
-        assert OmegaConf.create(str(result.decode("utf-8"))) == dict(
-            dataset=dict(name="imagenet", path="/datasets/imagenet")
-        )
+        assert OmegaConf.create(str(result.decode("utf-8"))) == {
+            "db": {"driver": "mysql", "pass": "secret", "user": "omry"}
+        }
     finally:
         chdir_hydra_root()
 
