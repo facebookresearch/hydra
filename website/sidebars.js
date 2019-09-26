@@ -5,16 +5,6 @@ module.exports = {
             'intro',
             'getting_started',
         ],
-        'Basic usage': [
-            'examples/minimal',
-            'examples/working_directory',
-            'examples/logging',
-            'examples/config_file',
-            'examples/config_splitting',
-            'examples/config_groups',
-            'examples/multi-run',
-            'examples/tab_completion',
-        ],
 
         'Tutorial': [
             'tutorial/simple_cli',
@@ -22,6 +12,7 @@ module.exports = {
             'tutorial/config_groups',
             'tutorial/defaults',
             'tutorial/multi-run',
+            'tutorial/tab_completion',
             'tutorial/working_directory',
             'tutorial/logging',
         ],
