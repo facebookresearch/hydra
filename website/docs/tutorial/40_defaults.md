@@ -58,4 +58,4 @@ The following will load `some_file.yaml` from your config directory:
 defaults:
     - some_file
 ```
-Config files that a part of a `config group` like `db` cannot be overridden.
+Config files that not a part of a `config group` like `db` cannot be overridden.
