@@ -7,7 +7,7 @@
 
 module.exports = {
     title: 'Hydra',
-    tagline: 'A Framework for flexible command line applications',
+    tagline: 'A framework for elegantly configuring complex applications',
     url: 'https://cli.dev',
     baseUrl: '/',
     favicon: 'img/favicon.ico',

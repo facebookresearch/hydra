@@ -3,7 +3,7 @@ id: intro
 title: Introduction
 sidebar_label: Introduction
 ---
-Hydra is a framework for writing flexible command line applications.
+Hydra is a framework for elegantly configuring complex applications.
 The name Hydra comes from its ability to run multiple similar jobs - much like a Hydra with
 multiple heads.
 
