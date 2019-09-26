@@ -4,10 +4,11 @@ title: Simple command line application
 sidebar_label: Simple command line application
 ---
 
-This is a simple Hydra application. The `my_app` function is a place holder 
+This is a simple Hydra application that print your configuration.
+The `my_app` function is a place holder 
 for your code. We will slowly evolve this example to show-case more Hydra features.
 
-Python file (`my_app.py`):
+Python file: `my_app.py`
 ```python
 import hydra
 
@@ -18,9 +19,11 @@ def my_app(cfg):
 if __name__ == "__main__":
     my_app()
 ```
-Note that the function takes a `cfg` object that holds the configuration for your function.
+The `cfg` is an [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) 
+object that holds the configuration for your function.
+You don't need a deep understanding of OmegaConf for this tutorial.
 
-We can pass arbitrary command line arguments, which will be used to create a hierarchical configuration object:
+We can pass arbitrary command line arguments from which Hydra creates a hierarchical configuration object:
 ```yaml
 $ python my_app.py db.driver=mysql db.user=omry db.pass=secret
 db:
@@ -29,5 +32,3 @@ db:
   user: omry
 ```
 
-The `cfg` is an [OmegaConf](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) 
-object

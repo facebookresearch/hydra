@@ -7,7 +7,7 @@ sidebar_label: Configuration file
 It can get tedious to type all those command line arguments every time.
 Fix it by creating a configuration file:
 
-Configuration file (`config.yaml`):
+Configuration file: `config.yaml`
 ```yaml
 db:
   driver: mysql
@@ -15,10 +15,10 @@ db:
   pass: secret
 ```
 
-You can pass a config file for your application by specifying a `config_path` parameter to the `@hydra.main()` decorator.
+Specify the config file by passing a `config_path` parameter to the `@hydra.main()` decorator.
 The location of the `config_path` is relative to your Python file.
 
-Python file (`my_app.py`):
+Python file: `my_app.py`
 ```python
 @hydra.main(config_path='config.yaml')
 def my_app(cfg):

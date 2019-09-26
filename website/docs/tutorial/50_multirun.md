@@ -4,46 +4,48 @@ title: Multi-run
 sidebar_label: Multi-run
 ---
 
-Hydra can run the same job multiple time with different arguments in each run using a mode called multi-run.
-To turn on multi-run, use `-m` or `--multirun` and pass comma separated list for each value you want
-to sweep over.
+Sometimes you want to run a parameter sweep.
+To run a parameter sweep, use the `--multirun` (`-m`) flag and pass a comma separated list for each 
+ dimension you want to sweep.
+ 
+Here is a sweep over both db configurations and the two tables `tbl_1` and `tbl_2` (4 runs total). 
 
-To run the application 4 times, with both mysql and postgresql and with with the databases of hydra and chimera:
 ```text
-$ python my_app.py -m db=mysql,postgresql db.database=hydra,chimera
-[2019-09-25 09:27:37,529] - Launching 4 jobs locally
-[2019-09-25 09:27:37,529] - Sweep output dir : multirun/2019-09-25/09-27-37
-[2019-09-25 09:27:37,529] -     #0 : db=mysql db.database=hydra
+$ python my_app.py -m db=mysql,postgresql db.table=tbl_1,tbl_2
+[2019-09-25 14:53:41,265] - Launching 4 jobs locally
+[2019-09-25 14:53:41,265] - Sweep output dir : multirun/2019-09-25/14-53-41
+[2019-09-25 14:53:41,265] -     #0 : db=mysql db.table=tbl_1
 db:
-  database: hydra
   driver: mysql
   pass: secret
+  table: tbl_1
   user: omry
 
-[2019-09-25 09:27:37,575] -     #1 : db=mysql db.database=chimera
+[2019-09-25 14:53:41,313] -     #1 : db=mysql db.table=tbl_2
 db:
-  database: chimera
   driver: mysql
   pass: secret
+  table: tbl_2
   user: omry
 
-[2019-09-25 09:27:37,627] -     #2 : db=postgresql db.database=hydra
+[2019-09-25 14:53:41,364] -     #2 : db=postgresql db.table=tbl_1
 db:
-  database: hydra
   driver: postgresql
   pass: drowssap
+  table: tbl_1
   timeout: 10
   user: postgre_user
 
-[2019-09-25 09:27:37,675] -     #3 : db=postgresql db.database=chimera
+[2019-09-25 14:53:41,413] -     #3 : db=postgresql db.table=tbl_2
 db:
-  database: chimera
   driver: postgresql
   pass: drowssap
+  table: tbl_2
   timeout: 10
   user: postgre_user
+
 ```
 
 The default launcher runs the jobs locally and serially.
-Launcher plugins can change this. At the moment there are no public Launcher plugins but there will be some soon.
-For example, a Launcher plugin for AWS would be able to launch your code to an AWS instance.
+
+There are plans to add additional Launchers, such as a Launcher that launches your application code on AWS.

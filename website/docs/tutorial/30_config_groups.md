@@ -5,24 +5,30 @@ sidebar_label: Config groups
 ---
 This is the most important concept in Hydra.
 
-After a while, you decide that it's time to add PostgreSQL support for your application.
+Suppose you want to benchmark PostgreSQL and MySQL for your application.
 When running of the application, you will need either MySQL or PostgreSQL - but not both.
 
-The best way to represent this with Hydra is to create a directory - `db` - that will hold
-a file for each database configuration alternative. 
-We call this directory a config group.
-To reduce clutter, we will also move `db` directory into `conf` - next to the Python file.
-config_path specifies only the directory to find the configs.
+The way to do this with Hydra is with a **Config group**.
+A config group is a mutually exclusive set of configuration files.
 
-Python file (`my_app.py`):
+To create a config group, create a directory - `db` - that will hold
+a file for each database configuration alternative. 
+Since we are expecting to have multiple config groups, we will proactively move all the configuration 
+files into a `conf` directory.
+
+Python file: `my_app.py`
 ```python
 @hydra.main(config_path="conf")
 def my_app(cfg):
     print(cfg.pretty())
 ```
 
-Note that in this example the `config_path` is a directory and not a config file like before.
-This is the directory structure:
+
+`config_path` can specify your config file as in the [previous command line example](simple_cli/), or the root directory for your configuration files.
+If a config file is specified, it's directory is the root directory.
+
+
+The directory structure of our application now looks like:
 ```text
 ├── conf
 │   └── db
@@ -31,21 +37,13 @@ This is the directory structure:
 └── my_app.py
 ```
 
-If you run it, it prints an empty config:
+If you run it, it prints an empty config because no configuration was specified.
 ```yaml
 $ python my_app.py
 {}
 ```
 
-But you can now choose which database snippet to merge into the `cfg` from the command line:
-```yaml
-$ python my_app.py db=mysql
-db:
-  driver: mysql
-  pass: secret
-  user: omry
-```
-Or:
+You can now choose which database configuration to use from the command line:
 ```yaml
 $ python my_app.py db=postgresql
 db:
@@ -66,4 +64,4 @@ db:
 ```
 
 This simple example demonstrated a very powerful feature of Hydra:
-You can compose your configuration object from multiple configuration snippets.
+You can compose your configuration object from multiple configuration files.

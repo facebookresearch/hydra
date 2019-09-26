@@ -9,12 +9,13 @@ multiple heads.
 
 ## Key features:
 
-* Unified command line interface to run your application locally or launch it remotely
-* Compose your configuration dynamically, allowing overriding of everything from the command line
-* Run multiple jobs with different arguments with a single command
+* Hierarchical configuration composable from multiple sources
+* Configuration can be specified or overridden from the command line
 * Dynamic command line tab completion
+* Run your application locally or to launch it remotely
+* Run multiple jobs with different arguments with a single command
 
-The best way to understand what Hydra is good for is to go through some [examples](examples/minimal).
+The best way to understand what Hydra is good for is to go through some [examples](tutorial/simple_cli/).
 
 ## Community
 Ask questions in the google group:
