@@ -4,7 +4,7 @@ title: Simple command line application
 sidebar_label: Simple command line application
 ---
 
-This is a simple Hydra application that print your configuration.
+This is a simple Hydra application that prints your configuration.
 The `my_app` function is a place holder 
 for your code. We will slowly evolve this example to show-case more Hydra features.
 
