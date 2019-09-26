@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[44],{55:function(e){e.exports=JSON.parse('{"id":"examples/config_file","title":"Config file","sidebar_label":"Config file","description":"Your app evolves, and you now want to use a configuration file to make things more manageable:","source":"@site/docs/examples/config_file.md","permalink":"/docs/examples/config_file"}')}}]);
