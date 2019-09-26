@@ -1,14 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
-import sys
-from hydra._internal.config_loader import ConfigLoader
-from hydra.plugins.completion_plugin import DefaultCompletionPlugin
-from hydra._internal.core_plugins import BashCompletion
-from hydra.test_utils.test_utils import chdir_hydra_root
-from hydra.test_utils.test_utils import create_search_path
 import os
-from hydra._internal.pathlib import Path
+import sys
+
+import pytest
 import subprocess
+
+from hydra._internal.config_loader import ConfigLoader
+from hydra._internal.core_plugins import BashCompletion
+from hydra._internal.pathlib import Path
+from hydra.plugins.completion_plugin import DefaultCompletionPlugin
+from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 
 chdir_hydra_root()
 
