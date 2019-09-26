@@ -45,4 +45,4 @@ We have 4 files there:
 * `overrides.yaml`: The command line overrides used
 * `my_app.log`: A log file created for this run
 
-Working directory can be [customized](../configure_hydra/workdir).
+Working directory can be [customized](../configure_hydra/workdir/).

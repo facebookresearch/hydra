@@ -39,5 +39,5 @@ $ python my_app.py -v hydra,mysql
 ```
 `-v root` activate debug logging for all loggers, even external libraries. 
 
-Logging can be [customized](../configure_hydra/logging).
+Logging can be [customized](../configure_hydra/logging/).
 

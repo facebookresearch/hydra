@@ -6,9 +6,6 @@ from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import integration_test
 
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
-
 
 def verify_plugin(plugin_module):
     if plugin_module is not None:
@@ -113,11 +110,12 @@ def create_submitit_launcher_local_config():
             ["-m", "hydra.sweep.dir=."],
             "hydra_plugins.fairtask",
         ),
-        # # TODO: re-enable after submitit local queue is fixed
-        # pytest.param(
-        #     create_submitit_launcher_local_config(), ['-m'], 'hydra_plugins.submitit',
-        #     marks=[pytest.mark.skip]
-        # ),
+        pytest.param(
+            create_submitit_launcher_local_config(),
+            ["-m"],
+            "hydra_plugins.submitit",
+            marks=[pytest.mark.skip],
+        ),
     ],
 )
 def test_custom_task_name(

@@ -187,12 +187,18 @@ class ConfigLoader:
             primary.append(d)
 
     def _load_config_impl(self, input_file, record_load=True):
+        """
+        :param input_file:
+        :param record_load:
+        :return: the loaded config or None if it was not found
+        """
         loaded_cfg = None
         filename, search_path = self._find_config(input_file)
         if search_path is None and record_load:
             assert search_path is None
             self.all_config_checked.append((filename, None, None))
-        else:
+
+        if search_path is not None:
             fullpath = "{}/{}".format(search_path.path, filename)
             is_pkg = search_path.path.startswith("pkg://")
             if is_pkg:
