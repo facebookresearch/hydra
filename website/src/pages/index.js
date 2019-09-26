@@ -52,7 +52,7 @@ function Home() {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Flexible experimentation framework">
+      description="A framework for elegantly configuring complex applications">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>

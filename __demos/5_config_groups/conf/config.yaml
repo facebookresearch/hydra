@@ -1,3 +1,0 @@
-defaults:
-  - dataset: imagenet
-  - optimizer: nesterov
