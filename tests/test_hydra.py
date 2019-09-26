@@ -1,8 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
+import sys
 
 import pytest
+import subprocess
+from omegaconf import OmegaConf
+from hydra import MissingConfigException
 
-from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
 # noinspection PyUnresolvedReferences
@@ -174,3 +178,17 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
+
+
+def test_short_module_name(tmpdir):
+    try:
+        os.chdir("tutorial/config_file")
+        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
+        modified_env = os.environ.copy()
+        modified_env["HYDRA_MAIN_MODULE"] = "my_app"
+        result = subprocess.check_output(cmd, env=modified_env)
+        assert OmegaConf.create(str(result.decode("utf-8"))) == {
+            "db": {"driver": "mysql", "pass": "secret", "user": "omry"}
+        }
+    finally:
+        chdir_hydra_root()

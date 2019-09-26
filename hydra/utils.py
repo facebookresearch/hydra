@@ -42,6 +42,7 @@ def get_static_method(full_method_name):
 
 
 def instantiate(config, *args, **kwargs):
+    assert config is not None, "Input config is None"
     try:
         clazz = get_class(config["class"])
         params = config.params if "params" in config else OmegaConf.create()
