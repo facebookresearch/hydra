@@ -33,9 +33,12 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
         ({}, ["hydra.run.dir=bar"], "bar"),
         ({"hydra": {"run": {"dir": "foo"}}}, ["hydra.run.dir=boom"], "boom"),
         (
-            {"hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}}},
-            ["a=1", "b=2"],
-            "foo-a=1,b=2",
+            {
+                "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
+                "app": {"a": 1, "b": 2},
+            },
+            ["app.a=20"],
+            "foo-app.a=20",
         ),
     ],
 )

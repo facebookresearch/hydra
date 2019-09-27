@@ -5,7 +5,7 @@ from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict
 from collections import defaultdict
-from .config_loader import ConfigLoader
+from .config_loader import ConfigLoader, consume_argument
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from ..errors import MissingConfigException
@@ -75,6 +75,9 @@ class Hydra:
         for spp in search_path_plugins:
             plugin = spp()
             plugin.manipulate_search_path(search_path)
+
+        # decide on strict mode
+        strict = self._strict_mode_strategy(strict, config_file)
 
         self.config_loader = ConfigLoader(
             config_file=config_file, config_search_path=search_path, strict_cfg=strict
@@ -149,14 +152,10 @@ class Hydra:
         return shell_to_plugin
 
     def shell_completion(self, overrides):
-        config = self._load_config(overrides)
         subcommands = ["install", "uninstall", "query"]
-        found = False
-        for sc in subcommands:
-            if sc in config:
-                found = True
-                break
-        if not found:
+        sc_cmd, sc_shell = consume_argument(overrides, subcommands)
+        self._load_config(overrides)
+        if sc_cmd is None:
             log.error(
                 "No completion subcommand specified ({})".format(",".join(subcommands))
             )
@@ -172,14 +171,12 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        if config.install:
-            plugin = find_plugin(config.install)
+        plugin = find_plugin(sc_shell)
+        if "install" == sc_cmd:
             plugin.install()
-        elif config.uninstall:
-            plugin = find_plugin(config.uninstall)
+        elif "uninstall" == sc_cmd:
             plugin.uninstall()
-        elif config.query:
-            plugin = find_plugin(config.query)
+        elif "query" == sc_cmd:
             plugin.query()
 
     @staticmethod
@@ -268,3 +265,15 @@ class Hydra:
         log = logging.getLogger(__name__)
         self._print_debug_info()
         return cfg
+
+    def _strict_mode_strategy(self, strict, config_file):
+        """Decide how to set strict mode.
+        If a value was provided -- always use it. Oherwise decide based
+        on the existance of config_file.
+        """
+
+        if strict is not None:
+            return strict
+
+        # strict if config_file is present
+        return config_file is not None

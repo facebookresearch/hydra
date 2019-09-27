@@ -209,7 +209,7 @@ from hydra.plugins.common.utils import HydraConfig
 
 @hydra.main($CONFIG_PATH)
 def experiment(cfg):
-    with open(HydraConfig().hydra.output_file, "w") as f:
+    with open("$OUTPUT_FILE", "w") as f:
         $PRINTS
 
 if __name__ == "__main__":
@@ -230,13 +230,13 @@ if __name__ == "__main__":
         task_config.save(str(cfg_file))
         config_path = "config_path='{}'".format("config.yaml")
     output_file = str(tmpdir / "output.txt")
-    code = s.substitute(PRINTS=print_code, CONFIG_PATH=config_path)
-
+    code = s.substitute(
+        PRINTS=print_code, CONFIG_PATH=config_path, OUTPUT_FILE=output_file
+    )
     task_file = tmpdir / filename
     task_file.write_text(six.u(str(code)), encoding="utf-8")
     cmd = [sys.executable, str(task_file)]
     cmd.extend(overrides)
-    cmd.append("hydra.output_file=" + output_file)
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
