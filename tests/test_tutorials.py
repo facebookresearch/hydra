@@ -180,7 +180,7 @@ def test_specializing_config_example(task_runner):  # noqa: F811
             OmegaConf.create(
                 {
                     "db": {
-                        "class": "tutorial.objects_example.objects.MySQLConnection",
+                        "class": "tutorial.objects_example.my_app.MySQLConnection",
                         "params": {
                             "host": "localhost",
                             "user": "root",
@@ -195,7 +195,7 @@ def test_specializing_config_example(task_runner):  # noqa: F811
             OmegaConf.create(
                 {
                     "db": {
-                        "class": "tutorial.objects_example.objects.MySQLConnection",
+                        "class": "tutorial.objects_example.my_app.MySQLConnection",
                         "params": {
                             "host": "localhost",
                             "user": "root",
