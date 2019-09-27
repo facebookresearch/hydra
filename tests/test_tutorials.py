@@ -6,16 +6,10 @@ import re
 import subprocess
 from omegaconf import OmegaConf
 
-from hydra.test_utils.launcher_common_tests import (
-    sweep_1_job,
-    sweep_2_jobs,
-    not_sweeping_hydra_overrides,
-    sweep_two_config_groups,
-)
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import task_runner, sweep_runner  # noqa: F401
+from hydra.test_utils.test_utils import task_runner  # noqa: F401
 
 chdir_hydra_root()
 
@@ -129,49 +123,6 @@ def test_tutorial_config_groups(tmpdir, args, output_conf):
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
 
 
-def test_fairtask_sweep_1_job(sweep_runner):  # noqa: F811
-    sweep_1_job(sweep_runner, overrides=["hydra/launcher=basic"])
-
-
-def test_fairtask_sweep_2_jobs(sweep_runner):  # noqa: F811
-    sweep_2_jobs(sweep_runner, overrides=["hydra/launcher=basic"])
-
-
-def test_not_sweeping_hydra_overrides(sweep_runner):  # noqa: F811
-    not_sweeping_hydra_overrides(sweep_runner, overrides=["hydra/launcher=basic"])
-
-
-def test_fairtask_sweep_1_job_strict(sweep_runner):  # noqa: F811
-    sweep_1_job(sweep_runner, strict=True, overrides=["hydra/launcher=basic"])
-
-
-def test_fairtask_sweep_1_job_strict_and_bad_key(sweep_runner):  # noqa: F811
-    with pytest.raises(KeyError):
-        sweep_1_job(
-            sweep_runner,
-            strict=True,
-            overrides=["hydra/launcher=basic", "hydra.foo=bar"],
-        )
-
-
-def test_fairtask_sweep_2_optimizers(sweep_runner):  # noqa: F811
-    sweep_two_config_groups(sweep_runner, overrides=["hydra/launcher=basic"])
-
-
-def test_specializing_config_example(task_runner):  # noqa: F811
-    with task_runner(
-        calling_file="tutorial/specializing_config/example.py",
-        calling_module=None,
-        config_path="conf/config.yaml",
-        overrides=["dataset=cifar10"],
-    ) as task:
-        assert task.job_ret.cfg == dict(
-            dataset=dict(name="cifar10", path="/datasets/cifar10"),
-            model=dict(num_layers=5, type="alexnet"),
-        )
-        verify_dir_outputs(task.job_ret, overrides=task.overrides)
-
-
 @pytest.mark.parametrize(
     "args,output_conf",
     [
@@ -215,4 +166,18 @@ def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
         overrides=[],
     ) as task:
         assert task.job_ret.cfg == output_conf
+        verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+def test_specializing_config_example(task_runner):  # noqa: F811
+    with task_runner(
+        calling_file="tutorial/specializing_config/example.py",
+        calling_module=None,
+        config_path="conf/config.yaml",
+        overrides=["dataset=cifar10"],
+    ) as task:
+        assert task.job_ret.cfg == dict(
+            dataset=dict(name="cifar10", path="/datasets/cifar10"),
+            model=dict(num_layers=5, type="alexnet"),
+        )
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
