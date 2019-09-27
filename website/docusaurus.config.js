@@ -32,7 +32,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Docs',
-                            to: 'docs/intro',
+                            to: 'docs/
                         },
                         {
                             label: 'Hydra@GitHub',

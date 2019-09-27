@@ -31,7 +31,8 @@ class PostgreSQLConnection(DBConnection):
 
     def connect(self):
         print(
-            "PostgreSQL connecting to {} with user={} and password={} and database={}".format(
+            "PostgreSQL connecting to {} "
+            "with user={} and password={} and database={}".format(
                 self.host, self.user, self.password, self.database
             )
         )

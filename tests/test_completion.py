@@ -174,7 +174,7 @@ def test_file_completion(
         "python foo.py",
         "hydra_app",
         "python  foo.py",
-        "python demos/hydra_app/example/hydra_app/main.py",
+        "python tutorials/hydra_app/example/hydra_app/main.py",
         "/miniconda3/envs/hydra36/bin/python foo.py",
     ],
 )
