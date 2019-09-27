@@ -253,7 +253,9 @@ class IntegrationTestSuite:
                             "dir": "hydra_cfg",
                             "subdir": "${hydra.job.override_dirname}",
                         }
-                    }
+                    },
+                    "a": "hello",
+                    "b": 20,
                 },
                 ["a=1", "b=2"],
                 "hydra_cfg/a=1,b=2",

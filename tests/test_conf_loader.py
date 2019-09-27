@@ -4,7 +4,7 @@ import pkg_resources
 import pytest
 from omegaconf import OmegaConf
 
-from hydra._internal.config_loader import ConfigLoader
+from hydra._internal.config_loader import ConfigLoader, consume_argument
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 
@@ -316,3 +316,19 @@ def test_non_config_group_default():
         ("non_config_group_default.yaml", "hydra/test_utils/configs", "test"),
         ("some_config.yaml", "hydra/test_utils/configs", "test"),
     ]
+
+
+@pytest.mark.parametrize(
+    "dotlist, candidates, expected, remaining_list",
+    [
+        (["a=1", "b=2", "c=3"], ["a"], ("a", "1"), ["b=2", "c=3"]),
+        (["aa=1", "a=2", "c=3"], ["a"], ("a", "2"), ["aa=1", "c=3"]),
+        (["aa=1", "a=2", "c=3"], ["a", "aa"], ("aa", "1"), ["a=2", "c=3"]),
+        (["aa=1", "a=2", "c=3"], ["a", "d"], ("a", "2"), ["aa=1", "c=3"]),
+        (["a=1", "b=2", "c=3"], ["x"], (None, None), ["a=1", "b=2", "c=3"]),
+    ],
+)
+def test_consume_arguments(dotlist, candidates, expected, remaining_list):
+    res = consume_argument(dotlist, candidates)
+    assert dotlist == remaining_list
+    assert res == expected

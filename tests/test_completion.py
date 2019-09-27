@@ -19,7 +19,7 @@ def create_config_loader():
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/completion_test"], abspath=True
         ),
-        strict_cfg=False,
+        strict_cfg=True,
         config_file="config.yaml",
     )
 

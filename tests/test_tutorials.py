@@ -10,6 +10,7 @@ from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import task_runner  # noqa: F401
+from hydra.test_utils.test_utils import does_not_raise
 
 chdir_hydra_root()
 
@@ -70,16 +71,7 @@ def test_tutorial_logging(tmpdir, args, expected):
             OmegaConf.create(
                 {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}
             ),
-        ),
-        (
-            ["dataset.path=abc"],
-            OmegaConf.create(
-                {
-                    "dataset": {"path": "abc"},
-                    "db": {"driver": "mysql", "pass": "secret", "user": "omry"},
-                }
-            ),
-        ),
+        )
     ],
 )
 def test_tutorial_config_file(tmpdir, args, output_conf):
@@ -91,6 +83,32 @@ def test_tutorial_config_file(tmpdir, args, output_conf):
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+
+
+@pytest.mark.parametrize(
+    "args,expected",
+    [
+        (
+            [],
+            does_not_raise(
+                OmegaConf.create(
+                    {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}
+                )
+            ),
+        ),
+        (["dataset.path=abc"], pytest.raises(subprocess.CalledProcessError)),
+    ],
+)
+def test_tutorial_config_file_bad_key(tmpdir, args, expected):
+    """ Similar to the previous test, but also tests exception values"""
+    with expected:
+        cmd = [
+            sys.executable,
+            "tutorial/config_file/my_app.py",
+            "hydra.run.dir=" + str(tmpdir),
+        ]
+        cmd.extend(args)
+        subprocess.check_output(cmd)
 
 
 @pytest.mark.parametrize(
