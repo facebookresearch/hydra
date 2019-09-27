@@ -3,7 +3,7 @@ id: specializing_config
 title: Specializing configuration
 sidebar_label: Specializing configuration
 ---
-In some cases the desired configuration should depend on other configuraiton choices.
+In some cases the desired configuration should depend on other configuration choices.
 For example, You may want to use only 5 layers in your Alexnet model if the dataset of choice is cifar10, and the dafault 7 otherwise.
  
 We can start with a config that looks like this:
@@ -73,5 +73,3 @@ model:
   num_layers: 5
   type: alexnet
 ```
-
-Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/8_specializing_config).

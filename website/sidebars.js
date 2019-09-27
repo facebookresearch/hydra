@@ -18,8 +18,8 @@ module.exports = {
         ],
 
         'Common patterns': [
-            'examples/objects',
-            'examples/specializing_config',
+            'patterns/objects',
+            'patterns/specializing_config',
         ],
 
         'Deployment': [

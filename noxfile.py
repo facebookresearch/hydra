@@ -58,8 +58,8 @@ def get_all_plugins():
 
 def test_example_app(session, install_cmd):
     # Install and test example app
-    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
-    session.run("pytest", "demos/hydra_app_example", silent=True, *session.posargs)
+    session.run(*install_cmd, "tutorial/hydra_app_example", silent=True)
+    session.run("pytest", "tutorial/hydra_app_example", silent=True, *session.posargs)
 
 
 @nox.session(python=PYTHON_VERSIONS)

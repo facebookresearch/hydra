@@ -41,6 +41,3 @@ hydra:
   run:
     dir: output/${hydra.job.override_dirname}
 ```
-
-
-Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/99_hydra_configuration/workdir).
