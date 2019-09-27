@@ -224,7 +224,7 @@ if __name__ == "__main__":
         print_code = "pass"
     else:
         for p in prints:
-            print_code += 'f.write({});f.write("\\n")'.format(p)
+            print_code += 'f.write({} + "\\\n")'.format(p)
 
     config_path = ""
     if task_config is not None:
