@@ -2,17 +2,19 @@
 """
 Common test functions testing launchers
 """
-
+import importlib
 import pytest
 from omegaconf import OmegaConf
-
+from hydra.test_utils.test_utils import integration_test
 from hydra.test_utils.test_utils import verify_dir_outputs
 
 
 class LauncherTestSuite:
     def test_sweep_1_job(self, sweep_runner, launcher_name, overrides):  # noqa: F811
         sweep_1_job(
-            sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
+            sweep_runner,
+            overrides=["hydra/launcher=" + launcher_name, "hydra.sweep.dir=."]
+            + overrides,
         )
 
     def test_sweep_2_jobs(self, sweep_runner, launcher_name, overrides):  # noqa: F811
@@ -146,3 +148,138 @@ def sweep_two_config_groups(sweep_runner, overrides):
             assert job_ret.overrides == expected_overrides[i]
             assert job_ret.cfg == expected_conf[i]
             verify_dir_outputs(job_ret, job_ret.overrides)
+
+
+class IntegrationTestSuite:
+    @staticmethod
+    def verify_plugin(plugin_module):
+        if plugin_module is not None:
+            try:
+                importlib.import_module(plugin_module)
+            except ImportError:
+                pytest.skip("Plugin {} not installed".format(plugin_module))
+
+    @pytest.mark.parametrize(
+        "task_config, overrides, filename, expected_name",
+        [
+            (None, [], "no_config.py", "no_config"),
+            (
+                None,
+                ["hydra.job.name=overridden_name"],
+                "no_config.py",
+                "overridden_name",
+            ),
+            (
+                {"hydra": {"job": {"name": "name_from_config_file"}}},
+                [],
+                "with_config.py",
+                "name_from_config_file",
+            ),
+            (
+                {"hydra": {"name": "name_from_config_file"}},
+                ["hydra.job.name=overridden_name"],
+                "with_config.py",
+                "overridden_name",
+            ),
+        ],
+    )
+    def test_custom_task_name(
+        self,
+        tmpdir,
+        task_config,
+        overrides,
+        filename,
+        expected_name,
+        task_launcher_cfg,
+        extra_flags,
+        plugin_module,
+    ):
+        self.verify_plugin(plugin_module)
+        overrides = extra_flags + overrides
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
+        task_config = OmegaConf.create(task_config or {})
+        cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+        integration_test(
+            tmpdir=tmpdir,
+            task_config=cfg,
+            overrides=overrides,
+            prints="HydraConfig().hydra.job.name",
+            expected_outputs=expected_name,
+            filename=filename,
+        )
+
+    @pytest.mark.parametrize(
+        "task_config, overrides, expected_dir",
+        [
+            (
+                {
+                    "hydra": {
+                        "sweep": {
+                            "dir": "task_cfg",
+                            "subdir": "task_cfg_${hydra.job.num}",
+                        }
+                    }
+                },
+                [],
+                "task_cfg/task_cfg_0",
+            ),
+            (
+                {},
+                [
+                    "hydra.sweep.dir=cli_dir",
+                    "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
+                ],
+                "cli_dir/cli_dir_0",
+            ),
+            (
+                {
+                    "hydra": {
+                        "sweep": {
+                            "dir": "task_cfg",
+                            "subdir": "task_cfg_${hydra.job.num}",
+                        }
+                    }
+                },
+                [
+                    "hydra.sweep.dir=cli_dir",
+                    "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
+                ],
+                "cli_dir/cli_dir_0",
+            ),
+            (
+                {
+                    "hydra": {
+                        "sweep": {
+                            "dir": "hydra_cfg",
+                            "subdir": "${hydra.job.override_dirname}",
+                        }
+                    }
+                },
+                ["a=1", "b=2"],
+                "hydra_cfg/a=1,b=2",
+            ),
+        ],
+    )
+    def test_custom_sweeper_run_workdir(
+        self,
+        tmpdir,
+        task_config,
+        overrides,
+        expected_dir,
+        task_launcher_cfg,
+        extra_flags,
+        plugin_module,
+    ):
+        self.verify_plugin(plugin_module)
+        overrides = extra_flags + overrides
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
+        task_config = OmegaConf.create(task_config or {})
+        cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+
+        integration_test(
+            tmpdir=tmpdir,
+            task_config=cfg,
+            overrides=overrides,
+            prints="os.getcwd()",
+            expected_outputs=str(tmpdir / expected_dir),
+        )
