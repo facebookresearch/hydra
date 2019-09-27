@@ -167,7 +167,7 @@ def coverage(session):
         )
 
     # Increase the fail_under as coverage improves
-    session.run("coverage", "report", "--fail-under=70")
+    session.run("coverage", "report", "--fail-under=80")
 
     session.run("coverage", "erase")
 
