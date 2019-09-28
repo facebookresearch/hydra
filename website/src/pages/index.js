@@ -16,7 +16,7 @@ import styles from './styles.module.css';
 const features = [
   {
     title: <>No boilerplate</>,
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    imageUrl: 'img/undraw_site_content_hydra_plain.svg',
     description: (
       <>
         Hydra lets you focus on the problem at hand instead of spending time on boilerplate code like command line flags, loading configuration files, logging etc.
@@ -25,7 +25,7 @@ const features = [
   },
   {
     title: <>Powerful configuration</>,
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    imageUrl: 'img/undraw_product_teardown_hydra_plain.svg',
     description: (
       <>
         With Hydra, you can compose your configuration dynamically, enabling you to easily
