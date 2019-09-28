@@ -169,6 +169,37 @@ def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
+def test_composition_config_example(task_runner):  # noqa: F811
+    with task_runner(
+        calling_file="tutorial/composition/my_app.py",
+        calling_module=None,
+        config_path="conf/config.yaml",
+        overrides=["schema=school"],
+    ) as task:
+        assert task.job_ret.cfg == {
+            "db": {"driver": "mysql", "user": "omry", "pass": "secret"},
+            "ui": {"windows": {"create_db": True, "view": True}},
+            "schema": {
+                "database": "school",
+                "tables": [
+                    {
+                        "name": "students",
+                        "fields": [{"name": "string"}, {"class": "int"}],
+                    },
+                    {
+                        "name": "exams",
+                        "fields": [
+                            {"profession": "string"},
+                            {"time": "data"},
+                            {"class": "int"},
+                        ],
+                    },
+                ],
+            },
+        }
+        verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
 def test_specializing_config_example(task_runner):  # noqa: F811
     with task_runner(
         calling_file="tutorial/specializing_config/example.py",
