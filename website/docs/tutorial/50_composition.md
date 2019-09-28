@@ -59,7 +59,7 @@ schema:
   database: school
   tables:
   - fields:
-    - nname: string
+    - name: string
     - class: int
     name: students
   - fields:
