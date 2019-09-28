@@ -41,11 +41,12 @@ base_completion_list = [
     [
         ("", 2, base_completion_list),
         ("dict", 2, ["dict.", "dict_prefix="]),
-        ("dict.", 3, ["dict.key1=", "dict.key2="]),
-        ("dict.key", 2, ["dict.key1=", "dict.key2="]),
+        ("dict.", 3, ["dict.key1=", "dict.key2=", "dict.key3="]),
+        ("dict.key", 2, ["dict.key1=", "dict.key2=", "dict.key3="]),
         ("dict.key1=", 2, ["dict.key1=val1"]),
+        ("dict.key3=", 2, ["dict.key3="]),
         ("list", 2, ["list.", "list_prefix="]),
-        ("list.", 2, ["list.0=", "list.1="]),
+        ("list.", 2, ["list.0=", "list.1=", "list.2="]),
         (
             "hydra/",
             3,
@@ -102,7 +103,7 @@ class TestCompletion:
         line1 = "line={}".format(line_prefix + line)
         cmd = [
             "expect",
-            "-d",
+            # "-d",  # Uncomment for debug prints from expect
             "tests/expect/test_{}_completion.exp".format(shell),
             prog,
             line1,

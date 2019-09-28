@@ -2,6 +2,7 @@
 dict:
   key1: val1
   key2: val2
+  key3: ???
 
 # an item with a prefix identical to that of the dict
 dict_prefix: yup
@@ -10,6 +11,7 @@ dict_prefix: yup
 list:
   - aa
   - bb
+  - ???
 
 # an item with a prefix identical to a list
 list_prefix: yup
