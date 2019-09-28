@@ -4,7 +4,7 @@ import sys
 from abc import ABCMeta
 from abc import abstractmethod
 import six
-from omegaconf import DictConfig, ListConfig, Config
+from omegaconf import DictConfig, ListConfig, Config, MissingMandatoryValue
 
 from hydra.plugins import Plugin
 
@@ -82,7 +82,10 @@ class CompletionPlugin(Plugin):
             matches = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
-                conf_node = config.select(exact_key)
+                try:
+                    conf_node = config.select(exact_key)
+                except MissingMandatoryValue:
+                    conf_node = ""
                 if conf_node is not None:
                     if isinstance(conf_node, Config):
                         key_matches = CompletionPlugin._get_matches(conf_node, "")
@@ -107,7 +110,7 @@ class CompletionPlugin(Plugin):
                     )
                 else:
                     if isinstance(config, DictConfig):
-                        for key, value in config.items():
+                        for key, value in config.items(resolve=False):
                             if key.startswith(word):
                                 matches.append(str_rep(key, value))
                     elif isinstance(config, ListConfig):
