@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[48],{69:function(i){i.exports=JSON.parse('{"id":"examples/minimal","title":"Minimal example","sidebar_label":"Minimal example","description":"This is a minimal example of a Hydra app.","source":"@site/docs/examples/minimal.md","permalink":"/docs/examples/minimal"}')}}]);

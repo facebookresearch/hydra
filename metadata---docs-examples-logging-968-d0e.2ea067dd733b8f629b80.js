@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[47],{67:function(o){o.exports=JSON.parse('{"id":"examples/logging","title":"Python logging","sidebar_label":"Python logging","description":"Hydra configures Python logging for your app.","source":"@site/docs/examples/logging.md","permalink":"/docs/examples/logging"}')}}]);
