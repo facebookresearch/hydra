@@ -69,7 +69,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
         # TODO: update this after https://github.com/omry/omegaconf/issues/42 is resolved
-        hydra_cfg = OmegaConf.create({"hydra": task_cfg["hydra"]});
+        hydra_cfg = OmegaConf.create({"hydra": task_cfg["hydra"]})
         del task_cfg["hydra"]
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
