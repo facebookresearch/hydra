@@ -4,28 +4,36 @@ title: Customizing logging
 sidebar_label: Customizing logging
 ---
 Hydra is configuring Python standard logging library with the dictConfig method. You can learn more about it [here](https://docs.python.org/3/howto/logging.html).
-There are actually two logging configurations, one for Hydra itself and one for the executed jobs.
-
+There are two logging configurations, one for Hydra itself and one for the executed jobs.
  
 This example demonstrates how to to customize the logging behavior of your Hydra app, by making the following changes
 to the default logging behavior:
 
- * It outputs to stdout and not to a log file as well
- * It uses a simpler log pattern, without the timestamp etc.
+ * Outputs only to stdout (no log file)
+ * Output a simpler log line pattern
 
-Note that the resulting config will be a combination of the default logging config and your specification,
-With your specification overriding the default.
-
-conf/config.yaml
-```yaml
-defaults:
-  - hydra/job_logging : logging
+Project structure:
+```text
+$ tree
+├── conf
+│   ├── config.yaml
+│   └── hydra
+│       └── job_logging
+│           └── custom.yaml
+└── main.py
 ```
 
-conf/hydra/job_logging/logging.yaml
+config.yaml defaults the application to the custom logging.
+
+Config file: `config.yaml`
+```yaml
+defaults:
+  - hydra/job_logging : custom
+```
+Config file: `hydra/job_logging/logging.yaml`
+
 ```yaml
 hydra:
-  # python logging configuration
   job_logging:
     formatters:
       simple:
@@ -34,13 +42,14 @@ hydra:
       handlers: [console]
 ```
 
-Output:
-
+This is what the the default logging looks like:
 ```bash
-$ python demos/99_hydra_configuration/logging/main.py hydra/job_logging=logging
-[2019-08-14 21:07:31,382][__main__][INFO] - Info level message
-$ python demos/99_hydra_configuration/logging/main.py
-[INFO] - Info level message
+$ python main.py hydra/job_logging=default
+[2019-09-26 18:58:05,477][__main__][INFO] - Info level message
 ```
 
-Check the [runnable example](https://github.com/facebookresearch/hydra/tree/master/demos/99_hydra_configuration/logging).
+And this is what the custom logging looks like:
+```bash
+$ python main.py
+[INFO] - Info level message
+```

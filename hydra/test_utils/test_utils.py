@@ -205,48 +205,53 @@ def integration_test(
         task_config = OmegaConf.create(task_config)
 
     s = string.Template(
-        """
-import hydra
-from hydra.plugins.common.utils import HydraConfig
+        """import hydra
 import os
+from hydra.plugins.common.utils import HydraConfig
 
 @hydra.main($CONFIG_PATH)
-def experiment(_cfg):
-    $PRINTS
+def experiment(cfg):
+    with open(HydraConfig().hydra.output_file, "w") as f:
+        $PRINTS
 
 if __name__ == "__main__":
     experiment()
 """
     )
+
     print_code = ""
     if prints is None or len(prints) == 0:
         print_code = "pass"
     else:
         for p in prints:
-            print_code += "print({});".format(p)
+            print_code += 'f.write({} + "\\\n")'.format(p)
 
     config_path = ""
     if task_config is not None:
-        cfg_file = str(tmpdir / "config.yaml")
-        task_config.save(cfg_file)
+        cfg_file = tmpdir / "config.yaml"
+        task_config.save(str(cfg_file))
         config_path = "config_path='{}'".format("config.yaml")
-
+    output_file = str(tmpdir / "output.txt")
     code = s.substitute(PRINTS=print_code, CONFIG_PATH=config_path)
 
     task_file = tmpdir / filename
     task_file.write_text(six.u(str(code)), encoding="utf-8")
     cmd = [sys.executable, str(task_file)]
     cmd.extend(overrides)
+    cmd.append("hydra.output_file=" + output_file)
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
-        result = subprocess.check_output(cmd).decode("utf-8")
-        outputs = result.splitlines()
+        subprocess.check_call(cmd)
+
+        with open(output_file, "r") as f:
+            output = str.splitlines(f.readline())
+
         if expected_outputs is not None:
-            assert len(outputs) == len(expected_outputs)
-            for idx in range(len(outputs)):
-                assert outputs[idx] == expected_outputs[idx]
-        return result
+            assert len(output) == len(expected_outputs)
+            for idx in range(len(output)):
+                assert output[idx] == expected_outputs[idx]
+        return output
     finally:
         os.chdir(orig_dir)
 

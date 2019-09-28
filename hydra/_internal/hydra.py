@@ -45,7 +45,8 @@ class Hydra:
             basedir_prefix = "pkg://"
             abs_base_dir = calling_module
 
-        JobRuntime().set("name", get_valid_filename(task_name))
+        task_name = get_valid_filename(task_name)
+        JobRuntime().set("name", task_name)
         self.task_name = task_name
         self.task_function = task_function
 

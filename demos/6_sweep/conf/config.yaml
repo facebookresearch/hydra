@@ -1,3 +1,0 @@
-defaults:
-  - hydra/launcher: fairtask
-  - optimizer: nesterov

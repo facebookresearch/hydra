@@ -37,7 +37,7 @@ def install_pytest(session):
 
 
 def run_pytest(session, directory="."):
-    session.run("pytest", directory, silent=True, *session.posargs)
+    session.run("pytest", directory, silent=False, *session.posargs)
     # if session.python == "2.7":
     #     session.run("pytest", silent=True)
     # else:
@@ -58,8 +58,8 @@ def get_all_plugins():
 
 def test_example_app(session, install_cmd):
     # Install and test example app
-    session.run(*install_cmd, "demos/hydra_app_example", silent=True)
-    session.run("pytest", "demos/hydra_app_example", silent=True, *session.posargs)
+    session.run(*install_cmd, "tutorial/hydra_app_example", silent=True)
+    session.run("pytest", "tutorial/hydra_app_example", silent=True, *session.posargs)
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -167,7 +167,7 @@ def coverage(session):
         )
 
     # Increase the fail_under as coverage improves
-    session.run("coverage", "report", "--fail-under=70")
+    session.run("coverage", "report", "--fail-under=80")
 
     session.run("coverage", "erase")
 

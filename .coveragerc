@@ -2,7 +2,6 @@
 omit = 
     .nox/*
     *tests*
-    demos/*
 
 [report]
 exclude_lines =
