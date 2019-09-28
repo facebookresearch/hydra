@@ -1,3 +1,29 @@
+0.1.6 (2019-09-27)
+==================
+
+No significant changes.
+
+
+0.1.6 (2019-09-27)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- Old demos directory was removed and a new tutorial directory as added (`#167 <https://github.com/facebookresearch/hydra/issues/167>`_)
+
+Features
+--------
+
+- Add IntegrationTestSuite to test_utils for testing Launcher plugins (`#168 <https://github.com/facebookresearch/hydra/issues/168>`_)
+- Hydra is now hosted on https://cli.dev! (`#75 <https://github.com/facebookresearch/hydra/issues/75>`_)
+
+Improved Documentation
+----------------------
+
+- Updated the primary tutorial on the web site and added a brand new tutorial directory (`#58 <https://github.com/facebookresearch/hydra/issues/58>`_)
+
+
 0.1.5 (2019-09-22)
 ==================
 
