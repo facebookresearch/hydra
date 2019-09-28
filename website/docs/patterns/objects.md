@@ -93,6 +93,6 @@ MySQL connecting to localhost with user=root and password=1234
 ```
 You can now change the instantiate object class and override values from the commmand line:
 ```text
-$ python my_app.py db=postgresql db.passwd=abcde
-PostgreSQL connecting to localhost with user=root and password=1234 and database=tutorial
+$ python my_app.py db=postgresql db.params.password=abcde
+PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
 ```
