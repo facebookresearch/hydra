@@ -37,7 +37,7 @@ def install_pytest(session):
 
 
 def run_pytest(session, directory="."):
-    session.run("pytest", directory, silent=True, *session.posargs)
+    session.run("pytest", directory, silent=False, *session.posargs)
     # if session.python == "2.7":
     #     session.run("pytest", silent=True)
     # else:
