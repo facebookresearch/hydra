@@ -1,0 +1,12 @@
+schema:
+  database: school
+  tables:
+    - name: students
+      fields:
+        - nname: string
+        - class: int
+    - name: exams
+      fields:
+        - profession: string
+        - time : data
+        - class: int
