@@ -14,10 +14,7 @@ assignees: ''
 ## To reproduce
 
 ** Minimal Code/Config snippet to reproduce **
-```python
-# Your code goes here
-# Please make sure it does not require any external dependencies
-```
+
 
 ** Stack trace/error message **
 ```
@@ -31,11 +28,8 @@ You can also
 <!-- A clear and concise description of what you expected to happen. -->
 
 ## System information
-
-**Please complete the following information:**
 - <!-- Hydra Version -->
 - <!-- Operating system -->
-- <!-- List of installed Hydra plugins -->
 
 ## Additional context
 Add any other context about the problem here.
