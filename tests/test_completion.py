@@ -115,7 +115,12 @@ class TestCompletion:
 
 
 @pytest.mark.parametrize(
-    "line,expected", [(base_completion_list, "-c"), (base_completion_list, "-c ")]
+    "line,expected",
+    [
+        ("-c job", base_completion_list),
+        ("-c job ", base_completion_list),
+        ("-c", base_completion_list),
+    ],
 )
 def test_with_flags(line, expected):
     config_loader = create_config_loader()
