@@ -1,0 +1,1 @@
+Add support for specifying which config to print in -c, options are job (default), hydra or all.

@@ -70,10 +70,8 @@ class ConfigLoader:
         def is_hydra(x):
             return x.startswith("hydra.") or x.startswith("hydra/")
 
-        job_overrides = [x for x in remaining if not is_hydra(x)]
-        hydra_overrides = [x for x in remaining if is_hydra(x)]
-        cfg.hydra.overrides.task.extend(job_overrides)
-        cfg.hydra.overrides.hydra.extend(hydra_overrides)
+        cfg.hydra.overrides.task = [x for x in remaining if not is_hydra(x)]
+        cfg.hydra.overrides.hydra = [x for x in remaining if is_hydra(x)]
 
         return cfg
 

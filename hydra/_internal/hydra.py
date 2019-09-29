@@ -122,9 +122,17 @@ class Hydra:
         task_overrides = cfg.hydra.overrides.task
         return sweeper.sweep(arguments=task_overrides)
 
-    def show_cfg(self, overrides):
-        config = self._load_config(overrides)
-        log.info("\n" + config.pretty())
+    def show_cfg(self, overrides, cfg_type):
+        assert cfg_type in ["job", "hydra", "all"]
+        cfg = self._load_config(overrides)
+        if cfg_type == "job":
+            del cfg["hydra"]
+        elif cfg_type == "hydra":
+            for key in list(cfg.keys()):
+                if key != "hydra":
+                    del cfg[key]
+
+        log.info("\n" + cfg.pretty())
 
     @staticmethod
     def get_shell_to_plugin_map(config_loader):
