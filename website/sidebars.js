@@ -16,6 +16,7 @@ module.exports = {
             'tutorial/tab_completion',
             'tutorial/working_directory',
             'tutorial/logging',
+            'tutorial/debugging',
         ],
 
         'Common patterns': [
