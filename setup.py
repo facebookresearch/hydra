@@ -94,6 +94,7 @@ with open("README.md", "r") as fh:
         packages=find_packages(),
         include_package_data=True,
         classifiers=[
+            "License :: OSI Approved :: MIT License",
             "Development Status :: 4 - Beta",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
