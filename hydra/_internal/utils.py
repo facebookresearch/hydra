@@ -40,7 +40,7 @@ def run_hydra(args, task_function, config_path, strict):
     num_commands = args.run + has_show_cfg + args.multirun + args.shell_completion
     if num_commands > 1:
         raise ValueError(
-            "Only one of --run, -cfg and --shell_completion can be specified"
+            "Only one of --run, --multirun,  -cfg and --shell_completion can be specified"
         )
     if num_commands == 0:
         args.run = True
@@ -86,8 +86,8 @@ def get_args(args=None, version=None):
         "-c",
         const="job",
         nargs="?",
-        help="Show config instead of running, takes an optional value "
-        "that can be one of ['job', 'hydra', 'all'], which select which part of the config to show (default is job)",
+        choices=["job", "hydra", "all"],
+        help="Show config instead of running, optional value indicates which config to show (defaults to job)",
     )
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")
