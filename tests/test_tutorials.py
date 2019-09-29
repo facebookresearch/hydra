@@ -49,7 +49,7 @@ def test_tutorial_working_directory(tmpdir):
     "args,expected",
     [
         ([], ["Info level message"]),
-        (["-v" "__main__"], ["Info level message", "Debug level message"]),
+        (["hydra.verbose=[__main__]"], ["Info level message", "Debug level message"]),
     ],
 )
 def test_tutorial_logging(tmpdir, args, expected):

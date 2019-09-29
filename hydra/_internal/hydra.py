@@ -25,7 +25,7 @@ log = None
 
 class Hydra:
     def __init__(
-        self, calling_file, calling_module, config_path, task_function, verbose, strict
+        self, calling_file, calling_module, config_path, task_function, strict
     ):
         setup_globals()
         assert calling_module is not None or calling_file is not None
@@ -92,7 +92,6 @@ class Hydra:
                 missing_cfg_file=config_file,
                 message="Cannot find primary config file: {}".format(config_file),
             )
-        self.verbose = verbose
 
     def run(self, overrides):
         cfg = self._load_config(overrides)
@@ -105,7 +104,6 @@ class Hydra:
         return run_job(
             config=cfg,
             task_function=self.task_function,
-            verbose=self.verbose,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
         )
@@ -117,7 +115,6 @@ class Hydra:
             config=cfg,
             config_loader=self.config_loader,
             task_function=self.task_function,
-            verbose=self.verbose,
         )
         task_overrides = cfg.hydra.overrides.task
         return sweeper.sweep(arguments=task_overrides)
@@ -266,7 +263,7 @@ class Hydra:
 
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
-        configure_log(cfg.hydra.hydra_logging, self.verbose)
+        configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
         global log
         log = logging.getLogger(__name__)
         self._print_debug_info()

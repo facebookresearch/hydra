@@ -34,7 +34,6 @@ def run_hydra(args, task_function, config_path, strict):
         calling_module=calling__module,
         config_path=config_path,
         task_function=task_function,
-        verbose=args.verbose,
         strict=strict,
     )
     has_show_cfg = args.cfg is not None
@@ -80,14 +79,6 @@ def get_args(args=None, version=None):
         nargs="*",
         help="""Any key=value arguments to override config values
 (use dots for.nested=overrides)""",
-    )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        help="""Activate debug logging, otherwise takes a comma"
-separated list of loggers ('root' for root logger)""",
-        nargs="?",
-        default=None,
     )
 
     parser.add_argument(

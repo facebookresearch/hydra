@@ -93,7 +93,6 @@ def task_runner():
             calling_module=calling_module,
             config_path=config_path,
             task_function=task,
-            verbose=None,
             strict=strict,
         )
 
@@ -152,7 +151,6 @@ def sweep_runner():
             calling_module=calling_module,
             config_path=config_path,
             task_function=sweep,
-            verbose=None,
             strict=strict,
         )
 
