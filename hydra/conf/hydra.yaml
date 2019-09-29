@@ -30,8 +30,9 @@ hydra:
   # job runtime information will be populated here
   job: {}
 
-  # Can be a boolean or a list of strings
+  # Can be a boolean, string or a list of strings
   # If a boolean, setting to true will set the log level for the root logger to debug
+  # If a string, it's interpreted as a the list [string]
   # If a list, each element is interpreted as a logger to have logging level set to debug.
   # Typical command lines to manipulate hydra.verbose:
   # hydra.verbose=true
