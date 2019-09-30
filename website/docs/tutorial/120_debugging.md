@@ -3,7 +3,7 @@ id: debugging
 title: Debugging
 sidebar_label: Debugging
 ---
-Hydra provides a few options to enhance the visibility into what its' doing.
+Hydra provides a few options to improve debuggability.
 
 ### Printing config without running
 You can print the config that would be used for a job without running it the job by adding '-c' or '--cfg' to your command line:
