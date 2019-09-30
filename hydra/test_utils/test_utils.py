@@ -230,6 +230,8 @@ if __name__ == "__main__":
         task_config.save(str(cfg_file))
         config_path = "config_path='{}'".format("config.yaml")
     output_file = str(tmpdir / "output.txt")
+    # replace Windows path separator \ with an escaped version \\
+    output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
         PRINTS=print_code, CONFIG_PATH=config_path, OUTPUT_FILE=output_file
     )
