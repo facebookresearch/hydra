@@ -5,7 +5,7 @@ from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict
 from collections import defaultdict
-from .config_loader import ConfigLoader, consume_argument
+from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from ..errors import MissingConfigException
@@ -153,12 +153,13 @@ class Hydra:
 
     def shell_completion(self, overrides):
         subcommands = ["install", "uninstall", "query"]
-        sc_cmd, sc_shell = consume_argument(overrides, subcommands)
-        self._load_config(overrides)
-        if sc_cmd is None:
-            log.error(
-                "No completion subcommand specified ({})".format(",".join(subcommands))
-            )
+        cfg = self._load_config(overrides)
+        sc_cmd = cfg.hydra.shell.operation
+        assert (
+            sc_cmd in subcommands
+        ), "Completion subcommand was ({}), expecting one of ({})".format(
+            sc_cmd, ",".join(subcommands)
+        )
 
         shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
@@ -171,7 +172,7 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        plugin = find_plugin(sc_shell)
+        plugin = find_plugin(cfg.hydra.shell.name)
         if "install" == sc_cmd:
             plugin.install()
         elif "uninstall" == sc_cmd:

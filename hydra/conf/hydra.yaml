@@ -38,3 +38,11 @@ hydra:
   # hydra.verbose=true
   # hydra.verbose=[hydra,__main__]
   verbose: false
+
+  # The shell completion for Hydra.
+  # This is used with coordinance with the --shell_completion or -sc
+  # command line option. On its own, it'll just do nothing, which seems far from ideal.
+  shell:
+    name: null
+    # one of: install, uninstall, query
+    operation: null
