@@ -65,4 +65,5 @@ module.exports = {
             },
         ],
     ],
+    plugins: [require.resolve('./plugins/redirect-plugin/')],
 };
