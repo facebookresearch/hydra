@@ -34,24 +34,22 @@ def run_hydra(args, task_function, config_path, strict):
         calling_module=calling__module,
         config_path=config_path,
         task_function=task_function,
-        verbose=args.verbose,
         strict=strict,
     )
-
-    num_commands = args.run + args.cfg + args.multirun + args.shell_completion
+    has_show_cfg = args.cfg is not None
+    num_commands = args.run + has_show_cfg + args.multirun + args.shell_completion
     if num_commands > 1:
         raise ValueError(
-            "Only one of --run, --sweep and --cfg  --completion can be specified"
+            "Only one of --run, --multirun,  -cfg and --shell_completion can be specified"
         )
     if num_commands == 0:
         args.run = True
-
     if args.run:
         hydra.run(overrides=args.overrides)
     elif args.multirun:
         hydra.multirun(overrides=args.overrides)
     elif args.cfg:
-        hydra.show_cfg(overrides=args.overrides)
+        hydra.show_cfg(overrides=args.overrides, cfg_type=args.cfg)
     elif args.shell_completion:
         hydra.shell_completion(overrides=args.overrides)
     else:
@@ -82,16 +80,15 @@ def get_args(args=None, version=None):
         help="""Any key=value arguments to override config values
 (use dots for.nested=overrides)""",
     )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        help="""Activate debug logging, otherwise takes a comma"
-separated list of loggers ('root' for root logger)""",
-        nargs="?",
-        default=None,
-    )
 
-    parser.add_argument("--cfg", "-c", action="store_true", help="Show config")
+    parser.add_argument(
+        "--cfg",
+        "-c",
+        const="job",
+        nargs="?",
+        choices=["job", "hydra", "all"],
+        help="Show config instead of running, optional value indicates which config to show (defaults to job)",
+    )
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")
 

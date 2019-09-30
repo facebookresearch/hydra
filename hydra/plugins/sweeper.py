@@ -19,7 +19,7 @@ class Sweeper(Plugin):
             raise NotImplementedError
 
     @abstractmethod
-    def setup(self, config, config_loader, task_function, verbose):
+    def setup(self, config, config_loader, task_function):
         raise NotImplementedError()
 
     @abstractmethod

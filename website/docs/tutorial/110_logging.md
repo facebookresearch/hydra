@@ -26,18 +26,23 @@ $ python my_app.py
 [2019-06-27 00:52:46,653][__main__][INFO] - Info level message
 
 ```
-You can enable DEBUG level logging from the command line with `-v` or `--verbose`.
+You can enable DEBUG level logging from the command line  by overriding `hydra.verbose`.
 
+`hydra.verbose` can be a Boolean, a String or a List:
+Examples:
+* `hydra.verbose=true` : Sset **all** loggers log level to `DEBUG`
+* `hydra.verbose=__main__` : Set the `__main__` logger log level to `DEBUG`
+* `hydra.verbose=[__main__,hydra]`: Set the log levels of the loggers `__main__` and hydra log to `DEBUG`
+
+Example output:
 ``` text
-$ python my_app.py -v __main__
-[2019-06-27 00:54:39,440][__main__][INFO] - Info level message
-[2019-06-27 00:54:39,441][__main__][DEBUG] - Debug level message
+$ python my_app.py hydra.verbose=[__main__,hydra]
+[2019-09-29 13:06:00,880] - Installed Hydra Plugins
+[2019-09-29 13:06:00,880] - ***********************
+...
+[2019-09-29 13:06:00,896][__main__][INFO] - Info level message
+[2019-09-29 13:06:00,896][__main__][DEBUG] - Debug level message
 ```
-You can activate multiple loggers by passing a comma separated list to `-v`.
-```yaml
-$ python my_app.py -v hydra,mysql 
-```
-`-v root` activate debug logging for all loggers, even external libraries. 
 
 Logging can be [customized](../configure_hydra/logging/).
 

@@ -93,7 +93,6 @@ def task_runner():
             calling_module=calling_module,
             config_path=config_path,
             task_function=task,
-            verbose=None,
             strict=strict,
         )
 
@@ -152,7 +151,6 @@ def sweep_runner():
             calling_module=calling_module,
             config_path=config_path,
             task_function=sweep,
-            verbose=None,
             strict=strict,
         )
 
@@ -245,13 +243,15 @@ if __name__ == "__main__":
         subprocess.check_call(cmd)
 
         with open(output_file, "r") as f:
-            output = str.splitlines(f.readline())
+            file_str = f.read()
+            output = str.splitlines(file_str)
 
         if expected_outputs is not None:
             assert len(output) == len(expected_outputs)
             for idx in range(len(output)):
                 assert output[idx] == expected_outputs[idx]
-        return output
+        # some tests are parsing the file output for more specialized testing.
+        return file_str
     finally:
         os.chdir(orig_dir)
 

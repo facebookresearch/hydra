@@ -8,13 +8,14 @@ import sys
 from time import strftime, localtime
 
 import six
-from omegaconf import OmegaConf, DictConfig
+from omegaconf import OmegaConf, DictConfig, ListConfig
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
-def configure_log(log_config, verbose=None):
+def configure_log(log_config, verbose_config):
+    assert isinstance(verbose_config, (bool, str, ListConfig))
     if log_config is not None:
         conf = log_config.to_container(resolve=True)
         logging.config.dictConfig(conf)
@@ -28,11 +29,13 @@ def configure_log(log_config, verbose=None):
         )
         handler.setFormatter(formatter)
         root.addHandler(handler)
-
-    if verbose is not None:
-        if verbose == "root":
+    if isinstance(verbose_config, bool):
+        if verbose_config:
             logging.getLogger().setLevel(logging.DEBUG)
-        for logger in verbose.split(","):
+    else:
+        if isinstance(verbose_config, str):
+            verbose_config = OmegaConf.create([verbose_config])
+        for logger in verbose_config:
             logging.getLogger(logger).setLevel(logging.DEBUG)
 
 
@@ -55,7 +58,7 @@ def filter_overrides(overrides):
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
-def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
+def run_job(config, task_function, job_dir_key, job_subdir_key):
     old_cwd = os.getcwd()
     working_dir = str(config.select(job_dir_key))
     if job_subdir_key is not None:
@@ -77,7 +80,7 @@ def run_job(config, task_function, verbose, job_dir_key, job_subdir_key):
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)
         os.chdir(working_dir)
-        configure_log(config.hydra.job_logging, verbose)
+        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
 
         save_config(task_cfg, "config.yaml")
         save_config(hydra_cfg, "hydra.yaml")

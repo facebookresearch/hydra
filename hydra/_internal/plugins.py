@@ -45,28 +45,22 @@ class Plugins:
         )
 
     @staticmethod
-    def instantiate_sweeper(config, config_loader, task_function, verbose):
+    def instantiate_sweeper(config, config_loader, task_function):
         if config.hydra.sweeper is None:
             raise RuntimeError("Hydra sweeper is not configured")
         sweeper = Plugins._instantiate(config.hydra.sweeper)
         sweeper.setup(
-            config=config,
-            config_loader=config_loader,
-            task_function=task_function,
-            verbose=verbose,
+            config=config, config_loader=config_loader, task_function=task_function
         )
         return sweeper
 
     @staticmethod
-    def instantiate_launcher(config, config_loader, task_function, verbose):
+    def instantiate_launcher(config, config_loader, task_function):
         if config.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         launcher = Plugins._instantiate(config.hydra.launcher)
         launcher.setup(
-            config=config,
-            config_loader=config_loader,
-            task_function=task_function,
-            verbose=verbose,
+            config=config, config_loader=config_loader, task_function=task_function
         )
         return launcher
 

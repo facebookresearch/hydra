@@ -20,14 +20,11 @@ class StepSweeper(Sweeper):
         self.arguments = None
         self.launcher = None
 
-    def setup(self, config, config_loader, task_function, verbose):
+    def setup(self, config, config_loader, task_function):
         from .._internal.plugins import Plugins
 
         self.launcher = Plugins.instantiate_launcher(
-            config=config,
-            config_loader=config_loader,
-            task_function=task_function,
-            verbose=verbose,
+            config=config, config_loader=config_loader, task_function=task_function
         )
 
     @abstractmethod
