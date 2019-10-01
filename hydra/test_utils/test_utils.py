@@ -18,7 +18,7 @@ from omegaconf import OmegaConf
 
 from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.hydra import Hydra
-from hydra.plugins.common.utils import JobReturn, get_hydra_dir
+from hydra.plugins.common.utils import JobReturn
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
@@ -185,9 +185,7 @@ def verify_dir_outputs(job_return, overrides=None):
     assert os.path.exists(
         os.path.join(job_return.working_dir, job_return.task_name + ".log")
     )
-    hydra_dir = get_hydra_dir(job_return.working_dir)
-    print("Original neturn dir: ", job_return.working_dir)
-    print("Hydra return dir: ", hydra_dir)
+    hydra_dir = os.path.join(job_return.working_dir, ".hydra")
     assert os.path.exists(os.path.join(hydra_dir, "config.yaml"))
     assert os.path.exists(os.path.join(hydra_dir, "overrides.yaml"))
     assert OmegaConf.load(

@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import sys
+from hydra._internal.pathlib import Path
 from time import strftime, localtime
 
 import six
@@ -12,8 +13,6 @@ from omegaconf import OmegaConf, DictConfig, ListConfig
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
-
-HYDRA_DIR = "foobar"
 
 
 def configure_log(log_config, verbose_config):
@@ -41,10 +40,9 @@ def configure_log(log_config, verbose_config):
             logging.getLogger(logger).setLevel(logging.DEBUG)
 
 
-def save_config(cfg, filename, internal=False):
-    if internal:
-        filename = os.path.join(get_hydra_dir("."), filename)
-    with open(os.path.join(filename), "w") as file:
+def _save_config(cfg, filename, config_dir):
+    Path(str(config_dir)).mkdir(parents=True, exist_ok=True)
+    with open(os.path.join(config_dir, filename), "w") as file:
         file.write(cfg.pretty())
 
 
@@ -81,26 +79,20 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
         ret.overrides = config.hydra.overrides.task.to_container()
-        if not os.path.exists(working_dir):
-            os.makedirs(working_dir)
-        hydra_dir = get_hydra_dir(working_dir)
-        if not os.path.exists(hydra_dir):
-            os.makedirs(hydra_dir)
+        Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
         os.chdir(working_dir)
-        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
 
-        save_config(task_cfg, "config.yaml", internal=True)
-        save_config(hydra_cfg, "hydra.yaml", internal=True)
-        save_config(config.hydra.overrides.task, "overrides.yaml", internal=True)
+        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
+        _save_config(task_cfg, "config.yaml", hydra_cfg.hydra.output)
+        _save_config(hydra_cfg, "hydra.yaml", hydra_cfg.hydra.output)
+        _save_config(
+            config.hydra.overrides.task, "overrides.yaml", hydra_cfg.hydra.output
+        )
         ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime().get("name")
         return ret
     finally:
         os.chdir(old_cwd)
-
-
-def get_hydra_dir(working_dir):
-    return os.path.join(working_dir, HYDRA_DIR)
 
 
 def get_valid_filename(s):
