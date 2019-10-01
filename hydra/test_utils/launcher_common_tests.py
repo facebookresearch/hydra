@@ -53,6 +53,27 @@ class LauncherTestSuite:
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
+    def test_sweep_over_unspecified_mandatory_default(
+        self, sweep_runner, launcher_name, overrides  # noqa: F811
+    ):
+        base_overrides = ["hydra/launcher=" + launcher_name, "group1=file1,file2"]
+        sweep = sweep_runner(
+            calling_file=None,
+            calling_module="hydra.test_utils.a_module",
+            config_path="configs/unspecified_mandatory_default.yaml",
+            overrides=base_overrides + overrides,
+            strict=True,
+        )
+        expected_overrides = [["group1=file1"], ["group1=file2"]]
+        expected_conf = [OmegaConf.create({"foo": 10}), OmegaConf.create({"foo": 20})]
+        with sweep:
+            assert len(sweep.returns[0]) == 2
+            for i in range(2):
+                job_ret = sweep.returns[0][i]
+                assert job_ret.overrides == expected_overrides[i]
+                assert job_ret.cfg == expected_conf[i]
+                verify_dir_outputs(job_ret, job_ret.overrides)
+
 
 def sweep_1_job(sweep_runner, overrides, strict=False):
     """
