@@ -8,11 +8,6 @@
 import siteConfig from '@generated/docusaurus.config';
 
 (function() {
-  // Only run in browser.
-  if (typeof window === 'undefined') {
-    return;
-  }
-
   const src = `${siteConfig.organizationName}.github.io/${siteConfig.projectName}`;
   const dst = siteConfig.url.split('//')[1];
 
