@@ -192,3 +192,26 @@ def test_short_module_name(tmpdir):
         }
     finally:
         chdir_hydra_root()
+
+
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+)
+@pytest.mark.parametrize("overrides", [["free_group=opt1,opt2"]])
+def test_multirun_with_free_override(
+    sweep_runner, calling_file, calling_module, overrides  # noqa: F811
+):
+    sweep = sweep_runner(
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="config_with_free_group/config.yaml",
+        overrides=overrides,
+        strict=True,
+    )
+    with sweep:
+        assert len(sweep.returns[0]) == 2
+        assert sweep.returns[0][0].overrides == ["free_group=opt1"]
+        assert sweep.returns[0][0].cfg == {"group_opt1": True, "free_group_opt1": True}
+        assert sweep.returns[0][1].overrides == ["free_group=opt2"]
+        assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}

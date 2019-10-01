@@ -1,0 +1,1 @@
+Fixes a bug with multirun overriding free config groups (not in defaults) when strict mode is enabled
