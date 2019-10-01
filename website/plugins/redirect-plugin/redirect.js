@@ -5,15 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import siteConfig from '@generated/docusaurus.config';
-
 (function() {
-  const src = `${siteConfig.organizationName}.github.io/${siteConfig.projectName}`;
-  const dst = siteConfig.url.split('//')[1];
-
+  const src = 'facebookresearch.github.io/hydra';
+  const dst = 'cli.dev';
   if (window.location.href.indexOf(src) > -1) {
-    const fragments = window.location.href.split(src);
-    const newLocation = fragments[0] + dst + fragments[1];
+    var fragments = window.location.href.split(src);
+    var newLocation = fragments[0] + dst + fragments[1];
     window.location = newLocation + (newLocation.endsWith('/') ? '' : '/');
   }
 })();
