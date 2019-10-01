@@ -4,7 +4,7 @@ title: Output/Working directory
 sidebar_label: Output/Working directory
 ---
 
-Hydra solves the problem of you needing to specify a new output directory for each run, by 
+Hydra solves the problem of your needing to specify a new output directory for each run, by 
 creating a directory for each run and executing your code within that directory.
 
 The working directory is used to:
