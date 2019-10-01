@@ -1,0 +1,1 @@
+Fix a bug that prevented sweeping over an unspecified ('???') default group

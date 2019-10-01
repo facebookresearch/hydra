@@ -135,13 +135,16 @@ class ConfigLoader:
             ), "'{}' not a valid override, expecting key=value format".format(override)
             key, value = override.split("=")
             if key in key_to_idx:
-                # Do not add multirun configs into defaults, those will be added to the multirun config
-                # after the list is broken into items
-                if "," not in value:
-                    if value == "null":
-                        del defaults[key_to_idx[key]]
-                    else:
-                        defaults[key_to_idx[key]][key] = value
+                if "," in value:
+                    # If this is a multirun config (comma separated list), unset the default for the off chance
+                    # It's a ???. it will get added again when we construct the config for the job.
+                    value = "null"
+
+                if value == "null":
+                    del defaults[key_to_idx[key]]
+                else:
+                    defaults[key_to_idx[key]][key] = value
+
                 overrides.remove(override)
                 consumed.append(override)
         return consumed

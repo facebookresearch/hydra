@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
-
 import pytest
 import re
 import subprocess
@@ -9,7 +8,7 @@ from omegaconf import OmegaConf
 from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import task_runner  # noqa: F401
+from hydra.test_utils.test_utils import task_runner, sweep_runner  # noqa: F401
 from hydra.test_utils.test_utils import does_not_raise
 
 chdir_hydra_root()
@@ -28,7 +27,7 @@ chdir_hydra_root()
 def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/simple_cli_app/my_app.py",
+        "tutorial/010_simple_cli_app/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -39,7 +38,7 @@ def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
 def test_tutorial_working_directory(tmpdir):
     cmd = [
         sys.executable,
-        "tutorial/working_directory/my_app.py",
+        "tutorial/100_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
@@ -54,7 +53,11 @@ def test_tutorial_working_directory(tmpdir):
     ],
 )
 def test_tutorial_logging(tmpdir, args, expected):
-    cmd = [sys.executable, "tutorial/logging/my_app.py", "hydra.run.dir=" + str(tmpdir)]
+    cmd = [
+        sys.executable,
+        "tutorial/110_logging/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     lines = result.decode("utf-8").splitlines()
@@ -77,7 +80,7 @@ def test_tutorial_logging(tmpdir, args, expected):
 def test_tutorial_config_file(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/config_file/my_app.py",
+        "tutorial/020_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -104,7 +107,7 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
     with expected:
         cmd = [
             sys.executable,
-            "tutorial/config_file/my_app.py",
+            "tutorial/020_config_file/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
         ]
         cmd.extend(args)
@@ -133,12 +136,51 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
 def test_tutorial_config_groups(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/config_groups/my_app.py",
+        "tutorial/030_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+
+
+@pytest.mark.parametrize(
+    "args,expected",
+    [
+        ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
+        (
+            ["db=postgresql"],
+            {
+                "db": {
+                    "driver": "postgresql",
+                    "pass": "drowssap",
+                    "timeout": 10,
+                    "user": "postgre_user",
+                }
+            },
+        ),
+        (
+            ["db=postgresql", "db.timeout=20"],
+            {
+                "db": {
+                    "driver": "postgresql",
+                    "pass": "drowssap",
+                    "timeout": 20,
+                    "user": "postgre_user",
+                }
+            },
+        ),
+    ],
+)
+def test_tutorial_defaults(tmpdir, args, expected):
+    cmd = [
+        sys.executable,
+        "tutorial/040_defaults/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    cmd.extend(args)
+    result = subprocess.check_output(cmd)
+    assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
 
 
 @pytest.mark.parametrize(
@@ -189,7 +231,7 @@ def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
 
 def test_composition_config_example(task_runner):  # noqa: F811
     with task_runner(
-        calling_file="tutorial/composition/my_app.py",
+        calling_file="tutorial/050_composition/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["schema=school"],
@@ -216,6 +258,24 @@ def test_composition_config_example(task_runner):  # noqa: F811
             },
         }
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+def test_sweeping_example(sweep_runner):  # noqa: F811
+    with sweep_runner(
+        calling_file="tutorial/050_composition/my_app.py",
+        calling_module=None,
+        config_path="conf/config.yaml",
+        overrides=["schema=warehouse,support", "db=mysql,postgresql"],
+    ) as sweep:
+        overrides = {
+            ("schema=warehouse", "db=mysql"),
+            ("schema=warehouse", "db=postgresql"),
+            ("schema=support", "db=mysql"),
+            ("schema=support", "db=postgresql"),
+        }
+        assert len(sweep.returns[0]) == 4
+        for ret in sweep.returns[0]:
+            assert tuple(ret.overrides) in overrides
 
 
 def test_specializing_config_example(task_runner):  # noqa: F811
