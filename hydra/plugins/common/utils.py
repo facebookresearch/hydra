@@ -13,6 +13,8 @@ from omegaconf import OmegaConf, DictConfig, ListConfig
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
 
+HYDRA_DIR = "foobar"
+
 
 def configure_log(log_config, verbose_config):
     assert isinstance(verbose_config, (bool, str, ListConfig))
@@ -39,7 +41,9 @@ def configure_log(log_config, verbose_config):
             logging.getLogger(logger).setLevel(logging.DEBUG)
 
 
-def save_config(cfg, filename):
+def save_config(cfg, filename, internal=False):
+    if internal:
+        filename = os.path.join(get_hydra_dir("."), filename)
     with open(os.path.join(filename), "w") as file:
         file.write(cfg.pretty())
 
@@ -79,17 +83,24 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         ret.overrides = config.hydra.overrides.task.to_container()
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)
+        hydra_dir = get_hydra_dir(working_dir)
+        if not os.path.exists(hydra_dir):
+            os.makedirs(hydra_dir)
         os.chdir(working_dir)
         configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
 
-        save_config(task_cfg, "config.yaml")
-        save_config(hydra_cfg, "hydra.yaml")
-        save_config(config.hydra.overrides.task, "overrides.yaml")
+        save_config(task_cfg, "config.yaml", internal=True)
+        save_config(hydra_cfg, "hydra.yaml", internal=True)
+        save_config(config.hydra.overrides.task, "overrides.yaml", internal=True)
         ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime().get("name")
         return ret
     finally:
         os.chdir(old_cwd)
+
+
+def get_hydra_dir(working_dir):
+    return os.path.join(working_dir, HYDRA_DIR)
 
 
 def get_valid_filename(s):
