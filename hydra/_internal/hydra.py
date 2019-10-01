@@ -152,7 +152,6 @@ class Hydra:
         return shell_to_plugin
 
     def shell_completion(self, overrides):
-        # TODO: check this somewhere else
         subcommands = ["install", "uninstall", "query"]
         cfg = self._load_config(overrides)
         sc_cmd = cfg.hydra.shell
@@ -179,13 +178,13 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        if sc_cmd["install"] is not None:
+        if sc_cmd.install is not None:
             plugin = find_plugin(sc_cmd.install)
             plugin.install()
-        elif sc_cmd["uninstall"] is not None:
+        elif sc_cmd.uninstall is not None:
             plugin = find_plugin(sc_cmd.uninstall)
             plugin.uninstall()
-        elif sc_cmd["query"] is not None:
+        elif sc_cmd.query is not None:
             plugin = find_plugin(sc_cmd.query)
             plugin.query()
 
