@@ -21,7 +21,7 @@ set num_tabs [lindex $argv 2]
 puts "input line: '$line'"
 puts "num_tabs: $num_tabs"
 
-send "eval \"\$([lindex $argv 0] -sc hydra.shell.name=bash hydra.shell.operation=install)\"\r"
+send "eval \"\$([lindex $argv 0] -sc hydra.shell.install=bash)\"\r"
 expect >>
 
 set command "[lindex $argv 0] $line"

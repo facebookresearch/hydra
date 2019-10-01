@@ -34,7 +34,7 @@ class BashCompletion(CompletionPlugin):
         true
     fi
     if [ $? == 0 ]; then
-        extra="-sc hydra.shell.name=bash hydra.shell.operation=query"
+        extra="-sc hydra.shell.query=bash"
         options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper $extra)
         word=${words[$COMP_CWORD]}
 
