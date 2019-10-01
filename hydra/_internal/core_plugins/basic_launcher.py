@@ -49,14 +49,12 @@ class BasicLauncher(Launcher):
                     sweep_config.hydra.overrides.task
                 )
             HydraConfig().set_config(sweep_config)
-
-            runs.append(
-                run_job(
-                    config=sweep_config,
-                    task_function=self.task_function,
-                    job_dir_key="hydra.sweep.dir",
-                    job_subdir_key="hydra.sweep.subdir",
-                )
+            ret = run_job(
+                config=sweep_config,
+                task_function=self.task_function,
+                job_dir_key="hydra.sweep.dir",
+                job_subdir_key="hydra.sweep.subdir",
             )
+            runs.append(ret)
             configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs

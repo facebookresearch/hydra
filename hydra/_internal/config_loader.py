@@ -133,15 +133,15 @@ class ConfigLoader:
         for override in copy.deepcopy(overrides):
             key, value = override.split("=")
             if key in key_to_idx:
-                # Do not add sweep configs into defaults, those will be added to the sweep config
+                # Do not add multirun configs into defaults, those will be added to the multirun config
                 # after the list is broken into items
                 if "," not in value:
                     if value == "null":
                         del defaults[key_to_idx[key]]
                     else:
                         defaults[key_to_idx[key]][key] = value
-                    overrides.remove(override)
-                    consumed.append(override)
+                overrides.remove(override)
+                consumed.append(override)
         return consumed
 
     def _apply_free_defaults(self, defaults, overrides):
@@ -149,11 +149,12 @@ class ConfigLoader:
         for override in overrides:
             key, value = override.split("=")
             if self.exists_in_search_path(key):
-                # Do not add sweep configs into defaults, those will be added to the defaults
-                # during sweep when after list is broken into items
+                # Do not add multirun configs into defaults, those will be added to the defaults
+                # during the runs after list is broken into items
                 if "," not in value:
                     defaults.append({key: value})
-                    consumed.append(override)
+                overrides.remove(override)
+                consumed.append(override)
 
         return consumed
 
