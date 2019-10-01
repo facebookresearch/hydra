@@ -33,16 +33,21 @@ Let's take a look at one of those working directories:
 ```text
 $ tree outputs/2019-09-25/15-16-17
 outputs/2019-09-25/15-16-17
-├── config.yaml
-├── hydra.yaml
-├── my_app.log
-└── overrides.yaml
+├── .hydra
+│   ├── config.yaml
+│   ├── hydra.yaml
+│   └── overrides.yaml
+└── my_app.log
 ```
 
-We have 4 files there:
+We have the Hydra output directory (`.hydra` by default) and the application log file.
+Inside the configuration output directory we have:
 * `config.yaml`: A dump of the user specified configuration
 * `hydra.yaml`: A dump of the Hydra configuration
 * `overrides.yaml`: The command line overrides used
+
+And in the main output directory:
 * `my_app.log`: A log file created for this run
+
 
 Working directory can be [customized](../configure_hydra/workdir/).

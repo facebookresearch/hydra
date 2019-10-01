@@ -185,10 +185,14 @@ def verify_dir_outputs(job_return, overrides=None):
     assert os.path.exists(
         os.path.join(job_return.working_dir, job_return.task_name + ".log")
     )
-    assert os.path.exists(os.path.join(job_return.working_dir, "config.yaml"))
-    assert os.path.exists(os.path.join(job_return.working_dir, "overrides.yaml"))
+
+    hydra_dir = os.path.join(
+        job_return.working_dir, job_return.hydra_cfg.hydra.output_subdir
+    )
+    assert os.path.exists(os.path.join(hydra_dir, "config.yaml"))
+    assert os.path.exists(os.path.join(hydra_dir, "overrides.yaml"))
     assert OmegaConf.load(
-        os.path.join(job_return.working_dir, "overrides.yaml")
+        os.path.join(hydra_dir, "overrides.yaml")
     ) == OmegaConf.create(overrides or [])
 
 

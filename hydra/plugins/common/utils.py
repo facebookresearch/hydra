@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import sys
+from hydra._internal.pathlib import Path
 from time import strftime, localtime
 
 import six
@@ -39,8 +40,9 @@ def configure_log(log_config, verbose_config):
             logging.getLogger(logger).setLevel(logging.DEBUG)
 
 
-def save_config(cfg, filename):
-    with open(os.path.join(filename), "w") as file:
+def _save_config(cfg, filename, output_dir):
+    Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
+    with open(str(output_dir / filename), "w") as file:
         file.write(cfg.pretty())
 
 
@@ -77,14 +79,15 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
         ret.overrides = config.hydra.overrides.task.to_container()
-        if not os.path.exists(working_dir):
-            os.makedirs(working_dir)
+        # handle output directories here
+        Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
         os.chdir(working_dir)
-        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
+        hydra_output = Path(hydra_cfg.hydra.output_subdir)
 
-        save_config(task_cfg, "config.yaml")
-        save_config(hydra_cfg, "hydra.yaml")
-        save_config(config.hydra.overrides.task, "overrides.yaml")
+        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
+        _save_config(task_cfg, "config.yaml", hydra_output)
+        _save_config(hydra_cfg, "hydra.yaml", hydra_output)
+        _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
         ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime().get("name")
         return ret
