@@ -5,14 +5,14 @@ sidebar_label: Debugging
 ---
 Hydra provides a few options to improve debuggability.
 
-### Printing config without running
-You can print the config that would be used for a job without running it the job by adding '-c' or '--cfg' to your command line:
+### Printing the configuration
+Print the config that would be used for a job without running it the job by adding '-c' or '--cfg' to your command line:
 ```yaml
 # A normal run:
 $ python tutorial/objects_example/my_app.py
 MySQL connecting to localhost with user=root and password=1234
 
-# just shot the config, do not run:
+# just show the config without running your function:
 $ python tutorial/objects_example/my_app.py -c
 [2019-09-29 11:09:14,134] -
 db:
@@ -40,7 +40,7 @@ The `--cfg` flag takes an optional argument indicating which part of the config 
 * `hydra` : Hydra's config
 * `all` : The full config, which is a union of `job` and `hydra`.
 
-Warning: `-c` should be the last command line argument. Because of the optional argument to -c the following override may get parsed as the config type to show.
+Warning: `-c` should be the last command line argument. The first argument after `-c` will be interpreted config type to show.
 
 ### Hydra verbose debugging
 Hydra prints some very useful information in `DEBUG` log level.
