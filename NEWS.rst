@@ -1,3 +1,35 @@
+0.9.0 (2019-10-01)
+==================
+
+Deprecations and Removals
+-------------------------
+
+- Old demos directory was removed and a new tutorial directory as added (`#167 <https://github.com/facebookresearch/hydra/issues/167>`_)
+
+Features
+--------
+
+- Make strict mode the default when a config file is specified directly (`#150 <https://github.com/facebookresearch/hydra/issues/150>`_)
+- Replace --verbose with a standard override (hydra.verbose) (`#161 <https://github.com/facebookresearch/hydra/issues/161>`_)
+- Add IntegrationTestSuite to test_utils for testing Launcher plugins (`#168 <https://github.com/facebookresearch/hydra/issues/168>`_)
+- Add support for specifying which config to print in -c, options are job (default), hydra or all. (`#176 <https://github.com/facebookresearch/hydra/issues/176>`_)
+- Hydra is now hosted on https://cli.dev! (`#75 <https://github.com/facebookresearch/hydra/issues/75>`_)
+- Move all Hydra configuration files to a subfolder (.hydra by default) under the output folder (`#77 <https://github.com/facebookresearch/hydra/issues/77>`_)
+
+Bug Fixes
+---------
+
+- Fix a bug in tab completion of missing mandatory values. (`#145 <https://github.com/facebookresearch/hydra/issues/145>`_)
+- Fix a bug with multirun overriding free config groups (not in defaults) when strict mode is enabled (`#181 <https://github.com/facebookresearch/hydra/issues/181>`_)
+- Fix a bug that prevented sweeping over an unspecified ('???') default group (`#187 <https://github.com/facebookresearch/hydra/issues/187>`_)
+
+Improved Documentation
+----------------------
+
+- Updated the primary tutorial on the web site and added a brand new tutorial directory (`#58 <https://github.com/facebookresearch/hydra/issues/58>`_)
+- Documented debugging methods in website (`#6 <https://github.com/facebookresearch/hydra/issues/6>`_)
+
+
 0.1.5 (2019-09-22)
 ==================
 
