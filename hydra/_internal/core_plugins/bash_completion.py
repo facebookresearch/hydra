@@ -34,7 +34,7 @@ class BashCompletion(CompletionPlugin):
         true
     fi
     if [ $? == 0 ]; then
-        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper --shell_completion query=bash)
+        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc hydra.shell.query=bash)
         word=${words[$COMP_CWORD]}
 
         if [ "$HYDRA_COMP_DEBUG" == "1" ]; then

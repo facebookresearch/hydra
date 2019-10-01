@@ -3,9 +3,9 @@ import logging
 import os
 from os.path import realpath, dirname, splitext, basename
 
-from omegaconf import open_dict
+from omegaconf import open_dict, DictConfig
 from collections import defaultdict
-from .config_loader import ConfigLoader, consume_argument
+from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from ..errors import MissingConfigException
@@ -153,12 +153,19 @@ class Hydra:
 
     def shell_completion(self, overrides):
         subcommands = ["install", "uninstall", "query"]
-        sc_cmd, sc_shell = consume_argument(overrides, subcommands)
-        self._load_config(overrides)
-        if sc_cmd is None:
-            log.error(
-                "No completion subcommand specified ({})".format(",".join(subcommands))
-            )
+        cfg = self._load_config(overrides)
+        sc_cmd = cfg.hydra.shell
+
+        def has_one(items, search):
+            count = 0
+            for s in items:
+                if s in search and items[s] is not None:
+                    count += 1
+            return count == 1
+
+        assert isinstance(sc_cmd, DictConfig) and has_one(
+            sc_cmd, subcommands
+        ), "Completion subcommand expecting one of ({})".format(", ".join(subcommands))
 
         shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
@@ -171,12 +178,14 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        plugin = find_plugin(sc_shell)
-        if "install" == sc_cmd:
+        if sc_cmd.install is not None:
+            plugin = find_plugin(sc_cmd.install)
             plugin.install()
-        elif "uninstall" == sc_cmd:
+        elif sc_cmd.uninstall is not None:
+            plugin = find_plugin(sc_cmd.uninstall)
             plugin.uninstall()
-        elif "query" == sc_cmd:
+        elif sc_cmd.query is not None:
+            plugin = find_plugin(sc_cmd.query)
             plugin.query()
 
     @staticmethod

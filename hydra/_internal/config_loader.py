@@ -5,7 +5,6 @@ Configuration loader
 
 import copy
 import os
-import re
 
 from omegaconf import OmegaConf, DictConfig, ListConfig
 from pkg_resources import (
@@ -131,6 +130,9 @@ class ConfigLoader:
                 key = next(iter(d.keys()))
                 key_to_idx[key] = idx
         for override in copy.deepcopy(overrides):
+            assert (
+                "=" in override
+            ), "'{}' not a valid override, expecting key=value format".format(override)
             key, value = override.split("=")
             if key in key_to_idx:
                 # Do not add multirun configs into defaults, those will be added to the multirun config
@@ -438,29 +440,3 @@ class ConfigLoader:
             elif isinstance(default, str):
                 # single file to load
                 pass
-
-
-def consume_argument(dotlist, candidates):
-    """This method consumes an option from the configs_list
-    when the option is one of the provided candidates.
-
-    Only the first occurance of any candidate will be consumed.
-
-    configs_list -- list of key=value items [string]
-    candidates -- list of options to look for [string]
-
-    Returns the tuple from the consumed item as (key, value)
-    Returns (None, None) if there are no matches, and config_list
-    remains unchanged
-    """
-
-    startswith_expr = "({})=.*".format("|".join(candidates))
-    key_part = None
-    value_part = None
-    for item in dotlist:
-        if re.match(startswith_expr, item):
-            # found a match!
-            key_part, value_part = item.split("=")
-            dotlist.remove(item)
-            return (key_part, value_part)
-    return (None, None)

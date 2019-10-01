@@ -100,8 +100,12 @@ def get_args(args=None, version=None):
     )
 
     shell = "SHELL_NAME"
-    install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)
-    uninstall_cmd = 'eval "$({} --sc uninstall={})"'.format(_get_exec_command(), shell)
+    install_cmd = 'eval "$({} -sc hydra.shell.install={})"'.format(
+        _get_exec_command(), shell
+    )
+    uninstall_cmd = 'eval "$({} -sc hydra.shell.uninstall={})"'.format(
+        _get_exec_command(), shell
+    )
     parser.add_argument(
         "--shell_completion",
         "-sc",
