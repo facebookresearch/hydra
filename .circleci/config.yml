@@ -200,8 +200,8 @@ workflows:
       - py36_mac
       - py37_mac
 #      - py27_win
-      - py36_win
-      - py37_win
+#      - py36_win
+#      - py37_win
       - deploy-website:
           filters:
             branches:
