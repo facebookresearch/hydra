@@ -19,7 +19,7 @@ The best way to understand what Hydra is good for is to go through the [tutorial
 
 ## Community
 Ask questions in the google group:
-* [Google group](https://groups.google.com/forum/#!forum/hydra_cli)
+* [Google group](https://groups.google.com/d/forum/hydra_framework)
 
 Follow Hydra on Twitter and Facebook:
 * [Facebook page](https://www.facebook.com/Hydra-Framework-109364473802509/)
