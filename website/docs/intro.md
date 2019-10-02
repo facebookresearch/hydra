@@ -22,5 +22,6 @@ Ask questions in the google group:
 * [Google group](https://groups.google.com/forum/#!forum/hydra_cli)
 
 Follow Hydra on Twitter and Facebook:
+* [Facebook page](https://www.facebook.com/Hydra-Framework-109364473802509/)
 * [Twitter](https://twitter.com/hydra_cli)
-* [Facebook page](https://www.facebook.com/Hydra-CLI-101919107877022)
+
