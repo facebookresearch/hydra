@@ -14,14 +14,15 @@ conda create -n hydra37 python=3.7 -y
 ```
 
 <div class="alert alert--info" role="alert">
-<strong>NOTE</strong>: 
+<strong>NOTE</strong>:
 The core Hydra framework supports Python 2.7 or newer. You may need to create additional environments for different Python versions if
 CI detect issues on supported version of Python.
 </div>
+<br/>
 
 Activate the environment:
 ```
-conda activate hydra37  
+conda activate hydra37
 ```
 From the source tree, install Hydra in development mode with the following command:
 ```
@@ -31,7 +32,7 @@ pip install -e .[dev] -e .
 ### Pre commit hooks
 It is highly recommended that you install pre commit hooks into your local git repository.
 ```
-pre-commit install 
+pre-commit install
 ```
 Pre commit hooks can help you catch problems before you push your pull request.
 #### Hooks

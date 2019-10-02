@@ -88,7 +88,7 @@ function Home() {
                         />
                       </div>
                     )}
-                    <h3>{title}</h3>
+                    <h3 className="feature">{title}</h3>
                     <p>{description}</p>
                   </div>
                 ))}

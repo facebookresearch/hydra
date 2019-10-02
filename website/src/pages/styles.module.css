@@ -46,6 +46,7 @@
   width: 300px;
 }
 
-/*h3 {*/
-/*    text-transform: capitalize;*/
-/*}*/
+.feature h3{
+    text-transform: capitalize;
+    font-size: 1.5rem;
+}
