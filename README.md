@@ -9,7 +9,7 @@
 # Hydra
 A framework for elegantly configuring complex applications.
 
-Check [cli.dev](https://cli.dev/) for more information.
+Check the [website](https://cli.dev/) for more information.
 
 ## License
 Hydra is licensed under [MIT License](LICENSE).
