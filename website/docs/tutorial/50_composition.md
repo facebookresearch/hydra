@@ -40,16 +40,15 @@ Configuration file: `config.yaml`
 defaults:
   - db: mysql
   - ui: full
-  - schema: ???
+  - schema: school
 ```
-The defaults is ordered. if there are two configurations that defines the same value, the second one would win. If two configurations are contributing to the same dictionary the result would be a combined dictionary.
-We also see something new here: `schema: ???`. `???` is a special string which indicates that this key is mandatory and is missing right now.
-You decided that mysql is the default database, but there is no good choice for a default schema here. This will require that the schema is 
-specified in the command line. If it's not, an exception will be thrown when it's accessed. 
+The defaults are ordered:
+ * If there are two configurations that defines the same value, the second one would win. 
+ * If two configurations are contributing to the same dictionary the result would be the combined dictionary.
 
-When running this, we will compose a configuration with mysql, full ui and the `school` database schema (which we are seeing for the first time here):
+When running this, we will compose a configuration with `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):
 ```yaml
-$ python my_app.py schema=school
+$ python my_app.py
 db:
   driver: mysql
   pass: secret
@@ -72,5 +71,4 @@ ui:
     view: true
 ```
 
-In much the same way you can compose any of the other 11 configurations and by adding additional command line overrides you can 
-create completely new configurations.
+In much the same way you can compose any of the other 11 configurations by adding appropriate overrides such as `db=postgresql`.
