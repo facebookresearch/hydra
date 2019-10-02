@@ -23,5 +23,5 @@ Ask questions in the google group:
 
 Follow Hydra on Twitter and Facebook:
 * [Facebook page](https://www.facebook.com/Hydra-Framework-109364473802509/)
-* [Twitter](https://twitter.com/hydra_cli)
+* [Twitter](https://twitter.com/Hydra_Framework)
 
