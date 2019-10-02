@@ -7,7 +7,7 @@
 
 
 # Hydra
-Hydra is a framework for writing flexible command line applications.
+A framework for elegantly configuring complex applications.
 
 Check [cli.dev](https://cli.dev/) for more information.
 

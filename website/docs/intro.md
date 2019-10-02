@@ -25,3 +25,15 @@ Follow Hydra on Twitter and Facebook:
 * [Facebook page](https://www.facebook.com/Hydra-Framework-109364473802509/)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
+
+## Citing Hydra
+Please use:
+```text
+@Misc{,
+  author =       {Omry Yadan},
+  title =        {A framework for elegantly configuring complex applications},
+  howpublished = {Github},
+  year =         {2019},
+  url =          {https://github.com/facebookresearch/hydra}
+}
+```
