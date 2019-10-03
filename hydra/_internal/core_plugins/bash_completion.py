@@ -8,7 +8,6 @@ import re
 log = logging.getLogger(__name__)
 
 # TODO:
-# Add testing and integration testing
 # Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
 # Test handling of errors loading config from command line during completion
 
