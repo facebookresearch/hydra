@@ -67,6 +67,17 @@ function Home() {
               to={withBaseUrl('docs/intro')}>
               Get Started
             </Link>
+            <span className={styles['index-ctas-github-button']}
+                  style={{marginLeft: `1em`, paddingTop: `0.5em`}}>
+              <iframe
+                src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=false&amp;size=large"
+                frameBorder={0}
+                scrolling={0}
+                width={160}
+                height={30}
+                title="GitHub Stars"
+              />
+            </span>
           </div>
         </div>
       </header>
