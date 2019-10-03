@@ -1,10 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
+from collections import defaultdict
 from os.path import realpath, dirname, splitext, basename
 
-from omegaconf import open_dict, DictConfig
-from collections import defaultdict
+from omegaconf import open_dict, OmegaConf
+
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
@@ -153,19 +154,12 @@ class Hydra:
 
     def shell_completion(self, overrides):
         subcommands = ["install", "uninstall", "query"]
-        cfg = self._load_config(overrides)
-        sc_cmd = cfg.hydra.shell
-
-        def has_one(items, search):
-            count = 0
-            for s in items:
-                if s in search and items[s] is not None:
-                    count += 1
-            return count == 1
-
-        assert isinstance(sc_cmd, DictConfig) and has_one(
-            sc_cmd, subcommands
-        ), "Completion subcommand expecting one of ({})".format(", ".join(subcommands))
+        arguments = OmegaConf.from_dotlist(overrides)
+        num_commands = sum(1 for key in subcommands if arguments[key] is not None)
+        if num_commands != 1:
+            raise ValueError(
+                "Expecting one subcommand from {} to be set".format(subcommands)
+            )
 
         shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
@@ -178,14 +172,14 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        if sc_cmd.install is not None:
-            plugin = find_plugin(sc_cmd.install)
+        if arguments.install is not None:
+            plugin = find_plugin(arguments.install)
             plugin.install()
-        elif sc_cmd.uninstall is not None:
-            plugin = find_plugin(sc_cmd.uninstall)
+        elif arguments.uninstall is not None:
+            plugin = find_plugin(arguments.uninstall)
             plugin.uninstall()
-        elif sc_cmd.query is not None:
-            plugin = find_plugin(sc_cmd.query)
+        elif arguments.query is not None:
+            plugin = find_plugin(arguments.query)
             plugin.query()
 
     @staticmethod
@@ -275,10 +269,11 @@ class Hydra:
         self._print_debug_info()
         return cfg
 
-    def _strict_mode_strategy(self, strict, config_file):
+    @staticmethod
+    def _strict_mode_strategy(strict, config_file):
         """Decide how to set strict mode.
-        If a value was provided -- always use it. Oherwise decide based
-        on the existance of config_file.
+        If a value was provided -- always use it. Otherwise decide based
+        on the existence of config_file.
         """
 
         if strict is not None:
