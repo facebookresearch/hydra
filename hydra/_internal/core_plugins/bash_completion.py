@@ -54,12 +54,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         print(script + self._get_exec())
 
     def uninstall(self):
-        print(
-            """
-unset hydra_bash_completion
-complete -r """
-            + self._get_exec()
-        )
+        print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
 
     def provides(self):
         return "bash"

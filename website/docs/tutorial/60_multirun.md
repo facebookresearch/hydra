@@ -8,7 +8,7 @@ Sometimes you want to run a parameter sweep.
 To run a parameter sweep, use the `--multirun` (`-m`) flag and pass a comma separated list for each 
  dimension you want to sweep.
  
-Here is a sweep over two db types and three schemas from in the composition example.
+Here is a sweep over the db types (mysql,postgresql) and the schemas (warehouse,support,school).
 Output does not contain the configuration prints.
 
 ```text
