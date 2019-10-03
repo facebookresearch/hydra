@@ -311,18 +311,18 @@
     "11": {
       "js": [
         {
-          "file": "content---docs-development-contributing-946-4f0.513cc11477dab4ec1425.js",
-          "hash": "66e80777f87b75853f93",
-          "publicPath": "/content---docs-development-contributing-946-4f0.513cc11477dab4ec1425.js"
+          "file": "content---docs-development-contributing-946-4f0.122da25966ec60efc39b.js",
+          "hash": "86cd1956f30321051087",
+          "publicPath": "/content---docs-development-contributing-946-4f0.122da25966ec60efc39b.js"
         }
       ]
     },
     "12": {
       "js": [
         {
-          "file": "content---docs-development-releasee-04-b9d.9cb9c790e1f20ba4a92d.js",
-          "hash": "b9e5295530666c8e4dcf",
-          "publicPath": "/content---docs-development-releasee-04-b9d.9cb9c790e1f20ba4a92d.js"
+          "file": "content---docs-development-releasee-04-b9d.69a73750a4a23d5e903e.js",
+          "hash": "d95b305d3e44720bab5c",
+          "publicPath": "/content---docs-development-releasee-04-b9d.69a73750a4a23d5e903e.js"
         }
       ]
     },
@@ -347,27 +347,27 @@
     "15": {
       "js": [
         {
-          "file": "content---docs-patterns-objects-594-c72.91cd09089e7642309287.js",
-          "hash": "d553dd35594154d3d5f3",
-          "publicPath": "/content---docs-patterns-objects-594-c72.91cd09089e7642309287.js"
+          "file": "content---docs-patterns-objects-594-c72.0be9bec91614d5559b1c.js",
+          "hash": "7efb54e594c4414a9033",
+          "publicPath": "/content---docs-patterns-objects-594-c72.0be9bec91614d5559b1c.js"
         }
       ]
     },
     "16": {
       "js": [
         {
-          "file": "content---docs-patterns-specializing-config-6-a-5-565.c31ff428cd62c1788c2f.js",
-          "hash": "68a997cd4b155584415c",
-          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.c31ff428cd62c1788c2f.js"
+          "file": "content---docs-patterns-specializing-config-6-a-5-565.90ad7b2afe2c6146f512.js",
+          "hash": "3be4c6b98747f2b9ea70",
+          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.90ad7b2afe2c6146f512.js"
         }
       ]
     },
     "17": {
       "js": [
         {
-          "file": "content---docs-tutorial-composition-509-aa6.d6ad51043c0e48ce28f8.js",
-          "hash": "ea39b502ccbb42d48744",
-          "publicPath": "/content---docs-tutorial-composition-509-aa6.d6ad51043c0e48ce28f8.js"
+          "file": "content---docs-tutorial-composition-509-aa6.065f19886a1b33be454a.js",
+          "hash": "a72ce602e5e3590f2821",
+          "publicPath": "/content---docs-tutorial-composition-509-aa6.065f19886a1b33be454a.js"
         }
       ]
     },
@@ -455,9 +455,9 @@
     "27": {
       "js": [
         {
-          "file": "docsMetadata---docs-92-d-b06.78481bec296982fea4b1.js",
-          "hash": "dd179afa43ca6df0e4b4",
-          "publicPath": "/docsMetadata---docs-92-d-b06.78481bec296982fea4b1.js"
+          "file": "docsMetadata---docs-92-d-b06.7aca583e106720dd2b3a.js",
+          "hash": "7b2422d5c2ebd485ce99",
+          "publicPath": "/docsMetadata---docs-92-d-b06.7aca583e106720dd2b3a.js"
         }
       ]
     },
@@ -465,15 +465,15 @@
       "css": [
         {
           "file": "main.60bda0b9b1fff0a4b336.css",
-          "hash": "12fde84d11cfb016aab5",
+          "hash": "3ee1ffb7a4a86cc81c45",
           "publicPath": "/main.60bda0b9b1fff0a4b336.css"
         }
       ],
       "js": [
         {
-          "file": "main.44dbe27a06a649d2f170.js",
-          "hash": "12fde84d11cfb016aab5",
-          "publicPath": "/main.44dbe27a06a649d2f170.js"
+          "file": "main.77f1a4cb3004277eea9d.js",
+          "hash": "3ee1ffb7a4a86cc81c45",
+          "publicPath": "/main.77f1a4cb3004277eea9d.js"
         }
       ]
     },
@@ -543,18 +543,18 @@
     "36": {
       "js": [
         {
-          "file": "metadata---docs-development-contributing-138-4fa.f0867679716ae31aaa35.js",
-          "hash": "39b03f241987ef110f08",
-          "publicPath": "/metadata---docs-development-contributing-138-4fa.f0867679716ae31aaa35.js"
+          "file": "metadata---docs-development-contributing-138-4fa.8af5b66491262ecf084b.js",
+          "hash": "1c8f58deca6dd8d7ae5b",
+          "publicPath": "/metadata---docs-development-contributing-138-4fa.8af5b66491262ecf084b.js"
         }
       ]
     },
     "37": {
       "js": [
         {
-          "file": "metadata---docs-development-releasea-81-2d2.001b3d9d4d66e03ab7ed.js",
-          "hash": "163b847bdd34f8d8725e",
-          "publicPath": "/metadata---docs-development-releasea-81-2d2.001b3d9d4d66e03ab7ed.js"
+          "file": "metadata---docs-development-releasea-81-2d2.4a737e14dcb50e5337c5.js",
+          "hash": "c746559bce0e8d30e272",
+          "publicPath": "/metadata---docs-development-releasea-81-2d2.4a737e14dcb50e5337c5.js"
         }
       ]
     },
@@ -579,18 +579,18 @@
     "40": {
       "js": [
         {
-          "file": "metadata---docs-patterns-objects-5-d-0-4fd.6b5eff774dad38f49c83.js",
-          "hash": "88e2657e01b3ac1a0d33",
-          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.6b5eff774dad38f49c83.js"
+          "file": "metadata---docs-patterns-objects-5-d-0-4fd.d9056e165f4713d8e347.js",
+          "hash": "c16a367eb26d41f8d490",
+          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.d9056e165f4713d8e347.js"
         }
       ]
     },
     "41": {
       "js": [
         {
-          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.594952e49ae1f2266b81.js",
-          "hash": "7a0ddeeb985193a375c7",
-          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.594952e49ae1f2266b81.js"
+          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.07c183658e76f7de211a.js",
+          "hash": "eafa5643e4be8f914a5d",
+          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.07c183658e76f7de211a.js"
         }
       ]
     },
@@ -687,9 +687,9 @@
     "52": {
       "js": [
         {
-          "file": "runtime~main.38bdcfa22896327d5781.js",
-          "hash": "a6968cb03f0972e373ca",
-          "publicPath": "/runtime~main.38bdcfa22896327d5781.js"
+          "file": "runtime~main.db0948bd6fa34b3f529d.js",
+          "hash": "7fb4edf281b616bd36db",
+          "publicPath": "/runtime~main.db0948bd6fa34b3f529d.js"
         }
       ]
     },
