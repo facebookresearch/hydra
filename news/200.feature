@@ -1,1 +1,1 @@
-Simplfy install and unintall commands for shell completion
+Simplify install and uninstall commands for shell completion
