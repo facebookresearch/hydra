@@ -8,7 +8,7 @@ The product manager had an idea:
 She wants my_app to support creating arbitrary database schemas, on all supported databases!
 She also wants to have two kinds of UI - a full UI to create and view databases and a view only UI.
 You are the fall guy. Before you even start, she tells you there are already 3 database schema you need to support, and more are coming soon.
-You area already sweating because it all sounds pretty complex.
+You are already sweating because it all sounds pretty complex.
 You also got a feeling that this is only the beginning - who knows what idea she will have next?
 
 To solve it with Hydra, we need more config groups.
