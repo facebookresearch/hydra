@@ -57,8 +57,9 @@ function Home() {
         <div className="container">
           <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
+          <div className={styles.buttonContainer}>
           <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
+          <div className={styles.buttons}>
             <Link
               className={classnames(
                 'button button--outline button--secondary button--lg',
@@ -68,16 +69,17 @@ function Home() {
               Get Started
             </Link>
             <span className={styles['index-ctas-github-button']}
-                  style={{marginLeft: `1em`, paddingTop: `0.5em`}}>
+                  style={{paddingTop: `0.5em`}}>
               <iframe
-                src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=false&amp;size=large"
+                src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=true&amp;size=large"
                 frameBorder={0}
                 scrolling={0}
                 width={160}
                 height={30}
                 title="GitHub Stars"
               />
-            </span>
+             </span>
+          </div>
           </div>
         </div>
       </header>
