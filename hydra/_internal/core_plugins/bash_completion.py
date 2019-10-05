@@ -8,7 +8,6 @@ import re
 log = logging.getLogger(__name__)
 
 # TODO:
-# Add testing and integration testing
 # Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
 # Test handling of errors loading config from command line during completion
 
@@ -34,7 +33,7 @@ class BashCompletion(CompletionPlugin):
         true
     fi
     if [ $? == 0 ]; then
-        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc hydra.shell.query=bash)
+        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query=bash)
         word=${words[$COMP_CWORD]}
 
         if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
@@ -54,12 +53,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         print(script + self._get_exec())
 
     def uninstall(self):
-        print(
-            """
-unset hydra_bash_completion
-complete -r """
-            + self._get_exec()
-        )
+        print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
 
     def provides(self):
         return "bash"

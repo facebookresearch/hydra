@@ -40,6 +40,7 @@ base_completion_list = [
     "line,num_tabs,expected",
     [
         ("", 2, base_completion_list),
+        (" ", 2, base_completion_list),
         ("dict", 2, ["dict.", "dict_prefix="]),
         ("dict.", 3, ["dict.key1=", "dict.key2=", "dict.key3="]),
         ("dict.key", 2, ["dict.key1=", "dict.key2=", "dict.key3="]),

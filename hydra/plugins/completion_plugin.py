@@ -169,15 +169,14 @@ class CompletionPlugin(Plugin):
     def _query(self, line):
         from .._internal.utils import get_args
 
-        split = line.split(" ")
-        parsed_args = get_args(split)
-        args = parsed_args.overrides
-        if len(args) > 0:
-            word = args[-1]
-            words = args[0:-1]
-        else:
+        new_word = len(line) == 0 or line[-1] == " "
+        parsed_args = get_args(line.split())
+        words = parsed_args.overrides
+        if new_word or len(words) == 0:
             word = ""
-            words = []
+        else:
+            word = words[-1]
+            words = words[0:-1]
 
         config = self.config_loader.load_configuration(words)
 
