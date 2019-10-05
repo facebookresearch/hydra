@@ -8,6 +8,8 @@ This is a simple Hydra application that prints your configuration.
 The `my_app` function is a place holder 
 for your code. We will slowly evolve this example to show-case more Hydra features.
 
+The examples in this are available [here](https://github.com/facebookresearch/hydra/tree/master/tutorial).
+
 Python file: `my_app.py`
 ```python
 import hydra
