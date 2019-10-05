@@ -245,7 +245,6 @@ def test_multirun_with_free_override(
         assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}
 
 
-#
 # @pytest.mark.parametrize(
 #     "calling_file, calling_module",
 #     [
