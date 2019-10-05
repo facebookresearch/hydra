@@ -136,8 +136,8 @@ class ConfigLoader:
             key, value = override.split("=")
             if key in key_to_idx:
                 if "," in value:
-                    # If this is a multirun config (comma separated list), unset the default for the off chance
-                    # It's a ???. it will get added again when we construct the config for the job.
+                    # If this is a multirun config (comma separated list), flag the default to prevent it from being
+                    # loaded until we are constructing the config for individual jobs.
                     value = "_SKIP_"
 
                 if value == "null":
