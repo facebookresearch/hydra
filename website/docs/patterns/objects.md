@@ -78,7 +78,7 @@ db:
     database: tutorial
 ```
 
-Finally, the application can instantiate the object from the configuration with a single line of code:
+With this, you can instantiate the object from the configuration with a single line of code:
 ```python
 @hydra.main(config_path="conf/config.yaml")
 def my_app(cfg):
@@ -86,12 +86,12 @@ def my_app(cfg):
     connection.connect()
 ```
 
-As specified in in the `defaults` section, MySQL is the default.
+MySQL is the default per the `config.yaml` file:
 ```text
 $ python my_app.py
 MySQL connecting to localhost with user=root and password=1234
 ```
-You can now change the instantiate object class and override values from the commmand line:
+Change ehe instantiated object class and override values from the command line:
 ```text
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
