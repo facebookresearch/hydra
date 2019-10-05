@@ -136,9 +136,9 @@ class ConfigLoader:
             key, value = override.split("=")
             if key in key_to_idx:
                 if "," in value:
-                    # If this is a multirun config (comma separated list), unset the default for the off chance
-                    # It's a ???. it will get added again when we construct the config for the job.
-                    value = "null"
+                    # If this is a multirun config (comma separated list), flag the default to prevent it from being
+                    # loaded until we are constructing the config for individual jobs.
+                    value = "_SKIP_"
 
                 if value == "null":
                     del defaults[key_to_idx[key]]
@@ -366,7 +366,7 @@ class ConfigLoader:
                     family = next(iter(default1.keys()))
                     name = default1[family]
                     # Name is none if default value is removed
-                    if name is not None:
+                    if name is not None and "_SKIP_" not in name:
                         merged_cfg = self._merge_config(
                             cfg=merged_cfg,
                             family=family,
@@ -375,12 +375,13 @@ class ConfigLoader:
                         )
                 else:
                     assert isinstance(default1, str)
-                    merged_cfg = self._merge_config(
-                        cfg=merged_cfg,
-                        family="",
-                        name=get_filename(default1),
-                        required=True,
-                    )
+                    if "_SKIP_" not in default1:
+                        merged_cfg = self._merge_config(
+                            cfg=merged_cfg,
+                            family="",
+                            name=get_filename(default1),
+                            required=True,
+                        )
             return merged_cfg
 
         system_list = []

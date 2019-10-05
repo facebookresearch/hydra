@@ -2,10 +2,10 @@
 import hydra
 
 
-@hydra.main()
-def experiment(_):
+@hydra.main(config_path="config.yaml")
+def my_app(_):
     pass
 
 
 if __name__ == "__main__":
-    experiment()
+    my_app()

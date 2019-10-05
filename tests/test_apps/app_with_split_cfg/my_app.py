@@ -2,9 +2,9 @@
 import hydra
 
 
-@hydra.main(config_path="config_with_free_group/config.yaml")
-def my_app(_cfg):
-    print(_cfg.pretty())
+@hydra.main(config_path="config.yaml")
+def my_app(_):
+    pass
 
 
 if __name__ == "__main__":

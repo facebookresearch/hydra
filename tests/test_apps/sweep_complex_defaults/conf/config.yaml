@@ -1,0 +1,5 @@
+defaults:
+  - optimizer: adam
+  - dataset: imagenet
+  - optimizer_dataset: ${defaults.0.optimizer}_${defaults.1.dataset}
+    optional: true
