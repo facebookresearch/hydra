@@ -245,25 +245,22 @@ def test_multirun_with_free_override(
         assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}
 
 
-# @pytest.mark.parametrize(
-#     "calling_file, calling_module",
-#     [
-#         ("tests/test_apps/app_with_cfg/my_app.py", None),
-#         (None, "tests.test_apps.app_with_cfg.my_app"),
-#     ],
-# )
-# def test_sweep_complex_defaults(
-#     task_runner, calling_file, calling_module  # noqa: F811
-# ):
-#     with task_runner(
-#         calling_file=calling_file,
-#         calling_module=calling_module,
-#         config_path="sweep_cfg/config.yaml",
-#         overrides=["hydra/launcher=basic"],
-#     ) as task:
-#         hydra_cfg = task.job_ret.hydra_cfg
-#         assert (
-#             hydra_cfg.hydra.launcher["class"]
-#             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
-#         )
-#         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [
+        ("tests/test_apps/sweep_complex_defaults/my_app.py", None),
+        (None, "tests.test_apps.sweep_complex_defaults.my_app"),
+    ],
+)
+def test_sweep_complex_defaults(
+    sweep_runner, calling_file, calling_module  # noqa: F811
+):
+    with sweep_runner(
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="conf/config.yaml",
+        overrides=["optimizer=adam,nesterov"],
+    ) as sweep:
+        assert len(sweep.returns[0]) == 2
+        assert sweep.returns[0][0].overrides == ["optimizer=adam"]
+        assert sweep.returns[0][1].overrides == ["optimizer=nesterov"]
