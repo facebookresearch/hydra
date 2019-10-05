@@ -1,0 +1,2 @@
+defaults:
+  - hydra/launcher: custom_launcher

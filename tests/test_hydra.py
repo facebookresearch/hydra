@@ -27,7 +27,8 @@ def test_missing_conf_dir(task_runner, calling_file, calling_module):  # noqa: F
 
 
 @pytest.mark.parametrize(
-    "calling_file, calling_module", [("hydra/app.py", None), (None, "hydra.app")]
+    "calling_file, calling_module",
+    [("invalid_dir/app.py", None), (None, "invalid_module.app")],
 )
 def test_missing_conf_file(task_runner, calling_file, calling_module):  # noqa: F811
     with pytest.raises(MissingConfigException):
@@ -41,7 +42,10 @@ def test_missing_conf_file(task_runner, calling_file, calling_module):  # noqa: 
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app.py", None), (None, "tests.test_app.app")],
+    [
+        ("tests/test_apps/app_without_config/my_app.py", None),
+        (None, "tests.test_apps.app_without_config.my_app"),
+    ],
 )
 def test_app_without_config___no_overrides(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -54,7 +58,10 @@ def test_app_without_config___no_overrides(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app.py", None), (None, "tests.test_app.app")],
+    [
+        ("tests/test_apps/app_without_config/my_app.py", None),
+        (None, "tests.test_apps.app_without_config.my_app"),
+    ],
 )
 def test_app_without_config__with_overrides(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -71,7 +78,10 @@ def test_app_without_config__with_overrides(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_cfg/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg.my_app"),
+    ],
 )
 def test_app_with_config_file__no_overrides(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -90,7 +100,10 @@ def test_app_with_config_file__no_overrides(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_cfg/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg.my_app"),
+    ],
 )
 def test_app_with_config_file__with_overide(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -109,13 +122,16 @@ def test_app_with_config_file__with_overide(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_split_cfg/my_app.py", None),
+        (None, "tests.test_apps.app_with_split_cfg.my_app"),
+    ],
 )
 def test_app_with_split_config(task_runner, calling_file, calling_module):  # noqa: F811
     with task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path="split_cfg/config.yaml",
+        config_path="config.yaml",
     ) as task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet"),
@@ -126,7 +142,10 @@ def test_app_with_split_config(task_runner, calling_file, calling_module):  # no
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg_groups.my_app"),
+    ],
 )
 def test_app_with_config_groups__override_dataset__wrong(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -135,7 +154,7 @@ def test_app_with_config_groups__override_dataset__wrong(
         with task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
-            config_path="cfg_groups",
+            config_path="conf",
             overrides=["optimizer=wrong_name"],
         ):
             pass
@@ -144,7 +163,10 @@ def test_app_with_config_groups__override_dataset__wrong(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg_groups.my_app"),
+    ],
 )
 def test_app_with_config_groups__override_all_configs(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -152,7 +174,7 @@ def test_app_with_config_groups__override_all_configs(
     with task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path="cfg_groups",
+        config_path="conf",
         overrides=["optimizer=adam", "optimizer.lr=10"],
     ) as task:
         assert task.job_ret.cfg == dict(optimizer=dict(type="adam", lr=10, beta=0.01))
@@ -161,7 +183,10 @@ def test_app_with_config_groups__override_all_configs(
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_custom_launcher/my_app.py", None),
+        (None, "tests.test_apps.app_with_custom_launcher.my_app"),
+    ],
 )
 def test_app_with_sweep_cfg__override_to_basic_launcher(
     task_runner, calling_file, calling_module  # noqa: F811
@@ -169,7 +194,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
     with task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path="sweep_cfg/config.yaml",
+        config_path="config.yaml",
         overrides=["hydra/launcher=basic"],
     ) as task:
         hydra_cfg = task.job_ret.hydra_cfg
@@ -196,7 +221,10 @@ def test_short_module_name(tmpdir):
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
+    [
+        ("tests/test_apps/app_with_config_with_free_group/my_app.py", None),
+        (None, "tests.test_apps.app_with_config_with_free_group.my_app"),
+    ],
 )
 @pytest.mark.parametrize("overrides", [["free_group=opt1,opt2"]])
 def test_multirun_with_free_override(
@@ -205,7 +233,7 @@ def test_multirun_with_free_override(
     sweep = sweep_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path="config_with_free_group/config.yaml",
+        config_path="conf/config.yaml",
         overrides=overrides,
         strict=True,
     )
@@ -217,22 +245,26 @@ def test_multirun_with_free_override(
         assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}
 
 
-@pytest.mark.parametrize(
-    "calling_file, calling_module",
-    [("tests/test_app/app_with_cfg.py", None), (None, "tests.test_app.app_with_cfg")],
-)
-def test_sweep_complex_defaults(
-    task_runner, calling_file, calling_module  # noqa: F811
-):
-    with task_runner(
-        calling_file=calling_file,
-        calling_module=calling_module,
-        config_path="sweep_cfg/config.yaml",
-        overrides=["hydra/launcher=basic"],
-    ) as task:
-        hydra_cfg = task.job_ret.hydra_cfg
-        assert (
-            hydra_cfg.hydra.launcher["class"]
-            == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
-        )
-        assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
+#
+# @pytest.mark.parametrize(
+#     "calling_file, calling_module",
+#     [
+#         ("tests/test_apps/app_with_cfg/my_app.py", None),
+#         (None, "tests.test_apps.app_with_cfg.my_app"),
+#     ],
+# )
+# def test_sweep_complex_defaults(
+#     task_runner, calling_file, calling_module  # noqa: F811
+# ):
+#     with task_runner(
+#         calling_file=calling_file,
+#         calling_module=calling_module,
+#         config_path="sweep_cfg/config.yaml",
+#         overrides=["hydra/launcher=basic"],
+#     ) as task:
+#         hydra_cfg = task.job_ret.hydra_cfg
+#         assert (
+#             hydra_cfg.hydra.launcher["class"]
+#             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
+#         )
+#         assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
