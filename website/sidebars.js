@@ -24,11 +24,6 @@ module.exports = {
             'patterns/specializing_config',
         ],
 
-        'Deployment': [
-            'deployment/app_packaging',
-        ],
-
-
         'Configuring Hydra': [
             'configure_hydra/intro',
             'configure_hydra/hydra_config',
@@ -38,6 +33,7 @@ module.exports = {
 
 
         'Advanced': [
+            'advanced/app_packaging',
             'advanced/search_path',
             'advanced/plugins',
         ],

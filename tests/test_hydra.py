@@ -207,7 +207,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
 
 def test_short_module_name(tmpdir):
     try:
-        os.chdir("tutorial/020_config_file")
+        os.chdir("examples/tutorial/2_config_file")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         modified_env = os.environ.copy()
         modified_env["HYDRA_MAIN_MODULE"] = "my_app"
