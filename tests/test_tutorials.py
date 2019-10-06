@@ -27,7 +27,7 @@ chdir_hydra_root()
 def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/010_simple_cli_app/my_app.py",
+        "examples/tutorial/1_simple_cli_app/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -38,7 +38,7 @@ def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
 def test_tutorial_working_directory(tmpdir):
     cmd = [
         sys.executable,
-        "tutorial/100_working_directory/my_app.py",
+        "examples/tutorial/8_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
@@ -55,7 +55,7 @@ def test_tutorial_working_directory(tmpdir):
 def test_tutorial_logging(tmpdir, args, expected):
     cmd = [
         sys.executable,
-        "tutorial/110_logging/my_app.py",
+        "examples/tutorial/9_logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -80,7 +80,7 @@ def test_tutorial_logging(tmpdir, args, expected):
 def test_tutorial_config_file(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/020_config_file/my_app.py",
+        "examples/tutorial/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -107,7 +107,7 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
     with expected:
         cmd = [
             sys.executable,
-            "tutorial/020_config_file/my_app.py",
+            "examples/tutorial/2_config_file/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
         ]
         cmd.extend(args)
@@ -136,7 +136,7 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
 def test_tutorial_config_groups(tmpdir, args, output_conf):
     cmd = [
         sys.executable,
-        "tutorial/030_config_groups/my_app.py",
+        "examples/tutorial/3_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -175,7 +175,7 @@ def test_tutorial_config_groups(tmpdir, args, output_conf):
 def test_tutorial_defaults(tmpdir, args, expected):
     cmd = [
         sys.executable,
-        "tutorial/040_defaults/my_app.py",
+        "examples/tutorial/4_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -220,7 +220,7 @@ def test_tutorial_defaults(tmpdir, args, expected):
 )
 def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
     with task_runner(
-        calling_file="tutorial/objects_example/my_app.py",
+        calling_file="examples/patterns/objects/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=[],
@@ -231,7 +231,7 @@ def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
 
 def test_composition_config_example(task_runner):  # noqa: F811
     with task_runner(
-        calling_file="tutorial/050_composition/my_app.py",
+        calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["schema=school"],
@@ -262,7 +262,7 @@ def test_composition_config_example(task_runner):  # noqa: F811
 
 def test_sweeping_example(sweep_runner):  # noqa: F811
     with sweep_runner(
-        calling_file="tutorial/050_composition/my_app.py",
+        calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["schema=warehouse,support", "db=mysql,postgresql"],
@@ -280,7 +280,7 @@ def test_sweeping_example(sweep_runner):  # noqa: F811
 
 def test_specializing_config_example(task_runner):  # noqa: F811
     with task_runner(
-        calling_file="tutorial/specializing_config/example.py",
+        calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["dataset=cifar10"],

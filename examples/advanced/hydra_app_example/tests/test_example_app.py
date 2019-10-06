@@ -24,7 +24,7 @@ def verify_output(result):
 def test_python_run():
     verify_output(
         subprocess.check_output(
-            [sys.executable, "tutorial/hydra_app_example/hydra_app/main.py"]
+            [sys.executable, "examples/advanced/hydra_app_example/hydra_app/main.py"]
         )
     )
 

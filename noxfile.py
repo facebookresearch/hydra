@@ -11,11 +11,7 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = (
-    # TODO: enable after october when https://github.com/pypa/pip/pull/6770 is public
-    ["pip", "install"],
-    ["pip", "install", "-e"],
-)
+PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
@@ -58,8 +54,10 @@ def get_all_plugins():
 
 def test_example_app(session, install_cmd):
     # Install and test example app
-    session.run(*install_cmd, "tutorial/hydra_app_example", silent=True)
-    session.run("pytest", "tutorial/hydra_app_example", silent=True, *session.posargs)
+    session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=True)
+    session.run(
+        "pytest", "examples/advanced/hydra_app_example", silent=True, *session.posargs
+    )
 
 
 @nox.session(python=PYTHON_VERSIONS)

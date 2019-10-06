@@ -24,11 +24,8 @@ def my_app(cfg):
 ```
 
 
-`config_path` can specify your config file as in the [previous command line example](10_simple_cli_app.md), or the root directory for your configuration files.
+`config_path` can specify your config file as in the [previous command line example](simple_cli), or the root directory for your configuration files.
 If a config file is specified, it's directory is the root directory.
-
-Strict mode is disabled by default if `config_path` points to a directory, unlike [the previous example](20_config_file.md) where a configuration file was specified directly.
-
 
 The directory structure of our application now looks like:
 ```text
