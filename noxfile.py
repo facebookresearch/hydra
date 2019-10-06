@@ -54,9 +54,9 @@ def get_all_plugins():
 
 def test_example_app(session, install_cmd):
     # Install and test example app
-    session.run(*install_cmd, "example/advanced/hydra_app_example", silent=True)
+    session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=True)
     session.run(
-        "pytest", "example/advanced/hydra_app_example", silent=True, *session.posargs
+        "pytest", "examples/advanced/hydra_app_example", silent=True, *session.posargs
     )
 
 
