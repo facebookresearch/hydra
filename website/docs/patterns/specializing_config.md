@@ -15,7 +15,7 @@ defaults:
 ```
 
 We want to specialize the config based on the choice of the selected dataset and model:
-Furthermore, we only want to do that if right now for dataset=cifar10 and model=alexnet (and not for 3 other combinations)
+Furthermore, we only want to do it for cifar10 and alexnet and not for 3 other combinations.
 
 OmegaConf supports value interpolation, we can construct a value that would - at runtime - be a function of other values.
 The idea is that we can add another element to the defaults list that would load a file name that depends on those two values:
