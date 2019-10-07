@@ -34,7 +34,7 @@ The key `dataset_model` is an arbitrary directory, it can be anything unique tha
 
 #### ${defaults.0.dataset}_${defaults.1.model}
 the value `${defaults.0.dataset}_${defaults.1.model}` is using OmegaConf's [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation).
-At runtime, that value would resolve to *imagenet_alexnet*, or *cifar_resent* - depending on the values of defaults.dataset and defaults.model.
+At runtime, that value would resolve to *imagenet_alexnet*, or *cifar_resnet* - depending on the values of defaults.dataset and defaults.model.
 This a bit clunky because defaults contains a list (I hope to improve this in the future)
 
 #### optional: true
