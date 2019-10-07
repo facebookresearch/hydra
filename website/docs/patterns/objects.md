@@ -91,7 +91,7 @@ MySQL is the default per the `config.yaml` file:
 $ python my_app.py
 MySQL connecting to localhost with user=root and password=1234
 ```
-Change ehe instantiated object class and override values from the command line:
+Change the instantiated object class and override values from the command line:
 ```text
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
