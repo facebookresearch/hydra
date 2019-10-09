@@ -32,6 +32,11 @@ class BashCompletion(CompletionPlugin):
         helper="${words[0]}"
         true
     fi
+
+    if ! [ -x "$(command -v $helper)" ]; then
+        false
+    fi
+
     if [ $? == 0 ]; then
         options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query=bash)
         word=${words[$COMP_CWORD]}
