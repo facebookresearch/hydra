@@ -175,14 +175,19 @@ def test_file_completion(
         os.chdir(pwd)
 
 
+@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])
 @pytest.mark.parametrize(
     "app_prefix",
     [
         "python foo.py",
         "hydra_app",
+        "hydra_app ",
+        "hy1-_=ra_app",
+        "foo.par",
+        "f_o-o1=2.par",
         "python  foo.py",
         "python tutorials/hydra_app/example/hydra_app/main.py",
-        "/miniconda3/envs/hydra36/bin/python foo.py",
+        "python foo.py",
     ],
 )
 @pytest.mark.parametrize(
@@ -198,11 +203,10 @@ def test_file_completion(
         ("dict.", 5),
     ],
 )
-def test_strip(app_prefix, args_line, args_line_index):
+def test_strip(prefix, app_prefix, args_line, args_line_index):
+    app_prefix = prefix + app_prefix
     if args_line:
         app_prefix = app_prefix + " "
     line = "{}{}".format(app_prefix, args_line)
-    index = len(app_prefix) + args_line_index if args_line_index is not None else None
-    result_line, result_index = BashCompletion.strip_python_or_app_name(line, index)
+    result_line = BashCompletion.strip_python_or_app_name(line)
     assert result_line == args_line
-    assert result_index == args_line_index
