@@ -69,7 +69,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         :return: tuple(args line, index of cursor in args line)
         """
         python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
-        app_args = r"^\s*[\w_\-=\.]+\s*(.*)"
+        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
         match = re.match(python_args, line)
         if match:
             return match.group(1)

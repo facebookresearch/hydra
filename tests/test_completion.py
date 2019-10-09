@@ -175,7 +175,7 @@ def test_file_completion(
         os.chdir(pwd)
 
 
-@pytest.mark.parametrize("prefix", ["", " ", "\t"])
+@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])
 @pytest.mark.parametrize(
     "app_prefix",
     [
@@ -187,7 +187,7 @@ def test_file_completion(
         "f_o-o1=2.par",
         "python  foo.py",
         "python tutorials/hydra_app/example/hydra_app/main.py",
-        "/miniconda3/envs/hydra36/bin/python foo.py",
+        "python foo.py",
     ],
 )
 @pytest.mark.parametrize(
