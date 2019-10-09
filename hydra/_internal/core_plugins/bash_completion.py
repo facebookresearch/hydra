@@ -59,7 +59,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         return "bash"
 
     @staticmethod
-    def strip_python_or_app_name(line, index):
+    def strip_python_or_app_name(line):
         """
         Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
         which could be at the form of python script.py or some_app.
@@ -68,22 +68,15 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         :param index: index of cursor in input line
         :return: tuple(args line, index of cursor in args line)
         """
-        match = re.match(r"^[\\/\w]*python\s+[\\/\w]+.py\s*(.*)", line)
+        python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
+        app_args = r"^\s*[\w_\-=\.]+\s*(.*)"
+        match = re.match(python_args, line)
         if match:
-            ret_index = index - match.start(1) if index is not None else None
-            return match.group(1), ret_index
+            return match.group(1)
         else:
-            match = re.match(r"^[\w-]+\s*(.*)", line)
+            match = re.match(app_args, line)
             if match:
-                ret_index = index - match.start(1) if index is not None else None
-                assert ret_index is None or ret_index >= 0, (
-                    "Invalid index calculated:\n"
-                    "\tinput line : '{}'\n"
-                    "\tinput index={}\n"
-                    "\toutput_line='{}'\n"
-                    "\toutput_index={}".format(line, index, match.group(1), ret_index)
-                )
-                return match.group(1), ret_index
+                return match.group(1)
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
@@ -97,7 +90,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
             index = int(index)
 
         # currently index is ignored.
-        line, index = self.strip_python_or_app_name(line, index)
+        line = self.strip_python_or_app_name(line)
         print(" ".join(self._query(line)))
 
     @staticmethod
