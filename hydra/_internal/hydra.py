@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
+import copy
+import string
 from collections import defaultdict
 from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict, OmegaConf
+import hydra
 
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
@@ -26,10 +29,9 @@ log = None
 
 class Hydra:
     def __init__(
-        self, calling_file, calling_module, config_path, task_function, strict, version
+        self, calling_file, calling_module, config_path, task_function, strict
     ):
         setup_globals()
-        self.version = version
         assert calling_module is not None or calling_file is not None
         basedir_prefix = ""
         if calling_module is None:
@@ -124,17 +126,24 @@ class Hydra:
         task_overrides = cfg.hydra.overrides.task
         return sweeper.sweep(arguments=task_overrides)
 
+    @staticmethod
+    def get_sanitized_hydra_cfg(src_cfg):
+        cfg = copy.deepcopy(src_cfg)
+        for key in list(cfg.keys()):
+            if key != "hydra":
+                del cfg[key]
+        del cfg.hydra["hydra_help"]
+        del cfg.hydra["help"]
+        return cfg
+
     def show_cfg(self, overrides, cfg_type):
         assert cfg_type in ["job", "hydra", "all"]
         cfg = self._load_config(overrides)
         if cfg_type == "job":
             del cfg["hydra"]
         elif cfg_type == "hydra":
-            for key in list(cfg.keys()):
-                if key != "hydra":
-                    del cfg[key]
-
-        log.info("\n" + cfg.pretty())
+            cfg = self.get_sanitized_hydra_cfg(cfg)
+        print(cfg.pretty())
 
     @staticmethod
     def get_shell_to_plugin_map(config_loader):
@@ -183,9 +192,71 @@ class Hydra:
             plugin = find_plugin(arguments.query)
             plugin.query()
 
-    def help(self, args, overrides):
-        cfg = self._load_config(overrides)
-        print(cfg.hydra.help.template)
+    @staticmethod
+    def format_args_help(args_parser):
+        s = ""
+        overrides = None
+        for action in args_parser._actions:
+            if len(action.option_strings) == 0:
+                overrides = action
+            else:
+                s += "{} : {}\n".format(",".join(action.option_strings), action.help)
+        s += "Overrides : " + overrides.help
+        return s
+
+    def list_all_config_groups(self, parent=""):
+        groups = []
+        for group in self.config_loader.list_groups(parent):
+            if parent == "":
+                group_name = group
+            else:
+                group_name = "{}/{}".format(parent, group)
+            files = self.config_loader.get_group_options(group_name, file_type="file")
+            dirs = self.config_loader.get_group_options(group_name, file_type="dir")
+            if len(files) > 0:
+                groups.append(group_name)
+            if len(dirs) > 0:
+                groups.extend(self.list_all_config_groups(group_name))
+        return groups
+
+    def format_config_groups(self, predicate):
+        groups = [x for x in self.list_all_config_groups() if predicate(x)]
+        s = ""
+        for group in sorted(groups):
+            options = self.config_loader.get_group_options(group)
+            items = "\n".join(["\t" + o for o in options])
+            s += "{}:\n{}\n".format(group, items)
+
+        return s
+
+    def get_help(self, help_cfg, cfg, args_parser):
+        s = string.Template(help_cfg.template)
+        help_text = s.substitute(
+            FLAGS_HELP=self.format_args_help(args_parser),
+            HYDRA_CONFIG_GROUPS=self.format_config_groups(
+                lambda x: x.startswith("hydra/")
+            ),
+            APP_CONFIG_GROUPS=self.format_config_groups(
+                lambda x: not x.startswith("hydra/")
+            ),
+            CONFIG=cfg.pretty(resolve=False),
+        )
+        return help_text
+
+    def hydra_help(self, args_parser, args):
+        cfg = self._load_config(args.overrides)
+        help_cfg = cfg.hydra.hydra_help
+        cfg = self.get_sanitized_hydra_cfg(cfg)
+        help_text = self.get_help(help_cfg, cfg, args_parser)
+        print(help_text)
+
+    def app_help(self, args_parser, args):
+        cfg = self._load_config(args.overrides)
+        help_cfg = cfg.hydra.help
+        clean_cfg = copy.deepcopy(cfg)
+        del clean_cfg["hydra"]
+        help_text = self.get_help(help_cfg, clean_cfg, args_parser)
+        print(help_text)
 
     @staticmethod
     def _log_header(header, prefix="", filler="-"):
@@ -269,7 +340,7 @@ class Hydra:
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
         with open_dict(cfg):
-            cfg.hydra.runtime.version = self.version
+            cfg.hydra.runtime.version = hydra.__version__
             cfg.hydra.runtime.cwd = os.getcwd()
         configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
         global log

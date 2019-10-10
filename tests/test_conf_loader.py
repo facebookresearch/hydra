@@ -129,6 +129,7 @@ class TestConfigLoader:
             ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
             ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
             ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+            ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
             ("missing-optional-default.yaml", path, "test"),
             ("foo/missing.yaml", None, None),
         ]
@@ -148,6 +149,7 @@ class TestConfigLoader:
             ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
             ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
             ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+            ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
             ("custom_default_launcher.yaml", path, "test"),
         ]
 
@@ -217,6 +219,7 @@ def test_default_removal(config_file, overrides):
         ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         (config_file, "hydra/test_utils/configs", "test"),
     ]
 
@@ -273,6 +276,7 @@ def test_override_hydra_config_group_from_config_file():
         ("hydra/job_logging/disabled.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("overriding_logging_default.yaml", "hydra/test_utils/configs", "test"),
     ]
 
@@ -291,6 +295,7 @@ def test_list_groups():
     ]
 
     assert sorted(config_loader.list_groups("hydra")) == [
+        "help",
         "hydra_logging",
         "job_logging",
         "launcher",
@@ -313,6 +318,7 @@ def test_non_config_group_default():
         ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("non_config_group_default.yaml", "hydra/test_utils/configs", "test"),
         ("some_config.yaml", "hydra/test_utils/configs", "test"),
     ]
