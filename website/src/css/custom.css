@@ -21,3 +21,21 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
 }
+
+.hero {
+  padding: 0;
+}
+
+.hero .hero__title {
+  font-size: 6.5rem;
+  margin: 0 0 0.15em;
+  line-height: 1;
+}
+
+.hero .hero__subtitle {
+  font-weight: 500;
+  line-height: 1.2;
+  opacity: .9;;
+  margin-bottom: 30px;
+  color: #276475;
+}
