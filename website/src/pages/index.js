@@ -55,32 +55,38 @@ function Home() {
       description="A framework for elegantly configuring complex applications">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttonContainer}>
-          <div className={styles.imageLogo}><img src="img/logo.svg"/></div>
-          <div className={styles.buttons}>
-            <Link
-              className={classnames(
-                'button button--outline button--secondary button--lg',
-                styles.getStarted,
-              )}
-              to={withBaseUrl('docs/intro')}>
-              Get Started
-            </Link>
-            <span className={styles['index-ctas-github-button']}
-                  style={{paddingTop: `0.5em`}}>
-              <iframe
-                src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=true&amp;size=large"
-                frameBorder={0}
-                scrolling={0}
-                width={160}
-                height={30}
-                title="GitHub Stars"
-              />
-             </span>
+          {/* Left */}
+          <div className={styles.heroLeft}>
+            <div className={styles.imageLogo}><img src="img/logo.svg" /></div>
           </div>
+          {/* Right */}
+          <div className={styles.heroRight}>
+            <h1 className={"hero__title"}>{siteConfig.title}</h1>
+            <p className="hero__subtitle">{siteConfig.tagline}</p>
+            <div className={styles.buttonContainer}>
+              <div className={styles.buttons}>
+                <Link
+                  className={classnames(
+                    'button button--success button--lg',
+                    styles.getStarted,
+                  )}
+                  to={withBaseUrl('docs/intro')}>
+                  Get Started
+                </Link>
+                <span className={styles['index-ctas-github-button']}>
+                  <iframe
+                    src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=true&amp;size=large"
+                    frameBorder={0}
+                    scrolling={0}
+                    width={160}
+                    height={30}
+                    title="GitHub Stars"
+                  />
+                </span>
+              </div>
+            </div>
           </div>
+
         </div>
       </header>
       <main>
@@ -89,20 +95,20 @@ function Home() {
             <div className="container">
               <div className="row">
                 {features.map(({imageUrl, title, description}, idx) => (
-                  <div
-                    key={idx}
-                    className={classnames('col col--4', styles.feature)}>
-                    {imageUrl && (
-                      <div className="text--center">
-                        <img
-                          className={styles.featureImage}
-                          src={withBaseUrl(imageUrl)}
-                          alt={title}
-                        />
-                      </div>
-                    )}
-                    <h3 className="feature">{title}</h3>
-                    <p>{description}</p>
+                  <div key={idx} className={'col col--4'}>
+                    <div className={styles.feature}>
+                      {imageUrl && (
+                        <div className={styles.thumbnail}>
+                          <img
+                            className={styles.featureImage}
+                            src={withBaseUrl(imageUrl)}
+                            alt={title}
+                          />
+                        </div>
+                      )}
+                      <h3 className="feature">{title}</h3>
+                      <p>{description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
