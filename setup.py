@@ -108,6 +108,7 @@ with open("README.md", "r") as fh:
         # pip install -e .[dev]
         extras_require={
             "dev": [
+                "black",
                 "coverage",
                 "flake8",
                 "flake8-copyright",

@@ -4,10 +4,9 @@ import os
 import sys
 from .hydra import Hydra
 import argparse
-from argparse import RawTextHelpFormatter
 
 
-def run_hydra(args, task_function, config_path, strict):
+def run_hydra(args, task_function, config_path, strict, version):
     stack = inspect.stack()
     frame = stack[2]
 
@@ -35,7 +34,13 @@ def run_hydra(args, task_function, config_path, strict):
         config_path=config_path,
         task_function=task_function,
         strict=strict,
+        version=version,
     )
+
+    if args.help:
+        hydra.help(args=args, overrides=args.overrides)
+        sys.exit(0)
+
     has_show_cfg = args.cfg is not None
     num_commands = args.run + has_show_cfg + args.multirun + args.shell_completion
     if num_commands > 1:
@@ -67,9 +72,7 @@ def _get_exec_command():
 
 
 def get_args(args=None, version=None):
-    parser = argparse.ArgumentParser(
-        description="Hydra", formatter_class=RawTextHelpFormatter
-    )
+    parser = argparse.ArgumentParser(add_help=False, description="Hydra")
     if version is not None:
         parser.add_argument(
             "--version", action="version", version="Hydra {}".format(version)
@@ -98,6 +101,8 @@ def get_args(args=None, version=None):
         action="store_true",
         help="Run multiple jobs with the configured launcher",
     )
+
+    parser.add_argument("--help", "-h", action="store_true", help="Show dynamic help")
 
     shell = "SHELL_NAME"
     install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)

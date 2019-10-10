@@ -26,9 +26,10 @@ log = None
 
 class Hydra:
     def __init__(
-        self, calling_file, calling_module, config_path, task_function, strict
+        self, calling_file, calling_module, config_path, task_function, strict, version
     ):
         setup_globals()
+        self.version = version
         assert calling_module is not None or calling_file is not None
         basedir_prefix = ""
         if calling_module is None:
@@ -182,6 +183,10 @@ class Hydra:
             plugin = find_plugin(arguments.query)
             plugin.query()
 
+    def help(self, args, overrides):
+        cfg = self._load_config(overrides)
+        print(cfg.hydra.help.template)
+
     @staticmethod
     def _log_header(header, prefix="", filler="-"):
         log.debug(prefix + header)
@@ -263,6 +268,9 @@ class Hydra:
 
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
+        with open_dict(cfg):
+            cfg.hydra.runtime.version = self.version
+            cfg.hydra.runtime.cwd = os.getcwd()
         configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
         global log
         log = logging.getLogger(__name__)
