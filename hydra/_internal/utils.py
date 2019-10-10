@@ -6,7 +6,7 @@ from .hydra import Hydra
 import argparse
 
 
-def run_hydra(args, task_function, config_path, strict, version):
+def run_hydra(args_parser, task_function, config_path, strict):
     stack = inspect.stack()
     frame = stack[2]
 
@@ -34,11 +34,14 @@ def run_hydra(args, task_function, config_path, strict, version):
         config_path=config_path,
         task_function=task_function,
         strict=strict,
-        version=version,
     )
 
+    args = args_parser.parse_args()
     if args.help:
-        hydra.help(args=args, overrides=args.overrides)
+        hydra.app_help(args_parser=args_parser, args=args)
+        sys.exit(0)
+    if args.hydra_help:
+        hydra.hydra_help(args_parser=args_parser, args=args)
         sys.exit(0)
 
     has_show_cfg = args.cfg is not None
@@ -71,8 +74,10 @@ def _get_exec_command():
         return executable
 
 
-def get_args(args=None, version=None):
+def get_args_parser(version=None):
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")
+    parser.add_argument("--help", "-h", action="store_true", help="Application's help")
+    parser.add_argument("--hydra-help", action="store_true", help="Hydra's help")
     if version is not None:
         parser.add_argument(
             "--version", action="version", version="Hydra {}".format(version)
@@ -80,8 +85,7 @@ def get_args(args=None, version=None):
     parser.add_argument(
         "overrides",
         nargs="*",
-        help="""Any key=value arguments to override config values
-(use dots for.nested=overrides)""",
+        help="Any key=value arguments to override config values (use dots for.nested=overrides)",
     )
 
     parser.add_argument(
@@ -102,8 +106,6 @@ def get_args(args=None, version=None):
         help="Run multiple jobs with the configured launcher",
     )
 
-    parser.add_argument("--help", "-h", action="store_true", help="Show dynamic help")
-
     shell = "SHELL_NAME"
     install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)
     uninstall_cmd = 'eval "$({} -sc uninstall={})"'.format(_get_exec_command(), shell)
@@ -112,14 +114,17 @@ def get_args(args=None, version=None):
         "-sc",
         action="store_true",
         help="""Install or Uninstall shell completion:
-Install:
-{}
+    Install:
+    {}
 
-Uninstall:
-{}
+    Uninstall:
+    {}
 """.format(
             install_cmd, uninstall_cmd
         ),
     )
+    return parser
 
-    return parser.parse_args(args)
+
+def get_args(args=None, version=None):
+    return get_args_parser(version=version).parse_args(args=args)
