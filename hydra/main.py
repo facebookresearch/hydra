@@ -19,10 +19,11 @@ def main(config_path="", strict=None):
         def decorated_main():
             try:
                 run_hydra(
-                    get_args(version=hydra.__version__),
-                    task_function,
-                    config_path,
-                    strict,
+                    args=get_args(version=hydra.__version__),
+                    task_function=task_function,
+                    config_path=config_path,
+                    strict=strict,
+                    version=hydra.__version__,
                 )
             except KeyboardInterrupt:
                 sys.exit(-1)

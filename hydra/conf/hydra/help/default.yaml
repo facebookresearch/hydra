@@ -1,0 +1,13 @@
+hydra:
+  help:
+    template: |
+      Hydra ${hydra.runtime.version}
+
+      Hydra flags
+      $FLAGS_HELP
+
+      Available configuration groups:
+      $CONFIG_GROUPS
+
+      Generated configuration
+      $CONFIG

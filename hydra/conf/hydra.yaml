@@ -4,6 +4,7 @@ defaults:
   - hydra/launcher: basic
   - hydra/sweeper: basic
   - hydra/output: default
+  - hydra/help: default
 
 hydra:
   # Normal run output configuration
@@ -35,6 +36,10 @@ hydra:
   # job runtime information will be populated here
   job: {}
 
+  # populated at runtime
+  runtime:
+    version: ???
+
   # Can be a boolean, string or a list of strings
   # If a boolean, setting to true will set the log level for the root logger to debug
   # If a string, it's interpreted as a the list [string]
@@ -43,3 +48,6 @@ hydra:
   # hydra.verbose=true
   # hydra.verbose=[hydra,__main__]
   verbose: false
+
+  # Program Help template
+  help: ???
