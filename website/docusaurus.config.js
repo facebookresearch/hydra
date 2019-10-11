@@ -14,6 +14,9 @@ module.exports = {
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
     themeConfig: {
+        googleAnalytics: {
+          trackingID: 'UA-149862507-1',
+        },
         navbar: {
             title: 'Hydra',
             logo: {
