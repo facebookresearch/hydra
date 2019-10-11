@@ -7,7 +7,6 @@ from collections import defaultdict
 from os.path import realpath, dirname, splitext, basename
 
 from omegaconf import open_dict, OmegaConf
-import hydra
 
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
@@ -340,7 +339,9 @@ class Hydra:
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
         with open_dict(cfg):
-            cfg.hydra.runtime.version = hydra.__version__
+            from .. import version
+
+            cfg.hydra.runtime.version = version.number
             cfg.hydra.runtime.cwd = os.getcwd()
         configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
         global log
