@@ -1,7 +1,7 @@
 {
   "main": [
     "/main.a2c8fe5825836a42a141.css",
-    "/main.049c410d88dae715784d.js"
+    "/main.01c5c4e531da7e878f6f.js"
   ],
   "component---site-src-pages-index-jsc-4-f-f99": [
     "/component---site-src-pages-index-jsc-4-f-f99.0b78d2f899f6616269c8.css",
@@ -9,7 +9,7 @@
   ],
   "component---theme-doc-page-1-be-9be": [],
   "docsMetadata---docs-92-d-b06": [
-    "/docsMetadata---docs-92-d-b06.651bb157e84a63db9dcd.js"
+    "/docsMetadata---docs-92-d-b06.a12d77f547b7d80d64a8.js"
   ],
   "component---theme-doc-item-178-a40": [
     "/component---theme-doc-item-178-a40.de2648345892298aff25.css",
@@ -69,88 +69,88 @@
   "metadata---docs-configure-hydra-workdir-1-a-8-e4d": [
     "/metadata---docs-configure-hydra-workdir-1-a-8-e4d.161f46f2443426d32ccf.js"
   ],
-  "content---docs-development-releasee-04-b9d": [
-    "/content---docs-development-releasee-04-b9d.e484476197f9cb5c6766.js"
-  ],
-  "metadata---docs-development-releasea-81-2d2": [
-    "/metadata---docs-development-releasea-81-2d2.1a3b1f88c686e2ed5987.js"
-  ],
   "content---docs-development-contributing-946-4f0": [
-    "/content---docs-development-contributing-946-4f0.97bb8bab1d660e5596a1.js"
+    "/content---docs-development-contributing-946-4f0.eeaef7873e35e22a03a7.js"
   ],
   "metadata---docs-development-contributing-138-4fa": [
-    "/metadata---docs-development-contributing-138-4fa.a65f59e8141a6c41baea.js"
+    "/metadata---docs-development-contributing-138-4fa.939d80a8eed58293e3c4.js"
   ],
-  "content---docs-patterns-objects-594-c72": [
-    "/content---docs-patterns-objects-594-c72.1d26c4afcf9402b6eb68.js"
+  "content---docs-development-releasee-04-b9d": [
+    "/content---docs-development-releasee-04-b9d.0fda6adcad7f61744f4e.js"
   ],
-  "metadata---docs-patterns-objects-5-d-0-4fd": [
-    "/metadata---docs-patterns-objects-5-d-0-4fd.e3a6644270d090a881fa.js"
-  ],
-  "content---docs-patterns-specializing-config-6-a-5-565": [
-    "/content---docs-patterns-specializing-config-6-a-5-565.35582177272414d01658.js"
-  ],
-  "metadata---docs-patterns-specializing-configa-0-f-b88": [
-    "/metadata---docs-patterns-specializing-configa-0-f-b88.87a671ef00a230611ce5.js"
+  "metadata---docs-development-releasea-81-2d2": [
+    "/metadata---docs-development-releasea-81-2d2.afdebc3f67852807f39d.js"
   ],
   "content---docs-tutorial-debugging-8-fa-ea1": [
-    "/content---docs-tutorial-debugging-8-fa-ea1.96c877ab6eaa1f4de98e.js"
+    "/content---docs-tutorial-debugging-8-fa-ea1.50fd48e456844af89535.js"
   ],
   "metadata---docs-tutorial-debugging-4-c-7-e10": [
-    "/metadata---docs-tutorial-debugging-4-c-7-e10.98b5c044455d65ae3fa1.js"
+    "/metadata---docs-tutorial-debugging-4-c-7-e10.e5ffb0ef953df04e264e.js"
   ],
   "content---docs-tutorial-simple-clib-1-e-52e": [
-    "/content---docs-tutorial-simple-clib-1-e-52e.c0e9e87b05c9e2882509.js"
+    "/content---docs-tutorial-simple-clib-1-e-52e.e67da04ca9f063fca7fc.js"
   ],
   "metadata---docs-tutorial-simple-cli-68-e-3fa": [
-    "/metadata---docs-tutorial-simple-cli-68-e-3fa.19ad666914ac5cb20f34.js"
+    "/metadata---docs-tutorial-simple-cli-68-e-3fa.2135e449c52f1743761d.js"
   ],
   "content---docs-tutorial-config-file-612-6e8": [
-    "/content---docs-tutorial-config-file-612-6e8.b8890c88d87cd947da82.js"
+    "/content---docs-tutorial-config-file-612-6e8.cc0ac500a6c6e4959a4f.js"
   ],
   "metadata---docs-tutorial-config-file-539-d3d": [
-    "/metadata---docs-tutorial-config-file-539-d3d.4d64a84c51a9c6118ad9.js"
+    "/metadata---docs-tutorial-config-file-539-d3d.867da9ec1cee8e2621dc.js"
   ],
   "content---docs-tutorial-config-groupscc-9-679": [
-    "/content---docs-tutorial-config-groupscc-9-679.4d4a0588461651f3ea67.js"
+    "/content---docs-tutorial-config-groupscc-9-679.7a7fc30c0ef2fed22cfe.js"
   ],
   "metadata---docs-tutorial-config-groups-5-f-7-555": [
-    "/metadata---docs-tutorial-config-groups-5-f-7-555.62315f42ac86ca727e71.js"
+    "/metadata---docs-tutorial-config-groups-5-f-7-555.8020676b571e72aaf2b4.js"
   ],
   "content---docs-tutorial-defaultsf-24-f5d": [
-    "/content---docs-tutorial-defaultsf-24-f5d.4eb7cce71a09c8f27db6.js"
+    "/content---docs-tutorial-defaultsf-24-f5d.db41ffa7b8ba28f0ad1b.js"
   ],
   "metadata---docs-tutorial-defaults-235-509": [
-    "/metadata---docs-tutorial-defaults-235-509.787f0b55e024ee43f76c.js"
+    "/metadata---docs-tutorial-defaults-235-509.7e1925fd796522752faa.js"
+  ],
+  "content---docs-tutorial-composition-1-ce-5b4": [
+    "/content---docs-tutorial-composition-1-ce-5b4.87e793c55c012bcdddb8.js"
+  ],
+  "metadata---docs-tutorial-composition-02-d-10f": [
+    "/metadata---docs-tutorial-composition-02-d-10f.a76622dd3118ad180603.js"
   ],
   "content---docs-tutorial-multi-runef-6-850": [
-    "/content---docs-tutorial-multi-runef-6-850.ecc3783bf5c1510732a5.js"
+    "/content---docs-tutorial-multi-runef-6-850.3e2563ca0c998738de12.js"
   ],
   "metadata---docs-tutorial-multi-run-14-a-a88": [
-    "/metadata---docs-tutorial-multi-run-14-a-a88.8e434bc6572bf1e320a2.js"
+    "/metadata---docs-tutorial-multi-run-14-a-a88.632eaed8c8949f1521f5.js"
   ],
   "content---docs-tutorial-tab-completion-19-f-193": [
     "/content---docs-tutorial-tab-completion-19-f-193.eacc7558ab711d407738.js"
   ],
   "metadata---docs-tutorial-tab-completion-949-461": [
-    "/metadata---docs-tutorial-tab-completion-949-461.1a406a1fa26e74a1d923.js"
-  ],
-  "content---docs-tutorial-composition-1-ce-5b4": [
-    "/content---docs-tutorial-composition-1-ce-5b4.9dbf110f055809a85d94.js"
-  ],
-  "metadata---docs-tutorial-composition-02-d-10f": [
-    "/metadata---docs-tutorial-composition-02-d-10f.1b7a97e7c54186709be6.js"
+    "/metadata---docs-tutorial-tab-completion-949-461.a25e1cb76f7e126fbe2a.js"
   ],
   "content---docs-tutorial-working-directory-8-e-3-16a": [
-    "/content---docs-tutorial-working-directory-8-e-3-16a.8719bcb0ccac0bc1b4dc.js"
+    "/content---docs-tutorial-working-directory-8-e-3-16a.ec1eda0514ff09b27557.js"
   ],
   "metadata---docs-tutorial-working-directoryc-29-897": [
-    "/metadata---docs-tutorial-working-directoryc-29-897.f1d753a04f75b0dc31d2.js"
+    "/metadata---docs-tutorial-working-directoryc-29-897.cecf821fb504330d2753.js"
   ],
   "content---docs-tutorial-logging-83-f-bc1": [
-    "/content---docs-tutorial-logging-83-f-bc1.cc9b033eb1f185ec09bb.js"
+    "/content---docs-tutorial-logging-83-f-bc1.67388760a577fafe21c3.js"
   ],
   "metadata---docs-tutorial-loggingf-9-b-0de": [
-    "/metadata---docs-tutorial-loggingf-9-b-0de.9c9b10d5de5693ec2620.js"
+    "/metadata---docs-tutorial-loggingf-9-b-0de.40b1462abeb7d6f6a932.js"
+  ],
+  "content---docs-patterns-objects-594-c72": [
+    "/content---docs-patterns-objects-594-c72.5b35749f6ae3c57ad075.js"
+  ],
+  "metadata---docs-patterns-objects-5-d-0-4fd": [
+    "/metadata---docs-patterns-objects-5-d-0-4fd.371c34ba4df8d977360b.js"
+  ],
+  "content---docs-patterns-specializing-config-6-a-5-565": [
+    "/content---docs-patterns-specializing-config-6-a-5-565.dd91f126e2bc7414732e.js"
+  ],
+  "metadata---docs-patterns-specializing-configa-0-f-b88": [
+    "/metadata---docs-patterns-specializing-configa-0-f-b88.29727573dccf3fa50485.js"
   ]
 }
