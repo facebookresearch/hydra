@@ -30,7 +30,7 @@ You can enable DEBUG level logging from the command line  by overriding `hydra.v
 
 `hydra.verbose` can be a Boolean, a String or a List:
 Examples:
-* `hydra.verbose=true` : Sset **all** loggers log level to `DEBUG`
+* `hydra.verbose=true` : Set **all** loggers log level to `DEBUG`
 * `hydra.verbose=__main__` : Set the `__main__` logger log level to `DEBUG`
 * `hydra.verbose=[__main__,hydra]`: Set the log levels of the loggers `__main__` and hydra log to `DEBUG`
 
