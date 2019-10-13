@@ -53,6 +53,7 @@ base_completion_list = [
             3,
             [
                 "hydra/help=",
+                "hydra/hydra_help=",
                 "hydra/hydra_logging=",
                 "hydra/job_logging=",
                 "hydra/launcher=",

@@ -27,7 +27,7 @@ Follow Hydra on Twitter and Facebook:
 
 
 ## Citing Hydra
-Please use:
+If you use Hydra in your research please use the following BibTeX entry:
 ```text
 @Misc{,
   author =       {Omry Yadan},

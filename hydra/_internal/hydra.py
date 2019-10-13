@@ -218,13 +218,18 @@ class Hydra:
                 groups.extend(self.list_all_config_groups(group_name))
         return groups
 
-    def format_config_groups(self, predicate):
+    def format_config_groups(self, predicate, compact=True):
         groups = [x for x in self.list_all_config_groups() if predicate(x)]
         s = ""
         for group in sorted(groups):
-            options = self.config_loader.get_group_options(group)
-            items = "\n".join(["\t" + o for o in options])
-            s += "{}:\n{}\n".format(group, items)
+            options = sorted(self.config_loader.get_group_options(group))
+            if compact:
+                items = ", ".join(options)
+                line = "{}: {}".format(group, items)
+            else:
+                items = "\n".join(["  " + o for o in options])
+                line = "{}:\n{}".format(group, items)
+            s += line + "\n"
 
         return s
 

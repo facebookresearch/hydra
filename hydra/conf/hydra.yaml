@@ -1,25 +1,21 @@
 defaults:
-  - hydra/hydra_logging : default
-  - hydra/job_logging : default
-  - hydra/launcher: basic
-  - hydra/sweeper: basic
-  - hydra/output: default
-  - hydra/help: default
+  - hydra/hydra_logging : default   # Hydra's logging config
+  - hydra/job_logging : default     # Job's logging config
+  - hydra/launcher: basic           # Launcher config
+  - hydra/sweeper: basic            # Sweeper config
+  - hydra/output: default           # Output directory
+  - hydra/help: default             # --help template
+  - hydra/hydra_help: default       # --hydra-help template
 
 hydra:
-  # Normal run output configuration
-  run: ???
-  # Multi-run output configuration
-  sweep: ???
-
-  # Logging configuration for Hydra
-  hydra_logging: ???
-  # Logging configuration for the job
-  job_logging: ???
-
-  sweeper: ???
-
-  launcher: ???
+  run: ???              # Normal run output configuration
+  sweep: ???            # Multi-run output configuration
+  hydra_logging: ???    # Logging configuration for Hydra
+  job_logging: ???      # Logging configuration for the job
+  sweeper: ???          # Sweeper configuration
+  launcher: ???         # Launcher configuration
+  help: ???             # Program Help template
+  hydra_help: ???       # Hydra's help template
 
   # Output directory for produced configuration files and overrides.
   # E.g., hydra.yaml, overrides.yaml will go here. Useful for debugging
@@ -38,7 +34,8 @@ hydra:
 
   # populated at runtime
   runtime:
-    version: ???
+    version: ???    # Hydra's version
+    cwd: ???        # Original working directory the app was executed from
 
   # Can be a boolean, string or a list of strings
   # If a boolean, setting to true will set the log level for the root logger to debug
@@ -48,33 +45,3 @@ hydra:
   # hydra.verbose=true
   # hydra.verbose=[hydra,__main__]
   verbose: false
-
-  # Program Help template
-  help: ???
-
-  hydra_help:
-    # Help header.
-
-    # Basic Hydra flags:
-    #   $FLAGS_HELP
-    #
-    # Config groups, choose one of:
-    #   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
-    #   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
-    #
-    # Configuration generated with overrides:
-    #   $CONFIG : Generated config
-    #
-    template: |
-      Hydra (${hydra.runtime.version})
-      See https://cli.dev for more info.
-
-      == Flags ==
-      $FLAGS_HELP
-
-      == Configuration groups ==
-      Compose your configuration from those groups (For example, append hydra/job_logging=disabled to command line)
-
-      $HYDRA_CONFIG_GROUPS
-
-      Use '--cfg hydra' to Show the Hydra config.
