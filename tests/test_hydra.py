@@ -315,4 +315,6 @@ def test_help(tmpdir, script, overrides, expected):
     cmd.append("--help")
     print(" ".join(cmd))
     result = str(subprocess.check_output(cmd).decode("utf-8"))
+    # normalize newlines on Windows to make testing easier
+    result = result.replace("\r\n", "\n")
     assert result == expected
