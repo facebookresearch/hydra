@@ -75,7 +75,7 @@ def _get_exec_command():
 
 
 def get_args_parser():
-    from hydra import __version__
+    from .. import __version__
 
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")
     parser.add_argument("--help", "-h", action="store_true", help="Application's help")
