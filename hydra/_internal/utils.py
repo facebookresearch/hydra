@@ -74,14 +74,15 @@ def _get_exec_command():
         return executable
 
 
-def get_args_parser(version=None):
+def get_args_parser():
+    from hydra import __version__
+
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")
     parser.add_argument("--help", "-h", action="store_true", help="Application's help")
     parser.add_argument("--hydra-help", action="store_true", help="Hydra's help")
-    if version is not None:
-        parser.add_argument(
-            "--version", action="version", version="Hydra {}".format(version)
-        )
+    parser.add_argument(
+        "--version", action="version", version="Hydra {}".format(__version__)
+    )
     parser.add_argument(
         "overrides",
         nargs="*",
@@ -126,5 +127,5 @@ def get_args_parser(version=None):
     return parser
 
 
-def get_args(args=None, version=None):
-    return get_args_parser(version=version).parse_args(args=args)
+def get_args(args=None):
+    return get_args_parser().parse_args(args=args)

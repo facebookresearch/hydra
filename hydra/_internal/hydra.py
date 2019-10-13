@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 import logging
 import os
-import copy
 import string
 from collections import defaultdict
 from os.path import realpath, dirname, splitext, basename
@@ -344,9 +344,9 @@ class Hydra:
     def _load_config(self, overrides):
         cfg = self.config_loader.load_configuration(overrides)
         with open_dict(cfg):
-            from .. import version
+            from .. import __version__
 
-            cfg.hydra.runtime.version = version.number
+            cfg.hydra.runtime.version = __version__
             cfg.hydra.runtime.cwd = os.getcwd()
         configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
         global log
