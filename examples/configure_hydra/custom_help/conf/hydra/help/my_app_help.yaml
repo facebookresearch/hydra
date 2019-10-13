@@ -1,0 +1,41 @@
+hydra:
+  help:
+    # App name, override to match the name your app is known by
+    app_name: AwesomeApp
+
+    # Help header, customize to describe your app to your users
+    header: |
+      == ${hydra.help.app_name} ==
+
+    footer: |
+      Powered by Hydra (https://cli.dev)
+      Use --hydra-help to view Hydra specific help
+
+    # Basic Hydra flags:
+    #   $FLAGS_HELP
+    #
+    # Config groups, choose one of:
+    #   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
+    #   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
+    #
+    # Configuration generated with overrides:
+    #   $CONFIG : Generated config
+    #
+    template: |
+      ${hydra.help.header}
+
+      This is ${hydra.help.app_name}!
+      You can choose a db driver by appending
+      == Configuration groups ==
+      Compose your configuration from those groups (db=mysql)
+
+      $APP_CONFIG_GROUPS
+
+      == Config ==
+      This is the config generated for this run.
+      You can override everything, for example:
+      python my_app.py db.user=foo db.pass=bar
+      -------
+      $CONFIG
+      -------
+      ${hydra.help.footer}

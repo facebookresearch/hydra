@@ -7,6 +7,7 @@ You can enable shell TAB completion, for example:
 ```
 eval "$(python my_app.py -sc install=SHELL_NAME)"
 ```
+Get the exact command to install the completion from `--hydra-help`.
 
 Replace SHELL_NAME by your shell name, currently, only Bash is supported and we are relying on the community to implement completion plugins for additional shells.
 

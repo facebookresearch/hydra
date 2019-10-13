@@ -264,3 +264,57 @@ def test_sweep_complex_defaults(
         assert len(sweep.returns[0]) == 2
         assert sweep.returns[0][0].overrides == ["optimizer=adam"]
         assert sweep.returns[0][1].overrides == ["optimizer=nesterov"]
+
+
+@pytest.mark.parametrize(
+    "script, overrides,expected",
+    [
+        (
+            "examples/tutorial/1_simple_cli_app/my_app.py",
+            ["hydra.help.template=foo"],
+            "foo\n",
+        ),
+        (
+            "examples/tutorial/1_simple_cli_app/my_app.py",
+            ["hydra.help.template=$CONFIG", "foo=bar"],
+            """foo: bar
+
+""",
+        ),
+        (
+            "examples/tutorial/1_simple_cli_app/my_app.py",
+            ["hydra.help.template=$FLAGS_HELP"],
+            """--help,-h : Application's help
+--hydra-help : Hydra's help
+--version : show program's version number and exit
+--cfg,-c : Show config instead of running, optional value indicates which config to show (defaults to job)
+--run,-r : Run a job
+--multirun,-m : Run multiple jobs with the configured launcher
+--shell_completion,-sc : Install or Uninstall shell completion:
+    Install:
+    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc install=SHELL_NAME)"
+
+    Uninstall:
+    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=SHELL_NAME)"
+
+Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
+""",
+        ),
+        (
+            "examples/tutorial/3_config_groups/my_app.py",
+            ["hydra.help.template=$APP_CONFIG_GROUPS"],
+            """db: mysql, postgresql
+
+""",
+        ),
+    ],
+)
+def test_help(tmpdir, script, overrides, expected):
+    cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
+    cmd.extend(overrides)
+    cmd.append("--help")
+    print(" ".join(cmd))
+    result = str(subprocess.check_output(cmd).decode("utf-8"))
+    # normalize newlines on Windows to make testing easier
+    result = result.replace("\r\n", "\n")
+    assert result == expected

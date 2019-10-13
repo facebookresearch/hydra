@@ -1,0 +1,27 @@
+hydra:
+  hydra_help:
+    # Help header.
+
+    # Basic Hydra flags:
+    #   $FLAGS_HELP
+    #
+    # Config groups, choose one of:
+    #   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
+    #   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
+    #
+    # Configuration generated with overrides:
+    #   $CONFIG : Generated config
+    #
+    template: |
+      Hydra (${hydra.runtime.version})
+      See https://cli.dev for more info.
+
+      == Flags ==
+      $FLAGS_HELP
+
+      == Configuration groups ==
+      Compose your configuration from those groups (For example, append hydra/job_logging=disabled to command line)
+
+      $HYDRA_CONFIG_GROUPS
+
+      Use '--cfg hydra' to Show the Hydra config.

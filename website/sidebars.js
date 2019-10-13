@@ -26,9 +26,9 @@ module.exports = {
 
         'Configuring Hydra': [
             'configure_hydra/intro',
-            'configure_hydra/hydra_config',
             'configure_hydra/logging',
             'configure_hydra/workdir',
+            'configure_hydra/app_help',
         ],
 
 

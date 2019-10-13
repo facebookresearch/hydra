@@ -13,11 +13,11 @@ hydra:
     dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
 ```
 
-Sweep sub directory contains the override parameters for the job instance:
+Sweep sub directory contains the the job number and the override parameters for the job instance:
 ```yaml
 hydra:
   sweep:
-    subdir: ${hydra.job.num}_${hydra.job.id}_${hydra.job.override_dirname}
+    subdir: ${hydra.job.num}_${hydra.job.num}_${hydra.job.override_dirname}
 ```
 
 Run output directory grouped by job name:

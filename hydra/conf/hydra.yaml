@@ -1,24 +1,21 @@
 defaults:
-  - hydra/hydra_logging : default
-  - hydra/job_logging : default
-  - hydra/launcher: basic
-  - hydra/sweeper: basic
-  - hydra/output: default
+  - hydra/hydra_logging : default   # Hydra's logging config
+  - hydra/job_logging : default     # Job's logging config
+  - hydra/launcher: basic           # Launcher config
+  - hydra/sweeper: basic            # Sweeper config
+  - hydra/output: default           # Output directory
+  - hydra/help: default             # --help template
+  - hydra/hydra_help: default       # --hydra-help template
 
 hydra:
-  # Normal run output configuration
-  run: ???
-  # Multi-run output configuration
-  sweep: ???
-
-  # Logging configuration for Hydra
-  hydra_logging: ???
-  # Logging configuration for the job
-  job_logging: ???
-
-  sweeper: ???
-
-  launcher: ???
+  run: ???              # Normal run output configuration
+  sweep: ???            # Multi-run output configuration
+  hydra_logging: ???    # Logging configuration for Hydra
+  job_logging: ???      # Logging configuration for the job
+  sweeper: ???          # Sweeper configuration
+  launcher: ???         # Launcher configuration
+  help: ???             # Program Help template
+  hydra_help: ???       # Hydra's help template
 
   # Output directory for produced configuration files and overrides.
   # E.g., hydra.yaml, overrides.yaml will go here. Useful for debugging
@@ -34,6 +31,11 @@ hydra:
 
   # job runtime information will be populated here
   job: {}
+
+  # populated at runtime
+  runtime:
+    version: ???    # Hydra's version
+    cwd: ???        # Original working directory the app was executed from
 
   # Can be a boolean, string or a list of strings
   # If a boolean, setting to true will set the log level for the root logger to debug

@@ -4,35 +4,56 @@ title: Overview
 sidebar_label: Introduction
 ---
 
-## Hydra config
-Hydra is highly customizable, and is composed in the following order:
+Many things in Hydra can be customized, this includes:
+* Logging configuration
+* Run and Multirun output directory patterns
+* Application help (--help and --hydra-help)
 
-### default configuration in package
-This configuration comes with the Hydra code, and it not directly changeable by the end user.
+Hydra can be customized using the same methods you are already familiar with from the tutorial.
+You can include some Hydra config snippet in your own config to override it directly, or compose in different
+configurations provided by plugins or by your own code. You can also override everything in Hydra from the command 
+line just like with your own configuration.
 
-*Scope*: global, this is effecting all Hydra runs and is the first thing that is used
-to compose the Hydra configuration.
+The Hydra configuration actually lives in the same config object as your configuration, but is removed prior to running
+your function to reduce confusion.
+You can view the configuration with `--cfg hydra|job|all`
 
-### Job config (`config.yaml`)
-You can configure Hydra directly through your job config.
+The Hydra configuration itself is composed from multiple config files. here is a partial list:
+```yaml
+defaults:
+  - hydra/job_logging : default     # Job's logging config
+  - hydra/launcher: basic           # Launcher config
+  - hydra/sweeper: basic            # Sweeper config
+  - hydra/output: default           # Output directory
+```
+You can view the Hydra config structure [here](https://github.com/facebookresearch/hydra/tree/master/hydra/conf).
 
-*Scope*: Hydra application
+This is a subset of the composed Hydra configuration node:
 
-### Command line arguments
-Command line arguments can override Hydra configs.
+```yaml
+hydra:
+  run:
+    # Output directory for normal runs
+    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    # Output directory for sweep runs
+    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
+    # Output sub directory for sweep runs.
+    subdir: ${hydra.job.num}_${hydra.job.id}
+```
 
-*Scope*: Single app run
+## Runtime variables
+The following variables are populated at runtime.
+You can access them as config variables.
 
-## Customization examples
-### Working directories
-Job output directory can be [customized](workdir) both for local and for cluster (sweep) runs.
+`hydra.job`:
+- *hydra.job.name* : Job name, defaults to python file name without suffix. can be overridden.
+- *hydra.job.override_dirname* : Pathname derived from the overrides for this job
+- *hydra.job.num* : job serial number in sweep
+- *hydra.job.id* : Job ID in the underlying jobs system (Slurm etc) 
+- *hydra.job.num_jobs*: Number of jobs the launcher is starting in this sweep
 
-### Logging
-The default logging should be sufficient for most use cases but you can [customize](logging) 
-the logging in your own project 
-
-### Plugins
-Many plugins requires configuration, see the documentation of individual plugins for more information about how to configure them.
-
-TODO: Document plugins
+`hydra.runtime`:
+- *hydra.runtime.version*: Hydra's version
+- *hydra.runtime.cwd*: Original working directory the app was executed from
 
