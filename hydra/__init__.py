@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from . import version
 from . import utils
 from .errors import MissingConfigException
 from .main import main
 
-__all__ = ["version", "MissingConfigException", "main", "utils"]
+# Source of truth for Hydra's version
+__version__ = "0.9.0"
+
+__all__ = ["__version__", "MissingConfigException", "main", "utils"]

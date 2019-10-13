@@ -18,7 +18,7 @@ def read(*parts):
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^number = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
@@ -83,7 +83,7 @@ with open("README.md", "r") as fh:
     setup(
         cmdclass={"clean": CleanCommand},
         name="hydra-core",
-        version=find_version("hydra", "version.py"),
+        version=find_version("hydra", "__init__.py"),
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="Hydra is a library for writing flexible command line applications",
