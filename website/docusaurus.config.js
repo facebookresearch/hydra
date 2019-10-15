@@ -61,14 +61,13 @@ module.exports = {
             {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
+                    showLastUpdateAuthor: true,
+                    showLastUpdateTime: true,
+                    editUrl: 'https://github.com/facebookresearch/hydra/edit/master/website/docs/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
-                showLastUpdateAuthor: true,
-                showLastUpdateTime: true,
-                editUrl: 'https://github.com/facebookresearch/hydra/edit/master/website/docs/',
-
             },
         ],
     ],
