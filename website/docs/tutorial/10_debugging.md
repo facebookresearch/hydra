@@ -6,7 +6,7 @@ sidebar_label: Debugging
 Hydra provides a few options to improve debuggability.
 
 ### Printing the configuration
-Print the config that would be used for a job without running it the job by adding '-c' or '--cfg' to your command line:
+Print the config that would be used for a job without actually running it by adding '-c' or '--cfg' to your command line:
 ```yaml
 # A normal run:
 $ python tutorial/objects_example/my_app.py
