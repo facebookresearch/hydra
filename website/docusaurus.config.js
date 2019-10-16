@@ -17,9 +17,6 @@ module.exports = {
         googleAnalytics: {
           trackingID: 'UA-149862507-1',
         },
-        showLastUpdateAuthor: true,
-        showLastUpdateTime: true,
-        editUrl: 'https://github.com/facebookresearch/hydra/edit/master/website/docs/',
         navbar: {
             title: 'Hydra',
             logo: {
@@ -68,6 +65,10 @@ module.exports = {
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
+                showLastUpdateAuthor: true,
+                showLastUpdateTime: true,
+                editUrl: 'https://github.com/facebookresearch/hydra/edit/master/website/docs/',
+
             },
         ],
     ],
