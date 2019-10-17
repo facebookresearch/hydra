@@ -5,7 +5,7 @@ sidebar_label: Tab completion
 ---
 You can enable shell TAB completion, for example:
 ```
-eval "$(python my_app.py -sc install=SHELL_NAME)"
+eval "$(python my_app.py -sc hydra.shell.install=SHELL_NAME)"
 ```
 Get the exact command to install the completion from `--hydra-help`.
 
