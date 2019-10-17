@@ -30,7 +30,7 @@ Config file: `config.yaml`
 defaults:
   - hydra/job_logging : custom
 ```
-Config file: `hydra/job_logging/logging.yaml`
+Config file: `hydra/job_logging/custom.yaml`
 
 ```yaml
 hydra:
