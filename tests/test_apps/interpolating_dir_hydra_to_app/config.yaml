@@ -1,0 +1,5 @@
+experiment:
+  base_dir: ???
+  second_dir: ${experiment.base_dir}
+hydra:
+  output_subdir: ${experiment.base_dir}/.hydra
