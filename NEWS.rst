@@ -1,3 +1,34 @@
+0.10.0 (2019-10-19)
+===================
+
+Configuration structure changes
+-------------------------------
+
+- Change the default sweep subdir from ${hydra.job.num}_${hydra.job.id} to ${hydra.job.num} (`#150 <https://github.com/facebookresearch/hydra/issues/150>`_)
+
+Features
+--------
+
+- App help now contains config groups and generated config
+  App help can now be customized
+  Hydra help is now available via --hydra-help (`#1 <https://github.com/facebookresearch/hydra/issues/1>`_)
+- Simplify install and uninstall commands for tab completion (`#200 <https://github.com/facebookresearch/hydra/issues/200>`_)
+- hydra.runtime.cwd now contains the original working directory the app was launched from (`#244 <https://github.com/facebookresearch/hydra/issues/244>`_)
+
+Bug Fixes
+---------
+
+- Fix an error with tab completion that occurred when a TAB was pressed after two spaces (`#203 <https://github.com/facebookresearch/hydra/issues/203>`_)
+- Fix a bug when sweeping over groups that are used in an interpolation in defaults (`#206 <https://github.com/facebookresearch/hydra/issues/206>`_)
+- Fix tab completion for cases where app name looks like foo.par (`#213 <https://github.com/facebookresearch/hydra/issues/213>`_)
+
+Improved Documentation
+----------------------
+
+- Describe news fragment types in more details in development/contributing (`#150 <https://github.com/facebookresearch/hydra/issues/150>`_)
+- Examples dir now mirrors the structure of the website docs (`#209 <https://github.com/facebookresearch/hydra/issues/209>`_)
+
+
 0.9.0 (2019-10-01)
 ==================
 

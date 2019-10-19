@@ -4,6 +4,6 @@ from .errors import MissingConfigException
 from .main import main
 
 # Source of truth for Hydra's version
-__version__ = "1.0.0rc1"
+__version__ = "0.10.0"
 
 __all__ = ["__version__", "MissingConfigException", "main", "utils"]
