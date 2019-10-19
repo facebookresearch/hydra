@@ -73,8 +73,6 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         ret = JobReturn()
         ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
-        # TODO: update this after https://github.com/omry/omegaconf/issues/42 is resolved
-        hydra_cfg = OmegaConf.create({"hydra": task_cfg["hydra"]})
         del task_cfg["hydra"]
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
@@ -82,9 +80,13 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         # handle output directories here
         Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
         os.chdir(working_dir)
-        hydra_output = Path(hydra_cfg.hydra.output_subdir)
+        hydra_output = Path(config.hydra.output_subdir)
 
-        configure_log(hydra_cfg.hydra.job_logging, hydra_cfg.hydra.verbose)
+        configure_log(config.hydra.job_logging, config.hydra.verbose)
+
+        # TODO: update this after https://github.com/omry/omegaconf/issues/42 is resolved
+        hydra_cfg = OmegaConf.create({"hydra": config["hydra"]})
+
         _save_config(task_cfg, "config.yaml", hydra_output)
         _save_config(hydra_cfg, "hydra.yaml", hydra_output)
         _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)

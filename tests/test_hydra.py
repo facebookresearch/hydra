@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
+from hydra._internal.pathlib import Path
 
 import pytest
 import subprocess
@@ -318,3 +319,24 @@ def test_help(tmpdir, script, overrides, expected):
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
     assert result == expected
+
+
+@pytest.mark.parametrize(
+    "calling_file, calling_module",
+    [
+        ("tests/test_apps/interpolating_dir_hydra_to_app/my_app.py", None),
+        (None, "tests.test_apps.interpolating_dir_hydra_to_app.my_app"),
+    ],
+)
+def test_interpolating_dir_hydra_to_app(
+    task_runner, calling_file, calling_module  # noqa: F811
+):
+    basedir = "foo"
+    with task_runner(
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="config.yaml",
+        overrides=["experiment.base_dir=" + basedir],
+    ) as task:
+        path = Path(task.temp_dir) / basedir
+        assert path.exists()
