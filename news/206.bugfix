@@ -1,1 +1,0 @@
-Fix a bug when sweeping over groups that are used in an interpolation in defaults
