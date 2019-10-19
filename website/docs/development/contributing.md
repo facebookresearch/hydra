@@ -75,9 +75,15 @@ such, but it is preferred to have a dedicated issue (for example, in case the
 PR ends up rejected due to code quality reasons).
 
 Once you have an issue or pull request, you take the number and you create a
-file inside of the ``news/`` directory named after that issue number with an
-extension of ``removal``, ``feature``, ``bugfix``, ``docs`` or ``plugin``. Thus if your
-issue or PR number is ``1234`` and this change is fixing a bug, then you would
+file inside of the ``news/`` directory named after that issue number with one of the following extensions:
+* `removal` : Removal of deprecation of a feature
+* `feature` : Addition of a new feature
+* `bugfix` : Fixing of a bug
+* `docs` : Addition or updates to documentation
+* `plugin` : Addition of changes to a plugin
+* `config` : Changes or addition to the configuration structure
+
+If your issue or PR number is ``1234`` and this change is fixing a bug, then you would
 create a file ``news/1234.bugfix``. PRs can span multiple categories by creating
 multiple files (for instance, if you added a feature and deprecated/removed the
 old feature at the same time, you would create ``news/NNNN.feature`` and

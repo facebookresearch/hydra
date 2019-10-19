@@ -116,13 +116,9 @@ def sweep_runner():
 
         def __init__(self):
             self.temp_dir = None
-            self.cfg = None
-            self.overrides = None
             self.hydra = None
             self.sweeps = None
             self.returns = None
-
-            self.all_configs = None
 
         def __call__(self, cfg):
             """

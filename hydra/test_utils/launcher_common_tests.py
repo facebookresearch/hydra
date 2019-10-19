@@ -7,6 +7,7 @@ import pytest
 from omegaconf import OmegaConf
 from hydra.test_utils.test_utils import integration_test
 from hydra.test_utils.test_utils import verify_dir_outputs
+from hydra._internal.pathlib import Path
 
 
 class LauncherTestSuite:
@@ -119,6 +120,8 @@ def sweep_2_jobs(sweep_runner, overrides):
             assert job_ret.cfg == expected_conf
             assert job_ret.hydra_cfg.hydra.job.name == "a_module"
             verify_dir_outputs(job_ret, job_ret.overrides)
+            path = Path(sweep.temp_dir) / str(i)
+            assert path.exists()
 
 
 def not_sweeping_hydra_overrides(sweep_runner, overrides):
