@@ -110,6 +110,7 @@ def sweep_2_jobs(sweep_runner, overrides):
     base = OmegaConf.create({"foo": 10, "bar": 100, "a": 0})
 
     with sweep:
+        temp_dir = Path(sweep.temp_dir)
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
@@ -120,8 +121,10 @@ def sweep_2_jobs(sweep_runner, overrides):
             assert job_ret.cfg == expected_conf
             assert job_ret.hydra_cfg.hydra.job.name == "a_module"
             verify_dir_outputs(job_ret, job_ret.overrides)
-            path = Path(sweep.temp_dir) / str(i)
-            assert path.exists()
+            path = temp_dir / str(i)
+            assert path.exists(), "'{}' does not exist, dirs: {}".format(
+                path, [x for x in temp_dir.iterdir() if x.is_dir()]
+            )
 
 
 def not_sweeping_hydra_overrides(sweep_runner, overrides):
