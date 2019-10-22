@@ -17,8 +17,5 @@ hydra:
       level: INFO
       handlers: [console]
 
-    loggers:
-      logging_example:
-        level: DEBUG
+    disable_existing_loggers: false
 
-    disable_existing_loggers: False
