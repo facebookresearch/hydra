@@ -22,4 +22,5 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=["colorlog", "hydra-core"],
+        include_package_data=True,
     )

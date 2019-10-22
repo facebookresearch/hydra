@@ -1,4 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from .hydra_colorlog import HydraColorlog
+from .colorlog import HydraColorlogSearchPathPlugin
 
-__all__ = ["HydraColorlog"]
+__all__ = ["HydraColorlogSearchPathPlugin"]

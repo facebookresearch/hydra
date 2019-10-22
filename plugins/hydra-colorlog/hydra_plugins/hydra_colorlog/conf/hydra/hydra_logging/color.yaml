@@ -4,11 +4,14 @@ hydra:
     version: 1
     formatters:
       simple:
-        format: '---- [%(asctime)s] - %(message)s'
+        format: '[%(asctime)s] - %(message)s'
+      colored:
+        '()': 'colorlog.ColoredFormatter'
+        format: "%(cyan)sHYDRA> %(log_color)s%(message)s"
     handlers:
       console:
         class: logging.StreamHandler
-        formatter: simple
+        formatter: colored
         stream: ext://sys.stdout
     root:
       level: INFO
