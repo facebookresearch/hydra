@@ -1,0 +1,21 @@
+hydra:
+  # python logging configuration for tasks
+  hydra_logging:
+    version: 1
+    formatters:
+      simple:
+        format: '---- [%(asctime)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: simple
+        stream: ext://sys.stdout
+    root:
+      level: INFO
+      handlers: [console]
+
+    loggers:
+      logging_example:
+        level: DEBUG
+
+    disable_existing_loggers: False
