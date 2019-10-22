@@ -119,8 +119,6 @@ def test_get_original_cwd():
 @pytest.mark.parametrize(
     "orig_cwd, path, expected",
     [
-        ("C:\\", "foo", "C:\\foo"),
-        ("C:\\", "D:\\foo", "D:\\foo"),
         ("/home/omry/hydra", "foo/bar", "/home/omry/hydra/foo/bar"),
         ("/home/omry/hydra/", "foo/bar", "/home/omry/hydra/foo/bar"),
         ("/home/omry/hydra/", "/foo/bar", "/foo/bar"),
@@ -130,6 +128,7 @@ def test_to_absolute_path(orig_cwd, path, expected):
     # normalize paths to current OSg
     orig_cwd = str(Path(orig_cwd))
     path = str(Path(path))
+    expected = str(Path(expected))
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
     HydraConfig().set_config(cfg)
-    assert utils.to_absolute_path(path) == str(Path(expected))
+    assert utils.to_absolute_path(path) == expected
