@@ -1,3 +1,3 @@
 defaults:
-                           - hydra/job_logging: color
-                           - hydra/hydra_logging: color
+  - hydra/job_logging: colorlog
+  - hydra/hydra_logging: colorlog
