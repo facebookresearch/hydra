@@ -18,6 +18,6 @@ defaults:
   - hydra/hydra_logging: colorlog
 ```
 
-See included [example](example).
+See included [example](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_colorlog/example).
  
-![Colored log output](colorlog.png)
+![Colored log output](https://raw.githubusercontent.com/facebookresearch/hydra/master/website/docs/plugins/colorlog.png)
