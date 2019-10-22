@@ -2,6 +2,8 @@
 import pytest
 from hydra import utils
 from omegaconf import OmegaConf
+from hydra.plugins.common.utils import HydraConfig
+from hydra._internal.pathlib import Path
 
 
 def some_method():
@@ -105,3 +107,28 @@ def test_class_instantiate_passthrough(conf, expected):
     conf = OmegaConf.create(conf)
     obj = utils.instantiate(conf, 10, d=40)
     assert obj == expected
+
+
+def test_get_original_cwd():
+    orig = "/foo/bar"
+    cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig}}})
+    HydraConfig().set_config(cfg)
+    assert utils.get_original_cwd() == orig
+
+
+@pytest.mark.parametrize(
+    "orig_cwd, path, expected",
+    [
+        ("/home/omry/hydra", "foo/bar", "/home/omry/hydra/foo/bar"),
+        ("/home/omry/hydra/", "foo/bar", "/home/omry/hydra/foo/bar"),
+        ("/home/omry/hydra/", "/foo/bar", "/foo/bar"),
+    ],
+)
+def test_to_absolute_path(orig_cwd, path, expected):
+    # normalize paths to current OSg
+    orig_cwd = str(Path(orig_cwd))
+    path = str(Path(path))
+    expected = str(Path(expected))
+    cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
+    HydraConfig().set_config(cfg)
+    assert utils.to_absolute_path(path) == expected

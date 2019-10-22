@@ -3,6 +3,9 @@ import logging.config
 
 from omegaconf import OmegaConf, DictConfig
 
+from hydra._internal.pathlib import Path
+from hydra.plugins.common.utils import HydraConfig
+
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
 
@@ -56,3 +59,23 @@ def instantiate(config, *args, **kwargs):
     except Exception as e:
         log.error("Error instantiating {} : {}".format(config["class"], e))
         raise e
+
+
+def get_original_cwd():
+    return HydraConfig().hydra.runtime.cwd
+
+
+def to_absolute_path(path):
+    """
+    converts the specified path to be absolute path.
+    if the input path is relative, it's interpreted as relative to the original working directory
+    if it's absolute, it's returned as is
+    :param path:
+    :return:
+    """
+    path = Path(path)
+    if path.is_absolute():
+        ret = path
+    else:
+        ret = Path(get_original_cwd()) / path
+    return str(ret)
