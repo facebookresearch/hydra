@@ -127,7 +127,9 @@ def test_get_original_cwd():
     ],
 )
 def test_to_absolute_path(orig_cwd, path, expected):
+    # normalize paths to current OSg
+    orig_cwd = str(Path(orig_cwd))
+    path = str(Path(path))
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
     HydraConfig().set_config(cfg)
-    path = str(Path(path))
     assert utils.to_absolute_path(path) == str(Path(expected))
