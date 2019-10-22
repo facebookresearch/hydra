@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
 
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -46,6 +46,11 @@ def instantiate(config, *args, **kwargs):
     try:
         clazz = get_class(config["class"])
         params = config.params if "params" in config else OmegaConf.create()
+        assert isinstance(
+            params, DictConfig
+        ), "Input config params are expected to be a mapping, found {}".format(
+            type(config.params)
+        )
         params.merge_with(OmegaConf.create(kwargs))
         return clazz(*args, **params)
     except Exception as e:
