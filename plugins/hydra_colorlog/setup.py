@@ -14,8 +14,7 @@ with open("README.md", "r") as fh:
         url="https://github.com/facebookresearch/hydra/",
         packages=find_packages(exclude=["tests"]),
         classifiers=[
-            # Python versions are used by the noxfile in Hydra to determine which
-            # python versions to test this plugin with
+            "License :: OSI Approved :: MIT License",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
