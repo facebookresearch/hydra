@@ -5,7 +5,7 @@ hydra:
     formatters:
       simple:
         format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
-      colored:
+      colorlog:
         '()': 'colorlog.ColoredFormatter'
         format: '[%(cyan)s%(asctime)s%(reset)s][%(blue)s%(name)s%(reset)s][%(log_color)s%(levelname)s%(reset)s] - %(message)s'
         log_colors:
@@ -17,7 +17,7 @@ hydra:
     handlers:
       console:
         class: logging.StreamHandler
-        formatter: colored
+        formatter: colorlog
         stream: ext://sys.stdout
       file:
         class: logging.FileHandler
