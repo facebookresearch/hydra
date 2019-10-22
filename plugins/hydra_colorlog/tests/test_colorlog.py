@@ -14,5 +14,5 @@ def test_config_installed():
         task_function=None,
         strict=False,
     )
-    assert "color" in hydra.config_loader.get_group_options("hydra/job_logging")
-    assert "color" in hydra.config_loader.get_group_options("hydra/hydra_logging")
+    assert "colorlog" in hydra.config_loader.get_group_options("hydra/job_logging")
+    assert "colorlog" in hydra.config_loader.get_group_options("hydra/hydra_logging")
