@@ -4,7 +4,7 @@ hydra:
     version: 1
     formatters:
       simple:
-        format: '[%(asctime)s] - %(message)s'
+        format: "[%(asctime)s][HYDRA] %(message)s"
     handlers:
       console:
         class: logging.StreamHandler
