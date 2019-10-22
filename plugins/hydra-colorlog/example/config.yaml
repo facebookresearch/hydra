@@ -1,3 +1,0 @@
-defaults:
-  - hydra/job_logging: color
-  - hydra/hydra_logging: color
