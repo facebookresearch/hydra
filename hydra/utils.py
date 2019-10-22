@@ -48,7 +48,7 @@ def instantiate(config, *args, **kwargs):
         params = config.params if "params" in config else OmegaConf.create()
         assert isinstance(
             params, DictConfig
-        ), "Input config params are expected to be key-value items, found {}".format(
+        ), "Input config params are expected to be a mapping, found {}".format(
             type(config.params)
         )
         params.merge_with(OmegaConf.create(kwargs))
