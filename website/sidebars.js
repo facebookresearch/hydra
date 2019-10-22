@@ -31,6 +31,10 @@ module.exports = {
             'configure_hydra/app_help',
         ],
 
+        'Plugins': [
+            'plugins/colorlog',
+        ],
+
 
         'Advanced': [
             'advanced/app_packaging',
