@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-colorlog",
-        version="0.1.0",
+        version="0.1.1",
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="Enables colorlog for Hydra apps",
