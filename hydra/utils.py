@@ -60,10 +60,11 @@ def get_original_cwd():
     return HydraConfig().hydra.runtime.cwd
 
 
-def get_relative_path(path):
+def to_absolute_path(path):
     """
-    converts the specified path to be relative to the original working directory the job was executed from
-    if it's relative. does not change the path if it's absolute.
+    converts the specified path to be absolute path.
+    if the input path is relative, it's interpreted as relative to the original working directory
+    if it's absolute, it's returned as is
     :param path:
     :return:
     """

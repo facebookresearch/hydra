@@ -126,7 +126,7 @@ def test_get_original_cwd():
         ("/home/omry/hydra/", "/foo/bar", "/foo/bar"),
     ],
 )
-def testget_relative_path(orig_cwd, path, expected):
+def test_to_absolute_path(orig_cwd, path, expected):
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
     HydraConfig().set_config(cfg)
-    assert utils.get_relative_path(path) == str(Path(expected))
+    assert utils.to_absolute_path(path) == str(Path(expected))
