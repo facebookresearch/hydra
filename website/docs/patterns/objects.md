@@ -59,7 +59,6 @@ defaults:
 ```
 Config file: `db/mysql.yaml`
 ```yaml
-model:
 db:
   class: tutorial.objects_example.objects.MySQLConnection
   params:
