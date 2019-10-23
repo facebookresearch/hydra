@@ -232,9 +232,9 @@
     "3": {
       "js": [
         {
-          "file": "content---docs-advanced-app-packaginge-17-5a4.84eb55d7ddf3bb63b0d5.js",
-          "hash": "da52f9e4c8a33df7d838",
-          "publicPath": "/content---docs-advanced-app-packaginge-17-5a4.84eb55d7ddf3bb63b0d5.js"
+          "file": "content---docs-advanced-app-packaginge-17-5a4.35c2593f0a45646c9c29.js",
+          "hash": "839c96453b07f55408a6",
+          "publicPath": "/content---docs-advanced-app-packaginge-17-5a4.35c2593f0a45646c9c29.js"
         }
       ]
     },
@@ -259,54 +259,54 @@
     "6": {
       "js": [
         {
-          "file": "content---docs-configure-hydra-app-help-4-f-5-1e5.6e945302351cfd3582ea.js",
-          "hash": "b7ef705c40cb0cf0cff5",
-          "publicPath": "/content---docs-configure-hydra-app-help-4-f-5-1e5.6e945302351cfd3582ea.js"
+          "file": "content---docs-configure-hydra-app-help-4-f-5-1e5.814d3f6532f9bdc21e0e.js",
+          "hash": "f93eaae1de965a366e81",
+          "publicPath": "/content---docs-configure-hydra-app-help-4-f-5-1e5.814d3f6532f9bdc21e0e.js"
         }
       ]
     },
     "7": {
       "js": [
         {
-          "file": "content---docs-configure-hydra-introca-5-a1a.62073ca8af299a983e01.js",
-          "hash": "ade7a1bdf5c230838b8c",
-          "publicPath": "/content---docs-configure-hydra-introca-5-a1a.62073ca8af299a983e01.js"
+          "file": "content---docs-configure-hydra-introca-5-a1a.9342bed5507f0641ebe4.js",
+          "hash": "7bbe48f84664b5eab41e",
+          "publicPath": "/content---docs-configure-hydra-introca-5-a1a.9342bed5507f0641ebe4.js"
         }
       ]
     },
     "8": {
       "js": [
         {
-          "file": "content---docs-configure-hydra-loggingd-7-e-f83.fc5cfd00b469a2574680.js",
-          "hash": "dbeb6260d1fd9275f534",
-          "publicPath": "/content---docs-configure-hydra-loggingd-7-e-f83.fc5cfd00b469a2574680.js"
+          "file": "content---docs-configure-hydra-loggingd-7-e-f83.7eafa97adb781ffa513c.js",
+          "hash": "3883272c11613181d10f",
+          "publicPath": "/content---docs-configure-hydra-loggingd-7-e-f83.7eafa97adb781ffa513c.js"
         }
       ]
     },
     "9": {
       "js": [
         {
-          "file": "content---docs-configure-hydra-workdirdd-8-24a.2e93740df457a92f7faa.js",
-          "hash": "02b607d134befa0e3a24",
-          "publicPath": "/content---docs-configure-hydra-workdirdd-8-24a.2e93740df457a92f7faa.js"
+          "file": "content---docs-configure-hydra-workdirdd-8-24a.51b2cc82a7876b46701a.js",
+          "hash": "f326ba2f6c8990fd0aa5",
+          "publicPath": "/content---docs-configure-hydra-workdirdd-8-24a.51b2cc82a7876b46701a.js"
         }
       ]
     },
     "10": {
       "js": [
         {
-          "file": "content---docs-development-contributing-946-4f0.0b23cdba7c8ac0d98d2e.js",
-          "hash": "af4a0802e4c18f4e4de5",
-          "publicPath": "/content---docs-development-contributing-946-4f0.0b23cdba7c8ac0d98d2e.js"
+          "file": "content---docs-development-contributing-946-4f0.91eb23660dd8d424a818.js",
+          "hash": "c81fd9e19d95da94e37c",
+          "publicPath": "/content---docs-development-contributing-946-4f0.91eb23660dd8d424a818.js"
         }
       ]
     },
     "11": {
       "js": [
         {
-          "file": "content---docs-development-releasee-04-b9d.b0905ea254ba8b2e28b8.js",
-          "hash": "de2ae8afbea11138617a",
-          "publicPath": "/content---docs-development-releasee-04-b9d.b0905ea254ba8b2e28b8.js"
+          "file": "content---docs-development-releasee-04-b9d.22f73539a68f9089ed8b.js",
+          "hash": "0d8cac3da18464e4cfc0",
+          "publicPath": "/content---docs-development-releasee-04-b9d.22f73539a68f9089ed8b.js"
         }
       ]
     },
@@ -322,36 +322,36 @@
     "13": {
       "js": [
         {
-          "file": "content---docs-intro-0-e-3-be1.d2bbc14915198377c357.js",
-          "hash": "134e073537761c91a2b5",
-          "publicPath": "/content---docs-intro-0-e-3-be1.d2bbc14915198377c357.js"
+          "file": "content---docs-intro-0-e-3-be1.3bfeb6e20d284da960af.js",
+          "hash": "63e0419d679dc04b0fd1",
+          "publicPath": "/content---docs-intro-0-e-3-be1.3bfeb6e20d284da960af.js"
         }
       ]
     },
     "14": {
       "js": [
         {
-          "file": "content---docs-patterns-objects-594-c72.f3eeb0d2b8f7d607b0b9.js",
-          "hash": "761d1dd1ddf5580b1240",
-          "publicPath": "/content---docs-patterns-objects-594-c72.f3eeb0d2b8f7d607b0b9.js"
+          "file": "content---docs-patterns-objects-594-c72.1f4b2eeefc6aa7451aa8.js",
+          "hash": "b79cfc4bb4afc8070d61",
+          "publicPath": "/content---docs-patterns-objects-594-c72.1f4b2eeefc6aa7451aa8.js"
         }
       ]
     },
     "15": {
       "js": [
         {
-          "file": "content---docs-patterns-specializing-config-6-a-5-565.215966bcddcd5f93c864.js",
-          "hash": "1122c3d67f0f8c2a24d5",
-          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.215966bcddcd5f93c864.js"
+          "file": "content---docs-patterns-specializing-config-6-a-5-565.6be0fbbb6e68f3e47f37.js",
+          "hash": "484d90b2a94d80af0d01",
+          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.6be0fbbb6e68f3e47f37.js"
         }
       ]
     },
     "16": {
       "js": [
         {
-          "file": "content---docs-plugins-colorloge-72-4ff.b8c5976e0a08266b9f4e.js",
-          "hash": "cdd9a879b1bf1c311251",
-          "publicPath": "/content---docs-plugins-colorloge-72-4ff.b8c5976e0a08266b9f4e.js"
+          "file": "content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js",
+          "hash": "15128bbead61c7d7344b",
+          "publicPath": "/content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js"
         }
       ]
     },
@@ -439,18 +439,18 @@
     "26": {
       "js": [
         {
-          "file": "content---docs-tutorial-working-directory-8-e-3-16a.44139f23784d975e062d.js",
-          "hash": "ca0275b5083a8053abfc",
-          "publicPath": "/content---docs-tutorial-working-directory-8-e-3-16a.44139f23784d975e062d.js"
+          "file": "content---docs-tutorial-working-directory-8-e-3-16a.a6699eb96c7ea70f86a0.js",
+          "hash": "f8136330acb61cfcca47",
+          "publicPath": "/content---docs-tutorial-working-directory-8-e-3-16a.a6699eb96c7ea70f86a0.js"
         }
       ]
     },
     "27": {
       "js": [
         {
-          "file": "docsMetadata---docs-92-d-b06.0ee0dc80cb0de2936d1e.js",
-          "hash": "e47020853c8682f75c1e",
-          "publicPath": "/docsMetadata---docs-92-d-b06.0ee0dc80cb0de2936d1e.js"
+          "file": "docsMetadata---docs-92-d-b06.44ff20161c21fd7e4c1b.js",
+          "hash": "0bd91faa33ae8bfaf1fa",
+          "publicPath": "/docsMetadata---docs-92-d-b06.44ff20161c21fd7e4c1b.js"
         }
       ]
     },
@@ -458,24 +458,24 @@
       "css": [
         {
           "file": "main.a2c8fe5825836a42a141.css",
-          "hash": "692e494061d1fcdb5f4f",
+          "hash": "c22d2451fd63f063a05f",
           "publicPath": "/main.a2c8fe5825836a42a141.css"
         }
       ],
       "js": [
         {
-          "file": "main.679a580406aaa42e6e9d.js",
-          "hash": "692e494061d1fcdb5f4f",
-          "publicPath": "/main.679a580406aaa42e6e9d.js"
+          "file": "main.760e10a555b2a735ffa7.js",
+          "hash": "c22d2451fd63f063a05f",
+          "publicPath": "/main.760e10a555b2a735ffa7.js"
         }
       ]
     },
     "29": {
       "js": [
         {
-          "file": "metadata---docs-advanced-app-packaging-735-a66.8102858f7f2a0e86e102.js",
-          "hash": "0fda0bdec74f4b8ec72c",
-          "publicPath": "/metadata---docs-advanced-app-packaging-735-a66.8102858f7f2a0e86e102.js"
+          "file": "metadata---docs-advanced-app-packaging-735-a66.54356516efa77e989ba5.js",
+          "hash": "3e84c74e2d16e40fac9f",
+          "publicPath": "/metadata---docs-advanced-app-packaging-735-a66.54356516efa77e989ba5.js"
         }
       ]
     },
@@ -500,54 +500,54 @@
     "32": {
       "js": [
         {
-          "file": "metadata---docs-configure-hydra-app-helpc-9-d-12d.f50d1b6da5c813d84608.js",
-          "hash": "feaa338b2f71b6af24b6",
-          "publicPath": "/metadata---docs-configure-hydra-app-helpc-9-d-12d.f50d1b6da5c813d84608.js"
+          "file": "metadata---docs-configure-hydra-app-helpc-9-d-12d.f2a9dea348615b7ae707.js",
+          "hash": "45b93338b131995b13d7",
+          "publicPath": "/metadata---docs-configure-hydra-app-helpc-9-d-12d.f2a9dea348615b7ae707.js"
         }
       ]
     },
     "33": {
       "js": [
         {
-          "file": "metadata---docs-configure-hydra-intro-3-ec-512.dc10a74f686ce516a70c.js",
-          "hash": "5141091be90f8cb72679",
-          "publicPath": "/metadata---docs-configure-hydra-intro-3-ec-512.dc10a74f686ce516a70c.js"
+          "file": "metadata---docs-configure-hydra-intro-3-ec-512.db06f8b7c8c9468acd2a.js",
+          "hash": "2350637600fbb7da4408",
+          "publicPath": "/metadata---docs-configure-hydra-intro-3-ec-512.db06f8b7c8c9468acd2a.js"
         }
       ]
     },
     "34": {
       "js": [
         {
-          "file": "metadata---docs-configure-hydra-loggingc-2-f-54f.c8a33375b6cf51ef09a1.js",
-          "hash": "9878c7151649da1eec63",
-          "publicPath": "/metadata---docs-configure-hydra-loggingc-2-f-54f.c8a33375b6cf51ef09a1.js"
+          "file": "metadata---docs-configure-hydra-loggingc-2-f-54f.1b48b7e8d6f9ef32de57.js",
+          "hash": "970723327248d575a2ac",
+          "publicPath": "/metadata---docs-configure-hydra-loggingc-2-f-54f.1b48b7e8d6f9ef32de57.js"
         }
       ]
     },
     "35": {
       "js": [
         {
-          "file": "metadata---docs-configure-hydra-workdir-1-a-8-e4d.5fe7388ca8a502ebdb3f.js",
-          "hash": "3deded6cc9163788a22f",
-          "publicPath": "/metadata---docs-configure-hydra-workdir-1-a-8-e4d.5fe7388ca8a502ebdb3f.js"
+          "file": "metadata---docs-configure-hydra-workdir-1-a-8-e4d.041069bc4f7d287e6181.js",
+          "hash": "27f8b592dce7568aac4b",
+          "publicPath": "/metadata---docs-configure-hydra-workdir-1-a-8-e4d.041069bc4f7d287e6181.js"
         }
       ]
     },
     "36": {
       "js": [
         {
-          "file": "metadata---docs-development-contributing-138-4fa.a85de4967ccd765c8b45.js",
-          "hash": "016a0b79506e255db415",
-          "publicPath": "/metadata---docs-development-contributing-138-4fa.a85de4967ccd765c8b45.js"
+          "file": "metadata---docs-development-contributing-138-4fa.e18b7df96bfc88c6dc68.js",
+          "hash": "e616058f69df7a54c826",
+          "publicPath": "/metadata---docs-development-contributing-138-4fa.e18b7df96bfc88c6dc68.js"
         }
       ]
     },
     "37": {
       "js": [
         {
-          "file": "metadata---docs-development-releasea-81-2d2.e545ce1bf75e5d555600.js",
-          "hash": "6095eb1e55ceedcf9da6",
-          "publicPath": "/metadata---docs-development-releasea-81-2d2.e545ce1bf75e5d555600.js"
+          "file": "metadata---docs-development-releasea-81-2d2.5e70137f0ed6dbefb726.js",
+          "hash": "d800b2aced120fa5758d",
+          "publicPath": "/metadata---docs-development-releasea-81-2d2.5e70137f0ed6dbefb726.js"
         }
       ]
     },
@@ -563,36 +563,36 @@
     "39": {
       "js": [
         {
-          "file": "metadata---docs-intro-8-a-3-0eb.2fc7ff5aefc45ea6970a.js",
-          "hash": "41156cae527dbc1f4d41",
-          "publicPath": "/metadata---docs-intro-8-a-3-0eb.2fc7ff5aefc45ea6970a.js"
+          "file": "metadata---docs-intro-8-a-3-0eb.beacd27a0759b2cac56c.js",
+          "hash": "fe96e59d284f9ea60de1",
+          "publicPath": "/metadata---docs-intro-8-a-3-0eb.beacd27a0759b2cac56c.js"
         }
       ]
     },
     "40": {
       "js": [
         {
-          "file": "metadata---docs-patterns-objects-5-d-0-4fd.d6e8d9569da4300acbd7.js",
-          "hash": "e08155934dbf5e5e451e",
-          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.d6e8d9569da4300acbd7.js"
+          "file": "metadata---docs-patterns-objects-5-d-0-4fd.4f7265d5b8e3610528a7.js",
+          "hash": "6727436a4e41cde70d49",
+          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.4f7265d5b8e3610528a7.js"
         }
       ]
     },
     "41": {
       "js": [
         {
-          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.fadbf8c652ba36f1abac.js",
-          "hash": "8a174d6876586b09fefb",
-          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.fadbf8c652ba36f1abac.js"
+          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.f51daaf6dbe7ea9de7ff.js",
+          "hash": "6a7fee6d46149a7fa853",
+          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.f51daaf6dbe7ea9de7ff.js"
         }
       ]
     },
     "42": {
       "js": [
         {
-          "file": "metadata---docs-plugins-colorlog-839-e35.d6a5a61fe57675c6745a.js",
-          "hash": "34851a4daaf17c9abe58",
-          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.d6a5a61fe57675c6745a.js"
+          "file": "metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js",
+          "hash": "46dbf32974d98e79e8b4",
+          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js"
         }
       ]
     },
@@ -680,18 +680,18 @@
     "52": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-working-directoryc-29-897.e3162b04cc83ce21f320.js",
-          "hash": "73a0a8cbcbb3288bb3ad",
-          "publicPath": "/metadata---docs-tutorial-working-directoryc-29-897.e3162b04cc83ce21f320.js"
+          "file": "metadata---docs-tutorial-working-directoryc-29-897.8427b8fe8a63b60811fa.js",
+          "hash": "ae1a3799c4512b572199",
+          "publicPath": "/metadata---docs-tutorial-working-directoryc-29-897.8427b8fe8a63b60811fa.js"
         }
       ]
     },
     "53": {
       "js": [
         {
-          "file": "runtime~main.372c2bb89985e8b17583.js",
-          "hash": "fd3c5ab841a9524a23e5",
-          "publicPath": "/runtime~main.372c2bb89985e8b17583.js"
+          "file": "runtime~main.1b81332aa9597a0597e0.js",
+          "hash": "82b658c3c724d2689888",
+          "publicPath": "/runtime~main.1b81332aa9597a0597e0.js"
         }
       ]
     },
