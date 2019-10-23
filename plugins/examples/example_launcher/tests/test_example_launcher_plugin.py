@@ -2,14 +2,15 @@
 
 import pytest
 
-from hydra.plugins import Launcher
 from hydra._internal.plugins import Plugins
+from hydra.plugins import Launcher
+from hydra.test_utils.launcher_common_tests import IntegrationTestSuite
 from hydra.test_utils.launcher_common_tests import LauncherTestSuite
-from hydra_plugins.example_launcher import ExampleLauncher
 
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
+from hydra_plugins.example_launcher import ExampleLauncher
 
 
 def test_discovery():
@@ -27,4 +28,30 @@ class TestExampleLauncher(LauncherTestSuite):
     Note that hydra/launcher/example.yaml should be provided by this launcher.
     """
 
+    pass
+
+
+@pytest.mark.parametrize(
+    "task_launcher_cfg, extra_flags, plugin_module",
+    [
+        (
+            {
+                "defaults": [
+                    {"hydra/launcher": None},
+                    {"hydra/hydra_logging": "hydra_debug"},
+                    {"hydra/job_logging": "disabled"},
+                ],
+                "hydra": {
+                    "launcher": {
+                        "class": "hydra_plugins.example_launcher.ExampleLauncher",
+                        "params": {"foo": 10, "bar": "abcde"},
+                    }
+                },
+            },
+            ["-m"],
+            "hydra_plugins.example_launcher",
+        )
+    ],
+)
+class TestExampleLauncherIntegration(IntegrationTestSuite):
     pass
