@@ -67,7 +67,7 @@ def my_app(_cfg):
     print("to_absolute_path('/foo')   : {}".format(utils.to_absolute_path("/foo")))
 
 
-$ python examples/tutorial/8_working_directory/my_app.py
+$ python examples/tutorial/8_working_directory/original_cwd.py
 Current working directory  : /Users/omry/dev/hydra/outputs/2019-10-23/10-53-03
 Original working directory : /Users/omry/dev/hydra
 to_absolute_path('foo')    : /Users/omry/dev/hydra/foo
