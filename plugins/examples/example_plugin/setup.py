@@ -8,12 +8,14 @@ with open("README.md", "r") as fh:
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Example plugin for hydra",
+        description="Example Hydra plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
         packages=find_packages(exclude=["tests"]),
         classifiers=[
+            # Feel free to choose another license
+            "License :: OSI Approved :: MIT License",
             # Python versions are used by the noxfile in Hydra to determine which
             # python versions to test this plugin with
             "Programming Language :: Python :: 2.7",
@@ -21,5 +23,9 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
-        install_requires=[],
+        install_requires=["hydra-core"],
+        # If this plugin is providing configuraiton files, be sure to include them in the package.
+        # See MANIFEST.in.
+        # For configurations to be discoverable at runtime, they should also be added to the search path.
+        include_package_data=True,
     )

@@ -41,14 +41,31 @@ def run_pytest(session, directory="."):
 
 
 def plugin_names():
-    return sorted(os.listdir(os.path.join(BASE, "plugins")))
+    return [x["name"] for x in list_plugins()]
+
+
+def list_plugins():
+    example_plugins = [
+        {"name": x, "path": "examples/{}".format(x)}
+        for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
+    ]
+    plugins = [
+        {"name": x, "path": x}
+        for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
+        if x != "examples"
+    ]
+    return plugins + example_plugins
 
 
 def get_all_plugins():
     return [
-        (plugin, "hydra_plugins." + plugin)
-        for plugin in plugin_names()
-        if plugin in PLUGINS or PLUGINS == ["ALL"]
+        {
+            "name": plugin["name"],
+            "path": plugin["path"],
+            "module": "hydra_plugins." + plugin["name"],
+        }
+        for plugin in list_plugins()
+        if plugin["name"] in PLUGINS or PLUGINS == ["ALL"]
     ]
 
 
@@ -83,7 +100,7 @@ def get_setup_python_versions(session, setup_py):
 
 def get_plugin_python_version(session, plugin):
     return get_setup_python_versions(
-        session, os.path.join(BASE, "plugins", plugin, "setup.py")
+        session, os.path.join(BASE, "plugins", plugin["path"], "setup.py")
     )
 
 
@@ -93,7 +110,7 @@ def get_plugin_python_version(session, plugin):
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("plugin", plugin_names(), ids=plugin_names())
+@nox.parametrize("plugin", list_plugins(), ids=plugin_names())
 def test_plugin(session, plugin, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
     # Verify this plugin supports the python we are testing on, skip otherwise
@@ -109,21 +126,21 @@ def test_plugin(session, plugin, install_cmd):
     plugin_enabled = {}
     all_plugins = get_all_plugins()
     # Install all plugins in session
-    for a_plugin in all_plugins:
-        cmd = list(install_cmd) + [os.path.join("plugins", a_plugin[0])]
-        pythons = get_plugin_python_version(session, a_plugin[0])
-        plugin_enabled[plugin] = session.python in pythons
-        if plugin_enabled[plugin]:
+    for plugin in all_plugins:
+        cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
+        pythons = get_plugin_python_version(session, plugin)
+        plugin_enabled[plugin["path"]] = session.python in pythons
+        if plugin_enabled[plugin["path"]]:
             session.run(*cmd, silent=True)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=True)
 
     # Test that we can import all installed plugins
-    for a_plugin in all_plugins:
+    for plugin in all_plugins:
         # install all other plugins that are compatible with the current Python version
-        if plugin_enabled[plugin]:
-            session.run("python", "-c", "import {}".format(a_plugin[1]))
+        if plugin_enabled[plugin["path"]]:
+            session.run("python", "-c", "import {}".format(plugin["module"]))
 
     install_pytest(session)
 
@@ -131,7 +148,7 @@ def test_plugin(session, plugin, install_cmd):
     run_pytest(session, "tests")
 
     # Run tests for current plugin
-    session.chdir(os.path.join(BASE, "plugins", plugin))
+    session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
     run_pytest(session)
 
 
@@ -144,12 +161,12 @@ def coverage(session):
     # Install all plugins in session
     for plugin in get_all_plugins():
         session.run(
-            "pip", "install", "-e", os.path.join("plugins", plugin[0]), silent=True
+            "pip", "install", "-e", os.path.join("plugins", plugin["path"]), silent=True
         )
 
     session.run("coverage", "erase")
     session.run("coverage", "run", "--append", "-m", "pytest", silent=True)
-    for plugin in plugin_names():
+    for plugin in list_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
         if session.python not in plugin_python_versions:
             continue
@@ -160,7 +177,7 @@ def coverage(session):
             "--append",
             "-m",
             "pytest",
-            os.path.join("plugins", plugin),
+            os.path.join("plugins", plugin["path"]),
             silent=True,
         )
 
