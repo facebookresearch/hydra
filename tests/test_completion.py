@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import distutils.spawn
 import os
-import sys
+import subprocess
 
 import pytest
-import subprocess
 
 from hydra._internal.config_loader import ConfigLoader
 from hydra._internal.core_plugins import BashCompletion
@@ -12,6 +12,10 @@ from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 
 chdir_hydra_root()
+
+
+def is_expect_exists():
+    return distutils.spawn.find_executable("expect") is not None
 
 
 def create_config_loader():
@@ -95,8 +99,8 @@ class TestCompletion:
         assert ret == expected
 
     @pytest.mark.skipif(
-        sys.platform.startswith("win"),
-        reason="Completion integration tests are disabled on Windows",
+        not is_expect_exists(),
+        reason="expect should be installed to run the expects tests",
     )
     @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])
     @pytest.mark.parametrize("shell", ["bash"])
