@@ -26,8 +26,9 @@ Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-17
 
 $ python my_app.py
 Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-19
-
 ```
+
+
 
 Let's take a look at one of those working directories:
 ```text
@@ -48,6 +49,30 @@ Inside the configuration output directory we have:
 
 And in the main output directory:
 * `my_app.log`: A log file created for this run
+
+### Original working directory
+
+You can still access the original working directory if you need to:
+
+```python
+import os
+import hydra
+from hydra import utils
+
+@hydra.main()
+def my_app(_cfg):
+    print("Current working directory  : {}".format(os.getcwd()))
+    print("Original working directory : {}".format(utils.get_original_cwd()))
+    print("to_absolute_path('foo')    : {}".format(utils.to_absolute_path("foo")))
+    print("to_absolute_path('/foo')   : {}".format(utils.to_absolute_path("/foo")))
+
+
+$ python examples/tutorial/8_working_directory/my_app.py
+Current working directory  : /Users/omry/dev/hydra/outputs/2019-10-23/10-53-03
+Original working directory : /Users/omry/dev/hydra
+to_absolute_path('foo')    : /Users/omry/dev/hydra/foo
+to_absolute_path('/foo')   : /foo
+```
 
 
 Working directory can be [customized](../configure_hydra/workdir/).
