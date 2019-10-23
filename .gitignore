@@ -1,6 +1,6 @@
 /.idea
 outputs
-/multirun
+multirun
 dist
 build
 __pycache__

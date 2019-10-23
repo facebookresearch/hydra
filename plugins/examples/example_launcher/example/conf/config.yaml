@@ -1,0 +1,3 @@
+defaults:
+  - hydra/launcher: example
+  - db: mysql
