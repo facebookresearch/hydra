@@ -312,3 +312,20 @@ class IntegrationTestSuite:
             prints="os.getcwd()",
             expected_outputs=str(tmpdir / expected_dir),
         )
+
+    def test_get_orig_dir_multirun(
+        self, tmpdir, task_launcher_cfg, extra_flags, plugin_module
+    ):
+        self.verify_plugin(plugin_module)
+        overrides = extra_flags
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
+        task_config = OmegaConf.create()
+        cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+
+        integration_test(
+            tmpdir=tmpdir,
+            task_config=cfg,
+            overrides=overrides,
+            prints="hydra.utils.get_original_cwd()",
+            expected_outputs=str(tmpdir),
+        )

@@ -54,4 +54,8 @@ class TestExampleLauncher(LauncherTestSuite):
     ],
 )
 class TestExampleLauncherIntegration(IntegrationTestSuite):
+    """
+    Run this launcher through the integration test suite.
+    """
+
     pass
