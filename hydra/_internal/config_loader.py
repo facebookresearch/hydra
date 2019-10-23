@@ -6,7 +6,7 @@ Configuration loader
 import copy
 import os
 
-from omegaconf import OmegaConf, DictConfig, ListConfig
+from omegaconf import OmegaConf, DictConfig, ListConfig, open_dict
 from pkg_resources import (
     resource_stream,
     resource_exists,
@@ -14,9 +14,9 @@ from pkg_resources import (
     resource_isdir,
 )
 
+from .config_search_path import ConfigSearchPath
 from ..errors import MissingConfigException
 from ..plugins.common.utils import JobRuntime
-from .config_search_path import ConfigSearchPath
 
 
 class ConfigLoader:
@@ -79,6 +79,9 @@ class ConfigLoader:
         # Recreate the config for this sweep instance with the appropriate overrides
         overrides = master_config.hydra.overrides.hydra.to_container() + sweep_overrides
         sweep_config = self.load_configuration(overrides)
+
+        with open_dict(sweep_config):
+            sweep_config.hydra.runtime = master_config.hydra.runtime
 
         # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
         OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
