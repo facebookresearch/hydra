@@ -20,4 +20,4 @@ defaults:
 
 See included [example](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_colorlog/example).
  
-![Colored log output](https://raw.githubusercontent.com/facebookresearch/hydra/master/website/docs/plugins/colorlog.png)
+![Colored log output](/plugins/colorlog/colorlog.png)
