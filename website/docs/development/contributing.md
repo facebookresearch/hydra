@@ -26,7 +26,7 @@ conda activate hydra37
 ```
 From the source tree, install Hydra in development mode with the following command:
 ```
-pip install -e .[dev] -e .
+pip install -e '.[dev]' -e .
 ```
 
 ### Pre commit hooks
