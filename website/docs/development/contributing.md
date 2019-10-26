@@ -24,10 +24,16 @@ Activate the environment:
 ```
 conda activate hydra37
 ```
-From the source tree, install Hydra in development mode with the following command:
-```
-pip install -e .[dev] -e .
-```
+From the source tree, install Hydra in development mode as follows:
+
+* Bash
+    ```
+    pip install -e .[dev] -e .
+    ```
+* Zsh
+    ```
+    pip install -e '.[dev]' -e .
+    ```
 
 ### Pre commit hooks
 It is highly recommended that you install pre commit hooks into your local git repository.
