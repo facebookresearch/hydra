@@ -20,15 +20,13 @@ assignees: ''
 ```
 // Paste the bad output here!
 ```
-**Optional video**
-If applicable, record a short [video](https://asciinema.org) with to help explain your problem.
-You can also 
 
 ## Expected Behavior
 <!-- A clear and concise description of what you expected to happen. -->
 
 ## System information
 - <!-- Hydra Version -->
+- <!-- Python version -->
 - <!-- Operating system -->
 
 ## Additional context
