@@ -26,7 +26,7 @@ batch_size=128 optimizer=adam learning_rate=0.1
 ## Launcher
 Launchers are responsible for launching a job to a specific environment.
 A Launcher is taking a batch of argument lists like the one above and launches a job for each one.
-The job uses those arguments to compose a its configuration.
+The job uses those arguments to compose its configuration.
 The basic launcher simply launches the job locally. 
 
 ## SearchPathPlugin
