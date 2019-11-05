@@ -330,7 +330,11 @@ def test_non_config_group_default():
     ]
 
 
-def test_non_config_group_default():
+def test_mixed_composition_order():
+    """
+    Tests that the order of mixed composition (defaults contains both config group and non config group
+    items) is correct
+    """
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
         strict_cfg=False,
