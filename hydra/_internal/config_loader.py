@@ -187,9 +187,6 @@ class ConfigLoader:
                     idx = key_to_idx[key]
                     primary[idx] = d
                     merged_list.remove(d)
-            else:
-                primary.append(d)
-                merged_list.remove(d)
 
         for d in merged_list:
             primary.append(d)

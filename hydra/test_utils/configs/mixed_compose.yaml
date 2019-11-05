@@ -1,0 +1,4 @@
+defaults:
+  - some_config
+  - group1: file1
+  - config

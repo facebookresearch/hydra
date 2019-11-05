@@ -1,0 +1,1 @@
+Fix a bug that caused out of order composition when mixing config-groups with non-config-group in the defaults block
