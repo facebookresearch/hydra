@@ -328,3 +328,26 @@ def test_non_config_group_default():
         ("non_config_group_default.yaml", "hydra/test_utils/configs", "test"),
         ("some_config.yaml", "hydra/test_utils/configs", "test"),
     ]
+
+
+def test_non_config_group_default():
+    config_loader = ConfigLoader(
+        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        strict_cfg=False,
+        config_file="mixed_compose.yaml",
+    )
+    config_loader.load_configuration()
+    assert config_loader.get_load_history() == [
+        ("hydra.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("mixed_compose.yaml", "hydra/test_utils/configs", "test"),
+        ("some_config.yaml", "hydra/test_utils/configs", "test"),
+        ("group1/file1.yaml", "hydra/test_utils/configs", "test"),
+        ("config.yaml", "hydra/test_utils/configs", "test"),
+    ]
