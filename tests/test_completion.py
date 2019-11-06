@@ -49,7 +49,7 @@ base_completion_list = [
         ("dict.", 3, ["dict.key1=", "dict.key2=", "dict.key3="]),
         ("dict.key", 2, ["dict.key1=", "dict.key2=", "dict.key3="]),
         ("dict.key1=", 2, ["dict.key1=val1"]),
-        ("dict.key3=", 2, ["dict.key3="]),
+        ("dict.key3=", 2, []),  # no matches because value is ??? (missing)
         ("list", 2, ["list.", "list_prefix="]),
         ("list.", 2, ["list.0=", "list.1=", "list.2="]),
         (
