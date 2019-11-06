@@ -358,9 +358,9 @@ class ConfigLoader:
     def _merge_defaults(self, cfg, defaults, split_at):
         def get_filename(config_name):
             filename, ext = os.path.splitext(config_name)
-            if ext == "":
-                ext = ".yaml"
-            return "{}{}".format(filename, ext)
+            if ext not in (".yaml", ".yml"):
+                config_name = "{}{}".format(config_name, ".yaml")
+            return config_name
 
         def merge_defaults(merged_cfg, def_list):
             cfg_with_list = OmegaConf.create(dict(defaults=def_list))
