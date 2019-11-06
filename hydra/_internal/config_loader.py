@@ -125,6 +125,16 @@ class ConfigLoader:
         return filepath, found_search_path
 
     @staticmethod
+    def _split_key_val(s):
+        assert "=" in s, "'{}' not a valid override, expecting key=value format".format(
+            s
+        )
+
+        idx = s.find("=")
+        assert idx != -1
+        return s[0:idx], s[idx + 1 :]
+
+    @staticmethod
     def _apply_defaults_overrides(overrides, defaults):
         consumed = []
         key_to_idx = {}
@@ -133,10 +143,7 @@ class ConfigLoader:
                 key = next(iter(d.keys()))
                 key_to_idx[key] = idx
         for override in copy.deepcopy(overrides):
-            assert (
-                "=" in override
-            ), "'{}' not a valid override, expecting key=value format".format(override)
-            key, value = override.split("=")
+            key, value = ConfigLoader._split_key_val(override)
             if key in key_to_idx:
                 if "," in value:
                     # If this is a multirun config (comma separated list), flag the default to prevent it from being
@@ -155,7 +162,7 @@ class ConfigLoader:
     def _apply_free_defaults(self, defaults, overrides):
         consumed = []
         for override in overrides:
-            key, value = override.split("=")
+            key, value = ConfigLoader._split_key_val(override)
             if self.exists_in_search_path(key):
                 # Do not add multirun configs into defaults, those will be added to the defaults
                 # during the runs after list is broken into items
