@@ -165,6 +165,16 @@ class TestConfigLoader:
         del cfg["hydra"]
         assert cfg == dict(yml_file_here=True)
 
+    def test_override_with_equals(self, path):
+        config_loader = ConfigLoader(
+            config_search_path=create_search_path([path]),
+            strict_cfg=False,
+            config_file="config.yaml",
+        )
+        cfg = config_loader.load_configuration(overrides=["abc='cde=12'"])
+        del cfg["hydra"]
+        assert cfg == OmegaConf.create({"normal_yaml_config": True, "abc": "cde=12"})
+
 
 @pytest.mark.parametrize(
     "primary,merged,result",
