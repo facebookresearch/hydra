@@ -1,0 +1,1 @@
+Allow '=' to be used in the value of an override, eg. foo=bar=10 (key foo, value bar=10).
