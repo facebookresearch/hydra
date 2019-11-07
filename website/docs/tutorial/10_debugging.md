@@ -24,7 +24,7 @@ db:
 ```
 The printed config would be the actual config the job received with the rest of the command line arguments:
 ```yaml
-$ python tutorial/objects_example/my_app.py db=postgresql db.params.database=tutorial2 -c
+$ python tutorial/objects_example/my_app.py db=postgresql db.params.database=tutorial2 --cfg job
 [2019-09-29 11:14:55,977] -
 db:
   class: tutorial.objects_example.my_app.PostgreSQLConnection
@@ -35,12 +35,10 @@ db:
     user: root
 ```
 
-The `--cfg` flag takes an optional argument indicating which part of the config to print:
+The `--cfg` option takes one argument indicating which part of the config to print:
 * `job` : Your config 
 * `hydra` : Hydra's config
 * `all` : The full config, which is a union of `job` and `hydra`.
-
-Warning: `-c` should be the last command line argument. The first argument after `-c` will be interpreted config type to show.
 
 ### Hydra verbose debugging
 Hydra prints some very useful information in `DEBUG` log level.

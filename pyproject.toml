@@ -8,18 +8,13 @@
     issue_format = "`#{issue} <https://github.com/facebookresearch/hydra/issues/{issue}>`_"
 
   [[tool.towncrier.type]]
-  directory = "removal"
-  name = "Deprecations and Removals"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "config"
-  name = "Configuration structure changes"
-  showcontent = true
-
-  [[tool.towncrier.type]]
   directory = "feature"
   name = "Features"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "removal"
+  name = "Deprecations and Removals"
   showcontent = true
 
   [[tool.towncrier.type]]
@@ -30,6 +25,11 @@
   [[tool.towncrier.type]]
   directory = "plugin"
   name = "Plugins"
+  showcontent = true
+
+  [[tool.towncrier.type]]
+  directory = "config"
+  name = "Configuration structure changes"
   showcontent = true
 
   [[tool.towncrier.type]]
