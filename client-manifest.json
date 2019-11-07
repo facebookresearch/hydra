@@ -232,27 +232,27 @@
     "3": {
       "js": [
         {
-          "file": "content---docs-advanced-app-packaginge-17-5a4.84eb55d7ddf3bb63b0d5.js",
-          "hash": "da52f9e4c8a33df7d838",
-          "publicPath": "/content---docs-advanced-app-packaginge-17-5a4.84eb55d7ddf3bb63b0d5.js"
+          "file": "content---docs-advanced-app-packaginge-17-5a4.dfcab7cb07a76da21e3f.js",
+          "hash": "549de096e7ad3884ed9e",
+          "publicPath": "/content---docs-advanced-app-packaginge-17-5a4.dfcab7cb07a76da21e3f.js"
         }
       ]
     },
     "4": {
       "js": [
         {
-          "file": "content---docs-advanced-plugins-6-be-8cf.6dc5e93e9fb9c1391b3b.js",
-          "hash": "f2d789f6002aef9c80a6",
-          "publicPath": "/content---docs-advanced-plugins-6-be-8cf.6dc5e93e9fb9c1391b3b.js"
+          "file": "content---docs-advanced-plugins-6-be-8cf.8f0af5a4be259526b090.js",
+          "hash": "55c06c813939198364bb",
+          "publicPath": "/content---docs-advanced-plugins-6-be-8cf.8f0af5a4be259526b090.js"
         }
       ]
     },
     "5": {
       "js": [
         {
-          "file": "content---docs-advanced-search-pathee-7-845.312d86fd832aa4ac8c02.js",
-          "hash": "24937061a387952137bc",
-          "publicPath": "/content---docs-advanced-search-pathee-7-845.312d86fd832aa4ac8c02.js"
+          "file": "content---docs-advanced-search-pathee-7-845.c0ae5e784d19db556249.js",
+          "hash": "f6dc8c6f98c4da4be359",
+          "publicPath": "/content---docs-advanced-search-pathee-7-845.c0ae5e784d19db556249.js"
         }
       ]
     },
@@ -331,99 +331,99 @@
     "14": {
       "js": [
         {
-          "file": "content---docs-patterns-objects-594-c72.c6ead2e743db07d21d59.js",
-          "hash": "3d508e091f65806c74b4",
-          "publicPath": "/content---docs-patterns-objects-594-c72.c6ead2e743db07d21d59.js"
+          "file": "content---docs-patterns-objects-594-c72.f3eeb0d2b8f7d607b0b9.js",
+          "hash": "761d1dd1ddf5580b1240",
+          "publicPath": "/content---docs-patterns-objects-594-c72.f3eeb0d2b8f7d607b0b9.js"
         }
       ]
     },
     "15": {
       "js": [
         {
-          "file": "content---docs-patterns-specializing-config-6-a-5-565.caf18ab511b920300878.js",
-          "hash": "d7cb1983965a6fbd0cee",
-          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.caf18ab511b920300878.js"
+          "file": "content---docs-patterns-specializing-config-6-a-5-565.215966bcddcd5f93c864.js",
+          "hash": "1122c3d67f0f8c2a24d5",
+          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.215966bcddcd5f93c864.js"
         }
       ]
     },
     "16": {
       "js": [
         {
-          "file": "content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js",
-          "hash": "15128bbead61c7d7344b",
-          "publicPath": "/content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js"
+          "file": "content---docs-plugins-colorloge-72-4ff.947345859cb08761cf81.js",
+          "hash": "6c09aaaf7daa1497dff8",
+          "publicPath": "/content---docs-plugins-colorloge-72-4ff.947345859cb08761cf81.js"
         }
       ]
     },
     "17": {
       "js": [
         {
-          "file": "content---docs-tutorial-composition-1-ce-5b4.612539e9e430d0bd7fd3.js",
-          "hash": "09de4dec885ea493ce90",
-          "publicPath": "/content---docs-tutorial-composition-1-ce-5b4.612539e9e430d0bd7fd3.js"
+          "file": "content---docs-tutorial-composition-1-ce-5b4.bf07addd3e9b391334e9.js",
+          "hash": "78eade51f183f5deb4af",
+          "publicPath": "/content---docs-tutorial-composition-1-ce-5b4.bf07addd3e9b391334e9.js"
         }
       ]
     },
     "18": {
       "js": [
         {
-          "file": "content---docs-tutorial-config-file-612-6e8.a52f8a5251884367debb.js",
-          "hash": "b58e99dca25601eb6b9e",
-          "publicPath": "/content---docs-tutorial-config-file-612-6e8.a52f8a5251884367debb.js"
+          "file": "content---docs-tutorial-config-file-612-6e8.a640f1893f272da35915.js",
+          "hash": "8938a30108e41a52d1e0",
+          "publicPath": "/content---docs-tutorial-config-file-612-6e8.a640f1893f272da35915.js"
         }
       ]
     },
     "19": {
       "js": [
         {
-          "file": "content---docs-tutorial-config-groupscc-9-679.bd7a7b363c256da2ca15.js",
-          "hash": "fae24507e0a1d5b2c6ea",
-          "publicPath": "/content---docs-tutorial-config-groupscc-9-679.bd7a7b363c256da2ca15.js"
+          "file": "content---docs-tutorial-config-groupscc-9-679.81b7484b3abf786fef3e.js",
+          "hash": "ca2765f9d13136e2af2b",
+          "publicPath": "/content---docs-tutorial-config-groupscc-9-679.81b7484b3abf786fef3e.js"
         }
       ]
     },
     "20": {
       "js": [
         {
-          "file": "content---docs-tutorial-debugging-8-fa-ea1.1a67aa524731d835d377.js",
-          "hash": "2313e70284861d2b6d04",
-          "publicPath": "/content---docs-tutorial-debugging-8-fa-ea1.1a67aa524731d835d377.js"
+          "file": "content---docs-tutorial-debugging-8-fa-ea1.43f328374c27becc8966.js",
+          "hash": "d2f48c2c368a1e5dce0e",
+          "publicPath": "/content---docs-tutorial-debugging-8-fa-ea1.43f328374c27becc8966.js"
         }
       ]
     },
     "21": {
       "js": [
         {
-          "file": "content---docs-tutorial-defaultsf-24-f5d.7d74e7ccb56ce5d872d8.js",
-          "hash": "0694919b02449381cbdc",
-          "publicPath": "/content---docs-tutorial-defaultsf-24-f5d.7d74e7ccb56ce5d872d8.js"
+          "file": "content---docs-tutorial-defaultsf-24-f5d.10f35835d38d6990aba1.js",
+          "hash": "6f39c953cc4128ec9ef1",
+          "publicPath": "/content---docs-tutorial-defaultsf-24-f5d.10f35835d38d6990aba1.js"
         }
       ]
     },
     "22": {
       "js": [
         {
-          "file": "content---docs-tutorial-logging-83-f-bc1.14e9e6adf2ed6107a64f.js",
-          "hash": "aeb98b175f2ccf055d44",
-          "publicPath": "/content---docs-tutorial-logging-83-f-bc1.14e9e6adf2ed6107a64f.js"
+          "file": "content---docs-tutorial-logging-83-f-bc1.185b32f9c0fc4267b168.js",
+          "hash": "ab596e38bcdca302ef8c",
+          "publicPath": "/content---docs-tutorial-logging-83-f-bc1.185b32f9c0fc4267b168.js"
         }
       ]
     },
     "23": {
       "js": [
         {
-          "file": "content---docs-tutorial-multi-runef-6-850.c6d86cecfeff64b45867.js",
-          "hash": "553b5d80e366c9dd863e",
-          "publicPath": "/content---docs-tutorial-multi-runef-6-850.c6d86cecfeff64b45867.js"
+          "file": "content---docs-tutorial-multi-runef-6-850.843b9687f28b9079aba6.js",
+          "hash": "c7c7e62793d08ebcc42b",
+          "publicPath": "/content---docs-tutorial-multi-runef-6-850.843b9687f28b9079aba6.js"
         }
       ]
     },
     "24": {
       "js": [
         {
-          "file": "content---docs-tutorial-simple-clib-1-e-52e.34db8d1d2ca319d97af5.js",
-          "hash": "3da999ff9953cc332809",
-          "publicPath": "/content---docs-tutorial-simple-clib-1-e-52e.34db8d1d2ca319d97af5.js"
+          "file": "content---docs-tutorial-simple-clib-1-e-52e.39f43629b7400892cdcd.js",
+          "hash": "5f7fa7dae39a92f74320",
+          "publicPath": "/content---docs-tutorial-simple-clib-1-e-52e.39f43629b7400892cdcd.js"
         }
       ]
     },
@@ -439,18 +439,18 @@
     "26": {
       "js": [
         {
-          "file": "content---docs-tutorial-working-directory-8-e-3-16a.93818a218842cd411922.js",
-          "hash": "141df5d6ae2e3547b48b",
-          "publicPath": "/content---docs-tutorial-working-directory-8-e-3-16a.93818a218842cd411922.js"
+          "file": "content---docs-tutorial-working-directory-8-e-3-16a.11af8355e14cb7e07779.js",
+          "hash": "a17b94f0ba42d9c15f95",
+          "publicPath": "/content---docs-tutorial-working-directory-8-e-3-16a.11af8355e14cb7e07779.js"
         }
       ]
     },
     "27": {
       "js": [
         {
-          "file": "docsMetadata---docs-92-d-b06.ab4b3ecc1896844deb51.js",
-          "hash": "b53d858b69482306f6f3",
-          "publicPath": "/docsMetadata---docs-92-d-b06.ab4b3ecc1896844deb51.js"
+          "file": "docsMetadata---docs-92-d-b06.2f2bc1a4cd03e9866d61.js",
+          "hash": "a4f00875159b68fbcdca",
+          "publicPath": "/docsMetadata---docs-92-d-b06.2f2bc1a4cd03e9866d61.js"
         }
       ]
     },
@@ -458,42 +458,42 @@
       "css": [
         {
           "file": "main.a2c8fe5825836a42a141.css",
-          "hash": "f13f90bdb5f428becc2e",
+          "hash": "48294b5c242a9f2e8ac4",
           "publicPath": "/main.a2c8fe5825836a42a141.css"
         }
       ],
       "js": [
         {
-          "file": "main.25531d9e147f6747a0f3.js",
-          "hash": "f13f90bdb5f428becc2e",
-          "publicPath": "/main.25531d9e147f6747a0f3.js"
+          "file": "main.006d50f2e29e6d4ff109.js",
+          "hash": "48294b5c242a9f2e8ac4",
+          "publicPath": "/main.006d50f2e29e6d4ff109.js"
         }
       ]
     },
     "29": {
       "js": [
         {
-          "file": "metadata---docs-advanced-app-packaging-735-a66.8102858f7f2a0e86e102.js",
-          "hash": "0fda0bdec74f4b8ec72c",
-          "publicPath": "/metadata---docs-advanced-app-packaging-735-a66.8102858f7f2a0e86e102.js"
+          "file": "metadata---docs-advanced-app-packaging-735-a66.cb99caeb1cb939ef6479.js",
+          "hash": "bac7486451ecc339effa",
+          "publicPath": "/metadata---docs-advanced-app-packaging-735-a66.cb99caeb1cb939ef6479.js"
         }
       ]
     },
     "30": {
       "js": [
         {
-          "file": "metadata---docs-advanced-plugins-7-ea-637.7ec0d0b65ab0fd2c1a97.js",
-          "hash": "c127a6b5bd1bc3dfeb1f",
-          "publicPath": "/metadata---docs-advanced-plugins-7-ea-637.7ec0d0b65ab0fd2c1a97.js"
+          "file": "metadata---docs-advanced-plugins-7-ea-637.1d90466c38a6d170abe3.js",
+          "hash": "7e1faab1f603b2d33422",
+          "publicPath": "/metadata---docs-advanced-plugins-7-ea-637.1d90466c38a6d170abe3.js"
         }
       ]
     },
     "31": {
       "js": [
         {
-          "file": "metadata---docs-advanced-search-pathdcc-5dc.5a40ad5a46fb4231d082.js",
-          "hash": "0ab008222f5e5955189f",
-          "publicPath": "/metadata---docs-advanced-search-pathdcc-5dc.5a40ad5a46fb4231d082.js"
+          "file": "metadata---docs-advanced-search-pathdcc-5dc.c68074a58b7c23f8921e.js",
+          "hash": "cb0eda5c44c02ed416a8",
+          "publicPath": "/metadata---docs-advanced-search-pathdcc-5dc.c68074a58b7c23f8921e.js"
         }
       ]
     },
@@ -572,126 +572,126 @@
     "40": {
       "js": [
         {
-          "file": "metadata---docs-patterns-objects-5-d-0-4fd.32bc89b4cff20d00a249.js",
-          "hash": "33b2530f090b6b06ddef",
-          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.32bc89b4cff20d00a249.js"
+          "file": "metadata---docs-patterns-objects-5-d-0-4fd.d6e8d9569da4300acbd7.js",
+          "hash": "e08155934dbf5e5e451e",
+          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.d6e8d9569da4300acbd7.js"
         }
       ]
     },
     "41": {
       "js": [
         {
-          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.0dff237fe4ac6eb922d9.js",
-          "hash": "8ef855f04bcdca4c430d",
-          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.0dff237fe4ac6eb922d9.js"
+          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.fadbf8c652ba36f1abac.js",
+          "hash": "8a174d6876586b09fefb",
+          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.fadbf8c652ba36f1abac.js"
         }
       ]
     },
     "42": {
       "js": [
         {
-          "file": "metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js",
-          "hash": "46dbf32974d98e79e8b4",
-          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js"
+          "file": "metadata---docs-plugins-colorlog-839-e35.32ad8a2a868fa8bd3652.js",
+          "hash": "9c85e2ecbd330bd6519e",
+          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.32ad8a2a868fa8bd3652.js"
         }
       ]
     },
     "43": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-composition-02-d-10f.d69f6dfb3f02c8fd8143.js",
-          "hash": "b6149717b4c434247446",
-          "publicPath": "/metadata---docs-tutorial-composition-02-d-10f.d69f6dfb3f02c8fd8143.js"
+          "file": "metadata---docs-tutorial-composition-02-d-10f.c7fa0a4c60c942ae9dd3.js",
+          "hash": "82533cf7bb9c51b0131d",
+          "publicPath": "/metadata---docs-tutorial-composition-02-d-10f.c7fa0a4c60c942ae9dd3.js"
         }
       ]
     },
     "44": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-config-file-539-d3d.11f48a770b789201af2a.js",
-          "hash": "6d4269b59c2d2ab9d6d9",
-          "publicPath": "/metadata---docs-tutorial-config-file-539-d3d.11f48a770b789201af2a.js"
+          "file": "metadata---docs-tutorial-config-file-539-d3d.841ca6252642cf58715c.js",
+          "hash": "284a5346ae8b8a3395cc",
+          "publicPath": "/metadata---docs-tutorial-config-file-539-d3d.841ca6252642cf58715c.js"
         }
       ]
     },
     "45": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-config-groups-5-f-7-555.8bc83194c596c787186b.js",
-          "hash": "4cbe6a3387c9501461a8",
-          "publicPath": "/metadata---docs-tutorial-config-groups-5-f-7-555.8bc83194c596c787186b.js"
+          "file": "metadata---docs-tutorial-config-groups-5-f-7-555.2b48cedc1c41cf4ed320.js",
+          "hash": "b7717a6c071796eb941b",
+          "publicPath": "/metadata---docs-tutorial-config-groups-5-f-7-555.2b48cedc1c41cf4ed320.js"
         }
       ]
     },
     "46": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-debugging-4-c-7-e10.0e26b8a1989f98f20147.js",
-          "hash": "64d8a216d81c205f42e2",
-          "publicPath": "/metadata---docs-tutorial-debugging-4-c-7-e10.0e26b8a1989f98f20147.js"
+          "file": "metadata---docs-tutorial-debugging-4-c-7-e10.7c8a9dca72b5ccedb05d.js",
+          "hash": "536e4dd63dc32ea37f43",
+          "publicPath": "/metadata---docs-tutorial-debugging-4-c-7-e10.7c8a9dca72b5ccedb05d.js"
         }
       ]
     },
     "47": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-defaults-235-509.d90a5e7a9c340000f777.js",
-          "hash": "9e0de3c89b526b0a58ad",
-          "publicPath": "/metadata---docs-tutorial-defaults-235-509.d90a5e7a9c340000f777.js"
+          "file": "metadata---docs-tutorial-defaults-235-509.623ab17cea33ae86a0d6.js",
+          "hash": "dcbbd81d56974f4d2c4a",
+          "publicPath": "/metadata---docs-tutorial-defaults-235-509.623ab17cea33ae86a0d6.js"
         }
       ]
     },
     "48": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-loggingf-9-b-0de.25f4f27de02e040b8f08.js",
-          "hash": "dd2fde38bf0cff970d78",
-          "publicPath": "/metadata---docs-tutorial-loggingf-9-b-0de.25f4f27de02e040b8f08.js"
+          "file": "metadata---docs-tutorial-loggingf-9-b-0de.a3eed2a1d637b94c9396.js",
+          "hash": "06b7b1d3ac4bf10f0773",
+          "publicPath": "/metadata---docs-tutorial-loggingf-9-b-0de.a3eed2a1d637b94c9396.js"
         }
       ]
     },
     "49": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-multi-run-14-a-a88.753d86051ebadbc5e528.js",
-          "hash": "271c8f1e7d186da1feba",
-          "publicPath": "/metadata---docs-tutorial-multi-run-14-a-a88.753d86051ebadbc5e528.js"
+          "file": "metadata---docs-tutorial-multi-run-14-a-a88.e088d642c422aa7f1b9b.js",
+          "hash": "2d5d2f05df817a61a149",
+          "publicPath": "/metadata---docs-tutorial-multi-run-14-a-a88.e088d642c422aa7f1b9b.js"
         }
       ]
     },
     "50": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-simple-cli-68-e-3fa.ba577d97344c53c64e26.js",
-          "hash": "54a37a3092c1251c49ad",
-          "publicPath": "/metadata---docs-tutorial-simple-cli-68-e-3fa.ba577d97344c53c64e26.js"
+          "file": "metadata---docs-tutorial-simple-cli-68-e-3fa.97b2a01e40ca4691debc.js",
+          "hash": "654938e12d8926ca872e",
+          "publicPath": "/metadata---docs-tutorial-simple-cli-68-e-3fa.97b2a01e40ca4691debc.js"
         }
       ]
     },
     "51": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-tab-completion-949-461.6959de11b3bb013c2ee9.js",
-          "hash": "b83505cc41a47a111c81",
-          "publicPath": "/metadata---docs-tutorial-tab-completion-949-461.6959de11b3bb013c2ee9.js"
+          "file": "metadata---docs-tutorial-tab-completion-949-461.a43eff0b760a40eec6e4.js",
+          "hash": "f067078cbb5426d0daaf",
+          "publicPath": "/metadata---docs-tutorial-tab-completion-949-461.a43eff0b760a40eec6e4.js"
         }
       ]
     },
     "52": {
       "js": [
         {
-          "file": "metadata---docs-tutorial-working-directoryc-29-897.db8bad3c5aba458344fc.js",
-          "hash": "e1f7749bb03dbf752c8e",
-          "publicPath": "/metadata---docs-tutorial-working-directoryc-29-897.db8bad3c5aba458344fc.js"
+          "file": "metadata---docs-tutorial-working-directoryc-29-897.def478a5da5d64a9fe6f.js",
+          "hash": "d85036dd29e4f5407610",
+          "publicPath": "/metadata---docs-tutorial-working-directoryc-29-897.def478a5da5d64a9fe6f.js"
         }
       ]
     },
     "53": {
       "js": [
         {
-          "file": "runtime~main.8c7874cd630e54503f03.js",
-          "hash": "a463f36ba29f35cea876",
-          "publicPath": "/runtime~main.8c7874cd630e54503f03.js"
+          "file": "runtime~main.005cd5cd4cfd5e7176e2.js",
+          "hash": "555f9b9e71fc306ff483",
+          "publicPath": "/runtime~main.005cd5cd4cfd5e7176e2.js"
         }
       ]
     },
