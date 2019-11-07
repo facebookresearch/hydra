@@ -51,7 +51,6 @@ You can access them as config variables.
 - *hydra.job.override_dirname* : Pathname derived from the overrides for this job
 - *hydra.job.num* : job serial number in sweep
 - *hydra.job.id* : Job ID in the underlying jobs system (Slurm etc) 
-- *hydra.job.num_jobs*: Number of jobs the launcher is starting in this sweep
 
 `hydra.runtime`:
 - *hydra.runtime.version*: Hydra's version
