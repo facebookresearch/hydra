@@ -92,10 +92,8 @@ def get_args_parser():
     parser.add_argument(
         "--cfg",
         "-c",
-        const="job",
-        nargs="?",
         choices=["job", "hydra", "all"],
-        help="Show config instead of running, optional value indicates which config to show (defaults to job)",
+        help="Show config instead of running [job|hydra|all]",
     )
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")

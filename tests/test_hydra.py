@@ -288,7 +288,7 @@ def test_sweep_complex_defaults(
             """--help,-h : Application's help
 --hydra-help : Hydra's help
 --version : show program's version number and exit
---cfg,-c : Show config instead of running, optional value indicates which config to show (defaults to job)
+--cfg,-c : Show config instead of running [job|hydra|all]
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:

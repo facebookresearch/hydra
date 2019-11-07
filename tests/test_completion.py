@@ -125,8 +125,8 @@ class TestCompletion:
     "line,expected",
     [
         ("-c job", base_completion_list),
-        ("-c job ", base_completion_list),
-        ("-c", base_completion_list),
+        ("-c hydra ", base_completion_list),
+        ("-c all ", base_completion_list),
     ],
 )
 def test_with_flags(line, expected):
