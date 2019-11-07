@@ -41,3 +41,19 @@ hydra:
   run:
     dir: output/${hydra.job.override_dirname}
 ```
+
+
+### Configuring hydra.job.override_dirname
+`hydra.job.override_dirname` can be configured via hydra.job.config.override_dirname.
+You can exclude keys such as `random_seed` or change the separator used to construct override_dirname.
+
+```yaml
+hydra:
+  job:
+    config:
+      # configuration for the ${hydra.job.override_dirname} runtime variable
+      override_dirname:
+        kv_sep: '='
+        item_sep: ','
+        exclude_keys: []
+```

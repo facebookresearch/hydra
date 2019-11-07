@@ -45,6 +45,13 @@ hydra:
     # Job number if job is a part of a sweep
     num: ???
 
+    config:
+      # configuration for the ${hydra.job.override_dirname} runtime variable
+      override_dirname:
+        kv_sep: '='
+        item_sep: ','
+        exclude_keys: []
+
   # populated at runtime
   runtime:
     version: ???    # Hydra's version

@@ -287,6 +287,31 @@ class IntegrationTestSuite:
                 ["a=1", "b=2"],
                 "hydra_cfg/a=1,b=2",
             ),
+            (
+                # Test override_dirname integration
+                {
+                    "hydra": {
+                        "sweep": {
+                            "dir": "hydra_cfg",
+                            "subdir": "${hydra.job.override_dirname}",
+                        },
+                        "job": {
+                            "config": {
+                                "override_dirname": {
+                                    "kv_sep": "_",
+                                    "item_sep": "+",
+                                    "exclude_keys": ["seed"],
+                                }
+                            }
+                        },
+                    },
+                    "a": "hello",
+                    "b": 20,
+                    "seed": "???",
+                },
+                ["a=1", "b=2", "seed=10"],
+                "hydra_cfg/a_1+b_2",
+            ),
         ],
     )
     def test_custom_sweeper_run_workdir(
