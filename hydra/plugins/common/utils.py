@@ -46,18 +46,32 @@ def _save_config(cfg, filename, output_dir):
         file.write(cfg.pretty())
 
 
-def get_overrides_dirname(lst, exclude_keys=[]):
-    lst = [x for x in lst if x not in exclude_keys]
+def get_overrides_dirname(input_list, exclude_keys=[], item_sep=",", kv_sep="="):
+    lst = []
+    for x in input_list:
+        key, _val = split_key_val(x)
+        if key not in exclude_keys:
+            lst.append(x)
+
     lst.sort()
-    return re.sub(pattern="[=]", repl="=", string=",".join(lst))
+    # TODO? what is this re doing?
+    return re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lst))
 
 
 def filter_overrides(overrides):
     """
     :param overrides: overrides list
-    :return: returning a new overrides list with all the keys starting with hydra. fitlered.
+    :return: returning a new overrides list with all the keys starting with hydra. filtered.
     """
     return [x for x in overrides if not x.startswith("hydra.")]
+
+
+def split_key_val(s):
+    assert "=" in s, "'{}' not a valid override, expecting key=value format".format(s)
+
+    idx = s.find("=")
+    assert idx != -1
+    return s[0:idx], s[idx + 1 :]
 
 
 def run_job(config, task_function, job_dir_key, job_subdir_key):

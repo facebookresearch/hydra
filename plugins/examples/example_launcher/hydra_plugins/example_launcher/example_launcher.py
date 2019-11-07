@@ -9,7 +9,6 @@ from hydra.plugins import Launcher
 from hydra.plugins import SearchPathPlugin
 from hydra.plugins.common.utils import (
     configure_log,
-    get_overrides_dirname,
     filter_overrides,
     run_job,
     setup_globals,
@@ -75,9 +74,6 @@ class ExampleLauncher(Launcher):
                 # but instead should be populated remotely before calling the task_function.
                 sweep_config.hydra.job.id = "job_id_for_{}".format(idx)
                 sweep_config.hydra.job.num = idx
-                sweep_config.hydra.job.override_dirname = get_overrides_dirname(
-                    sweep_config.hydra.overrides.task
-                )
             HydraConfig().set_config(sweep_config)
 
             ret = run_job(
