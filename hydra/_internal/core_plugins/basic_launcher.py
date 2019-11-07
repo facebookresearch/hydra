@@ -6,7 +6,6 @@ from omegaconf import open_dict
 from hydra._internal.pathlib import Path
 from hydra.plugins.common.utils import (
     configure_log,
-    get_overrides_dirname,
     filter_overrides,
     run_job,
     setup_globals,
@@ -45,9 +44,6 @@ class BasicLauncher(Launcher):
             with open_dict(sweep_config):
                 sweep_config.hydra.job.id = idx
                 sweep_config.hydra.job.num = idx
-                sweep_config.hydra.job.override_dirname = get_overrides_dirname(
-                    sweep_config.hydra.overrides.task
-                )
             HydraConfig().set_config(sweep_config)
             ret = run_job(
                 config=sweep_config,

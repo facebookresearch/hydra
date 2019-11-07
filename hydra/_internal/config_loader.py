@@ -16,7 +16,7 @@ from pkg_resources import (
 
 from .config_search_path import ConfigSearchPath
 from ..errors import MissingConfigException
-from ..plugins.common.utils import JobRuntime
+from ..plugins.common.utils import JobRuntime, get_overrides_dirname
 
 
 class ConfigLoader:
@@ -55,9 +55,6 @@ class ConfigLoader:
         # Load and defaults and merge them into cfg
         cfg = self._merge_defaults(hydra_cfg, defaults, split_at)
 
-        job = OmegaConf.create(dict(name=JobRuntime().get("name")))
-        cfg.hydra.job = OmegaConf.merge(job, cfg.hydra.job)
-
         OmegaConf.set_struct(cfg, self.strict_cfg)
 
         # Merge all command line overrides after enabling strict flag
@@ -72,6 +69,13 @@ class ConfigLoader:
 
         cfg.hydra.overrides.task = [x for x in remaining if not is_hydra(x)]
         cfg.hydra.overrides.hydra = [x for x in remaining if is_hydra(x)]
+
+        with open_dict(cfg.hydra.job):
+            if "name" not in cfg.hydra.job:
+                cfg.hydra.job.name = JobRuntime().get("name")
+            cfg.hydra.job.override_dirname = get_overrides_dirname(
+                cfg.hydra.overrides.task
+            )
 
         return cfg
 

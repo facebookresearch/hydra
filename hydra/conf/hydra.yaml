@@ -30,7 +30,20 @@ hydra:
     task: []
 
   # job runtime information will be populated here
-  job: {}
+  job:
+    # Job name, can be specified by the user (in config or cli) or populated automatically
+    name: ???
+
+    # Concatenation of job overrides that can be used as a part
+    # of the directory name.
+    # This can be configured in hydra.job.config.override_dirname
+    override_dirname: ???
+
+    # Job ID in underlying scheduling system
+    id: ???
+
+    # Job number if job is a part of a sweep
+    num: ???
 
   # populated at runtime
   runtime:
