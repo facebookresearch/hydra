@@ -18,7 +18,8 @@ multiple heads.
 The best way to understand what Hydra is good for is to go through the [tutorial](tutorial/simple_cli/).
 
 ## Community
-Ask questions in the google group:
+Ask questions in the google group or the chat:
+* [Zulip Chat](https://hydra-framework.zulipchat.com)
 * [Google group](https://groups.google.com/d/forum/hydra_framework)
 
 Follow Hydra on Twitter and Facebook:
