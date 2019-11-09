@@ -4,6 +4,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-core)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-core.svg)](https://pypistats.org/packages/hydra-core)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://hydra-framework.zulipchat.com)
 
 
 # Hydra
