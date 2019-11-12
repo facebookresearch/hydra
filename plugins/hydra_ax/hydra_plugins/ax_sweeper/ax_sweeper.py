@@ -13,8 +13,8 @@ log = logging.getLogger(__name__)
 
 Trial = NewType("Trial", List[str])
 
-# TODO: output directory is overwriting, job.num should be adjusted
-# TODO: track best value and stop when no improvement (configurable)
+# TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
+# TODO: Support running multiple random seeds, aggregate mean and SEM
 
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
@@ -77,19 +77,51 @@ def yield_batch_of_trials_from_ax(ax: AxClient, num_max_trials: int):
                 return
 
 
-def _is_int(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
+class EarlyStopper:
+    def __init__(self, max_epochs_without_improvement, epsilon, minimize):
+        self.max_epochs_without_improvement = max_epochs_without_improvement
+        self.epsilon = epsilon
+        self.minimize = minimize
+        self.current_known_best = None
+        self.current_epochs_without_improvement = 0
+
+    def should_stop(self, current_best, best_parameters):
+        improve = True
+        if self.current_known_best is not None:
+            if self.minimize:
+                improve = current_best + self.epsilon < self.current_known_best
+            else:
+                improve = current_best - self.epsilon > self.current_known_best
+
+        if improve:
+            self.current_epochs_without_improvement = 0
+            self.current_known_best = current_best
+            log.info(
+                "New best : {}, parameters: {}".format(current_best, best_parameters)
+            )
+
+            return False
+        else:
+            self.current_epochs_without_improvement += 1
+
+        if (
+            self.current_epochs_without_improvement
+            >= self.max_epochs_without_improvement
+        ):
+            log.info(
+                "Early stopping, best known {} did not improve for {} epochs".format(
+                    self.current_known_best, self.current_epochs_without_improvement
+                )
+            )
+            return True
 
 
 class AxSweeper(Sweeper):
-    def __init__(self, verbose_logging, experiment):
+    def __init__(self, verbose_logging, experiment, early_stop):
         self.launcher = None
         self.job_results = None
         self.experiment = experiment
+        self.early_stopper = EarlyStopper(**early_stop)
         self.verbose_logging = verbose_logging
 
     def setup(self, config, config_loader, task_function):
@@ -106,15 +138,26 @@ class AxSweeper(Sweeper):
             overrides = [x["overrides"] for x in batch_of_trials]
             rets = self.launcher.launch(overrides)
             for idx in range(len(batch_of_trials)):
+                val = rets[idx].return_value
                 ax.complete_trial(
-                    trial_index=batch_of_trials[idx]["trial_index"],
-                    raw_data=rets[idx].return_value,
+                    trial_index=batch_of_trials[idx]["trial_index"], raw_data=val
                 )
+            best = ax.get_best_parameters()
 
-        best = ax.get_best_parameters()
+            metric = best[1][0][ax.objective_name]
+            if self.early_stopper.should_stop(metric, best[0]):
+                break
+
         log.info("Best parameters: " + str(best))
 
     def setup_ax_client(self, arguments) -> AxClient:
+        def _is_int(ss):
+            try:
+                int(ss)
+                return True
+            except ValueError:
+                return False
+
         parameters = []
         for s in arguments:
             key, value = s.split("=")

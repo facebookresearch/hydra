@@ -9,3 +9,15 @@ banana:
   # To be minimized
   x: ???
   y: ???
+
+hydra:
+  ax:
+    experiment:
+      # Banana function should be minimized (Ax defaults to maximize)
+      minimize: true
+
+    early_stop:
+      # Number of epochs without a significant improvement from
+      # the currently known best parameters
+      # An Epoch is defined as a batch of trials executed in parallel
+      max_epochs_without_improvement: 100

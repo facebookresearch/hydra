@@ -1,11 +1,21 @@
 hydra:
   # See https://ax.dev/
   ax:
+    early_stop:
+      # Number of epochs without a significant improvement from
+      # the currently known best parameters
+      # An Epoch is defined as a batch of trials executed in parallel
+      max_epochs_without_improvement: 10
+      # An improvement larger than this is considered significant
+      epsilon: 0.00001
+
+      minimize: ${hydra.ax.experiment.minimize}
+
     experiment:
       # Experiment name
       name: ${hydra.job.name}
       # Name of metric to optimize or null if you only return one metric
-      objective_name: null
+      objective_name: objective
       # Minimize objective:
       #   true: minimize
       #   false: maximize
@@ -18,4 +28,5 @@ hydra:
     class: hydra_plugins.ax_sweeper.AxSweeper
     params:
       experiment: ${hydra.ax.experiment}
+      early_stop: ${hydra.ax.early_stop}
       verbose_logging: false

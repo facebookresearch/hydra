@@ -15,7 +15,7 @@ def banana(cfg):
     z = (a - x) ** 2 + b * (y - x ** 2) ** 2
     log.info("Banana_a_{}_b_{}({}, {})={}".format(a, b, x, y, z))
     # Return the result and the SEM, see https://ax.dev/ for more details
-    return (z, 0.0)
+    return z, 0.0
 
 
 if __name__ == "__main__":
