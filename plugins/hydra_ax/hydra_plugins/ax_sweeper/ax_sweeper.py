@@ -117,12 +117,16 @@ class EarlyStopper:
 
 
 class AxSweeper(Sweeper):
-    def __init__(self, verbose_logging, experiment, early_stop):
+    def __init__(
+        self, verbose_logging, experiment, early_stop, random_seed, max_trials
+    ):
         self.launcher = None
         self.job_results = None
         self.experiment = experiment
         self.early_stopper = EarlyStopper(**early_stop)
         self.verbose_logging = verbose_logging
+        self.random_seed = random_seed
+        self.max_trials = max_trials
 
     def setup(self, config, config_loader, task_function):
         self.launcher = Plugins.instantiate_launcher(
@@ -131,8 +135,7 @@ class AxSweeper(Sweeper):
 
     def sweep(self, arguments):
         ax = self.setup_ax_client(arguments)
-        num_max_trials = 500
-        for batch_of_trials in yield_batch_of_trials_from_ax(ax, num_max_trials):
+        for batch_of_trials in yield_batch_of_trials_from_ax(ax, self.max_trials):
             log.info("AxSweeper is launching {} jobs".format(len(batch_of_trials)))
 
             overrides = [x["overrides"] for x in batch_of_trials]
@@ -142,6 +145,7 @@ class AxSweeper(Sweeper):
                 ax.complete_trial(
                     trial_index=batch_of_trials[idx]["trial_index"], raw_data=val
                 )
+            # predicted best value
             best = ax.get_best_parameters()
 
             metric = best[1][0][ax.objective_name]
@@ -202,6 +206,8 @@ class AxSweeper(Sweeper):
                     }
                 )
 
-        ax = AxClient(verbose_logging=self.verbose_logging)
+        ax = AxClient(
+            verbose_logging=self.verbose_logging, random_seed=self.random_seed
+        )
         ax.create_experiment(parameters=parameters, **self.experiment)
         return ax
