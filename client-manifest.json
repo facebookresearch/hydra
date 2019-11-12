@@ -241,18 +241,18 @@
     "4": {
       "js": [
         {
-          "file": "content---docs-advanced-plugins-6-be-8cf.6dc5e93e9fb9c1391b3b.js",
-          "hash": "f2d789f6002aef9c80a6",
-          "publicPath": "/content---docs-advanced-plugins-6-be-8cf.6dc5e93e9fb9c1391b3b.js"
+          "file": "content---docs-advanced-plugins-6-be-8cf.b2ec654e07684d050bb8.js",
+          "hash": "f04853eaede6b5fb424b",
+          "publicPath": "/content---docs-advanced-plugins-6-be-8cf.b2ec654e07684d050bb8.js"
         }
       ]
     },
     "5": {
       "js": [
         {
-          "file": "content---docs-advanced-search-pathee-7-845.312d86fd832aa4ac8c02.js",
-          "hash": "24937061a387952137bc",
-          "publicPath": "/content---docs-advanced-search-pathee-7-845.312d86fd832aa4ac8c02.js"
+          "file": "content---docs-advanced-search-pathee-7-845.c0ae5e784d19db556249.js",
+          "hash": "f6dc8c6f98c4da4be359",
+          "publicPath": "/content---docs-advanced-search-pathee-7-845.c0ae5e784d19db556249.js"
         }
       ]
     },
@@ -331,27 +331,27 @@
     "14": {
       "js": [
         {
-          "file": "content---docs-patterns-objects-594-c72.f5b9d4debc948348e016.js",
-          "hash": "7d30e1a8d654302885b2",
-          "publicPath": "/content---docs-patterns-objects-594-c72.f5b9d4debc948348e016.js"
+          "file": "content---docs-patterns-objects-594-c72.1f4b2eeefc6aa7451aa8.js",
+          "hash": "b79cfc4bb4afc8070d61",
+          "publicPath": "/content---docs-patterns-objects-594-c72.1f4b2eeefc6aa7451aa8.js"
         }
       ]
     },
     "15": {
       "js": [
         {
-          "file": "content---docs-patterns-specializing-config-6-a-5-565.3541f8193e668bec13d3.js",
-          "hash": "3630f5b3dff1ac9bff86",
-          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.3541f8193e668bec13d3.js"
+          "file": "content---docs-patterns-specializing-config-6-a-5-565.6be0fbbb6e68f3e47f37.js",
+          "hash": "484d90b2a94d80af0d01",
+          "publicPath": "/content---docs-patterns-specializing-config-6-a-5-565.6be0fbbb6e68f3e47f37.js"
         }
       ]
     },
     "16": {
       "js": [
         {
-          "file": "content---docs-plugins-colorloge-72-4ff.af44a2064ad6a225118f.js",
-          "hash": "48f76c76c2ea7a6e1960",
-          "publicPath": "/content---docs-plugins-colorloge-72-4ff.af44a2064ad6a225118f.js"
+          "file": "content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js",
+          "hash": "15128bbead61c7d7344b",
+          "publicPath": "/content---docs-plugins-colorloge-72-4ff.593d7b521cd91719e3eb.js"
         }
       ]
     },
@@ -448,9 +448,9 @@
     "27": {
       "js": [
         {
-          "file": "docsMetadata---docs-92-d-b06.e77b73b1d8b49177df1e.js",
-          "hash": "1c75822b8497b1bf7f16",
-          "publicPath": "/docsMetadata---docs-92-d-b06.e77b73b1d8b49177df1e.js"
+          "file": "docsMetadata---docs-92-d-b06.bfe5427c6e0916bc01ea.js",
+          "hash": "f1317f5b016360e4e069",
+          "publicPath": "/docsMetadata---docs-92-d-b06.bfe5427c6e0916bc01ea.js"
         }
       ]
     },
@@ -458,15 +458,15 @@
       "css": [
         {
           "file": "main.a2c8fe5825836a42a141.css",
-          "hash": "13e37aa9071afd26dc9e",
+          "hash": "18eba78550cb4148fe66",
           "publicPath": "/main.a2c8fe5825836a42a141.css"
         }
       ],
       "js": [
         {
-          "file": "main.0154c2ac547ac9e30f7e.js",
-          "hash": "13e37aa9071afd26dc9e",
-          "publicPath": "/main.0154c2ac547ac9e30f7e.js"
+          "file": "main.2c2ff87d2fa7096588f8.js",
+          "hash": "18eba78550cb4148fe66",
+          "publicPath": "/main.2c2ff87d2fa7096588f8.js"
         }
       ]
     },
@@ -482,18 +482,18 @@
     "30": {
       "js": [
         {
-          "file": "metadata---docs-advanced-plugins-7-ea-637.7ec0d0b65ab0fd2c1a97.js",
-          "hash": "c127a6b5bd1bc3dfeb1f",
-          "publicPath": "/metadata---docs-advanced-plugins-7-ea-637.7ec0d0b65ab0fd2c1a97.js"
+          "file": "metadata---docs-advanced-plugins-7-ea-637.76309d1aeb193b155d39.js",
+          "hash": "92df8b8a3329ff71db4f",
+          "publicPath": "/metadata---docs-advanced-plugins-7-ea-637.76309d1aeb193b155d39.js"
         }
       ]
     },
     "31": {
       "js": [
         {
-          "file": "metadata---docs-advanced-search-pathdcc-5dc.5a40ad5a46fb4231d082.js",
-          "hash": "0ab008222f5e5955189f",
-          "publicPath": "/metadata---docs-advanced-search-pathdcc-5dc.5a40ad5a46fb4231d082.js"
+          "file": "metadata---docs-advanced-search-pathdcc-5dc.c68074a58b7c23f8921e.js",
+          "hash": "cb0eda5c44c02ed416a8",
+          "publicPath": "/metadata---docs-advanced-search-pathdcc-5dc.c68074a58b7c23f8921e.js"
         }
       ]
     },
@@ -572,27 +572,27 @@
     "40": {
       "js": [
         {
-          "file": "metadata---docs-patterns-objects-5-d-0-4fd.26317bc815258f7bfbf2.js",
-          "hash": "e2d0bc3c85b675ee8c78",
-          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.26317bc815258f7bfbf2.js"
+          "file": "metadata---docs-patterns-objects-5-d-0-4fd.4f7265d5b8e3610528a7.js",
+          "hash": "6727436a4e41cde70d49",
+          "publicPath": "/metadata---docs-patterns-objects-5-d-0-4fd.4f7265d5b8e3610528a7.js"
         }
       ]
     },
     "41": {
       "js": [
         {
-          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.c27922304beaa7d8b4d6.js",
-          "hash": "ce1c18b19d881e55f654",
-          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.c27922304beaa7d8b4d6.js"
+          "file": "metadata---docs-patterns-specializing-configa-0-f-b88.f51daaf6dbe7ea9de7ff.js",
+          "hash": "6a7fee6d46149a7fa853",
+          "publicPath": "/metadata---docs-patterns-specializing-configa-0-f-b88.f51daaf6dbe7ea9de7ff.js"
         }
       ]
     },
     "42": {
       "js": [
         {
-          "file": "metadata---docs-plugins-colorlog-839-e35.52729dacadaadc07da9d.js",
-          "hash": "f71f735d19f60c46862f",
-          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.52729dacadaadc07da9d.js"
+          "file": "metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js",
+          "hash": "46dbf32974d98e79e8b4",
+          "publicPath": "/metadata---docs-plugins-colorlog-839-e35.1cca34601d601ccc1bd4.js"
         }
       ]
     },
@@ -689,9 +689,9 @@
     "53": {
       "js": [
         {
-          "file": "runtime~main.e9b9f197221eefb0a024.js",
-          "hash": "10941535a335277846a2",
-          "publicPath": "/runtime~main.e9b9f197221eefb0a024.js"
+          "file": "runtime~main.3a77ae3d3b7d5ebae7d0.js",
+          "hash": "94e6bbefbbe1e2580b2f",
+          "publicPath": "/runtime~main.3a77ae3d3b7d5ebae7d0.js"
         }
       ]
     },
