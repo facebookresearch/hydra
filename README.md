@@ -14,3 +14,4 @@ Check the [website](https://cli.dev/) for more information.
 
 ## License
 Hydra is licensed under [MIT License](LICENSE).
+
