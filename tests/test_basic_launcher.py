@@ -24,7 +24,7 @@ class TestBasicLauncher(LauncherTestSuite):
                     {"hydra/launcher": "basic"},
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
-                ],
+                ]
             },
             ["-m"],
             "hydra._internal.core_plugins.basic_launcher",

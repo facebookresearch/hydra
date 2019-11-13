@@ -75,6 +75,58 @@ class LauncherTestSuite:
                 assert job_ret.cfg == expected_conf[i]
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
+    def test_sweep_and_override(
+        self, sweep_runner, launcher_name, overrides
+    ):  # noqa: F811
+        """
+        This test validates the behavior that happens in issue #283.
+        While constructing the main config, Hydra is skipping the db config group overrides as they are a part of a
+        sweep and will be loaded later.
+        when merging in db.user, there is no such node and this causes an error in strict mode.
+        This is expected behavior, solving it automatically will require validating that we can apply db.user to
+        each of the sweep configs. This can be very expensive for large sweeps so it's not a viable solution.
+        Instead, the solution is for the user to create scaffolding for db.user in the main config, for example:
+        db:
+          user: ???
+
+        This makes sense because overriding db.user in a sweep essentially calls out db.user as
+        existing in all sweep variants.
+        """
+        base_overrides = [
+            "hydra/launcher=" + launcher_name,
+            "db=mysql,postgresql",
+            "db.user=someone",
+        ]
+        sweep = sweep_runner(
+            calling_file=None,
+            calling_module="hydra.test_utils.a_module",
+            config_path="configs/db_conf.yaml",
+            overrides=base_overrides + overrides,
+            strict=True,
+        )
+        expected_overrides = [
+            ["db=mysql", "db.user=someone"],
+            ["db=postgresql", "db.user=someone"],
+        ]
+        expected_conf = [
+            {"db": {"driver": "mysql", "pass": "secret", "user": "someone"}},
+            {
+                "db": {
+                    "user": "someone",
+                    "driver": "postgresql",
+                    "pass": "drowssap",
+                    "timeout": 10,
+                }
+            },
+        ]
+        with sweep:
+            assert len(sweep.returns[0]) == 2
+            for i in range(2):
+                job_ret = sweep.returns[0][i]
+                assert job_ret.overrides == expected_overrides[i]
+                assert job_ret.cfg == expected_conf[i]
+                verify_dir_outputs(job_ret, job_ret.overrides)
+
 
 def sweep_1_job(sweep_runner, overrides, strict=False):
     """
