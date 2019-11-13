@@ -311,12 +311,8 @@ def test_list_groups():
         strict_cfg=False,
         config_file="overriding_output_dir.yaml",
     )
-    assert sorted(config_loader.list_groups("")) == [
-        "completion_test",
-        "group1",
-        "group2",
-        "hydra",
-    ]
+    groups = config_loader.list_groups("")
+    assert sorted(groups) == ["completion_test", "db", "group1", "group2", "hydra"]
 
     assert sorted(config_loader.list_groups("hydra")) == [
         "help",
