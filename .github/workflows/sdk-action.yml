@@ -1,0 +1,19 @@
+name: SDK Action
+on: 
+  # To create pull requests.
+  push:
+  # To merge pull requests if not possible during the push run. Remove if `auto-merge` is `false`.
+  pull_request_review:
+  check_run:
+    types: [completed]
+
+jobs:
+  build:
+    name: SDK Action
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: xunholy/operator-sdk-action
+      with:
+          image: "example"
+          tag: 1.0
+          dirPath: "/path/to/build/dockerfile"
