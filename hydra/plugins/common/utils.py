@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 def configure_log(log_config, verbose_config):
     assert isinstance(verbose_config, (bool, str, ListConfig))
     if log_config is not None:
-        conf = log_config.to_container(resolve=True)
+        conf = OmegaConf.to_container(log_config, resolve=True)
         logging.config.dictConfig(conf)
     else:
         # default logging to stdout
@@ -90,7 +90,7 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
         del task_cfg["hydra"]
         ret.cfg = task_cfg
         ret.hydra_cfg = copy.deepcopy(HydraConfig())
-        ret.overrides = config.hydra.overrides.task.to_container()
+        ret.overrides = OmegaConf.to_container(config.hydra.overrides.task)
         # handle output directories here
         Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
         os.chdir(working_dir)
