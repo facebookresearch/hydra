@@ -4,7 +4,9 @@ from hydra_plugins.example_sweeper import ExampleSweeper
 
 from hydra._internal.plugins import Plugins
 from hydra.plugins import Sweeper
-from hydra.test_utils.test_utils import sweep_runner
+
+# noinspection PyUnresolvedReferences
+from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 
 
 def test_discovery():
@@ -15,7 +17,7 @@ def test_discovery():
     assert ExampleSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
 
 
-def test_launched_jobs(sweep_runner):
+def test_launched_jobs(sweep_runner):  # noqa: F811
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
