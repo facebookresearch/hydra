@@ -33,7 +33,6 @@ class BasicLauncher(Launcher):
         sweep_dir = self.config.hydra.sweep.dir
         Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
         log.info("Launching {} jobs locally".format(len(job_overrides)))
-        log.info("Sweep output dir : {}".format(sweep_dir))
         runs = []
 
         for idx, overrides in enumerate(job_overrides):

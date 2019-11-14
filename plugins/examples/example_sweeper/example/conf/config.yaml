@@ -1,0 +1,3 @@
+defaults:
+  - hydra/sweeper: example
+  - db: mysql
