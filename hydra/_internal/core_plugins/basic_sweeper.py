@@ -36,6 +36,7 @@ class BasicSweeper(StepSweeper):
         :return: A list of lists of strings, each inner list is the overrides for a single job
         that should be executed.
         """
+
         lists = []
         for s in self.arguments:
             key, value = s.split("=")

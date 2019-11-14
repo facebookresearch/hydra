@@ -5,6 +5,9 @@ A sweeper that operates on generational batches of jobs
 
 from abc import abstractmethod
 from . import Sweeper
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class StepSweeper(Sweeper):
@@ -22,6 +25,8 @@ class StepSweeper(Sweeper):
 
     def setup(self, config, config_loader, task_function):
         from .._internal.plugins import Plugins
+
+        self.config = config
 
         self.launcher = Plugins.instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
@@ -53,12 +58,13 @@ class StepSweeper(Sweeper):
         raise NotImplementedError()
 
     def sweep(self, arguments):
+        log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
+
         self.arguments = arguments
         returns = []
         while not self.is_done():
             batch = self.get_job_batch()
             results = self.launcher.launch(batch)
-            # TODO: use extend
             returns.append(results)
             self.update_results(results)
         return returns
