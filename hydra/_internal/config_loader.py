@@ -84,7 +84,8 @@ class ConfigLoader:
 
     def load_sweep_config(self, master_config, sweep_overrides):
         # Recreate the config for this sweep instance with the appropriate overrides
-        overrides = master_config.hydra.overrides.hydra.to_container() + sweep_overrides
+        hydra_overrides = OmegaConf.to_container(master_config.hydra.overrides.hydra)
+        overrides = hydra_overrides + sweep_overrides
         sweep_config = self.load_configuration(overrides)
 
         with open_dict(sweep_config):
