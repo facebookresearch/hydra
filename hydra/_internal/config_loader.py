@@ -24,28 +24,37 @@ class ConfigLoader:
     Configuration loader
     """
 
-    def __init__(self, config_file, strict_cfg, config_search_path):
+    def __init__(self, config_search_path, default_strict=None):
         assert isinstance(config_search_path, ConfigSearchPath)
-        self.config_file = config_file
         self.config_search_path = config_search_path
+        self.default_strict = default_strict
         self.all_config_checked = []
-        self.strict_cfg = strict_cfg
 
-    def load_configuration(self, overrides=[], strict=None):
+    def load_configuration(self, config_file, overrides=[], strict=None):
+        assert config_file is None or isinstance(config_file, str)
+        assert strict is None or isinstance(strict, bool)
+        assert isinstance(overrides, list)
         if strict is None:
-            strict = self.strict_cfg
+            strict = self.default_strict
+
         assert overrides is None or isinstance(overrides, list)
-        overrides = overrides or []
+        overrides = copy.deepcopy(overrides) or []
+
+        if config_file is not None and not self.exists_in_search_path(config_file):
+            raise MissingConfigException(
+                missing_cfg_file=config_file,
+                message="Cannot find primary config file: {}".format(config_file),
+            )
 
         # Load hydra config
         hydra_cfg = self._create_cfg(cfg_filename="hydra.yaml")
 
         # Load job config
-        job_cfg = self._create_cfg(cfg_filename=self.config_file, record_load=False)
+        job_cfg = self._create_cfg(cfg_filename=config_file, record_load=False)
 
         defaults = hydra_cfg.defaults or []
-        if self.config_file is not None:
-            defaults.append(self.config_file)
+        if config_file is not None:
+            defaults.append(config_file)
         split_at = len(defaults)
         ConfigLoader._merge_default_lists(defaults, job_cfg.defaults or [])
         consumed = self._apply_defaults_overrides(overrides, defaults)
@@ -56,7 +65,6 @@ class ConfigLoader:
 
         # Load and defaults and merge them into cfg
         cfg = self._merge_defaults(hydra_cfg, defaults, split_at)
-
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
@@ -82,14 +90,21 @@ class ConfigLoader:
                 item_sep=cfg.hydra.job.config.override_dirname.item_sep,
                 exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
             )
+            cfg.hydra.job.config_file = config_file
 
         return cfg
 
     def load_sweep_config(self, master_config, sweep_overrides):
         # Recreate the config for this sweep instance with the appropriate overrides
-        hydra_overrides = OmegaConf.to_container(master_config.hydra.overrides.hydra)
-        overrides = hydra_overrides + sweep_overrides
-        sweep_config = self.load_configuration(overrides, self.strict_cfg)
+        overrides = (
+            OmegaConf.to_container(master_config.hydra.overrides.hydra)
+            + sweep_overrides
+        )
+        sweep_config = self.load_configuration(
+            config_file=master_config.hydra.job.config_file,
+            strict=self.default_strict,
+            overrides=overrides,
+        )
 
         with open_dict(sweep_config):
             sweep_config.hydra.runtime.merge_with(master_config.hydra.runtime)
@@ -103,8 +118,9 @@ class ConfigLoader:
         _filename, search_path = self._find_config(filepath)
         return search_path is not None
 
-    def exists(self, filename):
-        is_pkg, path = self._split_path(filename)
+    @staticmethod
+    def exists(filename):
+        is_pkg, path = ConfigLoader._split_path(filename)
         return ConfigLoader._exists(is_pkg, path)
 
     def get_search_path(self):

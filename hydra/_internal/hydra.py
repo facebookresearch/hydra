@@ -4,10 +4,12 @@ import logging
 import os
 import string
 from collections import defaultdict
-from os.path import realpath, dirname, splitext, basename
+from os.path import realpath, dirname
 
+import six
 from omegaconf import open_dict, OmegaConf
 
+from ..plugins.common.utils import Singleton
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
@@ -25,96 +27,125 @@ from ..plugins.common.utils import (
 log = None
 
 
+@six.add_metaclass(Singleton)
+class GlobalHydra:
+    def __init__(self):
+        self.hydra = None
+
+    def initialize(self, hydra):
+        assert isinstance(hydra, Hydra)
+        assert not self.is_initialized(), "GlobalHydra is already initialized"
+        self.hydra = hydra
+
+    def is_initialized(self):
+        return self.hydra is not None
+
+    def clear(self):
+        self.hydra = None
+
+
 class Hydra:
-    def __init__(
-        self, calling_file, calling_module, config_path, task_function, strict
+    @classmethod
+    def create_main_hydra_file_or_module(
+        cls, calling_file, calling_module, config_dir, strict
     ):
-        setup_globals()
-        assert calling_module is not None or calling_file is not None
-        basedir_prefix = ""
-        if calling_module is None:
-            # executed with python file.py
-            abs_base_dir = realpath(dirname(calling_file))
-            target_file = os.path.basename(calling_file)
-            task_name = os.path.splitext(target_file)[0]
+        if calling_file is not None:
+            return Hydra.create_main_hydra_for_file(
+                calling_file=calling_file, config_dir=config_dir, strict=strict,
+            )
+        elif calling_module is not None:
+            return Hydra.create_main_hydra_for_module(
+                calling_module=calling_module, config_dir=config_dir, strict=strict,
+            )
         else:
-            # module is installed, use pkg:// access to get configs
-            last_dot = calling_module.rfind(".")
-            if last_dot != -1:
-                task_name = calling_module[last_dot + 1 :]
-            else:
-                task_name = calling_module
-            basedir_prefix = "pkg://"
-            abs_base_dir = calling_module
+            raise ValueError()
 
-        task_name = get_valid_filename(task_name)
-        JobRuntime().set("name", task_name)
-        self.task_name = task_name
-        self.task_function = task_function
-
-        split_file = splitext(config_path)
-        if split_file[1] in (".yaml", ".yml"):
-            # assuming dir/config.yaml form
-            config_file = basename(config_path)
-            config_dir = dirname(config_path)
-        else:
-            # assuming dir form without a config file.
-            config_file = None
-            config_dir = config_path
+    @classmethod
+    def create_main_hydra_for_file(cls, calling_file, config_dir, strict):
+        abs_base_dir = realpath(dirname(calling_file))
+        target_file = os.path.basename(calling_file)
+        task_name = get_valid_filename(os.path.splitext(target_file)[0])
 
         if config_dir != "":
-            abs_config_dir = "{}/{}".format(abs_base_dir, config_dir)
+            search_path_dir = "{}/{}".format(abs_base_dir, config_dir)
         else:
-            abs_config_dir = abs_base_dir
+            search_path_dir = abs_base_dir
+        return Hydra.create_main_hydra(task_name, search_path_dir, strict)
 
-        abs_config_dir = basedir_prefix + abs_config_dir
+    @classmethod
+    def create_main_hydra_for_module(cls, calling_module, config_dir, strict):
+        # module is installed, use pkg:// access to get configs
+        last_dot = calling_module.rfind(".")
+        if last_dot != -1:
+            task_name = calling_module[last_dot + 1 :]
+        else:
+            task_name = calling_module
+
+        search_path_dir = "pkg://" + calling_module
+        if config_dir != "":
+            search_path_dir = "{}/{}".format(search_path_dir, config_dir)
+
+        return Hydra.create_main_hydra(task_name, search_path_dir, strict)
+
+    @classmethod
+    def create_main_hydra(cls, task_name, search_path_dir, strict):
 
         search_path = ConfigSearchPath()
         search_path.append("hydra", "pkg://hydra.conf")
-        search_path.append("main", abs_config_dir)
+        if search_path_dir is not None:
+            search_path.append("main", search_path_dir)
 
         search_path_plugins = Plugins.discover(SearchPathPlugin)
         for spp in search_path_plugins:
             plugin = spp()
             plugin.manipulate_search_path(search_path)
 
-        # decide on strict mode
-        strict = self._strict_mode_strategy(strict, config_file)
-
-        self.config_loader = ConfigLoader(
-            config_file=config_file, config_search_path=search_path, strict_cfg=strict
+        config_loader = ConfigLoader(
+            config_search_path=search_path, default_strict=strict
         )
-        if not self.config_loader.exists(abs_config_dir):
+        if search_path_dir is not None and not ConfigLoader.exists(search_path_dir):
             raise MissingConfigException(
-                missing_cfg_file=abs_config_dir,
-                message="Primary config dir not found: {}".format(abs_config_dir),
+                missing_cfg_file=search_path_dir,
+                message="Primary config dir not found: {}".format(search_path_dir),
             )
 
-        if config_file is not None and not self.config_loader.exists_in_search_path(
-            config_file
-        ):
-            raise MissingConfigException(
-                missing_cfg_file=config_file,
-                message="Cannot find primary config file: {}".format(config_file),
-            )
+        hydra = cls(task_name=task_name, config_loader=config_loader)
 
-    def run(self, overrides):
-        cfg = self._load_config(overrides, strict=None)
+        GlobalHydra().initialize(hydra)
+        return hydra
+
+    def __init__(self, task_name, config_loader):
+        """
+        :param task_name: task name
+        :param config_loader: config loader
+        """
+        setup_globals()
+        self.config_loader = config_loader
+        JobRuntime().set("name", task_name)
+
+    def run(self, config_file, task_function, overrides):
+        cfg = self.compose_config(
+            config_file=config_file, overrides=overrides, with_log_configuration=True
+        )
         HydraConfig().set_config(cfg)
         return run_job(
             config=cfg,
-            task_function=self.task_function,
+            task_function=task_function,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
         )
 
-    def multirun(self, overrides):
-        cfg = self._load_config(overrides, strict=False)
+    def multirun(self, config_file, task_function, overrides):
+        # Initial config is loaded without strict (individual job configs may have strict).
+        cfg = self.compose_config(
+            config_file=config_file,
+            overrides=overrides,
+            strict=False,
+            with_log_configuration=True,
+        )
         HydraConfig().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
-            config=cfg,
-            config_loader=self.config_loader,
-            task_function=self.task_function,
+            config=cfg, config_loader=self.config_loader, task_function=task_function,
         )
         task_overrides = cfg.hydra.overrides.task
         return sweeper.sweep(arguments=task_overrides)
@@ -131,7 +162,7 @@ class Hydra:
 
     def show_cfg(self, overrides, cfg_type):
         assert cfg_type in ["job", "hydra", "all"]
-        cfg = self._load_config(overrides)
+        cfg = self.compose_config(overrides, with_log_configuration=True)
         if cfg_type == "job":
             del cfg["hydra"]
         elif cfg_type == "hydra":
@@ -155,7 +186,7 @@ class Hydra:
 
         return shell_to_plugin
 
-    def shell_completion(self, overrides):
+    def shell_completion(self, config_file, overrides):
         subcommands = ["install", "uninstall", "query"]
         arguments = OmegaConf.from_dotlist(overrides)
         num_commands = sum(1 for key in subcommands if arguments[key] is not None)
@@ -183,7 +214,7 @@ class Hydra:
             plugin.uninstall()
         elif arguments.query is not None:
             plugin = find_plugin(arguments.query)
-            plugin.query()
+            plugin.query(config_file=config_file)
 
     @staticmethod
     def format_args_help(args_parser):
@@ -241,15 +272,23 @@ class Hydra:
         )
         return help_text
 
-    def hydra_help(self, args_parser, args):
-        cfg = self._load_config(args.overrides)
+    def hydra_help(self, config_file, args_parser, args):
+        cfg = self.compose_config(
+            config_file=config_file,
+            overrides=args.overrides,
+            with_log_configuration=True,
+        )
         help_cfg = cfg.hydra.hydra_help
         cfg = self.get_sanitized_hydra_cfg(cfg)
         help_text = self.get_help(help_cfg, cfg, args_parser)
         print(help_text)
 
-    def app_help(self, args_parser, args):
-        cfg = self._load_config(args.overrides)
+    def app_help(self, config_file, args_parser, args):
+        cfg = self.compose_config(
+            config_file=config_file,
+            overrides=args.overrides,
+            with_log_configuration=True,
+        )
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
         del clean_cfg["hydra"]
@@ -335,34 +374,29 @@ class Hydra:
         self._print_search_path()
         self._print_composition_trace()
 
-    def _load_config(self, overrides, strict=None):
+    def compose_config(
+        self, config_file, overrides, strict=None, with_log_configuration=False
+    ):
         """
+        :param self:
+        :param config_file:
         :param overrides:
+        :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param strict: None for default behavior (default to true for config file, false if no config file).
                        otherwise forces specific behavior.
         :return:
         """
-        cfg = self.config_loader.load_configuration(overrides, strict=strict)
+        cfg = self.config_loader.load_configuration(
+            config_file=config_file, overrides=overrides, strict=strict
+        )
         with open_dict(cfg):
             from .. import __version__
 
             cfg.hydra.runtime.version = __version__
             cfg.hydra.runtime.cwd = os.getcwd()
-        configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
-        global log
-        log = logging.getLogger(__name__)
-        self._print_debug_info()
+        if with_log_configuration:
+            configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
+            global log
+            log = logging.getLogger(__name__)
+            self._print_debug_info()
         return cfg
-
-    @staticmethod
-    def _strict_mode_strategy(strict, config_file):
-        """Decide how to set strict mode.
-        If a value was provided -- always use it. Otherwise decide based
-        on the existence of config_file.
-        """
-
-        if strict is not None:
-            return strict
-
-        # strict if config_file is present
-        return config_file is not None

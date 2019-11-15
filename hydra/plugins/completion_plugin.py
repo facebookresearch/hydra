@@ -27,7 +27,7 @@ class CompletionPlugin(Plugin):
         """
         return None
 
-    def query(self):
+    def query(self, config_file):
         raise NotImplementedError()
 
     @staticmethod
@@ -166,7 +166,7 @@ class CompletionPlugin(Plugin):
 
         return matched_groups, exact_match
 
-    def _query(self, line):
+    def _query(self, config_file, line):
         from .._internal.utils import get_args
 
         new_word = len(line) == 0 or line[-1] == " "
@@ -178,7 +178,9 @@ class CompletionPlugin(Plugin):
             word = words[-1]
             words = words[0:-1]
 
-        config = self.config_loader.load_configuration(words)
+        config = self.config_loader.load_configuration(
+            config_file=config_file, overrides=words, strict=True
+        )
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)
         if filename is not None:

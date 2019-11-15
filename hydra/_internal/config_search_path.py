@@ -69,6 +69,9 @@ class ConfigSearchPath:
             else:
                 self.prepend(provider, path, None)
 
+    def __str__(self):
+        return str(self.config_search_path)
+
 
 class SearchPath:
     def __init__(self, provider, search_path):
@@ -76,4 +79,7 @@ class SearchPath:
         self.path = search_path
 
     def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
         return "provider={}, path={}".format(self.provider, self.path)

@@ -29,7 +29,10 @@ def test_missing_conf_dir(task_runner, calling_file, calling_module):  # noqa: F
 
 @pytest.mark.parametrize(
     "calling_file, calling_module",
-    [("invalid_dir/app.py", None), (None, "invalid_module.app")],
+    [
+        ("tests/test_apps/app_without_config/my_app.py", None),
+        (None, "tests.test_apps.app_without_config.my_app"),
+    ],
 )
 def test_missing_conf_file(task_runner, calling_file, calling_module):  # noqa: F811
     with pytest.raises(MissingConfigException):
@@ -268,15 +271,17 @@ def test_sweep_complex_defaults(
 
 
 @pytest.mark.parametrize(
-    "script, overrides,expected",
+    "script, flag, overrides,expected",
     [
         (
             "examples/tutorial/1_simple_cli_app/my_app.py",
+            "--help",
             ["hydra.help.template=foo"],
             "foo\n",
         ),
         (
             "examples/tutorial/1_simple_cli_app/my_app.py",
+            "--help",
             ["hydra.help.template=$CONFIG", "foo=bar"],
             """foo: bar
 
@@ -284,6 +289,7 @@ def test_sweep_complex_defaults(
         ),
         (
             "examples/tutorial/1_simple_cli_app/my_app.py",
+            "--help",
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
 --hydra-help : Hydra's help
@@ -303,17 +309,44 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
         ),
         (
             "examples/tutorial/3_config_groups/my_app.py",
+            "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             """db: mysql, postgresql
 
 """,
         ),
+        (
+            "examples/tutorial/1_simple_cli_app/my_app.py",
+            "--hydra-help",
+            ["hydra.hydra_help.template=foo"],
+            "foo\n",
+        ),
+        (
+            "examples/tutorial/1_simple_cli_app/my_app.py",
+            "--hydra-help",
+            ["hydra.hydra_help.template=$FLAGS_HELP"],
+            """--help,-h : Application's help
+--hydra-help : Hydra's help
+--version : show program's version number and exit
+--cfg,-c : Show config instead of running [job|hydra|all]
+--run,-r : Run a job
+--multirun,-m : Run multiple jobs with the configured launcher
+--shell_completion,-sc : Install or Uninstall shell completion:
+    Install:
+    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc install=SHELL_NAME)"
+
+    Uninstall:
+    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=SHELL_NAME)"
+
+Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
+""",
+        ),
     ],
 )
-def test_help(tmpdir, script, overrides, expected):
+def test_help(tmpdir, script, flag, overrides, expected):
     cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(overrides)
-    cmd.append("--help")
+    cmd.append(flag)
     print(" ".join(cmd))
     result = str(subprocess.check_output(cmd).decode("utf-8"))
     # normalize newlines on Windows to make testing easier

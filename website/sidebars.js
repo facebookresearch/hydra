@@ -40,6 +40,7 @@ module.exports = {
             'advanced/app_packaging',
             'advanced/search_path',
             'advanced/plugins',
+            'advanced/compose_api',
         ],
 
         'Development': [

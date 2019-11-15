@@ -1,0 +1,4 @@
+defaults:
+  - db: mysql
+  - ui: full
+  - schema: school

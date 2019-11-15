@@ -23,8 +23,6 @@ def create_config_loader():
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/completion_test"], abspath=True
         ),
-        strict_cfg=True,
-        config_file="config.yaml",
     )
 
 
@@ -95,7 +93,7 @@ class TestCompletion:
     def test_completion_plugin(self, line_prefix, num_tabs, line, expected):
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
-        ret = bc._query(line=line_prefix + line)
+        ret = bc._query(config_file="config.yaml", line=line_prefix + line)
         assert ret == expected
 
     @pytest.mark.skipif(
@@ -132,7 +130,7 @@ class TestCompletion:
 def test_with_flags(line, expected):
     config_loader = create_config_loader()
     bc = DefaultCompletionPlugin(config_loader)
-    ret = bc._query(line=line)
+    ret = bc._query(config_file="config.yaml", line=line)
     assert ret == expected
 
 
@@ -173,7 +171,7 @@ def test_file_completion(
             prefix = os.path.realpath(".")
             probe += os.path.join(prefix, fname_prefix)
 
-        ret = bc._query(line=probe)
+        ret = bc._query(config_file="config.yaml", line=probe)
         assert len(expected) == len(ret)
         for idx, file in enumerate(expected):
             assert key_eq + os.path.join(prefix, file) == ret[idx]

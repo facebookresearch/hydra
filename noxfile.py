@@ -17,11 +17,13 @@ PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
+SILENT = os.environ.get("VERBOSE", "0") == "0"
+
 
 def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
-    session.run(*cmd, ".", silent=True)
+    session.run(*cmd, ".", silent=SILENT)
 
 
 def install_pytest(session):
@@ -35,9 +37,9 @@ def install_pytest(session):
 def run_pytest(session, directory="."):
     session.run("pytest", directory, silent=False, *session.posargs)
     # if session.python == "2.7":
-    #     session.run("pytest", silent=True)
+    #     session.run("pytest", silent=SILENT)
     # else:
-    #     session.run("pytest", "--workers=30", silent=True)
+    #     session.run("pytest", "--workers=30", silent=SILENT)
 
 
 def plugin_names():
@@ -71,9 +73,9 @@ def get_all_plugins():
 
 def test_example_app(session, install_cmd):
     # Install and test example app
-    session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=True)
+    session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)
     session.run(
-        "pytest", "examples/advanced/hydra_app_example", silent=True, *session.posargs
+        "pytest", "examples/advanced/hydra_app_example", silent=SILENT, *session.posargs
     )
 
 
@@ -131,10 +133,10 @@ def test_plugin(session, plugin, install_cmd):
         pythons = get_plugin_python_version(session, plugin)
         plugin_enabled[plugin["path"]] = session.python in pythons
         if plugin_enabled[plugin["path"]]:
-            session.run(*cmd, silent=True)
+            session.run(*cmd, silent=SILENT)
 
     # Test that we can import Hydra
-    session.run("python", "-c", "from hydra import main", silent=True)
+    session.run("python", "-c", "from hydra import main", silent=SILENT)
 
     # Test that we can import all installed plugins
     for plugin in all_plugins:
@@ -157,15 +159,19 @@ def test_plugin(session, plugin, install_cmd):
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
-    session.run("pip", "install", "-e", ".", silent=True)
+    session.run("pip", "install", "-e", ".", silent=SILENT)
     # Install all plugins in session
     for plugin in get_all_plugins():
         session.run(
-            "pip", "install", "-e", os.path.join("plugins", plugin["path"]), silent=True
+            "pip",
+            "install",
+            "-e",
+            os.path.join("plugins", plugin["path"]),
+            silent=SILENT,
         )
 
     session.run("coverage", "erase")
-    session.run("coverage", "run", "--append", "-m", "pytest", silent=True)
+    session.run("coverage", "run", "--append", "-m", "pytest", silent=SILENT)
     for plugin in list_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
         if session.python not in plugin_python_versions:
@@ -178,7 +184,7 @@ def coverage(session):
             "-m",
             "pytest",
             os.path.join("plugins", plugin["path"]),
-            silent=True,
+            silent=SILENT,
         )
 
     # Increase the fail_under as coverage improves
@@ -192,7 +198,7 @@ def coverage(session):
 def lint(session, py_ver):
     session.install("--upgrade", "setuptools", "pip")
     session.install("flake8", "flake8-copyright")
-    session.run("pip", "install", "-e", ".", silent=True)
+    session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py{}.cfg".format(py_ver))
 
     session.install("black")
