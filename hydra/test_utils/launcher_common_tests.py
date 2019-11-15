@@ -183,7 +183,7 @@ def not_sweeping_hydra_overrides(sweep_runner, overrides):
     """
     Runs a sweep with two jobs
     """
-    overrides.extend(["a=0,1", "hydra.foo=1,2,3"])
+    overrides.extend(["a=0,1", "hydra.verbose=true,false"])
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",

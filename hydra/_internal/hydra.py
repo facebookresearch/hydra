@@ -99,7 +99,7 @@ class Hydra:
             )
 
     def run(self, overrides):
-        cfg = self._load_config(overrides)
+        cfg = self._load_config(overrides, strict=None)
         HydraConfig().set_config(cfg)
         return run_job(
             config=cfg,
@@ -109,7 +109,7 @@ class Hydra:
         )
 
     def multirun(self, overrides):
-        cfg = self._load_config(overrides)
+        cfg = self._load_config(overrides, strict=False)
         HydraConfig().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
             config=cfg,
@@ -335,8 +335,14 @@ class Hydra:
         self._print_search_path()
         self._print_composition_trace()
 
-    def _load_config(self, overrides):
-        cfg = self.config_loader.load_configuration(overrides)
+    def _load_config(self, overrides, strict=None):
+        """
+        :param overrides:
+        :param strict: None for default behavior (default to true for config file, false if no config file).
+                       otherwise forces specific behavior.
+        :return:
+        """
+        cfg = self.config_loader.load_configuration(overrides, strict=strict)
         with open_dict(cfg):
             from .. import __version__
 
