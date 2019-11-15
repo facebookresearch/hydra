@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import argparse
 import inspect
 import os
 import sys
+
 from .hydra import Hydra
-import argparse
+from ..plugins.common.utils import split_config_path
 
 
 def run_hydra(args_parser, task_function, config_path, strict):
@@ -11,7 +13,7 @@ def run_hydra(args_parser, task_function, config_path, strict):
     frame = stack[2]
 
     calling_file = None
-    calling__module = None
+    calling_module = None
     try:
         calling_file = frame[0].f_locals["__file__"]
     except KeyError:
@@ -20,28 +22,30 @@ def run_hydra(args_parser, task_function, config_path, strict):
         module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
         for module_env in module_envs:
             if module_env in os.environ:
-                calling__module = os.environ[module_env]
+                calling_module = os.environ[module_env]
                 break
 
-        if calling__module is None:
-            calling__module = frame[0].f_globals[frame[3]].__module__
+        if calling_module is None:
+            calling_module = frame[0].f_globals[frame[3]].__module__
     except KeyError:
         pass
 
-    hydra = Hydra(
+    config_dir, config_file = split_config_path(config_path)
+    strict = _strict_mode_strategy(strict, config_file)
+
+    hydra = Hydra.create_main_hydra_file_or_module(
         calling_file=calling_file,
-        calling_module=calling__module,
-        config_path=config_path,
-        task_function=task_function,
+        calling_module=calling_module,
+        config_dir=config_dir,
         strict=strict,
     )
 
     args = args_parser.parse_args()
     if args.help:
-        hydra.app_help(args_parser=args_parser, args=args)
+        hydra.app_help(config_file=config_file, args_parser=args_parser, args=args)
         sys.exit(0)
     if args.hydra_help:
-        hydra.hydra_help(args_parser=args_parser, args=args)
+        hydra.hydra_help(config_file=config_file, args_parser=args_parser, args=args)
         sys.exit(0)
 
     has_show_cfg = args.cfg is not None
@@ -53,13 +57,21 @@ def run_hydra(args_parser, task_function, config_path, strict):
     if num_commands == 0:
         args.run = True
     if args.run:
-        hydra.run(overrides=args.overrides)
+        hydra.run(
+            config_file=config_file,
+            task_function=task_function,
+            overrides=args.overrides,
+        )
     elif args.multirun:
-        hydra.multirun(overrides=args.overrides)
+        hydra.multirun(
+            config_file=config_file,
+            task_function=task_function,
+            overrides=args.overrides,
+        )
     elif args.cfg:
         hydra.show_cfg(overrides=args.overrides, cfg_type=args.cfg)
     elif args.shell_completion:
-        hydra.shell_completion(overrides=args.overrides)
+        hydra.shell_completion(config_file=config_file, overrides=args.overrides)
     else:
         print("Command not specified")
         sys.exit(1)
@@ -127,3 +139,16 @@ def get_args_parser():
 
 def get_args(args=None):
     return get_args_parser().parse_args(args=args)
+
+
+def _strict_mode_strategy(strict, config_file):
+    """Decide how to set strict mode.
+    If a value was provided -- always use it. Otherwise decide based
+    on the existence of config_file.
+    """
+
+    if strict is not None:
+        return strict
+
+    # strict if config_file is present
+    return config_file is not None

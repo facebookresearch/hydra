@@ -16,80 +16,70 @@ chdir_hydra_root()
 )
 class TestConfigLoader:
     def test_load_configuration(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="config.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="config.yaml", strict=False, overrides=["abc=123"]
         )
-        cfg = config_loader.load_configuration(overrides=["abc=123"])
         del cfg["hydra"]
         assert cfg == OmegaConf.create({"normal_yaml_config": True, "abc": 123})
 
     def test_load_with_missing_default(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="missing-default.yaml",
-        )
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
         with pytest.raises(MissingConfigException):
-            config_loader.load_configuration()
+            config_loader.load_configuration(
+                config_file="missing-default.yaml", strict=False
+            )
 
     def test_load_with_missing_optional_default(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="missing-optional-default.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="missing-optional-default.yaml", strict=False
         )
-        cfg = config_loader.load_configuration()
         del cfg["hydra"]
         assert cfg == {}
 
     def test_load_with_optional_default(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="optional-default.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="optional-default.yaml", strict=False
         )
-        cfg = config_loader.load_configuration()
         del cfg["hydra"]
         assert cfg == dict(foo=10)
 
     def test_load_changing_group_in_default(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
             config_file="optional-default.yaml",
+            overrides=["group1=file2"],
+            strict=False,
         )
-        cfg = config_loader.load_configuration(["group1=file2"])
         del cfg["hydra"]
         assert cfg == dict(foo=20)
 
     def test_load_adding_group_not_in_default(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
             config_file="optional-default.yaml",
+            overrides=["group2=file1"],
+            strict=False,
         )
-        cfg = config_loader.load_configuration(["group2=file1"])
         del cfg["hydra"]
         assert cfg == dict(foo=10, bar=100)
 
     def test_change_run_dir_with_override(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
             config_file="overriding_run_dir.yaml",
+            overrides=["hydra.run.dir=abc"],
+            strict=False,
         )
-        cfg = config_loader.load_configuration(overrides=["hydra.run.dir=abc"])
         assert cfg.hydra.run.dir == "abc"
 
     def test_change_run_dir_with_config(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="overriding_run_dir.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="overriding_run_dir.yaml", overrides=[], strict=False
         )
-        cfg = config_loader.load_configuration(overrides=[])
         assert cfg.hydra.run.dir == "cde"
 
     def test_load_strict(self, path):
@@ -97,13 +87,11 @@ class TestConfigLoader:
         Ensure that in strict mode we can override only things that are already in the config
         :return:
         """
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            config_file="compose.yaml",
-            strict_cfg=True,
-        )
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
         # Test that overriding existing things works in strict mode
-        cfg = config_loader.load_configuration(overrides=["foo=ZZZ"])
+        cfg = config_loader.load_configuration(
+            config_file="compose.yaml", overrides=["foo=ZZZ"], strict=True
+        )
         del cfg["hydra"]
         assert cfg == {"foo": "ZZZ", "bar": 100}
 
@@ -113,15 +101,15 @@ class TestConfigLoader:
 
         # Test that bad overrides triggers the KeyError
         with pytest.raises(KeyError):
-            config_loader.load_configuration(overrides=["f00=ZZZ"])
+            config_loader.load_configuration(
+                config_file="compose.yaml", overrides=["f00=ZZZ"], strict=True
+            )
 
     def test_load_history(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="missing-optional-default.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        config_loader.load_configuration(
+            config_file="missing-optional-default.yaml", strict=False
         )
-        config_loader.load_configuration()
         assert config_loader.get_load_history() == [
             ("hydra.yaml", "pkg://hydra.conf", "hydra"),
             ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
@@ -136,12 +124,12 @@ class TestConfigLoader:
         ]
 
     def test_load_history_with_basic_launcher(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        config_loader.load_configuration(
             config_file="custom_default_launcher.yaml",
+            overrides=["hydra/launcher=basic"],
+            strict=False,
         )
-        config_loader.load_configuration(overrides=["hydra/launcher=basic"])
 
         assert config_loader.get_load_history() == [
             ("hydra.yaml", "pkg://hydra.conf", "hydra"),
@@ -156,32 +144,24 @@ class TestConfigLoader:
         ]
 
     def test_load_yml_file(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="config.yml",
-        )
-        cfg = config_loader.load_configuration()
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(config_file="config.yml", strict=False)
         del cfg["hydra"]
         assert cfg == dict(yml_file_here=True)
 
     def test_override_with_equals(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="config.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="config.yaml", overrides=["abc='cde=12'"], strict=False
         )
-        cfg = config_loader.load_configuration(overrides=["abc='cde=12'"])
         del cfg["hydra"]
         assert cfg == OmegaConf.create({"normal_yaml_config": True, "abc": "cde=12"})
 
     def test_compose_file_with_dot(self, path):
-        config_loader = ConfigLoader(
-            config_search_path=create_search_path([path]),
-            strict_cfg=False,
-            config_file="compose.yaml",
+        config_loader = ConfigLoader(config_search_path=create_search_path([path]))
+        cfg = config_loader.load_configuration(
+            config_file="compose.yaml", overrides=["group1=abc.cde"], strict=False
         )
-        cfg = config_loader.load_configuration(["group1=abc.cde"])
         del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
@@ -230,11 +210,11 @@ def test_merge_default_lists(primary, merged, result):
 )
 def test_default_removal(config_file, overrides):
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file=config_file,
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
-    config_loader.load_configuration(overrides=overrides)
+    config_loader.load_configuration(
+        config_file=config_file, overrides=overrides, strict=False
+    )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
@@ -250,11 +230,11 @@ def test_default_removal(config_file, overrides):
 def test_defaults_not_list_exception():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="defaults_not_list.yaml",
     )
     with pytest.raises(ValueError):
-        config_loader.load_configuration(overrides=[])
+        config_loader.load_configuration(
+            config_file="defaults_not_list.yaml", overrides=[], strict=False
+        )
 
 
 @pytest.mark.parametrize(
@@ -277,22 +257,22 @@ def test_resource_exists(module_name, resource_name):
 def test_override_hydra_config_value_from_config_file():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="overriding_output_dir.yaml",
     )
 
-    cfg = config_loader.load_configuration(overrides=[])
+    cfg = config_loader.load_configuration(
+        config_file="overriding_output_dir.yaml", overrides=[], strict=False
+    )
     assert cfg.hydra.run.dir == "foo"
 
 
 def test_override_hydra_config_group_from_config_file():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="overriding_logging_default.yaml",
     )
 
-    config_loader.load_configuration(overrides=[])
+    config_loader.load_configuration(
+        config_file="overriding_logging_default.yaml", overrides=[], strict=False
+    )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_logging/hydra_debug.yaml", "pkg://hydra.conf", "hydra"),
@@ -308,8 +288,6 @@ def test_override_hydra_config_group_from_config_file():
 def test_list_groups():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="overriding_output_dir.yaml",
     )
     groups = config_loader.list_groups("")
     assert sorted(groups) == ["completion_test", "db", "group1", "group2", "hydra"]
@@ -328,10 +306,10 @@ def test_list_groups():
 def test_non_config_group_default():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="non_config_group_default.yaml",
     )
-    config_loader.load_configuration()
+    config_loader.load_configuration(
+        config_file="non_config_group_default.yaml", strict=False
+    )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
@@ -353,10 +331,8 @@ def test_mixed_composition_order():
     """
     config_loader = ConfigLoader(
         config_search_path=create_search_path(["hydra/test_utils/configs"]),
-        strict_cfg=False,
-        config_file="mixed_compose.yaml",
     )
-    config_loader.load_configuration()
+    config_loader.load_configuration(config_file="mixed_compose.yaml", strict=False)
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),

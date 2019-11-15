@@ -78,6 +78,11 @@ class LauncherTestSuite:
     def test_sweep_and_override(
         self, sweep_runner, launcher_name, overrides
     ):  # noqa: F811
+        """
+        Tests that we can override things in the configs merged in only during the sweep config construction
+        db.user=someone does not exist db_conf.yaml, and is only appear when we merge in db=mysql or db=postgresql.
+        This presents a tricky situation when operating in strict mode, this tests verifies it's handled correctly.
+        """
         base_overrides = [
             "hydra/launcher=" + launcher_name,
             "db=mysql,postgresql",
@@ -125,12 +130,15 @@ def sweep_1_job(sweep_runner, overrides, strict=False):
         overrides=overrides,
         strict=strict,
     )
+
     with sweep:
         job_ret = sweep.returns[0]
         assert len(job_ret) == 1
         assert job_ret[0].overrides == []
         assert job_ret[0].cfg == {"foo": 10, "bar": 100}
-        assert job_ret[0].hydra_cfg.hydra.job.name == "a_module"
+        assert job_ret[0].hydra_cfg.hydra.job.name == "a_module", (
+            "Unexpected job name: " + job_ret[0].hydra_cfg.hydra.job.name
+        )
         verify_dir_outputs(sweep.returns[0][0])
 
 
@@ -157,7 +165,9 @@ def sweep_2_jobs(sweep_runner, overrides):
             )
             assert job_ret.overrides == ["a={}".format(i)]
             assert job_ret.cfg == expected_conf
-            assert job_ret.hydra_cfg.hydra.job.name == "a_module"
+            assert job_ret.hydra_cfg.hydra.job.name == "a_module", (
+                "Unexpected job name: " + job_ret.hydra_cfg.hydra.job.name
+            )
             verify_dir_outputs(job_ret, job_ret.overrides)
             path = temp_dir / str(i)
             assert path.exists(), "'{}' does not exist, dirs: {}".format(

@@ -15,10 +15,11 @@ from contextlib import contextmanager
 import pytest
 import six
 from omegaconf import OmegaConf
+import hydra.experimental
 
 from hydra._internal.config_search_path import ConfigSearchPath
-from hydra._internal.hydra import Hydra
-from hydra.plugins.common.utils import JobReturn
+from hydra._internal.hydra import Hydra, GlobalHydra
+from hydra.plugins.common.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
@@ -50,6 +51,35 @@ def strip_node(cfg, key):
 
 
 @pytest.fixture(scope="function")
+def hydra_global_context():
+    class GlobalHydraContext:
+        def __init__(self):
+            self.task_name = None
+            self.search_path_dir = None
+            self.strict = None
+
+        def __enter__(self):
+            hydra.experimental.initialize_hydra(
+                task_name="task",
+                search_path_dir=self.search_path_dir,
+                strict=self.strict,
+            )
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            GlobalHydra().clear()
+
+    def _(task_name="task", search_path_dir=None, strict=False):
+        ctx = GlobalHydraContext()
+        ctx.task_name = task_name
+        ctx.search_path_dir = search_path_dir
+        ctx.strict = strict
+        return ctx
+
+    return _
+
+
+@pytest.fixture(scope="function")
 def task_runner():
     """
     Task runner fixture
@@ -63,6 +93,10 @@ def task_runner():
         def __init__(self):
             self.temp_dir = None
             self.overrides = None
+            self.calling_file = None
+            self.calling_module = None
+            self.config_path = None
+            self.strict = None
             self.hydra = None
             self.job_ret = None
 
@@ -74,12 +108,26 @@ def task_runner():
             return 100
 
         def __enter__(self):
-            self.temp_dir = tempfile.mkdtemp()
-            overrides = copy.deepcopy(self.overrides)
-            overrides.append("hydra.run.dir={}".format(self.temp_dir))
-            self.job_ret = self.hydra.run(overrides=overrides)
-            strip_node(self.job_ret.cfg, "hydra.run.dir")
-            return self
+            try:
+                config_dir, config_file = split_config_path(self.config_path)
+                hydra = Hydra.create_main_hydra_file_or_module(
+                    calling_file=self.calling_file,
+                    calling_module=self.calling_module,
+                    config_dir=config_dir,
+                    strict=self.strict,
+                )
+
+                self.hydra = hydra
+                self.temp_dir = tempfile.mkdtemp()
+                overrides = copy.deepcopy(self.overrides)
+                overrides.append("hydra.run.dir={}".format(self.temp_dir))
+                self.job_ret = self.hydra.run(
+                    config_file=config_file, task_function=self, overrides=overrides,
+                )
+                strip_node(self.job_ret.cfg, "hydra.run.dir")
+                return self
+            finally:
+                GlobalHydra().clear()
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             # release log file handles
@@ -88,16 +136,11 @@ def task_runner():
 
     def _(calling_file, calling_module, config_path, overrides=None, strict=False):
         task = TaskTestFunction()
-        hydra = Hydra(
-            calling_file=calling_file,
-            calling_module=calling_module,
-            config_path=config_path,
-            task_function=task,
-            strict=strict,
-        )
-
-        task.hydra = hydra
         task.overrides = overrides or []
+        task.calling_file = calling_file
+        task.calling_module = calling_module
+        task.config_path = config_path
+        task.strict = strict
         return task
 
     return _
@@ -116,7 +159,10 @@ def sweep_runner():
 
         def __init__(self):
             self.temp_dir = None
-            self.hydra = None
+            self.calling_file = None
+            self.calling_module = None
+            self.config_path = None
+            self.strict = None
             self.sweeps = None
             self.returns = None
 
@@ -130,10 +176,23 @@ def sweep_runner():
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
-            self.returns = self.hydra.multirun(overrides=overrides)
-            flat = [item for sublist in self.returns for item in sublist]
-            for ret in flat:
-                strip_node(ret.cfg, "hydra.sweep.dir")
+            try:
+                config_dir, config_file = split_config_path(self.config_path)
+                hydra = Hydra.create_main_hydra_file_or_module(
+                    calling_file=self.calling_file,
+                    calling_module=self.calling_module,
+                    config_dir=config_dir,
+                    strict=self.strict,
+                )
+
+                self.returns = hydra.multirun(
+                    config_file=config_file, task_function=self, overrides=overrides
+                )
+                flat = [item for sublist in self.returns for item in sublist]
+                for ret in flat:
+                    strip_node(ret.cfg, "hydra.sweep.dir")
+            finally:
+                GlobalHydra().clear()
 
             return self
 
@@ -142,15 +201,10 @@ def sweep_runner():
 
     def _(calling_file, calling_module, config_path, overrides=None, strict=False):
         sweep = SweepTaskFunction()
-        hydra = Hydra(
-            calling_file=calling_file,
-            calling_module=calling_module,
-            config_path=config_path,
-            task_function=sweep,
-            strict=strict,
-        )
-
-        sweep.hydra = hydra
+        sweep.calling_file = calling_file
+        sweep.calling_module = calling_module
+        sweep.config_path = config_path
+        sweep.strict = strict
         sweep.overrides = overrides or []
         return sweep
 

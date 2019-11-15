@@ -45,6 +45,9 @@ hydra:
     # Job number if job is a part of a sweep
     num: ???
 
+    # The config file name used by the job (without the directory, which is a part of the search path)
+    config_file: ???
+
     config:
       # configuration for the ${hydra.job.override_dirname} runtime variable
       override_dirname:

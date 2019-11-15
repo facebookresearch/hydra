@@ -5,11 +5,13 @@ import logging
 import os
 import re
 import sys
-from hydra._internal.pathlib import Path
+from os.path import dirname, splitext, basename
 from time import strftime, localtime
 
 import six
 from omegaconf import OmegaConf, DictConfig, ListConfig
+
+from hydra._internal.pathlib import Path
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -182,3 +184,16 @@ class HydraConfig(DictConfig):
             self.hydra = copy.deepcopy(cfg.hydra)
         finally:
             OmegaConf.set_readonly(self, True)
+
+
+def split_config_path(config_path):
+    split_file = splitext(config_path)
+    if split_file[1] in (".yaml", ".yml"):
+        # assuming dir/config.yaml form
+        config_file = basename(config_path)
+        config_dir = dirname(config_path)
+    else:
+        # assuming dir form without a config file.
+        config_file = None
+        config_dir = config_path
+    return config_dir, config_file

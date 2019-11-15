@@ -6,7 +6,6 @@ from omegaconf import OmegaConf, DictConfig
 from hydra._internal.pathlib import Path
 from hydra.plugins.common.utils import HydraConfig
 
-# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
