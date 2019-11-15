@@ -31,7 +31,9 @@ class ConfigLoader:
         self.all_config_checked = []
         self.strict_cfg = strict_cfg
 
-    def load_configuration(self, overrides=[]):
+    def load_configuration(self, overrides=[], strict=None):
+        if strict is None:
+            strict = self.strict_cfg
         assert overrides is None or isinstance(overrides, list)
         overrides = overrides or []
 
@@ -55,7 +57,8 @@ class ConfigLoader:
         # Load and defaults and merge them into cfg
         cfg = self._merge_defaults(hydra_cfg, defaults, split_at)
 
-        OmegaConf.set_struct(cfg, self.strict_cfg)
+        OmegaConf.set_struct(cfg.hydra, True)
+        OmegaConf.set_struct(cfg, strict)
 
         # Merge all command line overrides after enabling strict flag
         all_consumed = consumed + consumed_free_job_defaults
@@ -86,10 +89,10 @@ class ConfigLoader:
         # Recreate the config for this sweep instance with the appropriate overrides
         hydra_overrides = OmegaConf.to_container(master_config.hydra.overrides.hydra)
         overrides = hydra_overrides + sweep_overrides
-        sweep_config = self.load_configuration(overrides)
+        sweep_config = self.load_configuration(overrides, self.strict_cfg)
 
         with open_dict(sweep_config):
-            sweep_config.hydra.runtime = master_config.hydra.runtime
+            sweep_config.hydra.runtime.merge_with(master_config.hydra.runtime)
 
         # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
         OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
