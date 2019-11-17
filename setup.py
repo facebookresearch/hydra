@@ -104,7 +104,7 @@ with open("README.md", "r") as fh:
             "Operating System :: Microsoft :: Windows",
         ],
         install_requires=[
-            "omegaconf>=1.4.0rc3",
+            "omegaconf>=1.4.0rc4",
             'pathlib2>=2.2.0;python_version<"3.0"',
         ],
         # Install development dependencies with
