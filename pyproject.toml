@@ -1,11 +1,12 @@
 [tool.towncrier]
     package = "hydra"
     package_dir = ""
-    filename = "NEWS.rst"
+    filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"
     template = "news/_template.rst"
-    issue_format = "`#{issue} <https://github.com/facebookresearch/hydra/issues/{issue}>`_"
+    issue_format = "#{issue}"
+    start_string = "<!-- TOWNCRIER -->\n"
 
   [[tool.towncrier.type]]
   directory = "feature"
