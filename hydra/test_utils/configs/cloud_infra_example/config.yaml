@@ -1,0 +1,4 @@
+defaults:
+  - db: sqlite
+  - cloud_provider: local
+  - environment: testing

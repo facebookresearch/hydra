@@ -1,0 +1,5 @@
+db:
+  driver: sqlite
+  user: ???
+  pass: ???
+  file: test.db

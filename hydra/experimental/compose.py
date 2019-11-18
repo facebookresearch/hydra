@@ -1,17 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 from hydra._internal.hydra import Hydra, GlobalHydra
+from hydra._internal.utils import detect_calling_file_or_module
 
 
-def initialize_hydra(task_name, search_path_dir, strict):
+def initialize(config_dir=None, strict=None, caller_stack_depth=1):
     """
-    Initializes the Hydra sub system
-
-    :param task_name: The name of the task
-    :param search_path_dir: entry point search path element (eg: /foo/bar or pkg://foo.bar)
-    :param strict: Default value for strict mode
+    :param config_dir: config directory relative to the calling script
+    :param strict:
+    :param caller_stack_depth:
+    :return:
     """
-    Hydra.create_main_hydra(
-        task_name=task_name, strict=strict, search_path_dir=search_path_dir
+    calling_file, calling_module = detect_calling_file_or_module(caller_stack_depth + 1)
+    Hydra.create_main_hydra_file_or_module(
+        calling_file, calling_module, config_dir, strict
     )
 
 
@@ -24,9 +26,11 @@ def compose(config_file=None, overrides=[], strict=None):
     """
     assert (
         GlobalHydra().is_initialized()
-    ), "GlobalHydra is not initialized, use @hydra.main() or call hydra.experimental.initialize_hydra() first"
+    ), "GlobalHydra is not initialized, use @hydra.main() or call hydra.experimental.initialize() first"
+
     cfg = GlobalHydra().hydra.compose_config(
         config_file=config_file, overrides=overrides, strict=strict
     )
-    del cfg["hydra"]
+    if "hydra" in cfg:
+        del cfg["hydra"]
     return cfg
