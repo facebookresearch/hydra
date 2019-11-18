@@ -55,7 +55,7 @@ def test_app_without_config___no_overrides(
     task_runner, calling_file, calling_module  # noqa: F811
 ):
     with task_runner(
-        calling_file=calling_file, calling_module=calling_module, config_path=""
+        calling_file=calling_file, calling_module=calling_module, config_path=None
     ) as task:
         assert task.job_ret.cfg == {}
 
@@ -90,11 +90,12 @@ def test_app_without_config__with_overrides(
 def test_app_with_config_file__no_overrides(
     task_runner, calling_file, calling_module  # noqa: F811
 ):
-    with task_runner(
+    task = task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
         config_path="config.yaml",
-    ) as task:
+    )
+    with task:
         assert task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet")
         )

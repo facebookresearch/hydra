@@ -287,10 +287,18 @@ def test_override_hydra_config_group_from_config_file():
 
 def test_list_groups():
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(
+            ["hydra/test_utils/configs/cloud_infra_example"]
+        ),
     )
     groups = config_loader.list_groups("")
-    assert sorted(groups) == ["completion_test", "db", "group1", "group2", "hydra"]
+    assert sorted(groups) == [
+        "application",
+        "cloud_provider",
+        "db",
+        "environment",
+        "hydra",
+    ]
 
     assert sorted(config_loader.list_groups("hydra")) == [
         "help",

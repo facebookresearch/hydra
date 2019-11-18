@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 import os
 
 import nox
@@ -204,3 +205,24 @@ def lint(session, py_ver):
     session.install("black")
     # if this fails you need to format your code with black
     session.run("black", "--check", ".")
+
+
+@nox.session(python=PYTHON_VERSIONS)
+def test_jupyter_notebook(session):
+    versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
+    versions.remove("2.7")
+    if session.python not in versions:
+        session.skip(
+            "Not testing Jupyter notebook on Python {}, supports [{}]".format(
+                session.python, ",".join(versions)
+            )
+        )
+    session.install("--upgrade", "setuptools", "pip")
+    session.install("jupyter", "nbval")
+    install_hydra(session, ["pip", "install", "-e"])
+    session.run(
+        "pytest",
+        "--nbval",
+        "examples/notebook/hydra_notebook_example.ipynb",
+        silent=SILENT,
+    )

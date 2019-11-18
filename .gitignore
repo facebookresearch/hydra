@@ -10,3 +10,4 @@ __pycache__
 /report.json
 /.coverage
 pip-wheel-metadata
+.ipynb_checkpoints

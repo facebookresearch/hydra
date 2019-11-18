@@ -4,16 +4,16 @@ title: Compose API
 sidebar_label: Experimental compose API
 ---
 
-Hydra 0.11.0 introduces a new experimental API that will allow composition of config from any place in the code via the `hydra.experimental.compose()` function.
-Before using this function, you need to initialize Hydra. This can be done by using the standard `@hydra.main()` or by calling `hydra.experimental.initialize_hydra()`.
+Hydra 0.11.0 introduces a new experimental API for composing configuration via the `hydra.experimental.compose()` function.
+Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()` or by calling `hydra.experimental.initialize()`.
 
 ### `hydra.experimental.compose()` example
 ```python
-from hydra.experimental import compose, initialize_hydra
+from hydra.experimental import compose, initialize
 
 
 if __name__ == "__main__":
-    initialize_hydra(
+    initialize(
         task_name="my_app", search_path_dir="conf", strict=True,
     )
 
@@ -31,7 +31,7 @@ def compose(config_file=None, overrides=[], strict=None):
     """
 
 
-def initialize_hydra(task_name, search_path_dir, strict):
+def initialize(task_name, search_path_dir, strict):
     """
     Initializes the Hydra sub system
 

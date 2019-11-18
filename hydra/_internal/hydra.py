@@ -4,21 +4,19 @@ import logging
 import os
 import string
 from collections import defaultdict
-from os.path import realpath, dirname
 
 import six
 from omegaconf import open_dict, OmegaConf
 
-from ..plugins.common.utils import Singleton
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
-from ..errors import MissingConfigException
+from .utils import create_automatic_config_search_path, detect_task_name
 from ..plugins import SearchPathPlugin, Launcher, Sweeper, CompletionPlugin
+from ..plugins.common.utils import Singleton
 from ..plugins.common.utils import (
     configure_log,
     run_job,
-    get_valid_filename,
     JobRuntime,
     HydraConfig,
     setup_globals,
@@ -49,68 +47,21 @@ class Hydra:
     def create_main_hydra_file_or_module(
         cls, calling_file, calling_module, config_dir, strict
     ):
-        if calling_file is not None:
-            return Hydra.create_main_hydra_for_file(
-                calling_file=calling_file, config_dir=config_dir, strict=strict,
-            )
-        elif calling_module is not None:
-            return Hydra.create_main_hydra_for_module(
-                calling_module=calling_module, config_dir=config_dir, strict=strict,
-            )
-        else:
-            raise ValueError()
+        config_search_path = create_automatic_config_search_path(
+            calling_file, calling_module, config_dir
+        )
+        task_name = detect_task_name(calling_file, calling_module)
+        return Hydra.create_main_hydra2(task_name, config_search_path, strict)
 
     @classmethod
-    def create_main_hydra_for_file(cls, calling_file, config_dir, strict):
-        abs_base_dir = realpath(dirname(calling_file))
-        target_file = os.path.basename(calling_file)
-        task_name = get_valid_filename(os.path.splitext(target_file)[0])
-
-        if config_dir != "":
-            search_path_dir = "{}/{}".format(abs_base_dir, config_dir)
-        else:
-            search_path_dir = abs_base_dir
-        return Hydra.create_main_hydra(task_name, search_path_dir, strict)
-
-    @classmethod
-    def create_main_hydra_for_module(cls, calling_module, config_dir, strict):
-        # module is installed, use pkg:// access to get configs
-        last_dot = calling_module.rfind(".")
-        if last_dot != -1:
-            task_name = calling_module[last_dot + 1 :]
-        else:
-            task_name = calling_module
-
-        search_path_dir = "pkg://" + calling_module
-        if config_dir != "":
-            search_path_dir = "{}/{}".format(search_path_dir, config_dir)
-
-        return Hydra.create_main_hydra(task_name, search_path_dir, strict)
-
-    @classmethod
-    def create_main_hydra(cls, task_name, search_path_dir, strict):
-
-        search_path = ConfigSearchPath()
-        search_path.append("hydra", "pkg://hydra.conf")
-        if search_path_dir is not None:
-            search_path.append("main", search_path_dir)
-
-        search_path_plugins = Plugins.discover(SearchPathPlugin)
-        for spp in search_path_plugins:
-            plugin = spp()
-            plugin.manipulate_search_path(search_path)
+    def create_main_hydra2(cls, task_name, config_search_path, strict):
+        assert isinstance(config_search_path, ConfigSearchPath)
 
         config_loader = ConfigLoader(
-            config_search_path=search_path, default_strict=strict
+            config_search_path=config_search_path, default_strict=strict
         )
-        if search_path_dir is not None and not ConfigLoader.exists(search_path_dir):
-            raise MissingConfigException(
-                missing_cfg_file=search_path_dir,
-                message="Primary config dir not found: {}".format(search_path_dir),
-            )
 
         hydra = cls(task_name=task_name, config_loader=config_loader)
-
         GlobalHydra().initialize(hydra)
         return hydra
 

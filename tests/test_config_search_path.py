@@ -1,7 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from os.path import realpath
+
 import pytest
 
 from hydra._internal.config_search_path import ConfigSearchPath, SearchPath
+from hydra._internal.utils import compute_search_path_dir
 
 
 def create_search_path(base_list):
@@ -121,3 +124,28 @@ def test_prepend(base_list, provider, path, anchor_provider, result_list):
     csp = create_search_path(base_list)
     csp.prepend(provider=provider, path=path, anchor=anchor_provider)
     assert to_tuples_list(csp) == result_list
+
+
+@pytest.mark.parametrize(
+    "calling_file, calling_module, config_dir, expected",
+    [
+        ("foo.py", None, None, realpath("")),
+        ("foo/bar.py", None, None, realpath("foo")),
+        ("foo/bar.py", None, "conf", realpath("foo/conf")),
+        ("foo/bar.py", None, "../conf", realpath("conf")),
+        ("c:/foo/bar.py", None, "conf", realpath("c:/foo/conf")),
+        ("c:/foo/bar.py", None, "../conf", realpath("c:/conf")),
+        # short module name, keep it to avoid empty module error
+        (None, "module", None, "pkg://module"),
+        (None, "package.module", None, "pkg://package"),
+        (None, "package.module", "conf", "pkg://package/conf"),
+        # This is an unusual one. this behavior is intentional.
+        (None, "package.module", "../conf", "pkg://conf"),
+        (None, "package1.package2.module", "../conf", "pkg://package1/conf"),
+        # prefer package
+        ("foo", "package1.package2.module", "../conf", "pkg://package1/conf"),
+    ],
+)
+def test_compute_search_path_dir(calling_file, calling_module, config_dir, expected):
+    res = compute_search_path_dir(calling_file, calling_module, config_dir)
+    assert res == expected

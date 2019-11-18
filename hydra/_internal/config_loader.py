@@ -43,7 +43,15 @@ class ConfigLoader:
         if config_file is not None and not self.exists_in_search_path(config_file):
             raise MissingConfigException(
                 missing_cfg_file=config_file,
-                message="Cannot find primary config file: {}".format(config_file),
+                message="Cannot find primary config file: {}\nSearch path:\n{}".format(
+                    config_file,
+                    "\n".join(
+                        [
+                            "\t{} (from {})".format(x.path, x.provider)
+                            for x in self.config_search_path.config_search_path
+                        ]
+                    ),
+                ),
             )
 
         # Load hydra config

@@ -55,24 +55,22 @@ def hydra_global_context():
     class GlobalHydraContext:
         def __init__(self):
             self.task_name = None
-            self.search_path_dir = None
+            self.config_dir = None
             self.strict = None
 
         def __enter__(self):
-            hydra.experimental.initialize_hydra(
-                task_name="task",
-                search_path_dir=self.search_path_dir,
-                strict=self.strict,
+            hydra.experimental.initialize(
+                config_dir=self.config_dir, strict=self.strict, caller_stack_depth=2
             )
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             GlobalHydra().clear()
 
-    def _(task_name="task", search_path_dir=None, strict=False):
+    def _(task_name="task", config_dir=None, strict=False):
         ctx = GlobalHydraContext()
         ctx.task_name = task_name
-        ctx.search_path_dir = search_path_dir
+        ctx.config_dir = config_dir
         ctx.strict = strict
         return ctx
 

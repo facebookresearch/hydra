@@ -1,0 +1,4 @@
+cloud:
+  name: aws
+  api_key: ${env:AWS_API_KEY}
+  ami_id: 1234
