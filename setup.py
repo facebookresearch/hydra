@@ -86,7 +86,7 @@ with open("README.md", "r") as fh:
         version=find_version("hydra", "__init__.py"),
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Hydra is a library for writing flexible command line applications",
+        description="A framework for elegantly configuring complex applications",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra",
