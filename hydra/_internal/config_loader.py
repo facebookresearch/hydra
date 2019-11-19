@@ -178,7 +178,7 @@ class ConfigLoader:
 
     def _apply_free_defaults(self, defaults, overrides):
         consumed = []
-        for override in overrides:
+        for override in copy.copy(overrides):
             key, value = split_key_val(override)
             if self.exists_in_search_path(key):
                 # Do not add multirun configs into defaults, those will be added to the defaults
