@@ -103,10 +103,7 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        install_requires=[
-            "omegaconf>=1.4.0rc4",
-            'pathlib2>=2.2.0;python_version<"3.0"',
-        ],
+        install_requires=["omegaconf>=1.4.0", 'pathlib2>=2.2.0;python_version<"3.0"'],
         # Install development dependencies with
         # pip install -e .[dev]
         extras_require={
