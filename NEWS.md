@@ -1,3 +1,35 @@
+0.11.0 (2019-11-19)
+===================
+
+Features
+--------
+
+- Add hydra.experimental API for composing configuration on demand (hydra.experimental.compose) (#219)
+- Add hydra.utils.get_original_cwd() to access original working directory and hydra.utils.to_absolute_path() to convert a path to absolute path (#251)
+- Change hydra logging format pattern, example: "[2019-10-22 16:13:10,769][HYDRA] Installed Hydra Plugins" (#254)
+- Change --cfg to require config type (one of 'job', 'hydra' or 'all') (#270)
+- Upgrade to OmegaConf 1.4.0, see full change log [here](https://github.com/omry/omegaconf/releases/tag/1.4.0) (#280)
+- Experimental support for Jupyter notebooks via compose API (#281)
+- Allow configuring override_dirname via hydra.job.config.override_dirname to exclude specific keys or change separator characters (#95)
+
+Bug Fixes
+---------
+
+- Fix a bug that caused out of order composition when mixing config-groups with non-config-group in the defaults block (#261)
+- Allow '=' to be used in the value of an override, eg. foo=bar=10 (key foo, value bar=10). (#266)
+- Allow composing config files with dot in their name (foo.bar.yaml) (#271)
+
+Plugins
+-------
+
+- hydra-colorlog plugin adds colored log output.
+
+Improved Documentation
+----------------------
+
+- Document utils.get_original_cwd() and utils.to_absolute_path("foo") (#251)
+
+
 0.10.0 (2019-10-19)
 ===================
 
