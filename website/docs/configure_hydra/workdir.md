@@ -4,8 +4,6 @@ title: Customizing working directory pattern
 sidebar_label: Customizing working directory pattern
 ---
 
-See the [intro](intro) for details about how to apply the customization.
-
 Run output directory grouped by day:
 ```yaml
 hydra:
