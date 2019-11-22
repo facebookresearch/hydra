@@ -225,6 +225,22 @@ def test_short_module_name(tmpdir):
 
 
 @pytest.mark.parametrize(
+    "flag,expected_keys",
+    [("--cfg=all", ["db", "hydra"]), ("--cfg=hydra", ["hydra"]), ("--cfg=job", ["db"])],
+)
+def test_cfg(tmpdir, flag, expected_keys):
+    try:
+        os.chdir("examples/tutorial/4_defaults")
+        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir), flag]
+        result = subprocess.check_output(cmd)
+        conf = OmegaConf.create(str(result.decode("utf-8")))
+        for key in expected_keys:
+            assert key in conf
+    finally:
+        chdir_hydra_root()
+
+
+@pytest.mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_config_with_free_group/my_app.py", None),

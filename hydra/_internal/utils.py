@@ -180,7 +180,9 @@ def run_hydra(args_parser, task_function, config_path, strict):
             overrides=args.overrides,
         )
     elif args.cfg:
-        hydra.show_cfg(overrides=args.overrides, cfg_type=args.cfg)
+        hydra.show_cfg(
+            config_file=config_file, overrides=args.overrides, cfg_type=args.cfg
+        )
     elif args.shell_completion:
         hydra.shell_completion(config_file=config_file, overrides=args.overrides)
     else:

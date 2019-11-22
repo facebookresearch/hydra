@@ -96,7 +96,7 @@ class Hydra:
         )
         HydraConfig().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
-            config=cfg, config_loader=self.config_loader, task_function=task_function,
+            config=cfg, config_loader=self.config_loader, task_function=task_function
         )
         task_overrides = cfg.hydra.overrides.task
         return sweeper.sweep(arguments=task_overrides)
@@ -111,9 +111,11 @@ class Hydra:
         del cfg.hydra["help"]
         return cfg
 
-    def show_cfg(self, overrides, cfg_type):
+    def show_cfg(self, config_file, overrides, cfg_type):
         assert cfg_type in ["job", "hydra", "all"]
-        cfg = self.compose_config(overrides, with_log_configuration=True)
+        cfg = self.compose_config(
+            config_file=config_file, overrides=overrides, with_log_configuration=True
+        )
         if cfg_type == "job":
             del cfg["hydra"]
         elif cfg_type == "hydra":
