@@ -14,7 +14,7 @@ from hydra.experimental import compose, initialize
 
 if __name__ == "__main__":
     initialize(
-        task_name="my_app", search_path_dir="conf", strict=True,
+        config_dir="conf", strict=True,
     )
 
     cfg = compose("config.yaml", overrides=["db=mysql", "db.user=me"])
@@ -31,13 +31,14 @@ def compose(config_file=None, overrides=[], strict=None):
     """
 
 
-def initialize(task_name, search_path_dir, strict):
+def initialize(config_dir=None, strict=None, caller_stack_depth=1):
     """
     Initializes the Hydra sub system
 
-    :param task_name: The name of the task
-    :param search_path_dir: entry point search path element (eg: /foo/bar or pkg://foo.bar)
+    :param config_dir: config directory relative to the calling script
     :param strict: Default value for strict mode
+    :param caller_stack_depth:
+    :return:
     """
 
 
