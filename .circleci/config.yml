@@ -179,20 +179,18 @@ jobs:
           name: Deploying to GitHub Pages
           command: |
             SUBDIR=website
-            REV=$(git log -1 --pretty=oneline origin/gh-pages | awk 'NF>1{print $NF}')
-            git diff-index --quiet $REV -- $SUBDIR
-            if [ $? -eq 0 ]; then
-              echo "No changes detected in directory $SUBDIR between origin/master and this diff"
-            else
+            if [[ $(git log --pretty=format:'%h' origin/master... $SUBDIR) ]]; then
               echo "Changes detected in directory $SUBDIR between origin/master and this diff"
 
-              cd $SUBDIR
+              cd website
               yarn --no-progress
 
               git config --global user.email omry@users.noreply.github.com
               git config --global user.name omry
               echo "machine github.com login docusaurus-bot password $GITHUB_TOKEN" > ~/.netrc
               yarn install && GIT_USER=docusaurus-bot yarn deploy
+            else
+              echo "No changes detected in directory $SUBDIR between origin/master and this diff"
             fi
 
 workflows:
