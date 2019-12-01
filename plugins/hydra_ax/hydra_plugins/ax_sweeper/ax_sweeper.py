@@ -78,26 +78,39 @@ def yield_batch_of_trials_from_ax(ax: AxClient, num_max_trials: int):
 
 
 class EarlyStopper:
+    """Class to implement the early stopping mechanism.
+    The optimisation process is stopped when the performance does not
+    improve for a threshold number of consecutive epochs. The performance
+    is considered to have improved when the change is more than a given
+    threshold (epsilon)."""
+
     def __init__(self, max_epochs_without_improvement, epsilon, minimize):
         self.max_epochs_without_improvement = max_epochs_without_improvement
         self.epsilon = epsilon
         self.minimize = minimize
-        self.current_known_best = None
+        self.current_best_value = None
         self.current_epochs_without_improvement = 0
 
-    def should_stop(self, current_best, best_parameters):
-        improve = True
-        if self.current_known_best is not None:
+    def should_stop(self, potential_best_value, best_parameters):
+        """Check if the optimisation process should be stopped."""
+        is_improving = True
+        if self.current_best_value is not None:
             if self.minimize:
-                improve = current_best + self.epsilon < self.current_known_best
+                is_improving = (
+                    potential_best_value + self.epsilon < self.current_best_value
+                )
             else:
-                improve = current_best - self.epsilon > self.current_known_best
+                is_improving = (
+                    potential_best_value - self.epsilon > self.current_best_value
+                )
 
-        if improve:
+        if is_improving:
             self.current_epochs_without_improvement = 0
-            self.current_known_best = current_best
+            self.current_best_value = potential_best_value
             log.info(
-                "New best : {}, parameters: {}".format(current_best, best_parameters)
+                "New best value: {}, best parameters: {}".format(
+                    potential_best_value, best_parameters
+                )
             )
 
             return False
@@ -109,11 +122,12 @@ class EarlyStopper:
             >= self.max_epochs_without_improvement
         ):
             log.info(
-                "Early stopping, best known {} did not improve for {} epochs".format(
-                    self.current_known_best, self.current_epochs_without_improvement
+                "Early stopping, best known value {} did not improve for {} epochs".format(
+                    self.current_best_value, self.current_epochs_without_improvement
                 )
             )
             return True
+        return False
 
 
 class AxSweeper(Sweeper):
