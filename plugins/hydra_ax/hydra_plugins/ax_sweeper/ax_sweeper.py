@@ -117,6 +117,8 @@ class EarlyStopper:
 
 
 class AxSweeper(Sweeper):
+    """Class to interface with the Ax Platform"""
+
     def __init__(
         self, verbose_logging, experiment, early_stop, random_seed, max_trials
     ):
@@ -155,48 +157,51 @@ class AxSweeper(Sweeper):
         log.info("Best parameters: " + str(best))
 
     def setup_ax_client(self, arguments) -> AxClient:
-        def _is_int(ss):
+        """Method to setup the Ax Client"""
+
+        def _is_int(string_inp):
+            """Method to check if the given string input can be parsed as integer"""
             try:
-                int(ss)
+                int(string_inp)
                 return True
             except ValueError:
                 return False
 
         parameters = []
-        for s in arguments:
-            key, value = s.split("=")
+        for arg in arguments:
+            key, value = arg.split("=")
             if "," in value:
-                # choice
-                values = value.split(",")
+                # This is a Choice Parameter.
+                value_choices = value.split(",")
                 parameters.append(
                     {
                         "name": key,
                         "type": "choice",
-                        "values": values,
+                        "values": value_choices,
                         "parameter_type": ParameterType.STRING,
                     }
                 )
             elif ":" in value:
-                # range
-                x1, x2 = value.split(":")
-                if _is_int(x1) and _is_int(x2):
-                    x1 = int(x1)
-                    x2 = int(x2)
+                # This is a Range Parameter.
+                range_start, range_end = value.split(":")
+                if _is_int(range_start) and _is_int(range_end):
+                    range_start = int(range_start)
+                    range_end = int(range_end)
                     param_type = ParameterType.INT
                 else:
-                    x1 = float(x1)
-                    x2 = float(x2)
+                    range_start = float(range_start)
+                    range_end = float(range_end)
                     param_type = ParameterType.FLOAT
                 parameters.append(
                     {
                         "name": key,
                         "type": "range",
-                        "bounds": [x1, x2],
+                        "bounds": [range_start, range_end],
                         "parameter_type": param_type,
                     }
                 )
             else:
-                # fixed
+                # This is a Fixed Parameter.
                 parameters.append(
                     {
                         "name": key,
@@ -206,8 +211,8 @@ class AxSweeper(Sweeper):
                     }
                 )
 
-        ax = AxClient(
+        ax_client = AxClient(
             verbose_logging=self.verbose_logging, random_seed=self.random_seed
         )
-        ax.create_experiment(parameters=parameters, **self.experiment)
-        return ax
+        ax_client.create_experiment(parameters=parameters, **self.experiment)
+        return ax_client
