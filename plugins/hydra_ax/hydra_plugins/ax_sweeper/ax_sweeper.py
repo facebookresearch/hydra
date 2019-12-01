@@ -1,10 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Tuple, List, Iterator, NewType
+from typing import Iterator, List, NewType, Tuple
 
 from ax import ParameterType
 from ax.service.ax_client import AxClient
-
 from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin, Sweeper
@@ -40,6 +39,7 @@ def map_params_to_arg_list(params: dict) -> List[str]:
 def yield_batch_of_trials_from_parallelism(
     ax: AxClient, parallelism: Tuple[int, int]
 ) -> Iterator[List[Trial]]:
+    """Produce a batch of trials that can be run in parallel, given the parallelism"""
     num_trials, num_parallel_trials = parallelism
     if num_trials == -1:
         # Special case, return infinite number of batches
@@ -54,6 +54,7 @@ def yield_batch_of_trials_from_parallelism(
 
 
 def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> List[Trial]:
+    """Produce a batch of trials that can be run in parallel"""
     batch_of_trials = []
     for trial_idx in range(num_parallel_trials):
         parameters, trial_index = ax.get_next_trial()
@@ -67,6 +68,7 @@ def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> List[Tria
 
 
 def yield_batch_of_trials_from_ax(ax: AxClient, num_max_trials: int):
+    """Yield batches of trials that can be run in parallel"""
     recommended_max_parallelism = ax.get_recommended_max_parallelism()
     num_trials_left = num_max_trials
     for parallelism in recommended_max_parallelism:
