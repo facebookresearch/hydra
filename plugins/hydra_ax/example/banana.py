@@ -14,7 +14,7 @@ def banana(cfg):
     x = cfg.banana.x
     y = cfg.banana.y
     z = (a - x) ** 2 + b * ((y - x ** 2) ** 2)
-    log.info("Banana_Function_a={}_b={}(x={}, y={})={}".format(a, b, x, y, z))
+    log.info(f"Banana_Function_a={a}_b={b}(x={x}, y={y})={z}")
     return z
 
 
