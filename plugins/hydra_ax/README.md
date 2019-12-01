@@ -1,7 +1,9 @@
-# Hydra example Launcher plugin
+# Hydra Ax Launcher plugin
 
-This plugin provides an example for how to write a custom Sweeper for Hydra.
+This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform aka Ax](https://ax.dev/). Ax can be used to optimize any kind of experiment - machine learning experiments, A/B tests and simulations. 
+
+The plugin can be installed by running the following command in the `plugins/hydra_ax` directory:
 
 ```
-python plugins/hydra_ax/example/banana.py  -m banana.x=-5.0:5 banana.y=-5:5.0
+python setup.py install
 ```
