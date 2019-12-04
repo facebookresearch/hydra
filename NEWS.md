@@ -1,3 +1,17 @@
+0.11.2 (2019-12-04)
+===================
+
+Features
+--------
+
+- Change website from cli.dev to hydra.cc (#314)
+
+Bug Fixes
+---------
+
+- Fixes --cfg command line flag not working (#305)
+
+
 0.11.0 (2019-11-19)
 ===================
 
