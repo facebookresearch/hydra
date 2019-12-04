@@ -14,7 +14,7 @@ hydra:
     #
     template: |
       Hydra (${hydra.runtime.version})
-      See https://cli.dev for more info.
+      See https://hydra.cc for more info.
 
       == Flags ==
       $FLAGS_HELP
