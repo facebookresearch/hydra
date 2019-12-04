@@ -27,7 +27,7 @@ db:
   user: omry
 
 
-Powered by Hydra (https://cli.dev)
+Powered by Hydra (https://hydra.cc)
 Use --hydra-help to view Hydra specific help
 ```
 
@@ -44,7 +44,7 @@ hydra:
       ${hydra.help.app_name} is powered by Hydra.
 
     footer: |
-      Powered by Hydra (https://cli.dev)
+      Powered by Hydra (https://hydra.cc)
       Use --hydra-help to view Hydra specific help
 
     # Basic Hydra flags:
