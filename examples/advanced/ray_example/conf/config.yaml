@@ -1,0 +1,7 @@
+defaults:
+  - dataset: imagenet
+  - model: alexnet
+
+ray:
+  init:
+    num_cpus: 4

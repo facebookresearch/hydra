@@ -1,0 +1,3 @@
+model:
+  type: alexnet
+  num_layers: 7
