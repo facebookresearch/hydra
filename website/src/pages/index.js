@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import withBaseUrl from '@docusaurus/withBaseUrl';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 const features = [
@@ -70,7 +70,7 @@ function Home() {
                     'button button--success button--lg',
                     styles.getStarted,
                   )}
-                  to={withBaseUrl('docs/intro')}>
+                  to={useBaseUrl('docs/intro')}>
                   Get Started
                 </Link>
                 <span className={styles['index-ctas-github-button']}>
@@ -101,7 +101,7 @@ function Home() {
                         <div className={styles.thumbnail}>
                           <img
                             className={styles.featureImage}
-                            src={withBaseUrl(imageUrl)}
+                            src={useBaseUrl(imageUrl)}
                             alt={title}
                           />
                         </div>
