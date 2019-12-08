@@ -179,7 +179,7 @@ jobs:
           name: Deploying to GitHub Pages
           command: |
             SUBDIR=website
-            REV=$(git log -1 --pretty=oneline origin/gh-pages | awk 'NF>1{print $NF}')
+            REV=$(git log -5 --pretty=oneline origin/gh-pages | grep "Deploy website" |  awk 'NF>1{print $NF}'  | head -1)
             if [[ $(git diff-index $REV -- $SUBDIR) ]]; then
               echo "Changes detected in directory $SUBDIR between origin/master and this diff"
 
