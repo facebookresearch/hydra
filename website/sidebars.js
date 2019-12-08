@@ -41,6 +41,7 @@ module.exports = {
             'advanced/search_path',
             'advanced/plugins',
             'advanced/compose_api',
+            'advanced/ray_example',
         ],
 
         'Development': [
