@@ -152,21 +152,22 @@ class AxSweeper(Sweeper):
         )
 
     def sweep(self, arguments):
-        ax = self.setup_ax_client(arguments)
-        for batch_of_trials in yield_batch_of_trials_from_ax(ax, self.max_trials):
+        ax_client = self.setup_ax_client(arguments)
+        for batch_of_trials in yield_batch_of_trials_from_ax(
+            ax_client, self.max_trials
+        ):
             log.info("AxSweeper is launching {} jobs".format(len(batch_of_trials)))
 
             overrides = [x["overrides"] for x in batch_of_trials]
             rets = self.launcher.launch(overrides)
             for idx in range(len(batch_of_trials)):
                 val = rets[idx].return_value
-                ax.complete_trial(
+                ax_client.complete_trial(
                     trial_index=batch_of_trials[idx]["trial_index"], raw_data=val
                 )
             # predicted best value
-            best = ax.get_best_parameters()
-
-            metric = best[1][0][ax.objective_name]
+            best = ax_client.get_best_parameters()
+            metric = best[1][0][ax_client.objective_name]
             if self.early_stopper.should_stop(metric, best[0]):
                 break
 
