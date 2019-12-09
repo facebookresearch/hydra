@@ -2,7 +2,6 @@ hydra:
   # See https://ax.dev/
   ax:
     max_trials: 100
-
     early_stop:
       # Number of epochs without a significant improvement from
       # the currently known best parameters
@@ -35,3 +34,12 @@ hydra:
       max_trials: ${hydra.ax.max_trials}
       # set random seed here to make Ax results reproducible
       random_seed: null
+      ax_params:
+        x:
+          type: range
+          bounds: [-5.0, 10.0]
+          log_scale: false
+        y:
+          type: range
+          bounds: [-5.0, 5.0]
+          log_scale: false
