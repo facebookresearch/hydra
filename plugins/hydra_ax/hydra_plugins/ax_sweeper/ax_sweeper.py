@@ -184,6 +184,14 @@ class AxSweeper(Sweeper):
             except ValueError:
                 return False
 
+        def _is_float(string_inp):
+            """Method to check if the given string input can be parsed as a float"""
+            try:
+                float(string_inp)
+                return True
+            except ValueError:
+                return False
+
         parameters = []
         for arg in arguments:
             key, value = arg.split("=")
