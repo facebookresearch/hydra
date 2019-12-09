@@ -7,6 +7,7 @@ from ax.service.ax_client import AxClient
 from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin, Sweeper
+from omegaconf import OmegaConf
 
 log = logging.getLogger(__name__)
 
@@ -136,7 +137,13 @@ class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(
-        self, verbose_logging, experiment, early_stop, random_seed, max_trials
+        self,
+        verbose_logging,
+        experiment,
+        early_stop,
+        random_seed,
+        max_trials,
+        ax_params,
     ):
         self.launcher = None
         self.job_results = None
@@ -145,6 +152,7 @@ class AxSweeper(Sweeper):
         self.verbose_logging = verbose_logging
         self.random_seed = random_seed
         self.max_trials = max_trials
+        self.ax_params = ax_params
 
     def setup(self, config, config_loader, task_function):
         self.launcher = Plugins.instantiate_launcher(
@@ -153,6 +161,7 @@ class AxSweeper(Sweeper):
 
     def sweep(self, arguments):
         ax_client = self.setup_ax_client(arguments)
+
         for batch_of_trials in yield_batch_of_trials_from_ax(
             ax_client, self.max_trials
         ):
@@ -176,6 +185,20 @@ class AxSweeper(Sweeper):
     def setup_ax_client(self, arguments) -> AxClient:
         """Method to setup the Ax Client"""
 
+        parameters = []
+        for key, value in self.ax_params.items():
+            parameters.append(OmegaConf.to_container(value, resolve=True))
+            parameters[-1]["name"] = key
+        ax_client = AxClient(
+            verbose_logging=self.verbose_logging, random_seed=self.random_seed
+        )
+        ax_client.create_experiment(parameters=parameters, **self.experiment)
+
+        return ax_client
+
+    def parse_commandline_args(self, arguments):
+        """Method to parse the command line arguments and convert them into Ax parameters"""
+
         def _is_int(string_inp):
             """Method to check if the given string input can be parsed as integer"""
             try:
@@ -197,13 +220,19 @@ class AxSweeper(Sweeper):
             key, value = arg.split("=")
             if "," in value:
                 # This is a Choice Parameter.
-                value_choices = value.split(",")
+
+                value_choices = [x for x in value.split(",")]
+                if _is_float(value_choices[0]):
+                    parameter_type = ParameterType.FLOAT
+                    value_choices = [float(x) for x in value_choices]
+                else:
+                    parameter_type = ParameterType.STRING
                 parameters.append(
                     {
                         "name": key,
                         "type": "choice",
                         "values": value_choices,
-                        "parameter_type": ParameterType.STRING,
+                        "parameter_type": parameter_type,
                     }
                 )
             elif ":" in value:
