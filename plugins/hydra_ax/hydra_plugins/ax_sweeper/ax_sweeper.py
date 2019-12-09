@@ -77,7 +77,7 @@ def yield_batch_of_trials_from_ax(ax: AxClient, num_max_trials: int):
             yield batch_of_trials[:num_trials_left]
             num_trials_left -= len(batch_of_trials[:num_trials_left])
             if num_trials_left <= 0:
-                return
+                return None
 
 
 class EarlyStopper:
@@ -168,6 +168,7 @@ class AxSweeper(Sweeper):
             log.info("AxSweeper is launching {} jobs".format(len(batch_of_trials)))
 
             overrides = [x["overrides"] for x in batch_of_trials]
+
             rets = self.launcher.launch(overrides)
             for idx in range(len(batch_of_trials)):
                 val = rets[idx].return_value
@@ -189,6 +190,12 @@ class AxSweeper(Sweeper):
         for key, value in self.ax_params.items():
             parameters.append(OmegaConf.to_container(value, resolve=True))
             parameters[-1]["name"] = key
+        commandline_params = self.parse_commandline_args(arguments)
+        for cmd_param in commandline_params:
+            for param in parameters:
+                if param["name"] == cmd_param["name"]:
+                    for key, value in cmd_param.items():
+                        param[key] = value
         ax_client = AxClient(
             verbose_logging=self.verbose_logging, random_seed=self.random_seed
         )
@@ -265,8 +272,4 @@ class AxSweeper(Sweeper):
                     }
                 )
 
-        ax_client = AxClient(
-            verbose_logging=self.verbose_logging, random_seed=self.random_seed
-        )
-        ax_client.create_experiment(parameters=parameters, **self.experiment)
-        return ax_client
+        return parameters

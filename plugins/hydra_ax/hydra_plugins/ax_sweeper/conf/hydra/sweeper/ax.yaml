@@ -35,11 +35,11 @@ hydra:
       # set random seed here to make Ax results reproducible
       random_seed: null
       ax_params:
-        x:
+        banana.x:
           type: range
           bounds: [-5.0, 10.0]
           log_scale: false
-        y:
+        banana.y:
           type: range
           bounds: [-5.0, 5.0]
           log_scale: false
