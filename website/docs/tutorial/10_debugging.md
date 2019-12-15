@@ -6,14 +6,14 @@ sidebar_label: Debugging
 Hydra provides a few options to improve debuggability.
 
 ### Printing the configuration
-Print the config that would be used for a job without actually running it by adding '-c' or '--cfg' to your command line:
+Print the config that would be used for a job without actually running it by adding '-c job' or '--cfg job' to your command line:
 ```yaml
 # A normal run:
 $ python tutorial/objects_example/my_app.py
 MySQL connecting to localhost with user=root and password=1234
 
 # just show the config without running your function:
-$ python tutorial/objects_example/my_app.py -c
+$ python tutorial/objects_example/my_app.py -c job
 [2019-09-29 11:09:14,134] -
 db:
   class: tutorial.objects_example.my_app.MySQLConnection
