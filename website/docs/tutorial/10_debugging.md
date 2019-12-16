@@ -50,7 +50,7 @@ This includes:
 This is often used with `-c` to just see the config without running the application.
 Example output:
 ```text
-$ python my_app.py hydra.verbose=hydra -c
+$ python my_app.py hydra.verbose=hydra --cfg job
 [2019-09-29 13:35:46,780] - Installed Hydra Plugins
 [2019-09-29 13:35:46,780] - ***********************
 [2019-09-29 13:35:46,780] -     SearchPathPlugin:
@@ -72,4 +72,5 @@ $ python my_app.py hydra.verbose=hydra -c
 [2019-09-29 13:35:46,783] - Composition trace
 [2019-09-29 13:35:46,783] - *****************
 [2019-09-29 13:35:46,783] - | Provider | Search path     | File      |
+...
 ```
