@@ -207,7 +207,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
             hydra_cfg.hydra.launcher["class"]
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
-        assert task.job_ret.hydra_cfg.hydra.launcher.params or {} == {}
+        assert "params" not in task.job_ret.hydra_cfg.hydra.launcher
 
 
 def test_short_module_name(tmpdir):
