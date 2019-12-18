@@ -4,7 +4,7 @@ import sys
 from abc import ABCMeta
 from abc import abstractmethod
 import six
-from omegaconf import DictConfig, ListConfig, Config, MissingMandatoryValue
+from omegaconf import OmegaConf, MissingMandatoryValue
 
 from hydra.plugins import Plugin
 
@@ -71,14 +71,14 @@ class CompletionPlugin(Plugin):
     @staticmethod
     def _get_matches(config, word):
         def str_rep(in_key, in_value):
-            if isinstance(in_value, Config):
+            if OmegaConf.is_config(in_value):
                 return "{}.".format(in_key)
             else:
                 return "{}=".format(in_key)
 
         if config is None:
             return []
-        elif isinstance(config, Config):
+        elif OmegaConf.is_config(config):
             matches = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
@@ -87,7 +87,7 @@ class CompletionPlugin(Plugin):
                 except MissingMandatoryValue:
                     conf_node = ""
                 if conf_node is not None:
-                    if isinstance(conf_node, Config):
+                    if OmegaConf.is_config(conf_node):
                         key_matches = CompletionPlugin._get_matches(conf_node, "")
                     else:
                         # primitive
@@ -109,11 +109,11 @@ class CompletionPlugin(Plugin):
                         ["{}.{}".format(base_key, match) for match in key_matches]
                     )
                 else:
-                    if isinstance(config, DictConfig):
+                    if OmegaConf.is_dict(config):
                         for key, value in config.items(resolve=False):
                             if key.startswith(word):
                                 matches.append(str_rep(key, value))
-                    elif isinstance(config, ListConfig):
+                    elif OmegaConf.is_list(config):
                         for idx, value in enumerate(config):
                             if str(idx).startswith(word):
                                 matches.append(str_rep(idx, value))

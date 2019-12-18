@@ -96,11 +96,11 @@ class TestConfigLoader:
         assert cfg == {"foo": "ZZZ", "bar": 100}
 
         # Test that accessing a key that is not there will fail
-        with pytest.raises(KeyError):
+        with pytest.raises(AttributeError):
             cfg.not_here
 
-        # Test that bad overrides triggers the KeyError
-        with pytest.raises(KeyError):
+        # Test that bad overrides triggers the AttributeError
+        with pytest.raises(AttributeError):
             config_loader.load_configuration(
                 config_file="compose.yaml", overrides=["f00=ZZZ"], strict=True
             )

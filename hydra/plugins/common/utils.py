@@ -3,15 +3,15 @@
 import copy
 import logging
 import os
-import re
 import sys
 from os.path import dirname, splitext, basename
+
+import re
+import six
 from time import strftime, localtime
 
-import six
-from omegaconf import OmegaConf, DictConfig, ListConfig
-
 from hydra._internal.pathlib import Path
+from omegaconf import OmegaConf, ListConfig
 
 # pylint: disable=C0103
 log = logging.getLogger(__name__)
@@ -173,17 +173,16 @@ class JobRuntime:
 
 
 @six.add_metaclass(Singleton)
-class HydraConfig(DictConfig):
+class HydraConfig:
     def __init__(self):
-        super(HydraConfig, self).__init__(content={})
-        self.hydra = None
+        self.hydra = OmegaConf.create()
 
     def set_config(self, cfg):
         try:
-            OmegaConf.set_readonly(self, False)
+            OmegaConf.set_readonly(self.hydra, False)
             self.hydra = copy.deepcopy(cfg.hydra)
         finally:
-            OmegaConf.set_readonly(self, True)
+            OmegaConf.set_readonly(self.hydra, True)
 
 
 def split_config_path(config_path):
