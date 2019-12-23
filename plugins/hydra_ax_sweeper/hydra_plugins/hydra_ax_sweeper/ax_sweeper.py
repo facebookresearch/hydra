@@ -1,17 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Iterator, List, NewType, Tuple
+from typing import List, Tuple
 
 from ax import ParameterType
 from ax.service.ax_client import AxClient
+from omegaconf import OmegaConf
+
 from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin, Sweeper
-from omegaconf import OmegaConf
 
 log = logging.getLogger(__name__)
 
-Trial = NewType("Trial", List[str])
+Trial = List[str]
+BatchOfTrial = List[Trial]
 
 # TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
 # TODO: Support running multiple random seeds, aggregate mean and SEM
@@ -19,8 +21,8 @@ Trial = NewType("Trial", List[str])
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
     """
-    This plugin is allowing configuration files provided by the AxSweeper plugin to be discovered
-    and used once the AxSweeper plugin is installed
+    This plugin makes the config files (provided by the AxSweeper plugin) discoverable and
+    useable by the AxSweeper plugin.
     """
 
     def manipulate_search_path(self, search_path):
@@ -37,13 +39,18 @@ def map_params_to_arg_list(params: dict) -> List[str]:
     return arg_list
 
 
-def yield_batch_of_trials_from_parallelism(
-    ax: AxClient, parallelism: Tuple[int, int]
-) -> Iterator[List[Trial]]:
+def get_batches_of_trials_given_parallelism(
+    ax: AxClient, parallelism: Tuple[int, int], num_trials_left: int
+) -> List[BatchOfTrial]:
     """Produce a batch of trials that can be run in parallel, given the parallelism"""
     num_trials, num_parallel_trials = parallelism
     if num_trials == -1:
-        # Special case, return infinite number of batches
+        # This is a special case. We can use this parallelism as many times as we want.
+
+        if num_parallel_trials == -1:
+            # This is another special case where we can run as many trials in parallel as we want.
+            # Given that num_trials is also -1, we can run all the trials in parallel.
+            num_parallel_trials = num_trials_left
         while True:
             yield get_one_batch_of_trials(ax, num_parallel_trials)
     else:
@@ -54,10 +61,10 @@ def yield_batch_of_trials_from_parallelism(
             yield get_one_batch_of_trials(ax, num_parallel_trials)
 
 
-def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> List[Trial]:
+def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> BatchOfTrial:
     """Produce a batch of trials that can be run in parallel"""
     batch_of_trials = []
-    for trial_idx in range(num_parallel_trials):
+    for _ in range(num_parallel_trials):
         parameters, trial_index = ax.get_next_trial()
         batch_of_trials.append(
             {
@@ -68,16 +75,23 @@ def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> List[Tria
     return batch_of_trials
 
 
-def yield_batch_of_trials_from_ax(ax: AxClient, num_max_trials: int):
-    """Yield batches of trials that can be run in parallel"""
+def get_batches_of_trials_from_ax(
+    ax: AxClient, num_max_trials: int
+) -> List[BatchOfTrial]:
+    """Return a list of batch of trials that can be run in parallel"""
+    list_of_batch_of_trials = []
     recommended_max_parallelism = ax.get_recommended_max_parallelism()
+    print(recommended_max_parallelism)
     num_trials_left = num_max_trials
     for parallelism in recommended_max_parallelism:
-        for batch_of_trials in yield_batch_of_trials_from_parallelism(ax, parallelism):
-            yield batch_of_trials[:num_trials_left]
-            num_trials_left -= len(batch_of_trials[:num_trials_left])
+        for batch_of_trials in get_batches_of_trials_given_parallelism(
+            ax, parallelism, num_trials_left
+        ):
+            list_of_batch_of_trials.append(batch_of_trials[:num_trials_left])
+            num_trials_left -= len(list_of_batch_of_trials[-1])
             if num_trials_left <= 0:
-                return None
+                return list_of_batch_of_trials
+    return list_of_batch_of_trials
 
 
 class EarlyStopper:
@@ -162,7 +176,7 @@ class AxSweeper(Sweeper):
     def sweep(self, arguments):
         ax_client = self.setup_ax_client(arguments)
 
-        for batch_of_trials in yield_batch_of_trials_from_ax(
+        for batch_of_trials in get_batches_of_trials_from_ax(
             ax_client, self.max_trials
         ):
             log.info("AxSweeper is launching {} jobs".format(len(batch_of_trials)))
