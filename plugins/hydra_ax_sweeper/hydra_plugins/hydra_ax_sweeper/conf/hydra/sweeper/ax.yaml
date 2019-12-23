@@ -34,12 +34,4 @@ hydra:
       max_trials: ${hydra.ax.max_trials}
       # set random seed here to make Ax results reproducible
       random_seed: null
-      ax_params:
-        banana.x:
-          type: range
-          bounds: [-5.0, 10.0]
-          log_scale: false
-        banana.y:
-          type: range
-          bounds: [-5.0, 5.0]
-          log_scale: false
+      ax_params: ${hydra.ax.params}
