@@ -290,3 +290,64 @@ def test_specializing_config_example(task_runner):  # noqa: F811
             model=dict(num_layers=5, type="alexnet"),
         )
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+@pytest.mark.parametrize(
+    "args,expected",
+    [
+        (
+                [],
+                {
+                    "db": {
+                        "driver": "mysql",
+                        "pass": "secret",
+                        "user": "${env:USER}",
+                    },
+                    "ui": {
+                        "windows": {
+                            "create_db": True,
+                            "view": True
+                        }
+                    },
+                    "schema": {
+                        "database": "school",
+                        "tables": [
+                            {
+                                "name": "students",
+                                "fields": [
+                                    {
+                                        "name": "string",
+                                    },
+                                    {
+                                        "class": "int",
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "exams",
+                                "fields": [
+                                    {
+                                        "profession": "string"
+                                    },
+                                    {
+                                        "time": "data"
+                                    },
+                                    {
+                                        "class": "int"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+        ),
+    ]
+)
+def test_advanced_ad_hoc_composition(tmpdir, args, expected):
+    cmd = [
+        sys.executable,
+        "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
