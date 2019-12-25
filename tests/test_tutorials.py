@@ -296,52 +296,30 @@ def test_specializing_config_example(task_runner):  # noqa: F811
     "args,expected",
     [
         (
-                [],
-                {
-                    "db": {
-                        "driver": "mysql",
-                        "pass": "secret",
-                        "user": "${env:USER}",
-                    },
-                    "ui": {
-                        "windows": {
-                            "create_db": True,
-                            "view": True
-                        }
-                    },
-                    "schema": {
-                        "database": "school",
-                        "tables": [
-                            {
-                                "name": "students",
-                                "fields": [
-                                    {
-                                        "name": "string",
-                                    },
-                                    {
-                                        "class": "int",
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "exams",
-                                "fields": [
-                                    {
-                                        "profession": "string"
-                                    },
-                                    {
-                                        "time": "data"
-                                    },
-                                    {
-                                        "class": "int"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+            [],
+            {
+                "db": {"driver": "mysql", "pass": "secret", "user": "${env:USER}"},
+                "ui": {"windows": {"create_db": True, "view": True}},
+                "schema": {
+                    "database": "school",
+                    "tables": [
+                        {
+                            "name": "students",
+                            "fields": [{"name": "string"}, {"class": "int"}],
+                        },
+                        {
+                            "name": "exams",
+                            "fields": [
+                                {"profession": "string"},
+                                {"time": "data"},
+                                {"class": "int"},
+                            ],
+                        },
+                    ],
                 },
+            },
         ),
-    ]
+    ],
 )
 def test_advanced_ad_hoc_composition(tmpdir, args, expected):
     cmd = [
