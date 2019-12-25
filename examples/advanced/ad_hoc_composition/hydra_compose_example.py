@@ -6,7 +6,7 @@ if __name__ == "__main__":
     # initialize the Hydra subsystem.
     # This is needed for apps that cannot have a standard @hydra.main() entry point
     initialize(
-        task_name="my_app", search_path_dir="conf", strict=True,
+        config_dir="conf", strict=True,
     )
 
     cfg = compose("config.yaml", overrides=["db=mysql", "db.user=${env:USER}"])
