@@ -1,1 +1,0 @@
-Pin Hydra 0.11 to OmegaConf 1.4 to avoid breaking compatiblity when OmegaConf 2.0 is released
