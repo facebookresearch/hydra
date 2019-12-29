@@ -22,7 +22,7 @@ def create_config_loader():
     return ConfigLoader(
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/completion_test"], abspath=True
-        ),
+        )
     )
 
 

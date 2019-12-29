@@ -120,7 +120,7 @@ def task_runner():
                 overrides = copy.deepcopy(self.overrides)
                 overrides.append("hydra.run.dir={}".format(self.temp_dir))
                 self.job_ret = self.hydra.run(
-                    config_file=config_file, task_function=self, overrides=overrides,
+                    config_file=config_file, task_function=self, overrides=overrides
                 )
                 strip_node(self.job_ret.cfg, "hydra.run.dir")
                 return self
