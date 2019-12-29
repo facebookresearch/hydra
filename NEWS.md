@@ -1,3 +1,17 @@
+0.11.3 (2019-12-29)
+===================
+
+Bug Fixes
+---------
+
+- Pin Hydra 0.11 to OmegaConf 1.4 to avoid breaking compatibility when OmegaConf 2.0 is released ([#334](https://github.com/facebookresearch/hydra/issues/334))
+
+Improved Documentation
+----------------------
+
+- Document a simple Ray example ([#317](https://github.com/facebookresearch/hydra/issues/317))
+
+
 0.11.2 (2019-12-04)
 ===================
 
