@@ -9,5 +9,5 @@ repos:
       - id: flake8
         name: flake8
         language: system
-        entry: flake8 --config .circleci/flake8_py2.cfg
+        entry: flake8 --config .circleci/flake8_py3.cfg
         types: [python]

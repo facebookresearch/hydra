@@ -18,9 +18,9 @@ with open("README.md", "r") as fh:
             "License :: OSI Approved :: MIT License",
             # Python versions are used by the noxfile in Hydra to determine which
             # python versions to test this plugin with
-            "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
         install_requires=["hydra-core"],
