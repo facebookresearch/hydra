@@ -6,7 +6,7 @@ import nox
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["2.7", "3.5", "3.6", "3.7"]
+DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
 
 PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
@@ -29,18 +29,12 @@ def install_hydra(session, cmd):
 
 def install_pytest(session):
     session.install("pytest")
-    # if session.python == "2.7":
-    #     session.install("pytest")
-    # else:
-    #     session.install("pytest", "pytest_parallel")
+    # session.install("pytest", "pytest_parallel")
 
 
 def run_pytest(session, directory="."):
     session.run("pytest", directory, silent=False, *session.posargs)
-    # if session.python == "2.7":
-    #     session.run("pytest", silent=SILENT)
-    # else:
-    #     session.run("pytest", "--workers=30", silent=SILENT)
+    # session.run("pytest", "--workers=30", silent=SILENT)
 
 
 def plugin_names():
@@ -195,12 +189,11 @@ def coverage(session):
 
 
 @nox.session
-@nox.parametrize("py_ver", [2, 3])
-def lint(session, py_ver):
+def lint(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("flake8", "flake8-copyright")
     session.run("pip", "install", "-e", ".", silent=SILENT)
-    session.run("flake8", "--config", ".circleci/flake8_py{}.cfg".format(py_ver))
+    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
 
     session.install("black")
     # if this fails you need to format your code with black
@@ -210,7 +203,6 @@ def lint(session, py_ver):
 @nox.session(python=PYTHON_VERSIONS)
 def test_jupyter_notebook(session):
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
-    versions.remove("2.7")
     if session.python not in versions:
         session.skip(
             "Not testing Jupyter notebook on Python {}, supports [{}]".format(

@@ -2,19 +2,6 @@ version: 2.1
 
 jobs:
   # Mac
-  py27_mac:
-    macos:
-      xcode: "10.0.0"
-    steps:
-      - checkout
-      - run:
-          name: "Testing Hydra"
-          no_output_timeout: 60m
-          command: |
-            export NOX_PYTHON_VERSIONS=2.7
-            sudo pip3 install nox
-            python3 -m nox
-
   py36_mac:
     macos:
       xcode: "10.0.0"
@@ -31,9 +18,9 @@ jobs:
           no_output_timeout: 60m
           command: |
             export NOX_PYTHON_VERSIONS=3.6
-            ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
-            ~/miniconda3/bin/conda run -n hydra36 pip install nox
-            ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
+            ~/miniconda3/bin/conda create -n hydra python=3.6 -q -y
+            ~/miniconda3/bin/conda run -n hydra pip install nox
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
   py37_mac:
     macos:
@@ -51,22 +38,32 @@ jobs:
           no_output_timeout: 60m
           command: |
             export NOX_PYTHON_VERSIONS=3.7
-            ~/miniconda3/bin/conda create -n hydra36 python=3.6 -q -y
-            ~/miniconda3/bin/conda run -n hydra36 pip install nox
-            ~/miniconda3/bin/conda run -n hydra36 python3 -m nox
+            ~/miniconda3/bin/conda create -n hydra python=3.7 -q -y
+            ~/miniconda3/bin/conda run -n hydra pip install nox
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
-  # Linux
-  py27_linux:
-    docker:
-      # nox got requires python 3 but it can test 2.7
-      - image: circleci/python:3.6
+  py38_mac:
+    macos:
+      xcode: "10.0.0"
     steps:
       - checkout
-      - run: sudo apt-get install -y expect
-      - run: echo 'export NOX_PYTHON_VERSIONS=2.7' >> $BASH_ENV
-      - run: sudo pip install nox
-      - run: nox
+      - run:
+          name: "Installing Conda"
+          command: |
+            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            ~/miniconda3/bin/conda init bash
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 60m
+          command: |
+            export NOX_PYTHON_VERSIONS=3.8
+            ~/miniconda3/bin/conda create -n hydra python=3.8 -q -y
+            ~/miniconda3/bin/conda run -n hydra pip install nox
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
+
+  # Linux
   py36_linux:
     docker:
       - image: circleci/python:3.6
@@ -87,42 +84,17 @@ jobs:
       - run: sudo pip install nox
       - run: nox
 
-  # Misc
-  coverage:
+  py38_linux:
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:3.8
     steps:
       - checkout
+      - run: sudo apt-get install -y expect
+      - run: echo 'export NOX_PYTHON_VERSIONS=3.8' >> $BASH_ENV
       - run: sudo pip install nox
-      - run: nox -s coverage
+      - run: nox
 
-## TODO: fix windows_python27. this is currently not running the python2.7 tests on Windows
-#  # Windows
-#  py27_win:
-#    executor: win/default
-#    steps:
-#      - checkout
-#      - run:
-#          name: Installing Conda
-#          command: |
-#            choco install miniconda3 -y
-#            choco install python2 -y
-#            C:\tools\miniconda3\Scripts\conda.exe init powershell
-#      - run:
-#          name: Preparing conda environment
-#          command: |
-#            conda create -n hydra python=3.7 -q -y
-#            conda run -n hydra pip install nox
-#      - run:
-#          name: Testing Hydra
-#          # because nox is not able to find python 2.7
-#          command: |
-#            $env:NOX_PYTHON_VERSIONS=2.7
-#            $env:PYTHONIOENCODING="utf_8"
-#            conda activate hydra
-#            nox
-#            exit $LASTEXITCODE
-
+  # windows
   py36_win:
     executor: win/default
     steps:
@@ -130,7 +102,7 @@ jobs:
       - run:
           name: Installing Conda
           command: |
-            choco install miniconda3 -y --version=4.6.14
+            choco install miniconda3 -y
             C:\tools\miniconda3\Scripts\conda.exe init powershell
       - run:
           name: Preparing conda environment
@@ -153,7 +125,7 @@ jobs:
       - run:
           name: Installing Conda
           command: |
-            choco install miniconda3 -y --version=4.6.14
+            choco install miniconda3 -y
             C:\tools\miniconda3\Scripts\conda.exe init powershell
       - run:
           name: Preparing conda environment
@@ -169,7 +141,38 @@ jobs:
             nox
             exit $LASTEXITCODE
 
+# TODO: test re-enable in a few months
+#  py38_win:
+#    executor: win/default
+#    steps:
+#      - checkout
+#      - run:
+#          name: Installing Conda
+#          command: |
+#            choco install miniconda3 -y
+#            C:\tools\miniconda3\Scripts\conda.exe init powershell
+#      - run:
+#          name: Preparing conda environment
+#          command: |
+#            conda create -n hydra python=3.8 -q -y
+#            conda run -n hydra pip install nox
+#      - run:
+#          name: Testing Hydra
+#          command: |
+#            $env:NOX_PYTHON_VERSIONS=3.8
+#            $env:PYTHONIOENCODING="utf_8"
+#            conda activate hydra
+#            nox
+#            exit $LASTEXITCODE
   # Misc
+  coverage:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: sudo pip install nox
+      - run: nox -s coverage
+
   deploy-website:
     docker:
       - image: circleci/node:12
@@ -198,15 +201,18 @@ workflows:
   version: 2
   build:
     jobs:
-      - py27_linux
+      # linux
       - py36_linux
       - py37_linux
-      - py27_mac
+      - py38_linux
+      # mac
       - py36_mac
       - py37_mac
-#      - py27_win
+      - py38_mac
+      # windows
       - py36_win
       - py37_win
+      # - py38_win
       - deploy-website:
           filters:
             branches:
