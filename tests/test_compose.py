@@ -39,9 +39,7 @@ def test_initialize_with_config_dir():
         GlobalHydra().clear()
 
 
-@pytest.mark.parametrize(
-    "config_dir", ["../hydra/test_utils/configs"],
-)
+@pytest.mark.parametrize("config_dir", ["../hydra/test_utils/configs"])
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
     [
@@ -130,13 +128,13 @@ class TestCompose:
 
 
 @pytest.mark.parametrize(
-    "config_dir", ["../hydra/test_utils/configs/cloud_infra_example"],
+    "config_dir", ["../hydra/test_utils/configs/cloud_infra_example"]
 )
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
     [
         # empty
-        (None, [], {},),
+        (None, [], {}),
         (
             None,
             ["db=sqlite"],

@@ -229,7 +229,7 @@ def test_default_removal(config_file, overrides):
 
 def test_defaults_not_list_exception():
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
     with pytest.raises(ValueError):
         config_loader.load_configuration(
@@ -256,7 +256,7 @@ def test_resource_exists(module_name, resource_name):
 
 def test_override_hydra_config_value_from_config_file():
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
 
     cfg = config_loader.load_configuration(
@@ -267,7 +267,7 @@ def test_override_hydra_config_value_from_config_file():
 
 def test_override_hydra_config_group_from_config_file():
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
 
     config_loader.load_configuration(
@@ -289,7 +289,7 @@ def test_list_groups():
     config_loader = ConfigLoader(
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/cloud_infra_example"]
-        ),
+        )
     )
     groups = config_loader.list_groups("")
     assert sorted(groups) == [
@@ -313,7 +313,7 @@ def test_list_groups():
 
 def test_non_config_group_default():
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
     config_loader.load_configuration(
         config_file="non_config_group_default.yaml", strict=False
@@ -338,7 +338,7 @@ def test_mixed_composition_order():
     items) is correct
     """
     config_loader = ConfigLoader(
-        config_search_path=create_search_path(["hydra/test_utils/configs"]),
+        config_search_path=create_search_path(["hydra/test_utils/configs"])
     )
     config_loader.load_configuration(config_file="mixed_compose.yaml", strict=False)
     assert config_loader.get_load_history() == [

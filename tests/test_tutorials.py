@@ -318,7 +318,7 @@ def test_specializing_config_example(task_runner):  # noqa: F811
                     ],
                 },
             },
-        ),
+        )
     ],
 )
 def test_advanced_ad_hoc_composition(tmpdir, args, expected):
