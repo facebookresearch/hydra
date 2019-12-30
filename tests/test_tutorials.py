@@ -1,15 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import sys
-import pytest
 import re
 import subprocess
+import sys
+
+import pytest
 from omegaconf import OmegaConf
 
-from hydra.test_utils.test_utils import chdir_hydra_root, verify_dir_outputs
-
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import task_runner, sweep_runner  # noqa: F401
-from hydra.test_utils.test_utils import does_not_raise
+from hydra.test_utils.test_utils import (  # noqa: F401
+    chdir_hydra_root,
+    does_not_raise,
+    sweep_runner,
+    task_runner,
+    verify_dir_outputs,
+)
 
 chdir_hydra_root()
 

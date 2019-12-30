@@ -1,11 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import pytest
 
 from hydra._internal.plugins import Plugins
 from hydra.plugins import Launcher
-from hydra.test_utils.launcher_common_tests import IntegrationTestSuite
-from hydra.test_utils.launcher_common_tests import LauncherTestSuite
+from hydra.test_utils.launcher_common_tests import (
+    IntegrationTestSuite,
+    LauncherTestSuite,
+)
 
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences

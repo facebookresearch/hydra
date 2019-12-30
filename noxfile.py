@@ -191,13 +191,21 @@ def coverage(session):
 @nox.session
 def lint(session):
     session.install("--upgrade", "setuptools", "pip")
-    session.install("flake8", "flake8-copyright")
+    # needed for isort to properly identify pytest as third party
+    session.install("pytest")
+    session.install(
+        "flake8",
+        "flake8-copyright",
+        "git+git://github.com/timothycrosley/isort.git@c54b3dd4620f9b3e7ac127c583ecb029fb90f1b7",
+    )
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
 
     session.install("black")
     # if this fails you need to format your code with black
     session.run("black", "--check", ".")
+
+    session.run("isort", "--check", ".")
 
 
 @nox.session(python=PYTHON_VERSIONS)

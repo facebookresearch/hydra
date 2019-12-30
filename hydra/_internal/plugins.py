@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import inspect
 import pkgutil
+
 from ..plugins import Plugin
 
 
@@ -99,6 +100,7 @@ class Plugins:
         top_level = []
         try:
             import hydra_plugins
+
         except ImportError:
             hydra_plugins = None
             # If no plugins are installed the hydra_plugins package does not exist.

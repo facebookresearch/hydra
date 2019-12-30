@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import time
+
+import ray
+
 import hydra
 from hydra.experimental import compose
-import ray
-import time
 
 
 @ray.remote

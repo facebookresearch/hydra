@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.experimental import compose, initialize
 
-
 if __name__ == "__main__":
     # initialize the Hydra subsystem.
     # This is needed for apps that cannot have a standard @hydra.main() entry point

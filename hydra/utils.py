@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
-
-from omegaconf import OmegaConf, DictConfig
-
 from pathlib import Path
+
+from omegaconf import DictConfig, OmegaConf
+
 from hydra.plugins.common.utils import HydraConfig
 
 log = logging.getLogger(__name__)

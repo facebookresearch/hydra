@@ -11,3 +11,9 @@ repos:
         language: system
         entry: flake8 --config .circleci/flake8_py3.cfg
         types: [python]
+
+  # isort to ensure imports remains sorted
+  - repo: https://github.com/timothycrosley/isort
+    rev: 'c54b3dd'
+    hooks:
+      - id: isort

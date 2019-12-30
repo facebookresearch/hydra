@@ -2,12 +2,12 @@
 import distutils.spawn
 import os
 import subprocess
+from pathlib import Path
 
 import pytest
 
 from hydra._internal.config_loader import ConfigLoader
 from hydra._internal.core_plugins import BashCompletion
-from pathlib import Path
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 

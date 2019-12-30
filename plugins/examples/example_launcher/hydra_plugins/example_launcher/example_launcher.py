@@ -7,11 +7,11 @@ from omegaconf import open_dict
 from hydra._internal.config_search_path import ConfigSearchPath
 from hydra.plugins import Launcher, SearchPathPlugin
 from hydra.plugins.common.utils import (
+    HydraConfig,
     configure_log,
     filter_overrides,
     run_job,
     setup_globals,
-    HydraConfig,
 )
 
 log = logging.getLogger(__name__)

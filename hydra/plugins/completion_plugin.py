@@ -1,11 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-from abc import ABCMeta
-from abc import abstractmethod
-from omegaconf import OmegaConf, MissingMandatoryValue
+from abc import ABCMeta, abstractmethod
 
-from hydra.plugins import Plugin
+from omegaconf import MissingMandatoryValue, OmegaConf
+
+from hydra.plugins.plugin import Plugin
 
 
 class CompletionPlugin(Plugin, metaclass=ABCMeta):

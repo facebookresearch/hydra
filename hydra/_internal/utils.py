@@ -3,14 +3,14 @@ import argparse
 import inspect
 import os
 import sys
-from os.path import realpath, dirname, join, normpath
+from os.path import dirname, join, normpath, realpath
 
+from ..errors import MissingConfigException
+from ..plugins import SearchPathPlugin
+from ..plugins.common.utils import get_valid_filename, split_config_path
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
-from ..errors import MissingConfigException
-from ..plugins import SearchPathPlugin
-from ..plugins.common.utils import split_config_path, get_valid_filename
 
 
 def detect_calling_file_or_module(stack_depth):

@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra.plugins.completion_plugin import CompletionPlugin
 import logging
-import sys
 import os
 import re
+import sys
+
+from hydra.plugins.completion_plugin import CompletionPlugin
 
 log = logging.getLogger(__name__)
 

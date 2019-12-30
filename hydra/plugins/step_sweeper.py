@@ -2,10 +2,10 @@
 """
 A sweeper that operates on generational batches of jobs
 """
-
-from abc import abstractmethod
-from . import Sweeper
 import logging
+from abc import abstractmethod
+
+from .sweeper import Sweeper
 
 log = logging.getLogger(__name__)
 

@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import pkg_resources
 import pytest
 from omegaconf import OmegaConf

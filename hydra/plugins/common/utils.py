@@ -1,16 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import copy
 import logging
 import os
-import sys
-from os.path import dirname, splitext, basename
-
 import re
-from time import strftime, localtime
-
+import sys
+from os.path import basename, dirname, splitext
 from pathlib import Path
-from omegaconf import OmegaConf, ListConfig
+from time import localtime, strftime
+
+from omegaconf import ListConfig, OmegaConf
 
 log = logging.getLogger(__name__)
 

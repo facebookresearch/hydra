@@ -1,7 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
 import sys
-from ._internal.utils import run_hydra, get_args_parser
+
+from ._internal.utils import get_args_parser, run_hydra
 
 
 def main(config_path="", strict=None):
