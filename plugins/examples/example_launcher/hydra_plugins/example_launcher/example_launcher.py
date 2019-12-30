@@ -1,12 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+from pathlib import Path
 
 from omegaconf import open_dict
 
 from hydra._internal.config_search_path import ConfigSearchPath
-from hydra._internal.pathlib import Path
-from hydra.plugins import Launcher
-from hydra.plugins import SearchPathPlugin
+from hydra.plugins import Launcher, SearchPathPlugin
 from hydra.plugins.common.utils import (
     configure_log,
     filter_overrides,

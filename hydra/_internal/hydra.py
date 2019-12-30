@@ -5,7 +5,6 @@ import os
 import string
 from collections import defaultdict
 
-import six
 from omegaconf import open_dict, OmegaConf
 
 from .config_loader import ConfigLoader
@@ -25,8 +24,7 @@ from ..plugins.common.utils import (
 log = None
 
 
-@six.add_metaclass(Singleton)
-class GlobalHydra:
+class GlobalHydra(metaclass=Singleton):
     def __init__(self):
         self.hydra = None
 

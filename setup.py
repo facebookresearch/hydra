@@ -103,11 +103,7 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        install_requires=[
-            "omegaconf>=2.0.0rc1",
-            'pathlib2>=2.2.0;python_version<"3.0"',
-            "six",  # temporary dep until python 2.7 is removed
-        ],
+        install_requires=["omegaconf>=2.0.0rc1"],
         # Install development dependencies with
         # pip install -e .[dev]
         extras_require={

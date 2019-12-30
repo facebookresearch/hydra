@@ -13,7 +13,6 @@ import tempfile
 from contextlib import contextmanager
 
 import pytest
-import six
 from omegaconf import OmegaConf
 import hydra.experimental
 
@@ -288,7 +287,7 @@ if __name__ == "__main__":
         PRINTS=print_code, CONFIG_PATH=config_path, OUTPUT_FILE=output_file
     )
     task_file = tmpdir / filename
-    task_file.write_text(six.u(str(code)), encoding="utf-8")
+    task_file.write_text(str(code), encoding="utf-8")
     cmd = [sys.executable, str(task_file)]
     cmd.extend(overrides)
     orig_dir = os.getcwd()

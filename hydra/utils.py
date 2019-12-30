@@ -3,7 +3,7 @@ import logging.config
 
 from omegaconf import OmegaConf, DictConfig
 
-from hydra._internal.pathlib import Path
+from pathlib import Path
 from hydra.plugins.common.utils import HydraConfig
 
 log = logging.getLogger(__name__)

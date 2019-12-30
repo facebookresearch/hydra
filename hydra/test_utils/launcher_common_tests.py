@@ -7,7 +7,7 @@ import pytest
 from omegaconf import OmegaConf
 from hydra.test_utils.test_utils import integration_test
 from hydra.test_utils.test_utils import verify_dir_outputs
-from hydra._internal.pathlib import Path
+from pathlib import Path
 
 
 class LauncherTestSuite:

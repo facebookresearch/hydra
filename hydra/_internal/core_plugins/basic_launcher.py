@@ -3,7 +3,7 @@ import logging
 
 from omegaconf import open_dict
 
-from hydra._internal.pathlib import Path
+from pathlib import Path
 from hydra.plugins.common.utils import (
     configure_log,
     filter_overrides,

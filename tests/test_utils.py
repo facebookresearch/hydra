@@ -3,7 +3,7 @@ import pytest
 from hydra import utils
 from omegaconf import OmegaConf
 from hydra.plugins.common.utils import HydraConfig
-from hydra._internal.pathlib import Path
+from pathlib import Path
 
 
 def some_method():
