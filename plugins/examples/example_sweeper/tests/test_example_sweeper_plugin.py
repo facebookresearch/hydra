@@ -1,12 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
-from hydra_plugins.example_sweeper import ExampleSweeper
-
 from hydra._internal.plugins import Plugins
 from hydra.plugins import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
+from hydra_plugins.example_sweeper import ExampleSweeper
 
 
 def test_discovery():

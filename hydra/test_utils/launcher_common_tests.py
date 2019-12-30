@@ -3,11 +3,12 @@
 Common test functions testing launchers
 """
 import importlib
+from pathlib import Path
+
 import pytest
 from omegaconf import OmegaConf
-from hydra.test_utils.test_utils import integration_test
-from hydra.test_utils.test_utils import verify_dir_outputs
-from pathlib import Path
+
+from hydra.test_utils.test_utils import integration_test, verify_dir_outputs
 
 
 class LauncherTestSuite:

@@ -5,21 +5,21 @@ import os
 import string
 from collections import defaultdict
 
-from omegaconf import open_dict, OmegaConf
+from omegaconf import OmegaConf, open_dict
 
+from ..plugins import CompletionPlugin, Launcher, SearchPathPlugin, Sweeper
+from ..plugins.common.utils import (
+    HydraConfig,
+    JobRuntime,
+    Singleton,
+    configure_log,
+    run_job,
+    setup_globals,
+)
 from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from .utils import create_automatic_config_search_path, detect_task_name
-from ..plugins import SearchPathPlugin, Launcher, Sweeper, CompletionPlugin
-from ..plugins.common.utils import Singleton
-from ..plugins.common.utils import (
-    configure_log,
-    run_job,
-    JobRuntime,
-    HydraConfig,
-    setup_globals,
-)
 
 log = None
 

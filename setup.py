@@ -4,9 +4,9 @@ import distutils
 import os
 import re
 import shutil
-from os.path import join, exists, isdir
+from os.path import exists, isdir, join
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -112,6 +112,7 @@ with open("README.md", "r") as fh:
                 "coverage",
                 "flake8",
                 "flake8-copyright",
+                "isort@git+git://github.com/timothycrosley/isort.git@c54b3dd#egg=isort",
                 "nox",
                 "pre-commit",
                 "pytest",

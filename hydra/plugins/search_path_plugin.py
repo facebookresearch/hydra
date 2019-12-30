@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from .plugin import Plugin
 from abc import abstractmethod
+
+from .plugin import Plugin
 
 
 class SearchPathPlugin(Plugin):

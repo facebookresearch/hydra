@@ -2,8 +2,8 @@
 import pytest
 
 from hydra.test_utils.launcher_common_tests import (
-    LauncherTestSuite,
     IntegrationTestSuite,
+    LauncherTestSuite,
 )
 
 # noinspection PyUnresolvedReferences

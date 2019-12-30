@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 from hydra._internal.hydra import GlobalHydra
 
 # noinspection PyUnresolvedReferences

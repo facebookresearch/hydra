@@ -2,13 +2,12 @@
 import pytest
 
 import hydra.experimental
-from hydra._internal.hydra import GlobalHydra
 from hydra._internal.config_search_path import SearchPath
-from hydra.test_utils.test_utils import chdir_hydra_root
-from hydra.test_utils.test_utils import does_not_raise
+from hydra._internal.hydra import GlobalHydra
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import hydra_global_context  # noqa: F401
+from hydra.test_utils.test_utils import chdir_hydra_root, does_not_raise
 
 chdir_hydra_root()
 

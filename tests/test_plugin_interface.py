@@ -1,7 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
+
 from hydra._internal.plugins import Plugins
-from hydra.plugins import Plugin, Launcher, Sweeper, SearchPathPlugin
+from hydra.plugins import Launcher, Plugin, SearchPathPlugin, Sweeper
 from hydra.utils import get_class
 
 # This only test core plugins.

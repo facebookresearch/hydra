@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
-from hydra._internal.hydra import Hydra, GlobalHydra
+from hydra._internal.hydra import GlobalHydra, Hydra
 from hydra._internal.utils import detect_calling_file_or_module
 
 

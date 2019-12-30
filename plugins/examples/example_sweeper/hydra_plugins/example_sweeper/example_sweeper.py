@@ -3,8 +3,6 @@ import itertools
 import logging
 
 from hydra._internal.config_search_path import ConfigSearchPath
-
-# TODO: Move Plugins class outside of hydra._internal
 from hydra._internal.plugins import Plugins
 from hydra.plugins import SearchPathPlugin, Sweeper
 

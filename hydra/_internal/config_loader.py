@@ -2,21 +2,20 @@
 """
 Configuration loader
 """
-
 import copy
 import os
 
-from omegaconf import OmegaConf, DictConfig, ListConfig, open_dict
+from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from pkg_resources import (
-    resource_stream,
     resource_exists,
-    resource_listdir,
     resource_isdir,
+    resource_listdir,
+    resource_stream,
 )
 
-from .config_search_path import ConfigSearchPath
 from ..errors import MissingConfigException
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
+from .config_search_path import ConfigSearchPath
 
 
 class ConfigLoader:

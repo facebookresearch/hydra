@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
-from hydra import utils
-from omegaconf import OmegaConf
-from hydra.plugins.common.utils import HydraConfig
 from pathlib import Path
+
+import pytest
+from omegaconf import OmegaConf
+
+from hydra import utils
+from hydra.plugins.common.utils import HydraConfig
 
 
 def some_method():

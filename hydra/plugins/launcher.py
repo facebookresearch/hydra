@@ -3,6 +3,7 @@
 Launcher plugin interface
 """
 from abc import abstractmethod
+
 from .plugin import Plugin
 
 

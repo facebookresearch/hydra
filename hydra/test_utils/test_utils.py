@@ -14,10 +14,10 @@ from contextlib import contextmanager
 
 import pytest
 from omegaconf import OmegaConf
-import hydra.experimental
 
+import hydra.experimental
 from hydra._internal.config_search_path import ConfigSearchPath
-from hydra._internal.hydra import Hydra, GlobalHydra
+from hydra._internal.hydra import GlobalHydra, Hydra
 from hydra.plugins.common.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.
