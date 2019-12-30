@@ -7,13 +7,11 @@ import sys
 from os.path import dirname, splitext, basename
 
 import re
-import six
 from time import strftime, localtime
 
-from hydra._internal.pathlib import Path
+from pathlib import Path
 from omegaconf import OmegaConf, ListConfig
 
-# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 
@@ -100,8 +98,7 @@ def run_job(config, task_function, job_dir_key, job_subdir_key):
 
         configure_log(config.hydra.job_logging, config.hydra.verbose)
 
-        # TODO: update this after https://github.com/omry/omegaconf/issues/42 is resolved
-        hydra_cfg = OmegaConf.create({"hydra": config["hydra"]})
+        hydra_cfg = OmegaConf.masked_copy(config, "hydra")
 
         _save_config(task_cfg, "config.yaml", hydra_output)
         _save_config(hydra_cfg, "hydra.yaml", hydra_output)
@@ -155,8 +152,7 @@ class Singleton(type):
         Singleton._instances = instances
 
 
-@six.add_metaclass(Singleton)
-class JobRuntime:
+class JobRuntime(metaclass=Singleton):
     def __init__(self):
         self.conf = OmegaConf.create()
         self.set("name", "UNKNOWN_NAME")
@@ -172,8 +168,7 @@ class JobRuntime:
         self.conf[key] = value
 
 
-@six.add_metaclass(Singleton)
-class HydraConfig:
+class HydraConfig(metaclass=Singleton):
     def __init__(self):
         self.hydra = OmegaConf.create()
 

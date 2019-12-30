@@ -3,14 +3,12 @@ import os
 import sys
 from abc import ABCMeta
 from abc import abstractmethod
-import six
 from omegaconf import OmegaConf, MissingMandatoryValue
 
 from hydra.plugins import Plugin
 
 
-@six.add_metaclass(ABCMeta)
-class CompletionPlugin(Plugin):
+class CompletionPlugin(Plugin, metaclass=ABCMeta):
     def __init__(self, config_loader):
         self.config_loader = config_loader
 
@@ -31,22 +29,21 @@ class CompletionPlugin(Plugin):
         raise NotImplementedError()
 
     @staticmethod
-    def _get_filename(fname):
-        last = fname.rfind("=")
+    def _get_filename(filename):
+        last = filename.rfind("=")
         if last != -1:
-            key_eq = fname[0 : last + 1]
-            fname = fname[last + 1 :]
+            key_eq = filename[0 : last + 1]
+            filename = filename[last + 1 :]
             prefixes = [".", "/", "\\", "./", ".\\"]
             if sys.platform.startswith("win"):
                 for drive in range(ord("a"), ord("z")):
                     prefixes.append("{}:".format(chr(drive)))
 
-            if not fname:
+            if not filename:
                 return None, None
-            lowerfilename = fname.lower()
             for prefix in prefixes:
-                if lowerfilename.startswith(prefix):
-                    return key_eq, fname
+                if filename.lower().startswith(prefix):
+                    return key_eq, filename
         return None, None
 
     @staticmethod
@@ -196,8 +193,7 @@ class CompletionPlugin(Plugin):
         return sorted(result)
 
 
-@six.add_metaclass(ABCMeta)
-class DefaultCompletionPlugin(CompletionPlugin):
+class DefaultCompletionPlugin(CompletionPlugin, metaclass=ABCMeta):
     """
     A concrete instance of CompletionPlugin that is used for testing.
     """
