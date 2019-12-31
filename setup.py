@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# type: ignore
 import codecs
-import distutils
 import os
 import re
 import shutil
+from distutils import cmd
 from os.path import exists, isdir, join
+from typing import Any, List
 
 from setuptools import find_packages, setup
 
@@ -24,13 +26,13 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-class CleanCommand(distutils.cmd.Command):
+class CleanCommand(cmd.Command):
     """
     Our custom command to clean out junk files.
     """
 
     description = "Cleans out junk files we don't want in the repo"
-    user_options = []
+    user_options: List[Any] = []
 
     def initialize_options(self):
         pass
@@ -103,7 +105,7 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        install_requires=["omegaconf>=2.0.0rc1"],
+        install_requires=["omegaconf>=2.0.0rc", "typing_extensions"],
         # Install development dependencies with
         # pip install -e .[dev]
         extras_require={
@@ -113,6 +115,7 @@ with open("README.md", "r") as fh:
                 "flake8",
                 "flake8-copyright",
                 "isort@git+git://github.com/timothycrosley/isort.git@c54b3dd#egg=isort",
+                "mypy",
                 "nox",
                 "pre-commit",
                 "pytest",

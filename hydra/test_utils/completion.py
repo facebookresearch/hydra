@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import DictConfig
+
 import hydra
 
 
 @hydra.main(config_path="configs/completion_test/config.yaml")
-def run_cli(cfg):
+def run_cli(cfg: DictConfig) -> None:
     print(cfg.pretty())
 
 

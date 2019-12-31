@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import Any, List
+
 import pytest
 
 import hydra.experimental
@@ -6,13 +8,17 @@ from hydra._internal.config_search_path import SearchPath
 from hydra._internal.hydra import GlobalHydra
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import hydra_global_context  # noqa: F401
-from hydra.test_utils.test_utils import chdir_hydra_root, does_not_raise
+from hydra.test_utils.test_utils import (  # noqa: F401
+    TGlobalHydraContext,
+    chdir_hydra_root,
+    does_not_raise,
+    hydra_global_context,
+)
 
 chdir_hydra_root()
 
 
-def test_initialize():
+def test_initialize() -> None:
     try:
         assert not GlobalHydra().is_initialized()
         hydra.experimental.initialize(config_dir=None, strict=True)
@@ -21,7 +27,7 @@ def test_initialize():
         GlobalHydra().clear()
 
 
-def test_initialize_with_config_dir():
+def test_initialize_with_config_dir() -> None:
     try:
         assert not GlobalHydra().is_initialized()
         hydra.experimental.initialize(
@@ -29,7 +35,9 @@ def test_initialize_with_config_dir():
         )
         assert GlobalHydra().is_initialized()
 
-        config_search_path = GlobalHydra().hydra.config_loader.config_search_path
+        config_search_path = (
+            GlobalHydra.instance().hydra.config_loader.config_search_path
+        )
         idx = config_search_path.find_first_match(
             SearchPath(provider="main", search_path=None)
         )
@@ -51,36 +59,36 @@ def test_initialize_with_config_dir():
 class TestCompose:
     def test_compose_decorator(
         self,
-        hydra_global_context,  # noqa: F811
-        config_dir,
-        config_file,
-        overrides,
-        expected,
-    ):
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_dir: str,
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         with hydra_global_context(config_dir=config_dir):
             ret = hydra.experimental.compose(config_file, overrides)
             assert ret == expected
 
     def test_compose_config(
         self,
-        config_dir,
-        hydra_global_context,  # noqa: F811
-        config_file,
-        overrides,
-        expected,
-    ):
+        config_dir: str,
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         with hydra_global_context(config_dir=config_dir):
             cfg = hydra.experimental.compose(config_file, overrides)
             assert cfg == expected
 
     def test_strict_failure_global_strict(
         self,
-        hydra_global_context,  # noqa: F811
-        config_dir,
-        config_file,
-        overrides,
-        expected,
-    ):
+        config_dir: str,
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         # default strict True, call is unspecified
         overrides.append("fooooooooo=bar")
         with hydra_global_context(config_dir=config_dir, strict=True):
@@ -89,12 +97,12 @@ class TestCompose:
 
     def test_strict_failure_call_is_strict(
         self,
-        hydra_global_context,  # noqa: F811
-        config_dir,
-        config_file,
-        overrides,
-        expected,
-    ):
+        config_dir: str,
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         # default strict false, but call is strict
         with hydra_global_context(config_dir=config_dir, strict=False):
             with pytest.raises(AttributeError):
@@ -112,12 +120,12 @@ class TestCompose:
 
     def test_strict_failure_disabled_on_call(
         self,
-        hydra_global_context,  # noqa: F811
-        config_dir,
-        config_file,
-        overrides,
-        expected,
-    ):
+        config_dir: str,
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
             with does_not_raise():
@@ -200,12 +208,12 @@ class TestCompose:
 class TestComposeCloudInfraExample:
     def test_compose(
         self,
-        hydra_global_context,  # noqa: F811
-        config_dir,
-        config_file,
-        overrides,
-        expected,
-    ):
+        config_dir: str,
+        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        config_file: str,
+        overrides: List[str],
+        expected: Any,
+    ) -> None:
         with hydra_global_context(config_dir=config_dir):
             ret = hydra.experimental.compose(config_file, overrides)
             assert ret == expected

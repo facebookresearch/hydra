@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import List, Type
+
 import pytest
 
 from hydra._internal.plugins import Plugins
@@ -9,10 +11,10 @@ from hydra.utils import get_class
 # Individual plugins are responsible to test that they are discoverable.
 launchers = ["hydra._internal.core_plugins.basic_launcher.BasicLauncher"]
 sweepers = ["hydra._internal.core_plugins.basic_sweeper.BasicSweeper"]
-search_path_plugins = []
+search_path_plugins: List[str] = []
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "plugin_type, expected",
     [
         (Launcher, launchers),
@@ -21,7 +23,7 @@ search_path_plugins = []
         (Plugin, launchers + sweepers + search_path_plugins),
     ],
 )
-def test_discover(plugin_type, expected):
+def test_discover(plugin_type: Type[Plugin], expected: List[str]) -> None:
     plugins = Plugins.discover(plugin_type)
     expected_classes = [get_class(c) for c in sorted(expected)]
     for ex in expected_classes:

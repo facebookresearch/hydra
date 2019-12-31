@@ -14,7 +14,7 @@ from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 from hydra_plugins.example_launcher import ExampleLauncher
 
 
-def test_discovery():
+def test_discovery() -> None:
     """
     Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     :return:

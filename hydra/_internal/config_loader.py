@@ -4,6 +4,8 @@ Configuration loader
 """
 import copy
 import os
+from dataclasses import dataclass
+from typing import Any, List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from pkg_resources import (
@@ -15,7 +17,7 @@ from pkg_resources import (
 
 from ..errors import MissingConfigException
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
-from .config_search_path import ConfigSearchPath
+from .config_search_path import ConfigSearchPath, SearchPath
 
 
 class ConfigLoader:
@@ -23,13 +25,22 @@ class ConfigLoader:
     Configuration loader
     """
 
-    def __init__(self, config_search_path, default_strict=None):
+    def __init__(
+        self,
+        config_search_path: ConfigSearchPath,
+        default_strict: Optional[bool] = None,
+    ) -> None:
         assert isinstance(config_search_path, ConfigSearchPath)
         self.config_search_path = config_search_path
         self.default_strict = default_strict
-        self.all_config_checked = []
+        self.all_config_checked: List["LoadTrace"] = []
 
-    def load_configuration(self, config_file, overrides=[], strict=None):
+    def load_configuration(
+        self,
+        config_file: Optional[str],
+        overrides: List[str],
+        strict: Optional[bool] = None,
+    ) -> DictConfig:
         assert config_file is None or isinstance(config_file, str)
         assert strict is None or isinstance(strict, bool)
         assert isinstance(overrides, list)
@@ -59,11 +70,12 @@ class ConfigLoader:
         # Load job config
         job_cfg = self._create_cfg(cfg_filename=config_file, record_load=False)
 
-        defaults = hydra_cfg.defaults or []
+        defaults = ConfigLoader._get_defaults(hydra_cfg)
         if config_file is not None:
             defaults.append(config_file)
         split_at = len(defaults)
-        ConfigLoader._merge_default_lists(defaults, job_cfg.defaults or [])
+        job_defaults = ConfigLoader._get_defaults(job_cfg)
+        ConfigLoader._merge_default_lists(defaults, job_defaults)
         consumed = self._apply_defaults_overrides(overrides, defaults)
 
         consumed_free_job_defaults = self._apply_free_defaults(defaults, overrides)
@@ -82,7 +94,7 @@ class ConfigLoader:
 
         remaining = consumed + consumed_free_job_defaults + remaining_overrides
 
-        def is_hydra(x):
+        def is_hydra(x: str) -> bool:
             return x.startswith("hydra.") or x.startswith("hydra/")
 
         cfg.hydra.overrides.task = [x for x in remaining if not is_hydra(x)]
@@ -101,12 +113,13 @@ class ConfigLoader:
 
         return cfg
 
-    def load_sweep_config(self, master_config, sweep_overrides):
+    def load_sweep_config(
+        self, master_config: DictConfig, sweep_overrides: List[str]
+    ) -> DictConfig:
         # Recreate the config for this sweep instance with the appropriate overrides
-        overrides = (
-            OmegaConf.to_container(master_config.hydra.overrides.hydra)
-            + sweep_overrides
-        )
+        overrides = OmegaConf.to_container(master_config.hydra.overrides.hydra)
+        assert isinstance(overrides, list)
+        overrides = overrides + sweep_overrides
         sweep_config = self.load_configuration(
             config_file=master_config.hydra.job.config_file,
             strict=self.default_strict,
@@ -121,19 +134,18 @@ class ConfigLoader:
 
         return sweep_config
 
-    def exists_in_search_path(self, filepath):
-        _filename, search_path = self._find_config(filepath)
-        return search_path is not None
+    def exists_in_search_path(self, filepath: str) -> bool:
+        return self._find_config(filepath) is not None
 
     @staticmethod
-    def exists(filename):
+    def exists(filename: str) -> bool:
         is_pkg, path = ConfigLoader._split_path(filename)
         return ConfigLoader._exists(is_pkg, path)
 
-    def get_search_path(self):
+    def get_search_path(self) -> ConfigSearchPath:
         return self.config_search_path
 
-    def get_load_history(self):
+    def get_load_history(self) -> List["LoadTrace"]:
         """
         returns the load history (which configs were attempted to load, and if they
         were loaded successfully or not.
@@ -141,14 +153,15 @@ class ConfigLoader:
         return copy.deepcopy(self.all_config_checked)
 
     @staticmethod
-    def _split_path(path):
+    def _split_path(path: Optional[str]) -> Tuple[bool, str]:
         prefix = "pkg://"
+        assert path is not None
         is_pkg = path.startswith(prefix)
         if is_pkg:
             path = path[len(prefix) :]
         return is_pkg, path
 
-    def _find_config(self, filepath):
+    def _find_config(self, filepath: str) -> Optional[SearchPath]:
         found_search_path = None
         for search_path in self.config_search_path.config_search_path:
             is_pkg, path = self._split_path(search_path.path)
@@ -156,10 +169,12 @@ class ConfigLoader:
             if self._exists(is_pkg, config_file):
                 found_search_path = search_path
                 break
-        return filepath, found_search_path
+        return found_search_path
 
     @staticmethod
-    def _apply_defaults_overrides(overrides, defaults):
+    def _apply_defaults_overrides(
+        overrides: List[str], defaults: ListConfig
+    ) -> List[str]:
         consumed = []
         key_to_idx = {}
         for idx, d in enumerate(defaults):
@@ -183,7 +198,9 @@ class ConfigLoader:
                 consumed.append(override)
         return consumed
 
-    def _apply_free_defaults(self, defaults, overrides):
+    def _apply_free_defaults(
+        self, defaults: ListConfig, overrides: List[str]
+    ) -> List[str]:
         consumed = []
         for override in copy.copy(overrides):
             key, value = split_key_val(override)
@@ -198,44 +215,55 @@ class ConfigLoader:
         return consumed
 
     @staticmethod
-    def _merge_default_lists(primary, merged_list):
-        def get_key(d1):
+    def _merge_default_lists(primary: ListConfig, merged_list: ListConfig) -> None:
+        assert isinstance(primary, ListConfig)
+        assert isinstance(merged_list, ListConfig)
+
+        def get_key(d1: DictConfig) -> str:
             keys_iter = iter(d1.keys())
             key1 = next(keys_iter)
             if key1 == "optional":
                 key1 = next(keys_iter)
+            assert isinstance(key1, str)
             return key1
 
         key_to_idx = {}
         for idx, d in enumerate(primary):
-            if isinstance(d, (dict, DictConfig)):
+            assert isinstance(d, (DictConfig, str))
+            if isinstance(d, DictConfig):
                 key = get_key(d)
                 key_to_idx[key] = idx
         for d in copy.deepcopy(merged_list):
-            if isinstance(d, (dict, DictConfig)):
+            if isinstance(d, DictConfig):
                 key = get_key(d)
                 if key in key_to_idx.keys():
                     idx = key_to_idx[key]
                     primary[idx] = d
                     merged_list.remove(d)
 
+        # append remaining items that were not matched to existing keys
         for d in merged_list:
             primary.append(d)
 
-    def _load_config_impl(self, input_file, record_load=True):
+    def _load_config_impl(
+        self, input_file: str, record_load: bool = True
+    ) -> Optional[DictConfig]:
         """
         :param input_file:
         :param record_load:
         :return: the loaded config or None if it was not found
         """
         loaded_cfg = None
-        filename, search_path = self._find_config(input_file)
+        search_path = self._find_config(input_file)
         if search_path is None and record_load:
             assert search_path is None
-            self.all_config_checked.append((filename, None, None))
+            self.all_config_checked.append(
+                LoadTrace(filename=input_file, path=None, provider=None)
+            )
 
         if search_path is not None:
-            fullpath = "{}/{}".format(search_path.path, filename)
+            assert search_path.path is not None
+            fullpath = "{}/{}".format(search_path.path, input_file)
             is_pkg = search_path.path.startswith("pkg://")
             if is_pkg:
                 fullpath = fullpath[len("pkg://") :]
@@ -246,29 +274,39 @@ class ConfigLoader:
                     loaded_cfg = OmegaConf.load(stream)
                 if record_load:
                     self.all_config_checked.append(
-                        (filename, search_path.path, search_path.provider)
+                        LoadTrace(
+                            filename=input_file,
+                            path=search_path.path,
+                            provider=search_path.provider,
+                        )
                     )
             elif os.path.exists(fullpath):
                 loaded_cfg = OmegaConf.load(fullpath)
                 if record_load:
                     self.all_config_checked.append(
-                        (filename, search_path.path, search_path.provider)
+                        LoadTrace(
+                            filename=input_file,
+                            path=search_path.path,
+                            provider=search_path.provider,
+                        )
                     )
             else:
                 # This should never happen because we just searched for it and found it
                 assert False, "'{}' not found".format(fullpath)
+        assert loaded_cfg is None or isinstance(
+            loaded_cfg, DictConfig
+        ), f"Top level config should be a dictionary : {type(loaded_cfg)}"
         return loaded_cfg
 
-    def list_groups(self, parent_name):
+    def list_groups(self, parent_name: str) -> List[str]:
         ret = list(set(self.get_group_options(parent_name, file_type="dir")))
         return ret
 
-    def get_group_options(self, group_name, file_type="file"):
-        options = []
+    def get_group_options(self, group_name: str, file_type: str = "file") -> List[str]:
+        options: List[str] = []
         for search_path in self.config_search_path.config_search_path:
-            search_path = search_path.path
-            is_pkg, path = self._split_path(search_path)
-            files = []
+            is_pkg, path = self._split_path(search_path.path)
+            files: List[str] = []
             if is_pkg:
                 module_name, resource_name = ConfigLoader._split_module_and_resource(
                     "{}/{}".format(path, group_name)
@@ -308,7 +346,9 @@ class ConfigLoader:
             options.extend(files)
         return options
 
-    def _merge_config(self, cfg, family, name, required):
+    def _merge_config(
+        self, cfg: DictConfig, family: str, name: str, required: bool
+    ) -> DictConfig:
 
         if family != "":
             new_cfg = "{}/{}".format(family, name)
@@ -334,12 +374,12 @@ class ConfigLoader:
                 return cfg
 
         else:
-            return OmegaConf.merge(cfg, loaded_cfg)
-
-        assert False
+            ret = OmegaConf.merge(cfg, loaded_cfg)
+            assert isinstance(ret, DictConfig)
+            return ret
 
     @staticmethod
-    def _split_module_and_resource(filename):
+    def _split_module_and_resource(filename: str) -> Tuple[str, str]:
         sep = filename.find("/")
         if sep == -1:
             module_name = filename
@@ -355,7 +395,7 @@ class ConfigLoader:
         return module_name, resource_name
 
     @staticmethod
-    def _exists(is_pkg, filename):
+    def _exists(is_pkg: bool, filename: str) -> bool:
         if is_pkg:
             module_name, resource_name = ConfigLoader._split_module_and_resource(
                 filename
@@ -363,8 +403,6 @@ class ConfigLoader:
             try:
                 ret = resource_exists(module_name, resource_name)
             except ImportError:
-                ret = False
-            except ValueError:  # Python 2.7 throws ValueError empty module name sometimes.
                 ret = False
             except NotImplementedError:
                 raise NotImplementedError(
@@ -379,14 +417,16 @@ class ConfigLoader:
         else:
             return os.path.exists(filename)
 
-    def _merge_defaults(self, cfg, defaults, split_at):
-        def get_filename(config_name):
+    def _merge_defaults(
+        self, cfg: DictConfig, defaults: ListConfig, split_at: int
+    ) -> DictConfig:
+        def get_filename(config_name: str) -> str:
             filename, ext = os.path.splitext(config_name)
             if ext not in (".yaml", ".yml"):
                 config_name = "{}{}".format(config_name, ".yaml")
             return config_name
 
-        def merge_defaults(merged_cfg, def_list):
+        def merge_defaults(merged_cfg: DictConfig, def_list: ListConfig) -> DictConfig:
             cfg_with_list = OmegaConf.create(dict(defaults=def_list))
             for default1 in cfg_with_list.defaults:
                 if isinstance(default1, DictConfig):
@@ -415,8 +455,8 @@ class ConfigLoader:
                         )
             return merged_cfg
 
-        system_list = []
-        user_list = []
+        system_list: ListConfig = OmegaConf.create([])
+        user_list: ListConfig = OmegaConf.create([])
         for default in defaults:
             if len(system_list) < split_at:
                 system_list.append(default)
@@ -429,37 +469,24 @@ class ConfigLoader:
             del cfg["defaults"]
         return cfg
 
-    def _create_cfg(self, cfg_filename, record_load=True):
+    def _create_cfg(
+        self, cfg_filename: Optional[str], record_load: bool = True
+    ) -> DictConfig:
         if cfg_filename is None:
             cfg = OmegaConf.create()
+            assert isinstance(cfg, DictConfig)
         else:
-            cfg = self._load_config_impl(cfg_filename, record_load=record_load)
-            if cfg is None:
-                raise IOError(
-                    "could not find {}, config path:\n\t".format(
-                        cfg_filename,
-                        "\n\t".join(self.config_search_path.config_search_path),
-                    )
-                )
+            ret = self._load_config_impl(cfg_filename, record_load=record_load)
+            assert isinstance(ret, DictConfig)
+            cfg = ret
+
         if cfg.defaults is not None:
             self._validate_defaults(cfg.defaults)
+
         return cfg
 
     @staticmethod
-    def _validate_defaults(defaults):
-        valid_example = """
-        Example of a valid defaults:
-        defaults:
-          - dataset: imagenet
-          - model: alexnet
-            optional: true
-          - optimizer: nesterov
-        """
-        if not isinstance(defaults, ListConfig):
-            raise ValueError(
-                "defaults must be a list because composition is order sensitive, "
-                + valid_example
-            )
+    def _validate_defaults(defaults: ListConfig) -> None:
 
         for default in defaults:
             assert isinstance(default, DictConfig) or isinstance(default, str)
@@ -475,3 +502,41 @@ class ConfigLoader:
             elif isinstance(default, str):
                 # single file to load
                 pass
+
+    @staticmethod
+    def _get_defaults(cfg: DictConfig) -> ListConfig:
+        valid_example = """
+        Example of a valid defaults:
+        defaults:
+          - dataset: imagenet
+          - model: alexnet
+            optional: true
+          - optimizer: nesterov
+        """
+
+        defaults = cfg.defaults or OmegaConf.create([])
+        if not isinstance(defaults, ListConfig):
+            raise ValueError(
+                "defaults must be a list because composition is order sensitive, "
+                + valid_example
+            )
+
+        assert isinstance(defaults, ListConfig)
+        return defaults
+
+
+@dataclass
+class LoadTrace:
+    filename: str
+    path: Optional[str]
+    provider: Optional[str]
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, tuple):
+            return (  # type:ignore
+                self.filename == other[0]
+                and self.path == other[1]
+                and self.provider == other[2]
+            )
+        else:
+            return NotImplemented

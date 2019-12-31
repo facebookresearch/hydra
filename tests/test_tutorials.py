@@ -2,12 +2,16 @@
 import re
 import subprocess
 import sys
+from pathlib import Path
+from typing import Any, List
 
 import pytest
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
+    TSweepRunner,
+    TTaskRunner,
     chdir_hydra_root,
     does_not_raise,
     sweep_runner,
@@ -18,7 +22,7 @@ from hydra.test_utils.test_utils import (  # noqa: F401
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,output_conf",
     [
         ([], OmegaConf.create()),
@@ -28,7 +32,9 @@ chdir_hydra_root()
         ),
     ],
 )
-def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
+def test_tutorial_simple_cli_app(
+    tmpdir: Path, args: List[str], output_conf: DictConfig
+) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/1_simple_cli_app/my_app.py",
@@ -39,7 +45,7 @@ def test_tutorial_simple_cli_app(tmpdir, args, output_conf):
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
 
 
-def test_tutorial_working_directory(tmpdir):
+def test_tutorial_working_directory(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/8_working_directory/my_app.py",
@@ -49,14 +55,14 @@ def test_tutorial_working_directory(tmpdir):
     assert result.decode("utf-8").rstrip() == "Working directory : {}".format(tmpdir)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,expected",
     [
         ([], ["Info level message"]),
         (["hydra.verbose=[__main__]"], ["Info level message", "Debug level message"]),
     ],
 )
-def test_tutorial_logging(tmpdir, args, expected):
+def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/9_logging/my_app.py",
@@ -70,7 +76,7 @@ def test_tutorial_logging(tmpdir, args, expected):
         assert re.findall(expected[i], lines[i])
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,output_conf",
     [
         (
@@ -81,7 +87,7 @@ def test_tutorial_logging(tmpdir, args, expected):
         )
     ],
 )
-def test_tutorial_config_file(tmpdir, args, output_conf):
+def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/2_config_file/my_app.py",
@@ -92,7 +98,7 @@ def test_tutorial_config_file(tmpdir, args, output_conf):
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,expected",
     [
         (
@@ -106,7 +112,9 @@ def test_tutorial_config_file(tmpdir, args, output_conf):
         (["dataset.path=abc"], pytest.raises(subprocess.CalledProcessError)),
     ],
 )
-def test_tutorial_config_file_bad_key(tmpdir, args, expected):
+def test_tutorial_config_file_bad_key(
+    tmpdir: Path, args: List[str], expected: Any
+) -> None:
     """ Similar to the previous test, but also tests exception values"""
     with expected:
         cmd = [
@@ -118,7 +126,7 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
         subprocess.check_output(cmd)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,output_conf",
     [
         ([], OmegaConf.create()),
@@ -137,7 +145,9 @@ def test_tutorial_config_file_bad_key(tmpdir, args, expected):
         ),
     ],
 )
-def test_tutorial_config_groups(tmpdir, args, output_conf):
+def test_tutorial_config_groups(
+    tmpdir: Path, args: List[str], output_conf: DictConfig
+) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/3_config_groups/my_app.py",
@@ -148,7 +158,7 @@ def test_tutorial_config_groups(tmpdir, args, output_conf):
     assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,expected",
     [
         ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
@@ -176,7 +186,7 @@ def test_tutorial_config_groups(tmpdir, args, output_conf):
         ),
     ],
 )
-def test_tutorial_defaults(tmpdir, args, expected):
+def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) -> None:
     cmd = [
         sys.executable,
         "examples/tutorial/4_defaults/my_app.py",
@@ -187,7 +197,7 @@ def test_tutorial_defaults(tmpdir, args, expected):
     assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,output_conf",
     [
         (
@@ -222,24 +232,31 @@ def test_tutorial_defaults(tmpdir, args, expected):
         ),
     ],
 )
-def test_objects_example(tmpdir, task_runner, args, output_conf):  # noqa: F811
+def test_objects_example(
+    tmpdir: Path,
+    task_runner: TTaskRunner,  # noqa: F811
+    args: List[str],
+    output_conf: DictConfig,
+) -> None:
     with task_runner(
         calling_file="examples/patterns/objects/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=[],
     ) as task:
+        assert task.job_ret is not None
         assert task.job_ret.cfg == output_conf
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_composition_config_example(task_runner):  # noqa: F811
+def test_composition_config_example(task_runner: TTaskRunner) -> None:  # noqa: F811
     with task_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["schema=school"],
     ) as task:
+        assert task.job_ret is not None
         assert task.job_ret.cfg == {
             "db": {"driver": "mysql", "user": "omry", "pass": "secret"},
             "ui": {"windows": {"create_db": True, "view": True}},
@@ -264,7 +281,7 @@ def test_composition_config_example(task_runner):  # noqa: F811
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_sweeping_example(sweep_runner):  # noqa: F811
+def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
     with sweep_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
@@ -277,26 +294,27 @@ def test_sweeping_example(sweep_runner):  # noqa: F811
             ("schema=support", "db=mysql"),
             ("schema=support", "db=postgresql"),
         }
-        assert len(sweep.returns[0]) == 4
+
+        assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
 
 
-def test_specializing_config_example(task_runner):  # noqa: F811
+def test_specializing_config_example(task_runner: TTaskRunner) -> None:  # noqa: F811
     with task_runner(
         calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,
         config_path="conf/config.yaml",
         overrides=["dataset=cifar10"],
     ) as task:
-        assert task.job_ret.cfg == dict(
+        assert task.job_ret is not None and task.job_ret.cfg == dict(
             dataset=dict(name="cifar10", path="/datasets/cifar10"),
             model=dict(num_layers=5, type="alexnet"),
         )
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args,expected",
     [
         (
@@ -325,7 +343,9 @@ def test_specializing_config_example(task_runner):  # noqa: F811
         )
     ],
 )
-def test_advanced_ad_hoc_composition(tmpdir, args, expected):
+def test_advanced_ad_hoc_composition(
+    tmpdir: Path, args: List[str], expected: Any
+) -> None:
     cmd = [
         sys.executable,
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",

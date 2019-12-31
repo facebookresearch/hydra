@@ -3,6 +3,7 @@ import distutils.spawn
 import os
 import subprocess
 from pathlib import Path
+from typing import List
 
 import pytest
 
@@ -14,11 +15,11 @@ from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 chdir_hydra_root()
 
 
-def is_expect_exists():
+def is_expect_exists() -> bool:
     return distutils.spawn.find_executable("expect") is not None
 
 
-def create_config_loader():
+def create_config_loader() -> ConfigLoader:
     return ConfigLoader(
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/completion_test"], abspath=True
@@ -26,7 +27,7 @@ def create_config_loader():
     )
 
 
-base_completion_list = [
+base_completion_list: List[str] = [
     "dict.",
     "dict_prefix=",
     "group=",
@@ -90,21 +91,29 @@ base_completion_list = [
     ],
 )
 class TestCompletion:
-    def test_completion_plugin(self, line_prefix, num_tabs, line, expected):
+    def test_completion_plugin(
+        self, line_prefix: str, num_tabs: int, line: str, expected: List[str]
+    ) -> None:
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
         ret = bc._query(config_file="config.yaml", line=line_prefix + line)
         assert ret == expected
 
-    @pytest.mark.skipif(
+    @pytest.mark.skipif(  # type: ignore
         not is_expect_exists(),
         reason="expect should be installed to run the expects tests",
     )
-    @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])
-    @pytest.mark.parametrize("shell", ["bash"])
+    @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])  # type: ignore
+    @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
     def test_shell_integration(
-        self, shell, prog, num_tabs, line_prefix, line, expected
-    ):
+        self,
+        shell: str,
+        prog: str,
+        num_tabs: int,
+        line_prefix: str,
+        line: str,
+        expected: List[str],
+    ) -> None:
         line1 = "line={}".format(line_prefix + line)
         cmd = [
             "expect",
@@ -119,7 +128,7 @@ class TestCompletion:
         subprocess.check_call(cmd)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "line,expected",
     [
         ("-c job", base_completion_list),
@@ -127,16 +136,16 @@ class TestCompletion:
         ("-c all ", base_completion_list),
     ],
 )
-def test_with_flags(line, expected):
+def test_with_flags(line: str, expected: List[str]) -> None:
     config_loader = create_config_loader()
     bc = DefaultCompletionPlugin(config_loader)
     ret = bc._query(config_file="config.yaml", line=line)
     assert ret == expected
 
 
-@pytest.mark.parametrize("relative", [True, False])
-@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
-@pytest.mark.parametrize(
+@pytest.mark.parametrize("relative", [True, False])  # type: ignore
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
     "key_eq, fname_prefix, files, expected",
     [
         ("abc=", "", ["foo.txt"], ["foo.txt"]),
@@ -148,12 +157,19 @@ def test_with_flags(line, expected):
     ],
 )
 def test_file_completion(
-    tmpdir, files, line_prefix, key_eq, fname_prefix, expected, relative
-):
-    def create_files(in_files):
+    tmpdir: Path,
+    files: List[str],
+    line_prefix: str,
+    key_eq: str,
+    fname_prefix: str,
+    expected: List[str],
+    relative: bool,
+) -> None:
+    def create_files(in_files: List[str]) -> None:
         for f in in_files:
-            dirname = os.path.dirname(f)
-            if dirname != "":
+            path = Path(f)
+            dirname = path.parent
+            if str(dirname) != ".":
                 Path.mkdir(dirname, parents=True)
             Path(f).touch(exist_ok=True)
 
@@ -179,8 +195,8 @@ def test_file_completion(
         os.chdir(pwd)
 
 
-@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])
-@pytest.mark.parametrize(
+@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
     "app_prefix",
     [
         "python foo.py",
@@ -194,7 +210,7 @@ def test_file_completion(
         "python foo.py",
     ],
 )
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "args_line, args_line_index",
     [
         ("", None),
@@ -207,7 +223,9 @@ def test_file_completion(
         ("dict.", 5),
     ],
 )
-def test_strip(prefix, app_prefix, args_line, args_line_index):
+def test_strip(
+    prefix: str, app_prefix: str, args_line: str, args_line_index: int
+) -> None:
     app_prefix = prefix + app_prefix
     if args_line:
         app_prefix = app_prefix + " "

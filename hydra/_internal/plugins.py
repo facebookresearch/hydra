@@ -1,16 +1,22 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import inspect
 import pkgutil
+from typing import Any, List, Optional, Type
 
-from ..plugins import Plugin
+from omegaconf import DictConfig
+
+from hydra._internal.config_loader import ConfigLoader
+from hydra.types import TaskFunction
+
+from ..plugins import Launcher, Plugin, Sweeper
 
 
 class Plugins:
-    def __init__(self):
+    def __init__(self) -> None:
         raise NotImplementedError("Plugins is a static class, do not instantiate")
 
     @staticmethod
-    def _instantiate(config):
+    def _instantiate(config: DictConfig) -> Plugin:
         clazz = config["class"]
         try:
             if clazz is None:
@@ -29,6 +35,8 @@ class Plugins:
             from ..utils import instantiate
 
             plugin = instantiate(config)
+            assert isinstance(plugin, Plugin)
+
         except ImportError as e:
             raise ImportError(
                 "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(
@@ -39,34 +47,42 @@ class Plugins:
         return plugin
 
     @staticmethod
-    def is_plugin(clazz):
+    def is_plugin(clazz: str) -> bool:
 
         return clazz.startswith("hydra_plugins.") or clazz.startswith(
             "hydra._internal.core_plugins."
         )
 
     @staticmethod
-    def instantiate_sweeper(config, config_loader, task_function):
+    def instantiate_sweeper(
+        config: DictConfig, config_loader: ConfigLoader, task_function: TaskFunction
+    ) -> Sweeper:
         if config.hydra.sweeper is None:
             raise RuntimeError("Hydra sweeper is not configured")
         sweeper = Plugins._instantiate(config.hydra.sweeper)
+        assert isinstance(sweeper, Sweeper)
         sweeper.setup(
             config=config, config_loader=config_loader, task_function=task_function
         )
         return sweeper
 
     @staticmethod
-    def instantiate_launcher(config, config_loader, task_function):
+    def instantiate_launcher(
+        config: DictConfig, config_loader: ConfigLoader, task_function: TaskFunction
+    ) -> Launcher:
         if config.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
         launcher = Plugins._instantiate(config.hydra.launcher)
+        assert isinstance(launcher, Launcher)
         launcher.setup(
             config=config, config_loader=config_loader, task_function=task_function
         )
         return launcher
 
     @staticmethod
-    def _get_all_subclasses_in(modules, supertype=None):
+    def _get_all_subclasses_in(
+        modules: List[Any], supertype: Optional[type] = None
+    ) -> List[type]:
         """
         :param modules: a list of top level modules to look in
         :param supertype: look for subclasses of this type, if None return all classes
@@ -90,25 +106,23 @@ class Plugins:
         return list(ret.values())
 
     @staticmethod
-    def discover(plugin_type=None):
-
+    def discover(plugin_type: Optional[Type[Plugin]] = None) -> List[type]:
         """
         :param plugin_type: class of plugin to discover, None for all
         :return: a list of plugins implementing the plugin type (or all if plugin type is None)
         """
         assert plugin_type is None or issubclass(plugin_type, Plugin)
-        top_level = []
+        top_level: List[Any] = []
+        from . import core_plugins
+
+        top_level.append(core_plugins)
+
         try:
             import hydra_plugins
 
+            top_level.append(hydra_plugins)
+
         except ImportError:
-            hydra_plugins = None
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
-        from . import core_plugins
-
-        if hydra_plugins is not None:
-            top_level.append(hydra_plugins)
-        top_level.append(core_plugins)
-        ret = Plugins._get_all_subclasses_in(top_level, plugin_type)
-        return ret
+        return Plugins._get_all_subclasses_in(top_level, plugin_type)

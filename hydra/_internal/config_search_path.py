@@ -1,17 +1,32 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import List, Optional
+
+
+class SearchPath:
+    def __init__(self, provider: Optional[str], search_path: Optional[str]):
+        self.provider = provider
+        self.path = search_path
+
+    def __str__(self) -> str:
+        return repr(self)
+
+    def __repr__(self) -> str:
+        return f"provider={self.provider}, path={self.path}"
 
 
 class ConfigSearchPath:
-    def __init__(self):
+    config_search_path: List[SearchPath]
+
+    def __init__(self) -> None:
         self.config_search_path = []
 
-    def find_last_match(self, reference):
+    def find_last_match(self, reference: SearchPath) -> int:
         return self.find_match(reference, reverse=True)
 
-    def find_first_match(self, reference):
+    def find_first_match(self, reference: SearchPath) -> int:
         return self.find_match(reference, reverse=False)
 
-    def find_match(self, reference, reverse):
+    def find_match(self, reference: SearchPath, reverse: bool) -> int:
         p = self.config_search_path
         if reverse:
             iterator = zip(reversed(range(len(p))), reversed(p))
@@ -33,7 +48,9 @@ class ConfigSearchPath:
                 assert False
         return -1
 
-    def append(self, provider, path, anchor=None):
+    def append(
+        self, provider: str, path: str, anchor: Optional[SearchPath] = None
+    ) -> None:
         """
         :param provider: who is providing this search path, can be Hydra,
                the @hydra.main() function, or individual plugins or libraries.
@@ -53,7 +70,9 @@ class ConfigSearchPath:
             else:
                 self.append(provider, path, anchor=None)
 
-    def prepend(self, provider, path, anchor=None):
+    def prepend(
+        self, provider: str, path: str, anchor: Optional[SearchPath] = None
+    ) -> None:
         if anchor is None:
             self.config_search_path.insert(0, SearchPath(provider, path))
         else:
@@ -69,17 +88,5 @@ class ConfigSearchPath:
             else:
                 self.prepend(provider, path, None)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.config_search_path)
-
-
-class SearchPath:
-    def __init__(self, provider, search_path):
-        self.provider = provider
-        self.path = search_path
-
-    def __str__(self):
-        return repr(self)
-
-    def __repr__(self):
-        return "provider={}, path={}".format(self.provider, self.path)

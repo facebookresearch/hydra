@@ -1,6 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pathlib import Path
+from typing import List
+
 import pytest
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.test_utils.launcher_common_tests import IntegrationTestSuite
 from hydra.test_utils.test_utils import integration_test
@@ -26,7 +29,7 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "task_config, overrides, expected_dir",
     [
         ({"hydra": {"run": {"dir": "foo"}}}, [], "foo"),
@@ -42,8 +45,11 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
         ),
     ],
 )
-def test_local_run_workdir(tmpdir, task_config, overrides, expected_dir):
+def test_local_run_workdir(
+    tmpdir: Path, task_config: DictConfig, overrides: List[str], expected_dir: str
+) -> None:
     cfg = OmegaConf.create(task_config)
+    assert isinstance(cfg, DictConfig)
     expected_dir1 = tmpdir / expected_dir
     integration_test(
         tmpdir=tmpdir,

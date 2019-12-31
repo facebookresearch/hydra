@@ -1,35 +1,40 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
+from typing import Any, List, Optional, Tuple, Union
 
-from omegaconf import MissingMandatoryValue, OmegaConf
+from omegaconf import Container, DictConfig, MissingMandatoryValue, OmegaConf
 
+from hydra._internal.config_loader import ConfigLoader
 from hydra.plugins.plugin import Plugin
 
 
-class CompletionPlugin(Plugin, metaclass=ABCMeta):
-    def __init__(self, config_loader):
+class CompletionPlugin(Plugin):
+    def __init__(self, config_loader: ConfigLoader) -> None:
         self.config_loader = config_loader
 
-    def install(self):
-        raise NotImplementedError()
-
-    def uninstall(self):
-        raise NotImplementedError()
+    @abstractmethod
+    def install(self) -> None:
+        ...
 
     @abstractmethod
-    def provides(self):
+    def uninstall(self) -> None:
+        ...
+
+    @abstractmethod
+    def provides(self) -> str:
         """
         :return: the name of the shell this plugin provides completion for
         """
-        return None
+        ...
 
-    def query(self, config_file):
-        raise NotImplementedError()
+    @abstractmethod
+    def query(self, config_file: Optional[str]) -> None:
+        ...
 
     @staticmethod
-    def _get_filename(filename):
+    def _get_filename(filename: str) -> Tuple[Optional[str], Optional[str]]:
         last = filename.rfind("=")
         if last != -1:
             key_eq = filename[0 : last + 1]
@@ -47,7 +52,7 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
         return None, None
 
     @staticmethod
-    def complete_files(word):
+    def complete_files(word: str) -> List[str]:
         if os.path.isdir(word):
             dirname = word
             files = os.listdir(word)
@@ -66,8 +71,8 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
         return ret
 
     @staticmethod
-    def _get_matches(config, word):
-        def str_rep(in_key, in_value):
+    def _get_matches(config: Container, word: str) -> List[str]:
+        def str_rep(in_key: Union[str, int], in_value: Any) -> str:
             if OmegaConf.is_config(in_value):
                 return "{}.".format(in_key)
             else:
@@ -106,8 +111,8 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
                         ["{}.{}".format(base_key, match) for match in key_matches]
                     )
                 else:
-                    if OmegaConf.is_dict(config):
-                        for key, value in config.items(resolve=False):
+                    if isinstance(config, DictConfig):
+                        for key, value in config.items_ex(resolve=False):
                             if key.startswith(word):
                                 matches.append(str_rep(key, value))
                     elif OmegaConf.is_list(config):
@@ -121,10 +126,10 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
 
         return matches
 
-    def _query_config_groups(self, word):
+    def _query_config_groups(self, word: str) -> Tuple[List[str], bool]:
         last_eq_index = word.rfind("=")
         last_slash_index = word.rfind("/")
-        exact_match = False
+        exact_match: bool = False
         if last_eq_index != -1:
             parent_group = word[0:last_eq_index]
             file_type = "file"
@@ -138,7 +143,7 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
         all_matched_groups = self.config_loader.get_group_options(
             parent_group, file_type=file_type
         )
-        matched_groups = []
+        matched_groups: List[str] = []
         if file_type == "file":
             for match in all_matched_groups:
                 name = (
@@ -163,7 +168,7 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
 
         return matched_groups, exact_match
 
-    def _query(self, config_file, line):
+    def _query(self, config_file: Optional[str], line: str) -> List[str]:
         from .._internal.utils import get_args
 
         new_word = len(line) == 0 or line[-1] == " "
@@ -181,11 +186,12 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)
         if filename is not None:
+            assert fname_prefix is not None
             result = CompletionPlugin.complete_files(filename)
             result = [fname_prefix + file for file in result]
         else:
             matched_groups, exact_match = self._query_config_groups(word)
-            config_matches = []
+            config_matches: List[str] = []
             if not exact_match:
                 config_matches = CompletionPlugin._get_matches(config, word)
             result = list(set(matched_groups + config_matches))
@@ -193,10 +199,19 @@ class CompletionPlugin(Plugin, metaclass=ABCMeta):
         return sorted(result)
 
 
-class DefaultCompletionPlugin(CompletionPlugin, metaclass=ABCMeta):
+class DefaultCompletionPlugin(CompletionPlugin):
     """
     A concrete instance of CompletionPlugin that is used for testing.
     """
 
-    def provides(self):
-        return None
+    def install(self) -> None:
+        ...
+
+    def uninstall(self) -> None:
+        ...
+
+    def provides(self) -> str:
+        ...
+
+    def query(self, config_file: Optional[str]) -> None:
+        ...

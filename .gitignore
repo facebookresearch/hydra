@@ -9,5 +9,7 @@ __pycache__
 /.nox
 /report.json
 /.coverage
+/.mypy_cache
 pip-wheel-metadata
 .ipynb_checkpoints
+/.dmypy.json

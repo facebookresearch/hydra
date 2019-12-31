@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# type: ignore
 import copy
 import os
 
@@ -194,6 +195,7 @@ def lint(session):
     # needed for isort to properly identify pytest as third party
     session.install("pytest")
     session.install(
+        "mypy",
         "flake8",
         "flake8-copyright",
         "git+git://github.com/timothycrosley/isort.git@c54b3dd4620f9b3e7ac127c583ecb029fb90f1b7",
@@ -206,6 +208,12 @@ def lint(session):
     session.run("black", "--check", ".")
 
     session.run("isort", "--check", ".")
+
+    # Mypy
+    session.run("mypy", ".", "--strict")
+    # Mypy for plugins
+    for plugin in get_all_plugins():
+        session.run("mypy", os.path.join("plugins", plugin["path"]), "--strict")
 
 
 @nox.session(python=PYTHON_VERSIONS)
