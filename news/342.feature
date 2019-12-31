@@ -1,0 +1,1 @@
+Annotate codebase and enable mypy

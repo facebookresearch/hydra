@@ -3,7 +3,11 @@ import argparse
 import inspect
 import os
 import sys
+from argparse import ArgumentParser
 from os.path import dirname, join, normpath, realpath
+from typing import Any, Optional, Sequence, Tuple
+
+from hydra.types import TaskFunction
 
 from ..errors import MissingConfigException
 from ..plugins import SearchPathPlugin
@@ -13,16 +17,15 @@ from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 
 
-def detect_calling_file_or_module(stack_depth):
+def detect_calling_file_or_module(
+    stack_depth: int,
+) -> Tuple[Optional[str], Optional[str]]:
     stack = inspect.stack()
     frame = stack[stack_depth]
-    if is_notebook():
-        pynb_dir = frame[0].f_globals["_dh"][0]
-        calling_file = join(pynb_dir, "notebook.ipynb")
-        return calling_file, None
 
     calling_file = None
     calling_module = None
+
     try:
         calling_file = frame[0].f_locals["__file__"]
     except KeyError:
@@ -45,9 +48,9 @@ def detect_calling_file_or_module(stack_depth):
     return calling_file, calling_module
 
 
-def is_notebook():
+def is_notebook() -> bool:
     try:
-        shell = get_ipython().__class__.__name__
+        shell = get_ipython().__class__.__name__  # type: ignore
         if shell == "ZMQInteractiveShell":
             return True  # Jupyter notebook or qtconsole
         elif shell == "TerminalInteractiveShell":
@@ -58,7 +61,7 @@ def is_notebook():
         return False
 
 
-def detect_task_name(calling_file, calling_module):
+def detect_task_name(calling_file: Optional[str], calling_module: Optional[str]) -> str:
 
     if calling_file is not None:
         target_file = os.path.basename(calling_file)
@@ -75,7 +78,11 @@ def detect_task_name(calling_file, calling_module):
     return task_name
 
 
-def compute_search_path_dir(calling_file, calling_module, config_dir):
+def compute_search_path_dir(
+    calling_file: Optional[str],
+    calling_module: Optional[str],
+    config_dir: Optional[str],
+) -> str:
     if calling_module is not None:
         last_dot = calling_module.rfind(".")
         if last_dot != -1:
@@ -112,7 +119,11 @@ def compute_search_path_dir(calling_file, calling_module, config_dir):
     return search_path_dir
 
 
-def create_automatic_config_search_path(calling_file, calling_module, config_dir):
+def create_automatic_config_search_path(
+    calling_file: Optional[str],
+    calling_module: Optional[str],
+    config_dir: Optional[str],
+) -> ConfigSearchPath:
     search_path_dir = compute_search_path_dir(calling_file, calling_module, config_dir)
     if search_path_dir is not None and not ConfigLoader.exists(search_path_dir):
         raise MissingConfigException(
@@ -122,7 +133,7 @@ def create_automatic_config_search_path(calling_file, calling_module, config_dir
     return create_config_search_path(search_path_dir)
 
 
-def create_config_search_path(search_path_dir):
+def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPath:
     search_path = ConfigSearchPath()
     search_path.append("hydra", "pkg://hydra.conf")
     if search_path_dir is not None:
@@ -136,7 +147,12 @@ def create_config_search_path(search_path_dir):
     return search_path
 
 
-def run_hydra(args_parser, task_function, config_path, strict):
+def run_hydra(
+    args_parser: ArgumentParser,
+    task_function: TaskFunction,
+    config_path: Optional[str],
+    strict: Optional[bool],
+) -> None:
     from .hydra import Hydra
 
     calling_file, calling_module = detect_calling_file_or_module(3)
@@ -190,7 +206,7 @@ def run_hydra(args_parser, task_function, config_path, strict):
         sys.exit(1)
 
 
-def _get_exec_command():
+def _get_exec_command() -> str:
     if sys.argv[0].endswith(".py"):
         return "python {}".format(sys.argv[0])
     else:
@@ -199,7 +215,7 @@ def _get_exec_command():
         return executable
 
 
-def get_args_parser():
+def get_args_parser() -> ArgumentParser:
     from .. import __version__
 
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")
@@ -250,11 +266,11 @@ def get_args_parser():
     return parser
 
 
-def get_args(args=None):
+def get_args(args: Optional[Sequence[str]] = None) -> Any:
     return get_args_parser().parse_args(args=args)
 
 
-def _strict_mode_strategy(strict, config_file):
+def _strict_mode_strategy(strict: Optional[bool], config_file: Optional[str]) -> bool:
     """Decide how to set strict mode.
     If a value was provided -- always use it. Otherwise decide based
     on the existence of config_file.

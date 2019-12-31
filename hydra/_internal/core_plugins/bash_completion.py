@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import sys
+from typing import Optional
 
 from hydra.plugins.completion_plugin import CompletionPlugin
 
@@ -15,7 +16,7 @@ log = logging.getLogger(__name__)
 
 class BashCompletion(CompletionPlugin):
     # TODO: detect python with path like /foo/bar/python
-    def install(self):
+    def install(self) -> None:
         script = """hydra_bash_completion()
 {
     words=($COMP_LINE)
@@ -58,20 +59,19 @@ COMP_WORDBREAKS=${COMP_WORDBREAKS//=}
 COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_completion """
         print(script + self._get_exec())
 
-    def uninstall(self):
+    def uninstall(self) -> None:
         print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
 
-    def provides(self):
+    def provides(self) -> str:
         return "bash"
 
     @staticmethod
-    def strip_python_or_app_name(line):
+    def strip_python_or_app_name(line: str) -> str:
         """
         Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
         which could be at the form of python script.py or some_app.
         it also corrects the index (COMP_INDEX) to reflect the same location in the striped command line.
         :param line: input line, may contain python file.py followed=by_args..
-        :param index: index of cursor in input line
         :return: tuple(args line, index of cursor in args line)
         """
         python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
@@ -86,21 +86,21 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
-    def query(self, config_file):
+    def query(self, config_file: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
-        index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
+        # index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 
-        if index == "":
-            index = 0
-        if isinstance(index, str):
-            index = int(index)
+        # if index == "":
+        #     index = 0
+        # if isinstance(index, str):
+        #     index = int(index)
 
         # currently index is ignored.
         line = self.strip_python_or_app_name(line)
         print(" ".join(self._query(config_file=config_file, line=line)))
 
     @staticmethod
-    def _get_exec():
+    def _get_exec() -> str:
         if sys.argv[0].endswith(".py"):
             return "python"
         else:

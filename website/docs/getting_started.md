@@ -5,8 +5,7 @@ sidebar_label: Getting started
 ---
 ### Requirements
 #### Python:
-* Python 2.7
-* Python >= 3.5.
+* Python >= 3.6.
 
 #### Operating System:
 * Linux

@@ -2,38 +2,48 @@
 """
 Common test functions testing launchers
 """
+import copy
 import importlib
 from pathlib import Path
+from typing import List, Optional
 
 import pytest
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
-from hydra.test_utils.test_utils import integration_test, verify_dir_outputs
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    integration_test,
+    verify_dir_outputs,
+)
 
 
 class LauncherTestSuite:
-    def test_sweep_1_job(self, sweep_runner, launcher_name, overrides):  # noqa: F811
+    def test_sweep_1_job(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:
         sweep_1_job(
             sweep_runner,
             overrides=["hydra/launcher=" + launcher_name, "hydra.sweep.dir=."]
             + overrides,
         )
 
-    def test_sweep_2_jobs(self, sweep_runner, launcher_name, overrides):  # noqa: F811
+    def test_sweep_2_jobs(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
         sweep_2_jobs(
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
     def test_not_sweeping_hydra_overrides(
-        self, sweep_runner, launcher_name, overrides
-    ):  # noqa: F811
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
         not_sweeping_hydra_overrides(
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
     def test_sweep_1_job_strict(
-        self, sweep_runner, launcher_name, overrides
-    ):  # noqa: F811
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
         sweep_1_job(
             sweep_runner,
             strict=True,
@@ -41,8 +51,8 @@ class LauncherTestSuite:
         )
 
     def test_sweep_1_job_strict_and_bad_key(
-        self, sweep_runner, launcher_name, overrides
-    ):  # noqa: F811
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
         # Ideally this would be KeyError, This can't be more specific because some launcher plugins
         # like submitit raises a different exception on job failure and not the underlying exception.
         with pytest.raises(Exception):
@@ -52,14 +62,19 @@ class LauncherTestSuite:
                 overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
             )
 
-    def test_sweep_2_optimizers(self, sweep_runner, launcher_name, overrides):
+    def test_sweep_2_optimizers(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:
         sweep_two_config_groups(
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
     def test_sweep_over_unspecified_mandatory_default(
-        self, sweep_runner, launcher_name, overrides  # noqa: F811
-    ):
+        self,
+        sweep_runner: TSweepRunner,  # noqa: F811
+        launcher_name: str,
+        overrides: List[str],
+    ) -> None:
         base_overrides = ["hydra/launcher=" + launcher_name, "group1=file1,file2"]
         sweep = sweep_runner(
             calling_file=None,
@@ -71,6 +86,7 @@ class LauncherTestSuite:
         expected_overrides = [["group1=file1"], ["group1=file2"]]
         expected_conf = [OmegaConf.create({"foo": 10}), OmegaConf.create({"foo": 20})]
         with sweep:
+            assert sweep.returns is not None
             assert len(sweep.returns[0]) == 2
             for i in range(2):
                 job_ret = sweep.returns[0][i]
@@ -79,8 +95,8 @@ class LauncherTestSuite:
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
     def test_sweep_and_override(
-        self, sweep_runner, launcher_name, overrides
-    ):  # noqa: F811
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
         """
         Tests that we can override things in the configs merged in only during the sweep config construction
         db.user=someone does not exist db_conf.yaml, and is only appear when we merge in db=mysql or db=postgresql.
@@ -114,6 +130,7 @@ class LauncherTestSuite:
             },
         ]
         with sweep:
+            assert sweep.returns is not None
             assert len(sweep.returns[0]) == 2
             for i in range(2):
                 job_ret = sweep.returns[0][i]
@@ -122,7 +139,9 @@ class LauncherTestSuite:
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
 
-def sweep_1_job(sweep_runner, overrides, strict=False):
+def sweep_1_job(
+    sweep_runner: TSweepRunner, overrides: List[str], strict: bool = False
+) -> None:
     """
     Runs a sweep with one job
     """
@@ -135,6 +154,7 @@ def sweep_1_job(sweep_runner, overrides, strict=False):
     )
 
     with sweep:
+        assert sweep.returns is not None
         job_ret = sweep.returns[0]
         assert len(job_ret) == 1
         assert job_ret[0].overrides == []
@@ -145,7 +165,7 @@ def sweep_1_job(sweep_runner, overrides, strict=False):
         verify_dir_outputs(sweep.returns[0][0])
 
 
-def sweep_2_jobs(sweep_runner, overrides):
+def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
     """
     Runs a sweep with two jobs
     """
@@ -159,6 +179,8 @@ def sweep_2_jobs(sweep_runner, overrides):
     base = OmegaConf.create({"foo": 10, "bar": 100, "a": 0})
 
     with sweep:
+        assert sweep.temp_dir is not None
+        assert sweep.returns is not None
         temp_dir = Path(sweep.temp_dir)
         assert len(sweep.returns[0]) == 2
         for i in range(2):
@@ -178,7 +200,9 @@ def sweep_2_jobs(sweep_runner, overrides):
             )
 
 
-def not_sweeping_hydra_overrides(sweep_runner, overrides):
+def not_sweeping_hydra_overrides(
+    sweep_runner: TSweepRunner, overrides: List[str]
+) -> None:
     """
     Runs a sweep with two jobs
     """
@@ -188,10 +212,12 @@ def not_sweeping_hydra_overrides(sweep_runner, overrides):
         calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=overrides,
+        strict=None,
     )
     base = OmegaConf.create({"foo": 10, "bar": 100})
 
     with sweep:
+        assert sweep.returns is not None
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
@@ -203,10 +229,11 @@ def not_sweeping_hydra_overrides(sweep_runner, overrides):
             verify_dir_outputs(job_ret, job_ret.overrides)
 
 
-def sweep_two_config_groups(sweep_runner, overrides):
+def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
     """
     Make sure that optimizers=adam,nesterov is interpreted correctly
     """
+    overrides = copy.deepcopy(overrides)
     overrides.extend(["group1=file1,file2"])
     sweep = sweep_runner(
         calling_file=None,
@@ -220,6 +247,7 @@ def sweep_two_config_groups(sweep_runner, overrides):
         OmegaConf.create({"foo": 20, "bar": 100}),
     ]
     with sweep:
+        assert sweep.returns is not None
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
@@ -230,14 +258,14 @@ def sweep_two_config_groups(sweep_runner, overrides):
 
 class IntegrationTestSuite:
     @staticmethod
-    def verify_plugin(plugin_module):
+    def verify_plugin(plugin_module: Optional[str]) -> None:
         if plugin_module is not None:
             try:
                 importlib.import_module(plugin_module)
             except ImportError:
                 pytest.skip("Plugin {} not installed".format(plugin_module))
 
-    @pytest.mark.parametrize(
+    @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, filename, expected_name",
         [
             (None, [], "no_config.py", "no_config"),
@@ -263,20 +291,21 @@ class IntegrationTestSuite:
     )
     def test_custom_task_name(
         self,
-        tmpdir,
-        task_config,
-        overrides,
-        filename,
-        expected_name,
-        task_launcher_cfg,
-        extra_flags,
-        plugin_module,
-    ):
+        tmpdir: Path,
+        task_config: DictConfig,
+        overrides: List[str],
+        filename: str,
+        expected_name: str,
+        task_launcher_cfg: DictConfig,
+        extra_flags: List[str],
+        plugin_module: Optional[str],
+    ) -> None:
         self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
-        task_config = OmegaConf.create(task_config or {})
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_config = OmegaConf.create(task_config or {})  # type: ignore
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+        assert isinstance(cfg, DictConfig)
         integration_test(
             tmpdir=tmpdir,
             task_config=cfg,
@@ -286,7 +315,7 @@ class IntegrationTestSuite:
             filename=filename,
         )
 
-    @pytest.mark.parametrize(
+    @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, expected_dir",
         [
             (
@@ -367,20 +396,20 @@ class IntegrationTestSuite:
     )
     def test_custom_sweeper_run_workdir(
         self,
-        tmpdir,
-        task_config,
-        overrides,
-        expected_dir,
-        task_launcher_cfg,
-        extra_flags,
-        plugin_module,
-    ):
+        tmpdir: Path,
+        task_config: str,
+        overrides: List[str],
+        expected_dir: str,
+        task_launcher_cfg: DictConfig,
+        extra_flags: List[str],
+        plugin_module: str,
+    ) -> None:
         self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
-        task_config = OmegaConf.create(task_config or {})
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_config = OmegaConf.create(task_config or {})  # type: ignore
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
-
+        assert isinstance(cfg, DictConfig)
         integration_test(
             tmpdir=tmpdir,
             task_config=cfg,
@@ -390,14 +419,18 @@ class IntegrationTestSuite:
         )
 
     def test_get_orig_dir_multirun(
-        self, tmpdir, task_launcher_cfg, extra_flags, plugin_module
-    ):
+        self,
+        tmpdir: Path,
+        task_launcher_cfg: DictConfig,
+        extra_flags: List[str],
+        plugin_module: str,
+    ) -> None:
         self.verify_plugin(plugin_module)
         overrides = extra_flags
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create()
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
-
+        assert isinstance(cfg, DictConfig)
         integration_test(
             tmpdir=tmpdir,
             task_config=cfg,

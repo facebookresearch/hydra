@@ -3,8 +3,8 @@ from hydra.plugins import Plugin
 
 
 class ExamplePlugin(Plugin):
-    def __init__(self, v):
+    def __init__(self, v: int) -> None:
         self.v = v
 
-    def add(self, x):
+    def add(self, x: int) -> int:
         return self.v + x

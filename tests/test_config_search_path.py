@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from os.path import realpath
+from typing import List, Optional, Tuple
 
 import pytest
 
@@ -7,17 +8,21 @@ from hydra._internal.config_search_path import ConfigSearchPath, SearchPath
 from hydra._internal.utils import compute_search_path_dir
 
 
-def create_search_path(base_list):
+def create_search_path(
+    base_list: List[Tuple[Optional[str], Optional[str]]]
+) -> ConfigSearchPath:
     csp = ConfigSearchPath()
     csp.config_search_path = [SearchPath(x[0], x[1]) for x in base_list]
     return csp
 
 
-def to_tuples_list(search_path):
+def to_tuples_list(
+    search_path: ConfigSearchPath,
+) -> List[Tuple[Optional[str], Optional[str]]]:
     return [(x.provider, x.path) for x in search_path.config_search_path]
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "input_list, reference, expected_idx",
     [
         ([], ("", ""), -1),
@@ -27,12 +32,16 @@ def to_tuples_list(search_path):
         ([("a", "10"), ("b", "20"), ("a", "30")], ("a", "10"), 0),
     ],
 )
-def test_find_last_match(input_list, reference, expected_idx):
+def test_find_last_match(
+    input_list: List[Tuple[Optional[str], Optional[str]]],
+    reference: str,
+    expected_idx: int,
+) -> None:
     csp = create_search_path(input_list)
     assert csp.find_last_match(SearchPath(reference[0], reference[1])) == expected_idx
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "input_list, reference, expected_idx",
     [
         ([], ("", ""), -1),
@@ -42,13 +51,17 @@ def test_find_last_match(input_list, reference, expected_idx):
         ([("a", "10"), ("b", "20"), ("a", "30")], ("a", "10"), 0),
     ],
 )
-def test_find_first_match(input_list, reference, expected_idx):
+def test_find_first_match(
+    input_list: List[Tuple[Optional[str], Optional[str]]],
+    reference: str,
+    expected_idx: int,
+) -> None:
     csp = create_search_path(input_list)
     sp = SearchPath(reference[0], reference[1])
     assert csp.find_first_match(sp) == expected_idx
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "base_list, provider, path, anchor_provider, result_list",
     [
         # appending to an empty list
@@ -81,13 +94,19 @@ def test_find_first_match(input_list, reference, expected_idx):
         ),
     ],
 )
-def test_append(base_list, provider, path, anchor_provider, result_list):
+def test_append(
+    base_list: List[Tuple[Optional[str], Optional[str]]],
+    provider: str,
+    path: str,
+    anchor_provider: SearchPath,
+    result_list: List[Tuple[Optional[str], Optional[str]]],
+) -> None:
     csp = create_search_path(base_list)
     csp.append(provider=provider, path=path, anchor=anchor_provider)
     assert to_tuples_list(csp) == result_list
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "base_list, provider, path, anchor_provider, result_list",
     [
         # prepending to an empty list
@@ -120,13 +139,19 @@ def test_append(base_list, provider, path, anchor_provider, result_list):
         ([], "foo2", "/path2", "does not exist", [("foo2", "/path2")]),
     ],
 )
-def test_prepend(base_list, provider, path, anchor_provider, result_list):
+def test_prepend(
+    base_list: List[Tuple[Optional[str], Optional[str]]],
+    provider: str,
+    path: str,
+    anchor_provider: SearchPath,
+    result_list: List[Tuple[Optional[str], Optional[str]]],
+) -> None:
     csp = create_search_path(base_list)
     csp.prepend(provider=provider, path=path, anchor=anchor_provider)
     assert to_tuples_list(csp) == result_list
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type:ignore
     "calling_file, calling_module, config_dir, expected",
     [
         ("foo.py", None, None, realpath("")),
@@ -146,6 +171,8 @@ def test_prepend(base_list, provider, path, anchor_provider, result_list):
         ("foo", "package1.package2.module", "../conf", "pkg://package1/conf"),
     ],
 )
-def test_compute_search_path_dir(calling_file, calling_module, config_dir, expected):
+def test_compute_search_path_dir(
+    calling_file: str, calling_module: str, config_dir: str, expected: str
+) -> None:
     res = compute_search_path_dir(calling_file, calling_module, config_dir)
     assert res == expected

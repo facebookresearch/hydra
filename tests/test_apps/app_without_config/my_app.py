@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import DictConfig
+
 import hydra
 
 
 @hydra.main()
-def my_app(_):
+def my_app(_: DictConfig) -> None:
     pass
 
 

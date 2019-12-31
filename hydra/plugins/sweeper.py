@@ -3,6 +3,12 @@
 Sweeper plugin interface
 """
 from abc import abstractmethod
+from typing import Any, List
+
+from omegaconf import DictConfig
+
+from hydra._internal.config_loader import ConfigLoader
+from hydra.types import TaskFunction
 
 from .plugin import Plugin
 
@@ -14,16 +20,21 @@ class Sweeper(Plugin):
     (where each job typically takes a different command line arguments)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         if type(self) == Sweeper:
             raise NotImplementedError
 
     @abstractmethod
-    def setup(self, config, config_loader, task_function):
+    def setup(
+        self,
+        config: DictConfig,
+        config_loader: ConfigLoader,
+        task_function: TaskFunction,
+    ) -> None:
         raise NotImplementedError()
 
     @abstractmethod
-    def sweep(self, arguments):
+    def sweep(self, arguments: List[str]) -> Any:
         """
         Execute a sweep
         :param arguments: list of strings describing what this sweeper should do.
@@ -31,4 +42,4 @@ class Sweeper(Plugin):
         :return: the return objects of all thy launched jobs. structure depends on the Sweeper
         implementation.
         """
-        raise NotImplementedError()
+        ...

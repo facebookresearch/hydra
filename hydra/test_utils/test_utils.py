@@ -11,9 +11,12 @@ import subprocess
 import sys
 import tempfile
 from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, Callable, Iterator, List, Optional, Union
 
 import pytest
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
+from typing_extensions import Protocol
 
 import hydra.experimental
 from hydra._internal.config_search_path import ConfigSearchPath
@@ -27,46 +30,35 @@ log = logging.getLogger(__name__)
 
 
 @contextmanager
-def does_not_raise(enter_result=None):
+def does_not_raise(enter_result: Any = None) -> Iterator[Any]:
     yield enter_result
 
 
-def strip_node(cfg, key):
-    """
-    Removes a key from a config, key is in dot.notation.
-    Nodes that are becoming empty after removing the element inside them will also be removed.
-    :param cfg: config node
-    :param key: key to strip
-    """
-    fragments = key.split(".")
-    while cfg.select(key) is not None:
-        c = cfg
-        for f in fragments[0:-1]:
-            c = c[f]
-        del c[fragments.pop(-1)]
-        if c:
-            break
-        key = ".".join(fragments)
+class GlobalHydraContext:
+    def __init__(self) -> None:
+        self.task_name: Optional[str] = None
+        self.config_dir: Optional[str] = None
+        self.strict: Optional[bool] = None
+
+    def __enter__(self) -> "GlobalHydraContext":
+        hydra.experimental.initialize(
+            config_dir=self.config_dir, strict=self.strict, caller_stack_depth=2
+        )
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
+        GlobalHydra().clear()
 
 
-@pytest.fixture(scope="function")
-def hydra_global_context():
-    class GlobalHydraContext:
-        def __init__(self):
-            self.task_name = None
-            self.config_dir = None
-            self.strict = None
-
-        def __enter__(self):
-            hydra.experimental.initialize(
-                config_dir=self.config_dir, strict=self.strict, caller_stack_depth=2
-            )
-            return self
-
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            GlobalHydra().clear()
-
-    def _(task_name="task", config_dir=None, strict=False):
+@pytest.fixture(scope="function")  # type: ignore
+def hydra_global_context() -> Callable[
+    [str, Optional[str], Optional[bool]], GlobalHydraContext
+]:
+    def _(
+        task_name: str = "task",
+        config_dir: Optional[str] = None,
+        strict: Optional[bool] = False,
+    ) -> "GlobalHydraContext":
         ctx = GlobalHydraContext()
         ctx.task_name = task_name
         ctx.config_dir = config_dir
@@ -76,62 +68,84 @@ def hydra_global_context():
     return _
 
 
-@pytest.fixture(scope="function")
-def task_runner():
+class TGlobalHydraContext(Protocol):
+    def __call__(
+        self,
+        task_name: str = "task",
+        config_dir: Optional[str] = None,
+        strict: Optional[bool] = False,
+    ) -> GlobalHydraContext:
+        ...
+
+
+"""
+Task runner fixture
+"""
+
+
+class TaskTestFunction:
     """
-    Task runner fixture
+    Context function
     """
 
-    class TaskTestFunction:
+    def __init__(self) -> None:
+        self.temp_dir: Optional[str] = None
+        self.overrides: Optional[List[str]] = None
+        self.calling_file: Optional[str] = None
+        self.calling_module: Optional[str] = None
+        self.config_path: Optional[str] = None
+        self.strict: Optional[bool] = None
+        self.hydra: Optional[Hydra] = None
+        self.job_ret: Optional[JobReturn] = None
+
+    def __call__(self, cfg: DictConfig) -> Any:
         """
-        Context function
+        Actual function being executed by Hydra
         """
 
-        def __init__(self):
-            self.temp_dir = None
-            self.overrides = None
-            self.calling_file = None
-            self.calling_module = None
-            self.config_path = None
-            self.strict = None
-            self.hydra = None
-            self.job_ret = None
+        return 100
 
-        def __call__(self, cfg):
-            """
-            Actual function being executed by Hydra
-            """
+    def __enter__(self) -> "TaskTestFunction":
+        try:
+            config_dir, config_file = split_config_path(self.config_path)
+            hydra = Hydra.create_main_hydra_file_or_module(
+                calling_file=self.calling_file,
+                calling_module=self.calling_module,
+                config_dir=config_dir,
+                strict=self.strict,
+            )
 
-            return 100
+            self.hydra = hydra
+            self.temp_dir = tempfile.mkdtemp()
+            overrides = copy.deepcopy(self.overrides)
+            assert overrides is not None
+            overrides.append("hydra.run.dir={}".format(self.temp_dir))
+            self.job_ret = self.hydra.run(
+                config_file=config_file, task_function=self, overrides=overrides
+            )
+            return self
+        finally:
+            GlobalHydra().clear()
 
-        def __enter__(self):
-            try:
-                config_dir, config_file = split_config_path(self.config_path)
-                hydra = Hydra.create_main_hydra_file_or_module(
-                    calling_file=self.calling_file,
-                    calling_module=self.calling_module,
-                    config_dir=config_dir,
-                    strict=self.strict,
-                )
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        # release log file handles
+        logging.shutdown()
+        assert self.temp_dir is not None
+        shutil.rmtree(self.temp_dir)
 
-                self.hydra = hydra
-                self.temp_dir = tempfile.mkdtemp()
-                overrides = copy.deepcopy(self.overrides)
-                overrides.append("hydra.run.dir={}".format(self.temp_dir))
-                self.job_ret = self.hydra.run(
-                    config_file=config_file, task_function=self, overrides=overrides
-                )
-                strip_node(self.job_ret.cfg, "hydra.run.dir")
-                return self
-            finally:
-                GlobalHydra().clear()
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            # release log file handles
-            logging.shutdown()
-            shutil.rmtree(self.temp_dir)
-
-    def _(calling_file, calling_module, config_path, overrides=None, strict=False):
+@pytest.fixture(scope="function")  # type: ignore
+def task_runner() -> Callable[
+    [Optional[str], Optional[str], Optional[str], Optional[List[str]], Optional[bool]],
+    TaskTestFunction,
+]:
+    def _(
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        config_path: Optional[str],
+        overrides: Optional[List[str]] = None,
+        strict: Optional[bool] = False,
+    ) -> TaskTestFunction:
         task = TaskTestFunction()
         task.overrides = overrides or []
         task.calling_file = calling_file
@@ -143,60 +157,83 @@ def task_runner():
     return _
 
 
-@pytest.fixture(scope="function")
-def sweep_runner():
+class TTaskRunner(Protocol):
+    def __call__(
+        self,
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        config_path: Optional[str],
+        overrides: Optional[List[str]] = None,
+        strict: Optional[bool] = False,
+    ) -> TaskTestFunction:
+        ...
+
+
+"""
+Sweep runner fixture
+"""
+
+
+class SweepTaskFunction:
     """
-    Sweep runner fixture
+    Context function
     """
 
-    class SweepTaskFunction:
+    def __init__(self) -> None:
+        self.temp_dir: Optional[str] = None
+        self.overrides: Optional[List[str]] = None
+        self.calling_file: Optional[str] = None
+        self.calling_module: Optional[str] = None
+        self.config_path: Optional[str] = None
+        self.strict: Optional[bool] = None
+        self.sweeps = None
+        self.returns = None
+
+    def __call__(self, cfg: DictConfig) -> Any:
         """
-        Context function
+        Actual function being executed by Hydra
         """
+        return 100
 
-        def __init__(self):
-            self.temp_dir = None
-            self.calling_file = None
-            self.calling_module = None
-            self.config_path = None
-            self.strict = None
-            self.sweeps = None
-            self.returns = None
+    def __enter__(self) -> "SweepTaskFunction":
+        self.temp_dir = tempfile.mkdtemp()
+        overrides = copy.deepcopy(self.overrides)
+        assert overrides is not None
+        overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
+        try:
+            config_dir, config_file = split_config_path(self.config_path)
+            hydra = Hydra.create_main_hydra_file_or_module(
+                calling_file=self.calling_file,
+                calling_module=self.calling_module,
+                config_dir=config_dir,
+                strict=self.strict,
+            )
 
-        def __call__(self, cfg):
-            """
-            Actual function being executed by Hydra
-            """
-            return 100
+            self.returns = hydra.multirun(
+                config_file=config_file, task_function=self, overrides=overrides
+            )
+        finally:
+            GlobalHydra().clear()
 
-        def __enter__(self):
-            self.temp_dir = tempfile.mkdtemp()
-            overrides = copy.deepcopy(self.overrides)
-            overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
-            try:
-                config_dir, config_file = split_config_path(self.config_path)
-                hydra = Hydra.create_main_hydra_file_or_module(
-                    calling_file=self.calling_file,
-                    calling_module=self.calling_module,
-                    config_dir=config_dir,
-                    strict=self.strict,
-                )
+        return self
 
-                self.returns = hydra.multirun(
-                    config_file=config_file, task_function=self, overrides=overrides
-                )
-                flat = [item for sublist in self.returns for item in sublist]
-                for ret in flat:
-                    strip_node(ret.cfg, "hydra.sweep.dir")
-            finally:
-                GlobalHydra().clear()
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        assert self.temp_dir is not None
+        shutil.rmtree(self.temp_dir)
 
-            return self
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            shutil.rmtree(self.temp_dir)
-
-    def _(calling_file, calling_module, config_path, overrides=None, strict=False):
+@pytest.fixture(scope="function")  # type: ignore
+def sweep_runner() -> Callable[
+    [Optional[str], Optional[str], Optional[str], Optional[List[str]], Optional[bool]],
+    SweepTaskFunction,
+]:
+    def _(
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        config_path: Optional[str],
+        overrides: Optional[List[str]],
+        strict: Optional[bool] = None,
+    ) -> SweepTaskFunction:
         sweep = SweepTaskFunction()
         sweep.calling_file = calling_file
         sweep.calling_module = calling_module
@@ -208,7 +245,21 @@ def sweep_runner():
     return _
 
 
-def chdir_hydra_root():
+class TSweepRunner(Protocol):
+    returns: List[List[JobReturn]]
+
+    def __call__(
+        self,
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        config_path: Optional[str],
+        overrides: Optional[List[str]],
+        strict: Optional[bool] = None,
+    ) -> SweepTaskFunction:
+        ...
+
+
+def chdir_hydra_root() -> None:
     """
     Chage the cwd to the root of the hydra project.
     used from unit tests to make them runnable from anywhere in the tree.
@@ -224,15 +275,20 @@ def chdir_hydra_root():
     os.chdir(cur)
 
 
-def verify_dir_outputs(job_return, overrides=None):
+def verify_dir_outputs(
+    job_return: JobReturn, overrides: Optional[List[str]] = None
+) -> None:
     """
     Verify that directory output makes sense
     """
     assert isinstance(job_return, JobReturn)
+    assert job_return.working_dir is not None
+    assert job_return.task_name is not None
+    assert job_return.hydra_cfg is not None
+
     assert os.path.exists(
         os.path.join(job_return.working_dir, job_return.task_name + ".log")
     )
-
     hydra_dir = os.path.join(
         job_return.working_dir, job_return.hydra_cfg.hydra.output_subdir
     )
@@ -244,8 +300,13 @@ def verify_dir_outputs(job_return, overrides=None):
 
 
 def integration_test(
-    tmpdir, task_config, overrides, prints, expected_outputs, filename="task.py"
-):
+    tmpdir: Path,
+    task_config: DictConfig,
+    overrides: List[str],
+    prints: Union[str, List[str]],
+    expected_outputs: Union[str, List[str]],
+    filename: str = "task.py",
+) -> str:
     if isinstance(prints, str):
         prints = [prints]
     if isinstance(expected_outputs, str):
@@ -309,7 +370,9 @@ if __name__ == "__main__":
         os.chdir(orig_dir)
 
 
-def create_search_path(search_path=[], abspath=False):
+def create_search_path(
+    search_path: List[str] = [], abspath: bool = False
+) -> ConfigSearchPath:
     csp = ConfigSearchPath()
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:

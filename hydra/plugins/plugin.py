@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from abc import ABCMeta
+from abc import ABC
 
 
-class Plugin(object, metaclass=ABCMeta):
+class Plugin(ABC):
     pass

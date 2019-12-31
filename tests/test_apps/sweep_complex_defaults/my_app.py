@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import DictConfig
+
 import hydra
 
 
 @hydra.main(config_path="conf/config.yaml")
-def my_app(_cfg):
+def my_app(_cfg: DictConfig) -> None:
     print(_cfg.pretty())
 
 
