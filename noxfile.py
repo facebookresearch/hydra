@@ -91,7 +91,7 @@ def test_core(session, install_cmd):
 
 
 def get_setup_python_versions(session, setup_py):
-    out = session.run("python", setup_py, "--classifiers", silent=True).split("\n")
+    out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
     pythons = filter(lambda line: "Programming Language :: Python" in line, out)
     return [p[len("Programming Language :: Python :: ") :] for p in pythons]
 
