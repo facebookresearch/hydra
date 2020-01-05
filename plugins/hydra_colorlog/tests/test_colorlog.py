@@ -2,12 +2,15 @@
 from hydra._internal.hydra import GlobalHydra
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import TGlobalHydraContext  # noqa: F401
+from hydra.test_utils.test_utils import (  # noqa: F401
+    TGlobalHydraContext,
+    hydra_global_context,
+)
 
 
 def test_config_installed(
-    hydra_global_context: TGlobalHydraContext,
-) -> None:  # noqa: F811
+    hydra_global_context: TGlobalHydraContext,  # noqa: F811
+) -> None:
     """
     Tests that color options are available for both hydra/hydra_logging and hydra/job_logging
     """

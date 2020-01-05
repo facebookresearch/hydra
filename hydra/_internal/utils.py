@@ -20,11 +20,15 @@ from .plugins import Plugins
 def detect_calling_file_or_module(
     stack_depth: int,
 ) -> Tuple[Optional[str], Optional[str]]:
-    stack = inspect.stack()
-    frame = stack[stack_depth]
-
     calling_file = None
     calling_module = None
+
+    stack = inspect.stack()
+    frame = stack[stack_depth]
+    if is_notebook():
+        pynb_dir = frame[0].f_globals["_dh"][0]
+        calling_file = join(pynb_dir, "notebook.ipynb")
+        return calling_file, None
 
     try:
         calling_file = frame[0].f_locals["__file__"]
