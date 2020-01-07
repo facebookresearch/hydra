@@ -418,7 +418,7 @@ def test_interpolating_dir_hydra_to_app(
         assert path.exists()
 
 
-def test_sys_exit(tmpdir):
+def test_sys_exit(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
         "tests/test_apps/sys_exit/my_app.py",
