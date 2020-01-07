@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
-import sys
 from typing import Callable, Optional
 
 from ._internal.utils import get_args_parser, run_hydra
@@ -23,17 +22,12 @@ def main(
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
         @functools.wraps(task_function)
         def decorated_main() -> None:
-            try:
-                run_hydra(
-                    args_parser=get_args_parser(),
-                    task_function=task_function,
-                    config_path=config_path,
-                    strict=strict,
-                )
-            except KeyboardInterrupt:
-                sys.exit(-1)
-            except SystemExit:
-                pass
+            run_hydra(
+                args_parser=get_args_parser(),
+                task_function=task_function,
+                config_path=config_path,
+                strict=strict,
+            )
 
         return decorated_main
 
