@@ -1,0 +1,1 @@
+Fix a bug causing sys.exit() error code to not be propagated
