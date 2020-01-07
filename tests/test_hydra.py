@@ -416,3 +416,12 @@ def test_interpolating_dir_hydra_to_app(
         assert task.temp_dir is not None
         path = Path(task.temp_dir) / basedir
         assert path.exists()
+
+
+def test_sys_exit(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/sys_exit/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    assert subprocess.run(cmd).returncode == 42
