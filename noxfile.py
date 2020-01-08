@@ -108,28 +108,27 @@ def get_plugin_python_version(session, plugin):
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("plugin", list_plugins(), ids=plugin_names())
-def test_plugin(session, plugin, install_cmd):
+def test_plugins(session, install_cmd):
     session.install("--upgrade", "setuptools", "pip")
-    # Verify this plugin supports the python we are testing on, skip otherwise
-    plugin_python_versions = get_plugin_python_version(session, plugin)
-    if session.python not in plugin_python_versions:
-        session.skip(
-            "Not testing {} on Python {}, supports [{}]".format(
-                plugin, session.python, ",".join(plugin_python_versions)
-            )
-        )
-
+    install_pytest(session)
     install_hydra(session, install_cmd)
     plugin_enabled = {}
     all_plugins = get_all_plugins()
-    # Install all plugins in session
+    # Install all supported plugins in session
     for plugin in all_plugins:
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
         pythons = get_plugin_python_version(session, plugin)
+        # Verify this plugin supports the python we are testing on, skip otherwise
+        plugin_python_versions = get_plugin_python_version(session, plugin)
         plugin_enabled[plugin["path"]] = session.python in pythons
-        if plugin_enabled[plugin["path"]]:
-            session.run(*cmd, silent=SILENT)
+        if not plugin_enabled[plugin["path"]]:
+            py_str = ",".join(plugin_python_versions)
+            session.log(
+                f"Not testing {plugin['name']} on Python {session.python}, supports [{py_str}]"
+            )
+            continue
+
+        cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
+        session.run(*cmd, silent=SILENT)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)
@@ -140,14 +139,15 @@ def test_plugin(session, plugin, install_cmd):
         if plugin_enabled[plugin["path"]]:
             session.run("python", "-c", "import {}".format(plugin["module"]))
 
-    install_pytest(session)
-
-    # Run Hydra tests
+    # Run Hydra tests to verify installed plugins did not break anything
     run_pytest(session, "tests")
 
-    # Run tests for current plugin
-    session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
-    run_pytest(session)
+    # Run tests for all installed plugins
+    for plugin in all_plugins:
+        # install all other plugins that are compatible with the current Python version
+        if plugin_enabled[plugin["path"]]:
+            session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+            run_pytest(session)
 
 
 # code coverage runs with python 3.6
