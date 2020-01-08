@@ -55,3 +55,15 @@ hydra:
         item_sep: ','
         exclude_keys: []
 ```
+
+### Customizing outputs with substitution through the CLI 
+
+Outputs can also be configured through the CLI, like any other configuration.
+
+> python3 train.py model.nb_layers=3 hydra.run.dir=3_layers
+
+While this feature by itself is not surprising, it can become really powerful to write multiruns without boilerplate using substitution.
+
+> python3 train.py model.nb_layers=1,2,3,5 hydra.sweep.dir="multiruns/layers_effect" hydra.sweep.subdir=\${model.nb_layers} -m
+
+With bash, be careful to escpae the $ symbol. Otherwise, bash will try to resolve the substitution, instead of passing it to hydra.
