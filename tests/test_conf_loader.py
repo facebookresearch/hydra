@@ -13,7 +13,7 @@ chdir_hydra_root()
 
 
 @pytest.mark.parametrize(
-    "path", ["hydra/test_utils/configs", "pkg://hydra.test_utils.configs"]
+    "path", ["file://hydra/test_utils/configs", "pkg://hydra.test_utils.configs"]
 )
 class TestConfigLoader:
     def test_load_configuration(self, path: str) -> None:
@@ -232,7 +232,7 @@ def test_default_removal(config_file: str, overrides: List[str]) -> None:
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
-        (config_file, "hydra/test_utils/configs", "test"),
+        (config_file, "file://hydra/test_utils/configs", "test"),
     ]
 
 
@@ -290,7 +290,7 @@ def test_override_hydra_config_group_from_config_file() -> None:
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("overriding_logging_default.yaml", "hydra/test_utils/configs", "test"),
+        ("overriding_logging_default.yaml", "file://hydra/test_utils/configs", "test"),
     ]
 
 
@@ -336,8 +336,8 @@ def test_non_config_group_default() -> None:
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("non_config_group_default.yaml", "hydra/test_utils/configs", "test"),
-        ("some_config.yaml", "hydra/test_utils/configs", "test"),
+        ("non_config_group_default.yaml", "file://hydra/test_utils/configs", "test"),
+        ("some_config.yaml", "file://hydra/test_utils/configs", "test"),
     ]
 
 
@@ -361,8 +361,8 @@ def test_mixed_composition_order() -> None:
         ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
         ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("mixed_compose.yaml", "hydra/test_utils/configs", "test"),
-        ("some_config.yaml", "hydra/test_utils/configs", "test"),
-        ("group1/file1.yaml", "hydra/test_utils/configs", "test"),
-        ("config.yaml", "hydra/test_utils/configs", "test"),
+        ("mixed_compose.yaml", "file://hydra/test_utils/configs", "test"),
+        ("some_config.yaml", "file://hydra/test_utils/configs", "test"),
+        ("group1/file1.yaml", "file://hydra/test_utils/configs", "test"),
+        ("config.yaml", "file://hydra/test_utils/configs", "test"),
     ]

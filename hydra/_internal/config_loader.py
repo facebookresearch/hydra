@@ -8,16 +8,13 @@ from dataclasses import dataclass
 from typing import Any, List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
-from pkg_resources import (
-    resource_exists,
-    resource_isdir,
-    resource_listdir,
-    resource_stream,
-)
+from pkg_resources import resource_exists
 
-from ..errors import MissingConfigException
+from hydra.errors import MissingConfigException
+
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
-from .config_search_path import ConfigSearchPath, SearchPath
+from .config import ConfigRepository, ConfigSource, ObjectType
+from .config_search_path import ConfigSearchPath
 
 
 class ConfigLoader:
@@ -30,10 +27,9 @@ class ConfigLoader:
         config_search_path: ConfigSearchPath,
         default_strict: Optional[bool] = None,
     ) -> None:
-        assert isinstance(config_search_path, ConfigSearchPath)
-        self.config_search_path = config_search_path
         self.default_strict = default_strict
         self.all_config_checked: List["LoadTrace"] = []
+        self.repository = ConfigRepository(config_search_path=config_search_path)
 
     def load_configuration(
         self,
@@ -57,8 +53,8 @@ class ConfigLoader:
                     config_file,
                     "\n".join(
                         [
-                            "\t{} (from {})".format(x.path, x.provider)
-                            for x in self.config_search_path.config_search_path
+                            "\t{} (from {})".format(src.path, src.provider)
+                            for src in self.repository.sources
                         ]
                     ),
                 ),
@@ -135,15 +131,10 @@ class ConfigLoader:
         return sweep_config
 
     def exists_in_search_path(self, filepath: str) -> bool:
-        return self._find_config(filepath) is not None
-
-    @staticmethod
-    def exists(filename: str) -> bool:
-        is_pkg, path = ConfigLoader._split_path(filename)
-        return ConfigLoader._exists(is_pkg, path)
+        return self.repository.exists(filepath)
 
     def get_search_path(self) -> ConfigSearchPath:
-        return self.config_search_path
+        return self.repository.config_search_path
 
     def get_load_history(self) -> List["LoadTrace"]:
         """
@@ -151,25 +142,6 @@ class ConfigLoader:
         were loaded successfully or not.
         """
         return copy.deepcopy(self.all_config_checked)
-
-    @staticmethod
-    def _split_path(path: Optional[str]) -> Tuple[bool, str]:
-        prefix = "pkg://"
-        assert path is not None
-        is_pkg = path.startswith(prefix)
-        if is_pkg:
-            path = path[len(prefix) :]
-        return is_pkg, path
-
-    def _find_config(self, filepath: str) -> Optional[SearchPath]:
-        found_search_path = None
-        for search_path in self.config_search_path.config_search_path:
-            is_pkg, path = self._split_path(search_path.path)
-            config_file = "{}/{}".format(path, filepath)
-            if self._exists(is_pkg, config_file):
-                found_search_path = search_path
-                break
-        return found_search_path
 
     @staticmethod
     def _apply_defaults_overrides(
@@ -253,98 +225,37 @@ class ConfigLoader:
         :param record_load:
         :return: the loaded config or None if it was not found
         """
-        loaded_cfg = None
-        search_path = self._find_config(input_file)
-        if search_path is None and record_load:
-            assert search_path is None
-            self.all_config_checked.append(
-                LoadTrace(filename=input_file, path=None, provider=None)
-            )
 
-        if search_path is not None:
-            assert search_path.path is not None
-            fullpath = "{}/{}".format(search_path.path, input_file)
-            is_pkg = search_path.path.startswith("pkg://")
-            if is_pkg:
-                fullpath = fullpath[len("pkg://") :]
-                module_name, resource_name = ConfigLoader._split_module_and_resource(
-                    fullpath
+        ret = self.repository.load_config(config_path=input_file)
+        if record_load:
+            if ret is None:
+                self.all_config_checked.append(
+                    LoadTrace(filename=input_file, path=None, provider=None)
                 )
-                with resource_stream(module_name, resource_name) as stream:
-                    loaded_cfg = OmegaConf.load(stream)
-                if record_load:
-                    self.all_config_checked.append(
-                        LoadTrace(
-                            filename=input_file,
-                            path=search_path.path,
-                            provider=search_path.provider,
-                        )
-                    )
-            elif os.path.exists(fullpath):
-                loaded_cfg = OmegaConf.load(fullpath)
-                if record_load:
-                    self.all_config_checked.append(
-                        LoadTrace(
-                            filename=input_file,
-                            path=search_path.path,
-                            provider=search_path.provider,
-                        )
-                    )
             else:
-                # This should never happen because we just searched for it and found it
-                assert False, "'{}' not found".format(fullpath)
-        assert loaded_cfg is None or isinstance(
-            loaded_cfg, DictConfig
-        ), f"Top level config should be a dictionary : {type(loaded_cfg)}"
-        return loaded_cfg
+                self.all_config_checked.append(
+                    LoadTrace(
+                        filename=input_file, path=ret.path, provider=ret.provider,
+                    )
+                )
+
+        if ret is not None:
+            if not isinstance(ret.config, DictConfig):
+                raise ValueError(
+                    f"Config {input_file} must be a Dictionary, got {type(ret).__name__}"
+                )
+            return ret.config
+        else:
+            return None
 
     def list_groups(self, parent_name: str) -> List[str]:
         ret = list(set(self.get_group_options(parent_name, file_type="dir")))
         return ret
 
     def get_group_options(self, group_name: str, file_type: str = "file") -> List[str]:
-        options: List[str] = []
-        for search_path in self.config_search_path.config_search_path:
-            is_pkg, path = self._split_path(search_path.path)
-            files: List[str] = []
-            if is_pkg:
-                module_name, resource_name = ConfigLoader._split_module_and_resource(
-                    "{}/{}".format(path, group_name)
-                )
-                if self._exists(is_pkg, path) and resource_isdir(
-                    module_name, resource_name
-                ):
-                    all_files = resource_listdir(module_name, resource_name)
-                    files = []
-                    for file in all_files:
-                        if (
-                            file_type == "dir"
-                            and resource_isdir(
-                                module_name, os.path.join(group_name, file)
-                            )
-                            and file != "__pycache__"
-                        ):
-                            files.append(file)
-                        elif file_type == "file" and file.endswith(".yaml"):
-                            files.append(file[0 : -len(".yaml")])
-            else:
-                group_path = "{}/{}".format(path, group_name)
-                if os.path.isdir(group_path):
-                    all_files = os.listdir(group_path)
-                    files = []
-                    for file in all_files:
-                        full_path = os.path.join(group_path, group_name, file)
-                        if (
-                            file_type == "dir"
-                            and os.path.isdir(full_path)
-                            and file != "__pycache__"
-                        ):
-                            files.append(file)
-                        elif file_type == "file" and file.endswith(".yaml"):
-                            files.append(file[0 : -len(".yaml")])
-
-            options.extend(files)
-        return options
+        return self.repository.get_group_options(
+            group_name, ObjectType.GROUP if file_type == "dir" else ObjectType.CONFIG
+        )
 
     def _merge_config(
         self, cfg: DictConfig, family: str, name: str, required: bool
@@ -477,7 +388,7 @@ class ConfigLoader:
             assert isinstance(cfg, DictConfig)
         else:
             ret = self._load_config_impl(cfg_filename, record_load=record_load)
-            assert isinstance(ret, DictConfig)
+            assert ret is not None
             cfg = ret
 
         if cfg.defaults is not None:
@@ -523,6 +434,9 @@ class ConfigLoader:
 
         assert isinstance(defaults, ListConfig)
         return defaults
+
+    def get_sources(self) -> List[ConfigSource]:
+        return self.repository.sources
 
 
 @dataclass

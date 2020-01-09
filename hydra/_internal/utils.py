@@ -9,10 +9,8 @@ from typing import Any, Optional, Sequence, Tuple
 
 from hydra.types import TaskFunction
 
-from ..errors import MissingConfigException
 from ..plugins import SearchPathPlugin
 from ..plugins.common.utils import get_valid_filename, split_config_path
-from .config_loader import ConfigLoader
 from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 
@@ -129,11 +127,6 @@ def create_automatic_config_search_path(
     config_dir: Optional[str],
 ) -> ConfigSearchPath:
     search_path_dir = compute_search_path_dir(calling_file, calling_module, config_dir)
-    if search_path_dir is not None and not ConfigLoader.exists(search_path_dir):
-        raise MissingConfigException(
-            missing_cfg_file=search_path_dir,
-            message="Primary config dir not found: {}".format(search_path_dir),
-        )
     return create_config_search_path(search_path_dir)
 
 

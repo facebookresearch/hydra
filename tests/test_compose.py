@@ -3,9 +3,9 @@ from typing import Any, List
 
 import pytest
 
-import hydra.experimental
 from hydra._internal.config_search_path import SearchPath
 from hydra._internal.hydra import GlobalHydra
+from hydra.experimental import compose, initialize
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
@@ -21,7 +21,7 @@ chdir_hydra_root()
 def test_initialize() -> None:
     try:
         assert not GlobalHydra().is_initialized()
-        hydra.experimental.initialize(config_dir=None, strict=True)
+        initialize(config_dir=None, strict=True)
         assert GlobalHydra().is_initialized()
     finally:
         GlobalHydra().clear()
@@ -30,14 +30,12 @@ def test_initialize() -> None:
 def test_initialize_with_config_dir() -> None:
     try:
         assert not GlobalHydra().is_initialized()
-        hydra.experimental.initialize(
-            config_dir="../hydra/test_utils/configs", strict=True
-        )
+        initialize(config_dir="../hydra/test_utils/configs", strict=True)
         assert GlobalHydra().is_initialized()
 
-        config_search_path = (
-            GlobalHydra.instance().hydra.config_loader.config_search_path
-        )
+        gh = GlobalHydra.instance()
+        assert gh.hydra is not None
+        config_search_path = gh.hydra.config_loader.get_search_path()
         idx = config_search_path.find_first_match(
             SearchPath(provider="main", search_path=None)
         )
@@ -66,7 +64,7 @@ class TestCompose:
         expected: Any,
     ) -> None:
         with hydra_global_context(config_dir=config_dir):
-            ret = hydra.experimental.compose(config_file, overrides)
+            ret = compose(config_file, overrides)
             assert ret == expected
 
     def test_compose_config(
@@ -78,7 +76,7 @@ class TestCompose:
         expected: Any,
     ) -> None:
         with hydra_global_context(config_dir=config_dir):
-            cfg = hydra.experimental.compose(config_file, overrides)
+            cfg = compose(config_file, overrides)
             assert cfg == expected
 
     def test_strict_failure_global_strict(
@@ -93,7 +91,7 @@ class TestCompose:
         overrides.append("fooooooooo=bar")
         with hydra_global_context(config_dir=config_dir, strict=True):
             with pytest.raises(AttributeError):
-                hydra.experimental.compose(config_file, overrides)
+                compose(config_file, overrides)
 
     def test_strict_failure_call_is_strict(
         self,
@@ -106,17 +104,13 @@ class TestCompose:
         # default strict false, but call is strict
         with hydra_global_context(config_dir=config_dir, strict=False):
             with pytest.raises(AttributeError):
-                hydra.experimental.compose(
-                    config_file=config_file, overrides=overrides, strict=True
-                )
+                compose(config_file=config_file, overrides=overrides, strict=True)
 
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
 
             with does_not_raise():
-                hydra.experimental.compose(
-                    config_file=config_file, overrides=overrides, strict=False
-                )
+                compose(config_file=config_file, overrides=overrides, strict=False)
 
     def test_strict_failure_disabled_on_call(
         self,
@@ -129,9 +123,7 @@ class TestCompose:
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
             with does_not_raise():
-                hydra.experimental.compose(
-                    config_file=config_file, overrides=overrides, strict=False
-                )
+                compose(config_file=config_file, overrides=overrides, strict=False)
 
 
 @pytest.mark.parametrize(
@@ -215,5 +207,5 @@ class TestComposeCloudInfraExample:
         expected: Any,
     ) -> None:
         with hydra_global_context(config_dir=config_dir):
-            ret = hydra.experimental.compose(config_file, overrides)
+            ret = compose(config_file, overrides)
             assert ret == expected
