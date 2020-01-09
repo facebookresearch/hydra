@@ -1,0 +1,3 @@
+defaults:
+  - hydra/launcher: ray
+  - db: mysql
