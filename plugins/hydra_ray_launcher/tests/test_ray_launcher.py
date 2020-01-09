@@ -11,7 +11,7 @@ from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 
 
 @pytest.mark.parametrize("launcher_name, overrides", [("ray", [])])
-class TestBasicLauncher(LauncherTestSuite):
+class TestRayLauncher(LauncherTestSuite):
     pass
 
 
@@ -31,7 +31,7 @@ class TestBasicLauncher(LauncherTestSuite):
         )
     ],
 )
-class TestExampleLauncherIntegration(IntegrationTestSuite):
+class TestRayLauncherIntegration(IntegrationTestSuite):
     """
     Run this launcher through the integration test suite.
     """
