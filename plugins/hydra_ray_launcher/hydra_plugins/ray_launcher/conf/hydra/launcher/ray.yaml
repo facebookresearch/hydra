@@ -1,3 +1,7 @@
 hydra:
   launcher:
     class: hydra_plugins.ray_launcher.RayLauncher
+ray:
+  init: 
+  remote:
+    num_cpus: 1

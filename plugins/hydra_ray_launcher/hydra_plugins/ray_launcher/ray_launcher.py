@@ -22,32 +22,6 @@ import ray
 
 log = logging.getLogger(__name__)
 
-def get_key(cfg, key):
-    if key == '':
-        return cfg
-    else:
-        keys = key.split('.')
-        if keys[0] in cfg:
-            return get_key(getattr(cfg, keys[0]), '.'.join(keys[1:]))
-        else:
-            return False
-
-def merge_kwargs(kwargs1, kwargs2):
-    k1 = kwargs1 if isinstance(kwargs1, DictConfig) else OmegaConf.create(kwargs1)
-    k2 = kwargs2 if isinstance(kwargs2, DictConfig) else OmegaConf.create(kwargs2)
-    merged = OmegaConf.merge(k1,k2)
-    return merged.to_container(resolve=True)
-
-def pass_conf(f, cfg, key):
-    item = get_key(cfg, key)
-    if item:
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            return f(*args, **merge_kwargs(item, kwargs))
-        return wrapper
-    else:
-        return f
-
 class RayLauncherSearchPathPlugin(SearchPathPlugin):
     """
     This plugin is allowing configuration files provided by the ExampleLauncher plugin to be discovered
@@ -76,7 +50,7 @@ class RayLauncher(Launcher):
         self.config_loader = config_loader
         self.task_function = task_function
         
-        if not ray.is_initialized(): pass_conf(ray.init, config, 'ray.init')()
+        if not ray.is_initialized(): ray.init(**config.select("ray.init")) if config.select("ray.init") else ray.init()
 
     def launch(self, job_overrides):
         """
@@ -107,7 +81,7 @@ class RayLauncher(Launcher):
                 sweep_config.hydra.job.num = idx
             HydraConfig().set_config(sweep_config)
 
-            ray_remote_cfg = get_key(self.config, 'ray.remote')
+            ray_remote_cfg = self.config.select('ray.remote')
             if ray_remote_cfg:
                 run_job_ray = ray.remote(**ray_remote_cfg)(launch)
             else:
