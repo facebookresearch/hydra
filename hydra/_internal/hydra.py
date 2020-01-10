@@ -9,6 +9,8 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from hydra._internal.singleton import Singleton
+from hydra.errors import MissingConfigException
 from hydra.types import TaskFunction
 
 from ..plugins import CompletionPlugin, Launcher, SearchPathPlugin, Sweeper
@@ -16,7 +18,6 @@ from ..plugins.common.utils import (
     HydraConfig,
     JobReturn,
     JobRuntime,
-    Singleton,
     configure_log,
     run_job,
     setup_globals,
@@ -43,6 +44,10 @@ class GlobalHydra(metaclass=Singleton):
 
     def clear(self) -> None:
         self.hydra = None
+
+    @staticmethod
+    def instance(*args: Any, **kwargs: Any) -> "GlobalHydra":
+        return Singleton.instance(GlobalHydra, *args, **kwargs)  # type: ignore
 
 
 class Hydra:
@@ -84,6 +89,16 @@ class Hydra:
         """
         setup_globals()
         self.config_loader = config_loader
+
+        for source in config_loader.get_sources():
+            # if specified, make sure main config search path exists
+            if source.provider == "main":
+                if not source.exists(""):
+                    raise MissingConfigException(
+                        missing_cfg_file=source.path,
+                        message="Primary config dir not found: {}".format(source.path),
+                    )
+
         JobRuntime().set("name", task_name)
 
     def run(
@@ -304,7 +319,7 @@ class Hydra:
         provider_pad = 0
         search_path_pad = 0
         file_pad = 0
-        for sp in self.config_loader.config_search_path.config_search_path:
+        for sp in self.config_loader.get_sources():
             assert sp.provider is not None
             assert sp.path is not None
             provider_pad = max(provider_pad, len(sp.provider))
@@ -330,12 +345,13 @@ class Hydra:
             filler="-",
         )
 
-        for sp in self.config_loader.config_search_path.config_search_path:
-            assert sp.provider is not None
-            assert sp.path is not None
+        for source in self.config_loader.get_sources():
+            assert source.provider is not None
+            assert source.path is not None
             log.debug(
                 "| {} | {} |".format(
-                    sp.provider.ljust(provider_pad), sp.path.ljust(search_path_pad)
+                    source.provider.ljust(provider_pad),
+                    source.path.ljust(search_path_pad),
                 )
             )
 

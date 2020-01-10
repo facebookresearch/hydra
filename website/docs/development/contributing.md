@@ -36,9 +36,12 @@ pre-commit install
 ```
 Pre commit hooks can help you catch problems before you push your pull request.
 #### Hooks
- - black : automatic code formatting for Python
- - flake8: pep8 compliance checker for Python, this includes copyright header verification.
-any PR that does not pass black and flake8 will fail the automated testing.
+ - black : Automatic code formatting for Python
+ - flake8: PEP8 compliance checker for Python, this includes copyright header verification.
+ - mypy: Ensures code passes strict type checking
+ - isort: Ensure imports are sorted properly
+
+any PR that does not the above tests will fail the automated testing.
 
 
 ## Testing
@@ -62,7 +65,7 @@ You can use `nox -s NAME` to run a specific session.
 
 For example:
  * `nox -s test_core` will test Hydra core on all supported Python versions
- * `nox -s lint` will lint the code in both Python 2 and Python 3.
+ * `nox -s lint` will lint the code, making sure it passes all automated style, correctness and formatting checks
  * `nox -s coverage` will run the code coverage tool
 
 ## NEWS Entries

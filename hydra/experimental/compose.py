@@ -39,7 +39,9 @@ def compose(
         GlobalHydra().is_initialized()
     ), "GlobalHydra is not initialized, use @hydra.main() or call hydra.experimental.initialize() first"
 
-    cfg = GlobalHydra.instance().hydra.compose_config(
+    gh = GlobalHydra.instance()
+    assert gh.hydra is not None
+    cfg = gh.hydra.compose_config(
         config_file=config_file, overrides=overrides, strict=strict
     )
     assert isinstance(cfg, DictConfig)

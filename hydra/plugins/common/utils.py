@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra._internal.singleton import Singleton
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
@@ -157,18 +158,6 @@ class JobReturn:
         self.hydra_cfg: Optional[DictConfig] = None
         self.working_dir: Optional[str] = None
         self.task_name: Optional[str] = None
-
-
-class Singleton(type):
-    _instances: Dict[type, "Singleton"] = {}
-
-    def __call__(cls, *args: Any, **kwargs: Any) -> Any:
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-    def instance(cls, *args: Any, **kwargs: Any) -> Any:
-        return cls(*args, **kwargs)
 
 
 class JobRuntime(metaclass=Singleton):
