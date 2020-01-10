@@ -15,7 +15,7 @@ multiple heads.
 * Run your application locally or launch it to run remotely
 * Run multiple jobs with different arguments with a single command
 
-The best way to understand what Hydra is good for is to go through the [tutorial](tutorial/simple_cli/).
+The best way to understand what Hydra is good for is to go through the [tutorial](tutorial/1_simple_cli_app.md).
 
 ## Community
 Ask questions in the google group or the chat:

@@ -44,5 +44,5 @@ $ python my_app.py hydra.verbose=[__main__,hydra]
 [2019-09-29 13:06:00,896][__main__][DEBUG] - Debug level message
 ```
 
-Logging can be [customized](../configure_hydra/logging/).
+Logging can be [customized](../configure_hydra/logging.md).
 

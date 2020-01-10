@@ -10,44 +10,47 @@ It is recommended that you install Hydra in a virtual environment like conda or 
 ### Environment setup
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and create an empty Conda environment with:
 ```
-conda create -n hydra37 python=3.7 -y
+conda create -n hydra38 python=3.8 -y
 ```
 
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>:
-The core Hydra framework supports Python 2.7 or newer. You may need to create additional environments for different Python versions if
+The core Hydra framework supports Python 3.6 or newer. You may need to create additional environments for different Python versions if
 CI detect issues on supported version of Python.
 </div>
 <br/>
 
 Activate the environment:
 ```
-conda activate hydra37
+conda activate hydra38
 ```
 From the source tree, install Hydra in development mode with the following command:
 ```
 pip install -e .[dev] -e .
 ```
+## Nox
+Hydra is using a test automation tool called [nox](https://github.com/theacodes/nox) to manage tests, linting, code coverage etc. 
+`nox` will run all the configured sessions. You can see the full list of nox sessions with `nox -l` and run specific sessions
+with `nox -s NAME` (you may need to quote the session name in some cases)
 
-### Pre commit hooks
-It is highly recommended that you install pre commit hooks into your local git repository.
-```
-pre-commit install
-```
-Pre commit hooks can help you catch problems before you push your pull request.
-#### Hooks
- - black : Automatic code formatting for Python
- - flake8: PEP8 compliance checker for Python, this includes copyright header verification.
- - mypy: Ensures code passes strict type checking
- - isort: Ensure imports are sorted properly
+## Code style guide
+The code need to pass verification by the following tools:
+ - `black .` : Automatic code formatting for Python
+ - `flake8` : PEP8 compliance checker for Python, this includes copyright header verification
+ - `isort .` : Ensure imports are sorted properly
+ - `mypy --strict .` : Ensures code passes strict type checking
+ 
+The easiest way to run all the required verifications is with `nox -s lint`.
 
-any PR that does not the above tests will fail the automated testing.
+It is also recommended that you install pre-commit hooks (use `pre-commit install`), this will ensure that those tests
+are ran just before you commit your code.
+
+Any pull request that does not pass the linting will fail the automated testing.
 
 
 ## Testing
-There are two ways to run the tests:
 ### With pytest
-use `pytest` at the repository root to run all the Hydra core tests.
+Use `pytest` at the repository root to run all the Hydra core tests.
 To run the tests of individual plugins, use `pytest plugins/NAME`.
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>:
@@ -55,18 +58,10 @@ Some plugins supports fewer versions of Python than the Hydra core.
 </div>
 
 ### With nox
-Nox is a test automation tool that is used by the CI to test Hydra under multiple Python versions with a single command.
-
-To trigger a full nox run, just run `nox`.
-
-You may want to run specific nox sessions as well to speed things up. 
-`nox -l` will list all available sessions.
-You can use `nox -s NAME` to run a specific session.
-
-For example:
- * `nox -s test_core` will test Hydra core on all supported Python versions
- * `nox -s lint` will lint the code, making sure it passes all automated style, correctness and formatting checks
- * `nox -s coverage` will run the code coverage tool
+See `nox -l`. a few examples:
+* `nox -s test_core` will test Hydra core on all supported Python versions
+* `nox -s "test_core-3.6(pip install)"` : Test on Python 3.6 with `pip install` as installation method
+* `nox -s "test_plugins-3.8(pip install -e)"` : Test plugins on Python 3.8 with `pip install -e` as installation method  
 
 ## NEWS Entries
 The `NEWS.rst` file is managed using `towncrier` and all non trivial changes
@@ -96,12 +91,12 @@ deduplicate them.
 
 
 ### Contents of a NEWS entry
-The contents of this file are reStructuredText formatted text that will be used
+The contents of this file is markdown formatted text that will be used
 as the content of the news file entry. You do not need to reference the issue
 or PR numbers here as towncrier will automatically add a reference to all of
 the affected issues when rendering the news file.
 
-In order to maintain a consistent style in the ``NEWS.rst`` file, it is
+In order to maintain a consistent style in the `NEWS.md` file, it is
 preferred to keep the news entry to the point, in sentence case, shorter than
 80 characters and in an imperative tone -- an entry should complete the sentence
 "This change will ...". In rare cases, where one line is not enough, use a
