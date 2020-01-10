@@ -45,7 +45,7 @@ class PackageConfigSource(ConfigSource):
             return False
 
     def get_type(self, config_path: str) -> ObjectType:
-        full_path = f"{self.path}/{config_path}"
+        full_path = self.concat(self.path, config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
             full_path
         )
@@ -59,12 +59,12 @@ class PackageConfigSource(ConfigSource):
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
-        full_path = f"{self.path}/{config_path}"
+        full_path = self.concat(self.path, config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
             full_path
         )
         for file in resource_listdir(module_name, resource_name):
-            file_path = f"{config_path}/{file}"
+            file_path = self.concat(config_path, file)
             self._list_add_result(
                 files=files,
                 file_path=file_path,
@@ -89,3 +89,10 @@ class PackageConfigSource(ConfigSource):
             resource_name = ""
 
         return module_name, resource_name
+
+    @staticmethod
+    def concat(path1: str, path2: str) -> str:
+        if path1 != "":
+            return f"{path1}/{path2}"
+        else:
+            return path2

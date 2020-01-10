@@ -16,6 +16,8 @@ def test_config_installed(
     """
 
     with hydra_global_context(config_dir="../hydra_plugins/hydra_colorlog/conf"):
-        config_loader = GlobalHydra.instance().hydra.config_loader
+        gh = GlobalHydra.instance()
+        assert gh.hydra is not None
+        config_loader = gh.hydra.config_loader
         assert "colorlog" in config_loader.get_group_options("hydra/job_logging")
         assert "colorlog" in config_loader.get_group_options("hydra/hydra_logging")

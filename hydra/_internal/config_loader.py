@@ -5,10 +5,9 @@ Configuration loader
 import copy
 import os
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
-from pkg_resources import resource_exists
 
 from hydra.errors import MissingConfigException
 
@@ -288,45 +287,6 @@ class ConfigLoader:
             ret = OmegaConf.merge(cfg, loaded_cfg)
             assert isinstance(ret, DictConfig)
             return ret
-
-    @staticmethod
-    def _split_module_and_resource(filename: str) -> Tuple[str, str]:
-        sep = filename.find("/")
-        if sep == -1:
-            module_name = filename
-            resource_name = ""
-        else:
-            module_name = filename[0:sep]
-            resource_name = filename[sep + 1 :]
-        if module_name == "":
-            # if we have a module a module only, dirname would return nothing and basename would return the module.
-            module_name = resource_name
-            resource_name = ""
-
-        return module_name, resource_name
-
-    @staticmethod
-    def _exists(is_pkg: bool, filename: str) -> bool:
-        if is_pkg:
-            module_name, resource_name = ConfigLoader._split_module_and_resource(
-                filename
-            )
-            try:
-                ret = resource_exists(module_name, resource_name)
-            except ImportError:
-                ret = False
-            except NotImplementedError:
-                raise NotImplementedError(
-                    "Unable to load {}/{}, are you missing an __init__.py?".format(
-                        module_name, resource_name
-                    )
-                )
-            # Uncomment to debug issues with configs not getting loaded.
-            # WARNING: breaks integration tests that relies on specified output from the process.
-            # print("_exists? {}, {} == {}".format(module_name, resource_name, ret))
-            return ret
-        else:
-            return os.path.exists(filename)
 
     def _merge_defaults(
         self, cfg: DictConfig, defaults: ListConfig, split_at: int
