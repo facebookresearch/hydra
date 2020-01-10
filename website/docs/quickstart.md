@@ -69,9 +69,13 @@ Here is the new `config.yaml`
 ```yaml
 defaults:
     - db: mysql
+# some other config options in your config file.
+website:
+    domain: example.com
 ```
 
-`defaults` is a special directive telling Hydra to use db/mysql.yaml when composing the configuration object. 
+`defaults` is a special directive telling Hydra to use db/mysql.yaml when composing the configuration object.
+The resulting cfg object is a composition of configs from defaults with configs specified in your `config.yaml`.
 
 You can now choose which database configuration to use from the and override values from the command line: 
 ```yaml
@@ -81,6 +85,8 @@ db:
   pass: drowssap
   timeout: 20
   user: postgre_user
+website:
+    domain: example.com
 ```
 You can have as many config groups as you need.
 
@@ -97,6 +103,8 @@ db:
   driver: mysql
   pass: secret
   user: omry
+website:
+    domain: example.com
 
 [HYDRA]        #1 : db=postgresql
 db:
@@ -104,7 +112,8 @@ db:
   pass: drowssap
   timeout: 10
   user: postgre_user
-
+website:
+    domain: example.com
 ```
 
 There is a whole lot more to Hydra. Read the tutorial to learn more.
