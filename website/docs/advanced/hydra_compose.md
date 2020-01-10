@@ -42,7 +42,5 @@ def initialize(config_dir=None, strict=None, caller_stack_depth=1):
     :param caller_stack_depth:
     :return:
     """
-
-
 ```
 

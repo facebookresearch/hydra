@@ -27,4 +27,4 @@ May contain nuts and bugs and might be incompatible with existing plugins.
 pip install hydra-core --pre --upgrade
 ```
 #### Source
-You can install Hydra from source following the [contributing](development/contributing/) guide.
+You can install Hydra from source following the [contributing](development/contributing.md) guide.

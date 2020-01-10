@@ -24,7 +24,7 @@ def my_app(cfg):
 ```
 
 
-`config_path` can specify your config file as in the [previous command line example](simple_cli), or the root directory for your configuration files.
+`config_path` can specify your config file as in the [previous command line example](./1_simple_cli_app.md), or the root directory for your configuration files.
 If a config file is specified, its directory is the root directory.
 
 The directory structure of our application now looks like:

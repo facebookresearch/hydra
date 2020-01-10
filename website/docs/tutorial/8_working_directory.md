@@ -28,8 +28,6 @@ $ python my_app.py
 Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-19
 ```
 
-
-
 Let's take a look at one of those working directories:
 ```text
 $ tree outputs/2019-09-25/15-16-17
@@ -75,4 +73,4 @@ to_absolute_path('/foo')   : /foo
 ```
 
 
-Working directory can be [customized](../configure_hydra/workdir/).
+Working directory can be [customized](../configure_hydra/workdir.md).

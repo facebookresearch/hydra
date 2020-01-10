@@ -4,7 +4,7 @@ title: Ray example
 sidebar_label: Ray example
 ---
 
-Ray is a framework for building and running distributed applications.
+[Ray](https://github.com/ray-project/ray) is a framework for building and running distributed applications.
 Hydra can be used with Ray to configure Ray itself as well as complex remote calls through the compose API.
 A future plugin will enable launching to Ray clusters directly from the command line.
 
