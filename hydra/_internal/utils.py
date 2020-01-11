@@ -131,6 +131,7 @@ def create_automatic_config_search_path(
 
 
 def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPath:
+    Plugins.register_config_sources()
     search_path = ConfigSearchPath()
     search_path.append("hydra", "pkg://hydra.conf")
     if search_path_dir is not None:
@@ -139,6 +140,7 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     search_path_plugins = Plugins.discover(SearchPathPlugin)
     for spp in search_path_plugins:
         plugin = spp()
+        assert isinstance(plugin, SearchPathPlugin)
         plugin.manipulate_search_path(search_path)
 
     return search_path

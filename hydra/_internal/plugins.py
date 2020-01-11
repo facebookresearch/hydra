@@ -5,10 +5,11 @@ from typing import Any, List, Optional, Type
 
 from omegaconf import DictConfig
 
+from hydra._internal.config.sources_registry import SourcesRegistry
 from hydra._internal.config_loader import ConfigLoader
 from hydra.types import TaskFunction
 
-from ..plugins import Launcher, Plugin, Sweeper
+from ..plugins import ConfigSource, Launcher, Plugin, Sweeper
 
 
 class Plugins:
@@ -106,7 +107,7 @@ class Plugins:
         return list(ret.values())
 
     @staticmethod
-    def discover(plugin_type: Optional[Type[Plugin]] = None) -> List[type]:
+    def discover(plugin_type: Optional[Type[Plugin]] = None) -> List[Type[Plugin]]:
         """
         :param plugin_type: class of plugin to discover, None for all
         :return: a list of plugins implementing the plugin type (or all if plugin type is None)
@@ -126,3 +127,10 @@ class Plugins:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
         return Plugins._get_all_subclasses_in(top_level, plugin_type)
+
+    @staticmethod
+    def register_config_sources() -> None:
+        config_sources = Plugins.discover(ConfigSource)
+        for source in config_sources:
+            assert issubclass(source, ConfigSource)
+            SourcesRegistry.instance().register(source)

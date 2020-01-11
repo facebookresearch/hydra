@@ -1,8 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, Dict, Type
 
+from hydra.plugins.config_source import ConfigSource
+
 from ..singleton import Singleton
-from .config_source import ConfigSource
 
 
 class SourcesRegistry(metaclass=Singleton):
@@ -11,10 +12,16 @@ class SourcesRegistry(metaclass=Singleton):
     def __init__(self) -> None:
         self.types = {}
 
-    def register(self, schema: str, type_: Type[ConfigSource]) -> None:
-        assert (
-            schema not in self.types or self.types[schema] is type_
-        ), f"{schema} is already registered with a different class"
+    def register(self, type_: Type[ConfigSource]) -> None:
+        schema = type_.schema()
+        if schema in self.types:
+            if self.types[schema].__name__ != type_.__name__:
+                raise ValueError(
+                    f"{schema} is already registered with a different class"
+                )
+            else:
+                # Do not replace existing ConfigSource
+                return
         self.types[schema] = type_
 
     def resolve(self, schema: str) -> Type[ConfigSource]:

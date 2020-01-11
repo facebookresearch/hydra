@@ -4,19 +4,18 @@ from typing import List, Optional
 
 from omegaconf import OmegaConf
 
-from .config_source import ConfigResult, ConfigSource, ObjectType
+from hydra.plugins.config_source import ConfigResult, ConfigSource, ObjectType
 
 
 class FileConfigSource(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
         if path.find("://") == -1:
-            path = f"file://{path}"
-        else:
-            if not path.startswith("file://"):
-                raise ValueError("Invalid path")
+            path = f"{self.schema()}{path}"
+        super().__init__(provider=provider, path=path)
 
-        self.provider = provider
-        self.path = path[len("file://") :]
+    @staticmethod
+    def schema() -> str:
+        return "file://"
 
     def load_config(self, config_path: str) -> ConfigResult:
         full_path = os.path.realpath(os.path.join(self.path, config_path))
@@ -24,7 +23,7 @@ class FileConfigSource(ConfigSource):
             raise IOError(f"FileConfigSource: Config not found : {full_path}")
         return ConfigResult(
             config=OmegaConf.load(full_path),
-            path=f"file://{self.path}",
+            path=f"{self.schema()}{self.path}",
             provider=self.provider,
         )
 

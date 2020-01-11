@@ -2,8 +2,8 @@
 from typing import List, Optional
 
 from hydra._internal.config_search_path import ConfigSearchPath
+from hydra.plugins.config_source import ConfigResult, ConfigSource, ObjectType
 
-from .config_source import ConfigResult, ConfigSource, ObjectType
 from .sources_registry import SourcesRegistry
 
 
@@ -56,6 +56,6 @@ class ConfigRepository:
     def _get_schema(path: str) -> str:
         idx = path.find("://")
         if idx == -1:
-            return "file"
+            return "file://"
         else:
-            return path[0:idx]
+            return path[0 : idx + 3]

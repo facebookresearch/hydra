@@ -21,4 +21,4 @@ repos:
     hooks:
       - id: mypy
         args: [--strict]
-        additional_dependencies: [omegaconf==2.0.0rc3]
+        additional_dependencies: [omegaconf==2.0.0rc4]

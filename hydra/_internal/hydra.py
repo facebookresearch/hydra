@@ -167,6 +167,7 @@ class Hydra:
     ) -> DefaultDict[str, List[CompletionPlugin]]:
         shell_to_plugin: DefaultDict[str, List[CompletionPlugin]] = defaultdict(list)
         for clazz in Plugins.discover(CompletionPlugin):
+            assert issubclass(clazz, CompletionPlugin)
             plugin = clazz(config_loader)
             shell_to_plugin[plugin.provides()].append(plugin)
 
