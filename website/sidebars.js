@@ -3,7 +3,6 @@ module.exports = {
     Docs: {
         About: [
             'intro',
-            'getting_started',
         ],
 
         'Tutorial': [
