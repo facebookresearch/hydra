@@ -9,15 +9,16 @@ from pkg_resources import (
     resource_stream,
 )
 
-from .config_source import ConfigResult, ConfigSource, ObjectType
+from hydra.plugins.config_source import ConfigResult, ConfigSource, ObjectType
 
 
 class PackageConfigSource(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
-        if not path.startswith("pkg://"):
-            raise ValueError("Invalid path")
-        self.provider = provider
-        self.path = path[len("pkg://") :]
+        super().__init__(provider=provider, path=path)
+
+    @staticmethod
+    def schema() -> str:
+        return "pkg://"
 
     def load_config(self, config_path: str) -> ConfigResult:
         full_path = f"{self.path}/{config_path}"
@@ -30,7 +31,7 @@ class PackageConfigSource(ConfigSource):
                 raise IOError(f"PackageConfigSource: Config not found: {full_path}")
             return ConfigResult(
                 config=OmegaConf.load(stream),
-                path=f"pkg://{self.path}",
+                path=f"{self.schema()}{self.path}",
                 provider=self.provider,
             )
 

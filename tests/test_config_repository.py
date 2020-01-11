@@ -3,17 +3,16 @@ from typing import List, Optional, Type
 
 import pytest
 
-from hydra._internal.config import (
-    ConfigRepository,
-    ConfigSource,
-    FileConfigSource,
-    ObjectType,
-    PackageConfigSource,
-)
+from hydra._internal.config import ConfigRepository
 from hydra._internal.config_search_path import ConfigSearchPath
+from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
+from hydra._internal.plugins import Plugins
+from hydra.plugins import ConfigSource, ObjectType
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
+
+Plugins.register_config_sources()
 
 
 @pytest.mark.parametrize(

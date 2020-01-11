@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
 
 from omegaconf import Container
+
+from hydra.plugins.plugin import Plugin
 
 
 @dataclass
@@ -20,12 +22,19 @@ class ObjectType(Enum):
     GROUP = 2
 
 
-class ConfigSource(ABC):
+class ConfigSource(Plugin):
     provider: str
     path: str
 
-    @abstractmethod
     def __init__(self, provider: str, path: str) -> None:
+        if not path.startswith(self.schema()):
+            raise ValueError("Invalid path")
+        self.provider = provider
+        self.path = path[len(self.schema()) :]
+
+    @staticmethod
+    @abstractmethod
+    def schema() -> str:
         ...
 
     @abstractmethod

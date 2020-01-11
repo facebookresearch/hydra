@@ -10,9 +10,10 @@ from typing import Any, List, Optional
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
 from hydra.errors import MissingConfigException
+from hydra.plugins.config_source import ConfigSource, ObjectType
 
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
-from .config import ConfigRepository, ConfigSource, ObjectType
+from .config import ConfigRepository
 from .config_search_path import ConfigSearchPath
 
 
