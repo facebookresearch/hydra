@@ -19,8 +19,8 @@ multiple heads.
 Hydra requires Python 3.6 or newer, and it officially supports Linux, Mac and Windows.
 
 ## Quick start guide
-This quick start guide will show you some of the most important features of Hydra.
-Read the tutorial [tutorial](tutorial/1_simple_cli_app.md) to gain a deeper understanding. 
+This guide will show you some of the most important features of Hydra.
+Read the [tutorial](tutorial/1_simple_cli_app.md) to gain a deeper understanding.
 
 ### Installation
 Install the stable release with `pip install hydra-core --upgrade`.
@@ -39,7 +39,7 @@ db:
 ```
 
 Python file: `my_app.py`
-```python
+```python {4-6}
 import hydra
 from omegaconf import DictConfig
 
@@ -50,7 +50,6 @@ def my_app(cfg : DictConfig) -> None:
 if __name__ == "__main__":
     my_app()
 ```
-
 You can learn more about OmegaConf [here](https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation) later.
 
 `config.yaml` is loaded automatically when you run your application
@@ -63,7 +62,7 @@ db:
 ```
 
 You can override values in the loaded config from the command line:
-```yaml
+```yaml {4-5}
 $ python my_app.py db.user=root db.pass=1234
 db:
   driver: mysql
