@@ -20,10 +20,6 @@ class Sweeper(Plugin):
     (where each job typically takes a different command line arguments)
     """
 
-    def __init__(self) -> None:
-        if type(self) == Sweeper:
-            raise NotImplementedError
-
     @abstractmethod
     def setup(
         self,

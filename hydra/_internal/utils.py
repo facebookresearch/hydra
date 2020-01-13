@@ -7,11 +7,12 @@ from argparse import ArgumentParser
 from os.path import dirname, join, normpath, realpath
 from typing import Any, Optional, Sequence, Tuple
 
+from hydra._internal import ConfigSearchPathImpl
+from hydra.config import ConfigSearchPath
 from hydra.types import TaskFunction
 
 from ..plugins import SearchPathPlugin
 from ..plugins.common.utils import get_valid_filename, split_config_path
-from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 
 
@@ -132,7 +133,7 @@ def create_automatic_config_search_path(
 
 def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPath:
     Plugins.register_config_sources()
-    search_path = ConfigSearchPath()
+    search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
     if search_path_dir is not None:
         search_path.append("main", search_path_dir)

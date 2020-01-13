@@ -1,0 +1,1 @@
+Some internal APIs like ConfigSearchPath and Plugins are no longer internal and now live in hydra.config

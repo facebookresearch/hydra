@@ -1,12 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import importlib
 import inspect
 import pkgutil
 from typing import Any, List, Optional, Type
 
 from omegaconf import DictConfig
 
-from hydra._internal.config.sources_registry import SourcesRegistry
 from hydra._internal.config_loader import ConfigLoader
+from hydra._internal.sources_registry import SourcesRegistry
 from hydra.plugins import Launcher, Plugin, Sweeper
 from hydra.plugins.config import ConfigSource
 from hydra.types import TaskFunction
@@ -83,7 +84,7 @@ class Plugins:
     @staticmethod
     def _get_all_subclasses_in(
         modules: List[Any], supertype: Optional[type] = None
-    ) -> List[type]:
+    ) -> List[Type[Plugin]]:
         """
         :param modules: a list of top level modules to look in
         :param supertype: look for subclasses of this type, if None return all classes
@@ -104,7 +105,11 @@ class Plugins:
                         ):
                             ret[obj.__name__] = obj
 
-        return list(ret.values())
+        result: List[Type[Plugin]] = []
+        for v in ret.values():
+            assert issubclass(v, Plugin)
+            result.append(v)
+        return result
 
     @staticmethod
     def discover(plugin_type: Optional[Type[Plugin]] = None) -> List[Type[Plugin]]:
@@ -114,15 +119,12 @@ class Plugins:
         """
         assert plugin_type is None or issubclass(plugin_type, Plugin)
         top_level: List[Any] = []
-        from . import core_plugins
-
+        core_plugins = importlib.import_module("hydra._internal.core_plugins")
         top_level.append(core_plugins)
 
         try:
-            import hydra_plugins
-
+            hydra_plugins = importlib.import_module("hydra_plugins")
             top_level.append(hydra_plugins)
-
         except ImportError:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass

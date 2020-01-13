@@ -15,11 +15,8 @@ from hydra_plugins.example_launcher import ExampleLauncher
 
 
 def test_discovery() -> None:
-    """
-    Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    :return:
-    """
-    assert ExampleLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
+    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
+    assert ExampleLauncher in Plugins.discover(Launcher)
 
 
 @pytest.mark.parametrize("launcher_name, overrides", [("example", [])])

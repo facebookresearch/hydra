@@ -10,6 +10,7 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra._internal.singleton import Singleton
+from hydra.config import ConfigSearchPath
 from hydra.errors import MissingConfigException
 from hydra.types import TaskFunction
 
@@ -23,7 +24,6 @@ from ..plugins.common.utils import (
     setup_globals,
 )
 from .config_loader import ConfigLoader
-from .config_search_path import ConfigSearchPath
 from .plugins import Plugins
 from .utils import create_automatic_config_search_path, detect_task_name
 
@@ -72,8 +72,6 @@ class Hydra:
         config_search_path: ConfigSearchPath,
         strict: Optional[bool],
     ) -> "Hydra":
-        assert isinstance(config_search_path, ConfigSearchPath)
-
         config_loader = ConfigLoader(
             config_search_path=config_search_path, default_strict=strict
         )

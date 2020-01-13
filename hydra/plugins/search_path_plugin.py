@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import abstractmethod
 
-from hydra._internal.config_search_path import ConfigSearchPath
+from hydra.config import ConfigSearchPath
 
 from .plugin import Plugin
 

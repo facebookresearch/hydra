@@ -1,21 +1,20 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-from hydra._internal.config_search_path import ConfigSearchPath
+from hydra.config import ConfigRepository, ConfigSearchPath
 from hydra.plugins.config import ConfigResult, ConfigSource, ObjectType
 
 from .sources_registry import SourcesRegistry
 
 
-class ConfigRepository:
+class ConfigRepositoryImpl(ConfigRepository):
 
     config_search_path: ConfigSearchPath
     sources: List[ConfigSource]
 
     def __init__(self, config_search_path: ConfigSearchPath) -> None:
-        self.config_search_path = config_search_path
         self.sources = []
-        for search_path in self.config_search_path.config_search_path:
+        for search_path in config_search_path.get_path():
             assert search_path.path is not None
             assert search_path.provider is not None
             scheme = self._get_scheme(search_path.path)
@@ -43,6 +42,9 @@ class ConfigRepository:
                     source.list(config_path=group_name, results_filter=results_filter)
                 )
         return sorted(list(set(options)))
+
+    def get_sources(self) -> List[ConfigSource]:
+        return self.sources
 
     def _find_config(self, config_path: str) -> Optional[ConfigSource]:
         found_source = None

@@ -6,7 +6,7 @@ from typing import Optional, Sequence
 from omegaconf import DictConfig, open_dict
 
 from hydra._internal.config_loader import ConfigLoader
-from hydra._internal.config_search_path import ConfigSearchPath
+from hydra.config import ConfigSearchPath
 from hydra.plugins import Launcher, SearchPathPlugin
 from hydra.plugins.common.utils import (
     HydraConfig,

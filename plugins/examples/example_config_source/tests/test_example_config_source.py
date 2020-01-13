@@ -46,10 +46,5 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def test_discovery() -> None:
-    # This may seem weird, but it verifies that we can discover this Plugin via
-    # the plugins subsystem.
-    # The discover method takes a class and return all plugins that implements that class.
-    # Typically we would be discovering all plugins that implementing some common interface.
-    plugins = Plugins.discover(ConfigSource)
-    # discovered plugins are actually different class objects, compare by name
-    assert ConfigSourceExample.__name__ in [x.__name__ for x in plugins]
+    # Test that this config source is discoverable when looking at config sources
+    assert ConfigSourceExample in Plugins.discover(ConfigSource)

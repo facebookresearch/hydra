@@ -6,8 +6,8 @@ from typing import Any, List, Optional
 from omegaconf import DictConfig
 
 from hydra._internal.config_loader import ConfigLoader
-from hydra._internal.config_search_path import ConfigSearchPath
 from hydra._internal.plugins import Plugins
+from hydra.config import ConfigSearchPath
 from hydra.plugins import Launcher, SearchPathPlugin, Sweeper
 from hydra.types import TaskFunction
 

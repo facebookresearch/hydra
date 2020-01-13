@@ -9,12 +9,12 @@ from typing import Any, List, Optional
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
+from hydra._internal import ConfigRepositoryImpl
+from hydra.config import ConfigRepository, ConfigSearchPath
 from hydra.errors import MissingConfigException
 from hydra.plugins.config import ConfigSource, ObjectType
 
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
-from .config import ConfigRepository
-from .config_search_path import ConfigSearchPath
 
 
 class ConfigLoader:
@@ -29,7 +29,10 @@ class ConfigLoader:
     ) -> None:
         self.default_strict = default_strict
         self.all_config_checked: List["LoadTrace"] = []
-        self.repository = ConfigRepository(config_search_path=config_search_path)
+        self.config_search_path = config_search_path
+        self.repository: ConfigRepository = ConfigRepositoryImpl(
+            config_search_path=config_search_path
+        )
 
     def load_configuration(
         self,
@@ -54,7 +57,7 @@ class ConfigLoader:
                     "\n".join(
                         [
                             "\t{} (from {})".format(src.path, src.provider)
-                            for src in self.repository.sources
+                            for src in self.repository.get_sources()
                         ]
                     ),
                 ),
@@ -134,7 +137,7 @@ class ConfigLoader:
         return self.repository.exists(filepath)
 
     def get_search_path(self) -> ConfigSearchPath:
-        return self.repository.config_search_path
+        return self.config_search_path
 
     def get_load_history(self) -> List["LoadTrace"]:
         """
@@ -397,7 +400,7 @@ class ConfigLoader:
         return defaults
 
     def get_sources(self) -> List[ConfigSource]:
-        return self.repository.sources
+        return self.repository.get_sources()
 
 
 @dataclass

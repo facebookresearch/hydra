@@ -74,7 +74,7 @@ PR ends up rejected due to code quality reasons).
 
 Once you have an issue or pull request, you take the number and you create a
 file inside of the ``news/`` directory named after that issue number with one of the following extensions:
-* `removal` : Removal of deprecation of a feature
+* `api_change` : API Change (May require changes from downstream projects or plugins)
 * `feature` : Addition of a new feature
 * `bugfix` : Fixing of a bug
 * `docs` : Addition or updates to documentation

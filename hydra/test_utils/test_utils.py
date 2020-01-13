@@ -19,7 +19,7 @@ from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 import hydra.experimental
-from hydra._internal.config_search_path import ConfigSearchPath
+from hydra._internal import ConfigSearchPathImpl
 from hydra._internal.hydra import GlobalHydra, Hydra
 from hydra.plugins.common.utils import JobReturn, split_config_path
 
@@ -371,9 +371,9 @@ if __name__ == "__main__":
 
 
 def create_search_path(
-    search_path: List[str] = [], abspath: bool = False
-) -> ConfigSearchPath:
-    csp = ConfigSearchPath()
+    search_path: List[str], abspath: bool = False
+) -> ConfigSearchPathImpl:
+    csp = ConfigSearchPathImpl()
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:
         csp.append("test", sp if not abspath else os.path.realpath(sp))

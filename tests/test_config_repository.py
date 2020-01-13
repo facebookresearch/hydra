@@ -3,8 +3,7 @@ from typing import List, Optional
 
 import pytest
 
-from hydra._internal.config import ConfigRepository
-from hydra._internal.config_search_path import ConfigSearchPath
+from hydra._internal import ConfigRepositoryImpl, ConfigSearchPathImpl
 from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
 from hydra._internal.plugins import Plugins
 from hydra.plugins.config import ObjectType
@@ -27,8 +26,8 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
     pass
 
 
-def create_config_search_path(path: str) -> ConfigSearchPath:
-    csp = ConfigSearchPath()
+def create_config_search_path(path: str) -> ConfigSearchPathImpl:
+    csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp
 
@@ -43,7 +42,7 @@ def create_config_search_path(path: str) -> ConfigSearchPath:
 class TestConfigRepository:
     def test_config_repository_load(self, path: str) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepository(config_search_path=config_search_path)
+        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
         ret = repo.load_config(config_path="dataset/imagenet.yaml")
         assert ret is not None
         assert ret.config == {
@@ -53,7 +52,7 @@ class TestConfigRepository:
 
     def test_config_repository_exists(self, path: str) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepository(config_search_path=config_search_path)
+        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
         assert repo.exists("dataset/imagenet.yaml")
         assert not repo.exists("not_found.yaml")
 
@@ -80,7 +79,7 @@ class TestConfigRepository:
         expected: List[str],
     ) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepository(config_search_path=config_search_path)
+        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
         ret = repo.get_group_options(
             group_name=config_path, results_filter=results_filter
         )

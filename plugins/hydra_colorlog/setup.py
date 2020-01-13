@@ -20,6 +20,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["colorlog", "hydra-core"],
+        install_requires=["colorlog", "hydra-core>=0.12.0rc0"],
         include_package_data=True,
     )
