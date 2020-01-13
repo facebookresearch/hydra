@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra._internal.plugins import Plugins
-from hydra_plugins.example_plugin import ExamplePlugin
+from hydra_plugins.example_plugin.example_plugin import ExamplePlugin
 
 
 def test_discovery() -> None:
@@ -14,7 +14,5 @@ def test_discovery() -> None:
 
 
 def test_example_plugin() -> None:
-    from hydra_plugins.example_plugin import ExamplePlugin
-
     a = ExamplePlugin(10)
     assert a.add(20) == 30

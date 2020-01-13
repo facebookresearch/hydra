@@ -4,11 +4,11 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
-        name="hydra-example",
+        name="hydra-example-config-source",
         version="0.1.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Example Hydra plugin",
+        description="Example Hydra Config source plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",

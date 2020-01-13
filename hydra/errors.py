@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Sequence
+from typing import Optional, Sequence
 
 
 class MissingConfigException(IOError):
     def __init__(
-        self, message: str, missing_cfg_file: str, options: Sequence[str] = []
+        self,
+        message: str,
+        missing_cfg_file: str,
+        options: Optional[Sequence[str]] = None,
     ) -> None:
         super(MissingConfigException, self).__init__(message)
         self.missing_cfg_file = missing_cfg_file

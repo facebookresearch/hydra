@@ -1,0 +1,1 @@
+New ConfigSource plugin API allowing configs to be provided by external plugins
