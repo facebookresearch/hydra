@@ -1,0 +1,146 @@
+{
+  "version-0.11/Docs": [
+    {
+      "type": "category",
+      "label": "About",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/intro"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Tutorial",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/simple_cli"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/config_file"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/config_groups"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/defaults"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/composition"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/multi-run"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/tab_completion"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/working_directory"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/logging"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/tutorial/debugging"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Common patterns",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/patterns/objects"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/patterns/specializing_config"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Configuring Hydra",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/configure_hydra/intro"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/configure_hydra/logging"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/configure_hydra/workdir"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/configure_hydra/app_help"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Plugins",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/plugins/colorlog"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Advanced",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/advanced/app_packaging"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/advanced/search_path"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/advanced/plugins"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/advanced/compose_api"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/advanced/ray_example"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Development",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-0.11/development/contributing"
+        },
+        {
+          "type": "doc",
+          "id": "version-0.11/development/release"
+        }
+      ]
+    }
+  ]
+}
