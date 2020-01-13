@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from hydra._internal.config_search_path import ConfigSearchPath
-from hydra.plugins.config_source import ConfigResult, ConfigSource, ObjectType
+from hydra.plugins.config import ConfigResult, ConfigSource, ObjectType
 
 from .sources_registry import SourcesRegistry
 
@@ -18,8 +18,8 @@ class ConfigRepository:
         for search_path in self.config_search_path.config_search_path:
             assert search_path.path is not None
             assert search_path.provider is not None
-            schema = self._get_schema(search_path.path)
-            source_type = SourcesRegistry.instance().resolve(schema)
+            scheme = self._get_scheme(search_path.path)
+            source_type = SourcesRegistry.instance().resolve(scheme)
             self.sources.append(source_type(search_path.provider, search_path.path))
 
     def load_config(self, config_path: str) -> Optional[ConfigResult]:
@@ -53,9 +53,9 @@ class ConfigRepository:
         return found_source
 
     @staticmethod
-    def _get_schema(path: str) -> str:
+    def _get_scheme(path: str) -> str:
         idx = path.find("://")
         if idx == -1:
-            return "file://"
+            return "file"
         else:
-            return path[0 : idx + 3]
+            return path[0:idx]

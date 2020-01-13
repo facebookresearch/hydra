@@ -5,6 +5,6 @@ from .main import main
 from .types import TaskFunction
 
 # Source of truth for Hydra's version
-__version__ = "0.11.3"
+__version__ = "0.12.0-rc1"
 
 __all__ = ["__version__", "MissingConfigException", "main", "utils", "TaskFunction"]

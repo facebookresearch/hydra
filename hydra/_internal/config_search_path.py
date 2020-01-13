@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-# TODO: move to _internal.config and split into search_path and ConfigSearchPath (maybe renaming in the process)
-
 
 class SearchPath:
     def __init__(self, provider: Optional[str], search_path: Optional[str]):

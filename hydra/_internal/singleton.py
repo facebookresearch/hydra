@@ -10,5 +10,5 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-    def instance(cls, *args: Any, **kwargs: Any) -> Any:
+    def instance(cls: Any, *args: Any, **kwargs: Any) -> Any:
         return cls(*args, **kwargs)
