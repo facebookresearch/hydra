@@ -26,7 +26,7 @@ defaults:
   - hydra/sweeper: basic            # Sweeper config
   - hydra/output: default           # Output directory
 ```
-You can view the Hydra config structure [here](https://github.com/facebookresearch/hydra/tree/master/hydra/conf).
+You can view the Hydra config structure [here](https://github.com/facebookresearch/hydra/tree/0.11_branch/hydra/conf).
 
 This is a subset of the composed Hydra configuration node:
 
