@@ -195,7 +195,9 @@ def test_file_completion(
         os.chdir(pwd)
 
 
-@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
+    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"],
+)
 @pytest.mark.parametrize(  # type: ignore
     "app_prefix",
     [

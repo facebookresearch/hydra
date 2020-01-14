@@ -37,26 +37,29 @@ class PackageConfigSource(ConfigSource):
             raise ConfigLoadError(f"PackageConfigSource: Config not found: {full_path}")
 
     def exists(self, config_path: str) -> bool:
-        full_path = f"{self.path}/{config_path}"
-        module_name, resource_name = PackageConfigSource._split_module_and_resource(
-            full_path
-        )
-        try:
-            return resource_exists(module_name, resource_name)
-        except ImportError:
-            return False
+        return self.get_type(config_path=config_path) != ObjectType.NOT_FOUND
 
     def get_type(self, config_path: str) -> ObjectType:
         full_path = self.concat(self.path, config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
             full_path
         )
-        if resource_exists(module_name, resource_name):
-            if resource_isdir(module_name, resource_name):
-                return ObjectType.GROUP
+
+        try:
+            if resource_exists(module_name, resource_name):
+                if resource_isdir(module_name, resource_name):
+                    return ObjectType.GROUP
+                else:
+                    return ObjectType.CONFIG
             else:
-                return ObjectType.CONFIG
-        else:
+                return ObjectType.NOT_FOUND
+        except NotImplementedError:
+            raise NotImplementedError(
+                "Unable to load {}/{}, are you missing an __init__.py?".format(
+                    module_name, resource_name
+                )
+            )
+        except ImportError:
             return ObjectType.NOT_FOUND
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:

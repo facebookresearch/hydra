@@ -2,6 +2,7 @@
 import importlib
 import inspect
 import pkgutil
+import warnings
 from typing import Any, List, Optional, Type
 
 from omegaconf import DictConfig
@@ -97,7 +98,18 @@ class Plugins:
             for importer, modname, ispkg in pkgutil.walk_packages(
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
             ):
-                loaded_mod = importer.find_module(modname).load_module(modname)
+                try:
+                    loaded_mod = importer.find_module(modname).load_module(modname)
+                except ImportError as e:
+                    warnings.warn(
+                        message=f"\n"
+                        f"\tError importing '{modname}'.\n"
+                        f"\tPlugin is incompatible with this Hydra version or buggy.\n"
+                        f"\tRecommended to uninstall or upgrade plugin.\n"
+                        f"\t\t{type(e).__name__} : {e}",
+                        category=UserWarning,
+                    )
+                    pass
                 for name, obj in inspect.getmembers(loaded_mod):
                     if inspect.isclass(obj):
                         if (
