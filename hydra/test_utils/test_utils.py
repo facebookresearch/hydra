@@ -20,7 +20,8 @@ from typing_extensions import Protocol
 
 import hydra.experimental
 from hydra._internal import ConfigSearchPathImpl
-from hydra._internal.hydra import GlobalHydra, Hydra
+from hydra._internal.hydra import Hydra
+from hydra.core.global_hydra import GlobalHydra
 from hydra.plugins.common.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.

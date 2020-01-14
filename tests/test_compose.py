@@ -4,8 +4,8 @@ from typing import Any, List
 import pytest
 
 from hydra._internal import ConfigSearchPathImpl
-from hydra._internal.hydra import GlobalHydra
-from hydra.config import SearchPathQuery
+from hydra.core.config_search_path import SearchPathQuery
+from hydra.core.global_hydra import GlobalHydra
 from hydra.experimental import compose, initialize
 
 # noinspection PyUnresolvedReferences

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, Dict, Type
 
-from hydra._internal.singleton import Singleton
+from hydra.core.singleton import Singleton
 from hydra.plugins.config.config_source import ConfigSource
 
 

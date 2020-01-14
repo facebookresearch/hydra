@@ -1,1 +1,1 @@
-Some internal APIs like ConfigSearchPath and Plugins are no longer internal and now live in hydra.config
+Move several formerly internal APIs to hydra/core to ensure plugins does not need to use internal APIs

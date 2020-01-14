@@ -7,7 +7,7 @@ from typing import Any, List
 
 from omegaconf import DictConfig
 
-from hydra._internal.config_loader import ConfigLoader
+from hydra.core.config_loader import ConfigLoader
 from hydra.types import TaskFunction
 
 from .plugin import Plugin

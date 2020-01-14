@@ -4,20 +4,20 @@ Configuration loader
 """
 import copy
 import os
-from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
-from hydra._internal import ConfigRepositoryImpl
-from hydra.config import ConfigRepository, ConfigSearchPath
+from hydra._internal import ConfigRepository
+from hydra.core.config_loader import ConfigLoader, LoadTrace
+from hydra.core.config_search_path import ConfigSearchPath
 from hydra.errors import MissingConfigException
 from hydra.plugins.config import ConfigSource, ObjectType
 
 from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
 
 
-class ConfigLoader:
+class ConfigLoaderImpl(ConfigLoader):
     """
     Configuration loader
     """
@@ -28,9 +28,9 @@ class ConfigLoader:
         default_strict: Optional[bool] = None,
     ) -> None:
         self.default_strict = default_strict
-        self.all_config_checked: List["LoadTrace"] = []
+        self.all_config_checked: List[LoadTrace] = []
         self.config_search_path = config_search_path
-        self.repository: ConfigRepository = ConfigRepositoryImpl(
+        self.repository: ConfigRepository = ConfigRepository(
             config_search_path=config_search_path
         )
 
@@ -69,17 +69,17 @@ class ConfigLoader:
         # Load job config
         job_cfg = self._create_cfg(cfg_filename=config_file, record_load=False)
 
-        defaults = ConfigLoader._get_defaults(hydra_cfg)
+        defaults = ConfigLoaderImpl._get_defaults(hydra_cfg)
         if config_file is not None:
             defaults.append(config_file)
         split_at = len(defaults)
-        job_defaults = ConfigLoader._get_defaults(job_cfg)
-        ConfigLoader._merge_default_lists(defaults, job_defaults)
+        job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
+        ConfigLoaderImpl._merge_default_lists(defaults, job_defaults)
         consumed = self._apply_defaults_overrides(overrides, defaults)
 
         consumed_free_job_defaults = self._apply_free_defaults(defaults, overrides)
 
-        ConfigLoader._validate_defaults(defaults)
+        ConfigLoaderImpl._validate_defaults(defaults)
 
         # Load and defaults and merge them into cfg
         cfg = self._merge_defaults(hydra_cfg, defaults, split_at)
@@ -139,7 +139,7 @@ class ConfigLoader:
     def get_search_path(self) -> ConfigSearchPath:
         return self.config_search_path
 
-    def get_load_history(self) -> List["LoadTrace"]:
+    def get_load_history(self) -> List[LoadTrace]:
         """
         returns the load history (which configs were attempted to load, and if they
         were loaded successfully or not.
@@ -401,20 +401,3 @@ class ConfigLoader:
 
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
-
-
-@dataclass
-class LoadTrace:
-    filename: str
-    path: Optional[str]
-    provider: Optional[str]
-
-    def __eq__(self, other: Any) -> bool:
-        if isinstance(other, tuple):
-            return (  # type:ignore
-                self.filename == other[0]
-                and self.path == other[1]
-                and self.provider == other[2]
-            )
-        else:
-            return NotImplemented

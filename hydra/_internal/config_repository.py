@@ -1,13 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-from hydra.config import ConfigRepository, ConfigSearchPath
+from hydra.core.config_search_path import ConfigSearchPath
 from hydra.plugins.config import ConfigResult, ConfigSource, ObjectType
 
 from .sources_registry import SourcesRegistry
 
 
-class ConfigRepositoryImpl(ConfigRepository):
+class ConfigRepository:
 
     config_search_path: ConfigSearchPath
     sources: List[ConfigSource]

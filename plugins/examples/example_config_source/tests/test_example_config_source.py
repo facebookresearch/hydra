@@ -2,7 +2,7 @@
 import pytest
 from omegaconf import OmegaConf
 
-from hydra._internal.plugins import Plugins
+from hydra.core.plugins import Plugins
 from hydra.plugins.config import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra_plugins.example_config_source.config_source_example import (

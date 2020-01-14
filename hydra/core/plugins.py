@@ -6,10 +6,12 @@ from typing import Any, List, Optional, Type
 
 from omegaconf import DictConfig
 
-from hydra._internal.config_loader import ConfigLoader
 from hydra._internal.sources_registry import SourcesRegistry
-from hydra.plugins import Launcher, Plugin, Sweeper
+from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.config import ConfigSource
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.plugin import Plugin
+from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 
 

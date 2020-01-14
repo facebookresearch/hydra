@@ -1,6 +1,10 @@
 from typing import List, Optional, Sequence
 
-from hydra.config import ConfigSearchPath, SearchPathElement, SearchPathQuery
+from hydra.core.config_search_path import (
+    ConfigSearchPath,
+    SearchPathElement,
+    SearchPathQuery,
+)
 
 
 class ConfigSearchPathImpl(ConfigSearchPath):

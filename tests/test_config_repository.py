@@ -3,9 +3,9 @@ from typing import List, Optional
 
 import pytest
 
-from hydra._internal import ConfigRepositoryImpl, ConfigSearchPathImpl
+from hydra._internal import ConfigRepository, ConfigSearchPathImpl
 from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
-from hydra._internal.plugins import Plugins
+from hydra.core.plugins import Plugins
 from hydra.plugins.config import ObjectType
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -42,7 +42,7 @@ def create_config_search_path(path: str) -> ConfigSearchPathImpl:
 class TestConfigRepository:
     def test_config_repository_load(self, path: str) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
+        repo = ConfigRepository(config_search_path=config_search_path)
         ret = repo.load_config(config_path="dataset/imagenet.yaml")
         assert ret is not None
         assert ret.config == {
@@ -52,7 +52,7 @@ class TestConfigRepository:
 
     def test_config_repository_exists(self, path: str) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
+        repo = ConfigRepository(config_search_path=config_search_path)
         assert repo.exists("dataset/imagenet.yaml")
         assert not repo.exists("not_found.yaml")
 
@@ -79,7 +79,7 @@ class TestConfigRepository:
         expected: List[str],
     ) -> None:
         config_search_path = create_config_search_path(path)
-        repo = ConfigRepositoryImpl(config_search_path=config_search_path)
+        repo = ConfigRepository(config_search_path=config_search_path)
         ret = repo.get_group_options(
             group_name=config_path, results_filter=results_filter
         )

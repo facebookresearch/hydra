@@ -6,7 +6,7 @@ import pytest
 
 from hydra._internal import ConfigSearchPathImpl
 from hydra._internal.utils import compute_search_path_dir
-from hydra.config import SearchPathElement, SearchPathQuery
+from hydra.core.config_search_path import SearchPathElement, SearchPathQuery
 
 
 def create_search_path(base_list: List[Tuple[str, str]]) -> ConfigSearchPathImpl:

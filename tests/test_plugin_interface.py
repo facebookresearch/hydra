@@ -3,8 +3,11 @@ from typing import List, Type
 
 import pytest
 
-from hydra._internal.plugins import Plugins
-from hydra.plugins import Launcher, Plugin, SearchPathPlugin, Sweeper
+from hydra.core.plugins import Plugins
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.plugin import Plugin
+from hydra.plugins.search_path_plugin import SearchPathPlugin
+from hydra.plugins.sweeper import Sweeper
 from hydra.utils import get_class
 
 # This only test core plugins.
