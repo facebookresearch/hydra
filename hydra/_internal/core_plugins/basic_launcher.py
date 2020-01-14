@@ -5,8 +5,7 @@ from typing import List, Optional, Sequence
 
 from omegaconf import DictConfig, open_dict
 
-from hydra._internal.config_loader import ConfigLoader
-from hydra.plugins import Launcher
+from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.common.utils import (
     HydraConfig,
     JobReturn,
@@ -15,6 +14,7 @@ from hydra.plugins.common.utils import (
     run_job,
     setup_globals,
 )
+from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)

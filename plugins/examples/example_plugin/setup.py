@@ -23,7 +23,7 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core"],
+        install_requires=["hydra-core>=0.12.0rc0"],
         # If this plugin is providing configuration files, be sure to include them in the package.
         # See MANIFEST.in.
         # For configurations to be discoverable at runtime, they should also be added to the search path.

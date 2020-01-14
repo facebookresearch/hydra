@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra._internal.plugins import Plugins
+from hydra.core.plugins import Plugins
 from hydra.plugins import Sweeper
 
 # noinspection PyUnresolvedReferences
@@ -8,10 +8,7 @@ from hydra_plugins.example_sweeper import ExampleSweeper
 
 
 def test_discovery() -> None:
-    """
-    Tests that this plugin can be discovered via the plugins subsystem when looking for Sweeper
-    :return:
-    """
+    # Tests that this plugin can be discovered via the plugins subsystem when looking at the Sweeper plugins
     assert ExampleSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
 
 

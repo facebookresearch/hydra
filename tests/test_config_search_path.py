@@ -4,20 +4,19 @@ from typing import List, Optional, Tuple
 
 import pytest
 
-from hydra._internal.config_search_path import ConfigSearchPath, SearchPath
+from hydra._internal import ConfigSearchPathImpl
 from hydra._internal.utils import compute_search_path_dir
+from hydra.core.config_search_path import SearchPathElement, SearchPathQuery
 
 
-def create_search_path(
-    base_list: List[Tuple[Optional[str], Optional[str]]]
-) -> ConfigSearchPath:
-    csp = ConfigSearchPath()
-    csp.config_search_path = [SearchPath(x[0], x[1]) for x in base_list]
+def create_search_path(base_list: List[Tuple[str, str]]) -> ConfigSearchPathImpl:
+    csp = ConfigSearchPathImpl()
+    csp.config_search_path = [SearchPathElement(x[0], x[1]) for x in base_list]
     return csp
 
 
 def to_tuples_list(
-    search_path: ConfigSearchPath,
+    search_path: ConfigSearchPathImpl,
 ) -> List[Tuple[Optional[str], Optional[str]]]:
     return [(x.provider, x.path) for x in search_path.config_search_path]
 
@@ -33,12 +32,12 @@ def to_tuples_list(
     ],
 )
 def test_find_last_match(
-    input_list: List[Tuple[Optional[str], Optional[str]]],
-    reference: str,
-    expected_idx: int,
+    input_list: List[Tuple[str, str]], reference: str, expected_idx: int,
 ) -> None:
     csp = create_search_path(input_list)
-    assert csp.find_last_match(SearchPath(reference[0], reference[1])) == expected_idx
+    assert (
+        csp.find_last_match(SearchPathQuery(reference[0], reference[1])) == expected_idx
+    )
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -52,12 +51,10 @@ def test_find_last_match(
     ],
 )
 def test_find_first_match(
-    input_list: List[Tuple[Optional[str], Optional[str]]],
-    reference: str,
-    expected_idx: int,
+    input_list: List[Tuple[str, str]], reference: str, expected_idx: int,
 ) -> None:
     csp = create_search_path(input_list)
-    sp = SearchPath(reference[0], reference[1])
+    sp = SearchPathQuery(reference[0], reference[1])
     assert csp.find_first_match(sp) == expected_idx
 
 
@@ -73,7 +70,7 @@ def test_find_first_match(
             [("f1", "A"), ("f2", "B")],
             "f3",
             "B",
-            SearchPath(None, "A"),
+            SearchPathQuery(None, "A"),
             [("f1", "A"), ("f3", "B"), ("f2", "B")],
         ),
         # appending after an anchor at the end of the list
@@ -81,7 +78,7 @@ def test_find_first_match(
             [("f1", "A"), ("f2", "B")],
             "f3",
             "B",
-            SearchPath(None, "B"),
+            SearchPathQuery(None, "B"),
             [("f1", "A"), ("f2", "B"), ("f3", "B")],
         ),
         # appending after a non existent anchor
@@ -95,11 +92,11 @@ def test_find_first_match(
     ],
 )
 def test_append(
-    base_list: List[Tuple[Optional[str], Optional[str]]],
+    base_list: List[Tuple[str, str]],
     provider: str,
     path: str,
-    anchor_provider: SearchPath,
-    result_list: List[Tuple[Optional[str], Optional[str]]],
+    anchor_provider: SearchPathQuery,
+    result_list: List[Tuple[str, str]],
 ) -> None:
     csp = create_search_path(base_list)
     csp.append(provider=provider, path=path, anchor=anchor_provider)
@@ -124,7 +121,7 @@ def test_append(
             [("foo", "/path")],
             "foo2",
             "/path2",
-            SearchPath("foo", "/path"),
+            SearchPathQuery("foo", "/path"),
             [("foo2", "/path2"), ("foo", "/path")],
         ),
         # prepending in front of an anchor at index 1
@@ -132,7 +129,7 @@ def test_append(
             [("foo", "/path"), ("foo2", "/path2")],
             "foo3",
             "/path3",
-            SearchPath("foo2", "/path2"),
+            SearchPathQuery("foo2", "/path2"),
             [("foo", "/path"), ("foo3", "/path3"), ("foo2", "/path2")],
         ),
         # prepending in front of a none existing anchor results in prepending to the head of the list
@@ -140,11 +137,11 @@ def test_append(
     ],
 )
 def test_prepend(
-    base_list: List[Tuple[Optional[str], Optional[str]]],
+    base_list: List[Tuple[str, str]],
     provider: str,
     path: str,
-    anchor_provider: SearchPath,
-    result_list: List[Tuple[Optional[str], Optional[str]]],
+    anchor_provider: SearchPathQuery,
+    result_list: List[Tuple[str, str]],
 ) -> None:
     csp = create_search_path(base_list)
     csp.prepend(provider=provider, path=path, anchor=anchor_provider)

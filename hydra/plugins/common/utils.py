@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 from omegaconf import DictConfig, OmegaConf
 
-from hydra._internal.singleton import Singleton
+from hydra.core.singleton import Singleton
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)

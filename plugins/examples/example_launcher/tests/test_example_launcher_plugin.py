@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 
-from hydra._internal.plugins import Plugins
+from hydra.core.plugins import Plugins
 from hydra.plugins import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
@@ -15,10 +15,7 @@ from hydra_plugins.example_launcher import ExampleLauncher
 
 
 def test_discovery() -> None:
-    """
-    Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    :return:
-    """
+    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert ExampleLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
 
 

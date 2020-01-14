@@ -3,8 +3,9 @@ from typing import List, Optional
 
 from omegaconf import DictConfig
 
-from hydra._internal.hydra import GlobalHydra, Hydra
+from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_calling_file_or_module
+from hydra.core.global_hydra import GlobalHydra
 
 
 def initialize(

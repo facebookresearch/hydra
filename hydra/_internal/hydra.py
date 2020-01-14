@@ -9,12 +9,11 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra._internal.singleton import Singleton
+from hydra.core.config_loader import ConfigLoader
+from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.plugins import Plugins
 from hydra.errors import MissingConfigException
-from hydra.types import TaskFunction
-
-from ..plugins import CompletionPlugin, Launcher, SearchPathPlugin, Sweeper
-from ..plugins.common.utils import (
+from hydra.plugins.common.utils import (
     HydraConfig,
     JobReturn,
     JobRuntime,
@@ -22,32 +21,16 @@ from ..plugins.common.utils import (
     run_job,
     setup_globals,
 )
-from .config_loader import ConfigLoader
-from .config_search_path import ConfigSearchPath
-from .plugins import Plugins
+from hydra.plugins.completion_plugin import CompletionPlugin
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.search_path_plugin import SearchPathPlugin
+from hydra.plugins.sweeper import Sweeper
+from hydra.types import TaskFunction
+
+from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path, detect_task_name
 
 log: Optional[logging.Logger] = None
-
-
-class GlobalHydra(metaclass=Singleton):
-    def __init__(self) -> None:
-        self.hydra: Optional[Hydra] = None
-
-    def initialize(self, hydra: "Hydra") -> None:
-        assert isinstance(hydra, Hydra)
-        assert not self.is_initialized(), "GlobalHydra is already initialized"
-        self.hydra = hydra
-
-    def is_initialized(self) -> bool:
-        return self.hydra is not None
-
-    def clear(self) -> None:
-        self.hydra = None
-
-    @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "GlobalHydra":
-        return Singleton.instance(GlobalHydra, *args, **kwargs)  # type: ignore
 
 
 class Hydra:
@@ -72,13 +55,13 @@ class Hydra:
         config_search_path: ConfigSearchPath,
         strict: Optional[bool],
     ) -> "Hydra":
-        assert isinstance(config_search_path, ConfigSearchPath)
-
-        config_loader = ConfigLoader(
+        config_loader: ConfigLoader = ConfigLoaderImpl(
             config_search_path=config_search_path, default_strict=strict
         )
 
         hydra = cls(task_name=task_name, config_loader=config_loader)
+        from hydra.core.global_hydra import GlobalHydra
+
         GlobalHydra.instance().initialize(hydra)
         return hydra
 

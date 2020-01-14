@@ -2,7 +2,7 @@
 import pytest
 from omegaconf import OmegaConf
 
-from hydra._internal.plugins import Plugins
+from hydra.core.plugins import Plugins
 from hydra.plugins.config import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra_plugins.example_config_source.config_source_example import (
@@ -46,10 +46,7 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def test_discovery() -> None:
-    # This may seem weird, but it verifies that we can discover this Plugin via
-    # the plugins subsystem.
-    # The discover method takes a class and return all plugins that implements that class.
-    # Typically we would be discovering all plugins that implementing some common interface.
-    plugins = Plugins.discover(ConfigSource)
-    # discovered plugins are actually different class objects, compare by name
-    assert ConfigSourceExample.__name__ in [x.__name__ for x in plugins]
+    # Test that this config source is discoverable when looking at config sources
+    assert ConfigSourceExample.__name__ in [
+        x.__name__ for x in Plugins.discover(ConfigSource)
+    ]

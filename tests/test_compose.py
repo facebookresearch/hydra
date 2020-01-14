@@ -3,8 +3,9 @@ from typing import Any, List
 
 import pytest
 
-from hydra._internal.config_search_path import SearchPath
-from hydra._internal.hydra import GlobalHydra
+from hydra._internal import ConfigSearchPathImpl
+from hydra.core.config_search_path import SearchPathQuery
+from hydra.core.global_hydra import GlobalHydra
 from hydra.experimental import compose, initialize
 
 # noinspection PyUnresolvedReferences
@@ -36,8 +37,9 @@ def test_initialize_with_config_dir() -> None:
         gh = GlobalHydra.instance()
         assert gh.hydra is not None
         config_search_path = gh.hydra.config_loader.get_search_path()
+        assert isinstance(config_search_path, ConfigSearchPathImpl)
         idx = config_search_path.find_first_match(
-            SearchPath(provider="main", search_path=None)
+            SearchPathQuery(provider="main", search_path=None)
         )
         assert idx != -1
     finally:

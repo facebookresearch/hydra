@@ -7,7 +7,7 @@ from typing import Any, List
 
 from omegaconf import DictConfig
 
-from hydra._internal.config_loader import ConfigLoader
+from hydra.core.config_loader import ConfigLoader
 from hydra.types import TaskFunction
 
 from .plugin import Plugin
@@ -19,10 +19,6 @@ class Sweeper(Plugin):
     Sweeper takes the command line arguments, generates a and launches jobs
     (where each job typically takes a different command line arguments)
     """
-
-    def __init__(self) -> None:
-        if type(self) == Sweeper:
-            raise NotImplementedError
 
     @abstractmethod
     def setup(

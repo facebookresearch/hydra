@@ -3,10 +3,10 @@ from typing import List, Optional
 
 import pytest
 
-from hydra._internal.config import ConfigRepository
-from hydra._internal.config_search_path import ConfigSearchPath
-from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
-from hydra._internal.plugins import Plugins
+from hydra._internal import ConfigRepository, ConfigSearchPathImpl
+from hydra._internal.core_plugins.file_config_source import FileConfigSource
+from hydra._internal.core_plugins.package_config_source import PackageConfigSource
+from hydra.core.plugins import Plugins
 from hydra.plugins.config import ObjectType
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -27,8 +27,8 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
     pass
 
 
-def create_config_search_path(path: str) -> ConfigSearchPath:
-    csp = ConfigSearchPath()
+def create_config_search_path(path: str) -> ConfigSearchPathImpl:
+    csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp
 

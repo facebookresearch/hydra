@@ -6,7 +6,7 @@ from typing import Any, List, Optional, Tuple, Union
 
 from omegaconf import Container, DictConfig, MissingMandatoryValue, OmegaConf
 
-from hydra._internal.config_loader import ConfigLoader
+from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.plugin import Plugin
 
 
