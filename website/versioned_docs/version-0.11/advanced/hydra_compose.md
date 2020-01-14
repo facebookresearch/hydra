@@ -7,7 +7,7 @@ sidebar_label: Experimental compose API
 Hydra 0.11.0 introduces a new experimental API for composing configuration via the `hydra.experimental.compose()` function.
 Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()` or by calling `hydra.experimental.initialize()`.
 
-Here is an [example Jupyter notebook utilizing this API](https://github.com/facebookresearch/hydra/tree/master/examples/notebook).
+Here is an [example Jupyter notebook utilizing this API](https://github.com/facebookresearch/hydra/tree/0.11_branch/examples/notebook).
 
 ### `hydra.experimental.compose()` example
 ```python
