@@ -353,3 +353,33 @@ def test_advanced_ad_hoc_composition(
     ]
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
+
+
+def test_examples_configure_hydra_job_name_no_config_override(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/configure_hydra/job_name/no_config_file_override.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert result.decode("utf-8").rstrip() == "no_config_file_override"
+
+
+def test_examples_configure_hydra_job_name_with_config_override(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/configure_hydra/job_name/with_config_file_override.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert result.decode("utf-8").rstrip() == "with_config_file_override"
+
+
+def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/configure_hydra/logging/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert result.decode("utf-8").rstrip() == "[INFO] - Info level message"

@@ -2,15 +2,17 @@
 import logging
 import sys
 
+from omegaconf import DictConfig
+
 import hydra
 
 log = logging.getLogger(__name__)
 
 
 @hydra.main(config_path="conf/config.yaml")
-def experiment(_cfg):
+def my_app(_cfg: DictConfig) -> None:
     log.info("Info level message")
 
 
 if __name__ == "__main__":
-    sys.exit(experiment())
+    sys.exit(my_app())

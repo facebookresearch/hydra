@@ -109,15 +109,17 @@ class Plugins:
                         f"\t\t{type(e).__name__} : {e}",
                         category=UserWarning,
                     )
-                    pass
-                for name, obj in inspect.getmembers(loaded_mod):
-                    if inspect.isclass(obj):
-                        if (
-                            supertype is None
-                            or issubclass(obj, supertype)
-                            and not inspect.isabstract(obj)
-                        ):
-                            ret[obj.__name__] = obj
+                    loaded_mod = None
+
+                if loaded_mod is not None:
+                    for name, obj in inspect.getmembers(loaded_mod):
+                        if inspect.isclass(obj):
+                            if (
+                                supertype is None
+                                or issubclass(obj, supertype)
+                                and not inspect.isabstract(obj)
+                            ):
+                                ret[obj.__name__] = obj
 
         result: List[Type[Plugin]] = []
         for v in ret.values():
