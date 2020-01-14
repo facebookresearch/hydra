@@ -6,7 +6,7 @@ from hydra_plugins.example_plugin.example_plugin import ExamplePlugin
 
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking at all Plugins
-    assert ExamplePlugin in Plugins.discover(Plugin)
+    assert ExamplePlugin.__name__ in [x.__name__ for x in Plugins.discover(Plugin)]
 
 
 def test_example_plugin() -> None:

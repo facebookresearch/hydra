@@ -8,7 +8,7 @@ from typing import List
 import pytest
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
-from hydra._internal.core_plugins import BashCompletion
+from hydra._internal.core_plugins.bash_completion import BashCompletion
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 

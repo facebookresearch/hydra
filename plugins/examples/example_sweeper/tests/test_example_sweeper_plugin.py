@@ -9,7 +9,7 @@ from hydra_plugins.example_sweeper import ExampleSweeper
 
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking at the Sweeper plugins
-    assert ExampleSweeper in Plugins.discover(Sweeper)
+    assert ExampleSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
 
 
 def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore

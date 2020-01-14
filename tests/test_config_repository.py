@@ -4,7 +4,8 @@ from typing import List, Optional
 import pytest
 
 from hydra._internal import ConfigRepository, ConfigSearchPathImpl
-from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
+from hydra._internal.core_plugins.file_config_source import FileConfigSource
+from hydra._internal.core_plugins.package_config_source import PackageConfigSource
 from hydra.core.plugins import Plugins
 from hydra.plugins.config import ObjectType
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
