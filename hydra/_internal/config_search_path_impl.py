@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional, Sequence
 
 from hydra.core.config_search_path import (

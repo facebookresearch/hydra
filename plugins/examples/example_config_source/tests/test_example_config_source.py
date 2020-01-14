@@ -47,4 +47,6 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 def test_discovery() -> None:
     # Test that this config source is discoverable when looking at config sources
-    assert ConfigSourceExample in Plugins.discover(ConfigSource)
+    assert ConfigSourceExample.__name__ in [
+        x.__name__ for x in Plugins.discover(ConfigSource)
+    ]

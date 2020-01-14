@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, Optional
 
 from hydra._internal.hydra import Hydra
