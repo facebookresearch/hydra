@@ -3,7 +3,6 @@ import argparse
 import inspect
 import os
 import sys
-from argparse import ArgumentParser
 from os.path import dirname, join, normpath, realpath
 from typing import Any, Optional, Sequence, Tuple
 
@@ -149,7 +148,7 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
 
 
 def run_hydra(
-    args_parser: ArgumentParser,
+    args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
     strict: Optional[bool],
@@ -216,7 +215,7 @@ def _get_exec_command() -> str:
         return executable
 
 
-def get_args_parser() -> ArgumentParser:
+def get_args_parser() -> argparse.ArgumentParser:
     from .. import __version__
 
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")
