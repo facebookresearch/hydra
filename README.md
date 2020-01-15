@@ -4,8 +4,9 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-core)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-core.svg)](https://pypistats.org/packages/hydra-core)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/facebookresearch/hydra/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/facebookresearch/hydra/context:python)
 [![](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://hydra-framework.zulipchat.com)
-
 
 # Hydra
 A framework for elegantly configuring complex applications.
