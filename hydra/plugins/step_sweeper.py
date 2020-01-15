@@ -9,7 +9,7 @@ from typing import Any, List, Optional, Sequence
 from omegaconf import DictConfig
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.plugins.common.utils import JobReturn
+from hydra.core.utils import JobReturn
 from hydra.types import TaskFunction
 
 from .launcher import Launcher

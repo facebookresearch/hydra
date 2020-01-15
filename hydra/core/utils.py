@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import TaskFunction
 
@@ -110,8 +111,7 @@ def run_job(
         task_cfg = copy.deepcopy(config)
         del task_cfg["hydra"]
         ret.cfg = task_cfg
-        hc: DictConfig = HydraConfig.instance()
-        ret.hydra_cfg = copy.deepcopy(hc)
+        ret.hydra_cfg = OmegaConf.create({"hydra": HydraConfig.instance().hydra})
         overrides = OmegaConf.to_container(config.hydra.overrides.task)
         assert isinstance(overrides, list)
         ret.overrides = overrides
@@ -174,22 +174,6 @@ class JobRuntime(metaclass=Singleton):
     def set(self, key: str, value: Any) -> None:
         log.debug("Setting {}:{}={}".format(type(self).__name__, key, value))
         self.conf[key] = value
-
-
-class HydraConfig(metaclass=Singleton):
-    hydra: DictConfig
-
-    def __init__(self) -> None:
-        ret = OmegaConf.create()
-        assert isinstance(ret, DictConfig)
-        self.hydra = ret
-
-    def set_config(self, cfg: DictConfig) -> None:
-        try:
-            OmegaConf.set_readonly(self.hydra, False)
-            self.hydra = copy.deepcopy(cfg.hydra)
-        finally:
-            OmegaConf.set_readonly(self.hydra, True)
 
 
 def split_config_path(

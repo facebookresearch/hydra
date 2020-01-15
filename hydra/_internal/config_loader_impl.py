@@ -11,10 +11,9 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from hydra._internal import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
 from hydra.plugins.config import ConfigSource, ObjectType
-
-from ..plugins.common.utils import JobRuntime, get_overrides_dirname, split_key_val
 
 
 class ConfigLoaderImpl(ConfigLoader):

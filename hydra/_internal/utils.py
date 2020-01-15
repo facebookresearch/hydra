@@ -8,9 +8,8 @@ from typing import Any, Optional, Sequence, Tuple
 
 from hydra._internal import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.types import TaskFunction
-
-from ..plugins.common.utils import get_valid_filename, split_config_path
 
 
 def detect_calling_file_or_module(

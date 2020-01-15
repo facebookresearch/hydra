@@ -17,7 +17,7 @@ import copy
 import itertools
 from typing import Optional, Sequence
 
-from hydra.plugins.common.utils import JobReturn
+from hydra.core.utils import JobReturn
 from hydra.plugins.step_sweeper import StepSweeper
 
 

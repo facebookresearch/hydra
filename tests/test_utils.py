@@ -7,7 +7,7 @@ import pytest
 from omegaconf import DictConfig, OmegaConf
 
 from hydra import utils
-from hydra.plugins.common.utils import HydraConfig
+from hydra.core.hydra_config import HydraConfig
 
 
 def some_method() -> int:

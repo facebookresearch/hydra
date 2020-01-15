@@ -22,7 +22,8 @@ import hydra.experimental
 from hydra._internal import ConfigSearchPathImpl
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
-from hydra.plugins.common.utils import JobReturn, split_config_path
+from hydra.core.plugins import Plugins
+from hydra.core.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
@@ -109,14 +110,13 @@ class TaskTestFunction:
     def __enter__(self) -> "TaskTestFunction":
         try:
             config_dir, config_file = split_config_path(self.config_path)
-            hydra = Hydra.create_main_hydra_file_or_module(
+
+            self.hydra = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
                 config_dir=config_dir,
                 strict=self.strict,
             )
-
-            self.hydra = hydra
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             assert overrides is not None
@@ -203,14 +203,14 @@ class SweepTaskFunction:
         overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
         try:
             config_dir, config_file = split_config_path(self.config_path)
-            hydra = Hydra.create_main_hydra_file_or_module(
+            hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
                 config_dir=config_dir,
                 strict=self.strict,
             )
 
-            self.returns = hydra.multirun(
+            self.returns = hydra_.multirun(
                 config_file=config_file, task_function=self, overrides=overrides
             )
         finally:
@@ -318,7 +318,7 @@ def integration_test(
     s = string.Template(
         """import hydra
 import os
-from hydra.plugins.common.utils import HydraConfig
+from hydra.core import HydraConfig
 
 @hydra.main($CONFIG_PATH)
 def experiment(cfg):
@@ -374,6 +374,7 @@ if __name__ == "__main__":
 def create_search_path(
     search_path: List[str], abspath: bool = False
 ) -> ConfigSearchPathImpl:
+    Plugins.register_config_sources()
     csp = ConfigSearchPathImpl()
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:

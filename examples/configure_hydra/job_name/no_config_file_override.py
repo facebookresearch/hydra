@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import DictConfig
+
 import hydra
-from hydra.plugins.common.utils import HydraConfig
+from hydra.core import HydraConfig
 
 
 @hydra.main()
-def experiment(_cfg):
+def experiment(_cfg: DictConfig) -> None:
     print(HydraConfig.instance().hydra.job.name)
 
 

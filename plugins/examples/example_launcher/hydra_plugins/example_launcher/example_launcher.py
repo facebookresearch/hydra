@@ -7,15 +7,15 @@ from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.plugins import Launcher, SearchPathPlugin
-from hydra.plugins.common.utils import (
-    HydraConfig,
+from hydra.core.hydra_config import HydraConfig
+from hydra.core.utils import (
     JobReturn,
     configure_log,
     filter_overrides,
     run_job,
     setup_globals,
 )
+from hydra.plugins import Launcher, SearchPathPlugin
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ class ExampleLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class ExampleLauncher(Launcher):
-    def __init__(self, foo: str, bar: str):
+    def __init__(self, foo: str, bar: str) -> None:
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -86,7 +86,7 @@ class ExampleLauncher(Launcher):
                 # but instead should be populated remotely before calling the task_function.
                 sweep_config.hydra.job.id = "job_id_for_{}".format(idx)
                 sweep_config.hydra.job.num = idx
-            HydraConfig().set_config(sweep_config)
+            HydraConfig.instance().set_config(sweep_config)
 
             ret = run_job(
                 config=sweep_config,

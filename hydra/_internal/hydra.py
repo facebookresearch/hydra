@@ -9,18 +9,18 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from hydra.core import HydraConfig
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
-from hydra.errors import MissingConfigException
-from hydra.plugins.common.utils import (
-    HydraConfig,
+from hydra.core.utils import (
     JobReturn,
     JobRuntime,
     configure_log,
     run_job,
     setup_globals,
 )
+from hydra.errors import MissingConfigException
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
@@ -93,7 +93,7 @@ class Hydra:
         cfg = self.compose_config(
             config_file=config_file, overrides=overrides, with_log_configuration=True
         )
-        HydraConfig().set_config(cfg)
+        HydraConfig.instance().set_config(cfg)
         return run_job(
             config=cfg,
             task_function=task_function,
@@ -114,7 +114,7 @@ class Hydra:
             strict=False,
             with_log_configuration=True,
         )
-        HydraConfig().set_config(cfg)
+        HydraConfig.instance().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
         )
