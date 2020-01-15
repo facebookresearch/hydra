@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 import pytest
 
-from hydra._internal import ConfigSearchPathImpl
+from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.utils import compute_search_path_dir
 from hydra.core.config_search_path import SearchPathElement, SearchPathQuery
 

@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
-from hydra.plugins import Launcher
+from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction

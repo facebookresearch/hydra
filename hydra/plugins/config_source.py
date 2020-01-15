@@ -1,18 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import abstractmethod
 from dataclasses import dataclass
-from enum import Enum
 from typing import List, Optional
 
 from omegaconf import Container
 
+from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
-
-
-class ObjectType(Enum):
-    NOT_FOUND = 0
-    CONFIG = 1
-    GROUP = 2
 
 
 @dataclass
@@ -20,6 +14,10 @@ class ConfigResult:
     provider: str
     path: str
     config: Container
+
+
+class ConfigLoadError(IOError):
+    pass
 
 
 class ConfigSource(Plugin):
@@ -85,3 +83,6 @@ class ConfigSource(Plugin):
             if last_dot != -1:
                 file_name = file_name[0:last_dot]
             files.append(file_name)
+
+    def full_path(self) -> str:
+        return f"{self.scheme()}://{self.path}"

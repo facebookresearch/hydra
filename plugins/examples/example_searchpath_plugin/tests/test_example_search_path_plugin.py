@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins
-from hydra.plugins import SearchPathPlugin
+from hydra.plugins.search_path_plugin import SearchPathPlugin
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401

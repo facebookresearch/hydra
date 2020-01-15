@@ -6,7 +6,8 @@ from typing import Any, List, Optional
 from omegaconf import DictConfig
 
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.plugins.config import ConfigSource
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config_source import ConfigSource
 
 
 @dataclass
@@ -66,7 +67,8 @@ class ConfigLoader(ABC):
     def list_groups(self, parent_name: str) -> List[str]:
         ...
 
-    # TODO: cleanup this API
     @abstractmethod
-    def get_group_options(self, group_name: str, file_type: str = "file") -> List[str]:
+    def get_group_options(
+        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+    ) -> List[str]:
         ...

@@ -3,7 +3,7 @@ from typing import Any, List
 
 import pytest
 
-from hydra._internal import ConfigSearchPathImpl
+from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
 from hydra.experimental import compose, initialize

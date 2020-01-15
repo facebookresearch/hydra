@@ -5,7 +5,7 @@ from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
 
-from hydra.plugins.common.utils import HydraConfig
+from hydra.core.hydra_config import HydraConfig
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def instantiate(config: DictConfig, *args: Any, **kwargs: Any) -> Any:
 
 
 def get_original_cwd() -> str:
-    ret = HydraConfig().hydra.runtime.cwd
+    ret = HydraConfig.instance().hydra.runtime.cwd
     assert ret is not None and isinstance(ret, str)
     return ret
 

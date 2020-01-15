@@ -3,8 +3,9 @@ from typing import Any, Dict, List, Optional
 
 from omegaconf import DictConfig
 
+from hydra.core.object_type import ObjectType
 from hydra.core.singleton import Singleton
-from hydra.plugins.config import ConfigLoadError, ConfigResult, ConfigSource, ObjectType
+from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 
 class ConfigSourceExample(ConfigSource):

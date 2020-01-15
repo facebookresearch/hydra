@@ -8,21 +8,13 @@ from typing import Sequence
 from omegaconf import DictConfig
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.plugins.common.utils import JobReturn
+from hydra.core.utils import JobReturn
 from hydra.types import TaskFunction
 
 from .plugin import Plugin
 
 
 class Launcher(Plugin):
-    """
-    Abstract launcher
-    """
-
-    @abstractmethod
-    def __init__(self) -> None:
-        ...
-
     @abstractmethod
     def setup(
         self,

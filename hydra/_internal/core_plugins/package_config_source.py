@@ -9,7 +9,8 @@ from pkg_resources import (
     resource_stream,
 )
 
-from hydra.plugins.config import ConfigLoadError, ConfigResult, ConfigSource, ObjectType
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 
 class PackageConfigSource(ConfigSource):

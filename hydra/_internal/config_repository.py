@@ -2,7 +2,8 @@
 from typing import List, Optional
 
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.plugins.config import ConfigResult, ConfigSource, ObjectType
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 from .sources_registry import SourcesRegistry
 

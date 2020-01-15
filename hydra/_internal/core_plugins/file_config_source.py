@@ -4,7 +4,8 @@ from typing import List, Optional
 
 from omegaconf import OmegaConf
 
-from hydra.plugins.config import ConfigLoadError, ConfigResult, ConfigSource, ObjectType
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 
 class FileConfigSource(ConfigSource):

@@ -2,7 +2,7 @@
 from typing import Any, Dict, Type
 
 from hydra.core.singleton import Singleton
-from hydra.plugins.config.config_source import ConfigSource
+from hydra.plugins.config_source import ConfigSource
 
 
 class SourcesRegistry(metaclass=Singleton):
