@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.plugins import Plugins
-from hydra.plugins import Plugin
+from hydra.plugins.plugin import Plugin
 from hydra_plugins.example_plugin.example_plugin import ExamplePlugin
 
 

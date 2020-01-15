@@ -209,14 +209,16 @@ class Hydra:
         return s
 
     def list_all_config_groups(self, parent: str = "") -> Sequence[str]:
+        from hydra.core.object_type import ObjectType
+
         groups: List[str] = []
         for group in self.config_loader.list_groups(parent):
             if parent == "":
                 group_name = group
             else:
                 group_name = "{}/{}".format(parent, group)
-            files = self.config_loader.get_group_options(group_name, file_type="file")
-            dirs = self.config_loader.get_group_options(group_name, file_type="dir")
+            files = self.config_loader.get_group_options(group_name, ObjectType.CONFIG)
+            dirs = self.config_loader.get_group_options(group_name, ObjectType.GROUP)
             if len(files) > 0:
                 groups.append(group_name)
             if len(dirs) > 0:

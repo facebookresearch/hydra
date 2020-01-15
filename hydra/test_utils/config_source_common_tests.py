@@ -3,7 +3,9 @@ from typing import List, Optional, Type
 
 import pytest
 
-from hydra.plugins.config import ConfigLoadError, ConfigSource, ObjectType
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config.config_source import ConfigSource
+from hydra.plugins.config.errors import ConfigLoadError
 
 
 class ConfigSourceTestSuite:

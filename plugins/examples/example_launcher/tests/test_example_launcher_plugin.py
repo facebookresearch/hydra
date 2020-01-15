@@ -2,7 +2,7 @@
 import pytest
 
 from hydra.core.plugins import Plugins
-from hydra.plugins import Launcher
+from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,

@@ -19,7 +19,7 @@ from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 import hydra.experimental
-from hydra._internal import ConfigSearchPathImpl
+from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins

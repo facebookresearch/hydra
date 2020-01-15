@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.plugins import SearchPathPlugin
+from hydra.plugins.search_path_plugin import SearchPathPlugin
 
 
 class ExampleSearchPathPlugin(SearchPathPlugin):

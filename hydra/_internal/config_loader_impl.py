@@ -8,12 +8,13 @@ from typing import List, Optional
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
-from hydra._internal import ConfigRepository
+from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
-from hydra.plugins.config import ConfigSource, ObjectType
+from hydra.plugins.config.config_source import ConfigSource
 
 
 class ConfigLoaderImpl(ConfigLoader):
@@ -251,13 +252,14 @@ class ConfigLoaderImpl(ConfigLoader):
             return None
 
     def list_groups(self, parent_name: str) -> List[str]:
-        ret = list(set(self.get_group_options(parent_name, file_type="dir")))
-        return ret
-
-    def get_group_options(self, group_name: str, file_type: str = "file") -> List[str]:
-        return self.repository.get_group_options(
-            group_name, ObjectType.GROUP if file_type == "dir" else ObjectType.CONFIG
+        return self.get_group_options(
+            group_name=parent_name, results_filter=ObjectType.GROUP
         )
+
+    def get_group_options(
+        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+    ) -> List[str]:
+        return self.repository.get_group_options(group_name, results_filter)
 
     def _merge_config(
         self, cfg: DictConfig, family: str, name: str, required: bool

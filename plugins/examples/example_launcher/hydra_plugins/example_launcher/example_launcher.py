@@ -15,7 +15,8 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
-from hydra.plugins import Launcher, SearchPathPlugin
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.plugins import Plugins
-from hydra.plugins import Sweeper
+from hydra.plugins.sweeper import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401

@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra.plugins import Plugin
+from hydra.plugins.plugin import Plugin
 
 
 class ExamplePlugin(Plugin):
