@@ -318,7 +318,7 @@ def integration_test(
     s = string.Template(
         """import hydra
 import os
-from hydra.core import HydraConfig
+from hydra.core.hydra_config import HydraConfig
 
 @hydra.main($CONFIG_PATH)
 def experiment(cfg):

@@ -14,7 +14,7 @@ from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
-from hydra.plugins.config.config_source import ConfigSource
+from hydra.plugins.config_source import ConfigSource
 
 
 class ConfigLoaderImpl(ConfigLoader):

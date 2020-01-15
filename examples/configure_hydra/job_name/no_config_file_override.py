@@ -2,7 +2,7 @@
 from omegaconf import DictConfig
 
 import hydra
-from hydra.core import HydraConfig
+from hydra.core.hydra_config import HydraConfig
 
 
 @hydra.main()

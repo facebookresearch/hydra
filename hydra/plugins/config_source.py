@@ -16,6 +16,10 @@ class ConfigResult:
     config: Container
 
 
+class ConfigLoadError(IOError):
+    pass
+
+
 class ConfigSource(Plugin):
     provider: str
     path: str

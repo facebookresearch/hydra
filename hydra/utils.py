@@ -5,7 +5,7 @@ from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
 
-from hydra.core import HydraConfig
+from hydra.core.hydra_config import HydraConfig
 
 log = logging.getLogger(__name__)
 

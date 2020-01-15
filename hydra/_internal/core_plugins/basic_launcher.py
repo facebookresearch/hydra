@@ -5,8 +5,8 @@ from typing import List, Optional, Sequence
 
 from omegaconf import DictConfig, open_dict
 
-from hydra.core import HydraConfig
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.utils import (
     JobReturn,
     configure_log,

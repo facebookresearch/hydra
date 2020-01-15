@@ -9,9 +9,9 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra.core import HydraConfig
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,

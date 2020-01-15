@@ -9,7 +9,7 @@ from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
 from hydra.core.config_loader import ConfigLoader
-from hydra.plugins.config.config_source import ConfigSource
+from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.sweeper import Sweeper

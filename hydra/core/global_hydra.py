@@ -2,8 +2,8 @@
 from typing import Any, Optional
 
 from hydra._internal.hydra import Hydra
-from hydra.core import Singleton
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.singleton import Singleton
 
 
 class GlobalHydra(metaclass=Singleton):
