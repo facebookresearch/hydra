@@ -301,15 +301,13 @@ class Hydra:
             for plugin in Plugins.discover(plugin_type):
                 log.debug("\t\t{}".format(plugin.__name__))
 
-    def _get_padding(self) -> Tuple[int, int, int]:
+    def _get_padding(self,) -> Tuple[int, int, int]:
         provider_pad = 0
         search_path_pad = 0
         file_pad = 0
         for sp in self.config_loader.get_sources():
-            assert sp.provider is not None
-            assert sp.path is not None
             provider_pad = max(provider_pad, len(sp.provider))
-            search_path_pad = max(search_path_pad, len(sp.path))
+            search_path_pad = max(search_path_pad, len(sp.full_path()))
         for trace in self.config_loader.get_load_history():
             file_pad = max(file_pad, len(trace.filename))
 
@@ -332,12 +330,10 @@ class Hydra:
         )
 
         for source in self.config_loader.get_sources():
-            assert source.provider is not None
-            assert source.path is not None
             log.debug(
                 "| {} | {} |".format(
                     source.provider.ljust(provider_pad),
-                    source.path.ljust(search_path_pad),
+                    source.full_path().ljust(search_path_pad),
                 )
             )
 
