@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 
 from omegaconf import DictConfig
 
-from hydra.core.singleton import Singleton
+from hydra.core import Singleton
 from hydra.plugins.config import ConfigLoadError, ConfigResult, ConfigSource, ObjectType
 
 
