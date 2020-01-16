@@ -31,7 +31,7 @@ class PackageConfigSource(ConfigSource):
             with resource_stream(module_name, resource_name) as stream:
                 return ConfigResult(
                     config=OmegaConf.load(stream),
-                    path=f"{self.scheme()}://{self.path}",
+                    path=self.get_source_path(),
                     provider=self.provider,
                 )
         except IOError:

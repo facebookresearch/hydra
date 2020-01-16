@@ -307,7 +307,7 @@ class Hydra:
         file_pad = 0
         for sp in self.config_loader.get_sources():
             provider_pad = max(provider_pad, len(sp.provider))
-            search_path_pad = max(search_path_pad, len(sp.full_path()))
+            search_path_pad = max(search_path_pad, len(sp.get_source_path()))
         for trace in self.config_loader.get_load_history():
             file_pad = max(file_pad, len(trace.filename))
 
@@ -333,7 +333,7 @@ class Hydra:
             log.debug(
                 "| {} | {} |".format(
                     source.provider.ljust(provider_pad),
-                    source.full_path().ljust(search_path_pad),
+                    source.get_source_path().ljust(search_path_pad),
                 )
             )
 

@@ -24,7 +24,7 @@ class FileConfigSource(ConfigSource):
             raise ConfigLoadError(f"FileConfigSource: Config not found : {full_path}")
         return ConfigResult(
             config=OmegaConf.load(full_path),
-            path=f"{self.scheme()}://{self.path}",
+            path=self.get_source_path(),
             provider=self.provider,
         )
 

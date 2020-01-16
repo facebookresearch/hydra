@@ -84,5 +84,5 @@ class ConfigSource(Plugin):
                 file_name = file_name[0:last_dot]
             files.append(file_name)
 
-    def full_path(self) -> str:
+    def get_source_path(self) -> str:
         return f"{self.scheme()}://{self.path}"

@@ -5,7 +5,7 @@ from omegaconf import OmegaConf
 from hydra.core.plugins import Plugins
 from hydra.plugins.config_source import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
-from hydra_plugins.example_config_source.config_source_example import (
+from hydra_plugins.example_configsource.example_configsource import (
     ConfigSourceExample,
     ConfigStore,
 )
