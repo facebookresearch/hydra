@@ -12,3 +12,11 @@ class Singleton(type):
 
     def instance(cls: Any, *args: Any, **kwargs: Any) -> Any:
         return cls(*args, **kwargs)
+
+    @staticmethod
+    def get_state() -> Dict[type, "Singleton"]:
+        return Singleton._instances
+
+    @staticmethod
+    def set_state(instances: Dict[type, "Singleton"]) -> None:
+        Singleton._instances = instances
