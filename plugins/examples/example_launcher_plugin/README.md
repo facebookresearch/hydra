@@ -17,7 +17,7 @@ When the launcher is initialized, its "using" the foo and bar parameters.
 
 Output of the example application:
 ```text
-$ python example/my_app.py  --multirun db=postgresql,mysql
+$ python example/my_app.py --multirun db=postgresql,mysql
 [2019-10-22 19:45:05,060] - Example Launcher(foo=10, bar=abcde) is launching 2 jobs locally
 [2019-10-22 19:45:05,060] - Sweep output dir : multirun/2019-10-22/19-45-05
 [2019-10-22 19:45:05,060] -     #0 : db=postgresql
