@@ -8,7 +8,7 @@ import hydra
 
 @hydra.main()
 def my_app(_cfg: DictConfig) -> None:
-    print("Working directory : {}".format(os.getcwd()))
+    print(f"Working directory : {os.getcwd()}")
 
 
 if __name__ == "__main__":

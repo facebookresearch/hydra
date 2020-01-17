@@ -12,10 +12,11 @@ The examples in this tutorial are available [here](https://github.com/facebookre
 
 Python file: `my_app.py`
 ```python
+from omegaconf import DictConfig
 import hydra
 
 @hydra.main()
-def my_app(cfg):
+def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 
 if __name__ == "__main__":

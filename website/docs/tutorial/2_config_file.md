@@ -51,7 +51,7 @@ It can be turned on or off via the `strict` argument in your `@hydra.main()` dec
 
 ```python
 @hydra.main(config_path='config.yaml')
-def my_app(cfg):
+def my_app(cfg : DictConfig) -> None:
     driver = cfg.db.driver # Okay
     user = cfg.db.user # Okay
     password = cfg.db.password # Not okay, there is no password field in db!
@@ -70,6 +70,6 @@ With strict mode off, accessing unknown keys in the config is permitted and both
 below would run.
 ```python
 @hydra.main(config_path='config.yaml', strict=False)
-def my_app(cfg):
+def my_app(cfg : DictConfig) -> None:
     cfg.db.port = 3306 # Okay
 ```
