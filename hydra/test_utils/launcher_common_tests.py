@@ -300,7 +300,7 @@ class IntegrationTestSuite:
         extra_flags: List[str],
         plugin_module: Optional[str],
     ) -> None:
-        self.verify_plugin(plugin_module)
+        # self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create(task_config or {})  # type: ignore
@@ -404,7 +404,7 @@ class IntegrationTestSuite:
         extra_flags: List[str],
         plugin_module: str,
     ) -> None:
-        self.verify_plugin(plugin_module)
+        # self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create(task_config or {})  # type: ignore
@@ -425,7 +425,7 @@ class IntegrationTestSuite:
         extra_flags: List[str],
         plugin_module: str,
     ) -> None:
-        self.verify_plugin(plugin_module)
+        # self.verify_plugin(plugin_module)
         overrides = extra_flags
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create()
