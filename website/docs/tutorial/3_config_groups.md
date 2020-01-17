@@ -19,7 +19,7 @@ files into a `conf` directory.
 Python file: `my_app.py`
 ```python
 @hydra.main(config_path="conf")
-def my_app(cfg):
+def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
 

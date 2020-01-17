@@ -16,9 +16,10 @@ Every time you run the app, a new working directory is automatically created:
 Python file: `my_app.py`
 ```python
 import os
+from omegaconf import DictConfig
 
 @hydra.main()
-def my_app(_cfg):
+def my_app(cfg: DictConfig) -> None:
     print("Working directory : {}".format(os.getcwd()))
 
 $ python my_app.py
@@ -54,15 +55,18 @@ You can still access the original working directory if you need to:
 
 ```python
 import os
+from omegaconf import DictConfig
 import hydra
-from hydra import utils
 
 @hydra.main()
-def my_app(_cfg):
-    print("Current working directory  : {}".format(os.getcwd()))
-    print("Original working directory : {}".format(utils.get_original_cwd()))
-    print("to_absolute_path('foo')    : {}".format(utils.to_absolute_path("foo")))
-    print("to_absolute_path('/foo')   : {}".format(utils.to_absolute_path("/foo")))
+def my_app(_cfg: DictConfig) -> None:
+    print(f"Current working directory : {os.getcwd()}")
+    print(f"Orig working directory    : {hydra.utils.get_original_cwd()}")
+    print(f"to_absolute_path('foo')   : {hydra.utils.to_absolute_path('foo')}")
+    print(f"to_absolute_path('/foo')  : {hydra.utils.to_absolute_path('/foo')}")
+
+if __name__ == "__main__":
+    my_app()
 
 
 $ python examples/tutorial/8_working_directory/original_cwd.py
