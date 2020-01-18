@@ -7,30 +7,31 @@ from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from omegaconf import DictConfig, OmegaConf
 
-from hydra._internal.config_search_path import ConfigSearchPath  # type: ignore
-from hydra._internal.plugins import Plugins  # type: ignore
 from hydra.core.config_loader import ConfigLoader
-from hydra.plugins import SearchPathPlugin, Sweeper  # type: ignore
+from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.plugins import Plugins
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.search_path_plugin import SearchPathPlugin
+from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
 
 TrialType = Dict[str, int]
 BatchOfTrialType = List[TrialType]
-BestParameterType = Union[ax_types.Parameterization]
+BestParameterType = Union[ax_types.TParameterization]
 
 # TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
 # TODO: Support running multiple random seeds, aggregate mean and SEM
 
 
-class AxSweeperSearchPathPlugin(SearchPathPlugin):  # type: ignore
+class AxSweeperSearchPathPlugin(SearchPathPlugin):
     """
     This plugin makes the config files (provided by the AxSweeper plugin) discoverable and
     useable by the AxSweeper plugin.
     """
 
-    def manipulate_search_path(self, search_path: str) -> None:
-        assert isinstance(search_path, ConfigSearchPath)
+    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
             "hydra-ax-sweeper", "pkg://hydra_plugins.hydra_ax_sweeper.conf"
@@ -176,7 +177,7 @@ class EarlyStopper:
         return False
 
 
-class AxSweeper(Sweeper):  # type: ignore
+class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(
@@ -188,7 +189,7 @@ class AxSweeper(Sweeper):  # type: ignore
         max_trials: int,
         ax_params: DictConfig,
     ):
-        self.launcher = None
+        self.launcher: Optional[Launcher] = None
         self.job_results = None
         self.experiment = experiment
         self.early_stopper = EarlyStopper(**early_stop)
