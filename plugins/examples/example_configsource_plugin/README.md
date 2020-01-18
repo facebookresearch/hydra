@@ -5,4 +5,7 @@ Config source plugins are allowing Hydra to recognize other search path schemas 
 `file://` (which provides access to configs in the file system) and 
 `pkg://` (which provides access to configs installed with a Python package) 
 
-This plugin provides access to configs stored in a simple in-memory data structure.
+This config source hard codes all the responses so it's not very useful.
+All config sources need to pass the ConfigSourceTestSuite tests, which are expecting those specific responses.
+When implementing a new config source, be sure to run it through the rest suite to ensure it always behaves the same
+as the other config sources.

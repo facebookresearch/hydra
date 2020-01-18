@@ -37,8 +37,7 @@ class ConfigRepository:
     ) -> List[str]:
         options: List[str] = []
         for source in self.sources:
-            object_type = source.get_type(config_path=group_name)
-            if object_type == ObjectType.GROUP:
+            if source.is_group(config_path=group_name):
                 options.extend(
                     source.list(config_path=group_name, results_filter=results_filter)
                 )

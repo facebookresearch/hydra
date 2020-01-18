@@ -26,6 +26,9 @@ class LoadTrace:
         else:
             return NotImplemented
 
+    def __repr__(self) -> str:
+        return str((self.filename, self.path, self.provider))
+
 
 class ConfigLoader(ABC):
     """

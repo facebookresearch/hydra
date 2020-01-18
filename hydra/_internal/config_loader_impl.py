@@ -3,7 +3,6 @@
 Configuration loader
 """
 import copy
-import os
 from typing import List, Optional
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
@@ -296,12 +295,6 @@ class ConfigLoaderImpl(ConfigLoader):
     def _merge_defaults(
         self, cfg: DictConfig, defaults: ListConfig, split_at: int
     ) -> DictConfig:
-        def get_filename(config_name: str) -> str:
-            filename, ext = os.path.splitext(config_name)
-            if ext not in (".yaml", ".yml"):
-                config_name = "{}{}".format(config_name, ".yaml")
-            return config_name
-
         def merge_defaults(merged_cfg: DictConfig, def_list: ListConfig) -> DictConfig:
             cfg_with_list = OmegaConf.create(dict(defaults=def_list))
             for default1 in cfg_with_list.defaults:
@@ -317,17 +310,14 @@ class ConfigLoaderImpl(ConfigLoader):
                         merged_cfg = self._merge_config(
                             cfg=merged_cfg,
                             family=family,
-                            name=get_filename(name),
+                            name=name,
                             required=not is_optional,
                         )
                 else:
                     assert isinstance(default1, str)
                     if "_SKIP_" not in default1:
                         merged_cfg = self._merge_config(
-                            cfg=merged_cfg,
-                            family="",
-                            name=get_filename(default1),
-                            required=True,
+                            cfg=merged_cfg, family="", name=default1, required=True,
                         )
             return merged_cfg
 
