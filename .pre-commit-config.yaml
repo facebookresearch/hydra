@@ -14,7 +14,7 @@ repos:
     rev: 3.7.9
     hooks:
       - id: flake8
-        additional_dependencies: [-e, git+git://github.com/pycqa/pyflakes.git@1911c20#egg=pyflakes]
+        additional_dependencies: [-e, "git+git://github.com/pycqa/pyflakes.git@1911c20#egg=pyflakes"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.761

@@ -1,12 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from hydra._internal.plugins import Plugins  # type: ignore
+from hydra.plugins import Sweeper  # type: ignore
+from hydra_plugins.hydra_ax_sweeper import AxSweeper
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import map_params_to_arg_list
 
-from hydra._internal.plugins import Plugins
-from hydra.plugins import Sweeper
-from hydra_plugins.hydra_ax import AxSweeper
-from hydra_plugins.hydra_ax.ax_sweeper import map_params_to_arg_list
 
-
-def test_discovery():
+def test_discovery() -> None:
     """
     Tests that this plugin can be discovered via the plugins subsystem when looking for Sweeper
     :return:
@@ -17,7 +16,7 @@ def test_discovery():
 # TODO: create tests for ExampleSweeper
 
 
-def test_map_params_to_arg_list():
+def test_map_params_to_arg_list() -> None:
     """Method to test the map_params_to_arg_list method"""
     params = {
         "x1": 0.1087956354022026,
