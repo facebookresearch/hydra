@@ -135,15 +135,15 @@ class TestConfigLoader:
         )
         assert config_loader.get_load_history() == [
             ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+            ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
+            ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+            ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
             ("missing-optional-default.yaml", path, "main"),
-            ("foo/missing.yaml", None, None),
+            ("foo/missing", None, None),
         ]
 
     def test_load_history_with_basic_launcher(self, path: str) -> None:
@@ -158,13 +158,13 @@ class TestConfigLoader:
 
         assert config_loader.get_load_history() == [
             ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+            ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
+            ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+            ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+            ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
             ("custom_default_launcher.yaml", path, "main"),
         ]
 
@@ -256,12 +256,12 @@ def test_default_removal(config_file: str, overrides: List[str]) -> None:
     )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
         (config_file, "file://hydra/test_utils/configs", "main"),
     ]
 
@@ -314,12 +314,12 @@ def test_override_hydra_config_group_from_config_file() -> None:
     )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_logging/hydra_debug.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/disabled.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
         ("overriding_logging_default.yaml", "file://hydra/test_utils/configs", "main"),
     ]
 
@@ -359,15 +359,15 @@ def test_non_config_group_default() -> None:
     )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
         ("non_config_group_default.yaml", "file://hydra/test_utils/configs", "main"),
-        ("some_config.yaml", "file://hydra/test_utils/configs", "main"),
+        ("some_config", "file://hydra/test_utils/configs", "main"),
     ]
 
 
@@ -384,15 +384,15 @@ def test_mixed_composition_order() -> None:
     )
     assert config_loader.get_load_history() == [
         ("hydra.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/launcher/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default.yaml", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default.yaml", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
+        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
+        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
         ("mixed_compose.yaml", "file://hydra/test_utils/configs", "main"),
-        ("some_config.yaml", "file://hydra/test_utils/configs", "main"),
-        ("group1/file1.yaml", "file://hydra/test_utils/configs", "main"),
-        ("config.yaml", "file://hydra/test_utils/configs", "main"),
+        ("some_config", "file://hydra/test_utils/configs", "main"),
+        ("group1/file1", "file://hydra/test_utils/configs", "main"),
+        ("config", "file://hydra/test_utils/configs", "main"),
     ]

@@ -7,6 +7,7 @@ from hydra._internal.config_repository import ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.core_plugins.file_config_source import FileConfigSource
 from hydra._internal.core_plugins.package_config_source import PackageConfigSource
+from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.object_type import ObjectType
 from hydra.core.plugins import Plugins
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
@@ -20,8 +21,12 @@ Plugins.register_config_sources()
 @pytest.mark.parametrize(
     "type_, path",
     [
-        (FileConfigSource, "file://tests/test_apps/config_source_test_configs"),
-        (PackageConfigSource, "pkg://tests.test_apps.config_source_test_configs"),
+        (FileConfigSource, "file://tests/test_apps/config_source_test/dir"),
+        (PackageConfigSource, "pkg://tests.test_apps.config_source_test.dir"),
+        (
+            StructuredConfigSource,
+            "structured://tests.test_apps.config_source_test.structured",
+        ),
     ],
 )
 class TestCoreConfigSources(ConfigSourceTestSuite):
@@ -37,8 +42,8 @@ def create_config_search_path(path: str) -> ConfigSearchPathImpl:
 @pytest.mark.parametrize(
     "path",
     [
-        "file://tests/test_apps/config_source_test_configs",
-        "pkg://tests.test_apps/config_source_test_configs",
+        "file://tests/test_apps/config_source_test/dir",
+        "pkg://tests.test_apps.config_source_test.dir",
     ],
 )
 class TestConfigRepository:
@@ -61,16 +66,15 @@ class TestConfigRepository:
     @pytest.mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",
         [
-            ("", None, ["config_without_group", "dataset", "optimizer"]),
-            ("", ObjectType.GROUP, ["dataset", "optimizer"]),
-            ("", ObjectType.CONFIG, ["config_without_group"]),
-            ("dataset", None, ["cifar10", "config_without_extension", "imagenet"]),
+            ("", None, ["config_without_group", "dataset", "level1", "optimizer"]),
+            ("", ObjectType.GROUP, ["dataset", "level1", "optimizer"]),
+            ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
+            ("dataset", None, ["cifar10", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
-            (
-                "dataset",
-                ObjectType.CONFIG,
-                ["cifar10", "config_without_extension", "imagenet"],
-            ),
+            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"],),
+            ("level1", ObjectType.GROUP, ["level2"],),
+            ("level1", ObjectType.CONFIG, []),
+            ("level1/level2", ObjectType.CONFIG, ["nested1", "nested2"],),
         ],
     )
     def test_config_repository_list(

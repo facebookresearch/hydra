@@ -42,21 +42,32 @@ class ConfigSource(Plugin):
     def load_config(self, config_path: str) -> ConfigResult:
         ...
 
-    @abstractmethod
+    # subclasses may override to improve performance
     def exists(self, config_path: str) -> bool:
+        return self.is_group(config_path) or self.is_config(config_path)
+
+    @abstractmethod
+    def is_group(self, config_path: str) -> bool:
         ...
 
-    def get_type(self, config_path: str) -> ObjectType:
+    @abstractmethod
+    def is_config(self, config_path: str) -> bool:
         ...
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
+        """
+        List items under the specified config path
+        :param config_path: config path to list items in, examples: "", "foo", "foo/bar"
+        :param results_filter: None for all, GROUP for groups only and CONFIG for configs only
+        :return: a list of config or group identifiers (sorted and unique)
+        """
         ...
 
     def __str__(self) -> str:
         return repr(self)
 
     def __repr__(self) -> str:
-        return f"provider={self.provider}, path={self.path}"
+        return f"provider={self.provider}, path={self.scheme()}://{self.path}"
 
     def _list_add_result(
         self,
@@ -66,23 +77,31 @@ class ConfigSource(Plugin):
         results_filter: Optional[ObjectType],
     ) -> None:
         filtered = ["__pycache__", "__init__.py"]
-        file_type = self.get_type(file_path)
-        assert file_type is not ObjectType.NOT_FOUND
+        is_group = self.is_group(file_path)
+        is_config = self.is_config(file_path)
         if (
-            file_type == ObjectType.GROUP
+            is_group
             and (results_filter is None or results_filter == ObjectType.GROUP)
             and file_name not in filtered
         ):
             files.append(file_name)
         if (
-            file_type == ObjectType.CONFIG
+            is_config
             and file_name not in filtered
             and (results_filter is None or results_filter == ObjectType.CONFIG)
         ):
+            # strip extension
             last_dot = file_name.rfind(".")
             if last_dot != -1:
                 file_name = file_name[0:last_dot]
+
             files.append(file_name)
 
     def full_path(self) -> str:
         return f"{self.scheme()}://{self.path}"
+
+    @staticmethod
+    def _normalize_file_name(filename: str) -> str:
+        if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
+            filename += ".yaml"
+        return filename
