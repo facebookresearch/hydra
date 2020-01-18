@@ -19,11 +19,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
-        install_requires=[
-            "hydra-core",
-            "botorch==0.1.3",
-            "sqlalchemy",
-            "ax-platform==0.1.6",
-        ],
+        install_requires=["hydra-core", "ax-platform[mysql]==0.1.9"],
         include_package_data=True,
     )

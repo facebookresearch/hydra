@@ -26,7 +26,7 @@ hydra:
       status_quo: null
 
   sweeper:
-    class: hydra_plugins.ax_sweeper.AxSweeper
+    class: hydra_plugins.hydra_ax_sweeper.AxSweeper
     params:
       experiment: ${hydra.ax.experiment}
       early_stop: ${hydra.ax.early_stop}
