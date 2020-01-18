@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra._internal.plugins import Plugins  # type: ignore
-from hydra.plugins import Sweeper  # type: ignore
+from hydra.core.plugins import Plugins
+from hydra.plugins.sweeper import Sweeper
 from hydra_plugins.hydra_ax_sweeper import AxSweeper
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import map_params_to_arg_list
 
