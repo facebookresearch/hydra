@@ -150,8 +150,7 @@ def test_plugins(session, install_cmd):
             run_pytest(session)
 
 
-# code coverage runs with python 3.6
-@nox.session(python="3.6")
+@nox.session
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
