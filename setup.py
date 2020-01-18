@@ -119,6 +119,7 @@ with open("README.md", "r") as fh:
                 "nox",
                 "pre-commit",
                 "pytest",
+                "pytest-snail",
                 "setuptools",
                 "towncrier",
                 "twine",

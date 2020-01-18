@@ -1,1 +1,1 @@
-Paves the road for additional config sources by creating a config source abstraction
+Config source is now abstracted, allowing additional config sources to be used

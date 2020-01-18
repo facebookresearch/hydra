@@ -20,7 +20,7 @@ defaults:
 Remember to specify `config.yaml` as the `config_path`.
 ```python
 @hydra.main(config_path='conf/config.yaml')
-def my_app(cfg):
+def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
 

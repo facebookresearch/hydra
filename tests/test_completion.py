@@ -7,8 +7,8 @@ from typing import List
 
 import pytest
 
-from hydra._internal.config_loader import ConfigLoader
-from hydra._internal.core_plugins import BashCompletion
+from hydra._internal.config_loader_impl import ConfigLoaderImpl
+from hydra._internal.core_plugins.bash_completion import BashCompletion
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
 from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
 
@@ -19,8 +19,8 @@ def is_expect_exists() -> bool:
     return distutils.spawn.find_executable("expect") is not None
 
 
-def create_config_loader() -> ConfigLoader:
-    return ConfigLoader(
+def create_config_loader() -> ConfigLoaderImpl:
+    return ConfigLoaderImpl(
         config_search_path=create_search_path(
             ["hydra/test_utils/configs/completion_test"], abspath=True
         )
@@ -195,7 +195,9 @@ def test_file_completion(
         os.chdir(pwd)
 
 
-@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
+    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"],
+)
 @pytest.mark.parametrize(  # type: ignore
     "app_prefix",
     [

@@ -17,6 +17,11 @@ module.exports = {
         googleAnalytics: {
           trackingID: 'UA-149862507-1',
         },
+        algolia: {
+          apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
+          indexName: 'hydra',
+          algoliaOptions: {},
+        },
         navbar: {
             title: 'Hydra',
             logo: {

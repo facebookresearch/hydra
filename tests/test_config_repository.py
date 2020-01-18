@@ -1,13 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional, Type
+from typing import List, Optional
 
 import pytest
 
-from hydra._internal.config import ConfigRepository
-from hydra._internal.config_search_path import ConfigSearchPath
-from hydra._internal.core_plugins import FileConfigSource, PackageConfigSource
-from hydra._internal.plugins import Plugins
-from hydra.plugins import ConfigSource, ObjectType
+from hydra._internal.config_repository import ConfigRepository
+from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
+from hydra._internal.core_plugins.file_config_source import FileConfigSource
+from hydra._internal.core_plugins.package_config_source import PackageConfigSource
+from hydra.core.object_type import ObjectType
+from hydra.core.plugins import Plugins
+from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -18,62 +20,16 @@ Plugins.register_config_sources()
 @pytest.mark.parametrize(
     "type_, path",
     [
-        (FileConfigSource, "file://tests/test_apps/app_with_cfg_groups/conf"),
-        (PackageConfigSource, "pkg://tests.test_apps.app_with_cfg_groups.conf"),
+        (FileConfigSource, "file://tests/test_apps/config_source_test_configs"),
+        (PackageConfigSource, "pkg://tests.test_apps.config_source_test_configs"),
     ],
 )
-class TestConfigSource:
-    def test_source_load_config(self, type_: Type[ConfigSource], path: str) -> None:
-        src = type_(provider="foo", path=path)
-
-        ret = src.load_config(config_path="dataset/imagenet.yaml")
-        assert ret.config == {
-            "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
-        }
-
-        with pytest.raises(IOError):
-            src.load_config(config_path="dataset/not_found.yaml")
-
-    def test_source_file_exists(self, type_: Type[ConfigSource], path: str) -> None:
-        src = type_(provider="foo", path=path)
-
-        assert src.exists("dataset/imagenet.yaml")
-        assert not src.exists("not_there.yaml")
-
-    def test_source_file_type(self, type_: Type[ConfigSource], path: str) -> None:
-        src = type_(provider="foo", path=path)
-
-        assert src.get_type("dataset/imagenet.yaml") == ObjectType.CONFIG
-        assert src.get_type("dataset") == ObjectType.GROUP
-        assert src.get_type("dataset/") == ObjectType.GROUP
-        assert src.get_type("not_found") == ObjectType.NOT_FOUND
-
-    @pytest.mark.parametrize(  # type: ignore
-        "config_path,results_filter,expected",
-        [
-            ("", None, ["config", "dataset", "optimizer"]),
-            ("", ObjectType.GROUP, ["dataset", "optimizer"]),
-            ("", ObjectType.CONFIG, ["config"]),
-            ("dataset", None, ["imagenet", "nesterov"]),
-            ("dataset", ObjectType.GROUP, []),
-            ("dataset", ObjectType.CONFIG, ["imagenet", "nesterov"]),
-        ],
-    )
-    def test_source_list(
-        self,
-        type_: Type[ConfigSource],
-        path: str,
-        config_path: str,
-        results_filter: Optional[ObjectType],
-        expected: List[str],
-    ) -> None:
-        src = type_(provider="foo", path=path)
-        ret = src.list(config_path=config_path, results_filter=results_filter)
-        assert ret == expected
+class TestCoreConfigSources(ConfigSourceTestSuite):
+    pass
 
 
-def create_config_search_path(path: str) -> ConfigSearchPath:
-    csp = ConfigSearchPath()
+def create_config_search_path(path: str) -> ConfigSearchPathImpl:
+    csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp
 
@@ -81,8 +37,8 @@ def create_config_search_path(path: str) -> ConfigSearchPath:
 @pytest.mark.parametrize(
     "path",
     [
-        "file://tests/test_apps/app_with_cfg_groups/conf",
-        "pkg://tests.test_apps.app_with_cfg_groups.conf",
+        "file://tests/test_apps/config_source_test_configs",
+        "pkg://tests.test_apps/config_source_test_configs",
     ],
 )
 class TestConfigRepository:
@@ -105,12 +61,16 @@ class TestConfigRepository:
     @pytest.mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",
         [
-            ("", None, ["config", "dataset", "optimizer"]),
+            ("", None, ["config_without_group", "dataset", "optimizer"]),
             ("", ObjectType.GROUP, ["dataset", "optimizer"]),
-            ("", ObjectType.CONFIG, ["config"]),
-            ("dataset", None, ["imagenet", "nesterov"]),
+            ("", ObjectType.CONFIG, ["config_without_group"]),
+            ("dataset", None, ["cifar10", "config_without_extension", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
-            ("dataset", ObjectType.CONFIG, ["imagenet", "nesterov"]),
+            (
+                "dataset",
+                ObjectType.CONFIG,
+                ["cifar10", "config_without_extension", "imagenet"],
+            ),
         ],
     )
     def test_config_repository_list(

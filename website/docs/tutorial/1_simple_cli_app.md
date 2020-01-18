@@ -8,14 +8,15 @@ This is a simple Hydra application that prints your configuration.
 The `my_app` function is a place holder 
 for your code. We will slowly evolve this example to show-case more Hydra features.
 
-The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples).
+The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples/tutorial).
 
 Python file: `my_app.py`
 ```python
+from omegaconf import DictConfig
 import hydra
 
 @hydra.main()
-def my_app(cfg):
+def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 
 if __name__ == "__main__":

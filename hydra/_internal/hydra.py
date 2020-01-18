@@ -9,45 +9,28 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Tuple, 
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra._internal.singleton import Singleton
-from hydra.errors import MissingConfigException
-from hydra.types import TaskFunction
-
-from ..plugins import CompletionPlugin, Launcher, SearchPathPlugin, Sweeper
-from ..plugins.common.utils import (
-    HydraConfig,
+from hydra.core.config_loader import ConfigLoader
+from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.hydra_config import HydraConfig
+from hydra.core.plugins import Plugins
+from hydra.core.utils import (
     JobReturn,
     JobRuntime,
     configure_log,
     run_job,
     setup_globals,
 )
-from .config_loader import ConfigLoader
-from .config_search_path import ConfigSearchPath
-from .plugins import Plugins
+from hydra.errors import MissingConfigException
+from hydra.plugins.completion_plugin import CompletionPlugin
+from hydra.plugins.launcher import Launcher
+from hydra.plugins.search_path_plugin import SearchPathPlugin
+from hydra.plugins.sweeper import Sweeper
+from hydra.types import TaskFunction
+
+from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path, detect_task_name
 
 log: Optional[logging.Logger] = None
-
-
-class GlobalHydra(metaclass=Singleton):
-    def __init__(self) -> None:
-        self.hydra: Optional[Hydra] = None
-
-    def initialize(self, hydra: "Hydra") -> None:
-        assert isinstance(hydra, Hydra)
-        assert not self.is_initialized(), "GlobalHydra is already initialized"
-        self.hydra = hydra
-
-    def is_initialized(self) -> bool:
-        return self.hydra is not None
-
-    def clear(self) -> None:
-        self.hydra = None
-
-    @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "GlobalHydra":
-        return Singleton.instance(GlobalHydra, *args, **kwargs)  # type: ignore
 
 
 class Hydra:
@@ -72,13 +55,13 @@ class Hydra:
         config_search_path: ConfigSearchPath,
         strict: Optional[bool],
     ) -> "Hydra":
-        assert isinstance(config_search_path, ConfigSearchPath)
-
-        config_loader = ConfigLoader(
+        config_loader: ConfigLoader = ConfigLoaderImpl(
             config_search_path=config_search_path, default_strict=strict
         )
 
         hydra = cls(task_name=task_name, config_loader=config_loader)
+        from hydra.core.global_hydra import GlobalHydra
+
         GlobalHydra.instance().initialize(hydra)
         return hydra
 
@@ -110,7 +93,7 @@ class Hydra:
         cfg = self.compose_config(
             config_file=config_file, overrides=overrides, with_log_configuration=True
         )
-        HydraConfig().set_config(cfg)
+        HydraConfig.instance().set_config(cfg)
         return run_job(
             config=cfg,
             task_function=task_function,
@@ -131,7 +114,7 @@ class Hydra:
             strict=False,
             with_log_configuration=True,
         )
-        HydraConfig().set_config(cfg)
+        HydraConfig.instance().set_config(cfg)
         sweeper = Plugins.instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
         )
@@ -226,14 +209,16 @@ class Hydra:
         return s
 
     def list_all_config_groups(self, parent: str = "") -> Sequence[str]:
+        from hydra.core.object_type import ObjectType
+
         groups: List[str] = []
         for group in self.config_loader.list_groups(parent):
             if parent == "":
                 group_name = group
             else:
                 group_name = "{}/{}".format(parent, group)
-            files = self.config_loader.get_group_options(group_name, file_type="file")
-            dirs = self.config_loader.get_group_options(group_name, file_type="dir")
+            files = self.config_loader.get_group_options(group_name, ObjectType.CONFIG)
+            dirs = self.config_loader.get_group_options(group_name, ObjectType.GROUP)
             if len(files) > 0:
                 groups.append(group_name)
             if len(dirs) > 0:
@@ -316,15 +301,13 @@ class Hydra:
             for plugin in Plugins.discover(plugin_type):
                 log.debug("\t\t{}".format(plugin.__name__))
 
-    def _get_padding(self) -> Tuple[int, int, int]:
+    def _get_padding(self,) -> Tuple[int, int, int]:
         provider_pad = 0
         search_path_pad = 0
         file_pad = 0
         for sp in self.config_loader.get_sources():
-            assert sp.provider is not None
-            assert sp.path is not None
             provider_pad = max(provider_pad, len(sp.provider))
-            search_path_pad = max(search_path_pad, len(sp.path))
+            search_path_pad = max(search_path_pad, len(sp.full_path()))
         for trace in self.config_loader.get_load_history():
             file_pad = max(file_pad, len(trace.filename))
 
@@ -347,12 +330,10 @@ class Hydra:
         )
 
         for source in self.config_loader.get_sources():
-            assert source.provider is not None
-            assert source.path is not None
             log.debug(
                 "| {} | {} |".format(
                     source.provider.ljust(provider_pad),
-                    source.path.ljust(search_path_pad),
+                    source.full_path().ljust(search_path_pad),
                 )
             )
 

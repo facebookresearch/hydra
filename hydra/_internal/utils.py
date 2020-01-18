@@ -3,16 +3,13 @@ import argparse
 import inspect
 import os
 import sys
-from argparse import ArgumentParser
 from os.path import dirname, join, normpath, realpath
 from typing import Any, Optional, Sequence, Tuple
 
+from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
+from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.types import TaskFunction
-
-from ..plugins import SearchPathPlugin
-from ..plugins.common.utils import get_valid_filename, split_config_path
-from .config_search_path import ConfigSearchPath
-from .plugins import Plugins
 
 
 def detect_calling_file_or_module(
@@ -131,8 +128,11 @@ def create_automatic_config_search_path(
 
 
 def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPath:
+    from hydra.core.plugins import Plugins
+    from hydra.plugins.search_path_plugin import SearchPathPlugin
+
     Plugins.register_config_sources()
-    search_path = ConfigSearchPath()
+    search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
     if search_path_dir is not None:
         search_path.append("main", search_path_dir)
@@ -147,7 +147,7 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
 
 
 def run_hydra(
-    args_parser: ArgumentParser,
+    args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
     strict: Optional[bool],
@@ -214,7 +214,7 @@ def _get_exec_command() -> str:
         return executable
 
 
-def get_args_parser() -> ArgumentParser:
+def get_args_parser() -> argparse.ArgumentParser:
     from .. import __version__
 
     parser = argparse.ArgumentParser(add_help=False, description="Hydra")

@@ -14,8 +14,8 @@
   showcontent = true
 
   [[tool.towncrier.type]]
-  directory = "removal"
-  name = "Deprecations and Removals"
+  directory = "api_change"
+  name = "API Change (Renames, deprecations and removals)"
   showcontent = true
 
   [[tool.towncrier.type]]

@@ -8,8 +8,8 @@ from typing import Any, List, Optional, Sequence
 
 from omegaconf import DictConfig
 
-from hydra._internal.config_loader import ConfigLoader
-from hydra.plugins.common.utils import JobReturn
+from hydra.core.config_loader import ConfigLoader
+from hydra.core.utils import JobReturn
 from hydra.types import TaskFunction
 
 from .launcher import Launcher
@@ -38,7 +38,7 @@ class StepSweeper(Sweeper):
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
-        from .._internal.plugins import Plugins
+        from hydra.core.plugins import Plugins
 
         self.config = config
 

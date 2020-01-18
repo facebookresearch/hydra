@@ -6,7 +6,8 @@ from typing import Any, List, Optional, Tuple, Union
 
 from omegaconf import Container, DictConfig, MissingMandatoryValue, OmegaConf
 
-from hydra._internal.config_loader import ConfigLoader
+from hydra.core.config_loader import ConfigLoader
+from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
 
 
@@ -132,19 +133,19 @@ class CompletionPlugin(Plugin):
         exact_match: bool = False
         if last_eq_index != -1:
             parent_group = word[0:last_eq_index]
-            file_type = "file"
+            results_filter = ObjectType.CONFIG
         else:
-            file_type = "dir"
+            results_filter = ObjectType.GROUP
             if last_slash_index == -1:
                 parent_group = ""
             else:
                 parent_group = word[0:last_slash_index]
 
         all_matched_groups = self.config_loader.get_group_options(
-            parent_group, file_type=file_type
+            group_name=parent_group, results_filter=results_filter
         )
         matched_groups: List[str] = []
-        if file_type == "file":
+        if results_filter == ObjectType.CONFIG:
             for match in all_matched_groups:
                 name = (
                     "{}={}".format(parent_group, match) if parent_group != "" else match
@@ -152,14 +153,18 @@ class CompletionPlugin(Plugin):
                 if name.startswith(word):
                     matched_groups.append(name)
                 exact_match = True
-        elif file_type == "dir":
+        elif results_filter == ObjectType.GROUP:
             for match in all_matched_groups:
                 name = (
                     "{}/{}".format(parent_group, match) if parent_group != "" else match
                 )
                 if name.startswith(word):
-                    files = self.config_loader.get_group_options(name, file_type="file")
-                    dirs = self.config_loader.get_group_options(name, file_type="dir")
+                    files = self.config_loader.get_group_options(
+                        group_name=name, results_filter=ObjectType.CONFIG
+                    )
+                    dirs = self.config_loader.get_group_options(
+                        group_name=name, results_filter=ObjectType.GROUP
+                    )
                     if len(dirs) == 0 and len(files) > 0:
                         name = name + "="
                     elif len(dirs) > 0 and len(files) == 0:

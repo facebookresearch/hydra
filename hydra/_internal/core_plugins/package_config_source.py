@@ -9,7 +9,8 @@ from pkg_resources import (
     resource_stream,
 )
 
-from hydra.plugins.config_source import ConfigResult, ConfigSource, ObjectType
+from hydra.core.object_type import ObjectType
+from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 
 class PackageConfigSource(ConfigSource):
@@ -17,8 +18,8 @@ class PackageConfigSource(ConfigSource):
         super().__init__(provider=provider, path=path)
 
     @staticmethod
-    def schema() -> str:
-        return "pkg://"
+    def scheme() -> str:
+        return "pkg"
 
     def load_config(self, config_path: str) -> ConfigResult:
         full_path = f"{self.path}/{config_path}"
@@ -26,36 +27,40 @@ class PackageConfigSource(ConfigSource):
             full_path
         )
 
-        with resource_stream(module_name, resource_name) as stream:
-            if stream is None:
-                raise IOError(f"PackageConfigSource: Config not found: {full_path}")
-            return ConfigResult(
-                config=OmegaConf.load(stream),
-                path=f"{self.schema()}{self.path}",
-                provider=self.provider,
-            )
+        try:
+            with resource_stream(module_name, resource_name) as stream:
+                return ConfigResult(
+                    config=OmegaConf.load(stream),
+                    path=f"{self.scheme()}://{self.path}",
+                    provider=self.provider,
+                )
+        except IOError:
+            raise ConfigLoadError(f"PackageConfigSource: Config not found: {full_path}")
 
     def exists(self, config_path: str) -> bool:
-        full_path = f"{self.path}/{config_path}"
-        module_name, resource_name = PackageConfigSource._split_module_and_resource(
-            full_path
-        )
-        try:
-            return resource_exists(module_name, resource_name)
-        except ImportError:
-            return False
+        return self.get_type(config_path=config_path) != ObjectType.NOT_FOUND
 
     def get_type(self, config_path: str) -> ObjectType:
         full_path = self.concat(self.path, config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
             full_path
         )
-        if resource_exists(module_name, resource_name):
-            if resource_isdir(module_name, resource_name):
-                return ObjectType.GROUP
+
+        try:
+            if resource_exists(module_name, resource_name):
+                if resource_isdir(module_name, resource_name):
+                    return ObjectType.GROUP
+                else:
+                    return ObjectType.CONFIG
             else:
-                return ObjectType.CONFIG
-        else:
+                return ObjectType.NOT_FOUND
+        except NotImplementedError:
+            raise NotImplementedError(
+                "Unable to load {}/{}, are you missing an __init__.py?".format(
+                    module_name, resource_name
+                )
+            )
+        except ImportError:
             return ObjectType.NOT_FOUND
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
