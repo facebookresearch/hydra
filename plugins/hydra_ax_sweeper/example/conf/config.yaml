@@ -28,5 +28,5 @@ hydra:
         log_scale: false
       banana.y:
         type: choice
-        bounds: -5.0, 5
+        bounds: [-5.0, 5, 6]
         log_scale: false
