@@ -105,6 +105,35 @@ def test_class_instantiate_passthrough(
     assert obj == expected
 
 
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, expected",
+    [
+        (
+            {
+                "all_params": {
+                    "main": {
+                        "class": "tests.test_utils.Bar",
+                        "params": {"a": 10, "b": 20, "c": "${all_params.aux.c}"},
+                    },
+                    "aux": {"c": 30},
+                }
+            },
+            Bar(10, 20, 30, 40),
+        ),
+    ],
+)
+def test_string_iterpolation_during_deepcopy(
+    input_conf: Dict[str, Any], expected: Any
+) -> None:
+    # Check if the instantiate method maintains the parent when making a deepcopy
+    conf = OmegaConf.create(input_conf)
+    orig = copy.deepcopy(conf)
+    assert isinstance(conf, DictConfig)
+    obj = utils.instantiate(conf.all_params.main, d=40)
+    assert orig == conf
+    assert obj == expected
+
+
 def test_get_original_cwd() -> None:
     orig = "/foo/bar"
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig}}})
