@@ -282,7 +282,7 @@ class IntegrationTestSuite:
                 "name_from_config_file",
             ),
             (
-                {"hydra": {"name": "name_from_config_file"}},
+                {"hydra": {"job": {"name": "name_from_config_file"}}},
                 ["hydra.job.name=overridden_name"],
                 "with_config.py",
                 "overridden_name",

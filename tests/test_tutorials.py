@@ -372,7 +372,7 @@ def test_examples_configure_hydra_job_name_with_config_override(tmpdir: Path) ->
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "with_config_file_override"
+    assert result.decode("utf-8").rstrip() == "name_from_config_file"
 
 
 def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
