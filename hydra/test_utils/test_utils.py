@@ -376,6 +376,7 @@ def create_search_path(
 ) -> ConfigSearchPathImpl:
     Plugins.register_config_sources()
     csp = ConfigSearchPathImpl()
+    csp.append("hydra", "structured://hydra.conf")
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:
         csp.append("test", sp if not abspath else os.path.realpath(sp))
