@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pytest
 from omegaconf import DictConfig, OmegaConf
@@ -63,45 +62,58 @@ def test_get_static_method(path: str, return_value: Any) -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "input_conf, expected",
+    "input_conf, key_to_get_config, kwargs_to_pass, expected",
     [
         (
             {
                 "class": "tests.test_utils.Bar",
                 "params": {"a": 10, "b": 20, "c": 30, "d": 40},
             },
+            None,
+            {},
             Bar(10, 20, 30, 40),
-        )
-    ],
-)
-def test_class_instantiate(input_conf: Dict[str, Any], expected: Any) -> Any:
-    conf = OmegaConf.create(input_conf)
-    assert isinstance(conf, DictConfig)
-    obj = utils.instantiate(conf)
-    assert obj == expected
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "input_conf, expected",
-    [
+        ),
+        (
+            {
+                "all_params": {
+                    "main": {
+                        "class": "tests.test_utils.Bar",
+                        "params": {"a": 10, "b": 20, "c": "${all_params.aux.c}"},
+                    },
+                    "aux": {"c": 30},
+                }
+            },
+            "all_params.main",
+            {"d": 40},
+            Bar(10, 20, 30, 40),
+        ),
         (
             {"class": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}},
+            None,
+            {"a": 10, "d": 40},
             Bar(10, 20, 30, 40),
         ),
         (
             {"class": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
+            None,
+            {"a": 10, "d": 40},
             Bar(10, 200, 200, 40),
         ),
     ],
 )
-def test_class_instantiate_passthrough(
-    input_conf: Dict[str, Any], expected: Any
-) -> None:
+def test_class_instantiate(
+    input_conf: Dict[str, Any],
+    key_to_get_config: Optional[str],
+    kwargs_to_pass: Dict[str, Any],
+    expected: Any,
+) -> Any:
     conf = OmegaConf.create(input_conf)
-    orig = copy.deepcopy(conf)
     assert isinstance(conf, DictConfig)
-    obj = utils.instantiate(conf, 10, d=40)
-    assert orig == conf
+    if key_to_get_config is None:
+        config_to_pass = conf
+    else:
+        config_to_pass = conf.select(key_to_get_config)
+    obj = utils.instantiate(config_to_pass, **kwargs_to_pass)
     assert obj == expected
 
 
