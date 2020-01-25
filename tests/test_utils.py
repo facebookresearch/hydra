@@ -71,13 +71,28 @@ def test_get_static_method(path: str, return_value: Any) -> None:
                 "params": {"a": 10, "b": 20, "c": 30, "d": 40},
             },
             Bar(10, 20, 30, 40),
-        )
+        ),
+        (
+            {
+                "all_params": {
+                    "main": {
+                        "class": "tests.test_utils.Bar",
+                        "params": {"a": 10, "b": 20, "c": "${all_params.aux.c}"},
+                    },
+                    "aux": {"c": 30},
+                }
+            },
+            Bar(10, 20, 30, 40),
+        ),
     ],
 )
 def test_class_instantiate(input_conf: Dict[str, Any], expected: Any) -> Any:
     conf = OmegaConf.create(input_conf)
     assert isinstance(conf, DictConfig)
-    obj = utils.instantiate(conf)
+    if "all_params" in conf:
+        obj = utils.instantiate(conf.all_params.main, d=40)
+    else:
+        obj = utils.instantiate(conf)
     assert obj == expected
 
 
@@ -101,35 +116,6 @@ def test_class_instantiate_passthrough(
     orig = copy.deepcopy(conf)
     assert isinstance(conf, DictConfig)
     obj = utils.instantiate(conf, 10, d=40)
-    assert orig == conf
-    assert obj == expected
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "input_conf, expected",
-    [
-        (
-            {
-                "all_params": {
-                    "main": {
-                        "class": "tests.test_utils.Bar",
-                        "params": {"a": 10, "b": 20, "c": "${all_params.aux.c}"},
-                    },
-                    "aux": {"c": 30},
-                }
-            },
-            Bar(10, 20, 30, 40),
-        ),
-    ],
-)
-def test_string_iterpolation_during_deepcopy(
-    input_conf: Dict[str, Any], expected: Any
-) -> None:
-    # Check if the instantiate method maintains the parent when making a deepcopy
-    conf = OmegaConf.create(input_conf)
-    orig = copy.deepcopy(conf)
-    assert isinstance(conf, DictConfig)
-    obj = utils.instantiate(conf.all_params.main, d=40)
     assert orig == conf
     assert obj == expected
 

@@ -51,8 +51,7 @@ def instantiate(config: DictConfig, *args: Any, **kwargs: Any) -> Any:
     assert config is not None, "Input config is None"
     # copy config to avoid mutating it when merging with kwargs
     config_copy = copy.deepcopy(config)
-    if config._get_parent() is not None:
-        config_copy._set_parent(config._get_parent())
+    config_copy._set_parent(config._get_parent())
     config = config_copy
 
     try:
