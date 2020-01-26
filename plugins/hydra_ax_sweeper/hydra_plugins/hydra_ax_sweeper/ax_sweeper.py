@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Dict, List, Mapping, Optional, Tuple, Union
+from typing import Dict, List, Mapping, NamedTuple, Optional, Sequence, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -17,8 +17,13 @@ from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
 
-TrialType = Dict[str, int]
-BatchOfTrialType = List[TrialType]
+
+class Trial(NamedTuple):
+    overrides: List[str]
+    trial_index: int
+
+
+BatchOfTrialType = List[Trial]
 BestParameterType = Union[ax_types.TParameterization]
 
 # TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
@@ -46,78 +51,33 @@ def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List
     return arg_list
 
 
-def get_batches_of_trials_given_parallelism(
-    ax: AxClient, parallelism: Tuple[int, int], num_trials_left: int
-) -> List[BatchOfTrialType]:
-
-    """Return a list of batch of trials.
-    Each batch of trials is a list where each trial in a batch can be run in paralle.
-    Different batches (of trials) should be executed sequentially, in the
-    order they are provided.
-
-    The difference between this method and `get_batches_of_trials_from_ax`
-    is that the former method returns a list of batches only for one
-    given `parallelism` while the latter method returns the list of batches
-    for all values of `parallelism`.
-    """
-    num_trials, num_parallel_trials = parallelism
-    batches_of_trials = []
-    if num_trials == -1:
-        # This is a special case. We can use this parallelism as many times as we want.
-
-        if num_parallel_trials == -1:
-            # This is another special case where we can run as many trials in parallel as we want.
-            # Given that num_trials is also -1, we can run all the trials in parallel.
-            num_parallel_trials = num_trials_left
-
-        while num_trials_left > 0:
-            batches_of_trials.append(
-                get_one_batch_of_trials(ax, num_parallel_trials)[:num_trials_left]
-            )
-            num_trials -= len(batches_of_trials[-1])
-    else:
-        if num_parallel_trials == -1:
-            num_parallel_trials = num_trials
-        number_of_parallel_trials = int(num_trials / num_parallel_trials)
-        for batch_idx in range(number_of_parallel_trials):
-            batches_of_trials.append(get_one_batch_of_trials(ax, num_parallel_trials))
-
-    return batches_of_trials
-
-
-def get_one_batch_of_trials(ax: AxClient, num_parallel_trials: int) -> BatchOfTrialType:
+def get_one_batch_of_trials(
+    ax_client: AxClient,
+    parallelism: Tuple[int, int],
+    num_trials_done_in_current_parallelism: int,
+    num_max_trials_to_do: int,
+) -> BatchOfTrialType:
     """Produce a batch of trials that can be run in parallel"""
+    (num_trials, max_parallelism_setting) = parallelism
+    if max_parallelism_setting == -1:
+        # Special case, we can group all the trials into one batch
+        max_parallelism_setting = num_trials - num_trials_done_in_current_parallelism
+
+        if num_trials == -1:
+            # This is a special case where we can run as many trials in parallel as we want.
+            # Given that num_trials is also -1, we can run all the trials in parallel.
+            max_parallelism_setting = num_max_trials_to_do
+
     batch_of_trials = []
-    for _ in range(num_parallel_trials):
-        parameters, trial_index = ax.get_next_trial()
+    for _ in range(max_parallelism_setting):
+        parameters, trial_index = ax_client.get_next_trial()
         batch_of_trials.append(
-            {
-                "overrides": map_params_to_arg_list(params=parameters),
-                "trial_index": trial_index,
-            }
+            Trial(
+                overrides=map_params_to_arg_list(params=parameters),
+                trial_index=trial_index,
+            )
         )
     return batch_of_trials
-
-
-def get_batches_of_trials_from_ax(
-    ax: AxClient, num_max_trials: int
-) -> List[BatchOfTrialType]:
-    """Return a list of batch of trials.
-    Each batch of trials is a list where each trial in a batch can be run in parallel.
-    Different batches (of trials) should be executed sequentially, in the
-    order they are provided."""
-    list_of_batch_of_trials = []
-    recommended_max_parallelism = ax.get_recommended_max_parallelism()
-    num_trials_left = num_max_trials
-    for parallelism in recommended_max_parallelism:
-        for batch_of_trials in get_batches_of_trials_given_parallelism(
-            ax, parallelism, num_trials_left
-        ):
-            list_of_batch_of_trials.append(batch_of_trials[:num_trials_left])
-            num_trials_left -= len(list_of_batch_of_trials[-1])
-            if num_trials_left <= 0:
-                return list_of_batch_of_trials
-    return list_of_batch_of_trials
 
 
 class EarlyStopper:
@@ -211,26 +171,64 @@ class AxSweeper(Sweeper):
     def sweep(self, arguments: List[str]) -> None:
         ax_client = self.setup_ax_client(arguments)
 
-        for batch_of_trials in get_batches_of_trials_from_ax(
-            ax_client, self.max_trials
-        ):
-            log.info("AxSweeper is launching {} jobs".format(len(batch_of_trials)))
+        num_trials_left = self.max_trials
+        recommended_max_parallelism = ax_client.get_recommended_max_parallelism()
+        current_parallelism_index = 0
+        # Index to track the parallelism value we are using right now.
 
-            overrides = [x["overrides"] for x in batch_of_trials]
-
-            rets = self.launcher.launch(overrides)  # type: ignore
-            for idx in range(len(batch_of_trials)):
-                val = rets[idx].return_value
-                ax_client.complete_trial(
-                    trial_index=batch_of_trials[idx]["trial_index"], raw_data=val
+        while num_trials_left > 0:
+            current_parallelism = recommended_max_parallelism[current_parallelism_index]
+            num_trials, max_parallelism_setting = current_parallelism
+            num_trials_done_in_current_parallelism = 0
+            while (
+                num_trials > num_trials_done_in_current_parallelism or num_trials == -1
+            ) and num_trials_left > 0:
+                batch_of_trials = get_one_batch_of_trials(
+                    ax_client=ax_client,
+                    parallelism=current_parallelism,
+                    num_trials_done_in_current_parallelism=num_trials_done_in_current_parallelism,
+                    num_max_trials_to_do=num_trials_left,
                 )
-            # predicted best value
-            best = ax_client.get_best_parameters()
-            metric = best[1][0][ax_client.objective_name]
-            if self.early_stopper.should_stop(metric, best[0]):
-                break
+                batch_of_trials_to_launch = batch_of_trials[:num_trials_left]
+
+                log.info(
+                    "AxSweeper is launching {} jobs".format(
+                        len(batch_of_trials_to_launch)
+                    )
+                )
+                overrides = [x.overrides for x in batch_of_trials_to_launch]
+
+                self.sweep_over_batches(
+                    ax_client=ax_client,
+                    overrides=overrides,
+                    batch_of_trials_to_launch=batch_of_trials_to_launch,
+                )
+
+                num_trials_done_in_current_parallelism += len(batch_of_trials_to_launch)
+                num_trials_left -= len(batch_of_trials_to_launch)
+
+                best = ax_client.get_best_parameters()
+                metric = best[1][0][ax_client.objective_name]
+
+                if self.early_stopper.should_stop(metric, best[0]):
+                    break
+
+            current_parallelism_index += 1
 
         log.info("Best parameters: " + str(best))
+
+    def sweep_over_batches(
+        self,
+        ax_client: AxClient,
+        overrides: Sequence[Sequence[str]],
+        batch_of_trials_to_launch: BatchOfTrialType,
+    ) -> None:
+        rets = self.launcher.launch(overrides)  # type: ignore
+        for idx in range(len(batch_of_trials_to_launch)):
+            val = rets[idx].return_value
+            ax_client.complete_trial(
+                trial_index=batch_of_trials_to_launch[idx].trial_index, raw_data=val,
+            )
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
