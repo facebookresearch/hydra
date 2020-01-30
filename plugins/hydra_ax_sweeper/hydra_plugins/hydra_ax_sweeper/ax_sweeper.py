@@ -2,11 +2,11 @@
 import logging
 from typing import Dict, List, Mapping, NamedTuple, Optional, Sequence, Tuple, Union
 
+from omegaconf import DictConfig, OmegaConf
+
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
-from omegaconf import DictConfig, OmegaConf
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
