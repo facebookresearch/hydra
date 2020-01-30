@@ -15,6 +15,20 @@ class PluginConf(Dict[str, Any]):
 
 
 @dataclass
+class HelpConf:
+    app_name: str = MISSING
+    header: str = MISSING
+    footer: str = MISSING
+    template: str = MISSING
+
+
+@dataclass
+class HydraHelpConf:
+    hydra_help: str = MISSING
+    template: str = MISSING
+
+
+@dataclass
 class HydraConf:
     @dataclass
     class RunDir:
@@ -40,9 +54,9 @@ class HydraConf:
     launcher: PluginConf = field(default_factory=PluginConf)
 
     # Program Help template
-    help: Any = MISSING
+    help: HelpConf = HelpConf()
     # Hydra's Help template
-    hydra_help: Any = MISSING
+    hydra_help: HydraHelpConf = HydraHelpConf()
 
     # Output directory for produced configuration files and overrides.
     # E.g., hydra.yaml, overrides.yaml will go here. Useful for debugging
