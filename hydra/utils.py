@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
+import warnings
 from pathlib import Path
 from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.conf import PluginConf
 from hydra.core.hydra_config import HydraConfig
 
 log = logging.getLogger(__name__)
@@ -45,17 +47,20 @@ def get_static_method(full_method_name: str) -> type:
         raise e
 
 
-def instantiate(config: DictConfig, *args: Any, **kwargs: Any) -> Any:
+def instantiate(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
     import copy
 
-    assert config is not None, "Input config is None"
     # copy config to avoid mutating it when merging with kwargs
-    config_copy = copy.deepcopy(config)
-    config_copy._set_parent(config._get_parent())
-    config = config_copy
 
+    config_copy = copy.deepcopy(config)
+
+    # Manually set parent as deepcopy does not currently handles it (https://github.com/omry/omegaconf/issues/130)
+    # noinspection PyProtectedMember
+    config_copy._set_parent(config._get_parent())  # type: ignore
+    config = config_copy
+    classname = _get_class_name(config)
     try:
-        clazz = get_class(config["class"])
+        clazz = get_class(classname)
         params = config.params if "params" in config else OmegaConf.create()
         assert isinstance(
             params, DictConfig
@@ -66,7 +71,7 @@ def instantiate(config: DictConfig, *args: Any, **kwargs: Any) -> Any:
 
         return clazz(*args, **params)
     except Exception as e:
-        log.error("Error instantiating {} : {}".format(config["class"], e))
+        log.error(f"Error instantiating '{classname}' : {e}")
         raise e
 
 
@@ -90,3 +95,23 @@ def to_absolute_path(path: str) -> str:
     else:
         ret = Path(get_original_cwd()) / p
     return str(ret)
+
+
+def _get_class_name(config: PluginConf) -> str:
+    if "class" in config:
+        warnings.warn(
+            "\n"
+            "PluginConf field 'class' is deprecated since Hydra 1.0.0 and will be removed in a future Hydra version.\n"
+            "Offending config class:\n"
+            f"\tclass={config['class']}\n"
+            "Change your config to use 'cls' instead of 'class'.\n",
+            category=UserWarning,
+        )
+        classname = config["class"]
+        assert isinstance(classname, str)
+        return classname
+    else:
+        if "cls" in config:
+            return config.cls
+        else:
+            raise ValueError("Input config does not have a cls field")
