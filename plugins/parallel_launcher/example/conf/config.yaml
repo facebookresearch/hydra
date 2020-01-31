@@ -1,0 +1,4 @@
+defaults:
+  - hydra/launcher/example.yaml
+
+task: 1

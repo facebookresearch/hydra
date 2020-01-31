@@ -1,0 +1,5 @@
+hydra:
+  launcher:
+    class: hydra_plugins.parallel_launcher.ParallelLauncher
+    params:
+      n_jobs: -1
