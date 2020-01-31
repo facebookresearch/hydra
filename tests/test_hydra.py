@@ -224,7 +224,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
         assert task.job_ret.hydra_cfg is not None
         hydra_cfg = task.job_ret.hydra_cfg
         assert (
-            hydra_cfg.hydra.launcher["class"]
+            hydra_cfg.hydra.launcher["cls"]
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
         assert "params" not in task.job_ret.hydra_cfg.hydra.launcher

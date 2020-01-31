@@ -8,6 +8,7 @@ from typing import Any, List, Optional, Type
 from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
+from hydra.conf import PluginConf
 from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
@@ -21,23 +22,22 @@ class Plugins:
         raise NotImplementedError("Plugins is a static class, do not instantiate")
 
     @staticmethod
-    def _instantiate(config: DictConfig) -> Plugin:
-        clazz = config["class"]
+    def _instantiate(config: PluginConf) -> Plugin:
+        from ..utils import _get_class_name, instantiate
+
+        classname = _get_class_name(config)
         try:
-            if clazz is None:
+            if classname is None:
                 raise ImportError("class not configured")
 
-            if not Plugins.is_plugin(clazz):
+            if not Plugins.is_plugin(classname):
                 # prevent loading plugins in invalid package. this is an indication that it's not
                 # a proper plugin and is probably due to pre-plugins config lying around.
                 # his also gives us an opportunity confirm that the plugin
                 # version is compatible with Hydra's version.
                 raise RuntimeError(
-                    "Invalid plugin '{}': not in hydra_plugins package, ".format(
-                        config["class"]
-                    )
+                    f"Invalid plugin '{classname}': not in hydra_plugins package"
                 )
-            from ..utils import instantiate
 
             plugin = instantiate(config)
             assert isinstance(plugin, Plugin)
