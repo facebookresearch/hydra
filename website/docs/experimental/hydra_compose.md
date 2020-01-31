@@ -1,7 +1,7 @@
 ---
 id: compose_api
 title: Compose API
-sidebar_label: Experimental compose API
+sidebar_label: Compose API
 ---
 
 Hydra 0.11.0 introduces a new experimental API for composing configuration via the `hydra.experimental.compose()` function.

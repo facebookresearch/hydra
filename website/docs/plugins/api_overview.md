@@ -1,7 +1,7 @@
 ---
-id: plugins
-title: Hydra plugins types
-sidebar_label: Hydra plugins
+id: api_overview
+title: Plugin API overview
+sidebar_label: Plugin API overview
 ---
 
 Hydra can be extended via plugins.

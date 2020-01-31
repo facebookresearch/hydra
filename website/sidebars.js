@@ -31,17 +31,22 @@ module.exports = {
         ],
 
         'Plugins': [
+            'plugins/api_overview',
             'plugins/colorlog',
             'plugins/joblib_launcher',
         ],
 
-
         'Advanced': [
             'advanced/app_packaging',
             'advanced/search_path',
-            'advanced/plugins',
-            'advanced/compose_api',
-            'advanced/ray_example',
+
+        ],
+
+        "Experimental": [
+            "experimental/intro",
+            "experimental/structured_configs",
+            'experimental/compose_api',
+            'experimental/ray_example',
         ],
 
         'Development': [
