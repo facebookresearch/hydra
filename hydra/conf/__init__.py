@@ -29,15 +29,67 @@ class HydraHelpConf:
 
 
 @dataclass
-class HydraConf:
-    @dataclass
-    class RunDir:
-        dir: str = MISSING
+class RunDir:
+    dir: str = MISSING
+
+
+@dataclass
+class SweepDir:
+    dir: str = MISSING
+    subdir: str = MISSING
+
+
+@dataclass
+class OverridesConf:
+    # Overrides for the hydra configuration
+    hydra: List[str] = field(default_factory=lambda: [])
+    # Overrides for the task configuration
+    task: List[str] = field(default_factory=lambda: [])
+
+
+@dataclass
+# job runtime information will be populated here
+class JobConf:
+    # Job name, can be specified by the user (in config or cli) or populated automatically
+    name: str = MISSING
+
+    # Concatenation of job overrides that can be used as a part
+    # of the directory name.
+    # This can be configured in hydra.job.config.override_dirname
+    override_dirname: str = MISSING
+
+    # Job ID in underlying scheduling system
+    id: str = MISSING
+
+    # Job number if job is a part of a sweep
+    num: str = MISSING
+
+    # The config file name used by the job (without the directory, which is a part of the search path)
+    config_file: Optional[str] = MISSING
 
     @dataclass
-    class SweepDir:
-        dir: str = MISSING
-        subdir: str = MISSING
+    # Job config
+    class JobConfig:
+        @dataclass
+        # configuration for the ${hydra.job.override_dirname} runtime variable
+        class OverrideDirname:
+            kv_sep: str = "="
+            item_sep: str = ","
+            exclude_keys: List[str] = field(default_factory=lambda: [])
+
+        override_dirname: OverrideDirname = OverrideDirname()
+
+    config: JobConfig = JobConfig()
+
+
+@dataclass
+class RuntimeConf:
+    version: str = MISSING
+    cwd: str = MISSING
+
+
+@dataclass
+class HydraConf:
 
     # Normal run output configuration
     run: RunDir = RunDir()
@@ -64,58 +116,12 @@ class HydraConf:
     output_subdir: str = ".hydra"
 
     # Those lists will contain runtime overrides
-    @dataclass
-    class Overrides:
-        # Overrides for the hydra configuration
-        hydra: List[str] = field(default_factory=lambda: [])
-        # Overrides for the task configuration
-        task: List[str] = field(default_factory=lambda: [])
+    overrides: OverridesConf = OverridesConf()
 
-    overrides: Overrides = Overrides()
-
-    @dataclass
-    # job runtime information will be populated here
-    class Job:
-        # Job name, can be specified by the user (in config or cli) or populated automatically
-        name: str = MISSING
-
-        # Concatenation of job overrides that can be used as a part
-        # of the directory name.
-        # This can be configured in hydra.job.config.override_dirname
-        override_dirname: str = MISSING
-
-        # Job ID in underlying scheduling system
-        id: str = MISSING
-
-        # Job number if job is a part of a sweep
-        num: str = MISSING
-
-        # The config file name used by the job (without the directory, which is a part of the search path)
-        config_file: Optional[str] = MISSING
-
-        @dataclass
-        # Job config
-        class Config:
-            @dataclass
-            # configuration for the ${hydra.job.override_dirname} runtime variable
-            class OverrideDirname:
-                kv_sep: str = "="
-                item_sep: str = ","
-                exclude_keys: List[str] = field(default_factory=lambda: [])
-
-            override_dirname: OverrideDirname = OverrideDirname()
-
-        config: Config = Config()
-
-    job: Job = Job()
+    job: JobConf = JobConf()
 
     # populated at runtime
-    @dataclass
-    class Runtime:
-        version: str = MISSING
-        cwd: str = MISSING
-
-    runtime: Runtime = Runtime()
+    runtime: RuntimeConf = RuntimeConf()
 
     # Can be a boolean, string or a list of strings
     # If a boolean, setting to true will set the log level for the root logger to debug
