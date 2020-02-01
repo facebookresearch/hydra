@@ -26,12 +26,12 @@ def initialize(
 
 
 def compose(
-    config_file: Optional[str] = None,
+    config_name: Optional[str] = None,
     overrides: List[str] = [],
     strict: Optional[bool] = None,
 ) -> DictConfig:
     """
-    :param config_file: optional config file to load
+    :param config_name: optional config name to load
     :param overrides: list of overrides for config file
     :param strict: optionally override the default strict mode
     :return: the composed config
@@ -43,7 +43,7 @@ def compose(
     gh = GlobalHydra.instance()
     assert gh.hydra is not None
     cfg = gh.hydra.compose_config(
-        config_file=config_file, overrides=overrides, strict=strict
+        config_name=config_name, overrides=overrides, strict=strict
     )
     assert isinstance(cfg, DictConfig)
 

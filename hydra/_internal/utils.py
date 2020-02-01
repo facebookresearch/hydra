@@ -151,13 +151,14 @@ def run_hydra(
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
+    config_name: Optional[str],
     strict: Optional[bool],
 ) -> None:
     from .hydra import Hydra
 
     calling_file, calling_module = detect_calling_file_or_module(3)
-    config_dir, config_file = split_config_path(config_path)
-    strict = _strict_mode_strategy(strict, config_file)
+    config_dir, config_name = split_config_path(config_path, config_name)
+    strict = _strict_mode_strategy(strict, config_name)
     task_name = detect_task_name(calling_file, calling_module)
     search_path = create_automatic_config_search_path(
         calling_file, calling_module, config_dir
@@ -169,10 +170,10 @@ def run_hydra(
 
     args = args_parser.parse_args()
     if args.help:
-        hydra.app_help(config_file=config_file, args_parser=args_parser, args=args)
+        hydra.app_help(config_name=config_name, args_parser=args_parser, args=args)
         sys.exit(0)
     if args.hydra_help:
-        hydra.hydra_help(config_file=config_file, args_parser=args_parser, args=args)
+        hydra.hydra_help(config_name=config_name, args_parser=args_parser, args=args)
         sys.exit(0)
 
     has_show_cfg = args.cfg is not None
@@ -185,22 +186,22 @@ def run_hydra(
         args.run = True
     if args.run:
         hydra.run(
-            config_file=config_file,
+            config_name=config_name,
             task_function=task_function,
             overrides=args.overrides,
         )
     elif args.multirun:
         hydra.multirun(
-            config_file=config_file,
+            config_name=config_name,
             task_function=task_function,
             overrides=args.overrides,
         )
     elif args.cfg:
         hydra.show_cfg(
-            config_file=config_file, overrides=args.overrides, cfg_type=args.cfg
+            config_name=config_name, overrides=args.overrides, cfg_type=args.cfg
         )
     elif args.shell_completion:
-        hydra.shell_completion(config_file=config_file, overrides=args.overrides)
+        hydra.shell_completion(config_name=config_name, overrides=args.overrides)
     else:
         print("Command not specified")
         sys.exit(1)
@@ -270,14 +271,14 @@ def get_args(args: Optional[Sequence[str]] = None) -> Any:
     return get_args_parser().parse_args(args=args)
 
 
-def _strict_mode_strategy(strict: Optional[bool], config_file: Optional[str]) -> bool:
+def _strict_mode_strategy(strict: Optional[bool], config_name: Optional[str]) -> bool:
     """Decide how to set strict mode.
     If a value was provided -- always use it. Otherwise decide based
-    on the existence of config_file.
+    on the existence of config_name.
     """
 
     if strict is not None:
         return strict
 
-    # strict if config_file is present
-    return config_file is not None
+    # strict if config_name is present
+    return config_name is not None

@@ -241,7 +241,8 @@ def test_objects_example(
     with task_runner(
         calling_file="examples/patterns/objects/my_app.py",
         calling_module=None,
-        config_path="conf/config.yaml",
+        config_path="conf",
+        config_name="config.yaml",
         overrides=[],
     ) as task:
         assert task.job_ret is not None
@@ -253,7 +254,8 @@ def test_composition_config_example(task_runner: TTaskRunner) -> None:  # noqa: 
     with task_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
-        config_path="conf/config.yaml",
+        config_path="conf",
+        config_name="config.yaml",
         overrides=["schema=school"],
     ) as task:
         assert task.job_ret is not None
@@ -285,7 +287,8 @@ def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
     with sweep_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
-        config_path="conf/config.yaml",
+        config_path="conf",
+        config_name="config.yaml",
         overrides=["schema=warehouse,support", "db=mysql,postgresql"],
     ) as sweep:
         overrides = {
@@ -304,7 +307,8 @@ def test_specializing_config_example(task_runner: TTaskRunner) -> None:  # noqa:
     with task_runner(
         calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,
-        config_path="conf/config.yaml",
+        config_path="conf",
+        config_name="config.yaml",
         overrides=["dataset=cifar10"],
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(

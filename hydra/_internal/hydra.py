@@ -86,12 +86,12 @@ class Hydra:
 
     def run(
         self,
-        config_file: Optional[str],
+        config_name: Optional[str],
         task_function: TaskFunction,
         overrides: List[str],
     ) -> JobReturn:
         cfg = self.compose_config(
-            config_file=config_file, overrides=overrides, with_log_configuration=True
+            config_name=config_name, overrides=overrides, with_log_configuration=True
         )
         HydraConfig.instance().set_config(cfg)
         return run_job(
@@ -103,13 +103,13 @@ class Hydra:
 
     def multirun(
         self,
-        config_file: Optional[str],
+        config_name: Optional[str],
         task_function: TaskFunction,
         overrides: List[str],
     ) -> Any:
         # Initial config is loaded without strict (individual job configs may have strict).
         cfg = self.compose_config(
-            config_file=config_file,
+            config_name=config_name,
             overrides=overrides,
             strict=False,
             with_log_configuration=True,
@@ -132,11 +132,11 @@ class Hydra:
         return cfg
 
     def show_cfg(
-        self, config_file: Optional[str], overrides: List[str], cfg_type: str
+        self, config_name: Optional[str], overrides: List[str], cfg_type: str
     ) -> None:
         assert cfg_type in ["job", "hydra", "all"]
         cfg = self.compose_config(
-            config_file=config_file, overrides=overrides, with_log_configuration=True
+            config_name=config_name, overrides=overrides, with_log_configuration=True
         )
         if cfg_type == "job":
             del cfg["hydra"]
@@ -165,7 +165,7 @@ class Hydra:
         return shell_to_plugin
 
     def shell_completion(
-        self, config_file: Optional[str], overrides: List[str]
+        self, config_name: Optional[str], overrides: List[str]
     ) -> None:
         subcommands = ["install", "uninstall", "query"]
         arguments = OmegaConf.from_dotlist(overrides)
@@ -194,7 +194,7 @@ class Hydra:
             plugin.uninstall()
         elif arguments.query is not None:
             plugin = find_plugin(arguments.query)
-            plugin.query(config_file=config_file)
+            plugin.query(config_name=config_name)
 
     @staticmethod
     def format_args_help(args_parser: ArgumentParser) -> str:
@@ -259,10 +259,10 @@ class Hydra:
         return help_text
 
     def hydra_help(
-        self, config_file: Optional[str], args_parser: ArgumentParser, args: Any
+        self, config_name: Optional[str], args_parser: ArgumentParser, args: Any
     ) -> None:
         cfg = self.compose_config(
-            config_file=config_file,
+            config_name=config_name,
             overrides=args.overrides,
             with_log_configuration=True,
         )
@@ -272,10 +272,10 @@ class Hydra:
         print(help_text)
 
     def app_help(
-        self, config_file: Optional[str], args_parser: ArgumentParser, args: Any
+        self, config_name: Optional[str], args_parser: ArgumentParser, args: Any
     ) -> None:
         cfg = self.compose_config(
-            config_file=config_file,
+            config_name=config_name,
             overrides=args.overrides,
             with_log_configuration=True,
         )
@@ -373,14 +373,14 @@ class Hydra:
 
     def compose_config(
         self,
-        config_file: Optional[str],
+        config_name: Optional[str],
         overrides: List[str],
         strict: Optional[bool] = None,
         with_log_configuration: bool = False,
     ) -> DictConfig:
         """
         :param self:
-        :param config_file:
+        :param config_name:
         :param overrides:
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param strict: None for default behavior (default to true for config file, false if no config file).
@@ -388,7 +388,7 @@ class Hydra:
         :return:
         """
         cfg = self.config_loader.load_configuration(
-            config_file=config_file, overrides=overrides, strict=strict
+            config_name=config_name, overrides=overrides, strict=strict
         )
         with open_dict(cfg):
             from .. import __version__

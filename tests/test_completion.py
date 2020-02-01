@@ -97,7 +97,7 @@ class TestCompletion:
     ) -> None:
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
-        ret = bc._query(config_file="config.yaml", line=line_prefix + line)
+        ret = bc._query(config_name="config.yaml", line=line_prefix + line)
         assert ret == expected
 
     @pytest.mark.skipif(  # type: ignore
@@ -140,7 +140,7 @@ class TestCompletion:
 def test_with_flags(line: str, expected: List[str]) -> None:
     config_loader = create_config_loader()
     bc = DefaultCompletionPlugin(config_loader)
-    ret = bc._query(config_file="config.yaml", line=line)
+    ret = bc._query(config_name="config.yaml", line=line)
     assert ret == expected
 
 
@@ -188,7 +188,7 @@ def test_file_completion(
             prefix = os.path.realpath(".")
             probe += os.path.join(prefix, fname_prefix)
 
-        ret = bc._query(config_file="config.yaml", line=probe)
+        ret = bc._query(config_name="config.yaml", line=probe)
         assert len(expected) == len(ret)
         for idx, file in enumerate(expected):
             assert key_eq + os.path.join(prefix, file) == ret[idx]
