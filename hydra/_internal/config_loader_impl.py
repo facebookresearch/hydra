@@ -346,7 +346,7 @@ class ConfigLoaderImpl(ConfigLoader):
             assert ret is not None
             cfg = ret
 
-        if cfg.defaults is not None:
+        if "defaults" in cfg and cfg.defaults is not None:
             self._validate_defaults(cfg.defaults)
 
         return cfg
@@ -380,7 +380,7 @@ class ConfigLoaderImpl(ConfigLoader):
           - optimizer: nesterov
         """
 
-        defaults = cfg.defaults or OmegaConf.create([])
+        defaults = cfg.defaults if "defaults" in cfg else OmegaConf.create([])
         if not isinstance(defaults, ListConfig):
             raise ValueError(
                 "defaults must be a list because composition is order sensitive, "

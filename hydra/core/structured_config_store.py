@@ -39,7 +39,9 @@ class StructuredConfigStore(metaclass=Singleton):
         else:
             cfg = OmegaConf.structured(node)
 
-        cur[f"{name}.yaml"] = cfg
+        if not name.endswith(".yaml"):
+            name = f"{name}.yaml"
+        cur[name] = cfg
 
     def load(self, config_path: str) -> DictConfig:
         idx = config_path.rfind("/")
