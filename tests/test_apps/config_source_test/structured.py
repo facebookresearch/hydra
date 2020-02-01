@@ -53,7 +53,7 @@ s.store(group=None, name="dataset", path=None, node={"dataset_yaml": True})
 s.store(
     group="dataset", name="cifar10", path="dataset", node=Cifar10,
 )
-s.store(group="dataset", name="imagenet", path="dataset", node=ImageNet)
+s.store(group="dataset", name="imagenet.yaml", path="dataset", node=ImageNet)
 s.store(group="optimizer", name="adam", path="optimizer", node=Adam)
 s.store(group="optimizer", name="nesterov", path="optimizer", node=Nesterov)
 s.store(
