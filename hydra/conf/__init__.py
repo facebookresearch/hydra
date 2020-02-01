@@ -64,8 +64,8 @@ class JobConf:
     # Job number if job is a part of a sweep
     num: str = MISSING
 
-    # The config file name used by the job (without the directory, which is a part of the search path)
-    config_file: Optional[str] = MISSING
+    # The config name used by the job
+    config_name: Optional[str] = MISSING
 
     @dataclass
     # Job config

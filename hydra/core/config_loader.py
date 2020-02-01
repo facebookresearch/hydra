@@ -38,7 +38,7 @@ class ConfigLoader(ABC):
     @abstractmethod
     def load_configuration(
         self,
-        config_file: Optional[str],
+        config_name: Optional[str],
         overrides: List[str],
         strict: Optional[bool] = None,
     ) -> DictConfig:

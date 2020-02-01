@@ -35,11 +35,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
     def load_configuration(
         self,
-        config_file: Optional[str],
+        config_name: Optional[str],
         overrides: List[str],
         strict: Optional[bool] = None,
     ) -> DictConfig:
-        assert config_file is None or isinstance(config_file, str)
+        assert config_name is None or isinstance(config_name, str)
         assert strict is None or isinstance(strict, bool)
         assert isinstance(overrides, list)
         if strict is None:
@@ -48,11 +48,11 @@ class ConfigLoaderImpl(ConfigLoader):
         assert overrides is None or isinstance(overrides, list)
         overrides = copy.deepcopy(overrides) or []
 
-        if config_file is not None and not self.exists_in_search_path(config_file):
+        if config_name is not None and not self.exists_in_search_path(config_name):
             raise MissingConfigException(
-                missing_cfg_file=config_file,
+                missing_cfg_file=config_name,
                 message="Cannot find primary config file: {}\nSearch path:\n{}".format(
-                    config_file,
+                    config_name,
                     "\n".join(
                         [
                             "\t{} (from {})".format(src.path, src.provider)
@@ -66,11 +66,11 @@ class ConfigLoaderImpl(ConfigLoader):
         hydra_cfg = self._create_cfg(cfg_filename="hydra.yaml")
 
         # Load job config
-        job_cfg = self._create_cfg(cfg_filename=config_file, record_load=False)
+        job_cfg = self._create_cfg(cfg_filename=config_name, record_load=False)
 
         defaults = ConfigLoaderImpl._get_defaults(hydra_cfg)
-        if config_file is not None:
-            defaults.append(config_file)
+        if config_name is not None:
+            defaults.append(config_name)
         split_at = len(defaults)
         job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
         ConfigLoaderImpl._merge_default_lists(defaults, job_defaults)
@@ -107,7 +107,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 item_sep=cfg.hydra.job.config.override_dirname.item_sep,
                 exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
             )
-            cfg.hydra.job.config_file = config_file
+            cfg.hydra.job.config_name = config_name
 
         return cfg
 
@@ -119,7 +119,7 @@ class ConfigLoaderImpl(ConfigLoader):
         assert isinstance(overrides, list)
         overrides = overrides + sweep_overrides
         sweep_config = self.load_configuration(
-            config_file=master_config.hydra.job.config_file,
+            config_name=master_config.hydra.job.config_name,
             strict=self.default_strict,
             overrides=overrides,
         )
