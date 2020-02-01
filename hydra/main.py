@@ -5,11 +5,9 @@ from typing import Callable, Optional
 from ._internal.utils import get_args_parser, run_hydra
 from .types import TaskFunction
 
-# TODO: change config_path to Optional[str]
-
 
 def main(
-    config_path: str = "", strict: Optional[bool] = None
+    config_path: Optional[str] = None, strict: Optional[bool] = None
 ) -> Callable[[TaskFunction], Callable[[], None]]:
     """
     :param config_path: the config path, can be a directory in which it's used as the config root
