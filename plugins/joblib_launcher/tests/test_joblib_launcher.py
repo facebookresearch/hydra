@@ -11,16 +11,16 @@ from hydra.test_utils.launcher_common_tests import (
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
-from hydra_plugins.parallel_launcher import ParallelLauncher
+from hydra_plugins.joblib_launcher import JoblibLauncher
 
 
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert ParallelLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
+    assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
 
 
 @pytest.mark.parametrize("launcher_name, overrides", [("example", [])])
-class TestParallelLauncher(LauncherTestSuite):
+class TestJoblibLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
     Note that hydra/launcher/example.yaml should be provided by this launcher.
@@ -41,17 +41,17 @@ class TestParallelLauncher(LauncherTestSuite):
                 ],
                 "hydra": {
                     "launcher": {
-                        "class": "hydra_plugins.parallel_launcher.ParallelLauncher",
-                        "params": {"n_jobs": 2, "backend": "loky"},
+                        "class": "hydra_plugins.joblib_launcher.JoblibLauncher",
+                        "params": {"n_jobs": 2},
                     }
                 },
             },
             ["-m"],
-            "hydra_plugins.parallel_launcher",
+            "hydra_plugins.joblib_launcher",
         )
     ],
 )
-class TestParallelLauncherIntegration(IntegrationTestSuite):
+class TestJoblibLauncherIntegration(IntegrationTestSuite):
     """
     Run this launcher through the integration test suite.
     """

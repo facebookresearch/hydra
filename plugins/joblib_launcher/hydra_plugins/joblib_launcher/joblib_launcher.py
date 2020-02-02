@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Dict, Optional, Sequence
 
-from joblib import Parallel, delayed
+from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
@@ -11,6 +11,7 @@ from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.utils import (
     JobReturn,
+    JobRuntime,
     configure_log,
     filter_overrides,
     run_job,
@@ -23,21 +24,20 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class ParallelLauncherSearchPathPlugin(SearchPathPlugin):
+class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     """
-    This plugin is allowing configuration files provided by the ParallelLauncher plugin to be discovered
-    and used once the ParallelLauncher plugin is installed
+    This plugin is allowing configuration files provided by the JoblibLauncher plugin to be discovered
+    and used once the JoblibLauncher plugin is installed
     """
 
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-parallel-launcher",
-            "pkg://hydra_plugins.parallel_launcher_plugin.conf",
+            "hydra-joblib-launcher", "pkg://hydra_plugins.joblib_launcher_plugin.conf",
         )
 
 
-class ParallelLauncher(Launcher):
+class JoblibLauncher(Launcher):
     def __init__(self, **kwargs_joblib_parallel: Any) -> None:
         """Parallel Launcher
 
@@ -79,16 +79,23 @@ class ParallelLauncher(Launcher):
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
         log.info(
-            "ParallelLauncher({}) is launching {} jobs".format(
+            "JoblibLauncher({}) is launching {} jobs".format(
                 ",".join([f"{k}={v}" for k, v in self.kwargs_joblib_parallel.items()]),
                 len(job_overrides),
             )
         )
         log.info("Sweep output dir : {}".format(sweep_dir))
 
+        job_runtime = {"name": JobRuntime.instance().get("name")}
+
         runs = Parallel(**self.kwargs_joblib_parallel)(
             delayed(dispatch_job)(
-                idx, overrides, self.config_loader, self.config, self.task_function
+                idx,
+                overrides,
+                self.config_loader,
+                self.config,
+                self.task_function,
+                job_runtime,
             )
             for idx, overrides in enumerate(job_overrides)
         )
@@ -102,8 +109,18 @@ def dispatch_job(
     config_loader: ConfigLoader,
     config: DictConfig,
     task_function: TaskFunction,
+    job_runtime: Dict[str, Any],
 ) -> JobReturn:
-    setup_globals()  # Needed here since now interpolation is otherwise not available
+    """Calls `run_job` through Joblib Parallel backend
+
+    Note that Joblib's default backend runs isolated Python processes, see
+    https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
+    """
+    # JobRuntime uses a singleton pattern and thus needs to be re-created
+    JobRuntime.instance().set("name", job_runtime["name"])
+
+    # Similarly, setup_globals() registering OmegaConf resolvers is called again
+    setup_globals()
 
     log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
     sweep_config = config_loader.load_sweep_config(config, list(overrides))

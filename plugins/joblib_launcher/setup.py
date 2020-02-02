@@ -4,11 +4,11 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
-        name="parallel-launcher",
+        name="joblib-launcher",
         version="0.1.0",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
-        description="Parallel launcher",
+        description="Joblib launcher",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
