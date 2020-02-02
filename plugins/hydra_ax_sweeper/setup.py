@@ -19,6 +19,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core", "ax-platform[mysql]==0.1.9"],
+        install_requires=["hydra-core>=1.0.0-rc1", "ax-platform[mysql]==0.1.9"],
         include_package_data=True,
     )

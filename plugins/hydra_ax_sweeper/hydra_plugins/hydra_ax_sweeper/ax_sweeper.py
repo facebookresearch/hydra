@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Dict, List, Mapping, NamedTuple, Optional, Sequence, Tuple, Union
+from dataclasses import dataclass
+from typing import Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -18,13 +19,14 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class Trial(NamedTuple):
+@dataclass
+class Trial:
     overrides: List[str]
     trial_index: int
 
 
 BatchOfTrialType = List[Trial]
-BestParameterType = Union[ax_types.TParameterization]
+# ParameterType = Union[ax_types.TParameterization]
 
 # TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
 # TODO: Support running multiple random seeds, aggregate mean and SEM
@@ -54,14 +56,14 @@ def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List
 def get_one_batch_of_trials(
     ax_client: AxClient,
     parallelism: Tuple[int, int],
-    num_trials_done_in_current_parallelism: int,
+    num_trials_so_far: int,
     num_max_trials_to_do: int,
 ) -> BatchOfTrialType:
     """Produce a batch of trials that can be run in parallel"""
     (num_trials, max_parallelism_setting) = parallelism
     if max_parallelism_setting == -1:
         # Special case, we can group all the trials into one batch
-        max_parallelism_setting = num_trials - num_trials_done_in_current_parallelism
+        max_parallelism_setting = num_trials - num_trials_so_far
 
         if num_trials == -1:
             # This is a special case where we can run as many trials in parallel as we want.
@@ -97,7 +99,7 @@ class EarlyStopper:
         self.current_epochs_without_improvement = 0
 
     def should_stop(
-        self, potential_best_value: float, best_parameters: BestParameterType
+        self, potential_best_value: float, best_parameters: ParameterType
     ) -> bool:
         """Check if the optimisation process should be stopped."""
         is_improving = True
@@ -179,14 +181,14 @@ class AxSweeper(Sweeper):
         while num_trials_left > 0:
             current_parallelism = recommended_max_parallelism[current_parallelism_index]
             num_trials, max_parallelism_setting = current_parallelism
-            num_trials_done_in_current_parallelism = 0
+            num_trials_so_far = 0
             while (
-                num_trials > num_trials_done_in_current_parallelism or num_trials == -1
+                num_trials > num_trials_so_far or num_trials == -1
             ) and num_trials_left > 0:
                 batch_of_trials = get_one_batch_of_trials(
                     ax_client=ax_client,
                     parallelism=current_parallelism,
-                    num_trials_done_in_current_parallelism=num_trials_done_in_current_parallelism,
+                    num_trials_so_far=num_trials_so_far,
                     num_max_trials_to_do=num_trials_left,
                 )
                 batch_of_trials_to_launch = batch_of_trials[:num_trials_left]
@@ -204,7 +206,7 @@ class AxSweeper(Sweeper):
                     batch_of_trials_to_launch=batch_of_trials_to_launch,
                 )
 
-                num_trials_done_in_current_parallelism += len(batch_of_trials_to_launch)
+                num_trials_so_far += len(batch_of_trials_to_launch)
                 num_trials_left -= len(batch_of_trials_to_launch)
 
                 best = ax_client.get_best_parameters()
@@ -277,12 +279,13 @@ class AxSweeper(Sweeper):
             if "," in value:
                 # This is a Choice Parameter.
 
-                value_choices = [x for x in value.split(",")]
-                if _is_float(value_choices[0]):
+                values = [x for x in value.split(",")]
+                if _is_float(values[0]):
                     parameter_type = ParameterType.FLOAT
-                    value_choices = [float(x) for x in value_choices]  # type: ignore
+                    value_choices = [float(x) for x in values]
                 else:
                     parameter_type = ParameterType.STRING
+                    value_choices = values  # type: ignore
                 parameters.append(
                     {
                         "name": key,
