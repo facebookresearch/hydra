@@ -34,5 +34,4 @@ def test_map_params_to_arg_list() -> None:
         "x5=0.696702241897583",
         "x6=0.36982154846191406",
     ]
-    # TODO : eps
     assert map_params_to_arg_list(params) == correct_args_list
