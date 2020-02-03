@@ -19,11 +19,11 @@ def test_discovery() -> None:
     assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
 
 
-@pytest.mark.parametrize("launcher_name, overrides", [("example", [])])
+@pytest.mark.parametrize("launcher_name, overrides", [("joblib", [])])
 class TestJoblibLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
-    Note that hydra/launcher/example.yaml should be provided by this launcher.
+    Note that hydra/launcher/joblib.yaml should be provided by this launcher.
     """
 
     pass
