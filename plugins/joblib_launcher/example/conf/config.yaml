@@ -1,4 +1,4 @@
 defaults:
-  - hydra/launcher/example.yaml
+  - hydra/launcher: joblib
 
 task: 1

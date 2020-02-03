@@ -1,12 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import logging
+import os
 import time
 
 import hydra
 
+log = logging.getLogger(__name__)
+
 
 @hydra.main(config_path="conf/config.yaml")
 def my_app(cfg):
-    print(f"Executing task {cfg.task} ...")
+    log.info(f"Process ID {os.getpid()} executing task {cfg.task} ...")
+
     time.sleep(1)
 
 

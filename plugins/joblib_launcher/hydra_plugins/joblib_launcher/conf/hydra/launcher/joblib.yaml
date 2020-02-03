@@ -1,5 +1,6 @@
 hydra:
   launcher:
     class: hydra_plugins.joblib_launcher.JoblibLauncher
-    params:
+    joblib_arguments:
+      backend: loky
       n_jobs: -1

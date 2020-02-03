@@ -1,5 +1,0 @@
-hydra:
-  launcher:
-    class: hydra_plugins.joblib_launcher.JoblibLauncher
-    params:
-      n_jobs: -1

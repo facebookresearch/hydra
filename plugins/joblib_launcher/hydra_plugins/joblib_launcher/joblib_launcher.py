@@ -33,15 +33,13 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.joblib_launcher_plugin.conf",
+            "hydra-joblib-launcher", "pkg://hydra_plugins.joblib_launcher/conf",
         )
 
 
 class JoblibLauncher(Launcher):
-    def __init__(self, **kwargs_joblib_parallel: Any) -> None:
+    def __init__(self) -> None:
         """Parallel Launcher
-
-        Keyword arguments that are not None are passed to joblib.Parallel
 
         For details, refer to to the Parallel documentation:
         https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
@@ -49,11 +47,6 @@ class JoblibLauncher(Launcher):
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
-
-        self.kwargs_joblib_parallel = {}
-        for keyword, value in kwargs_joblib_parallel.items():
-            if value is not None:
-                self.kwargs_joblib_parallel[keyword] = value
 
     def setup(
         self,
@@ -75,12 +68,14 @@ class JoblibLauncher(Launcher):
         assert self.config_loader is not None
         assert self.task_function is not None
 
+        joblib_arguments = self.config.hydra.launcher.joblib_arguments
+
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
         log.info(
-            "JoblibLauncher({}) is launching {} jobs".format(
-                ",".join([f"{k}={v}" for k, v in self.kwargs_joblib_parallel.items()]),
+            "Joblib.Parallel({}) is launching {} jobs".format(
+                ",".join([f"{k}={v}" for k, v in joblib_arguments.items()]),
                 len(job_overrides),
             )
         )
@@ -88,7 +83,7 @@ class JoblibLauncher(Launcher):
 
         job_runtime = {"name": JobRuntime.instance().get("name")}
 
-        runs = Parallel(**self.kwargs_joblib_parallel)(
+        runs = Parallel(**joblib_arguments)(
             delayed(dispatch_job)(
                 idx,
                 overrides,
@@ -111,7 +106,7 @@ def dispatch_job(
     task_function: TaskFunction,
     job_runtime: Dict[str, Any],
 ) -> JobReturn:
-    """Calls `run_job` through Joblib Parallel backend
+    """Calls `run_job` in parallel
 
     Note that Joblib's default backend runs isolated Python processes, see
     https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
