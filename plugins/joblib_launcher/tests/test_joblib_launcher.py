@@ -35,16 +35,11 @@ class TestJoblibLauncher(LauncherTestSuite):
         (
             {
                 "defaults": [
-                    {"hydra/launcher": None},
+                    {"hydra/launcher": "joblib"},
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
-                "hydra": {
-                    "launcher": {
-                        "class": "hydra_plugins.joblib_launcher.JoblibLauncher",
-                        "params": {"n_jobs": 2},
-                    }
-                },
+                "hydra": {"launcher": {"joblib_arguments": {"n_jobs": 2},}},
             },
             ["-m"],
             "hydra_plugins.joblib_launcher",
