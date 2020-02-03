@@ -39,11 +39,27 @@ class TestJoblibLauncher(LauncherTestSuite):
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
-                "hydra": {"launcher": {"joblib_arguments": {"n_jobs": 2},}},
             },
             ["-m"],
             "hydra_plugins.joblib_launcher",
-        )
+        ),
+        (
+            {
+                "defaults": [
+                    {"hydra/launcher": None},
+                    {"hydra/hydra_logging": "hydra_debug"},
+                    {"hydra/job_logging": "disabled"},
+                ],
+                "hydra": {
+                    "launcher": {
+                        "class": "hydra_plugins.joblib_launcher.JoblibLauncher",
+                        "joblib_arguments": {"n_jobs": 2},
+                    }
+                },
+            },
+            ["-m"],
+            "hydra_plugins.joblib_launcher",
+        ),
     ],
 )
 class TestJoblibLauncherIntegration(IntegrationTestSuite):
