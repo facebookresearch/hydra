@@ -38,15 +38,23 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class JoblibLauncher(Launcher):
-    def __init__(self) -> None:
-        """Parallel Launcher
+    def __init__(self, joblib: Dict[str, Any] = {},) -> None:
+        """Joblib Launcher
 
-        For details, refer to to the Parallel documentation:
+        Launches parallel jobs using Joblib.Parallel. For details, refer to:
         https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
+
+        This plugin is based on the idea and inital implementation of @emilemathieutmp:
+        https://github.com/facebookresearch/hydra/issues/357
         """
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
+
+        self.joblib = joblib
+        for k, v in self.joblib.items():
+            if v == "None":
+                self.joblib[k] = None
 
     def setup(
         self,
@@ -68,14 +76,12 @@ class JoblibLauncher(Launcher):
         assert self.config_loader is not None
         assert self.task_function is not None
 
-        joblib_arguments = self.config.hydra.launcher.joblib_arguments
-
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
         log.info(
             "Joblib.Parallel({}) is launching {} jobs".format(
-                ",".join([f"{k}={v}" for k, v in joblib_arguments.items()]),
+                ",".join([f"{k}={v}" for k, v in self.joblib.items()]),
                 len(job_overrides),
             )
         )
@@ -83,7 +89,7 @@ class JoblibLauncher(Launcher):
 
         job_runtime = {"name": JobRuntime.instance().get("name")}
 
-        runs = Parallel(**joblib_arguments)(
+        runs = Parallel(**self.joblib)(
             delayed(dispatch_job)(
                 idx,
                 overrides,

@@ -1,6 +1,16 @@
 hydra:
   launcher:
     class: hydra_plugins.joblib_launcher.JoblibLauncher
-    joblib_arguments:
-      backend: loky
-      n_jobs: -1
+    params:
+      joblib:
+        n_jobs: -1
+        backend: None
+        prefer: processes
+        require: None
+        verbose: 0
+        timeout: None
+        pre_dispatch: 2*n_jobs
+        batch_size: auto
+        temp_folder: None
+        max_nbytes: 1M
+        mmap_mode: r

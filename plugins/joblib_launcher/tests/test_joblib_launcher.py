@@ -53,7 +53,7 @@ class TestJoblibLauncher(LauncherTestSuite):
                 "hydra": {
                     "launcher": {
                         "class": "hydra_plugins.joblib_launcher.JoblibLauncher",
-                        "joblib_arguments": {"n_jobs": 2},
+                        "params": {"joblib": {"prefer": "threads"}},
                     }
                 },
             },

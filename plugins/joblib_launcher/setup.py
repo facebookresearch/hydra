@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
         version="0.1.0",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
-        description="Joblib launcher",
+        description="Joblib Launcher",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
