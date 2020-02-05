@@ -9,21 +9,23 @@ hydra:
   launcher:
     class: hydra_plugins.joblib_launcher.JoblibLauncher
     params:
-      joblib:
-        n_jobs: -1
-        backend: None
-        prefer: processes
-        require: None
-        verbose: 0
-        timeout: None
-        pre_dispatch: 2*n_jobs
-        batch_size: auto
-        temp_folder: None
-        max_nbytes: 1M
-        mmap_mode: r
+      joblib: ${hydra.joblib}
+
+  joblib:
+    n_jobs: -1  # maximum number of concurrently running jobs. if -1, all CPUs are used
+    backend: null  # allows to hard-code backend, otherwise inferred based on prefer and require
+    prefer: processes  # processes or threads, soft hint to choose backend
+    require: null  # null or sharedmem, sharedmem will select thread-based backend
+    verbose: 0  # if greater than zero, prints progress messages
+    timeout: null  # timeout limit for each task
+    pre_dispatch: 2*n_jobs  #  number of batches to be pre-dispatched
+    batch_size: auto  # number of atomic tasks to dispatch at once to each worker
+    temp_folder: null  # folder used for memmapping large arrays for sharing memory with workers
+    max_nbytes: 1M  # thresholds size of arrays that triggers automated memmapping
+    mmap_mode: r  # memmapping mode for numpy arrays passed to workers
 ```
 
-All arguments specified in `joblib` are passed to `Joblib.Parallel`. `prefer` defaults to `processes`, depending on the application, `threads` can be an alternative (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for details). `n_jobs` defaults to -1, which means that all available CPUs may be used.
+All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for details). `n_jobs` defaults to -1, which means that all available CPUs may be used. `prefer` defaults to `processes`, depending on the application, `threads` can be an alternative. 
 
 An example application using the plugin is provided in `plugins/joblib_launcher/example`. It overwrites the launcher used by Hydra.
 
@@ -32,12 +34,12 @@ Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch f
 Output of the example application:
 ```text
 $ python example/my_app.py --multirun task=1,2,3,4,5
-[2020-02-03 22:23:59,035][HYDRA] Sweep output dir : multirun/2020-02-03/22-23-59
-[2020-02-03 22:23:59,037][HYDRA] Joblib.Parallel(backend=loky,n_jobs=-1) is launching 5 jobs
-[2020-02-03 22:23:59,037][HYDRA] Sweep output dir : multirun/2020-02-03/22-23-59
-[2020-02-03 22:23:59,681][__main__][INFO] - Process ID 95127 executing task 1 ...
-[2020-02-03 22:23:59,687][__main__][INFO] - Process ID 95126 executing task 2 ...
-[2020-02-03 22:23:59,691][__main__][INFO] - Process ID 95128 executing task 3 ...
-[2020-02-03 22:23:59,699][__main__][INFO] - Process ID 95131 executing task 5 ...
-[2020-02-03 22:23:59,703][__main__][INFO] - Process ID 95130 executing task 4 ...
+[2020-02-05 13:59:56,582][HYDRA] Sweep output dir : multirun/2020-02-05/13-59-56
+[2020-02-05 13:59:56,584][HYDRA] Joblib.Parallel(n_jobs=-1,backend=None,prefer=processes,require=None,verbose=0,timeout=None,pre_dispatch=2*n_jobs,batch_size=auto,temp_folder=None,max_nbytes=1M,mmap_mode=r) is launching 5 jobs
+[2020-02-05 13:59:56,584][HYDRA] Sweep output dir : multirun/2020-02-05/13-59-56
+[2020-02-05 13:59:57,249][__main__][INFO] - Process ID 14336 executing task 2 ...
+[2020-02-05 13:59:57,250][__main__][INFO] - Process ID 14333 executing task 1 ...
+[2020-02-05 13:59:57,250][__main__][INFO] - Process ID 14334 executing task 3 ...
+[2020-02-05 13:59:57,257][__main__][INFO] - Process ID 14335 executing task 4 ...
+[2020-02-05 13:59:57,261][__main__][INFO] - Process ID 14337 executing task 5 ...
 ```
