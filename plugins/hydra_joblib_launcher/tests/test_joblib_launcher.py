@@ -52,7 +52,7 @@ class TestHydraJoblibLauncher(LauncherTestSuite):
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
-                "hydra": {"launcher": {"params": {"joblib": {"prefer": "threads"}},}},
+                "hydra": {"launcher": {"params": {"joblib": {"prefer": "threads"}}}},
             },
             ["-m"],
             "hydra_plugins.joblib_launcher",
