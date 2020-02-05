@@ -12,17 +12,38 @@ hydra:
       joblib: ${hydra.joblib}
 
   joblib:
-    n_jobs: -1  # maximum number of concurrently running jobs. if -1, all CPUs are used
-    backend: null  # allows to hard-code backend, otherwise inferred based on prefer and require
-    prefer: processes  # processes or threads, soft hint to choose backend
-    require: null  # null or sharedmem, sharedmem will select thread-based backend
-    verbose: 0  # if greater than zero, prints progress messages
-    timeout: null  # timeout limit for each task
-    pre_dispatch: 2*n_jobs  #  number of batches to be pre-dispatched
-    batch_size: auto  # number of atomic tasks to dispatch at once to each worker
-    temp_folder: null  # folder used for memmapping large arrays for sharing memory with workers
-    max_nbytes: 1M  # thresholds size of arrays that triggers automated memmapping
-    mmap_mode: r  # memmapping mode for numpy arrays passed to workers
+    # maximum number of concurrently running jobs. if -1, all CPUs are used
+    n_jobs: -1
+
+    # allows to hard-code backend, otherwise inferred based on prefer and require
+    backend: null
+
+    # processes or threads, soft hint to choose backend
+    prefer: processes
+
+    # null or sharedmem, sharedmem will select thread-based backend
+    require: null
+
+    # if greater than zero, prints progress messages
+    verbose: 0
+
+    # timeout limit for each task
+    timeout: null
+
+    # number of batches to be pre-dispatched
+    pre_dispatch: 2*n_jobs
+
+    # number of atomic tasks to dispatch at once to each worker
+    batch_size: auto
+
+    # folder used for memmapping large arrays for sharing memory with workers
+    temp_folder: null
+
+    # thresholds size of arrays that triggers automated memmapping
+    max_nbytes: 1M
+
+    # memmapping mode for numpy arrays passed to workers
+    mmap_mode: r
 ```
 
 All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for details). `n_jobs` defaults to -1, which means that all available CPUs may be used. `prefer` defaults to `processes`, depending on the application, `threads` can be an alternative. 
