@@ -27,6 +27,8 @@ hydra:
 
 All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for details). `n_jobs` defaults to -1, which means that all available CPUs may be used. `prefer` defaults to `processes`, depending on the application, `threads` can be an alternative. 
 
+An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in `plugins/hydra_joblib_launcher/example`. It changes the default launcher Hydra is using to this one.
+
 An example application using the plugin is provided in `plugins/hydra_joblib_launcher/example`. It overwrites the launcher used by Hydra.
 
 Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions.
