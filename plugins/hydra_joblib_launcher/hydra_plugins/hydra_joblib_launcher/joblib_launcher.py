@@ -24,7 +24,7 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
+class HydraJoblibLauncherSearchPathPlugin(SearchPathPlugin):
     """
     This plugin is allowing configuration files provided by the JoblibLauncher plugin to be discovered
     and used once the JoblibLauncher plugin is installed
@@ -33,11 +33,11 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.joblib_launcher.conf",
+            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.conf",
         )
 
 
-class JoblibLauncher(Launcher):
+class HydraJoblibLauncher(Launcher):
     def __init__(self, joblib: Dict[str, Any] = {},) -> None:
         """Joblib Launcher
 
