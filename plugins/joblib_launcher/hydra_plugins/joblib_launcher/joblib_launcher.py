@@ -9,6 +9,7 @@ from omegaconf import DictConfig, open_dict
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
+from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
     JobRuntime,
@@ -52,9 +53,6 @@ class JoblibLauncher(Launcher):
         self.task_function: Optional[TaskFunction] = None
 
         self.joblib = joblib
-        for k, v in self.joblib.items():
-            if v == "None":
-                self.joblib[k] = None
 
     def setup(
         self,
@@ -87,7 +85,7 @@ class JoblibLauncher(Launcher):
         )
         log.info("Sweep output dir : {}".format(sweep_dir))
 
-        job_runtime = {"name": JobRuntime.instance().get("name")}
+        singleton_state = Singleton.get_state()
 
         runs = Parallel(**self.joblib)(
             delayed(dispatch_job)(
@@ -96,7 +94,7 @@ class JoblibLauncher(Launcher):
                 self.config_loader,
                 self.config,
                 self.task_function,
-                job_runtime,
+                singleton_state,
             )
             for idx, overrides in enumerate(job_overrides)
         )
@@ -110,18 +108,15 @@ def dispatch_job(
     config_loader: ConfigLoader,
     config: DictConfig,
     task_function: TaskFunction,
-    job_runtime: Dict[str, Any],
+    singleton_state: Dict[Any, Any],
 ) -> JobReturn:
     """Calls `run_job` in parallel
 
     Note that Joblib's default backend runs isolated Python processes, see
     https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
     """
-    # JobRuntime uses a singleton pattern and thus needs to be re-created
-    JobRuntime.instance().set("name", job_runtime["name"])
-
-    # Similarly, setup_globals() registering OmegaConf resolvers is called again
     setup_globals()
+    Singleton.set_state(singleton_state)
 
     log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
     sweep_config = config_loader.load_sweep_config(config, list(overrides))
