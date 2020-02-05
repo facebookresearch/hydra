@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
@@ -98,7 +98,11 @@ class HydraJoblibLauncher(Launcher):
             for idx, overrides in enumerate(job_overrides)
         )
 
-        return runs  # type: ignore
+        assert isinstance(runs, List)
+        for run in runs:
+            assert isinstance(run, JobReturn)
+
+        return runs
 
 
 def dispatch_job(
@@ -120,7 +124,7 @@ def dispatch_job(
     log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
     sweep_config = config_loader.load_sweep_config(config, list(overrides))
     with open_dict(sweep_config):
-        sweep_config.hydra.job.id = "job_id_for_{}".format(idx)
+        sweep_config.hydra.job.id = "{}_{}".format(sweep_config.hydra.job.name, idx)
         sweep_config.hydra.job.num = idx
     HydraConfig.instance().set_config(sweep_config)
 
