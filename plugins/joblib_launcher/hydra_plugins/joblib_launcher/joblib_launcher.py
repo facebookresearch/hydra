@@ -12,7 +12,6 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
-    JobRuntime,
     configure_log,
     filter_overrides,
     run_job,
