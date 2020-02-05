@@ -72,7 +72,10 @@ jobs:
       - run: sudo apt-get install -y expect
       - run: echo 'export NOX_PYTHON_VERSIONS=3.6' >> $BASH_ENV
       - run: sudo pip install nox
-      - run: nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 60m
+          command: nox
 
   py37_linux:
     docker:
@@ -82,7 +85,10 @@ jobs:
       - run: sudo apt-get install -y expect
       - run: echo 'export NOX_PYTHON_VERSIONS=3.7' >> $BASH_ENV
       - run: sudo pip install nox
-      - run: nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 60m
+          command: nox
 
   py38_linux:
     docker:
@@ -92,7 +98,10 @@ jobs:
       - run: sudo apt-get install -y expect
       - run: echo 'export NOX_PYTHON_VERSIONS=3.8' >> $BASH_ENV
       - run: sudo pip install nox
-      - run: nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 60m
+          command: nox
 
   # windows
   py36_win:
@@ -111,6 +120,7 @@ jobs:
             conda run -n hydra pip install nox
       - run:
           name: Testing Hydra
+          no_output_timeout: 60m
           command: |
             $env:NOX_PYTHON_VERSIONS=3.6
             $env:PYTHONIOENCODING="utf_8"
@@ -134,6 +144,7 @@ jobs:
             conda run -n hydra pip install nox
       - run:
           name: Testing Hydra
+          no_output_timeout: 60m
           command: |
             $env:NOX_PYTHON_VERSIONS=3.7
             $env:PYTHONIOENCODING="utf_8"
