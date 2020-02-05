@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
-        name="joblib-launcher",
+        name="hydra-joblib-launcher",
         version="0.1.0",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
