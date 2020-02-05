@@ -8,7 +8,7 @@ import hydra
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="conf/config.yaml")
+@hydra.main(config_path="config.yaml")
 def my_app(cfg):
     log.info(f"Process ID {os.getpid()} executing task {cfg.task} ...")
 
