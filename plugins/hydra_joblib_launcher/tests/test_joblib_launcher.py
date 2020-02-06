@@ -34,6 +34,7 @@ class TestHydraJoblibLauncher(LauncherTestSuite):
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags, plugin_module",
     [
+        # joblib with multi-process backend
         (
             {
                 "defaults": [
@@ -45,6 +46,7 @@ class TestHydraJoblibLauncher(LauncherTestSuite):
             ["-m"],
             "hydra_plugins.joblib_launcher",
         ),
+        # joblib with thread-based backend
         (
             {
                 "defaults": [
