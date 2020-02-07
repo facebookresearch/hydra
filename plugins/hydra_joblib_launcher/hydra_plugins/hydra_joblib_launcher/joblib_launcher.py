@@ -26,8 +26,8 @@ log = logging.getLogger(__name__)
 
 class HydraJoblibLauncherSearchPathPlugin(SearchPathPlugin):
     """
-    This plugin is allowing configuration files provided by the JoblibLauncher plugin to be discovered
-    and used once the JoblibLauncher plugin is installed
+    This plugin is allowing configuration files provided by the HydraJoblibLauncher plugin to be
+    discovered and used once the plugin is installed
     """
 
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
