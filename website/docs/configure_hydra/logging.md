@@ -5,8 +5,8 @@ sidebar_label: Customizing logging
 ---
 Hydra is configuring Python standard logging library with the dictConfig method. You can learn more about it [here](https://docs.python.org/3/howto/logging.html).
 There are two logging configurations, one for Hydra itself and one for the executed jobs.
- 
-This example demonstrates how to to customize the logging behavior of your Hydra app, by making the following changes
+
+This example demonstrates how to customize the logging behavior of your Hydra app, by making the following changes
 to the default logging behavior:
 
  * Outputs only to stdout (no log file)

@@ -29,7 +29,7 @@ From the source tree, install Hydra in development mode with the following comma
 pip install -e .[dev] -e .
 ```
 ## Nox
-Hydra is using a test automation tool called [nox](https://github.com/theacodes/nox) to manage tests, linting, code coverage etc. 
+Hydra is using a test automation tool called [nox](https://github.com/theacodes/nox) to manage tests, linting, code coverage etc.
 `nox` will run all the configured sessions. You can see the full list of nox sessions with `nox -l` and run specific sessions
 with `nox -s NAME` (you may need to quote the session name in some cases)
 
@@ -39,7 +39,7 @@ The code need to pass verification by the following tools:
  - `flake8` : PEP8 compliance checker for Python, this includes copyright header verification
  - `isort .` : Ensure imports are sorted properly
  - `mypy --strict .` : Ensures code passes strict type checking
- 
+
 The easiest way to run all the required verifications is with `nox -s lint`.
 
 It is also recommended that you install pre-commit hooks (use `pre-commit install`), this will ensure that those tests
@@ -54,14 +54,14 @@ Use `pytest` at the repository root to run all the Hydra core tests.
 To run the tests of individual plugins, use `pytest plugins/NAME`.
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>:
-Some plugins supports fewer versions of Python than the Hydra core. 
+Some plugins support fewer versions of Python than the Hydra core.
 </div>
 
 ### With nox
 See `nox -l`. a few examples:
 * `nox -s test_core` will test Hydra core on all supported Python versions
 * `nox -s "test_core-3.6(pip install)"` : Test on Python 3.6 with `pip install` as installation method
-* `nox -s "test_plugins-3.8(pip install -e)"` : Test plugins on Python 3.8 with `pip install -e` as installation method  
+* `nox -s "test_plugins-3.8(pip install -e)"` : Test plugins on Python 3.8 with `pip install -e` as installation method
 
 ## NEWS Entries
 The `NEWS.rst` file is managed using `towncrier` and all non trivial changes
