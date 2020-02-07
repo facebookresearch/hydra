@@ -39,7 +39,7 @@ This a bit clunky because defaults contains a list (I hope to improve this in th
 
 #### optional: true
 By default, Hydra would fail with an error if a config specified in the defaults does not exist.
-in this case we only want to specialize cifar10 + alexnet, not all 4 combinations.
+In this case we only want to specialize cifar10 + alexnet, not all 4 combinations.
 indication optional: true here tells Hydra to just continue if it can't find this file.
 
 When specializing config, you usually want to only specify what's different, and not the whole thing.

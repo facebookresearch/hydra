@@ -30,7 +30,8 @@ Add a `schema` and a `ui` config group:
 ```
 
 At this point, we already have 2 supported databases, 3 schemas, and 2 ui modes.
-This is a total of 12 combinations. adding another supported database will bring this to 18 combinations.
+This is a total of 12 combinations.
+Adding another supported database will bring this to 18 combinations.
 Creating 18 files is not a good idea, if you wanted to make a change such as renaming `db.user` to `db.username` you would have to do it 18 times!
 
 Composition can come to the rescue.
@@ -43,7 +44,7 @@ defaults:
   - schema: school
 ```
 The defaults are ordered:
- * If there are two configurations that defines the same value, the second one would win. 
+ * If there are two configurations that defines the same value, the second one would win.
  * If two configurations are contributing to the same dictionary the result would be the combined dictionary.
 
 When running this, we will compose a configuration with `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):

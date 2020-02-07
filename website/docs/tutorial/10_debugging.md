@@ -36,16 +36,16 @@ db:
 ```
 
 The `--cfg` option takes one argument indicating which part of the config to print:
-* `job` : Your config 
+* `job` : Your config
 * `hydra` : Hydra's config
 * `all` : The full config, which is a union of `job` and `hydra`.
 
 ### Hydra verbose debugging
 Hydra prints some very useful information in `DEBUG` log level.
 This includes:
-* Installed plugins : What Hydra plugins are installed in the environment 
+* Installed plugins : What Hydra plugins are installed in the environment
 * Config search path : The configuration search path
-* Composition trace : Which config files were used to compose your configuration, at what order and where did they came from.
+* Composition trace : Which config files were used to compose your configuration, at what order and where did they come from.
 
 This is often used with `-c` to just see the config without running the application.
 Example output:
