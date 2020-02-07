@@ -50,8 +50,6 @@ All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Jobli
 
 An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in `plugins/hydra_joblib_launcher/example`. It changes the default launcher Hydra is using to this one.
 
-An example application using the plugin is provided in `plugins/hydra_joblib_launcher/example`. It overwrites the launcher used by Hydra.
-
 Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions.
 
 Output of the example application:
