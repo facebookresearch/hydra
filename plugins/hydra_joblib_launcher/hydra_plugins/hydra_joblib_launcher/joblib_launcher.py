@@ -128,13 +128,13 @@ def dispatch_job(
         sweep_config.hydra.job.num = idx
     HydraConfig.instance().set_config(sweep_config)
 
+    configure_log(sweep_config.hydra.hydra_logging, sweep_config.hydra.verbose)
+
     ret = run_job(
         config=sweep_config,
         task_function=task_function,
         job_dir_key="hydra.sweep.dir",
         job_subdir_key="hydra.sweep.subdir",
     )
-
-    configure_log(config.hydra.hydra_logging, config.hydra.verbose)
 
     return ret
