@@ -48,18 +48,18 @@ class Optimizer:
 
 
 s = StructuredConfigStore.instance()
-s.store(group=None, name="config_without_group", path="", node=ConfigWithoutGroup)
-s.store(group=None, name="dataset", path=None, node={"dataset_yaml": True})
+s.store(name="config_without_group", node=ConfigWithoutGroup)
+s.store(name="dataset", node={"dataset_yaml": True})
 s.store(
-    group="dataset", name="cifar10", path="dataset", node=Cifar10,
+    name="cifar10", node=Cifar10, group="dataset", path="dataset",
 )
-s.store(group="dataset", name="imagenet.yaml", path="dataset", node=ImageNet)
-s.store(group="optimizer", name="adam", path="optimizer", node=Adam)
-s.store(group="optimizer", name="nesterov", path="optimizer", node=Nesterov)
+s.store(name="imagenet.yaml", node=ImageNet, group="dataset", path="dataset")
+s.store(name="adam", node=Adam, group="optimizer", path="optimizer")
+s.store(name="nesterov", node=Nesterov, group="optimizer", path="optimizer")
 s.store(
-    group="level1/level2", name="nested1", path="optimizer", node={"l1_l2_n1": True},
+    name="nested1", node={"l1_l2_n1": True}, group="level1/level2", path="optimizer",
 )
 
 s.store(
-    group="level1/level2", name="nested2", path="optimizer", node={"l1_l2_n2": True},
+    name="nested2", node={"l1_l2_n2": True}, group="level1/level2", path="optimizer",
 )

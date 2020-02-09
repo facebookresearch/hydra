@@ -1,21 +1,23 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import time
+from typing import List, Tuple
 
 import ray
+from omegaconf import DictConfig
 
 import hydra
 from hydra.experimental import compose
 
 
-@ray.remote
-def train(overrides, cfg):
+@ray.remote  # type: ignore
+def train(overrides: List[str], cfg: DictConfig) -> Tuple[List[str], float]:
     print(cfg.pretty())
     time.sleep(5)
     return overrides, 0.9
 
 
 @hydra.main(config_path="conf/config.yaml")
-def main(cfg):
+def main(cfg: DictConfig) -> None:
     ray.init(**cfg.ray.init)
 
     results = []
