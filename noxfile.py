@@ -9,6 +9,7 @@ import nox
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
+DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
@@ -124,10 +125,14 @@ def get_setup_python_versions(session, setup_py):
     return [p[len("Programming Language :: Python :: ") :] for p in pythons]
 
 
-def get_setup_os_versions(session, setup_py):
+def get_setup_os_names(session, setup_py):
     out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
-    oses = filter(lambda line: "Operating System" in line, out)
-    return [p.split("::")[-1].strip() for p in oses]
+    oses = list(filter(lambda line: "Operating System" in line, out))
+    if len(oses) == 1 and oses[0] == "Operating System :: OS Independent":
+        # All oses are supported
+        return DEFAULT_OS_NAMES
+    else:
+        return [p.split("::")[-1].strip() for p in oses]
 
 
 def get_plugin_python_version(session, plugin):
@@ -136,8 +141,8 @@ def get_plugin_python_version(session, plugin):
     )
 
 
-def get_plugin_os_version(session, plugin):
-    return get_setup_os_versions(
+def get_plugin_os_names(session, plugin):
+    return get_setup_os_names(
         session, os.path.join(BASE, "plugins", plugin["path"], "setup.py")
     )
 
@@ -176,10 +181,10 @@ def test_plugins(session, install_cmd):
 
         # Verify this plugin supports the OS we are testing on, skip otherwise
         current_os = get_current_os()
-        plugin_os_versions = get_plugin_os_version(session, plugin)
-        plugin_enabled[plugin["path"]] = current_os in plugin_os_versions
+        plugin_os_names = get_plugin_os_names(session, plugin)
+        plugin_enabled[plugin["path"]] = current_os in plugin_os_names
         if not plugin_enabled[plugin["path"]]:
-            os_str = ",".join(plugin_os_versions)
+            os_str = ",".join(plugin_os_names)
             session.log(
                 f"Not testing {plugin['name']} on OS {current_os}, supports [{os_str}]"
             )
@@ -214,8 +219,12 @@ def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
     session.run("pip", "install", "-e", ".", silent=SILENT)
+    current_os = get_current_os()
     # Install all plugins in session
     for plugin in get_all_plugins():
+        plugin_os_names = get_plugin_os_names(session, plugin)
+        if current_os not in plugin_os_names:
+            continue
         session.run(
             "pip",
             "install",
@@ -230,9 +239,8 @@ def coverage(session):
         plugin_python_versions = get_plugin_python_version(session, plugin)
         if session.python not in plugin_python_versions:
             continue
-        plugin_os_version = get_plugin_os_version(session, plugin)
-        current_os = get_current_os()
-        if current_os not in plugin_os_version:
+        plugin_os_names = get_plugin_os_names(session, plugin)
+        if current_os not in plugin_os_names:
             continue
 
         session.run(
