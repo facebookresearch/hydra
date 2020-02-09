@@ -387,3 +387,38 @@ def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
     ]
     result = subprocess.check_output(cmd)
     assert result.decode("utf-8").rstrip() == "[INFO] - Info level message"
+
+
+# structured configs
+
+
+def test_structured_configs_1_run(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/structured_configs_tutorial/1_basic/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert result.decode("utf-8").rstrip() == "Connecting to localhost:8080"
+
+
+def test_structured_configs_1_override(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/structured_configs_tutorial/1_basic/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "port=9090",
+    ]
+    result = subprocess.check_output(cmd)
+    assert result.decode("utf-8").rstrip() == "Connecting to localhost:9090"
+
+
+def test_structured_configs_1_override_type_error(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/structured_configs_tutorial/1_basic/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "port=foo",
+    ]
+    with pytest.raises(subprocess.CalledProcessError):
+        subprocess.check_output(cmd)
