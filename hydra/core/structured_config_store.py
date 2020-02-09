@@ -15,7 +15,11 @@ class StructuredConfigStore(metaclass=Singleton):
         self.repo = {}
 
     def store(
-        self, group: Optional[str], name: str, path: Optional[str], node: Any
+        self,
+        name: str,
+        node: Any,
+        group: Optional[str] = None,
+        path: Optional[str] = None,
     ) -> None:
         """
         Stores a config node into the repository
