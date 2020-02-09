@@ -2,6 +2,7 @@
 # type: ignore
 import copy
 import os
+import platform
 
 import nox
 
@@ -96,10 +97,29 @@ def get_setup_python_versions(session, setup_py):
     return [p[len("Programming Language :: Python :: ") :] for p in pythons]
 
 
+def get_setup_os_versions(session, setup_py):
+    out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
+    oses = filter(lambda line: "Operating System" in line, out)
+    return [p.rsplit("::", 1).strip() for p in oses]
+
+
 def get_plugin_python_version(session, plugin):
     return get_setup_python_versions(
         session, os.path.join(BASE, "plugins", plugin["path"], "setup.py")
     )
+
+
+def get_plugin_os_version(session, plugin):
+    return get_setup_os_versions(
+        session, os.path.join(BASE, "plugins", plugin["path"], "setup.py")
+    )
+
+
+def get_current_os():
+    os = platform.system()
+    if os == "Darwin":
+        os = "MacOS"
+    return os
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -125,6 +145,15 @@ def test_plugins(session, install_cmd):
             session.log(
                 f"Not testing {plugin['name']} on Python {session.python}, supports [{py_str}]"
             )
+            continue
+
+        # Verify this plugin supports the OS we are testing on, skip otherwise
+        os = get_current_os()
+        plugin_os_versions = get_plugin_python_version(session, plugin)
+        plugin_enabled[plugin["path"]] = os in plugin_os_versions
+        if not plugin_enabled[plugin["path"]]:
+            os_str = ",".join(plugin_os_versions)
+            session.log(f"Not testing {plugin['name']} on OS {os}, supports [{os_str}]")
             continue
 
         cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
