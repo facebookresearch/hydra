@@ -100,7 +100,7 @@ def get_setup_python_versions(session, setup_py):
 def get_setup_os_versions(session, setup_py):
     out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
     oses = filter(lambda line: "Operating System" in line, out)
-    return [p.rsplit("::", 1).strip() for p in oses]
+    return [p.split("::")[-1].strip() for p in oses]
 
 
 def get_plugin_python_version(session, plugin):
