@@ -279,40 +279,40 @@ class AxSweeper(Sweeper):
             if "," in value:
                 # This is a Choice Parameter.
 
-                values = [x for x in value.split(",")]
-                if _is_float(values[0]):
-                    parameter_type = ParameterType.FLOAT
-                    value_choices = [float(x) for x in values]
+                value_choices = [x for x in value.split(",")]
+                if _is_float(value_choices[0]):
+                    param = {
+                        "name": key,
+                        "type": "choice",
+                        "values": [float(x) for x in value_choices],
+                        "parameter_type": ParameterType.FLOAT,
+                    }
                 else:
-                    parameter_type = ParameterType.STRING
-                    value_choices = values  # type: ignore
-                parameters.append(
-                    {
+                    param = {
                         "name": key,
                         "type": "choice",
                         "values": value_choices,
-                        "parameter_type": parameter_type,
+                        "parameter_type": ParameterType.STRING,
                     }
-                )
+                parameters.append(param)
             elif ":" in value:
                 # This is a Range Parameter.
                 range_start, range_end = value.split(":")
                 if _is_int(range_start) and _is_int(range_end):
-                    range_start = int(range_start)  # type: ignore
-                    range_end = int(range_end)  # type: ignore
-                    param_type = ParameterType.INT
-                else:
-                    range_start = float(range_start)  # type: ignore
-                    range_end = float(range_end)  # type: ignore
-                    param_type = ParameterType.FLOAT
-                parameters.append(
-                    {
+                    param = {
                         "name": key,
                         "type": "range",
-                        "bounds": [range_start, range_end],
-                        "parameter_type": param_type,
+                        "bounds": [int(range_start), int(range_end)],
+                        "parameter_type": ParameterType.INT,
                     }
-                )
+                else:
+                    param = {
+                        "name": key,
+                        "type": "range",
+                        "bounds": [float(range_start), float(range_end)],
+                        "parameter_type": ParameterType.FLOAT,
+                    }
+                parameters.append(param)
             else:
                 # This is a Fixed Parameter.
                 parameters.append(
