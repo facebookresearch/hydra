@@ -399,7 +399,10 @@ def test_structured_configs_1_run(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "Connecting to localhost:8080"
+    assert (
+        result.decode("utf-8").rstrip()
+        == "Connecting to mysql at localhost:3306, user=root, password=1234"
+    )
 
 
 def test_structured_configs_1_override(tmpdir: Path) -> None:
@@ -410,7 +413,10 @@ def test_structured_configs_1_override(tmpdir: Path) -> None:
         "port=9090",
     ]
     result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "Connecting to localhost:9090"
+    assert (
+        result.decode("utf-8").rstrip()
+        == "Connecting to mysql at localhost:9090, user=root, password=1234"
+    )
 
 
 def test_structured_configs_1_override_type_error(tmpdir: Path) -> None:
