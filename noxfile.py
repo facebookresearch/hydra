@@ -168,10 +168,9 @@ def test_plugins(session, install_cmd):
     all_plugins = get_all_plugins()
     # Install all supported plugins in session
     for plugin in all_plugins:
-        pythons = get_plugin_python_version(session, plugin)
         # Verify this plugin supports the python we are testing on, skip otherwise
         plugin_python_versions = get_plugin_python_version(session, plugin)
-        plugin_enabled[plugin["path"]] = session.python in pythons
+        plugin_enabled[plugin["path"]] = session.python in plugin_python_versions
         if not plugin_enabled[plugin["path"]]:
             py_str = ",".join(plugin_python_versions)
             session.log(
