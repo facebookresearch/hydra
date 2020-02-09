@@ -116,10 +116,10 @@ def get_plugin_os_version(session, plugin):
 
 
 def get_current_os():
-    os = platform.system()
-    if os == "Darwin":
-        os = "MacOS"
-    return os
+    current_os = platform.system()
+    if current_os == "Darwin":
+        current_os = "MacOS"
+    return current_os
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -148,12 +148,14 @@ def test_plugins(session, install_cmd):
             continue
 
         # Verify this plugin supports the OS we are testing on, skip otherwise
-        os = get_current_os()
-        plugin_os_versions = get_plugin_python_version(session, plugin)
-        plugin_enabled[plugin["path"]] = os in plugin_os_versions
+        current_os = get_current_os()
+        plugin_os_versions = get_plugin_os_version(session, plugin)
+        plugin_enabled[plugin["path"]] = current_os in plugin_os_versions
         if not plugin_enabled[plugin["path"]]:
             os_str = ",".join(plugin_os_versions)
-            session.log(f"Not testing {plugin['name']} on OS {os}, supports [{os_str}]")
+            session.log(
+                f"Not testing {plugin['name']} on OS {current_os}, supports [{os_str}]"
+            )
             continue
 
         cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
@@ -200,6 +202,10 @@ def coverage(session):
     for plugin in list_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
         if session.python not in plugin_python_versions:
+            continue
+        plugin_os_version = get_plugin_os_version(session, plugin)
+        current_os = get_current_os()
+        if current_os not in plugin_os_version:
             continue
 
         session.run(
