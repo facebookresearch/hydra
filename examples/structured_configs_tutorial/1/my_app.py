@@ -23,8 +23,10 @@ def my_app(cfg: DictConfig) -> None:
     connect(cfg.db)
 
 
-# db here is typed as DBConf
-# The actual type is DictConfig but if it walks like a duck...
+# db is typed as DBConf
+# The actual type is DictConfig but if it swims like a duck and quacks like a duck...
+# Python is allowing us to pretend that the DictConfig type is actually DBConf,
+# resulting in type checking in tools that are aware of types like mypy or PyCharm.
 def connect(db: DBConf) -> None:
     print(f"Connecting to {db.driver} with user={db.user} and password={db.password}")
 
