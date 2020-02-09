@@ -8,7 +8,7 @@ from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError
 
 
-class StructuredConfigStore(metaclass=Singleton):
+class ConfigStore(metaclass=Singleton):
     repo: Dict[str, Any]
 
     def __init__(self) -> None:
@@ -103,5 +103,5 @@ class StructuredConfigStore(metaclass=Singleton):
         return d
 
     @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "StructuredConfigStore":
-        return Singleton.instance(StructuredConfigStore, *args, **kwargs)  # type: ignore
+    def instance(*args: Any, **kwargs: Any) -> "ConfigStore":
+        return Singleton.instance(ConfigStore, *args, **kwargs)  # type: ignore

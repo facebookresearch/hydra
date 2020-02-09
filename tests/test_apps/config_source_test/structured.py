@@ -4,7 +4,7 @@ from typing import Any
 
 from omegaconf import MISSING
 
-from hydra.core.structured_config_store import StructuredConfigStore
+from hydra.core.config_store import ConfigStore
 
 
 @dataclass
@@ -47,7 +47,7 @@ class Optimizer:
     optimizer: Any = MISSING
 
 
-s = StructuredConfigStore.instance()
+s = ConfigStore.instance()
 s.store(name="config_without_group", node=ConfigWithoutGroup)
 s.store(name="dataset", node={"dataset_yaml": True})
 s.store(
