@@ -98,11 +98,11 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/plugins/colorlog"
+          "id": "version-0.11/plugins/ax_sweeper"
         },
         {
           "type": "doc",
-          "id": "version-0.11/plugins/ax_sweeper"
+          "id": "version-0.11/plugins/colorlog"
         }
       ]
     },
