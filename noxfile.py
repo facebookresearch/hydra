@@ -157,7 +157,7 @@ def test_plugins(session, install_cmd):
         # Verify this plugin supports the OS we are testing on, skip otherwise
         plugin_enabled[plugin["path"]] = check_if_os_supports_plugin(session, plugin)
         if not plugin_enabled[plugin["path"]]:
-            os_str = ",".join(get_plugin_os_names())
+            os_str = ",".join(get_plugin_os_names(session, plugin))
             session.log(
                 f"Not testing {plugin['name']} on OS {get_current_os()}, supports [{os_str}]"
             )
