@@ -4,7 +4,7 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, _utils
 
 from hydra.conf import PluginConf
 from hydra.core.hydra_config import HydraConfig
@@ -67,9 +67,22 @@ def instantiate(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
         ), "Input config params are expected to be a mapping, found {}".format(
             type(config.params)
         )
-        params.merge_with(OmegaConf.create(kwargs))
+        primitives = {}
+        rest = {}
+        for k, v in kwargs.items():
+            if _utils._is_primitive_type(v) or isinstance(v, (dict, list)):
+                primitives[k] = v
+            else:
+                rest[k] = v
+        final_kwargs = {}
+        params.merge_with(OmegaConf.create(primitives))
+        for k, v in params.items():
+            final_kwargs[k] = v
 
-        return clazz(*args, **params)
+        for k, v in rest.items():
+            final_kwargs[k] = v
+
+        return clazz(*args, **final_kwargs)
     except Exception as e:
         log.error(f"Error instantiating '{classname}' : {e}")
         raise e
