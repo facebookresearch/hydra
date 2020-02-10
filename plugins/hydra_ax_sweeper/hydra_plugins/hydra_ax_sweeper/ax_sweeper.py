@@ -158,6 +158,7 @@ class AxSweeper(Sweeper):
                 metric = best[1][0][ax_client.objective_name]
 
                 if self.early_stopper.should_stop(metric, best[0]):
+                    num_trials_left = -1
                     break
 
             current_parallelism_index += 1
