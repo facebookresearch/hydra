@@ -1,0 +1,1 @@
+Allow hydra.utils.instantiate() to accept non primitive objects for passthrough by name

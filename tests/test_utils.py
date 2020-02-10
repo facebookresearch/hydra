@@ -7,6 +7,7 @@ from omegaconf import DictConfig, OmegaConf
 
 import hydra._internal.utils as internal_utils
 from hydra import utils
+from hydra.conf import PluginConf
 from hydra.core.hydra_config import HydraConfig
 
 
@@ -46,6 +47,16 @@ class Bar:
         if x is not NotImplemented:
             return not x
         return NotImplemented
+
+
+class Foo:
+    def __init__(self, x: int) -> None:
+        self.x = x
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, Foo):
+            return self.x == other.x
+        return False
 
 
 @pytest.mark.parametrize("path,expected_type", [("tests.test_utils.Bar", Bar)])  # type: ignore
@@ -103,6 +114,12 @@ def test_get_static_method(path: str, return_value: Any) -> None:
             {"a": 10, "d": 40},
             Bar(10, 200, 200, 40),
         ),
+        (
+            {"cls": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
+            None,
+            {"a": 10, "d": Foo(99)},
+            Bar(10, 200, 200, Foo(99)),
+        ),
     ],
 )
 def test_class_instantiate(
@@ -119,6 +136,18 @@ def test_class_instantiate(
         config_to_pass = conf.select(key_to_get_config)
     obj = utils.instantiate(config_to_pass, **kwargs_to_pass)  # type: ignore
     assert obj == expected
+
+
+def test_class_instantiate_pass_omegaconf_node() -> Any:
+    pc = PluginConf()
+    # This is a bit clunky because it exposes a problem with the backport of dataclass on Python 3.6
+    # see: https://github.com/ericvsmith/dataclasses/issues/155
+    pc.cls = "tests.test_utils.Bar"
+    pc.params = {"b": 200, "c": {"x": 10, "y": "${params.b}"}}
+    conf = OmegaConf.structured(pc)
+    obj = utils.instantiate(conf, **{"a": 10, "d": Foo(99)})
+    assert obj == Bar(10, 200, {"x": 10, "y": 200}, Foo(99))
+    assert OmegaConf.is_config(obj.c)
 
 
 def test_class_warning() -> None:
