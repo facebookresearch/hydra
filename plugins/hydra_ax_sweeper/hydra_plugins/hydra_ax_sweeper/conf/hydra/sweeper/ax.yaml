@@ -7,7 +7,7 @@ hydra:
       # the currently known best parameters
       # An Epoch is defined as a batch of trials executed in parallel
       max_epochs_without_improvement: 10
-      # An improvement larger than this is considered significant
+      # An improvement larger than epsilon is considered significant
       epsilon: 0.00001
 
       minimize: ${hydra.ax.experiment.minimize}

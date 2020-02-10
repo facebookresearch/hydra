@@ -223,7 +223,6 @@ class AxSweeper(Sweeper):
             key, value = arg.split("=")
             if "," in value:
                 # This is a Choice Parameter.
-
                 value_choices = [x for x in value.split(",")]
                 if _is_float(value_choices[0]):
                     param = {
