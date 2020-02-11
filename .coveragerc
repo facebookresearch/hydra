@@ -1,5 +1,6 @@
 [run]
 omit = 
+    .local/*
     .nox/*
     *tests*
 
@@ -12,3 +13,4 @@ exclude_lines =
     raise TypeError
     @deprecated
     assert False
+
