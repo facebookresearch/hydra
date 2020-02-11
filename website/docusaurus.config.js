@@ -10,7 +10,7 @@ module.exports = {
     tagline: 'A framework for elegantly configuring complex applications',
     url: 'https://hydra.cc',
     baseUrl: '/',
-    favicon: 'img/Hydra-head.svg',
+    favicon: 'img/Hydra-head.ico',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
     themeConfig: {
