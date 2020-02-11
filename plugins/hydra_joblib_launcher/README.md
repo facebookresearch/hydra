@@ -7,7 +7,7 @@ The configuration for this launcher is packaged with the plugin:
 ```yaml
 hydra:
   launcher:
-    class: hydra_plugins.hydra_joblib_launcher.HydraJoblibLauncher
+    class: hydra_plugins.hydra_joblib_launcher.JoblibLauncher
     params:
       joblib: ${hydra.joblib}
 

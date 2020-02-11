@@ -1,4 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from .joblib_launcher import HydraJoblibLauncher
+from .joblib_launcher import JoblibLauncher
 
-__all__ = ["HydraJoblibLauncher"]
+__all__ = ["JoblibLauncher"]

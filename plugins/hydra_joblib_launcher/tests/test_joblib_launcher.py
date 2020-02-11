@@ -11,18 +11,16 @@ from hydra.test_utils.launcher_common_tests import (
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
-from hydra_plugins.hydra_joblib_launcher import HydraJoblibLauncher
+from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
 
 
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert HydraJoblibLauncher.__name__ in [
-        x.__name__ for x in Plugins.discover(Launcher)
-    ]
+    assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
 
 
 @pytest.mark.parametrize("launcher_name, overrides", [("joblib", [])])
-class TestHydraJoblibLauncher(LauncherTestSuite):
+class TestJoblibLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
     Note that hydra/launcher/joblib.yaml should be provided by this launcher.
@@ -61,7 +59,7 @@ class TestHydraJoblibLauncher(LauncherTestSuite):
         ),
     ],
 )
-class TestHydraJoblibLauncherIntegration(IntegrationTestSuite):
+class TestJoblibLauncherIntegration(IntegrationTestSuite):
     """
     Run this launcher through the integration test suite.
     """

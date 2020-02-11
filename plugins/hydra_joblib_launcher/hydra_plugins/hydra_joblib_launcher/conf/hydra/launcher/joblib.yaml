@@ -1,6 +1,6 @@
 hydra:
   launcher:
-    class: hydra_plugins.hydra_joblib_launcher.HydraJoblibLauncher
+    class: hydra_plugins.hydra_joblib_launcher.JoblibLauncher
     params:
       joblib: ${hydra.joblib}
 

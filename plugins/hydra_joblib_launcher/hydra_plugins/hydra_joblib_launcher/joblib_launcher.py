@@ -7,9 +7,6 @@ from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
-from hydra.core.hydra_config import HydraConfig
-from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
     configure_log,
@@ -17,6 +14,9 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
+from hydra.core.hydra_config import HydraConfig
+from hydra.core.singleton import Singleton
+from hydra.core.utils import JobReturn, configure_log, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.types import TaskFunction
@@ -24,9 +24,9 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class HydraJoblibLauncherSearchPathPlugin(SearchPathPlugin):
+class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     """
-    This plugin is allowing configuration files provided by the HydraJoblibLauncher plugin to be
+    This plugin is allowing configuration files provided by the JoblibLauncher plugin to be
     discovered and used once the plugin is installed
     """
 
@@ -37,7 +37,7 @@ class HydraJoblibLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 
-class HydraJoblibLauncher(Launcher):
+class JoblibLauncher(Launcher):
     def __init__(self, joblib: Dict[str, Any] = {},) -> None:
         """Joblib Launcher
 
