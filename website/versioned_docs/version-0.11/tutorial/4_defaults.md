@@ -14,7 +14,7 @@ You can add a `defaults` list into your config file.
 Configuration file: `config.yaml`
 ```yaml
 defaults:
-    - db: mysql
+  - db: mysql
 ```
 
 Remember to specify `config.yaml` as the `config_path`.
@@ -51,11 +51,11 @@ $ python my_app.py db=null
 {}
 ```
 
-## Non-config group defaults 
+## Non-config group defaults
 Sometimes a config file you want to merge does not belong in any config group.
 The following will load `some_file.yaml` from your config directory:
 ```yaml
 defaults:
-    - some_file
+  - some_file
 ```
 Config files that not a part of a `config group` like `db` cannot be overridden.
