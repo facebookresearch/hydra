@@ -25,4 +25,10 @@ $ yarn build
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
 ### Deployment
+
 Done automatically once a website change is landed to master.
+
+
+### Adding pages
+
+New pages, e.g., for a new plugin, should be added to `docs/`. They can be accessed on a local server via `http://localhost:3000/docs/next/page_name`.
