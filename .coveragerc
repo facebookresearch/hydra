@@ -12,3 +12,4 @@ exclude_lines =
     raise TypeError
     @deprecated
     assert False
+
