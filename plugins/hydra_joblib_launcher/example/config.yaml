@@ -1,0 +1,4 @@
+defaults:
+  - hydra/launcher: joblib
+
+task: 1
