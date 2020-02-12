@@ -7,6 +7,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
+
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
