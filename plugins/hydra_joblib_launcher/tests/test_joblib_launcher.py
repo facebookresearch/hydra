@@ -9,21 +9,24 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
+
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
 
-windows_reason = "Windows is unsupported, due to issues with Joblib (related Joblib issue: #964)"
+windows_reason = (
+    "Windows is unsupported, due to issues with Joblib (related Joblib issue: #964)"
+)
 
 
-@pytest.mark.skipif(sys.platform.startswith('win'), reason=windows_reason)
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=windows_reason)
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
 
 
-@pytest.mark.skipif(sys.platform.startswith('win'), reason=windows_reason)
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=windows_reason)
 @pytest.mark.parametrize("launcher_name, overrides", [("joblib", [])])
 class TestJoblibLauncher(LauncherTestSuite):
     """
@@ -34,7 +37,7 @@ class TestJoblibLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.skipif(sys.platform.startswith('win'), reason=windows_reason)
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=windows_reason)
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags, plugin_module",
     [
@@ -58,11 +61,7 @@ class TestJoblibLauncher(LauncherTestSuite):
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
-                "hydra": {
-                    "launcher": {
-                        "params": {"joblib": {"prefer": "threads"}}
-                    }
-                },
+                "hydra": {"launcher": {"params": {"joblib": {"prefer": "threads"}}}},
             },
             ["-m"],
             "hydra_plugins.joblib_launcher",
