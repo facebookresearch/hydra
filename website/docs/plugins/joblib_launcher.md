@@ -1,10 +1,10 @@
 ---
-id: joblib
-title: Joblib plugin
-sidebar_label: Joblib plugin
+id: joblib_launcher
+title: Joblib Launcher plugin
+sidebar_label: Joblib Launcher plugin
 ---
 
-The Joblib plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
+The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
 Install with 
 ```
@@ -18,7 +18,7 @@ defaults:
   - hydra/launcher: joblib
 ```
 
-Per default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible to switch to thread-based parallelism and limit the number of parallel executions.
+By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible to switch to thread-based parallelism and limit the number of parallel executions.
 
 The default configuration packaged with the plugin is:
 
@@ -64,7 +64,7 @@ hydra:
     mmap_mode: r
 ```
 
-Note that `n_jobs` defaults to -1 (all available CPUs) and `prefer` defaults to `processes`. Depending on the application, `threads` might be a good alternative. All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details). 
+`n_jobs` defaults to -1 (all available CPUs) and `prefer` defaults to `processes`. Depending on the application, `threads` might be a good alternative. All arguments specified in `joblib` are passed to `Joblib.Parallel` (see [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details). 
 
 An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in `plugins/hydra_joblib_launcher/example`. Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions:
 
