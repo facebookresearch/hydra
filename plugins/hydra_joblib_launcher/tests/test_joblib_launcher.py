@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 
-import pytest  # type: ignore
+import pytest
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -20,7 +20,7 @@ windows_reason = (
 )
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=windows_reason)
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=windows_reason)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
