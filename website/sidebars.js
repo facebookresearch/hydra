@@ -32,6 +32,7 @@ module.exports = {
 
         'Plugins': [
             'plugins/colorlog',
+            'plugins/joblib_launcher',
         ],
 
 
