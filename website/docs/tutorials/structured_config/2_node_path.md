@@ -3,10 +3,9 @@ id: node_path
 title: Custom node path
 ---
 
-You may want to place MySQLConfig in a specific path in the final configuraiton object.
-Use use the path parameter to specify the path. You can use dot notation to create multiple
+You may want to place MySQLConfig in a specific path in the final configuration object.
+Use the path parameter to specify the path. You can use dot notation to create multiple
 parent nodes (E.G. `path="foo.bar.baz"`)  
-
 
 ```python
 class MySQLConfig:

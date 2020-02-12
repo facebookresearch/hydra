@@ -29,6 +29,9 @@ module.exports = {
             items: [
                 'tutorials/structured_config/basic',
                 'tutorials/structured_config/node_path',
+                'tutorials/structured_config/nesting',
+                'tutorials/structured_config/config_groups',
+                'tutorials/structured_config/config_store',
             ],
           },
         ],
@@ -59,7 +62,6 @@ module.exports = {
 
         "Experimental": [
             "experimental/intro",
-            "experimental/structured_configs",
             'experimental/compose_api',
             'experimental/ray_example',
         ],

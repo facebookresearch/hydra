@@ -9,8 +9,8 @@ from hydra.core.config_store import ConfigStore
 
 
 @dataclass
-class MySQLConfig:
-    driver: str = "mysql"
+class DBConfig:
+    driver: str = MISSING
     host: str = "localhost"
     port: int = 3306
     user: str = "omry"
@@ -18,16 +18,16 @@ class MySQLConfig:
 
 
 @dataclass
-class PostGreSQLConfig:
+class MySQLConfig(DBConfig):
+    driver: str = "mysql"
+
+
+@dataclass
+class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
-    host: str = "localhost"
-    port: int = 3306
-    user: str = "postgre_user"
-    password: str = "drowssap"
     timeout: int = 10
 
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below.
 @dataclass
 class Config(DictConfig):
     db: Any = MISSING

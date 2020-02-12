@@ -1,13 +1,12 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-from typing import Any
+---
+id: config_groups
+title: Config groups
+---
 
-from omegaconf import MISSING, DictConfig
+Using the path parameter can be handy, but it's even better if you create a top level config that describes the complete structure.
+The example below nests MySQLConfig inside a Config class, and registers the top level Config as "config":
 
-import hydra
-from hydra.core.config_store import ConfigStore
-
-
+```python
 @dataclass
 class MySQLConfig:
     driver: str = "mysql"
@@ -15,7 +14,6 @@ class MySQLConfig:
     port: int = 3306
     user: str = "omry"
     password: str = "secret"
-
 
 @dataclass
 class PostGreSQLConfig:
@@ -26,12 +24,10 @@ class PostGreSQLConfig:
     password: str = "drowssap"
     timeout: int = 10
 
-
 # Config is extending DictConfig to allow type safe access to the pretty() function below.
 @dataclass
 class Config(DictConfig):
     db: Any = MISSING
-
 
 cs = ConfigStore.instance()
 cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
@@ -46,3 +42,28 @@ def my_app(cfg: Config) -> None:
 
 if __name__ == "__main__":
     my_app()
+
+```
+
+You can also model your configuration classes using inheritance:
+```python
+@dataclass
+class DBConfig:
+    driver: str = MISSING
+    host: str = "localhost"
+    port: int = 3306
+    user: str = "omry"
+    password: str = "secret"
+
+
+@dataclass
+class MySQLConfig(DBConfig):
+    driver: str = "mysql"
+
+
+@dataclass
+class PostGreSQLConfig(DBConfig):
+    driver: str = "postgresql"
+    timeout: int = 10
+
+```

@@ -1,31 +1,43 @@
 ---
 id: basic
-title: Basic example
-sidebar_label: Basic example
+title: Introduction to Structured Configs
+sidebar_label: Introduction to Structured Configs
 ---
-### Overview
+This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
+
 Structured configs are new in **Hydra 1.0.0**. The key idea is that a regular Python dataclass or object can be used to construct a DictConfig object.
+The DictConfig object is very similar to those defined through config files, with one important difference:
+Structured configs are strongly typed.
 
 This enables two new features:
 
  * **Static type checking**: The resulting object looks much like an instance of the underlying type. You can annotate the config object as the type and use Mypy or other static
 type checkers to perform static type analysis on your config objects.
-* **Runtime type checking**: The type information in retained at runtime and is used to validate that changes to your object are conforming to underlying type specification.
+* **Runtime type checking**: The type information in retained at runtime and is used to validate that changes to your object are conforming to underlying type specification. 
+This is especially useful for catching type errors during the composition of your configuration.
   
-
 You don't need a deep understanding of structured configs for this tutorial. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">documentation</a> later to learn more.
 
-Below is a complete example that registers a structured config in the config store under the name "config", 
-and proceeds to use it as the primary config of the application.
+<div class="alert alert--info" role="alert">
+<strong>NOTE</strong>: 
+Structured configs are a new feature with significant surface area. Please report any difficulties or issues you are running into.
+</div>
+<br/>
+<div class="alert alert--info" role="alert">
+<strong>NOTE</strong>: 
+This is an experimental feature and API and behavior may change in a future version.
+</div>
+<br/>
 
-### Complete example
+#### Minimal example
+Below is a minimal example that registers a structured config in the ConfigStore under the name "config", 
+and proceeds to use it as the primary config of the application.
 
 ```python
 from dataclasses import dataclass
 
 import hydra
 from hydra.core.config_store import ConfigStore
-
 
 @dataclass
 class MySQLConfig:
