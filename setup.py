@@ -107,7 +107,7 @@ with open("README.md", "r") as fh:
         ],
         install_requires=["omegaconf==2.0.0rc4", "typing_extensions"],
         # Install development dependencies with
-        # pip install -e .[dev]
+        # pip install -e ".[dev]"
         extras_require={
             "dev": [
                 "black",

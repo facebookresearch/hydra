@@ -26,7 +26,7 @@ conda activate hydra38
 ```
 From the source tree, install Hydra in development mode with the following command:
 ```
-pip install -e .[dev] -e .
+pip install -e ".[dev]" -e .
 ```
 ## Nox
 Hydra is using a test automation tool called [nox](https://github.com/theacodes/nox) to manage tests, linting, code coverage etc. 
