@@ -16,11 +16,6 @@ class MySQLConfig:
     password: str = "secret"
 
 
-# I will probably want want to have MySQLConfig under a db or similar node path.
-# You can either create the config with the path and register is, for example:
-ConfigStore.instance().store(node={"db": MySQLConfig}, name="config")
-
-# Or alternatively you can use the path parameter when storing the config:
 ConfigStore.instance().store(node=MySQLConfig, name="config", path="db")
 
 

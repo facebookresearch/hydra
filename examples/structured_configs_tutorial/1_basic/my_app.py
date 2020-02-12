@@ -18,13 +18,13 @@ cfg_store = ConfigStore.instance()
 # Registering the Config class with the name 'config'
 cfg_store.store(node=MySQLConfig, name="config")
 
-# You can also register objects of this class like Config(port=8081)
-# (If you are registering 'config' more than once the last one will replace the previous ones.
+# You can also register objects of this class, allowing easy overriding of default values.
+# If you are registering 'config' more than once the last one will replace the previous ones.
 cfg_store.store(node=MySQLConfig(user="root", password="1234"), name="config")
 
 
 # The config name can be used to indicate which config we are using
-# Tye real type of cfg is actually DictConfig, but we lie a little to get static type checking.
+# The real type of cfg is actually DictConfig, but we lie a little to get static type checking.
 # If it swims like a duck and quacks like a duck...
 # You get the rest of the Hydra features, command line overrides, tab completion etc.
 # In addition, you get runtime type safety! (you cannot assign a non integer value to cfg.port)

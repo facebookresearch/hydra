@@ -23,12 +23,10 @@ class ConfigStore(metaclass=Singleton):
     ) -> None:
         """
         Stores a config node into the repository
-        :rtype: object
-        :param group:
-        :param name:
-        :param path:
-        :param node:
-        :return:
+        :param name: config name
+        :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
+        :param group: config group, subgroup separator is '/', for example hydra/launcher
+        :param path: path inside config node. child separator is '.', for example foo.bar.baz
         """
         cur = self.repo
         if group is not None:
