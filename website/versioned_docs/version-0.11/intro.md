@@ -85,10 +85,10 @@ The directory structure of our application now looks like:
 Here is the new `config.yaml`
 ```yaml
 defaults:
-    - db: mysql
+  - db: mysql
 # some other config options in your config file.
 website:
-    domain: example.com
+  domain: example.com
 ```
 
 `defaults` is a special directive telling Hydra to use db/mysql.yaml when composing the configuration object.
