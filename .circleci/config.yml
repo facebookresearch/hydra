@@ -66,7 +66,9 @@ jobs:
   # Linux
   py36_linux:
     docker:
-      - image: circleci/python:3.6
+#      - image: circleci/python:3.6
+      # Temporary workaround around 3.6 image
+      - image: circleci/python@sha256:19a446501d3e0ca273ed3161eeca3780dadbc9e3f3a788c8fd2bc92f5ed9bed0
     steps:
       - checkout
       - run: sudo apt-get install -y expect
@@ -141,29 +143,28 @@ jobs:
             nox
             exit $LASTEXITCODE
 
-# TODO: test re-enable in a few months
-#  py38_win:
-#    executor: win/default
-#    steps:
-#      - checkout
-#      - run:
-#          name: Installing Conda
-#          command: |
-#            choco install miniconda3 -y
-#            C:\tools\miniconda3\Scripts\conda.exe init powershell
-#      - run:
-#          name: Preparing conda environment
-#          command: |
-#            conda create -n hydra python=3.8 -q -y
-#            conda run -n hydra pip install nox
-#      - run:
-#          name: Testing Hydra
-#          command: |
-#            $env:NOX_PYTHON_VERSIONS=3.8
-#            $env:PYTHONIOENCODING="utf_8"
-#            conda activate hydra
-#            nox
-#            exit $LASTEXITCODE
+  py38_win:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Installing Conda
+          command: |
+            choco install miniconda3 -y
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+      - run:
+          name: Preparing conda environment
+          command: |
+            conda create -n hydra python=3.8 -q -y
+            conda run -n hydra pip install nox
+      - run:
+          name: Testing Hydra
+          command: |
+            $env:NOX_PYTHON_VERSIONS=3.8
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox
+            exit $LASTEXITCODE
   # Misc
   coverage:
     docker:
@@ -212,7 +213,7 @@ workflows:
       # windows
       - py36_win
       - py37_win
-      # - py38_win
+      - py38_win
       - deploy-website:
           filters:
             branches:
