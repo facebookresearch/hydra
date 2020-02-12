@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
-
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -32,7 +31,7 @@ class TestJoblibLauncher(LauncherTestSuite):
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags, plugin_module",
     [
-        # joblib with process-based backend
+        # joblib with process-based backend (default)
         (
             {
                 "defaults": [
@@ -40,6 +39,24 @@ class TestJoblibLauncher(LauncherTestSuite):
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
+                "hydra": {"launcher": {"params": {"joblib": {"n_jobs": 2}}}},
+            },
+            ["-m"],
+            "hydra_plugins.joblib_launcher",
+        ),
+        # joblib with thread-based backend
+        (
+            {
+                "defaults": [
+                    {"hydra/launcher": "joblib"},
+                    {"hydra/hydra_logging": "hydra_debug"},
+                    {"hydra/job_logging": "disabled"},
+                ],
+                "hydra": {
+                    "launcher": {
+                        "params": {"joblib": {"n_jobs": 2, "prefer": "threads"}}
+                    }
+                },
             },
             ["-m"],
             "hydra_plugins.joblib_launcher",
