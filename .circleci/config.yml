@@ -66,7 +66,9 @@ jobs:
   # Linux
   py36_linux:
     docker:
-      - image: circleci/python:3.6
+#      - image: circleci/python:3.6
+      # Temporary workaround around 3.6 image
+      - image: circleci/python@sha256:19a446501d3e0ca273ed3161eeca3780dadbc9e3f3a788c8fd2bc92f5ed9bed0
     steps:
       - checkout
       - run: sudo apt-get install -y expect
@@ -141,7 +143,7 @@ jobs:
             nox
             exit $LASTEXITCODE
 
-# TODO: test re-enable in a few months
+  # TODO: Test later, for now low priority
 #  py38_win:
 #    executor: win/default
 #    steps:
@@ -212,7 +214,7 @@ workflows:
       # windows
       - py36_win
       - py37_win
-      # - py38_win
+#      - py38_win
       - deploy-website:
           filters:
             branches:
