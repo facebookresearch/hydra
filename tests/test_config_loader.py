@@ -1,12 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from dataclasses import dataclass
 from typing import Any, List
 
 import pkg_resources
 import pytest
-from omegaconf import ListConfig, OmegaConf
+from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
+from hydra.core.config_store import SchemaStore
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -25,7 +27,7 @@ class TestConfigLoader:
             config_name="config.yaml", strict=False, overrides=["abc=123"]
         )
         del cfg["hydra"]
-        assert cfg == OmegaConf.create({"normal_yaml_config": True, "abc": 123})
+        assert cfg == {"normal_yaml_config": True, "abc": 123}
 
     def test_load_with_missing_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -199,6 +201,54 @@ class TestConfigLoader:
         )
         del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
+
+    def test_load_with_schema(self, path: str) -> None:
+        @dataclass
+        class MySQLConfig:
+            driver: str = MISSING
+            host: str = MISSING
+            port: int = MISSING
+            user: str = MISSING
+            password: str = MISSING
+
+        SchemaStore.instance().store(
+            group="db", name="mysql", node=MySQLConfig, path="db"
+        )
+
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+
+        cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
+        del cfg["hydra"]
+        assert cfg == {
+            "db": {
+                "driver": "mysql",
+                "host": "???",
+                "port": "???",
+                "user": "omry",
+                "password": "secret",
+            }
+        }
+
+        cfg = config_loader.load_configuration(
+            config_name="db/mysql", overrides=["db.port=101010"]
+        )
+        del cfg["hydra"]
+        assert cfg == {
+            "db": {
+                "driver": "mysql",
+                "host": "???",
+                "port": 101010,
+                "user": "omry",
+                "password": "secret",
+            }
+        }
+
+        with pytest.raises(ValidationError):
+            config_loader.load_configuration(
+                config_name="db/mysql", overrides=["db.port=fail"]
+            )
 
 
 @pytest.mark.parametrize(  # type:ignore

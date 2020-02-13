@@ -121,12 +121,12 @@ class LauncherTestSuite:
             ["db=postgresql", "db.user=someone"],
         ]
         expected_conf = [
-            {"db": {"driver": "mysql", "pass": "secret", "user": "someone"}},
+            {"db": {"driver": "mysql", "password": "secret", "user": "someone"}},
             {
                 "db": {
                     "user": "someone",
                     "driver": "postgresql",
-                    "pass": "drowssap",
+                    "password": "drowssap",
                     "timeout": 10,
                 }
             },
