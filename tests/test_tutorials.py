@@ -390,6 +390,8 @@ def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
 
 
 # structured configs
+# TODO: complete the tests for the rest of the tutorial.
+# TODO: split into a different file, "test_structured_config_tutorial.py"
 
 
 def test_structured_configs_1_run(tmpdir: Path) -> None:

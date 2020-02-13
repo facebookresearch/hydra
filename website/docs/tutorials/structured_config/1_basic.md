@@ -16,7 +16,8 @@ type checkers to perform static type analysis on your config objects.
 * **Runtime type checking**: The type information in retained at runtime and is used to validate that changes to your object are conforming to underlying type specification. 
 This is especially useful for catching type errors during the composition of your configuration.
   
-You don't need a deep understanding of structured configs for this tutorial. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">documentation</a> later to learn more.
+You don't need a complete of structured configs for this tutorial. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">documentation</a> later to learn more.
+At a high level, they support primitive types, including Enums, nesting of structured configs as well as containers (Dict and List)
 
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>: 
@@ -28,6 +29,10 @@ Structured configs are a new feature with significant surface area. Please repor
 This is an experimental feature and API and behavior may change in a future version.
 </div>
 <br/>
+
+This tutorial follows a path similar to that of the first tutorial, except it's showing how to do everything using Structured Configs.
+Structured configs and configuration files can easily be mixed together. This tutorial will also show you how to use Structured configs 
+as strongly typed schema for configuration files.
 
 #### Minimal example
 Below is a minimal example that registers a structured config in the ConfigStore under the name "config", 
