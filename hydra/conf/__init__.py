@@ -89,7 +89,7 @@ class RuntimeConf:
 
 
 @dataclass
-class HydraConf:
+class HydraConf(Dict[str, Any]):
 
     # Normal run output configuration
     run: RunDir = RunDir()
