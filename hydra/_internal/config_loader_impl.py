@@ -10,10 +10,11 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.config_store import SchemaStore
 from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
-from hydra.plugins.config_source import ConfigSource
+from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
 class ConfigLoaderImpl(ConfigLoader):
@@ -236,9 +237,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 )
             else:
                 self.all_config_checked.append(
-                    LoadTrace(
-                        filename=input_file, path=ret.path, provider=ret.provider,
-                    )
+                    LoadTrace(filename=input_file, path=ret.path, provider=ret.provider)
                 )
 
         if ret is not None:
@@ -246,7 +245,16 @@ class ConfigLoaderImpl(ConfigLoader):
                 raise ValueError(
                     f"Config {input_file} must be a Dictionary, got {type(ret).__name__}"
                 )
-            return ret.config
+            try:
+                # TODO: expose schema information in LoadTrace?
+                schema = SchemaStore.instance().load(
+                    config_path=ConfigSource._normalize_file_name(filename=input_file)
+                )
+                merged = OmegaConf.merge(schema, ret.config)
+                assert isinstance(merged, DictConfig)
+                return merged
+            except ConfigLoadError:
+                return ret.config
         else:
             return None
 
@@ -317,7 +325,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     assert isinstance(default1, str)
                     if "_SKIP_" not in default1:
                         merged_cfg = self._merge_config(
-                            cfg=merged_cfg, family="", name=default1, required=True,
+                            cfg=merged_cfg, family="", name=default1, required=True
                         )
             return merged_cfg
 
