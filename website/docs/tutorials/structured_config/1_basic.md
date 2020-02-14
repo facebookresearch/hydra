@@ -5,7 +5,7 @@ sidebar_label: Introduction to Structured Configs
 ---
 This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
 
-Structured configs are new in **Hydra 1.0.0**. The key idea is that a regular Python dataclass or object can be used to construct a DictConfig object.
+Structured configs are new in **Hydra 1.0.0**. The key idea is that a regular Python dataclass or instance can be used to construct a DictConfig object.
 The DictConfig object is very similar to those defined through config files, with one important difference:
 Structured configs are strongly typed.
 

@@ -21,10 +21,10 @@ class MySQLConfig:
 class PostGreSQLConfig:
     driver: str = "postgresql"
     host: str = "localhost"
-    port: int = 3306
+    port: int = 5432
+    timeout: int = 10
     user: str = "postgre_user"
     password: str = "drowssap"
-    timeout: int = 10
 
 
 # Config is extending DictConfig to allow type safe access to the pretty() function below.

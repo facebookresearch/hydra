@@ -19,7 +19,7 @@ class MySQLConfig:
 class PostGreSQLConfig:
     driver: str = "postgresql"
     host: str = "localhost"
-    port: int = 3306
+    port: int = 5432
     user: str = "postgre_user"
     password: str = "drowssap"
     timeout: int = 10

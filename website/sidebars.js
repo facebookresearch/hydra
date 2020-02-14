@@ -32,6 +32,7 @@ module.exports = {
                 'tutorials/structured_config/nesting',
                 'tutorials/structured_config/config_groups',
                 'tutorials/structured_config/defaults',
+                'tutorials/structured_config/schema',
                 'tutorials/structured_config/config_store',
             ],
           },
