@@ -8,29 +8,36 @@ from hydra.core.config_store import SchemaStore
 
 
 @dataclass
-class MySQLConfig:
-    driver: str = "mysql"
+class DBConfig:
+    driver: str = MISSING
     host: str = "localhost"
     port: int = 3306
+
+
+@dataclass
+class MySQLConfig(DBConfig):
+    driver: str = "mysql"
     user: str = MISSING
     password: str = MISSING
 
 
 @dataclass
-class PostGreSQLConfig:
+class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
-    host: str = "localhost"
-    port: int = 5432
-    timeout: int = 10
     user: str = MISSING
     password: str = MISSING
+    timeout: int = 10
 
 
+# registering db/mysql and db/postgresql schemas.
 ss = SchemaStore.instance()
 ss.store(group="db", name="mysql", path="db", node=MySQLConfig)
 ss.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 
 
+# config here is config.yaml under the conf directory.
+# config.yaml will compose in db: mysql by default (per the defaults list),
+# and it will be validated against the schema
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
