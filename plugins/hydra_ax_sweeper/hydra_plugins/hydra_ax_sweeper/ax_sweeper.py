@@ -30,9 +30,6 @@ class Trial:
 BatchOfTrialType = List[Trial]
 # ParameterType = Union[ax_types.TParameterization]
 
-# TODO: output directory is overwriting, job.num should be adjusted (depends on issue #284)
-# TODO: Support running multiple random seeds, aggregate mean and SEM
-
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
     """
@@ -224,7 +221,7 @@ class AxSweeper(Sweeper):
             key, value = arg.split("=")
             if "," in value:
                 # This is a Choice Parameter.
-                value_choices = [x for x in value.split(",")]
+                value_choices = [x.strip() for x in value.split(",")]
                 if _is_float(value_choices[0]):
                     param = {
                         "name": key,
@@ -250,13 +247,17 @@ class AxSweeper(Sweeper):
                         "bounds": [int(range_start), int(range_end)],
                         "parameter_type": ParameterType.INT,
                     }
-                else:
+                elif _is_float(range_start) and _is_float(range_end):
                     param = {
                         "name": key,
                         "type": "range",
                         "bounds": [float(range_start), float(range_end)],
                         "parameter_type": ParameterType.FLOAT,
                     }
+                else:
+                    raise ValueError(
+                        "Input to the range parameter should be an int or a float."
+                    )
                 parameters.append(param)
             else:
                 # This is a Fixed Parameter.
