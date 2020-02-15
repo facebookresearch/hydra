@@ -42,7 +42,10 @@ def install_pytest(session):
 
 
 def run_pytest(session, directory="."):
-    session.run("pytest", directory, silent=False, *session.posargs)
+    if len(session.posargs) == 0:
+        session.run("pytest", directory, silent=False)
+    else:
+        session.run("pytest", *session.posargs, silent=False)
     # session.run("pytest", "--workers=30", silent=SILENT)
 
 

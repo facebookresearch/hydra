@@ -10,7 +10,10 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import SchemaStore
 from hydra.errors import MissingConfigException
-from hydra.test_utils.test_utils import chdir_hydra_root
+from hydra.test_utils.test_utils import (  # noqa: F401
+    chdir_hydra_root,
+    restore_singletons,
+)
 
 chdir_hydra_root()
 
@@ -202,7 +205,9 @@ class TestConfigLoader:
         del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
-    def test_load_with_schema(self, path: str) -> None:
+    def test_load_with_schema(
+        self, restore_singletons: Any, path: str  # noqa: F811
+    ) -> None:
         @dataclass
         class MySQLConfig:
             driver: str = MISSING

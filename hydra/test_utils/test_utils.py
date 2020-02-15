@@ -23,6 +23,7 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins
+from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.
@@ -407,3 +408,15 @@ def create_search_path(
     for sp in search_path:
         csp.append("test", sp if not abspath else os.path.realpath(sp))
     return csp
+
+
+@pytest.fixture(scope="function")  # type: ignore
+def restore_singletons() -> Any:
+    """
+    A fixture to restore singletons state after this the function.
+    This is useful for functions that are making a one-off change to singlestons that should not effect
+    other tests
+    """
+    state = copy.deepcopy(Singleton.get_state())
+    yield
+    Singleton.set_state(state)
