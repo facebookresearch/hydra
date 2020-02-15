@@ -3,8 +3,7 @@ id: config_groups
 title: Config groups
 ---
 
-Using the path parameter can be handy, but it's even better if you create a top level config that describes the complete structure.
-The example below nests MySQLConfig inside a Config class, and registers the top level Config as "config":
+This example registers `mysql` and `postgresql` into the config group `db`.
 
 ```python
 @dataclass
@@ -44,26 +43,37 @@ if __name__ == "__main__":
     my_app()
 
 ```
+When running this, you can now select which config group to use from the command line:
+```yaml
+$ python my_app.py db=mysql
+db:
+  driver: mysql
+  host: localhost
+  password: secret
+  port: 3306
+  user: omry
+```
 
-You can also model your configuration classes using inheritance:
+As a site note, you can model your configuration classes using inheritance, reducing the duplication between `mysql` and `postgresql`.
 ```python
 @dataclass
 class DBConfig:
-    driver: str = MISSING
+    # In this example both configurations have a common default host
     host: str = "localhost"
+
+
+@dataclass
+class MySQLConfig:
+    driver: str = "mysql"
     port: int = 3306
     user: str = "omry"
     password: str = "secret"
 
-
 @dataclass
-class MySQLConfig(DBConfig):
-    driver: str = "mysql"
-
-
-@dataclass
-class PostGreSQLConfig(DBConfig):
+class PostGreSQLConfig:
     driver: str = "postgresql"
+    port: int = 5432
+    user: str = "postgre_user"
+    password: str = "drowssap"
     timeout: int = 10
-
 ```

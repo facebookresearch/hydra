@@ -5,9 +5,9 @@ sidebar_label: Introduction to Structured Configs
 ---
 This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
 
-Structured configs are new in **Hydra 1.0.0**. The key idea is that a regular Python dataclass or instance can be used to construct a DictConfig object.
+Structured Configs are new in **Hydra 1.0.0**. The key idea is that a regular Python dataclass or instance can be used to define the configuration.
 The DictConfig object is very similar to those defined through config files, with one important difference:
-Structured configs are strongly typed.
+Structured Configs are strongly typed.
 
 This enables two new features:
 
@@ -15,24 +15,18 @@ This enables two new features:
 type checkers to perform static type analysis on your config objects.
 * **Runtime type checking**: The type information in retained at runtime and is used to validate that changes to your object are conforming to underlying type specification. 
 This is especially useful for catching type errors during the composition of your configuration.
-  
-You don't need a complete of structured configs for this tutorial. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">documentation</a> later to learn more.
-At a high level, they support primitive types, including Enums, nesting of structured configs as well as containers (Dict and List)
+
+Structured Configs support primitive types, Enums, nesting of other Structured Configs and typed containers like `List` or `Dict`.
+This tutorial does not assume complete knowledge of Structured Configs. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">documentation</a> later to learn more.
 
 <div class="alert alert--info" role="alert">
-<strong>NOTE</strong>: 
-Structured configs are a new feature with significant surface area. Please report any difficulties or issues you are running into.
-</div>
-<br/>
-<div class="alert alert--info" role="alert">
-<strong>NOTE</strong>: 
-This is an experimental feature and API and behavior may change in a future version.
+1. The APIs and behaviors described in this tutorial are experimental and may change in a future version<br/> 
+2. Structured Configs adds a significant API surface area. Please report any issues
 </div>
 <br/>
 
-This tutorial follows a path similar to that of the first tutorial, except it's showing how to do everything using Structured Configs.
-Structured configs and configuration files can easily be mixed together. This tutorial will also show you how to use Structured configs 
-as strongly typed schema for configuration files.
+This tutorial follows a path similar to that of the Basic Tutorial, but with Structured Configs instead of configuration files.
+The [Structured config as schema](/tutorials/structured_config/6_schema.md) page shows how use Structured configs as a schema to validate configuration files.
 
 #### Minimal example
 Below is a minimal example that registers a structured config in the ConfigStore under the name "config", 
@@ -57,15 +51,10 @@ cfg_store = ConfigStore.instance()
 # Registering the Config class with the name 'config'
 cfg_store.store(node=MySQLConfig, name="config")
 
-# You can also register objects of this class, allowing easy overriding of default values.
-# If you are registering 'config' more than once the last one will replace the previous ones.
-cfg_store.store(node=MySQLConfig(user="root", password="1234"), name="config")
-
-
-# The real type of cfg is actually DictConfig, but we lie a little to get static type checking.
-# If it swims like a duck and quacks like a duck...
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
+    # The real type of cfg is DictConfig, but we lie a little to get static type checking.
+    # If it swims like a duck and quacks like a duck, it's a "duck".
     print(
         f"Connecting to {cfg.driver} at {cfg.host}:{cfg.port}, user={cfg.user}, password={cfg.password}"
     )
@@ -73,6 +62,19 @@ def my_app(cfg: MySQLConfig) -> None:
 
 if __name__ == "__main__":
     my_app()
+```
+
+You can also register instances of the dataclasses, allowing easy overriding of default values.
+If you are registering 'config' more than once the last one will replace the previous ones.
+```python
+cfg_store.store(node=MySQLConfig(user="root", password="1234"), name="config")
+```
+
+
+Running this app you would see the expected output:
+```text
+$ python my_app.py 
+Connecting to mysql at localhost:3306, user=root, password=1234
 ```
 
 In addition to the static type checking, You also get runtime type checking.

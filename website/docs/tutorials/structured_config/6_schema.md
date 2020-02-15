@@ -22,12 +22,13 @@ from hydra.core.config_store import SchemaStore
 class DBConfig:
     driver: str = MISSING
     host: str = "localhost"
-    port: int = 3306
+    port: int = MISSING
 
 
 @dataclass
 class MySQLConfig(DBConfig):
     driver: str = "mysql"
+    port: int = 3306
     user: str = MISSING
     password: str = MISSING
 
@@ -35,6 +36,7 @@ class MySQLConfig(DBConfig):
 @dataclass
 class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
+    port: int = 5432
     user: str = MISSING
     password: str = MISSING
     timeout: int = 10
