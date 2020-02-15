@@ -25,9 +25,10 @@ assignees: ''
 <!-- A clear and concise description of what you expected to happen. -->
 
 ## System information
-- <!-- Hydra Version -->
-- <!-- Python version -->
-- <!-- Operating system -->
+- **Hydra Version** :  
+- **Python version** : 
+- **Virtual environment type and version** : 
+- **Operating system** : 
 
 ## Additional context
 Add any other context about the problem here.
