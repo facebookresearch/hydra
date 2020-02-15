@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from omegaconf import MISSING
 
-from hydra.core.config_store import ConfigStore
+from hydra.core.config_store import SchemaStore
 
 
 @dataclass
@@ -134,6 +134,4 @@ class HydraConf(Dict[str, Any]):
     verbose: Any = False
 
 
-ConfigStore.instance().store(
-    group="hydra/schema", name="hydra", path="hydra", node=HydraConf
-)
+SchemaStore.instance().store(name="hydra", path="hydra", node=HydraConf)
