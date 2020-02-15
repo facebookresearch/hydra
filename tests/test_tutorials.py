@@ -403,7 +403,7 @@ def test_structured_configs_1_run(tmpdir: Path) -> None:
     result = subprocess.check_output(cmd)
     assert (
         result.decode("utf-8").rstrip()
-        == "Connecting to mysql at localhost:3306, user=root, password=1234"
+        == "Connecting to mysql at localhost:3306, user=omry, password=secret"
     )
 
 
@@ -417,7 +417,7 @@ def test_structured_configs_1_override(tmpdir: Path) -> None:
     result = subprocess.check_output(cmd)
     assert (
         result.decode("utf-8").rstrip()
-        == "Connecting to mysql at localhost:9090, user=root, password=1234"
+        == "Connecting to mysql at localhost:9090, user=omry, password=secret"
     )
 
 
