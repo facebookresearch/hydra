@@ -96,5 +96,6 @@ class ExampleLauncher(Launcher):
                 job_subdir_key="hydra.sweep.subdir",
             )
             runs.append(ret)
+            # reconfigure the logging subsystem for Hydra as the run_job call configured it for the Job.
             configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs

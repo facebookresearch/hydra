@@ -130,6 +130,11 @@ def run_job(
         _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
         ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime.instance().get("name")
+
+        # shut down logging to ensure job log files are closed.
+        # caller is responsible to re-initialize logging.
+        logging.shutdown()
+
         return ret
     finally:
         os.chdir(old_cwd)

@@ -53,19 +53,6 @@ class TestJoblibLauncher(LauncherTestSuite):
             ["-m"],
             "hydra_plugins.joblib_launcher",
         ),
-        # joblib with thread-based backend
-        (
-            {
-                "defaults": [
-                    {"hydra/launcher": "joblib"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ],
-                "hydra": {"launcher": {"params": {"joblib": {"prefer": "threads"}}}},
-            },
-            ["-m"],
-            "hydra_plugins.joblib_launcher",
-        ),
     ],
 )
 class TestJoblibLauncherIntegration(IntegrationTestSuite):
