@@ -34,7 +34,7 @@ def install_pytest(session):
 
 
 def run_pytest(session, directory="."):
-    session.run("pytest", "-v", directory, silent=False, *session.posargs)
+    session.run("pytest", directory, silent=False, *session.posargs)
     # session.run("pytest", "--workers=30", silent=SILENT)
 
 

@@ -33,12 +33,12 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.conf",
+            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.conf"
         )
 
 
 class JoblibLauncher(Launcher):
-    def __init__(self, joblib: Dict[str, Any] = {},) -> None:
+    def __init__(self, joblib: Dict[str, Any] = {}) -> None:
         """Joblib Launcher
 
         Launches parallel jobs using Joblib.Parallel. For details, refer to:
@@ -82,12 +82,15 @@ class JoblibLauncher(Launcher):
                 len(job_overrides),
             )
         )
-        log.info("Sweep output dir : {}".format(sweep_dir))
+        log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))
 
         singleton_state = Singleton.get_state()
 
+        for idx, overrides in enumerate(job_overrides):
+            log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
+
         runs = Parallel(**self.joblib)(
-            delayed(dispatch_job)(
+            delayed(execute_job)(
                 idx,
                 overrides,
                 self.config_loader,
@@ -101,12 +104,10 @@ class JoblibLauncher(Launcher):
         assert isinstance(runs, List)
         for run in runs:
             assert isinstance(run, JobReturn)
-        # reconfigure the logging subsystem for Hydra as the run_job call configured it for the Job.
-        configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs
 
 
-def dispatch_job(
+def execute_job(
     idx: int,
     overrides: Sequence[str],
     config_loader: ConfigLoader,
@@ -122,7 +123,6 @@ def dispatch_job(
     setup_globals()
     Singleton.set_state(singleton_state)
 
-    log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
     sweep_config = config_loader.load_sweep_config(config, list(overrides))
     with open_dict(sweep_config):
         sweep_config.hydra.job.id = "{}_{}".format(sweep_config.hydra.job.name, idx)
