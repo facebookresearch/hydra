@@ -2,7 +2,6 @@
 """
 A sweeper that operates on generational batches of jobs
 """
-import logging
 from abc import abstractmethod
 from typing import Any, List, Optional, Sequence
 
@@ -14,8 +13,6 @@ from hydra.types import TaskFunction
 
 from .launcher import Launcher
 from .sweeper import Sweeper
-
-log = logging.getLogger(__name__)
 
 
 class StepSweeper(Sweeper):
@@ -74,8 +71,6 @@ class StepSweeper(Sweeper):
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
-        log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
-
         self.arguments = arguments
         returns: List[Sequence[JobReturn]] = []
         while not self.is_done():

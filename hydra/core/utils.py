@@ -132,7 +132,7 @@ def run_job(
         ret.task_name = JobRuntime.instance().get("name")
 
         # shut down logging to ensure job log files are closed.
-        # caller is responsible to re-initialize logging.
+        # If logging is still required after run_job caller is responsible to re-initialize it.
         logging.shutdown()
 
         return ret

@@ -97,5 +97,6 @@ class ExampleLauncher(Launcher):
             )
             runs.append(ret)
             # reconfigure the logging subsystem for Hydra as the run_job call configured it for the Job.
+            # This is needed for launchers that calls run_job in the same process and not spawn a new one.
             configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs
