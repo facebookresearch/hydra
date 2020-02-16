@@ -101,7 +101,8 @@ class JoblibLauncher(Launcher):
         assert isinstance(runs, List)
         for run in runs:
             assert isinstance(run, JobReturn)
-
+        # reconfigure the logging subsystem for Hydra as the run_job call configured it for the Job.
+        configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs
 
 
