@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -112,7 +112,7 @@ class AxSweeper(Sweeper):
             config=config, config_loader=config_loader, task_function=task_function
         )
 
-    def sweep(self, arguments: List[str]) -> None:
+    def sweep(self, arguments: List[str]) -> Any:
         ax_client = self.setup_ax_client(arguments)
 
         num_trials_left = self.max_trials
@@ -161,6 +161,7 @@ class AxSweeper(Sweeper):
             current_parallelism_index += 1
 
         log.info("Best parameters: " + str(best))
+        return best
 
     def sweep_over_batches(
         self,
