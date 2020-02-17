@@ -3,22 +3,26 @@ import importlib
 import warnings
 from typing import List, Optional
 
-from hydra.core.config_store import ConfigStore
+from hydra.core.config_store import ConfigStoreImpl, ConfigStore
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 
 class StructuredConfigSource(ConfigSource):
+    store: ConfigStoreImpl
+
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
         # Import the module, the __init__ there is expected to register the configs.
-        try:
-            importlib.import_module(self.path)
-        except Exception as e:
-            warnings.warn(
-                f"Error importing {self.path} : some configs may not be available\n\n\tRoot cause: {e}\n"
-            )
-            raise e
+        self.store = ConfigStore.instance()
+        if self.path != "":
+            try:
+                importlib.import_module(self.path)
+            except Exception as e:
+                warnings.warn(
+                    f"Error importing {self.path} : some configs may not be available\n\n\tRoot cause: {e}\n"
+                )
+                raise e
 
     @staticmethod
     def scheme() -> str:
@@ -27,23 +31,23 @@ class StructuredConfigSource(ConfigSource):
     def load_config(self, config_path: str) -> ConfigResult:
         full_path = self._normalize_file_name(config_path)
         return ConfigResult(
-            config=ConfigStore.instance().load(config_path=full_path),
+            config=self.store.load(config_path=full_path),
             path=f"{self.scheme()}://{self.path}",
             provider=self.provider,
         )
 
     def is_group(self, config_path: str) -> bool:
-        type_ = ConfigStore.instance().get_type(config_path.rstrip("/"))
+        type_ = self.store.get_type(config_path.rstrip("/"))
         return type_ == ObjectType.GROUP
 
     def is_config(self, config_path: str) -> bool:
         filename = self._normalize_file_name(config_path.rstrip("/"))
-        type_ = ConfigStore.instance().get_type(filename)
+        type_ = self.store.get_type(filename)
         return type_ == ObjectType.CONFIG
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         ret: List[str] = []
-        files = ConfigStore.instance().list(config_path)
+        files = self.store.list(config_path)
 
         for file in files:
             self._list_add_result(

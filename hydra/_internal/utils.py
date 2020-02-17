@@ -133,8 +133,9 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
 
     Plugins.register_config_sources()
     search_path = ConfigSearchPathImpl()
-    search_path.append("hydra", "structured://hydra.conf")
+    # search_path.append("hydra", "structured://hydra.conf")
     search_path.append("hydra", "pkg://hydra.conf")
+
     if search_path_dir is not None:
         search_path.append("main", search_path_dir)
 
@@ -143,6 +144,8 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
         plugin = spp()
         assert isinstance(plugin, SearchPathPlugin)
         plugin.manipulate_search_path(search_path)
+
+    search_path.append("schema", "structured://")
 
     return search_path
 

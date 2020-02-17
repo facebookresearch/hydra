@@ -2,8 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
-
-from hydra.core.config_store import SchemaStore
+from hydra.core.config_store import ConfigStore
 
 
 @dataclass
@@ -61,7 +60,7 @@ class JobLibLauncherConf:
 # )
 
 
-SchemaStore.instance().store(
+ConfigStore.instance().store(
     group="hydra/launcher",
     name="joblib",
     path="hydra.launcher",

@@ -103,19 +103,9 @@ class ConfigStoreImpl:
 
 class ConfigStore(ConfigStoreImpl, metaclass=Singleton):
     """
-    Stores configs, in the config search path via the StructuredConfigSource
+    Stores schemas, not in the search path.
     """
 
     @staticmethod
     def instance(*args: Any, **kwargs: Any) -> "ConfigStore":
         return Singleton.instance(ConfigStore, *args, **kwargs)  # type: ignore
-
-
-class SchemaStore(ConfigStoreImpl, metaclass=Singleton):
-    """
-    Stores schemas, not in the search path.
-    """
-
-    @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "SchemaStore":
-        return Singleton.instance(SchemaStore, *args, **kwargs)  # type: ignore

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from omegaconf import MISSING, DictConfig
 
 import hydra
-from hydra.core.config_store import SchemaStore
+from hydra.core.config_store import ConfigStore
 
 
 @dataclass
@@ -32,7 +32,7 @@ class PostGreSQLConfig(DBConfig):
 
 
 # registering db/mysql and db/postgresql schemas.
-ss = SchemaStore.instance()
+ss = ConfigStore.instance()
 ss.store(group="db", name="mysql", path="db", node=MySQLConfig)
 ss.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 

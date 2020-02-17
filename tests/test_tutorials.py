@@ -430,3 +430,9 @@ def test_structured_configs_1_override_type_error(tmpdir: Path) -> None:
     ]
     with pytest.raises(subprocess.CalledProcessError):
         subprocess.check_output(cmd)
+
+
+# TODO: Add test cases for :
+# 1. Using schema as config
+# 2. Successful schema override
+# 3. Failed schema override

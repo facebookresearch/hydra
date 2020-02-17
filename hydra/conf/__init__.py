@@ -151,7 +151,7 @@ class HydraConf(Dict[str, Any]):
 
 
 ConfigStore.instance().store(
-    name="hydra",
+    name="hydra_config",
     node={
         # Hydra composition defaults
         "defaults": hydra_defaults,

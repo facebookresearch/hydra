@@ -10,7 +10,7 @@ from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.core.config_store import SchemaStore
+from hydra.core.config_store import ConfigStore
 from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
@@ -64,7 +64,7 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         # Load hydra config
-        hydra_cfg = self._create_cfg(cfg_filename="hydra")
+        hydra_cfg = self._create_cfg(cfg_filename="hydra_config")
 
         # Load job config
         job_cfg = self._create_cfg(cfg_filename=config_name, record_load=False)
@@ -247,7 +247,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 )
             try:
                 # TODO: expose schema information in LoadTrace?
-                schema = SchemaStore.instance().load(
+                schema = ConfigStore.instance().load(
                     config_path=ConfigSource._normalize_file_name(filename=input_file)
                 )
                 merged = OmegaConf.merge(schema, ret.config)

@@ -398,6 +398,7 @@ if __name__ == "__main__":
         os.chdir(orig_dir)
 
 
+# TODO: can this be replaced by a direct call to utils.create_config_search_path
 def create_search_path(
     search_path: List[str], abspath: bool = False
 ) -> ConfigSearchPathImpl:
@@ -407,6 +408,7 @@ def create_search_path(
     csp.append("hydra", "pkg://hydra.conf")
     for sp in search_path:
         csp.append("test", sp if not abspath else os.path.realpath(sp))
+    csp.append("schema", "structured://")
     return csp
 
 

@@ -23,7 +23,9 @@ from hydra.test_utils.test_utils import (  # noqa: F401
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
+    "calling_file, calling_module", [(".", None), (None, ".")]
+)
 def test_missing_conf_dir(
     task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
 ) -> None:
@@ -262,10 +264,10 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
         assert task.job_ret.hydra_cfg is not None
         hydra_cfg = task.job_ret.hydra_cfg
         assert (
-            hydra_cfg.hydra.launcher["cls"]
+            hydra_cfg.hydra.launcher.cls
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
-        assert "params" not in task.job_ret.hydra_cfg.hydra.launcher
+        assert len(task.job_ret.hydra_cfg.hydra.launcher.params) == 0
 
 
 def test_short_module_name(tmpdir: Path) -> None:
