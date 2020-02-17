@@ -1,8 +1,0 @@
-defaults:
-  - hydra/hydra_logging : default   # Hydra's logging config
-  - hydra/job_logging : default     # Job's logging config
-  - hydra/launcher: basic           # Launcher config
-  - hydra/sweeper: basic            # Sweeper config
-  - hydra/output: default           # Output directory
-  - hydra/help: default             # --help template
-  - hydra/hydra_help: default       # --hydra-help template

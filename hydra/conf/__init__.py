@@ -4,7 +4,24 @@ from typing import Any, Dict, List, Optional
 
 from omegaconf import MISSING
 
-from hydra.core.config_store import SchemaStore
+from hydra.core.config_store import ConfigStore
+
+hydra_defaults = [
+    # Hydra's logging config
+    {"hydra/hydra_logging": "default"},
+    # Job's logging config
+    {"hydra/job_logging": "default"},
+    # Launcher config
+    {"hydra/launcher": "basic"},
+    # Sweeper config
+    {"hydra/sweeper": "basic"},
+    # Output directory
+    {"hydra/output": "default"},
+    # --help template
+    {"hydra/help": "default"},
+    # --hydra-help template
+    {"hydra/hydra_help": "default"},
+]
 
 
 @dataclass
@@ -90,7 +107,6 @@ class RuntimeConf:
 
 @dataclass
 class HydraConf(Dict[str, Any]):
-
     # Normal run output configuration
     run: RunDir = RunDir()
     # Multi-run output configuration
@@ -134,4 +150,12 @@ class HydraConf(Dict[str, Any]):
     verbose: Any = False
 
 
-SchemaStore.instance().store(name="hydra", path="hydra", node=HydraConf)
+ConfigStore.instance().store(
+    name="hydra",
+    node={
+        # Hydra composition defaults
+        "defaults": hydra_defaults,
+        # Hydra config
+        "hydra": HydraConf,
+    },
+)

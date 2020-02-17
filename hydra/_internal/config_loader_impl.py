@@ -64,7 +64,7 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         # Load hydra config
-        hydra_cfg = self._create_cfg(cfg_filename="hydra.yaml")
+        hydra_cfg = self._create_cfg(cfg_filename="hydra")
 
         # Load job config
         job_cfg = self._create_cfg(cfg_filename=config_name, record_load=False)
@@ -396,7 +396,7 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         assert isinstance(defaults, ListConfig)
-        return defaults
+        return copy.deepcopy(defaults)
 
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
