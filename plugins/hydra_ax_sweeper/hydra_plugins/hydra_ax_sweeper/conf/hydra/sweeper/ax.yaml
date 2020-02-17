@@ -34,5 +34,5 @@ hydra:
       verbose_logging: false
       max_trials: ${hydra.ax.max_trials}
       # set random seed here to make Ax results reproducible
-      random_seed: 1
+      random_seed: null
       ax_params: ${hydra.ax.params}

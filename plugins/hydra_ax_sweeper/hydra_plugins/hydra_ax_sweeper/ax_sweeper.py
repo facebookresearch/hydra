@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
+import yaml
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
@@ -29,6 +31,24 @@ class Trial:
 
 BatchOfTrialType = List[Trial]
 # ParameterType = Union[ax_types.TParameterization]
+
+
+def _is_int(string_inp: str) -> bool:
+    """Method to check if the given string input can be parsed as integer"""
+    try:
+        int(string_inp)
+        return True
+    except ValueError:
+        return False
+
+
+def _is_float(string_inp: str) -> bool:
+    """Method to check if the given string input can be parsed as a float"""
+    try:
+        float(string_inp)
+        return True
+    except ValueError:
+        return False
 
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
@@ -101,6 +121,7 @@ class AxSweeper(Sweeper):
         self.random_seed = random_seed
         self.max_trials = max_trials
         self.ax_params = ax_params
+        self.sweep_dir: str
 
     def setup(
         self,
@@ -111,8 +132,9 @@ class AxSweeper(Sweeper):
         self.launcher = Plugins.instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
+        self.sweep_dir = config.hydra.sweep.dir
 
-    def sweep(self, arguments: List[str]) -> Any:
+    def sweep(self, arguments: List[str]) -> None:
         ax_client = self.setup_ax_client(arguments)
 
         num_trials_left = self.max_trials
@@ -160,8 +182,12 @@ class AxSweeper(Sweeper):
 
             current_parallelism_index += 1
 
+        with open(f"{self.sweep_dir}/optimization_results.yaml", "w") as f:
+            results_to_serialize = {"optimizer": "ax", "ax": {"best_parameters": best}}
+            results_to_serialize = json.loads(json.dumps(results_to_serialize))
+            # This step is to convert all the numpy floats into python floats
+            yaml.dump(results_to_serialize, f)
         log.info("Best parameters: " + str(best))
-        return best
 
     def sweep_over_batches(
         self,
@@ -179,16 +205,23 @@ class AxSweeper(Sweeper):
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
 
-        parameters = []
+        parameters: List[Dict[str, Any]] = []
         for key, value in self.ax_params.items():
-            parameters.append(OmegaConf.to_container(value, resolve=True))
-            parameters[-1]["name"] = key  # type: ignore
+            param = OmegaConf.to_container(value, resolve=True)
+            assert isinstance(param, DictConfig)
+            if param["type"] == "range":
+                bounds = param["bounds"]
+                if not (all(isinstance(x, int) for x in bounds)):
+                    # Type mismatch. Promote all to float
+                    param["bounds"] = [float(x) for x in bounds]
+            parameters.append(param)
+            parameters[-1]["name"] = key
         commandline_params = self.parse_commandline_args(arguments)
         for cmd_param in commandline_params:
             for param in parameters:
-                if param["name"] == cmd_param["name"]:  # type: ignore
+                if param["name"] == cmd_param["name"]:
                     for key, value in cmd_param.items():
-                        param[key] = value  # type: ignore
+                        param[key] = value
         ax_client = AxClient(
             verbose_logging=self.verbose_logging, random_seed=self.random_seed
         )
@@ -201,29 +234,20 @@ class AxSweeper(Sweeper):
     ) -> List[Dict[str, Union[ax_types.TParamValue, List[ax_types.TParamValue]]]]:
         """Method to parse the command line arguments and convert them into Ax parameters"""
 
-        def _is_int(string_inp: str) -> bool:
-            """Method to check if the given string input can be parsed as integer"""
-            try:
-                int(string_inp)
-                return True
-            except ValueError:
-                return False
-
-        def _is_float(string_inp: str) -> bool:
-            """Method to check if the given string input can be parsed as a float"""
-            try:
-                float(string_inp)
-                return True
-            except ValueError:
-                return False
-
         parameters = []
         for arg in arguments:
             key, value = arg.split("=")
             if "," in value:
                 # This is a Choice Parameter.
                 value_choices = [x.strip() for x in value.split(",")]
-                if _is_float(value_choices[0]):
+                if all(_is_int(x) for x in value_choices):
+                    param = {
+                        "name": key,
+                        "type": "choice",
+                        "values": [int(x) for x in value_choices],
+                        "parameter_type": ParameterType.INT,
+                    }
+                if all(_is_float(x) for x in value_choices):
                     param = {
                         "name": key,
                         "type": "choice",
@@ -262,12 +286,18 @@ class AxSweeper(Sweeper):
                 parameters.append(param)
             else:
                 # This is a Fixed Parameter.
+                if _is_int(value):
+                    parameter_type = ParameterType.INT
+                elif _is_float(value):
+                    parameter_type = ParameterType.FLOAT
+                else:
+                    parameter_type = ParameterType.STRING
                 parameters.append(
                     {
                         "name": key,
                         "type": "fixed",
                         "value": value,
-                        "parameter_type": ParameterType.STRING,
+                        "parameter_type": parameter_type,
                     }
                 )
 

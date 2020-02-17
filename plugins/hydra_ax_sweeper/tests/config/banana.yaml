@@ -19,7 +19,11 @@ hydra:
       # Number of epochs without a significant improvement from
       # the currently known best parameters
       # An Epoch is defined as a batch of trials executed in parallel
-      max_epochs_without_improvement: 10
+      max_epochs_without_improvement: 3
+  
+  # sweeper:
+  #   params:
+  #     random_seed: 1
     
     params:
       banana.x:
@@ -28,5 +32,5 @@ hydra:
         log_scale: false
       banana.y:
         type: range
-        bounds: [-2, 2]
+        bounds: [-5, 10.1]
         log_scale: false

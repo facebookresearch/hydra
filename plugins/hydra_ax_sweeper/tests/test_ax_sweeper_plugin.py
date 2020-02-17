@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import importlib
 import math
+import os
 from typing import Any, Callable, List, Optional
 
 import pytest
+import yaml
 from omegaconf import DictConfig
 
 from hydra.core.plugins import Plugins
@@ -28,32 +29,30 @@ class AxSweepTaskFunction(SweepTaskFunction):
     Context function
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.calling_function = None
-
-    def __call__(self, cfg: DictConfig) -> Any:
-        """
-        Actual function being executed by Hydra
-        """
-        assert self.calling_function is not None
-        return self.calling_function(cfg=cfg)
-
     def __enter__(self) -> "SweepTaskFunction":
-        assert self.calling_module is not None
-        module = importlib.import_module(self.calling_module)
-        self.calling_function = getattr(module, "banana")
-        return super().__enter__()
+        super().__enter__()
+        print(self.temp_dir)
+        with open(f"{self.temp_dir}/optimization_results.yaml", "r") as f:
+            self.returns = yaml.safe_load(f)
+        return self
 
 
 @pytest.fixture(scope="function")  # type: ignore
 def ax_sweep_runner() -> Callable[
-    [Optional[str], Optional[str], Optional[str], Optional[List[str]], Optional[bool]],
+    [
+        Optional[str],
+        Optional[str],
+        Optional[Callable[[DictConfig], Any]],
+        Optional[str],
+        Optional[List[str]],
+        Optional[bool],
+    ],
     AxSweepTaskFunction,
 ]:
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
+        calling_function: Optional[Callable[[DictConfig], Any]],
         config_path: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
@@ -61,6 +60,7 @@ def ax_sweep_runner() -> Callable[
         sweep = AxSweepTaskFunction()
         sweep.calling_file = calling_file
         sweep.calling_module = calling_module
+        sweep.calling_function = calling_function
         sweep.config_path = config_path
         sweep.strict = strict
         sweep.overrides = overrides or []
@@ -69,21 +69,37 @@ def ax_sweep_runner() -> Callable[
     return _
 
 
+def banana(cfg: DictConfig) -> Any:
+    x = cfg.banana.x
+    y = cfg.banana.y
+    a = 1
+    b = 100
+    z = (a - x) ** 2 + b * ((y - x ** 2) ** 2)
+    return z
+
+
 def test_launched_jobs(
     ax_sweep_runner: TSweepRunner,
 ) -> None:  # noqa: F811 # type: ignore
     sweep = ax_sweep_runner(
-        calling_file=None,
-        calling_module="hydra.test_utils.ax_sweeper_plugin",
-        config_path="configs/ax_sweeper_plugin/banana.yaml",
-        overrides=["hydra/sweeper=ax", "hydra/launcher=basic"],
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        calling_function=banana,
+        config_path="tests/config/banana.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.random_seed=1",
+        ],
         strict=True,
     )
     with sweep:
         assert sweep.returns is not None
-        assert len(sweep.returns) == 2
-        best_parameters, predictions = sweep.returns
+        returns = sweep.returns["ax"]["best_parameters"]
+        assert len(returns) == 2
+        print(returns)
+        best_parameters, predictions = returns
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["banana.x"], 1.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["banana.y"], 1.0, abs_tol=1e-4)
-        assert math.isclose(predictions[0]["objective"], 0.7, abs_tol=1e-1)
+        assert math.isclose(best_parameters["banana.y"], 0.96, abs_tol=1e-1)
+        assert math.isclose(predictions[0]["objective"], -37.06, abs_tol=1)
