@@ -208,12 +208,13 @@ class AxSweeper(Sweeper):
         parameters: List[Dict[str, Any]] = []
         for key, value in self.ax_params.items():
             param = OmegaConf.to_container(value, resolve=True)
-            assert isinstance(param, DictConfig)
+            assert isinstance(param, Dict)
             if param["type"] == "range":
                 bounds = param["bounds"]
                 if not (all(isinstance(x, int) for x in bounds)):
                     # Type mismatch. Promote all to float
                     param["bounds"] = [float(x) for x in bounds]
+
             parameters.append(param)
             parameters[-1]["name"] = key
         commandline_params = self.parse_commandline_args(arguments)
