@@ -13,7 +13,8 @@ from hydra.plugins.sweeper import Sweeper
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner  # noqa: F401
 from hydra.test_utils.test_utils import SweepTaskFunction
-from hydra_plugins.hydra_ax_sweeper import AxSweeper
+from hydra.types import TaskFunction
+from hydra_plugins.hydra_ax_sweeper import AxSweeper  # type: ignore
 
 
 def test_discovery() -> None:
@@ -31,7 +32,6 @@ class AxSweepTaskFunction(SweepTaskFunction):
 
     def __enter__(self) -> "SweepTaskFunction":
         super().__enter__()
-        print(self.temp_dir)
         with open(f"{self.temp_dir}/optimization_results.yaml", "r") as f:
             self.returns = yaml.safe_load(f)
         return self
@@ -42,7 +42,7 @@ def ax_sweep_runner() -> Callable[
     [
         Optional[str],
         Optional[str],
-        Optional[Callable[[DictConfig], Any]],
+        Optional[TaskFunction],
         Optional[str],
         Optional[List[str]],
         Optional[bool],
@@ -52,7 +52,7 @@ def ax_sweep_runner() -> Callable[
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
-        calling_function: Optional[Callable[[DictConfig], Any]],
+        task_function: Optional[TaskFunction],
         config_path: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
@@ -60,7 +60,7 @@ def ax_sweep_runner() -> Callable[
         sweep = AxSweepTaskFunction()
         sweep.calling_file = calling_file
         sweep.calling_module = calling_module
-        sweep.calling_function = calling_function
+        sweep.task_function = task_function
         sweep.config_path = config_path
         sweep.strict = strict
         sweep.overrides = overrides or []
@@ -84,7 +84,7 @@ def test_launched_jobs(
     sweep = ax_sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
-        calling_function=banana,
+        task_function=banana,
         config_path="tests/config/banana.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -97,7 +97,6 @@ def test_launched_jobs(
         assert sweep.returns is not None
         returns = sweep.returns["ax"]["best_parameters"]
         assert len(returns) == 2
-        print(returns)
         best_parameters, predictions = returns
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["banana.x"], 1.0, abs_tol=1e-4)

@@ -24,6 +24,7 @@ from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins
 from hydra.core.utils import JobReturn, split_config_path
+from hydra.types import TaskFunction
 
 # CircleCI does not have the environment variable USER, breaking the tests.
 os.environ["USER"] = "test_user"
@@ -185,7 +186,7 @@ class SweepTaskFunction:
         self.overrides: Optional[List[str]] = None
         self.calling_file: Optional[str] = None
         self.calling_module: Optional[str] = None
-        self.calling_function: Optional[Callable[[DictConfig], Any]] = None
+        self.task_function: Optional[TaskFunction] = None
         self.config_path: Optional[str] = None
         self.strict: Optional[bool] = None
         self.sweeps = None
@@ -195,8 +196,8 @@ class SweepTaskFunction:
         """
         Actual function being executed by Hydra
         """
-        if self.calling_function is not None:
-            return self.calling_function(cfg)
+        if self.task_function is not None:
+            return self.task_function(cfg)
         return 100
 
     def __enter__(self) -> "SweepTaskFunction":
@@ -231,7 +232,7 @@ def sweep_runner() -> Callable[
     [
         Optional[str],
         Optional[str],
-        Optional[Callable[[DictConfig], Any]],
+        Optional[TaskFunction],
         Optional[str],
         Optional[List[str]],
         Optional[bool],
@@ -241,7 +242,7 @@ def sweep_runner() -> Callable[
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
-        calling_function: Optional[Callable[[DictConfig], Any]],
+        task_function: Optional[TaskFunction],
         config_path: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
@@ -249,7 +250,7 @@ def sweep_runner() -> Callable[
         sweep = SweepTaskFunction()
         sweep.calling_file = calling_file
         sweep.calling_module = calling_module
-        sweep.calling_function = calling_function
+        sweep.task_function = task_function
         sweep.config_path = config_path
         sweep.strict = strict
         sweep.overrides = overrides or []
@@ -265,7 +266,7 @@ class TSweepRunner(Protocol):
         self,
         calling_file: Optional[str],
         calling_module: Optional[str],
-        calling_function: Optional[Callable[[DictConfig], Any]],
+        task_function: Optional[TaskFunction],
         config_path: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,

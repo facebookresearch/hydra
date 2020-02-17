@@ -30,3 +30,4 @@ hydra:
         type: range
         bounds: [-5, 10.1]
         log_scale: false
+        

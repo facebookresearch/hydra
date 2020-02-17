@@ -79,7 +79,7 @@ class LauncherTestSuite:
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
-            calling_function=None,
+            task_function=None,
             config_path="configs/unspecified_mandatory_default.yaml",
             overrides=base_overrides + overrides,
             strict=True,
@@ -111,7 +111,7 @@ class LauncherTestSuite:
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
-            calling_function=None,
+            task_function=None,
             config_path="configs/db_conf.yaml",
             overrides=base_overrides + overrides,
             strict=True,
@@ -150,7 +150,7 @@ def sweep_1_job(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        calling_function=None,
+        task_function=None,
         config_path="configs/compose.yaml",
         overrides=overrides,
         strict=strict,
@@ -176,7 +176,7 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        calling_function=None,
+        task_function=None,
         config_path="configs/compose.yaml",
         overrides=overrides,
     )
@@ -214,7 +214,7 @@ def not_sweeping_hydra_overrides(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        calling_function=None,
+        task_function=None,
         config_path="configs/compose.yaml",
         overrides=overrides,
         strict=None,
@@ -243,7 +243,7 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        calling_function=None,
+        task_function=None,
         config_path="configs/compose.yaml",
         overrides=overrides,
     )

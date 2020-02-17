@@ -20,10 +20,6 @@ hydra:
       # the currently known best parameters
       # An Epoch is defined as a batch of trials executed in parallel
       max_epochs_without_improvement: 3
-  
-  # sweeper:
-  #   params:
-  #     random_seed: 1
     
     params:
       banana.x:

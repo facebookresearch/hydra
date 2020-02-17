@@ -277,7 +277,7 @@ def test_multirun_with_free_override(
     sweep = sweep_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        calling_function=None,
+        task_function=None,
         config_path="conf/config.yaml",
         overrides=overrides,
         strict=True,
@@ -303,7 +303,7 @@ def test_sweep_complex_defaults(
     with sweep_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        calling_function=None,
+        task_function=None,
         config_path="conf/config.yaml",
         overrides=["optimizer=adam,nesterov"],
     ) as sweep:
