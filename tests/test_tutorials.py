@@ -285,6 +285,7 @@ def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
     with sweep_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
+        calling_function=None,
         config_path="conf/config.yaml",
         overrides=["schema=warehouse,support", "db=mysql,postgresql"],
     ) as sweep:
