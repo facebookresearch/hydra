@@ -78,7 +78,7 @@ class JoblibLauncher(Launcher):
         sweep_dir.mkdir(parents=True, exist_ok=True)
 
         # Joblib's backend is hard-coded to loky since the threading
-        # backend is incompatible with Hydra's logging
+        # backend is incompatible with Hydra
         joblib_keywords = OmegaConf.to_container(self.joblib, resolve=True)
         joblib_keywords["backend"] = "loky"
 
