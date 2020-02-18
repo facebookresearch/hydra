@@ -35,6 +35,7 @@ base_completion_list: List[str] = [
     "hydra/",
     "list.",
     "list_prefix=",
+    "test_hydra/",
 ]
 
 
@@ -64,9 +65,9 @@ base_completion_list: List[str] = [
                 "hydra/sweeper=",
             ],
         ),
-        ("hydra/lau", 2, ["hydra/launcher="]),
-        ("hydra/launcher=", 2, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
-        ("hydra/launcher=ba", 2, ["hydra/launcher=basic"]),
+        ("test_hydra/lau", 2, ["test_hydra/launcher="]),
+        ("test_hydra/launcher=", 2, ["test_hydra/launcher=fairtask"]),
+        ("test_hydra/launcher=fa", 2, ["test_hydra/launcher=fairtask"]),
         # loading groups
         ("gro", 2, ["group="]),
         ("group=di", 2, ["group=dict"]),
@@ -82,6 +83,7 @@ base_completion_list: List[str] = [
                 "hydra/",
                 "list.",
                 "list_prefix=",
+                "test_hydra/",
                 "toys.",
             ],
         ),
@@ -103,7 +105,9 @@ class TestCompletion:
         not is_expect_exists(),
         reason="expect should be installed to run the expects tests",
     )
-    @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])  # type: ignore
+    @pytest.mark.parametrize(
+        "prog", ["python hydra/test_utils/completion.py"]
+    )  # type: ignore
     @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
     def test_shell_integration(
         self,
@@ -196,7 +200,7 @@ def test_file_completion(
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"],
+    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"]
 )
 @pytest.mark.parametrize(  # type: ignore
     "app_prefix",

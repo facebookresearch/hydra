@@ -3,7 +3,7 @@ import importlib
 import warnings
 from typing import List, Optional
 
-from hydra.core.config_store import ConfigStoreImpl, ConfigStore
+from hydra.core.config_store import ConfigStore, ConfigStoreImpl
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
