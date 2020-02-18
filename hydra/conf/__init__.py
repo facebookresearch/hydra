@@ -106,7 +106,7 @@ class RuntimeConf:
 
 
 @dataclass
-class HydraConf(Dict[str, Any]):
+class HydraConf:
     # Normal run output configuration
     run: RunDir = RunDir()
     # Multi-run output configuration
@@ -158,4 +158,5 @@ ConfigStore.instance().store(
         # Hydra config
         "hydra": HydraConf,
     },
+    provider="hydra",
 )

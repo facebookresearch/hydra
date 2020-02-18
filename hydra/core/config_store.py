@@ -1,11 +1,55 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, Dict, List, Optional
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError
+
+
+class ConfigStoreWithProvider:
+    def __init__(self, provider: str) -> None:
+        self.provider = provider
+
+    def __enter__(self) -> "ConfigStoreWithProvider":
+        return self
+
+    def store(
+        self,
+        name: str,
+        node: Any,
+        group: Optional[str] = None,
+        path: Optional[str] = None,
+    ) -> None:
+        ConfigStore.instance().store(
+            group=group, name=name, node=node, path=path, provider=self.provider
+        )
+
+    def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> Any:
+        ...
+
+
+class ConfigNode:
+    name: str
+    node: Any
+    group: Optional[str]
+    path: Optional[str]
+    provider: Optional[str]
+
+    def __init__(
+        self,
+        name: str,
+        node: Any,
+        group: Optional[str],
+        path: Optional[str],
+        provider: Optional[str],
+    ):
+        self.name = name
+        self.node = node
+        self.group = group
+        self.path = path
+        self.provider = provider
 
 
 class ConfigStore(metaclass=Singleton):
@@ -24,13 +68,15 @@ class ConfigStore(metaclass=Singleton):
         node: Any,
         group: Optional[str] = None,
         path: Optional[str] = None,
+        provider: Optional[str] = None,
     ) -> None:
         """
         Stores a config node into the repository
         :param name: config name
         :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
         :param group: config group, subgroup separator is '/', for example hydra/launcher
-        :param path: Config node parent hierarchy. child separator is '.', for example foo.bar.bazz
+        :param path: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
+        :param provider: the name of the module/app providing this config. Helps debugging.
         """
         cur = self.repo
         if group is not None:
@@ -47,16 +93,19 @@ class ConfigStore(metaclass=Singleton):
 
         if not name.endswith(".yaml"):
             name = f"{name}.yaml"
-        cur[name] = cfg
+        assert isinstance(cur, dict)
+        cur[name] = ConfigNode(
+            name=name, node=cfg, group=group, path=path, provider=provider
+        )
 
-    def load(self, config_path: str) -> DictConfig:
+    def load(self, config_path: str) -> ConfigNode:
         idx = config_path.rfind("/")
         if idx == -1:
             ret = self._open(config_path)
             if ret is None:
                 raise ConfigLoadError(f"Structured config not found {config_path}")
 
-            assert isinstance(ret, DictConfig)
+            assert isinstance(ret, ConfigNode)
             return ret
         else:
             path = config_path[0:idx]
@@ -71,7 +120,7 @@ class ConfigStore(metaclass=Singleton):
                 )
 
             ret = d[name]
-            assert isinstance(ret, DictConfig)
+            assert isinstance(ret, ConfigNode)
             return ret
 
     def get_type(self, path: str) -> ObjectType:

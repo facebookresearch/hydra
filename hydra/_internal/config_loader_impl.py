@@ -250,7 +250,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 schema = ConfigStore.instance().load(
                     config_path=ConfigSource._normalize_file_name(filename=input_file)
                 )
-                merged = OmegaConf.merge(schema, ret.config)
+                merged = OmegaConf.merge(schema.node, ret.config)
                 assert isinstance(merged, DictConfig)
                 return merged
             except ConfigLoadError:
