@@ -9,7 +9,7 @@ The example below nests MySQLConfig inside a Config class, and registers the top
 ```python
 @dataclass
 class MySQLConfig:
-    pass
+    ...
 
 @dataclass
 class Config:

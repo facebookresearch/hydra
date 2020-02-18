@@ -3,13 +3,13 @@ import importlib
 import warnings
 from typing import List, Optional
 
-from hydra.core.config_store import ConfigStore, ConfigStoreImpl
+from hydra.core.config_store import ConfigStore
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 
 class StructuredConfigSource(ConfigSource):
-    store: ConfigStoreImpl
+    store: ConfigStore
 
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)

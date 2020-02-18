@@ -8,7 +8,11 @@ from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError
 
 
-class ConfigStoreImpl:
+class ConfigStore(metaclass=Singleton):
+    @staticmethod
+    def instance(*args: Any, **kwargs: Any) -> "ConfigStore":
+        return Singleton.instance(ConfigStore, *args, **kwargs)  # type: ignore
+
     repo: Dict[str, Any]
 
     def __init__(self) -> None:
@@ -99,13 +103,3 @@ class ConfigStoreImpl:
             else:
                 return None
         return d
-
-
-class ConfigStore(ConfigStoreImpl, metaclass=Singleton):
-    """
-    Stores schemas, not in the search path.
-    """
-
-    @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "ConfigStore":
-        return Singleton.instance(ConfigStore, *args, **kwargs)  # type: ignore

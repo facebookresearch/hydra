@@ -3,21 +3,24 @@ id: schema
 title: Structured config as schema
 ---
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema validating configuration files!
-
-`SchemaStore` can be used to store schemas. It is very similar to The `ConfigStore` class we saw earlier.
-When Hydra loads a configuration, it looks for schema with the same name in the `SchemaStore`. If found, it is used as the schema for the newly loaded config.
+When Hydra loads a configuration, it looks for config with the same name in the `ConfigStore`.
+If found, it is used as the schema for the newly loaded config.
 
 This is an example of defining and registering one schema for db/mysql and another for db/postgresql.
 
+Given a config directory structure like:
+```text
+$ tree conf/
+conf/
+├── config.yaml
+└── db
+    ├── mysql.yaml
+    └── postgresql.yaml
+```
+
+Configs registered names matching other configs - here db/mysql and db/postgresql will be used as schema:
+
 ```python
-from dataclasses import dataclass
-
-from omegaconf import MISSING, DictConfig
-
-import hydra
-from hydra.core.config_store import ConfigStore
-
-
 @dataclass
 class DBConfig:
     driver: str = MISSING
@@ -53,25 +56,11 @@ ss.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 # and it will be validated against the schema
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
-
-
-if __name__ == "__main__":
-    my_app()
+    ...
 ```
 
-`@hydra.main()` above is specifying a config_path and a config_name.
-This is what the conf directory looks like:
-```text
-$ tree conf/
-conf/
-├── config.yaml
-└── db
-    ├── mysql.yaml
-    └── postgresql.yaml
-```
 
-When `db/mysql.yaml` and `db/postgresql.yaml` are loaded, the corresponding schemas from the `SchemaStore` are used automatically.
+When `db/mysql.yaml` and `db/postgresql.yaml` are loaded, the corresponding configs from the `ConfigStore` are used automatically.
 This can be used to validate that both the configuration files (`mysql.yaml` and `postgresql.yaml`) and the command line overrides are conforming to the schema. 
 
 ```bash

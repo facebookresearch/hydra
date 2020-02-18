@@ -105,9 +105,9 @@ class TestCompletion:
         not is_expect_exists(),
         reason="expect should be installed to run the expects tests",
     )
-    @pytest.mark.parametrize(
+    @pytest.mark.parametrize(  # type: ignore
         "prog", ["python hydra/test_utils/completion.py"]
-    )  # type: ignore
+    )
     @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
     def test_shell_integration(
         self,
