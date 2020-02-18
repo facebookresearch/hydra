@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-joblib-launcher",
-        version="1.0.1",
+        version="1.0.2",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
         description="Joblib Launcher for Hydra apps",

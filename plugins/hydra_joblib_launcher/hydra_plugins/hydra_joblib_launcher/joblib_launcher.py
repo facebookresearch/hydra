@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from joblib import Parallel, delayed  # type: ignore
-from omegaconf import DictConfig, open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
@@ -76,20 +76,25 @@ class JoblibLauncher(Launcher):
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
+
+        # Joblib's backend is hard-coded to loky since the threading
+        # backend is incompatible with Hydra's logging
+        joblib_keywords = OmegaConf.to_container(self.joblib).copy()
+        joblib_keywords["backend"] = "loky"
+
         log.info(
             "Joblib.Parallel({}) is launching {} jobs".format(
-                ",".join([f"{k}={v}" for k, v in self.joblib.items()]),
+                ",".join([f"{k}={v}" for k, v in joblib_keywords.items()]),
                 len(job_overrides),
             )
         )
         log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))
-
-        singleton_state = Singleton.get_state()
-
         for idx, overrides in enumerate(job_overrides):
             log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
 
-        runs = Parallel(**self.joblib)(
+        singleton_state = Singleton.get_state()
+
+        runs = Parallel(**joblib_keywords)(
             delayed(execute_job)(
                 idx,
                 overrides,
@@ -116,9 +121,6 @@ def execute_job(
     singleton_state: Dict[Any, Any],
 ) -> JobReturn:
     """Calls `run_job` in parallel
-
-    Note that Joblib's default backend runs isolated Python processes, see
-    https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
     """
     setup_globals()
     Singleton.set_state(singleton_state)

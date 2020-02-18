@@ -8,15 +8,6 @@ hydra:
     # maximum number of concurrently running jobs. if -1, all CPUs are used
     n_jobs: -1
 
-    # allows to hard-code backend, otherwise inferred based on prefer and require
-    backend: null
-
-    # processes or threads, soft hint to choose backend
-    prefer: processes
-
-    # null or sharedmem, sharedmem will select thread-based backend
-    require: null
-
     # if greater than zero, prints progress messages
     verbose: 0
 
@@ -33,7 +24,7 @@ hydra:
     temp_folder: null
 
     # thresholds size of arrays that triggers automated memmapping
-    max_nbytes: 1M
+    max_nbytes: null
 
     # memmapping mode for numpy arrays passed to workers
     mmap_mode: r
