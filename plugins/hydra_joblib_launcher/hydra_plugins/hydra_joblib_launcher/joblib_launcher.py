@@ -79,7 +79,7 @@ class JoblibLauncher(Launcher):
 
         # Joblib's backend is hard-coded to loky since the threading
         # backend is incompatible with Hydra's logging
-        joblib_keywords = OmegaConf.to_container(self.joblib).copy()
+        joblib_keywords = OmegaConf.to_container(self.joblib, resolve=True)
         joblib_keywords["backend"] = "loky"
 
         log.info(
