@@ -398,7 +398,7 @@ if __name__ == "__main__":
         os.chdir(orig_dir)
 
 
-# TODO: can this be replaced by a direct call to utils.create_config_search_path
+# TODO: can this be replaced by a direct call to utils.create_config_search_path?
 def create_search_path(
     search_path: List[str], abspath: bool = False
 ) -> ConfigSearchPathImpl:

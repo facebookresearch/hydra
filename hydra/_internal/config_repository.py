@@ -4,7 +4,7 @@ from typing import List, Optional
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
-
+from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from .sources_registry import SourcesRegistry
 
 
@@ -27,6 +27,11 @@ class ConfigRepository:
         ret = None
         if source is not None:
             ret = source.load_config(config_path=config_path)
+        # if this source is THE schema source, flag the result as coming from it.
+        ret.is_schema_source = (
+            source.__class__.__name__ == "StructuredConfigSource"
+            and source.provider == "schema"
+        )
         return ret
 
     def exists(self, config_path: str) -> bool:

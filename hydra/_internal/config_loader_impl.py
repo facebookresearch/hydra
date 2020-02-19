@@ -252,28 +252,34 @@ class ConfigLoaderImpl(ConfigLoader):
                 raise ValueError(
                     f"Config {input_file} must be a Dictionary, got {type(ret).__name__}"
                 )
-            try:
-                schema = ConfigStore.instance().load(
-                    config_path=ConfigSource._normalize_file_name(filename=input_file)
-                )
-                record_loading(
-                    name=input_file,
-                    path=ret.path,
-                    provider=ret.provider,
-                    schema_provider=schema.provider,
-                )
+            if not ret.is_schema_source:
+                try:
+                    schema = ConfigStore.instance().load(
+                        config_path=ConfigSource._normalize_file_name(
+                            filename=input_file
+                        )
+                    )
+                    record_loading(
+                        name=input_file,
+                        path=ret.path,
+                        provider=ret.provider,
+                        schema_provider=schema.provider,
+                    )
 
-                merged = OmegaConf.merge(schema.node, ret.config)
-                assert isinstance(merged, DictConfig)
-                return merged
-            except ConfigLoadError:
-                record_loading(
-                    name=input_file,
-                    path=ret.path,
-                    provider=ret.provider,
-                    schema_provider=None,
-                )
-                return ret.config
+                    merged = OmegaConf.merge(schema.node, ret.config)
+                    assert isinstance(merged, DictConfig)
+                    return merged
+                except ConfigLoadError:
+                    # schema not found, ignore
+                    pass
+
+            record_loading(
+                name=input_file,
+                path=ret.path,
+                provider=ret.provider,
+                schema_provider=None,
+            )
+            return ret.config
         else:
             record_loading(
                 name=input_file, path=None, provider=None, schema_provider=None

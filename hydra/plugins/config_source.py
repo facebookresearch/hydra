@@ -14,6 +14,7 @@ class ConfigResult:
     provider: str
     path: str
     config: Container
+    is_schema_source: bool = False
 
 
 class ConfigLoadError(IOError):

@@ -128,7 +128,7 @@ class TestCompletion:
             str(num_tabs),
         ]
         cmd.extend(expected)
-        print(" ".join(["'{}'".format(x) for x in cmd]))
+        print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
         subprocess.check_call(cmd)
 
 

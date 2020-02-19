@@ -31,7 +31,7 @@ class MySQLConfig:
 
 
 hydra_load_list: List[Tuple[str, Optional[str], Optional[str], Optional[str]]] = [
-    ("hydra_config", "structured://", "hydra", "hydra"),
+    ("hydra_config", "structured://", "hydra", None),
     ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
     ("hydra/job_logging/default", "pkg://hydra.conf", "hydra", None),
     ("hydra/launcher/basic", "pkg://hydra.conf", "hydra", None),
@@ -370,9 +370,10 @@ def test_override_hydra_config_group_from_config_file() -> None:
     config_loader.load_configuration(
         config_name="overriding_logging_default.yaml", overrides=[], strict=False
     )
+
     # This load history is too different to easily reuse the standard hydra_load_list
     assert config_loader.get_load_history() == [
-        ("hydra_config", "structured://", "hydra", "hydra"),
+        ("hydra_config", "structured://", "hydra", None),
         ("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra", None),
         ("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra", None),
         ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", None),
@@ -466,7 +467,9 @@ def test_load_as_configuration(restore_singletons: Any) -> None:  # noqa: F811
     """
     Load structured config as a configuration
     """
-    ConfigStore.instance().store(group="db", name="mysql", node=MySQLConfig, path="db")
+    ConfigStore.instance().store(
+        group="db", name="mysql", node=MySQLConfig, path="db", provider="test_provider"
+    )
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
