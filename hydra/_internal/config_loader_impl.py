@@ -229,16 +229,23 @@ class ConfigLoaderImpl(ConfigLoader):
         :return: the loaded config or None if it was not found
         """
 
+        def record_loading(
+            name: str,
+            path: Optional[str],
+            provider: Optional[str],
+            schema_provider: Optional[str],
+        ) -> None:
+            if record_load:
+                self.all_config_checked.append(
+                    LoadTrace(
+                        filename=name,
+                        path=path,
+                        provider=provider,
+                        schema_provider=schema_provider,
+                    )
+                )
+
         ret = self.repository.load_config(config_path=input_file)
-        if record_load:
-            if ret is None:
-                self.all_config_checked.append(
-                    LoadTrace(filename=input_file, path=None, provider=None)
-                )
-            else:
-                self.all_config_checked.append(
-                    LoadTrace(filename=input_file, path=ret.path, provider=ret.provider)
-                )
 
         if ret is not None:
             if not isinstance(ret.config, DictConfig):
@@ -246,16 +253,32 @@ class ConfigLoaderImpl(ConfigLoader):
                     f"Config {input_file} must be a Dictionary, got {type(ret).__name__}"
                 )
             try:
-                # TODO: expose schema information in LoadTrace?
                 schema = ConfigStore.instance().load(
                     config_path=ConfigSource._normalize_file_name(filename=input_file)
                 )
+                record_loading(
+                    name=input_file,
+                    path=ret.path,
+                    provider=ret.provider,
+                    schema_provider=schema.provider,
+                )
+
                 merged = OmegaConf.merge(schema.node, ret.config)
                 assert isinstance(merged, DictConfig)
                 return merged
             except ConfigLoadError:
+                record_loading(
+                    name=input_file,
+                    path=ret.path,
+                    provider=ret.provider,
+                    schema_provider=None,
+                )
                 return ret.config
         else:
+            record_loading(
+                name=input_file, path=None, provider=None, schema_provider=None
+            )
+
             return None
 
     def list_groups(self, parent_name: str) -> List[str]:

@@ -15,6 +15,7 @@ class LoadTrace:
     filename: str
     path: Optional[str]
     provider: Optional[str]
+    schema_provider: Optional[str] = None
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, tuple):
@@ -22,12 +23,13 @@ class LoadTrace:
                 self.filename == other[0]
                 and self.path == other[1]
                 and self.provider == other[2]
+                and self.schema_provider == other[3]
             )
         else:
             return NotImplemented
 
     def __repr__(self) -> str:
-        return str((self.filename, self.path, self.provider))
+        return str((self.filename, self.path, self.provider, self.schema_provider))
 
 
 class ConfigLoader(ABC):

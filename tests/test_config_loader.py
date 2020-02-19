@@ -1,21 +1,45 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-from typing import Any, List
+from typing import Any, List, Tuple, Optional
 
 import pkg_resources
 import pytest
+from dataclasses import dataclass
 from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore
+from hydra.core.config_store import ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
+
+# noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     chdir_hydra_root,
     restore_singletons,
 )
 
 chdir_hydra_root()
+
+
+@dataclass
+class MySQLConfig:
+    driver: str = MISSING
+    host: str = MISSING
+    port: int = MISSING
+    user: str = MISSING
+    password: str = MISSING
+
+
+hydra_load_list: List[Tuple[str, Optional[str], Optional[str], Optional[str]]] = [
+    ("hydra_config", "structured://", "hydra", "hydra"),
+    ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
+    ("hydra/job_logging/default", "pkg://hydra.conf", "hydra", None),
+    ("hydra/launcher/basic", "pkg://hydra.conf", "hydra", None),
+    ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", None),
+    ("hydra/output/default", "pkg://hydra.conf", "hydra", None),
+    ("hydra/help/default", "pkg://hydra.conf", "hydra", None),
+    ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+]
 
 
 @pytest.mark.parametrize(
@@ -138,18 +162,11 @@ class TestConfigLoader:
         config_loader.load_configuration(
             config_name="missing-optional-default.yaml", overrides=[], strict=False
         )
-        assert config_loader.get_load_history() == [
-            ("hydra_config", "structured://", "hydra"),
-            ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
-            ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-            ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-            ("missing-optional-default.yaml", path, "main"),
-            ("foo/missing", None, None),
-        ]
+        expected = hydra_load_list.copy()
+        expected.append(("missing-optional-default.yaml", path, "main", None))
+        expected.append(("foo/missing", None, None, None))
+
+        assert config_loader.get_load_history() == expected
 
     def test_load_history_with_basic_launcher(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -161,17 +178,7 @@ class TestConfigLoader:
             strict=False,
         )
 
-        assert config_loader.get_load_history() == [
-            ("hydra_config", "structured://", "hydra"),
-            ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
-            ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-            ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-            ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-            ("custom_default_launcher.yaml", path, "main"),
-        ]
+        assert config_loader.get_load_history() == hydra_load_list
 
     def test_load_yml_file(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -309,16 +316,12 @@ def test_default_removal(config_file: str, overrides: List[str]) -> None:
     config_loader.load_configuration(
         config_name=config_file, overrides=overrides, strict=False
     )
-    assert config_loader.get_load_history() == [
-        ("hydra_config", "structured://", "hydra"),
-        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-        (config_file, "file://hydra/test_utils/configs", "main"),
-    ]
+
+    expected = list(
+        filter(lambda x: x[0] != "hydra/launcher/basic", hydra_load_list.copy())
+    )
+    expected.extend([(config_file, "file://hydra/test_utils/configs", "main", None)])
+    assert config_loader.get_load_history() == expected
 
 
 def test_defaults_not_list_exception() -> None:
@@ -367,15 +370,21 @@ def test_override_hydra_config_group_from_config_file() -> None:
     config_loader.load_configuration(
         config_name="overriding_logging_default.yaml", overrides=[], strict=False
     )
+    # This load history is too different to easily reuse the standard hydra_load_list
     assert config_loader.get_load_history() == [
-        ("hydra_config", "structured://", "hydra"),
-        ("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-        ("overriding_logging_default.yaml", "file://hydra/test_utils/configs", "main"),
+        ("hydra_config", "structured://", "hydra", "hydra"),
+        ("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra", None),
+        ("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra", None),
+        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", None),
+        ("hydra/output/default", "pkg://hydra.conf", "hydra", None),
+        ("hydra/help/default", "pkg://hydra.conf", "hydra", None),
+        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+        (
+            "overriding_logging_default.yaml",
+            "file://hydra/test_utils/configs",
+            "main",
+            None,
+        ),
     ]
 
 
@@ -412,18 +421,20 @@ def test_non_config_group_default() -> None:
     config_loader.load_configuration(
         config_name="non_config_group_default.yaml", overrides=[], strict=False
     )
-    assert config_loader.get_load_history() == [
-        ("hydra_config", "structured://", "hydra"),
-        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-        ("non_config_group_default.yaml", "file://hydra/test_utils/configs", "main"),
-        ("some_config", "file://hydra/test_utils/configs", "main"),
-    ]
+
+    expected = hydra_load_list.copy()
+    expected.extend(
+        [
+            (
+                "non_config_group_default.yaml",
+                "file://hydra/test_utils/configs",
+                "main",
+                None,
+            ),
+            ("some_config", "file://hydra/test_utils/configs", "main", None),
+        ]
+    )
+    assert config_loader.get_load_history() == expected
 
 
 def test_mixed_composition_order() -> None:
@@ -437,17 +448,99 @@ def test_mixed_composition_order() -> None:
     config_loader.load_configuration(
         config_name="mixed_compose.yaml", overrides=[], strict=False
     )
-    assert config_loader.get_load_history() == [
-        ("hydra_config", "structured://", "hydra"),
-        ("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/job_logging/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/launcher/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/sweeper/basic", "pkg://hydra.conf", "hydra"),
-        ("hydra/output/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/help/default", "pkg://hydra.conf", "hydra"),
-        ("hydra/hydra_help/default", "pkg://hydra.conf", "hydra"),
-        ("mixed_compose.yaml", "file://hydra/test_utils/configs", "main"),
-        ("some_config", "file://hydra/test_utils/configs", "main"),
-        ("group1/file1", "file://hydra/test_utils/configs", "main"),
-        ("config", "file://hydra/test_utils/configs", "main"),
-    ]
+
+    expected = hydra_load_list.copy()
+    expected.extend(
+        [
+            ("mixed_compose.yaml", "file://hydra/test_utils/configs", "main", None),
+            ("some_config", "file://hydra/test_utils/configs", "main", None),
+            ("group1/file1", "file://hydra/test_utils/configs", "main", None),
+            ("config", "file://hydra/test_utils/configs", "main", None),
+        ]
+    )
+
+    assert config_loader.get_load_history() == expected
+
+
+def test_load_as_configuration(restore_singletons: Any) -> None:  # noqa: F811
+    """
+    Load structured config as a configuration
+    """
+    ConfigStore.instance().store(group="db", name="mysql", node=MySQLConfig, path="db")
+
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
+    del cfg["hydra"]
+    assert cfg == {
+        "db": {
+            "driver": MISSING,
+            "host": MISSING,
+            "port": MISSING,
+            "user": MISSING,
+            "password": MISSING,
+        }
+    }
+
+    expected = hydra_load_list.copy()
+    expected.extend([("db/mysql", "structured://", "test_provider", None)])
+    assert config_loader.get_load_history() == expected
+
+
+@pytest.mark.parametrize(
+    "path", ["file://hydra/test_utils/configs", "pkg://hydra.test_utils.configs"]
+)
+class TestConfigLoader:
+    def test_load_config_file(self, path):
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+        cfg = config_loader.load_configuration(
+            config_name="db/mysql", overrides=[], strict=False
+        )
+
+        del cfg["hydra"]
+        assert cfg == {"db": {"driver": "mysql", "user": "omry", "password": "secret"}}
+
+        expected = hydra_load_list.copy()
+        expected.append(("db/mysql", path, "main", None))
+        assert config_loader.get_load_history() == expected
+
+    def test_load_config_file_with_schema_validation(
+        self, restore_singletons, path: str
+    ):
+
+        with ConfigStoreWithProvider("test_provider") as config_store:
+            config_store.store(group="db", name="mysql", node=MySQLConfig, path="db")
+
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+        cfg = config_loader.load_configuration(
+            config_name="db/mysql", overrides=[], strict=False
+        )
+
+        del cfg["hydra"]
+        assert cfg == {
+            "db": {
+                "driver": "mysql",
+                "host": "???",
+                "port": "???",
+                "user": "omry",
+                "password": "secret",
+            }
+        }
+
+        expected = hydra_load_list.copy()
+        expected.append(("db/mysql", path, "main", "test_provider"))
+        assert config_loader.get_load_history() == expected
+
+
+"""
+TODO:
+Test loading as schema for existing config:
+1. verify number of loads make sense
+2. implement proper display in hydra.verbose
+3. verify positive and validation error cases
+4. verify overrides behavior.
+5. check behavior with overlapping schemas
+"""
