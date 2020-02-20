@@ -177,7 +177,9 @@ class TestConfigLoader:
             strict=False,
         )
 
-        assert config_loader.get_load_history() == hydra_load_list
+        expected = hydra_load_list.copy()
+        expected.append(("custom_default_launcher.yaml", path, "main", None))
+        assert config_loader.get_load_history() == expected
 
     def test_load_yml_file(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -209,19 +211,16 @@ class TestConfigLoader:
         del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
-    def test_load_with_schema(
+    def test_load_config_with_schema(
         self, restore_singletons: Any, path: str  # noqa: F811
     ) -> None:
-        @dataclass
-        class MySQLConfig:
-            driver: str = MISSING
-            host: str = MISSING
-            port: int = MISSING
-            user: str = MISSING
-            password: str = MISSING
 
         ConfigStore.instance().store(
-            group="db", name="mysql", node=MySQLConfig, path="db"
+            group="db",
+            name="mysql",
+            node=MySQLConfig,
+            path="db",
+            provider="test_provider",
         )
 
         config_loader = ConfigLoaderImpl(
@@ -240,24 +239,48 @@ class TestConfigLoader:
             }
         }
 
-        cfg = config_loader.load_configuration(
-            config_name="db/mysql", overrides=["db.port=101010"]
+        expected = hydra_load_list.copy()
+        expected.append(("db/mysql", path, "main", "test_provider"))
+        assert config_loader.get_load_history() == expected
+
+        # verify illegal modification is rejected at runtime
+        with pytest.raises(ValidationError):
+            cfg.db.port = "fail"
+
+        # verify illegal override is rejected during load
+        with pytest.raises(ValidationError):
+            config_loader.load_configuration(
+                config_name="db/mysql", overrides=["db.port=fail"]
+            )
+
+    def test_load_config_file_with_schema_validation(
+        self, restore_singletons: Any, path: str  # noqa: F811
+    ) -> None:
+
+        with ConfigStoreWithProvider("test_provider") as config_store:
+            config_store.store(group="db", name="mysql", node=MySQLConfig, path="db")
+
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
         )
+        cfg = config_loader.load_configuration(
+            config_name="db/mysql", overrides=[], strict=False
+        )
+
         del cfg["hydra"]
         assert cfg == {
             "db": {
                 "driver": "mysql",
                 "host": "???",
-                "port": 101010,
+                "port": "???",
                 "user": "omry",
                 "password": "secret",
             }
         }
 
-        with pytest.raises(ValidationError):
-            config_loader.load_configuration(
-                config_name="db/mysql", overrides=["db.port=fail"]
-            )
+        expected = hydra_load_list.copy()
+        expected.append(("db/mysql", path, "main", "test_provider"))
+        assert config_loader.get_load_history() == expected
 
 
 @pytest.mark.parametrize(  # type:ignore
@@ -462,7 +485,7 @@ def test_mixed_composition_order() -> None:
     assert config_loader.get_load_history() == expected
 
 
-def test_load_as_configuration(restore_singletons: Any) -> None:  # noqa: F811
+def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
     """
     Load structured config as a configuration
     """
@@ -488,61 +511,12 @@ def test_load_as_configuration(restore_singletons: Any) -> None:  # noqa: F811
     assert config_loader.get_load_history() == expected
 
 
-@pytest.mark.parametrize(
-    "path", ["file://hydra/test_utils/configs", "pkg://hydra.test_utils.configs"]
-)
-class TestConfigLoader:
-    def test_load_config_file(self, path):
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
-        )
-        cfg = config_loader.load_configuration(
-            config_name="db/mysql", overrides=[], strict=False
-        )
-
-        del cfg["hydra"]
-        assert cfg == {"db": {"driver": "mysql", "user": "omry", "password": "secret"}}
-
-        expected = hydra_load_list.copy()
-        expected.append(("db/mysql", path, "main", None))
-        assert config_loader.get_load_history() == expected
-
-    def test_load_config_file_with_schema_validation(
-        self, restore_singletons, path: str
-    ):
-
-        with ConfigStoreWithProvider("test_provider") as config_store:
-            config_store.store(group="db", name="mysql", node=MySQLConfig, path="db")
-
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
-        )
-        cfg = config_loader.load_configuration(
-            config_name="db/mysql", overrides=[], strict=False
-        )
-
-        del cfg["hydra"]
-        assert cfg == {
-            "db": {
-                "driver": "mysql",
-                "host": "???",
-                "port": "???",
-                "user": "omry",
-                "password": "secret",
-            }
-        }
-
-        expected = hydra_load_list.copy()
-        expected.append(("db/mysql", path, "main", "test_provider"))
-        assert config_loader.get_load_history() == expected
-
-
-"""
-TODO:
-Test loading as schema for existing config:
-1. verify number of loads make sense
-2. implement proper display in hydra.verbose
-3. verify positive and validation error cases
-4. verify overrides behavior.
-5. check behavior with overlapping schemas
-"""
+# """
+# TODO:
+# Test loading as schema for existing config:
+# 1. (Y) verify number of loads make sense
+# 2. Implement proper display in hydra.verbose
+# 3. (Y) verify positive and validation error cases
+# 4. (Y) verify overrides behavior.
+# 5. check behavior with overlapping schemas
+# """
