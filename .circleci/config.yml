@@ -75,12 +75,11 @@ jobs:
       - run:
           name: "Testing Hydra"
           command: |
-            for i in {1..75}; do
+            for i in {1..10}; do
               echo "run $i"
-              nox -s test_joblib -- -vlx
+              nox -s "test_plugins-3.6(pip install)" -- -vlx
               exitcode=$?
               test $exitcode -ne 0 && break
-              echo "ok"
             done
             exit $exitcode
 
