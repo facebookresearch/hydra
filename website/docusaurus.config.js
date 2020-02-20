@@ -30,6 +30,7 @@ module.exports = {
             },
             links: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
+                {to: 'versions', label: 'Versions', position: 'left'},
                 {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
             ],
         },
