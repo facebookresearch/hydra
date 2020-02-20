@@ -15,6 +15,7 @@ with open("README.md", "r") as fh:
         packages=find_packages(exclude=["tests", "example"]),
         classifiers=[
             "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Operating System :: MacOS",
