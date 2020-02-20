@@ -74,7 +74,7 @@ jobs:
       - run: sudo pip install nox
       - run:
           name: "Testing Hydra"
-          command: nox -s test_joblib -- -vlx
+          command: for i in {1..100}; do echo "run $i"; nox -s test_joblib -- -vlx; test $? && break; done
 
   py37_linux:
     docker:
@@ -86,7 +86,7 @@ jobs:
       - run: sudo pip install nox
       - run:
           name: "Testing Hydra"
-          command: nox
+          command: for i in {1..100}; do echo "run $i"; nox -s test_joblib -- -vlx; test $? && break; done
 
   py38_linux:
     docker:
@@ -98,7 +98,7 @@ jobs:
       - run: sudo pip install nox
       - run:
           name: "Testing Hydra"
-          command: nox
+          command: for i in {1..100}; do echo "run $i"; nox -s test_joblib -- -vlx; test $? && break; done
 
   # windows
   py36_win:
@@ -211,17 +211,8 @@ workflows:
     jobs:
       # linux
       - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-      - py36_linux
-#       - py37_linux
-#       - py38_linux
+      - py37_linux
+      - py38_linux
 #       # mac
 #       - py36_mac
 #       - py37_mac
