@@ -177,6 +177,34 @@ def test_plugins(session, install_cmd):
             run_pytest(session)
 
 
+# run only joblib_launcher plugging
+@nox.session(python="3.6")
+def test_joblib(session):
+    install_cmd = ["pip", "install"]
+    session.install("--upgrade", "setuptools", "pip")
+    install_pytest(session)
+    install_hydra(session, install_cmd)
+    # Install all supported plugins in session
+    plugin = {
+        "name": "hydra_joblib_launcher",
+        "path": "hydra_joblib_launcher",
+        "module": "hydra_plugins.hydra_joblib_launcher",
+    }
+
+    cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
+    session.run(*cmd, silent=SILENT)
+
+    # Test that we can import Hydra
+    session.run("python", "-c", "from hydra import main", silent=SILENT)
+
+    # Test that we can import joblib plugin
+    session.run("python", "-c", "import {}".format(plugin["module"]))
+
+    # Run tests for joblib plugin
+    session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+    run_pytest(session)
+
+
 # code coverage runs with python 3.6
 @nox.session(python="3.6")
 def coverage(session):

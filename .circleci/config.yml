@@ -74,7 +74,7 @@ jobs:
       - run: sudo pip install nox
       - run:
           name: "Testing Hydra"
-          command: nox
+          command: nox -s test_joblib -- -vlx
 
   py37_linux:
     docker:
@@ -211,20 +211,29 @@ workflows:
     jobs:
       # linux
       - py36_linux
-      - py37_linux
-      - py38_linux
-      # mac
-      - py36_mac
-      - py37_mac
-      - py38_mac
-      # windows
-      - py36_win
-      - py37_win
-#      - py38_win
-      - deploy-website:
-          filters:
-            branches:
-              only: master
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+      - py36_linux
+#       - py37_linux
+#       - py38_linux
+#       # mac
+#       - py36_mac
+#       - py37_mac
+#       - py38_mac
+#       # windows
+#       - py36_win
+#       - py37_win
+# #      - py38_win
+#       - deploy-website:
+#           filters:
+#             branches:
+#               only: master
 
 orbs:
   win: circleci/windows@1.0.0
