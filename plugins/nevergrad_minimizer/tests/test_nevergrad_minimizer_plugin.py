@@ -21,8 +21,8 @@ def test_discovery() -> None:
     [("blu,blublu", ng.p.Choice, str),
      ("0,1,2", ng.p.TransitionChoice, int),
      ("0.0,12.0,2.0", ng.p.Choice, float),
-     ("1:12", ng.p.Log, int),
-     ("1.0:12", ng.p.Log, float),
+     ("1:12", ng.p.Scalar, int),
+     ("1.0:12", ng.p.Scalar, float),
      ("blublu", str, str),
      ("Scalar(init=12.1).set_mutation(sigma=3).set_integer_casting()", ng.p.Scalar, int),
      ]
@@ -38,19 +38,15 @@ def test_make_parameter(
         assert isinstance(param.value, value_cls)
 
 
-# def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
-#     sweep = sweep_runner(
-#         calling_file=None,
-#         calling_module="hydra.test_utils.a_module",
-#         config_path="configs/compose.yaml",
-#         overrides=["hydra/sweeper=example", "hydra/launcher=basic", "foo=1,2"],
-#         strict=True,
-#     )
-#     with sweep:
-#         assert sweep.returns is not None
-#         job_ret = sweep.returns[0]
-#         assert len(job_ret) == 2
-#         assert job_ret[0].overrides == ["foo=1"]
-#         assert job_ret[0].cfg == {"foo": 1, "bar": 100}
-#         assert job_ret[1].overrides == ["foo=2"]
-#         assert job_ret[1].cfg == {"foo": 2, "bar": 100}
+def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
+    sweep = sweep_runner(
+        calling_file=None,
+        calling_module="hydra.test_utils.a_module",
+        config_path="configs/compose.yaml",
+        # TODO: How to give a smaller budget?
+        overrides=["hydra/sweeper=nevergrad-minimizer", "hydra/launcher=basic", "foo=1,2"],
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is not None
+        assert len(sweep.returns) == 80
