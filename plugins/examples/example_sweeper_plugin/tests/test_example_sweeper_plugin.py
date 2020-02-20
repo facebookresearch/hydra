@@ -18,6 +18,7 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         calling_module="hydra.test_utils.a_module",
         config_path="configs",
         config_name="compose.yaml",
+        task_function=None,
         overrides=["hydra/sweeper=example", "hydra/launcher=basic", "foo=1,2"],
         strict=True,
     )

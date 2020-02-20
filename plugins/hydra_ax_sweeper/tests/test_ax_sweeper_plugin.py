@@ -1,0 +1,110 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import math
+import os
+from typing import Any
+
+from omegaconf import DictConfig, OmegaConf
+
+from hydra.core.plugins import Plugins
+from hydra.plugins.sweeper import Sweeper
+
+# noinspection PyUnresolvedReferences
+from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
+from hydra_plugins.hydra_ax_sweeper import AxSweeper
+
+
+def test_discovery() -> None:
+    """
+    Tests that this plugin can be discovered via the plugins subsystem when looking for Sweeper
+    :return:
+    """
+    assert AxSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
+
+
+def quadratic(cfg: DictConfig) -> Any:
+    x = cfg.quadratic.x
+    y = cfg.quadratic.y
+    a = 100
+    b = 1
+    z = a * (x ** 2) + b * y
+    return z
+
+
+def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noqa: F811
+    sweep = sweep_runner(
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        task_function=quadratic,
+        config_path="tests/config/quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.random_seed=1",
+        ],
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters, predictions = returns["ax"]
+        assert len(best_parameters) == 2
+        assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
+
+
+def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: F811
+    sweep = sweep_runner(
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        task_function=quadratic,
+        config_path="tests/config/quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.random_seed=1",
+            "quadratic.x=-5:-2",
+            "quadratic.y=-2:2",
+        ],
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters, predictions = returns["ax"]
+        assert len(best_parameters) == 2
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], -0.0, abs_tol=1e-4)
+
+
+def test_jobs_configured_via_cmd_and_config(
+    sweep_runner: TSweepRunner,  # noqa: F811
+) -> None:
+    sweep = sweep_runner(
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        task_function=quadratic,
+        config_path="tests/config/quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.random_seed=1",
+            "quadratic.x=-5:-2",
+        ],
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters, predictions = returns["ax"]
+        assert len(best_parameters) == 2
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], -0.0, abs_tol=1e-4)

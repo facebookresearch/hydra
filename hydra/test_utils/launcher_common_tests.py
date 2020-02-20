@@ -81,6 +81,7 @@ class LauncherTestSuite:
             calling_module="hydra.test_utils.a_module",
             config_path="configs",
             config_name="unspecified_mandatory_default",
+            task_function=None,
             overrides=base_overrides + overrides,
             strict=True,
         )
@@ -113,6 +114,7 @@ class LauncherTestSuite:
             calling_module="hydra.test_utils.a_module",
             config_path="configs",
             config_name="db_conf.yaml",
+            task_function=None,
             overrides=base_overrides + overrides,
             strict=True,
         )
@@ -152,6 +154,7 @@ def sweep_1_job(
         calling_module="hydra.test_utils.a_module",
         config_path="configs",
         config_name="compose.yaml",
+        task_function=None,
         overrides=overrides,
         strict=strict,
     )
@@ -176,6 +179,7 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
+        task_function=None,
         config_path="configs/compose.yaml",
         config_name=None,
         overrides=overrides,
@@ -216,6 +220,7 @@ def not_sweeping_hydra_overrides(
         calling_module="hydra.test_utils.a_module",
         config_path="configs",
         config_name="compose.yaml",
+        task_function=None,
         overrides=overrides,
         strict=None,
     )
@@ -245,6 +250,7 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
         calling_module="hydra.test_utils.a_module",
         config_path="configs",
         config_name="compose",
+        task_function=None,
         overrides=overrides,
     )
     expected_overrides = [["group1=file1"], ["group1=file2"]]
