@@ -38,7 +38,7 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class JoblibLauncher(Launcher):
-    def __init__(self, joblib: Dict[str, Any] = {}) -> None:
+    def __init__(self, joblib: DictConfig) -> None:
         """Joblib Launcher
 
         Launches parallel jobs using Joblib.Parallel. For details, refer to:
@@ -79,12 +79,13 @@ class JoblibLauncher(Launcher):
 
         # Joblib's backend is hard-coded to loky since the threading
         # backend is incompatible with Hydra
-        joblib_keywords = OmegaConf.to_container(self.joblib, resolve=True)
-        joblib_keywords["backend"] = "loky"
+        joblib_cfg = OmegaConf.to_container(self.joblib, resolve=True)
+        assert isinstance(joblib_cfg, dict)
+        joblib_cfg["backend"] = "loky"
 
         log.info(
             "Joblib.Parallel({}) is launching {} jobs".format(
-                ",".join([f"{k}={v}" for k, v in joblib_keywords.items()]),
+                ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
                 len(job_overrides),
             )
         )
@@ -94,7 +95,7 @@ class JoblibLauncher(Launcher):
 
         singleton_state = Singleton.get_state()
 
-        runs = Parallel(**joblib_keywords)(
+        runs = Parallel(**joblib_cfg)(
             delayed(execute_job)(
                 idx,
                 overrides,
