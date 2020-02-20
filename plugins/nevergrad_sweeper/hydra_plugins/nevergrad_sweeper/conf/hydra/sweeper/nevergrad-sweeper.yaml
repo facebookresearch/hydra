@@ -1,0 +1,7 @@
+hydra:
+  sweeper:
+    class: hydra_plugins.nevergrad_sweeper.NevergradSweeper
+    params:
+      optimizer: Shiva
+      num_workers: 1
+      budget: 5
