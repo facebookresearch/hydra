@@ -38,15 +38,23 @@ def test_make_parameter(
         assert isinstance(param.value, value_cls)
 
 
+# pylint: disable=redefined-outer-name
 def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
+    budget = 8
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
-        # TODO: How to give a smaller budget?
-        overrides=["hydra/sweeper=nevergrad-minimizer", "hydra/launcher=basic", "foo=1,2"],
+        overrides=[
+            "hydra/sweeper=nevergrad-minimizer",
+            "hydra/launcher=basic",
+            f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
+            "hydra.sweeper.params.num_workers=3",
+            "foo=1,2",
+            "bar=4.0:8.0",
+        ],
         strict=True,
     )
     with sweep:
         assert sweep.returns is not None
-        assert len(sweep.returns) == 80
+        assert len(sweep.returns) == budget

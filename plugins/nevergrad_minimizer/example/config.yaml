@@ -1,5 +1,10 @@
 defaults:
   - hydra/sweeper: nevergrad-minimizer
+hydra:
+  sweeper:
+    params:
+      budget: 4
+      num_workers: 6
 db: mnist
 lr: 0.01
 dropout: 0.6
