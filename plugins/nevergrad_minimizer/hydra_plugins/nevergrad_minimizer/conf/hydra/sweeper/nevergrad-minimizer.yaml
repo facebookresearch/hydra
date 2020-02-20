@@ -1,6 +1,6 @@
 hydra:
   sweeper:
-    class: hydra_plugins.nevergrad_sweeper.NevergradSweeper
+    class: hydra_plugins.nevergrad_minimizer.NevergradMinimizer
     params:
       optimizer: Shiva
       num_workers: 1

@@ -17,7 +17,7 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class NevergradSweeperSearchPathPlugin(SearchPathPlugin):
+class NgSearchPathPlugin(SearchPathPlugin):
     """
     This plugin is allowing configuration files provided by the ExampleSweeper plugin to be discovered
     and used once the ExampleSweeper plugin is installed
@@ -26,7 +26,7 @@ class NevergradSweeperSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "nevergrad-sweeper", "pkg://hydra_plugins.nevergrad_sweeper.conf"
+            "nevergrad-minimizer", "pkg://hydra_plugins.nevergrad_minimizer.conf"
         )
 
 
@@ -64,7 +64,7 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     return read_value(string)  # constant
 
 
-class NevergradSweeper(Sweeper):
+class NevergradMinimizer(Sweeper):
     def __init__(self, optimizer: str, budget: int, num_workers: int):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None

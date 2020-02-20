@@ -1,3 +1,0 @@
-defaults:
-  - hydra/sweeper: nevergrad-sweeper
-  - db: mysql
