@@ -65,11 +65,12 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
 
 
 class NevergradMinimizer(Sweeper):
-    def __init__(self, optimizer: str, budget: int, num_workers: int):
+    def __init__(self, optimizer: str, budget: int, num_workers: int, noisy: bool):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None
         self.job_results = None
         self.optimizer = optimizer
+        self.noisy = noisy
         self.budget = budget
         self.num_workers = num_workers
 
@@ -87,21 +88,29 @@ class NevergradMinimizer(Sweeper):
     def sweep(self, arguments: tp.List[str]) -> tp.Any:
         assert self.config is not None
         assert self.launcher is not None
-        log.info("NevergradMinimizer(optimizer=%s, budget=%s, num_workers=%s) sweeping",
-                 self.optimizer, self.budget, self.num_workers)
-        log.info("Sweep output dir : %s", self.config.hydra.sweep.dir)
-        # Construct list of overrides per job we want to launch
+        # Construct the parametrization
         params: tp.Dict[str, tp.Union[str, int, float, ng.p.Parameter]] = {}
         for s in arguments:
-            key, value = s.split("=")
-            # for each argument, create a list. if the argument has , (aka - is a sweep), add an element for each
-            # option to that list, otherwise add a single element with the value
+            key, value = s.split("=", 1)
             params[key] = make_parameter(value)
         instrumentation = ng.p.Instrumentation(**params)
-        log.info("Minimizing with %s", instrumentation)
+        instrumentation.descriptors.deterministic_function = not self.noisy
+        # log and build the optimizer
+        log.info("NevergradMinimizer(optimizer=%s, budget=%s, num_workers=%s) sweeping",
+                 self.optimizer, self.budget, self.num_workers)
+        log.info("with %s", instrumentation)
+        log.info("Sweep output dir : %s", self.config.hydra.sweep.dir)
         optimizer = ng.optimizers.registry[self.optimizer](instrumentation, self.budget, self.num_workers)
-
-        candidates = [optimizer.ask() for _ in range(self.budget)]
-        overrides = list(tuple(f"{x}={y}" for x, y in c.kwargs.items()) for c in candidates)
-        returns = [self.launcher.launch(overrides)]
-        return returns
+        # loop!
+        remaining_budget = self.budget
+        all_returns: tp.List[tp.Any] = []
+        while remaining_budget > 0:
+            batch = max(self.num_workers, remaining_budget)
+            remaining_budget -= batch
+            candidates = [optimizer.ask() for _ in range(batch)]
+            overrides = list(tuple(f"{x}={y}" for x, y in c.kwargs.items()) for c in candidates)
+            returns = self.launcher.launch(overrides)
+            for cand, ret in zip(candidates, returns):
+                optimizer.tell(cand, ret.return_value)
+            all_returns.extend(returns)
+        return all_returns

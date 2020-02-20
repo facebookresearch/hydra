@@ -1,3 +1,8 @@
 defaults:
   - hydra/sweeper: nevergrad-minimizer
-  - db: mysql
+db: mnist
+lr: 0.01
+dropout: 0.6
+batch_size: 4
+
+

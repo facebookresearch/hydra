@@ -3,5 +3,6 @@ hydra:
     class: hydra_plugins.nevergrad_minimizer.NevergradMinimizer
     params:
       optimizer: Shiva
-      num_workers: 1
-      budget: 5
+      num_workers: 10
+      budget: 500
+      noisy: false
