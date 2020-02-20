@@ -31,6 +31,7 @@ module.exports = {
         ],
 
         'Plugins': [
+            'plugins/ax_sweeper',
             'plugins/colorlog',
             'plugins/joblib_launcher',
         ],
