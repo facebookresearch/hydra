@@ -28,7 +28,7 @@ hydra_defaults = [
 class PluginConf(Dict[str, Any]):
     # class name for plugin
     cls: str = MISSING
-    params: Dict[str, Any] = MISSING
+    params: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass

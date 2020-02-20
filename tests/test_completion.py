@@ -2,6 +2,7 @@
 import distutils.spawn
 import os
 import subprocess
+import sys
 from pathlib import Path
 from typing import List
 
@@ -106,24 +107,32 @@ class TestCompletion:
         reason="expect should be installed to run the expects tests",
     )
     @pytest.mark.parametrize(  # type: ignore
-        "prog", ["python hydra/test_utils/completion.py"]
+        "prog", [["python", "hydra/test_utils/completion.py"]]
     )
     @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
-        prog: str,
+        prog: List[str],
         num_tabs: int,
         line_prefix: str,
         line: str,
         expected: List[str],
     ) -> None:
+
+        # verify expect will be running the correct Python.
+        # This preemptively detect a much harder to understand error from expect.
+        ret = subprocess.check_output(["which", "python"], env=os.environ)
+        assert os.path.realpath(ret.decode("utf-8").strip()) == os.path.realpath(
+            sys.executable.strip()
+        )
+
         line1 = "line={}".format(line_prefix + line)
         cmd = [
             "expect",
-            # "-d",  # Uncomment for debug prints from expect
+            "-d",  # Uncomment for debug prints from expect
             "tests/expect/test_{}_completion.exp".format(shell),
-            prog,
+            f"{' '.join(prog)}",
             line1,
             str(num_tabs),
         ]

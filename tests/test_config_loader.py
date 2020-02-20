@@ -1,15 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Any, List, Tuple, Optional
+from dataclasses import dataclass
+from typing import Any, List, Optional, Tuple
 
 import pkg_resources
 import pytest
-from dataclasses import dataclass
 from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
-from hydra.core.config_store import ConfigStore
-from hydra.core.config_store import ConfigStoreWithProvider
+from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
 
 # noinspection PyUnresolvedReferences
