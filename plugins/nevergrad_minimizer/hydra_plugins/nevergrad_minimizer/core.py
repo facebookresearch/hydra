@@ -58,6 +58,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
 
 def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     """Returns a Nevergrad parameter from a definition string.
+
     Parameters
     ----------
     string: str
@@ -103,6 +104,32 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
 
 
 class NevergradMinimizer(Sweeper):
+    """Returns a Nevergrad parameter from a definition string.
+
+    Parameters
+    ----------
+    optimizer: str
+       name of a Nevergrad optimizer to use. Some interesting options are:
+         - "OnePlusOne" extemely simple and robust, especially at low budget
+         - "CMA" very good algorithm, but may require a significant budget (> 100)
+         - "TwoPointsDE": an algorithm good in a wide range of settings, for significant budgets
+           (> 100).
+         - "Shiva" an algorithm aiming at identifying the best optimizer given your input
+           definition (work in progress, it may still be ill-suited for low budget)
+       See nevergrad documentation: https://facebookresearch.github.io/nevergrad/
+    budget: int
+       the total number of function evaluation that can be performed
+    num_workers: int
+       the number of evaluation to run in parallel. Sequential means num_workers=1.
+       Population based algorithms such as CMA and DE can have num_workers up to 40 without slowing
+       down the convergence, while OnePlusOne can benefit sequential, but will perform well with several
+       workers as well.
+    noisy: bool
+       notifies (some) algorithms that the function evaluation is noisy
+    version: int
+       the version of the commandline input parsing. The parsing will probably evolve in the near
+       future and several versions may temporarily coexist.
+    """
     def __init__(self, optimizer: str, budget: int, num_workers: int, noisy: bool, version: int):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None

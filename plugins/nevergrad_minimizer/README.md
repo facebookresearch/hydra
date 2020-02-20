@@ -6,8 +6,8 @@ defaults:
 hydra:
   sweeper:
     params:
-      budget: 4
-      num_workers: 6
+      budget: 100
+      num_workers: 10
 db: mnist
 lr: 0.01
 dropout: 0.6
