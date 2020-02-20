@@ -2,7 +2,7 @@ hydra:
   sweeper:
     class: hydra_plugins.nevergrad_minimizer.NevergradMinimizer
     params:
-      optimizer: Shiva
+      optimizer: OnePlusOne
       num_workers: 10
-      budget: 500
+      budget: 50
       noisy: false

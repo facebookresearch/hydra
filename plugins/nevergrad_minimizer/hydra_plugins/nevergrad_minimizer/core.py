@@ -54,11 +54,11 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
         ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))  # type: ignore
         return (ng.p.TransitionChoice if ordered else ng.p.Choice)(choices)  # type: ignore
     if ":" in string:
-        bounds = [read_value(x) for x in string.split(":")]
-        assert all(isinstance(b, (int, float)) for b in bounds), "Bounds must be scalars"
-        # TODO modify to Scalar with updated API
-        scalar = ng.p.Log(a_min=bounds[0], a_max=bounds[1])  # type: ignore
-        if all(isinstance(b, int) for b in bounds):
+        a, b = [read_value(x) for x in string.split(":")]
+        assert all(isinstance(c, (int, float)) for c in (a, b)), "Bounds must be scalars"
+        sigma = (b - a) / 5  # type: ignore
+        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_bounds(a_min=a, a_max=b, full_range_sampling=True).set_mutation(sigma=sigma)  # type: ignore
+        if all(isinstance(c, int) for c in (a, b)):
             scalar.set_integer_casting()
         return scalar
     return read_value(string)  # constant
