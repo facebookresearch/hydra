@@ -4,6 +4,7 @@ defaults:
 quadratic:
   # To be minimized
   x: ???
+  y: ???
   
 
 hydra:
@@ -25,5 +26,11 @@ hydra:
     params:
       quadratic.x:
         type: range
-        bounds: [-5, 5]
+        bounds: [-1, 1]
         log_scale: false
+      
+      quadratic.y:
+        type: range
+        bounds: [-1, 1]
+        log_scale: false
+
