@@ -37,7 +37,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
     except ValueError:
         pass
     else:
-        if output.is_integer():
+        if output.is_integer() and "." not in string:
             output = int(output)
     return output
 
@@ -45,7 +45,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
 def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     string = string.strip()
     if string.startswith(tuple(dir(ng.p))):
-        param = exec("ng.p." + string)  # pylint: disable=exec-used
+        param = eval("ng.p." + string)  # pylint: disable=eval-used
         assert isinstance(param, ng.p.Parameter)
         return param
     if "," in string:
