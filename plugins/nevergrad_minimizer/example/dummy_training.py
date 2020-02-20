@@ -12,7 +12,6 @@ def dummy_training(cfg):
     Minimum is 0.0 at:
     lr = 0.12, dropout=0.33, db=mnist, batch_size=4
     """
-    print(cfg.pretty())
     do = cfg.dropout
     bs = cfg.batch_size
     out = abs(do - 0.33) + int(cfg.db == "mnist") + abs(cfg.lr - 0.12) + abs(bs - 4)
