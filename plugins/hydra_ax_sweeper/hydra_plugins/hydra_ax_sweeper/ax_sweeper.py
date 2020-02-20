@@ -246,7 +246,7 @@ class AxSweeper(Sweeper):
                         "values": [int(x) for x in value_choices],
                         "parameter_type": ParameterType.INT,
                     }
-                if all(_is_float(x) for x in value_choices):
+                elif all(_is_float(x) for x in value_choices):
                     param = {
                         "name": key,
                         "type": "choice",
