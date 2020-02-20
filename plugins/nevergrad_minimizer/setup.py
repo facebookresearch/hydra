@@ -4,11 +4,11 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
-        name="nevergrad_sweeper",
+        name="nevergrad_minimizer",
         version="0.1.0",
         author="Jeremy Rapin",
         author_email="jrapin@fb.com",
-        description="Example Hydra Sweeper plugin",
+        description="Nevergrad Minimization plugin with basic features",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",

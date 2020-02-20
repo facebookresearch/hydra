@@ -46,7 +46,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
     >>> "blublu"
     """
     output: tp.Union[float, int, str] = string
-    try:ython example/my_app.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.001:1.0
+    try:
         output = float(string)
     except ValueError:
         pass
