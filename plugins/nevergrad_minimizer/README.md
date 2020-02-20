@@ -11,4 +11,4 @@ hydra:
 
 #### Example app using custom sweeper:
 ```text
-$ python example/my_app.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=0.1)' dropout=0.001:1.0
+$ python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.001:1.0

@@ -4,5 +4,6 @@ hydra:
     params:
       optimizer: OnePlusOne
       num_workers: 10
-      budget: 50
+      budget: 80
       noisy: false
+      version: 1

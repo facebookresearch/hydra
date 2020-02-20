@@ -31,8 +31,22 @@ class NgSearchPathPlugin(SearchPathPlugin):
 
 
 def read_value(string: str) -> tp.Union[int, float, str]:
+    """Converts a string into a float or an int if it makes sense,
+    or returns the string.
+
+    Examples
+    --------
+    read_value("1")
+    >>> 1
+
+    read_value("1.0")
+    >>> 1.0
+
+    read_value("blublu")
+    >>> "blublu"
+    """
     output: tp.Union[float, int, str] = string
-    try:
+    try:ython example/my_app.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.001:1.0
         output = float(string)
     except ValueError:
         pass
@@ -43,6 +57,28 @@ def read_value(string: str) -> tp.Union[int, float, str]:
 
 
 def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
+    """Returns a Nevergrad parameter from a definition string.
+    Parameters
+    ----------
+    string: str
+         a definition string. This can be:
+         - comma-separated values: for a choice parameter
+           Eg.: "a,b,c"
+           Note: sequences of increasing scalars provide a specific parametrization
+             compared to unordered categorical values
+         - ":"-separated values for ranges of scalars.
+           Eg.: "1.0:5.0"
+           Note: using integers as bounds will parametrize as an integer value
+         - evaluable nevergrad Parameter definition, which will be evaluated at
+           runtime. This provides full nevergrad flexibility at the cost of robustness.
+           Eg.:"Log(a_min=0.001, a_max=0.1)"
+         - anything else will be treated as a constant string
+
+    Returns
+    -------
+    Parameter or str
+        A Parameter if the string fitted one of the definitions, else the input string
+    """
     string = string.strip()
     if string.startswith(tuple(dir(ng.p))):
         param = eval("ng.p." + string)  # pylint: disable=eval-used
@@ -56,8 +92,10 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     if ":" in string:
         a, b = [read_value(x) for x in string.split(":")]
         assert all(isinstance(c, (int, float)) for c in (a, b)), "Bounds must be scalars"
-        sigma = (b - a) / 5  # type: ignore
-        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_bounds(a_min=a, a_max=b, full_range_sampling=True).set_mutation(sigma=sigma)  # type: ignore
+        sigma = (b - a) / 6  # type: ignore
+        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_bounds(  # type: ignore
+            a_min=a, a_max=b, full_range_sampling=True
+        ).set_mutation(sigma=sigma)
         if all(isinstance(c, int) for c in (a, b)):
             scalar.set_integer_casting()
         return scalar
@@ -65,9 +103,10 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
 
 
 class NevergradMinimizer(Sweeper):
-    def __init__(self, optimizer: str, budget: int, num_workers: int, noisy: bool):
+    def __init__(self, optimizer: str, budget: int, num_workers: int, noisy: bool, version: int):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None
+        assert version == 1, "Only version 1 of API is currently available"
         self.job_results = None
         self.optimizer = optimizer
         self.noisy = noisy
@@ -105,12 +144,14 @@ class NevergradMinimizer(Sweeper):
         remaining_budget = self.budget
         all_returns: tp.List[tp.Any] = []
         while remaining_budget > 0:
-            batch = max(self.num_workers, remaining_budget)
+            batch = min(self.num_workers, remaining_budget)
             remaining_budget -= batch
             candidates = [optimizer.ask() for _ in range(batch)]
             overrides = list(tuple(f"{x}={y}" for x, y in c.kwargs.items()) for c in candidates)
             returns = self.launcher.launch(overrides)
+            # would have been nice to avoid waiting for all jobs to finish
+            # aka batch size Vs steady state (launching a new job whenever one is done)
             for cand, ret in zip(candidates, returns):
                 optimizer.tell(cand, ret.return_value)
             all_returns.extend(returns)
-        return all_returns
+        return all_returns  # not sure what the return should be
