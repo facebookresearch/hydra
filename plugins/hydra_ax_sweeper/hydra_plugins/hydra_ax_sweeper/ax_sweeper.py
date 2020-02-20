@@ -4,7 +4,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
-import yaml
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
@@ -30,7 +29,6 @@ class Trial:
 
 
 BatchOfTrialType = List[Trial]
-# ParameterType = Union[ax_types.TParameterization]
 
 
 def _is_int(string_inp: str) -> bool:
@@ -186,7 +184,7 @@ class AxSweeper(Sweeper):
             results_to_serialize = {"optimizer": "ax", "ax": best}
             results_to_serialize = json.loads(json.dumps(results_to_serialize))
             # This step is to convert all the numpy floats into python floats
-            yaml.dump(results_to_serialize, f)
+            OmegaConf.save(OmegaConf.create(results_to_serialize), f)
         log.info("Best parameters: " + str(best))
 
     def sweep_over_batches(
