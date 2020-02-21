@@ -153,6 +153,9 @@ def get_plugin_os_names(session: nox.session, plugin: str) -> List[str]:
     setup_py = os.path.join(BASE, "plugins", plugin["path"], "setup.py")
     out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
     oses = list(filter(lambda line: "Operating System" in line, out))
+    if len(oses) == 0:
+        # No Os is specified so all oses are supported
+        return DEFAULT_OS_NAMES
     if len(oses) == 1 and oses[0] == "Operating System :: OS Independent":
         # All oses are supported
         return DEFAULT_OS_NAMES
