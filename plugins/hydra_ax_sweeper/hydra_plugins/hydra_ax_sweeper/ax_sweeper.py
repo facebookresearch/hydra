@@ -180,11 +180,13 @@ class AxSweeper(Sweeper):
 
             current_parallelism_index += 1
 
-        with open(f"{self.sweep_dir}/optimization_results.yaml", "w") as f:
-            results_to_serialize = {"optimizer": "ax", "ax": best}
-            results_to_serialize = json.loads(json.dumps(results_to_serialize))
-            # This step is to convert all the numpy floats into python floats
-            OmegaConf.save(OmegaConf.create(results_to_serialize), f)
+        results_to_serialize = {"optimizer": "ax", "ax": best}
+        results_to_serialize = json.loads(json.dumps(results_to_serialize))
+        # This step is to convert all the numpy floats into python floats
+        OmegaConf.save(
+            OmegaConf.create(results_to_serialize),
+            f"{self.sweep_dir}/optimization_results.yaml",
+        )
         log.info("Best parameters: " + str(best))
 
     def sweep_over_batches(

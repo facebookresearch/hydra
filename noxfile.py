@@ -193,8 +193,10 @@ def test_plugins(session, install_cmd):
     for plugin in all_plugins:
         # Verify this plugin supports the python we are testing on, skip otherwise
         plugin_python_versions = get_plugin_python_version(session, plugin)
-        plugin_enabled[plugin["path"]] = session.python in plugin_python_versions
-        if not plugin_enabled[plugin["path"]]:
+        os_supported = check_if_os_supports_plugin(session, plugin)
+        python_supported = session.python in plugin_python_versions
+        plugin_enabled[plugin["path"]] = os_supported and python_supported
+        if not python_supported:
             py_str = ",".join(plugin_python_versions)
             session.log(
                 f"Not testing {plugin['name']} on Python {session.python}, supports [{py_str}]"
@@ -202,8 +204,7 @@ def test_plugins(session, install_cmd):
             continue
 
         # Verify this plugin supports the OS we are testing on, skip otherwise
-        plugin_enabled[plugin["path"]] = check_if_os_supports_plugin(session, plugin)
-        if not plugin_enabled[plugin["path"]]:
+        if not os_supported:
             os_str = ",".join(get_plugin_os_names(session, plugin))
             session.log(
                 f"Not testing {plugin['name']} on OS {get_current_os()}, supports [{os_str}]"
@@ -241,7 +242,10 @@ def coverage(session):
     session.run("pip", "install", "-e", ".", silent=SILENT)
     # Install all plugins in session
     for plugin in get_all_plugins():
-        if check_if_os_supports_plugin(session, plugin):
+        plugin_python_versions = get_plugin_python_version(session, plugin)
+        os_supported = check_if_os_supports_plugin(session, plugin)
+        python_supported = session.python not in plugin_python_versions
+        if os_supported and python_supported:
             session.run(
                 "pip",
                 "install",
@@ -254,9 +258,9 @@ def coverage(session):
     session.run("coverage", "run", "--append", "-m", "pytest", silent=SILENT)
     for plugin in list_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
-        if session.python not in plugin_python_versions:
-            continue
-        if not check_if_os_supports_plugin(session, plugin):
+        os_supported = check_if_os_supports_plugin(session, plugin)
+        python_supported = session.python not in plugin_python_versions
+        if not (python_supported and os_supported):
             continue
 
         session.run(
