@@ -96,10 +96,10 @@ def lint(session):
     session.run("isort", "--check", ".")
 
     # Mypy
-    session.run("mypy", ".", "--strict")
-    # Mypy for plugins
-    for plugin in get_all_plugins():
-        session.run("mypy", os.path.join("plugins", plugin["path"]), "--strict")
+    # session.run("mypy", ".", "--strict")
+    # # Mypy for plugins
+    # for plugin in get_all_plugins():
+    #     session.run("mypy", os.path.join("plugins", plugin["path"]), "--strict")
 
 
 @nox.session(python=PYTHON_VERSIONS)
