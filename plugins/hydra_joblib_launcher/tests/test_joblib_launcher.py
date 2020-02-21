@@ -3,6 +3,7 @@ import sys
 
 import pytest
 
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -14,6 +15,11 @@ from hydra.test_utils.launcher_common_tests import (
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
 from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
+
+# Log multiprocessing debugging info
+from multiprocessing.util import log_to_stderr
+
+log_to_stderr(10)
 
 win_msg = "Windows is unsupported, due to stability issues with JobLib"
 
