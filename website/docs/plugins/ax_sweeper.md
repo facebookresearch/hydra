@@ -24,9 +24,14 @@ x:
  type: range
  bounds: [-5.0, 10.0]
  log_scale: false
+
+banana.y:
+ type: range
+ bounds: [-5, 10.1]
+ log_scale: false
 ```
 
-The `x` parameter takes on a "range" of values, between `-5.0` to `10.0`,  and the values should not be sampled from the log-space. In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. The required elements in the config are:
+The `x` parameter takes on a "range" of integer values, between `-5` to `5`, and the values should not be sampled from the log-space. The `y` parameter takes on a range of floating-point values between `-5` to `10.1`, and the values are not to be sampled from the log-space. In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
 
 * `name` - Name of the parameter. It is of type string.
 * `type` - Type of the parameter. It can take the following values: `range`, `fixed`, or `choice`.
@@ -34,7 +39,7 @@ The `x` parameter takes on a "range" of values, between `-5.0` to `10.0`,  and t
 * `values` - Required only for the `choice` parameters. It should be a list of values.
 * `value` - Required only for the `fixed` parameters. It should be a single value. 
 
-Note that when using the config file, the parameter type (int, float, string, etc.) is set via the [`parameter_type` attribute](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter).
+Note that when using the config file, the parameter type (int, float, string, etc.) is set via the [`parameter_type` attribute](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter). One important thing to note is how mixed types (float + int) are handled. For `y` parameter, the range bounds were set to be `-5` to `10.1`. Both the values were upcasted to a float (irrespective of whether the range was set via the command line or the config file). In case the user provides the `parameter_type` attribute in the config, the attribute is not changed when type casting is done. If the user wants to sample integers in range `-5` to `5`, they need to specify the range as `-5:5` or `[-5, 5]` (in config). If they want to sample floats in range `-5` to `5`, they need to specify the range as `-5.0:5.0` or `[-5.0, 5.0]` (in config). The type casted values, and unchaged attributes are passed to the Ax Client. 
 
 The parameters for the optimization process can also be set in the config file. The most important parameters are listed below:
 
@@ -62,7 +67,7 @@ The params can be specified via the command line. For example,
 python example/banana.py -m banana.x=-5:5 banana.y=-5:10.1
 ```
 
-This sets the range of `x` parameter as an integer in `[-5, 5]` and the range of `y` parameter as a float in `[-5, 10.1]`. Note that in the case of `x`, both the upper and the lower range values are integers, and hence only integers are sampled. In the case of `y`, the lower range value is an int while the upper range value is a float. The lower range value is promoted to float as well and floating-point numbers are sampled from the range. Other supported formats are fixed parameters (eg `banana.x=5.0`) and choice parameters (eg `banana.x=1,2,3`).
+This sets the range of `x` parameter as an integer in `[-5, 5]` and the range of `y` parameter as a float in `[-5, 10.1]`. Note that in the case of `x`, both the upper and the lower range values are integers, and hence only integers are sampled. In the case of `y`, the lower range value is an int while the upper range value is a float. The lower range value is promoted to float as well, and floating-point numbers are sampled from the range. Other supported formats are fixed parameters (eg `banana.x=5.0`) and choice parameters (eg `banana.x=1,2,3`).
  
 
 Output of a run looks like:
