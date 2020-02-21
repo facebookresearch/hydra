@@ -1,5 +1,5 @@
 defaults:
-  - hydra/sweeper: nevergrad-minimizer
+  - hydra/sweeper: nevergrad-sweeper
 hydra:
   sweeper:
     params:

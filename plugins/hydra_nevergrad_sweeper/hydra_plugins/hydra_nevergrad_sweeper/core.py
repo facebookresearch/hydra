@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import itertools
 import logging
 import typing as tp
 import nevergrad as ng
@@ -26,7 +25,7 @@ class NgSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "nevergrad-minimizer", "pkg://hydra_plugins.nevergrad_minimizer.conf"
+            "nevergrad-sweeper", "pkg://hydra_plugins.hydra_nevergrad_sweeper.conf"
         )
 
 
@@ -103,7 +102,7 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     return read_value(string)  # constant
 
 
-class NevergradMinimizer(Sweeper):
+class NevergradSweeper(Sweeper):
     """Returns a Nevergrad parameter from a definition string.
 
     Parameters

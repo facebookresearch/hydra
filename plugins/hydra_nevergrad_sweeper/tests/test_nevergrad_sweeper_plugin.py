@@ -7,8 +7,8 @@ from hydra.plugins.sweeper import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
-from hydra_plugins.nevergrad_minimizer import NevergradMinimizer
-from hydra_plugins.nevergrad_minimizer.core import make_parameter
+from hydra_plugins.hydra_nevergrad_sweeper import NevergradSweeper
+from hydra_plugins.hydra_nevergrad_sweeper.core import make_parameter
 
 
 def test_discovery() -> None:
@@ -46,7 +46,7 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         calling_module="hydra.test_utils.a_module",
         config_path="configs/compose.yaml",
         overrides=[
-            "hydra/sweeper=nevergrad-minimizer",
+            "hydra/sweeper=nevergrad-sweeper",
             "hydra/launcher=basic",
             f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
             "hydra.sweeper.params.num_workers=3",
