@@ -174,7 +174,9 @@ def test_plugins(session, install_cmd):
         # install all other plugins that are compatible with the current Python version
         if plugin_enabled[plugin["path"]]:
             session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
-            run_pytest(session)
+            n_run = 10 if 'joblib' in plugin['name'] else 1
+            for _ in range(n_run):
+                run_pytest(session)
 
 
 # run only joblib_launcher plugging

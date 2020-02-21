@@ -20,7 +20,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=3.6
             ~/miniconda3/bin/conda create -n hydra python=3.6 -q -y
             ~/miniconda3/bin/conda run -n hydra pip install nox
-            ~/miniconda3/bin/conda run -n hydra python3 -m nox
+            ~/miniconda3/bin/conda run -n hydra python3 -X faulthandler -m nox -- -v
 
   py37_mac:
     macos:
@@ -74,7 +74,7 @@ jobs:
       - run: sudo pip install nox
       - run:
           name: "Testing Hydra"
-          command: nox
+          command: nox -- -v
 
   py37_linux:
     docker:
