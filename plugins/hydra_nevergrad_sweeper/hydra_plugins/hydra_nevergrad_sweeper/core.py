@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 class NgSearchPathPlugin(SearchPathPlugin):
     """
-    This plugin is allowing configuration files provided by the ExampleSweeper plugin to be discovered
-    and used once the ExampleSweeper plugin is installed
+    This plugin is allowing configuration files provided by this sweeper plugin to be discovered
+    and used once it is installed.
     """
 
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:

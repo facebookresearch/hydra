@@ -1,5 +1,8 @@
-# Hydra Nevergrad Sweeper plugin example
+# Hydra Nevergrad Sweeper plugin
 
+#### Example of training using Nevergrad hyperparameter search
+```
+Using the following configuration:
 ```yaml
 defaults:
   - hydra/sweeper: nevergrad-sweeper
@@ -14,24 +17,33 @@ dropout: 0.6
 batch_size: 4
 ```
 
-#### Example of training using Nevergrad hyperparameter search
+And running with:
 ```text
-$ python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.001:1.0
+$ python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.0:1.0
 ```
 
-Example of the outputs of the last batch of 10 jobs (out of 100):
+Example of the outputs for the initialization and the first 5 evaluations (out of 100):
+
+```text
+[2020-02-21 10:03:21,496][HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
+[2020-02-21 10:03:21,496][HYDRA] with parametrization Dict(batch_size=TransitionChoice(choices=Tuple(4,8,16),position=Scalar[recombination=average,sigma=Log{exp=1.2}[recombination=average,sigma=1.0]],transitions=[1. 1.]),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(2,)}[recombination=average,sigma=1.0]),dropout=Scalar{Clipping(a_max=[1.], a_min=[0.], name=Cl([0.],[1.]), shape=(1,))}[recombination=average,sigma=Log{exp=1.2}[recombination=average,sigma=1.0]],lr=Log{exp=1.9952623149688797,Clipping(a_max=[1.], a_min=[0.001], name=Cl([0.001],[1.]), shape=(1,))}[recombination=average,sigma=1.0]):{'db': 'cifar', 'batch_size': 8, 'lr': 0.03162277660168379, 'dropout': 0.5}
+[2020-02-21 10:03:21,498][HYDRA] Sweep output dir : multirun/2020-02-21/10-03-21
+[2020-02-21 10:03:21,512][HYDRA] Launching 10 jobs locally
+[2020-02-21 10:03:21,513][HYDRA]    #0 : db=mnist batch_size=8 lr=0.031622776601683784 dropout=0.5
+[2020-02-21 10:03:21,617][root][INFO] - dummy_training(dropout=0.5, lr=0.031622776601683784, db=mnist, batch_size=8) = 5.258377223398316
+[2020-02-21 10:03:21,620][HYDRA]    #1 : db=cifar batch_size=16 lr=0.03580028569948765 dropout=0.5733629848055519
+[2020-02-21 10:03:21,720][root][INFO] - dummy_training(dropout=0.5733629848055519, lr=0.03580028569948765, db=cifar, batch_size=16) = 12.327562699106064
+[2020-02-21 10:03:21,721][HYDRA]    #2 : db=cifar batch_size=16 lr=0.018086273752018992 dropout=0.4932938358052737
+[2020-02-21 10:03:21,825][root][INFO] - dummy_training(dropout=0.4932938358052737, lr=0.018086273752018992, db=cifar, batch_size=16) = 12.265207562053254
+[2020-02-21 10:03:21,826][HYDRA]    #3 : db=cifar batch_size=4 lr=0.030657177201676725 dropout=0.7677816541646862
+[2020-02-21 10:03:21,934][root][INFO] - dummy_training(dropout=0.7677816541646862, lr=0.030657177201676725, db=cifar, batch_size=4) = 0.5271244769630095
+[2020-02-21 10:03:21,935][HYDRA]    #4 : db=mnist batch_size=16 lr=0.021093062090794576 dropout=0.34188215594911286
+[2020-02-21 10:03:22,049][root][INFO] - dummy_training(dropout=0.34188215594911286, lr=0.021093062090794576, db=mnist, batch_size=16) = 13.110789093858319
 ```
-[2020-02-21 09:26:09,554][HYDRA] Launching 10 jobs locally
-[2020-02-21 09:26:09,554][HYDRA] 	#0 : db=cifar batch_size=4 lr=0.03497970212569416 dropout=0.33002012968491873
-[2020-02-21 09:26:09,712][root][INFO] - dummy_training(dropout=0.33002012968491873, lr=0.03497970212569416, db=cifar, batch_size=4) = 0.08504042755922456
-[2020-02-21 09:26:09,713][HYDRA] 	#1 : db=cifar batch_size=4 lr=0.03590551571492024 dropout=0.33003635891401906
-[2020-02-21 09:26:09,859][root][INFO] - dummy_training(dropout=0.33003635891401906, lr=0.03590551571492024, db=cifar, batch_size=4) = 0.0841308431990988
-[2020-02-21 09:26:09,860][HYDRA] 	#2 : db=mnist batch_size=4 lr=0.03508269158529374 dropout=0.3301659686202661
-[2020-02-21 09:26:10,003][root][INFO] - dummy_training(dropout=0.3301659686202661, lr=0.03508269158529374, db=mnist, batch_size=4) = 1.0850832770349725
-[2020-02-21 09:26:10,004][HYDRA] 	#3 : db=cifar batch_size=4 lr=0.035222050729784946 dropout=0.3301621659635698
-[2020-02-21 09:26:10,202][root][INFO] - dummy_training(dropout=0.3301621659635698, lr=0.035222050729784946, db=cifar, batch_size=4) = 0.08494011523378482
-[2020-02-21 09:26:10,205][HYDRA] 	#4 : db=cifar batch_size=4 lr=0.03510125293118649 dropout=0.33282045448041886
-[2020-02-21 09:26:10,356][root][INFO] - dummy_training(dropout=0.33282045448041886, lr=0.03510125293118649, db=cifar, batch_size=4) = 0.08771920154923235
+
+
+Example of the outputs of the last 5 evaluations (out of 100):
+```text
 [2020-02-21 09:26:10,357][HYDRA] 	#5 : db=mnist batch_size=4 lr=0.0346667594978735 dropout=0.32937253608049494
 [2020-02-21 09:26:10,511][root][INFO] - dummy_training(dropout=0.32937253608049494, lr=0.0346667594978735, db=mnist, batch_size=4) = 1.0859607044216317
 [2020-02-21 09:26:10,512][HYDRA] 	#6 : db=cifar batch_size=4 lr=0.035256650820510785 dropout=0.3300880416273387
