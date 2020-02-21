@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+# noinspection PyUnresolvedReferences
 import typing as tp
 
 import nevergrad as ng
@@ -6,8 +8,6 @@ import pytest
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-
-# noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
 from hydra_plugins.hydra_nevergrad_sweeper import NevergradSweeper
 from hydra_plugins.hydra_nevergrad_sweeper.core import make_parameter
