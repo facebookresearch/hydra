@@ -7,5 +7,5 @@ hydra:
       budget: 80
       noisy: false
       maximize: false
-      seed: -1
+      seed: null
       version: 1

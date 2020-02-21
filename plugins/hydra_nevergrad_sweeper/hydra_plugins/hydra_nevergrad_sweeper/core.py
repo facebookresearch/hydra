@@ -149,7 +149,7 @@ class NevergradSweeper(Sweeper):
         num_workers: int,
         noisy: bool,
         maximize: bool,
-        seed: int,
+        seed: Optional[int],
         version: int,
     ):
         self.config: Optional[DictConfig] = None
@@ -184,8 +184,7 @@ class NevergradSweeper(Sweeper):
             params[key] = make_parameter(value)
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.noisy
-        if self.seed != -1:
-            parametrization.random_state.seed(self.seed)
+        parametrization.random_state.seed(self.seed)
         # log and build the optimizer
         name = "maximization" if self._direction == -1 else "minimization"
         log.info(
