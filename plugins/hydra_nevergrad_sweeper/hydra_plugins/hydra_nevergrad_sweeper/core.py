@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import typing as tp
+from typing import Any, Dict, List, Optional, Union
 
 import nevergrad as ng
 from omegaconf import DictConfig
@@ -29,7 +29,7 @@ class NgSearchPathPlugin(SearchPathPlugin):
         )
 
 
-def read_value(string: str) -> tp.Union[int, float, str]:
+def read_value(string: str) -> Union[int, float, str]:
     """Converts a string into a float or an int if it makes sense,
     or returns the string.
 
@@ -44,7 +44,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
     read_value("blublu")
     >>> "blublu"
     """
-    output: tp.Union[float, int, str] = string
+    output: Union[float, int, str] = string
     try:
         output = float(string)
     except ValueError:
@@ -55,7 +55,7 @@ def read_value(string: str) -> tp.Union[int, float, str]:
     return output
 
 
-def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
+def make_parameter(string: str) -> Union[int, float, str, ng.p.Parameter]:
     """Returns a Nevergrad parameter from a definition string.
 
     Parameters
@@ -134,9 +134,12 @@ class NevergradSweeper(Sweeper):
        notifies (some) algorithms that the function evaluation is noisy
     maximize: bool
        whether to perform maximization instead of default minimization
+    seed: int
+        seed for the optimizer for reproducibility. If the seed is -1, the optimizer is not seeded (default)
     version: int
        the version of the commandline input parsing. The parsing will probably evolve in the near
        future and several versions may temporarily coexist.
+       s
     """
 
     def __init__(
@@ -146,16 +149,18 @@ class NevergradSweeper(Sweeper):
         num_workers: int,
         noisy: bool,
         maximize: bool,
+        seed: int,
         version: int,
     ):
-        self.config: tp.Optional[DictConfig] = None
-        self.launcher: tp.Optional[Launcher] = None
+        self.config: Optional[DictConfig] = None
+        self.launcher: Optional[Launcher] = None
         assert version == 1, "Only version 1 of API is currently available"
         self.job_results = None
         self.optimizer = optimizer
         self.noisy = noisy
         self.budget = budget
         self.num_workers = num_workers
+        self.seed = seed
         self._direction = -1 if maximize else 1
 
     def setup(
@@ -169,16 +174,18 @@ class NevergradSweeper(Sweeper):
             config=config, config_loader=config_loader, task_function=task_function
         )
 
-    def sweep(self, arguments: tp.List[str]) -> tp.Any:
+    def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
         # Construct the parametrization
-        params: tp.Dict[str, tp.Union[str, int, float, ng.p.Parameter]] = {}
+        params: Dict[str, Union[str, int, float, ng.p.Parameter]] = {}
         for s in arguments:
             key, value = s.split("=", 1)
             params[key] = make_parameter(value)
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.noisy
+        if self.seed != -1:
+            parametrization.random_state.seed(self.seed)
         # log and build the optimizer
         name = "maximization" if self._direction == -1 else "minimization"
         log.info(
@@ -195,7 +202,7 @@ class NevergradSweeper(Sweeper):
         )
         # loop!
         remaining_budget = self.budget
-        all_returns: tp.List[tp.Any] = []
+        all_returns: List[Any] = []
         while remaining_budget > 0:
             batch = min(self.num_workers, remaining_budget)
             remaining_budget -= batch

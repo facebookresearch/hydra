@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import typing as tp
+from typing import Any
 
 import hydra
 
@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 @hydra.main(config_path="config.yaml")
-def dummy_training(cfg: tp.Any) -> float:
+def dummy_training(cfg: Any) -> float:
     """A dummy function to minimize
     Minimum is 0.0 at:
     lr = 0.12, dropout=0.33, db=mnist, batch_size=4

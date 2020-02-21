@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 # noinspection PyUnresolvedReferences
-import typing as tp
+from typing import Any
 
 import nevergrad as ng
 import pytest
@@ -34,7 +34,7 @@ def test_discovery() -> None:
         ),
     ],
 )
-def test_make_parameter(string: str, param_cls: tp.Any, value_cls: tp.Any) -> None:
+def test_make_parameter(string: str, param_cls: Any, value_cls: Any) -> None:
     param = make_parameter(string)
     assert isinstance(param, param_cls)
     if param_cls is not str:
