@@ -1,8 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import typing as tp
-import nevergrad as ng
 
+import nevergrad as ng
 from omegaconf import DictConfig
 
 from hydra.core.config_loader import ConfigLoader
@@ -87,14 +87,20 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
     if "," in string:
         choices = [read_value(x) for x in string.split(",")]
         ordered = all(isinstance(c, (int, float)) for c in choices)
-        ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))  # type: ignore
+        ordered &= all(
+            c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
+        )
         return (ng.p.TransitionChoice if ordered else ng.p.Choice)(choices)
     if ":" in string:
         a, b = [read_value(x) for x in string.split(":")]
-        assert all(isinstance(c, (int, float)) for c in (a, b)), "Bounds must be scalars"
+        assert all(
+            isinstance(c, (int, float)) for c in (a, b)
+        ), "Bounds must be scalars"
         sigma = (b - a) / 6  # type: ignore
-        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_mutation(sigma=sigma).set_bounds(  # type: ignore
-            a_min=a, a_max=b, full_range_sampling=True
+        scalar = (
+            ng.p.Scalar(init=(a + b) / 2.0)  # type: ignore
+            .set_mutation(sigma=sigma)
+            .set_bounds(a_min=a, a_max=b, full_range_sampling=True)
         )
         if all(isinstance(c, int) for c in (a, b)):
             scalar.set_integer_casting()
@@ -109,10 +115,11 @@ class NevergradSweeper(Sweeper):
     ----------
     optimizer: str
        name of a Nevergrad optimizer to use. Some interesting options are:
-         - "OnePlusOne" extemely simple and robust, especially at low budget
-         - "CMA" very good algorithm, but may require a significant budget (> 100)
+         - "OnePlusOne" extemely simple and robust, especially at low budget, but
+           tends to converge early.
+         - "CMA" very good algorithm, but may require a significant budget (> 120)
          - "TwoPointsDE": an algorithm good in a wide range of settings, for significant budgets
-           (> 100).
+           (> 120).
          - "Shiva" an algorithm aiming at identifying the best optimizer given your input
            definition (work in progress, it may still be ill-suited for low budget)
        See nevergrad documentation: https://facebookresearch.github.io/nevergrad/
@@ -131,12 +138,15 @@ class NevergradSweeper(Sweeper):
        the version of the commandline input parsing. The parsing will probably evolve in the near
        future and several versions may temporarily coexist.
     """
+
     def __init__(
-            self, optimizer: str,
-            budget: int, num_workers: int,
-            noisy: bool,
-            maximize: bool,
-            version: int
+        self,
+        optimizer: str,
+        budget: int,
+        num_workers: int,
+        noisy: bool,
+        maximize: bool,
+        version: int,
     ):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None
@@ -171,11 +181,18 @@ class NevergradSweeper(Sweeper):
         parametrization.descriptors.deterministic_function = not self.noisy
         # log and build the optimizer
         name = "maximization" if self._direction == -1 else "minimization"
-        log.info("NevergradSweeper(optimizer=%s, budget=%s, num_workers=%s) %s",
-                 self.optimizer, self.budget, self.num_workers, name)
+        log.info(
+            "NevergradSweeper(optimizer=%s, budget=%s, num_workers=%s) %s",
+            self.optimizer,
+            self.budget,
+            self.num_workers,
+            name,
+        )
         log.info("with parametrization %s", parametrization)
         log.info("Sweep output dir : %s", self.config.hydra.sweep.dir)
-        optimizer = ng.optimizers.registry[self.optimizer](parametrization, self.budget, self.num_workers)
+        optimizer = ng.optimizers.registry[self.optimizer](
+            parametrization, self.budget, self.num_workers
+        )
         # loop!
         remaining_budget = self.budget
         all_returns: tp.List[tp.Any] = []
@@ -183,7 +200,9 @@ class NevergradSweeper(Sweeper):
             batch = min(self.num_workers, remaining_budget)
             remaining_budget -= batch
             candidates = [optimizer.ask() for _ in range(batch)]
-            overrides = list(tuple(f"{x}={y}" for x, y in c.value.items()) for c in candidates)
+            overrides = list(
+                tuple(f"{x}={y}" for x, y in c.value.items()) for c in candidates
+            )
             returns = self.launcher.launch(overrides)
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)

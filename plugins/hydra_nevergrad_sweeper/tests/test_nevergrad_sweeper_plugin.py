@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import typing as tp
-import pytest
+
 import nevergrad as ng
+import pytest
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 
@@ -13,25 +15,26 @@ from hydra_plugins.hydra_nevergrad_sweeper.core import make_parameter
 
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking at the Sweeper plugins
-    assert NevergradMinimizer.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
+    assert NevergradSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
 
 
 @pytest.mark.parametrize(  # type: ignore
     "string,param_cls,value_cls",
-    [("blu,blublu", ng.p.Choice, str),
-     ("0,1,2", ng.p.TransitionChoice, int),
-     ("0.0,12.0,2.0", ng.p.Choice, float),
-     ("1:12", ng.p.Scalar, int),
-     ("1.0:12", ng.p.Scalar, float),
-     ("blublu", str, str),
-     ("Scalar(init=12.1).set_mutation(sigma=3).set_integer_casting()", ng.p.Scalar, int),
-     ]
+    [
+        ("blu,blublu", ng.p.Choice, str),
+        ("0,1,2", ng.p.TransitionChoice, int),
+        ("0.0,12.0,2.0", ng.p.Choice, float),
+        ("1:12", ng.p.Scalar, int),
+        ("1.0:12", ng.p.Scalar, float),
+        ("blublu", str, str),
+        (
+            "Scalar(init=12.1).set_mutation(sigma=3).set_integer_casting()",
+            ng.p.Scalar,
+            int,
+        ),
+    ],
 )
-def test_make_parameter(
-    string: str,
-    param_cls: tp.Any,
-    value_cls: tp.Any,
-) -> None:
+def test_make_parameter(string: str, param_cls: tp.Any, value_cls: tp.Any) -> None:
     param = make_parameter(string)
     assert isinstance(param, param_cls)
     if param_cls is not str:
