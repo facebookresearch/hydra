@@ -7,3 +7,4 @@ hydra:
       budget: 80
       noisy: false
       version: 1
+      maximize: false

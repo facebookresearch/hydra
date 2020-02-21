@@ -88,14 +88,14 @@ def make_parameter(string: str) -> tp.Union[int, float, str, ng.p.Parameter]:
         choices = [read_value(x) for x in string.split(",")]
         ordered = all(isinstance(c, (int, float)) for c in choices)
         ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))  # type: ignore
-        return (ng.p.TransitionChoice if ordered else ng.p.Choice)(choices)  # type: ignore
+        return (ng.p.TransitionChoice if ordered else ng.p.Choice)(choices)
     if ":" in string:
         a, b = [read_value(x) for x in string.split(":")]
         assert all(isinstance(c, (int, float)) for c in (a, b)), "Bounds must be scalars"
         sigma = (b - a) / 6  # type: ignore
-        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_bounds(  # type: ignore
+        scalar = ng.p.Scalar(init=(a + b) / 2.0).set_mutation(sigma=sigma).set_bounds(  # type: ignore
             a_min=a, a_max=b, full_range_sampling=True
-        ).set_mutation(sigma=sigma)
+        )
         if all(isinstance(c, int) for c in (a, b)):
             scalar.set_integer_casting()
         return scalar
@@ -125,11 +125,19 @@ class NevergradSweeper(Sweeper):
        workers as well.
     noisy: bool
        notifies (some) algorithms that the function evaluation is noisy
+    maximize: bool
+       whether to perform maximization instead of default minimization
     version: int
        the version of the commandline input parsing. The parsing will probably evolve in the near
        future and several versions may temporarily coexist.
     """
-    def __init__(self, optimizer: str, budget: int, num_workers: int, noisy: bool, version: int):
+    def __init__(
+            self, optimizer: str,
+            budget: int, num_workers: int,
+            noisy: bool,
+            maximize: bool,
+            version: int
+    ):
         self.config: tp.Optional[DictConfig] = None
         self.launcher: tp.Optional[Launcher] = None
         assert version == 1, "Only version 1 of API is currently available"
@@ -138,6 +146,7 @@ class NevergradSweeper(Sweeper):
         self.noisy = noisy
         self.budget = budget
         self.num_workers = num_workers
+        self._direction = -1 if maximize else 1
 
     def setup(
         self,
@@ -158,14 +167,15 @@ class NevergradSweeper(Sweeper):
         for s in arguments:
             key, value = s.split("=", 1)
             params[key] = make_parameter(value)
-        instrumentation = ng.p.Instrumentation(**params)
-        instrumentation.descriptors.deterministic_function = not self.noisy
+        parametrization = ng.p.Dict(**params)
+        parametrization.descriptors.deterministic_function = not self.noisy
         # log and build the optimizer
-        log.info("NevergradMinimizer(optimizer=%s, budget=%s, num_workers=%s) sweeping",
-                 self.optimizer, self.budget, self.num_workers)
-        log.info("with %s", instrumentation)
+        name = "maximization" if self._direction == -1 else "minimization"
+        log.info("NevergradSweeper(optimizer=%s, budget=%s, num_workers=%s) %s",
+                 self.optimizer, self.budget, self.num_workers, name)
+        log.info("with parametrization %s", parametrization)
         log.info("Sweep output dir : %s", self.config.hydra.sweep.dir)
-        optimizer = ng.optimizers.registry[self.optimizer](instrumentation, self.budget, self.num_workers)
+        optimizer = ng.optimizers.registry[self.optimizer](parametrization, self.budget, self.num_workers)
         # loop!
         remaining_budget = self.budget
         all_returns: tp.List[tp.Any] = []
@@ -173,11 +183,11 @@ class NevergradSweeper(Sweeper):
             batch = min(self.num_workers, remaining_budget)
             remaining_budget -= batch
             candidates = [optimizer.ask() for _ in range(batch)]
-            overrides = list(tuple(f"{x}={y}" for x, y in c.kwargs.items()) for c in candidates)
+            overrides = list(tuple(f"{x}={y}" for x, y in c.value.items()) for c in candidates)
             returns = self.launcher.launch(overrides)
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
             for cand, ret in zip(candidates, returns):
-                optimizer.tell(cand, ret.return_value)
+                optimizer.tell(cand, self._direction * ret.return_value)
             all_returns.extend(returns)
         return all_returns  # not sure what the return should be
