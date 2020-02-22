@@ -7,6 +7,8 @@ from hydra.core.object_type import ObjectType
 from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError
 
+import copy
+
 
 class ConfigStoreWithProvider:
     def __init__(self, provider: str) -> None:
@@ -94,18 +96,27 @@ class ConfigStore(metaclass=Singleton):
         if not name.endswith(".yaml"):
             name = f"{name}.yaml"
         assert isinstance(cur, dict)
+        cfg_copy = copy.deepcopy(cfg)
         cur[name] = ConfigNode(
-            name=name, node=cfg, group=group, path=path, provider=provider
+            name=name, node=cfg_copy, group=group, path=path, provider=provider
         )
 
     def load(self, config_path: str) -> ConfigNode:
+        ret = self._load(config_path)
+
+        # shallow copy to avoid changing the original stored ConfigNode
+        ret = copy.copy(ret)
+        assert isinstance(ret, ConfigNode)
+        # copy to avoid mutations to config effecting subsequent calls
+        ret.node = copy.deepcopy(ret.node)
+        return ret
+
+    def _load(self, config_path: str) -> ConfigNode:
         idx = config_path.rfind("/")
         if idx == -1:
             ret = self._open(config_path)
             if ret is None:
                 raise ConfigLoadError(f"Structured config not found {config_path}")
-
-            assert isinstance(ret, ConfigNode)
             return ret
         else:
             path = config_path[0:idx]
@@ -119,9 +130,7 @@ class ConfigStore(metaclass=Singleton):
                     f"Structured config {name} not found in {config_path}"
                 )
 
-            ret = d[name]
-            assert isinstance(ret, ConfigNode)
-            return ret
+            return d[name]
 
     def get_type(self, path: str) -> ObjectType:
         d = self._open(path)

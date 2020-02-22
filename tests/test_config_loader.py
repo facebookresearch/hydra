@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Dict
 
 import pkg_resources
 import pytest
@@ -10,6 +10,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
+
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
@@ -511,6 +512,46 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
     assert config_loader.get_load_history() == expected
 
 
+def test_overlapping_schemas(restore_singletons: Any) -> None:
+    @dataclass
+    class Plugin:
+        name: str = MISSING
+        params: Dict[str, Any] = MISSING
+
+    @dataclass
+    class ConcretePlugin(Plugin):
+        name: str = "foobar_plugin"
+
+        @dataclass
+        class FoobarParams:
+            foo: int = 10
+
+        params: FoobarParams = FoobarParams()
+
+    @dataclass
+    class Config:
+        plugin: Plugin = Plugin()
+
+    cs = ConfigStore.instance()
+    cs.store(name="config", node=Config)
+    cs.store(group="plugin", name="concrete", node=ConcretePlugin, path="plugin")
+
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    cfg = config_loader.load_configuration(config_name="config", overrides=[])
+    del cfg["hydra"]
+    assert cfg == {"plugin": {"name": "???", "params": "???"}}
+    assert cfg.plugin.__dict__["_type"] == Plugin
+
+    cfg = config_loader.load_configuration(
+        config_name="config", overrides=["plugin=concrete"]
+    )
+    del cfg["hydra"]
+    assert cfg == {"plugin": {"name": "foobar_plugin", "params": {"foo": 10}}}
+    assert cfg.plugin.__dict__["_type"] == ConcretePlugin
+    with pytest.raises(ValidationError):
+        cfg.plugin = 10
+
+
 # """
 # TODO:
 # Test loading as schema for existing config:
@@ -518,5 +559,5 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
 # 2. Implement proper display in hydra.verbose
 # 3. (Y) verify positive and validation error cases
 # 4. (Y) verify overrides behavior.
-# 5. check behavior with overlapping schemas
+# 5. (Y) check behavior with overlapping schemas
 # """

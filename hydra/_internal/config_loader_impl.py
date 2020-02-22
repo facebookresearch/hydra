@@ -3,7 +3,7 @@
 Configuration loader
 """
 import copy
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
@@ -64,14 +64,18 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         # Load hydra config
-        hydra_cfg = self._create_cfg(cfg_filename="hydra_config")
+        hydra_cfg, _load_trace = self._create_cfg(cfg_filename="hydra_config")
 
         # Load job config
-        job_cfg = self._create_cfg(cfg_filename=config_name, record_load=False)
+        job_cfg, job_cfg_load_trace = self._create_cfg(
+            cfg_filename=config_name, record_load=False
+        )
+
+        hydra_cfg.cast(job_cfg.__dict__["_type"])
 
         defaults = ConfigLoaderImpl._get_defaults(hydra_cfg)
         if config_name is not None:
-            defaults.append(config_name)
+            defaults.append("__SELF__")
         split_at = len(defaults)
         job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
         ConfigLoaderImpl._merge_default_lists(defaults, job_defaults)
@@ -82,7 +86,9 @@ class ConfigLoaderImpl(ConfigLoader):
         ConfigLoaderImpl._validate_defaults(defaults)
 
         # Load and defaults and merge them into cfg
-        cfg = self._merge_defaults(hydra_cfg, defaults, split_at)
+        cfg = self._merge_defaults(
+            hydra_cfg, job_cfg, job_cfg_load_trace, defaults, split_at
+        )
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
@@ -222,7 +228,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
     def _load_config_impl(
         self, input_file: str, record_load: bool = True
-    ) -> Optional[DictConfig]:
+    ) -> Tuple[Optional[DictConfig], Optional[LoadTrace]]:
         """
         :param input_file:
         :param record_load:
@@ -234,16 +240,18 @@ class ConfigLoaderImpl(ConfigLoader):
             path: Optional[str],
             provider: Optional[str],
             schema_provider: Optional[str],
-        ) -> None:
+        ) -> Optional[LoadTrace]:
+            trace = LoadTrace(
+                filename=name,
+                path=path,
+                provider=provider,
+                schema_provider=schema_provider,
+            )
+
             if record_load:
-                self.all_config_checked.append(
-                    LoadTrace(
-                        filename=name,
-                        path=path,
-                        provider=provider,
-                        schema_provider=schema_provider,
-                    )
-                )
+                self.all_config_checked.append(trace)
+
+            return trace
 
         ret = self.repository.load_config(config_path=input_file)
 
@@ -259,33 +267,39 @@ class ConfigLoaderImpl(ConfigLoader):
                             filename=input_file
                         )
                     )
-                    record_loading(
-                        name=input_file,
-                        path=ret.path,
-                        provider=ret.provider,
-                        schema_provider=schema.provider,
-                    )
 
                     merged = OmegaConf.merge(schema.node, ret.config)
                     assert isinstance(merged, DictConfig)
-                    return merged
+                    return (
+                        merged,
+                        record_loading(
+                            name=input_file,
+                            path=ret.path,
+                            provider=ret.provider,
+                            schema_provider=schema.provider,
+                        ),
+                    )
+
                 except ConfigLoadError:
                     # schema not found, ignore
                     pass
 
-            record_loading(
-                name=input_file,
-                path=ret.path,
-                provider=ret.provider,
-                schema_provider=None,
+            return (
+                ret.config,
+                record_loading(
+                    name=input_file,
+                    path=ret.path,
+                    provider=ret.provider,
+                    schema_provider=None,
+                ),
             )
-            return ret.config
         else:
-            record_loading(
-                name=input_file, path=None, provider=None, schema_provider=None
+            return (
+                None,
+                record_loading(
+                    name=input_file, path=None, provider=None, schema_provider=None
+                ),
             )
-
-            return None
 
     def list_groups(self, parent_name: str) -> List[str]:
         return self.get_group_options(
@@ -306,7 +320,7 @@ class ConfigLoaderImpl(ConfigLoader):
         else:
             new_cfg = name
 
-        loaded_cfg = self._load_config_impl(new_cfg)
+        loaded_cfg, _ = self._load_config_impl(new_cfg)
         if loaded_cfg is None:
             if required:
                 if family == "":
@@ -330,12 +344,21 @@ class ConfigLoaderImpl(ConfigLoader):
             return ret
 
     def _merge_defaults(
-        self, cfg: DictConfig, defaults: ListConfig, split_at: int
+        self,
+        hydra_cfg: DictConfig,
+        job_cfg: DictConfig,
+        job_cfg_load_trace: Optional[LoadTrace],
+        defaults: ListConfig,
+        split_at: int,
     ) -> DictConfig:
         def merge_defaults(merged_cfg: DictConfig, def_list: ListConfig) -> DictConfig:
             cfg_with_list = OmegaConf.create(dict(defaults=def_list))
             for default1 in cfg_with_list.defaults:
-                if isinstance(default1, DictConfig):
+                if default1 == "__SELF__":
+                    merged_cfg.merge_with(job_cfg)
+                    if job_cfg_load_trace is not None:
+                        self.all_config_checked.append(job_cfg_load_trace)
+                elif isinstance(default1, DictConfig):
                     is_optional = False
                     if default1.optional is not None:
                         is_optional = default1.optional
@@ -365,28 +388,31 @@ class ConfigLoaderImpl(ConfigLoader):
                 system_list.append(default)
             else:
                 user_list.append(default)
-        cfg = merge_defaults(cfg, system_list)
-        cfg = merge_defaults(cfg, user_list)
+        hydra_cfg = merge_defaults(hydra_cfg, system_list)
+        hydra_cfg = merge_defaults(hydra_cfg, user_list)
 
-        if "defaults" in cfg:
-            del cfg["defaults"]
-        return cfg
+        if "defaults" in hydra_cfg:
+            del hydra_cfg["defaults"]
+        return hydra_cfg
 
     def _create_cfg(
         self, cfg_filename: Optional[str], record_load: bool = True
-    ) -> DictConfig:
+    ) -> Tuple[DictConfig, Optional[LoadTrace]]:
         if cfg_filename is None:
             cfg = OmegaConf.create()
             assert isinstance(cfg, DictConfig)
+            load_trace = None
         else:
-            ret = self._load_config_impl(cfg_filename, record_load=record_load)
+            ret, load_trace = self._load_config_impl(
+                cfg_filename, record_load=record_load
+            )
             assert ret is not None
             cfg = ret
 
         if "defaults" in cfg and cfg.defaults is not None:
             self._validate_defaults(cfg.defaults)
 
-        return cfg
+        return cfg, load_trace
 
     @staticmethod
     def _validate_defaults(defaults: ListConfig) -> None:
@@ -417,7 +443,11 @@ class ConfigLoaderImpl(ConfigLoader):
           - optimizer: nesterov
         """
 
-        defaults = cfg.defaults if "defaults" in cfg else OmegaConf.create([])
+        if "defaults" in cfg:
+            defaults = cfg.pop("defaults")
+        else:
+            defaults = OmegaConf.create([])
+
         if not isinstance(defaults, ListConfig):
             raise ValueError(
                 "defaults must be a list because composition is order sensitive, "
@@ -425,7 +455,7 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         assert isinstance(defaults, ListConfig)
-        return copy.deepcopy(defaults)
+        return defaults
 
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
