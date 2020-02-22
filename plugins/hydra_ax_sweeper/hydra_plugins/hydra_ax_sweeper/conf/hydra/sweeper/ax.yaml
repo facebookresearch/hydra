@@ -29,10 +29,7 @@ hydra:
   sweeper:
     class: hydra_plugins.hydra_ax_sweeper.AxSweeper
     params:
-      experiment: ${hydra.ax.experiment}
-      early_stop: ${hydra.ax.early_stop}
-      verbose_logging: false
-      max_trials: ${hydra.ax.max_trials}
+      ax_config:  ${hydra.ax}
       # set random seed here to make Ax results reproducible
+      verbose_logging: false
       random_seed: null
-      ax_params: ${hydra.ax.params}

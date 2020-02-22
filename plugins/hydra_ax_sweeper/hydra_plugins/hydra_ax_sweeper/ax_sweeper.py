@@ -103,22 +103,16 @@ class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(
-        self,
-        verbose_logging: bool,
-        experiment: TaskFunction,
-        early_stop: DictConfig,
-        random_seed: int,
-        max_trials: int,
-        ax_params: DictConfig,
+        self, verbose_logging: bool, ax_config: DictConfig, random_seed: int,
     ):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
-        self.experiment = experiment
-        self.early_stopper = EarlyStopper(**early_stop)
+        self.experiment = ax_config.experiment
+        self.early_stopper = EarlyStopper(**ax_config.early_stop)
         self.verbose_logging = verbose_logging
         self.random_seed = random_seed
-        self.max_trials = max_trials
-        self.ax_params = ax_params
+        self.max_trials = ax_config.max_trials
+        self.ax_params = ax_config.params
         self.sweep_dir: str
 
     def setup(
