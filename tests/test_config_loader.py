@@ -512,7 +512,7 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
     assert config_loader.get_load_history() == expected
 
 
-def test_overlapping_schemas(restore_singletons: Any) -> None:
+def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     @dataclass
     class Plugin:
         name: str = MISSING

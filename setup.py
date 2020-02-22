@@ -105,7 +105,7 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        install_requires=["omegaconf>=2.0.0rc9", "typing_extensions"],
+        install_requires=["omegaconf>=2.0.0rc10", "typing_extensions"],
         # Install development dependencies with
         # pip install -e ".[dev]"
         extras_require={
