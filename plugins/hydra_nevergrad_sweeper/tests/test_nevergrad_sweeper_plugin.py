@@ -3,7 +3,7 @@
 # noinspection PyUnresolvedReferences
 from typing import Any
 
-import nevergrad as ng
+import nevergrad as ng  # type: ignore
 import pytest
 
 from hydra.core.plugins import Plugins

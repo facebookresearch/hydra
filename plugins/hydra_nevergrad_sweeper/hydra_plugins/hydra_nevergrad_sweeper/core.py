@@ -2,7 +2,7 @@
 import logging
 from typing import Any, Dict, List, Optional, Union
 
-import nevergrad as ng
+import nevergrad as ng  # type: ignore
 from omegaconf import DictConfig
 
 from hydra.core.config_loader import ConfigLoader
