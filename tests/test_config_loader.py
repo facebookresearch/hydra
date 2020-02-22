@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple, Dict
+from typing import Any, Dict, List, Optional, Tuple
 
 import pkg_resources
 import pytest
@@ -10,7 +10,6 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
-
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
@@ -516,7 +515,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     @dataclass
     class Plugin:
         name: str = MISSING
-        params: Dict[str, Any] = MISSING
+        params: Any = MISSING
 
     @dataclass
     class ConcretePlugin(Plugin):

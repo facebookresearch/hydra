@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 from typing import Any, Dict, List, Optional
 
 from omegaconf import OmegaConf
@@ -6,8 +7,6 @@ from omegaconf import OmegaConf
 from hydra.core.object_type import ObjectType
 from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError
-
-import copy
 
 
 class ConfigStoreWithProvider:
@@ -117,6 +116,7 @@ class ConfigStore(metaclass=Singleton):
             ret = self._open(config_path)
             if ret is None:
                 raise ConfigLoadError(f"Structured config not found {config_path}")
+            assert isinstance(ret, ConfigNode)
             return ret
         else:
             path = config_path[0:idx]
@@ -130,7 +130,9 @@ class ConfigStore(metaclass=Singleton):
                     f"Structured config {name} not found in {config_path}"
                 )
 
-            return d[name]
+            ret = d[name]
+            assert isinstance(ret, ConfigNode)
+            return ret
 
     def get_type(self, path: str) -> ObjectType:
         d = self._open(path)
