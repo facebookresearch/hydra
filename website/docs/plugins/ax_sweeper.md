@@ -46,7 +46,7 @@ The parameters for the optimization process can also be set in the config file. 
 ```
 ax:
     experiment:
-      # If the function should be minimized (Ax defaults to maximize)
+      # If the function should be minimized (Plugin defaults to minimize)
       minimize: true
 
     early_stop:
