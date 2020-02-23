@@ -4,7 +4,7 @@ import inspect
 import os
 import sys
 from os.path import dirname, join, normpath, realpath
-from typing import Any, Optional, Sequence, Tuple
+from typing import Any, List, Optional, Sequence, Tuple
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
@@ -133,7 +133,6 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
 
     Plugins.register_config_sources()
     search_path = ConfigSearchPathImpl()
-    # search_path.append("hydra", "structured://hydra.conf")
     search_path.append("hydra", "pkg://hydra.conf")
 
     if search_path_dir is not None:
@@ -285,3 +284,15 @@ def _strict_mode_strategy(strict: Optional[bool], config_name: Optional[str]) ->
 
     # strict if config_name is present
     return config_name is not None
+
+
+def get_column_widths(matrix: List[List[str]]) -> List[int]:
+    num_cols = 0
+    for row in matrix:
+        num_cols = max(num_cols, len(row))
+    widths: List[int] = [0] * num_cols
+    for row in matrix:
+        for idx, col in enumerate(row):
+            widths[idx] = max(widths[idx], len(col))
+
+    return widths

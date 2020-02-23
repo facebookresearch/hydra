@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
+import hydra._internal.utils as internal_utils
 from hydra import utils
 from hydra.core.hydra_config import HydraConfig
 
@@ -165,3 +166,20 @@ def test_to_absolute_path(orig_cwd: str, path: str, expected: str) -> None:
     assert isinstance(cfg, DictConfig)
     HydraConfig().set_config(cfg)
     assert utils.to_absolute_path(path) == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "matrix,expected",
+    [
+        ([["a"]], [1]),
+        ([["a", "bb"]], [1, 2]),
+        ([["a", "bb"], ["aa", "b"]], [2, 2]),
+        ([["a"], ["aa", "b"]], [2, 1]),
+        ([["a", "aa"], ["bb"]], [2, 2]),
+        ([["a"]], [1]),
+        ([["a"]], [1]),
+        ([["a"]], [1]),
+    ],
+)
+def test_get_column_widths(matrix: Any, expected: Any) -> None:
+    assert internal_utils.get_column_widths(matrix) == expected

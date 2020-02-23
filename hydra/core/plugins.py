@@ -133,7 +133,9 @@ class Plugins:
         :param plugin_type: class of plugin to discover, None for all
         :return: a list of plugins implementing the plugin type (or all if plugin type is None)
         """
-        assert plugin_type is None or issubclass(plugin_type, Plugin)
+        if plugin_type is None:
+            plugin_type = Plugin
+        assert issubclass(plugin_type, Plugin)
         top_level: List[Any] = []
         core_plugins = importlib.import_module("hydra._internal.core_plugins")
         top_level.append(core_plugins)
