@@ -112,7 +112,9 @@ class AxSweeper(Sweeper):
         self.verbose_logging = verbose_logging
         self.random_seed = random_seed
         self.max_trials = ax_config.max_trials
-        self.ax_params = ax_config.params
+        self.ax_params: DictConfig = OmegaConf.create({})
+        if hasattr(ax_config, "params"):
+            self.ax_params.update(ax_config.params)
         self.sweep_dir: str
 
     def setup(
@@ -217,6 +219,9 @@ class AxSweeper(Sweeper):
                 if param["name"] == cmd_param["name"]:
                     for key, value in cmd_param.items():
                         param[key] = value
+                    break
+            else:
+                parameters.append(cmd_param)
         ax_client = AxClient(
             verbose_logging=self.verbose_logging, random_seed=self.random_seed
         )
