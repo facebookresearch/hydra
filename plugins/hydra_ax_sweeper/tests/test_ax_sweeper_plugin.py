@@ -5,12 +5,13 @@ from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
-from hydra_plugins.hydra_ax_sweeper import AxSweeper
+from hydra_plugins.hydra_ax_sweeper import AxSweeper  # type: ignore
 
 
 def test_discovery() -> None:
@@ -108,3 +109,36 @@ def test_jobs_configured_via_cmd_and_config(
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], -0.0, abs_tol=1e-4)
+
+
+def test_configuration_set_via_cmd_and_default_config(
+    sweep_runner: TSweepRunner,  # noqa: F811
+) -> None:
+    sweep = sweep_runner(
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        task_function=quadratic,
+        config_path="tests/config/default_quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.random_seed=1",
+            "quadratic.x=-5:-2",
+            "hydra.ax.max_trials=10",
+            "hydra.ax.early_stop.max_epochs_without_improvement=2",
+            "quadratic.x=-5:-2",
+            "quadratic.y=-1:1",
+        ],
+    )
+    with sweep:
+        ax_config = HydraConfig.instance().hydra.ax
+        print(HydraConfig.instance().hydra)
+        assert ax_config.max_trials == 10
+        assert ax_config.early_stop.max_epochs_without_improvement == 2
+        assert ax_config.experiment.minimize is True
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        best_parameters = returns["ax"][0]
+        assert "quadratic.x" in best_parameters
+        assert "quadratic.y" in best_parameters
