@@ -391,7 +391,7 @@ class Hydra:
             config_name=config_name, overrides=overrides, strict=strict
         )
         with open_dict(cfg):
-            from .. import __version__
+            from hydra import __version__
 
             cfg.hydra.runtime.version = __version__
             cfg.hydra.runtime.cwd = os.getcwd()

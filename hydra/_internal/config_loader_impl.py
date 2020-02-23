@@ -71,13 +71,17 @@ class ConfigLoaderImpl(ConfigLoader):
             cfg_filename=config_name, record_load=False
         )
 
-        hydra_cfg.cast(job_cfg.__dict__["_type"])
-
+        job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
         defaults = ConfigLoaderImpl._get_defaults(hydra_cfg)
+        hydra_cfg._promote(job_cfg.__dict__["_type"])
+        # if defaults are re-introduced by the promotion, remove it.
+        if "defaults" in hydra_cfg:
+            del hydra_cfg["defaults"]
+
         if config_name is not None:
             defaults.append("__SELF__")
         split_at = len(defaults)
-        job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
+
         ConfigLoaderImpl._merge_default_lists(defaults, job_defaults)
         consumed = self._apply_defaults_overrides(overrides, defaults)
 
