@@ -1,7 +1,7 @@
 hydra:
   # See https://ax.dev/
   ax:
-    max_trials: 100
+    max_trials: 10
     early_stop:
       # Number of epochs without a significant improvement from
       # the currently known best parameters
