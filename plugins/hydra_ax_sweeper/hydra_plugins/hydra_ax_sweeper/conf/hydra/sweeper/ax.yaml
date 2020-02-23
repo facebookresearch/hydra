@@ -20,7 +20,7 @@ hydra:
       # Minimize objective:
       #   true: minimize
       #   false: maximize
-      minimize: false
+      minimize: true
       # For the remaining paramaters, refer the Ax documentation: https://ax.dev/api/core.html#experiment
       parameter_constraints: null
       outcome_constraints: null
