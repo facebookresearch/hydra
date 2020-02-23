@@ -515,10 +515,10 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     @dataclass
     class Plugin:
         name: str = MISSING
-        params: Any = MISSING
+        params: Dict[str, Any] = MISSING
 
     @dataclass
-    class ConcretePlugin(Plugin):
+    class ConcretePlugin:
         name: str = "foobar_plugin"
 
         @dataclass
@@ -539,14 +539,15 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     cfg = config_loader.load_configuration(config_name="config", overrides=[])
     del cfg["hydra"]
     assert cfg == {"plugin": {"name": "???", "params": "???"}}
-    assert cfg.plugin.__dict__["_type"] == Plugin
+    assert cfg.plugin._type == Plugin
 
     cfg = config_loader.load_configuration(
         config_name="config", overrides=["plugin=concrete"]
     )
     del cfg["hydra"]
     assert cfg == {"plugin": {"name": "foobar_plugin", "params": {"foo": 10}}}
-    assert cfg.plugin.__dict__["_type"] == ConcretePlugin
+    assert cfg.plugin._type == ConcretePlugin
+    assert cfg.plugin.params._type == ConcretePlugin.FoobarParams
     with pytest.raises(ValidationError):
         cfg.plugin = 10
 
