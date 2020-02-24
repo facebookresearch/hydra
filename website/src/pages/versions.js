@@ -1,3 +1,4 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import React from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
