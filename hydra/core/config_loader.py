@@ -10,6 +10,7 @@ from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigSource
 
 
+# TODO: split filename into config group and config_name
 @dataclass
 class LoadTrace:
     filename: str

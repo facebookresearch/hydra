@@ -352,39 +352,40 @@ class Hydra:
         assert log is not None
         log.debug("")
         self._log_header("Composition trace", filler="*")
-        box: List[List[str]] = [["Provider", "Search path", "File"]]
+        box: List[List[str]] = [
+            ["Config name", "Search path", "Provider", "Schema provider"]
+        ]
         for trace in self.config_loader.get_load_history():
             box.append(
                 [
-                    trace.provider if trace.provider is not None else "",
-                    trace.path if trace.path is not None else "",
                     trace.filename,
+                    trace.path if trace.path is not None else "",
+                    trace.provider if trace.provider is not None else "",
+                    trace.schema_provider if trace.schema_provider is not None else "",
                 ]
             )
-        provider_pad, search_path_pad, file_pad = get_column_widths(box)
+        padding = get_column_widths(box)
+        del box[0]
 
         self._log_header(
-            "| {} | {} | {} |".format(
-                "Provider".ljust(provider_pad),
-                "Search path".ljust(search_path_pad),
-                "File".ljust(file_pad),
+            "| {} | {} | {} | {} |".format(
+                "Config name".ljust(padding[0]),
+                "Search path".ljust(padding[1]),
+                "Provider".ljust(padding[2]),
+                "Schema provider".ljust(padding[3]),
             ),
             filler="-",
         )
 
-        for trace in self.config_loader.get_load_history():
-            if trace.path is not None:
-                assert trace.provider is not None
-                assert trace.filename is not None
-                log.debug(
-                    "| {} | {} | {} |".format(
-                        trace.provider.ljust(provider_pad),
-                        trace.path.ljust(search_path_pad),
-                        trace.filename.ljust(file_pad),
-                    )
+        for row in box:
+            log.debug(
+                "| {} | {} | {} | {} |".format(
+                    row[0].ljust(padding[0]),
+                    row[1].ljust(padding[1]),
+                    row[2].ljust(padding[2]),
+                    row[3].ljust(padding[3]),
                 )
-            else:
-                log.debug("{} : NOT FOUND".format(trace.filename))
+            )
 
     def _print_debug_info(self) -> None:
         assert log is not None
