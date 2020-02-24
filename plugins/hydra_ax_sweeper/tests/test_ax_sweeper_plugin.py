@@ -11,7 +11,7 @@ from hydra.plugins.sweeper import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
-from hydra_plugins.hydra_ax_sweeper import AxSweeper  # type: ignore
+from hydra_plugins.hydra_ax_sweeper import AxSweeper
 
 
 def test_discovery() -> None:
@@ -40,7 +40,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noq
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.random_seed=1",
+            "hydra.ax.client.random_seed=1",
         ],
         strict=True,
     )
@@ -65,7 +65,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.random_seed=1",
+            "hydra.ax.client.random_seed=1",
             "quadratic.x=-5:-2",
             "quadratic.y=-2:2",
         ],
@@ -94,7 +94,7 @@ def test_jobs_configured_via_cmd_and_config(
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.random_seed=1",
+            "hydra.ax.client.random_seed=1",
             "quadratic.x=-5:-2",
         ],
         strict=True,
@@ -122,7 +122,7 @@ def test_configuration_set_via_cmd_and_default_config(
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.random_seed=1",
+            "hydra.ax.client.random_seed=1",
             "quadratic.x=-5:-2",
             "hydra.ax.max_trials=10",
             "hydra.ax.early_stop.max_epochs_without_improvement=2",
@@ -132,7 +132,6 @@ def test_configuration_set_via_cmd_and_default_config(
     )
     with sweep:
         ax_config = HydraConfig.instance().hydra.ax
-        print(HydraConfig.instance().hydra)
         assert ax_config.max_trials == 10
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True

@@ -7,12 +7,11 @@ banana:
   # To be minimized
   x: ???
   y: ???
-  
 
 hydra:
   ax:
     experiment:
-      # Banana function should be minimized (Ax defaults to maximize)
+      # Default to minimize, set to false to maximize
       minimize: true
 
     early_stop:
@@ -20,7 +19,7 @@ hydra:
       # the currently known best parameters
       # An Epoch is defined as a batch of trials executed in parallel
       max_epochs_without_improvement: 10
-    
+
     params:
       banana.x:
         type: range
@@ -30,4 +29,3 @@ hydra:
         type: range
         bounds: [-5, 10.1]
         log_scale: false
-        

@@ -103,14 +103,13 @@ class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(
-        self, verbose_logging: bool, ax_config: DictConfig, random_seed: int,
+        self, ax_config: DictConfig,
     ):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
         self.experiment = ax_config.experiment
         self.early_stopper = EarlyStopper(**ax_config.early_stop)
-        self.verbose_logging = verbose_logging
-        self.random_seed = random_seed
+        self.ax_client_config = ax_config.client
         self.max_trials = ax_config.max_trials
         self.ax_params: DictConfig = OmegaConf.create({})
         if hasattr(ax_config, "params"):
@@ -223,7 +222,8 @@ class AxSweeper(Sweeper):
             else:
                 parameters.append(cmd_param)
         ax_client = AxClient(
-            verbose_logging=self.verbose_logging, random_seed=self.random_seed
+            verbose_logging=self.ax_client_config.verbose_logging,
+            random_seed=self.ax_client_config.random_seed,
         )
         ax_client.create_experiment(parameters=parameters, **self.experiment)
 

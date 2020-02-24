@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
 from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
@@ -18,8 +17,7 @@ class HydraConfig(metaclass=Singleton):
     def set_config(self, cfg: DictConfig) -> None:
         try:
             OmegaConf.set_readonly(self.hydra, False)
-            self.hydra = copy.deepcopy(cfg.hydra)
-            self.hydra._set_parent(cfg.hydra._get_parent())
+            self.hydra = OmegaConf.masked_copy(cfg, "hydra").hydra
         finally:
             OmegaConf.set_readonly(self.hydra, True)
 

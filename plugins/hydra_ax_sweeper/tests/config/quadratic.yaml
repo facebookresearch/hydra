@@ -5,15 +5,14 @@ quadratic:
   # To be minimized
   x: ???
   y: ???
-  
 
 hydra:
   ax:
 
     max_trials: 10
-    
+
     experiment:
-      # Quadratic function should be minimized (Ax defaults to maximize)
+      # Defaults to minimize, set to false to maximize
       minimize: true
 
     early_stop:
@@ -21,16 +20,14 @@ hydra:
       # the currently known best parameters
       # An Epoch is defined as a batch of trials executed in parallel
       max_epochs_without_improvement: 2
-        
-    
+
     params:
       quadratic.x:
         type: range
         bounds: [-1, 1]
         log_scale: false
-      
+
       quadratic.y:
         type: range
         bounds: [-1, 1]
         log_scale: false
-
