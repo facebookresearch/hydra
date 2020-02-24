@@ -25,9 +25,7 @@ hydra:
       quadratic.x:
         type: range
         bounds: [-1, 1]
-        log_scale: false
 
       quadratic.y:
         type: range
         bounds: [-1, 1]
-        log_scale: false

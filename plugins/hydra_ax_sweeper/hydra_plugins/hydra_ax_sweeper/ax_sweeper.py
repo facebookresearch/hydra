@@ -65,12 +65,41 @@ class AxSweeperSearchPathPlugin(SearchPathPlugin):
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     """Convert a list of params into a string
     """
+    mandatory_keys = set(
+        ["name", "type", "bounds", "values", "value", "parameter_type"]
+    )
     parameter_log_string = ""
     for parameter in parameters:
         parameter_log_string += "\n"
+        parameter_log_string += f'{parameter["name"]}: {parameter["type"]}='
+        if parameter["type"] == "range":
+            parameter_log_string += f'{parameter["bounds"]}, '
+        elif parameter["type"] == "choice":
+            parameter_log_string += f'{parameter["values"]}, '
+        elif parameter["type"] == "fixed":
+            parameter_log_string += f'{parameter["value"]}, '
+
+        parameter_log_string += f'type = {parameter["parameter_type"].name.lower()}'
+
         for key, value in parameter.items():
-            parameter_log_string += f"\n\t{key} = {value}"
+            if key not in mandatory_keys:
+                parameter_log_string += f", {key} = {value}"
     return parameter_log_string
+
+
+def infer_parameter_type(parameter: Dict[str, Any]) -> ParameterType:
+    if parameter["type"] == "range":
+        value = parameter["bounds"][0]
+    elif parameter["type"] == "choice":
+        value = parameter["values"][0]
+    elif parameter["type"] == "fixed":
+        value = parameter["value"]
+
+    if isinstance(value, int):
+        return ParameterType.INT
+    if isinstance(value, float):
+        return ParameterType.FLOAT
+    return ParameterType.STRING
 
 
 def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List[str]:
@@ -215,6 +244,8 @@ class AxSweeper(Sweeper):
         for key, value in self.ax_params.items():
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)
+            if "parameter_type" not in param:
+                param["parameter_type"] = infer_parameter_type(param)
             if param["type"] == "range":
                 bounds = param["bounds"]
                 if not (all(isinstance(x, int) for x in bounds)):

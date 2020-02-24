@@ -8,6 +8,7 @@ banana:
   x: ???
   y: ???
 
+# The following part of config is used to setup the Hydra Ax plugin and is optional
 hydra:
   ax:
     experiment:
@@ -24,8 +25,6 @@ hydra:
       banana.x:
         type: range
         bounds: [-5, 5]
-        log_scale: false
       banana.y:
         type: range
         bounds: [-5, 10.1]
-        log_scale: false
