@@ -62,6 +62,17 @@ class AxSweeperSearchPathPlugin(SearchPathPlugin):
         )
 
 
+def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
+    """Convert a list of params into a string
+    """
+    parameter_log_string = ""
+    for parameter in parameters:
+        parameter_log_string += "\n"
+        for key, value in parameter.items():
+            parameter_log_string += f"\n\t{key} = {value}"
+    return parameter_log_string
+
+
 def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List[str]:
     """Method to map a dictionary of params to a list of string arguments"""
     arg_list = []
@@ -221,10 +232,15 @@ class AxSweeper(Sweeper):
                     break
             else:
                 parameters.append(cmd_param)
+
+        log.info(
+            f"AxSweeper is optimizing the following parameters: {encoder_parameters_into_string(parameters)}"
+        )
         ax_client = AxClient(
             verbose_logging=self.ax_client_config.verbose_logging,
             random_seed=self.ax_client_config.random_seed,
         )
+
         ax_client.create_experiment(parameters=parameters, **self.experiment)
 
         return ax_client
