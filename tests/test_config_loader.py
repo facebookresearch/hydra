@@ -550,14 +550,3 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     assert cfg.plugin.params._type == ConcretePlugin.FoobarParams
     with pytest.raises(ValidationError):
         cfg.plugin = 10
-
-
-# """
-# TODO:
-# Test loading as schema for existing config:
-# 1. (Y) verify number of loads make sense
-# 2. Implement proper display in hydra.verbose
-# 3. (Y) verify positive and validation error cases
-# 4. (Y) verify overrides behavior.
-# 5. (Y) check behavior with overlapping schemas
-# """

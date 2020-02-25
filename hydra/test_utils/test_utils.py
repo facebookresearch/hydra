@@ -19,10 +19,8 @@ from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 import hydra.experimental
-from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
-from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, split_config_path
 
@@ -396,20 +394,6 @@ if __name__ == "__main__":
         return file_str
     finally:
         os.chdir(orig_dir)
-
-
-# TODO: can this be replaced by a direct call to utils.create_config_search_path?
-def create_search_path(
-    search_path: List[str], abspath: bool = False
-) -> ConfigSearchPathImpl:
-    Plugins.register_config_sources()
-    csp = ConfigSearchPathImpl()
-    csp.append("hydra", "structured://hydra.conf")
-    csp.append("hydra", "pkg://hydra.conf")
-    for sp in search_path:
-        csp.append("test", sp if not abspath else os.path.realpath(sp))
-    csp.append("schema", "structured://")
-    return csp
 
 
 @pytest.fixture(scope="function")  # type: ignore

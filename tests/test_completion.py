@@ -10,8 +10,9 @@ import pytest
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
+from hydra._internal.utils import create_config_search_path
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
-from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
@@ -22,8 +23,8 @@ def is_expect_exists() -> bool:
 
 def create_config_loader() -> ConfigLoaderImpl:
     return ConfigLoaderImpl(
-        config_search_path=create_search_path(
-            ["hydra/test_utils/configs/completion_test"], abspath=True
+        config_search_path=create_config_search_path(
+            search_path_dir=os.path.realpath("hydra/test_utils/configs/completion_test")
         )
     )
 

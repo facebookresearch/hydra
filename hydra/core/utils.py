@@ -207,9 +207,6 @@ def split_config_path(
             raise ValueError(
                 "Config name should be specified in either config_path or config_name, but not both"
             )
-        # TODO:
-        #  1. Add a warning here. this is no longer the recommended API.
-        #  2. Update tutorials and documentation  to reflect this change.
         config_name = config_file
 
     return config_dir, config_name
