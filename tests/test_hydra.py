@@ -75,6 +75,23 @@ def test_app_without_config___no_overrides(
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
+        ("tests/test_apps/hydra_main_rerun/my_app.py", None),
+        (None, "tests.test_apps.hydra_main_rerun.my_app"),
+    ],
+)
+def test_hydra_main_rerun(
+    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+) -> None:
+    with task_runner(
+        calling_file=calling_file, calling_module=calling_module, config_path=None
+    ) as task:
+        assert task.job_ret is not None
+        assert task.job_ret.cfg == {}
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "calling_file, calling_module",
+    [
         ("tests/test_apps/app_without_config/my_app.py", None),
         (None, "tests.test_apps.app_without_config.my_app"),
     ],
