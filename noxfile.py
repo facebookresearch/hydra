@@ -2,6 +2,7 @@
 # type: ignore
 import copy
 import os
+import platform
 
 import nox
 
@@ -218,6 +219,12 @@ def coverage(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_jupyter_notebook(session):
+    # TODO: disable this when https://github.com/zeromq/pyzmq/issues/1366 is resolved
+    if platform.system() == "Windows":
+        session.skip(
+            f"Not testing Jupyter notebook on Windows due to a temporary dependency issue"
+        )
+
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
         session.skip(
