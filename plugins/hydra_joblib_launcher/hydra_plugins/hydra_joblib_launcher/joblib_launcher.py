@@ -33,7 +33,7 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.conf"
+            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.config"
         )
 
 
