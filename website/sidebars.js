@@ -4,18 +4,38 @@ module.exports = {
         About: [
             'intro',
         ],
+        Tutorials: [
+          'tutorials/intro',
+          {
+            type: 'category',
+            label: 'Basic Tutorial',
+            items: [
+                'tutorials/basic/simple_cli',
+                'tutorials/basic/config_file',
+                'tutorials/basic/config_groups',
+                'tutorials/basic/defaults',
+                'tutorials/basic/composition',
+                'tutorials/basic/multi-run',
+                'tutorials/basic/tab_completion',
+                'tutorials/basic/working_directory',
+                'tutorials/basic/logging',
+                'tutorials/basic/debugging',
+            ],
+          },
 
-        'Tutorial': [
-            'tutorial/simple_cli',
-            'tutorial/config_file',
-            'tutorial/config_groups',
-            'tutorial/defaults',
-            'tutorial/composition',
-            'tutorial/multi-run',
-            'tutorial/tab_completion',
-            'tutorial/working_directory',
-            'tutorial/logging',
-            'tutorial/debugging',
+          {
+            type: 'category',
+            label: 'Structured configs tutorial',
+            items: [
+                'tutorials/structured_config/basic',
+                'tutorials/structured_config/node_path',
+                'tutorials/structured_config/nesting',
+                'tutorials/structured_config/config_groups',
+                'tutorials/structured_config/defaults',
+                'tutorials/structured_config/schema',
+                'tutorials/structured_config/config_store',
+            ],
+          },
         ],
 
         'Common patterns': [
@@ -31,17 +51,21 @@ module.exports = {
         ],
 
         'Plugins': [
+            'plugins/api_overview',
             'plugins/colorlog',
             'plugins/joblib_launcher',
         ],
 
-
         'Advanced': [
             'advanced/app_packaging',
             'advanced/search_path',
-            'advanced/plugins',
-            'advanced/compose_api',
-            'advanced/ray_example',
+
+        ],
+
+        "Experimental": [
+            "experimental/intro",
+            'experimental/compose_api',
+            'experimental/ray_example',
         ],
 
         'Development': [

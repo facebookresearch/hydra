@@ -20,13 +20,21 @@ Hydra requires Python 3.6 or newer, and it officially supports Linux, Mac and Wi
 
 ## Quick start guide
 This guide will show you some of the most important features of Hydra.
-Read the [tutorial](tutorial/1_simple_cli_app.md) to gain a deeper understanding.
+Read the [tutorial](tutorials/basic/1_simple_cli_app.md) to gain a deeper understanding.
 
 ### Installation
-Install the stable release with `pip install hydra-core --upgrade`.
+Install the stable release with 
+```
+pip install hydra-core --upgrade
+```
 
-You can install pre-release versions with `pip install hydra-core --pre --upgrade`. 
-Those may contain nuts and bugs and might be incompatible with existing plugins.
+
+You can install pre-release version with: 
+```
+pip install hydra-core --pre --upgrade
+``` 
+This version may contain nuts and bugs and be incompatible with existing plugins.
+
 
 ### Basic example
 Configuration file: `config.yaml`

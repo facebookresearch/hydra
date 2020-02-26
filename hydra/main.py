@@ -14,7 +14,7 @@ def main(
     """
     :param config_path: the config path, can be a directory in which it's used as the config root
     or a file to load
-    :config_name: the name of the config (usually file name without extension)
+    :param config_name: the name of the config (usually file name without extension)
     :param strict: strict mode, will throw an error if command line overrides are not changing an
     existing key or
            if the code is accessing a non existent key

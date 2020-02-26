@@ -1,2 +1,3 @@
 hydra:
-  name: name_from_config_file
+  job:
+    name: name_from_config_file
