@@ -2,6 +2,7 @@
 import distutils.spawn
 import os
 import subprocess
+import sys
 from pathlib import Path
 from typing import List
 
@@ -9,8 +10,9 @@ import pytest
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
+from hydra._internal.utils import create_config_search_path
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
-from hydra.test_utils.test_utils import chdir_hydra_root, create_search_path
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
@@ -21,8 +23,8 @@ def is_expect_exists() -> bool:
 
 def create_config_loader() -> ConfigLoaderImpl:
     return ConfigLoaderImpl(
-        config_search_path=create_search_path(
-            ["hydra/test_utils/configs/completion_test"], abspath=True
+        config_search_path=create_config_search_path(
+            search_path_dir=os.path.realpath("hydra/test_utils/configs/completion_test")
         )
     )
 
@@ -35,6 +37,7 @@ base_completion_list: List[str] = [
     "hydra/",
     "list.",
     "list_prefix=",
+    "test_hydra/",
 ]
 
 
@@ -64,9 +67,9 @@ base_completion_list: List[str] = [
                 "hydra/sweeper=",
             ],
         ),
-        ("hydra/lau", 2, ["hydra/launcher="]),
-        ("hydra/launcher=", 2, ["hydra/launcher=basic", "hydra/launcher=fairtask"]),
-        ("hydra/launcher=ba", 2, ["hydra/launcher=basic"]),
+        ("test_hydra/lau", 2, ["test_hydra/launcher="]),
+        ("test_hydra/launcher=", 2, ["test_hydra/launcher=fairtask"]),
+        ("test_hydra/launcher=fa", 2, ["test_hydra/launcher=fairtask"]),
         # loading groups
         ("gro", 2, ["group="]),
         ("group=di", 2, ["group=dict"]),
@@ -82,6 +85,7 @@ base_completion_list: List[str] = [
                 "hydra/",
                 "list.",
                 "list_prefix=",
+                "test_hydra/",
                 "toys.",
             ],
         ),
@@ -96,35 +100,45 @@ class TestCompletion:
     ) -> None:
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
-        ret = bc._query(config_file="config.yaml", line=line_prefix + line)
+        ret = bc._query(config_name="config.yaml", line=line_prefix + line)
         assert ret == expected
 
     @pytest.mark.skipif(  # type: ignore
         not is_expect_exists(),
         reason="expect should be installed to run the expects tests",
     )
-    @pytest.mark.parametrize("prog", ["python hydra/test_utils/completion.py"])  # type: ignore
+    @pytest.mark.parametrize(  # type: ignore
+        "prog", [["python", "hydra/test_utils/completion.py"]]
+    )
     @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
-        prog: str,
+        prog: List[str],
         num_tabs: int,
         line_prefix: str,
         line: str,
         expected: List[str],
     ) -> None:
+
+        # verify expect will be running the correct Python.
+        # This preemptively detect a much harder to understand error from expect.
+        ret = subprocess.check_output(["which", "python"], env=os.environ)
+        assert os.path.realpath(ret.decode("utf-8").strip()) == os.path.realpath(
+            sys.executable.strip()
+        )
+
         line1 = "line={}".format(line_prefix + line)
         cmd = [
             "expect",
-            # "-d",  # Uncomment for debug prints from expect
+            "-d",  # Uncomment for debug prints from expect
             "tests/expect/test_{}_completion.exp".format(shell),
-            prog,
+            f"{' '.join(prog)}",
             line1,
             str(num_tabs),
         ]
         cmd.extend(expected)
-        print(" ".join(["'{}'".format(x) for x in cmd]))
+        print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
         subprocess.check_call(cmd)
 
 
@@ -139,7 +153,7 @@ class TestCompletion:
 def test_with_flags(line: str, expected: List[str]) -> None:
     config_loader = create_config_loader()
     bc = DefaultCompletionPlugin(config_loader)
-    ret = bc._query(config_file="config.yaml", line=line)
+    ret = bc._query(config_name="config.yaml", line=line)
     assert ret == expected
 
 
@@ -187,7 +201,7 @@ def test_file_completion(
             prefix = os.path.realpath(".")
             probe += os.path.join(prefix, fname_prefix)
 
-        ret = bc._query(config_file="config.yaml", line=probe)
+        ret = bc._query(config_name="config.yaml", line=probe)
         assert len(expected) == len(ret)
         for idx, file in enumerate(expected):
             assert key_eq + os.path.join(prefix, file) == ret[idx]
@@ -196,7 +210,7 @@ def test_file_completion(
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"],
+    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"]
 )
 @pytest.mark.parametrize(  # type: ignore
     "app_prefix",

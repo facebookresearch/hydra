@@ -1,0 +1,1 @@
+Plugin definition class name field "class" in configs is deprecated in favor of "cls" and will be removed in a future version.

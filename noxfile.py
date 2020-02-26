@@ -23,6 +23,13 @@ PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 SILENT = os.environ.get("VERBOSE", "0") == "0"
 
 
+def find_python_files(folder):
+    for root, folders, files in os.walk(folder,):
+        for filename in folders + files:
+            if filename.endswith(".py"):
+                yield os.path.join(root, filename)
+
+
 def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
@@ -35,7 +42,10 @@ def install_pytest(session):
 
 
 def run_pytest(session, directory="."):
-    session.run("pytest", directory, silent=False, *session.posargs)
+    if len(session.posargs) == 0:
+        session.run("pytest", directory, silent=False)
+    else:
+        session.run("pytest", *session.posargs, silent=False)
     # session.run("pytest", "--workers=30", silent=SILENT)
 
 
@@ -98,9 +108,16 @@ def lint(session):
 
     # Mypy
     session.run("mypy", ".", "--strict")
+
     # Mypy for plugins
     for plugin in get_all_plugins():
-        session.run("mypy", os.path.join("plugins", plugin["path"]), "--strict")
+        session.run(
+            "mypy", os.path.join("plugins", plugin["path"]), "--strict", silent=SILENT
+        )
+
+    # Mypy for examples
+    for pyfie in find_python_files("examples"):
+        session.run("mypy", pyfie, "--strict", silent=SILENT)
 
 
 @nox.session(python=PYTHON_VERSIONS)

@@ -182,10 +182,10 @@ class JobRuntime(metaclass=Singleton):
 
 
 def split_config_path(
-    config_path: Optional[str],
+    config_path: Optional[str], config_name: Optional[str]
 ) -> Tuple[Optional[str], Optional[str]]:
     if config_path is None or config_path == "":
-        return None, None
+        return None, config_name
     split_file = splitext(config_path)
     if split_file[1] in (".yaml", ".yml"):
         # assuming dir/config.yaml form
@@ -201,4 +201,12 @@ def split_config_path(
 
     if config_file == "":
         config_file = None
-    return config_dir, config_file
+
+    if config_file is not None:
+        if config_name is not None:
+            raise ValueError(
+                "Config name should be specified in either config_path or config_name, but not both"
+            )
+        config_name = config_file
+
+    return config_dir, config_name
