@@ -31,7 +31,7 @@ class CompletionPlugin(Plugin):
         ...
 
     @abstractmethod
-    def query(self, config_file: Optional[str]) -> None:
+    def query(self, config_name: Optional[str]) -> None:
         ...
 
     @staticmethod
@@ -173,7 +173,7 @@ class CompletionPlugin(Plugin):
 
         return matched_groups, exact_match
 
-    def _query(self, config_file: Optional[str], line: str) -> List[str]:
+    def _query(self, config_name: Optional[str], line: str) -> List[str]:
         from .._internal.utils import get_args
 
         new_word = len(line) == 0 or line[-1] == " "
@@ -186,7 +186,7 @@ class CompletionPlugin(Plugin):
             words = words[0:-1]
 
         config = self.config_loader.load_configuration(
-            config_file=config_file, overrides=words, strict=True
+            config_name=config_name, overrides=words, strict=True
         )
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)
@@ -218,5 +218,5 @@ class DefaultCompletionPlugin(CompletionPlugin):
     def provides(self) -> str:
         ...
 
-    def query(self, config_file: Optional[str]) -> None:
+    def query(self, config_name: Optional[str]) -> None:
         ...

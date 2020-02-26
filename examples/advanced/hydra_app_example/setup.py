@@ -13,5 +13,5 @@ setup(
     author_email="your_email@example.com",
     url="http://hydra_app.example.com",
     include_package_data=True,
-    # TODO: add hydra dependency
+    install_requires=["hydra-core==1.0.*"],
 )

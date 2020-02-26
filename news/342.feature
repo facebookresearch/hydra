@@ -1,1 +1,1 @@
-Annotate codebase and enable mypy
+Codebase is now passing mypy --strict type checking

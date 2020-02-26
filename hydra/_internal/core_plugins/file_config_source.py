@@ -19,6 +19,7 @@ class FileConfigSource(ConfigSource):
         return "file"
 
     def load_config(self, config_path: str) -> ConfigResult:
+        config_path = self._normalize_file_name(config_path)
         full_path = os.path.realpath(os.path.join(self.path, config_path))
         if not os.path.exists(full_path):
             raise ConfigLoadError(f"FileConfigSource: Config not found : {full_path}")
@@ -28,19 +29,14 @@ class FileConfigSource(ConfigSource):
             provider=self.provider,
         )
 
-    def exists(self, config_path: str) -> bool:
+    def is_group(self, config_path: str) -> bool:
         full_path = os.path.realpath(os.path.join(self.path, config_path))
-        return os.path.exists(full_path)
+        return os.path.isdir(full_path)
 
-    def get_type(self, config_path: str) -> ObjectType:
+    def is_config(self, config_path: str) -> bool:
+        config_path = self._normalize_file_name(config_path)
         full_path = os.path.realpath(os.path.join(self.path, config_path))
-        if os.path.exists(full_path):
-            if os.path.isdir(full_path):
-                return ObjectType.GROUP
-            else:
-                return ObjectType.CONFIG
-        else:
-            return ObjectType.NOT_FOUND
+        return os.path.isfile(full_path)
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
@@ -54,4 +50,4 @@ class FileConfigSource(ConfigSource):
                 results_filter=results_filter,
             )
 
-        return sorted(files)
+        return sorted(list(set(files)))

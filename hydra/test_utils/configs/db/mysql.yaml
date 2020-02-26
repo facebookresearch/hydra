@@ -1,4 +1,4 @@
 db:
   driver: mysql
   user: omry
-  pass: secret
+  password: secret

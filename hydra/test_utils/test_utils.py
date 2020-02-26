@@ -19,10 +19,9 @@ from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 import hydra.experimental
-from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
-from hydra.core.plugins import Plugins
+from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, split_config_path
 
 # CircleCI does not have the environment variable USER, breaking the tests.
@@ -96,6 +95,7 @@ class TaskTestFunction:
         self.calling_file: Optional[str] = None
         self.calling_module: Optional[str] = None
         self.config_path: Optional[str] = None
+        self.config_name: Optional[str] = None
         self.strict: Optional[bool] = None
         self.hydra: Optional[Hydra] = None
         self.job_ret: Optional[JobReturn] = None
@@ -109,7 +109,9 @@ class TaskTestFunction:
 
     def __enter__(self) -> "TaskTestFunction":
         try:
-            config_dir, config_file = split_config_path(self.config_path)
+            config_dir, config_name = split_config_path(
+                self.config_path, self.config_name
+            )
 
             self.hydra = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
@@ -122,7 +124,7 @@ class TaskTestFunction:
             assert overrides is not None
             overrides.append("hydra.run.dir={}".format(self.temp_dir))
             self.job_ret = self.hydra.run(
-                config_file=config_file, task_function=self, overrides=overrides
+                config_name=config_name, task_function=self, overrides=overrides
             )
             return self
         finally:
@@ -137,19 +139,28 @@ class TaskTestFunction:
 
 @pytest.fixture(scope="function")  # type: ignore
 def task_runner() -> Callable[
-    [Optional[str], Optional[str], Optional[str], Optional[List[str]], Optional[bool]],
+    [
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        Optional[bool],
+    ],
     TaskTestFunction,
 ]:
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
         config_path: Optional[str],
+        config_name: Optional[str],
         overrides: Optional[List[str]] = None,
         strict: Optional[bool] = False,
     ) -> TaskTestFunction:
         task = TaskTestFunction()
         task.overrides = overrides or []
         task.calling_file = calling_file
+        task.config_name = config_name
         task.calling_module = calling_module
         task.config_path = config_path
         task.strict = strict
@@ -164,6 +175,7 @@ class TTaskRunner(Protocol):
         calling_file: Optional[str],
         calling_module: Optional[str],
         config_path: Optional[str],
+        config_name: Optional[str],
         overrides: Optional[List[str]] = None,
         strict: Optional[bool] = False,
     ) -> TaskTestFunction:
@@ -186,6 +198,7 @@ class SweepTaskFunction:
         self.calling_file: Optional[str] = None
         self.calling_module: Optional[str] = None
         self.config_path: Optional[str] = None
+        self.config_name: Optional[str] = None
         self.strict: Optional[bool] = None
         self.sweeps = None
         self.returns = None
@@ -202,7 +215,9 @@ class SweepTaskFunction:
         assert overrides is not None
         overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
         try:
-            config_dir, config_file = split_config_path(self.config_path)
+            config_dir, config_name = split_config_path(
+                self.config_path, self.config_name
+            )
             hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
@@ -211,7 +226,7 @@ class SweepTaskFunction:
             )
 
             self.returns = hydra_.multirun(
-                config_file=config_file, task_function=self, overrides=overrides
+                config_name=config_name, task_function=self, overrides=overrides
             )
         finally:
             GlobalHydra().clear()
@@ -225,13 +240,21 @@ class SweepTaskFunction:
 
 @pytest.fixture(scope="function")  # type: ignore
 def sweep_runner() -> Callable[
-    [Optional[str], Optional[str], Optional[str], Optional[List[str]], Optional[bool]],
+    [
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        Optional[bool],
+    ],
     SweepTaskFunction,
 ]:
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
         config_path: Optional[str],
+        config_name: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
     ) -> SweepTaskFunction:
@@ -239,6 +262,7 @@ def sweep_runner() -> Callable[
         sweep.calling_file = calling_file
         sweep.calling_module = calling_module
         sweep.config_path = config_path
+        sweep.config_name = config_name
         sweep.strict = strict
         sweep.overrides = overrides or []
         return sweep
@@ -254,6 +278,7 @@ class TSweepRunner(Protocol):
         calling_file: Optional[str],
         calling_module: Optional[str],
         config_path: Optional[str],
+        config_name: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
     ) -> SweepTaskFunction:
@@ -371,12 +396,13 @@ if __name__ == "__main__":
         os.chdir(orig_dir)
 
 
-def create_search_path(
-    search_path: List[str], abspath: bool = False
-) -> ConfigSearchPathImpl:
-    Plugins.register_config_sources()
-    csp = ConfigSearchPathImpl()
-    csp.append("hydra", "pkg://hydra.conf")
-    for sp in search_path:
-        csp.append("test", sp if not abspath else os.path.realpath(sp))
-    return csp
+@pytest.fixture(scope="function")  # type: ignore
+def restore_singletons() -> Any:
+    """
+    A fixture to restore singletons state after this the function.
+    This is useful for functions that are making a one-off change to singlestons that should not effect
+    other tests
+    """
+    state = copy.deepcopy(Singleton.get_state())
+    yield
+    Singleton.set_state(state)
