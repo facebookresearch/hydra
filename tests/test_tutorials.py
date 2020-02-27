@@ -205,7 +205,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
             OmegaConf.create(
                 {
                     "db": {
-                        "class": "tutorial.objects_example.my_app.MySQLConnection",
+                        "cls": "tutorial.objects_example.my_app.MySQLConnection",
                         "params": {
                             "host": "localhost",
                             "user": "root",
@@ -220,7 +220,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
             OmegaConf.create(
                 {
                     "db": {
-                        "class": "tutorial.objects_example.my_app.MySQLConnection",
+                        "cls": "tutorial.objects_example.my_app.MySQLConnection",
                         "params": {
                             "host": "localhost",
                             "user": "root",
