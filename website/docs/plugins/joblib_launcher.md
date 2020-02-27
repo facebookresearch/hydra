@@ -27,16 +27,17 @@ defaults:
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
 The default configuration packaged with the plugin is:
-TODO : UPDATE
 ```yaml
 hydra:
   launcher:
     class: hydra_plugins.hydra_joblib_launcher.JoblibLauncher
     params:
-      joblib: JobLibConf()
+      joblib: ... # See JobLibConf below
 ```
 
-[JobLibConf](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
+The JobLibConf class is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
+
+It looks like this: 
 
 ```python
 @dataclass
@@ -75,11 +76,15 @@ class JobLibConf:
     mmap_mode: str = "r"
 ```
 
-See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details configuration parameters.
+See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details about the parameters above.
 
-The only supported backend is Loky (Processes bases parallelism).
+<div class="alert alert--info" role="alert">
+NOTE: The only supported JobLib backend is Loky (process-based parallelism).
+</div><br/>
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in `plugins/hydra_joblib_launcher/example`. Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions:
+An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in the plugin repository.
+
+Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions:
 
 ```text
 $ python my_app.py --multirun task=1,2,3,4,5
