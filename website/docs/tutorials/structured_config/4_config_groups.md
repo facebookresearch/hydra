@@ -19,9 +19,9 @@ class PostGreSQLConfig:
     driver: str = "postgresql"
     host: str = "localhost"
     port: int = 5432
+    timeout: int = 10
     user: str = "postgre_user"
     password: str = "drowssap"
-    timeout: int = 10
 
 # Config is extending DictConfig to allow type safe access to the pretty() function below.
 @dataclass
@@ -54,26 +54,31 @@ db:
   user: omry
 ```
 
-As a site note, you can model your configuration classes using inheritance, reducing the duplication between `mysql` and `postgresql`.
+#### Config inheritance
+You can also model your configuration classes using inheritance, reducing the duplication between `mysql` and `postgresql`,
+and also establishing a common interface between the two configs.
+
 ```python
 @dataclass
 class DBConfig:
-    # In this example both configurations have a common default host
+    driver: str = MISSING
     host: str = "localhost"
-
+    port: int = MISSING
+    user: str = MISSING
+    password: str = MISSING
 
 @dataclass
-class MySQLConfig:
+class MySQLConfig(DBConfig):
     driver: str = "mysql"
     port: int = 3306
     user: str = "omry"
     password: str = "secret"
 
 @dataclass
-class PostGreSQLConfig:
+class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
     port: int = 5432
+    timeout: int = 10
     user: str = "postgre_user"
     password: str = "drowssap"
-    timeout: int = 10
 ```
