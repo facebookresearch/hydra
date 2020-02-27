@@ -25,6 +25,8 @@ hydra_defaults = [
 
 
 @dataclass
+# This extends Dict[str, Any] to allow for the deprecated "class" field.
+# Once support for class field removed this can stop extending Dict.
 class PluginConf(Dict[str, Any]):
     # class name for plugin
     cls: str = MISSING
