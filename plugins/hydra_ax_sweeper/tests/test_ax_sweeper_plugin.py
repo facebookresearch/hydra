@@ -1,6 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import math
 import os
+import subprocess
+import sys
+from pathlib import Path
 from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
@@ -123,7 +126,6 @@ def test_configuration_set_via_cmd_and_default_config(
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
             "hydra.ax.client.random_seed=1",
-            "quadratic.x=-5:-2",
             "hydra.ax.max_trials=10",
             "hydra.ax.early_stop.max_epochs_without_improvement=2",
             "quadratic.x=-5:-2",
@@ -141,3 +143,18 @@ def test_configuration_set_via_cmd_and_default_config(
         best_parameters = returns["ax"][0]
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
+
+
+def test_ax_logging(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "apps/quadratic.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "quadratic.x=-5:-2",
+        "quadratic.y=-1:1",
+        "hydra.ax.max_trials=3",
+    ]
+    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    assert "quadratic.x: range=[-5, -2], type = int" in result
+    assert "quadratic.y: range=[-1, 1], type = int" in result
