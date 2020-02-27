@@ -21,7 +21,7 @@ defaults:
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
 The default configuration packaged with the plugin is:
-
+TODO : UPDATE
 ```yaml
 hydra:
   launcher:
