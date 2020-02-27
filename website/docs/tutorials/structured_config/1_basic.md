@@ -27,14 +27,7 @@ Some of the major features of Structured Configs:
 - `Union` types are not supported (except `Optional`)
 - User methods are not supported.
 
-This tutorial does not assume complete knowledge of Structured Configs. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more.
-
-<div class="alert alert--info" role="alert">
-1. The APIs and behaviors described in this tutorial are experimental and may change in a future version<br/> 
-2. Structured configs are new, please report any issues<br/>
-</div>
-<br/>
-
+### Overviw
 
 There are two primary ways for using Structured configs.
 - In place of configuration files
@@ -42,6 +35,14 @@ There are two primary ways for using Structured configs.
 
 With both methods, you get everything else Hydra has to offer (Config composition, Command line overrides etc).
 This tutorial covers both methods, read it in order.
+
+This tutorial does not assume complete knowledge of Structured Configs. Visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more.
+
+<div class="alert alert--info" role="alert">
+1. The APIs and behaviors described in this tutorial are experimental and may change in a future version<br/> 
+2. Structured configs are new, please report any issues<br/>
+</div>
+<br/>
 
 #### Minimal example
 This tutorial uses the `ConfigStore`, a Singleton that stores configs in memory, in a structured similar to the file system.
