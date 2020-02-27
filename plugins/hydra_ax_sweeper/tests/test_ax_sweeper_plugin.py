@@ -148,7 +148,7 @@ def test_configuration_set_via_cmd_and_default_config(
 def test_ax_logging(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "apps/quadratic.py",
+        "plugins/hydra_ax_sweeper/tests/apps/quadratic.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "quadratic.x=-5:-2",
