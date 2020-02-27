@@ -71,15 +71,15 @@ def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     parameter_log_string = ""
     for parameter in parameters:
         parameter_log_string += "\n"
-        parameter_log_string += f'{parameter["name"]}: {parameter["type"]}='
+        parameter_log_string += f"{parameter['name']}: {parameter['type']}="
         if parameter["type"] == "range":
-            parameter_log_string += f'{parameter["bounds"]}, '
+            parameter_log_string += f"{parameter['bounds']}, "
         elif parameter["type"] == "choice":
-            parameter_log_string += f'{parameter["values"]}, '
+            parameter_log_string += f"{parameter['values']}, "
         elif parameter["type"] == "fixed":
-            parameter_log_string += f'{parameter["value"]}, '
+            parameter_log_string += f"{parameter['value']}, "
 
-        parameter_log_string += f'type = {parameter["parameter_type"].name.lower()}'
+        parameter_log_string += f"type = {parameter['parameter_type'].name.lower()}"
 
         for key, value in parameter.items():
             if key not in mandatory_keys:
