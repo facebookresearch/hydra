@@ -15,11 +15,10 @@ from hydra.plugins.sweeper import Sweeper
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     TSweepRunner,
-    sweep_runner,
     chdir_hydra_root,
+    sweep_runner,
 )
 from hydra_plugins.hydra_ax_sweeper import AxSweeper
-
 
 chdir_hydra_root()
 
