@@ -35,7 +35,7 @@ class JobLibConf:
     temp_folder: Optional[str] = None
 
     # thresholds size of arrays that triggers automated memmapping
-    max_nbytes: str = "1M"
+    max_nbytes: Optional[str] = None
 
     # memmapping mode for numpy arrays passed to workers
     mmap_mode: str = "r"
