@@ -45,11 +45,12 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noq
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config/quadratic.yaml",
+        config_path="tests/config",
+        config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.ax.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
         ],
         strict=True,
     )
@@ -70,11 +71,12 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config/quadratic.yaml",
+        config_path="tests/config",
+        config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.ax.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
             "quadratic.x=-5:-2",
             "quadratic.y=-2:2",
         ],
@@ -99,11 +101,12 @@ def test_jobs_configured_via_cmd_and_config(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config/quadratic.yaml",
+        config_path="tests/config",
+        config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.ax.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
             "quadratic.x=-5:-2",
         ],
         strict=True,
@@ -127,19 +130,20 @@ def test_configuration_set_via_cmd_and_default_config(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config/default_quadratic.yaml",
+        config_path="tests/config",
+        config_name="default_quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.ax.client.random_seed=1",
-            "hydra.ax.max_trials=10",
-            "hydra.ax.early_stop.max_epochs_without_improvement=2",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.max_trials=10",
+            "hydra.sweeper.params.ax_config.early_stop.max_epochs_without_improvement=2",
             "quadratic.x=-5:-2",
             "quadratic.y=-1:1",
         ],
     )
     with sweep:
-        ax_config = HydraConfig.instance().hydra.ax
+        ax_config = HydraConfig.instance().hydra.sweeper.params.ax_config
         assert ax_config.max_trials == 10
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True
@@ -160,7 +164,7 @@ def test_ax_logging(tmpdir: Path) -> None:
         "polynomial.x=-5:-2",
         "polynomial.y=-1,1",
         "polynomial.z=10",
-        "hydra.ax.max_trials=3",
+        "hydra.sweeper.params.ax_config.max_trials=3",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5, -2], type = int" in result
