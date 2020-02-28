@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from joblib import Parallel, delayed  # type: ignore
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
@@ -38,7 +38,7 @@ class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class JoblibLauncher(Launcher):
-    def __init__(self, joblib: DictConfig) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """Joblib Launcher
 
         Launches parallel jobs using Joblib.Parallel. For details, refer to:
@@ -51,7 +51,7 @@ class JoblibLauncher(Launcher):
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
 
-        self.joblib = joblib
+        self.joblib = kwargs
 
     def setup(
         self,
@@ -79,8 +79,7 @@ class JoblibLauncher(Launcher):
 
         # Joblib's backend is hard-coded to loky since the threading
         # backend is incompatible with Hydra
-        joblib_cfg = OmegaConf.to_container(self.joblib, resolve=True)
-        assert isinstance(joblib_cfg, dict)
+        joblib_cfg = self.joblib
         joblib_cfg["backend"] = "loky"
 
         log.info(
