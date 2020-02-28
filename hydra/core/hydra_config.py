@@ -15,11 +15,8 @@ class HydraConfig(metaclass=Singleton):
         self.hydra = ret
 
     def set_config(self, cfg: DictConfig) -> None:
-        try:
-            OmegaConf.set_readonly(self.hydra, False)
-            self.hydra = OmegaConf.masked_copy(cfg, "hydra").hydra
-        finally:
-            OmegaConf.set_readonly(self.hydra, True)
+        self.hydra = OmegaConf.masked_copy(cfg, "hydra").hydra
+        OmegaConf.set_readonly(self.hydra, True)  # type: ignore
 
     @staticmethod
     def instance(*args: Any, **kwargs: Any) -> "HydraConfig":

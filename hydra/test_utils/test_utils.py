@@ -247,8 +247,8 @@ def sweep_runner() -> Callable[
     [
         Optional[str],
         Optional[str],
-        Optional[str],
         Optional[TaskFunction],
+        Optional[str],
         Optional[str],
         Optional[List[str]],
         Optional[bool],
