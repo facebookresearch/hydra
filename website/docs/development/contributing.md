@@ -74,7 +74,7 @@ PR ends up rejected due to code quality reasons).
 
 Once you have an issue or pull request, you take the number and you create a
 file inside of the ``news/`` directory named after that issue number with one of the following extensions:
-* `api_change` : API Change (May require changes from downstream projects or plugins)
+* `api_change` : API Change (Renames, deprecations and removals)
 * `feature` : Addition of a new feature
 * `bugfix` : Fixing of a bug
 * `docs` : Addition or updates to documentation
@@ -85,7 +85,7 @@ If your issue or PR number is ``1234`` and this change is fixing a bug, then you
 create a file ``news/1234.bugfix``. PRs can span multiple categories by creating
 multiple files (for instance, if you added a feature and deprecated/removed the
 old feature at the same time, you would create ``news/NNNN.feature`` and
-``news/NNNN.removal``). Likewise if a PR touches multiple issues/PRs you may
+``news/NNNN.api_change``). Likewise if a PR touches multiple issues/PRs you may
 create a file for each of them with the exact same contents and Towncrier will
 deduplicate them.
 

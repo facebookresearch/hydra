@@ -106,13 +106,13 @@ class TestCompose:
         # default strict false, but call is strict
         with hydra_global_context(config_dir=config_dir, strict=False):
             with pytest.raises(AttributeError):
-                compose(config_file=config_file, overrides=overrides, strict=True)
+                compose(config_name=config_file, overrides=overrides, strict=True)
 
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
 
             with does_not_raise():
-                compose(config_file=config_file, overrides=overrides, strict=False)
+                compose(config_name=config_file, overrides=overrides, strict=False)
 
     def test_strict_failure_disabled_on_call(
         self,
@@ -125,7 +125,7 @@ class TestCompose:
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
             with does_not_raise():
-                compose(config_file=config_file, overrides=overrides, strict=False)
+                compose(config_name=config_file, overrides=overrides, strict=False)
 
 
 @pytest.mark.parametrize(

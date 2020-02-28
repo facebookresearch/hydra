@@ -16,7 +16,7 @@ MySQL connecting to localhost with user=root and password=1234
 $ python tutorial/objects_example/my_app.py -c job
 [2019-09-29 11:09:14,134] -
 db:
-  class: tutorial.objects_example.my_app.MySQLConnection
+  cls: tutorial.objects_example.my_app.MySQLConnection
   params:
     host: localhost
     password: 1234
@@ -27,7 +27,7 @@ The printed config would be the actual config the job received with the rest of 
 $ python tutorial/objects_example/my_app.py db=postgresql db.params.database=tutorial2 --cfg job
 [2019-09-29 11:14:55,977] -
 db:
-  class: tutorial.objects_example.my_app.PostgreSQLConnection
+  cls: tutorial.objects_example.my_app.PostgreSQLConnection
   params:
     database: tutorial2
     host: localhost

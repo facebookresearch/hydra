@@ -86,7 +86,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
             else:
                 raise RuntimeError("Error parsing line '{}'".format(line))
 
-    def query(self, config_file: Optional[str]) -> None:
+    def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
         # index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 
@@ -97,7 +97,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
 
         # currently index is ignored.
         line = self.strip_python_or_app_name(line)
-        print(" ".join(self._query(config_file=config_file, line=line)))
+        print(" ".join(self._query(config_name=config_name, line=line)))
 
     @staticmethod
     def _get_exec() -> str:

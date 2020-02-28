@@ -1,0 +1,5 @@
+hydra:
+  launcher:
+    params:
+      joblib:
+        n_jobs: 10

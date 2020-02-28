@@ -4,23 +4,20 @@ from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.conf import HydraConf
 from hydra.core.singleton import Singleton
 
 
 class HydraConfig(metaclass=Singleton):
-    hydra: DictConfig
+    hydra: HydraConf
 
     def __init__(self) -> None:
-        ret = OmegaConf.create()
-        assert isinstance(ret, DictConfig)
+        ret = OmegaConf.structured(HydraConf)
         self.hydra = ret
 
     def set_config(self, cfg: DictConfig) -> None:
-        try:
-            OmegaConf.set_readonly(self.hydra, False)
-            self.hydra = copy.deepcopy(cfg.hydra)
-        finally:
-            OmegaConf.set_readonly(self.hydra, True)
+        self.hydra = copy.deepcopy(cfg.hydra)
+        OmegaConf.set_readonly(self.hydra, True)  # type: ignore
 
     @staticmethod
     def instance(*args: Any, **kwargs: Any) -> "HydraConfig":

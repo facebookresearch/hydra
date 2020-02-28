@@ -1,6 +1,6 @@
 hydra:
   sweeper:
-    class: hydra_plugins.example_sweeper_plugin.ExampleSweeper
+    cls: hydra_plugins.example_sweeper_plugin.ExampleSweeper
     params:
       foo: 10
       bar: abcde

@@ -5,15 +5,22 @@ import pytest
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
-from hydra.test_utils.launcher_common_tests import (
+from hydra.test_utils.launcher_common_tests import (  # noqa: F401
     IntegrationTestSuite,
     LauncherTestSuite,
 )
 
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
+from hydra.test_utils.test_utils import (  # noqa: F401
+    TSweepRunner,
+    chdir_plugin_root,
+    sweep_runner,
+)
 from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
+
+chdir_plugin_root()
+
 
 win_msg = "Windows is unsupported, due to stability issues with JobLib"
 
@@ -59,3 +66,23 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
     """
 
     pass
+
+
+def test_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
+    with sweep_runner(
+        calling_file="example/my_app.py",
+        calling_module=None,
+        config_path=None,
+        config_name="config",
+        overrides=["task=1,2,3,4"],
+    ) as sweep:
+        overrides = {
+            ("task=1",),
+            ("task=2",),
+            ("task=3",),
+            ("task=4",),
+        }
+
+        assert sweep.returns is not None and len(sweep.returns[0]) == 4
+        for ret in sweep.returns[0]:
+            assert tuple(ret.overrides) in overrides

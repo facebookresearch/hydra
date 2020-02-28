@@ -60,7 +60,7 @@ defaults:
 Config file: `db/mysql.yaml`
 ```yaml
 db:
-  class: tutorial.objects_example.objects.MySQLConnection
+  cls: tutorial.objects_example.objects.MySQLConnection
   params:
     host: localhost
     user: root
@@ -69,7 +69,7 @@ db:
 db/postgresql.yaml:
 ```yaml
 db:
-  class: tutorial.objects_example.objects.PostgreSQLConnection
+  cls: tutorial.objects_example.objects.PostgreSQLConnection
   params:
     host: localhost
     user: root

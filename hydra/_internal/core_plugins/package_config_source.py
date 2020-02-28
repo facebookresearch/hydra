@@ -22,9 +22,9 @@ class PackageConfigSource(ConfigSource):
         return "pkg"
 
     def load_config(self, config_path: str) -> ConfigResult:
-        full_path = f"{self.path}/{config_path}"
+        config_path = self._normalize_file_name(filename=config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
-            full_path
+            self.concat(self.path, config_path)
         )
 
         try:
@@ -34,34 +34,39 @@ class PackageConfigSource(ConfigSource):
                     path=f"{self.scheme()}://{self.path}",
                     provider=self.provider,
                 )
-        except IOError:
-            raise ConfigLoadError(f"PackageConfigSource: Config not found: {full_path}")
+        except FileNotFoundError:
+            raise ConfigLoadError(
+                f"PackageConfigSource: Config not found: module={module_name}, resource_name={resource_name}"
+            )
 
-    def exists(self, config_path: str) -> bool:
-        return self.get_type(config_path=config_path) != ObjectType.NOT_FOUND
-
-    def get_type(self, config_path: str) -> ObjectType:
-        full_path = self.concat(self.path, config_path)
-        module_name, resource_name = PackageConfigSource._split_module_and_resource(
-            full_path
-        )
-
+    @staticmethod
+    def _exists(module_name: str, resource_name: str) -> bool:
         try:
             if resource_exists(module_name, resource_name):
-                if resource_isdir(module_name, resource_name):
-                    return ObjectType.GROUP
-                else:
-                    return ObjectType.CONFIG
-            else:
-                return ObjectType.NOT_FOUND
+                return True
         except NotImplementedError:
-            raise NotImplementedError(
-                "Unable to load {}/{}, are you missing an __init__.py?".format(
-                    module_name, resource_name
-                )
-            )
+            return False
         except ImportError:
-            return ObjectType.NOT_FOUND
+            return False
+        return False
+
+    def is_group(self, config_path: str) -> bool:
+        module_name, resource_name = PackageConfigSource._split_module_and_resource(
+            self.concat(self.path, config_path)
+        )
+        return self._exists(module_name, resource_name) and resource_isdir(
+            module_name, resource_name
+        )
+
+    def is_config(self, config_path: str) -> bool:
+        config_path = self._normalize_file_name(filename=config_path)
+        fname = self.concat(self.path, config_path)
+        module_name, resource_name = PackageConfigSource._split_module_and_resource(
+            fname
+        )
+        return self._exists(module_name, resource_name) and not resource_isdir(
+            module_name, resource_name
+        )
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
@@ -78,7 +83,7 @@ class PackageConfigSource(ConfigSource):
                 results_filter=results_filter,
             )
 
-        return sorted(files)
+        return sorted(list(set(files)))
 
     @staticmethod
     def _split_module_and_resource(filename: str) -> Tuple[str, str]:
