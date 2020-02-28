@@ -15,7 +15,10 @@ Install with
 pip install hydra_joblib_launcher
 ```
 
-**NOTE: This plugin depends on hydra 1.0 which is not yet released, if you want to try it install Hydra from master**
+<div class="alert alert--info" role="alert">
+NOTE: This plugin depends on Hydra 1.0 which is not yet released, if you want to try it install Hydra from master
+</div><br/>
+
 
 Once installed, override `hydra/launcher` in your config:
 
