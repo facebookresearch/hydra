@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 from hydra.core.config_store import ConfigStore
 
@@ -44,7 +44,7 @@ class JobLibConf:
 @dataclass
 class JobLibLauncherConf:
     cls: str = "hydra_plugins.hydra_joblib_launcher.JoblibLauncher"
-    params: Dict[str, Any] = field(default_factory=lambda: {"joblib": JobLibConf})
+    params: JobLibConf = JobLibConf()
 
 
 ConfigStore.instance().store(
