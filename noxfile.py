@@ -234,8 +234,8 @@ def test_plugins(session, install_cmd):
             run_pytest(session)
 
 
-# code coverage runs with python 3.6
-@nox.session(python="3.6")
+# code coverage runs with python 3.8
+@nox.session(python="3.8")
 def coverage(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
@@ -244,7 +244,7 @@ def coverage(session):
     for plugin in get_all_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
         os_supported = check_if_os_supports_plugin(session, plugin)
-        python_supported = session.python not in plugin_python_versions
+        python_supported = session.python in plugin_python_versions
         if os_supported and python_supported:
             session.run(
                 "pip",
@@ -259,7 +259,7 @@ def coverage(session):
     for plugin in list_plugins():
         plugin_python_versions = get_plugin_python_version(session, plugin)
         os_supported = check_if_os_supports_plugin(session, plugin)
-        python_supported = session.python not in plugin_python_versions
+        python_supported = session.python in plugin_python_versions
         if not (python_supported and os_supported):
             continue
 
