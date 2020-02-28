@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 from typing import Any
 
 from omegaconf import DictConfig, OmegaConf
@@ -15,7 +16,7 @@ class HydraConfig(metaclass=Singleton):
         self.hydra = ret
 
     def set_config(self, cfg: DictConfig) -> None:
-        self.hydra = OmegaConf.masked_copy(cfg, "hydra").hydra
+        self.hydra = copy.deepcopy(cfg.hydra)
         OmegaConf.set_readonly(self.hydra, True)  # type: ignore
 
     @staticmethod
