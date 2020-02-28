@@ -1,10 +1,11 @@
 defaults:
   - hydra/sweeper: ax
 
-quadratic:
+polynomial:
   # To be minimized
   x: ???
   y: ???
+  z: ???
 
 hydra:
   ax:
@@ -22,10 +23,10 @@ hydra:
       max_epochs_without_improvement: 2
 
     params:
-      quadratic.x:
+      polynomial.x:
         type: range
         bounds: [-1, 1]
 
-      quadratic.y:
-        type: range
-        bounds: [-1, 1]
+      polynomial.y:
+        type: choice
+        values: [-1, 1]

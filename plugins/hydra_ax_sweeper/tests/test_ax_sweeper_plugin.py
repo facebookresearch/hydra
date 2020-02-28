@@ -154,13 +154,15 @@ def test_configuration_set_via_cmd_and_default_config(
 def test_ax_logging(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "plugins/hydra_ax_sweeper/tests/apps/quadratic.py",
+        "plugins/hydra_ax_sweeper/tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
-        "quadratic.x=-5:-2",
-        "quadratic.y=-1:1",
+        "polynomial.x=-5:-2",
+        "polynomial.y=-1,1",
+        "polynomial.z=10",
         "hydra.ax.max_trials=3",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
-    assert "quadratic.x: range=[-5, -2], type = int" in result
-    assert "quadratic.y: range=[-1, 1], type = int" in result
+    assert "polynomial.x: range=[-5, -2], type = int" in result
+    assert "polynomial.y: choice=[-1, 1], type = int" in result
+    assert "polynomial.z: fixed=10, type = int" in result

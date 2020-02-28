@@ -65,6 +65,7 @@ class AxSweeperSearchPathPlugin(SearchPathPlugin):
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     """Convert a list of params into a string
     """
+
     mandatory_keys = set(
         ["name", "type", "bounds", "values", "value", "parameter_type"]
     )

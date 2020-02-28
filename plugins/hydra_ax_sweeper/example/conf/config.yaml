@@ -8,8 +8,8 @@ banana:
   x: ???
   y: ???
 
-# The following part of config is used to setup the Hydra Ax plugin and is optional
 hydra:
+# The following part of config is used to setup the Hydra Ax plugin and is optional
   ax:
     experiment:
       # Default to minimize, set to false to maximize
