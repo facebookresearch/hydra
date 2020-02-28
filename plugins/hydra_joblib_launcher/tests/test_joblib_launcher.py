@@ -14,12 +14,12 @@ from hydra.test_utils.launcher_common_tests import (  # noqa: F401
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     TSweepRunner,
-    chdir_plugin_root,
+    chdir_hydra_root,
     sweep_runner,
 )
 from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
 
-chdir_plugin_root()
+chdir_hydra_root()
 
 
 win_msg = "Windows is unsupported, due to stability issues with JobLib"
@@ -70,7 +70,7 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
 
 def test_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
     with sweep_runner(
-        calling_file="example/my_app.py",
+        calling_file="plugins/hydra_joblib_launcher/example/my_app.py",
         calling_module=None,
         task_function=None,
         config_path=None,
