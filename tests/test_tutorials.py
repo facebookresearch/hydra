@@ -8,7 +8,6 @@ from typing import Any, List
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
-# noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     TSweepRunner,
     TTaskRunner,
@@ -289,6 +288,7 @@ def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
         calling_module=None,
         config_path="conf",
         config_name="config.yaml",
+        task_function=None,
         overrides=["schema=warehouse,support", "db=mysql,postgresql"],
     ) as sweep:
         overrides = {

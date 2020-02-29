@@ -2,12 +2,15 @@
 # type: ignore
 import copy
 import os
+import platform
+from typing import List
 
 import nox
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
+DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
@@ -146,6 +149,34 @@ def get_plugin_python_version(session, plugin):
     )
 
 
+def get_plugin_os_names(session: nox.session, plugin: str) -> List[str]:
+    setup_py = os.path.join(BASE, "plugins", plugin["path"], "setup.py")
+    out = session.run("python", setup_py, "--classifiers", silent=True).splitlines()
+    oses = list(filter(lambda line: "Operating System" in line, out))
+    if len(oses) == 0:
+        # No Os is specified so all oses are supported
+        return DEFAULT_OS_NAMES
+    if len(oses) == 1 and oses[0] == "Operating System :: OS Independent":
+        # All oses are supported
+        return DEFAULT_OS_NAMES
+    else:
+        return [p.split("::")[-1].strip() for p in oses]
+
+
+def get_current_os() -> str:
+    current_os = platform.system()
+    if current_os == "Darwin":
+        current_os = "MacOS"
+    return current_os
+
+
+def check_if_os_supports_plugin(session: nox.session, plugin: str) -> bool:
+    """Check if the given plugin is supported for the current OS"""
+    current_os = get_current_os()
+    plugin_os_names = get_plugin_os_names(session, plugin)
+    return current_os in plugin_os_names
+
+
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
@@ -160,14 +191,23 @@ def test_plugins(session, install_cmd):
     all_plugins = get_all_plugins()
     # Install all supported plugins in session
     for plugin in all_plugins:
-        pythons = get_plugin_python_version(session, plugin)
         # Verify this plugin supports the python we are testing on, skip otherwise
         plugin_python_versions = get_plugin_python_version(session, plugin)
-        plugin_enabled[plugin["path"]] = session.python in pythons
-        if not plugin_enabled[plugin["path"]]:
+        os_supported = check_if_os_supports_plugin(session, plugin)
+        python_supported = session.python in plugin_python_versions
+        plugin_enabled[plugin["path"]] = os_supported and python_supported
+        if not python_supported:
             py_str = ",".join(plugin_python_versions)
             session.log(
                 f"Not testing {plugin['name']} on Python {session.python}, supports [{py_str}]"
+            )
+            continue
+
+        # Verify this plugin supports the OS we are testing on, skip otherwise
+        if not os_supported:
+            os_str = ",".join(get_plugin_os_names(session, plugin))
+            session.log(
+                f"Not testing {plugin['name']} on OS {get_current_os()}, supports [{os_str}]"
             )
             continue
 
@@ -194,38 +234,41 @@ def test_plugins(session, install_cmd):
             run_pytest(session)
 
 
-# code coverage runs with python 3.6
-@nox.session(python="3.6")
+# code coverage runs with python 3.8
+@nox.session(python="3.8")
 def coverage(session):
+    os.environ["COVERAGE_FILE"] = f"{BASE}/.coverage"
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
     session.run("pip", "install", "-e", ".", silent=SILENT)
     # Install all plugins in session
     for plugin in get_all_plugins():
-        session.run(
-            "pip",
-            "install",
-            "-e",
-            os.path.join("plugins", plugin["path"]),
-            silent=SILENT,
-        )
+        plugin_python_versions = get_plugin_python_version(session, plugin)
+        os_supported = check_if_os_supports_plugin(session, plugin)
+        python_supported = session.python in plugin_python_versions
+        if os_supported and python_supported:
+            session.run(
+                "pip",
+                "install",
+                "-e",
+                os.path.join("plugins", plugin["path"]),
+                silent=SILENT,
+            )
 
     session.run("coverage", "erase")
     session.run("coverage", "run", "--append", "-m", "pytest", silent=SILENT)
-    for plugin in list_plugins():
-        plugin_python_versions = get_plugin_python_version(session, plugin)
-        if session.python not in plugin_python_versions:
-            continue
-
-        session.run(
-            "coverage",
-            "run",
-            "--append",
-            "-m",
-            "pytest",
-            os.path.join("plugins", plugin["path"]),
-            silent=SILENT,
-        )
+    # for plugin in list_plugins():
+    #     plugin_python_versions = get_plugin_python_version(session, plugin)
+    #     os_supported = check_if_os_supports_plugin(session, plugin)
+    #     python_supported = session.python in plugin_python_versions
+    #     if not (python_supported and os_supported):
+    #         continue
+    #     session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+    #     coveragerc_path = os.path.join(BASE, ".coveragerc")
+    #     rc_file_arg = "--rcfile=" + coveragerc_path  # noqa: E226
+    #     session.run(
+    #         "coverage", "run", rc_file_arg, "--append", "-m", "pytest", silent=SILENT,
+    #     )
 
     # Increase the fail_under as coverage improves
     session.run("coverage", "report", "--fail-under=80")

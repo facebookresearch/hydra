@@ -2,6 +2,7 @@
 omit = 
     .nox/*
     *tests*
+    plugins/*
 
 [report]
 exclude_lines =
