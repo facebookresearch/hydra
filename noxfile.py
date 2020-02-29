@@ -262,15 +262,9 @@ def coverage(session):
         python_supported = session.python in plugin_python_versions
         if not (python_supported and os_supported):
             continue
-
+        session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
         session.run(
-            "coverage",
-            "run",
-            "--append",
-            "-m",
-            "pytest",
-            os.path.join("plugins", plugin["path"]),
-            silent=SILENT,
+            "coverage", "run", "--append", "-m", "pytest", silent=SILENT,
         )
 
     # Increase the fail_under as coverage improves

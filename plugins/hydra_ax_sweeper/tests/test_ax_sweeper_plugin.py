@@ -15,12 +15,12 @@ from hydra.plugins.sweeper import Sweeper
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     TSweepRunner,
-    chdir_hydra_root,
+    chdir_plugin_root,
     sweep_runner,
 )
 from hydra_plugins.hydra_ax_sweeper import AxSweeper
 
-chdir_hydra_root()
+chdir_plugin_root()
 
 
 def test_discovery() -> None:
@@ -158,7 +158,7 @@ def test_configuration_set_via_cmd_and_default_config(
 def test_ax_logging(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "plugins/hydra_ax_sweeper/tests/apps/polynomial.py",
+        "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "polynomial.x=-5:-2",
