@@ -257,18 +257,18 @@ def coverage(session):
 
     session.run("coverage", "erase")
     session.run("coverage", "run", "--append", "-m", "pytest", silent=SILENT)
-    for plugin in list_plugins():
-        plugin_python_versions = get_plugin_python_version(session, plugin)
-        os_supported = check_if_os_supports_plugin(session, plugin)
-        python_supported = session.python in plugin_python_versions
-        if not (python_supported and os_supported):
-            continue
-        session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
-        coveragerc_path = os.path.join(BASE, ".coveragerc")
-        rc_file_arg = "--rcfile=" + coveragerc_path  # noqa: E226
-        session.run(
-            "coverage", "run", rc_file_arg, "--append", "-m", "pytest", silent=SILENT,
-        )
+    # for plugin in list_plugins():
+    #     plugin_python_versions = get_plugin_python_version(session, plugin)
+    #     os_supported = check_if_os_supports_plugin(session, plugin)
+    #     python_supported = session.python in plugin_python_versions
+    #     if not (python_supported and os_supported):
+    #         continue
+    #     session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+    #     coveragerc_path = os.path.join(BASE, ".coveragerc")
+    #     rc_file_arg = "--rcfile=" + coveragerc_path  # noqa: E226
+    #     session.run(
+    #         "coverage", "run", rc_file_arg, "--append", "-m", "pytest", silent=SILENT,
+    #     )
 
     # Increase the fail_under as coverage improves
     session.run("coverage", "report", "--fail-under=80")
