@@ -2,7 +2,7 @@
 omit = 
     .nox/*
     *tests*
-    plugins/hydra_ax_sweeper/*
+    plugins/*
 
 [report]
 exclude_lines =
