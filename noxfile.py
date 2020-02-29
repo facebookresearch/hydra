@@ -237,6 +237,7 @@ def test_plugins(session, install_cmd):
 # code coverage runs with python 3.8
 @nox.session(python="3.8")
 def coverage(session):
+    os.environ["COVERAGE_FILE"] = f"{BASE}/.coverage"
     session.install("--upgrade", "setuptools", "pip")
     session.install("coverage", "pytest")
     session.run("pip", "install", "-e", ".", silent=SILENT)
@@ -263,8 +264,10 @@ def coverage(session):
         if not (python_supported and os_supported):
             continue
         session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+        coveragerc_path = os.path.join(BASE, ".coveragerc")
+        rc_file_arg = "--rcfile=" + coveragerc_path  # noqa: E226
         session.run(
-            "coverage", "run", "--append", "-m", "pytest", silent=SILENT,
+            "coverage", "run", rc_file_arg, "--append", "-m", "pytest", silent=SILENT,
         )
 
     # Increase the fail_under as coverage improves
