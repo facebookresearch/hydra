@@ -8,11 +8,15 @@ The product manager had an idea:
 She wants my_app to support creating arbitrary database schemas, on all supported databases!
 She also wants to have two kinds of UI - a full UI to create and view databases and a view only UI.
 You are the fall guy. Before you even start, she tells you there are already 3 database schema you need to support, and more are coming soon.
-You are already sweating because it all sounds pretty complex.
 You also got a feeling that this is only the beginning - who knows what idea she will have next?
 
-To solve it with Hydra, we need more config groups.
-Add a `schema` and a `ui` config group:
+At this point, you already have 2 supported databases, 3 schemas, and 2 ui modes.
+This is a total of 12 combinations.
+Adding another supported database will bring this to 18 combinations.
+Creating 18 files is not a good idea, if you wanted to make a change such as renaming `db.user` to `db.username` you would have to do it 18 times!
+
+Composition to the rescue! To solve this with Hydra, add a config group for each new dimension (`schema` and `ui`):
+
 ```text
 ├── conf
 │   ├── config.yaml
@@ -29,13 +33,6 @@ Add a `schema` and a `ui` config group:
 └── my_app.py
 ```
 
-At this point, we already have 2 supported databases, 3 schemas, and 2 ui modes.
-This is a total of 12 combinations.
-Adding another supported database will bring this to 18 combinations.
-Creating 18 files is not a good idea, if you wanted to make a change such as renaming `db.user` to `db.username` you would have to do it 18 times!
-
-Composition can come to the rescue.
-
 Configuration file: `config.yaml`
 ```yaml
 defaults:
@@ -44,10 +41,10 @@ defaults:
   - schema: school
 ```
 The defaults are ordered:
- * If there are two configurations that defines the same value, the second one would win.
- * If two configurations are contributing to the same dictionary the result would be the combined dictionary.
+ * If multiple configurations define the same value, the last one wins. 
+ * If multiple configurations contribute to the same dictionary, the result is the combined dictionary.
 
-When running this, we will compose a configuration with `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):
+The resulting configuration would be a composition of `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):
 ```yaml
 $ python my_app.py
 db:
@@ -73,3 +70,11 @@ ui:
 ```
 
 In much the same way you can compose any of the other 11 configurations by adding appropriate overrides such as `db=postgresql`.
+
+### Summary
+To summarize this section:
+ - The addition of each new db, schema, or ui only requires a single file
+ - Each config group can have a default specified in the `defaults` list
+ - Any combination can be composed by selecting the desired config from each config group
+
+Stay tuned for seeing how to run all of the combinations automatically (Multi-run).

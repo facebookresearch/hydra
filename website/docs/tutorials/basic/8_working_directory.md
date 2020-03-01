@@ -5,13 +5,13 @@ sidebar_label: Output/Working directory
 ---
 
 Hydra solves the problem of your needing to specify a new output directory for each run, by 
-creating a directory for each run and executing your code within that directory.
+creating a directory for each run and executing your code within that working directory.
 
 The working directory is used to:
 * Store the output for the application (For example, a database dump file)
 * Store the Hydra output for the run (Configuration, Logs etc)
 
-Every time you run the app, a new working directory is automatically created:
+Every time you run the app, a new working directory is created:
 
 Python file: `my_app.py`
 ```python
@@ -29,7 +29,7 @@ $ python my_app.py
 Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-19
 ```
 
-Let's take a look at one of those working directories:
+Let's take a look at one of the working directories:
 ```text
 $ tree outputs/2019-09-25/15-16-17
 outputs/2019-09-25/15-16-17
@@ -77,4 +77,4 @@ to_absolute_path('/foo')   : /foo
 ```
 
 
-Working directory can be [customized](../configure_hydra/workdir.md).
+Working directory can be [customized](/configure_hydra/workdir.md).
