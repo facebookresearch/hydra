@@ -11,10 +11,9 @@ When running of the application, you will need either MySQL or PostgreSQL - but 
 The way to do this with Hydra is with a **Config group**.
 A config group is a mutually exclusive set of configuration files.
 
-To create a config group, create a directory - `db` - that will hold
-a file for each database configuration alternative. 
-Since we are expecting to have multiple config groups, we will proactively move all the configuration 
-files into a `conf` directory.
+To create a config group, create a directory. e.g. `db` to hold a file for each database configuration alternative. 
+Since we are expecting to have multiple config groups, we will proactively move all the configuration files 
+into a `conf` directory.
 
 Python file: `my_app.py`
 ```python
@@ -36,7 +35,7 @@ The directory structure of our application now looks like:
 └── my_app.py
 ```
 
-If you run it, it prints an empty config because no configuration was specified.
+If you run my_app.py, it prints an empty config because no configuration was specified.
 ```yaml
 $ python my_app.py
 {}
@@ -64,3 +63,8 @@ db:
 
 This simple example demonstrated a very powerful feature of Hydra:
 You can compose your configuration object from multiple configuration files.
+
+For example, you can add a second config group controlling another aspect of your application:
+```
+$ python my_app.py db=postgresql walk=depth_first
+```

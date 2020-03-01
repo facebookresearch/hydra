@@ -5,7 +5,7 @@ sidebar_label: Configuration file
 ---
 
 It can get tedious to type all those command line arguments every time.
-Fix it by creating a configuration file:
+Fix it by creating a configuration file in YAML format.
 
 Configuration file: `config.yaml`
 ```yaml
@@ -45,31 +45,38 @@ db:
 
 
 ### Strict mode
-`Strict mode` is useful for catching mistakes in both the command line overrides and in the code early.
-Strict mode is on by default when you specify a configuration file for the `config_path` argument in `@hydra.main` decorator.
-It can be turned on or off via the `strict` argument in your `@hydra.main()` decorator.
+`Strict mode` is useful for catching mistakes earlier by preventing access to missing config fields.
+It is enabled by default once you specify a configuration file, and can help with two classes of mistakes:
+
+#### Accessing missing fields in the code
+In the example below, there is a typo in `db.driver` in the code.
+This will result in an exception.
 
 ```python
 @hydra.main(config_path='config.yaml')
 def my_app(cfg : DictConfig) -> None:
-    driver = cfg.db.driver # Okay
-    user = cfg.db.user # Okay
-    password = cfg.db.password # Not okay, there is no password field in db!
-                               # This will result in a KeyError
+    print(cfg.db.drover)  # typo: cfg.db.driver. Raises exception
 ```
+With `Strict mode` disabled, `None` will be printed.
 
-Strict mode will also catch command line override mistakes:
+#### Command line override errors
+In the example below, there is a typo in `db.driver` in the command line.  
+This will result in an exception.
 ```text
-$ python my_app.py db.port=3306
+$ python my_app.py db.drover=mariadb
 Traceback (most recent call last):
 ...
-KeyError: 'Accessing unknown key in a struct : db.port
+AttributeError: Accessing unknown key in a struct : db.drover
 ```
+With `Strict mode` disabled, the `drover` field will be added to the `db` config node.
 
-With strict mode off, accessing unknown keys in the config is permitted and both the above override and the example
-below would run.
+#### Disabling strict mode
+It is not recommended to disable strict mode. You can do it by passing `strict=False` to `hydra.main()` 
 ```python
 @hydra.main(config_path='config.yaml', strict=False)
 def my_app(cfg : DictConfig) -> None:
     cfg.db.port = 3306 # Okay
 ```
+
+You can also disable it selectively within specific context. See [open_dict](https://omegaconf.readthedocs.io/en/latest/usage.html#struct-flag) in the OmegaConf documentation.
+Note that strict mode is referred to as `struct mode` in OmegaConf.
