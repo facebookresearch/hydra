@@ -1,6 +1,6 @@
 hydra:
   sweeper:
-    class: hydra_plugins.hydra_nevergrad_sweeper.NevergradSweeper
+    cls: hydra_plugins.hydra_nevergrad_sweeper.NevergradSweeper
     params:
       optimizer: OnePlusOne
       num_workers: 10
