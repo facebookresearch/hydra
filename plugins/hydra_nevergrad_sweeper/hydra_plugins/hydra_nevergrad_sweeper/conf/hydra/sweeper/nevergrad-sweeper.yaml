@@ -10,6 +10,8 @@ hydra:
       #     budgets (> 120).
       #   - "Shiva" an algorithm aiming at identifying the best optimizer given your input
       #     definition (work in progress, it may still be ill-suited for low budget)
+      # find out more within nevergrad's documentation:
+      # https://github.com/facebookresearch/nevergrad/
       optimizer: OnePlusOne
       # number of parallel function evaluations to perform
       num_workers: 10
