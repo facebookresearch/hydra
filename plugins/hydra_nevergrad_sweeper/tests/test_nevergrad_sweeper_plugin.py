@@ -90,5 +90,5 @@ def test_dummy_training_example_app(sweep_runner: TSweepRunner) -> None:  # noqa
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "nevergrad"
         assert len(returns) == 2
-        best_parameters = returns["nevergrad"]
+        # best_parameters = returns["nevergrad"]
         # assert best_parameters.batch_size == 4  # this argument should be easy to find
