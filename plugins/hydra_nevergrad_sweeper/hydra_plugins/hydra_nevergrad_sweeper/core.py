@@ -16,7 +16,7 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class NgSearchPathPlugin(SearchPathPlugin):
+class NevergradSearchPathPlugin(SearchPathPlugin):
     """
     This plugin is allowing configuration files provided by this sweeper plugin to be discovered
     and used once it is installed.
