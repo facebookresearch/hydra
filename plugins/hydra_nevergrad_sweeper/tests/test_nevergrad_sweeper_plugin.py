@@ -106,7 +106,7 @@ def test_dummy_training_example_app(sweep_runner: TSweepRunner) -> None:  # noqa
             "db=mnist,cifar",
             "batch_size=4,8,16",
             "lr=Log(a_min=0.001,a_max=1.0)",
-            "dropout=0.0:1.0"
+            "dropout=0.0:1.0",
         ],
     ) as sweep:
         assert sweep.returns is not None
