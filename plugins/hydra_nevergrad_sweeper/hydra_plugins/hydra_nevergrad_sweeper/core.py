@@ -116,7 +116,7 @@ class NevergradSweeper(Sweeper):
     ----------
     optimizer: str
        name of a Nevergrad optimizer to use. Some interesting options are:
-         - "OnePlusOne" extemely simple and robust, especially at low budget, but
+         - "OnePlusOne" extremely simple and robust, especially at low budget, but
            tends to converge early.
          - "CMA" very good algorithm, but may require a significant budget (> 120)
          - "TwoPointsDE": an algorithm good in a wide range of settings, for significant budgets
