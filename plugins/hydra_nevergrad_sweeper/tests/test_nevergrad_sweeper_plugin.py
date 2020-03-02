@@ -5,8 +5,8 @@ from typing import Any
 
 import nevergrad as ng  # type: ignore
 import pytest
-
 from omegaconf import DictConfig, OmegaConf
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
