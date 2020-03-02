@@ -29,7 +29,7 @@ class NevergradSearchPathPlugin(SearchPathPlugin):
         )
 
 
-def read_value(string: str) -> Union[int, float, str]:
+def convert_to_deduced_type(string: str) -> Union[int, float, str]:
     """Converts a string into a float or an int if it makes sense,
     or returns the string.
 
@@ -85,14 +85,14 @@ def make_parameter(string: str) -> Union[int, float, str, ng.p.Parameter]:
         assert isinstance(param, ng.p.Parameter)
         return param
     if "," in string:
-        choices = [read_value(x) for x in string.split(",")]
+        choices = [convert_to_deduced_type(x) for x in string.split(",")]
         ordered = all(isinstance(c, (int, float)) for c in choices)
         ordered &= all(
             c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
         )
-        return (ng.p.TransitionChoice if ordered else ng.p.Choice)(choices)
+        return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
     if ":" in string:
-        a, b = [read_value(x) for x in string.split(":")]
+        a, b = [convert_to_deduced_type(x) for x in string.split(":")]
         assert all(
             isinstance(c, (int, float)) for c in (a, b)
         ), "Bounds must be scalars"
@@ -105,7 +105,7 @@ def make_parameter(string: str) -> Union[int, float, str, ng.p.Parameter]:
         if all(isinstance(c, int) for c in (a, b)):
             scalar.set_integer_casting()
         return scalar
-    return read_value(string)  # constant
+    return convert_to_deduced_type(string)  # constant
 
 
 class NevergradSweeper(Sweeper):
