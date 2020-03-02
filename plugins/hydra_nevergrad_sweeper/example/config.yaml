@@ -1,13 +1,14 @@
 defaults:
   - hydra/sweeper: nevergrad-sweeper
+
 hydra:
   sweeper:
     params:
       budget: 100
       num_workers: 10
+
 db: mnist
 lr: 0.01
 dropout: 0.6
 batch_size: 4
-
 
