@@ -3,7 +3,7 @@ id: config_groups
 title: Config groups
 ---
 
-This example adds `mysql` and `postgresql` configs into the config group `db`.
+This example adds `mysql` and `postgresql` configs into the config group `database`.
 
 ```python
 @dataclass
@@ -23,62 +23,61 @@ class PostGreSQLConfig:
     user: str = "postgre_user"
     password: str = "drowssap"
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below.
+# Config can extend DictConfig to allow type safe access to DictConfig functions.
 @dataclass
 class Config(DictConfig):
-    db: Any = MISSING
+    db: Any = MySQLConfig()
 
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
-
+cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
     print(cfg.pretty())
 
-
 if __name__ == "__main__":
     my_app()
 
 ```
-When running this, you can now select which config group to use from the command line:
+You can change the default database from the command line:
 ```yaml
-$ python my_app.py db=mysql
+$ python my_app.py database=postgresql
 db:
-  driver: mysql
+  driver: postgresql
   host: localhost
-  password: secret
-  port: 3306
-  user: omry
+  password: drowssap
+  port: 5432
+  timeout: 10
+  user: postgre_user
 ```
 
 #### Config inheritance
-You can also model your configuration classes using inheritance, reducing the duplication between `mysql` and `postgresql`,
-and also establishing a common interface between the two configs.
+You can also model your configuration classes using inheritance.
 
 ```python
 @dataclass
 class DBConfig:
-    driver: str = MISSING
     host: str = "localhost"
+    driver: str = MISSING
     port: int = MISSING
     user: str = MISSING
     password: str = MISSING
 
 @dataclass
 class MySQLConfig(DBConfig):
-    driver: str = "mysql"
-    port: int = 3306
-    user: str = "omry"
-    password: str = "secret"
+    driver = "mysql"
+    port = 3306
+    user = "omry"
+    password = "secret"
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
-    driver: str = "postgresql"
-    port: int = 5432
+    driver = "postgresql"
+    port = 5432
+    user = "postgre_user"
+    password = "drowssap"
+    # new field:
     timeout: int = 10
-    user: str = "postgre_user"
-    password: str = "drowssap"
 ```

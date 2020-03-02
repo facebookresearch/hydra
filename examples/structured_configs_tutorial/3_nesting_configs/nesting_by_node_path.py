@@ -1,6 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
 
+from omegaconf import DictConfig
+
 import hydra
 from hydra.core.config_store import ConfigStore
 
@@ -14,17 +16,12 @@ class MySQLConfig:
     password: str = "secret"
 
 
-@dataclass
-class Config:
-    db: MySQLConfig = MySQLConfig()
-
-
 # We no longer need to use the path parameter because Config has the correct structure
-ConfigStore.instance().store(node=Config, name="config")
+ConfigStore.instance().store(name="config", node={"db": MySQLConfig, "verbose": True})
 
 
 @hydra.main(config_name="config")
-def my_app(cfg: Config) -> None:
+def my_app(cfg: DictConfig) -> None:
     # Python knows that the type of cfg.db is MySQLConfig without any additional hints
     print(
         f"Connecting to {cfg.db.driver} at {cfg.db.host}:{cfg.db.port}, "

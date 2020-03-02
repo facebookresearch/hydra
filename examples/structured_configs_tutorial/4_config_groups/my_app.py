@@ -30,13 +30,13 @@ class PostGreSQLConfig:
 # Config is extending DictConfig to allow type safe access to the pretty() function below.
 @dataclass
 class Config(DictConfig):
-    db: Any = MISSING
+    db: Any = MySQLConfig()
 
 
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
+cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 
 
 @hydra.main(config_name="config")
