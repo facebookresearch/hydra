@@ -72,6 +72,7 @@ def test_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
     with sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,
+        task_function=None,
         config_path=None,
         config_name="config",
         overrides=["task=1,2,3,4"],

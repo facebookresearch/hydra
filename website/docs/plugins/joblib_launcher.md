@@ -34,8 +34,8 @@ The default configuration packaged with the plugin is:
 hydra:
   launcher:
     class: hydra_plugins.hydra_joblib_launcher.JoblibLauncher
-    params:
-      joblib: ... # See JobLibConf below
+    params: # See JobLibConf class below
+      ... 
 ```
 
 The JobLibConf class is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):

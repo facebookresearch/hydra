@@ -1,0 +1,32 @@
+hydra:
+  # See https://ax.dev/
+
+  sweeper:
+    cls: hydra_plugins.hydra_ax_sweeper.AxSweeper
+    params:
+      ax_config: 
+        max_trials: 10
+        early_stop:
+          # Number of epochs without a significant improvement from
+          # the currently known best parameters
+          # An Epoch is defined as a batch of trials executed in parallel
+          max_epochs_without_improvement: 10
+          # An improvement larger than epsilon is considered significant
+          epsilon: 0.00001
+          minimize: ${hydra.sweeper.params.ax_config.experiment.minimize}
+        experiment:
+          # Experiment name
+          name: ${hydra.job.name}
+          # Name of metric to optimize or null if you only return one metric
+          objective_name: objective
+          # Defaults to minimize, set to false to maximize
+          minimize: true
+          # For the remaining paramaters, refer the Ax documentation: https://ax.dev/api/core.html#experiment
+          parameter_constraints: null
+          outcome_constraints: null
+          status_quo: null
+
+        client:
+          verbose_logging: false
+          # set random seed here to make Ax results reproducible
+          random_seed: null

@@ -6,7 +6,13 @@ sidebar_label: Debugging
 Hydra provides a few options to improve debuggability.
 
 ### Printing the configuration
-Print the config that would be used for a job without actually running it by adding '-c job' or '--cfg job' to your command line:
+Print the config that would be used for a application without really running your function by adding  `--cfg` or `-c` to your command line.
+
+The `--cfg` option takes one argument indicating which part of the config to print:
+* `job` : Your config
+* `hydra` : Hydra's config
+* `all` : The full config, which is a union of `job` and `hydra`.
+
 ```yaml
 # A normal run:
 $ python tutorial/objects_example/my_app.py
@@ -35,17 +41,12 @@ db:
     user: root
 ```
 
-The `--cfg` option takes one argument indicating which part of the config to print:
-* `job` : Your config
-* `hydra` : Hydra's config
-* `all` : The full config, which is a union of `job` and `hydra`.
-
 ### Hydra verbose debugging
 Hydra prints some very useful information in `DEBUG` log level.
 This includes:
 * Installed plugins : What Hydra plugins are installed in the environment
 * Config search path : The configuration search path
-* Composition trace : Which config files were used to compose your configuration, at what order and where did they come from.
+* Composition trace : Which config files were used to compose your configuration, and in what order.
 
 This is often used with `-c` to just see the config without running the application.
 Example output:

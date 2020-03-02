@@ -1,7 +1,8 @@
 [run]
 omit = 
-    .nox/*
-    *tests*
+    ${COVERAGE_HOME}/.nox/*
+    ${COVERAGE_HOME}/*tests*
+    ${COVERAGE_HOME}/plugins/*
 
 [report]
 exclude_lines =

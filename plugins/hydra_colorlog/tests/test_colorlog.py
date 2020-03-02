@@ -4,8 +4,11 @@ from hydra.core.global_hydra import GlobalHydra
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import (  # noqa: F401
     TGlobalHydraContext,
+    chdir_plugin_root,
     hydra_global_context,
 )
+
+chdir_plugin_root()
 
 
 def test_config_installed(

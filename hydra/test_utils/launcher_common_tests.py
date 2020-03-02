@@ -79,6 +79,7 @@ class LauncherTestSuite:
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
+            task_function=None,
             config_path="configs",
             config_name="unspecified_mandatory_default",
             overrides=base_overrides + overrides,
@@ -111,6 +112,7 @@ class LauncherTestSuite:
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
+            task_function=None,
             config_path="configs",
             config_name="db_conf.yaml",
             overrides=base_overrides + overrides,
@@ -150,6 +152,7 @@ def sweep_1_job(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
+        task_function=None,
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
@@ -176,6 +179,7 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
+        task_function=None,
         config_path="configs/compose.yaml",
         config_name=None,
         overrides=overrides,
@@ -214,6 +218,7 @@ def not_sweeping_hydra_overrides(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
+        task_function=None,
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
@@ -243,6 +248,7 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
+        task_function=None,
         config_path="configs",
         config_name="compose",
         overrides=overrides,

@@ -339,6 +339,7 @@ def test_multirun_with_free_override(
         calling_module=calling_module,
         config_path="conf/",
         config_name="config.yaml",
+        task_function=None,
         overrides=overrides,
         strict=True,
     )
@@ -365,6 +366,7 @@ def test_sweep_complex_defaults(
         calling_module=calling_module,
         config_path="conf",
         config_name="config.yaml",
+        task_function=None,
         overrides=["optimizer=adam,nesterov"],
     ) as sweep:
         assert sweep.returns is not None and len(sweep.returns[0]) == 2

@@ -52,10 +52,10 @@ $ python my_app.py db=null
 ```
 
 ## Non-config group defaults
-Sometimes a config file you want to merge does not belong in any config group.
-The following will load `some_file.yaml` from your config directory:
+Sometimes a config file does not belong in any config group.
+You can still load it by default. Here is an example for `some_file.yaml`.
 ```yaml
 defaults:
   - some_file
 ```
-Config files that not a part of a `config group` like `db` cannot be overridden.
+Config files that are not part of a config group will always be loaded. They cannot be overridden.
