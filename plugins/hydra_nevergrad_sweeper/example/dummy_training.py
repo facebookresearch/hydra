@@ -15,7 +15,9 @@ def dummy_training(cfg: Any) -> float:
     """
     do = cfg.dropout
     bs = cfg.batch_size
-    out = float(abs(do - 0.33) + int(cfg.db == "mnist") + abs(cfg.lr - 0.12) + abs(bs - 4))
+    out = float(
+        abs(do - 0.33) + int(cfg.db == "mnist") + abs(cfg.lr - 0.12) + abs(bs - 4)
+    )
     logging.info(
         "dummy_training(dropout=%s, lr=%s, db=%s, batch_size=%s) = %s",
         do,
