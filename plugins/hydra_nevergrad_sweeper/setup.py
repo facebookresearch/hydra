@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
         version="0.1.0",
         author="Jeremy Rapin",
         author_email="jrapin@fb.com",
-        description="Hydra Nevergrad Sweeper plugin with basic features",
+        description="Hydra Nevergrad Sweeper plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
