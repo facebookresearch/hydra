@@ -6,6 +6,7 @@ from typing import Any
 import nevergrad as ng  # type: ignore
 import pytest
 
+from omegaconf import DictConfig, OmegaConf
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
@@ -61,36 +62,11 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         strict=True,
     )
     with sweep:
-        assert sweep.returns is not None
-        assert len(sweep.returns) == budget
-
-
-# pylint: disable=redefined-outer-name
-def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
-    budget = 8
-    sweep = sweep_runner(
-        calling_file=None,
-        calling_module="hydra.test_utils.a_module",
-        config_path="configs",
-        config_name="compose.yaml",
-        task_function=None,
-        overrides=[
-            "hydra/sweeper=nevergrad-sweeper",
-            "hydra/launcher=basic",
-            f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
-            "hydra.sweeper.params.num_workers=3",
-            "foo=1,2",
-            "bar=4.0:8.0",
-        ],
-        strict=True,
-    )
-    with sweep:
-        assert sweep.returns is not None
-        assert len(sweep.returns) == budget
+        assert sweep.returns is None
 
 
 def test_dummy_training_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
-    budget = 8
+    budget = 32
     with sweep_runner(
         calling_file="example/dummy_training.py",
         calling_module=None,
@@ -102,12 +78,17 @@ def test_dummy_training_example_app(sweep_runner: TSweepRunner) -> None:  # noqa
             "hydra/sweeper=nevergrad-sweeper",
             "hydra/launcher=basic",
             f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
-            "hydra.sweeper.params.num_workers=3",
+            "hydra.sweeper.params.num_workers=4",
             "db=mnist,cifar",
             "batch_size=4,8,16",
             "lr=Log(a_min=0.001,a_max=1.0)",
             "dropout=0.0:1.0",
         ],
     ) as sweep:
-        assert sweep.returns is not None
-        assert len(sweep.returns) == budget
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "nevergrad"
+        assert len(returns) == 2
+        best_parameters = returns["nevergrad"]
+        # assert best_parameters.batch_size == 4  # this argument should be easy to find

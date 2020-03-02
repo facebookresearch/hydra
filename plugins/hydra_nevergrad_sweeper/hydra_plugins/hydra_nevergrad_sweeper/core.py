@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import json
 import logging
 from typing import Any, Dict, List, Optional, Union
 
 import nevergrad as ng  # type: ignore
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
@@ -174,7 +175,7 @@ class NevergradSweeper(Sweeper):
             config=config, config_loader=config_loader, task_function=task_function
         )
 
-    def sweep(self, arguments: List[str]) -> Any:
+    def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
         # Construct the parametrization
@@ -215,4 +216,13 @@ class NevergradSweeper(Sweeper):
             for cand, ret in zip(candidates, returns):
                 optimizer.tell(cand, self._direction * ret.return_value)
             all_returns.extend(returns)
-        return all_returns  # not sure what the return should be
+        recom = optimizer.provide_recommendation()
+        results_to_serialize = {"optimizer": "nevergrad", "nevergrad": recom.value}
+        results_to_serialize = json.loads(json.dumps(results_to_serialize))
+        OmegaConf.save(
+            OmegaConf.create(results_to_serialize),
+            f"{self.config.hydra.sweep.dir}/optimization_results.yaml",
+        )
+        log.info(
+            "Best parameters: %s", " ".join(f"{x}={y}" for x, y in recom.value.items())
+        )
