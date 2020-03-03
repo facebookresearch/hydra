@@ -51,6 +51,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noq
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.max_trials=2",
         ],
         strict=True,
     )
@@ -79,6 +80,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
             "hydra.sweeper.params.ax_config.client.random_seed=1",
             "quadratic.x=-5:-2",
             "quadratic.y=-2:2",
+            "hydra.sweeper.params.ax_config.max_trials=2",
         ],
         strict=True,
     )
@@ -91,7 +93,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
         best_parameters, predictions = returns["ax"]
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], -0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(
@@ -108,6 +110,7 @@ def test_jobs_configured_via_cmd_and_config(
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
             "quadratic.x=-5:-2",
+            "hydra.sweeper.params.ax_config.max_trials=2",
         ],
         strict=True,
     )
@@ -120,7 +123,7 @@ def test_jobs_configured_via_cmd_and_config(
         best_parameters, predictions = returns["ax"]
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], -0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
 
 
 def test_configuration_set_via_cmd_and_default_config(
@@ -136,7 +139,7 @@ def test_configuration_set_via_cmd_and_default_config(
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
-            "hydra.sweeper.params.ax_config.max_trials=10",
+            "hydra.sweeper.params.ax_config.max_trials=2",
             "hydra.sweeper.params.ax_config.early_stop.max_epochs_without_improvement=2",
             "quadratic.x=-5:-2",
             "quadratic.y=-1:1",
@@ -144,7 +147,7 @@ def test_configuration_set_via_cmd_and_default_config(
     )
     with sweep:
         ax_config = HydraConfig.instance().hydra.sweeper.params.ax_config
-        assert ax_config.max_trials == 10
+        assert ax_config.max_trials == 2
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True
         assert sweep.returns is None
@@ -164,7 +167,7 @@ def test_ax_logging(tmpdir: Path) -> None:
         "polynomial.x=-5:-2",
         "polynomial.y=-1,1",
         "polynomial.z=10",
-        "hydra.sweeper.params.ax_config.max_trials=3",
+        "hydra.sweeper.params.ax_config.max_trials=2",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5, -2], type = int" in result
