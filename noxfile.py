@@ -101,26 +101,19 @@ def test_example_app(session, install_cmd):
 
 @nox.session
 def lint(session):
-    session.install("--upgrade", "setuptools", "pip")
-    # needed for isort to properly identify pytest as third party
-    session.install("pytest")
-    session.install(
-        "mypy",
-        "flake8",
-        "flake8-copyright",
-        "git+git://github.com/timothycrosley/isort.git@c54b3dd4620f9b3e7ac127c583ecb029fb90f1b7",
-    )
+    session.install("--upgrade", "setuptools", "pip", silent=SILENT)
+    session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
 
     session.install("black")
     # if this fails you need to format your code with black
-    session.run("black", "--check", ".")
+    session.run("black", "--check", ".", silent=SILENT)
 
-    session.run("isort", "--check", ".")
+    session.run("isort", "--check", ".", silent=SILENT)
 
     # Mypy
-    session.run("mypy", ".", "--strict")
+    session.run("mypy", ".", "--strict", silent=SILENT)
 
     # Mypy for plugins
     for plugin in get_selected_plugins(session):
