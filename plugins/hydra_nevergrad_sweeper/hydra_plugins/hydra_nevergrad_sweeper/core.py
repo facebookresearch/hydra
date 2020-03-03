@@ -18,13 +18,7 @@ log = logging.getLogger(__name__)
 
 
 class NevergradSearchPathPlugin(SearchPathPlugin):
-    """
-    This plugin is allowing configuration files provided by this sweeper plugin to be discovered
-    and used once it is installed.
-    """
-
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        # Appends the search path for this plugin to the end of the search path
         search_path.append(
             "nevergrad-sweeper", "pkg://hydra_plugins.hydra_nevergrad_sweeper.conf"
         )
@@ -189,14 +183,11 @@ class NevergradSweeper(Sweeper):
         # log and build the optimizer
         name = "maximization" if self._direction == -1 else "minimization"
         log.info(
-            "NevergradSweeper(optimizer=%s, budget=%s, num_workers=%s) %s",
-            self.optimizer,
-            self.budget,
-            self.num_workers,
-            name,
+            f"NevergradSweeper(optimizer={self.optimizer}, budget={self.budget}, "
+            f"num_workers={self.num_workers}) {name}"
         )
-        log.info("with parametrization %s", parametrization)
-        log.info("Sweep output dir : %s", self.config.hydra.sweep.dir)
+        log.info(f"with parametrization {parametrization}")
+        log.info(f"Sweep output dir: {self.config.hydra.sweep.dir}")
         optimizer = ng.optimizers.registry[self.optimizer](
             parametrization, self.budget, self.num_workers
         )
@@ -218,7 +209,9 @@ class NevergradSweeper(Sweeper):
             all_returns.extend(returns)
         recom = optimizer.provide_recommendation()
         results_to_serialize = {"optimizer": "nevergrad", "nevergrad": recom.value}
+        # TODO remove the following line with next nevergrad release
         results_to_serialize = json.loads(json.dumps(results_to_serialize))
+        print(f"Saving to {self.config.hydra.sweep.dir}/optimization_results.yaml")
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.config.hydra.sweep.dir}/optimization_results.yaml",
