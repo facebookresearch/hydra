@@ -55,3 +55,14 @@ Example of the outputs of the last 5 evaluations (out of 100):
 [HYDRA] 	#9 : db=cifar batch_size=4 lr=0.03496732134738235 dropout=0.3336075509908663
 [__main__][INFO] - dummy_training(dropout=0.3336075509908663, lr=0.03496732134738235, db=cifar, batch_size=4) = 0.08864022964348395
 ```
+
+
+You will find an `optimization_results.yaml` file in your sweep folder with the parameters recommended by the optimizer:
+```yaml
+nevergrad:
+  batch_size: 4
+  db: mnist
+  dropout: 0.34410367547736725
+  lr: 0.11116748967967864
+optimizer: nevergrad
+```

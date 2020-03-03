@@ -211,7 +211,6 @@ class NevergradSweeper(Sweeper):
         results_to_serialize = {"optimizer": "nevergrad", "nevergrad": recom.value}
         # TODO remove the following line with next nevergrad release
         results_to_serialize = json.loads(json.dumps(results_to_serialize))
-        print(f"Saving to {self.config.hydra.sweep.dir}/optimization_results.yaml")
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.config.hydra.sweep.dir}/optimization_results.yaml",
