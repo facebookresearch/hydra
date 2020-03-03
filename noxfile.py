@@ -17,10 +17,12 @@ PYTHON_VERSIONS = os.environ.get(
 ).split(",")
 
 PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
+SKIP_CORE_TESTS = "0"
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
+SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 
 SILENT = os.environ.get("VERBOSE", "0") == "0"
 
@@ -74,8 +76,8 @@ def list_plugins():
     return plugins + example_plugins
 
 
-def get_all_plugins():
-    return [
+def get_selected_plugins(session):
+    ret = [
         {
             "name": plugin["name"],
             "path": plugin["path"],
@@ -84,6 +86,9 @@ def get_all_plugins():
         for plugin in list_plugins()
         if plugin["name"] in PLUGINS or PLUGINS == ["ALL"]
     ]
+    if len(ret) == 0:
+        session.log("Warning : No plugins selected")
+    return ret
 
 
 def test_example_app(session, install_cmd):
@@ -118,7 +123,7 @@ def lint(session):
     session.run("mypy", ".", "--strict")
 
     # Mypy for plugins
-    for plugin in get_all_plugins():
+    for plugin in get_selected_plugins(session):
         session.run(
             "mypy", os.path.join("plugins", plugin["path"]), "--strict", silent=SILENT
         )
@@ -194,7 +199,7 @@ def test_plugins(session, install_cmd):
     install_pytest(session)
     install_hydra(session, install_cmd)
     plugin_enabled = {}
-    all_plugins = get_all_plugins()
+    all_plugins = get_selected_plugins(session)
     # Install all supported plugins in session
     for plugin in all_plugins:
         # Verify this plugin supports the python we are testing on, skip otherwise
@@ -230,7 +235,10 @@ def test_plugins(session, install_cmd):
             session.run("python", "-c", "import {}".format(plugin["module"]))
 
     # Run Hydra tests to verify installed plugins did not break anything
-    run_pytest(session, "tests")
+    if not SKIP_CORE_TESTS:
+        run_pytest(session, "tests")
+    else:
+        session.log("Skipping Hydra core tests")
 
     # Run tests for all installed plugins
     for plugin in all_plugins:
@@ -253,7 +261,7 @@ def coverage(session):
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("coverage", "erase")
 
-    all_plugins = get_all_plugins()
+    all_plugins = get_selected_plugins(session)
     plugin_enabled = {}
     for plugin in all_plugins:
         plugin_python_versions = get_plugin_python_version(session, plugin)
