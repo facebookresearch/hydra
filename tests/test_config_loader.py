@@ -529,7 +529,7 @@ class ConcretePlugin(Plugin):
 
 
 @dataclass
-# A plugin that does not extend from the parent Plugin class
+# A plugin that does not extend the parent Plugin class
 class InvalidPlugin:
     name: str = "invalid_plugin"
 
