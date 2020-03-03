@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 class NevergradSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         search_path.append(
-            "nevergrad-sweeper", "pkg://hydra_plugins.hydra_nevergrad_sweeper.conf"
+            "nevergrad", "pkg://hydra_plugins.hydra_nevergrad_sweeper.conf"
         )
 
 
