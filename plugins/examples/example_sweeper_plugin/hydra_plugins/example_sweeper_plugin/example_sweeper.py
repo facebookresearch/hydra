@@ -64,4 +64,5 @@ class ExampleSweeper(Sweeper):
         batch = list(itertools.product(*src_lists))
 
         returns = [self.launcher.launch(batch)]
+        # returns are not acted on right now.
         return returns
