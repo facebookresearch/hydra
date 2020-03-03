@@ -31,17 +31,17 @@ banana.y: range=[-5.0, 10.1], type = float
 ax.modelbridge.dispatch_utils: Using Bayesian Optimization generation strategy: GenerationStrategy(name='Sobol+GPEI', steps=[Sobol for 5 arms, GPEI for subsequent arms], generated 0 arm(s) so far). Iterations after 5 will take longer to generate due to model-fitting.
 AxSweeper is launching 5 jobs
 [HYDRA] Launching 5 jobs locally
-[HYDRA] 	#0 : banana.x=4 banana.y=-1.4849858552217485
-[__main__][INFO] - Banana_Function(x=4, y=-1.4849858552217485)=30581.473035730458
-[HYDRA] 	#1 : banana.x=3 banana.y=-3.653166103363037
-[__main__][INFO] - Banana_Function(x=3, y=-3.653166103363037)=16014.261243929537
-[HYDRA] 	#2 : banana.x=0 banana.y=9.409750688076018
-[__main__][INFO] - Banana_Function(x=0, y=9.409750688076018)=8855.34080117471
-[HYDRA] 	#3 : banana.x=-4 banana.y=2.0593890726566313
-[__main__][INFO] - Banana_Function(x=-4, y=2.0593890726566313)=19459.06330275653
-[HYDRA] 	#4 : banana.x=-3 banana.y=-1.338518775999546
-[__main__][INFO] - Banana_Function(x=-3, y=-1.338518775999546)=10704.497048169515
-[HYDRA] New best value: 8855.34080117471, best parameters: {'banana.x': 0, 'banana.y': 9.409750688076018}
+[HYDRA] 	#0 : banana.x=4 banana.y=-1.484
+[__main__][INFO] - Banana_Function(x=4, y=-1.484)=30581.473
+[HYDRA] 	#1 : banana.x=3 banana.y=-3.653
+[__main__][INFO] - Banana_Function(x=3, y=-3.653)=16014.261
+[HYDRA] 	#2 : banana.x=0 banana.y=9.409
+[__main__][INFO] - Banana_Function(x=0, y=9.409)=8855.340
+[HYDRA] 	#3 : banana.x=-4 banana.y=2.059
+[__main__][INFO] - Banana_Function(x=-4, y=2.059)=19459.063
+[HYDRA] 	#4 : banana.x=-3 banana.y=-1.338
+[__main__][INFO] - Banana_Function(x=-3, y=-1.338)=10704.497
+[HYDRA] New best value: 8855.340, best parameters: {'banana.x': 0, 'banana.y': 9.409}
 ```
 
 In this example, we set the range of `x` parameter as an integer in `[-5, 5]` and the range of `y` parameter as a float in `[-5, 10.1]`. Note that in the case of `x`, both the upper and the lower range values are integers, and hence only integers are sampled. In the case of `y`, the lower range value is an int while the upper range value is a float. The lower range value is promoted to float as well, and floating-point numbers are sampled from the range. Other supported formats are fixed parameters (eg `banana.x=5.0`) and choice parameters (eg `banana.x=1,2,3`). 
