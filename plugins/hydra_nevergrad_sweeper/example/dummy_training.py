@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any
+
+from omegaconf import DictConfig
 
 import hydra
 
@@ -8,7 +9,7 @@ log = logging.getLogger(__name__)
 
 
 @hydra.main(config_path="config.yaml")
-def dummy_training(cfg: Any) -> float:
+def dummy_training(cfg: DictConfig) -> float:
     """A dummy function to minimize
     Minimum is 0.0 at:
     lr = 0.12, dropout=0.33, db=mnist, batch_size=4
