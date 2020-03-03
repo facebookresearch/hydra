@@ -2,12 +2,14 @@
 # type: ignore
 import codecs
 import os
+import pathlib
 import re
 import shutil
 from distutils import cmd
 from os.path import exists, isdir, join
 from typing import Any, List
 
+import pkg_resources
 from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -24,6 +26,13 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+
+
+with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
+    install_requires = [
+        str(requirement)
+        for requirement in pkg_resources.parse_requirements(requirements_txt)
+    ]
 
 
 class CleanCommand(cmd.Command):
@@ -105,24 +114,7 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        install_requires=["omegaconf>=2.0.0rc14", "typing_extensions"],
+        install_requires=install_requires,
         # Install development dependencies with
-        # pip install -e ".[dev]"
-        extras_require={
-            "dev": [
-                "black",
-                "coverage",
-                "flake8",
-                "flake8-copyright",
-                "isort@git+git://github.com/timothycrosley/isort.git@c54b3dd#egg=isort",
-                "mypy",
-                "nox",
-                "pre-commit",
-                "pytest",
-                "pytest-snail",
-                "setuptools",
-                "towncrier",
-                "twine",
-            ]
-        },
+        # pip install -r requirements/dev.txt -e .
     )
