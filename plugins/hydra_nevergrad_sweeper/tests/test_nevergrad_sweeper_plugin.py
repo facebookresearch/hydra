@@ -24,7 +24,6 @@ chdir_plugin_root()
 
 
 def test_discovery() -> None:
-    # Tests that this plugin can be discovered via the plugins subsystem when looking at the Sweeper plugins
     assert NevergradSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
 
 
