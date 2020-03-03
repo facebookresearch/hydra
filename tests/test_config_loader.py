@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import pkg_resources
 import pytest
@@ -511,25 +511,35 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
     assert config_loader.get_load_history() == expected
 
 
+@dataclass
+class Plugin:
+    name: str = MISSING
+    params: Any = MISSING
+
+
+@dataclass
+class ConcretePlugin(Plugin):
+    name: str = "foobar_plugin"
+
+    @dataclass
+    class FoobarParams:
+        foo: int = 10
+
+    params: FoobarParams = FoobarParams()
+
+
+@dataclass
+# A plugin that does not extend from the parent Plugin class
+class InvalidPlugin:
+    name: str = "invalid_plugin"
+
+
+@dataclass
+class Config:
+    plugin: Plugin = Plugin()
+
+
 def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
-    @dataclass
-    class Plugin:
-        name: str = MISSING
-        params: Dict[str, Any] = MISSING
-
-    @dataclass
-    class ConcretePlugin:
-        name: str = "foobar_plugin"
-
-        @dataclass
-        class FoobarParams:
-            foo: int = 10
-
-        params: FoobarParams = FoobarParams()
-
-    @dataclass
-    class Config:
-        plugin: Plugin = Plugin()
 
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
@@ -550,3 +560,13 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
     assert cfg.plugin.params._type == ConcretePlugin.FoobarParams
     with pytest.raises(ValidationError):
         cfg.plugin = 10
+
+
+def test_invalid_plugin_merge(restore_singletons: Any) -> Any:  # noqa: F811
+    cs = ConfigStore.instance()
+    cs.store(name="config", node=Config)
+    cs.store(group="plugin", name="invalid", node=InvalidPlugin, path="plugin")
+
+    cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    with pytest.raises(ValidationError):
+        cl.load_configuration(config_name="config", overrides=["plugin=invalid"])
