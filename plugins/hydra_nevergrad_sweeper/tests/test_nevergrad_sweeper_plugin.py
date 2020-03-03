@@ -61,7 +61,7 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         config_name="compose.yaml",
         task_function=None,
         overrides=[
-            "hydra/sweeper=nevergrad-sweeper",
+            "hydra/sweeper=nevergrad",
             "hydra/launcher=basic",
             f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
             "hydra.sweeper.params.num_workers=3",
