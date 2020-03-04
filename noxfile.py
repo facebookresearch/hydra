@@ -188,9 +188,7 @@ def test_core(session, install_cmd):
 
     # Install and test example app
     session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)
-    session.run(
-        "pytest", "examples/advanced/hydra_app_example", silent=SILENT, *session.posargs
-    )
+    run_pytest(session, "examples/advanced/hydra_app_example")
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -263,7 +261,13 @@ def coverage(session):
 
     # run hydra-core coverage
     session.run(
-        "coverage", "run", "--append", "-m", "pytest", silent=SILENT, env=coverage_env
+        "coverage",
+        "run",
+        "--append",
+        "-m",
+        silent=SILENT,
+        env=coverage_env,
+        *pytest_args(session),
     )
 
     # Increase the fail_under as coverage improves
@@ -282,8 +286,8 @@ def test_jupyter_notebook(session):
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
     session.run(
-        "pytest",
-        "--nbval",
-        "examples/notebook/hydra_notebook_example.ipynb",
+        *pytest_args(
+            session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
+        ),
         silent=SILENT,
     )
