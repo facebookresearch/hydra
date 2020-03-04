@@ -102,7 +102,7 @@ with open("README.md", "r") as fh:
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra",
         keywords="command-line configuration yaml tab-completion",
-        packages=find_packages(),
+        packages=find_packages(include=["hydra"]),
         include_package_data=True,
         classifiers=[
             "License :: OSI Approved :: MIT License",
