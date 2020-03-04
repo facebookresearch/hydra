@@ -20,7 +20,7 @@ def dummy_training(cfg: DictConfig) -> float:
         abs(do - 0.33) + int(cfg.db == "mnist") + abs(cfg.lr - 0.12) + abs(bs - 4)
     )
     log.info(
-        f"dummy_training(dropout={do}, lr={cfg.lr}, db={cfg.db}, batch_size={bs}) = {out}",
+        f"dummy_training(dropout={do:.3f}, lr={cfg.lr:.3f}, db={cfg.db}, batch_size={bs}) = {out:.3f}",
     )
     return out
 

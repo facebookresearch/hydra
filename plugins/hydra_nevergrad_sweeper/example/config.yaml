@@ -4,7 +4,9 @@ defaults:
 hydra:
   sweeper:
     params:
+      # total number of function evaluations to perform
       budget: 100
+      # number of parallel workers for performing function evaluations
       num_workers: 10
 
 db: mnist

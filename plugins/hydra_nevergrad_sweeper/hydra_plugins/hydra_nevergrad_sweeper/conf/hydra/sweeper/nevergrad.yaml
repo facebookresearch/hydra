@@ -13,10 +13,10 @@ hydra:
       # find out more within nevergrad's documentation:
       # https://github.com/facebookresearch/nevergrad/
       optimizer: OnePlusOne
-      # number of parallel function evaluations to perform
-      num_workers: 10
       # total number of function evaluations to perform
       budget: 80
+      # number of parallel workers for performing function evaluations
+      num_workers: 10
       # set to true if the function evaluations are noisy
       noisy: false
       # set to true for performing maximization instead of minimization
