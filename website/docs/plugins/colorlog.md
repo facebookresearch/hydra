@@ -8,7 +8,8 @@ sidebar_label: Colorlog plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-colorlog)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-colorlog)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-colorlog.svg)](https://pypistats.org/packages/hydra-colorlog)
-
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_colorlog/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_colorlog)
 
 Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
 
