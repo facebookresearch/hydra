@@ -7,6 +7,8 @@ sidebar_label: Joblib Launcher plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-joblib-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-joblib-launcher)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-joblib-launcher.svg)](https://pypistats.org/packages/hydra-joblib-launcher)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher)
 
 The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
@@ -30,12 +32,11 @@ defaults:
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
 The default configuration packaged with the plugin is:
-```yaml
-hydra:
-  launcher:
-    class: hydra_plugins.hydra_joblib_launcher.JoblibLauncher
-    params: # See JobLibConf class below
-      ... 
+```python
+@dataclass
+class JobLibLauncherConf(PluginConf):
+    cls: str = "hydra_plugins.hydra_joblib_launcher.JoblibLauncher"
+    params: JobLibConf = JobLibConf() 
 ```
 
 The JobLibConf class is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
