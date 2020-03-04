@@ -16,7 +16,7 @@ def some_method() -> int:
 
 
 class Bar:
-    def __init__(self, a: Any, b: Any, c: Any, d: Any) -> None:
+    def __init__(self, a: Any, b: Any, c: Any, d: Any = "default_value") -> None:
         self.a = a
         self.b = b
         self.c = c
@@ -59,12 +59,16 @@ class Foo:
         return False
 
 
-@pytest.mark.parametrize("path,expected_type", [("tests.test_utils.Bar", Bar)])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
+    "path,expected_type", [("tests.test_utils.Bar", Bar)]
+)
 def test_get_class(path: str, expected_type: type) -> None:
     assert utils.get_class(path) == expected_type
 
 
-@pytest.mark.parametrize("path,return_value", [("tests.test_utils.some_method", 42)])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
+    "path,return_value", [("tests.test_utils.some_method", 42)]
+)
 def test_get_method(path: str, return_value: Any) -> None:
     assert utils.get_method(path)() == return_value
 
@@ -114,11 +118,18 @@ def test_get_static_method(path: str, return_value: Any) -> None:
             {"a": 10, "d": 40},
             Bar(10, 200, 200, 40),
         ),
+        # Check that default value is respected
         (
             {"cls": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
             None,
-            {"a": 10, "d": Foo(99)},
-            Bar(10, 200, 200, Foo(99)),
+            {"a": 10},
+            Bar(10, 200, 200, "default_value"),
+        ),
+        (
+            {"cls": "tests.test_utils.Bar", "params": {}},
+            None,
+            {"a": 10, "b": 20, "c": 30},
+            Bar(10, 20, 30, "default_value"),
         ),
     ],
 )
@@ -157,15 +168,12 @@ def test_class_warning() -> None:
             {
                 "class": "tests.test_utils.Bar",
                 "params": {"a": 10, "b": 20, "c": 30, "d": 40},
-            },
+            }
         )
         assert utils.instantiate(config) == expected
 
     config = OmegaConf.structured(
-        {
-            "cls": "tests.test_utils.Bar",
-            "params": {"a": 10, "b": 20, "c": 30, "d": 40},
-        },
+        {"cls": "tests.test_utils.Bar", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
     )
     assert utils.instantiate(config) == expected
 
