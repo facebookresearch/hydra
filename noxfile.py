@@ -85,6 +85,8 @@ def select_plugins(session):
     as well as the user plugins selection (via the PLUGINS environment variable).
     """
 
+    assert session.python is not None, "Session python version is not specified"
+
     example_plugins = [
         {"name": x, "path": "examples/{}".format(x)}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
@@ -145,7 +147,7 @@ def select_plugins(session):
     return ret
 
 
-@nox.session
+@nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     session.install("--upgrade", "setuptools", "pip", silent=SILENT)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
