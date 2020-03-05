@@ -5,6 +5,7 @@ jobs:
   py36_mac:
     macos:
       xcode: "10.0.0"
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -25,6 +26,7 @@ jobs:
   py37_mac:
     macos:
       xcode: "10.0.0"
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -45,6 +47,7 @@ jobs:
   py38_mac:
     macos:
       xcode: "10.0.0"
+    resource_class: large
     steps:
       - checkout
       - run:
