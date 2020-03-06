@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
@@ -207,23 +206,21 @@ class AxSweeper(Sweeper):
                 num_trials_so_far += len(batch_of_trials_to_launch)
                 num_trials_left -= len(batch_of_trials_to_launch)
 
-                best = ax_client.get_best_parameters()
-                metric = best[1][0][ax_client.objective_name]
+                best_parameters, predictions = ax_client.get_best_parameters()
+                metric = predictions[0][ax_client.objective_name]
 
-                if self.early_stopper.should_stop(metric, best[0]):
+                if self.early_stopper.should_stop(metric, best_parameters):
                     num_trials_left = -1
                     break
 
             current_parallelism_index += 1
 
-        results_to_serialize = {"optimizer": "ax", "ax": best}
-        results_to_serialize = json.loads(json.dumps(results_to_serialize))
-        # This step is to convert all the numpy floats into python floats
+        results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.sweep_dir}/optimization_results.yaml",
         )
-        log.info("Best parameters: " + str(best))
+        log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
         self,
