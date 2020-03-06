@@ -213,16 +213,16 @@ workflows:
   build:
     jobs:
       # linux
-      - py36_linux
-      - py37_linux
-      - py38_linux
+#      - py36_linux
+#      - py37_linux
+#      - py38_linux
       # mac
       - py36_mac
       - py37_mac
       - py38_mac
       # windows
-      - py36_win
-      - py37_win
+#      - py36_win
+#      - py37_win
 #      - py38_win
       - deploy-website:
           filters:
