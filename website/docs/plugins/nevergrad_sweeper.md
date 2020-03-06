@@ -101,5 +101,4 @@ In this example, we set the range of... TODO
 
 #### About integers and floats
 
-One important thing to note is how float and integers are interpreted in the commandline. When at least one of variable bounds is a float then the parameter is considered to be a float and be continuous. On the other end, when both the bounds are set to integers, the variable becomes a discrete integer scalar. Note that minimizing on continuous variables is simpler so favor floats over integers when it makes sense.
-
+One important thing to note is how float and integers are interpreted in the command-line. When at least one of variable bounds is a float then the parameter is considered to be a float and be continuous. On the other end, when both the bounds are set to integers, the variable becomes a discrete integer scalar. Optimizing with continuous variables is easier so favor floats over integers when it makes sense.
