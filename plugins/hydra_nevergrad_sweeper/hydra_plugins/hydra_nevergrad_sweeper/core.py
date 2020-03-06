@@ -3,7 +3,6 @@ import json
 import logging
 from typing import Any, Dict, List, Optional, Union
 
-import nevergrad as ng  # type: ignore
 from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
@@ -50,7 +49,7 @@ def convert_to_deduced_type(string: str) -> Union[int, float, str]:
     return output
 
 
-def make_parameter(string: str) -> Union[int, float, str, ng.p.Parameter]:
+def make_parameter(string: str) -> Any:
     """Returns a Nevergrad parameter from a definition string.
 
     Parameters
@@ -74,6 +73,8 @@ def make_parameter(string: str) -> Union[int, float, str, ng.p.Parameter]:
     Parameter or str
         A Parameter if the string fitted one of the definitions, else the input string
     """
+    import nevergrad as ng  # type: ignore
+
     string = string.strip()
     if string.startswith(tuple(dir(ng.p))):
         param = eval("ng.p." + string)  # pylint: disable=eval-used
@@ -170,6 +171,8 @@ class NevergradSweeper(Sweeper):
         )
 
     def sweep(self, arguments: List[str]) -> None:
+        import nevergrad as ng
+
         assert self.config is not None
         assert self.launcher is not None
         # Construct the parametrization

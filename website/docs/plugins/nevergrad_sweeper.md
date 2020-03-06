@@ -4,7 +4,7 @@ title: Nevergrad Sweeper plugin
 sidebar_label: Nevergrad Sweeper plugin
 ---
 
-This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://github.com/facebookresearch/nevergrad) algorithms for the optimization of the parameters of any experiment.
+This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://github.com/facebookresearch/nevergrad) algorithms for the optimization of experiments/applications parameters.
 
 Install with:
 
