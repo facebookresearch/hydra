@@ -4,8 +4,9 @@ This website is built using Docusaurus 2, a modern static website generator.
 
 ### Installation
 
+Install docusaurus with yarn:
 ```
-$ yarn
+$ yarn add docusaurus-init
 ```
 
 ### Local Development
