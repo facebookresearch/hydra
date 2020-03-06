@@ -20,6 +20,10 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core>=1.0.0rc1", "nevergrad>=0.3.2"],
+        install_requires=[
+            "hydra-core>=1.0.0rc1",
+            # TODO move to v0.4.0 when ready (before merge!)
+            "nevergrad@git+git://github.com/facebookresearch/nevergrad.git@master#egg=isort",
+        ],
         include_package_data=True,
     )

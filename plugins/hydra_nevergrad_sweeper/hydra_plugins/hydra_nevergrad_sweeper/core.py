@@ -53,18 +53,6 @@ def convert_to_deduced_type(string: str) -> Union[int, float, str]:
     return output
 
 
-def _make_list_parameter(param_list: List[str]) -> Any:
-    import nevergrad as ng  # type: ignore
-
-    choices = [convert_to_deduced_type(x) for x in param_list]
-    print(choices)
-    ordered = all(isinstance(c, (int, float)) for c in choices)
-    ordered &= all(
-        c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
-    )
-    return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
-
-
 def make_parameter_from_commandline(string: str) -> Any:
     """Returns a Nevergrad parameter from a definition string.
 
@@ -92,62 +80,63 @@ def make_parameter_from_commandline(string: str) -> Any:
     Parameter or str
         A Parameter if the string fitted one of the definitions, else the input string
     """
-    import nevergrad as ng
-
     string = string.strip()
-    if string.startswith(tuple(dir(ng.p))):
-        param = eval("ng.p." + string)  # pylint: disable=eval-used
-        assert isinstance(param, ng.p.Parameter)
-        return param
     if "," in string:
-        return _make_list_parameter(string.split(","))
+        return make_parameter_from_config(string.split(","))
     for sep in [":log:", ":"]:
         if sep in string:
             a, b = [convert_to_deduced_type(x) for x in string.split(sep)]
             assert isinstance(a, (int, float)), "Bounds must be scalars"
             assert isinstance(b, (int, float)), "Bounds must be scalars"
-            if sep == ":":
-                sigma = (b - a) / 6
-                scalar = (
-                    ng.p.Scalar(init=(a + b) / 2.0)
-                    .set_mutation(sigma=sigma)
-                    .set_bounds(a_min=a, a_max=b, full_range_sampling=True)
-                )
-            else:
-                scalar = ng.p.Log(a_min=a, a_max=b)
+            description = {"lower": a, "upper": b, "log": sep == ":log:"}
             if all(isinstance(c, int) for c in (a, b)):
+                description["integer"] = True
                 if b - a <= 6:
                     raise ValueError(
                         "For integers with 6 or fewer values, use a choice instead"
                     )
-                scalar.set_integer_casting()
-            return scalar
-    return convert_to_deduced_type(string)  # constant
+            return make_parameter_from_config(description)
+    return make_parameter_from_config(string)
 
 
 def make_parameter_from_config(description: Any) -> Any:
-    import nevergrad as ng
+    import nevergrad as ng  # type: ignore
 
-    if isinstance(description, ListConfig):
-        return _make_list_parameter(list(description))
-    elif isinstance(description, str) and description.startswith(tuple(dir(ng.p))):
-        param = eval("ng.p." + description)  # pylint: disable=eval-used
+    # choice
+
+    if isinstance(description, (ListConfig, list)):
+        choices = [convert_to_deduced_type(x) for x in description]
+        print(choices)
+        ordered = all(isinstance(c, (int, float)) for c in choices)
+        ordered &= all(
+            c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
+        )
+        return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
+    # custom
+    if isinstance(description, str) and description.startswith(tuple(dir(ng.p))):
+        param: ng.p.Parameter = eval("ng.p." + description)  # pylint: disable=eval-used
         assert isinstance(param, ng.p.Parameter)
         return param
-    elif isinstance(description, DictConfig):
+    # scalar
+    if isinstance(description, (dict, DictConfig)):
         init = ["init", "lower", "upper"]
-        options = init + ["log", "step"]
+        options = init + ["log", "step", "integer"]
         assert all(x in options for x in description)
         init_params = {x: y for x, y in description.items() if x in init}
-        if description.get("log", False):
-            param = ng.p.Scalar(**init_params)
+        if not description.get("log", False):
+            scalar = ng.p.Scalar(**init_params)
             if "step" in description:
-                param.set_mutation(sigma=description["step"])
+                scalar.set_mutation(sigma=description["step"])
         else:
             if "step" in description:
                 init_params["exponent"] = description["step"]
-            param = ng.p.Log(**init_params)
-            return param
+            scalar = ng.p.Log(**init_params)
+        if description.get("integer", False):
+            scalar.set_integer_casting()
+        return scalar
+    # constant
+    if isinstance(description, (str, int, float)):
+        return description
     raise TypeError(f"Unexpected parameter configuration: {description}")
 
 
@@ -196,8 +185,8 @@ class NevergradSweeper(Sweeper):
         assert self.launcher is not None
         direction = -1 if self.opt_config.maximize else 1
         name = "maximization" if self.opt_config.maximize else "minimization"
-        # Construct the parametrization
-        params: Dict[str, Union[str, int, float, ng.p.Parameter]] = {}
+        # Override the parametrization from commandline
+        params = dict(self.parametrization)
         for s in arguments:
             key, value = s.split("=", 1)
             params[key] = make_parameter_from_commandline(value)

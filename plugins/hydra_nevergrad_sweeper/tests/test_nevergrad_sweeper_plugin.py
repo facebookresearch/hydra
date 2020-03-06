@@ -75,7 +75,10 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         assert sweep.returns is None
 
 
-def test_nevergrad_example(tmpdir: Path) -> None:
+@pytest.mark.parametrize(  # type: ignore
+    "with_commandline", (True, False)
+)
+def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32
     cmd = [
         sys.executable,
@@ -85,11 +88,14 @@ def test_nevergrad_example(tmpdir: Path) -> None:
         f"hydra.sweeper.params.optim.budget={budget}",  # small budget to test fast
         "hydra.sweeper.params.optim.num_workers=8",
         "hydra.sweeper.params.optim.seed=12",  # avoid random failures
-        "db=mnist,cifar",
-        "batch_size=4,8,12,16",
-        "lr=0.001:log:1.0",
-        "dropout=0.0:1.0",
     ]
+    if with_commandline:
+        cmd += [
+            "db=mnist,cifar",
+            "batch_size=4,8,12,16",
+            "lr=0.001:log:1.0",
+            "dropout=0.0:1.0",
+        ]
     subprocess.check_call(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert returns.optimizer == "nevergrad"
