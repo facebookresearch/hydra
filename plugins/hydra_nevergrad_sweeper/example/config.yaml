@@ -4,16 +4,30 @@ defaults:
 hydra:
   sweeper:
     params:
-      # name of the nevergrad optimizer to use
-      # OnePlusOne is good at low budget, but may converge early
-      optimizer: OnePlusOne
-      # total number of function evaluations to perform
-      budget: 100
-      # number of parallel workers for performing function evaluations
-      num_workers: 10
+      optim:
+        # name of the nevergrad optimizer to use
+        # OnePlusOne is good at low budget, but may converge early
+        optimizer: OnePlusOne
+        # total number of function evaluations to perform
+        budget: 100
+        # number of parallel workers for performing function evaluations
+        num_workers: 10
+        #parametrization:
+        #  db:
+        #    - mnist
+        #    - cifar
+        #  lr:
+        #    init: 0.02
+        #    step: 2.0
+        #    log: true
+        #  dropout:
+        #    lower: 0.0
+        #    upper: 1.0
+        #  batch_size: [4, 8, 12, 16]
 
-db: mnist
+
+db: cifar
 lr: 0.01
 dropout: 0.6
-batch_size: 4
+batch_size: 8
 

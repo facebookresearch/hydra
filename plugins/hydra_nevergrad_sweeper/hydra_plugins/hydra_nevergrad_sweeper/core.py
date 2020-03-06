@@ -3,7 +3,7 @@ import json
 import logging
 from typing import Any, Dict, List, Optional, Union
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, ListConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
@@ -12,6 +12,8 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+
+# pylint: disable=logging-fstring-interpolation,no-self-used
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +41,8 @@ def convert_to_deduced_type(string: str) -> Union[int, float, str]:
     >>> "blublu"
     """
     output: Union[float, int, str] = string
+    if not isinstance(string, str):
+        return string
     try:
         output = float(string)
     except ValueError:
@@ -49,7 +53,19 @@ def convert_to_deduced_type(string: str) -> Union[int, float, str]:
     return output
 
 
-def make_parameter(string: str) -> Any:
+def _make_list_parameter(param_list: List[str]) -> Any:
+    import nevergrad as ng  # type: ignore
+
+    choices = [convert_to_deduced_type(x) for x in param_list]
+    print(choices)
+    ordered = all(isinstance(c, (int, float)) for c in choices)
+    ordered &= all(
+        c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
+    )
+    return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
+
+
+def make_parameter_from_commandline(string: str) -> Any:
     """Returns a Nevergrad parameter from a definition string.
 
     Parameters
@@ -63,6 +79,9 @@ def make_parameter(string: str) -> Any:
          - ":"-separated values for ranges of scalars.
            Eg.: "1.0:5.0"
            Note: using integers as bounds will parametrize as an integer value
+         - ":log:"-separated values for ranges of log-distributed positive scalars.
+           Eg.: "0.001:log:1.0"
+           Note: using integers as bounds will parametrize as an integer value
          - evaluable nevergrad Parameter definition, which will be evaluated at
            runtime. This provides full nevergrad flexibility at the cost of robustness.
            Eg.:"Log(a_min=0.001, a_max=0.1)"
@@ -73,7 +92,7 @@ def make_parameter(string: str) -> Any:
     Parameter or str
         A Parameter if the string fitted one of the definitions, else the input string
     """
-    import nevergrad as ng  # type: ignore
+    import nevergrad as ng
 
     string = string.strip()
     if string.startswith(tuple(dir(ng.p))):
@@ -81,27 +100,55 @@ def make_parameter(string: str) -> Any:
         assert isinstance(param, ng.p.Parameter)
         return param
     if "," in string:
-        choices = [convert_to_deduced_type(x) for x in string.split(",")]
-        ordered = all(isinstance(c, (int, float)) for c in choices)
-        ordered &= all(
-            c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
-        )
-        return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
-    if ":" in string:
-        a, b = [convert_to_deduced_type(x) for x in string.split(":")]
-        assert all(
-            isinstance(c, (int, float)) for c in (a, b)
-        ), "Bounds must be scalars"
-        sigma = (b - a) / 6  # type: ignore
-        scalar = (
-            ng.p.Scalar(init=(a + b) / 2.0)  # type: ignore
-            .set_mutation(sigma=sigma)
-            .set_bounds(a_min=a, a_max=b, full_range_sampling=True)
-        )
-        if all(isinstance(c, int) for c in (a, b)):
-            scalar.set_integer_casting()
-        return scalar
+        return _make_list_parameter(string.split(","))
+    for sep in [":log:", ":"]:
+        if sep in string:
+            a, b = [convert_to_deduced_type(x) for x in string.split(sep)]
+            assert isinstance(a, (int, float)), "Bounds must be scalars"
+            assert isinstance(b, (int, float)), "Bounds must be scalars"
+            if sep == ":":
+                sigma = (b - a) / 6
+                scalar = (
+                    ng.p.Scalar(init=(a + b) / 2.0)
+                    .set_mutation(sigma=sigma)
+                    .set_bounds(a_min=a, a_max=b, full_range_sampling=True)
+                )
+            else:
+                scalar = ng.p.Log(a_min=a, a_max=b)
+            if all(isinstance(c, int) for c in (a, b)):
+                if b - a <= 6:
+                    raise ValueError(
+                        "For integers with 6 or fewer values, use a choice instead"
+                    )
+                scalar.set_integer_casting()
+            return scalar
     return convert_to_deduced_type(string)  # constant
+
+
+def make_parameter_from_config(description: Any) -> Any:
+    import nevergrad as ng
+
+    if isinstance(description, ListConfig):
+        return _make_list_parameter(list(description))
+    elif isinstance(description, str) and description.startswith(tuple(dir(ng.p))):
+        param = eval("ng.p." + description)  # pylint: disable=eval-used
+        assert isinstance(param, ng.p.Parameter)
+        return param
+    elif isinstance(description, DictConfig):
+        init = ["init", "lower", "upper"]
+        options = init + ["log", "step"]
+        assert all(x in options for x in description)
+        init_params = {x: y for x, y in description.items() if x in init}
+        if description.get("log", False):
+            param = ng.p.Scalar(**init_params)
+            if "step" in description:
+                param.set_mutation(sigma=description["step"])
+        else:
+            if "step" in description:
+                init_params["exponent"] = description["step"]
+            param = ng.p.Log(**init_params)
+            return param
+    raise TypeError(f"Unexpected parameter configuration: {description}")
 
 
 class NevergradSweeper(Sweeper):
@@ -109,55 +156,27 @@ class NevergradSweeper(Sweeper):
 
     Parameters
     ----------
-    optimizer: str
-       name of a Nevergrad optimizer to use. Some interesting options are:
-         - "OnePlusOne" extremely simple and robust, especially at low budget, but
-           tends to converge early.
-         - "CMA" very good algorithm, but may require a significant budget (> 120)
-         - "TwoPointsDE": an algorithm good in a wide range of settings, for significant budgets
-           (> 120).
-         - "Shiva" an algorithm aiming at identifying the best optimizer given your input
-           definition (work in progress, it may still be ill-suited for low budget)
-       See nevergrad documentation: https://facebookresearch.github.io/nevergrad/
-    budget: int
-       the total number of function evaluation that can be performed
-    num_workers: int
-       the number of evaluation to run in parallel. Sequential means num_workers=1.
-       Population based algorithms such as CMA and DE can have num_workers up to 40 without slowing
-       down the convergence, while OnePlusOne can benefit sequential, but will perform well with several
-       workers as well.
-    noisy: bool
-       notifies (some) algorithms that the function evaluation is noisy
-    maximize: bool
-       whether to perform maximization instead of default minimization
-    seed: int
-        seed for the optimizer for reproducibility. If the seed is -1, the optimizer is not seeded (default)
+    config: DictConfig
+      the optimization process configuration
     version: int
-       the version of the commandline input parsing. The parsing will probably evolve in the near
-       future and several versions may temporarily coexist.
-       s
+      version of the API
     """
 
     def __init__(
-        self,
-        optimizer: str,
-        budget: int,
-        num_workers: int,
-        noisy: bool,
-        maximize: bool,
-        seed: Optional[int],
-        version: int,
+        self, optim: DictConfig, version: int, parametrization: Optional[DictConfig],
     ):
+        assert version == 1, "Only version 1 of API is currently available"
+        self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
-        assert version == 1, "Only version 1 of API is currently available"
         self.job_results = None
-        self.optimizer = optimizer
-        self.noisy = noisy
-        self.budget = budget
-        self.num_workers = num_workers
-        self.seed = seed
-        self._direction = -1 if maximize else 1
+        self.parametrization: Dict[str, Any] = {}
+        if parametrization is not None:
+            print(parametrization)
+            assert isinstance(parametrization, DictConfig)
+            self.parametrization = {
+                x: make_parameter_from_config(y) for x, y in parametrization.items()
+            }
 
     def setup(
         self,
@@ -175,30 +194,31 @@ class NevergradSweeper(Sweeper):
 
         assert self.config is not None
         assert self.launcher is not None
+        direction = -1 if self.opt_config.maximize else 1
+        name = "maximization" if self.opt_config.maximize else "minimization"
         # Construct the parametrization
         params: Dict[str, Union[str, int, float, ng.p.Parameter]] = {}
         for s in arguments:
             key, value = s.split("=", 1)
-            params[key] = make_parameter(value)
+            params[key] = make_parameter_from_commandline(value)
         parametrization = ng.p.Dict(**params)
-        parametrization.descriptors.deterministic_function = not self.noisy
-        parametrization.random_state.seed(self.seed)
+        parametrization.descriptors.deterministic_function = not self.opt_config.noisy
+        parametrization.random_state.seed(self.opt_config.seed)
         # log and build the optimizer
-        name = "maximization" if self._direction == -1 else "minimization"
+        opt = self.opt_config.optimizer
+        remaining_budget = self.opt_config.budget
+        nw = self.opt_config.num_workers
         log.info(
-            f"NevergradSweeper(optimizer={self.optimizer}, budget={self.budget}, "
-            f"num_workers={self.num_workers}) {name}"
+            f"NevergradSweeper(optimizer={opt}, budget={remaining_budget}, "
+            f"num_workers={nw}) {name}"
         )
         log.info(f"with parametrization {parametrization}")
         log.info(f"Sweep output dir: {self.config.hydra.sweep.dir}")
-        optimizer = ng.optimizers.registry[self.optimizer](
-            parametrization, self.budget, self.num_workers
-        )
+        optimizer = ng.optimizers.registry[opt](parametrization, remaining_budget, nw)
         # loop!
-        remaining_budget = self.budget
         all_returns: List[Any] = []
         while remaining_budget > 0:
-            batch = min(self.num_workers, remaining_budget)
+            batch = min(nw, remaining_budget)
             remaining_budget -= batch
             candidates = [optimizer.ask() for _ in range(batch)]
             overrides = list(
@@ -208,7 +228,7 @@ class NevergradSweeper(Sweeper):
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
             for cand, ret in zip(candidates, returns):
-                optimizer.tell(cand, self._direction * ret.return_value)
+                optimizer.tell(cand, direction * ret.return_value)
             all_returns.extend(returns)
         recom = optimizer.provide_recommendation()
         results_to_serialize = {"optimizer": "nevergrad", "nevergrad": recom.value}
