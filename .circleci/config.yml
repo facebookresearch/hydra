@@ -218,8 +218,8 @@ workflows:
 #      - py37_linux
 #      - py38_linux
       # mac
-      - py36_mac
-      - py37_mac
+#      - py36_mac
+#      - py37_mac
       - py38_mac
       # windows
 #      - py36_win
