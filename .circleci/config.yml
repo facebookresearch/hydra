@@ -62,9 +62,9 @@ jobs:
           no_output_timeout: 30m
           command: |
             export NOX_PYTHON_VERSIONS=3.8
-            strace ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
-            strace ~/miniconda3/bin/conda run -n hydra pip install nox -v
-            strace ~/miniconda3/bin/conda run -n hydra python3 -m nox -v
+            ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
+            ~/miniconda3/bin/conda run -n hydra pip install nox -v
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox -v
 
 
   # Linux
