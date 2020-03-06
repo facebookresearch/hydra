@@ -96,4 +96,3 @@ def test_nevergrad_example(tmpdir: Path) -> None:
     assert len(returns) == 2
     best_parameters = returns.nevergrad
     assert best_parameters.batch_size == 4  # this argument should be easy to find
-    raise Exception
