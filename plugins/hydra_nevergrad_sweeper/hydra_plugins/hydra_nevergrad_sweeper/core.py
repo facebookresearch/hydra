@@ -106,7 +106,6 @@ def make_parameter_from_config(description: Any) -> Any:
 
     if isinstance(description, (ListConfig, list)):
         choices = [convert_to_deduced_type(x) for x in description]
-        print(choices)
         ordered = all(isinstance(c, (int, float)) for c in choices)
         ordered &= all(
             c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
@@ -161,7 +160,6 @@ class NevergradSweeper(Sweeper):
         self.job_results = None
         self.parametrization: Dict[str, Any] = {}
         if parametrization is not None:
-            print(parametrization)
             assert isinstance(parametrization, DictConfig)
             self.parametrization = {
                 x: make_parameter_from_config(y) for x, y in parametrization.items()

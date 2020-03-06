@@ -2,6 +2,7 @@ hydra:
   sweeper:
     cls: hydra_plugins.hydra_nevergrad_sweeper.NevergradSweeper
     params:
+      # configuration of the optimizer
       optim:
         # name of the Nevergrad optimizer to use. Here is a sample:
         #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
@@ -24,6 +25,7 @@ hydra:
         maximize: false
         # optimization seed, for reproducibility
         seed: null
+      # default parametrization of the search space
       parametrization: null
       # version of the commandline API
       version: 1

@@ -4,7 +4,7 @@ title: Nevergrad Sweeper plugin
 sidebar_label: Nevergrad Sweeper plugin
 ---
 
-This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://github.com/facebookresearch/nevergrad) algorithms for the optimization of experiments/applications parameters.
+[Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
 
 Install with:
 
@@ -19,7 +19,7 @@ defaults:
   - hydra/sweeper: nevergrad
 ```
 
-#### Example of training using Nevergrad hyperparameter search
+## Example of training using Nevergrad hyperparameter search
 
 We include an example of how to use this plugin. The file [`example/dummy_training.py`](plugins/hydra_nevergrad_sweeper/example/dummy_training.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
 
@@ -32,24 +32,58 @@ defaults:
 hydra:
   sweeper:
     params:
-      # name of the nevergrad optimizer to use
-      # OnePlusOne is good at low budget, but may converge early
-      optimizer: OnePlusOne
-      # total number of function evaluations to perform
-      budget: 100
-      # number of parallel workers for performing function evaluations
-      num_workers: 10
+      # configuration of the optimizer
+      optim:
+        # name of the nevergrad optimizer to use
+        # OnePlusOne is good at low budget, but may converge early
+        optimizer: OnePlusOne
+        # total number of function evaluations to perform
+        budget: 100
+        # number of parallel workers for performing function evaluations
+        num_workers: 10
+      # default parametrization of the search space
+      parametrization:
+        # either one or the other
+        db:
+          - mnist
+          - cifar
+        # a log-distributed positive scalar, evolving by factors of 2 on average
+        lr:
+          init: 0.02
+          step: 2.0
+          log: true
+        # a custom nevergrad parameter evaluated at runtime (avoid using this whenever possible)
+        dropout: Scalar(lower=0.0, upper=1.0)
+        # an integer scalar going from 4 to 16
+        # init is set to the middle of the range
+        # step is set to a sixth of the range
+        batch_size:
+          lower: 4
+          upper: 16
+          integer: true
 
-db: mnist
+db: cifar
 lr: 0.01
 dropout: 0.6
-batch_size: 4
+batch_size: 8
 ```
 
-To compute the best parameters for this function, clone the code and run the following command in the `plugins/hydra_nevergrad_sweeper` directory:
+The application `main` returns a float which we want to minimimize, the minimum is 0 and reached for:
+```yaml
+db: mnist
+lr: 0.12
+dropout: 0.33
+batch_size=4
+```
 
+To run hyperparameter search and look for the best parameters for this function, clone the code and run the following command in the `plugins/hydra_nevergrad_sweeper` directory:
 ```bash
-python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr='Log(a_min=0.001,a_max=1.0)' dropout=0.0:1.0
+python example/dummy_training.py -m
+```
+
+You can also override the search space parametrization:
+```bash
+python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=0.001:log:1.0 dropout=0.0:1.0
 ```
 
 The output of a run looks like:
@@ -94,11 +128,43 @@ nevergrad:
 optimizer: nevergrad
 ```
 
-#### Defining the parameters
+## Defining the parameters
 
-In this example, we set the range of... TODO
+The plugin can use 3 types of parameters:
+
+### Choices
+
+Choices are defined with **comma-separated values** in the command-line (`db=mnist,cifar` or `batch_size=4,8,12,16`) or with a list in a config file.
+
+**Note:** sequences of increasing scalars are treated as a special case, easier to solve. Make sure to specify it this way when possible.
+
+### Scalars
+Scalars can be defined:
+
+- through a commandline override with **`:`-separated values** for linearly distributed values between 2 bounds (eg.: `dropout=0.0:1.0`)  
+  or **`:log:`-separated values** for log-distributed values between 2 positive bounds (eg.: `lr=0.001:log:1.0`). 
+
+  **Beware:** when at least one of variable bounds is a float then the parameter is considered to be a float and be continuous. $
+  On the other end, when both the bounds are set to integers, the variable becomes a discrete integer scalar. 
+  Optimizing with continuous variables is easier so favor floats over integers when it makes sense.
+
+- through a config files, with fields:
+  - `init`: optional initial value
+  - `lower` : optional lower bound
+  - `upper`: optional upper bound
+  - `log`: set to `true` for log distributed values
+  - `step`: optional step size for looking for better parameters. In linear mode this is an additive step, in logarithmic mode it
+    is multiplicative. 
+  - `integers`: set to `true` for integers (favor floats over integers whenever possible)
+
+  Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
+
+**Note**: unbounded variables are only available through a config file.
 
 
-#### About integers and floats
+### Custom parameter
 
-One important thing to note is how float and integers are interpreted in the command-line. When at least one of variable bounds is a float then the parameter is considered to be a float and be continuous. On the other end, when both the bounds are set to integers, the variable becomes a discrete integer scalar. Optimizing with continuous variables is easier so favor floats over integers when it makes sense.
+You can use the full scope of [Nevergrad parametrization](https://facebookresearch.github.io/nevergrad/parametrization.html) by using a string defining a nevergrad parameter which will be evaluated at runtime 
+(eg.: `lr=Log(lower=0.001, upper=0.1)`). While providing greater flexibility, this comes at the cost of robustness, so avoid it whenever possible.
+
+
