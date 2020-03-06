@@ -19,7 +19,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             export NOX_PYTHON_VERSIONS=3.6
-            ~/miniconda3/bin/conda create -n hydra python=3.6 -q -y
+            ~/miniconda3/bin/conda create -n hydra python=3.6 -y
             ~/miniconda3/bin/conda run -n hydra pip install nox
             ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
@@ -40,7 +40,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             export NOX_PYTHON_VERSIONS=3.7
-            ~/miniconda3/bin/conda create -n hydra python=3.7 -q -y
+            ~/miniconda3/bin/conda create -n hydra python=3.7 -y
             ~/miniconda3/bin/conda run -n hydra pip install nox
             ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
@@ -61,7 +61,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             export NOX_PYTHON_VERSIONS=3.8
-            ~/miniconda3/bin/conda create -n hydra python=3.8 -q -y
+            ~/miniconda3/bin/conda create -n hydra python=3.8 -y
             ~/miniconda3/bin/conda run -n hydra pip install nox
             ~/miniconda3/bin/conda run -n hydra python3 -m nox
 
