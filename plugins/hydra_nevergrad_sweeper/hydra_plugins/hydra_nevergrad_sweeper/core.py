@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import json
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
@@ -100,6 +99,7 @@ def make_parameter_from_commandline(string: str) -> Any:
 
 
 def make_parameter_from_config(description: Any) -> Any:
+    # lazy initialization to avoid overhead when loading hydra
     import nevergrad as ng  # type: ignore
 
     # choice
@@ -153,7 +153,9 @@ class NevergradSweeper(Sweeper):
     def __init__(
         self, optim: DictConfig, version: int, parametrization: Optional[DictConfig],
     ):
-        assert version == 1, "Only version 1 of API is currently available"
+        assert (
+            version == 1
+        ), f"Only version 1 of API is currently available (got {version})"
         self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
@@ -177,6 +179,7 @@ class NevergradSweeper(Sweeper):
         )
 
     def sweep(self, arguments: List[str]) -> None:
+        # lazy initialization to avoid overhead when loading hydra
         import nevergrad as ng
 
         assert self.config is not None
@@ -204,6 +207,7 @@ class NevergradSweeper(Sweeper):
         optimizer = ng.optimizers.registry[opt](parametrization, remaining_budget, nw)
         # loop!
         all_returns: List[Any] = []
+        best: Tuple[float, ng.p.Parameter] = (float("inf"), parametrization)
         while remaining_budget > 0:
             batch = min(nw, remaining_budget)
             remaining_budget -= batch
@@ -215,12 +219,17 @@ class NevergradSweeper(Sweeper):
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
             for cand, ret in zip(candidates, returns):
-                optimizer.tell(cand, direction * ret.return_value)
+                loss = direction * ret.return_value
+                optimizer.tell(cand, loss)
+                if loss < best[0]:
+                    best = (loss, cand)
             all_returns.extend(returns)
         recom = optimizer.provide_recommendation()
-        results_to_serialize = {"optimizer": "nevergrad", "nevergrad": recom.value}
-        # TODO remove the following line with next nevergrad release
-        results_to_serialize = json.loads(json.dumps(results_to_serialize))
+        results_to_serialize = {
+            "name": "nevergrad",
+            "best_parameters": best[1].value,
+            "best_achieved_result": direction * best[0],
+        }
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.config.hydra.sweep.dir}/optimization_results.yaml",

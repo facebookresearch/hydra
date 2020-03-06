@@ -79,14 +79,14 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
     "with_commandline", (True, False)
 )
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
-    budget = 32
+    budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
         sys.executable,
         "example/dummy_training.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
         f"hydra.sweeper.params.optim.budget={budget}",  # small budget to test fast
-        "hydra.sweeper.params.optim.num_workers=8",
+        f"hydra.sweeper.params.optim.num_workers={min(8, budget)}",
         "hydra.sweeper.params.optim.seed=12",  # avoid random failures
     ]
     if with_commandline:
@@ -98,7 +98,8 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         ]
     subprocess.check_call(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
-    assert returns.optimizer == "nevergrad"
-    assert len(returns) == 2
-    best_parameters = returns.nevergrad
-    assert best_parameters.batch_size == 4  # this argument should be easy to find
+    assert returns.name == "nevergrad"
+    assert len(returns) == 3
+    best_parameters = returns.best_parameters
+    if budget > 1:
+        assert best_parameters.batch_size == 4  # this argument should be easy to find

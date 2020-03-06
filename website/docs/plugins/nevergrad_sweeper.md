@@ -119,13 +119,15 @@ and the final 2 evaluations look like this:
 
 The run also creates an `optimization_results.yaml` file in your sweep folder with the parameters recommended by the optimizer:
 ```yaml
-nevergrad:
+best_achieved_result: 0.381
+
+best_parameters:
   batch_size: 4
   db: mnist
   dropout: 0.381
   lr: 0.094
 
-optimizer: nevergrad
+name: nevergrad:
 ```
 
 ## Defining the parameters
