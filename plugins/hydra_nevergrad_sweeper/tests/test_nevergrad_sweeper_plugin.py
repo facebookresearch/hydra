@@ -74,16 +74,17 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
 
 
 def test_nevergrad_example(tmpdir: Path) -> None:
-    budget = 30
+    budget = 32
     cmd = [
         sys.executable,
         "example/dummy_training.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
         f"hydra.sweeper.params.budget={budget}",  # small budget to test fast
-        "hydra.sweeper.params.num_workers=4",
+        "hydra.sweeper.params.num_workers=8",
+        "hydra.sweeper.params.seed=12",  # avoid random failures
         "db=mnist,cifar",
-        "batch_size=4,8,16",
+        "batch_size=4,8,12,16",
         "lr=Log(a_min=0.001,a_max=1.0)",
         "dropout=0.0:1.0",
     ]
