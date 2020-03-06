@@ -61,7 +61,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noq
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters, predictions = returns["ax"]
+        best_parameters = returns["ax"]
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
@@ -90,7 +90,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters, predictions = returns["ax"]
+        best_parameters = returns["ax"]
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
@@ -120,7 +120,7 @@ def test_jobs_configured_via_cmd_and_config(
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters, predictions = returns["ax"]
+        best_parameters = returns["ax"]
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
@@ -153,7 +153,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert sweep.returns is None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
-        best_parameters = returns["ax"][0]
+        best_parameters = returns["ax"]
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
 
