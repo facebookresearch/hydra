@@ -71,8 +71,9 @@ jobs:
             export VERBOSE=1
             export PYTHONUNBUFFERED=1
             ~/miniconda3/bin/conda create -n hydra python=3.8 -yq
-            ~/miniconda3/bin/conda run -n hydra pip install nox
-            ~/miniconda3/bin/conda run -n hydra python3 -m nox -x -v
+            conda activate hydra
+            pip install nox
+            python3 -m nox -x -v
 
 
   # Linux
