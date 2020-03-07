@@ -58,6 +58,12 @@ jobs:
             bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
             ~/miniconda3/bin/conda init bash
       - run:
+          name: "Preparing conda environment"
+          no_output_timeout: 30m
+          command: |
+            ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
+            ~/miniconda3/bin/conda run -n hydra pip install nox -v
+      - run:
           name: "Testing Hydra"
           no_output_timeout: 30m
           command: |
