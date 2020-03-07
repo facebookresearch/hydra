@@ -1,56 +1,56 @@
 version: 2.1
 
 jobs:
-#  # Mac
-#  py36_mac:
-#    macos:
-#      xcode: "10.0.0"
-#    steps:
-#      - checkout
-#      - run:
-#          name: "Installing Conda"
-#          command: |
-#            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-#            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
-#            ~/miniconda3/bin/conda init bash
-#      - run:
-#          name: "Preparing conda environment"
-#          command: |
-#            conda create -n hydra python=3.6 -yq
-#            conda run -n hydra pip install nox
-#      - run:
-#          name: "Testing Hydra"
-#          no_output_timeout: 10m
-#          command: |
-#            export NOX_PYTHON_VERSIONS=3.6
-#            conda activate hydra
-#            pip install nox
-#            nox
-#
-#  py37_mac:
-#    macos:
-#      xcode: "10.0.0"
-#    steps:
-#      - checkout
-#      - run:
-#          name: "Installing Conda"
-#          command: |
-#            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-#            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
-#            ~/miniconda3/bin/conda init bash
-#      - run:
-#          name: "Preparing conda environment"
-#          command: |
-#            conda create -n hydra python=3.7 -yq
-#            conda run -n hydra pip install nox
-#      - run:
-#          name: "Testing Hydra"
-#          no_output_timeout: 10m
-#          command: |
-#            export NOX_PYTHON_VERSIONS=3.7
-#            conda activate hydra
-#            pip install nox
-#            nox
+  # Mac
+  py36_mac:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run:
+          name: "Installing Conda"
+          command: |
+            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            ~/miniconda3/bin/conda init bash
+      - run:
+          name: "Preparing Conda environment"
+          command: |
+            conda create -n hydra python=3.6 -yq
+            conda run -n hydra pip install nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=3.6
+            conda activate hydra
+            pip install nox
+            nox
+
+  py37_mac:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run:
+          name: "Installing Conda"
+          command: |
+            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            ~/miniconda3/bin/conda init bash
+      - run:
+          name: "Preparing Conda environment"
+          command: |
+            conda create -n hydra python=3.7 -yq
+            conda run -n hydra pip install nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=3.7
+            conda activate hydra
+            pip install nox
+            nox
 
   py38_mac:
     macos:
@@ -64,7 +64,7 @@ jobs:
             bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing conda environment"
+          name: "Preparing Conda environment"
           command: |
             conda create -n hydra python=3.8 -yq
             conda run -n hydra pip install nox
@@ -244,8 +244,8 @@ workflows:
 #      - py37_linux
 #      - py38_linux
       # mac
-#      - py36_mac
-#      - py37_mac
+      - py36_mac
+      - py37_mac
       - py38_mac
       # windows
 #      - py36_win
