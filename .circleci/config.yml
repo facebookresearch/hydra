@@ -20,7 +20,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS=3.6
             export VERBOSE=1
-            ~/miniconda3/bin/conda create -n hydra python=3.6 -y -vv
+            ~/miniconda3/bin/conda create -n hydra python=3.6 -y -v\
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
             ~/miniconda3/bin/conda run -n hydra python3 -m nox -v
 
@@ -61,19 +61,16 @@ jobs:
           name: "Preparing conda environment"
           no_output_timeout: 30m
           command: |
-            ~/miniconda3/bin/conda create -n hydra python=3.8 -y
-            ~/miniconda3/bin/conda run -n hydra pip install nox
+            conda create -n hydra python=3.8 -yq
+            conda run -n hydra pip install nox
       - run:
           name: "Testing Hydra"
-          no_output_timeout: 30m
+          no_output_timeout: 10m
           command: |
             export NOX_PYTHON_VERSIONS=3.8
-            export VERBOSE=1
-            export PYTHONUNBUFFERED=1
-            ~/miniconda3/bin/conda create -n hydra python=3.8 -yq
             conda activate hydra
             pip install nox
-            python3 -m nox -x -v
+            nox
 
 
   # Linux
