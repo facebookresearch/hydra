@@ -43,9 +43,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=3.7
             ~/miniconda3/bin/conda create -n hydra python=3.7 -y -vv
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
-            echo "+++++++++++ nox starts"
-            ~/miniconda3/bin/conda run -n hydra python3 -m nox -v -- -v
-            echo "----------- nox done"
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox -v
 
   py38_mac:
     macos:
@@ -67,7 +65,9 @@ jobs:
             export VERBOSE=1
             ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
-            ~/miniconda3/bin/conda run -n hydra python3 -m nox -v
+            echo "+++++++++++ nox starts"
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox -v -- -v
+            echo "----------- nox done"
 
 
   # Linux
