@@ -61,14 +61,15 @@ jobs:
           name: "Preparing conda environment"
           no_output_timeout: 30m
           command: |
-            ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
-            ~/miniconda3/bin/conda run -n hydra pip install nox -v
+            ~/miniconda3/bin/conda create -n hydra python=3.8 -y
+            ~/miniconda3/bin/conda run -n hydra pip install nox
       - run:
           name: "Testing Hydra"
           no_output_timeout: 30m
           command: |
             export NOX_PYTHON_VERSIONS=3.8
             export VERBOSE=1
+            export PLUGINS=hydra_ax_sweeper
             ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
             sudo whoami
@@ -76,7 +77,8 @@ jobs:
             echo "+++++++++++ activate"
             conda activate hydra
             echo "+++++++++++ nox"
-            sudo dtruss -f nox -v -- -v
+#            sudo dtruss -f nox -v
+            nox -v
             echo "----------- nox done"
 
 
