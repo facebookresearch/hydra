@@ -93,6 +93,7 @@ jobs:
           command: |
               export NOX_PYTHON_VERSIONS=3.6
               pip install nox
+              nox
 
   py37_linux:
     docker:
@@ -109,6 +110,7 @@ jobs:
           command: |
               export NOX_PYTHON_VERSIONS=3.7
               pip install nox
+              nox
 
   py38_linux:
     docker:
@@ -125,6 +127,7 @@ jobs:
           command: |
               export NOX_PYTHON_VERSIONS=3.8
               pip install nox
+              nox
 
   # windows
   py36_win:
