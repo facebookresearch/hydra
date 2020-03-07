@@ -77,7 +77,6 @@ jobs:
             echo "+++++++++++ activate"
             conda activate hydra
             echo "+++++++++++ nox"
-#            sudo dtruss -f nox -v
             nox -v
             echo "----------- nox done"
 
