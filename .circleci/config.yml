@@ -74,11 +74,7 @@ jobs:
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
             sudo whoami
             python --version
-            echo "+++++++++++ activate"
-            conda activate hydra
-            echo "+++++++++++ nox"
-            nox -v -x
-            echo "----------- nox done"
+            ~/miniconda3/bin/conda run -n hydra python3 -m nox -x -v
 
 
   # Linux
