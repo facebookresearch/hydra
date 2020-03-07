@@ -71,9 +71,12 @@ jobs:
             export VERBOSE=1
             ~/miniconda3/bin/conda create -n hydra python=3.8 -y -vv
             ~/miniconda3/bin/conda run -n hydra pip install nox -v
-            echo "+++++++++++ nox starts"
             sudo whoami
-            ~/miniconda3/bin/conda run -n hydra sudo dtruss nox -v -- -v
+            python --version
+            echo "+++++++++++ activate"
+            conda activate hydra
+            echo "+++++++++++ nox"
+            sudo dtruss nox -v -- -v
             echo "----------- nox done"
 
 
