@@ -77,7 +77,7 @@ jobs:
             echo "+++++++++++ activate"
             conda activate hydra
             echo "+++++++++++ nox"
-            nox -v
+            nox -v -x
             echo "----------- nox done"
 
 
