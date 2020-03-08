@@ -186,6 +186,9 @@ def test_core(session, install_cmd):
     session.install("pytest")
     run_pytest(session, "tests")
 
+    # test discovery_test_plugin
+    run_pytest(session, "tests/test_plugins/discovery_test_plugin")
+
     # Install and test example app
     session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)
     run_pytest(session, "examples/advanced/hydra_app_example")
