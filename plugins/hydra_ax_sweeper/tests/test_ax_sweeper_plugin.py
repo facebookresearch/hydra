@@ -18,7 +18,7 @@ from hydra.test_utils.test_utils import (  # noqa: F401
     chdir_plugin_root,
     sweep_runner,
 )
-from hydra_plugins.hydra_ax_sweeper import AxSweeper
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
 

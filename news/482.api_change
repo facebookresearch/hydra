@@ -1,0 +1,1 @@
+User plugins should be modified to not import twice during plugin discovery. see issue for details.

@@ -4,7 +4,7 @@ from hydra.plugins.sweeper import Sweeper
 
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
-from hydra_plugins.example_sweeper_plugin import ExampleSweeper
+from hydra_plugins.example_sweeper_plugin.example_sweeper import ExampleSweeper
 
 
 def test_discovery() -> None:

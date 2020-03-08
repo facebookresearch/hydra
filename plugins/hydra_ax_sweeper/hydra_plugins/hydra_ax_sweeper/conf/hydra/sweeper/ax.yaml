@@ -2,7 +2,7 @@ hydra:
   # See https://ax.dev/
 
   sweeper:
-    cls: hydra_plugins.hydra_ax_sweeper.AxSweeper
+    cls: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper
     params:
       ax_config: 
         max_trials: 10

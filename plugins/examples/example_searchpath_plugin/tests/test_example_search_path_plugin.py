@@ -8,7 +8,9 @@ from hydra.test_utils.test_utils import (  # noqa: F401
     TGlobalHydraContext,
     hydra_global_context,
 )
-from hydra_plugins.example_searchpath_plugin import ExampleSearchPathPlugin
+from hydra_plugins.example_searchpath_plugin.example_searchpath_plugin import (
+    ExampleSearchPathPlugin,
+)
 
 
 def test_discovery() -> None:
