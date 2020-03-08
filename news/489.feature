@@ -1,0 +1,1 @@
+Improve performance of plugin discovery and instantiation

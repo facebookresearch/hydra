@@ -128,17 +128,24 @@ class TestCompletion:
             sys.executable.strip()
         )
 
+        verbose = os.environ.get("VERBOSE", "0") != "0"
+
         line1 = "line={}".format(line_prefix + line)
-        cmd = [
-            "expect",
-            "-d",  # Uncomment for debug prints from expect
-            "tests/expect/test_{}_completion.exp".format(shell),
-            f"{' '.join(prog)}",
-            line1,
-            str(num_tabs),
-        ]
+        cmd = ["expect"]
+        if verbose:
+            cmd.append("-d")
+
+        cmd.extend(
+            [
+                "tests/expect/test_{}_completion.exp".format(shell),
+                f"{' '.join(prog)}",
+                line1,
+                str(num_tabs),
+            ]
+        )
         cmd.extend(expected)
-        print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
+        if verbose:
+            print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
         subprocess.check_call(cmd)
 
 

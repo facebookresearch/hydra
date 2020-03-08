@@ -15,8 +15,6 @@ from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
-Plugins.register_config_sources()
-
 
 @pytest.mark.parametrize(
     "type_, path",
@@ -34,6 +32,7 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def create_config_search_path(path: str) -> ConfigSearchPathImpl:
+    Plugins().initialize()
     csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp
@@ -71,10 +70,10 @@ class TestConfigRepository:
             ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
             ("dataset", None, ["cifar10", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
-            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"],),
-            ("level1", ObjectType.GROUP, ["level2"],),
+            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
+            ("level1", ObjectType.GROUP, ["level2"]),
             ("level1", ObjectType.CONFIG, []),
-            ("level1/level2", ObjectType.CONFIG, ["nested1", "nested2"],),
+            ("level1/level2", ObjectType.CONFIG, ["nested1", "nested2"]),
         ],
     )
     def test_config_repository_list(

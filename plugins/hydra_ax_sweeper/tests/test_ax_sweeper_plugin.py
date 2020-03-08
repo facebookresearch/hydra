@@ -28,7 +28,9 @@ def test_discovery() -> None:
     Tests that this plugin can be discovered via the plugins subsystem when looking for Sweeper
     :return:
     """
-    assert AxSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
+    assert AxSweeper.__name__ in [
+        x.__name__ for x in Plugins.instance().discover(Sweeper)
+    ]
 
 
 def quadratic(cfg: DictConfig) -> Any:
