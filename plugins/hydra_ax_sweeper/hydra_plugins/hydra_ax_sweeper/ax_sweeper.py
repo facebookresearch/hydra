@@ -161,7 +161,7 @@ class AxSweeper(Sweeper):
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
-        self.launcher = Plugins.instantiate_launcher(
+        self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
         self.sweep_dir = config.hydra.sweep.dir

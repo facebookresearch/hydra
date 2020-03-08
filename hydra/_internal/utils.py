@@ -131,14 +131,14 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     from hydra.core.plugins import Plugins
     from hydra.plugins.search_path_plugin import SearchPathPlugin
 
-    Plugins.register_config_sources()
+    Plugins.instance().initialize()
     search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
 
     if search_path_dir is not None:
         search_path.append("main", search_path_dir)
 
-    search_path_plugins = Plugins.discover(SearchPathPlugin)
+    search_path_plugins = Plugins.instance().discover(SearchPathPlugin)
     for spp in search_path_plugins:
         plugin = spp()
         assert isinstance(plugin, SearchPathPlugin)
@@ -156,6 +156,7 @@ def run_hydra(
     config_name: Optional[str],
     strict: Optional[bool],
 ) -> None:
+
     from hydra.core.global_hydra import GlobalHydra
 
     from .hydra import Hydra

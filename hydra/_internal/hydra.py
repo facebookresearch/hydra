@@ -57,6 +57,7 @@ class Hydra:
         config_search_path: ConfigSearchPath,
         strict: Optional[bool],
     ) -> "Hydra":
+
         config_loader: ConfigLoader = ConfigLoaderImpl(
             config_search_path=config_search_path, default_strict=strict
         )
@@ -117,7 +118,7 @@ class Hydra:
             with_log_configuration=True,
         )
         HydraConfig.instance().set_config(cfg)
-        sweeper = Plugins.instantiate_sweeper(
+        sweeper = Plugins.instance().instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
         )
         task_overrides = cfg.hydra.overrides.task
@@ -151,7 +152,7 @@ class Hydra:
         config_loader: ConfigLoader,
     ) -> DefaultDict[str, List[CompletionPlugin]]:
         shell_to_plugin: DefaultDict[str, List[CompletionPlugin]] = defaultdict(list)
-        for clazz in Plugins.discover(CompletionPlugin):
+        for clazz in Plugins.instance().discover(CompletionPlugin):
             assert issubclass(clazz, CompletionPlugin)
             plugin = clazz(config_loader)
             shell_to_plugin[plugin.provides()].append(plugin)
@@ -296,7 +297,7 @@ class Hydra:
     def _print_plugins(self) -> None:
         assert log is not None
         self._log_header(header="Installed Hydra Plugins", filler="*")
-        all_plugins = {p.__name__ for p in Plugins.discover()}
+        all_plugins = {p.__name__ for p in Plugins.instance().discover()}
         for plugin_type in [
             ConfigSource,
             CompletionPlugin,
@@ -305,7 +306,7 @@ class Hydra:
             SearchPathPlugin,
         ]:
             # Mypy false positive?
-            plugins = Plugins.discover(plugin_type)  # type: ignore
+            plugins = Plugins.instance().discover(plugin_type)  # type: ignore
             if len(plugins) > 0:
                 Hydra._log_header(
                     header="{}:".format(plugin_type.__name__), prefix="\t", filler="-"

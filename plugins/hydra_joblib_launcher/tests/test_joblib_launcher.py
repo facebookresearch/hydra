@@ -28,7 +28,9 @@ win_msg = "Windows is unsupported, due to stability issues with JobLib"
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert JoblibLauncher.__name__ in [x.__name__ for x in Plugins.discover(Launcher)]
+    assert JoblibLauncher.__name__ in [
+        x.__name__ for x in Plugins.instance().discover(Launcher)
+    ]
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)

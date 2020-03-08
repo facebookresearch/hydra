@@ -16,7 +16,7 @@ from hydra_plugins.example_searchpath_plugin.example_searchpath_plugin import (
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking at all Plugins
     assert ExampleSearchPathPlugin.__name__ in [
-        x.__name__ for x in Plugins.discover(SearchPathPlugin)
+        x.__name__ for x in Plugins.instance().discover(SearchPathPlugin)
     ]
 
 

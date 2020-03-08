@@ -52,7 +52,7 @@ class ExampleSweeper(Sweeper):
         task_function: TaskFunction,
     ) -> None:
         self.config = config
-        self.launcher = Plugins.instantiate_launcher(
+        self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
 

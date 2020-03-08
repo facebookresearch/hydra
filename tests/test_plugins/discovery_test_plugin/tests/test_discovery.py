@@ -11,7 +11,9 @@ from hydra.plugins.plugin import Plugin
 def test_number_of_imports(tmpdir: Path) -> None:
     os.environ["TMP_FILE"] = str(tmpdir / "import.log")
     # Tests that this plugin can be discovered via the plugins subsystem when looking at all Plugins
-    assert "DiscoveryTestPlugin" in [x.__name__ for x in Plugins.discover(Plugin)]
+    assert "DiscoveryTestPlugin" in [
+        x.__name__ for x in Plugins.instance().discover(Plugin)
+    ]
 
     with Path(os.environ["TMP_FILE"]) as f:
         txt = str(f.read_text())

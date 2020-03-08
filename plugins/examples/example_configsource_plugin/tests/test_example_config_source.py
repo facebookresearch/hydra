@@ -9,9 +9,7 @@ from hydra_plugins.example_configsource_plugin.example_configsource_plugin impor
 )
 
 
-@pytest.mark.parametrize(
-    "type_, path", [(ConfigSourceExample, "example://some_path")],
-)
+@pytest.mark.parametrize("type_, path", [(ConfigSourceExample, "example://some_path")])
 class TestCoreConfigSources(ConfigSourceTestSuite):
     pass
 
@@ -19,5 +17,5 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 def test_discovery() -> None:
     # Test that this config source is discoverable when looking at config sources
     assert ConfigSourceExample.__name__ in [
-        x.__name__ for x in Plugins.discover(ConfigSource)
+        x.__name__ for x in Plugins.instance().discover(ConfigSource)
     ]
