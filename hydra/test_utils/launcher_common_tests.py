@@ -3,9 +3,8 @@
 Common test functions testing launchers
 """
 import copy
-import importlib
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Set
 
 import pytest
 from omegaconf import DictConfig, OmegaConf
@@ -143,6 +142,59 @@ class LauncherTestSuite:
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
 
+class BatchedSweeperTestSuite:
+    def test_sweep_2_jobs_2_batches(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:  # noqa: F811
+        overrides.extend(
+            # order sensitive?
+            ["hydra/launcher=" + launcher_name, "group1=file1,file2", "bar=100,200,300"]
+        )
+        sweep = sweep_runner(
+            calling_file=None,
+            calling_module="hydra.test_utils.a_module",
+            task_function=None,
+            config_path="configs",
+            config_name="compose.yaml",
+            overrides=overrides,
+            strict=True,
+        )
+        expected_overrides = [
+            ["group1=file1", "bar=100"],
+            ["group1=file1", "bar=200"],
+            ["group1=file1", "bar=300"],
+            ["group1=file2", "bar=100"],
+            ["group1=file2", "bar=200"],
+            ["group1=file2", "bar=300"],
+        ]
+
+        expected_conf = [
+            {"foo": 10, "bar": 100},
+            {"foo": 10, "bar": 200},
+            {"foo": 10, "bar": 300},
+            {"foo": 20, "bar": 100},
+            {"foo": 20, "bar": 200},
+            {"foo": 20, "bar": 300},
+        ]
+
+        dirs: Set[str] = set()
+        with sweep:
+            assert sweep.returns is not None
+            # expecting 3 batches of 2
+            assert len(sweep.returns) == 3
+            for batch in sweep.returns:
+                assert len(batch) == 2
+
+            flat = [rt for batch in sweep.returns for rt in batch]
+            assert len(flat) == 6  # with a total of 6 jobs
+            for idx, job_ret in enumerate(flat):
+                assert job_ret.overrides == expected_overrides[idx]
+                assert job_ret.cfg == expected_conf[idx]
+                dirs.add(job_ret.working_dir)
+                verify_dir_outputs(job_ret, job_ret.overrides)
+        assert len(dirs) == 6  # and a total of 6 unique output directories
+
+
 def sweep_1_job(
     sweep_runner: TSweepRunner, overrides: List[str], strict: bool = False
 ) -> None:
@@ -269,14 +321,6 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
 
 
 class IntegrationTestSuite:
-    @staticmethod
-    def verify_plugin(plugin_module: Optional[str]) -> None:
-        if plugin_module is not None:
-            try:
-                importlib.import_module(plugin_module)
-            except ImportError:
-                pytest.skip("Plugin {} not installed".format(plugin_module))
-
     @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, filename, expected_name",
         [
@@ -310,9 +354,7 @@ class IntegrationTestSuite:
         expected_name: str,
         task_launcher_cfg: DictConfig,
         extra_flags: List[str],
-        plugin_module: Optional[str],
     ) -> None:
-        # self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create(task_config or {})  # type: ignore
@@ -414,9 +456,7 @@ class IntegrationTestSuite:
         expected_dir: str,
         task_launcher_cfg: DictConfig,
         extra_flags: List[str],
-        plugin_module: str,
     ) -> None:
-        # self.verify_plugin(plugin_module)
         overrides = extra_flags + overrides
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create(task_config or {})  # type: ignore
@@ -431,13 +471,8 @@ class IntegrationTestSuite:
         )
 
     def test_get_orig_dir_multirun(
-        self,
-        tmpdir: Path,
-        task_launcher_cfg: DictConfig,
-        extra_flags: List[str],
-        plugin_module: str,
+        self, tmpdir: Path, task_launcher_cfg: DictConfig, extra_flags: List[str]
     ) -> None:
-        # self.verify_plugin(plugin_module)
         overrides = extra_flags
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
         task_config = OmegaConf.create()
