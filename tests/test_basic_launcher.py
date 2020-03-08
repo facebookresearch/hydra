@@ -2,6 +2,7 @@
 import pytest
 
 from hydra.test_utils.launcher_common_tests import (
+    BatchedSweeperTestSuite,
     IntegrationTestSuite,
     LauncherTestSuite,
 )
@@ -16,7 +17,7 @@ class TestBasicLauncher(LauncherTestSuite):
 
 
 @pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags, plugin_module",
+    "task_launcher_cfg, extra_flags",
     [
         (
             {
@@ -27,7 +28,6 @@ class TestBasicLauncher(LauncherTestSuite):
                 ]
             },
             ["-m"],
-            "hydra._internal.core_plugins.basic_launcher",
         )
     ],
 )
@@ -37,3 +37,11 @@ class TestExampleLauncherIntegration(IntegrationTestSuite):
     """
 
     pass
+
+
+@pytest.mark.parametrize(
+    "launcher_name, overrides",
+    [("basic", ["hydra/sweeper=basic", "hydra.sweeper.params.max_batch_size=2"])],
+)
+class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
+    ...

@@ -9,6 +9,9 @@ set env(PS1) >>
 set env(HYDRA_COMP_DEBUG) 1
 set env(INPUTRC) /dev/null
 
+# Suppress bash deprecation warning on Mac
+set env(BASH_SILENCE_DEPRECATION_WARNING) 1
+
 # parray env
 
 spawn bash --norc --noprofile

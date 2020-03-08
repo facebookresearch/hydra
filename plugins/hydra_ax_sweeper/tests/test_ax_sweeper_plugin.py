@@ -40,6 +40,27 @@ def quadratic(cfg: DictConfig) -> Any:
     return z
 
 
+# TODO: try to enable this
+# # Many sweepers are batching jobs in groups.
+# # This test suite verifies that the spawned jobs are not overstepping the directories of one another.
+# @pytest.mark.parametrize(
+#     "launcher_name, overrides",
+#     [
+#         (
+#             "basic",
+#             [
+#                 "hydra/sweeper=ax",
+#                 # This will cause the sweeper to split batches to at most 2 jobs each, which is what
+#                 # the tests in BatchedSweeperTestSuite are expecting.
+#                 "hydra.sweeper.params.max_batch_size=2",
+#             ],
+#         )
+#     ],
+# )
+# class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
+#     ...
+
+
 def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noqa: F811
     sweep = sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
