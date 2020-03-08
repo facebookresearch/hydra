@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import itertools
 import logging
-from typing import Any, List, Optional
+from typing import Any, Iterable, List, Optional, Sequence
 
 from omegaconf import DictConfig
 
@@ -12,6 +12,13 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+
+# IMPORTANT:
+# If your plugin imports any module that takes more than a fraction of a second to import,
+# Import the module lazily (typically inside sweep()).
+# Installed plugins are imported during Hydra initialization and plugins that are slow to import plugins will slow
+# the startup of ALL hydra applications.
+
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +37,8 @@ class ExampleSweeperSearchPathPlugin(SearchPathPlugin):
 
 
 class ExampleSweeper(Sweeper):
-    def __init__(self, foo: str, bar: str):
+    def __init__(self, max_batch_size: int, foo: str, bar: str):
+        self.max_batch_size = max_batch_size
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
         self.job_results = None
@@ -61,8 +69,31 @@ class ExampleSweeper(Sweeper):
             # option to that list, otherwise add a single element with the value
             src_lists.append(["{}={}".format(key, val) for val in value.split(",")])
 
-        batch = list(itertools.product(*src_lists))
+        batches = list(itertools.product(*src_lists))
 
-        returns = [self.launcher.launch(batch)]
-        # returns are not acted on right now.
+        # some sweepers will launch multiple bathes.
+        # for such sweepers, it is important that they pass the proper initial_job_idx when launching
+        # each batch. see example below.
+        # This is required to ensure that working that the job gets a unique job id
+        # (which in turn can be used for other things, like the working directory)
+
+        def chunks(
+            lst: Sequence[Sequence[str]], n: Optional[int]
+        ) -> Iterable[Sequence[Sequence[str]]]:
+            """
+            Split input to chunks of up to n items each
+            """
+            if n is None or n == -1:
+                n = len(lst)
+            for i in range(0, len(lst), n):
+                yield lst[i : i + n]
+
+        chunked_batches = list(chunks(batches, self.max_batch_size))
+
+        returns = []
+        initial_job_idx = 0
+        for batch in chunked_batches:
+            results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+            initial_job_idx += len(batch)
+            returns.append(results)
         return returns
