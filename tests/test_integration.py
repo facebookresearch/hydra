@@ -10,7 +10,7 @@ from hydra.test_utils.test_utils import integration_test
 
 
 @pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags, plugin_module",
+    "task_launcher_cfg, extra_flags",
     [
         (
             {
@@ -21,7 +21,6 @@ from hydra.test_utils.test_utils import integration_test
                 ]
             },
             ["-m"],
-            None,
         )
     ],
 )
