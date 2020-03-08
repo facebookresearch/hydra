@@ -32,9 +32,9 @@ def test_discovery() -> None:
         ("blu,blublu", ng.p.Choice, str),
         ("0,1,2", ng.p.TransitionChoice, int),
         ("0.0,12.0,2.0", ng.p.Choice, float),
-        ("1:12", ng.p.Scalar, int),
-        ("1.0:12", ng.p.Scalar, float),
-        ("0.01:log:1.0", ng.p.Log, float),
+        ("int:1:12", ng.p.Scalar, int),
+        ("1:12", ng.p.Scalar, float),
+        ("log:0.01:1.0", ng.p.Log, float),
         ("blublu", str, str),
         (
             "Scalar(init=12.1).set_mutation(sigma=3).set_integer_casting()",
@@ -67,7 +67,7 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
             f"hydra.sweeper.params.optim.budget={budget}",  # small budget to test fast
             "hydra.sweeper.params.optim.num_workers=3",
             "foo=1,2",
-            "bar=4.0:8.0",
+            "bar=4:8",
         ],
         strict=True,
     )
@@ -93,13 +93,14 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         cmd += [
             "db=mnist,cifar",
             "batch_size=4,8,12,16",
-            "lr=0.001:log:1.0",
-            "dropout=0.0:1.0",
+            "lr=log:0.001:1.0",
+            "dropout=0:1",
         ]
     subprocess.check_call(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert returns.name == "nevergrad"
     assert len(returns) == 3
     best_parameters = returns.best_parameters
+    assert not best_parameters.dropout.is_integer()
     if budget > 1:
         assert best_parameters.batch_size == 4  # this argument should be easy to find

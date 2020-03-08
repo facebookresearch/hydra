@@ -83,7 +83,7 @@ python example/dummy_training.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=0.001:log:1.0 dropout=0.0:1.0
+python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=log:0.001:1 dropout=0:1
 ```
 
 The output of a run looks like:
@@ -143,12 +143,9 @@ Choices are defined with **comma-separated values** in the command-line (`db=mni
 ### Scalars
 Scalars can be defined:
 
-- through a commandline override with **`:`-separated values** for linearly distributed values between 2 bounds (eg.: `dropout=0.0:1.0`)  
-  or **`:log:`-separated values** for log-distributed values between 2 positive bounds (eg.: `lr=0.001:log:1.0`). 
-
-  **Beware:** when at least one of variable bounds is a float then the parameter is considered to be a float and be continuous. $
-  On the other end, when both the bounds are set to integers, the variable becomes a discrete integer scalar. 
-  Optimizing with continuous variables is easier so favor floats over integers when it makes sense.
+- through a commandline override with **`:`-separated values** defining a range (eg: `dropout=0:1`).
+You can add specifications for log distributed values (eg.: `lr=log:0.001:1`) or integer values (eg.: `batch_size=int:4:8`)
+or a combination of both (eg.: `batch_size=log:int:4:1024`)
 
 - through a config files, with fields:
   - `init`: optional initial value
@@ -157,7 +154,7 @@ Scalars can be defined:
   - `log`: set to `true` for log distributed values
   - `step`: optional step size for looking for better parameters. In linear mode this is an additive step, in logarithmic mode it
     is multiplicative. 
-  - `integers`: set to `true` for integers (favor floats over integers whenever possible)
+  - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
   Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 

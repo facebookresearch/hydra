@@ -82,19 +82,23 @@ def make_parameter_from_commandline(string: str) -> Any:
     string = string.strip()
     if "," in string:
         return make_parameter_from_config(string.split(","))
-    for sep in [":log:", ":"]:
-        if sep in string:
-            a, b = [convert_to_deduced_type(x) for x in string.split(sep)]
-            assert isinstance(a, (int, float)), "Bounds must be scalars"
-            assert isinstance(b, (int, float)), "Bounds must be scalars"
-            description = {"lower": a, "upper": b, "log": sep == ":log:"}
-            if all(isinstance(c, int) for c in (a, b)):
-                description["integer"] = True
-                if b - a <= 6:
-                    raise ValueError(
-                        "For integers with 6 or fewer values, use a choice instead"
-                    )
-            return make_parameter_from_config(description)
+    if ":" in string:
+        *specs, b1, b2 = string.split(":")
+        a, b = [convert_to_deduced_type(x) for x in (b1, b2)]
+        assert isinstance(a, (int, float)), "Bounds must be scalars"
+        assert isinstance(b, (int, float)), "Bounds must be scalars"
+        description = {"lower": a, "upper": b, "log": "log" in specs}
+        if "int" in specs:
+            description["integer"] = True
+            if not all(isinstance(x, int) for x in (a, b)):
+                raise TypeError(
+                    f"Only integers should be provided for integer ranges (got {string})"
+                )
+            if b - a <= 6:
+                raise ValueError(
+                    "For integers with 6 or fewer values, use a choice instead"
+                )
+        return make_parameter_from_config(description)
     return make_parameter_from_config(string)
 
 
