@@ -17,7 +17,7 @@ from hydra.test_utils.test_utils import (  # noqa: F401
     chdir_plugin_root,
     sweep_runner,
 )
-from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
+from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
 chdir_plugin_root()
 
