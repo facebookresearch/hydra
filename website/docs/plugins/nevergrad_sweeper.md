@@ -3,6 +3,8 @@ id: nevergrad_sweeper
 title: Nevergrad Sweeper plugin
 sidebar_label: Nevergrad Sweeper plugin
 ---
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
 
 [Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
 
