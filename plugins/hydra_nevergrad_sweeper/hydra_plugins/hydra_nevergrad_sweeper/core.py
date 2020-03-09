@@ -170,6 +170,7 @@ class NevergradSweeper(Sweeper):
             self.parametrization = {
                 x: make_parameter_from_config(y) for x, y in parametrization.items()
             }
+        self.job_idx: Optional[int] = None
 
     def setup(
         self,
@@ -177,6 +178,7 @@ class NevergradSweeper(Sweeper):
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
+        self.job_idx = 0
         self.config = config
         self.launcher = Plugins.instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
@@ -188,6 +190,7 @@ class NevergradSweeper(Sweeper):
 
         assert self.config is not None
         assert self.launcher is not None
+        assert self.job_idx is not None
         direction = -1 if self.opt_config.maximize else 1
         name = "maximization" if self.opt_config.maximize else "minimization"
         # Override the parametrization from commandline
@@ -219,7 +222,8 @@ class NevergradSweeper(Sweeper):
             overrides = list(
                 tuple(f"{x}={y}" for x, y in c.value.items()) for c in candidates
             )
-            returns = self.launcher.launch(overrides)
+            returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
+            self.job_idx += len(returns)
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
             for cand, ret in zip(candidates, returns):
