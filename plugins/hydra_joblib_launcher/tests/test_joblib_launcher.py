@@ -17,7 +17,7 @@ from hydra.test_utils.test_utils import (  # noqa: F401
     chdir_plugin_root,
     sweep_runner,
 )
-from hydra_plugins.hydra_joblib_launcher import JoblibLauncher
+from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
 chdir_plugin_root()
 
@@ -36,7 +36,6 @@ def test_discovery() -> None:
 class TestJoblibLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
-    Note that hydra/launcher/joblib.yaml should be provided by this launcher.
     """
 
     pass
@@ -44,7 +43,7 @@ class TestJoblibLauncher(LauncherTestSuite):
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 @pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags, plugin_module",
+    "task_launcher_cfg, extra_flags",
     [
         # joblib with process-based backend (default)
         (
@@ -56,7 +55,6 @@ class TestJoblibLauncher(LauncherTestSuite):
                 ]
             },
             ["-m"],
-            "hydra_plugins.joblib_launcher",
         )
     ],
 )
@@ -77,12 +75,7 @@ def test_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
         config_name="config",
         overrides=["task=1,2,3,4"],
     ) as sweep:
-        overrides = {
-            ("task=1",),
-            ("task=2",),
-            ("task=3",),
-            ("task=4",),
-        }
+        overrides = {("task=1",), ("task=2",), ("task=3",), ("task=4",)}
 
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:

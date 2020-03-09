@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
@@ -143,9 +142,7 @@ def get_one_batch_of_trials(
 class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
-    def __init__(
-        self, ax_config: DictConfig,
-    ):
+    def __init__(self, ax_config: DictConfig):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
         self.experiment = ax_config.experiment
@@ -156,6 +153,7 @@ class AxSweeper(Sweeper):
         if hasattr(ax_config, "params"):
             self.ax_params.update(ax_config.params)
         self.sweep_dir: str
+        self.job_idx: Optional[int] = None
 
     def setup(
         self,
@@ -169,6 +167,7 @@ class AxSweeper(Sweeper):
         self.sweep_dir = config.hydra.sweep.dir
 
     def sweep(self, arguments: List[str]) -> None:
+        self.job_idx = 0
         ax_client = self.setup_ax_client(arguments)
 
         num_trials_left = self.max_trials
@@ -207,23 +206,21 @@ class AxSweeper(Sweeper):
                 num_trials_so_far += len(batch_of_trials_to_launch)
                 num_trials_left -= len(batch_of_trials_to_launch)
 
-                best = ax_client.get_best_parameters()
-                metric = best[1][0][ax_client.objective_name]
+                best_parameters, predictions = ax_client.get_best_parameters()
+                metric = predictions[0][ax_client.objective_name]
 
-                if self.early_stopper.should_stop(metric, best[0]):
+                if self.early_stopper.should_stop(metric, best_parameters):
                     num_trials_left = -1
                     break
 
             current_parallelism_index += 1
 
-        results_to_serialize = {"optimizer": "ax", "ax": best}
-        results_to_serialize = json.loads(json.dumps(results_to_serialize))
-        # This step is to convert all the numpy floats into python floats
+        results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.sweep_dir}/optimization_results.yaml",
         )
-        log.info("Best parameters: " + str(best))
+        log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
         self,
@@ -231,11 +228,16 @@ class AxSweeper(Sweeper):
         overrides: Sequence[Sequence[str]],
         batch_of_trials_to_launch: BatchOfTrialType,
     ) -> None:
-        rets = self.launcher.launch(overrides)  # type: ignore
+        assert self.launcher is not None
+        assert self.job_idx is not None
+        rets = self.launcher.launch(
+            job_overrides=overrides, initial_job_idx=self.job_idx
+        )
+        self.job_idx += len(rets)
         for idx in range(len(batch_of_trials_to_launch)):
             val = rets[idx].return_value
             ax_client.complete_trial(
-                trial_index=batch_of_trials_to_launch[idx].trial_index, raw_data=val,
+                trial_index=batch_of_trials_to_launch[idx].trial_index, raw_data=val
             )
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:

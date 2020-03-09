@@ -5,7 +5,7 @@ The provided example has a custom configuration for the sweeper that takes two p
 ```yaml
 hydra:
   sweeper:
-    class: hydra_plugins.example_sweeper.ExampleSweeper
+    cls: hydra_plugins.example_sweeper.ExampleSweeper
     params:
       foo: 10
       bar: abcde

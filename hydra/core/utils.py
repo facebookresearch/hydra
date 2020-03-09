@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import sys
+from dataclasses import dataclass
 from os.path import basename, dirname, splitext
 from pathlib import Path
 from time import localtime, strftime
@@ -155,14 +156,14 @@ def setup_globals() -> None:
         pass
 
 
+@dataclass
 class JobReturn:
-    def __init__(self) -> None:
-        self.overrides: Optional[Sequence[str]] = None
-        self.return_value: Any = None
-        self.cfg: Optional[DictConfig] = None
-        self.hydra_cfg: Optional[DictConfig] = None
-        self.working_dir: Optional[str] = None
-        self.task_name: Optional[str] = None
+    overrides: Optional[Sequence[str]] = None
+    return_value: Any = None
+    cfg: Optional[DictConfig] = None
+    hydra_cfg: Optional[DictConfig] = None
+    working_dir: Optional[str] = None
+    task_name: Optional[str] = None
 
 
 class JobRuntime(metaclass=Singleton):

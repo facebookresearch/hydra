@@ -44,7 +44,7 @@ class JobLibConf:
 
 @dataclass
 class JobLibLauncherConf(PluginConf):
-    cls: str = "hydra_plugins.hydra_joblib_launcher.JoblibLauncher"
+    cls: str = "hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher"
     params: JobLibConf = JobLibConf()
 
 

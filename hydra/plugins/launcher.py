@@ -28,8 +28,11 @@ class Launcher(Plugin):
         raise NotImplementedError()
 
     @abstractmethod
-    def launch(self, job_overrides: Sequence[Sequence[str]]) -> Sequence[JobReturn]:
+    def launch(
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
         """
         :param job_overrides: a batch of job arguments
+        :param initial_job_idx: Initial job idx. used by sweepers that executes several batches
         """
         raise NotImplementedError()

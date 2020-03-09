@@ -29,19 +29,23 @@ python example/banana.py -m banana.x=-5:5 banana.y=-5:10.1
 The output of a run looks like:
 
 ```
-[2020-02-09 14:53:07,282][HYDRA] AxSweeper is launching 5 jobs
-[2020-02-09 14:53:07,287][HYDRA] Launching 5 jobs locally
-[2020-02-09 14:53:07,287][HYDRA]    #0 : banana.x=4 banana.y=9.366917353868484
-[2020-02-09 14:53:07,444][__main__][INFO] - Banana_Function(x=4, y=9.366917353868484)=52.997785390411075
-[2020-02-09 14:53:07,447][HYDRA]    #1 : banana.x=3 banana.y=4.2380884230136875
-[2020-02-09 14:53:07,590][__main__][INFO] - Banana_Function(x=3, y=4.2380884230136875)=26.67580186703627
-[2020-02-09 14:53:07,592][HYDRA]    #2 : banana.x=2 banana.y=2.807121509313583
-[2020-02-09 14:53:07,736][__main__][INFO] - Banana_Function(x=2, y=2.807121509313583)=2.4229590935423047
-[2020-02-09 14:53:07,738][HYDRA]    #3 : banana.x=1 banana.y=1.6320534139871592
-[2020-02-09 14:53:07,886][__main__][INFO] - Banana_Function(x=1, y=1.6320534139871592)=0.39949151813282324
-[2020-02-09 14:53:07,888][HYDRA]    #4 : banana.x=2 banana.y=-1.5182482689619063
-[2020-02-09 14:53:08,039][__main__][INFO] - Banana_Function(x=2, y=-1.5182482689619063)=31.45106395790108
-[2020-02-09 14:53:08,112][HYDRA] New best value: 0.39949151813282324, best parameters: {'banana.x': 1, 'banana.y': 1.6320534139871592}
+[HYDRA] AxSweeper is optimizing the following parameters:
+banana.x: range=[-5, 5], type = int
+banana.y: range=[-5.0, 10.1], type = float
+ax.modelbridge.dispatch_utils: Using Bayesian Optimization generation strategy: GenerationStrategy(name='Sobol+GPEI', steps=[Sobol for 5 arms, GPEI for subsequent arms], generated 0 arm(s) so far). Iterations after 5 will take longer to generate due to model-fitting.
+AxSweeper is launching 5 jobs
+[HYDRA] Launching 5 jobs locally
+[HYDRA] 	#0 : banana.x=4 banana.y=-1.484
+[__main__][INFO] - Banana_Function(x=4, y=-1.484)=30581.473
+[HYDRA] 	#1 : banana.x=3 banana.y=-3.653
+[__main__][INFO] - Banana_Function(x=3, y=-3.653)=16014.261
+[HYDRA] 	#2 : banana.x=0 banana.y=9.409
+[__main__][INFO] - Banana_Function(x=0, y=9.409)=8855.340
+[HYDRA] 	#3 : banana.x=-4 banana.y=2.059
+[__main__][INFO] - Banana_Function(x=-4, y=2.059)=19459.063
+[HYDRA] 	#4 : banana.x=-3 banana.y=-1.338
+[__main__][INFO] - Banana_Function(x=-3, y=-1.338)=10704.497
+[HYDRA] New best value: 8855.340, best parameters: {'banana.x': 0, 'banana.y': 9.409}
 ```
 
 In this example, we set the range of `x` parameter as an integer in `[-5, 5]` and the range of `y` parameter as a float in `[-5, 10.1]`. Note that in the case of `x`, both the upper and the lower range values are integers, and hence only integers are sampled. In the case of `y`, the lower range value is an int while the upper range value is a float. The lower range value is promoted to float as well, and floating-point numbers are sampled from the range. Other supported formats are fixed parameters (eg `banana.x=5.0`) and choice parameters (eg `banana.x=1,2,3`). 

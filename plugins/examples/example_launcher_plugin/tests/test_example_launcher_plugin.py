@@ -11,7 +11,7 @@ from hydra.test_utils.launcher_common_tests import (
 # This has to be included here for the LauncherTestSuite to work.
 # noinspection PyUnresolvedReferences
 from hydra.test_utils.test_utils import sweep_runner  # noqa: F401
-from hydra_plugins.example_launcher_plugin import ExampleLauncher
+from hydra_plugins.example_launcher_plugin.example_launcher import ExampleLauncher
 
 
 def test_discovery() -> None:
@@ -30,7 +30,7 @@ class TestExampleLauncher(LauncherTestSuite):
 
 
 @pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags, plugin_module",
+    "task_launcher_cfg, extra_flags",
     [
         (
             {
@@ -41,13 +41,12 @@ class TestExampleLauncher(LauncherTestSuite):
                 ],
                 "hydra": {
                     "launcher": {
-                        "class": "hydra_plugins.example_launcher_plugin.ExampleLauncher",
+                        "cls": "hydra_plugins.example_launcher_plugin.example_launcher.ExampleLauncher",
                         "params": {"foo": 10, "bar": "abcde"},
                     }
                 },
             },
             ["-m"],
-            "hydra_plugins.example_launcher",
         )
     ],
 )

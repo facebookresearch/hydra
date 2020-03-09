@@ -1,0 +1,14 @@
+-r requirements.txt
+black
+coverage
+flake8
+flake8-copyright
+isort@git+git://github.com/timothycrosley/isort.git@c54b3dd#egg=isort
+mypy
+nox
+pre-commit
+pytest
+pytest-snail
+setuptools
+towncrier
+twine

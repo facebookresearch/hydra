@@ -37,7 +37,9 @@ class BasicLauncher(Launcher):
         self.config_loader = config_loader
         self.task_function = task_function
 
-    def launch(self, job_overrides: Sequence[Sequence[str]]) -> Sequence[JobReturn]:
+    def launch(
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
         setup_globals()
         assert self.config is not None
         assert self.task_function is not None
@@ -48,8 +50,8 @@ class BasicLauncher(Launcher):
         Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
         log.info("Launching {} jobs locally".format(len(job_overrides)))
         runs: List[JobReturn] = []
-
         for idx, overrides in enumerate(job_overrides):
+            idx = initial_job_idx + idx
             log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
             sweep_config = self.config_loader.load_sweep_config(
                 self.config, list(overrides)

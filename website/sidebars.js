@@ -51,7 +51,6 @@ module.exports = {
         ],
 
         'Plugins': [
-            'plugins/api_overview',
             'plugins/ax_sweeper',
             'plugins/colorlog',
             'plugins/joblib_launcher',

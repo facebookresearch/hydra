@@ -63,9 +63,12 @@ class JoblibLauncher(Launcher):
         self.config_loader = config_loader
         self.task_function = task_function
 
-    def launch(self, job_overrides: Sequence[Sequence[str]]) -> Sequence[JobReturn]:
+    def launch(
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
         """
         :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.
+        :param initial_job_idx: Initial job idx in batch.
         :return: an array of return values from run_job with indexes corresponding to the input list indexes.
         """
         setup_globals()
@@ -96,7 +99,7 @@ class JoblibLauncher(Launcher):
 
         runs = Parallel(**joblib_cfg)(
             delayed(execute_job)(
-                idx,
+                initial_job_idx + idx,
                 overrides,
                 self.config_loader,
                 self.config,
