@@ -158,11 +158,12 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
 
   Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 
-**Note**: unbounded scalars (scalars with no upper and lower bounds) can only be defined through a config file.
+**Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
 
 
 ### Custom parameter
 
 You can use the full scope of [Nevergrad parametrization](https://facebookresearch.github.io/nevergrad/parametrization.html) by using a string defining a nevergrad parameter which will be evaluated at runtime 
 (eg.: `lr=Log(lower=0.001, upper=0.1)`). While providing greater flexibility, this comes at the cost of robustness, so avoid it whenever possible.
+
 
