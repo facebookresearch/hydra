@@ -17,13 +17,15 @@ from hydra.test_utils.test_utils import (  # noqa: F401
     chdir_plugin_root,
     sweep_runner,
 )
-from hydra_plugins.hydra_nevergrad_sweeper import NevergradSweeper, core
+from hydra_plugins.hydra_nevergrad_sweeper import core
 
 chdir_plugin_root()
 
 
 def test_discovery() -> None:
-    assert NevergradSweeper.__name__ in [x.__name__ for x in Plugins.discover(Sweeper)]
+    assert core.NevergradSweeper.__name__ in [
+        x.__name__ for x in Plugins.discover(Sweeper)
+    ]
 
 
 @pytest.mark.parametrize(  # type: ignore

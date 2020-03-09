@@ -52,8 +52,6 @@ hydra:
           init: 0.02
           step: 2.0
           log: true
-        # a custom nevergrad parameter evaluated at runtime (avoid using this whenever possible)
-        dropout: Scalar(lower=0.0, upper=1.0)
         # an integer scalar going from 4 to 16
         # init is set to the middle of the range
         # step is set to a sixth of the range
@@ -61,11 +59,13 @@ hydra:
           lower: 4
           upper: 16
           integer: true
+        # a custom nevergrad parameter evaluated at runtime (avoid using this whenever possible)
+        dropout: Scalar(lower=0.0, upper=1.0)
 
 db: cifar
 lr: 0.01
-dropout: 0.6
 batch_size: 8
+dropout: 0.6
 ```
 
 The the function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -86,7 +86,6 @@ You can also override the search space parametrization:
 python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=log:0.001:1 dropout=0:1
 ```
 
-The output of a run looks like:
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
 
 ```text

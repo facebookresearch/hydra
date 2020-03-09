@@ -1,6 +1,6 @@
 hydra:
   sweeper:
-    cls: hydra_plugins.hydra_nevergrad_sweeper.NevergradSweeper
+    cls: hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper
     params:
       # configuration of the optimizer
       optim:
