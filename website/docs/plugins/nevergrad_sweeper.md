@@ -68,7 +68,7 @@ dropout: 0.6
 batch_size: 8
 ```
 
-The application `main` returns a float which we want to minimimize, the minimum is 0 and reached for:
+The the function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
 ```yaml
 db: mnist
 lr: 0.12
@@ -165,5 +165,4 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
 
 You can use the full scope of [Nevergrad parametrization](https://facebookresearch.github.io/nevergrad/parametrization.html) by using a string defining a nevergrad parameter which will be evaluated at runtime 
 (eg.: `lr=Log(lower=0.001, upper=0.1)`). While providing greater flexibility, this comes at the cost of robustness, so avoid it whenever possible.
-
 
