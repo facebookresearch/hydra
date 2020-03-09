@@ -53,8 +53,9 @@ hydra:
           step: 2.0
           log: true
         # an integer scalar going from 4 to 16
-        # init is set to the middle of the range
-        # step is set to a sixth of the range
+        # init and step parameters could also be provided,
+        # by default init is set to the middle of the range
+        # and step is set to a sixth of the range
         batch_size:
           lower: 4
           upper: 16
@@ -157,7 +158,7 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
 
   Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 
-**Note**: unbounded variables are only available through a config file.
+**Note**: unbounded scalars (scalars with no upper and lower bounds) can only be defined through a config file.
 
 
 ### Custom parameter
