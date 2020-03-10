@@ -18,14 +18,28 @@ PYTHON_VERSIONS = os.environ.get(
 ).split(",")
 
 PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
-SKIP_CORE_TESTS = "0"
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
+
+SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 
 SILENT = os.environ.get("VERBOSE", "0") == "0"
+
+
+def get_current_os() -> str:
+    current_os = platform.system()
+    if current_os == "Darwin":
+        current_os = "MacOS"
+    return current_os
+
+
+print(f"Operating system\t:\t{get_current_os()}")
+print(f"PYTHON_VERSIONS\t\t:\t{PYTHON_VERSIONS}")
+print(f"PLUGINS\t\t\t:\t{PLUGINS}")
+print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 
 
 def find_python_files(folder):
@@ -69,13 +83,6 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return DEFAULT_OS_NAMES
     else:
         return [p.split("::")[-1].strip() for p in oses]
-
-
-def get_current_os() -> str:
-    current_os = platform.system()
-    if current_os == "Darwin":
-        current_os = "MacOS"
-    return current_os
 
 
 def select_plugins(session):
