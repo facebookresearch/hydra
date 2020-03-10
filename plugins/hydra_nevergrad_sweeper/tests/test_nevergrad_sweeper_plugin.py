@@ -24,7 +24,7 @@ chdir_plugin_root()
 
 def test_discovery() -> None:
     assert core.NevergradSweeper.__name__ in [
-        x.__name__ for x in Plugins.discover(Sweeper)
+        x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
 
 
