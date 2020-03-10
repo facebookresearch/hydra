@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Operating System :: MacOS",
-            "Operating System :: Unix",
+            "Operating System :: POSIX :: Linux",
         ],
         install_requires=["hydra-core==1.0.*", "joblib>=0.14.0"],
         include_package_data=True,
