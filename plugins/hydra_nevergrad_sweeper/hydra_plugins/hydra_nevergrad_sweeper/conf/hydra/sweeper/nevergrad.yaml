@@ -1,0 +1,31 @@
+hydra:
+  sweeper:
+    cls: hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper
+    params:
+      # configuration of the optimizer
+      optim:
+        # name of the Nevergrad optimizer to use. Here is a sample:
+        #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
+        #     tends to converge early.
+        #   - "CMA" very good algorithm, but may require a significant budget (> 120)
+        #   - "TwoPointsDE": an algorithm good in a wide range of settings, for significant 
+        #     budgets (> 120).
+        #   - "Shiva" an algorithm aiming at identifying the best optimizer given your input
+        #     definition (work in progress, it may still be ill-suited for low budget)
+        # find out more within nevergrad's documentation:
+        # https://github.com/facebookresearch/nevergrad/
+        optimizer: OnePlusOne
+        # total number of function evaluations to perform
+        budget: 80
+        # number of parallel workers for performing function evaluations
+        num_workers: 10
+        # set to true if the function evaluations are noisy
+        noisy: false
+        # set to true for performing maximization instead of minimization
+        maximize: false
+        # optimization seed, for reproducibility
+        seed: null
+      # default parametrization of the search space
+      parametrization: null
+      # version of the commandline API
+      version: 1

@@ -54,6 +54,7 @@ module.exports = {
             'plugins/ax_sweeper',
             'plugins/colorlog',
             'plugins/joblib_launcher',
+            'plugins/nevergrad_sweeper',
         ],
 
         'Advanced': [
