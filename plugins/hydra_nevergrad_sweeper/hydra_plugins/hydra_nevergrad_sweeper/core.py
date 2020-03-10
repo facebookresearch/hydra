@@ -64,11 +64,8 @@ def make_parameter_from_commandline(string: str) -> Any:
            Note: sequences of increasing scalars provide a specific parametrization
              compared to unordered categorical values
          - ":"-separated values for ranges of scalars.
-           Eg.: "1.0:5.0"
-           Note: using integers as bounds will parametrize as an integer value
-         - ":log:"-separated values for ranges of log-distributed positive scalars.
-           Eg.: "0.001:log:1.0"
-           Note: using integers as bounds will parametrize as an integer value
+           "int" and/or "log" modifiers can be added in front to cast to integer or
+           use log-distributed values (Eg: int:log:4:1024)
          - evaluable nevergrad Parameter definition, which will be evaluated at
            runtime. This provides full nevergrad flexibility at the cost of robustness.
            Eg.:"Log(a_min=0.001, a_max=0.1)"

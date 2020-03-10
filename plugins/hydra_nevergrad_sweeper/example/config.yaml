@@ -12,6 +12,7 @@ hydra:
         budget: 100
         # number of parallel workers for performing function evaluations
         num_workers: 10
+        # maximize: true  # comment out for maximization
       # default parametrization of the search space
       parametrization:
         # either one or the other
