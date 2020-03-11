@@ -3,6 +3,13 @@ id: ax_sweeper
 title: Ax Sweeper plugin
 sidebar_label: Ax Sweeper plugin
 ---
+[![PyPI](https://img.shields.io/pypi/v/hydra-ax-sweeper)](https://img.shields.io/pypi/v/hydra-ax-sweeper)
+![PyPI - License](https://img.shields.io/pypi/l/hydra-ax-sweeper)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ax-sweeper)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ax-sweeper.svg)](https://pypistats.org/packages/hydra-ax-sweeper)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ax_sweeper/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ax_sweeper)
+
 This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform, aka Ax](https://ax.dev/). Ax can optimize any experiment - machine learning experiments, A/B tests, and simulations. 
 
 Install with:
@@ -11,7 +18,7 @@ Install with:
 pip install hydra_ax_sweeper
 ```
 
-Once installed, override `hydra/sweeper` in your config:
+Once installed, add `hydra.sweeper=ax` to the cmd command. Alternatively, override `hydra/sweeper` in your config:
 
 ```yaml
 defaults:
