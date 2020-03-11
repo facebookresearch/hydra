@@ -9,7 +9,6 @@ from hydra._internal.core_plugins.file_config_source import FileConfigSource
 from hydra._internal.core_plugins.package_config_source import PackageConfigSource
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.object_type import ObjectType
-from hydra.core.plugins import Plugins
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -32,7 +31,6 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def create_config_search_path(path: str) -> ConfigSearchPathImpl:
-    Plugins().initialize()
     csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp

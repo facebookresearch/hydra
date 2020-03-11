@@ -308,17 +308,13 @@ class Hydra:
             # Mypy false positive?
             plugins = Plugins.instance().discover(plugin_type)  # type: ignore
             if len(plugins) > 0:
-                Hydra._log_header(
-                    header="{}:".format(plugin_type.__name__), prefix="\t", filler="-"
-                )
+                Hydra._log_header(header=f"{plugin_type.__name__}:", prefix="\t")
                 for plugin in plugins:
                     log.debug("\t\t{}".format(plugin.__name__))
                     all_plugins.remove(plugin.__name__)
 
         if len(all_plugins) > 0:
-            Hydra._log_header(
-                header="{}:".format("Generic plugins"), prefix="\t", filler="-"
-            )
+            Hydra._log_header(header="Generic plugins: ", prefix="\t")
             for plugin_name in all_plugins:
                 log.debug("\t\t{}".format(plugin_name))
 
@@ -388,12 +384,48 @@ class Hydra:
                 )
             )
 
+    def _print_plugins_profiling_info(self, top_n: int) -> None:
+        assert log is not None
+        stats = Plugins.instance().get_stats()
+        if stats is None:
+            return
+
+        items = list(stats.modules_import_time.items())
+        filtered = filter(lambda x: x[1] > 0.0005, items)
+        sorted_items = sorted(filtered, key=lambda x: x[1], reverse=True)
+
+        top_n = max(len(sorted_items), top_n)
+        box: List[List[str]] = [["Module", "Sec"]]
+
+        for item in sorted_items[0:top_n]:
+            box.append([item[0], f"{item[1]:.3f}"])
+        padding = get_column_widths(box)
+
+        log.debug("")
+        self._log_header(header="Profiling information", filler="*")
+        self._log_header(
+            header=f"Total plugins scan time : {stats.total_time:.3f} seconds",
+            filler="-",
+        )
+
+        self._log_header(
+            f"| {box[0][0].ljust(padding[0])} | {box[0][1].ljust(padding[1])} |",
+            filler="-",
+        )
+        del box[0]
+
+        for row in box:
+            a = row[0].ljust(padding[0])
+            b = row[1].ljust(padding[1])
+            log.debug(f"| {a} | {b} |")
+
     def _print_debug_info(self) -> None:
         assert log is not None
         if log.isEnabledFor(logging.DEBUG):
             self._print_plugins()
             self._print_search_path()
             self._print_composition_trace()
+            self._print_plugins_profiling_info(10)
 
     def compose_config(
         self,

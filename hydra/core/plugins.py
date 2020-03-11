@@ -4,9 +4,9 @@ import inspect
 import pkgutil
 import warnings
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from timeit import default_timer as timer
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 from omegaconf import DictConfig
 
@@ -24,9 +24,10 @@ from hydra.types import TaskFunction
 
 
 @dataclass
-class PluginMetadata:
-    cls: Type[Plugin]
-    import_time: float
+class ScanStats:
+    total_time: float = 0
+    total_modules_import_time: float = 0
+    modules_import_time: Dict[str, float] = field(default_factory=dict)
 
 
 class Plugins(metaclass=Singleton):
@@ -37,11 +38,12 @@ class Plugins(metaclass=Singleton):
         return ret
 
     def __init__(self) -> None:
-        self.plugin_type_to_subclass_list: Dict[Type[Plugin], List[PluginMetadata]] = {}
+        self.plugin_type_to_subclass_list: Dict[Type[Plugin], List[Type[Plugin]]] = {}
         self.class_name_to_class: Dict[str, Type[Plugin]] = {}
-        self.initialize()
+        self.stats: Optional[ScanStats] = None
+        self._initialize()
 
-    def initialize(self) -> None:
+    def _initialize(self) -> None:
         top_level: List[Any] = []
         core_plugins = importlib.import_module("hydra._internal.core_plugins")
         top_level.append(core_plugins)
@@ -52,18 +54,19 @@ class Plugins(metaclass=Singleton):
         except ImportError:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
-        self.plugin_type_to_subclass_list = self._scan_all_plugins(modules=top_level)
+        self.plugin_type_to_subclass_list, self.stats = self._scan_all_plugins(
+            modules=top_level
+        )
         self.class_name_to_class = {}
-        for plugin_type, plugin_metas in self.plugin_type_to_subclass_list.items():
-            for pm in plugin_metas:
-                clazz = pm.cls
+        for plugin_type, plugins in self.plugin_type_to_subclass_list.items():
+            for clazz in plugins:
                 name = f"{clazz.__module__}.{clazz.__name__}"
                 self.class_name_to_class[name] = clazz
 
         # Register config sources
         for source in self.plugin_type_to_subclass_list[ConfigSource]:
-            assert issubclass(source.cls, ConfigSource)
-            SourcesRegistry.instance().register(source.cls)
+            assert issubclass(source, ConfigSource)
+            SourcesRegistry.instance().register(source)
 
     def _instantiate(self, config: PluginConf) -> Plugin:
         import hydra.utils as utils
@@ -95,7 +98,8 @@ class Plugins(metaclass=Singleton):
 
         return plugin
 
-    def is_in_toplevel_plugins_module(self, clazz: str) -> bool:
+    @staticmethod
+    def is_in_toplevel_plugins_module(clazz: str) -> bool:
 
         return clazz.startswith("hydra_plugins.") or clazz.startswith(
             "hydra._internal.core_plugins."
@@ -133,12 +137,17 @@ class Plugins(metaclass=Singleton):
         )
         return launcher
 
+    @staticmethod
     def _scan_all_plugins(
-        self, modules: List[Any]
-    ) -> Dict[Type[Plugin], List[PluginMetadata]]:
-        ret: Dict[Type[Plugin], List[PluginMetadata]] = defaultdict(list)
+        modules: List[Any],
+    ) -> Tuple[Dict[Type[Plugin], List[Type[Plugin]]], ScanStats]:
 
-        plugin_types = [
+        stats = ScanStats()
+        stats.total_time = timer()
+
+        ret: Dict[Type[Plugin], List[Type[Plugin]]] = defaultdict(list)
+
+        plugin_types: List[Type[Plugin]] = [
             Plugin,
             ConfigSource,
             CompletionPlugin,
@@ -146,16 +155,20 @@ class Plugins(metaclass=Singleton):
             Sweeper,
             SearchPathPlugin,
         ]
-
         for mdl in modules:
             for importer, modname, ispkg in pkgutil.walk_packages(
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
             ):
                 try:
-                    start = timer()
+                    import_time = timer()
                     m = importer.find_module(modname)
                     loaded_mod = m.load_module(modname)
-                    import_time = timer() - start
+                    import_time = timer() - import_time
+
+                    stats.total_modules_import_time += import_time
+
+                    assert modname not in stats.modules_import_time
+                    stats.modules_import_time[modname] = import_time
 
                     if loaded_mod is not None:
                         for name, obj in inspect.getmembers(loaded_mod):
@@ -166,10 +179,7 @@ class Plugins(metaclass=Singleton):
                             ):
                                 for plugin_type in plugin_types:
                                     if issubclass(obj, plugin_type):
-                                        pm = PluginMetadata(
-                                            cls=obj, import_time=import_time
-                                        )
-                                        ret[plugin_type].append(pm)
+                                        ret[plugin_type].append(obj)
                 except ImportError as e:
                     warnings.warn(
                         message=f"\n"
@@ -179,7 +189,12 @@ class Plugins(metaclass=Singleton):
                         f"\t\t{type(e).__name__} : {e}",
                         category=UserWarning,
                     )
-        return ret
+
+        stats.total_time = timer() - stats.total_time
+        return ret, stats
+
+    def get_stats(self) -> Optional[ScanStats]:
+        return self.stats
 
     def discover(
         self, plugin_type: Optional[Type[Plugin]] = None
@@ -195,8 +210,8 @@ class Plugins(metaclass=Singleton):
         assert issubclass(plugin_type, Plugin)
         if plugin_type not in self.plugin_type_to_subclass_list:
             return []
-        for pm in self.plugin_type_to_subclass_list[plugin_type]:
-            ret.append(pm.cls)
+        for clazz in self.plugin_type_to_subclass_list[plugin_type]:
+            ret.append(clazz)
 
         return ret
 

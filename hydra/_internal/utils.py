@@ -131,7 +131,6 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     from hydra.core.plugins import Plugins
     from hydra.plugins.search_path_plugin import SearchPathPlugin
 
-    Plugins.instance().initialize()
     search_path = ConfigSearchPathImpl()
     search_path.append("hydra", "pkg://hydra.conf")
 
