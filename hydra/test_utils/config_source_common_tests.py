@@ -22,11 +22,7 @@ class ConfigSourceTestSuite:
         ],
     )
     def test_is_group(
-        self,
-        type_: Type[ConfigSource],
-        path: str,
-        config_path: str,
-        expected: List[str],
+        self, type_: Type[ConfigSource], path: str, config_path: str, expected: bool
     ) -> None:
         src = type_(provider="foo", path=path)
         ret = src.is_group(config_path=config_path)
@@ -48,11 +44,7 @@ class ConfigSourceTestSuite:
         ],
     )
     def test_is_config(
-        self,
-        type_: Type[ConfigSource],
-        path: str,
-        config_path: str,
-        expected: List[str],
+        self, type_: Type[ConfigSource], path: str, config_path: str, expected: bool
     ) -> None:
         src = type_(provider="foo", path=path)
         ret = src.is_config(config_path=config_path)
