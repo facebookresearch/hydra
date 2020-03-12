@@ -1,1 +1,1 @@
-Skip files starting with "_" during plugin discovery
+Modules whose name starts with "_" are skipped during plugin discovery
