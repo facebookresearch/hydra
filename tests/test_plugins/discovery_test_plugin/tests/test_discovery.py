@@ -18,3 +18,13 @@ def test_number_of_imports(tmpdir: Path) -> None:
     with Path(os.environ["TMP_FILE"]) as f:
         txt = str(f.read_text())
         assert txt.split("\n").count("imported") == 1
+
+
+def test_skipped_imports(tmpdir: Path) -> None:
+    # Tests that modules starting with an "_" are skipped
+    plugin_stats = Plugins.instance().stats
+    assert plugin_stats is not None
+    loaded_modules = list(plugin_stats.modules_import_time.keys())
+    for module in loaded_modules:
+        module_name = module.split(".")[-1]
+        assert not module_name.startswith("_")
