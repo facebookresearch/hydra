@@ -162,7 +162,9 @@ class Plugins(metaclass=Singleton):
                 try:
                     module_name = modname.rsplit(".", 1)[-1]
                     # If module's name starts with "_", do not load the module.
-                    if module_name.startswith("_"):
+                    # But if the module's name starts with a "__", then load the
+                    # module.
+                    if module_name.startswith("_") and not module_name.startswith("__"):
                         continue
                     import_time = timer()
                     m = importer.find_module(modname)
