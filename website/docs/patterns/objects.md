@@ -33,6 +33,10 @@ class PostgreSQLConnection(DBConnection):
         self.user = user
         self.password = password
         self.database = database
+    
+    @classmethod
+    def default_init_method(self, database):
+        return self("localhost", "admin", "password", database)
 
     def connect(self):
         print(
@@ -49,7 +53,8 @@ conf/
 ├── config.yaml
 └── db
     ├── mysql.yaml
-    └── postgresql.yaml
+    ├── postgresql.yaml
+    └── postgresql_default.yaml
 ```
 
 Config file: `config.yaml`
@@ -76,6 +81,14 @@ db:
     password: 1234
     database: tutorial
 ```
+Config file: `db/postgres_default.yaml`
+```yaml
+db:
+  cls: tutorial.objects_example.objects.PostgreSQLConnection
+  method: default_init_method
+  params:
+    database: tutorial
+```
 
 With this, you can instantiate the object from the configuration with a single line of code:
 ```python
@@ -94,4 +107,9 @@ Change the instantiated object class and override values from the command line:
 ```text
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
+```
+Instantiate an object from a class method:
+```text
+$ python my_app.py db=postgresql_default
+PostgreSQL connecting to localhost with user=admin and password=password and database=tutorial
 ```
