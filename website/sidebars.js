@@ -59,6 +59,7 @@ module.exports = {
 
         'Advanced': [
             'advanced/app_packaging',
+            'advanced/plugins',
             'advanced/search_path',
 
         ],
