@@ -7,6 +7,8 @@ sidebar_label: Hydra plugins
 Hydra can be extended via plugins.
 You can see example plugins [here](https://github.com/facebookresearch/hydra/tree/master/plugins/examples).
 
+Note: When loading modules in a plugin, files starting with `_` (but not `__`) are not loaded but Hydra. This enables plugins developers to lazily load third party modules. This reduces the startup time associated with Hydra. For an example of how to use files starting with `_` for lazy-loading, check the [Ax Plugin](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ax_sweeper/hydra_plugins/hydra_ax_sweeper).
+
 ## Plugin types
 
 ### Sweeper
