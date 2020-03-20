@@ -160,6 +160,12 @@ class Plugins(metaclass=Singleton):
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
             ):
                 try:
+                    module_name = modname.rsplit(".", 1)[-1]
+                    # If module's name starts with "_", do not load the module.
+                    # But if the module's name starts with a "__", then load the
+                    # module.
+                    if module_name.startswith("_") and not module_name.startswith("__"):
+                        continue
                     import_time = timer()
                     m = importer.find_module(modname)
                     loaded_mod = m.load_module(modname)

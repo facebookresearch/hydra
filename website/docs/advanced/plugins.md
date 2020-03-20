@@ -7,8 +7,13 @@ sidebar_label: Hydra plugins
 Hydra can be extended via plugins.
 You can see example plugins [here](https://github.com/facebookresearch/hydra/tree/master/plugins/examples).
 
-## Plugin types
+## Plugin discovery
+During plugin discovery, Hydra looks up for plugins in all submodules of `hydra_plugins`. To do this, Hydra imports sub-modules defined under `hydra_plugins` to look for plugins that are defined in them.
+Since plugins are discovered whenever Hydra starts, any installed plugins that are slow to import will slow down the startup of _ALL_ Hydra applicaitons.
+Plugins with expensive imports can exclude individual files from this by prefixing them with `_` (but not `__`).
+For example, the file `_my_plugin_lib.py` would not be imported and scanned, while `my_plugin_lib.py` would be.
 
+## Plugin types
 ### Sweeper
 A sweeper is responsible for converting command line arguments list into multiple jobs.
 For example, the basic built-in sweeper takes arguments like:
