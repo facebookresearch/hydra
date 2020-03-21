@@ -84,8 +84,7 @@ db:
 Config file: `db/postgres_default.yaml`
 ```yaml
 db:
-  cls: tutorial.objects_example.objects.PostgreSQLConnection
-  method: default_init_method
+  cls: tutorial.objects_example.objects.PostgreSQLConnection.default_init_method 
   params:
     database: tutorial
 ```
