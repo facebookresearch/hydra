@@ -35,7 +35,7 @@ def get_static_method(full_method_name: str) -> type:
         ret: type = get_class(full_method_name)
         return ret
     except Exception as e:
-        log.error("Error getting static method {} : {}".format(full_method_name, e))
+        log.error(f"Error getting static method {full_method_name} : {e}")
         raise e
 
 
@@ -108,9 +108,7 @@ def _instantiate_class(
     params = config.params if "params" in config else OmegaConf.create()
     assert isinstance(
         params, DictConfig
-    ), "Input config params are expected to be a mapping, found {}".format(
-        type(config.params)
-    )
+    ), f"Input config params are expected to be a mapping, found {type(config.params)}"
     primitives = {}
     rest = {}
     for k, v in kwargs.items():
