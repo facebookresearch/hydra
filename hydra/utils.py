@@ -18,36 +18,21 @@ def get_method(path: str) -> type:
 
 def get_class(path: str) -> type:
     try:
-        from importlib import import_module
+        from pydoc import locate
 
-        module_path, _, class_name = path.rpartition(".")
-        mod = import_module(module_path)
-        try:
-            klass: type = getattr(mod, class_name)
-        except AttributeError:
-            raise ImportError(
-                "Class {} is not in module {}".format(class_name, module_path)
-            )
+        klass = locate(path)
+        if not klass:
+            log.error(f"Error finding module in class path {path}")
+            raise ValueError(f"Error finding module in class path {path}")
         return klass
-    except ValueError as e:
-        log.error("Error initializing class " + path)
-        raise e
-
-
-def get_class_method(clazz: Type[Any], method_name: str) -> type:
-    try:
-        clazz_method = getattr(clazz, method_name)
-        return clazz_method
     except Exception as e:
-        log.error("Error getting method {} from class {} : {}".format(clazz, method_name, e))
+        log.error(f"Error initializing class {path}")
         raise e
 
 
 def get_static_method(full_method_name: str) -> type:
     try:
-        class_name, method_name = full_method_name.rsplit(".", 1)
-        clz = get_class(class_name)
-        ret: type = getattr(clz, method_name)
+        ret: type = get_class(full_method_name)
         return ret
     except Exception as e:
         log.error("Error getting static method {} : {}".format(full_method_name, e))
@@ -56,11 +41,8 @@ def get_static_method(full_method_name: str) -> type:
 
 def instantiate(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
     classname = _get_class_name(config)
-    methodname = _get_method_name(config)
     try:
         clazz = get_class(classname)
-        if methodname:
-            clazz = get_class_method(clazz, methodname)
         return _instantiate_class(clazz, config, *args, **kwargs)
     except Exception as e:
         log.error(f"Error instantiating '{classname}' : {e}")
@@ -107,13 +89,6 @@ def _get_class_name(config: PluginConf) -> str:
             return config.cls
         else:
             raise ValueError("Input config does not have a cls field")
-
-
-def _get_method_name(config: PluginConf) -> str:
-    if "method" in config:
-        return config.method
-    else:
-        return ""
 
 
 def _instantiate_class(

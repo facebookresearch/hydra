@@ -126,8 +126,7 @@ def test_get_static_method(path: str, return_value: Any) -> None:
         ),
         (
             {
-                "cls": "tests.test_utils.Baz",
-                "method": "class_method",
+                "cls": "tests.test_utils.Baz.class_method",
                 "params": {"y": 10},
             },
             None,
