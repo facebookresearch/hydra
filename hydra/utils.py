@@ -2,8 +2,8 @@
 import logging.config
 import warnings
 from pathlib import Path
-from typing import Any, Type, Optional, cast
 from types import ModuleType
+from typing import Any, Optional, Type, cast
 
 from omegaconf import DictConfig, OmegaConf, _utils
 
@@ -18,8 +18,8 @@ def _safeimport(path: str) -> Optional[ModuleType]:
     Import a module; handle errors; return None if the module isn't found.
     This is a typed simplified version of the `pydoc` function `safeimport`.
     """
-    import sys
     from importlib import import_module
+
     try:
         module = import_module(path)
     except ImportError as e:
@@ -31,7 +31,7 @@ def _safeimport(path: str) -> Optional[ModuleType]:
     except Exception as e:
         log.error(f"Non-ImportError while importing module {path}: {e}")
         raise ValueError(f"Non-ImportError while importing module {path}: {e}")
-    for part in path.replace(module.__name__, "").split('.'):
+    for part in path.replace(module.__name__, "").split("."):
         if not hasattr(module, part):
             break
         module = getattr(module, part)
@@ -42,14 +42,14 @@ def _locate(path: str) -> ModuleType:
     """
     Locate an object by name or dotted path, importing as necessary.
     This is similar to the pydoc function `locate`, except that it checks for
-    the module from the end of the path to the beginning.
+    the module from the given path from back to front.
     """
-    parts = [part for part in path.split('.') if part]
+    parts = [part for part in path.split(".") if part]
     module = None
     for n in reversed(range(len(parts))):
         try:
-            module = _safeimport('.'.join(parts[:n]))
-        except:
+            module = _safeimport(".".join(parts[:n]))
+        except Exception:
             continue
         if module:
             break
@@ -60,8 +60,12 @@ def _locate(path: str) -> ModuleType:
         raise ValueError(f"Module not found: {path}")
     for part in parts[n:]:
         if not hasattr(obj, part):
-            log.error(f"Error finding attribute ({part}) in class ({obj.__name__}): {path}")
-            raise ValueError(f"Error finding attribute ({part}) in class ({obj.__name__}): {path}")
+            log.error(
+                f"Error finding attribute ({part}) in class ({obj.__name__}): {path}"
+            )
+            raise ValueError(
+                f"Error finding attribute ({part}) in class ({obj.__name__}): {path}"
+            )
         obj = getattr(obj, part)
     return obj
 
