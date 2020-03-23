@@ -61,9 +61,12 @@ class Foo:
 
 class Baz(Foo):
     @classmethod
-    def class_method(self, y: int) -> None:
+    def class_method(self, y: int) -> Any:
         return self(y + 1)
 
+    @staticmethod
+    def static_method() -> Any:
+        return 43
 
 @pytest.mark.parametrize(  # type: ignore
     "path,expected_type", [("tests.test_utils.Bar", Bar)]
@@ -125,13 +128,16 @@ def test_get_static_method(path: str, return_value: Any) -> None:
             Bar(10, 200, 200, 40),
         ),
         (
-            {
-                "cls": "tests.test_utils.Baz.class_method",
-                "params": {"y": 10},
-            },
+            {"cls": "tests.test_utils.Baz.class_method", "params": {"y": 10}, },
             None,
             {},
             Baz(11),
+        ),
+        (
+            {"cls": "tests.test_utils.Baz.static_method", "params": {}, },
+            None,
+            {},
+            43,
         ),
         # Check that default value is respected
         (
