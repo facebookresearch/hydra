@@ -33,10 +33,6 @@ class PostgreSQLConnection(DBConnection):
         self.user = user
         self.password = password
         self.database = database
-    
-    @classmethod
-    def default_init_method(self, database):
-        return self("localhost", "admin", "password", database)
 
     def connect(self):
         print(
@@ -99,3 +95,62 @@ Change the instantiated object class and override values from the command line:
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
 ```
+
+In addition to instantiating objects from classes, the `hydra.utils.call` method can also
+be used to call functions and methods.  Simply put the path to the function or method in the
+`cls` field and optionally use `params` to pass parameters to the function or method.
+
+Example file for classes, class and static methods, and functions (`models.py`)
+```python
+class Foo:
+  def __init__(x: int, y: int) -> None:
+    self.x = x
+    self.y = y
+
+  @classmethod
+  def class_method(self, z: int) -> Any:
+    return self(z, 10)
+
+  @staticmethod
+  def static_method(z: int) -> int:
+    return z + 1
+
+def bar(z: int) -> int:
+  return z + 2
+```
+Example configs
+```yaml
+# instantiates an object Foo(10, 20)
+myobject:
+  cls: models.Foo
+  params:
+    x: 10
+    y: 20
+# instantiates an object Foo(5, 10)
+myclassmethod:
+  cls: models.Foo.class_method
+  params:
+    z: 5
+# returns 16
+mystaticmethod:
+  cls: models.Foo.static_method
+  params:
+    z: 15
+# returns 17
+myfunction:
+  cls: models.bar
+  params:
+    z: 15
+```
+Now to test these instantiate / call them as follows:
+```python
+import hydra
+
+@hydra.main(config_path="config.yaml")
+def app(cfg):
+  myobject = hydra.utils.call(cfg.myobject)
+  myclassmethod = hydra.utils.call(cfg.myclassmethod)
+  mystaticmethod = hydra.utils.call(cfg.mystaticmethod)
+  myfunction = hydra.utils.call(cfg.myfunction)
+```
+Note, the old `instantiate` function is now an alias of the `call` function used above.
