@@ -27,7 +27,7 @@ Some of the major features of Structured Configs:
 - `Union` types are not supported (except `Optional`)
 - User methods are not supported.
 
-### Overviw
+### Overview
 
 There are two primary ways for using Structured configs.
 - In place of configuration files
