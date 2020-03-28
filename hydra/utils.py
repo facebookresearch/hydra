@@ -183,4 +183,3 @@ def _call_callable(
 instantiate = call
 get_static_method = get_fn_or_method
 get_method = get_fn_or_method
-_get_class_name = _get_cls_name

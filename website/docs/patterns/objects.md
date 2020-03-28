@@ -153,4 +153,5 @@ def app(cfg):
   mystaticmethod = hydra.utils.call(cfg.mystaticmethod)
   myfunction = hydra.utils.call(cfg.myfunction)
 ```
-Note, the old `instantiate` function is now an alias of the `call` function used above.
+Note, `hydra.utils.instantiate()` is an alias for `hydra.utils.call()`. They are in fact
+the same function.
