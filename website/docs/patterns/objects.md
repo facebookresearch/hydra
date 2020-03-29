@@ -148,10 +148,10 @@ import hydra
 
 @hydra.main(config_path="config.yaml")
 def app(cfg):
-  myobject = hydra.utils.call(cfg.myobject)
-  myclassmethod = hydra.utils.call(cfg.myclassmethod)
-  mystaticmethod = hydra.utils.call(cfg.mystaticmethod)
-  myfunction = hydra.utils.call(cfg.myfunction)
+  foo1: Foo = hydra.utils.call(cfg.myobject)
+  foo2: Foo = hydra.utils.call(cfg.myclassmethod)
+  ret1: int = hydra.utils.call(cfg.mystaticmethod)
+  ret2: int = hydra.utils.call(cfg.myfunction)
 ```
 Note, `hydra.utils.instantiate()` is an alias for `hydra.utils.call()`. They are in fact
 the same function.
