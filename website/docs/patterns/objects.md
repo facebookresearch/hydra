@@ -4,9 +4,25 @@ title: Creating objects and calling functions
 sidebar_label: Creating objects and calling functions
 ---
 ### Instantiating objects and calling methods and functions
-With `hydra.utils.call()` one can instantiate objects and call functions and methods. Create keys with a
-`cls`field with the full path to the class, method, or function and optionally use `params` to pass
-parameters to the call.
+Use `hydra.utils.call()` (or it's alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
+
+```python
+def call(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
+```
+ - `config`: A config node describing the class to instantiate or function to call and the parameters to pass
+ - `args`: optional positional passthrough
+ - `kwargs`: optional named parameters passthrough
+
+Example config node:
+```yaml
+# target class name, function name or class method fully qualified name
+cls: foo.Bar
+# optional parameters dictionary to pass when calling the target
+params:
+  x: 10
+```
+
+#### Example usage
 
 models.py
 ```python
@@ -150,5 +166,3 @@ Change the instantiated object class and override values from the command line:
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
 ```
-Note, `hydra.utils.instantiate()` is an alias for `hydra.utils.call()`. They are in fact
-the same function.
