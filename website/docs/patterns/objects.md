@@ -1,8 +1,63 @@
 ---
 id: objects
-title: Creating objects
-sidebar_label: Creating objects
+title: Creating objects and calling functions
+sidebar_label: Creating objects and calling functions
 ---
+### Instantiating objects and calling methods and functions
+With `hydra.utils.call()` one can instantiate objects and call functions and methods. Create keys with a
+`cls`field with the full path to the class, method, or function and optionally use `params` to pass
+parameters to the call.
+
+models.py
+```python
+class Foo:
+  def __init__(x: int, y: int) -> None:
+    self.x = x
+    self.y = y
+
+  @classmethod
+  def class_method(self, z: int) -> Any:
+    return self(z, 10)
+
+  @staticmethod
+  def static_method(z: int) -> int:
+    return z + 1
+
+def bar(z: int) -> int:
+  return z + 2
+```
+config.yaml
+```yaml
+myobject:
+  cls: models.Foo
+  params:
+    x: 10
+    y: 20
+myclassmethod:
+  cls: models.Foo.class_method
+  params:
+    z: 5
+mystaticmethod:
+  cls: models.Foo.static_method
+  params:
+    z: 15
+myfunction:
+  cls: models.bar
+  params:
+    z: 15
+```
+Now to test these instantiate / call them as follows:
+```python
+import hydra
+
+@hydra.main(config_path="config.yaml")
+def app(cfg):
+  foo1: Foo = hydra.utils.call(cfg.myobject)  # Foo(10, 20)
+  foo2: Foo = hydra.utils.call(cfg.myclassmethod)  # Foo(5, 10)
+  ret1: int = hydra.utils.call(cfg.mystaticmethod)  # 16
+  ret2: int = hydra.utils.call(cfg.myfunction)  # 17
+```
+### Real World Example
 One of the best ways to drive different behavior in the application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
 is determined by the actual object instance.
@@ -94,64 +149,6 @@ Change the instantiated object class and override values from the command line:
 ```text
 $ python my_app.py db=postgresql db.params.password=abcde
 PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
-```
-
-In addition to instantiating objects from classes, the `hydra.utils.call` method can also
-be used to call functions and methods.  Simply put the path to the function or method in the
-`cls` field and optionally use `params` to pass parameters to the function or method.
-
-Example file for classes, class and static methods, and functions (`models.py`)
-```python
-class Foo:
-  def __init__(x: int, y: int) -> None:
-    self.x = x
-    self.y = y
-
-  @classmethod
-  def class_method(self, z: int) -> Any:
-    return self(z, 10)
-
-  @staticmethod
-  def static_method(z: int) -> int:
-    return z + 1
-
-def bar(z: int) -> int:
-  return z + 2
-```
-Example configs
-```yaml
-# instantiates an object Foo(10, 20)
-myobject:
-  cls: models.Foo
-  params:
-    x: 10
-    y: 20
-# instantiates an object Foo(5, 10)
-myclassmethod:
-  cls: models.Foo.class_method
-  params:
-    z: 5
-# returns 16
-mystaticmethod:
-  cls: models.Foo.static_method
-  params:
-    z: 15
-# returns 17
-myfunction:
-  cls: models.bar
-  params:
-    z: 15
-```
-Now to test these instantiate / call them as follows:
-```python
-import hydra
-
-@hydra.main(config_path="config.yaml")
-def app(cfg):
-  foo1: Foo = hydra.utils.call(cfg.myobject)
-  foo2: Foo = hydra.utils.call(cfg.myclassmethod)
-  ret1: int = hydra.utils.call(cfg.mystaticmethod)
-  ret2: int = hydra.utils.call(cfg.myfunction)
 ```
 Note, `hydra.utils.instantiate()` is an alias for `hydra.utils.call()`. They are in fact
 the same function.
