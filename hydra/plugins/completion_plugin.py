@@ -86,7 +86,7 @@ class CompletionPlugin(Plugin):
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 try:
-                    conf_node = config.select(exact_key, throw_on_missing=True)
+                    conf_node = config.select(exact_key, throw_on_missing=True)  # type: ignore
                 except MissingMandatoryValue:
                     conf_node = ""
                 if conf_node is not None:
