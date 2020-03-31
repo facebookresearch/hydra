@@ -1,8 +1,79 @@
 ---
 id: objects
-title: Creating objects
-sidebar_label: Creating objects
+title: Creating objects and calling functions
+sidebar_label: Creating objects and calling functions
 ---
+### Instantiating objects and calling methods and functions
+Use `hydra.utils.call()` (or it's alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
+
+```python
+def call(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
+```
+ - `config`: A config node describing the class to instantiate or function to call and the parameters to pass
+ - `args`: optional positional passthrough
+ - `kwargs`: optional named parameters passthrough
+
+Example config node:
+```yaml
+# target class name, function name or class method fully qualified name
+cls: foo.Bar
+# optional parameters dictionary to pass when calling the target
+params:
+  x: 10
+```
+
+#### Example usage
+
+models.py
+```python
+class Foo:
+  def __init__(x: int, y: int) -> None:
+    self.x = x
+    self.y = y
+
+  @classmethod
+  def class_method(self, z: int) -> Any:
+    return self(z, 10)
+
+  @staticmethod
+  def static_method(z: int) -> int:
+    return z + 1
+
+def bar(z: int) -> int:
+  return z + 2
+```
+config.yaml
+```yaml
+myobject:
+  cls: models.Foo
+  params:
+    x: 10
+    y: 20
+myclassmethod:
+  cls: models.Foo.class_method
+  params:
+    z: 5
+mystaticmethod:
+  cls: models.Foo.static_method
+  params:
+    z: 15
+myfunction:
+  cls: models.bar
+  params:
+    z: 15
+```
+Now to test these instantiate / call them as follows:
+```python
+import hydra
+
+@hydra.main(config_path="config.yaml")
+def app(cfg):
+  foo1: Foo = hydra.utils.call(cfg.myobject)  # Foo(10, 20)
+  foo2: Foo = hydra.utils.call(cfg.myclassmethod)  # Foo(5, 10)
+  ret1: int = hydra.utils.call(cfg.mystaticmethod)  # 16
+  ret2: int = hydra.utils.call(cfg.myfunction)  # 17
+```
+### Real World Example
 One of the best ways to drive different behavior in the application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
 is determined by the actual object instance.

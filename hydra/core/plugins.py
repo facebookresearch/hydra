@@ -71,7 +71,7 @@ class Plugins(metaclass=Singleton):
     def _instantiate(self, config: PluginConf) -> Plugin:
         import hydra.utils as utils
 
-        classname = utils._get_class_name(config)
+        classname = utils._get_cls_name(config)
         try:
             if classname is None:
                 raise ImportError("class not configured")

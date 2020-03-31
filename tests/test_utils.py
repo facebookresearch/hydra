@@ -59,6 +59,45 @@ class Foo:
         return False
 
 
+class Baz(Foo):
+    @classmethod
+    def class_method(self, y: int) -> Any:
+        return self(y + 1)
+
+    @staticmethod
+    def static_method(z: int) -> int:
+        return z
+
+
+class Fii:
+    def __init__(self, a: Baz = Baz(10)):
+        self.a = a
+
+    def __repr__(self) -> str:
+        return f"a={self.a}"
+
+    def __eq__(self, other: Any) -> Any:
+        """Overrides the default implementation"""
+        if isinstance(other, Fii):
+
+            return self.a == other.a
+        return NotImplemented
+
+    def __ne__(self, other: Any) -> Any:
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        x = self.__eq__(other)
+        if x is not NotImplemented:
+            return not x
+        return NotImplemented
+
+
+fii = Fii()
+
+
+def fum(k: int) -> int:
+    return k + 1
+
+
 @pytest.mark.parametrize(  # type: ignore
     "path,expected_type", [("tests.test_utils.Bar", Bar)]
 )
@@ -118,6 +157,33 @@ def test_get_static_method(path: str, return_value: Any) -> None:
             {"a": 10, "d": 40},
             Bar(10, 200, 200, 40),
         ),
+        # Check class and static methods
+        (
+            {"cls": "tests.test_utils.Baz.class_method", "params": {"y": 10}},
+            None,
+            {},
+            Baz(11),
+        ),
+        (
+            {"cls": "tests.test_utils.Baz.static_method", "params": {"z": 43}},
+            None,
+            {},
+            43,
+        ),
+        # Check nested types and static methods
+        ({"cls": "tests.test_utils.Fii", "params": {}}, None, {}, Fii(Baz(10)),),
+        (
+            {"cls": "tests.test_utils.fii.a.class_method", "params": {"y": 10}},
+            None,
+            {},
+            Baz(11),
+        ),
+        (
+            {"cls": "tests.test_utils.fii.a.static_method", "params": {"z": 43}},
+            None,
+            {},
+            43,
+        ),
         # Check that default value is respected
         (
             {"cls": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
@@ -131,6 +197,10 @@ def test_get_static_method(path: str, return_value: Any) -> None:
             {"a": 10, "b": 20, "c": 30},
             Bar(10, 20, 30, "default_value"),
         ),
+        # call a function from a module
+        ({"cls": "tests.test_utils.fum", "params": {"k": 43}}, None, {}, 44,),
+        # Check builtins
+        ({"cls": "builtins.str", "params": {"object": 43}}, None, {}, "43",),
     ],
 )
 def test_class_instantiate(

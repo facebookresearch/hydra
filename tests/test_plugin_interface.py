@@ -28,6 +28,6 @@ search_path_plugins: List[str] = []
 )
 def test_discover(plugin_type: Type[Plugin], expected: List[str]) -> None:
     plugins = Plugins.instance().discover(plugin_type)
-    expected_classes = [get_class(c) for c in sorted(expected)]
+    expected_classes = [get_class(c) for c in expected]
     for ex in expected_classes:
         assert ex in plugins
