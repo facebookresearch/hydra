@@ -4,7 +4,7 @@ title: Creating objects and calling functions
 sidebar_label: Creating objects and calling functions
 ---
 ### Instantiating objects and calling methods and functions
-Use `hydra.utils.call()` (or it's alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
+Use `hydra.utils.call()` (or its alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
 
 ```python
 def call(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
@@ -49,19 +49,23 @@ myobject:
   params:
     x: 10
     y: 20
+    
 myclassmethod:
   cls: models.Foo.class_method
   params:
     z: 5
+
 mystaticmethod:
   cls: models.Foo.static_method
   params:
     z: 15
+
 myfunction:
   cls: models.bar
   params:
     z: 15
 ```
+
 Now to test these instantiate / call them as follows:
 ```python
 import hydra
