@@ -223,7 +223,10 @@ jobs:
           command: |
             SUBDIR=website
             REV=$(git log -5 --pretty=oneline origin/gh-pages | grep "Deploy website" |  awk 'NF>1{print $NF}'  | head -1)
-            if [[ $(git diff-index $REV -- $SUBDIR) ]]; then
+            # This condition passes in 2 conditions:
+            # 1. The revision does not exist (squash/force push happened)
+            # 2. There are changes between last deployed revision and HEAD
+            if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
               echo "Changes detected in directory $SUBDIR between origin/master and this diff"
 
               cd $SUBDIR
