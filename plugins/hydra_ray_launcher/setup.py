@@ -21,6 +21,6 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: POSIX :: Linux",
         ],
-        install_requires=["hydra-core==1.0.*", "ray"],
+        install_requires=["boto3", "hydra-core==1.0.*", "ray"],
         include_package_data=True,
     )

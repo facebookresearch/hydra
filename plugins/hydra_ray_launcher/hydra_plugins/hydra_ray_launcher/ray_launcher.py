@@ -2,9 +2,9 @@
 import logging
 import tempfile
 from subprocess import PIPE, Popen
-from typing import Sequence
+from typing import Any, Dict, Sequence
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
@@ -25,7 +25,7 @@ class RayLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class RayLauncher(Launcher):
-    def __init__(self, cluster_config: DictConfig) -> None:
+    def __init__(self, **cluster_config: Dict[str, Any]) -> None:
         self.cluster_config = cluster_config
         self.config = None
         self.task_function = None
@@ -54,7 +54,7 @@ class RayLauncher(Launcher):
         # save cluster config to a temp file for ray update
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
             with open(f.name, "w") as file:
-                print(self.cluster_config.pretty(), file=file)
+                print(OmegaConf.create(self.cluster_config).pretty(), file=file)
 
             # call 'ray up cluster.yaml' to update the cluster
             ray_up_proc = Popen(["ray", "up", f.name], stdin=PIPE, stdout=PIPE)
