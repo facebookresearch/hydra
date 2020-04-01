@@ -1,1 +1,0 @@
-# Hydra Ray AWS Launcher

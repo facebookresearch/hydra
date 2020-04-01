@@ -16,15 +16,15 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
-class RayAWSLauncherSearchPathPlugin(SearchPathPlugin):
+class RayLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         # Appends the search path for this plugin to the end of the search path
         search_path.append(
-            "hydra-ray-aws-launcher", "pkg://hydra_plugins.hydra_ray_aws_launcher.conf"
+            "hydra-ray-launcher", "pkg://hydra_plugins.hydra_ray_launcher.conf"
         )
 
 
-class RayAWSLauncher(Launcher):
+class RayLauncher(Launcher):
     def __init__(self, cluster_config: DictConfig) -> None:
         self.cluster_config = cluster_config
         self.config = None
