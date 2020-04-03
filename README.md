@@ -13,6 +13,9 @@ A framework for elegantly configuring complex applications.
 
 Check the [website](https://hydra.cc/) for more information.
 
+## License
+Hydra is licensed under [MIT License](LICENSE).
+
 ## Contributors
 
 ### Code Contributors
@@ -43,6 +46,4 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/hydra/organization/8/website"><img src="https://opencollective.com/hydra/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/hydra/organization/9/website"><img src="https://opencollective.com/hydra/organization/9/avatar.svg"></a>
 
-## License
-Hydra is licensed under [MIT License](LICENSE).
 
