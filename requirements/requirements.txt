@@ -1,2 +1,2 @@
-omegaconf>=2.0.0rc16
+omegaconf>=2.0.0rc17
 typing_extensions

@@ -151,7 +151,7 @@ def _get_kwargs(config: PluginConf, **kwargs: Any) -> Any:
     primitives = {}
     rest = {}
     for k, v in kwargs.items():
-        if _utils._is_primitive_type(v) or isinstance(v, (dict, list)):
+        if _utils.is_primitive_type(v) or isinstance(v, (dict, list)):
             primitives[k] = v
         else:
             rest[k] = v

@@ -65,7 +65,7 @@ def test_find_first_match(
         ([], "foo", "/path", None, [("foo", "/path")]),
         # appending to a non empty list
         ([("f1", "/p1")], "f2", "/p2", None, [("f1", "/p1"), ("f2", "/p2")]),
-        # appending after an anchor at index 0
+        # appending after an anchor at key 0
         (
             [("f1", "A"), ("f2", "B")],
             "f3",
@@ -116,7 +116,7 @@ def test_append(
             None,
             [("foo2", "/path2"), ("foo", "/path")],
         ),
-        # prepending in front of an anchor at index 0
+        # prepending in front of an anchor at key 0
         (
             [("foo", "/path")],
             "foo2",
@@ -124,7 +124,7 @@ def test_append(
             SearchPathQuery("foo", "/path"),
             [("foo2", "/path2"), ("foo", "/path")],
         ),
-        # prepending in front of an anchor at index 1
+        # prepending in front of an anchor at key 1
         (
             [("foo", "/path"), ("foo2", "/path2")],
             "foo3",
