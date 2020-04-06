@@ -13,3 +13,4 @@ __pycache__
 pip-wheel-metadata
 .ipynb_checkpoints
 /.dmypy.json
+.DS_store

@@ -1,0 +1,4 @@
+driver: postgresql
+pass: postgre_password
+timeout: 10
+user: postgre_user

@@ -119,7 +119,7 @@ def execute_job(
     idx: int,
     overrides: Sequence[str],
     config_loader: ConfigLoader,
-    config: DictConfig,
+    config: DictConfig, # config
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
 ) -> JobReturn:
@@ -127,6 +127,16 @@ def execute_job(
     """
     setup_globals()
     Singleton.set_state(singleton_state)
+
+    # construct the parent to the child
+    # identity
+    # search path, need to know
+    # config loader searilizign
+    # copy the single
+    # we are supporting config
+    # automatically add to the search path
+    # plugin
+    #
 
     sweep_config = config_loader.load_sweep_config(config, list(overrides))
     with open_dict(sweep_config):

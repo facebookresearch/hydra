@@ -1,4 +1,4 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+d# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 
 from omegaconf import DictConfig

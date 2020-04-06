@@ -1,0 +1,4 @@
+driver: mysql
+pass: mysql_password
+timeout: 10
+user: mysql_user
