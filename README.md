@@ -16,3 +16,15 @@ Check the [website](https://hydra.cc/) for more information.
 ## License
 Hydra is licensed under [MIT License](LICENSE).
 
+
+## Citing Hydra
+If you use Hydra in your research please use the following BibTeX entry:
+```text
+@Misc{,
+  author =       {Omry Yadan},
+  title =        {A framework for elegantly configuring complex applications},
+  howpublished = {Github},
+  year =         {2019},
+  url =          {https://github.com/facebookresearch/hydra}
+}
+```
