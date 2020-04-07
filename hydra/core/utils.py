@@ -100,7 +100,6 @@ def run_job(
 ) -> "JobReturn":
     old_cwd = os.getcwd()
     working_dir = str(config.select(job_dir_key))
-
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
