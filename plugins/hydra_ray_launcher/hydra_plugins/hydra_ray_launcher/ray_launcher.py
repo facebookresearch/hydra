@@ -50,7 +50,6 @@ class RayLauncher(Launcher):
         self.config = config
         self.config_loader = config_loader
         self.task_function = task_function
-        print(f"CONFIG {config.pretty()}")
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
@@ -137,7 +136,7 @@ class RayLauncher(Launcher):
         self, yaml_file_path: str, file_path: str, pickle_path: str
     ):
         command = "python {} {}".format(file_path, pickle_path)
-        log.info("COMMAND RUN {}".format(command))
+        log.info("Issuing command on remote server: {}".format(command))
         ray_proc = Popen(
             [
                 "ray",
