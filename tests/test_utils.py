@@ -214,7 +214,7 @@ def test_class_instantiate(
     if key_to_get_config is None:
         config_to_pass = conf
     else:
-        config_to_pass = conf.select(key_to_get_config)
+        config_to_pass = OmegaConf.select(conf, key_to_get_config)
     obj = utils.instantiate(config_to_pass, **kwargs_to_pass)  # type: ignore
     assert obj == expected
 

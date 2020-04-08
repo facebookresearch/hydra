@@ -86,7 +86,9 @@ class CompletionPlugin(Plugin):
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 try:
-                    conf_node = config.select(exact_key, throw_on_missing=True)
+                    conf_node = OmegaConf.select(
+                        config, exact_key, throw_on_missing=True
+                    )
                 except MissingMandatoryValue:
                     conf_node = ""
                 if conf_node is not None:
@@ -106,7 +108,7 @@ class CompletionPlugin(Plugin):
                 if last_dot != -1:
                     base_key = word[0:last_dot]
                     partial_key = word[last_dot + 1 :]
-                    conf_node = config.select(base_key)
+                    conf_node = OmegaConf.select(config, base_key)
                     key_matches = CompletionPlugin._get_matches(conf_node, partial_key)
                     matches.extend(
                         ["{}.{}".format(base_key, match) for match in key_matches]

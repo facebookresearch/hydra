@@ -76,7 +76,7 @@ class ConfigStore(metaclass=Singleton):
 
         if path is not None and path != "":
             cfg = OmegaConf.create()
-            cfg.update_node(path, OmegaConf.structured(node))
+            OmegaConf.update(cfg, path, OmegaConf.structured(node))
         else:
             cfg = OmegaConf.structured(node)
 

@@ -70,9 +70,9 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         """
         Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
         which could be at the form of python script.py or some_app.
-        it also corrects the index (COMP_INDEX) to reflect the same location in the striped command line.
+        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
         :param line: input line, may contain python file.py followed=by_args..
-        :return: tuple(args line, index of cursor in args line)
+        :return: tuple(args line, key of cursor in args line)
         """
         python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
         app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
@@ -88,14 +88,14 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
 
     def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
-        # index = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
+        # key = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 
-        # if index == "":
-        #     index = 0
-        # if isinstance(index, str):
-        #     index = int(index)
+        # if key == "":
+        #     key = 0
+        # if isinstance(key, str):
+        #     key = int(key)
 
-        # currently index is ignored.
+        # currently key is ignored.
         line = self.strip_python_or_app_name(line)
         print(" ".join(self._query(config_name=config_name, line=line)))
 

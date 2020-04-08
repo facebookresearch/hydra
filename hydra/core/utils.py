@@ -99,12 +99,12 @@ def run_job(
     job_subdir_key: Optional[str],
 ) -> "JobReturn":
     old_cwd = os.getcwd()
-    working_dir = str(config.select(job_dir_key))
+    working_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
-        subdir = str(config.select(job_subdir_key))
+        subdir = str(OmegaConf.select(config, job_subdir_key))
         working_dir = os.path.join(working_dir, subdir)
     try:
         ret = JobReturn()
@@ -172,7 +172,7 @@ class JobRuntime(metaclass=Singleton):
         self.set("name", "UNKNOWN_NAME")
 
     def get(self, key: str) -> Any:
-        ret = self.conf.select(key)
+        ret = OmegaConf.select(self.conf, key)
         if ret is None:
             raise KeyError("Key not found in {}: {}".format(type(self).__name__, key))
         return ret

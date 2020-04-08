@@ -73,7 +73,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
         job_defaults = ConfigLoaderImpl._get_defaults(job_cfg)
         defaults = ConfigLoaderImpl._get_defaults(hydra_cfg)
-        hydra_cfg._promote(OmegaConf.get_type(job_cfg))
+
+        job_cfg_type = OmegaConf.get_type(job_cfg)
+        if job_cfg_type is not None and not issubclass(job_cfg_type, dict):
+            hydra_cfg._promote(job_cfg_type)
+
         # if defaults are re-introduced by the promotion, remove it.
         if "defaults" in hydra_cfg:
             del hydra_cfg["defaults"]
