@@ -8,7 +8,7 @@ from typing import Any
 
 import nevergrad as ng  # type: ignore
 import pytest
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -100,6 +100,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         ]
     subprocess.check_call(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"
     assert len(returns) == 3
     best_parameters = returns.best_parameters
