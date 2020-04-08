@@ -9,7 +9,6 @@ from typing import Any, Dict, Sequence
 import cloudpickle
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
@@ -18,6 +17,7 @@ from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_g
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.types import TaskFunction
+
 
 log = logging.getLogger(__name__)
 
@@ -31,15 +31,19 @@ class RayLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class RayLauncher(Launcher):
-    def __init__(self, **params: Dict[str, Any]) -> None:
-        self.ray_cluster_config = params.get("ray_cluster_config")
-        self.ray_init_config = params.get("ray_init_config")
-        self.ray_remote_config = params.get("ray_remote_config")
-        self.app_config_path = params.get("app_config_path")
+    def __init__(self,
+                 mode: str,
+                 modes: DictConfig) -> None:
         self.config = None
         self.task_function = None
-        self.sweep_configs = None
         self.config_loader = None
+        self.mode = mode
+        cluster_config = modes.get(mode)
+        # TODO make it support local
+        if mode == "aws":
+            self.ray_cluster_config = cluster_config.get("ray_cluster_config")
+            self.ray_init_config = cluster_config.get("ray_init_config")
+            self.ray_remote_config = cluster_config.get("ray_remote_config")
 
     def setup(
         self,
@@ -54,25 +58,16 @@ class RayLauncher(Launcher):
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
-        """
-        :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.
-        :param initial_job_idx: Initial job idx in batch.
-        :return: an array of return values from run_job with indexes corresponding to the input list indexes.
-        """
         setup_globals()
         assert self.config is not None
         assert self.config_loader is not None
         assert self.task_function is not None
 
-        ray_yaml_path = (
-            self._save_ray_config()
-        )  # TODO separate ray up with saving yaml file
+        # based on mode, populate self.ray_yaml_path
+        ray_yaml_path = self._save_ray_config()
 
         # Add remote dir to the search path. TODO see if there's a better way to do this
         remote_script_dir = self._get_remote_dir(ray_yaml_path)
-        config_search_path = self.config_loader.get_search_path()
-        config_search_path.append("main", remote_script_dir + "/conf")
-        self.config_loader = ConfigLoaderImpl(config_search_path=config_search_path)
 
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
@@ -95,12 +90,10 @@ class RayLauncher(Launcher):
                 sweep_config.hydra.job.id = "job_id_for_{}".format(idx)
                 sweep_config.hydra.job.num = idx
             HydraConfig.instance().set_config(sweep_config)
-
             singleton_state = Singleton.get_state()
             self._dump_func_params(
                 idx,
-                overrides,
-                self.config_loader,
+                sweep_config,
                 self.config,
                 self.task_function,
                 singleton_state,
@@ -114,12 +107,6 @@ class RayLauncher(Launcher):
 
         self._rsync_to_ray_cluster(
             os.path.join(os.path.dirname(__file__), "ray_remote_invoke.py"),
-            remote_script_dir,
-            ray_yaml_path,
-        )
-
-        self._rsync_to_ray_cluster(
-            self.app_config_path,
             remote_script_dir,
             ray_yaml_path,
         )
@@ -177,9 +164,8 @@ class RayLauncher(Launcher):
     def _dump_func_params(
         self,
         idx: int,
-        overrides: Sequence[str],
-        config_loader: ConfigLoader,
-        config: DictConfig,  # config
+        sweep_config: DictConfig,
+        config: DictConfig,
         task_function: TaskFunction,
         singleton_state: Dict[Any, Any],
         temp_dir: str,
@@ -189,9 +175,8 @@ class RayLauncher(Launcher):
         with open(path, "wb") as f:
             params_dict = {
                 "idx": idx,
-                "overrides": overrides,
-                "config_loader": config_loader,
-                "config": config,  # config
+                "sweep_config": sweep_config,
+                "config": config,
                 "task_function": task_function,
                 "singleton_state": singleton_state,
             }
@@ -209,3 +194,4 @@ class RayLauncher(Launcher):
             # y to the prompt asking if we want to restart ray server
             ray_up_proc.communicate(input=b"y")
             return f.name
+
