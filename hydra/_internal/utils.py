@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import argparse
 import inspect
+import logging
 import os
 import sys
 from os.path import dirname, join, normpath, realpath
@@ -10,6 +11,8 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.types import TaskFunction
+
+log = logging.getLogger(__name__)
 
 
 def detect_calling_file_or_module(
