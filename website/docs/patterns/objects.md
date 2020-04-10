@@ -7,13 +7,27 @@ sidebar_label: Creating objects and calling functions
 Use `hydra.utils.call()` (or its alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
 
 ```python
-def call(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
+def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
+    """
+    :param config: An ObjectConf or DictConfig describing what to call and what params to use
+    :param args: optional positional parameters pass-through
+    :param kwargs: optional named parameters pass-through
+    :return: the return value from the specified class or method
+    """
 ```
- - `config`: A config node describing the class to instantiate or function to call and the parameters to pass
- - `args`: optional positional passthrough
- - `kwargs`: optional named parameters passthrough
 
-Example config node:
+### ObjectConf definition
+ObjectConf is defined in `hydra.types.ObjectConf`:
+```python
+@dataclass
+class ObjectConf(Dict[str, Any]):
+    # class, class method or function name
+    cls: str = MISSING
+    # parameters to pass to cls when calling it
+    params: Any = field(default_factory=dict)
+```
+
+### Example config node
 ```yaml
 # target class name, function name or class method fully qualified name
 cls: foo.Bar
@@ -21,6 +35,7 @@ cls: foo.Bar
 params:
   x: 10
 ```
+
 
 #### Example usage
 

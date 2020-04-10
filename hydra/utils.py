@@ -17,6 +17,30 @@ from hydra.types import ObjectConf
 log = logging.getLogger(__name__)
 
 
+def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
+    """
+    :param config: An ObjectConf or DictConfig describing what to call and what params to use
+    :param args: optional positional parameters pass-through
+    :param kwargs: optional named parameters pass-through
+    :return: the return value from the specified class or method
+    """
+    try:
+        cls = _get_cls_name(config)
+        type_or_callable = _locate(cls)
+        if isinstance(type_or_callable, type):
+            return _instantiate_class(type_or_callable, config, *args, **kwargs)
+        else:
+            assert callable(type_or_callable)
+            return _call_callable(type_or_callable, config, *args, **kwargs)
+    except Exception as e:
+        log.error(f"Error instantiating '{cls}' : {e}")
+        raise e
+
+
+# Alias for call
+instantiate = call
+
+
 def get_class(path: str) -> type:
     try:
         cls = _locate(path)
@@ -43,25 +67,10 @@ def get_method(path: str) -> Callable[..., Any]:
 get_static_method = get_method
 
 
-def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
-    cls = _get_cls_name(config)
-    try:
-        type_or_callable = _locate(cls)
-        if isinstance(type_or_callable, type):
-            return _instantiate_class(type_or_callable, config, *args, **kwargs)
-        else:
-            assert callable(type_or_callable)
-            return _call_callable(type_or_callable, config, *args, **kwargs)
-    except Exception as e:
-        log.error(f"Error instantiating '{cls}' : {e}")
-        raise e
-
-
-# Alias for call
-instantiate = call
-
-
 def get_original_cwd() -> str:
+    """
+    :return: the original working directory the Hydra application was launched from
+    """
     ret = HydraConfig.instance().hydra.runtime.cwd
     assert ret is not None and isinstance(ret, str)
     return ret
@@ -72,7 +81,7 @@ def to_absolute_path(path: str) -> str:
     converts the specified path to be absolute path.
     if the input path is relative, it's interpreted as relative to the original working directory
     if it's absolute, it's returned as is
-    :param path:
+    :param path: path to convert
     :return:
     """
     p = Path(path)
