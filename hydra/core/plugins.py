@@ -69,7 +69,7 @@ class Plugins(metaclass=Singleton):
             SourcesRegistry.instance().register(source)
 
     def _instantiate(self, config: PluginConf) -> Plugin:
-        import hydra.utils as utils
+        import hydra._internal._utils_impl as utils
 
         classname = utils._get_cls_name(config)
         try:
