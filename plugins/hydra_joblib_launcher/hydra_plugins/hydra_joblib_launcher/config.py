@@ -2,8 +2,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from hydra.conf import PluginConf
 from hydra.core.config_store import ConfigStore
+from hydra.types import ObjectConf
 
 
 @dataclass
@@ -43,7 +43,7 @@ class JobLibConf:
 
 
 @dataclass
-class JobLibLauncherConf(PluginConf):
+class JobLibLauncherConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher"
     params: JobLibConf = JobLibConf()
 

@@ -5,20 +5,23 @@ from typing import Any, Callable, Type, Union
 
 from omegaconf import DictConfig, OmegaConf, _utils
 
-from hydra.conf import PluginConf
+from hydra.types import ObjectConf
 
 log = logging.getLogger(__name__)
 
 
 def _instantiate_class(
-    clazz: Type[Any], config: PluginConf, *args: Any, **kwargs: Any
+    clazz: Type[Any], config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
 ) -> Any:
     final_kwargs = _get_kwargs(config, **kwargs)
     return clazz(*args, **final_kwargs)
 
 
 def _call_callable(
-    fn: Callable[..., Any], config: PluginConf, *args: Any, **kwargs: Any
+    fn: Callable[..., Any],
+    config: Union[ObjectConf, DictConfig],
+    *args: Any,
+    **kwargs: Any,
 ) -> Any:
     final_kwargs = _get_kwargs(config, **kwargs)
     return fn(*args, **final_kwargs)
@@ -66,7 +69,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
 
 
-def _get_kwargs(config: PluginConf, **kwargs: Any) -> Any:
+def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     import copy
 
     # copy config to avoid mutating it when merging with kwargs
@@ -100,11 +103,11 @@ def _get_kwargs(config: PluginConf, **kwargs: Any) -> Any:
 
 
 # private
-def _get_cls_name(config: PluginConf) -> str:
+def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
     if "class" in config:
         warnings.warn(
             "\n"
-            "PluginConf field 'class' is deprecated since Hydra 1.0.0 and will be removed in a future Hydra version.\n"
+            "ObjectConf field 'class' is deprecated since Hydra 1.0.0 and will be removed in a future Hydra version.\n"
             "Offending config class:\n"
             f"\tclass={config['class']}\n"
             "Change your config to use 'cls' instead of 'class'.\n",

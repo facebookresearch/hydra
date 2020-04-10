@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Union
+
+from omegaconf import DictConfig
 
 from hydra._internal._utils_impl import (
     _call_callable,
@@ -9,8 +11,8 @@ from hydra._internal._utils_impl import (
     _instantiate_class,
     _locate,
 )
-from hydra.conf import PluginConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.types import ObjectConf
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +43,7 @@ def get_method(path: str) -> Callable[..., Any]:
 get_static_method = get_method
 
 
-def call(config: PluginConf, *args: Any, **kwargs: Any) -> Any:
+def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
     cls = _get_cls_name(config)
     try:
         type_or_callable = _locate(cls)

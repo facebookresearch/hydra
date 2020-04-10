@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
-from hydra.conf import PluginConf
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin
@@ -20,7 +19,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import ObjectConf, TaskFunction
 
 
 @dataclass
@@ -68,7 +67,7 @@ class Plugins(metaclass=Singleton):
             assert issubclass(source, ConfigSource)
             SourcesRegistry.instance().register(source)
 
-    def _instantiate(self, config: PluginConf) -> Plugin:
+    def _instantiate(self, config: ObjectConf) -> Plugin:
         import hydra._internal._utils_impl as utils
 
         classname = utils._get_cls_name(config)

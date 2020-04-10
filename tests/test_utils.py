@@ -7,8 +7,8 @@ from omegaconf import DictConfig, OmegaConf
 
 import hydra._internal.utils as internal_utils
 from hydra import utils
-from hydra.conf import PluginConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.types import ObjectConf
 
 
 def some_method() -> int:
@@ -215,12 +215,12 @@ def test_class_instantiate(
         config_to_pass = conf
     else:
         config_to_pass = OmegaConf.select(conf, key_to_get_config)
-    obj = utils.instantiate(config_to_pass, **kwargs_to_pass)  # type: ignore
+    obj = utils.instantiate(config_to_pass, **kwargs_to_pass)
     assert obj == expected
 
 
 def test_class_instantiate_pass_omegaconf_node() -> Any:
-    pc = PluginConf()
+    pc = ObjectConf()
     # This is a bit clunky because it exposes a problem with the backport of dataclass on Python 3.6
     # see: https://github.com/ericvsmith/dataclasses/issues/155
     pc.cls = "tests.test_utils.Bar"
