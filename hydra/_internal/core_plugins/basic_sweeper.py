@@ -19,16 +19,15 @@ from typing import Any, Iterable, List, Optional, Sequence
 
 from omegaconf import DictConfig
 
-from hydra.conf import PluginConf
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.utils import JobReturn
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import ObjectConf, TaskFunction
 
 
 @dataclass
-class BasicSweeperConf(PluginConf):
+class BasicSweeperConf(ObjectConf):
     cls: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
 
     @dataclass

@@ -1,10 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import ObjectConf
 
 hydra_defaults = [
     # Hydra's logging config
@@ -22,16 +23,6 @@ hydra_defaults = [
     # --hydra-help template
     {"hydra/hydra_help": "default"},
 ]
-
-
-# This extends Dict[str, Any] to allow for the deprecated "class" field.
-# Once support for class field removed this can stop extending Dict.
-@dataclass
-class PluginConf(Dict[str, Any]):
-    # class, class method or function name
-    cls: str = MISSING
-    # parameters to pass to cls when calling it
-    params: Any = field(default_factory=dict)
 
 
 @dataclass
@@ -120,9 +111,9 @@ class HydraConf:
     job_logging: Any = MISSING
 
     # Sweeper configuration
-    sweeper: PluginConf = field(default_factory=PluginConf)
+    sweeper: ObjectConf = field(default_factory=ObjectConf)
     # Launcher configuration
-    launcher: PluginConf = field(default_factory=PluginConf)
+    launcher: ObjectConf = field(default_factory=ObjectConf)
 
     # Program Help template
     help: HelpConf = HelpConf()
