@@ -21,7 +21,6 @@ from typing_extensions import Protocol
 import hydra.experimental
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
-from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, split_config_path
 from hydra.types import TaskFunction
 
@@ -411,15 +410,3 @@ if __name__ == "__main__":
         return file_str
     finally:
         os.chdir(orig_dir)
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def restore_singletons() -> Any:
-    """
-    A fixture to restore singletons state after this the function.
-    This is useful for functions that are making a one-off change to singlestons that should not effect
-    other tests
-    """
-    state = copy.deepcopy(Singleton.get_state())
-    yield
-    Singleton.set_state(state)

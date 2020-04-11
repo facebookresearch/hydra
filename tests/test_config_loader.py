@@ -13,10 +13,7 @@ from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
 
 # noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    chdir_hydra_root,
-    restore_singletons,
-)
+from hydra.test_utils.test_utils import chdir_hydra_root  # noqa: F401
 
 chdir_hydra_root()
 

@@ -264,7 +264,9 @@ def test_get_original_cwd() -> None:
         ("/home/omry/hydra/", "/foo/bar", "/foo/bar"),
     ],
 )
-def test_to_absolute_path(orig_cwd: str, path: str, expected: str) -> None:
+def test_to_absolute_path(
+    restore_singletons: Any, orig_cwd: str, path: str, expected: str
+) -> None:
     # normalize paths to current OS
     orig_cwd = str(Path(orig_cwd))
     path = str(Path(path))
