@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -215,8 +216,11 @@ def test_class_instantiate(
         config_to_pass = conf
     else:
         config_to_pass = OmegaConf.select(conf, key_to_get_config)
+    config_to_pass_copy = copy.deepcopy(config_to_pass)
     obj = utils.instantiate(config_to_pass, **kwargs_to_pass)
     assert obj == expected
+    # make sure config is not modified by instantiate
+    assert config_to_pass == config_to_pass_copy
 
 
 def test_class_instantiate_pass_omegaconf_node() -> Any:

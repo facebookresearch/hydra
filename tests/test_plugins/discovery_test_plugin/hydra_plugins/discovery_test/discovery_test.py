@@ -10,8 +10,4 @@ if "TMP_FILE" in os.environ:
 
 
 class DiscoveryTestPlugin(Plugin):
-    def __init__(self, v: int) -> None:
-        self.v = v
-
-    def add(self, x: int) -> int:
-        return self.v + x
+    ...
