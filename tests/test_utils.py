@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -252,12 +253,18 @@ def test_class_warning() -> None:
     assert utils.instantiate(config) == expected
 
 
-def test_get_original_cwd() -> None:
+def test_get_original_cwd(restore_singletons: Any) -> None:
     orig = "/foo/bar"
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig}}})
     assert isinstance(cfg, DictConfig)
-    HydraConfig().set_config(cfg)
+    HydraConfig.instance().set_config(cfg)
     assert utils.get_original_cwd() == orig
+
+
+def test_get_original_cwd_without_hydra(restore_singletons: Any) -> None:
+    HydraConfig.instance()
+    with pytest.raises(ValueError):
+        utils.get_original_cwd()
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -278,6 +285,23 @@ def test_to_absolute_path(
     cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
     assert isinstance(cfg, DictConfig)
     HydraConfig().set_config(cfg)
+    assert utils.to_absolute_path(path) == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "path, expected",
+    [
+        ("foo/bar", f"{os.getcwd()}/foo/bar"),
+        ("foo/bar", f"{os.getcwd()}/foo/bar"),
+        ("/foo/bar", os.path.abspath("/foo/bar")),
+    ],
+)
+def test_to_absolute_path_without_hydra(
+    restore_singletons: Any, path: str, expected: str
+) -> None:
+    # normalize paths to current OS
+    path = str(Path(path))
+    expected = str(Path(expected).absolute())
     assert utils.to_absolute_path(path) == expected
 
 
