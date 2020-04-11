@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 import logging.config
 import warnings
 from typing import Any, Callable, Type, Union
@@ -70,10 +71,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
 
 
 def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
-    import copy
-
     # copy config to avoid mutating it when merging with kwargs
-
     config_copy = copy.deepcopy(config)
 
     # Manually set parent as deepcopy does not currently handles it (https://github.com/omry/omegaconf/issues/130)

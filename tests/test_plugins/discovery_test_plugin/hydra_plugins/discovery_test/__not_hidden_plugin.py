@@ -3,4 +3,4 @@ from hydra.plugins.plugin import Plugin
 
 
 class NotHiddenTestPlugin(Plugin):
-    pass
+    ...
