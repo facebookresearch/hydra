@@ -29,9 +29,8 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
         type_or_callable = _locate(cls)
         if isinstance(type_or_callable, type):
             return _instantiate_class(type_or_callable, config, *args, **kwargs)
-        else:
-            assert callable(type_or_callable)
-            return _call_callable(type_or_callable, config, *args, **kwargs)
+        assert callable(type_or_callable)
+        return _call_callable(type_or_callable, config, *args, **kwargs)
     except Exception as e:
         log.error(f"Error instantiating '{cls}' : {e}")
         raise e
