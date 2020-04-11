@@ -63,8 +63,8 @@ def pytest_args(session, *args):
     return ret
 
 
-def run_pytest(session, directory="."):
-    pytest_cmd = pytest_args(session, directory)
+def run_pytest(session, directory=".", *args):
+    pytest_cmd = pytest_args(session, directory, *args)
     session.run(*pytest_cmd, silent=SILENT)
 
 
@@ -194,7 +194,7 @@ def test_core(session, install_cmd):
     run_pytest(session, "tests")
 
     # test discovery_test_plugin
-    run_pytest(session, "tests/test_plugins/discovery_test_plugin")
+    run_pytest(session, "tests/test_plugins/discovery_test_plugin", "--noconftest")
 
     # Install and test example app
     session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)

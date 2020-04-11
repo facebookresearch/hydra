@@ -7,13 +7,10 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
 from hydra.experimental import compose, initialize
-
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
+from hydra.test_utils.test_utils import (
     TGlobalHydraContext,
     chdir_hydra_root,
     does_not_raise,
-    hydra_global_context,
 )
 
 chdir_hydra_root()
@@ -59,7 +56,7 @@ def test_initialize_with_config_dir() -> None:
 class TestCompose:
     def test_compose_decorator(
         self,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_dir: str,
         config_file: str,
         overrides: List[str],
@@ -72,7 +69,7 @@ class TestCompose:
     def test_compose_config(
         self,
         config_dir: str,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_file: str,
         overrides: List[str],
         expected: Any,
@@ -84,7 +81,7 @@ class TestCompose:
     def test_strict_failure_global_strict(
         self,
         config_dir: str,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_file: str,
         overrides: List[str],
         expected: Any,
@@ -98,7 +95,7 @@ class TestCompose:
     def test_strict_failure_call_is_strict(
         self,
         config_dir: str,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_file: str,
         overrides: List[str],
         expected: Any,
@@ -117,7 +114,7 @@ class TestCompose:
     def test_strict_failure_disabled_on_call(
         self,
         config_dir: str,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_file: str,
         overrides: List[str],
         expected: Any,
@@ -203,7 +200,7 @@ class TestComposeCloudInfraExample:
     def test_compose(
         self,
         config_dir: str,
-        hydra_global_context: TGlobalHydraContext,  # noqa: F811
+        hydra_global_context: TGlobalHydraContext,
         config_file: str,
         overrides: List[str],
         expected: Any,

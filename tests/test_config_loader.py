@@ -11,12 +11,7 @@ from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.errors import MissingConfigException
-
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    chdir_hydra_root,
-    restore_singletons,
-)
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
@@ -217,9 +212,7 @@ class TestConfigLoader:
         del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
-    def test_load_config_with_schema(
-        self, restore_singletons: Any, path: str  # noqa: F811
-    ) -> None:
+    def test_load_config_with_schema(self, restore_singletons: Any, path: str) -> None:
 
         ConfigStore.instance().store(
             group="db",
@@ -260,7 +253,7 @@ class TestConfigLoader:
             )
 
     def test_load_config_file_with_schema_validation(
-        self, restore_singletons: Any, path: str  # noqa: F811
+        self, restore_singletons: Any, path: str
     ) -> None:
 
         with ConfigStoreWithProvider("test_provider") as config_store:
@@ -500,7 +493,7 @@ def test_mixed_composition_order() -> None:
     assert config_loader.get_load_history() == expected
 
 
-def test_load_schema_as_config(restore_singletons: Any) -> None:  # noqa: F811
+def test_load_schema_as_config(restore_singletons: Any) -> None:
     """
     Load structured config as a configuration
     """
@@ -554,7 +547,7 @@ class Config:
     plugin: Plugin = Plugin()
 
 
-def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
+def test_overlapping_schemas(restore_singletons: Any) -> None:
 
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
@@ -577,7 +570,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:  # noqa: F811
         cfg.plugin = 10
 
 
-def test_invalid_plugin_merge(restore_singletons: Any) -> Any:  # noqa: F811
+def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
     cs.store(group="plugin", name="invalid", node=InvalidPlugin, path="plugin")

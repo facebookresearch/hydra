@@ -9,14 +9,10 @@ import pytest
 from omegaconf import OmegaConf
 
 from hydra import MissingConfigException
-
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
+from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
-    sweep_runner,
-    task_runner,
     verify_dir_outputs,
 )
 
@@ -27,7 +23,7 @@ chdir_hydra_root()
     "calling_file, calling_module", [(".", None), (None, ".")]
 )
 def test_missing_conf_dir(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with pytest.raises(MissingConfigException):
         with task_runner(
@@ -47,7 +43,7 @@ def test_missing_conf_dir(
     ],
 )
 def test_missing_conf_file(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with pytest.raises(MissingConfigException):
         with task_runner(
@@ -67,7 +63,7 @@ def test_missing_conf_file(
     ],
 )
 def test_app_without_config___no_overrides(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -87,7 +83,7 @@ def test_app_without_config___no_overrides(
     ],
 )
 def test_hydra_main_rerun(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -107,7 +103,7 @@ def test_hydra_main_rerun(
     ],
 )
 def test_app_without_config__with_overrides(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -130,7 +126,7 @@ def test_app_without_config__with_overrides(
     ],
 )
 def test_app_with_config_file__no_overrides(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
 
     task = task_runner(
@@ -155,7 +151,7 @@ def test_app_with_config_file__no_overrides(
     ],
 )
 def test_app_with_config_path_backward_compatibility(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     task = task_runner(
         calling_file=calling_file,
@@ -180,7 +176,7 @@ def test_app_with_config_path_backward_compatibility(
     ],
 )
 def test_app_with_config_file__with_overide(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -203,7 +199,7 @@ def test_app_with_config_file__with_overide(
     ],
 )
 def test_app_with_split_config(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -226,7 +222,7 @@ def test_app_with_split_config(
     ],
 )
 def test_app_with_config_groups__override_dataset__wrong(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with pytest.raises(MissingConfigException) as ex:
         with task_runner(
@@ -248,7 +244,7 @@ def test_app_with_config_groups__override_dataset__wrong(
     ],
 )
 def test_app_with_config_groups__override_all_configs(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -271,7 +267,7 @@ def test_app_with_config_groups__override_all_configs(
     ],
 )
 def test_app_with_sweep_cfg__override_to_basic_launcher(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     with task_runner(
         calling_file=calling_file,
@@ -329,7 +325,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
 )
 @pytest.mark.parametrize("overrides", [["free_group=opt1,opt2"]])  # type: ignore
 def test_multirun_with_free_override(
-    sweep_runner: TSweepRunner,  # noqa: F811
+    sweep_runner: TSweepRunner,
     calling_file: str,
     calling_module: str,
     overrides: List[str],
@@ -359,7 +355,7 @@ def test_multirun_with_free_override(
     ],
 )
 def test_sweep_complex_defaults(
-    sweep_runner: TSweepRunner, calling_file: str, calling_module: str  # noqa: F811
+    sweep_runner: TSweepRunner, calling_file: str, calling_module: str
 ) -> None:
     with sweep_runner(
         calling_file=calling_file,
@@ -468,7 +464,7 @@ def test_help(
     ],
 )
 def test_interpolating_dir_hydra_to_app(
-    task_runner: TTaskRunner, calling_file: str, calling_module: str  # noqa: F811
+    task_runner: TTaskRunner, calling_file: str, calling_module: str
 ) -> None:
     basedir = "foo"
     with task_runner(

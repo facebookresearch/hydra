@@ -1,19 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from hydra.core.global_hydra import GlobalHydra
+from typing import Any
 
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    TGlobalHydraContext,
-    chdir_plugin_root,
-    hydra_global_context,
-)
+from hydra.core.global_hydra import GlobalHydra
+from hydra.test_utils.test_utils import chdir_plugin_root
 
 chdir_plugin_root()
 
 
-def test_config_installed(
-    hydra_global_context: TGlobalHydraContext,  # noqa: F811
-) -> None:
+def test_config_installed(hydra_global_context: Any) -> None:
     """
     Tests that color options are available for both hydra/hydra_logging and hydra/job_logging
     """

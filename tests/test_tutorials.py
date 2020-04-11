@@ -8,13 +8,11 @@ from typing import Any, List
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
-from hydra.test_utils.test_utils import (  # noqa: F401
+from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
     does_not_raise,
-    sweep_runner,
-    task_runner,
     verify_dir_outputs,
 )
 
@@ -232,10 +230,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
     ],
 )
 def test_objects_example(
-    tmpdir: Path,
-    task_runner: TTaskRunner,  # noqa: F811
-    args: List[str],
-    output_conf: DictConfig,
+    tmpdir: Path, task_runner: TTaskRunner, args: List[str], output_conf: DictConfig
 ) -> None:
     with task_runner(
         calling_file="examples/patterns/objects/my_app.py",
@@ -249,7 +244,7 @@ def test_objects_example(
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_composition_config_example(task_runner: TTaskRunner) -> None:  # noqa: F811
+def test_composition_config_example(task_runner: TTaskRunner) -> None:
     with task_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
@@ -282,7 +277,7 @@ def test_composition_config_example(task_runner: TTaskRunner) -> None:  # noqa: 
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
+def test_sweeping_example(sweep_runner: TSweepRunner) -> None:
     with sweep_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
@@ -303,7 +298,7 @@ def test_sweeping_example(sweep_runner: TSweepRunner) -> None:  # noqa: F811
             assert tuple(ret.overrides) in overrides
 
 
-def test_specializing_config_example(task_runner: TTaskRunner) -> None:  # noqa: F811
+def test_specializing_config_example(task_runner: TTaskRunner) -> None:
     with task_runner(
         calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,

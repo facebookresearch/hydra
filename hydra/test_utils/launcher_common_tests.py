@@ -28,21 +28,21 @@ class LauncherTestSuite:
 
     def test_sweep_2_jobs(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         sweep_2_jobs(
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
     def test_not_sweeping_hydra_overrides(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         not_sweeping_hydra_overrides(
             sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
         )
 
     def test_sweep_1_job_strict(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         sweep_1_job(
             sweep_runner,
             strict=True,
@@ -51,7 +51,7 @@ class LauncherTestSuite:
 
     def test_sweep_1_job_strict_and_bad_key(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         # Ideally this would be KeyError, This can't be more specific because some launcher plugins
         # like submitit raises a different exception on job failure and not the underlying exception.
         with pytest.raises(Exception):
@@ -69,10 +69,7 @@ class LauncherTestSuite:
         )
 
     def test_sweep_over_unspecified_mandatory_default(
-        self,
-        sweep_runner: TSweepRunner,  # noqa: F811
-        launcher_name: str,
-        overrides: List[str],
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
     ) -> None:
         base_overrides = ["hydra/launcher=" + launcher_name, "group1=file1,file2"]
         sweep = sweep_runner(
@@ -97,7 +94,7 @@ class LauncherTestSuite:
 
     def test_sweep_and_override(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         """
         Tests that we can override things in the configs merged in only during the sweep config construction
         db.user=someone does not exist db_conf.yaml, and is only appear when we merge in db=mysql or db=postgresql.
@@ -145,7 +142,7 @@ class LauncherTestSuite:
 class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
-    ) -> None:  # noqa: F811
+    ) -> None:
         overrides.extend(
             # order sensitive?
             ["hydra/launcher=" + launcher_name, "group1=file1,file2", "bar=100,200,300"]

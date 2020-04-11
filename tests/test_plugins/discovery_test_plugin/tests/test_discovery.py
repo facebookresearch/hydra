@@ -5,8 +5,6 @@ from pathlib import Path
 from hydra.core.plugins import Plugins
 from hydra.plugins.plugin import Plugin
 
-# TODO: test that launcher and sweeper plugins are imported only once when they are instantiated
-
 
 def test_number_of_imports(tmpdir: Path) -> None:
     os.environ["TMP_FILE"] = str(tmpdir / "import.log")

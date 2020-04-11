@@ -6,16 +6,7 @@ from pathlib import Path
 import pytest
 from omegaconf import OmegaConf
 
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    TSweepRunner,
-    TTaskRunner,
-    chdir_hydra_root,
-    does_not_raise,
-    sweep_runner,
-    task_runner,
-    verify_dir_outputs,
-)
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 

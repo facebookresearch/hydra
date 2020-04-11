@@ -8,9 +8,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import TSweepRunner, sweep_runner  # noqa: F401
+from hydra.test_utils.test_utils import TSweepRunner
 from hydra_plugins.example_sweeper_plugin.example_sweeper import ExampleSweeper
 
 
@@ -21,7 +19,7 @@ def test_discovery() -> None:
     ]
 
 
-def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
+def test_launched_jobs(sweep_runner: TSweepRunner) -> None:
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
