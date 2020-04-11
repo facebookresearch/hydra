@@ -16,9 +16,10 @@ from hydra.test_utils.test_utils import (
 )
 
 
+@pytest.mark.usefixtures("restore_singletons")
 class LauncherTestSuite:
     def test_sweep_1_job(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
     ) -> None:
         sweep_1_job(
             sweep_runner,
@@ -139,9 +140,10 @@ class LauncherTestSuite:
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
 
+@pytest.mark.usefixtures("restore_singletons")
 class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
     ) -> None:
         overrides.extend(
             # order sensitive?
@@ -317,6 +319,7 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
             verify_dir_outputs(job_ret, job_ret.overrides)
 
 
+@pytest.mark.usefixtures("restore_singletons")
 class IntegrationTestSuite:
     @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, filename, expected_name",

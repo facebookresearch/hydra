@@ -230,7 +230,11 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
     ],
 )
 def test_objects_example(
-    tmpdir: Path, task_runner: TTaskRunner, args: List[str], output_conf: DictConfig
+    restore_singletons: Any,
+    tmpdir: Path,
+    task_runner: TTaskRunner,
+    args: List[str],
+    output_conf: DictConfig,
 ) -> None:
     with task_runner(
         calling_file="examples/patterns/objects/my_app.py",
@@ -244,7 +248,9 @@ def test_objects_example(
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_composition_config_example(task_runner: TTaskRunner) -> None:
+def test_composition_config_example(
+    restore_singletons: Any, task_runner: TTaskRunner
+) -> None:
     with task_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
@@ -277,7 +283,7 @@ def test_composition_config_example(task_runner: TTaskRunner) -> None:
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_sweeping_example(sweep_runner: TSweepRunner) -> None:
+def test_sweeping_example(restore_singletons: Any, sweep_runner: TSweepRunner) -> None:
     with sweep_runner(
         calling_file="examples/tutorial/5_composition/my_app.py",
         calling_module=None,
@@ -298,7 +304,9 @@ def test_sweeping_example(sweep_runner: TSweepRunner) -> None:
             assert tuple(ret.overrides) in overrides
 
 
-def test_specializing_config_example(task_runner: TTaskRunner) -> None:
+def test_specializing_config_example(
+    restore_singletons: Any, task_runner: TTaskRunner
+) -> None:
     with task_runner(
         calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,

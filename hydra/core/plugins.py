@@ -68,9 +68,9 @@ class Plugins(metaclass=Singleton):
             SourcesRegistry.instance().register(source)
 
     def _instantiate(self, config: ObjectConf) -> Plugin:
-        import hydra._internal._utils_impl as utils
+        import hydra._internal.utils as internal_utils
 
-        classname = utils._get_cls_name(config)
+        classname = internal_utils._get_cls_name(config)
         try:
             if classname is None:
                 raise ImportError("class not configured")
@@ -85,7 +85,7 @@ class Plugins(metaclass=Singleton):
             if classname not in self.class_name_to_class.keys():
                 raise RuntimeError(f"Unknown plugin class : '{classname}'")
             clazz = self.class_name_to_class[classname]
-            plugin = utils._instantiate_class(clazz=clazz, config=config)
+            plugin = internal_utils._instantiate_class(clazz=clazz, config=config)
             assert isinstance(plugin, Plugin)
 
         except ImportError as e:

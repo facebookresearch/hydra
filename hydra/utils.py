@@ -1,11 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
+import os
 from pathlib import Path
 from typing import Any, Callable, Union
 
 from omegaconf import DictConfig
 
-from hydra._internal._utils_impl import (
+from hydra._internal.utils import (
     _call_callable,
     _get_cls_name,
     _instantiate_class,
@@ -71,7 +72,12 @@ def get_original_cwd() -> str:
     """
     :return: the original working directory the Hydra application was launched from
     """
-    ret = HydraConfig.instance().hydra.runtime.cwd
+    hc = HydraConfig.instance()
+    if hc.hydra is None:
+        raise ValueError(
+            "get_original_cwd() must only be used after HydraConfig is initialized"
+        )
+    ret = hc.hydra.runtime.cwd
     assert ret is not None and isinstance(ret, str)
     return ret
 
@@ -85,8 +91,12 @@ def to_absolute_path(path: str) -> str:
     :return:
     """
     p = Path(path)
+    if HydraConfig.instance().hydra is None:
+        base = Path(os.getcwd())
+    else:
+        base = Path(get_original_cwd())
     if p.is_absolute():
         ret = p
     else:
-        ret = Path(get_original_cwd()) / p
+        ret = base / p
     return str(ret)
