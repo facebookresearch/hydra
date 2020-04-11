@@ -11,13 +11,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    TSweepRunner,
-    chdir_plugin_root,
-    sweep_runner,
-)
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
@@ -63,7 +57,7 @@ def quadratic(cfg: DictConfig) -> Any:
 #     ...
 
 
-def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noqa: F811
+def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
     sweep = sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
@@ -90,7 +84,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner,) -> None:  # noq
         assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: F811
+def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
     sweep = sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
@@ -119,9 +113,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:  # noqa: 
         assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd_and_config(
-    sweep_runner: TSweepRunner,  # noqa: F811
-) -> None:
+def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
     sweep = sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),
         calling_module=None,
@@ -150,7 +142,7 @@ def test_jobs_configured_via_cmd_and_config(
 
 
 def test_configuration_set_via_cmd_and_default_config(
-    sweep_runner: TSweepRunner,  # noqa: F811
+    sweep_runner: TSweepRunner,
 ) -> None:
     sweep = sweep_runner(
         calling_file=os.path.dirname(os.path.abspath(__file__)),

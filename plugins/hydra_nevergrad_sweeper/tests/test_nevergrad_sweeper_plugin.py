@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import subprocess
-
-# noinspection PyUnresolvedReferences
 import sys
 from pathlib import Path
 from typing import Any
@@ -12,11 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import (  # noqa: F401
-    TSweepRunner,
-    chdir_plugin_root,
-    sweep_runner,
-)
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from hydra_plugins.hydra_nevergrad_sweeper import core
 
 chdir_plugin_root()
@@ -54,8 +48,7 @@ def test_make_parameter_from_commandline(
         assert isinstance(param.value, value_cls)
 
 
-# pylint: disable=redefined-outer-name
-def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type: ignore
+def test_launched_jobs(sweep_runner: TSweepRunner) -> None:
     budget = 8
     sweep = sweep_runner(
         calling_file=None,
@@ -77,9 +70,7 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:  # noqa: F811 # type
         assert sweep.returns is None
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "with_commandline", (True, False)
-)
+@pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [

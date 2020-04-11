@@ -5,18 +5,11 @@ import pytest
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
-from hydra.test_utils.launcher_common_tests import (  # noqa: F401
+from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-
-# This has to be included here for the LauncherTestSuite to work.
-# noinspection PyUnresolvedReferences
-from hydra.test_utils.test_utils import (  # noqa: F401
-    TSweepRunner,
-    chdir_plugin_root,
-    sweep_runner,
-)
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
 chdir_plugin_root()
@@ -68,7 +61,7 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-def test_example_app(sweep_runner: TSweepRunner) -> None:  # noqa: F811
+def test_example_app(sweep_runner: TSweepRunner) -> None:
     with sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,

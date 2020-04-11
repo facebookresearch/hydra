@@ -12,9 +12,8 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Iterator, List, Optional, Union
+from typing import Any, Iterator, List, Optional, Union
 
-import pytest
 from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
@@ -49,24 +48,6 @@ class GlobalHydraContext:
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
         GlobalHydra().clear()
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[
-    [str, Optional[str], Optional[bool]], GlobalHydraContext
-]:
-    def _(
-        task_name: str = "task",
-        config_dir: Optional[str] = None,
-        strict: Optional[bool] = False,
-    ) -> "GlobalHydraContext":
-        ctx = GlobalHydraContext()
-        ctx.task_name = task_name
-        ctx.config_dir = config_dir
-        ctx.strict = strict
-        return ctx
-
-    return _
 
 
 class TGlobalHydraContext(Protocol):
@@ -135,38 +116,6 @@ class TaskTestFunction:
         logging.shutdown()
         assert self.temp_dir is not None
         shutil.rmtree(self.temp_dir)
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def task_runner() -> Callable[
-    [
-        Optional[str],
-        Optional[str],
-        Optional[str],
-        Optional[str],
-        Optional[List[str]],
-        Optional[bool],
-    ],
-    TaskTestFunction,
-]:
-    def _(
-        calling_file: Optional[str],
-        calling_module: Optional[str],
-        config_path: Optional[str],
-        config_name: Optional[str],
-        overrides: Optional[List[str]] = None,
-        strict: Optional[bool] = False,
-    ) -> TaskTestFunction:
-        task = TaskTestFunction()
-        task.overrides = overrides or []
-        task.calling_file = calling_file
-        task.config_name = config_name
-        task.calling_module = calling_module
-        task.config_path = config_path
-        task.strict = strict
-        return task
-
-    return _
 
 
 class TTaskRunner(Protocol):
@@ -239,41 +188,6 @@ class SweepTaskFunction:
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         assert self.temp_dir is not None
         shutil.rmtree(self.temp_dir)
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def sweep_runner() -> Callable[
-    [
-        Optional[str],
-        Optional[str],
-        Optional[TaskFunction],
-        Optional[str],
-        Optional[str],
-        Optional[List[str]],
-        Optional[bool],
-    ],
-    SweepTaskFunction,
-]:
-    def _(
-        calling_file: Optional[str],
-        calling_module: Optional[str],
-        task_function: Optional[TaskFunction],
-        config_path: Optional[str],
-        config_name: Optional[str],
-        overrides: Optional[List[str]],
-        strict: Optional[bool] = None,
-    ) -> SweepTaskFunction:
-        sweep = SweepTaskFunction()
-        sweep.calling_file = calling_file
-        sweep.calling_module = calling_module
-        sweep.task_function = task_function
-        sweep.config_path = config_path
-        sweep.config_name = config_name
-        sweep.strict = strict
-        sweep.overrides = overrides or []
-        return sweep
-
-    return _
 
 
 class TSweepRunner(Protocol):
