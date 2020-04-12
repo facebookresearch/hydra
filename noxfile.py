@@ -154,28 +154,41 @@ def select_plugins(session):
     return ret
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def lint(session):
+def install_lint_deps(session):
     session.install("--upgrade", "setuptools", "pip", silent=SILENT)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
-
     session.install("black")
-    # if this fails you need to format your code with black
+
+
+@nox.session(python=PYTHON_VERSIONS)
+def lint_plugins(session):
+
+    install_cmd = ["pip", "install", "-e"]
+    install_hydra(session, install_cmd)
+    _install_plugins(session, select_plugins(session), install_cmd)
+
+    install_lint_deps(session)
     session.run("black", "--check", ".", silent=SILENT)
-
     session.run("isort", "--check", ".", silent=SILENT)
-
-    # Mypy
     session.run("mypy", ".", "--strict", silent=SILENT)
 
     # Mypy for plugins
     for plugin in select_plugins(session):
-        session.run(
-            "mypy", os.path.join("plugins", plugin["path"]), "--strict", silent=SILENT
-        )
+        session.chdir(
+            os.path.join("plugins", plugin["path"])
+        )  # todo: can use mypy dir instead of cd?
+        session.run("mypy", ".", "--strict", silent=SILENT)
+        session.chdir(BASE)
 
+
+@nox.session(python=PYTHON_VERSIONS)
+def lint(session):
+    install_lint_deps(session)
+    session.run("black", "--check", ".", silent=SILENT)
+    session.run("isort", "--check", ".", silent=SILENT)
+    session.run("mypy", ".", "--strict", silent=SILENT)
     # Mypy for examples
     for pyfie in find_python_files("examples"):
         session.run("mypy", pyfie, "--strict", silent=SILENT)
@@ -212,7 +225,6 @@ def test_plugins(session, install_cmd):
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session)
-    # Install all supported plugins in session
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
         session.run(*cmd, silent=SILENT)
@@ -301,3 +313,9 @@ def test_jupyter_notebook(session):
         ),
         silent=SILENT,
     )
+
+
+def _install_plugins(session, plugins, install_cmd):
+    for plugin in plugins:
+        cmd = install_cmd + [os.path.join("plugins", plugin["path"])]
+        session.run(*cmd, silent=SILENT)

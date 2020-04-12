@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import nevergrad as ng  # type: ignore
-import pytest
+import nevergrad as ng
+import pytest  # type: ignore
 from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.plugins import Plugins

@@ -101,7 +101,7 @@ def make_parameter_from_commandline(string: str) -> Any:
 
 def make_parameter_from_config(description: Any) -> Any:
     # lazy initialization to avoid overhead when loading hydra
-    import nevergrad as ng  # type: ignore
+    import nevergrad as ng
 
     # choice
 
