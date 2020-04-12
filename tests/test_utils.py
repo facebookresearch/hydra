@@ -9,6 +9,7 @@ from omegaconf import DictConfig, OmegaConf
 
 import hydra._internal.utils as internal_utils
 from hydra import utils
+from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.types import ObjectConf
 
@@ -255,14 +256,13 @@ def test_class_warning() -> None:
 
 def test_get_original_cwd(restore_singletons: Any) -> None:
     orig = "/foo/bar"
-    cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig}}})
+    cfg = OmegaConf.create({"hydra": HydraConf(runtime=RuntimeConf(cwd=orig))})
     assert isinstance(cfg, DictConfig)
     HydraConfig.instance().set_config(cfg)
     assert utils.get_original_cwd() == orig
 
 
 def test_get_original_cwd_without_hydra(restore_singletons: Any) -> None:
-    HydraConfig.instance()
     with pytest.raises(ValueError):
         utils.get_original_cwd()
 
@@ -282,7 +282,7 @@ def test_to_absolute_path(
     orig_cwd = str(Path(orig_cwd))
     path = str(Path(path))
     expected = str(Path(expected))
-    cfg = OmegaConf.create({"hydra": {"runtime": {"cwd": orig_cwd}}})
+    cfg = OmegaConf.create({"hydra": HydraConf(runtime=RuntimeConf(cwd=orig_cwd))})
     assert isinstance(cfg, DictConfig)
     HydraConfig().set_config(cfg)
     assert utils.to_absolute_path(path) == expected

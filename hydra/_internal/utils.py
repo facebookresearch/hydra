@@ -9,7 +9,7 @@ import warnings
 from os.path import dirname, join, normpath, realpath
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
 
-from omegaconf import DictConfig, OmegaConf, _utils
+from omegaconf import DictConfig, OmegaConf, _utils, read_write
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
@@ -391,7 +391,9 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
         else:
             rest[k] = v
     final_kwargs = {}
-    params.merge_with(OmegaConf.create(primitives))
+    with read_write(params):
+        params.merge_with(OmegaConf.create(primitives))
+
     for k, v in params.items():
         final_kwargs[k] = v
 
