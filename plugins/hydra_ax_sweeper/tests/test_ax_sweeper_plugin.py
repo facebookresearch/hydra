@@ -14,8 +14,6 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
-chdir_plugin_root()
-
 
 def test_discovery() -> None:
     """
@@ -36,25 +34,33 @@ def quadratic(cfg: DictConfig) -> Any:
     return z
 
 
-# TODO: try to enable this
-# # Many sweepers are batching jobs in groups.
-# # This test suite verifies that the spawned jobs are not overstepping the directories of one another.
-# @pytest.mark.parametrize(
-#     "launcher_name, overrides",
-#     [
-#         (
-#             "basic",
-#             [
-#                 "hydra/sweeper=ax",
-#                 # This will cause the sweeper to split batches to at most 2 jobs each, which is what
-#                 # the tests in BatchedSweeperTestSuite are expecting.
-#                 "hydra.sweeper.params.max_batch_size=2",
-#             ],
-#         )
-#     ],
-# )
-# class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
-#     ...
+def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
+    # Verify that the spawned jobs are not overstepping the directories of one another.
+    sweep = sweep_runner(
+        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_module=None,
+        task_function=quadratic,
+        config_path="tests/config",
+        config_name="quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.max_trials=6",
+        ],
+        strict=True,
+    )
+    with sweep:
+        assert isinstance(sweep.temp_dir, str)
+        metadata = OmegaConf.load(f"{sweep.temp_dir}/metadata.yaml")
+        assert isinstance(metadata, DictConfig)
+        assert metadata.sweep_counter > 1
+        dirs = [
+            x
+            for x in os.listdir(sweep.temp_dir)
+            if os.path.isdir(os.path.join(sweep.temp_dir, x))
+        ]
+        assert len(dirs) == 6  # and a total of 6 unique output directories
 
 
 def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:

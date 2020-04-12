@@ -156,6 +156,7 @@ class CoreAxSweeper:
         num_trials_left = self.max_trials
         recommended_max_parallelism = ax_client.get_recommended_max_parallelism()
         current_parallelism_index = 0
+        sweep_counter = 0
         # Index to track the parallelism value we are using right now.
 
         while num_trials_left > 0:
@@ -185,6 +186,7 @@ class CoreAxSweeper:
                     overrides=overrides,
                     batch_of_trials_to_launch=batch_of_trials_to_launch,
                 )
+                sweep_counter += 1
 
                 num_trials_so_far += len(batch_of_trials_to_launch)
                 num_trials_left -= len(batch_of_trials_to_launch)
@@ -202,6 +204,11 @@ class CoreAxSweeper:
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.sweep_dir}/optimization_results.yaml",
+        )
+
+        metadata_to_serialize = {"sweep_counter": sweep_counter}
+        OmegaConf.save(
+            OmegaConf.create(metadata_to_serialize), f"{self.sweep_dir}/metadata.yaml",
         )
         log.info("Best parameters: " + str(best_parameters))
 
