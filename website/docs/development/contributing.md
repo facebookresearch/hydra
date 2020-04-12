@@ -40,13 +40,15 @@ The code need to pass verification by the following tools:
  - `isort .` : Ensure imports are sorted properly
  - `mypy --strict .` : Ensures code passes strict type checking
 
-The easiest way to run all the required verifications is with `nox -s lint`.
+The easiest way to run the required verifications is: 
+ - `nox -s lint` : for the Hydra core
+ - `nox -s lint_plugins` : for the included plugins
 
-It is also recommended that you install pre-commit hooks (use `pre-commit install`), this will ensure that those tests
-are ran just before you commit your code.
+It is also recommended that you install pre-commit hooks (use `pre-commit install`).
+pre-commit will execute some of the above tets when you commit your code locally. 
+You can disable it by appending `-n` to your commit command: `git commit -am wip -n`
 
-Any pull request that does not pass the linting will fail the automated testing.
-
+Pull requests that does not lint will fail the automated testing.
 
 ## Testing
 ### With pytest
