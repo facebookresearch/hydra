@@ -161,7 +161,7 @@ def test_configuration_set_via_cmd_and_default_config(
         ],
     )
     with sweep:
-        ax_config = HydraConfig.instance().hydra.sweeper.params.ax_config
+        ax_config = HydraConfig.get().sweeper.params.ax_config
         assert ax_config.max_trials == 2
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True

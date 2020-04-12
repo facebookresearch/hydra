@@ -364,7 +364,7 @@ class IntegrationTestSuite:
             tmpdir=tmpdir,
             task_config=cfg,
             overrides=overrides,
-            prints="HydraConfig.instance().hydra.job.name",
+            prints="HydraConfig.get().job.name",
             expected_outputs=expected_name,
             filename=filename,
         )
