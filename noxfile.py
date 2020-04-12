@@ -8,6 +8,9 @@ from typing import List
 import nox
 from nox.logger import logger
 
+# TODO: test examples with a single mypy? (add __init__.py files)
+# TODO: per-plugin isort config?
+
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
@@ -176,9 +179,8 @@ def lint_plugins(session):
 
     # Mypy for plugins
     for plugin in select_plugins(session):
-        session.chdir(
-            os.path.join("plugins", plugin["path"])
-        )  # todo: can use mypy dir instead of cd?
+        # todo: can use mypy dir instead of cd?
+        session.chdir(os.path.join("plugins", plugin["path"]))
         session.run("mypy", ".", "--strict", silent=SILENT)
         session.chdir(BASE)
 
