@@ -8,9 +8,6 @@ from typing import List
 import nox
 from nox.logger import logger
 
-# TODO: test examples with a single mypy? (add __init__.py files)
-# TODO: per-plugin isort config?
-
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
@@ -161,7 +158,6 @@ def install_lint_deps(session):
     session.install("--upgrade", "setuptools", "pip", silent=SILENT)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
-    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
     session.install("black")
 
 
@@ -170,17 +166,19 @@ def lint_plugins(session):
 
     install_cmd = ["pip", "install", "-e"]
     install_hydra(session, install_cmd)
-    _install_plugins(session, select_plugins(session), install_cmd)
+    plugins = select_plugins(session)
+
+    # plugin linting requires the plugins and their dependencies to be installed
+    _install_plugins(session, plugins, install_cmd)
 
     install_lint_deps(session)
-    session.run("black", "--check", ".", silent=SILENT)
-    session.run("isort", "--check", ".", silent=SILENT)
-    session.run("mypy", ".", "--strict", silent=SILENT)
 
+    session.run("flake8", "--config", ".circleci/flake8_py3.cfg", "plugins")
     # Mypy for plugins
-    for plugin in select_plugins(session):
-        # todo: can use mypy dir instead of cd?
+    for plugin in plugins:
         session.chdir(os.path.join("plugins", plugin["path"]))
+        session.run("black", "--check", ".", silent=SILENT)
+        session.run("isort", "--check", ".", silent=SILENT)
         session.run("mypy", ".", "--strict", silent=SILENT)
         session.chdir(BASE)
 
@@ -191,6 +189,7 @@ def lint(session):
     session.run("black", "--check", ".", silent=SILENT)
     session.run("isort", "--check", ".", silent=SILENT)
     session.run("mypy", ".", "--strict", silent=SILENT)
+    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
     # Mypy for examples
     for pyfie in find_python_files("examples"):
         session.run("mypy", pyfie, "--strict", silent=SILENT)
