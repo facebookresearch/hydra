@@ -11,7 +11,6 @@ banana:
 hydra:
   sweeper:
     params:
-      max_batch_size: null
   
       # The following part of config is used to setup the Hydra Ax plugin and is optional
       ax_config:

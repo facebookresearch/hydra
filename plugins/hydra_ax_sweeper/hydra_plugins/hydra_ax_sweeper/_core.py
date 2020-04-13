@@ -213,7 +213,6 @@ class CoreAxSweeper:
         chunked_batches = chunks(batch_of_trials, self.max_batch_size)
         for batch in chunked_batches:
             overrides = [x.overrides for x in batch]
-            print(overrides)
             rets = self.launcher.launch(
                 job_overrides=overrides, initial_job_idx=self.job_idx
             )
@@ -343,7 +342,6 @@ def chunks(
     """
     Chunk the batch into chunks of upto to n items (each)
     """
-    print("chunk")
     if n is None or n == -1:
         n = len(batch_of_trials)
     for i in range(0, len(batch_of_trials), n):
