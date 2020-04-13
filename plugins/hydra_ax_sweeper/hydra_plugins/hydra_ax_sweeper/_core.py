@@ -1,16 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
+from omegaconf import DictConfig, OmegaConf
+
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, OmegaConf
 
 from ._earlystopper import EarlyStopper
 
