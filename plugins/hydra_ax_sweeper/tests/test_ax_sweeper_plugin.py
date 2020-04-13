@@ -14,6 +14,8 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
+chdir_hydra_root()
+
 
 def test_discovery() -> None:
     """
@@ -37,10 +39,10 @@ def quadratic(cfg: DictConfig) -> Any:
 def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
     # Verify that the spawned jobs are not overstepping the directories of one another.
     sweep = sweep_runner(
-        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_file="plugins/hydra_ax_sweeper/tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config",
+        config_path="config",
         config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -53,23 +55,20 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
     )
     with sweep:
         assert isinstance(sweep.temp_dir, str)
-        metadata = OmegaConf.load(f"{sweep.temp_dir}/metadata.yaml")
-        assert isinstance(metadata, DictConfig)
-        assert metadata.sweep_counter > 1
         dirs = [
             x
             for x in os.listdir(sweep.temp_dir)
             if os.path.isdir(os.path.join(sweep.temp_dir, x))
         ]
-        assert len(dirs) == 6  # and a total of 6 unique output directories
+        assert len(dirs) == 3  # and a total of 6 unique output directories
 
 
 def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
     sweep = sweep_runner(
-        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_file="plugins/hydra_ax_sweeper/tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config",
+        config_path="config",
         config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -93,10 +92,10 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
 
 def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
     sweep = sweep_runner(
-        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_file="plugins/hydra_ax_sweeper/tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config",
+        config_path="config",
         config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -122,10 +121,10 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
 
 def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
     sweep = sweep_runner(
-        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_file="plugins/hydra_ax_sweeper/tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config",
+        config_path="config",
         config_name="quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -152,10 +151,10 @@ def test_configuration_set_via_cmd_and_default_config(
     sweep_runner: TSweepRunner,
 ) -> None:
     sweep = sweep_runner(
-        calling_file=os.path.dirname(os.path.abspath(__file__)),
+        calling_file="plugins/hydra_ax_sweeper/tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
-        config_path="tests/config",
+        config_path="config",
         config_name="default_quadratic.yaml",
         overrides=[
             "hydra/sweeper=ax",
@@ -183,7 +182,7 @@ def test_configuration_set_via_cmd_and_default_config(
 def test_ax_logging(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "tests/apps/polynomial.py",
+        "plugins/hydra_ax_sweeper/tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "polynomial.x=-5:-2",
