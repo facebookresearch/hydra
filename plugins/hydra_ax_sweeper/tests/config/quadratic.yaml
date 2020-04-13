@@ -9,7 +9,6 @@ quadratic:
 hydra:
     sweeper:
       params:
-        max_batch_size: null
         ax_config:
           max_trials: 10
 
