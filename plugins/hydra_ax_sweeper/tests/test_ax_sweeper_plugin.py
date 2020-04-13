@@ -4,17 +4,15 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
+
+import pytest
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-<<<<<<< HEAD
-from omegaconf import DictConfig, OmegaConf
-
-=======
->>>>>>> Resolve comments on PR
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
@@ -37,6 +35,32 @@ def quadratic(cfg: DictConfig) -> Any:
     b = 1
     z = a * (x ** 2) + b * y
     return z
+
+
+def test_chunk_method() -> None:
+    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
+
+    chunk_func = CoreAxSweeper.chunks
+
+    batch = [1, 2, 3, 4, 5]
+    n: Optional[int]
+
+    for n in [-1, -11, 0]:
+        with pytest.raises(ValueError):
+            list(chunk_func(batch, n))
+
+    inputs = [None, 2, 1, 5, 6]
+    expected_outputs = [
+        [[1, 2, 3, 4, 5]],
+        [[1, 2], [3, 4], [5]],
+        [[1], [2], [3], [4], [5]],
+        [[1, 2, 3, 4, 5]],
+        [[1, 2, 3, 4, 5]],
+    ]
+
+    for n, expected in zip(inputs, expected_outputs):
+        out = list(chunk_func(batch, n))
+        assert out == expected
 
 
 def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
