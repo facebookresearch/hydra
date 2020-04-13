@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, TypeVar, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -14,6 +14,8 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 
 from ._earlystopper import EarlyStopper
+
+T = TypeVar("T")
 
 log = logging.getLogger(__name__)
 
@@ -210,7 +212,7 @@ class CoreAxSweeper:
         assert self.launcher is not None
         assert self.job_idx is not None
 
-        chunked_batches = chunks(batch_of_trials, self.max_batch_size)
+        chunked_batches = self.chunks(batch_of_trials, self.max_batch_size)
         for batch in chunked_batches:
             overrides = [x.overrides for x in batch]
             rets = self.launcher.launch(
@@ -335,14 +337,12 @@ class CoreAxSweeper:
 
         return parameters
 
-
-def chunks(
-    batch_of_trials: BatchOfTrialType, n: Optional[int]
-) -> Iterable[BatchOfTrialType]:
-    """
-    Chunk the batch into chunks of upto to n items (each)
-    """
-    if n is None or n == -1:
-        n = len(batch_of_trials)
-    for i in range(0, len(batch_of_trials), n):
-        yield batch_of_trials[i : i + n]
+    @staticmethod
+    def chunks(batch: List[T], n: Optional[int]) -> Iterable[List[T]]:
+        """
+        Chunk the batch into chunks of upto to n items (each)
+        """
+        if n is None or n == -1:
+            n = len(batch)
+        for i in range(0, len(batch), n):
+            yield batch[i : i + n]
