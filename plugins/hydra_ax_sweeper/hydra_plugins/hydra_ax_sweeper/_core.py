@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -14,8 +14,6 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 
 from ._earlystopper import EarlyStopper
-
-T = TypeVar("T")
 
 log = logging.getLogger(__name__)
 
@@ -338,7 +336,7 @@ class CoreAxSweeper:
         return parameters
 
     @staticmethod
-    def chunks(batch: List[T], n: Optional[int]) -> Iterable[List[T]]:
+    def chunks(batch: List[Any], n: Optional[int]) -> Iterable[List[Any]]:
         """
         Chunk the batch into chunks of upto to n items (each)
         """
