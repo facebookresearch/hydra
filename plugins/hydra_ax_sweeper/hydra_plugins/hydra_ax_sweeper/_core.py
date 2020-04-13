@@ -342,7 +342,9 @@ class CoreAxSweeper:
         """
         Chunk the batch into chunks of upto to n items (each)
         """
-        if n is None or n == -1:
+        if n is None:
             n = len(batch)
+        if n < 1:
+            raise ValueError("n must be an integer greater than 0")
         for i in range(0, len(batch), n):
             yield batch[i : i + n]
