@@ -327,10 +327,29 @@ def test_short_module_name(tmpdir: Path) -> None:
         os.chdir("examples/tutorial/2_config_file")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         modified_env = os.environ.copy()
-        modified_env["HYDRA_MAIN_MODULE"] = "my_app"
         result = subprocess.check_output(cmd, env=modified_env)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {
             "db": {"driver": "mysql", "pass": "secret", "user": "omry"}
+        }
+    finally:
+        chdir_hydra_root()
+
+
+@pytest.mark.parametrize(
+    "env_name", ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
+)
+def test_module_env_override(tmpdir, env_name):
+    """
+    Tests that module name overrides are working.
+    """
+    try:
+        os.chdir("examples/tutorial/2_config_file")
+        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
+        modified_env = os.environ.copy()
+        modified_env[env_name] = "hydra.test_utils.configs.Foo"
+        result = subprocess.check_output(cmd, env=modified_env)
+        assert OmegaConf.create(str(result.decode("utf-8"))) == {
+            "normal_yaml_config": True
         }
     finally:
         chdir_hydra_root()
