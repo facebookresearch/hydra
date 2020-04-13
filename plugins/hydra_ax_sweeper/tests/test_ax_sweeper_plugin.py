@@ -46,7 +46,8 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
             "hydra/sweeper=ax",
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
-            "hydra.sweeper.params.ax_config.max_trials=6",
+            "hydra.sweeper.params.ax_config.max_trials=3",
+            "hydra.sweeper.params.max_batch_size=2",
         ],
         strict=True,
     )

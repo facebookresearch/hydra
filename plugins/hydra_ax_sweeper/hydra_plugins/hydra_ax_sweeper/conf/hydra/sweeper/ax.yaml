@@ -4,6 +4,7 @@ hydra:
   sweeper:
     cls: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper
     params:
+      max_batch_size: null
       ax_config: 
         max_trials: 10
         early_stop:

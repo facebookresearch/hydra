@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
@@ -125,7 +125,7 @@ def get_one_batch_of_trials(
 class CoreAxSweeper:
     """Class to interface with the Ax Platform"""
 
-    def __init__(self, ax_config: DictConfig):
+    def __init__(self, ax_config: DictConfig, max_batch_size: Optional[int]):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
         self.experiment = ax_config.experiment
@@ -137,6 +137,7 @@ class CoreAxSweeper:
             self.ax_params.update(ax_config.params)
         self.sweep_dir: str
         self.job_idx: Optional[int] = None
+        self.max_batch_size = max_batch_size
 
     def setup(
         self,
@@ -156,7 +157,6 @@ class CoreAxSweeper:
         num_trials_left = self.max_trials
         recommended_max_parallelism = ax_client.get_recommended_max_parallelism()
         current_parallelism_index = 0
-        sweep_counter = 0
         # Index to track the parallelism value we are using right now.
 
         while num_trials_left > 0:
@@ -179,14 +179,10 @@ class CoreAxSweeper:
                         len(batch_of_trials_to_launch)
                     )
                 )
-                overrides = [x.overrides for x in batch_of_trials_to_launch]
 
                 self.sweep_over_batches(
-                    ax_client=ax_client,
-                    overrides=overrides,
-                    batch_of_trials_to_launch=batch_of_trials_to_launch,
+                    ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch,
                 )
-                sweep_counter += 1
 
                 num_trials_so_far += len(batch_of_trials_to_launch)
                 num_trials_left -= len(batch_of_trials_to_launch)
@@ -205,30 +201,27 @@ class CoreAxSweeper:
             OmegaConf.create(results_to_serialize),
             f"{self.sweep_dir}/optimization_results.yaml",
         )
-
-        metadata_to_serialize = {"sweep_counter": sweep_counter}
-        OmegaConf.save(
-            OmegaConf.create(metadata_to_serialize), f"{self.sweep_dir}/metadata.yaml",
-        )
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self,
-        ax_client: AxClient,
-        overrides: Sequence[Sequence[str]],
-        batch_of_trials_to_launch: BatchOfTrialType,
+        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType,
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None
-        rets = self.launcher.launch(
-            job_overrides=overrides, initial_job_idx=self.job_idx
-        )
-        self.job_idx += len(rets)
-        for idx in range(len(batch_of_trials_to_launch)):
-            val = rets[idx].return_value
-            ax_client.complete_trial(
-                trial_index=batch_of_trials_to_launch[idx].trial_index, raw_data=val
+
+        chunked_batches = chunks(batch_of_trials, self.max_batch_size)
+        for batch in chunked_batches:
+            overrides = [x.overrides for x in batch]
+            print(overrides)
+            rets = self.launcher.launch(
+                job_overrides=overrides, initial_job_idx=self.job_idx
             )
+            self.job_idx += len(rets)
+            for idx in range(len(batch)):
+                val = rets[idx].return_value
+                ax_client.complete_trial(
+                    trial_index=batch[idx].trial_index, raw_data=val
+                )
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
@@ -341,3 +334,16 @@ class CoreAxSweeper:
                 )
 
         return parameters
+
+
+def chunks(
+    batch_of_trials: BatchOfTrialType, n: Optional[int]
+) -> Iterable[BatchOfTrialType]:
+    """
+    Chunk the batch into chunks of upto to n items (each)
+    """
+    print("chunk")
+    if n is None or n == -1:
+        n = len(batch_of_trials)
+    for i in range(0, len(batch_of_trials), n):
+        yield batch_of_trials[i : i + n]
