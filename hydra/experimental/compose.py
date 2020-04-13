@@ -4,7 +4,7 @@ from typing import List, Optional
 from omegaconf import DictConfig
 
 from hydra._internal.hydra import Hydra
-from hydra._internal.utils import detect_calling_file_or_module
+from hydra._internal.utils import detect_calling_file_or_module_from_stack_frame
 from hydra.core.global_hydra import GlobalHydra
 
 
@@ -19,7 +19,9 @@ def initialize(
     :param caller_stack_depth:
     :return:
     """
-    calling_file, calling_module = detect_calling_file_or_module(caller_stack_depth + 1)
+    calling_file, calling_module = detect_calling_file_or_module_from_stack_frame(
+        caller_stack_depth + 1
+    )
     Hydra.create_main_hydra_file_or_module(
         calling_file, calling_module, config_dir, strict
     )

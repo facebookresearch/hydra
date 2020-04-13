@@ -82,7 +82,7 @@ class Hydra:
                 if not source.exists(""):
                     raise MissingConfigException(
                         missing_cfg_file=source.path,
-                        message="Primary config dir not found: {}".format(source.path),
+                        message=f"Primary config dir not found: {source}",
                     )
 
         JobRuntime().set("name", task_name)

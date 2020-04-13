@@ -19,7 +19,34 @@ from hydra.types import ObjectConf, TaskFunction
 log = logging.getLogger(__name__)
 
 
-def detect_calling_file_or_module(
+def _get_module_name_override() -> Optional[str]:
+    module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
+    for module_env in module_envs:
+        if module_env in os.environ:
+            return os.environ[module_env]
+    return None
+
+
+def detect_calling_file_or_module_from_task_function(
+    task_function: Any,
+) -> Tuple[Optional[str], Optional[str]]:
+    mdl = _get_module_name_override()
+    calling_file: Optional[str]
+    calling_module: Optional[str]
+    if mdl is not None:
+        calling_file = None
+        # short module name
+        if mdl.rfind(".") == -1:
+            mdl = f"__main__.{mdl}"
+        calling_module = mdl
+    else:
+        calling_file = task_function.__code__.co_filename
+        calling_module = None
+
+    return calling_file, calling_module
+
+
+def detect_calling_file_or_module_from_stack_frame(
     stack_depth: int,
 ) -> Tuple[Optional[str], Optional[str]]:
     calling_file = None
@@ -37,12 +64,7 @@ def detect_calling_file_or_module(
     except KeyError:
         pass
     try:
-        module_envs = ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
-        for module_env in module_envs:
-            if module_env in os.environ:
-                calling_module = os.environ[module_env]
-                break
-
+        calling_module = _get_module_name_override()
         if calling_module is None:
             calling_module = frame[0].f_globals[frame[3]].__module__
     except KeyError:
@@ -167,7 +189,10 @@ def run_hydra(
 
     from .hydra import Hydra
 
-    calling_file, calling_module = detect_calling_file_or_module(3)
+    calling_file, calling_module = detect_calling_file_or_module_from_task_function(
+        task_function
+    )
+
     config_dir, config_name = split_config_path(config_path, config_name)
     strict = _strict_mode_strategy(strict, config_name)
     task_name = detect_task_name(calling_file, calling_module)

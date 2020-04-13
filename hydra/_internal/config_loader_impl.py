@@ -50,17 +50,15 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides = copy.deepcopy(overrides) or []
 
         if config_name is not None and not self.exists_in_search_path(config_name):
+            # TODO: handle schema as a special case
+            descs = [
+                "\t{} (from {})".format(src.path, src.provider)
+                for src in self.repository.get_sources()
+            ]
+            lines = "\n".join(descs)
             raise MissingConfigException(
                 missing_cfg_file=config_name,
-                message="Cannot find primary config file: {}\nSearch path:\n{}".format(
-                    config_name,
-                    "\n".join(
-                        [
-                            "\t{} (from {})".format(src.path, src.provider)
-                            for src in self.repository.get_sources()
-                        ]
-                    ),
-                ),
+                message=f"Cannot find primary config file: {config_name}\nSearch path:\n{lines}",
             )
 
         # Load hydra config
