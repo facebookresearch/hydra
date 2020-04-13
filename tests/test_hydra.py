@@ -13,6 +13,7 @@ from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
+    integration_test,
     verify_dir_outputs,
 )
 
@@ -326,8 +327,7 @@ def test_short_module_name(tmpdir: Path) -> None:
     try:
         os.chdir("examples/tutorial/2_config_file")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
-        modified_env = os.environ.copy()
-        result = subprocess.check_output(cmd, env=modified_env)
+        result = subprocess.check_output(cmd)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {
             "db": {"driver": "mysql", "pass": "secret", "user": "omry"}
         }
@@ -335,10 +335,34 @@ def test_short_module_name(tmpdir: Path) -> None:
         chdir_hydra_root()
 
 
-@pytest.mark.parametrize(
+def test_hydra_main_module_override_name(tmpdir: Path) -> None:
+    cfg = OmegaConf.create()
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[],
+        prints="HydraConfig.get().job.name",
+        expected_outputs="Foo",
+        env_override={"HYDRA_MAIN_MODULE": "hydra.test_utils.configs.Foo"},
+    )
+
+
+def test_short_hydra_main_module_override_name(tmpdir: Path) -> None:
+    cfg = OmegaConf.create()
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[],
+        prints="HydraConfig.get().job.name",
+        expected_outputs="Foo",
+        env_override={"HYDRA_MAIN_MODULE": "Foo"},
+    )
+
+
+@pytest.mark.parametrize(  # type: ignore
     "env_name", ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
 )
-def test_module_env_override(tmpdir, env_name):
+def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     """
     Tests that module name overrides are working.
     """

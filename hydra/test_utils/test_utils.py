@@ -12,7 +12,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Union
+from typing import Any, Dict, Iterator, List, Optional, Union
 
 from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
@@ -262,6 +262,7 @@ def integration_test(
     prints: Union[str, List[str]],
     expected_outputs: Union[str, List[str]],
     filename: str = "task.py",
+    env_override: Dict[str, str] = {},
 ) -> str:
     if isinstance(prints, str):
         prints = [prints]
@@ -310,7 +311,9 @@ if __name__ == "__main__":
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
-        subprocess.check_call(cmd)
+        modified_env = os.environ.copy()
+        modified_env.update(env_override)
+        subprocess.check_call(cmd, env=modified_env)
 
         with open(output_file, "r") as f:
             file_str = f.read()

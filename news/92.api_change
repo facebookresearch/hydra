@@ -1,0 +1,1 @@
+Installed Hydra applications no longer need have an additional `entry()` function on the stack

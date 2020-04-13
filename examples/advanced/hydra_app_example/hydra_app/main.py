@@ -10,12 +10,5 @@ def main(cfg: DictConfig) -> None:
     print(cfg.pretty())
 
 
-# this function is required to allow automatic detection of the module name when running
-# from a binary script.
-# it should be called from the executable script and not the hydra.main() function directly.
-def entry() -> None:
-    main()
-
-
 if __name__ == "__main__":
     main()
