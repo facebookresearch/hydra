@@ -178,7 +178,7 @@ def lint_plugins(session):
     for plugin in plugins:
         session.chdir(os.path.join("plugins", plugin["path"]))
         session.run("black", "--check", ".", silent=SILENT)
-        session.run("isort", "--check", ".", silent=SILENT)
+        session.run("isort", "--check", "--diff", ".", silent=SILENT)
         session.run("mypy", ".", "--strict", silent=SILENT)
         session.chdir(BASE)
 
@@ -187,7 +187,15 @@ def lint_plugins(session):
 def lint(session):
     install_lint_deps(session)
     session.run("black", "--check", ".", silent=SILENT)
-    session.run("isort", "--check", ".", silent=SILENT)
+    session.run(
+        "isort",
+        "--check",
+        "--diff",
+        ".",
+        "--skip=plugins",
+        "--skip=.nox",
+        silent=SILENT,
+    )
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
     # Mypy for examples
