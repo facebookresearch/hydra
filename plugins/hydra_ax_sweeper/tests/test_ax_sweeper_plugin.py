@@ -37,30 +37,34 @@ def quadratic(cfg: DictConfig) -> Any:
     return z
 
 
-def test_chunk_method() -> None:
+@pytest.mark.parametrize(
+    "n,expected",
+    [
+        (None, [[1, 2, 3, 4, 5]]),
+        (1, [[1], [2], [3], [4], [5]]),
+        (2, [[1, 2], [3, 4], [5]]),
+        (5, [[1, 2, 3, 4, 5]]),
+        (6, [[1, 2, 3, 4, 5]]),
+    ],
+)
+def test_chunk_method_for_valid_inputs(n, expected):
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
-
     batch = [1, 2, 3, 4, 5]
-    n: Optional[int]
+    out = list(chunk_func(batch, n))
+    print(expected)
+    assert out == expected
 
-    for n in [-1, -11, 0]:
-        with pytest.raises(ValueError):
-            list(chunk_func(batch, n))
 
-    inputs = [None, 2, 1, 5, 6]
-    expected_outputs = [
-        [[1, 2, 3, 4, 5]],
-        [[1, 2], [3, 4], [5]],
-        [[1], [2], [3], [4], [5]],
-        [[1, 2, 3, 4, 5]],
-        [[1, 2, 3, 4, 5]],
-    ]
+@pytest.mark.parametrize("n", [-1, -11, 0])
+def test_chunk_method_for_invalid_inputs(n):
+    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
-    for n, expected in zip(inputs, expected_outputs):
-        out = list(chunk_func(batch, n))
-        assert out == expected
+    chunk_func = CoreAxSweeper.chunks
+    batch = [1, 2, 3, 4, 5]
+    with pytest.raises(ValueError):
+        list(chunk_func(batch, n))
 
 
 def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
