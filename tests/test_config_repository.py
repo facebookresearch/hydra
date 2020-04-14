@@ -19,11 +19,20 @@ chdir_hydra_root()
 @pytest.mark.parametrize(
     "type_, path",
     [
-        (FileConfigSource, "file://tests/test_apps/config_source_test/dir"),
-        (PackageConfigSource, "pkg://tests.test_apps.config_source_test.dir"),
-        (
+        pytest.param(
+            FileConfigSource,
+            "file://tests/test_apps/config_source_test/dir",
+            id="file://",
+        ),
+        pytest.param(
+            PackageConfigSource,
+            "pkg://tests.test_apps.config_source_test.dir",
+            id="pkg://",
+        ),
+        pytest.param(
             StructuredConfigSource,
             "structured://tests.test_apps.config_source_test.structured",
+            id="structured://",
         ),
     ],
 )

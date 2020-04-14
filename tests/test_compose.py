@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
 from typing import Any, List
 
 import pytest
@@ -208,3 +209,17 @@ class TestComposeCloudInfraExample:
         with hydra_global_context(config_dir=config_dir):
             ret = compose(config_file, overrides)
             assert ret == expected
+
+
+def test_missing_init_py_error(hydra_global_context: TGlobalHydraContext) -> None:
+    with pytest.raises(
+        Exception,
+        match=re.escape(
+            "Unexpected error checking content of 'hydra.test_utils.configs.missing_init_py', "
+            "did you forget an __init__.py?"
+        ),
+    ):
+        with hydra_global_context(
+            config_dir="../hydra/test_utils/configs/missing_init_py"
+        ):
+            ...

@@ -1,0 +1,1 @@
+Configuration directories that are packaged now requires an `__init__.py` file

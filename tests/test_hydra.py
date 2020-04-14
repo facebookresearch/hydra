@@ -430,8 +430,12 @@ def test_multirun_with_free_override(
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
-        ("tests/test_apps/sweep_complex_defaults/my_app.py", None),
-        (None, "tests.test_apps.sweep_complex_defaults.my_app"),
+        pytest.param(
+            "tests/test_apps/sweep_complex_defaults/my_app.py", None, id="file_path"
+        ),
+        pytest.param(
+            None, "tests.test_apps.sweep_complex_defaults.my_app", id="pkg_path"
+        ),
     ],
 )
 def test_sweep_complex_defaults(
