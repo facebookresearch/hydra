@@ -12,6 +12,8 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 
+from .config import NevergradOptimConf
+
 # pylint: disable=logging-fstring-interpolation,no-self-used
 
 log = logging.getLogger(__name__)
@@ -152,7 +154,10 @@ class NevergradSweeper(Sweeper):
     """
 
     def __init__(
-        self, optim: DictConfig, version: int, parametrization: Optional[DictConfig],
+        self,
+        optim: NevergradOptimConf,
+        version: int,
+        parametrization: Optional[DictConfig],
     ):
         assert (
             version == 1
