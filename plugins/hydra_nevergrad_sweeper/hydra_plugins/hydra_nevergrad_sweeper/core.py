@@ -28,6 +28,27 @@ class NevergradSearchPathPlugin(SearchPathPlugin):
 
 @dataclass
 class CommandlineSpec:
+    """Structured commandline specification
+
+    Attributes
+    ----------
+    bounds: Optional[Tuple[float, float]]
+        if present, this defines a bounded scalar between bounds[0]
+        and bounds[1]
+    options: Optional[List[Any]]
+        if present, this defines the options/choices of a categorical
+        variable
+    cast: str
+        the name of the variable type to cast it to ("int", "str"
+        or "float")
+    log: bool
+        for bounded scalars, whether it is log-distributed
+
+    Note
+    ----
+    Exactly one of bounds or options must be provided
+    """
+
     bounds: Optional[Tuple[float, float]] = None
     options: Optional[List[str]] = None
     cast: str = "float"
@@ -48,6 +69,22 @@ class CommandlineSpec:
 
     @classmethod
     def parse(cls, string: str) -> "CommandlineSpec":
+        """Parses a commandline argument string
+
+        Parameter
+        ---------
+        string: str
+            This can be:
+             - comma-separated values: for a choice parameter
+               Eg.: "a,b,c"
+             - colon-separated values for ranges of scalars.
+               Eg.: "0:10"
+            Colon-separeted can be appended to:
+             - cast to int/str/float (always defaults to float):
+               Eg: "float:0,4,10", "int:0:10"
+             - set log distribution for scalars
+               Eg: "int:log:4:1024"
+        """
         available_modifiers = {"log", "float", "int", "str"}
         colon_split = string.split(":")
         modifiers = set(
