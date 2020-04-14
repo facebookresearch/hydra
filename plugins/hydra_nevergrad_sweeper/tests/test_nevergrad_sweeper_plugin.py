@@ -1,13 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import subprocess
 import sys
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-import nevergrad as ng
 import pytest  # type: ignore
 from omegaconf import DictConfig, OmegaConf
 
+import nevergrad as ng
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
@@ -23,10 +24,42 @@ def test_discovery() -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
+    "string,expected",
+    [
+        ("blu,blublu", core.CommandlineSpec(options=["blu", "blublu"], cast="str")),
+        ("0,1,2", core.CommandlineSpec(options=["0", "1", "2"], cast="float")),
+        ("str:0,1,2", core.CommandlineSpec(options=["0", "1", "2"], cast="str")),
+        (
+            "0.0,12.0,2.0",
+            core.CommandlineSpec(options=["0.0", "12.0", "2.0"], cast="float"),
+        ),
+        ("int:1:12", core.CommandlineSpec(bounds=(1.0, 12.0), cast="int")),
+        ("1:12", core.CommandlineSpec(bounds=(1.0, 12.0), cast="float")),
+        (
+            "log:0.01:1.0",
+            core.CommandlineSpec(bounds=(0.01, 1.0), cast="float", log=True),
+        ),
+        (
+            "int:log:1:1200",
+            core.CommandlineSpec(bounds=(1.0, 1200.0), cast="int", log=True),
+        ),
+    ],
+)
+def test_commandline_spec_parse(string: str, expected: core.CommandlineSpec) -> None:
+    param = core.CommandlineSpec.parse(string)
+    for attr, value in asdict(expected).items():
+        assert getattr(param, attr) == value, f"Wrong value for {attr}"
+    # the following equality fails for unknown reasons (only if running all tests)
+    # assert param == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
     "string,param_cls,value_cls",
     [
         ("blu,blublu", ng.p.Choice, str),
-        ("0,1,2", ng.p.TransitionChoice, int),
+        ("0,1,2", ng.p.TransitionChoice, float),
+        ("int:0,1,2", ng.p.TransitionChoice, int),
+        ("str:0,1,2", ng.p.Choice, str),
         ("0.0,12.0,2.0", ng.p.Choice, float),
         ("int:1:12", ng.p.Scalar, int),
         ("1:12", ng.p.Scalar, float),
@@ -39,10 +72,8 @@ def test_discovery() -> None:
         ),
     ],
 )
-def test_make_parameter_from_commandline(
-    string: str, param_cls: Any, value_cls: Any
-) -> None:
-    param = core.make_parameter_from_commandline(string)
+def test_make_nevergrad_parameter(string: str, param_cls: Any, value_cls: Any) -> None:
+    param = core.make_nevergrad_parameter(string)
     assert isinstance(param, param_cls)
     if param_cls is not str:
         assert isinstance(param.value, value_cls)
@@ -94,7 +125,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"
     assert len(returns) == 3
-    best_parameters = returns.best_parameters
+    best_parameters = returns.best_evaluated_params
     assert not best_parameters.dropout.is_integer()
     if budget > 1:
         assert best_parameters.batch_size == 4  # this argument should be easy to find
