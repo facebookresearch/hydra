@@ -3,7 +3,7 @@ from dataclasses import asdict
 
 import pytest
 
-from .sweeper import CommandlineSpec
+from hydra_plugins.hydra_nevergrad_sweeper.core import CommandlineSpec
 
 
 @pytest.mark.parametrize(  # type: ignore
