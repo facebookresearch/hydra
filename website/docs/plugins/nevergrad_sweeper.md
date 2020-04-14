@@ -29,7 +29,7 @@ We include an example of how to use this plugin. The file [`example/dummy_traini
 This application has the following configuration:
 ```yaml
 defaults:
-  - hydra/sweeper: nevergrad-sweeper
+  - hydra/sweeper: nevergrad
 
 hydra:
   sweeper:
