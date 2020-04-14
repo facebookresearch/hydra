@@ -20,7 +20,8 @@ class ConfigRepository:
             assert search_path.provider is not None
             scheme = self._get_scheme(search_path.path)
             source_type = SourcesRegistry.instance().resolve(scheme)
-            self.sources.append(source_type(search_path.provider, search_path.path))
+            source = source_type(search_path.provider, search_path.path)
+            self.sources.append(source)
 
     def load_config(self, config_path: str) -> Optional[ConfigResult]:
         source = self._find_config(config_path=config_path)

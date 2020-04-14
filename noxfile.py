@@ -25,9 +25,9 @@ PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
-
-SILENT = os.environ.get("VERBOSE", "0") == "0"
 FIX = os.environ.get("FIX", "0") == "1"
+VERBOSE = os.environ.get("VERBOSE", "0")
+SILENT = VERBOSE == "0"
 
 
 def get_current_os() -> str:
@@ -38,10 +38,11 @@ def get_current_os() -> str:
 
 
 print(f"Operating system\t:\t{get_current_os()}")
-print(f"PYTHON_VERSIONS\t\t:\t{PYTHON_VERSIONS}")
+print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
 print(f"PLUGINS\t\t\t:\t{PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
+print(f"VERBOSE\t\t\t:\t{VERBOSE}")
 
 
 def find_python_files(folder):
@@ -166,6 +167,26 @@ def install_lint_deps(session):
 
 
 @nox.session(python=PYTHON_VERSIONS)
+def lint(session):
+    install_lint_deps(session)
+    session.run("black", "--check", ".", silent=SILENT)
+    session.run(
+        "isort",
+        "--check",
+        "--diff",
+        ".",
+        "--skip=plugins",
+        "--skip=.nox",
+        silent=SILENT,
+    )
+    session.run("mypy", ".", "--strict", silent=SILENT)
+    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
+    # Mypy for examples
+    for pyfie in find_python_files("examples"):
+        session.run("mypy", pyfie, "--strict", silent=SILENT)
+
+
+@nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
 
     install_cmd = ["pip", "install", "-e"]
@@ -194,21 +215,6 @@ def lint_plugins(session):
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def lint(session):
-    install_lint_deps(session)
-    session.run("black", "--check", ".", silent=SILENT)
-    session.run(
-        "isort", "--check", "--diff", ".", silent=SILENT,
-    )
-
-    session.run("mypy", ".", "--strict", silent=SILENT)
-    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
-    # Mypy for examples
-    for pyfie in find_python_files("examples"):
-        session.run("mypy", pyfie, "--strict", silent=SILENT)
-
-
-@nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
     PLUGINS_INSTALL_COMMANDS,
@@ -222,6 +228,11 @@ def test_core(session, install_cmd):
 
     # test discovery_test_plugin
     run_pytest(session, "tests/test_plugins/discovery_test_plugin", "--noconftest")
+
+    # run namespace config loader tests
+    run_pytest(
+        session, "tests/test_plugins/namespace_pkg_config_source_test", "--noconftest"
+    )
 
     # Install and test example app
     session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)
