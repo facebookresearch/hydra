@@ -200,9 +200,7 @@ def make_nevergrad_parameter(description: Any) -> Any:
         caster = {"int": int, "str": str, "float": float}[description.cast]
         choices = [caster(x) for x in description.options]
         ordered = all(isinstance(c, (int, float)) for c in choices)
-        ordered &= all(
-            c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:])  # type: ignore
-        )
+        ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))
         return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
     # constant
     if isinstance(description, (str, int, float)):
