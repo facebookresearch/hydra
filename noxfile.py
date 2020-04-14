@@ -307,7 +307,7 @@ def coverage(session):
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def test_jupyter_notebook(session):
+def test_jupyter_notebooks(session):
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
         session.skip(
@@ -316,12 +316,13 @@ def test_jupyter_notebook(session):
     session.install("--upgrade", "setuptools", "pip")
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
-    session.run(
-        *pytest_args(
-            session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
-        ),
-        silent=SILENT,
+    args = pytest_args(
+        session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
     )
+    session.run(*args, silent=SILENT)
+
+    args = pytest_args(session, "--nbval", "examples/notebook/%run_test.ipynb")
+    session.run(*args, silent=SILENT)
 
 
 def _install_plugins(session, plugins, install_cmd):
