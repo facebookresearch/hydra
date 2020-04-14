@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import subprocess
 import sys
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -21,36 +20,6 @@ def test_discovery() -> None:
     assert core.NevergradSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "string,expected",
-    [
-        ("blu,blublu", core.CommandlineSpec(options=["blu", "blublu"], cast="str")),
-        ("0,1,2", core.CommandlineSpec(options=["0", "1", "2"], cast="float")),
-        ("str:0,1,2", core.CommandlineSpec(options=["0", "1", "2"], cast="str")),
-        (
-            "0.0,12.0,2.0",
-            core.CommandlineSpec(options=["0.0", "12.0", "2.0"], cast="float"),
-        ),
-        ("int:1:12", core.CommandlineSpec(bounds=(1.0, 12.0), cast="int")),
-        ("1:12", core.CommandlineSpec(bounds=(1.0, 12.0), cast="float")),
-        (
-            "log:0.01:1.0",
-            core.CommandlineSpec(bounds=(0.01, 1.0), cast="float", log=True),
-        ),
-        (
-            "int:log:1:1200",
-            core.CommandlineSpec(bounds=(1.0, 1200.0), cast="int", log=True),
-        ),
-    ],
-)
-def test_commandline_spec_parse(string: str, expected: core.CommandlineSpec) -> None:
-    param = core.CommandlineSpec.parse(string)
-    for attr, value in asdict(expected).items():
-        assert getattr(param, attr) == value, f"Wrong value for {attr}"
-    # the following equality fails for unknown reasons (only if running all tests)
-    # assert param == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
