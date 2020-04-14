@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from hydra.core.config_store import ConfigStore
 from hydra.types import ObjectConf
@@ -38,13 +38,42 @@ class NevergradOptimConf:
 
 
 @dataclass
+class ScalarSpec:
+
+    # lower bound if any
+    lower: Optional[float] = None
+
+    # upper bound if any
+    upper: Optional[float] = None
+
+    # initial value
+    # default to the middle point if completely bounded
+    init: Optional[float] = None
+
+    # step size for an update
+    # defaults to 1 if unbounded
+    # or 1/6 of the range if completely bounderd
+    step: Optional[float] = None
+
+    # cast to integer
+    integer: bool = False
+
+    # logarithmically distributed
+    log: bool = False
+
+
+@dataclass
 class NevergradFullConf:
 
     # configuration of the optimizer
     optim: NevergradOptimConf = NevergradOptimConf()
 
     # default parametrization of the search space
-    parametrization: Any = None
+    # can be specified:
+    # - as a string, like commandline arguments
+    # - as a list, for categorical variables
+    # - as a full scalar specification
+    parametrization: Optional[Dict[str, Union[List[Any], str, ScalarSpec]]] = None
 
     # version of the commandline API
     version: int = 1
