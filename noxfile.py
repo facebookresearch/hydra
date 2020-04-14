@@ -209,9 +209,9 @@ def lint_plugins(session):
             isortcmd += ["--check", "--diff"]
         session.run(*blackcmd, silent=SILENT)
         session.run(*isortcmd, silent=SILENT)
-
-        session.run("mypy", ".", "--strict", silent=SILENT)
         session.chdir(BASE)
+
+    session.run("mypy", ".", "--strict", silent=SILENT)
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -230,9 +230,7 @@ def test_core(session, install_cmd):
     run_pytest(session, "tests/test_plugins/discovery_test_plugin", "--noconftest")
 
     # run namespace config loader tests
-    run_pytest(
-        session, "tests/test_plugins/namespace_pkg_config_source_test", "--noconftest"
-    )
+    run_pytest(session, "tests/test_plugins/namespace_pkg_config_source_test")
 
     # Install and test example app
     session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)

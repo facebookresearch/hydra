@@ -391,6 +391,7 @@ class Hydra:
             return
 
         items = list(stats.modules_import_time.items())
+        # hide anything that took less than 5ms
         filtered = filter(lambda x: x[1] > 0.0005, items)
         sorted_items = sorted(filtered, key=lambda x: x[1], reverse=True)
 
