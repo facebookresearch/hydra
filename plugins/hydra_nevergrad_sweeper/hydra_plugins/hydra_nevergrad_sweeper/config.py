@@ -31,7 +31,7 @@ class NevergradOptimConf:
     noisy: bool = False
 
     # set to true for performing maximization instead of minimization
-    maximize: bool = True
+    maximize: bool = False
 
     # optimization seed, for reproducibility
     seed: Optional[int] = None
