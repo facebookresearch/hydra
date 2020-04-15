@@ -7,7 +7,7 @@ from hydra.types import ObjectConf
 
 
 @dataclass
-class NevergradOptimConf:
+class OptimConf:
 
     # name of the Nevergrad optimizer to use. Here is a sample:
     #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
@@ -38,10 +38,10 @@ class NevergradOptimConf:
 
 
 @dataclass
-class NevergradFullConf:
+class NevergradConf:
 
     # configuration of the optimizer
-    optim: NevergradOptimConf = NevergradOptimConf()
+    optim: OptimConf = OptimConf()
 
     # default parametrization of the search space
     # can be specified:
@@ -57,7 +57,7 @@ class NevergradFullConf:
 @dataclass
 class NevergradSweeperConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
-    params: NevergradFullConf = NevergradFullConf()
+    params: NevergradConf = NevergradConf()
 
 
 ConfigStore.instance().store(
