@@ -3,8 +3,6 @@ import logging
 from pathlib import Path
 from typing import Optional, Sequence
 
-from omegaconf import DictConfig, open_dict
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
@@ -18,6 +16,7 @@ from hydra.core.utils import (
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.types import TaskFunction
+from omegaconf import DictConfig, open_dict
 
 # IMPORTANT:
 # If your plugin imports any module that takes more than a fraction of a second to import,

@@ -1,9 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 
-from omegaconf import DictConfig
-
 import hydra
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 

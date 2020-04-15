@@ -27,6 +27,7 @@ SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 
 SILENT = os.environ.get("VERBOSE", "0") == "0"
+FIX = os.environ.get("FIX", "0") == "1"
 
 
 def get_current_os() -> str:
@@ -40,6 +41,7 @@ print(f"Operating system\t:\t{get_current_os()}")
 print(f"PYTHON_VERSIONS\t\t:\t{PYTHON_VERSIONS}")
 print(f"PLUGINS\t\t\t:\t{PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
+print(f"FIX\t\t\t:\t{FIX}")
 
 
 def find_python_files(folder):
@@ -93,15 +95,17 @@ def select_plugins(session):
     """
 
     assert session.python is not None, "Session python version is not specified"
-
+    blacklist = [".isort.cfg"]
     example_plugins = [
         {"name": x, "path": "examples/{}".format(x)}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
+        if x not in blacklist
     ]
     plugins = [
         {"name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
         if x != "examples"
+        if x not in blacklist
     ]
     available_plugins = plugins + example_plugins
 
@@ -177,8 +181,14 @@ def lint_plugins(session):
     # Mypy for plugins
     for plugin in plugins:
         session.chdir(os.path.join("plugins", plugin["path"]))
-        session.run("black", "--check", ".", silent=SILENT)
-        session.run("isort", "--check", "--diff", ".", silent=SILENT)
+        blackcmd = ["black", "."]
+        isortcmd = ["isort", "."]
+        if not FIX:
+            blackcmd += ["--check"]
+            isortcmd += ["--check", "--diff"]
+        session.run(*blackcmd, silent=SILENT)
+        session.run(*isortcmd, silent=SILENT)
+
         session.run("mypy", ".", "--strict", silent=SILENT)
         session.chdir(BASE)
 
@@ -188,14 +198,9 @@ def lint(session):
     install_lint_deps(session)
     session.run("black", "--check", ".", silent=SILENT)
     session.run(
-        "isort",
-        "--check",
-        "--diff",
-        ".",
-        "--skip=plugins",
-        "--skip=.nox",
-        silent=SILENT,
+        "isort", "--check", "--diff", ".", silent=SILENT,
     )
+
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
     # Mypy for examples

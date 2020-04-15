@@ -3,8 +3,6 @@ import itertools
 import logging
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import DictConfig
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
@@ -12,6 +10,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+from omegaconf import DictConfig
 
 # IMPORTANT:
 # If your plugin imports any module that takes more than a fraction of a second to import,
