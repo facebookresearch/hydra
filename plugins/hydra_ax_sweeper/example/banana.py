@@ -2,9 +2,8 @@
 import logging
 from typing import Any
 
-from omegaconf import DictConfig
-
 import hydra
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 

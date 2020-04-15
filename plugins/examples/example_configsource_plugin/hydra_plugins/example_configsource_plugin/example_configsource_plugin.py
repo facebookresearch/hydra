@@ -1,10 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, Dict, List, Optional
 
-from omegaconf import OmegaConf
-
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
+from omegaconf import OmegaConf
 
 
 class ConfigSourceExample(ConfigSource):

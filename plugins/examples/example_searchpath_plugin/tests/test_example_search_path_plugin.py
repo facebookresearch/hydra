@@ -3,6 +3,7 @@ from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.test_utils.test_utils import TGlobalHydraContext
+
 from hydra_plugins.example_searchpath_plugin.example_searchpath_plugin import (
     ExampleSearchPathPlugin,
 )

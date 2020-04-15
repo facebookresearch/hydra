@@ -2,8 +2,6 @@
 import logging
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from omegaconf import DictConfig, ListConfig, OmegaConf
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
@@ -11,6 +9,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+from omegaconf import DictConfig, ListConfig, OmegaConf
 
 # pylint: disable=logging-fstring-interpolation,no-self-used
 
