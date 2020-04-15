@@ -25,7 +25,6 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
     pass
 
 
-# TODO : ensure that if there is a missing __init__.py file in the dir a proper error is provided
 def test_config_in_dir(hydra_global_context: Any) -> None:
     with hydra_global_context(config_dir="../some_namespace/namespace_test/dir"):
         config_loader = GlobalHydra.instance().config_loader()
