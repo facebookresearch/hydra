@@ -57,7 +57,7 @@ class NevergradFullConf:
 @dataclass
 class NevergradSweeperConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
-    params: NevergradFullConf = field(default_factory=NevergradFullConf)
+    params: NevergradFullConf = NevergradFullConf()
 
 
 ConfigStore.instance().store(
