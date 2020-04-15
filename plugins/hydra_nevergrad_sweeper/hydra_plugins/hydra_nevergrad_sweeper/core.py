@@ -118,13 +118,42 @@ class CommandlineSpec:
         return cls(bounds=bounds, cast=cast, log="log" in modifiers)
 
 
+@dataclass
+class ScalarConfigSpec:
+    """Representation of all the options to define
+    a scalar.
+    """
+
+    # lower bound if any
+    lower: Optional[float] = None
+
+    # upper bound if any
+    upper: Optional[float] = None
+
+    # initial value
+    # default to the middle point if completely bounded
+    init: Optional[float] = None
+
+    # step size for an update
+    # defaults to 1 if unbounded
+    # or 1/6 of the range if completely bounderd
+    step: Optional[float] = None
+
+    # cast to integer
+    integer: bool = False
+
+    # logarithmically distributed
+    log: bool = False
+
+
+# pylint: disable=too-many-branches
 def make_nevergrad_parameter(description: Any) -> Any:
     """Returns a Nevergrad parameter from a definition string or object.
 
     Parameters
     ----------
     description: Any
-       - a definition string. This can be:
+       * a commandline definition string. This can be:
          - comma-separated values: for a choice parameter
            Eg.: "a,b,c"
            Note: sequences of increasing scalars provide a specific parametrization
@@ -136,9 +165,9 @@ def make_nevergrad_parameter(description: Any) -> Any:
            runtime. This provides full nevergrad flexibility at the cost of robustness.
            Eg.:"Log(a_min=0.001, a_max=0.1)"
          - anything else will be treated as a constant string
-       - a definition dict for scalar parameters, with potential fields
+       * a config definition dict for scalar parameters, with potential fields
          init, lower, upper, step, log, integer
-       - a list for option parameters
+       * a list for option parameters defined in config file
 
     Returns
     -------
@@ -155,9 +184,9 @@ def make_nevergrad_parameter(description: Any) -> Any:
     if isinstance(description, str):
         # hacky nevergrad parameter
         if description.startswith(tuple(dir(ng.p))):
-            param: ng.p.Parameter = eval(
+            param: ng.p.Parameter = eval(  # pylint: disable=eval-used
                 "ng.p." + description
-            )  # pylint: disable=eval-used
+            )
             assert isinstance(param, ng.p.Parameter)
             return param
         # cast to spec if possible
@@ -165,29 +194,30 @@ def make_nevergrad_parameter(description: Any) -> Any:
             description = CommandlineSpec.parse(description)
         except ValueError:
             pass
-    # convert scalar specs to dict
+    # convert scalar commandline specs to dict
     if isinstance(description, CommandlineSpec) and description.bounds is not None:
-        description = dict(
+        description = ScalarConfigSpec(
             lower=description.bounds[0],
             upper=description.bounds[1],
             log=description.log,
             integer=description.cast == "int",
         )
+    # convert scalar config specs to dict
     # convert dict to Scalar parameter instance
     if isinstance(description, (dict, DictConfig)):
+        description = ScalarConfigSpec(**description)
+    if isinstance(description, ScalarConfigSpec):
         init = ["init", "lower", "upper"]
-        options = init + ["log", "step", "integer"]
-        assert all(x in options for x in description)
-        init_params = {x: y for x, y in description.items() if x in init}
-        if not description.get("log", False):
+        init_params = {x: getattr(description, x) for x in init}
+        if not description.log:
             scalar = ng.p.Scalar(**init_params)
-            if "step" in description:
-                scalar.set_mutation(sigma=description["step"])
+            if description.step is not None:
+                scalar.set_mutation(sigma=description.step)
         else:
-            if "step" in description:
-                init_params["exponent"] = description["step"]
+            if description.step is not None:
+                init_params["exponent"] = description.step
             scalar = ng.p.Log(**init_params)
-        if description.get("integer", False):
+        if description.integer:
             scalar.set_integer_casting()
             a, b = scalar.bounds
             if a is not None and b is not None and b - a <= 6:
