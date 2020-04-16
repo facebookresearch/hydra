@@ -511,7 +511,7 @@ class IntegrationTestSuite:
             task_config=cfg,
             overrides=overrides,
             prints="hydra.utils.to_absolute_path('/foo/bar')",
-            expected_outputs="/foo/bar",
+            expected_outputs=str(Path("/foo/bar")),
         )
         outputs = [str(tmpdir / "foo/bar"), str(tmpdir / expected_dir)]
         integration_test(

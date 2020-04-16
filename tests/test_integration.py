@@ -5,27 +5,7 @@ from typing import List
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
-from hydra.test_utils.launcher_common_tests import IntegrationTestSuite
 from hydra.test_utils.test_utils import integration_test
-
-
-@pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags",
-    [
-        (
-            {
-                "defaults": [
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                    {"hydra/launcher": "basic"},
-                ]
-            },
-            ["-m"],
-        )
-    ],
-)
-class TestBasicLauncherIntegration(IntegrationTestSuite):
-    pass
 
 
 @pytest.mark.parametrize(  # type: ignore
