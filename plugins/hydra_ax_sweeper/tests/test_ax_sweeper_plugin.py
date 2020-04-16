@@ -225,3 +225,18 @@ def test_ax_logging(tmpdir: Path) -> None:
     assert "polynomial.x: range=[-5, -2], type = int" in result
     assert "polynomial.y: choice=[-1, 1], type = int" in result
     assert "polynomial.z: fixed=10, type = int" in result
+
+
+def test_example_app(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "example/banana.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "banana.x=-5:5",
+        "banana.y=-5:10.1",
+        "hydra.sweeper.params.ax_config.max_trials=2",
+    ]
+    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    assert "banana.x: range=[-5, 5], type = int" in result
+    assert "banana.y: range=[-5.0, 10.1], type = float" in result
