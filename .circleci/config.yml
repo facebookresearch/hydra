@@ -139,6 +139,7 @@ jobs:
           command: |
             choco install miniconda3 -y
             C:\tools\miniconda3\Scripts\conda.exe init powershell
+            choco install openssl -y
       - run:
           name: Preparing conda environment
           command: |
@@ -164,6 +165,7 @@ jobs:
           command: |
             choco install miniconda3 -y
             C:\tools\miniconda3\Scripts\conda.exe init powershell
+            choco install openssl -y
       - run:
           name: Preparing conda environment
           command: |
@@ -180,30 +182,30 @@ jobs:
             nox
             exit $LASTEXITCODE
 
-  # TODO: Test later, for now low priority
-#  py38_win:
-#    executor: win/default
-#    steps:
-#      - checkout
-#      - run:
-#          name: Installing Conda
-#          command: |
-#            choco install miniconda3 -y
-#            C:\tools\miniconda3\Scripts\conda.exe init powershell
-#      - run:
-#          name: Preparing conda environment
-#          command: |
-#            conda create -n hydra python=3.8 -q -y
-#            conda activate hydra
-#            pip install nox
-#      - run:
-#          name: Testing Hydra
-#          command: |
-#            $env:NOX_PYTHON_VERSIONS=3.8
-#            $env:PYTHONIOENCODING="utf_8"
-#            conda activate hydra
-#            nox
-#            exit $LASTEXITCODE
+  py38_win:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Installing Conda
+          command: |
+            choco install miniconda3 -y
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+            choco install openssl -y
+      - run:
+          name: Preparing conda environment
+          command: |
+            conda create -n hydra python=3.8 -q -y
+            conda activate hydra
+            pip install nox
+      - run:
+          name: Testing Hydra
+          command: |
+            $env:NOX_PYTHON_VERSIONS=3.8
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox
+            exit $LASTEXITCODE
   # Misc
   coverage:
     docker:
