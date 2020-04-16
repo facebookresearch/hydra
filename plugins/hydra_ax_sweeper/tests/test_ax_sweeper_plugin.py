@@ -7,8 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from omegaconf import DictConfig, OmegaConf
-
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
