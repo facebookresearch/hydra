@@ -506,12 +506,13 @@ class IntegrationTestSuite:
         task_config = OmegaConf.create()
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
+        path = str(Path("/foo/bar").absolute())
         integration_test(
             tmpdir=tmpdir,
             task_config=cfg,
             overrides=overrides,
             prints="hydra.utils.to_absolute_path('/foo/bar')",
-            expected_outputs=str(Path("/foo/bar")),
+            expected_outputs=path,
         )
         outputs = [str(tmpdir / "foo/bar"), str(tmpdir / expected_dir)]
         integration_test(
