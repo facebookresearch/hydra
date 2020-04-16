@@ -16,7 +16,7 @@ class TestBasicLauncher(LauncherTestSuite):
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [
-        (
+        pytest.param(
             {
                 "defaults": [
                     {"hydra/launcher": "basic"},
@@ -25,6 +25,7 @@ class TestBasicLauncher(LauncherTestSuite):
                 ]
             },
             ["-m"],
+            id="basic_launcher_multirun",
         )
     ],
 )

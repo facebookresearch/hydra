@@ -279,7 +279,7 @@ from hydra.core.hydra_config import HydraConfig
 @hydra.main($CONFIG_PATH)
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
-        $PRINTS
+$PRINTS
 
 if __name__ == "__main__":
     experiment()
@@ -287,11 +287,13 @@ if __name__ == "__main__":
     )
 
     print_code = ""
+    print_indent = "        "
     if prints is None or len(prints) == 0:
         print_code = "pass"
     else:
         for p in prints:
-            print_code += 'f.write({} + "\\\n")'.format(p)
+            print_code += f"{print_indent}f.write({p})\n"
+            print_code += f'{print_indent}f.write("\\n")\n'
 
     config_path = ""
     if task_config is not None:
@@ -320,9 +322,13 @@ if __name__ == "__main__":
             output = str.splitlines(file_str)
 
         if expected_outputs is not None:
-            assert len(output) == len(expected_outputs)
+            assert len(output) == len(
+                expected_outputs
+            ), f"Unexpected number of output lines from {task_file}"
             for idx in range(len(output)):
-                assert output[idx] == expected_outputs[idx]
+                assert (
+                    output[idx] == expected_outputs[idx]
+                ), f"Unexpected output for {prints[idx]} : expected {expected_outputs[idx]}, got {output[idx]}"
         # some tests are parsing the file output for more specialized testing.
         return file_str
     finally:
