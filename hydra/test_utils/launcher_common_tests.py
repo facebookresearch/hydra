@@ -324,24 +324,27 @@ class IntegrationTestSuite:
     @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, filename, expected_name",
         [
-            (None, [], "no_config.py", "no_config"),
-            (
+            pytest.param(None, [], "no_config.py", "no_config", id="no_config"),
+            pytest.param(
                 None,
                 ["hydra.job.name=overridden_name"],
                 "no_config.py",
                 "overridden_name",
+                id="different_filename",
             ),
-            (
+            pytest.param(
                 {"hydra": {"job": {"name": "name_from_config_file"}}},
                 [],
                 "with_config.py",
                 "name_from_config_file",
+                id="different_filename_and_config_file_name_override",
             ),
-            (
+            pytest.param(
                 {"hydra": {"job": {"name": "name_from_config_file"}}},
                 ["hydra.job.name=overridden_name"],
                 "with_config.py",
                 "overridden_name",
+                id="different_filename_and_config_file_name_override_and_command_line_override",
             ),
         ],
     )
@@ -372,7 +375,7 @@ class IntegrationTestSuite:
     @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, expected_dir",
         [
-            (
+            pytest.param(
                 {
                     "hydra": {
                         "sweep": {
@@ -383,16 +386,18 @@ class IntegrationTestSuite:
                 },
                 [],
                 "task_cfg/task_cfg_0",
+                id="sweep_dir_config_override",
             ),
-            (
+            pytest.param(
                 {},
                 [
                     "hydra.sweep.dir=cli_dir",
                     "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
                 ],
                 "cli_dir/cli_dir_0",
+                id="sweep_dir_cli_override",
             ),
-            (
+            pytest.param(
                 {
                     "hydra": {
                         "sweep": {
@@ -406,8 +411,9 @@ class IntegrationTestSuite:
                     "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
                 ],
                 "cli_dir/cli_dir_0",
+                id="sweep_dir_cli_overridding_config",
             ),
-            (
+            pytest.param(
                 {
                     "hydra": {
                         "sweep": {
@@ -420,8 +426,9 @@ class IntegrationTestSuite:
                 },
                 ["a=1", "b=2"],
                 "hydra_cfg/a=1,b=2",
+                id="subdir:override_dirname",
             ),
-            (
+            pytest.param(
                 # Test override_dirname integration
                 {
                     "hydra": {
@@ -445,6 +452,7 @@ class IntegrationTestSuite:
                 },
                 ["a=1", "b=2", "seed=10"],
                 "hydra_cfg/a_1+b_2",
+                id="subdir:custom_override_dirname",
             ),
         ],
     )
@@ -484,4 +492,33 @@ class IntegrationTestSuite:
             overrides=overrides,
             prints="hydra.utils.get_original_cwd()",
             expected_outputs=str(tmpdir),
+        )
+
+    def test_to_absolute_path_multirun(
+        self, tmpdir: Path, task_launcher_cfg: DictConfig, extra_flags: List[str],
+    ) -> None:
+        expected_dir = "cli_dir/cli_dir_0"
+        overrides = extra_flags + [
+            "hydra.sweep.dir=cli_dir",
+            "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
+        ]
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_config = OmegaConf.create()
+        cfg = OmegaConf.merge(task_launcher_cfg, task_config)
+        assert isinstance(cfg, DictConfig)
+        path = str(Path("/foo/bar").absolute())
+        integration_test(
+            tmpdir=tmpdir,
+            task_config=cfg,
+            overrides=overrides,
+            prints="hydra.utils.to_absolute_path('/foo/bar')",
+            expected_outputs=path,
+        )
+        outputs = [str(tmpdir / "foo/bar"), str(tmpdir / expected_dir)]
+        integration_test(
+            tmpdir=tmpdir,
+            task_config=cfg,
+            overrides=overrides,
+            prints=["hydra.utils.to_absolute_path('foo/bar')", "os.getcwd()"],
+            expected_outputs=outputs,
         )

@@ -1,8 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import sys
-
 import pytest  # type: ignore
-
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -10,15 +7,12 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
 chdir_plugin_root()
 
 
-win_msg = "Windows is unsupported, due to stability issues with JobLib"
-
-
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert JoblibLauncher.__name__ in [
@@ -26,7 +20,6 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 @pytest.mark.parametrize("launcher_name, overrides", [("joblib", [])])
 class TestJoblibLauncher(LauncherTestSuite):
     """
@@ -36,7 +29,6 @@ class TestJoblibLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [

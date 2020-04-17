@@ -1,13 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List
-
-from omegaconf import DictConfig
+from typing import List, Optional
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+from omegaconf import DictConfig
 
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
@@ -26,10 +25,10 @@ class AxSweeperSearchPathPlugin(SearchPathPlugin):
 class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
-    def __init__(self, ax_config: DictConfig):
+    def __init__(self, ax_config: DictConfig, max_batch_size: Optional[int]):
         from ._core import CoreAxSweeper
 
-        self.sweeper = CoreAxSweeper(ax_config)
+        self.sweeper = CoreAxSweeper(ax_config, max_batch_size)
 
     def setup(
         self,

@@ -16,6 +16,8 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSou
 class PackageConfigSource(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
+        # normalize to pkg format
+        self.path = self.path.replace("/", ".").rstrip(".")
 
     @staticmethod
     def scheme() -> str:
@@ -44,10 +46,12 @@ class PackageConfigSource(ConfigSource):
         try:
             if resource_exists(module_name, resource_name):
                 return True
-        except NotImplementedError:
+        except ModuleNotFoundError:
             return False
-        except ImportError:
-            return False
+        except Exception as e:
+            raise type(e)(
+                f"Unexpected error checking content of '{module_name}', did you forget an __init__.py?"
+            ) from e
         return False
 
     def is_group(self, config_path: str) -> bool:

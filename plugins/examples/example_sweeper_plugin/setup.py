@@ -1,19 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # type: ignore
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-example-sweeper",
-        version="0.1.0",
+        version="1.0.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="Example Hydra Sweeper plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
-        packages=find_packages(exclude=["tests", "example"]),
+        packages=find_namespace_packages(include=["hydra_plugins.*"]),
         classifiers=[
             # Feel free to choose another license
             "License :: OSI Approved :: MIT License",

@@ -16,7 +16,7 @@ class TestBasicLauncher(LauncherTestSuite):
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [
-        (
+        pytest.param(
             {
                 "defaults": [
                     {"hydra/launcher": "basic"},
@@ -25,10 +25,11 @@ class TestBasicLauncher(LauncherTestSuite):
                 ]
             },
             ["-m"],
+            id="basic_launcher_multirun",
         )
     ],
 )
-class TestExampleLauncherIntegration(IntegrationTestSuite):
+class TestBasicLauncherIntegration(IntegrationTestSuite):
     """
     Run this launcher through the integration test suite.
     """
@@ -40,5 +41,5 @@ class TestExampleLauncherIntegration(IntegrationTestSuite):
     "launcher_name, overrides",
     [("basic", ["hydra/sweeper=basic", "hydra.sweeper.params.max_batch_size=2"])],
 )
-class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
+class TesBasicSweeperWithBatching(BatchedSweeperTestSuite):
     ...

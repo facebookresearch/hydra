@@ -1,17 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
-from omegaconf import DictConfig, OmegaConf
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
+from omegaconf import DictConfig, OmegaConf
 
 from ._earlystopper import EarlyStopper
 
@@ -126,7 +125,7 @@ def get_one_batch_of_trials(
 class CoreAxSweeper:
     """Class to interface with the Ax Platform"""
 
-    def __init__(self, ax_config: DictConfig):
+    def __init__(self, ax_config: DictConfig, max_batch_size: Optional[int]):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
         self.experiment = ax_config.experiment
@@ -138,6 +137,7 @@ class CoreAxSweeper:
             self.ax_params.update(ax_config.params)
         self.sweep_dir: str
         self.job_idx: Optional[int] = None
+        self.max_batch_size = max_batch_size
 
     def setup(
         self,
@@ -179,12 +179,9 @@ class CoreAxSweeper:
                         len(batch_of_trials_to_launch)
                     )
                 )
-                overrides = [x.overrides for x in batch_of_trials_to_launch]
 
                 self.sweep_over_batches(
-                    ax_client=ax_client,
-                    overrides=overrides,
-                    batch_of_trials_to_launch=batch_of_trials_to_launch,
+                    ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch,
                 )
 
                 num_trials_so_far += len(batch_of_trials_to_launch)
@@ -207,22 +204,23 @@ class CoreAxSweeper:
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self,
-        ax_client: AxClient,
-        overrides: Sequence[Sequence[str]],
-        batch_of_trials_to_launch: BatchOfTrialType,
+        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType,
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None
-        rets = self.launcher.launch(
-            job_overrides=overrides, initial_job_idx=self.job_idx
-        )
-        self.job_idx += len(rets)
-        for idx in range(len(batch_of_trials_to_launch)):
-            val = rets[idx].return_value
-            ax_client.complete_trial(
-                trial_index=batch_of_trials_to_launch[idx].trial_index, raw_data=val
+
+        chunked_batches = self.chunks(batch_of_trials, self.max_batch_size)
+        for batch in chunked_batches:
+            overrides = [x.overrides for x in batch]
+            rets = self.launcher.launch(
+                job_overrides=overrides, initial_job_idx=self.job_idx
             )
+            self.job_idx += len(rets)
+            for idx in range(len(batch)):
+                val = rets[idx].return_value
+                ax_client.complete_trial(
+                    trial_index=batch[idx].trial_index, raw_data=val
+                )
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
@@ -335,3 +333,15 @@ class CoreAxSweeper:
                 )
 
         return parameters
+
+    @staticmethod
+    def chunks(batch: List[Any], n: Optional[int]) -> Iterable[List[Any]]:
+        """
+        Chunk the batch into chunks of upto to n items (each)
+        """
+        if n is None:
+            n = len(batch)
+        if n < 1:
+            raise ValueError("n must be an integer greater than 0")
+        for i in range(0, len(batch), n):
+            yield batch[i : i + n]
