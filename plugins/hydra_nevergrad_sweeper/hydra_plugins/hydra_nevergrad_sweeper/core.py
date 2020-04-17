@@ -13,7 +13,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
-from .config import OptimConf
+from .config import OptimConf, ScalarConfigSpec
 
 # pylint: disable=logging-fstring-interpolation,no-self-used
 
@@ -117,34 +117,6 @@ class CommandlineSpec:
         bounds: Tuple[float, float] = tuple(float(x) for x in remain)  # type: ignore
         cast = casts[0] if casts else "float"
         return cls(bounds=bounds, cast=cast, log="log" in modifiers)
-
-
-@dataclass
-class ScalarConfigSpec:
-    """Representation of all the options to define
-    a scalar.
-    """
-
-    # lower bound if any
-    lower: Optional[float] = None
-
-    # upper bound if any
-    upper: Optional[float] = None
-
-    # initial value
-    # default to the middle point if completely bounded
-    init: Optional[float] = None
-
-    # step size for an update
-    # defaults to 1 if unbounded
-    # or 1/6 of the range if completely bounderd
-    step: Optional[float] = None
-
-    # cast to integer
-    integer: bool = False
-
-    # logarithmically distributed
-    log: bool = False
 
 
 # pylint: disable=too-many-branches

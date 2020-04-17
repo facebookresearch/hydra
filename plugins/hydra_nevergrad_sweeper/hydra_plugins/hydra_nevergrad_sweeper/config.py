@@ -7,6 +7,34 @@ from hydra.types import ObjectConf
 
 
 @dataclass
+class ScalarConfigSpec:
+    """Representation of all the options to define
+    a scalar.
+    """
+
+    # lower bound if any
+    lower: Optional[float] = None
+
+    # upper bound if any
+    upper: Optional[float] = None
+
+    # initial value
+    # default to the middle point if completely bounded
+    init: Optional[float] = None
+
+    # step size for an update
+    # defaults to 1 if unbounded
+    # or 1/6 of the range if completely bounderd
+    step: Optional[float] = None
+
+    # cast to integer
+    integer: bool = False
+
+    # logarithmically distributed
+    log: bool = False
+
+
+@dataclass
 class OptimConf:
 
     # name of the Nevergrad optimizer to use. Here is a sample:
