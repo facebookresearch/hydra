@@ -74,7 +74,7 @@ batch_size: 8
 dropout: 0.6
 ```
 
-The the function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
+The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
 ```yaml
 db: mnist
 lr: 0.12
@@ -124,9 +124,9 @@ and the final 2 evaluations look like this:
 
 The run also creates an `optimization_results.yaml` file in your sweep folder with the parameters recommended by the optimizer:
 ```yaml
-best_achieved_result: 0.381
+best_evaluated_result: 0.381
 
-best_parameters:
+best_evaluated_params:
   batch_size: 4
   db: mnist
   dropout: 0.381
@@ -142,6 +142,7 @@ The plugin can use 3 types of parameters:
 ### Choices
 
 Choices are defined with **comma-separated values** in the command-line (`db=mnist,cifar` or `batch_size=4,8,12,16`) or with a list in a config file.
+By default, values are processed as floats if all can be converted to it, but you can modify this behavior by adding colon-separated specifications `int` or `str` before the the list. (eg.: `batch_size=int:4,8,12,16`)
 
 **Note:** sequences of increasing scalars are treated as a special case, easier to solve. Make sure to specify it this way when possible.
 

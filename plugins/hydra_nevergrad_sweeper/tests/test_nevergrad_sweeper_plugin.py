@@ -26,7 +26,9 @@ def test_discovery() -> None:
     "string,param_cls,value_cls",
     [
         ("blu,blublu", ng.p.Choice, str),
-        ("0,1,2", ng.p.TransitionChoice, int),
+        ("0,1,2", ng.p.TransitionChoice, float),
+        ("int:0,1,2", ng.p.TransitionChoice, int),
+        ("str:0,1,2", ng.p.Choice, str),
         ("0.0,12.0,2.0", ng.p.Choice, float),
         ("int:1:12", ng.p.Scalar, int),
         ("1:12", ng.p.Scalar, float),
@@ -39,10 +41,8 @@ def test_discovery() -> None:
         ),
     ],
 )
-def test_make_parameter_from_commandline(
-    string: str, param_cls: Any, value_cls: Any
-) -> None:
-    param = core.make_parameter_from_commandline(string)
+def test_make_nevergrad_parameter(string: str, param_cls: Any, value_cls: Any) -> None:
+    param = core.make_nevergrad_parameter(string)
     assert isinstance(param, param_cls)
     if param_cls is not str:
         assert isinstance(param.value, value_cls)
@@ -94,7 +94,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"
     assert len(returns) == 3
-    best_parameters = returns.best_parameters
+    best_parameters = returns.best_evaluated_params
     assert not best_parameters.dropout.is_integer()
     if budget > 1:
         assert best_parameters.batch_size == 4  # this argument should be easy to find
