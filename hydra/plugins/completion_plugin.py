@@ -4,7 +4,13 @@ import sys
 from abc import abstractmethod
 from typing import Any, List, Optional, Tuple, Union
 
-from omegaconf import Container, DictConfig, MissingMandatoryValue, OmegaConf
+from omegaconf import (
+    Container,
+    DictConfig,
+    MissingMandatoryValue,
+    OmegaConf,
+    ListConfig,
+)
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -75,9 +81,9 @@ class CompletionPlugin(Plugin):
     def _get_matches(config: Container, word: str) -> List[str]:
         def str_rep(in_key: Union[str, int], in_value: Any) -> str:
             if OmegaConf.is_config(in_value):
-                return "{}.".format(in_key)
+                return f"{in_key}."
             else:
-                return "{}=".format(in_key)
+                return f"{in_key}="
 
         if config is None:
             return []
@@ -119,9 +125,15 @@ class CompletionPlugin(Plugin):
                             if key.startswith(word):
                                 matches.append(str_rep(key, value))
                     elif OmegaConf.is_list(config):
-                        for idx, value in enumerate(config):
-                            if str(idx).startswith(word):
-                                matches.append(str_rep(idx, value))
+                        assert isinstance(config, ListConfig)
+                        for idx in range(len(config)):
+                            try:
+                                value = config[idx]
+                                if str(idx).startswith(word):
+                                    matches.append(str_rep(idx, value))
+                            except MissingMandatoryValue:
+                                matches.append(str_rep(idx, ""))
+
         else:
             assert False, "Object is not an instance of config : {}".format(
                 type(config)
