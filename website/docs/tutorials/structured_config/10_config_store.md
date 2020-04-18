@@ -25,3 +25,12 @@ class ConfigStore(metaclass=Singleton):
         """
     ...
 ```
+
+
+> TODO
+#### Overriding default values in the `@dataclass`
+You can use instances of the dataclasses to override default values in the stored config.
+```python
+cs.store(name="config", node=MySQLConfig(user="root", password="1234"))
+```
+If you register more than one config with the same name the last one will replace the previous ones.

@@ -1,6 +1,6 @@
 ---
 id: schema
-title: Structured config as schema
+title: Structured config schema
 ---
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema validating configuration files!
 When Hydra loads a configuration, it looks for config with the same name in the `ConfigStore`.
