@@ -18,8 +18,6 @@ cfg_store.store(node=MySQLConfig, name="config")
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    # The real type of cfg is DictConfig. We lie to get static type checking.
-    # See duck-typing section below for more information.
     print(f"Host: {cfg.host}, port: {cfg.port}")
 
 

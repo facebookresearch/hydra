@@ -3,10 +3,11 @@ id: minimal_example
 title: Minimal example
 ---
 
-This tutorial uses `ConfigStore`, an in-memory Singleton that stores configurations.
+There are three key elements in this example:
+- A `@dataclass` describes the application's configuration
+- `ConfigStore` manages the Structured Config
+- `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig` 
 
-The following example uses a `@dataclass` as the description of the application's configuration. 
-As usual, `cfg` is an instance of `DictConfig`; declaring it's type as `MySQLConfig` enables static type checking by tools like Mypy or PyCharm.
 
 ```python
 from dataclasses import dataclass
@@ -25,43 +26,43 @@ cfg_store.store(node=MySQLConfig, name="config")
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    # The real type of cfg is DictConfig. We lie to get static type checking.
-    # See duck-typing section below for more information.
     print(f"Host: {cfg.host}, port: {cfg.port}")
 
 if __name__ == "__main__":
     my_app()
 ```
 
-If you have this error in your code:
-```python {3}
+If you a typo in your code:
+```python
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    if cfg.post == "localhost":
-        print("Home is where the heart is!")
+    if cfg.pork == "80":  # pork should be of port!
+        print("Is this a webserver?!")
 ```
 
 Static type checkers like `mypy` can catch it:
 ```
-$ mypy my_app_type_error.py 
-my_app_type_error.py:21: error: "MySQLConfig" has no attribute "post"
+$ mypy my_app_type_error.py
+my_app_type_error.py:21: error: "MySQLConfig" has no attribute "pork"
 Found 1 error in 1 file (checked 1 source file)
 ```
 
-You also get runtime type checking:
-```python
+Hydra will catch runtime errors that `mypy` cannot, such as:
+
+A type error in the code:
+```
 $ python my_app_type_error.py
 Traceback (most recent call last):
 ...
-omegaconf.errors.ConfigAttributeError: Key 'post' not in 'MySQLConfig'
-        full_key: post
+omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
+        full_key: pork
         reference_type=Optional[dict]
         object_type=MySQLConfig
 ```
 
-Hydra will also catch runtime errors that `mypy` cannot:
+A type error in the command line:
 ```
-$ python my_app_type_error.py port=fail
+$ python my_app_type_error.py port=fail 
 omegaconf.errors.ValidationError: Value 'fail' could not be converted to Integer
         full_key: port
         reference_type=Optional[dict]
@@ -69,7 +70,10 @@ omegaconf.errors.ValidationError: Value 'fail' could not be converted to Integer
 ```
 
 ## Duck typing
-If it swims like a duck and quacks like a duck, it's a "duck".
-wikipedia.
 
-blah
+The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the phrase "If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck".
+It can be useful when you care about the methods or attributes of an object, not the actual type of the object.
+
+In the example above `cfg` is duck typed as `MySQLConfig`.
+It is actually an instance of `DictConfig`. The duck typing enables static type checking by tools like Mypy or PyCharm.
+This reduces development time by catching coding errors before you run your application.

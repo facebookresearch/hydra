@@ -18,8 +18,8 @@ cfg_store.store(node=MySQLConfig, name="config")
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    if cfg.post == "localhost":
-        print("Home is where the heart is!")
+    if cfg.pork == 80:  # pork should be of port!
+        print("Is this a webserver?!")
 
 
 if __name__ == "__main__":
