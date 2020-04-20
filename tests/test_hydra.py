@@ -503,6 +503,12 @@ def test_sweep_complex_defaults(
     Uninstall:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
 
+    Fish shell install:
+    python examples/tutorial/1_simple_cli_app/my_app.py -sc install=fish | source
+
+    Fish shell uninstall:
+    python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=fish | source
+
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
             id="overriding_help_template:$FLAGS_HELP",
@@ -539,6 +545,12 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 
     Uninstall:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
+
+    Fish shell install:
+    python examples/tutorial/1_simple_cli_app/my_app.py -sc install=fish | source
+
+    Fish shell uninstall:
+    python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,

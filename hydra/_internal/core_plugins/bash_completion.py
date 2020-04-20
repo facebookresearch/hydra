@@ -86,7 +86,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
             else:
                 raise RuntimeError(f"Error parsing line '{line}'")
 
-    def query(self, config_name: Optional[str]) -> None:
+    def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
         line = os.environ["COMP_LINE"]
         # key = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 

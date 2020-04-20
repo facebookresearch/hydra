@@ -37,7 +37,7 @@ class CompletionPlugin(Plugin):
         ...
 
     @abstractmethod
-    def query(self, config_name: Optional[str]) -> None:
+    def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
         ...
 
     @staticmethod
@@ -226,5 +226,5 @@ class DefaultCompletionPlugin(CompletionPlugin):
     def provides(self) -> str:
         ...
 
-    def query(self, config_name: Optional[str]) -> None:
+    def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
         ...

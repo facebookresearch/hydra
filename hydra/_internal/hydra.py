@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import argparse
 import copy
 import logging
 import os
@@ -168,7 +169,10 @@ class Hydra:
         return shell_to_plugin
 
     def shell_completion(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        line: Optional[str] = None,
     ) -> None:
         subcommands = ["install", "uninstall", "query"]
         arguments = OmegaConf.from_dotlist(overrides)
@@ -194,7 +198,7 @@ class Hydra:
             plugin.uninstall()
         elif arguments.query is not None:
             plugin = find_plugin(arguments.query)
-            plugin.query(config_name=config_name)
+            plugin.query(config_name=config_name, line=line)
 
     @staticmethod
     def format_args_help(args_parser: ArgumentParser) -> str:
@@ -204,6 +208,8 @@ class Hydra:
             if len(action.option_strings) == 0:
                 overrides = action
             else:
+                if action.help is argparse.SUPPRESS:
+                    continue
                 s += "{} : {}\n".format(",".join(action.option_strings), action.help)
         s += "Overrides : " + overrides.help
         return s

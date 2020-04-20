@@ -21,6 +21,17 @@ def is_expect_exists() -> bool:
     return distutils.spawn.find_executable("expect") is not None
 
 
+def is_fish_exists() -> bool:
+    return distutils.spawn.find_executable("fish") is not None
+
+
+def get_supported_shells() -> List[str]:
+    if is_fish_exists():
+        return ["bash", "fish"]
+    else:
+        return ["bash"]
+
+
 def create_config_loader() -> ConfigLoaderImpl:
     return ConfigLoaderImpl(
         config_search_path=create_config_search_path(
@@ -110,7 +121,7 @@ class TestCompletion:
     @pytest.mark.parametrize(  # type: ignore
         "prog", [["python", "hydra/test_utils/completion.py"]]
     )
-    @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
+    @pytest.mark.parametrize("shell", get_supported_shells())  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
@@ -143,6 +154,9 @@ class TestCompletion:
                 str(num_tabs),
             ]
         )
+        if shell == "fish":
+            num_tabs -= 1
+
         cmd.extend(expected)
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))

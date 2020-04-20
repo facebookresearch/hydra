@@ -320,6 +320,8 @@ def get_args_parser() -> argparse.ArgumentParser:
     shell = "SHELL_NAME"
     install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)
     uninstall_cmd = 'eval "$({} -sc uninstall={})"'.format(_get_exec_command(), shell)
+    fish_install_cmd = "{} -sc install=fish | source".format(_get_exec_command())
+    fish_uninstall_cmd = "{} -sc uninstall=fish | source".format(_get_exec_command())
     parser.add_argument(
         "--shell_completion",
         "-sc",
@@ -330,10 +332,19 @@ def get_args_parser() -> argparse.ArgumentParser:
 
     Uninstall:
     {}
+
+    Fish shell install:
+    {}
+
+    Fish shell uninstall:
+    {}
 """.format(
-            install_cmd, uninstall_cmd
+            install_cmd, uninstall_cmd, fish_install_cmd, fish_uninstall_cmd
         ),
     )
+
+    parser.add_argument("--_completion", help=argparse.SUPPRESS)
+
     return parser
 
 
