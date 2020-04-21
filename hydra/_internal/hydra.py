@@ -1,10 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import argparse
 import copy
 import logging
 import os
 import string
-from argparse import ArgumentParser
+from argparse import SUPPRESS, ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
 
@@ -208,7 +207,7 @@ class Hydra:
             if len(action.option_strings) == 0:
                 overrides = action
             else:
-                if action.help is argparse.SUPPRESS:
+                if action.help == SUPPRESS:
                     continue
                 s += "{} : {}\n".format(",".join(action.option_strings), action.help)
         s += "Overrides : " + overrides.help
