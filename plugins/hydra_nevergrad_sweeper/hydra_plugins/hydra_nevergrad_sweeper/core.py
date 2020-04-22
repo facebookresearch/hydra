@@ -5,10 +5,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
-from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, ListConfig, OmegaConf
@@ -16,15 +14,7 @@ from omegaconf import DictConfig, ListConfig, OmegaConf
 from .config import OptimConf, ScalarConfigSpec
 
 # pylint: disable=logging-fstring-interpolation,no-self-used
-
 log = logging.getLogger(__name__)
-
-
-class NevergradSearchPathPlugin(SearchPathPlugin):
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        search_path.append(
-            "nevergrad", "pkg://hydra_plugins.hydra_nevergrad_sweeper.config"
-        )
 
 
 @dataclass
