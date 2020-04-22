@@ -53,4 +53,5 @@ ConfigStore.instance().store(
     name="joblib",
     path="hydra.launcher",
     node=JobLibLauncherConf,
+    provider="joblib_launcher",
 )

@@ -23,19 +23,6 @@ from omegaconf import DictConfig, open_dict
 log = logging.getLogger(__name__)
 
 
-class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
-    """
-    This plugin is allowing configuration files provided by the JoblibLauncher plugin to be
-    discovered and used once the plugin is installed
-    """
-
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        # Appends the search path for this plugin to the end of the search path
-        search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.config"
-        )
-
-
 class JoblibLauncher(Launcher):
     def __init__(self, **kwargs: Any) -> None:
         """Joblib Launcher
