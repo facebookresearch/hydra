@@ -10,6 +10,7 @@ jobs:
       - run:
           name: "Installing Fish"
           command: |
+            brew update
             brew install fish
       - run:
           name: "Installing Conda"
@@ -39,6 +40,7 @@ jobs:
       - run:
           name: "Installing Fish"
           command: |
+            brew update
             brew install fish
       - run:
           name: "Installing Conda"
@@ -68,6 +70,7 @@ jobs:
       - run:
           name: "Installing Fish"
           command: |
+            brew update
             brew install fish
       - run:
           name: "Installing Conda"
