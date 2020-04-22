@@ -8,6 +8,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Installing Fish"
+          command: |
+            brew install fish
+      - run:
           name: "Installing Conda"
           command: |
             curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
@@ -33,6 +37,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "Installing Fish"
+          command: |
+            brew install fish
+      - run:
           name: "Installing Conda"
           command: |
             curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
@@ -57,6 +65,10 @@ jobs:
       xcode: "10.0.0"
     steps:
       - checkout
+      - run:
+          name: "Installing Fish"
+          command: |
+            brew install fish
       - run:
           name: "Installing Conda"
           command: |
@@ -87,6 +99,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get install -y expect
+            sudo apt-get install -y fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -104,6 +117,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get install -y expect
+            sudo apt-get install -y fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -121,6 +135,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get install -y expect
+            sudo apt-get install -y fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"

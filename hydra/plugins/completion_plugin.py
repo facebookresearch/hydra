@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+import re
 import sys
 from abc import abstractmethod
 from typing import Any, List, Optional, Tuple, Union
@@ -210,6 +211,27 @@ class CompletionPlugin(Plugin):
             result = list(set(matched_groups + config_matches))
 
         return sorted(result)
+
+    @staticmethod
+    def strip_python_or_app_name(line: str) -> str:
+        """
+        Take the command line received from shell completion, and strip the app name from it
+        which could be at the form of python script.py or some_app.
+        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
+        :param line: input line, may contain python file.py followed=by_args..
+        :return: tuple(args line, key of cursor in args line)
+        """
+        python_args = r"^\s*[\w\/]*python[23]?\s*[\w/\.]*\s*(.*)"
+        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
+        match = re.match(python_args, line)
+        if match:
+            return match.group(1)
+        else:
+            match = re.match(app_args, line)
+            if match:
+                return match.group(1)
+            else:
+                raise RuntimeError(f"Error parsing line '{line}'")
 
 
 class DefaultCompletionPlugin(CompletionPlugin):

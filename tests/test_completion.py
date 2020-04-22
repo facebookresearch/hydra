@@ -25,13 +25,6 @@ def is_fish_exists() -> bool:
     return distutils.spawn.find_executable("fish") is not None
 
 
-def get_supported_shells() -> List[str]:
-    if is_fish_exists():
-        return ["bash", "fish"]
-    else:
-        return ["bash"]
-
-
 def create_config_loader() -> ConfigLoaderImpl:
     return ConfigLoaderImpl(
         config_search_path=create_config_search_path(
@@ -121,7 +114,7 @@ class TestCompletion:
     @pytest.mark.parametrize(  # type: ignore
         "prog", [["python", "hydra/test_utils/completion.py"]]
     )
-    @pytest.mark.parametrize("shell", get_supported_shells())  # type: ignore
+    @pytest.mark.parametrize("shell", ["bash", "fish"])  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
@@ -131,6 +124,8 @@ class TestCompletion:
         line: str,
         expected: List[str],
     ) -> None:
+        if not is_fish_exists():
+            pytest.skip("fish should be installed to run the tests")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
@@ -154,6 +149,8 @@ class TestCompletion:
                 str(num_tabs),
             ]
         )
+
+        # Fish starts completion with one tab compared to bash's two tabs.
         if shell == "fish":
             num_tabs -= 1
 

@@ -2,15 +2,6 @@
 log_user 0
 set timeout 4
 
-# Under pycharm, for some unknown reason readline displays
-# the suggestions in a different order, breaking the test.
-# This enables debug output from Hydra which is easier to test
-set env(HYDRA_COMP_DEBUG) 1
-set env(INPUTRC) /dev/null
-
-# Suppress bash deprecation warning on Mac
-set env(BASH_SILENCE_DEPRECATION_WARNING) 1
-
 # Start fish without user configuration
 set env(HOME) /dev/null
 

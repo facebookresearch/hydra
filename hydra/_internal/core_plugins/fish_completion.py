@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-import re
 import sys
 from typing import List, Optional, Tuple
 
@@ -28,27 +27,6 @@ class FishCompletion(CompletionPlugin):
 
     def provides(self) -> str:
         return "fish"
-
-    @staticmethod
-    def strip_python_or_app_name(line: str) -> str:
-        """
-        Take the command line received from bash completion, and strip the app name from it
-        which could be at the form of python script.py or some_app.
-        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
-        :param line: input line, may contain python file.py followed=by_args..
-        :return: tuple(args line, key of cursor in args line)
-        """
-        python_args = r"^\s*[\w\/]*python[23]?\s*[\w/\.]*\s*(.*)"
-        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
-        match = re.match(python_args, line)
-        if match:
-            return match.group(1)
-        else:
-            match = re.match(app_args, line)
-            if match:
-                return match.group(1)
-            else:
-                raise RuntimeError("Error parsing line '{}'".format(line))
 
     def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
         if not line:

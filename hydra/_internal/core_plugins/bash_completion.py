@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-import re
 import sys
 from typing import Optional
 
@@ -64,27 +63,6 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
 
     def provides(self) -> str:
         return "bash"
-
-    @staticmethod
-    def strip_python_or_app_name(line: str) -> str:
-        """
-        Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
-        which could be at the form of python script.py or some_app.
-        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
-        :param line: input line, may contain python file.py followed=by_args..
-        :return: tuple(args line, key of cursor in args line)
-        """
-        python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
-        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
-        match = re.match(python_args, line)
-        if match:
-            return match.group(1)
-        else:
-            match = re.match(app_args, line)
-            if match:
-                return match.group(1)
-            else:
-                raise RuntimeError(f"Error parsing line '{line}'")
 
     def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
         line = os.environ["COMP_LINE"]
