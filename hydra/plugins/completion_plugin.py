@@ -221,7 +221,7 @@ class CompletionPlugin(Plugin):
         :param line: input line, may contain python file.py followed=by_args..
         :return: tuple(args line, key of cursor in args line)
         """
-        python_args = r"^\s*[\w\/]*python[23]?\s*[\w/\.]*\s*(.*)"
+        python_args = r"^\s*[\w\/]*python[3]?\s*[\w/\.]*\s*(.*)"
         app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
         match = re.match(python_args, line)
         if match:
