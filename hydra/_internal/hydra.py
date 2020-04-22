@@ -127,11 +127,13 @@ class Hydra:
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:
         cfg = copy.deepcopy(src_cfg)
-        for key in list(cfg.keys()):
-            if key != "hydra":
-                del cfg[key]
-        del cfg.hydra["hydra_help"]
-        del cfg.hydra["help"]
+        with open_dict(cfg):
+            for key in list(cfg.keys()):
+                if key != "hydra":
+                    del cfg[key]
+        with open_dict(cfg.hydra):
+            del cfg.hydra["hydra_help"]
+            del cfg.hydra["help"]
         return cfg
 
     def show_cfg(
@@ -142,7 +144,8 @@ class Hydra:
             config_name=config_name, overrides=overrides, with_log_configuration=True
         )
         if cfg_type == "job":
-            del cfg["hydra"]
+            with open_dict(cfg):
+                del cfg["hydra"]
         elif cfg_type == "hydra":
             cfg = self.get_sanitized_hydra_cfg(cfg)
         print(cfg.pretty())

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_calling_file_or_module_from_stack_frame
@@ -50,5 +50,6 @@ def compose(
     assert isinstance(cfg, DictConfig)
 
     if "hydra" in cfg:
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
     return cfg
