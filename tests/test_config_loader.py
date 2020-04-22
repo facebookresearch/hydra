@@ -4,7 +4,7 @@ from typing import Any, List
 
 import pkg_resources
 import pytest
-from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError
+from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError, open_dict
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
@@ -53,7 +53,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="config.yaml", strict=False, overrides=["abc=123"]
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == {"normal_yaml_config": True, "abc": 123}
 
     def test_load_with_missing_default(self, path: str) -> None:
@@ -72,7 +73,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="missing-optional-default.yaml", overrides=[], strict=False
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == {}
 
     def test_load_with_optional_default(self, path: str) -> None:
@@ -82,7 +84,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="optional-default.yaml", overrides=[], strict=False
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == dict(foo=10)
 
     def test_load_changing_group_in_default(self, path: str) -> None:
@@ -94,7 +97,8 @@ class TestConfigLoader:
             overrides=["group1=file2"],
             strict=False,
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == dict(foo=20)
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
@@ -106,7 +110,8 @@ class TestConfigLoader:
             overrides=["group2=file1"],
             strict=False,
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == dict(foo=10, bar=100)
 
     def test_change_run_dir_with_override(self, path: str) -> None:
@@ -141,7 +146,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="compose.yaml", overrides=["foo=ZZZ"], strict=True
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == {"foo": "ZZZ", "bar": 100}
 
         # Test that accessing a key that is not there will fail
@@ -189,7 +195,9 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="config.yml", overrides=[], strict=False
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
+
         assert cfg == dict(yml_file_here=True)
 
     def test_override_with_equals(self, path: str) -> None:
@@ -199,7 +207,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="config.yaml", overrides=["abc='cde=12'"], strict=False
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == OmegaConf.create({"normal_yaml_config": True, "abc": "cde=12"})
 
     def test_compose_file_with_dot(self, path: str) -> None:
@@ -209,7 +218,8 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="compose.yaml", overrides=["group1=abc.cde"], strict=False
         )
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
     def test_load_config_with_schema(self, restore_singletons: Any, path: str) -> None:
@@ -227,7 +237,8 @@ class TestConfigLoader:
         )
 
         cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
         assert cfg == {
             "db": {
                 "driver": "mysql",
@@ -266,7 +277,9 @@ class TestConfigLoader:
             config_name="db/mysql", overrides=[], strict=False
         )
 
-        del cfg["hydra"]
+        with open_dict(cfg):
+            del cfg["hydra"]
+
         assert cfg == {
             "db": {
                 "driver": "mysql",
@@ -503,7 +516,8 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
-    del cfg["hydra"]
+    with open_dict(cfg):
+        del cfg["hydra"]
     assert cfg == {
         "db": {
             "driver": MISSING,
@@ -555,14 +569,18 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     cfg = config_loader.load_configuration(config_name="config", overrides=[])
-    del cfg["hydra"]
+    with open_dict(cfg):
+        del cfg["hydra"]
+
     assert cfg == {"plugin": {"name": "???", "params": "???"}}
     assert OmegaConf.get_type(cfg.plugin) == Plugin
 
     cfg = config_loader.load_configuration(
         config_name="config", overrides=["plugin=concrete"]
     )
-    del cfg["hydra"]
+    with open_dict(cfg):
+        del cfg["hydra"]
+
     assert cfg == {"plugin": {"name": "foobar_plugin", "params": {"foo": 10}}}
     assert OmegaConf.get_type(cfg.plugin) == ConcretePlugin
     assert OmegaConf.get_type(cfg.plugin.params) == ConcretePlugin.FoobarParams

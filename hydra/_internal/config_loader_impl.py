@@ -78,7 +78,8 @@ class ConfigLoaderImpl(ConfigLoader):
 
         # if defaults are re-introduced by the promotion, remove it.
         if "defaults" in hydra_cfg:
-            del hydra_cfg["defaults"]
+            with open_dict(hydra_cfg):
+                del hydra_cfg["defaults"]
 
         if config_name is not None:
             defaults.append("__SELF__")
@@ -450,7 +451,8 @@ class ConfigLoaderImpl(ConfigLoader):
         """
 
         if "defaults" in cfg:
-            defaults = cfg.pop("defaults")
+            with open_dict(cfg):
+                defaults = cfg.pop("defaults")
         else:
             defaults = OmegaConf.create([])
 
