@@ -17,7 +17,7 @@ import itertools
 from dataclasses import dataclass
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import DictConfig, MISSING
+from omegaconf import MISSING, DictConfig
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
