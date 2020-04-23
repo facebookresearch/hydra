@@ -17,7 +17,7 @@ import itertools
 from dataclasses import dataclass
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import DictConfig
+from omegaconf import MISSING, DictConfig
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
@@ -28,7 +28,7 @@ from hydra.types import ObjectConf, TaskFunction
 
 @dataclass
 class BasicSweeperConf(ObjectConf):
-    cls: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
+    cls: str = MISSING
 
     @dataclass
     class Params:
@@ -42,7 +42,7 @@ ConfigStore.instance().store(
     name="basic",
     node=BasicSweeperConf,
     path="hydra.sweeper",
-    provider=__name__,
+    provider="hydra",
 )
 
 

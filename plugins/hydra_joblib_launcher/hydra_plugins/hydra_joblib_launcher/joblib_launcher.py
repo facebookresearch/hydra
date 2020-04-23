@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
@@ -15,25 +14,11 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.types import TaskFunction
-from joblib import Parallel, delayed  # type: ignore
+from joblib import Parallel, delayed
 from omegaconf import DictConfig, open_dict
 
 log = logging.getLogger(__name__)
-
-
-class JoblibLauncherSearchPathPlugin(SearchPathPlugin):
-    """
-    This plugin is allowing configuration files provided by the JoblibLauncher plugin to be
-    discovered and used once the plugin is installed
-    """
-
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        # Appends the search path for this plugin to the end of the search path
-        search_path.append(
-            "hydra-joblib-launcher", "pkg://hydra_plugins.hydra_joblib_launcher.config"
-        )
 
 
 class JoblibLauncher(Launcher):
