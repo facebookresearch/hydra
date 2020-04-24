@@ -27,7 +27,7 @@ class ConfigStore(metaclass=Singleton):
 ```
 
 
-> TODO
+> TODO: I actually want this in the minimal example.
 #### Overriding default values in the `@dataclass`
 You can use instances of the dataclasses to override default values in the stored config.
 ```python

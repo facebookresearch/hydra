@@ -14,13 +14,20 @@ class MySQLConfig:
 
 
 cfg_store = ConfigStore.instance()
-cfg_store.store(name="config", node={"db": MySQLConfig})
+cfg_store.store(
+    name="config",
+    node={
+        "src": MySQLConfig(host="localhost"),
+        "dst": MySQLConfig(host="example.com"),
+    },
+)
 
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    db: MySQLConfig = cfg.db
-    print(f"Host: {db.host}, port: {db.port}")
+    src: MySQLConfig = cfg.src
+    dst: MySQLConfig = cfg.dst
+    print(f"Copying {src.host}:{src.port} to {dst.host}:{dst.port}")
 
 
 if __name__ == "__main__":

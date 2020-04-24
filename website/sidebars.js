@@ -34,7 +34,6 @@ module.exports = {
                 'tutorials/structured_config/defaults',
                 'tutorials/structured_config/schema',
                 'tutorials/structured_config/config_store',
-                'tutorials/structured_config/node_paths',
             ],
           },
         ],
