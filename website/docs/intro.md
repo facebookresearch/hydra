@@ -141,7 +141,7 @@ website:
     domain: example.com
 ```
 
-There is a whole lot more to Hydra. Read the [tutorial](tutorial/1_simple_cli_app.md) to learn more.
+There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/1_simple_cli_app.md) to learn more.
 
 ## Other stuff
 ### Community
