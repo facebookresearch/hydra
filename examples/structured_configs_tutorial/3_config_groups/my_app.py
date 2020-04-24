@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore

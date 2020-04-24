@@ -18,7 +18,7 @@ cfg_store.store(node=MySQLConfig, name="config")
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    if cfg.pork == 80:  # pork should be of port!
+    if cfg.pork == 80:  # pork should be of port! # type: ignore
         print("Is this a webserver?!")
 
 
