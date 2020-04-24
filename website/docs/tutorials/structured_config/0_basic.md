@@ -29,7 +29,7 @@ describe your configuration structure and types. They enable:
 With both patterns, you get everything Hydra has to offer (Config composition, Command line overrides etc).
 This tutorial covers both. \***Read it in order**\*.
 
-Structured Configs are a feature of OmegaConf. This tutorial does assume any knowledge of them.
+Structured Configs are a feature of OmegaConf. This tutorial does not assume any knowledge of them.
 It is recommended that you visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more later.
 
 <div class="alert alert--info" role="alert">

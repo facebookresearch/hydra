@@ -75,6 +75,8 @@ class ConfigLoaderImpl(ConfigLoader):
         job_cfg_type = OmegaConf.get_type(job_cfg)
         if job_cfg_type is not None and not issubclass(job_cfg_type, dict):
             hydra_cfg._promote(job_cfg_type)
+            # this is breaking encapsulation a bit. can potentially be implemented in OmegaConf
+            hydra_cfg._metadata.ref_type = job_cfg._metadata.ref_type
 
         # if defaults are re-introduced by the promotion, remove it.
         if "defaults" in hydra_cfg:

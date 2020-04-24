@@ -29,12 +29,12 @@ module.exports = {
             items: [
                 'tutorials/structured_config/basic',
                 'tutorials/structured_config/minimal_example',
-                'tutorials/structured_config/node_paths',
                 'tutorials/structured_config/nesting',
                 'tutorials/structured_config/config_groups',
                 'tutorials/structured_config/defaults',
                 'tutorials/structured_config/schema',
                 'tutorials/structured_config/config_store',
+                'tutorials/structured_config/node_paths',
             ],
           },
         ],

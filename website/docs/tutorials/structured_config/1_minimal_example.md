@@ -32,7 +32,7 @@ if __name__ == "__main__":
     my_app()
 ```
 
-If you a typo in your code:
+If you have a typo in your code:
 ```python
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
@@ -56,16 +56,17 @@ Traceback (most recent call last):
 ...
 omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
         full_key: pork
-        reference_type=Optional[dict]
+        reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 ```
 
 A type error in the command line:
 ```
-$ python my_app_type_error.py port=fail 
+$ python my_app_type_error.py port=fail
+... 
 omegaconf.errors.ValidationError: Value 'fail' could not be converted to Integer
         full_key: port
-        reference_type=Optional[dict]
+        reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 ```
 
