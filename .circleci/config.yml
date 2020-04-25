@@ -8,19 +8,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Installing Fish"
-          command: |
-            brew update
-            brew install fish
-      - run:
           name: "Installing Conda"
           command: |
             curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
             bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing Conda environment"
+          name: "Preparing environment"
           command: |
+            brew update
+            brew install fish
             conda create -n hydra python=3.6 -yq
             conda run -n hydra pip install nox
       - run:
@@ -38,19 +35,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Installing Fish"
-          command: |
-            brew update
-            brew install fish
-      - run:
           name: "Installing Conda"
           command: |
             curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
             bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing Conda environment"
+          name: "Preparing environment"
           command: |
+            brew update
+            brew install fish
             conda create -n hydra python=3.7 -yq
             conda run -n hydra pip install nox
       - run:
@@ -68,19 +62,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Installing Fish"
-          command: |
-            brew update
-            brew install fish
-      - run:
           name: "Installing Conda"
           command: |
             curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
             bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing Conda environment"
+          name: "Preparing environment"
           command: |
+            brew update
+            brew install fish
             conda create -n hydra python=3.8 -yq
             conda run -n hydra pip install nox
       - run:
@@ -101,8 +92,7 @@ jobs:
       - run:
           name: "Preparing environment"
           command: |
-            sudo apt-get install -y expect
-            sudo apt-get install -y fish
+            sudo apt-get install -y expect fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -119,8 +109,7 @@ jobs:
       - run:
           name: "Preparing environment"
           command: |
-            sudo apt-get install -y expect
-            sudo apt-get install -y fish
+            sudo apt-get install -y expect fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -137,8 +126,7 @@ jobs:
       - run:
           name: "Preparing environment"
           command: |
-            sudo apt-get install -y expect
-            sudo apt-get install -y fish
+            sudo apt-get install -y expect fish
             sudo pip install nox
       - run:
           name: "Testing Hydra"
