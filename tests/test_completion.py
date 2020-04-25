@@ -124,7 +124,7 @@ class TestCompletion:
         line: str,
         expected: List[str],
     ) -> None:
-        if not is_fish_exists():
+        if shell == "fish" and not is_fish_exists():
             pytest.skip("fish should be installed to run the tests")
 
         # verify expect will be running the correct Python.
