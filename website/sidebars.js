@@ -27,7 +27,7 @@ module.exports = {
             type: 'category',
             label: 'Structured configs tutorial',
             items: [
-                'tutorials/structured_config/basic',
+                'tutorials/structured_config/intro',
                 'tutorials/structured_config/minimal_example',
                 'tutorials/structured_config/nesting',
                 'tutorials/structured_config/config_groups',

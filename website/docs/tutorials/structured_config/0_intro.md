@@ -1,5 +1,5 @@
 ---
-id: basic
+id: intro
 title: Introduction to Structured Configs
 sidebar_label: Introduction to Structured Configs
 ---
