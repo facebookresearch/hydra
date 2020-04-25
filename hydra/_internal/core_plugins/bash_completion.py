@@ -64,7 +64,7 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
     def provides(self) -> str:
         return "bash"
 
-    def query(self, config_name: Optional[str], line: Optional[str] = None) -> None:
+    def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
         # key = os.environ["COMP_POINT "] if "COMP_POINT " in os.environ else len(line)
 

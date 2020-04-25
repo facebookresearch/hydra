@@ -3,7 +3,7 @@ import copy
 import logging
 import os
 import string
-from argparse import SUPPRESS, ArgumentParser
+from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
 
@@ -168,10 +168,7 @@ class Hydra:
         return shell_to_plugin
 
     def shell_completion(
-        self,
-        config_name: Optional[str],
-        overrides: List[str],
-        line: Optional[str] = None,
+        self, config_name: Optional[str], overrides: List[str]
     ) -> None:
         subcommands = ["install", "uninstall", "query"]
         arguments = OmegaConf.from_dotlist(overrides)
@@ -197,7 +194,7 @@ class Hydra:
             plugin.uninstall()
         elif arguments.query is not None:
             plugin = find_plugin(arguments.query)
-            plugin.query(config_name=config_name, line=line)
+            plugin.query(config_name=config_name)
 
     @staticmethod
     def format_args_help(args_parser: ArgumentParser) -> str:
@@ -207,8 +204,6 @@ class Hydra:
             if len(action.option_strings) == 0:
                 overrides = action
             else:
-                if action.help == SUPPRESS:
-                    continue
                 s += "{} : {}\n".format(",".join(action.option_strings), action.help)
         s += "Overrides : " + overrides.help
         return s

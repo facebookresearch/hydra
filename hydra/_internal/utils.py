@@ -343,8 +343,6 @@ def get_args_parser() -> argparse.ArgumentParser:
         ),
     )
 
-    parser.add_argument("--_completion", help=argparse.SUPPRESS)
-
     return parser
 
 
