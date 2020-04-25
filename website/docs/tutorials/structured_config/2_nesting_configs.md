@@ -17,7 +17,7 @@ class MySQLConfig:
     host: str = "localhost"
     port: int = 3306
 
-@dataclassz
+@dataclass
 class MyConfig:
     db: MySQLConfig = MySQLConfig()
     verbose: bool = True
