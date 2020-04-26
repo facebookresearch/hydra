@@ -5,7 +5,7 @@ sidebar_label: Introduction to Structured Configs
 ---
 This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
 
-Structured Configs are enable the use of Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
+Structured Configs enables the use of Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
 describe your configuration structure and types. They enable:
 
 * **Static type checking** when using static type checkers (mypy, PyCharm, etc.)

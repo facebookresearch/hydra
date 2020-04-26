@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from omegaconf import DictConfig
+from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -13,8 +13,6 @@ class MySQLConfig:
     driver: str = "mysql"
     host: str = "localhost"
     port: int = 3306
-    user: str = "omry"
-    password: str = "secret"
 
 
 @dataclass
@@ -23,14 +21,12 @@ class PostGreSQLConfig:
     host: str = "localhost"
     port: int = 5432
     timeout: int = 10
-    user: str = "postgre_user"
-    password: str = "drowssap"
 
 
 # Config is extending DictConfig to allow type safe access to the pretty() function below.
 @dataclass
 class Config(DictConfig):
-    db: Any = MySQLConfig()
+    db: Any = MISSING
 
 
 cs = ConfigStore.instance()

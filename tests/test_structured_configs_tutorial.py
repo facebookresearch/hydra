@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-
 import subprocess
 import sys
 from pathlib import Path
