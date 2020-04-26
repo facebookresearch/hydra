@@ -7,13 +7,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-from omegaconf import DictConfig, OmegaConf
-
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
+from omegaconf import DictConfig, OmegaConf
 
 chdir_plugin_root()
 
@@ -31,6 +31,15 @@ def test_discovery() -> None:
 def quadratic(cfg: DictConfig) -> Any:
     x = cfg.quadratic.x
     y = cfg.quadratic.y
+    a = 100
+    b = 1
+    z = a * (x ** 2) + b * y
+    return z
+
+
+def nested_quadratic(cfg: DictConfig) -> Any:
+    x = cfg.quadratic.args.x
+    y = cfg.quadratic.args.y
     a = 100
     b = 1
     z = a * (x ** 2) + b * y
@@ -119,6 +128,33 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
+
+
+def test_jobs_configured_via_nested_config(sweep_runner: TSweepRunner) -> None:
+    sweep = sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=nested_quadratic,
+        config_path="config",
+        config_name="nested_quadratic.yaml",
+        overrides=[
+            "hydra/sweeper=ax",
+            "hydra/launcher=basic",
+            "hydra.sweeper.params.ax_config.client.random_seed=1",
+            "hydra.sweeper.params.ax_config.max_trials=2",
+        ],
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters = returns["ax"]
+        assert len(best_parameters) == 2
+        assert math.isclose(best_parameters["quadratic.args.x"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.args.y"], -1.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:

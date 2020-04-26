@@ -2,9 +2,10 @@ defaults:
   - hydra/sweeper: ax
 
 quadratic:
-  # To be minimized
-  x: ???
-  y: ???
+  args:
+    # To be minimized
+    x: ???
+    y: ???
 
 hydra:
     sweeper:
@@ -24,9 +25,10 @@ hydra:
           
           params:
             quadratic:
-              x:
-                type: range
-                bounds: [-1, 1]
-              y:
+              args:
+                x:
+                  type: range
+                  bounds: [-1, 1]
+            quadratic.args.y:
                 type: range
                 bounds: [-1, 1]

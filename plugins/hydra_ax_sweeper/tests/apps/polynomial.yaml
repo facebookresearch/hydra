@@ -24,10 +24,10 @@ hydra:
             max_epochs_without_improvement: 2
 
           params:
-            polynomial.x:
-              type: range
-              bounds: [-1, 1]
-
-            polynomial.y:
-              type: choice
-              values: [-1, 1]
+            polynomial:
+              x:
+                type: range
+                bounds: [-1, 1]
+              y:
+                type: choice
+                values: [-1, 1]

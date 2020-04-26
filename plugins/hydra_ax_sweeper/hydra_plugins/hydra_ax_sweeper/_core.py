@@ -221,10 +221,10 @@ class CoreAxSweeper:
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
 
-    def setup_ax_client(self, arguments: List[str]) -> AxClient:
-        """Method to setup the Ax Client"""
+    def parse_config_params(self):
+        """Parse the params from the config"""
         parameters: List[Dict[str, Any]] = []
-        for key, value in self.ax_params.items():
+        for key, value in parse_nested_config(self.ax_params).items():
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)
             if "parameter_type" not in param:
@@ -237,6 +237,12 @@ class CoreAxSweeper:
 
             parameters.append(param)
             parameters[-1]["name"] = key
+        return parameters
+
+    def setup_ax_client(self, arguments: List[str]) -> AxClient:
+        """Method to setup the Ax Client"""
+        parameters = self.parse_config_params()
+
         commandline_params = self.parse_commandline_args(arguments)
         for cmd_param in commandline_params:
             for param in parameters:
@@ -344,3 +350,16 @@ class CoreAxSweeper:
             raise ValueError("n must be an integer greater than 0")
         for i in range(0, len(batch), n):
             yield batch[i : i + n]
+
+
+def parse_nested_config(
+    config: DictConfig, parent_key: str = "", sep: str = "."
+) -> DictConfig:
+    items = []
+    for k, v in config.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if "type" in v:
+            items.append((new_key, v))
+        else:
+            items.extend(parse_nested_config(v, new_key, sep=sep).items())
+    return DictConfig(dict(items))
