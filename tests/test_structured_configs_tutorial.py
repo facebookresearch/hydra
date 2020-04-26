@@ -1,13 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import re
+# import re
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-from omegaconf import OmegaConf
-
 from hydra.test_utils.test_utils import chdir_hydra_root
+
+# import pytest
+# from omegaconf import OmegaConf
+
 
 chdir_hydra_root()
 
@@ -24,6 +25,8 @@ def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
     assert result.decode("utf-8").rstrip() == "Host: localhost, port: 3306"
 
 
+#
+#
 # def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
 #     cmd = [
 #         sys.executable,
@@ -36,8 +39,10 @@ def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
 #     reference_type=Optional[MySQLConfig]
 #     object_type=MySQLConfig
 #     """
-#     # TODO: validate expected in output
-#     subprocess.run(cmd)
+#     result = subprocess.check_output(cmd)
+#     print(result.decode("utf-8").rstrip())
+
+
 #
 #
 # def test_structured_configs_1_basic_override(tmpdir: Path) -> None:

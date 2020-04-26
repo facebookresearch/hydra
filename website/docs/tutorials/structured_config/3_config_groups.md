@@ -49,7 +49,7 @@ db:
 ```
 
 #### Config inheritance
-We can improve on the above example by modeling out config with inheritance.
+We can improve on the above example by modeling the configuration with inheritance.
 Noteworthy things in the example:
 - We can move fields to the top level class, reducing repetition of field names, type and default values
 - The type of the `db` field in `Config` is `DBConfig`, this offers static and runtime type safety 
