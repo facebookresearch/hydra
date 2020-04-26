@@ -8,12 +8,12 @@ Sometimes you want to run a parameter sweep.
 A parameter sweep is a method of evaluating a function (or a program) with a pre-determined set of parameters.
 The examples below will clarify what this means.
 
-To run a parameter sweep, use the `--multirun` (`-m`) flag and pass a comma separated list for each 
+To run a parameter sweep, use the `--multirun` (`-m`) flag and pass a comma separated list for each
 dimension you want to sweep.
 
 To run your program with the 3 different schemas in schema config group:
 ```
-$ python my_app.py -m schema=warehouse,support,school 
+$ python my_app.py -m schema=warehouse,support,school
 ```
 
 Here is sweep over the db types (mysql,postgresql) and the schemas (warehouse,support,school).
@@ -39,6 +39,6 @@ For example, the [Ax Sweeper](/plugins/ax_sweeper.md) can automatically find the
 ### Launcher
 A Launcher is what runs your job, Hydra comes with a simple launcher that runs the jobs locally and serially.
 However, other launchers are available as plugins. For example - The [JobLib Launcher](/plugins/joblib_launcher.md)
-Can execute the different parameter combinations in parallel on your local machine using multi-processing.
+can execute the different parameter combinations in parallel on your local machine using multi-processing.
 
 There are plans to add additional Launchers, such as a Launcher that launches your application code on AWS.
