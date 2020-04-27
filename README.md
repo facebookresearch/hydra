@@ -16,6 +16,12 @@ Check the [website](https://hydra.cc/) for more information.
 ## License
 Hydra is licensed under [MIT License](LICENSE).
 
+## Community
+Ask questions in the chat or StackOverflow (Use the tag #fb-hydra):
+* [Chat](https://hydra-framework.zulipchat.com)
+* [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
+* [Twitter](https://twitter.com/Hydra_Framework)
+
 
 ## Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
