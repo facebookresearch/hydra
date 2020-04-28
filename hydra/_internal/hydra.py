@@ -287,7 +287,8 @@ class Hydra:
         )
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
-        del clean_cfg["hydra"]
+        with open_dict(clean_cfg):
+            del clean_cfg["hydra"]
         help_text = self.get_help(help_cfg, clean_cfg, args_parser)
         print(help_text)
 

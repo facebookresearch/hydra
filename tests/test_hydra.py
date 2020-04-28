@@ -460,22 +460,34 @@ def test_sweep_complex_defaults(
 @pytest.mark.parametrize(  # type: ignore
     "script, flag, overrides,expected",
     [
-        (
+        pytest.param(
             "examples/tutorial/1_simple_cli_app/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
+            id="simple_cli_app",
         ),
-        (
-            "examples/tutorial/1_simple_cli_app/my_app.py",
+        pytest.param(
+            "examples/tutorial/2_config_file/my_app.py",
             "--help",
-            ["hydra.help.template=$CONFIG", "foo=bar"],
-            """foo: bar
+            ["hydra.help.template=foo"],
+            "foo\n",
+            id="overriding_help_template",
+        ),
+        pytest.param(
+            "examples/tutorial/2_config_file/my_app.py",
+            "--help",
+            ["hydra.help.template=$CONFIG", "db.user=root"],
+            """db:
+  driver: mysql
+  user: root
+  pass: secret
 
 """,
+            id="overriding_help_template:$CONFIG",
         ),
-        (
-            "examples/tutorial/1_simple_cli_app/my_app.py",
+        pytest.param(
+            "examples/tutorial/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -486,30 +498,33 @@ def test_sweep_complex_defaults(
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Install:
-    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc install=SHELL_NAME)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=SHELL_NAME)"
 
     Uninstall:
-    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=SHELL_NAME)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
+            id="overriding_help_template:$FLAGS_HELP",
         ),
-        (
+        pytest.param(
             "examples/tutorial/3_config_groups/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             """db: mysql, postgresql
 
 """,
+            id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
-        (
-            "examples/tutorial/1_simple_cli_app/my_app.py",
+        pytest.param(
+            "examples/tutorial/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
             "foo\n",
+            id="overriding_hydra_help_template",
         ),
-        (
-            "examples/tutorial/1_simple_cli_app/my_app.py",
+        pytest.param(
+            "examples/tutorial/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -520,13 +535,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Install:
-    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc install=SHELL_NAME)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=SHELL_NAME)"
 
     Uninstall:
-    eval "$(python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=SHELL_NAME)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
+            id="overriding_hydra_help_template:$FLAGS_HELP",
         ),
     ],
 )
