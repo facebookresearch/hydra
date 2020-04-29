@@ -143,7 +143,7 @@ jobs:
       - run:
           name: Preparing conda environment
           command: |
-            conda create -n hydra python=3.6 -qy
+            conda create -n hydra python=3.6 pywin32 -qy
             conda activate hydra
             pip install nox
       - run:
@@ -169,7 +169,7 @@ jobs:
       - run:
           name: Preparing conda environment
           command: |
-            conda create -n hydra python=3.7 -q -y
+            conda create -n hydra python=3.7 pywin32 -qy
             conda activate hydra
             pip install nox
       - run:
@@ -195,7 +195,7 @@ jobs:
       - run:
           name: Preparing conda environment
           command: |
-            conda create -n hydra python=3.8 -q -y
+            conda create -n hydra python=3.8 pywin32 -qy
             conda activate hydra
             pip install nox
       - run:
@@ -257,7 +257,7 @@ workflows:
       # windows
       - py36_win
       - py37_win
-#      - py38_win
+      - py38_win
       - deploy-website:
           filters:
             branches:

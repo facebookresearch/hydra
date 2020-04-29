@@ -45,6 +45,19 @@ print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
 
 
+def _upgrade_basic(session):
+    session.run(
+        "python",
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "setuptools",
+        "pip",
+        silent=SILENT,
+    )
+
+
 def find_python_files(folder):
     for root, folders, files in os.walk(folder):
         for filename in folders + files:
@@ -160,7 +173,7 @@ def select_plugins(session):
 
 
 def install_lint_deps(session):
-    session.install("--upgrade", "setuptools", "pip", silent=SILENT)
+    _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.install("black")
@@ -221,7 +234,7 @@ def lint_plugins(session):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_core(session, install_cmd):
-    session.install("--upgrade", "setuptools", "pip")
+    _upgrade_basic(session)
     install_hydra(session, install_cmd)
     session.install("pytest")
     run_pytest(session, "tests")
@@ -244,7 +257,7 @@ def test_core(session, install_cmd):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_plugins(session, install_cmd):
-    session.install("--upgrade", "setuptools", "pip")
+    _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session)
@@ -280,7 +293,7 @@ def coverage(session):
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    session.install("--upgrade", "setuptools", "pip")
+    _upgrade_basic(session)
     session.install("coverage", "pytest")
     session.run("pip", "install", "-e", ".", silent=SILENT)
     session.run("coverage", "erase")
@@ -327,7 +340,6 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
-    session.install("--upgrade", "setuptools", "pip")
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
