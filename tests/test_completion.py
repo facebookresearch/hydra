@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import distutils.spawn
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -152,7 +153,12 @@ class TestCompletion:
 
         # Fish starts completion with one tab compared to bash's two tabs.
         if shell == "fish":
-            num_tabs -= 1
+            # Fish will add a space to an unambiguous completion.
+            expected = [x + " " if re.match(r".*=\w+$", x) else x for x in expected]
+
+            # Exactly match token end. See
+            # https://github.com/fish-shell/fish-shell/issues/6928
+            expected = [re.escape(x) + "$" for x in expected]
 
         cmd.extend(expected)
         if verbose:
