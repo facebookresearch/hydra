@@ -23,7 +23,7 @@ class PostGreSQLConfig:
     timeout: int = 10
 
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below.
+# Config is extending DictConfig to allow type safe access to the pretty() function below
 @dataclass
 class Config(DictConfig):
     db: Any = MISSING

@@ -11,9 +11,9 @@ class MySQLConfig:
     port: int = 3306
 
 
-cfg_store = ConfigStore.instance()
+cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'
-cfg_store.store(node=MySQLConfig, name="config")
+cs.store(node=MySQLConfig, name="config")
 
 
 @hydra.main(config_name="config")

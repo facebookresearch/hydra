@@ -13,8 +13,8 @@ class MySQLConfig:
     port: int = 3306
 
 
-cfg_store = ConfigStore.instance()
-cfg_store.store(
+cs = ConfigStore.instance()
+cs.store(
     name="config",
     node={
         "src": MySQLConfig(host="localhost"),

@@ -4,9 +4,14 @@ title: Config groups
 ---
 
 This example adds `mysql` and `postgresql` configs into the config group `database`.
+The config group `database` corresponds to the directory name inside the config directory in config-file based examples.
+
 Noteworthy things in the example:
- - Despite their similarity, The two config classes `MySQLConfig` and `PostGreSQLConfig` are independent
- - The type of the `db` field in `Config` is `Any`, This means it offers no static or runtime type safety
+ - The two config classes `MySQLConfig` and `PostGreSQLConfig` have no common superclass
+ - The type of the `db` field in `Config` is `Any`, This means it offers *no* type safety (static or runtime)
+
+A good solution here might have been to use a `Union[MySQLConfig, PostGreSQLConfig]`, but Unions are not currently
+supported by Structured Configs, so we use `Any` as a last resort.
 
 ```python
 @dataclass
@@ -22,7 +27,7 @@ class PostGreSQLConfig:
     port: int = 5432
     timeout: int = 10
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below.
+# Config is extending DictConfig to allow type safe access to the pretty() function below
 @dataclass
 class Config(DictConfig):
     db: Any = MISSING

@@ -5,7 +5,7 @@ title: Minimal example
 
 There are three key elements in this example:
 - A `@dataclass` describes the application's configuration
-- `ConfigStore` manages the Structured Config
+- `ConfigStore` manages the Structured Config. The config name `config` is corresponds to the config filename `config.yaml` from the config-file based examples. 
 - `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig` 
 
 
@@ -20,9 +20,9 @@ class MySQLConfig:
     host: str = "localhost"
     port: int = 3306
 
-cfg_store = ConfigStore.instance()
-# Registering the Config class with the name 'config'
-cfg_store.store(node=MySQLConfig, name="config")
+cs = ConfigStore.instance()
+# Registering the Config class with the name 'config'. 
+cs.store(node=MySQLConfig, name="config")
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:

@@ -17,8 +17,8 @@ class MyConfig:
     verbose: bool = True
 
 
-cfg_store = ConfigStore.instance()
-cfg_store.store(name="config", node=MyConfig)
+cs = ConfigStore.instance()
+cs.store(name="config", node=MyConfig)
 
 
 @hydra.main(config_name="config")
