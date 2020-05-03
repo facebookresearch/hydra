@@ -1,2 +1,2 @@
 defaults:
-  - db: mysql
+  - database: mysql

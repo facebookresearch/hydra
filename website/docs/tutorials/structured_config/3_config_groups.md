@@ -58,7 +58,7 @@ We can improve on the above example by modeling the configuration with inheritan
 Noteworthy things in the example:
 - We can move fields to the top level class, reducing repetition of field names, type and default values
 - The type of the `db` field in `Config` is `DBConfig`, this offers static and runtime type safety 
-- We use OmegaConf.get_type() to obtain the underlying type, and cast() to coerce the type checker to accept it
+- We can use OmegaConf.get_type() to obtain the underlying type, and cast() to coerce the type checker to accept it
 
 ```python
 @dataclass
