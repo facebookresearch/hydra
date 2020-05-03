@@ -19,14 +19,11 @@ class FishCompletion(CompletionPlugin):
     set -l parts (string split -n ' ' $COMP_LINE)
     if test "$parts[1]" = "python" -o "$parts[1]" = "python3"
         set cmd "$parts[1] $parts[2]"
-        set script "$parts[2]"
+        if not grep -q "@hydra.main" $parts[2]
+            return
+        end
     else
         set cmd "$parts[1]"
-        set script "$parts[1]"
-    end
-
-    if not grep -q "@hydra.main" $script
-        return
     end
 
     # Generate candidates
