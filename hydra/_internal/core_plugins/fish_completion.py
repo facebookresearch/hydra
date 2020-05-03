@@ -10,9 +10,6 @@ log = logging.getLogger(__name__)
 
 
 class FishCompletion(CompletionPlugin):
-    """Issue 1: python script.py style rule cannot be uninstalled
-    Issue 2: fish adds a space to "hydra. " automatically"""
-
     def install(self) -> None:
         script = """function hydra_fish_completion
     # Hydra will access COMP_LINE to generate completion candidates
@@ -22,8 +19,14 @@ class FishCompletion(CompletionPlugin):
     set -l parts (string split -n ' ' $COMP_LINE)
     if test "$parts[1]" = "python" -o "$parts[1]" = "python3"
         set cmd "$parts[1] $parts[2]"
+        set script "$parts[2]"
     else
         set cmd "$parts[1]"
+        set script "$parts[1]"
+    end
+
+    if not grep -q "@hydra.main" $script
+        return
     end
 
     # Generate candidates
