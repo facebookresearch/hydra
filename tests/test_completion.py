@@ -151,7 +151,6 @@ class TestCompletion:
             ]
         )
 
-        # Fish starts completion with one tab compared to bash's two tabs.
         if shell == "fish":
             # Fish will add a space to an unambiguous completion.
             expected = [x + " " if re.match(r".*=\w+$", x) else x for x in expected]
