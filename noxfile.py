@@ -69,6 +69,8 @@ def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
     session.run(*cmd, ".", silent=SILENT)
+    session.install("pipdeptree", silent=SILENT)
+    session.run("pipdeptree", "-p", "hydra-core")
 
 
 def pytest_args(session, *args):
@@ -193,7 +195,7 @@ def lint(session):
         silent=SILENT,
     )
     session.run("mypy", ".", "--strict", silent=SILENT)
-    session.run("flake8", "--config", ".circleci/flake8_py3.cfg")
+    session.run("flake8", "--config", ".flake8")
     # Mypy for examples
     for pyfie in find_python_files("examples"):
         session.run("mypy", pyfie, "--strict", silent=SILENT)
@@ -211,7 +213,7 @@ def lint_plugins(session):
 
     install_lint_deps(session)
 
-    session.run("flake8", "--config", ".circleci/flake8_py3.cfg", "plugins")
+    session.run("flake8", "--config", ".flake8", "plugins")
     # Mypy for plugins
     for plugin in plugins:
         session.chdir(os.path.join("plugins", plugin["path"]))
