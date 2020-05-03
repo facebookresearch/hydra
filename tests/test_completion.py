@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 
 import pytest
+from packaging import version
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
@@ -22,8 +23,26 @@ def is_expect_exists() -> bool:
     return distutils.spawn.find_executable("expect") is not None
 
 
-def is_fish_exists() -> bool:
-    return distutils.spawn.find_executable("fish") is not None
+def is_fish_supported() -> bool:
+    if distutils.spawn.find_executable("fish") is None:
+        return False
+
+    proc = subprocess.run(
+        ["fish", "--version"], stdout=subprocess.PIPE, encoding="utf-8"
+    )
+    matches = re.match(r".*version\s+(\d\.\d\.\d)(.*)", proc.stdout)
+    if not matches:
+        return False
+
+    fish_version, git_version = matches.groups()
+
+    # Release after 3.1.2 or git build after 3.1.2 contain space fix.
+    if version.parse(fish_version) > version.parse("3.1.2"):
+        return True
+    elif version.parse(fish_version) >= version.parse("3.1.2") and git_version:
+        return True
+    else:
+        return False
 
 
 def create_config_loader() -> ConfigLoaderImpl:
@@ -125,8 +144,8 @@ class TestCompletion:
         line: str,
         expected: List[str],
     ) -> None:
-        if shell == "fish" and not is_fish_exists():
-            pytest.skip("fish should be installed to run the tests")
+        if shell == "fish" and not is_fish_supported():
+            pytest.skip("fish is not installed or the version is too old")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
