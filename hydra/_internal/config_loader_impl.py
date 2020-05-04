@@ -104,7 +104,7 @@ class ConfigLoaderImpl(ConfigLoader):
         # Merge all command line overrides after enabling strict flag
         all_consumed = consumed + consumed_free_job_defaults
         remaining_overrides = [x for x in overrides if x not in all_consumed]
-        cfg.merge_with_dotlist(remaining_overrides)
+        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(remaining_overrides))
 
         remaining = consumed + consumed_free_job_defaults + remaining_overrides
 
