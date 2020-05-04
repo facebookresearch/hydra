@@ -23,10 +23,10 @@ hydra:
             max_epochs_without_improvement: 2
           
           params:
-            quadratic.x:
+            quadratic_x:
               type: range
               bounds: [-1, 1]
 
-            quadratic.y:
+            quadratic_y:
               type: range
               bounds: [-1, 1]

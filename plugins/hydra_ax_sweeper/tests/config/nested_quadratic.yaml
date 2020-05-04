@@ -1,16 +1,16 @@
 defaults:
   - hydra/sweeper: ax
 
-polynomial:
-  # To be minimized
-  x: ???
-  y: ???
-  z: ???
+quadratic:
+  args:
+    # To be minimized
+    x: ???
+    y: ???
 
 hydra:
-  sweeper:
+    sweeper:
       params:
-        ax_config: 
+        ax_config:
           max_trials: 10
 
           experiment:
@@ -22,12 +22,11 @@ hydra:
             # the currently known best parameters
             # An Epoch is defined as a batch of trials executed in parallel
             max_epochs_without_improvement: 2
-
+          
           params:
-            polynomial_x:
+            quadratic_args_x:
               type: range
               bounds: [-1, 1]
-
-            polynomial_y:
-              type: choice
-              values: [-1, 1]
+            quadratic_args_y:
+              type: range
+              bounds: [-1, 1]

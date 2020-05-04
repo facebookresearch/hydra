@@ -197,7 +197,13 @@ class CoreAxSweeper:
 
         results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
         OmegaConf.save(
-            OmegaConf.create(results_to_serialize),
+            OmegaConf.create(
+                process_results(
+                    results=results_to_serialize,
+                    str_to_replace=".",
+                    str_to_replace_with="_",
+                )
+            ),
             f"{self.sweep_dir}/optimization_results.yaml",
         )
         log.info("Best parameters: " + str(best_parameters))
@@ -225,6 +231,7 @@ class CoreAxSweeper:
         """Method to setup the Ax Client"""
         parameters: List[Dict[str, Any]] = []
         for key, value in self.ax_params.items():
+            key = process_key(key, str_to_replace="_", str_to_replace_with=".")
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)
             if "parameter_type" not in param:
@@ -344,3 +351,47 @@ class CoreAxSweeper:
             raise ValueError("n must be an integer greater than 0")
         for i in range(0, len(batch), n):
             yield batch[i : i + n]
+
+
+def process_results(
+    results: dict, str_to_replace: str, str_to_replace_with: str
+) -> DictConfig:
+    items = []
+    for current_key, value in results.items():
+        new_key = process_key(
+            key=current_key,
+            str_to_replace=str_to_replace,
+            str_to_replace_with=str_to_replace_with,
+        )
+
+        if isinstance(value, DictConfig) or isinstance(value, dict):
+            items.append(
+                (
+                    new_key,
+                    process_results(
+                        value,
+                        str_to_replace=str_to_replace,
+                        str_to_replace_with=str_to_replace_with,
+                    ),
+                )
+            )
+        else:
+            items.append((new_key, value))
+    return DictConfig(dict(items))
+
+
+def process_key(
+    key: str, str_to_replace: str = "_", str_to_replace_with: str = "."
+) -> str:
+    """Process the key by replacing "str_to_replace" with "str_to_replace_with".
+    The "str_to_replace" escaped using r"\\" are not replaced. Finally, the r"\\" is removed.
+    """
+    str_to_escape = "\\" + str_to_replace
+    splits_to_update = key.split(str_to_escape)
+    updated_splits = [
+        current_split.replace(str_to_replace, str_to_replace_with)
+        for current_split in splits_to_update
+    ]
+    new_key = str_to_escape.join(updated_splits).replace("\\", "")
+    print(key, new_key)
+    return new_key
