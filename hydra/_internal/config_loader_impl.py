@@ -6,11 +6,13 @@ import copy
 from typing import List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
+from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.config_store import ConfigStore
+from hydra.core.errors import HydraException
 from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
 from hydra.errors import MissingConfigException
@@ -104,7 +106,12 @@ class ConfigLoaderImpl(ConfigLoader):
         # Merge all command line overrides after enabling strict flag
         all_consumed = consumed + consumed_free_job_defaults
         remaining_overrides = [x for x in overrides if x not in all_consumed]
-        cfg = OmegaConf.merge(cfg, OmegaConf.from_dotlist(remaining_overrides))
+        try:
+            merged = OmegaConf.merge(cfg, OmegaConf.from_dotlist(remaining_overrides))
+            assert isinstance(merged, DictConfig)
+            cfg = merged
+        except OmegaConfBaseException as ex:
+            raise HydraException("Error merging overrides") from ex
 
         remaining = consumed + consumed_free_job_defaults + remaining_overrides
 
@@ -323,34 +330,36 @@ class ConfigLoaderImpl(ConfigLoader):
     def _merge_config(
         self, cfg: DictConfig, family: str, name: str, required: bool
     ) -> DictConfig:
-
-        if family != "":
-            new_cfg = "{}/{}".format(family, name)
-        else:
-            new_cfg = name
-
-        loaded_cfg, _ = self._load_config_impl(new_cfg)
-        if loaded_cfg is None:
-            if required:
-                if family == "":
-                    msg = "Could not load {}".format(new_cfg)
-                    raise MissingConfigException(msg, new_cfg)
-                else:
-                    options = self.get_group_options(family)
-                    if options:
-                        msg = "Could not load {}, available options:\n{}:\n\t{}".format(
-                            new_cfg, family, "\n\t".join(options)
-                        )
-                    else:
-                        msg = "Could not load {}".format(new_cfg)
-                    raise MissingConfigException(msg, new_cfg, options)
+        try:
+            if family != "":
+                new_cfg = "{}/{}".format(family, name)
             else:
-                return cfg
+                new_cfg = name
 
-        else:
-            ret = OmegaConf.merge(cfg, loaded_cfg)
-            assert isinstance(ret, DictConfig)
-            return ret
+            loaded_cfg, _ = self._load_config_impl(new_cfg)
+            if loaded_cfg is None:
+                if required:
+                    if family == "":
+                        msg = "Could not load {}".format(new_cfg)
+                        raise MissingConfigException(msg, new_cfg)
+                    else:
+                        options = self.get_group_options(family)
+                        if options:
+                            msg = "Could not load {}, available options:\n{}:\n\t{}".format(
+                                new_cfg, family, "\n\t".join(options)
+                            )
+                        else:
+                            msg = "Could not load {}".format(new_cfg)
+                        raise MissingConfigException(msg, new_cfg, options)
+                else:
+                    return cfg
+
+            else:
+                ret = OmegaConf.merge(cfg, loaded_cfg)
+                assert isinstance(ret, DictConfig)
+                return ret
+        except OmegaConfBaseException as ex:
+            raise HydraException(f"Error merging {family}={name}") from ex
 
     def _merge_defaults(
         self,
