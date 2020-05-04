@@ -7,12 +7,15 @@ import os
 import sys
 import warnings
 from os.path import dirname, join, normpath, realpath
+from traceback import print_exc
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
 
 from omegaconf import DictConfig, OmegaConf, _utils, read_write
+from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.errors import HydraException
 from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.types import ObjectConf, TaskFunction
 
@@ -177,6 +180,23 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     return search_path
 
 
+def run_and_report(func: Any) -> None:
+    try:
+        func()
+    except (HydraException, OmegaConfBaseException) as ex:
+        if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
+            print_exc()
+        else:
+            sys.stderr.write(str(ex) + "\n")
+            if ex.__cause__ is not None:
+                sys.stderr.write(str(ex.__cause__) + "\n")
+
+            sys.stderr.write(
+                "Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\n"
+            )
+        sys.exit(1)
+
+
 def run_hydra(
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
@@ -223,25 +243,35 @@ def run_hydra(
         if num_commands == 0:
             args.run = True
         if args.run:
-            hydra.run(
-                config_name=config_name,
-                task_function=task_function,
-                overrides=args.overrides,
+            run_and_report(
+                lambda: hydra.run(
+                    config_name=config_name,
+                    task_function=task_function,
+                    overrides=args.overrides,
+                )
             )
         elif args.multirun:
-            hydra.multirun(
-                config_name=config_name,
-                task_function=task_function,
-                overrides=args.overrides,
+            run_and_report(
+                lambda: hydra.multirun(
+                    config_name=config_name,
+                    task_function=task_function,
+                    overrides=args.overrides,
+                )
             )
         elif args.cfg:
-            hydra.show_cfg(
-                config_name=config_name, overrides=args.overrides, cfg_type=args.cfg
+            run_and_report(
+                lambda: hydra.show_cfg(
+                    config_name=config_name, overrides=args.overrides, cfg_type=args.cfg
+                )
             )
         elif args.shell_completion:
-            hydra.shell_completion(config_name=config_name, overrides=args.overrides)
+            run_and_report(
+                lambda: hydra.shell_completion(
+                    config_name=config_name, overrides=args.overrides
+                )
+            )
         else:
-            print("Command not specified")
+            sys.stderr.write("Command not specified\n")
             sys.exit(1)
     finally:
         GlobalHydra.instance().clear()

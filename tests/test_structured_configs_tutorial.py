@@ -24,6 +24,14 @@ def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
     assert result.decode("utf-8").rstrip() == "Host: localhost, port: 3306"
 
 
+def run_with_error(cmd: Any) -> str:
+    with Popen(cmd, stdout=PIPE, stderr=PIPE) as p:
+        _stdout, stderr = p.communicate()
+        err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
+        assert p.returncode == 1
+    return err
+
+
 def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
@@ -31,14 +39,11 @@ def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> Non
         "hydra.run.dir=" + str(tmpdir),
     ]
 
-    expected = """omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
+    expected = """Key 'pork' not in 'MySQLConfig'
 \tfull_key: pork
 \treference_type=Optional[MySQLConfig]
 \tobject_type=MySQLConfig"""
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    _stdout, stderr = p.communicate()
-    err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
-
+    err = run_with_error(cmd)
     assert re.search(re.escape(expected), err) is not None
 
 
@@ -61,13 +66,12 @@ def test_structured_configs_1_basic_override_type_error(tmpdir: Path) -> None:
         "port=foo",
     ]
 
-    expected = """omegaconf.errors.ValidationError: Value 'foo' could not be converted to Integer
+    expected = """Value 'foo' could not be converted to Integer
 \tfull_key: port
 \treference_type=Optional[MySQLConfig]
 \tobject_type=MySQLConfig"""
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    _stdout, stderr = p.communicate()
-    err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
+
+    err = run_with_error(cmd)
     assert re.search(re.escape(expected), err) is not None
 
 

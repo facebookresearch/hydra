@@ -10,6 +10,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
+from hydra.core.errors import HydraException
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -151,7 +152,7 @@ class TestConfigLoader:
             cfg.not_here
 
         # Test that bad overrides triggers the KeyError
-        with pytest.raises(KeyError):
+        with pytest.raises(HydraException):
             config_loader.load_configuration(
                 config_name="compose.yaml", overrides=["f00=ZZZ"], strict=True
             )
@@ -253,7 +254,7 @@ class TestConfigLoader:
             cfg.db.port = "fail"
 
         # verify illegal override is rejected during load
-        with pytest.raises(ValidationError):
+        with pytest.raises(HydraException):
             config_loader.load_configuration(
                 config_name="db/mysql", overrides=["db.port=fail"]
             )
@@ -584,5 +585,5 @@ def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
     cs.store(group="plugin", name="invalid", node=InvalidPlugin, path="plugin")
 
     cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
-    with pytest.raises(ValidationError):
+    with pytest.raises(HydraException):
         cl.load_configuration(config_name="config", overrides=["plugin=invalid"])
