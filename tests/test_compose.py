@@ -90,7 +90,7 @@ class TestCompose:
         # default strict True, call is unspecified
         overrides.append("fooooooooo=bar")
         with hydra_global_context(config_dir=config_dir, strict=True):
-            with pytest.raises(AttributeError):
+            with pytest.raises(KeyError):
                 compose(config_file, overrides)
 
     def test_strict_failure_call_is_strict(
@@ -103,7 +103,7 @@ class TestCompose:
     ) -> None:
         # default strict false, but call is strict
         with hydra_global_context(config_dir=config_dir, strict=False):
-            with pytest.raises(AttributeError):
+            with pytest.raises(KeyError):
                 compose(config_name=config_file, overrides=overrides, strict=True)
 
         # default strict true, but call is false

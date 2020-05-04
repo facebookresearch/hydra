@@ -151,7 +151,7 @@ class TestConfigLoader:
             cfg.not_here
 
         # Test that bad overrides triggers the KeyError
-        with pytest.raises(AttributeError):
+        with pytest.raises(KeyError):
             config_loader.load_configuration(
                 config_name="compose.yaml", overrides=["f00=ZZZ"], strict=True
             )
