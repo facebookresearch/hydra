@@ -9,23 +9,20 @@ from hydra.core.config_store import ConfigStore
 
 @dataclass
 class MySQLConfig:
-    driver: str = "mysql"
     host: str = "localhost"
     port: int = 3306
-    user: str = "omry"
-    password: str = "secret"
 
 
-ConfigStore.instance().store(node=MySQLConfig, name="config", path="db")
+cs = ConfigStore.instance()
+cs.store(name="config", path="db", node=MySQLConfig)
 
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    # In order to get type safety you need to tell Python that the type of cfg.db is MySQLConfig:
+    # mypy does not know the type of cfg.db.
+    # we can You help it with a hint to get static type checking.
     db: MySQLConfig = cfg.db
-    print(
-        f"Connecting to {db.driver} at {db.host}:{db.port}, user={db.user}, password={db.password}"
-    )
+    print(f"Host: {db.host}, port: {db.port}")
 
 
 if __name__ == "__main__":

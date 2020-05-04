@@ -13,8 +13,6 @@ class MySQLConfig:
     driver: str = "mysql"
     host: str = "localhost"
     port: int = 3306
-    user: str = "omry"
-    password: str = "secret"
 
 
 @dataclass
@@ -23,20 +21,18 @@ class PostGreSQLConfig:
     host: str = "localhost"
     port: int = 5432
     timeout: int = 10
-    user: str = "postgre_user"
-    password: str = "drowssap"
 
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below.
+# Config is extending DictConfig to allow type safe access to the pretty() function below
 @dataclass
 class Config(DictConfig):
     db: Any = MISSING
 
 
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
+cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 
 
 @hydra.main(config_name="config")
