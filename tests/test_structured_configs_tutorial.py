@@ -37,7 +37,7 @@ def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> Non
 \tobject_type=MySQLConfig"""
     p = Popen(cmd, stdout=PIPE, stderr=PIPE)
     _stdout, stderr = p.communicate()
-    err = stderr.decode("utf-8").rstrip()
+    err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
 
     assert re.search(re.escape(expected), err) is not None
 
@@ -67,8 +67,7 @@ def test_structured_configs_1_basic_override_type_error(tmpdir: Path) -> None:
 \tobject_type=MySQLConfig"""
     p = Popen(cmd, stdout=PIPE, stderr=PIPE)
     _stdout, stderr = p.communicate()
-    err = stderr.decode("utf-8").rstrip()
-    print(err)
+    err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
     assert re.search(re.escape(expected), err) is not None
 
 
