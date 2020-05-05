@@ -12,10 +12,15 @@ sidebar_label: Ax Sweeper plugin
 
 This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform, aka Ax](https://ax.dev/). Ax can optimize any experiment - machine learning experiments, A/B tests, and simulations. 
 
-Install with:
 
-```
-pip install plugins/hydra_ax_sweeper
+This plugin requires Hydra 1.0 which is not yet released.
+To install, checkout Hydra from master, and install both Hydra and the Ax sweeper plugin from the checkout directory.
+
+```bash
+# Install Hydra
+$ pip install .
+# Install plugin
+$ pip install plugins/hydra_ax_sweeper
 ```
 
 Once installed, add `hydra.sweeper=ax` to the cmd command. Alternatively, override `hydra/sweeper` in your config:
