@@ -15,12 +15,12 @@ module.exports = {
     projectName: 'hydra', // Usually your repo name.
     themeConfig: {
         googleAnalytics: {
-          trackingID: 'UA-149862507-1',
+            trackingID: 'UA-149862507-1',
         },
         algolia: {
-          apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
-          indexName: 'hydra',
-          algoliaOptions: {},
+            apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
+            indexName: 'hydra',
+            algoliaOptions: {},
         },
         navbar: {
             title: 'Hydra',
@@ -31,15 +31,20 @@ module.exports = {
             links: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
                 {to: 'versions', label: 'Versions', position: 'left'},
-                {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
                 {to: 'blog', label: 'Blog', position: 'left'},
+                {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
             ],
         },
         footer: {
             style: 'dark',
             links: [
                 {
+                    title: "Links",
                     items: [
+                        {
+                            label: 'Blog',
+                            to: 'Blog'
+                        },
                         {
                             label: 'Docs',
                             to: 'docs/intro'
@@ -54,7 +59,27 @@ module.exports = {
                         },
                     ],
                 },
+                {
+                    title: 'Legal',
+                    // Please do not remove the privacy and terms, it's a legal requirement.
+                    items: [
+                        {
+                            label: 'Privacy',
+                            href: 'https://opensource.facebook.com/legal/privacy/',
+                            target: '_blank',
+                            rel: 'noreferrer noopener',
+                        },
+                        {
+                            label: 'Terms',
+                            href: 'https://opensource.facebook.com/legal/terms/',
+                            target: '_blank',
+                            rel: 'noreferrer noopener',
+                        },
+                    ],
+                },
             ],
+
+
             logo: {
                 alt: 'Facebook Open Source Logo',
                 src: 'https://docusaurus.io/img/oss_logo.png',
