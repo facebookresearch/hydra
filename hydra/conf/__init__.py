@@ -61,19 +61,20 @@ class OverridesConf:
 # job runtime information will be populated here
 @dataclass
 class JobConf:
-    # Job name, can be specified by the user (in config or cli) or populated automatically
+    # Job name, populated automatically unless specified by the user (in config or cli)
     name: str = MISSING
 
+    # Populated automatically by Hydra.
     # Concatenation of job overrides that can be used as a part
     # of the directory name.
-    # This can be configured in hydra.job.config.override_dirname
+    # This can be configured via hydra.job.config.override_dirname
     override_dirname: str = MISSING
 
     # Job ID in underlying scheduling system
     id: str = MISSING
 
     # Job number if job is a part of a sweep
-    num: str = MISSING
+    num: int = MISSING
 
     # The config name used by the job
     config_name: Optional[str] = MISSING
