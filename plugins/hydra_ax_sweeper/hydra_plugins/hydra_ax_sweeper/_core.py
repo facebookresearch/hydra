@@ -231,7 +231,7 @@ class CoreAxSweeper:
         """Method to setup the Ax Client"""
         parameters: List[Dict[str, Any]] = []
         for key, value in self.ax_params.items():
-            key = process_key(key, str_to_replace="_", str_to_replace_with=".")
+            key = normalize_key(key, str_to_replace="_", str_to_replace_with=".")
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)
             if "parameter_type" not in param:
@@ -358,7 +358,7 @@ def process_results(
 ) -> DictConfig:
     items = []
     for current_key, value in results.items():
-        new_key = process_key(
+        new_key = normalize_key(
             key=current_key,
             str_to_replace=str_to_replace,
             str_to_replace_with=str_to_replace_with,
@@ -380,9 +380,7 @@ def process_results(
     return DictConfig(dict(items))
 
 
-def process_key(
-    key: str, str_to_replace: str = "_", str_to_replace_with: str = "."
-) -> str:
+def normalize_key(key: str, str_to_replace: str, str_to_replace_with: str) -> str:
     """Process the key by replacing "str_to_replace" with "str_to_replace_with".
     The "str_to_replace" escaped using r"\\" are not replaced. Finally, the r"\\" is removed.
     """
@@ -393,5 +391,4 @@ def process_key(
         for current_split in splits_to_update
     ]
     new_key = str_to_escape.join(updated_splits).replace("\\", "")
-    print(key, new_key)
     return new_key

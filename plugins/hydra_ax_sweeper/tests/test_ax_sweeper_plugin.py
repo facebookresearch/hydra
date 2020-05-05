@@ -297,8 +297,11 @@ def test_jobs_configured_via_nested_config(sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic_args_y"], -1.0, abs_tol=1e-4)
 
 
+@pytest.mark.parametrize(
+    "overrides", [[], ["quadratic.a_rgs.x=-1:1"]],
+)
 def test_jobs_configured_via_nested_config_with_escape_char(
-    sweep_runner: TSweepRunner,
+    sweep_runner: TSweepRunner, overrides: list
 ) -> None:
     sweep = sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
@@ -311,7 +314,8 @@ def test_jobs_configured_via_nested_config_with_escape_char(
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
             "hydra.sweeper.params.ax_config.max_trials=2",
-        ],
+        ]
+        + overrides,
         strict=True,
     )
     with sweep:
@@ -340,7 +344,6 @@ def test_jobs_configured_via_nested_config_with_escape_char_and_cmd(
             "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.client.random_seed=1",
             "hydra.sweeper.params.ax_config.max_trials=2",
-            "quadratic.a_rgs.x=-1:1",
         ],
         strict=True,
     )
@@ -369,6 +372,6 @@ def test_jobs_configured_via_nested_config_with_escape_char_and_cmd(
 def test_process_key_method(
     inp: str, str_to_replace: str, str_to_replace_with: str, expected: str
 ):
-    from hydra_plugins.hydra_ax_sweeper._core import process_key
+    from hydra_plugins.hydra_ax_sweeper._core import normalize_key
 
-    assert process_key(inp, str_to_replace, str_to_replace_with) == expected
+    assert normalize_key(inp, str_to_replace, str_to_replace_with) == expected
