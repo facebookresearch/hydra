@@ -15,8 +15,7 @@ This plugin provides a mechanism for Hydra applications to use the [Adaptive Exp
 Install with:
 
 ```
-cd plugins/hydra_ax_sweeper
-pip inatall .
+pip install plugins/hydra_ax_sweeper
 ```
 
 Once installed, add `hydra.sweeper=ax` to the cmd command. Alternatively, override `hydra/sweeper` in your config:
