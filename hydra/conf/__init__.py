@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from omegaconf import MISSING
 
@@ -58,8 +58,8 @@ class OverridesConf:
     task: List[str] = field(default_factory=lambda: [])
 
 
-@dataclass
 # job runtime information will be populated here
+@dataclass
 class JobConf:
     # Job name, can be specified by the user (in config or cli) or populated automatically
     name: str = MISSING
@@ -78,15 +78,20 @@ class JobConf:
     # The config name used by the job
     config_name: Optional[str] = MISSING
 
-    @dataclass
+    # Environment variables to set remotely
+    env_set: Dict[str, str] = field(default_factory=dict)
+    # Environment variables to copy from the launching machine
+    env_copy: List[str] = field(default_factory=list)
+
     # Job config
+    @dataclass
     class JobConfig:
         @dataclass
         # configuration for the ${hydra.job.override_dirname} runtime variable
         class OverrideDirname:
             kv_sep: str = "="
             item_sep: str = ","
-            exclude_keys: List[str] = field(default_factory=lambda: [])
+            exclude_keys: List[str] = field(default_factory=list)
 
         override_dirname: OverrideDirname = OverrideDirname()
 

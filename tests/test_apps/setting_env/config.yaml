@@ -1,0 +1,9 @@
+dataset:
+  name: imagenet
+  path: /datasets/imagenet
+
+hydra:
+  job:
+    env:
+      foo: bar
+      bar: ${hydra.job.num}

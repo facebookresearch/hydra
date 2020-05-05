@@ -11,6 +11,7 @@ from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.core.errors import HydraException
+from hydra.core.utils import env_override
 from hydra.errors import MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -587,3 +588,12 @@ def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
     cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     with pytest.raises(HydraException):
         cl.load_configuration(config_name="config", overrides=["plugin=invalid"])
+
+
+def test_job_env_copy() -> None:
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    with env_override({"zonk": "123456"}):
+        cfg = config_loader.load_configuration(
+            config_name=None, overrides=["hydra.job.env_copy=[zonk]"]
+        )
+        assert cfg.hydra.job.env_set == {"zonk": "123456"}

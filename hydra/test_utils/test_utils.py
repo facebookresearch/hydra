@@ -255,26 +255,44 @@ def verify_dir_outputs(
     ) == OmegaConf.create(overrides or [])
 
 
+def _get_statements(indent: str, statements: Union[None, str, List[str]]) -> str:
+    if isinstance(statements, str):
+        statements = [statements]
+
+    code = ""
+    if statements is None or len(statements) == 0:
+        code = "pass"
+    else:
+        for p in statements:
+            code += f"{indent}{p}\n"
+    return code
+
+
 def integration_test(
     tmpdir: Path,
     task_config: DictConfig,
     overrides: List[str],
     prints: Union[str, List[str]],
     expected_outputs: Union[str, List[str]],
+    prolog: Union[None, str, List[str]] = None,
     filename: str = "task.py",
     env_override: Dict[str, str] = {},
+    clean_environment: bool = False,
 ) -> str:
-    if isinstance(prints, str):
-        prints = [prints]
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
     if isinstance(task_config, (list, dict)):
         task_config = OmegaConf.create(task_config)
+    if isinstance(prints, str):
+        prints = [prints]
+    prints = [f'f.write({p} + "\\n")' for p in prints]
 
     s = string.Template(
         """import hydra
 import os
 from hydra.core.hydra_config import HydraConfig
+
+$PROLOG
 
 @hydra.main($CONFIG_PATH)
 def experiment(cfg):
@@ -286,14 +304,8 @@ if __name__ == "__main__":
 """
     )
 
-    print_code = ""
-    print_indent = "        "
-    if prints is None or len(prints) == 0:
-        print_code = "pass"
-    else:
-        for p in prints:
-            print_code += f"{print_indent}f.write({p})\n"
-            print_code += f'{print_indent}f.write("\\n")\n'
+    print_code = _get_statements(indent="        ", statements=prints)
+    prolog_code = _get_statements(indent="", statements=prolog)
 
     config_path = ""
     if task_config is not None:
@@ -304,7 +316,10 @@ if __name__ == "__main__":
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
-        PRINTS=print_code, CONFIG_PATH=config_path, OUTPUT_FILE=output_file
+        PRINTS=print_code,
+        CONFIG_PATH=config_path,
+        OUTPUT_FILE=output_file,
+        PROLOG=prolog_code,
     )
     task_file = tmpdir / filename
     task_file.write_text(str(code), encoding="utf-8")
@@ -313,8 +328,11 @@ if __name__ == "__main__":
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
-        modified_env = os.environ.copy()
-        modified_env.update(env_override)
+        if clean_environment:
+            modified_env = {}
+        else:
+            modified_env = os.environ.copy()
+            modified_env.update(env_override)
         subprocess.check_call(cmd, env=modified_env)
 
         with open(output_file, "r") as f:
@@ -324,7 +342,7 @@ if __name__ == "__main__":
         if expected_outputs is not None:
             assert len(output) == len(
                 expected_outputs
-            ), f"Unexpected number of output lines from {task_file}"
+            ), f"Unexpected number of output lines from {task_file}, output lines:\n\n{file_str}"
             for idx in range(len(output)):
                 assert (
                     output[idx] == expected_outputs[idx]

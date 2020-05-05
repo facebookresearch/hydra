@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import sys
+from contextlib import contextmanager
 from dataclasses import dataclass
 from os.path import basename, dirname, splitext
 from pathlib import Path
@@ -130,7 +131,8 @@ def run_job(
         _save_config(task_cfg, "config.yaml", hydra_output)
         _save_config(hydra_cfg, "hydra.yaml", hydra_output)
         _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
-        ret.return_value = task_function(task_cfg)
+        with env_override(hydra_cfg.hydra.job.env_set):
+            ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime.instance().get("name")
 
         # shut down logging to ensure job log files are closed.
@@ -212,3 +214,20 @@ def split_config_path(
         config_name = config_file
 
     return config_dir, config_name
+
+
+@contextmanager
+def env_override(env: Dict[str, str]) -> Any:
+    """Temporarily set environment variables inside the context manager and
+    fully restore previous environment afterwards
+    """
+    original_env = {key: os.getenv(key) for key in env}
+    os.environ.update(env)
+    try:
+        yield
+    finally:
+        for key, value in original_env.items():
+            if value is None:
+                del os.environ[key]
+            else:
+                os.environ[key] = value
