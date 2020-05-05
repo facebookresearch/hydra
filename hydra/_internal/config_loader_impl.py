@@ -3,6 +3,7 @@
 Configuration loader
 """
 import copy
+import os
 from typing import List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
@@ -131,6 +132,9 @@ class ConfigLoaderImpl(ConfigLoader):
                 exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
             )
             cfg.hydra.job.config_name = config_name
+
+            for key in cfg.hydra.job.env_copy:
+                cfg.hydra.job.env_set[key] = os.environ[key]
 
         return cfg
 
