@@ -23,8 +23,8 @@ describe your configuration structure and types. They enable:
 
 #### There are two primary patterns for using Structured configs
 
-- As a [config](/tutorials/structured_config/2_minimal_example.md), in place of configuration files (often a starting place)
-- As a [config schema](/tutorials/structured_config/6_schema.md) validating configuration files (better for complex use cases)
+- As a [config](/tutorials/structured_config/1_minimal_example.md), in place of configuration files (often a starting place)
+- As a [config schema](/tutorials/structured_config/5_schema.md) validating configuration files (better for complex use cases)
 
 With both patterns, you get everything Hydra has to offer (Config composition, Command line overrides etc).
 This tutorial covers both. \***Read it in order**\*.
