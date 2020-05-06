@@ -49,7 +49,7 @@ class CompletionPlugin(Plugin):
             prefixes = [".", "/", "\\", "./", ".\\"]
             if sys.platform.startswith("win"):
                 for drive in range(ord("a"), ord("z")):
-                    prefixes.append("{}:".format(chr(drive)))
+                    prefixes.append(f"{chr(drive)}:")
 
             if not filename:
                 return None, None
@@ -108,7 +108,7 @@ class CompletionPlugin(Plugin):
                 else:
                     key_matches = []
 
-                matches.extend(["{}{}".format(word, match) for match in key_matches])
+                matches.extend([f"{word}{match}" for match in key_matches])
             else:
                 last_dot = word.rfind(".")
                 if last_dot != -1:
@@ -116,9 +116,7 @@ class CompletionPlugin(Plugin):
                     partial_key = word[last_dot + 1 :]
                     conf_node = OmegaConf.select(config, base_key)
                     key_matches = CompletionPlugin._get_matches(conf_node, partial_key)
-                    matches.extend(
-                        ["{}.{}".format(base_key, match) for match in key_matches]
-                    )
+                    matches.extend([f"{base_key}.{match}" for match in key_matches])
                 else:
                     if isinstance(config, DictConfig):
                         for key, value in config.items_ex(resolve=False):
@@ -135,9 +133,7 @@ class CompletionPlugin(Plugin):
                                 matches.append(str_rep(idx, ""))
 
         else:
-            assert False, "Object is not an instance of config : {}".format(
-                type(config)
-            )
+            assert False, f"Object is not an instance of config : {type(config)}"
 
         return matches
 
@@ -161,9 +157,7 @@ class CompletionPlugin(Plugin):
         matched_groups: List[str] = []
         if results_filter == ObjectType.CONFIG:
             for match in all_matched_groups:
-                name = (
-                    "{}={}".format(parent_group, match) if parent_group != "" else match
-                )
+                name = f"{parent_group}={match}" if parent_group != "" else match
                 if name.startswith(word):
                     matched_groups.append(name)
                 exact_match = True

@@ -162,11 +162,8 @@ class Hydra:
 
         for shell, plugins in shell_to_plugin.items():
             if len(plugins) > 1:
-                raise ValueError(
-                    "Multiple plugins installed for {} : {}".format(
-                        shell, ",".join([type(plugin).__name__ for plugin in plugins])
-                    )
-                )
+                lst = ",".join([type(plugin).__name__ for plugin in plugins])
+                raise ValueError(f"Multiple plugins installed for {shell} : {lst}")
 
         return shell_to_plugin
 
@@ -177,18 +174,15 @@ class Hydra:
         arguments = OmegaConf.from_dotlist(overrides)
         num_commands = sum(1 for key in subcommands if arguments[key] is not None)
         if num_commands != 1:
-            raise ValueError(
-                "Expecting one subcommand from {} to be set".format(subcommands)
-            )
+            raise ValueError(f"Expecting one subcommand from {subcommands} to be set")
 
         shell_to_plugin = self.get_shell_to_plugin_map(self.config_loader)
 
         def find_plugin(cmd: str) -> CompletionPlugin:
             if cmd not in shell_to_plugin:
+                lst = "\n".join(["\t" + x for x in shell_to_plugin.keys()])
                 raise ValueError(
-                    "No completion plugin for '{}' found, available : \n{}".format(
-                        cmd, "\n".join(["\t" + x for x in shell_to_plugin.keys()])
-                    )
+                    f"No completion plugin for '{cmd}' found, available : \n{lst}"
                 )
             return shell_to_plugin[cmd][0]
 

@@ -48,11 +48,12 @@ class BasicLauncher(Launcher):
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = self.config.hydra.sweep.dir
         Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
-        log.info("Launching {} jobs locally".format(len(job_overrides)))
+        log.info(f"Launching {job_overrides} jobs locally")
         runs: List[JobReturn] = []
         for idx, overrides in enumerate(job_overrides):
             idx = initial_job_idx + idx
-            log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
+            lst = " ".join(filter_overrides(overrides))
+            log.info(f"\t#{idx} : {lst}")
             sweep_config = self.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )

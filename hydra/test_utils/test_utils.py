@@ -103,7 +103,7 @@ class TaskTestFunction:
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             assert overrides is not None
-            overrides.append("hydra.run.dir={}".format(self.temp_dir))
+            overrides.append(f"hydra.run.dir={self.temp_dir}")
             self.job_ret = self.hydra.run(
                 config_name=config_name, task_function=self, overrides=overrides
             )
@@ -165,7 +165,7 @@ class SweepTaskFunction:
         self.temp_dir = tempfile.mkdtemp()
         overrides = copy.deepcopy(self.overrides)
         assert overrides is not None
-        overrides.append("hydra.sweep.dir={}".format(self.temp_dir))
+        overrides.append(f"hydra.sweep.dir={self.temp_dir}")
         try:
             config_dir, config_name = split_config_path(
                 self.config_path, self.config_name
@@ -227,7 +227,7 @@ def _chdir_to_dir_containing(target: str, max_up: int = 4) -> None:
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1
     if max_up == 0:
-        raise IOError("Could not find {} in parents of {}".format(target, os.getcwd()))
+        raise IOError(f"Could not find {target} in parents of {os.getcwd()}")
     os.chdir(cur)
 
 
@@ -311,7 +311,7 @@ if __name__ == "__main__":
     if task_config is not None:
         cfg_file = tmpdir / "config.yaml"
         OmegaConf.save(task_config, str(cfg_file))
-        config_path = "config_path='{}'".format("config.yaml")
+        config_path = f"config_path='config.yaml'"
     output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")

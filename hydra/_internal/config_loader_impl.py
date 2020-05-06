@@ -55,7 +55,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if config_name is not None and not self.exists_in_search_path(config_name):
             # TODO: handle schema as a special case
             descs = [
-                "\t{} (from {})".format(src.path, src.provider)
+                f"\t{src.path} (from {src.provider})"
                 for src in self.repository.get_sources()
             ]
             lines = "\n".join(descs)
@@ -336,7 +336,7 @@ class ConfigLoaderImpl(ConfigLoader):
     ) -> DictConfig:
         try:
             if family != "":
-                new_cfg = "{}/{}".format(family, name)
+                new_cfg = f"{family}/{name}"
             else:
                 new_cfg = name
 
@@ -344,16 +344,15 @@ class ConfigLoaderImpl(ConfigLoader):
             if loaded_cfg is None:
                 if required:
                     if family == "":
-                        msg = "Could not load {}".format(new_cfg)
+                        msg = f"Could not load {new_cfg}"
                         raise MissingConfigException(msg, new_cfg)
                     else:
                         options = self.get_group_options(family)
                         if options:
-                            msg = "Could not load {}, available options:\n{}:\n\t{}".format(
-                                new_cfg, family, "\n\t".join(options)
-                            )
+                            lst = "\n\t".join(options)
+                            msg = f"Could not load {new_cfg}, available options:\n{family}:\n\t{lst}"
                         else:
-                            msg = "Could not load {}".format(new_cfg)
+                            msg = f"Could not load {new_cfg}"
                         raise MissingConfigException(msg, new_cfg, options)
                 else:
                     return cfg

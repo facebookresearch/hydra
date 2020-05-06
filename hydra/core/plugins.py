@@ -90,9 +90,7 @@ class Plugins(metaclass=Singleton):
 
         except ImportError as e:
             raise ImportError(
-                "Could not instantiate plugin {} : {}\n\n\tIS THE PLUGIN INSTALLED?\n\n".format(
-                    config["class"], str(e)
-                )
+                f"Could not instantiate plugin {classname} : {str(e)}\n\n\tIS THE PLUGIN INSTALLED?\n\n"
             )
 
         return plugin

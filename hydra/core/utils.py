@@ -86,7 +86,8 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
 
 
 def split_key_val(s: str) -> Tuple[str, str]:
-    assert "=" in s, "'{}' not a valid override, expecting key=value format".format(s)
+    if "=" not in s:
+        raise ValueError(f"'{s}' not a valid override, expecting key=value format")
 
     idx = s.find("=")
     assert idx != -1
@@ -177,11 +178,11 @@ class JobRuntime(metaclass=Singleton):
     def get(self, key: str) -> Any:
         ret = OmegaConf.select(self.conf, key)
         if ret is None:
-            raise KeyError("Key not found in {}: {}".format(type(self).__name__, key))
+            raise KeyError(f"Key not found in {type(self).__name__}: {key}")
         return ret
 
     def set(self, key: str, value: Any) -> None:
-        log.debug("Setting {}:{}={}".format(type(self).__name__, key, value))
+        log.debug(f"Setting {type(self).__name__}:{key}={value}")
         self.conf[key] = value
 
 
