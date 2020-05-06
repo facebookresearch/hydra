@@ -78,16 +78,15 @@ class ExampleLauncher(Launcher):
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
         log.info(
-            "Example Launcher(foo={}, bar={}) is launching {} jobs locally".format(
-                self.foo, self.bar, len(job_overrides)
-            )
+            f"Example Launcher(foo={self.foo}, bar={self.bar}) is launching {len(job_overrides)} jobs locally"
         )
-        log.info("Sweep output dir : {}".format(sweep_dir))
+        log.info(f"Sweep output dir : {sweep_dir}")
         runs = []
 
         for idx, overrides in enumerate(job_overrides):
             idx = initial_job_idx + idx
-            log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
+            lst = " ".join(filter_overrides(overrides))
+            log.info(f"\t#{idx} : {lst}")
             sweep_config = self.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
@@ -95,7 +94,7 @@ class ExampleLauncher(Launcher):
                 # This typically coming from the underlying scheduler (SLURM_JOB_ID for instance)
                 # In that case, it will not be available here because we are still in the main process.
                 # but instead should be populated remotely before calling the task_function.
-                sweep_config.hydra.job.id = "job_id_for_{}".format(idx)
+                sweep_config.hydra.job.id = f"job_id_for_{idx}"
                 sweep_config.hydra.job.num = idx
             HydraConfig.instance().set_config(sweep_config)
 

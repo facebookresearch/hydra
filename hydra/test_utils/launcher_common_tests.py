@@ -247,16 +247,15 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
             expected_conf = OmegaConf.merge(
                 base, OmegaConf.from_dotlist(job_ret.overrides)
             )
-            assert job_ret.overrides == ["a={}".format(i)]
+            assert job_ret.overrides == [f"a={i}"]
             assert job_ret.cfg == expected_conf
             assert job_ret.hydra_cfg.hydra.job.name == "a_module", (
                 "Unexpected job name: " + job_ret.hydra_cfg.hydra.job.name
             )
             verify_dir_outputs(job_ret, job_ret.overrides)
             path = temp_dir / str(i)
-            assert path.exists(), "'{}' does not exist, dirs: {}".format(
-                path, [x for x in temp_dir.iterdir() if x.is_dir()]
-            )
+            lst = [x for x in temp_dir.iterdir() if x.is_dir()]
+            assert path.exists(), f"'{path}' does not exist, dirs: {lst}"
 
 
 def not_sweeping_hydra_overrides(
@@ -285,7 +284,7 @@ def not_sweeping_hydra_overrides(
             expected_conf = OmegaConf.merge(
                 base, OmegaConf.from_dotlist(job_ret.overrides)
             )
-            assert job_ret.overrides == ["a={}".format(i)]
+            assert job_ret.overrides == [f"a={i}"]
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret, job_ret.overrides)
 

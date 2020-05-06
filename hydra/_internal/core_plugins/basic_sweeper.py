@@ -88,7 +88,7 @@ class BasicSweeper(Sweeper):
         lists = []
         for s in arguments:
             key, value = s.split("=")
-            lists.append(["{}={}".format(key, val) for val in value.split(",")])
+            lists.append([f"{key}={val}" for val in value.split(",")])
 
         all_batches = list(itertools.product(*lists))
         assert self.max_batch_size is None or self.max_batch_size > 0

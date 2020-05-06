@@ -58,15 +58,15 @@ class ExampleSweeper(Sweeper):
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
-        log.info("ExampleSweeper (foo={}, bar={}) sweeping".format(self.foo, self.bar))
-        log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
+        log.info(f"ExampleSweeper (foo={self.foo}, bar={self.bar}) sweeping")
+        log.info(f"Sweep output dir : {self.config.hydra.sweep.dir}")
         # Construct list of overrides per job we want to launch
         src_lists = []
         for s in arguments:
             key, value = s.split("=")
             # for each argument, create a list. if the argument has , (aka - is a sweep), add an element for each
             # option to that list, otherwise add a single element with the value
-            src_lists.append(["{}={}".format(key, val) for val in value.split(",")])
+            src_lists.append([f"{key}={val}" for val in value.split(",")])
 
         batches = list(itertools.product(*src_lists))
 

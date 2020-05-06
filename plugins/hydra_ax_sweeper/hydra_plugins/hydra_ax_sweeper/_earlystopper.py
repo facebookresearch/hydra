@@ -42,9 +42,7 @@ class EarlyStopper:
             self.current_epochs_without_improvement = 0
             self.current_best_value = potential_best_value
             log.info(
-                "New best value: {}, best parameters: {}".format(
-                    potential_best_value, best_parameters
-                )
+                f"New best value: {potential_best_value}, best parameters: {best_parameters}"
             )
 
             return False
@@ -56,9 +54,8 @@ class EarlyStopper:
             >= self.max_epochs_without_improvement
         ):
             log.info(
-                "Early stopping, best known value {} did not improve for {} epochs".format(
-                    self.current_best_value, self.current_epochs_without_improvement
-                )
+                f"Early stopping, best known value {self.current_best_value}"
+                f" did not improve for {self.current_epochs_without_improvement} epochs"
             )
             return True
         return False

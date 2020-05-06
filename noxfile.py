@@ -272,7 +272,7 @@ def test_plugins(session, install_cmd):
 
     # Test that we can import all installed plugins
     for plugin in selected_plugin:
-        session.run("python", "-c", "import {}".format(plugin["module"]))
+        session.run("python", "-c", f"import {plugin['module']}")
 
     # Run Hydra tests to verify installed plugins did not break anything
     if not SKIP_CORE_TESTS:
