@@ -1,8 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from pathlib import Path
-
 import itertools
 import logging
+from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader

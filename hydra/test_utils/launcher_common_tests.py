@@ -4,11 +4,12 @@ Common test functions testing launchers
 """
 import copy
 from pathlib import Path
-from typing import List, Set
+from typing import Any, List, Optional, Set
 
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
+from hydra import TaskFunction
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     integration_test,
@@ -18,6 +19,9 @@ from hydra.test_utils.test_utils import (
 
 @pytest.mark.usefixtures("restore_singletons")
 class LauncherTestSuite:
+    def task_function(self, cfg: DictConfig) -> Any:
+        return 100
+
     def test_sweep_1_job(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
     ) -> None:
@@ -25,20 +29,26 @@ class LauncherTestSuite:
             sweep_runner,
             overrides=["hydra/launcher=" + launcher_name, "hydra.sweep.dir=."]
             + overrides,
+            strict=False,
+            task_function=self.task_function,
         )
 
     def test_sweep_2_jobs(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         sweep_2_jobs(
-            sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
+            sweep_runner,
+            overrides=["hydra/launcher=" + launcher_name] + overrides,
+            task_function=self.task_function,
         )
 
     def test_not_sweeping_hydra_overrides(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         not_sweeping_hydra_overrides(
-            sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
+            sweep_runner,
+            overrides=["hydra/launcher=" + launcher_name] + overrides,
+            task_function=self.task_function,
         )
 
     def test_sweep_1_job_strict(
@@ -48,6 +58,7 @@ class LauncherTestSuite:
             sweep_runner,
             strict=True,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
+            task_function=self.task_function,
         )
 
     def test_sweep_1_job_strict_and_bad_key(
@@ -60,13 +71,16 @@ class LauncherTestSuite:
                 sweep_runner,
                 strict=True,
                 overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
+                task_function=self.task_function,
             )
 
     def test_sweep_2_optimizers(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         sweep_two_config_groups(
-            sweep_runner, overrides=["hydra/launcher=" + launcher_name] + overrides
+            sweep_runner,
+            overrides=["hydra/launcher=" + launcher_name] + overrides,
+            task_function=self.task_function,
         )
 
     def test_sweep_over_unspecified_mandatory_default(
@@ -76,7 +90,7 @@ class LauncherTestSuite:
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
-            task_function=None,
+            task_function=self.task_function,
             config_path="configs",
             config_name="unspecified_mandatory_default",
             overrides=base_overrides + overrides,
@@ -203,7 +217,10 @@ class BatchedSweeperTestSuite:
 
 
 def sweep_1_job(
-    sweep_runner: TSweepRunner, overrides: List[str], strict: bool = False
+    sweep_runner: TSweepRunner,
+    overrides: List[str],
+    strict: bool,
+    task_function: Optional[TaskFunction],
 ) -> None:
     """
     Runs a sweep with one job
@@ -211,7 +228,7 @@ def sweep_1_job(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        task_function=None,
+        task_function=task_function,
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
@@ -230,15 +247,20 @@ def sweep_1_job(
         verify_dir_outputs(sweep.returns[0][0])
 
 
-def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
+def sweep_2_jobs(
+    sweep_runner: TSweepRunner,
+    overrides: List[str],
+    task_function: Optional[TaskFunction],
+) -> None:
     """
     Runs a sweep with two jobs
     """
-    overrides.append("a=0,1")
+    job_overrides = ["a=0,1"]
+    overrides.extend(job_overrides)
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        task_function=None,
+        task_function=task_function,
         config_path="configs/compose.yaml",
         config_name=None,
         overrides=overrides,
@@ -249,6 +271,12 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
         assert sweep.temp_dir is not None
         assert sweep.returns is not None
         temp_dir = Path(sweep.temp_dir)
+
+        multirun_cfg_path = Path(temp_dir) / "multirun.yaml"
+        assert multirun_cfg_path.exists()
+        multirun_cfg = OmegaConf.load(multirun_cfg_path)
+        assert multirun_cfg.hydra.overrides.task == job_overrides
+
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
@@ -267,7 +295,9 @@ def sweep_2_jobs(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
 
 
 def not_sweeping_hydra_overrides(
-    sweep_runner: TSweepRunner, overrides: List[str]
+    sweep_runner: TSweepRunner,
+    overrides: List[str],
+    task_function: Optional[TaskFunction],
 ) -> None:
     """
     Runs a sweep with two jobs
@@ -276,7 +306,7 @@ def not_sweeping_hydra_overrides(
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        task_function=None,
+        task_function=task_function,
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
@@ -297,7 +327,11 @@ def not_sweeping_hydra_overrides(
             verify_dir_outputs(job_ret, job_ret.overrides)
 
 
-def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) -> None:
+def sweep_two_config_groups(
+    sweep_runner: TSweepRunner,
+    overrides: List[str],
+    task_function: Optional[TaskFunction],
+) -> None:
     """
     Make sure that optimizers=adam,nesterov is interpreted correctly
     """
@@ -306,7 +340,7 @@ def sweep_two_config_groups(sweep_runner: TSweepRunner, overrides: List[str]) ->
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
-        task_function=None,
+        task_function=task_function,
         config_path="configs",
         config_name="compose",
         overrides=overrides,
