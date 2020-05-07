@@ -497,12 +497,14 @@ def test_sweep_complex_defaults(
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
-    Bash:
+    Bash - Install:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=bash)"
+    Bash - Uninstall:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=bash)"
 
-    Fish:
+    Fish - Install:
     python examples/tutorial/2_config_file/my_app.py -sc install=fish | source
+    Fish - Uninstall:
     python examples/tutorial/2_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
@@ -536,12 +538,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
-    Bash:
+    Bash - Install:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=bash)"
+    Bash - Uninstall:
     eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=bash)"
 
-    Fish:
+    Fish - Install:
     python examples/tutorial/2_config_file/my_app.py -sc install=fish | source
+    Fish - Uninstall:
     python examples/tutorial/2_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)

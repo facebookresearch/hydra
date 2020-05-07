@@ -294,8 +294,9 @@ def _get_completion_help() -> str:
     completion_info: List[str] = []
     for cls in completion_plugins:
         plugin_cls = cast(Type[CompletionPlugin], cls)
-        completion_info.append(plugin_cls.provides().capitalize() + ":")
         for cmd in ["install", "uninstall"]:
+            head = f"{plugin_cls.provides().capitalize()} - {cmd.capitalize()}:"
+            completion_info.append(head)
             completion_info.append(plugin_cls.help(cmd).format(_get_exec_command()))
         completion_info.append("")
     completion_help = "\n".join([f"    {x}" if x else x for x in completion_info])
