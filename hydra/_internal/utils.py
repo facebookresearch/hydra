@@ -8,7 +8,7 @@ import sys
 import warnings
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, _utils, read_write
 from omegaconf.errors import OmegaConfBaseException
@@ -286,6 +286,22 @@ def _get_exec_command() -> str:
         return executable
 
 
+def _get_completion_help() -> str:
+    from hydra.core.plugins import Plugins
+    from hydra.plugins.completion_plugin import CompletionPlugin
+
+    completion_plugins = Plugins.instance().discover(CompletionPlugin)
+    completion_info: List[str] = []
+    for cls in completion_plugins:
+        plugin_cls = cast(Type[CompletionPlugin], cls)
+        completion_info.append(plugin_cls.provides().capitalize() + ":")
+        for cmd in ["install", "uninstall"]:
+            completion_info.append(plugin_cls.help(cmd).format(_get_exec_command()))
+        completion_info.append("")
+    completion_help = "\n".join([f"    {x}" if x else x for x in completion_info])
+    return completion_help
+
+
 def get_args_parser() -> argparse.ArgumentParser:
     from .. import __version__
 
@@ -317,30 +333,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Run multiple jobs with the configured launcher",
     )
 
-    shell = "SHELL_NAME"
-    install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)
-    uninstall_cmd = 'eval "$({} -sc uninstall={})"'.format(_get_exec_command(), shell)
-    fish_install_cmd = "{} -sc install=fish | source".format(_get_exec_command())
-    fish_uninstall_cmd = "{} -sc uninstall=fish | source".format(_get_exec_command())
     parser.add_argument(
         "--shell_completion",
         "-sc",
         action="store_true",
-        help="""Install or Uninstall shell completion:
-    Install:
-    {}
-
-    Uninstall:
-    {}
-
-    Fish shell install:
-    {}
-
-    Fish shell uninstall:
-    {}
-""".format(
-            install_cmd, uninstall_cmd, fish_install_cmd, fish_uninstall_cmd
-        ),
+        help=f"Install or Uninstall shell completion:\n{_get_completion_help()}",
     )
 
     return parser

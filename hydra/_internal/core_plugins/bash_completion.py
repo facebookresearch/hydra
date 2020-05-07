@@ -61,7 +61,8 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
     def uninstall(self) -> None:
         print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
 
-    def provides(self) -> str:
+    @staticmethod
+    def provides() -> str:
         return "bash"
 
     def query(self, config_name: Optional[str]) -> None:
@@ -76,6 +77,11 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         # currently key is ignored.
         line = self.strip_python_or_app_name(line)
         print(" ".join(self._query(config_name=config_name, line=line)))
+
+    @staticmethod
+    def help(command: str) -> str:
+        assert command in ["install", "uninstall"]
+        return f'eval "$({{}} -sc {command}=bash)"'
 
     @staticmethod
     def _get_exec() -> str:

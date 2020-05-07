@@ -497,17 +497,13 @@ def test_sweep_complex_defaults(
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
-    Install:
-    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=SHELL_NAME)"
+    Bash:
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=bash)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=bash)"
 
-    Uninstall:
-    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
-
-    Fish shell install:
-    python examples/tutorial/1_simple_cli_app/my_app.py -sc install=fish | source
-
-    Fish shell uninstall:
-    python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=fish | source
+    Fish:
+    python examples/tutorial/2_config_file/my_app.py -sc install=fish | source
+    python examples/tutorial/2_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
@@ -540,17 +536,13 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
-    Install:
-    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=SHELL_NAME)"
+    Bash:
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc install=bash)"
+    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=bash)"
 
-    Uninstall:
-    eval "$(python examples/tutorial/2_config_file/my_app.py -sc uninstall=SHELL_NAME)"
-
-    Fish shell install:
-    python examples/tutorial/1_simple_cli_app/my_app.py -sc install=fish | source
-
-    Fish shell uninstall:
-    python examples/tutorial/1_simple_cli_app/my_app.py -sc uninstall=fish | source
+    Fish:
+    python examples/tutorial/2_config_file/my_app.py -sc install=fish | source
+    python examples/tutorial/2_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,

@@ -30,8 +30,9 @@ class CompletionPlugin(Plugin):
     def uninstall(self) -> None:
         ...
 
+    @staticmethod
     @abstractmethod
-    def provides(self) -> str:
+    def provides() -> str:
         """
         :return: the name of the shell this plugin provides completion for
         """
@@ -39,6 +40,15 @@ class CompletionPlugin(Plugin):
 
     @abstractmethod
     def query(self, config_name: Optional[str]) -> None:
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def help(command: str) -> str:
+        """
+        :param command: "install" or "uninstall"
+        :return: command the user can run to install or uninstall this shell completion on the appropriate shell
+        """
         ...
 
     @staticmethod
@@ -245,8 +255,13 @@ class DefaultCompletionPlugin(CompletionPlugin):
     def uninstall(self) -> None:
         ...
 
-    def provides(self) -> str:
+    @staticmethod
+    def provides() -> str:
         ...
 
     def query(self, config_name: Optional[str]) -> None:
+        ...
+
+    @staticmethod
+    def help(command: str) -> str:
         ...

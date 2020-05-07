@@ -43,13 +43,19 @@ end
         name = self._get_uninstall_exec()
         print(f"complete -e -c {name}")
 
-    def provides(self) -> str:
+    @staticmethod
+    def provides() -> str:
         return "fish"
 
     def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
         line = self.strip_python_or_app_name(line)
         print("\n".join(self._query(config_name=config_name, line=line)))
+
+    @staticmethod
+    def help(command: str) -> str:
+        assert command in ["install", "uninstall"]
+        return f"{{}} -sc {command}=fish | source"
 
     @staticmethod
     def _get_exec() -> List[Tuple[str, str]]:
