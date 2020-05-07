@@ -41,5 +41,5 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
     "launcher_name, overrides",
     [("basic", ["hydra/sweeper=basic", "hydra.sweeper.params.max_batch_size=2"])],
 )
-class TesBasicSweeperWithBatching(BatchedSweeperTestSuite):
+class TestBasicSweeperWithBatching(BatchedSweeperTestSuite):
     ...
