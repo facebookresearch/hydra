@@ -342,7 +342,8 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
-    session.install("jupyter", "nbval")
+    # pyzmq 19.0.1 has installation issues on Windows
+    session.install("jupyter", "nbval", "pyzmq==19.0.0")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
