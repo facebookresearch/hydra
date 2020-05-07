@@ -64,6 +64,7 @@ class TestExampleSweeper(LauncherTestSuite):
         (
             "basic",
             [
+                # CHANGE THIS TO YOUR SWEEPER CONFIG NAME
                 "hydra/sweeper=example",
                 # This will cause the sweeper to split batches to at most 2 jobs each, which is what
                 # the tests in BatchedSweeperTestSuite are expecting.
