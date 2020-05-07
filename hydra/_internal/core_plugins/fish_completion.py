@@ -42,6 +42,7 @@ end
     def uninstall(self) -> None:
         name = self._get_uninstall_exec()
         print(f"complete -e -c {name}")
+        print("function hydra_fish_completion\nend")
 
     @staticmethod
     def provides() -> str:
