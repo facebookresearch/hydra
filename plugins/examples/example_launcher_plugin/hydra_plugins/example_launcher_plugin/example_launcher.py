@@ -23,6 +23,8 @@ from omegaconf import DictConfig, open_dict
 # Import the module lazily (typically inside launch()).
 # Installed plugins are imported during Hydra initialization and plugins that are slow to import plugins will slow
 # the startup of ALL hydra applications.
+# Another approach is to place heavy includes in a file prefixed by _, such as _core.py:
+# Hydra will not look for plugin in such files and will not import them during plugin discovery.
 
 
 log = logging.getLogger(__name__)

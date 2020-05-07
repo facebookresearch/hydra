@@ -15,9 +15,10 @@ Basic Sweeper would generate 6 jobs:
 """
 import itertools
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING, DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
@@ -104,6 +105,12 @@ class BasicSweeper(Sweeper):
         assert self.launcher is not None
         self.initialize_arguments(arguments)
         returns: List[Sequence[JobReturn]] = []
+
+        # Save sweep run config in top level sweep working directory
+        sweep_dir = Path(self.config.hydra.sweep.dir)
+        sweep_dir.mkdir(parents=True, exist_ok=True)
+        OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
+
         initial_job_idx = 0
         while not self.is_done():
             batch = self.get_job_batch()

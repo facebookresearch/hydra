@@ -145,10 +145,10 @@ class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
     ) -> None:
-        overrides.extend(
-            # order sensitive?
-            ["hydra/launcher=" + launcher_name, "group1=file1,file2", "bar=100,200,300"]
-        )
+        job_overrides = ["group1=file1,file2", "bar=100,200,300"]
+        hydra_overrides = ["hydra/launcher=" + launcher_name]
+        overrides.extend(job_overrides)
+        overrides.extend(hydra_overrides)
         sweep = sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
@@ -178,6 +178,14 @@ class BatchedSweeperTestSuite:
 
         dirs: Set[str] = set()
         with sweep:
+
+            temp_dir = sweep.temp_dir
+            assert temp_dir is not None
+            multirun_cfg_path = Path(temp_dir) / "multirun.yaml"
+            assert multirun_cfg_path.exists()
+            multirun_cfg = OmegaConf.load(multirun_cfg_path)
+            assert multirun_cfg.hydra.overrides.task == job_overrides
+
             assert sweep.returns is not None
             # expecting 3 batches of 2
             assert len(sweep.returns) == 3

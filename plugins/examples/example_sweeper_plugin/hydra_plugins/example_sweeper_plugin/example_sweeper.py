@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pathlib import Path
+
 import itertools
 import logging
 from typing import Any, Iterable, List, Optional, Sequence
@@ -10,14 +12,15 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 # IMPORTANT:
 # If your plugin imports any module that takes more than a fraction of a second to import,
 # Import the module lazily (typically inside sweep()).
 # Installed plugins are imported during Hydra initialization and plugins that are slow to import plugins will slow
 # the startup of ALL hydra applications.
-
+# Another approach is to place heavy includes in a file prefixed by _, such as _core.py:
+# Hydra will not look for plugin in such files and will not import them during plugin discovery.
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +63,12 @@ class ExampleSweeper(Sweeper):
         assert self.launcher is not None
         log.info(f"ExampleSweeper (foo={self.foo}, bar={self.bar}) sweeping")
         log.info(f"Sweep output dir : {self.config.hydra.sweep.dir}")
+
+        # Save sweep run config in top level sweep working directory
+        sweep_dir = Path(self.config.hydra.sweep.dir)
+        sweep_dir.mkdir(parents=True, exist_ok=True)
+        OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
+
         # Construct list of overrides per job we want to launch
         src_lists = []
         for s in arguments:
