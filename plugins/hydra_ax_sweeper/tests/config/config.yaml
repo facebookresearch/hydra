@@ -1,17 +1,20 @@
 defaults:
   - hydra/sweeper: ax
+  - hydra/launcher: basic
 
 quadratic:
-  args:
-    # To be minimized
-    x: ???
-    y: ???
+  # To be minimized
+  x: ???
+  y: ???
 
 hydra:
     sweeper:
       params:
         ax_config:
-          max_trials: 10
+          client:
+            random_seed: 1
+
+          max_trials: 2
 
           experiment:
             # Defaults to minimize, set to false to maximize
@@ -23,10 +26,4 @@ hydra:
             # An Epoch is defined as a batch of trials executed in parallel
             max_epochs_without_improvement: 2
           
-          params:
-            quadratic_args_x:
-              type: range
-              bounds: [-1, 1]
-            quadratic_args_y:
-              type: range
-              bounds: [-1, 1]
+          

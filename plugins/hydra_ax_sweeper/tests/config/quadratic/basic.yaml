@@ -1,6 +1,3 @@
-defaults:
-  - hydra/sweeper: ax
-
 quadratic:
   # To be minimized
   x: ???

@@ -1,0 +1,5 @@
+quadratic:
+  a_rgs:
+    # To be minimized
+    x: ???
+    y: ???
