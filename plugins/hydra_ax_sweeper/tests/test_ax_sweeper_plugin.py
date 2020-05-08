@@ -7,14 +7,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-from hydra.types import TaskFunction
-from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 from omegaconf import DictConfig, OmegaConf
+
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
 
@@ -38,18 +37,9 @@ def quadratic(cfg: DictConfig) -> Any:
     return z
 
 
-def nested_quadratic(cfg: DictConfig) -> Any:
-    x = cfg.quadratic.args.x
-    y = cfg.quadratic.args.y
-    a = 100
-    b = 1
-    z = a * (x ** 2) + b * y
-    return z
-
-
 def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
-    x = cfg.quadratic.a_rgs.x
-    y = cfg.quadratic.a_rgs.y
+    x = cfg.quadratic.x_arg
+    y = cfg.quadratic.y_arg
     a = 100
     b = 1
     z = a * (x ** 2) + b * y
@@ -127,7 +117,6 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        # assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic_x"], 0.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
 
@@ -149,7 +138,6 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        # assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
 
@@ -175,7 +163,6 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        # assert len(best_parameters) == 2
         assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
 
@@ -254,43 +241,22 @@ def test_example_app(tmpdir: Path) -> None:
 
 
 @pytest.mark.parametrize(
-    "config_name, task_function, overrides, x_key, y_key",
-    [
-        (
-            "nested_quadratic_with_escape_char.yaml",
-            nested_quadratic_with_escape_char,
-            ["quadratic=nested_with_escape_char", "params=nested_with_escape_char"],
-            "quadratic_a_rgs_x",
-            "quadratic_a_rgs_y",
-        ),
-        (
-            "nested_quadratic_with_escape_char.yaml",
-            nested_quadratic_with_escape_char,
-            [
-                "quadratic=nested_with_escape_char",
-                "params=nested_with_escape_char",
-                "quadratic.a_rgs.x=-1:1",
-            ],
-            "quadratic_a_rgs_x",
-            "quadratic_a_rgs_y",
-        ),
-    ],
+    "overrides", [[], ["quadratic.x_arg=-1:1"]],
 )
 def test_jobs_configured_via_nested_config(
-    sweep_runner: TSweepRunner,
-    task_function: TaskFunction,
-    config_name: str,
-    overrides: list,
-    x_key: str,
-    y_key: str,
+    sweep_runner: TSweepRunner, overrides: list,
 ) -> None:
     sweep = sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
-        task_function=task_function,
+        task_function=nested_quadratic_with_escape_char,
         config_path="config",
         config_name="config.yaml",
-        overrides=overrides,
+        overrides=[
+            "quadratic=nested_with_escape_char",
+            "params=nested_with_escape_char",
+        ]
+        + overrides,
         strict=True,
     )
     with sweep:
@@ -300,9 +266,8 @@ def test_jobs_configured_via_nested_config(
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        # assert len(best_parameters) == 2
-        assert math.isclose(best_parameters[x_key], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters[y_key], -1.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x_arg"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y_arg"], -1.0, abs_tol=1e-4)
 
 
 @pytest.mark.parametrize(

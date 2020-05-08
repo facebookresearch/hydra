@@ -3,9 +3,9 @@ hydra:
       params:
         ax_config:
           params:
-            quadratic_a\_rgs_x:
+            quadratic_x\_arg:
               type: range
               bounds: [-1, 1]
-            quadratic_a\_rgs_y:
+            quadratic_y\_arg:
               type: range
               bounds: [-1, 1]
