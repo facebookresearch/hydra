@@ -29,21 +29,11 @@ def test_discovery() -> None:
 
 
 def quadratic(cfg: DictConfig) -> Any:
-    x = cfg.quadratic.x
-    y = cfg.quadratic.y
-    a = 100
-    b = 1
-    z = a * (x ** 2) + b * y
-    return z
+    return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
 
 def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
-    x = cfg.quadratic.x_arg
-    y = cfg.quadratic.y_arg
-    a = 100
-    b = 1
-    z = a * (x ** 2) + b * y
-    return z
+    return 100 * (cfg.quadratic.x_arg ** 2) + 1 * cfg.quadratic.y_arg
 
 
 @pytest.mark.parametrize(
@@ -84,6 +74,7 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
         config_path="config",
         config_name="config.yaml",
         overrides=[
+            "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.max_trials=6",
             "hydra.sweeper.params.max_batch_size=2",
             "params=basic",
@@ -107,7 +98,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         task_function=quadratic,
         config_path="config",
         config_name="config.yaml",
-        overrides=["params=basic"],
+        overrides=["hydra/launcher=basic", "params=basic"],
         strict=True,
     )
     with sweep:
@@ -128,7 +119,12 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         task_function=quadratic,
         config_path="config",
         config_name="config.yaml",
-        overrides=["quadratic.x=-5:-2", "quadratic.y=-2:2", "params=basic"],
+        overrides=[
+            "hydra/launcher=basic",
+            "quadratic.x=-5:-2",
+            "quadratic.y=-2:2",
+            "params=basic",
+        ],
         strict=True,
     )
     with sweep:
@@ -150,8 +146,9 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         config_path="config",
         config_name="config.yaml",
         overrides=[
-            "quadratic.x=-5:-2",
+            "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.max_trials=2",
+            "quadratic.x=-5:-2",
             "params=basic",
         ],
         strict=True,
@@ -177,6 +174,7 @@ def test_configuration_set_via_cmd_and_default_config(
         config_path="config",
         config_name="config.yaml",
         overrides=[
+            "hydra/launcher=basic",
             "hydra.sweeper.params.ax_config.max_trials=2",
             "hydra.sweeper.params.ax_config.early_stop.max_epochs_without_improvement=2",
             "quadratic=basic",
@@ -253,6 +251,7 @@ def test_jobs_configured_via_nested_config(
         config_path="config",
         config_name="config.yaml",
         overrides=[
+            "hydra/launcher=basic",
             "quadratic=nested_with_escape_char",
             "params=nested_with_escape_char",
         ]

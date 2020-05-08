@@ -1,6 +1,5 @@
 defaults:
   - hydra/sweeper: ax
-  - hydra/launcher: basic
 
 quadratic:
   # To be minimized
