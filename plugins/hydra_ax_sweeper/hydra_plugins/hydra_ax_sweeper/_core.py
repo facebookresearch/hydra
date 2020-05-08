@@ -195,15 +195,13 @@ class CoreAxSweeper:
 
             current_parallelism_index += 1
 
+        best_parameters = {
+            normalize_key(key, str_to_replace=".", str_to_replace_with="_",): value
+            for key, value in best_parameters.items()
+        }
         results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
         OmegaConf.save(
-            OmegaConf.create(
-                process_results(
-                    results=results_to_serialize,
-                    str_to_replace=".",
-                    str_to_replace_with="_",
-                )
-            ),
+            OmegaConf.create(results_to_serialize),
             f"{self.sweep_dir}/optimization_results.yaml",
         )
         log.info("Best parameters: " + str(best_parameters))
@@ -351,33 +349,6 @@ class CoreAxSweeper:
             raise ValueError("n must be an integer greater than 0")
         for i in range(0, len(batch), n):
             yield batch[i : i + n]
-
-
-def process_results(
-    results: dict, str_to_replace: str, str_to_replace_with: str
-) -> DictConfig:
-    items = []
-    for current_key, value in results.items():
-        new_key = normalize_key(
-            key=current_key,
-            str_to_replace=str_to_replace,
-            str_to_replace_with=str_to_replace_with,
-        )
-
-        if isinstance(value, DictConfig) or isinstance(value, dict):
-            items.append(
-                (
-                    new_key,
-                    process_results(
-                        value,
-                        str_to_replace=str_to_replace,
-                        str_to_replace_with=str_to_replace_with,
-                    ),
-                )
-            )
-        else:
-            items.append((new_key, value))
-    return DictConfig(dict(items))
 
 
 def normalize_key(key: str, str_to_replace: str, str_to_replace_with: str) -> str:
