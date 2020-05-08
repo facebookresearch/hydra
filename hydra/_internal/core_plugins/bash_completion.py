@@ -16,7 +16,11 @@ log = logging.getLogger(__name__)
 class BashCompletion(CompletionPlugin):
     # TODO: detect python with path like /foo/bar/python
     def install(self) -> None:
-        script = """hydra_bash_completion()
+        # Record the old rule for uninstalling
+        script = (
+            f"export _HYDRA_OLD_COMP=$(complete -p {self._get_exec()} 2> /dev/null)\n"
+        )
+        script += """hydra_bash_completion()
 {
     words=($COMP_LINE)
     if [ "${words[0]}" == "python" ]; then
@@ -59,7 +63,9 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         print(script + self._get_exec())
 
     def uninstall(self) -> None:
-        print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
+        print("unset hydra_bash_completion")
+        print(os.environ.get("_HYDRA_OLD_COMP", ""))
+        print("unset _HYDRA_OLD_COMP")
 
     @staticmethod
     def provides() -> str:
