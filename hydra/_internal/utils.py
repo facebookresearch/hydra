@@ -8,7 +8,7 @@ import sys
 import warnings
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union, cast
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
 
 from omegaconf import DictConfig, OmegaConf, _utils, read_write
 from omegaconf.errors import OmegaConfBaseException
@@ -292,8 +292,8 @@ def _get_completion_help() -> str:
 
     completion_plugins = Plugins.instance().discover(CompletionPlugin)
     completion_info: List[str] = []
-    for cls in completion_plugins:
-        plugin_cls = cast(Type[CompletionPlugin], cls)
+    for plugin_cls in completion_plugins:
+        assert issubclass(plugin_cls, CompletionPlugin)
         for cmd in ["install", "uninstall"]:
             head = f"{plugin_cls.provides().capitalize()} - {cmd.capitalize()}:"
             completion_info.append(head)
