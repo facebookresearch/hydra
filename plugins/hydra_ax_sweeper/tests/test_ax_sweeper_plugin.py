@@ -29,12 +29,11 @@ def test_discovery() -> None:
 
 
 def quadratic(cfg: DictConfig) -> Any:
-    x = cfg.quadratic.x
-    y = cfg.quadratic.y
-    a = 100
-    b = 1
-    z = a * (x ** 2) + b * y
-    return z
+    return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
+
+
+def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
+    return 100 * (cfg.quadratic.x_arg ** 2) + 1 * cfg.quadratic.y_arg
 
 
 @pytest.mark.parametrize(
@@ -53,7 +52,6 @@ def test_chunk_method_for_valid_inputs(n, expected):
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
     out = list(chunk_func(batch, n))
-    print(expected)
     assert out == expected
 
 
@@ -74,13 +72,12 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
         calling_module=None,
         task_function=quadratic,
         config_path="config",
-        config_name="quadratic.yaml",
+        config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra/sweeper=ax",
-            "hydra.sweeper.params.ax_config.client.random_seed=1",
             "hydra.sweeper.params.ax_config.max_trials=6",
             "hydra.sweeper.params.max_batch_size=2",
+            "params=basic",
         ],
         strict=True,
     )
@@ -100,13 +97,8 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         calling_module=None,
         task_function=quadratic,
         config_path="config",
-        config_name="quadratic.yaml",
-        overrides=[
-            "hydra/sweeper=ax",
-            "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.client.random_seed=1",
-            "hydra.sweeper.params.ax_config.max_trials=2",
-        ],
+        config_name="config.yaml",
+        overrides=["hydra/launcher=basic", "params=basic"],
         strict=True,
     )
     with sweep:
@@ -116,9 +108,8 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        assert len(best_parameters) == 2
-        assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
@@ -127,14 +118,12 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         calling_module=None,
         task_function=quadratic,
         config_path="config",
-        config_name="quadratic.yaml",
+        config_name="config.yaml",
         overrides=[
-            "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.client.random_seed=1",
             "quadratic.x=-5:-2",
             "quadratic.y=-2:2",
-            "hydra.sweeper.params.ax_config.max_trials=2",
+            "params=basic",
         ],
         strict=True,
     )
@@ -145,9 +134,8 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        assert len(best_parameters) == 2
-        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
@@ -156,13 +144,12 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         calling_module=None,
         task_function=quadratic,
         config_path="config",
-        config_name="quadratic.yaml",
+        config_name="config.yaml",
         overrides=[
-            "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.client.random_seed=1",
-            "quadratic.x=-5:-2",
             "hydra.sweeper.params.ax_config.max_trials=2",
+            "quadratic.x=-5:-2",
+            "params=basic",
         ],
         strict=True,
     )
@@ -173,9 +160,8 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        assert len(best_parameters) == 2
-        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
 
 
 def test_configuration_set_via_cmd_and_default_config(
@@ -186,13 +172,12 @@ def test_configuration_set_via_cmd_and_default_config(
         calling_module=None,
         task_function=quadratic,
         config_path="config",
-        config_name="default_quadratic.yaml",
+        config_name="config.yaml",
         overrides=[
-            "hydra/sweeper=ax",
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.client.random_seed=1",
             "hydra.sweeper.params.ax_config.max_trials=2",
             "hydra.sweeper.params.ax_config.early_stop.max_epochs_without_improvement=2",
+            "quadratic=basic",
             "quadratic.x=-5:-2",
             "quadratic.y=-1:1",
         ],
@@ -206,8 +191,8 @@ def test_configuration_set_via_cmd_and_default_config(
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         best_parameters = returns["ax"]
-        assert "quadratic.x" in best_parameters
-        assert "quadratic.y" in best_parameters
+        assert "quadratic_x" in best_parameters
+        assert "quadratic_y" in best_parameters
 
 
 def test_ax_logging(tmpdir: Path) -> None:
@@ -251,3 +236,52 @@ def test_example_app(tmpdir: Path) -> None:
 # class TestAxSweeper(LauncherTestSuite):
 #     def task_function(self, cfg):
 #         return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
+
+
+@pytest.mark.parametrize(
+    "overrides", [[], ["quadratic.x_arg=-1:1"]],
+)
+def test_jobs_configured_via_nested_config(
+    sweep_runner: TSweepRunner, overrides: list,
+) -> None:
+    sweep = sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=nested_quadratic_with_escape_char,
+        config_path="config",
+        config_name="config.yaml",
+        overrides=[
+            "hydra/launcher=basic",
+            "quadratic=nested_with_escape_char",
+            "params=nested_with_escape_char",
+        ]
+        + overrides,
+        strict=True,
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters = returns["ax"]
+        assert math.isclose(best_parameters["quadratic_x_arg"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y_arg"], -1.0, abs_tol=1e-4)
+
+
+@pytest.mark.parametrize(
+    "inp, str_to_replace, str_to_replace_with, expected",
+    [
+        ("apple", ".", "_", "apple"),
+        ("a.pple", ".", "_", "a_pple"),
+        ("a.p.ple", ".", "_", "a_p_ple"),
+        (r"a\.pple", ".", "_", "a.pple"),
+        (r"a.p\.pl.e", ".", "_", "a_p.pl_e"),
+    ],
+)
+def test_process_key_method(
+    inp: str, str_to_replace: str, str_to_replace_with: str, expected: str
+):
+    from hydra_plugins.hydra_ax_sweeper._core import normalize_key
+
+    assert normalize_key(inp, str_to_replace, str_to_replace_with) == expected

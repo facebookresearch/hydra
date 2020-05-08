@@ -25,9 +25,9 @@ hydra:
           max_epochs_without_improvement: 10
 
         params:
-          banana.x:
+          banana_x:
             type: range
             bounds: [-5, 5]
-          banana.y:
+          banana_y:
             type: range
             bounds: [-5, 10.1]

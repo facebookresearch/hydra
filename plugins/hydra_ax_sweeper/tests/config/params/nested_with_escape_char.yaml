@@ -1,0 +1,11 @@
+hydra:
+    sweeper:
+      params:
+        ax_config:
+          params:
+            quadratic_x\_arg:
+              type: range
+              bounds: [-1, 1]
+            quadratic_y\_arg:
+              type: range
+              bounds: [-1, 1]

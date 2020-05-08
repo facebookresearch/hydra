@@ -10,7 +10,10 @@ hydra:
     sweeper:
       params:
         ax_config:
-          max_trials: 10
+          client:
+            random_seed: 1
+
+          max_trials: 2
 
           experiment:
             # Defaults to minimize, set to false to maximize
@@ -22,11 +25,4 @@ hydra:
             # An Epoch is defined as a batch of trials executed in parallel
             max_epochs_without_improvement: 2
           
-          params:
-            quadratic.x:
-              type: range
-              bounds: [-1, 1]
-
-            quadratic.y:
-              type: range
-              bounds: [-1, 1]
+          
