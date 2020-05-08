@@ -257,13 +257,6 @@ def test_example_app(tmpdir: Path) -> None:
     "config_name, task_function, overrides, x_key, y_key",
     [
         (
-            "nested_quadratic.yaml",
-            nested_quadratic,
-            ["quadratic=nested", "params=nested"],
-            "quadratic_args_x",
-            "quadratic_args_y",
-        ),
-        (
             "nested_quadratic_with_escape_char.yaml",
             nested_quadratic_with_escape_char,
             ["quadratic=nested_with_escape_char", "params=nested_with_escape_char"],
