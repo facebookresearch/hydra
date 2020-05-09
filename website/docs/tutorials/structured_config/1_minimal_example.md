@@ -5,7 +5,7 @@ title: Minimal example
 
 There are three key elements in this example:
 - A `@dataclass` describes the application's configuration
-- `ConfigStore` manages the Structured Config. The config name `config` is corresponds to the config filename `config.yaml` from the config-file based examples. 
+- `ConfigStore` manages the Structured Config. The config name `config` corresponds to the config filename `config.yaml` from the config-file based examples. 
 - `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig` 
 
 
@@ -22,7 +22,7 @@ class MySQLConfig:
 
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'. 
-cs.store(node=MySQLConfig, name="config")
+cs.store(name="config", node=MySQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
@@ -32,11 +32,12 @@ if __name__ == "__main__":
     my_app()
 ```
 
-If you have a typo in your code:
+If you have a typo in your code, such as pork in the following example:
 ```python
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    if cfg.pork == "80":  # pork should be of port!
+    # pork should be port!
+    if cfg.pork == 80:
         print("Is this a webserver?!")
 ```
 
@@ -47,7 +48,7 @@ my_app_type_error.py:21: error: "MySQLConfig" has no attribute "pork"
 Found 1 error in 1 file (checked 1 source file)
 ```
 
-Hydra will catch runtime errors that `mypy` cannot, such as:
+With structured configs, Hydra will catch these and runtime errors that mypy cannot, such as:
 
 A type error in the code:
 ```
@@ -72,9 +73,9 @@ omegaconf.errors.ValidationError: Value 'fail' could not be converted to Integer
 
 ## Duck typing
 
-The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the phrase "If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck".
-It can be useful when you care about the methods or attributes of an object, not the actual type of the object.
-
 In the example above `cfg` is duck typed as `MySQLConfig`.
 It is actually an instance of `DictConfig`. The duck typing enables static type checking by tools like Mypy or PyCharm.
 This reduces development time by catching coding errors before you run your application.
+
+The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the phrase "If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck".
+It can be useful when you care about the methods or attributes of an object, not the actual type of the object.

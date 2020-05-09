@@ -13,12 +13,12 @@ class MySQLConfig:
 
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'
-cs.store(node=MySQLConfig, name="config")
+cs.store(name="config", node=MySQLConfig)
 
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    # pork should be of port!
+    # pork should be port!
     if cfg.pork == 80:  # type: ignore
         print("Is this a webserver?!")
 
