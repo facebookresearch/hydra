@@ -41,7 +41,7 @@ cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 def my_app(cfg: Config) -> None:
     print(cfg.pretty())
 ```
-You can change the default database from the command line:
+You can select the database from the command line:
 ```yaml
 $ python my_app.py database=postgresql
 db:
@@ -103,4 +103,10 @@ def my_app(cfg: Config) -> None:
         connect_postgresql(cast(PostGreSQLConfig, cfg.db))
     else:
         raise ValueError()
+```
+
+Example output:
+```
+$ python my_app_with_inheritance.py database=postgresql
+Connecting to PostGreSQL: localhost:5432 (timeout=10)
 ```

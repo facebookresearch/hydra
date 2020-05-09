@@ -13,7 +13,7 @@ class MySQLConfig:
 
 cs = ConfigStore.instance()
 # Registering the Config class with the name 'config'.
-cs.store(node=MySQLConfig, name="config")
+cs.store(name="config", node=MySQLConfig)
 
 
 @hydra.main(config_name="config")

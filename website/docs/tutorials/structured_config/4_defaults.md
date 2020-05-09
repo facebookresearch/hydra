@@ -15,21 +15,23 @@ class MySQLConfig:
 class PostGreSQLConfig:
     ...
 
+defaults = [
+    # Load the config "mysql" from the config group "database"
+    {"database": "mysql"}
+]
+
+
 @dataclass
 class Config(DictConfig):
-    # defaults list
-    defaults: List[Any] = field(
-        default_factory=lambda: [
-            # Load the config "mysql" from the config group "db"
-            {"db": "mysql"}
-        ]
-    )
+    # this is unfortunately verbose due to @dataclass limitations
+    defaults: List[Any] = field(default_factory=lambda: defaults)
     db: MySQLConfig = MySQLConfig()
 
 
+
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
 
 

@@ -27,15 +27,16 @@ class PostGreSQLConfig:
     password: str = "drowssap"
 
 
+defaults = [
+    # config group name db will load config named mysql
+    {"db": "mysql"}
+]
+
+
 @dataclass
 class Config(DictConfig):
-    # defaults list
-    defaults: List[Any] = field(
-        default_factory=lambda: [
-            # config group name db will load config named mysql
-            {"db": "mysql"}
-        ]
-    )
+    # this is unfortunately verbose due to @dataclass limitations
+    defaults: List[Any] = field(default_factory=lambda: defaults)
     db: MySQLConfig = MySQLConfig()
 
 

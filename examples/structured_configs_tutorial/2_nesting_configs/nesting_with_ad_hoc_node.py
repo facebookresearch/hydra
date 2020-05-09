@@ -25,9 +25,7 @@ cs.store(
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    src: MySQLConfig = cfg.src
-    dst: MySQLConfig = cfg.dst
-    print(f"Copying {src.host}:{src.port} to {dst.host}:{dst.port}")
+    print(f"Copying {cfg.src.host}:{cfg.src.port} to {cfg.dst.host}:{cfg.dst.port}")
 
 
 if __name__ == "__main__":

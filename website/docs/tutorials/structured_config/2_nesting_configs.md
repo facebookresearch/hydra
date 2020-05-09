@@ -5,9 +5,9 @@ title: Nesting configs
 Configs can be nested using several different methods.
 
 ### Nesting using a dataclass definition
-This is the preferred approach, use it when possible.
-There two things of note in this example:
-- A top level `MyConfig` class is defined and stored in the `ConfigStore`
+This is the preferred approach; use it when possible.
+There are two things of note in this example:
+- A top level `MyConfig` class defined and stored in the `ConfigStore`
 - The `cfg` object in `my_app` is annotated as the top level `MyConfig` class, providing static type safety for 
 the entire configuration tree
  
@@ -56,9 +56,8 @@ def my_app(cfg: DictConfig) -> None:
 ```
 
 ### Nesting by creating an ad-hoc config node
-Another choice, which offers even more flexibility is to create an ad-hoc config node and store it.
-This allow you to control the shape of the config node, enabling things like having multiple config nodes in the config
-object you are storing. This method should be used as a last resort as it offers the least static type safety.
+Ad-hoc config nodes can be created using Dictionaries.  While this
+allows great flexibility, it offers reduced type safety.
 
 ```python
 cfg_store.store(
@@ -72,7 +71,5 @@ cfg_store.store(
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    src: MySQLConfig = cfg.src
-    dst: MySQLConfig = cfg.dst
-    print(f"Copying {src.host}:{src.port} to {dst.host}:{dst.port}")
+    print(f"Copying {cfg.src.host}:{cfg.src.port} to {cfg.dst.host}:{cfg.dst.port}")
 ```

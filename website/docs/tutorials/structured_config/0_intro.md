@@ -5,7 +5,7 @@ sidebar_label: Introduction to Structured Configs
 ---
 This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
 
-Structured Configs enables the use of Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
+Structured Configs use Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
 describe your configuration structure and types. They enable:
 
 * **Runtime type checking** as you compose or mutate your config 
@@ -26,7 +26,7 @@ describe your configuration structure and types. They enable:
 - As a [config](/tutorials/structured_config/1_minimal_example.md), in place of configuration files (often a starting place)
 - As a [config schema](/tutorials/structured_config/5_schema.md) validating configuration files (better for complex use cases)
 
-With both patterns, you get everything Hydra has to offer (Config composition, Command line overrides etc).
+With both patterns, you get everything Hydra has to offer (config composition, Command line overrides etc).
 This tutorial covers both. \***Read it in order**\*.
 
 Structured Configs are a feature of OmegaConf. This tutorial does not assume any knowledge of them.
