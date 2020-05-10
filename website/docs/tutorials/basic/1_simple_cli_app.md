@@ -10,8 +10,7 @@ We will slowly evolve this example to showcase more Hydra features.
 
 The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples/tutorial).
 
-Python file: `my_app.py`
-```python
+```python title="my_app.py" {4-5}
 from omegaconf import DictConfig
 import hydra
 

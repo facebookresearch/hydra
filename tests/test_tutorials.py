@@ -160,7 +160,7 @@ def test_tutorial_config_groups(
     [
         ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
         (
-            ["database=postgresql"],
+            ["db=postgresql"],
             {
                 "db": {
                     "driver": "postgresql",
@@ -171,7 +171,7 @@ def test_tutorial_config_groups(
             },
         ),
         (
-            ["database=postgresql", "db.timeout=20"],
+            ["db=postgresql", "db.timeout=20"],
             {
                 "db": {
                     "driver": "postgresql",
