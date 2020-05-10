@@ -1,2 +1,5 @@
 defaults:
-  - db: mysql
+  - database: mysql
+
+db:
+  user: root

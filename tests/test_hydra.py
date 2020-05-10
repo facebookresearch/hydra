@@ -511,7 +511,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             "examples/tutorial/3_config_groups/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
-            """db: mysql, postgresql
+            """database: mysql, postgresql
 
 """,
             id="overriding_help_template:$APP_CONFIG_GROUPS",

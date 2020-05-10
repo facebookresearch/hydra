@@ -3,6 +3,7 @@ id: intro
 title: Getting started
 sidebar_label: Getting started
 ---
+TODO : group db -> database
 ## Introduction
 Hydra is an open-source Python framework that simplifies the development of research and other complex applications.
 The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. 

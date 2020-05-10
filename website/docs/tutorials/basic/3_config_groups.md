@@ -11,7 +11,7 @@ When running of the application, you will need either MySQL or PostgreSQL - but 
 The way to do this with Hydra is with a **Config group**.
 A config group is a mutually exclusive set of configuration files.
 
-To create a config group, create a directory. e.g. `db` to hold a file for each database configuration alternative. 
+To create a config group, create a directory. e.g. `database` to hold a file for each database configuration alternative. 
 Since we are expecting to have multiple config groups, we will proactively move all the configuration files 
 into a `conf` directory.
 
@@ -29,7 +29,7 @@ If a config file is specified, its directory is the root directory.
 The directory structure of our application now looks like:
 ```text
 ├── conf
-│   └── db
+│   └── database
 │       ├── mysql.yaml
 │       └── postgresql.yaml
 └── my_app.py
@@ -43,7 +43,7 @@ $ python my_app.py
 
 You can now choose which database configuration to use from the command line:
 ```yaml
-$ python my_app.py db=postgresql
+$ python my_app.py database=postgresql
 db:
   driver: postgresql
   pass: drowssap
@@ -53,7 +53,7 @@ db:
 
 Like before, you can still override individual values in the resulting config:
 ```yaml
-$ python my_app.py db=postgresql db.timeout=20
+$ python my_app.py database=postgresql db.timeout=20
 db:
   driver: postgresql
   pass: drowssap
@@ -66,5 +66,18 @@ You can compose your configuration object from multiple configuration files.
 
 For example, you can add a second config group controlling another aspect of your application:
 ```
-$ python my_app.py db=postgresql walk=depth_first
+$ python my_app.py database=postgresql walk=depth_first
 ```
+
+### Naming your config groups
+By convention, the names of your config group and the top level config node in the group options to line up.
+This tutorial is separating them is to demonstrate that they are not really related.
+In this example, we could have used `db` for both the config group name and for the config node.
+Have we done that, perfectly legal command line override can might have looked like:
+```
+$ python my_app.py db=postgresql db.timeout=20
+```
+
+In the example above, `db=postgresql` is overriding the config group and `db.timeout=20` is overriding the `timeout` value
+inside the `db` node. 
+

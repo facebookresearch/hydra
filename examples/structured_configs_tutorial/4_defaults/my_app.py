@@ -27,22 +27,21 @@ class PostGreSQLConfig:
     password: str = "drowssap"
 
 
-defaults = [
-    # config group name db will load config named mysql
-    {"db": "mysql"}
-]
+def create_list(lst: List[Any]) -> Any:
+    # This helper function makes the list creation a big cleaner
+    # this is unfortunately verbose due to @dataclass limitations
+    return field(default_factory=lambda: list(lst))
 
 
 @dataclass
 class Config(DictConfig):
-    # this is unfortunately verbose due to @dataclass limitations
-    defaults: List[Any] = field(default_factory=lambda: defaults)
+    defaults: List[Any] = create_list([{"database": "mysql"}])
     db: MySQLConfig = MySQLConfig()
 
 
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
 
 

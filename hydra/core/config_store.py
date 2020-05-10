@@ -79,7 +79,6 @@ class ConfigStore(metaclass=Singleton):
             OmegaConf.update(cfg, path, OmegaConf.structured(node))
         else:
             cfg = OmegaConf.structured(node)
-
         if not name.endswith(".yaml"):
             name = f"{name}.yaml"
         assert isinstance(cur, dict)

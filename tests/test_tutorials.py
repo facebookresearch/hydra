@@ -128,7 +128,7 @@ def test_tutorial_config_file_bad_key(
     [
         ([], OmegaConf.create()),
         (
-            ["db=postgresql"],
+            ["database=postgresql"],
             OmegaConf.create(
                 {
                     "db": {
@@ -160,7 +160,7 @@ def test_tutorial_config_groups(
     [
         ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
         (
-            ["db=postgresql"],
+            ["database=postgresql"],
             {
                 "db": {
                     "driver": "postgresql",
@@ -171,7 +171,7 @@ def test_tutorial_config_groups(
             },
         ),
         (
-            ["db=postgresql", "db.timeout=20"],
+            ["database=postgresql", "db.timeout=20"],
             {
                 "db": {
                     "driver": "postgresql",
