@@ -163,7 +163,7 @@ class TestCompletion:
 
         cmd.extend(
             [
-                "tests/expect/test_{}_completion.exp".format(shell),
+                "tests/scripts/test_{}_completion.exp".format(shell),
                 f"{' '.join(prog)}",
                 line1,
                 str(num_tabs),
@@ -290,3 +290,25 @@ def test_strip(
     line = "{}{}".format(app_prefix, args_line)
     result_line = BashCompletion.strip_python_or_app_name(line)
     assert result_line == args_line
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "shell,script,comp_func",
+    [
+        (
+            "bash",
+            "tests/scripts/test_bash_install_uninstall.sh",
+            "hydra_bash_completion",
+        ),
+        (
+            "fish",
+            "tests/scripts/test_fish_install_uninstall.fish",
+            "hydra_fish_completion",
+        ),
+    ],
+)
+def test_install_uninstall(shell: str, script: str, comp_func: str) -> None:
+    if shell == "fish" and not is_fish_supported():
+        pytest.skip("fish is not installed or the version is too old")
+    cmd = [shell, script, "python hydra/test_utils/completion.py", comp_func]
+    subprocess.check_call(cmd)
