@@ -31,8 +31,8 @@ class Config(DictConfig):
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group_path="database", name="mysql", path="db", node=MySQLConfig)
+cs.store(group_path="database", name="postgresql", path="db", node=PostGreSQLConfig)
 
 
 @hydra.main(config_name="config")

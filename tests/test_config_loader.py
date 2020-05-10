@@ -222,7 +222,7 @@ class TestConfigLoader:
     def test_load_config_with_schema(self, restore_singletons: Any, path: str) -> None:
 
         ConfigStore.instance().store(
-            group="db",
+            group_path="db",
             name="mysql",
             node=MySQLConfig,
             path="db",
@@ -503,7 +503,11 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:
     Load structured config as a configuration
     """
     ConfigStore.instance().store(
-        group="db", name="mysql", node=MySQLConfig, path="db", provider="test_provider"
+        group_path="db",
+        name="mysql",
+        node=MySQLConfig,
+        path="db",
+        provider="test_provider",
     )
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
@@ -557,7 +561,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
 
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
-    cs.store(group="plugin", name="concrete", node=ConcretePlugin, path="plugin")
+    cs.store(group_path="plugin", name="concrete", node=ConcretePlugin, path="plugin")
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     cfg = config_loader.load_configuration(config_name="config", overrides=[])
@@ -583,7 +587,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
 def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
-    cs.store(group="plugin", name="invalid", node=InvalidPlugin, path="plugin")
+    cs.store(group_path="plugin", name="invalid", node=InvalidPlugin, path="plugin")
 
     cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     with pytest.raises(HydraException):
