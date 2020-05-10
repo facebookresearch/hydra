@@ -225,7 +225,7 @@ class TestConfigLoader:
             group_path="db",
             name="mysql",
             node=MySQLConfig,
-            path="db",
+            node_root="db",
             provider="test_provider",
         )
 
@@ -506,7 +506,7 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:
         group_path="db",
         name="mysql",
         node=MySQLConfig,
-        path="db",
+        node_root="db",
         provider="test_provider",
     )
 
@@ -561,7 +561,9 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
 
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
-    cs.store(group_path="plugin", name="concrete", node=ConcretePlugin, path="plugin")
+    cs.store(
+        group_path="plugin", name="concrete", node=ConcretePlugin, node_root="plugin"
+    )
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     cfg = config_loader.load_configuration(config_name="config", overrides=[])
@@ -587,7 +589,9 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
 def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
-    cs.store(group_path="plugin", name="invalid", node=InvalidPlugin, path="plugin")
+    cs.store(
+        group_path="plugin", name="invalid", node=InvalidPlugin, node_root="plugin"
+    )
 
     cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
     with pytest.raises(HydraException):

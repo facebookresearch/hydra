@@ -45,7 +45,7 @@ class MySQLConfig:
     ...
 
 cfg_store = ConfigStore.instance()
-cfg_store.store(name="config", path="db", node=MySQLConfig)
+cfg_store.store(name="config", node_root="db", node=MySQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:

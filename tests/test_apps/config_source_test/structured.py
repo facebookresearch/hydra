@@ -50,20 +50,20 @@ class Optimizer:
 s = ConfigStore.instance()
 s.store(name="config_without_group", node=ConfigWithoutGroup)
 s.store(name="dataset", node={"dataset_yaml": True})
-s.store(name="cifar10", node=Cifar10, group_path="dataset", path="dataset")
-s.store(name="imagenet.yaml", node=ImageNet, group_path="dataset", path="dataset")
-s.store(name="adam", node=Adam, group_path="optimizer", path="optimizer")
-s.store(name="nesterov", node=Nesterov, group_path="optimizer", path="optimizer")
+s.store(name="cifar10", node=Cifar10, group_path="dataset", node_root="dataset")
+s.store(name="imagenet.yaml", node=ImageNet, group_path="dataset", node_root="dataset")
+s.store(name="adam", node=Adam, group_path="optimizer", node_root="optimizer")
+s.store(name="nesterov", node=Nesterov, group_path="optimizer", node_root="optimizer")
 s.store(
     name="nested1",
     node={"l1_l2_n1": True},
     group_path="level1/level2",
-    path="optimizer",
+    node_root="optimizer",
 )
 
 s.store(
     name="nested2",
     node={"l1_l2_n2": True},
     group_path="level1/level2",
-    path="optimizer",
+    node_root="optimizer",
 )

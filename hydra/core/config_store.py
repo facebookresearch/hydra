@@ -25,7 +25,11 @@ class ConfigStoreWithProvider:
         path: Optional[str] = None,
     ) -> None:
         ConfigStore.instance().store(
-            group_path=group, name=name, node=node, path=path, provider=self.provider
+            group_path=group,
+            name=name,
+            node=node,
+            node_root=path,
+            provider=self.provider,
         )
 
     def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> Any:
@@ -56,7 +60,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group_path: Optional[str] = None,
-        path: Optional[str] = None,
+        node_root: Optional[str] = None,
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -64,7 +68,7 @@ class ConfigStore(metaclass=Singleton):
         :param name: config name
         :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
         :param group_path: config group, subgroup separator is '/', for example hydra/launcher
-        :param path: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
+        :param node_root: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
         :param provider: the name of the module/app providing this config. Helps debugging.
         """
         cur = self.repo
@@ -74,9 +78,9 @@ class ConfigStore(metaclass=Singleton):
                     cur[d] = {}
                 cur = cur[d]
 
-        if path is not None and path != "":
+        if node_root is not None and node_root != "":
             cfg = OmegaConf.create()
-            OmegaConf.update(cfg, path, OmegaConf.structured(node))
+            OmegaConf.update(cfg, node_root, OmegaConf.structured(node))
         else:
             cfg = OmegaConf.structured(node)
         if not name.endswith(".yaml"):
@@ -84,7 +88,11 @@ class ConfigStore(metaclass=Singleton):
         assert isinstance(cur, dict)
         cfg_copy = copy.deepcopy(cfg)
         cur[name] = ConfigNode(
-            name=name, node=cfg_copy, group=group_path, path=path, provider=provider
+            name=name,
+            node=cfg_copy,
+            group=group_path,
+            path=node_root,
+            provider=provider,
         )
 
     def load(self, config_path: str) -> ConfigNode:
