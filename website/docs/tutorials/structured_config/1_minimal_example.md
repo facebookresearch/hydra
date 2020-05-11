@@ -79,3 +79,24 @@ This reduces development time by catching coding errors before you run your appl
 
 The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the phrase "If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck".
 It can be useful when you care about the methods or attributes of an object, not the actual type of the object.
+
+## The ConfigStore
+This page introduced the `ConfigStore`, we will see more of it soon.
+
+Let's do a quick dive into the API usage we have seen so far. 
+```python
+cs = ConfigStore.instance()
+cs.store(name="config", node=MySQLConfig)
+```
+The node parameter is converted to an OmegaConf DictConfig object, the above is equivalent to:
+```python
+cs.store(name="config", node=OmegaConf.structured(MySQLConfig))
+```
+
+You can also pass dictionary, which will similarly be converted to DictConfig:
+```python
+cs.store(name="config", node={"foo": "bar"})
+
+# equivalent to:
+cs.store(name="config", node=OmegaConf.create({"foo": "bar"}))
+```
