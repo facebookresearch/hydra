@@ -31,10 +31,14 @@ class PackageConfigSource(ConfigSource):
 
         try:
             with resource_stream(module_name, resource_name) as stream:
+                header_text = stream.read(512)
+                header = ConfigSource._get_header_dict(header_text.decode())
+                stream.seek(0)
                 return ConfigResult(
                     config=OmegaConf.load(stream),
                     path=f"{self.scheme()}://{self.path}",
                     provider=self.provider,
+                    header=header,
                 )
         except FileNotFoundError:
             raise ConfigLoadError(

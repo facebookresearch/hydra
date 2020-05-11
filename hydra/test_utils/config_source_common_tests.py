@@ -118,6 +118,7 @@ class ConfigSourceTestSuite:
         src = type_(provider="foo", path=path)
         if expectation is not None:
             with expectation:
-                assert src.load_config(config_path=config_path).config == expected
+                src.load_config(config_path=config_path)
         else:
-            assert src.load_config(config_path=config_path).config == expected
+            ret = src.load_config(config_path=config_path)
+            assert ret.config == expected

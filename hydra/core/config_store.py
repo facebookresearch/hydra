@@ -22,10 +22,10 @@ class ConfigStoreWithProvider:
         name: str,
         node: Any,
         group: Optional[str] = None,
-        path: Optional[str] = None,
+        package: Optional[str] = None,
     ) -> None:
         ConfigStore.instance().store(
-            group=group, name=name, node=node, path=path, provider=self.provider
+            group=group, name=name, node=node, package=package, provider=self.provider
         )
 
     def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> Any:
@@ -37,7 +37,7 @@ class ConfigNode:
     name: str
     node: Any
     group: Optional[str]
-    path: Optional[str]
+    package: Optional[str]
     provider: Optional[str]
 
 
@@ -56,7 +56,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        path: Optional[str] = None,
+        package: Optional[str] = None,
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -64,7 +64,7 @@ class ConfigStore(metaclass=Singleton):
         :param name: config name
         :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
         :param group: config group, subgroup separator is '/', for example hydra/launcher
-        :param path: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
+        :param package: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
         :param provider: the name of the module/app providing this config. Helps debugging.
         """
         cur = self.repo
@@ -74,9 +74,9 @@ class ConfigStore(metaclass=Singleton):
                     cur[d] = {}
                 cur = cur[d]
 
-        if path is not None and path != "":
+        if package is not None and package != "":
             cfg = OmegaConf.create()
-            OmegaConf.update(cfg, path, OmegaConf.structured(node))
+            OmegaConf.update(cfg, package, OmegaConf.structured(node))
         else:
             cfg = OmegaConf.structured(node)
 
@@ -85,7 +85,7 @@ class ConfigStore(metaclass=Singleton):
         assert isinstance(cur, dict)
         cfg_copy = copy.deepcopy(cfg)
         cur[name] = ConfigNode(
-            name=name, node=cfg_copy, group=group, path=path, provider=provider
+            name=name, node=cfg_copy, group=group, package=package, provider=provider
         )
 
     def load(self, config_path: str) -> ConfigNode:

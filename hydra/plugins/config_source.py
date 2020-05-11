@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
+
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from omegaconf import Container
 
@@ -14,6 +16,7 @@ class ConfigResult:
     provider: str
     path: str
     config: Container
+    header: Dict[str, str]
     is_schema_source: bool = False
 
 
@@ -106,3 +109,29 @@ class ConfigSource(Plugin):
         if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
             filename += ".yaml"
         return filename
+
+    @staticmethod
+    def _get_header_dict(config_text: str) -> Dict[str, str]:
+        res = {}
+        for line in config_text.splitlines():
+            line = line.strip()
+            if len(line) == 0:
+                # skip empty lines in header
+                continue
+            if re.match("^\\s*#\\s*@", line):
+                line = line.lstrip("#").strip()
+                splits = re.split(" |:", line)
+                splits = list(filter(lambda x: len(x) > 0, splits))
+                if len(splits) < 2:
+                    raise ValueError(f"Expected header format: KEY VALUE, got '{line}'")
+                if len(splits) > 2:
+                    raise ValueError(f"Too many components in '{line}'")
+                key, val = splits[0], splits[1]
+                key = key.strip()
+                val = val.strip()
+                if key.startswith("@"):
+                    res[key[1:]] = val
+            else:
+                # stop parsing header on first non-header line
+                break
+        return res
