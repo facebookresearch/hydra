@@ -282,13 +282,11 @@ class ConfigLoaderImpl(ConfigLoader):
                 )
             if not ret.is_schema_source:
                 try:
-                    schema = ConfigStore.instance().load(
-                        config_path=ConfigSource._normalize_file_name(
-                            filename=input_file
-                        )
-                    )
+                    schema_source = self.repository.get_schema_source()
+                    config_path = ConfigSource._normalize_file_name(filename=input_file)
+                    schema = schema_source.load_config(config_path)
 
-                    merged = OmegaConf.merge(schema.node, ret.config)
+                    merged = OmegaConf.merge(schema.config, ret.config)
                     assert isinstance(merged, DictConfig)
                     return (
                         merged,

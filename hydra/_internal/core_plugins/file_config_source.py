@@ -19,16 +19,18 @@ class FileConfigSource(ConfigSource):
         return "file"
 
     def load_config(self, config_path: str) -> ConfigResult:
-        config_path = self._normalize_file_name(config_path)
-        full_path = os.path.realpath(os.path.join(self.path, config_path))
+        normalized_config_path = self._normalize_file_name(config_path)
+        full_path = os.path.realpath(os.path.join(self.path, normalized_config_path))
         if not os.path.exists(full_path):
             raise ConfigLoadError(f"FileConfigSource: Config not found : {full_path}")
         with open(full_path) as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
+            self._update_package_in_header(header, normalized_config_path)
             f.seek(0)
+            cfg = OmegaConf.load(f)
             return ConfigResult(
-                config=OmegaConf.load(f),
+                config=self._embed_config(cfg, header["package"]),
                 path=f"{self.scheme()}://{self.path}",
                 provider=self.provider,
                 header=header,

@@ -50,14 +50,27 @@ class Optimizer:
 s = ConfigStore.instance()
 s.store(name="config_without_group", node=ConfigWithoutGroup)
 s.store(name="dataset", node={"dataset_yaml": True})
-s.store(name="cifar10", node=Cifar10, group="dataset", package="dataset")
-s.store(name="imagenet.yaml", node=ImageNet, group="dataset", package="dataset")
-s.store(name="adam", node=Adam, group="optimizer", package="optimizer")
-s.store(name="nesterov", node=Nesterov, group="optimizer", package="optimizer")
+s.store(group="dataset", name="cifar10", node=Cifar10, package="dataset")
+s.store(group="dataset", name="imagenet.yaml", node=ImageNet, package="dataset")
+s.store(group="optimizer", name="adam", node=Adam, package="optimizer")
+s.store(group="optimizer", name="nesterov", node=Nesterov, package="optimizer")
 s.store(
-    name="nested1", node={"l1_l2_n1": True}, group="level1/level2", package="optimizer"
+    group="level1/level2", name="nested1", node={"l1_l2_n1": True}, package="optimizer"
 )
 
 s.store(
-    name="nested2", node={"l1_l2_n2": True}, group="level1/level2", package="optimizer"
+    group="level1/level2", name="nested2", node={"l1_l2_n2": True}, package="optimizer"
 )
+
+
+s.store(group="package_test", name="none", node={"foo": "bar"})
+s.store(group="package_test", name="explicit", node={"foo": "bar"}, package="a.b")
+s.store(group="package_test", name="global", node={"foo": "bar"}, package="_global_")
+s.store(group="package_test", name="group", node={"foo": "bar"}, package="_group_")
+s.store(
+    group="package_test",
+    name="group_name",
+    node={"foo": "bar"},
+    package="foo._group_._name_",
+)
+s.store(group="package_test", name="name", node={"foo": "bar"}, package="_name_")

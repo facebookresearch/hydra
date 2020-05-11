@@ -23,6 +23,14 @@ class ConfigRepository:
             source = source_type(search_path.provider, search_path.path)
             self.sources.append(source)
 
+    def get_schema_source(self) -> ConfigSource:
+        source = self.sources[-1]  # should always be last
+        assert (
+            source.__class__.__name__ == "StructuredConfigSource"
+            and source.provider == "schema"
+        )
+        return source
+
     def load_config(self, config_path: str) -> Optional[ConfigResult]:
         source = self._find_config(config_path=config_path)
         ret = None

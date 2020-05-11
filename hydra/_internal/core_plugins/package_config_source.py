@@ -33,9 +33,11 @@ class PackageConfigSource(ConfigSource):
             with resource_stream(module_name, resource_name) as stream:
                 header_text = stream.read(512)
                 header = ConfigSource._get_header_dict(header_text.decode())
+                self._update_package_in_header(header, config_path)
                 stream.seek(0)
+                cfg = OmegaConf.load(stream)
                 return ConfigResult(
-                    config=OmegaConf.load(stream),
+                    config=self._embed_config(cfg, header["package"]),
                     path=f"{self.scheme()}://{self.path}",
                     provider=self.provider,
                     header=header,

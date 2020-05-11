@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
+
 import os
 import subprocess
 import sys
@@ -165,6 +167,36 @@ def test_app_with_config_file__no_overrides(
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
+        ("tests/test_apps/app_with_cfg_groups_no_header/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg_groups_no_header.my_app"),
+    ],
+)
+def test_config_without_package_header_warnings(
+    restore_singletons: Any,
+    task_runner: TTaskRunner,
+    calling_file: str,
+    calling_module: str,
+    recwarn,
+):
+    task = task_runner(
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path="conf",
+        config_name="config.yaml",
+    )
+    msg = "config_without_package_header.yaml"
+    with task:
+        assert task.job_ret is not None and task.job_ret.cfg == {
+            "optimizer": {"type": "nesterov", "lr": 0.001}
+        }
+
+    assert len(recwarn) == 2
+    # TODO: check for specific messages
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "calling_file, calling_module",
+    [
         ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
         (None, "tests.test_apps.app_with_cfg_groups.my_app"),
     ],
@@ -182,7 +214,6 @@ def test_app_with_config_path_backward_compatibility(
         config_name=None,
     )
     with task:
-
         assert task.job_ret is not None and task.job_ret.cfg == {
             "optimizer": {"type": "nesterov", "lr": 0.001}
         }

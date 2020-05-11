@@ -35,8 +35,10 @@ class StructuredConfigSource(ConfigSource):
         header = {}
         if ret.package:
             header["package"] = ret.package
+        self._update_package_in_header(header, full_path)
+        cfg = self._embed_config(ret.node, header["package"])
         return ConfigResult(
-            config=ret.node,
+            config=cfg,
             path=f"{self.scheme()}://{self.path}",
             provider=provider,
             header=header,
