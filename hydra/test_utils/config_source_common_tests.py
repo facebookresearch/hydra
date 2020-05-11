@@ -122,3 +122,44 @@ class ConfigSourceTestSuite:
         else:
             ret = src.load_config(config_path=config_path)
             assert ret.config == expected
+
+    @pytest.mark.parametrize(  # type: ignore
+        "config_path, expected_result, expected_package",
+        [
+            pytest.param("package_test/none", {"foo": "bar"}, "", id="none"),
+            pytest.param(
+                "package_test/explicit",
+                {"a": {"b": {"foo": "bar"}}},
+                "a.b",
+                id="explicit",
+            ),
+            pytest.param("package_test/global", {"foo": "bar"}, "", id="global"),
+            pytest.param(
+                "package_test/group",
+                {"package_test": {"foo": "bar"}},
+                "package_test",
+                id="group",
+            ),
+            pytest.param(
+                "package_test/group_name",
+                {"foo": {"package_test": {"group_name": {"foo": "bar"}}}},
+                "foo.package_test.group_name",
+                id="group_name",
+            ),
+            pytest.param(
+                "package_test/name", {"name": {"foo": "bar"}}, "name", id="name"
+            ),
+        ],
+    )
+    def test_package_behavior(
+        self,
+        type_: Type[ConfigSource],
+        path: str,
+        config_path: str,
+        expected_result: Any,
+        expected_package: str,
+    ) -> None:
+        src = type_(provider="foo", path=path)
+        cfg = src.load_config(config_path=config_path)
+        assert cfg.header["package"] == expected_package
+        assert cfg.config == expected_result

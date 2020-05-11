@@ -5,7 +5,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 
-from omegaconf import Container
+from omegaconf import Container, OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
@@ -111,6 +111,47 @@ class ConfigSource(Plugin):
         return filename
 
     @staticmethod
+    def _update_package_in_header(
+        header: Dict[str, str], normalized_config_path: str
+    ) -> None:
+        normalized_config_path = normalized_config_path[0 : -len(".yaml")]
+        last = normalized_config_path.rfind("/")
+        if last == -1:
+            group = ""
+            name = normalized_config_path
+        else:
+            group = normalized_config_path[0:last]
+            name = normalized_config_path[last + 1 :]
+
+        if "package" not in header:
+            header["package"] = "_global_"
+            # TODO: warn the user if we are defaulting
+            # to _global_ and they should make an explicit selection recommended  _group_.
+
+        package = header["package"]
+
+        if package == "_global_":
+            # default to the global behavior to remain backward compatible.
+            package = ""
+        else:
+            package = package.replace("_group_", group)
+            package = package.replace("_name_", name)
+
+        header["package"] = package
+
+    @staticmethod
+    def _embed_config(node: Container, package: str) -> Container:
+        if package == "_global_":
+            package = ""
+
+        if package is not None and package != "":
+            cfg = OmegaConf.create()
+            OmegaConf.update(cfg, package, OmegaConf.structured(node))
+        else:
+            cfg = OmegaConf.structured(node)
+        return cfg
+
+    @staticmethod
     def _get_header_dict(config_text: str) -> Dict[str, str]:
         res = {}
         for line in config_text.splitlines():
@@ -134,4 +175,5 @@ class ConfigSource(Plugin):
             else:
                 # stop parsing header on first non-header line
                 break
+
         return res

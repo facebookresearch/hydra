@@ -24,17 +24,17 @@ chdir_hydra_root()
         pytest.param(
             FileConfigSource,
             "file://tests/test_apps/config_source_test/dir",
-            id="file://",
+            id="FileConfigSource",
         ),
         pytest.param(
             PackageConfigSource,
             "pkg://tests.test_apps.config_source_test.dir",
-            id="pkg://",
+            id="PackageConfigSource",
         ),
         pytest.param(
             StructuredConfigSource,
             "structured://tests.test_apps.config_source_test.structured",
-            id="structured://",
+            id="StructuredConfigSource",
         ),
     ],
 )
@@ -77,8 +77,18 @@ class TestConfigRepository:
     @pytest.mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",
         [
-            ("", None, ["config_without_group", "dataset", "level1", "optimizer"]),
-            ("", ObjectType.GROUP, ["dataset", "level1", "optimizer"]),
+            (
+                "",
+                None,
+                [
+                    "config_without_group",
+                    "dataset",
+                    "level1",
+                    "optimizer",
+                    "package_test",
+                ],
+            ),
+            ("", ObjectType.GROUP, ["dataset", "level1", "optimizer", "package_test"]),
             ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
             ("dataset", None, ["cifar10", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
@@ -105,8 +115,8 @@ class TestConfigRepository:
         assert ret == expected
 
 
-@pytest.mark.parametrize("sep", [" ", ":"])
-@pytest.mark.parametrize(
+@pytest.mark.parametrize("sep", [" ", ":"])  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
     "cfg_text, expected",
     [
         ("# @package{sep}foo.bar", {"package": "foo.bar"}),
@@ -139,7 +149,7 @@ foo: bar
         ),
     ],
 )
-def test_get_config_header(cfg_text: str, expected, sep):
+def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
     cfg_text = cfg_text.format(sep=sep)
     if isinstance(expected, dict):
         header = ConfigSource._get_header_dict(cfg_text)
@@ -149,5 +159,5 @@ def test_get_config_header(cfg_text: str, expected, sep):
             ConfigSource._get_header_dict(cfg_text)
 
 
-# TODO: ensure header handling is consistent across different config loaders
 # TODO: implement and test header usage to inform node_root.
+# TODO : implement package override via command line and defaults

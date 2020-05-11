@@ -35,10 +35,13 @@ class ConfigStoreWithProvider:
 @dataclass
 class ConfigNode:
     name: str
-    node: Any
+    node: Any  # TODO: DictConfig or Container?
     group: Optional[str]
     package: Optional[str]
     provider: Optional[str]
+
+
+NO_DEFAULT_PACKAGE = str("_NO_DEFAULT_PACKAGE_")
 
 
 class ConfigStore(metaclass=Singleton):
@@ -56,7 +59,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        package: Optional[str] = None,
+        package: Optional[str] = NO_DEFAULT_PACKAGE,
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -67,6 +70,12 @@ class ConfigStore(metaclass=Singleton):
         :param package: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
         :param provider: the name of the module/app providing this config. Helps debugging.
         """
+
+        if package == NO_DEFAULT_PACKAGE:
+            package = "_global_"
+            # TODO: warn the user if we are defaulting
+            # to _global_ and they should make an explicit selection recommended  _group_.
+
         cur = self.repo
         if group is not None:
             for d in group.split("/"):
@@ -74,18 +83,12 @@ class ConfigStore(metaclass=Singleton):
                     cur[d] = {}
                 cur = cur[d]
 
-        if package is not None and package != "":
-            cfg = OmegaConf.create()
-            OmegaConf.update(cfg, package, OmegaConf.structured(node))
-        else:
-            cfg = OmegaConf.structured(node)
-
         if not name.endswith(".yaml"):
             name = f"{name}.yaml"
         assert isinstance(cur, dict)
-        cfg_copy = copy.deepcopy(cfg)
+        cfg = OmegaConf.structured(node)
         cur[name] = ConfigNode(
-            name=name, node=cfg_copy, group=group, package=package, provider=provider
+            name=name, node=cfg, group=group, package=package, provider=provider,
         )
 
     def load(self, config_path: str) -> ConfigNode:
