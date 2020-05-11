@@ -42,7 +42,7 @@ ConfigStore.instance().store(
     group="hydra/sweeper",
     name="basic",
     node=BasicSweeperConf,
-    path="hydra.sweeper",
+    package="hydra.sweeper",
     provider="hydra",
 )
 

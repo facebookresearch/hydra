@@ -33,11 +33,13 @@ class PostGreSQLConfig(DBConfig):
 
 # registering db/mysql and db/postgresql schemas.
 cs = ConfigStore.instance()
-cs.store(group="database", name="mysql", path="db", node=MySQLConfig, provider="main")
+cs.store(
+    group="database", name="mysql", package="db", node=MySQLConfig, provider="main"
+)
 cs.store(
     group="database",
     name="postgresql",
-    path="db",
+    package="db",
     node=PostGreSQLConfig,
     provider="main",
 )

@@ -32,8 +32,14 @@ class StructuredConfigSource(ConfigSource):
         full_path = self._normalize_file_name(config_path)
         ret = self.store.load(config_path=full_path)
         provider = ret.provider if ret.provider is not None else self.provider
+        header = {}
+        if ret.package:
+            header["package"] = ret.package
         return ConfigResult(
-            config=ret.node, path=f"{self.scheme()}://{self.path}", provider=provider
+            config=ret.node,
+            path=f"{self.scheme()}://{self.path}",
+            provider=provider,
+            header=header,
         )
 
     def is_group(self, config_path: str) -> bool:

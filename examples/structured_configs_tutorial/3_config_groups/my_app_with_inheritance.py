@@ -35,8 +35,8 @@ class Config(DictConfig):
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group="database", name="mysql", package="db", node=MySQLConfig)
+cs.store(group="database", name="postgresql", package="db", node=PostGreSQLConfig)
 
 
 def connect_mysql(cfg: MySQLConfig) -> None:

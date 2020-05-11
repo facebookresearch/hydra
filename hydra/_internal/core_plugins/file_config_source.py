@@ -23,11 +23,16 @@ class FileConfigSource(ConfigSource):
         full_path = os.path.realpath(os.path.join(self.path, config_path))
         if not os.path.exists(full_path):
             raise ConfigLoadError(f"FileConfigSource: Config not found : {full_path}")
-        return ConfigResult(
-            config=OmegaConf.load(full_path),
-            path=f"{self.scheme()}://{self.path}",
-            provider=self.provider,
-        )
+        with open(full_path) as f:
+            header_text = f.read(512)
+            header = ConfigSource._get_header_dict(header_text)
+            f.seek(0)
+            return ConfigResult(
+                config=OmegaConf.load(f),
+                path=f"{self.scheme()}://{self.path}",
+                provider=self.provider,
+                header=header,
+            )
 
     def is_group(self, config_path: str) -> bool:
         full_path = os.path.realpath(os.path.join(self.path, config_path))

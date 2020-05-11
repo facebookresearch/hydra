@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
 from typing import Any, List, Optional
 
 import pytest
@@ -10,6 +11,7 @@ from hydra._internal.core_plugins.package_config_source import PackageConfigSour
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.object_type import ObjectType
 from hydra.core.plugins import Plugins
+from hydra.plugins.config_source import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -101,3 +103,51 @@ class TestConfigRepository:
             group_name=config_path, results_filter=results_filter
         )
         assert ret == expected
+
+
+@pytest.mark.parametrize("sep", [" ", ":"])
+@pytest.mark.parametrize(
+    "cfg_text, expected",
+    [
+        ("# @package{sep}foo.bar", {"package": "foo.bar"}),
+        ("# @package{sep} foo.bar", {"package": "foo.bar"}),
+        ("# @package {sep}foo.bar", {"package": "foo.bar"}),
+        ("#@package{sep}foo.bar", {"package": "foo.bar"}),
+        ("#@package{sep}foo.bar ", {"package": "foo.bar"}),
+        (
+            "#@package{sep}foo.bar bah",
+            pytest.raises(ValueError, match=re.escape("Too many components in"),),
+        ),
+        (
+            "#@package",
+            pytest.raises(
+                ValueError, match=re.escape("Expected header format: KEY VALUE, got"),
+            ),
+        ),
+        (
+            """# @package{sep}foo.bar
+foo: bar
+# comment dsa
+""",
+            {"package": "foo.bar"},
+        ),
+        (
+            """
+# @package{sep}foo.bar
+""",
+            {"package": "foo.bar"},
+        ),
+    ],
+)
+def test_get_config_header(cfg_text: str, expected, sep):
+    cfg_text = cfg_text.format(sep=sep)
+    if isinstance(expected, dict):
+        header = ConfigSource._get_header_dict(cfg_text)
+        assert header == expected
+    else:
+        with expected:
+            ConfigSource._get_header_dict(cfg_text)
+
+
+# TODO: ensure header handling is consistent across different config loaders
+# TODO: implement and test header usage to inform node_root.
