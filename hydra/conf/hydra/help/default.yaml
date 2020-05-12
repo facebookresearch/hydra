@@ -1,36 +1,36 @@
-hydra:
-  help:
-    # App name, override to match the name your app is known by
-    app_name: ${hydra.job.name}
+# @package _group_
 
-    # Help header, customize to describe your app to your users
-    header: |
-      ${hydra.help.app_name} is powered by Hydra.
+# App name, override to match the name your app is known by
+app_name: ${hydra.job.name}
 
-    footer: |
-      Powered by Hydra (https://hydra.cc)
-      Use --hydra-help to view Hydra specific help
+# Help header, customize to describe your app to your users
+header: |
+  ${hydra.help.app_name} is powered by Hydra.
 
-    # Basic Hydra flags:
-    #   $FLAGS_HELP
-    #
-    # Config groups, choose one of:
-    #   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
-    #   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
-    #
-    # Configuration generated with overrides:
-    #   $CONFIG : Generated config
-    #
-    template: |
-      ${hydra.help.header}
-      == Configuration groups ==
-      Compose your configuration from those groups (group=option)
+footer: |
+  Powered by Hydra (https://hydra.cc)
+  Use --hydra-help to view Hydra specific help
 
-      $APP_CONFIG_GROUPS
+# Basic Hydra flags:
+#   $FLAGS_HELP
+#
+# Config groups, choose one of:
+#   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
+#   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
+#
+# Configuration generated with overrides:
+#   $CONFIG : Generated config
+#
+template: |
+  ${hydra.help.header}
+  == Configuration groups ==
+  Compose your configuration from those groups (group=option)
 
-      == Config ==
-      Override anything in the config (foo.bar=value)
+  $APP_CONFIG_GROUPS
 
-      $CONFIG
+  == Config ==
+  Override anything in the config (foo.bar=value)
 
-      ${hydra.help.footer}
+  $CONFIG
+
+  ${hydra.help.footer}

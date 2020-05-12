@@ -73,8 +73,9 @@ class ConfigStore(metaclass=Singleton):
 
         if package == NO_DEFAULT_PACKAGE:
             package = "_global_"
-            # TODO: warn the user if we are defaulting
-            # to _global_ and they should make an explicit selection recommended  _group_.
+            # TODO: warn the user if we are defaulting to _global_ and they should make
+            #  an explicit selection recommended  _group_.
+            # OR just change the default to _group_ (probably better)
 
         cur = self.repo
         if group is not None:
