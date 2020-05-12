@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import warnings
+
 import re
 
 from abc import abstractmethod
@@ -114,19 +116,26 @@ class ConfigSource(Plugin):
     def _update_package_in_header(
         header: Dict[str, str], normalized_config_path: str
     ) -> None:
-        normalized_config_path = normalized_config_path[0 : -len(".yaml")]
-        last = normalized_config_path.rfind("/")
+        config_without_ext = normalized_config_path[0 : -len(".yaml")]
+        last = config_without_ext.rfind("/")
         if last == -1:
             group = ""
-            name = normalized_config_path
+            name = config_without_ext
         else:
-            group = normalized_config_path[0:last]
-            name = normalized_config_path[last + 1 :]
+            group = config_without_ext[0:last]
+            name = config_without_ext[last + 1 :]
 
         if "package" not in header:
             header["package"] = "_global_"
             # TODO: warn the user if we are defaulting
             # to _global_ and they should make an explicit selection recommended  _group_.
+            msg = f"""Warning: Missing # @package directive in {normalized_config_path}.
+Recommendation: add “# @package _group_” at the top of {normalized_config_path} and
+remove the package ‘{group.replace("/", ".")}:’ from your file, de-indenting its children.
+More information at <link>.
+"""
+            msg = f"{normalized_config_path}"
+            warnings.warn(message=msg, category=UserWarning)
 
         package = header["package"]
 
@@ -134,7 +143,7 @@ class ConfigSource(Plugin):
             # default to the global behavior to remain backward compatible.
             package = ""
         else:
-            package = package.replace("_group_", group)
+            package = package.replace("_group_", group).replace("/", ".")
             package = package.replace("_name_", name)
 
         header["package"] = package
