@@ -311,7 +311,7 @@ if __name__ == "__main__":
     if task_config is not None:
         cfg_file = tmpdir / "config.yaml"
         OmegaConf.save(task_config, str(cfg_file))
-        config_path = f"config_path='config.yaml'"
+        config_path = "config_path='config.yaml'"
     output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
