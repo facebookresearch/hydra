@@ -6,6 +6,8 @@ Config source plugins are allowing Hydra to recognize other search path schemas 
 `pkg://` (which provides access to configs installed with a Python package) 
 
 This config source hard codes all the responses so it's not very useful.
+Please base your tests on the data in  hydra_root/tests/test_apps/config_source_test/dir.
+
 All config sources need to pass the ConfigSourceTestSuite tests, which are expecting those specific responses.
 When implementing a new config source, be sure to run it through the test suite to ensure it always behaves the same
 as the other config sources.

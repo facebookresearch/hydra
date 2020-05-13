@@ -1,19 +1,19 @@
-hydra:
-  # python logging configuration for tasks
-  hydra_logging:
-    version: 1
-    formatters:
-      colorlog:
-        '()': 'colorlog.ColoredFormatter'
-        format: "[%(cyan)s%(asctime)s%(reset)s][%(purple)sHYDRA%(reset)s] %(message)s"
-    handlers:
-      console:
-        class: logging.StreamHandler
-        formatter: colorlog
-        stream: ext://sys.stdout
-    root:
-      level: INFO
-      handlers: [console]
+# @package: _group_
 
-    disable_existing_loggers: false
+# python logging configuration for tasks
+version: 1
+formatters:
+  colorlog:
+    '()': 'colorlog.ColoredFormatter'
+    format: "[%(cyan)s%(asctime)s%(reset)s][%(purple)sHYDRA%(reset)s] %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: colorlog
+    stream: ext://sys.stdout
+root:
+  level: INFO
+  handlers: [console]
+
+disable_existing_loggers: false
 
