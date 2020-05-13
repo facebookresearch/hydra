@@ -74,7 +74,16 @@ module.exports = {
         'Development': [
             'development/contributing',
             'development/release',
-        ]
+        ],
 
+        Upgrades: [
+          {
+            type: 'category',
+            label: '0.11 to 1.0',
+            items: [
+                'upgrades/0.11_to_1.0/package_header',
+            ],
+          },
+        ],
     }
 }
