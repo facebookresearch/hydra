@@ -159,5 +159,4 @@ def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
             ConfigSource._get_header_dict(cfg_text)
 
 
-# TODO: implement and test header usage to inform node_root.
 # TODO : implement package override via command line and defaults

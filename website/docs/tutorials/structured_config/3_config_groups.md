@@ -3,8 +3,8 @@ id: config_groups
 title: Config groups
 ---
 
-This example adds `mysql` and `postgresql` configs into the config group `database`.
-The config group `database` corresponds to the directory name inside the config directory in config-file based examples.
+This example adds `mysql` and `postgresql` configs into the config group `db`.
+The config group `db` corresponds to the directory name inside the config directory in config-file based examples.
 
 Noteworthy things in the example:
  - The two config classes `MySQLConfig` and `PostGreSQLConfig` have no common superclass
@@ -34,8 +34,8 @@ class Config(DictConfig):
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
@@ -43,7 +43,7 @@ def my_app(cfg: Config) -> None:
 ```
 You can select the database from the command line:
 ```yaml
-$ python my_app.py database=postgresql
+$ python my_app.py db=postgresql
 db:
   driver: postgresql
   host: localhost
@@ -84,8 +84,8 @@ class Config(DictConfig):
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="database", name="mysql", path="db", node=MySQLConfig)
-cs.store(group="database", name="postgresql", path="db", node=PostGreSQLConfig)
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 def connect_mysql(cfg: MySQLConfig) -> None:
     print(f"Connecting to MySQL: {cfg.host}:{cfg.port}")
@@ -107,6 +107,6 @@ def my_app(cfg: Config) -> None:
 
 Example output:
 ```
-$ python my_app_with_inheritance.py database=postgresql
+$ python my_app_with_inheritance.py db=postgresql
 Connecting to PostGreSQL: localhost:5432 (timeout=10)
 ```

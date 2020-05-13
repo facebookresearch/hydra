@@ -3,7 +3,7 @@ import copy
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.core.singleton import Singleton
@@ -35,13 +35,10 @@ class ConfigStoreWithProvider:
 @dataclass
 class ConfigNode:
     name: str
-    node: Any  # TODO: DictConfig or Container?
+    node: DictConfig
     group: Optional[str]
     package: Optional[str]
     provider: Optional[str]
-
-
-NO_DEFAULT_PACKAGE = str("_NO_DEFAULT_PACKAGE_")
 
 
 class ConfigStore(metaclass=Singleton):
@@ -59,7 +56,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        package: Optional[str] = NO_DEFAULT_PACKAGE,  # TODO: use _group_ by default.
+        package: Optional[str] = "_group_",
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -70,12 +67,6 @@ class ConfigStore(metaclass=Singleton):
         :param package: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
         :param provider: the name of the module/app providing this config. Helps debugging.
         """
-
-        if package == NO_DEFAULT_PACKAGE:
-            package = "_global_"
-            # TODO: warn the user if we are defaulting to _global_ and they should make
-            #  an explicit selection recommended  _group_.
-            # OR just change the default to _group_ (probably better)
 
         cur = self.repo
         if group is not None:

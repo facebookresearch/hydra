@@ -18,7 +18,7 @@ conf/
     └── postgresql.yaml
 ```
 
-The Structurd configs below are stored as db/mysql and db/postgresql. They will be used as schema
+The Structurd Configs below are stored as db/mysql and db/postgresql. They will be used as schema
 when we load the corresponding config files.
 
 ```python
@@ -48,8 +48,8 @@ class PostGreSQLConfig(DBConfig):
 
 # registering db/mysql and db/postgresql schemas.
 ss = ConfigStore.instance()
-ss.store(group="db", name="mysql", path="db", node=MySQLConfig)
-ss.store(group="db", name="postgresql", path="db", node=PostGreSQLConfig)
+ss.store(group="db", name="mysql", node=MySQLConfig)
+ss.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 # config here is config.yaml under the conf directory.
