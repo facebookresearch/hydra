@@ -83,7 +83,7 @@ class TestConfigLoader:
         )
         with open_dict(cfg):
             del cfg["hydra"]
-        assert cfg == dict(foo=10)
+        assert cfg == {"foo": 10}
 
     def test_load_changing_group_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -96,7 +96,7 @@ class TestConfigLoader:
         )
         with open_dict(cfg):
             del cfg["hydra"]
-        assert cfg == dict(foo=20)
+        assert cfg == {"foo": 20}
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -109,7 +109,7 @@ class TestConfigLoader:
         )
         with open_dict(cfg):
             del cfg["hydra"]
-        assert cfg == dict(foo=10, bar=100)
+        assert cfg == {"foo": 10, "bar": 100}
 
     def test_change_run_dir_with_override(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -195,7 +195,7 @@ class TestConfigLoader:
         with open_dict(cfg):
             del cfg["hydra"]
 
-        assert cfg == dict(yml_file_here=True)
+        assert cfg == {"yml_file_here": True}
 
     def test_override_with_equals(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -272,7 +272,6 @@ class TestConfigLoader:
 
         with open_dict(cfg):
             del cfg["hydra"]
-
         assert cfg == {
             "db": {
                 "driver": "mysql",
