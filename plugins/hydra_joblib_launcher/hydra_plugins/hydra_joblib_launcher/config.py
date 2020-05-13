@@ -51,7 +51,6 @@ class JobLibLauncherConf(ObjectConf):
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="joblib",
-    package="hydra.launcher",
     node=JobLibLauncherConf,
     provider="joblib_launcher",
 )

@@ -41,8 +41,8 @@ class Config(DictConfig):
 
 
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", package="db", node=MySQLConfig)
-cs.store(group="db", name="postgresql", package="db", node=PostGreSQLConfig)
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
 
 

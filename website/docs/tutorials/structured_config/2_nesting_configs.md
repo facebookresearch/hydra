@@ -34,10 +34,11 @@ if __name__ == "__main__":
     my_app()
 ```
 
-### Nesting by specifying a node path
+### Nesting by specifying a package
 If for some reason you do not want to have a top level config class, you can still place MySQLConfig 
-in a specific path in the final configuration object. To do that, use the `path` parameter to specify the path.
-You can use dot-notation to create multiple parent nodes as needed (E.G. `path="foo.bar.baz"`)  
+in a specific package in the final configuration object. To do that, use the `package` parameter to specify the package.
+You can use dot-notation to create multiple parent nodes as needed (E.G. `path="foo.bar.baz"`).
+By default, the package parameter is `_group_`.
 
 ```python
 @dataclass
@@ -45,7 +46,7 @@ class MySQLConfig:
     ...
 
 cfg_store = ConfigStore.instance()
-cfg_store.store(name="config", path="db", node=MySQLConfig)
+cfg_store.store(name="config", node=MySQLConfig, package="db")
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:

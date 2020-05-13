@@ -91,6 +91,6 @@ class NevergradSweeperConf(ObjectConf):
 ConfigStore.instance().store(
     group="hydra/sweeper",
     name="nevergrad",
-    package="hydra.sweeper",
     node=NevergradSweeperConf,
+    provider="nevergrad",
 )

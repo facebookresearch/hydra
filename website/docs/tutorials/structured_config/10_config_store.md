@@ -12,7 +12,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        path: Optional[str] = None,
+        package: Optional[str] = "_group_",
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -20,7 +20,7 @@ class ConfigStore(metaclass=Singleton):
         :param name: config name
         :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
         :param group: config group, subgroup separator is '/', for example hydra/launcher
-        :param path: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
+        :param package: Config node package
         :param provider: the name of the module/app providing this config. Helps debugging.
         """
     ...

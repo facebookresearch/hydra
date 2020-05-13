@@ -50,10 +50,11 @@ class Optimizer:
 s = ConfigStore.instance()
 s.store(name="config_without_group", node=ConfigWithoutGroup)
 s.store(name="dataset", node={"dataset_yaml": True})
-s.store(group="dataset", name="cifar10", node=Cifar10, package="dataset")
-s.store(group="dataset", name="imagenet.yaml", node=ImageNet, package="dataset")
-s.store(group="optimizer", name="adam", node=Adam, package="optimizer")
-s.store(group="optimizer", name="nesterov", node=Nesterov, package="optimizer")
+s.store(group="dataset", name="cifar10", node=Cifar10)
+s.store(group="dataset", name="imagenet.yaml", node=ImageNet)
+s.store(group="optimizer", name="adam", node=Adam)
+s.store(group="optimizer", name="nesterov", node=Nesterov)
+# TODO : package here is wrong, why is it passing the tests?
 s.store(
     group="level1/level2", name="nested1", node={"l1_l2_n1": True}, package="optimizer"
 )
@@ -62,8 +63,8 @@ s.store(
     group="level1/level2", name="nested2", node={"l1_l2_n2": True}, package="optimizer"
 )
 
-
-s.store(group="package_test", name="none", node={"foo": "bar"})
+# TODO: remove _global_ once default for config file based package is changed to _group_
+s.store(group="package_test", name="none", node={"foo": "bar"}, package="_global_")
 s.store(group="package_test", name="explicit", node={"foo": "bar"}, package="a.b")
 s.store(group="package_test", name="global", node={"foo": "bar"}, package="_global_")
 s.store(group="package_test", name="group", node={"foo": "bar"}, package="_group_")

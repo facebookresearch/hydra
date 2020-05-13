@@ -39,11 +39,7 @@ class BasicSweeperConf(ObjectConf):
 
 
 ConfigStore.instance().store(
-    group="hydra/sweeper",
-    name="basic",
-    node=BasicSweeperConf,
-    package="hydra.sweeper",
-    provider="hydra",
+    group="hydra/sweeper", name="basic", node=BasicSweeperConf, provider="hydra",
 )
 
 
