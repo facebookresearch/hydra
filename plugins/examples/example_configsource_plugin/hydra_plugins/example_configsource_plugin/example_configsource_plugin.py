@@ -9,16 +9,30 @@ from omegaconf import OmegaConf
 class ConfigSourceExample(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
+        self.headers = {
+            "package_test/explicit.yaml": {"package": "a.b"},
+            "package_test/global.yaml": {"package": "_global_"},
+            "package_test/group.yaml": {"package": "_group_"},
+            "package_test/group_name.yaml": {"package": "foo._group_._name_"},
+            "package_test/name.yaml": {"package": "_name_"},
+            "package_test/none.yaml": {},
+        }
         self.configs: Dict[str, Dict[str, Any]] = {
-            "config_without_group": {"group": False},
-            "dataset/imagenet": {
+            "config_without_group.yaml": {"group": False},
+            "dataset/imagenet.yaml": {
                 "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
             },
-            "dataset/cifar10": {
+            "dataset/cifar10.yaml": {
                 "dataset": {"name": "cifar10", "path": "/datasets/cifar10"}
             },
-            "level1/level2/nested1": {},
-            "level1/level2/nested2": {},
+            "level1/level2/nested1.yaml": {},
+            "level1/level2/nested2.yaml": {},
+            "package_test/explicit.yaml": {"foo": "bar"},
+            "package_test/global.yaml": {"foo": "bar"},
+            "package_test/group.yaml": {"foo": "bar"},
+            "package_test/group_name.yaml": {"foo": "bar"},
+            "package_test/name.yaml": {"foo": "bar"},
+            "package_test/none.yaml": {"foo": "bar"},
         }
 
     @staticmethod
@@ -26,12 +40,20 @@ class ConfigSourceExample(ConfigSource):
         return "example"
 
     def load_config(self, config_path: str) -> ConfigResult:
+        config_path = self._normalize_file_name(config_path)
         if config_path not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
+        header = self.headers[config_path].copy() if config_path in self.headers else {}
+        if "package" not in header:
+            header["package"] = ""
+
+        self._update_package_in_header(header, config_path)
+        cfg = OmegaConf.create(self.configs[config_path])
         return ConfigResult(
-            config=OmegaConf.create(self.configs[config_path]),
+            config=self._embed_config(cfg, header["package"]),
             path=f"{self.scheme()}://{self.path}",
             provider=self.provider,
+            header=header,
         )
 
     def is_group(self, config_path: str) -> bool:

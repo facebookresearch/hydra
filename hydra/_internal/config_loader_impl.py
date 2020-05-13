@@ -12,7 +12,6 @@ from omegaconf.errors import OmegaConfBaseException
 from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.core.config_store import ConfigStore
 from hydra.core.errors import HydraException
 from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val

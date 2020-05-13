@@ -1,32 +1,32 @@
-hydra:
-  # python logging configuration for tasks
-  job_logging:
-    version: 1
-    formatters:
-      simple:
-        format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
-      colorlog:
-        '()': 'colorlog.ColoredFormatter'
-        format: '[%(cyan)s%(asctime)s%(reset)s][%(blue)s%(name)s%(reset)s][%(log_color)s%(levelname)s%(reset)s] - %(message)s'
-        log_colors:
-          DEBUG: purple
-          INFO: green
-          WARNING: yellow
-          ERROR: red
-          CRITICAL: red
-    handlers:
-      console:
-        class: logging.StreamHandler
-        formatter: colorlog
-        stream: ext://sys.stdout
-      file:
-        class: logging.FileHandler
-        formatter: simple
-        # relative to the job log directory
-        filename: ${hydra.job.name}.log
-    root:
-      level: INFO
-      handlers: [console, file]
+# @package: _group_
 
-    disable_existing_loggers: false
+# python logging configuration for tasks
+version: 1
+formatters:
+  simple:
+    format: '[%(asctime)s][%(name)s][%(levelname)s] - %(message)s'
+  colorlog:
+    '()': 'colorlog.ColoredFormatter'
+    format: '[%(cyan)s%(asctime)s%(reset)s][%(blue)s%(name)s%(reset)s][%(log_color)s%(levelname)s%(reset)s] - %(message)s'
+    log_colors:
+      DEBUG: purple
+      INFO: green
+      WARNING: yellow
+      ERROR: red
+      CRITICAL: red
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: colorlog
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler
+    formatter: simple
+    # relative to the job log directory
+    filename: ${hydra.job.name}.log
+root:
+  level: INFO
+  handlers: [console, file]
+
+disable_existing_loggers: false
 

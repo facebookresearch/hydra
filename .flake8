@@ -1,5 +1,5 @@
 [flake8]
-exclude = .git,.nox
+exclude = .git,.nox,build
 max-line-length = 119
 copyright-check = True
 select = E,F,W,C

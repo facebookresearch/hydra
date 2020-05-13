@@ -1,4 +1,3 @@
-hydra:
-  launcher:
-    params:
-      n_jobs: 10
+# @package: _group_
+params:
+  n_jobs: 10

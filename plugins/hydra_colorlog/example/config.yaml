@@ -1,3 +1,4 @@
+# @package: _group_
 defaults:
   - hydra/job_logging: colorlog
   - hydra/hydra_logging: colorlog

@@ -1,3 +1,4 @@
+# @package: _global_
 dataset:
   name: cifar10
   path: /datasets/cifar10
