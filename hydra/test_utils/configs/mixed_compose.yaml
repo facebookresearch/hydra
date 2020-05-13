@@ -1,3 +1,4 @@
+# @package: _global_
 defaults:
   - some_config
   - group1: file1

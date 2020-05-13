@@ -176,22 +176,30 @@ def test_config_without_package_header_warnings(
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
-    recwarn,
-):
+    recwarn: Any,
+) -> None:
     task = task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
         config_path="conf",
         config_name="config.yaml",
     )
-    msg = "config_without_package_header.yaml"
     with task:
         assert task.job_ret is not None and task.job_ret.cfg == {
             "optimizer": {"type": "nesterov", "lr": 0.001}
         }
 
+    msg1 = (
+        "Missing # @package directive in config.yaml.\n"
+        "See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+    )
+    msg2 = (
+        "Missing # @package directive in optimizer/nesterov.yaml.\n"
+        "See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+    )
     assert len(recwarn) == 2
-    # TODO: check for specific messages
+    assert recwarn.pop().message.args[0] == msg1
+    assert recwarn.pop().message.args[0] == msg2
 
 
 @pytest.mark.parametrize(  # type: ignore

@@ -127,14 +127,10 @@ class ConfigSource(Plugin):
 
         if "package" not in header:
             header["package"] = "_global_"
-            # TODO: warn the user if we are defaulting
-            # to _global_ and they should make an explicit selection recommended  _group_.
-            msg = f"""Warning: Missing # @package directive in {normalized_config_path}.
-Recommendation: add “# @package _group_” at the top of {normalized_config_path} and
-remove the package ‘{group.replace("/", ".")}:’ from your file, de-indenting its children.
-More information at <link>.
-"""
-            msg = f"{normalized_config_path}"
+            msg = (
+                f"Missing # @package directive in {normalized_config_path}.\n"
+                f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+            )
             warnings.warn(message=msg, category=UserWarning)
 
         package = header["package"]

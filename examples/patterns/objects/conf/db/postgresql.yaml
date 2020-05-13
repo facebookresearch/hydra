@@ -1,7 +1,7 @@
-db:
-  cls: tutorial.objects_example.my_app.PostgreSQLConnection
-  params:
-    host: localhost
-    user: root
-    password: 1234
-    database: tutorial
+# @package _group_
+cls: tutorial.objects_example.my_app.PostgreSQLConnection
+params:
+  host: localhost
+  user: root
+  password: 1234
+  database: tutorial

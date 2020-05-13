@@ -1,3 +1,3 @@
-ui:
-  windows:
-    view: true
+# @package _group_
+windows:
+  view: true

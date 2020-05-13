@@ -1,3 +1,4 @@
+# @package: _global_
 # a mapping item
 dict:
   key1: val1
