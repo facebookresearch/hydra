@@ -1,3 +1,4 @@
+# @package: _global_
 cloud:
   name: local
   host: localhost

@@ -1,3 +1,4 @@
+# @package: _global_
 # top level dict
 group:
   dict: true

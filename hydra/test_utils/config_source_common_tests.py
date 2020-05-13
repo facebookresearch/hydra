@@ -158,6 +158,7 @@ class ConfigSourceTestSuite:
         config_path: str,
         expected_result: Any,
         expected_package: str,
+        recwarn: Any,
     ) -> None:
         src = type_(provider="foo", path=path)
         cfg = src.load_config(config_path=config_path)

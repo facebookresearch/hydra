@@ -310,7 +310,9 @@ if __name__ == "__main__":
     config_path = ""
     if task_config is not None:
         cfg_file = tmpdir / "config.yaml"
-        OmegaConf.save(task_config, str(cfg_file))
+        with open(str(cfg_file), "w") as f:
+            f.write("# @package: _global_\n")
+            OmegaConf.save(task_config, f)
         config_path = "config_path='config.yaml'"
     output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
