@@ -1,12 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import distutils.spawn
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
 from typing import List
 
 import pytest
+from packaging import version
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
@@ -19,6 +21,28 @@ chdir_hydra_root()
 
 def is_expect_exists() -> bool:
     return distutils.spawn.find_executable("expect") is not None
+
+
+def is_fish_supported() -> bool:
+    if distutils.spawn.find_executable("fish") is None:
+        return False
+
+    proc = subprocess.run(
+        ["fish", "--version"], stdout=subprocess.PIPE, encoding="utf-8"
+    )
+    matches = re.match(r".*version\s+(\d\.\d\.\d)(.*)", proc.stdout)
+    if not matches:
+        return False
+
+    fish_version, git_version = matches.groups()
+
+    # Release after 3.1.2 or git build after 3.1.2 contain space fix.
+    if version.parse(fish_version) > version.parse("3.1.2"):
+        return True
+    elif version.parse(fish_version) >= version.parse("3.1.2") and git_version:
+        return True
+    else:
+        return False
 
 
 def create_config_loader() -> ConfigLoaderImpl:
@@ -110,7 +134,7 @@ class TestCompletion:
     @pytest.mark.parametrize(  # type: ignore
         "prog", [["python", "hydra/test_utils/completion.py"]]
     )
-    @pytest.mark.parametrize("shell", ["bash"])  # type: ignore
+    @pytest.mark.parametrize("shell", ["bash", "fish"])  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
@@ -120,6 +144,8 @@ class TestCompletion:
         line: str,
         expected: List[str],
     ) -> None:
+        if shell == "fish" and not is_fish_supported():
+            pytest.skip("fish is not installed or the version is too old")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
@@ -137,12 +163,21 @@ class TestCompletion:
 
         cmd.extend(
             [
-                "tests/expect/test_{}_completion.exp".format(shell),
+                "tests/scripts/test_{}_completion.exp".format(shell),
                 f"{' '.join(prog)}",
                 line1,
                 str(num_tabs),
             ]
         )
+
+        if shell == "fish":
+            # Fish will add a space to an unambiguous completion.
+            expected = [x + " " if re.match(r".*=\w+$", x) else x for x in expected]
+
+            # Exactly match token end. See
+            # https://github.com/fish-shell/fish-shell/issues/6928
+            expected = [re.escape(x) + "$" for x in expected]
+
         cmd.extend(expected)
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
@@ -255,3 +290,25 @@ def test_strip(
     line = "{}{}".format(app_prefix, args_line)
     result_line = BashCompletion.strip_python_or_app_name(line)
     assert result_line == args_line
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "shell,script,comp_func",
+    [
+        (
+            "bash",
+            "tests/scripts/test_bash_install_uninstall.sh",
+            "hydra_bash_completion",
+        ),
+        (
+            "fish",
+            "tests/scripts/test_fish_install_uninstall.fish",
+            "hydra_fish_completion",
+        ),
+    ],
+)
+def test_install_uninstall(shell: str, script: str, comp_func: str) -> None:
+    if shell == "fish" and not is_fish_supported():
+        pytest.skip("fish is not installed or the version is too old")
+    cmd = [shell, script, "python hydra/test_utils/completion.py", comp_func]
+    subprocess.check_call(cmd)

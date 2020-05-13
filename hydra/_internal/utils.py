@@ -286,6 +286,23 @@ def _get_exec_command() -> str:
         return executable
 
 
+def _get_completion_help() -> str:
+    from hydra.core.plugins import Plugins
+    from hydra.plugins.completion_plugin import CompletionPlugin
+
+    completion_plugins = Plugins.instance().discover(CompletionPlugin)
+    completion_info: List[str] = []
+    for plugin_cls in completion_plugins:
+        assert issubclass(plugin_cls, CompletionPlugin)
+        for cmd in ["install", "uninstall"]:
+            head = f"{plugin_cls.provides().capitalize()} - {cmd.capitalize()}:"
+            completion_info.append(head)
+            completion_info.append(plugin_cls.help(cmd).format(_get_exec_command()))
+        completion_info.append("")
+    completion_help = "\n".join([f"    {x}" if x else x for x in completion_info])
+    return completion_help
+
+
 def get_args_parser() -> argparse.ArgumentParser:
     from .. import __version__
 
@@ -317,23 +334,13 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Run multiple jobs with the configured launcher",
     )
 
-    shell = "SHELL_NAME"
-    install_cmd = 'eval "$({} -sc install={})"'.format(_get_exec_command(), shell)
-    uninstall_cmd = 'eval "$({} -sc uninstall={})"'.format(_get_exec_command(), shell)
     parser.add_argument(
         "--shell_completion",
         "-sc",
         action="store_true",
-        help="""Install or Uninstall shell completion:
-    Install:
-    {}
-
-    Uninstall:
-    {}
-""".format(
-            install_cmd, uninstall_cmd
-        ),
+        help=f"Install or Uninstall shell completion:\n{_get_completion_help()}",
     )
+
     return parser
 
 

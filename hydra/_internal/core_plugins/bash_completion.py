@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-import re
 import sys
 from typing import Optional
 
@@ -17,7 +16,11 @@ log = logging.getLogger(__name__)
 class BashCompletion(CompletionPlugin):
     # TODO: detect python with path like /foo/bar/python
     def install(self) -> None:
-        script = """hydra_bash_completion()
+        # Record the old rule for uninstalling
+        script = (
+            f"export _HYDRA_OLD_COMP=$(complete -p {self._get_exec()} 2> /dev/null)\n"
+        )
+        script += """hydra_bash_completion()
 {
     words=($COMP_LINE)
     if [ "${words[0]}" == "python" ]; then
@@ -60,31 +63,13 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         print(script + self._get_exec())
 
     def uninstall(self) -> None:
-        print("unset hydra_bash_completion\ncomplete -r " + self._get_exec())
-
-    def provides(self) -> str:
-        return "bash"
+        print("unset hydra_bash_completion")
+        print(os.environ.get("_HYDRA_OLD_COMP", ""))
+        print("unset _HYDRA_OLD_COMP")
 
     @staticmethod
-    def strip_python_or_app_name(line: str) -> str:
-        """
-        Take the command line (COMP_LINE) received from bash completion, and strip the app name from it
-        which could be at the form of python script.py or some_app.
-        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
-        :param line: input line, may contain python file.py followed=by_args..
-        :return: tuple(args line, key of cursor in args line)
-        """
-        python_args = r"^\s*[\w\/]*python\s*[\w/\.]*\s*(.*)"
-        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
-        match = re.match(python_args, line)
-        if match:
-            return match.group(1)
-        else:
-            match = re.match(app_args, line)
-            if match:
-                return match.group(1)
-            else:
-                raise RuntimeError(f"Error parsing line '{line}'")
+    def provides() -> str:
+        return "bash"
 
     def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
@@ -98,6 +83,11 @@ COMP_WORDBREAKS=$COMP_WORDBREAKS complete -o nospace -o default -F hydra_bash_co
         # currently key is ignored.
         line = self.strip_python_or_app_name(line)
         print(" ".join(self._query(config_name=config_name, line=line)))
+
+    @staticmethod
+    def help(command: str) -> str:
+        assert command in ["install", "uninstall"]
+        return f'eval "$({{}} -sc {command}=bash)"'
 
     @staticmethod
     def _get_exec() -> str:

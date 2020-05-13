@@ -1,0 +1,35 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+log_user 0
+set timeout 4
+
+# Start fish without user configuration
+set env(HOME) /dev/null
+
+# Suppress coloring
+set env(TERM) dumb
+
+spawn fish
+expect >
+
+set in_line [lindex $argv 1]
+set len [expr [string length $in_line] - 1]
+set line [string range $in_line 5 $len]
+set num_tabs [lindex $argv 2]
+puts "input line: '$line'"
+
+send "[lindex $argv 0] -sc install=fish | source\r"
+expect >
+
+set command "[lindex $argv 0] $line\t"
+puts "command: '$command'"
+
+send $command
+
+puts "\nMatching:\n"
+foreach arg [lrange $argv 3 end] {
+    send "\t"
+    expect {
+	-re "$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
+        timeout {puts "Error matching $arg";exit 1}
+    }
+}

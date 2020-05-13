@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+import re
 import sys
 from abc import abstractmethod
 from typing import Any, List, Optional, Tuple, Union
@@ -29,8 +30,9 @@ class CompletionPlugin(Plugin):
     def uninstall(self) -> None:
         ...
 
+    @staticmethod
     @abstractmethod
-    def provides(self) -> str:
+    def provides() -> str:
         """
         :return: the name of the shell this plugin provides completion for
         """
@@ -38,6 +40,15 @@ class CompletionPlugin(Plugin):
 
     @abstractmethod
     def query(self, config_name: Optional[str]) -> None:
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def help(command: str) -> str:
+        """
+        :param command: "install" or "uninstall"
+        :return: command the user can run to install or uninstall this shell completion on the appropriate shell
+        """
         ...
 
     @staticmethod
@@ -211,6 +222,27 @@ class CompletionPlugin(Plugin):
 
         return sorted(result)
 
+    @staticmethod
+    def strip_python_or_app_name(line: str) -> str:
+        """
+        Take the command line received from shell completion, and strip the app name from it
+        which could be at the form of python script.py or some_app.
+        it also corrects the key (COMP_INDEX) to reflect the same location in the striped command line.
+        :param line: input line, may contain python file.py followed=by_args..
+        :return: tuple(args line, key of cursor in args line)
+        """
+        python_args = r"^\s*[\w\/]*python[3]?\s*[\w/\.]*\s*(.*)"
+        app_args = r"^\s*[\w_\-=\./]+\s*(.*)"
+        match = re.match(python_args, line)
+        if match:
+            return match.group(1)
+        else:
+            match = re.match(app_args, line)
+            if match:
+                return match.group(1)
+            else:
+                raise RuntimeError(f"Error parsing line '{line}'")
+
 
 class DefaultCompletionPlugin(CompletionPlugin):
     """
@@ -223,8 +255,13 @@ class DefaultCompletionPlugin(CompletionPlugin):
     def uninstall(self) -> None:
         ...
 
-    def provides(self) -> str:
+    @staticmethod
+    def provides() -> str:
         ...
 
     def query(self, config_name: Optional[str]) -> None:
+        ...
+
+    @staticmethod
+    def help(command: str) -> str:
         ...
