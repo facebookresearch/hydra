@@ -1,4 +1,0 @@
-# @package: _global_
-defaults:
-  - group1: file1
-  - group2@pkg1: file1

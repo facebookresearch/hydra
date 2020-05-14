@@ -1,12 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-from typing import Any, List
+from dataclasses import dataclass, asdict
+from typing import Any, List, Tuple, Optional
 
 import pkg_resources
 import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 
-from hydra._internal.config_loader_impl import ConfigLoaderImpl, DefaultElement
+from hydra._internal.config_loader_impl import (
+    ConfigLoaderImpl,
+    DefaultElement,
+    ParsedOverride,
+)
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -105,31 +109,20 @@ class TestConfigLoader:
     @pytest.mark.parametrize(  # type: ignore
         "overrides,expected",
         [
-            pytest.param([], {"foo": 10, "pkg1": {"bar": 100}}, id="no_overrides"),
             pytest.param(
-                ["group1@=file1"],
-                {"foo": 10, "pkg1": {"bar": 100}},
-                id="unset_unspecified_is_noop",
+                [],
+                {"group1_option1": True, "pkg1": {"group2_option1": True}},
+                id="no_overrides",
             ),
             pytest.param(
-                ["group1@group1_pkg=file1"],
-                {"group1_pkg": {"foo": 10}, "pkg1": {"bar": 100}},
+                ["group1@pkg2=option1"],
+                {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
                 id="override_unspecified_pkg_of_default",
             ),
             pytest.param(
-                ["group2@pkg2=file1"],
-                {"foo": 10, "pkg2": {"bar": 100}},
-                id="override_specified_pkg_in_default",
-            ),
-            pytest.param(
-                ["group2@=file1"],
-                {"foo": 10, "bar": 100},
-                id="unset_specified_pkg_in_defaults",
-            ),
-            pytest.param(
-                ["group2@_group_=file1"],
-                {"foo": 10, "group2": {"bar": 100}},
-                id="unset_specified_pkg_in_defaults",
+                ["group1@pkg1=option1"],
+                {"pkg1": {"group1_option1": True, "group2_option1": True}},
+                id="override_two_groups_to_same_package",
             ),
         ],
     )
@@ -137,10 +130,52 @@ class TestConfigLoader:
         self, path: str, overrides: List[str], expected: Any
     ) -> None:
         config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
+            config_search_path=create_config_search_path(f"{path}/package_tests")
         )
         cfg = config_loader.load_configuration(
-            config_name="compose_pkg_override.yaml", overrides=overrides
+            config_name="pkg_override", overrides=overrides
+        )
+        with open_dict(cfg):
+            del cfg["hydra"]
+        assert cfg == expected
+
+    @pytest.mark.parametrize(  # type: ignore
+        "overrides,expected",
+        [
+            pytest.param(
+                [],
+                {"pkg1": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
+                id="baseline",
+            ),
+            pytest.param(
+                ["group1@pkg3=option1"],
+                {
+                    "pkg1": {"group1_option1": True},
+                    "pkg2": {"group1_option1": True},
+                    "pkg3": {"group1_option1": True},
+                },
+                id="append",
+            ),
+            pytest.param(
+                ["group1@pkg1:pkg4=option1"],
+                {"pkg4": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
+                id="change_package",
+            ),
+            pytest.param(
+                ["group1@pkg1=null"],
+                {"pkg2": {"group1_option1": True}},
+                id="delete_package",
+            ),
+        ],
+    )
+    def test_override_compose_two_package_one_group(
+        self, path: str, overrides: List[str], expected: Any
+    ) -> None:
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(f"{path}/package_tests")
+        )
+        cfg = config_loader.load_configuration(
+            config_name="two_packages_one_group", overrides=overrides
         )
         with open_dict(cfg):
             del cfg["hydra"]
@@ -380,7 +415,7 @@ def test_merge_default_lists(
     in_merged: List[DefaultElement],
     expected: List[DefaultElement],
 ) -> None:
-    ConfigLoaderImpl._merge_default_lists(in_primary, in_merged)
+    ConfigLoaderImpl._combine_default_lists(in_primary, in_merged)
     assert in_primary == expected
 
 
@@ -393,7 +428,7 @@ def test_merge_default_lists(
         ("config.yaml", ["hydra/launcher=null"]),
         # remove from both
         ("removing-hydra-launcher-default.yaml", ["hydra/launcher=null"]),
-        # # second overrides removes
+        # second overrides removes
         ("config.yaml", ["hydra/launcher=submitit", "hydra/launcher=null"]),
     ],
 )
@@ -688,3 +723,21 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
     with open_dict(cfg):
         del cfg["hydra"]
     assert cfg == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "override, expected",
+    [
+        ("key=value", ParsedOverride("key", None, None, "value")),
+        ("key@pkg=value", ParsedOverride("key", "pkg", None, "value")),
+        ("key@pkg1:pkg2=value", ParsedOverride("key", "pkg1", "pkg2", "value")),
+        ("key@a.b.c:x.y.z=value", ParsedOverride("key", "a.b.c", "x.y.z", "value")),
+        ("key@:pkg2=value", ParsedOverride("key", "", "pkg2", "value")),
+        ("key@pkg1:=value", ParsedOverride("key", "pkg1", "", "value")),
+        ("key=null", ParsedOverride("key", None, None, "null")),
+        ("foo/bar=zoo", ParsedOverride("foo/bar", None, None, "zoo")),
+    ],
+)
+def test_parse_override(override: str, expected: ParsedOverride) -> None:
+    ret = ConfigLoaderImpl._parse_override(override)
+    assert ret == expected
