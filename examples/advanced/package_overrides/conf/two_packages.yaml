@@ -1,0 +1,4 @@
+# @package _group_
+defaults:
+  - db@source: mysql
+  - db@destination: mysql

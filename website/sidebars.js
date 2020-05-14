@@ -59,10 +59,10 @@ module.exports = {
         ],
 
         'Advanced': [
-            'advanced/app_packaging',
-            'advanced/plugins',
+            'advanced/package_header',
             'advanced/search_path',
-
+            'advanced/plugins',
+            'advanced/app_packaging',
         ],
 
         "Experimental": [
