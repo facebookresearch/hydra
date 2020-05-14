@@ -45,7 +45,9 @@ class ConfigSource(Plugin):
         ...
 
     @abstractmethod
-    def load_config(self, config_path: str) -> ConfigResult:
+    def load_config(
+        self, config_path: str, package_override: Optional[str] = None
+    ) -> ConfigResult:
         ...
 
     # subclasses may override to improve performance
@@ -114,9 +116,12 @@ class ConfigSource(Plugin):
 
     @staticmethod
     def _update_package_in_header(
-        header: Dict[str, str], normalized_config_path: str
+        header: Dict[str, str],
+        normalized_config_path: str,
+        package_override: Optional[str],
     ) -> None:
         config_without_ext = normalized_config_path[0 : -len(".yaml")]
+
         last = config_without_ext.rfind("/")
         if last == -1:
             group = ""
@@ -134,6 +139,9 @@ class ConfigSource(Plugin):
             warnings.warn(message=msg, category=UserWarning)
 
         package = header["package"]
+
+        if package_override is not None:
+            package = package_override
 
         if package == "_global_":
             # default to the global behavior to remain backward compatible.

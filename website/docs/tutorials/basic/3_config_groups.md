@@ -68,3 +68,16 @@ For example, you can add a second config group controlling another aspect of you
 ```
 $ python my_app.py db=postgresql walk=depth_first
 ```
+
+### Overriding the package
+You can override the package defined in the config file via the command line with the syntax `group@package=choice`,
+for example:
+
+```yaml
+$ python examples/tutorial/3_config_groups/my_app.py db@foo.bar=mysql 
+foo:
+  bar:
+    driver: mysql
+    user: omry
+    pass: secret
+```
