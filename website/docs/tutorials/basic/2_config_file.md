@@ -84,22 +84,42 @@ Note that strict mode is referred to as `struct mode` in OmegaConf.
 
 
 ### Package Header
-TLDR:
+#### TLDR
 Add `# @package _group_` to the top of your config files.
-You are encouraged to read the rest, but if you have to take one thing from this section, it should be it.
 
-Hydra 1.0 introduces a @package header described in details in [this design doc](https://docs.google.com/document/d/10aU2axeJj_p_iv1Hp9VulYLL5qyvhErg89MKFGbkZO4/edit?usp=sharing).
+#### The full story
+Hydra 1.0 introduces a @package header to all config files.
+A `package` is essentially the `path` of a node in the config. You can also think of it as a `branch` in the config.
 
-The header contains the @package directive, defined as:
+For example, the `package` of the node `{driver: mysql}` below is db.
+```yaml
+db:
+  driver: mysql
+``` 
 
+By specifying the `package` at the top of your config, you can determine where it will be merged.
+The above is equivalent to:
+```yaml
+# @package: db
+driver: mysql
+```
+There are a few special keywords that you can use in your `@package` header.
 `@package`: `_global_` | `package-path`
 - `_global_`: Global package, this is the default behavior in Hydra `0.11`
 - `package-path`: Explicit package path, such as `oompa.loompa`, the following keywords are replaced at runtime:
 - `_group_`: config group in dot notation: `foo/bar/zoo.yaml` -> `foo.bar`
 - `_name_`: config name: `foo/bar/zoo.yaml` -> `zoo`
 
-### Header format
-The header format is generic:
+### The evolution of the `@package` header
+ - Before Hydra 1.0, `_global_` was implicit and the only supported option.
+ - Hydra 1.0 introduces the `@package` header and make `_group_` the recommended choice without changing the default.
+If you omit the `@package` header you will receive a warning.
+ - Hydra 1.1 will change the default to `_group_`
+
+The `@package` header is described in detail in [this design doc](https://docs.google.com/document/d/10aU2axeJj_p_iv1Hp9VulYLL5qyvhErg89MKFGbkZO4/edit?usp=sharing).
+
+### The config header format
+The config header format is a generic dictionary style block at the top of your config files.
 ```yaml
 # @oompa a.b.c
 # @loompa: yup

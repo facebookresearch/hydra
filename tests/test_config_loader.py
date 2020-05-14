@@ -4,9 +4,9 @@ from typing import Any, List
 
 import pkg_resources
 import pytest
-from omegaconf import MISSING, ListConfig, OmegaConf, ValidationError, open_dict
+from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 
-from hydra._internal.config_loader_impl import ConfigLoaderImpl
+from hydra._internal.config_loader_impl import ConfigLoaderImpl, DefaultElement
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -40,7 +40,11 @@ hydra_load_list: List[LoadTrace] = [
 
 
 @pytest.mark.parametrize(
-    "path", ["file://hydra/test_utils/configs", "pkg://hydra.test_utils.configs"]
+    "path",
+    [
+        pytest.param("file://hydra/test_utils/configs", id="file"),
+        pytest.param("pkg://hydra.test_utils.configs", id="pkg"),
+    ],
 )
 class TestConfigLoader:
     def test_load_configuration(self, path: str) -> None:
@@ -97,6 +101,52 @@ class TestConfigLoader:
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {"foo": 20}
+
+    @pytest.mark.parametrize(  # type: ignore
+        "overrides,expected",
+        [
+            pytest.param([], {"foo": 10, "pkg1": {"bar": 100}}, id="no_overrides"),
+            pytest.param(
+                ["group1@=file1"],
+                {"foo": 10, "pkg1": {"bar": 100}},
+                id="unset_unspecified_is_noop",
+            ),
+            pytest.param(
+                ["group1@group1_pkg=file1"],
+                {"group1_pkg": {"foo": 10}, "pkg1": {"bar": 100}},
+                id="override_unspecified_pkg_of_default",
+            ),
+            pytest.param(
+                ["group2@pkg2=file1"],
+                {"foo": 10, "pkg2": {"bar": 100}},
+                id="override_specified_pkg_in_default",
+            ),
+            pytest.param(
+                ["group2@=file1"],
+                {"foo": 10, "bar": 100},
+                id="unset_specified_pkg_in_defaults",
+            ),
+            pytest.param(
+                ["group2@_group_=file1"],
+                {"foo": 10, "group2": {"bar": 100}},
+                id="unset_specified_pkg_in_defaults",
+            ),
+        ],
+    )
+    def test_load_changing_group_and_package_in_default(
+        self, path: str, overrides: List[str], expected: Any
+    ) -> None:
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+        cfg = config_loader.load_configuration(
+            config_name="compose_pkg_override.yaml", overrides=overrides
+        )
+        with open_dict(cfg):
+            del cfg["hydra"]
+        assert cfg == expected
+
+    # TODO: test overriding of a key with @ (like an email)
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -291,35 +341,47 @@ class TestConfigLoader:
     "in_primary,in_merged,expected",
     [
         ([], [], []),
-        ([{"a": 10}], [], [{"a": 10}]),
-        ([{"a": 10}, {"b": 20}], [{"a": 20}], [{"a": 20}, {"b": 20}]),
+        (
+            [DefaultElement(config_group="a", config_name="aa")],
+            [],
+            [DefaultElement(config_group="a", config_name="aa")],
+        ),
+        (
+            [DefaultElement(config_group="a", config_name="aa")],
+            [DefaultElement(config_group="b", config_name="bb")],
+            [
+                DefaultElement(config_group="a", config_name="aa"),
+                DefaultElement(config_group="b", config_name="bb"),
+            ],
+        ),
         (
             [
-                {"hydra_logging": "default"},
-                {"job_logging": "default"},
-                {"launcher": "basic"},
-                {"sweeper": "basic"},
+                DefaultElement(config_group="hydra_logging", config_name="default"),
+                DefaultElement(config_group="job_logging", config_name="default"),
+                DefaultElement(config_group="launcher", config_name="basic"),
+                DefaultElement(config_group="sweeper", config_name="basic"),
             ],
-            [{"optimizer": "nesterov"}, {"launcher": "basic"}],
             [
-                {"hydra_logging": "default"},
-                {"job_logging": "default"},
-                {"launcher": "basic"},
-                {"sweeper": "basic"},
-                {"optimizer": "nesterov"},
+                DefaultElement(config_group="optimizer", config_name="nesterov"),
+                DefaultElement(config_group="launcher", config_name="basic"),
+            ],
+            [
+                DefaultElement(config_group="hydra_logging", config_name="default"),
+                DefaultElement(config_group="job_logging", config_name="default"),
+                DefaultElement(config_group="launcher", config_name="basic"),
+                DefaultElement(config_group="sweeper", config_name="basic"),
+                DefaultElement(config_group="optimizer", config_name="nesterov"),
             ],
         ),
     ],
 )
 def test_merge_default_lists(
-    in_primary: List[Any], in_merged: List[Any], expected: List[Any]
+    in_primary: List[DefaultElement],
+    in_merged: List[DefaultElement],
+    expected: List[DefaultElement],
 ) -> None:
-    primary = OmegaConf.create(in_primary)
-    merged = OmegaConf.create(in_merged)
-    assert isinstance(primary, ListConfig)
-    assert isinstance(merged, ListConfig)
-    ConfigLoaderImpl._merge_default_lists(primary, merged)
-    assert primary == expected
+    ConfigLoaderImpl._merge_default_lists(in_primary, in_merged)
+    assert in_primary == expected
 
 
 @pytest.mark.parametrize(  # type:ignore
@@ -331,7 +393,7 @@ def test_merge_default_lists(
         ("config.yaml", ["hydra/launcher=null"]),
         # remove from both
         ("removing-hydra-launcher-default.yaml", ["hydra/launcher=null"]),
-        # second overrides removes
+        # # second overrides removes
         ("config.yaml", ["hydra/launcher=submitit", "hydra/launcher=null"]),
     ],
 )
@@ -592,3 +654,37 @@ def test_job_env_copy() -> None:
             config_name=None, overrides=["hydra.job.env_copy=[zonk]"]
         )
         assert cfg.hydra.job.env_set == {"zonk": "123456"}
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,expected",
+    [
+        (
+            [],
+            {
+                "optimizer": {"type": "adam", "lr": 0.1, "beta": 0.01},
+                "dataset": {"name": "imagenet", "path": "/datasets/imagenet"},
+                "adam_imagenet": True,
+            },
+        ),
+        (
+            ["optimizer=nesterov"],
+            {
+                "optimizer": {"type": "nesterov", "lr": 0.001},
+                "dataset": {"name": "imagenet", "path": "/datasets/imagenet"},
+                "nesterov_imagenet": True,
+            },
+        ),
+    ],
+)
+def test_complex_defaults(overrides: Any, expected: Any) -> None:
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path(
+            "tests/test_apps/sweep_complex_defaults/conf"
+        )
+    )
+
+    cfg = config_loader.load_configuration(config_name="config", overrides=overrides)
+    with open_dict(cfg):
+        del cfg["hydra"]
+    assert cfg == expected

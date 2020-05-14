@@ -31,11 +31,15 @@ class ConfigRepository:
         )
         return source
 
-    def load_config(self, config_path: str) -> Optional[ConfigResult]:
+    def load_config(
+        self, config_path: str, package_override: Optional[str] = None
+    ) -> Optional[ConfigResult]:
         source = self._find_config(config_path=config_path)
         ret = None
         if source is not None:
-            ret = source.load_config(config_path=config_path)
+            ret = source.load_config(
+                config_path=config_path, package_override=package_override
+            )
             # if this source is THE schema source, flag the result as coming from it.
             ret.is_schema_source = (
                 source.__class__.__name__ == "StructuredConfigSource"
