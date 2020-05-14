@@ -39,7 +39,9 @@ class ConfigSourceExample(ConfigSource):
     def scheme() -> str:
         return "example"
 
-    def load_config(self, config_path: str) -> ConfigResult:
+    def load_config(
+        self, config_path: str, package_override: Optional[str] = None
+    ) -> ConfigResult:
         config_path = self._normalize_file_name(config_path)
         if config_path not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
@@ -47,7 +49,9 @@ class ConfigSourceExample(ConfigSource):
         if "package" not in header:
             header["package"] = ""
 
-        self._update_package_in_header(header, config_path)
+        self._update_package_in_header(
+            header, config_path, package_override=package_override
+        )
         cfg = OmegaConf.create(self.configs[config_path])
         return ConfigResult(
             config=self._embed_config(cfg, header["package"]),
