@@ -3,9 +3,13 @@
 Configuration loader
 """
 import copy
+from collections import defaultdict
+
+import re
+
 import os
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Dict
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf.errors import OmegaConfBaseException
@@ -21,11 +25,48 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
 @dataclass
+class ParsedOverride:
+    key: str
+    pkg1: str
+    pkg2: str
+    value: str
+
+    def _get_subject_package(self):
+        return self.pkg1 if self.pkg2 is None else self.pkg2
+
+    def _is_package_rename(self):
+        return self.pkg1 is not None and self.pkg2 is not None
+
+    def _is_default_deletion(self):
+        return self.value == "null"
+
+
+@dataclass
 class DefaultElement:
     config_group: Optional[str]
     config_name: str
     optional: bool = False
     package: Optional[str] = None
+
+    def __repr__(self):
+        ret = ""
+        if self.config_group is not None:
+            ret += self.config_group
+        if self.package is not None:
+            ret += f"@{self.package}"
+        ret += f"={self.config_name}"
+        if self.optional:
+            ret += " (optional)"
+        return ret
+
+
+@dataclass
+class IndexedDefaultElement:
+    idx: int
+    default: DefaultElement
+
+    def __repr__(self):
+        return f"#{self.idx} : {self.default}"
 
 
 class ConfigLoaderImpl(ConfigLoader):
@@ -94,23 +135,18 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults.append(DefaultElement(config_group=None, config_name="__SELF__"))
         split_at = len(defaults)
 
-        self._merge_default_lists(defaults, job_defaults)
+        self._combine_default_lists(defaults, job_defaults)
         consumed = self._apply_overrides_to_defaults(overrides, defaults)
 
-        consumed_free_job_defaults = self._append_free_config_group_overrides_to_defaults(
-            defaults, overrides
-        )
-
         # Load and defaults and merge them into cfg
-        cfg = self._merge_defaults(
+        cfg = self._merge_defaults_into_config(
             hydra_cfg, job_cfg, job_cfg_load_trace, defaults, split_at
         )
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
         # Merge all command line overrides after enabling strict flag
-        all_consumed = consumed + consumed_free_job_defaults
-        remaining_overrides = [x for x in overrides if x not in all_consumed]
+        remaining_overrides = [x for x in overrides if x not in consumed]
         try:
             merged = OmegaConf.merge(cfg, OmegaConf.from_dotlist(remaining_overrides))
             assert isinstance(merged, DictConfig)
@@ -118,7 +154,7 @@ class ConfigLoaderImpl(ConfigLoader):
         except OmegaConfBaseException as ex:
             raise HydraException("Error merging overrides") from ex
 
-        remaining = consumed + consumed_free_job_defaults + remaining_overrides
+        remaining = consumed + remaining_overrides
 
         def is_hydra(x: str) -> bool:
             return x.startswith("hydra.") or x.startswith("hydra/")
@@ -176,33 +212,62 @@ class ConfigLoaderImpl(ConfigLoader):
         """
         return copy.deepcopy(self.all_config_checked)
 
-    @staticmethod
     def _apply_overrides_to_defaults(
-        overrides: List[str], defaults: List[DefaultElement]
+        self, overrides: List[str], defaults: List[DefaultElement]
     ) -> List[str]:
         consumed = []
-        key_to_idx = {}
-        for idx, d in enumerate(defaults):
-            if d.config_group is not None:
-                key_to_idx[d.config_group] = idx
-        for override in copy.deepcopy(overrides):
-            group, package, value = ConfigLoaderImpl._split_override(override)
-            if group in key_to_idx:
-                if "," in value:
-                    # If this is a multirun config (comma separated list), flag the default to prevent it from being
-                    # loaded until we are constructing the config for individual jobs.
-                    value = "_SKIP_"
 
-                if value == "null":
-                    del defaults[key_to_idx[group]]
-                else:
-                    default = defaults[key_to_idx[group]]
-                    default.config_name = value
-                    if package is not None:
-                        default.package = package
+        key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
 
-                overrides.remove(override)
-                consumed.append(override)
+        def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
+            assert override.key == default.config_group
+            if override._is_default_deletion():
+                return override._get_subject_package() == default.package
+            elif override._is_package_rename():
+                return override.pkg1 == default.package
+            else:
+                return default.package is None
+
+        for idx, default in enumerate(defaults):
+            if default.config_group is not None:
+                key_to_defaults[default.config_group].append(
+                    IndexedDefaultElement(idx=idx, default=default)
+                )
+        # copying overrides list because the loop is mutating it.
+        for override_str in copy.deepcopy(overrides):
+            override = ConfigLoaderImpl._parse_override(override_str)
+            if not self.exists_in_search_path(override.key):
+                continue
+
+            if "," in override.value:
+                # If this is a multirun config (comma separated list), flag the default to prevent it from being
+                # loaded until we are constructing the config for individual jobs.
+                override.value = "_SKIP_"
+
+            if override.value == "null":
+                for pair in key_to_defaults[override.key]:
+                    if is_matching(override, pair.default):
+                        del defaults[key_to_defaults[override.key][0].idx]
+            else:
+                found = False
+                for pair in key_to_defaults[override.key]:
+                    if is_matching(override, pair.default):
+                        found = True
+                        default = defaults[key_to_defaults[override.key][0].idx]
+                        default.config_name = override.value
+                        if override.pkg1 is not None:
+                            default.package = override._get_subject_package()
+                if not found:
+                    defaults.append(
+                        DefaultElement(
+                            config_group=override.key,
+                            config_name=override.value,
+                            package=override._get_subject_package(),
+                        )
+                    )
+
+            consumed.append(override_str)
+            overrides.remove(override_str)
         return consumed
 
     @staticmethod
@@ -220,53 +285,33 @@ class ConfigLoaderImpl(ConfigLoader):
         return group, package
 
     @staticmethod
-    def _split_override(override: str) -> Tuple[str, Optional[str], str]:
-        idx = override.find("@")
-        if idx == -1:
-            # key=value
-            group, value = split_key_val(override)
-            package = None
+    def _parse_override(override: str) -> ParsedOverride:
+        # forms:
+        # key=value
+        # key@pkg=value
+        # key@src_pkg:dst_pkg=value
+        # regex code and tests: https://regex101.com/r/LiV6Rf/10
+
+        regex = r"^(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?=(?P<value>.*)$"
+        matches = re.search(regex, override)
+
+        if matches:
+            key = matches.group("key")
+            pkg1 = matches.group("pkg1")
+            pkg2 = matches.group("pkg2")
+            value = matches.group("value")
+            return ParsedOverride(key, pkg1, pkg2, value)
         else:
-            # key@package=value
-            group = override[0:idx]
-            eq_idx = override.find("=", idx)
-            if eq_idx == -1:
-                raise ValueError(
-                    f"'{override}' not a valid override, expecting key=value or key@package=value format"
-                )
-
-            package = override[idx + 1 : eq_idx]
-            value = override[eq_idx + 1 :]
-
-        return group, package, value
-
-    def _append_free_config_group_overrides_to_defaults(
-        self, defaults: List[DefaultElement], overrides: List[str]
-    ) -> List[str]:
-        consumed = []
-        for override in copy.copy(overrides):
-            group, package, value = self._split_override(override)
-            if self.exists_in_search_path(group):
-                # Do not add multirun configs into defaults, those will be added to the defaults
-                # during the runs after list is broken into items
-                if "," not in value:
-                    if package is None:
-                        defaults.append(
-                            DefaultElement(config_group=group, config_name=value)
-                        )
-                    else:
-                        defaults.append(
-                            DefaultElement(
-                                config_group=group, config_name=value, package=package
-                            )
-                        )
-                overrides.remove(override)
-                consumed.append(override)
-
-        return consumed
+            raise HydraException(
+                f"Error parsing command line override : '{override}'\n"
+                f"Accepted forms:\n"
+                f"\tkey=value\n"
+                f"\tkey@dest_pkg=value\n"
+                f"\tkey@src_pkg:dest_pkg=value"
+            )
 
     @staticmethod
-    def _merge_default_lists(
+    def _combine_default_lists(
         primary: List[DefaultElement], merged_list: List[DefaultElement]
     ) -> None:
         key_to_idx = {}
@@ -411,7 +456,7 @@ class ConfigLoaderImpl(ConfigLoader):
         except OmegaConfBaseException as ex:
             raise HydraException(f"Error merging {config_group}={name}") from ex
 
-    def _merge_defaults(
+    def _merge_defaults_into_config(
         self,
         hydra_cfg: DictConfig,
         job_cfg: DictConfig,
@@ -419,7 +464,7 @@ class ConfigLoaderImpl(ConfigLoader):
         defaults: List[DefaultElement],
         split_at: int,
     ) -> DictConfig:
-        def merge_defaults(
+        def merge_defaults_list_into_config(
             merged_cfg: DictConfig, def_list: List[DefaultElement]
         ) -> DictConfig:
             # Reconstruct the defaults to make use of the interpolation capabilities of OmegaConf.
@@ -472,8 +517,8 @@ class ConfigLoaderImpl(ConfigLoader):
                 system_list.append(default)
             else:
                 user_list.append(default)
-        hydra_cfg = merge_defaults(hydra_cfg, system_list)
-        hydra_cfg = merge_defaults(hydra_cfg, user_list)
+        hydra_cfg = merge_defaults_list_into_config(hydra_cfg, system_list)
+        hydra_cfg = merge_defaults_list_into_config(hydra_cfg, user_list)
 
         if "defaults" in hydra_cfg:
             del hydra_cfg["defaults"]
