@@ -3,13 +3,11 @@
 Configuration loader
 """
 import copy
-from collections import defaultdict
-
-import re
-
 import os
+import re
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, List, Optional, Tuple, Dict
+from typing import Any, Dict, List, Optional, Tuple
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf.errors import OmegaConfBaseException
@@ -19,7 +17,7 @@ from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.errors import HydraException
 from hydra.core.object_type import ObjectType
-from hydra.core.utils import JobRuntime, get_overrides_dirname, split_key_val
+from hydra.core.utils import JobRuntime, get_overrides_dirname
 from hydra.errors import MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
@@ -27,17 +25,17 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 @dataclass
 class ParsedOverride:
     key: str
-    pkg1: str
-    pkg2: str
+    pkg1: Optional[str]
+    pkg2: Optional[str]
     value: str
 
-    def _get_subject_package(self):
+    def _get_subject_package(self) -> Optional[str]:
         return self.pkg1 if self.pkg2 is None else self.pkg2
 
-    def _is_package_rename(self):
+    def _is_package_rename(self) -> bool:
         return self.pkg1 is not None and self.pkg2 is not None
 
-    def _is_default_deletion(self):
+    def _is_default_deletion(self) -> bool:
         return self.value == "null"
 
 
@@ -48,7 +46,7 @@ class DefaultElement:
     optional: bool = False
     package: Optional[str] = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         ret = ""
         if self.config_group is not None:
             ret += self.config_group
@@ -65,7 +63,7 @@ class IndexedDefaultElement:
     idx: int
     default: DefaultElement
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"#{self.idx} : {self.default}"
 
 
@@ -215,10 +213,6 @@ class ConfigLoaderImpl(ConfigLoader):
     def _apply_overrides_to_defaults(
         self, overrides: List[str], defaults: List[DefaultElement]
     ) -> List[str]:
-        consumed = []
-
-        key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
-
         def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
             assert override.key == default.config_group
             if override._is_default_deletion():
@@ -227,6 +221,24 @@ class ConfigLoaderImpl(ConfigLoader):
                 return override.pkg1 == default.package
             else:
                 return default.package is None
+
+        def find_matches(
+            key_to_defaults: Dict[str, List[IndexedDefaultElement]],
+            override: ParsedOverride,
+        ) -> List[IndexedDefaultElement]:
+            matches: List[IndexedDefaultElement] = []
+            for idefault in key_to_defaults[override.key]:
+                if is_matching(override, idefault.default):
+                    if override._is_package_rename():
+                        for candidate in key_to_defaults[override.key]:
+                            if candidate.default.package == override.pkg1:
+                                matches.append(candidate)
+                    else:
+                        matches.append(idefault)
+            return matches
+
+        consumed = []
+        key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
 
         for idx, default in enumerate(defaults):
             if default.config_group is not None:
@@ -245,19 +257,20 @@ class ConfigLoaderImpl(ConfigLoader):
                 override.value = "_SKIP_"
 
             if override.value == "null":
-                for pair in key_to_defaults[override.key]:
-                    if is_matching(override, pair.default):
-                        del defaults[key_to_defaults[override.key][0].idx]
+                matches = find_matches(key_to_defaults, override)
+                for pair in matches:
+                    del defaults[pair.idx]
             else:
-                found = False
-                for pair in key_to_defaults[override.key]:
-                    if is_matching(override, pair.default):
-                        found = True
-                        default = defaults[key_to_defaults[override.key][0].idx]
-                        default.config_name = override.value
-                        if override.pkg1 is not None:
-                            default.package = override._get_subject_package()
-                if not found:
+                matches = find_matches(key_to_defaults, override)
+
+                for match in matches:
+                    default = match.default
+                    default.config_name = override.value
+                    if override.pkg1 is not None:
+                        default.package = override._get_subject_package()
+                if len(matches) == 0 and not (
+                    override._is_package_rename() or override._is_default_deletion()
+                ):
                     defaults.append(
                         DefaultElement(
                             config_group=override.key,
@@ -292,7 +305,10 @@ class ConfigLoaderImpl(ConfigLoader):
         # key@src_pkg:dst_pkg=value
         # regex code and tests: https://regex101.com/r/LiV6Rf/10
 
-        regex = r"^(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?=(?P<value>.*)$"
+        regex = (
+            r"^(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)"
+            r"(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?=(?P<value>.*)$"
+        )
         matches = re.search(regex, override)
 
         if matches:

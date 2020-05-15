@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass, asdict
-from typing import Any, List, Tuple, Optional
+from dataclasses import dataclass
+from typing import Any, List
 
 import pkg_resources
 import pytest
@@ -157,14 +157,19 @@ class TestConfigLoader:
                 id="append",
             ),
             pytest.param(
-                ["group1@pkg1:pkg4=option1"],
-                {"pkg4": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
-                id="change_package",
-            ),
-            pytest.param(
                 ["group1@pkg1=null"],
                 {"pkg2": {"group1_option1": True}},
                 id="delete_package",
+            ),
+            pytest.param(
+                ["group1@pkg1:new_pkg=option1"],
+                {"new_pkg": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
+                id="change_pkg1",
+            ),
+            pytest.param(
+                ["group1@pkg2:new_pkg=option1"],
+                {"pkg1": {"group1_option1": True}, "new_pkg": {"group1_option1": True}},
+                id="change_pkg2",
             ),
         ],
     )
@@ -180,8 +185,6 @@ class TestConfigLoader:
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == expected
-
-    # TODO: test overriding of a key with @ (like an email)
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -741,3 +744,21 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 def test_parse_override(override: str, expected: ParsedOverride) -> None:
     ret = ConfigLoaderImpl._parse_override(override)
     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides, expected",
+    [
+        # interpreted as a dotlist
+        (["user@hostname=active"], {"user@hostname": "active"}),
+        (["user@hostname.com=active"], {"user@hostname": {"com": "active"}}),
+    ],
+)
+def test_override_config_key_with_at_symbol(
+    overrides: List[str], expected: Any
+) -> None:
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    cfg = config_loader.load_configuration(config_name=None, overrides=overrides)
+    with open_dict(cfg):
+        del cfg["hydra"]
+    assert cfg == expected
