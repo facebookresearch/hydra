@@ -1,15 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# import re
 import re
 import sys
 from pathlib import Path
-from subprocess import PIPE, Popen, check_output
+from subprocess import check_output
 from typing import Any
 
 import pytest
 from omegaconf import OmegaConf
 
 from hydra.test_utils.test_utils import chdir_hydra_root
+
+from . import run_with_error
 
 chdir_hydra_root()
 
@@ -22,14 +23,6 @@ def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
     ]
     result = check_output(cmd)
     assert result.decode("utf-8").rstrip() == "Host: localhost, port: 3306"
-
-
-def run_with_error(cmd: Any) -> str:
-    with Popen(cmd, stdout=PIPE, stderr=PIPE) as p:
-        _stdout, stderr = p.communicate()
-        err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
-        assert p.returncode == 1
-    return err
 
 
 def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> None:
