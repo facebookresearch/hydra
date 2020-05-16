@@ -37,21 +37,20 @@ This version may contain nuts and bugs and be incompatible with existing plugins
 
 
 ### Basic example
-Configuration file: `config.yaml`
-
-```yaml
+Config:
+```yaml title="config.yaml"
+# @package: _global_
 db:
   driver: mysql
   user: omry
   pass: secret
 ```
-
-Python file: `my_app.py`
-```python {4-6}
+Application:
+```python {4-6} title="my_app.py"
 import hydra
 from omegaconf import DictConfig
 
-@hydra.main(config_path="config.yaml")
+@hydra.main(config_name="config")
 def my_app(cfg : DictConfig) -> None:
     print(cfg.pretty())
 
@@ -90,13 +89,11 @@ The directory structure of our application now looks like:
 └── my_app.py
 ```
 
-Here is the new `config.yaml`
-```yaml
+Here is the new config:
+```yaml title="config.yaml"
+# @package: _global_
 defaults:
   - db: mysql
-# some other config options in your config file.
-website:
-  domain: example.com
 ```
 
 `defaults` is a special directive telling Hydra to use db/mysql.yaml when composing the configuration object.

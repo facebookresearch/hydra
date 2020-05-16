@@ -17,7 +17,7 @@ Creating 18 files is not a good idea, if you wanted to make a change such as ren
 
 Composition to the rescue! To solve this with Hydra, add a config group for each new dimension (`schema` and `ui`):
 
-```text
+``` text title="Directory layout"
 ├── conf
 │   ├── config.yaml
 │   ├── db
@@ -33,8 +33,7 @@ Composition to the rescue! To solve this with Hydra, add a config group for each
 └── my_app.py
 ```
 
-Configuration file: `config.yaml`
-```yaml
+```yaml title="config.yaml"
 defaults:
   - db: mysql
   - ui: full

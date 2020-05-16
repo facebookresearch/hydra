@@ -34,7 +34,7 @@ def test_tutorial_simple_cli_app(
 ) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/1_simple_cli_app/my_app.py",
+        "examples/tutorials/basic/1_simple_cli_app/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -45,7 +45,7 @@ def test_tutorial_simple_cli_app(
 def test_tutorial_working_directory(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/8_working_directory/my_app.py",
+        "examples/tutorials/basic/8_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = subprocess.check_output(cmd)
@@ -62,7 +62,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
 def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/9_logging/my_app.py",
+        "examples/tutorials/basic/9_logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -87,7 +87,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
 def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/2_config_file/my_app.py",
+        "examples/tutorials/basic/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -116,7 +116,7 @@ def test_tutorial_config_file_bad_key(
     with expected:
         cmd = [
             sys.executable,
-            "examples/tutorial/2_config_file/my_app.py",
+            "examples/tutorials/basic/2_config_file/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
         ]
         cmd.extend(args)
@@ -147,7 +147,7 @@ def test_tutorial_config_groups(
 ) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/3_config_groups/my_app.py",
+        "examples/tutorials/basic/3_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -186,7 +186,7 @@ def test_tutorial_config_groups(
 def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorial/4_defaults/my_app.py",
+        "examples/tutorials/basic/4_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
@@ -252,7 +252,7 @@ def test_composition_config_example(
     restore_singletons: Any, task_runner: TTaskRunner
 ) -> None:
     with task_runner(
-        calling_file="examples/tutorial/5_composition/my_app.py",
+        calling_file="examples/tutorials/basic/5_composition/my_app.py",
         calling_module=None,
         config_path="conf",
         config_name="config.yaml",
@@ -285,7 +285,7 @@ def test_composition_config_example(
 
 def test_sweeping_example(restore_singletons: Any, sweep_runner: TSweepRunner) -> None:
     with sweep_runner(
-        calling_file="examples/tutorial/5_composition/my_app.py",
+        calling_file="examples/tutorials/basic/5_composition/my_app.py",
         calling_module=None,
         config_path="conf",
         config_name="config.yaml",

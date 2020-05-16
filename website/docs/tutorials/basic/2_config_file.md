@@ -7,8 +7,13 @@ sidebar_label: Configuration file
 It can get tedious to type all those command line arguments every time.
 Fix it by creating a configuration file in YAML format.
 
-Configuration file: `config.yaml`
-```yaml
+``` text title="Directory layout"
+$ tree
+├── config.yaml
+└── my_app.py
+```
+
+```yaml title="config.yaml"
 # @package: _group_
 db: 
   driver: mysql
@@ -18,19 +23,19 @@ db:
 
 <div class="alert alert--info" role="alert">
 The <b>@package</b> directive is new in Hydra 1.0.
-This is an advanced topic that we will only touch briefly in this tutorial.
-You can learn more about it <a href="../../advanced/config_header">here</a>.
+This is an advanced topic and we will not cover it in this tutorial, You can learn more about 
+it <a href="../../advanced/package_header">here</a>.<br/>
+For now just put <b># @package: _group_</b> at the top of your config files.
 </div><br/>
 
-Specify the config file by passing a `config_path` parameter to the `@hydra.main()` decorator.
-The location of the `config_path` is relative to your Python file.
-
-Python file: `my_app.py`
-```python
-@hydra.main(config_path='config.yaml')
+Specify the config name by passing a `config_name` parameter to the `@hydra.main()` decorator.
+```python title="my_app.py" {1}
+@hydra.main(config_name='config')
 def my_app(cfg):
     print(cfg.pretty())
 ```
+The config name is the name of your config file without the `.yaml` extension.
+This config should be near your Python file. we will learn more about how Hydra find config files later.
 
 `config.yaml` is loaded automatically when you run your application
 ```yaml
@@ -42,7 +47,7 @@ db:
 ```
 
 You can override values in the loaded config from the command line:
-```yaml
+```yaml {1,4-5}
 $ python my_app.py db.user=root db.pass=1234
 db:
   driver: mysql
@@ -56,10 +61,10 @@ It is enabled by default once you specify a configuration file, and can help wit
 
 #### Accessing missing fields in the code
 In the example below, there is a typo in `db.driver` in the code.
-This will result in an exception.
+This will result in an error.
 
 ```python
-@hydra.main(config_path='config.yaml')
+@hydra.main(config_name='config')
 def my_app(cfg : DictConfig) -> None:
     print(cfg.db.drover)  # typo: cfg.db.driver. Raises exception
 ```
@@ -70,16 +75,18 @@ In the example below, there is a typo in `db.driver` in the command line.
 This will result in an exception.
 ```text
 $ python my_app.py db.drover=mariadb
-Traceback (most recent call last):
-...
-AttributeError: Accessing unknown key in a struct : db.drover
+Error merging overrides
+Key 'drover' in not in struct
+        full_key: db.drover
+        reference_type=Optional[Dict[Any, Any]]
+        object_type=dict
 ```
 With `Strict mode` disabled, the `drover` field will be added to the `db` config node.
 
 #### Disabling strict mode
 It is not recommended to disable strict mode. You can do it by passing `strict=False` to `hydra.main()` 
 ```python
-@hydra.main(config_path='config.yaml', strict=False)
+@hydra.main(config_name='config', strict=False)
 def my_app(cfg : DictConfig) -> None:
     cfg.db.port = 3306 # Okay
 ```

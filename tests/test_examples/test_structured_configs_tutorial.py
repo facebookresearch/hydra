@@ -18,7 +18,7 @@ chdir_hydra_root()
 def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/1_minimal/my_app.py",
+        "examples/tutorials/structured_configs/1_minimal/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
@@ -28,7 +28,7 @@ def test_structured_configs_1_basic_run(tmpdir: Path) -> None:
 def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/1_minimal/my_app_type_error.py",
+        "examples/tutorials/structured_configs/1_minimal/my_app_type_error.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
 
@@ -43,7 +43,7 @@ def test_structured_configs_1_basic_run_with_override_error(tmpdir: Path) -> Non
 def test_structured_configs_1_basic_override(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/1_minimal/my_app.py",
+        "examples/tutorials/structured_configs/1_minimal/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         "port=9090",
     ]
@@ -54,7 +54,7 @@ def test_structured_configs_1_basic_override(tmpdir: Path) -> None:
 def test_structured_configs_1_basic_override_type_error(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/1_minimal/my_app.py",
+        "examples/tutorials/structured_configs/1_minimal/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         "port=foo",
     ]
@@ -71,7 +71,7 @@ def test_structured_configs_1_basic_override_type_error(tmpdir: Path) -> None:
 def test_structured_configs_2_nesting_configs__with_dataclass(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/2_nesting_configs/nesting_with_dataclass.py",
+        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_dataclass.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
@@ -81,7 +81,7 @@ def test_structured_configs_2_nesting_configs__with_dataclass(tmpdir: Path) -> N
 def test_structured_configs_2_nesting_configs__with_node_path(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/2_nesting_configs/nesting_with_package.py",
+        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_package.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
@@ -91,7 +91,7 @@ def test_structured_configs_2_nesting_configs__with_node_path(tmpdir: Path) -> N
 def test_structured_configs_2_nesting_configs__with_ad_hoc_node(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/2_nesting_configs/nesting_with_ad_hoc_node.py",
+        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_ad_hoc_node.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
@@ -110,7 +110,7 @@ def test_structured_configs_3_config_groups(
 ) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/3_config_groups/my_app.py",
+        "examples/tutorials/structured_configs/3_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(overrides)
@@ -122,7 +122,7 @@ def test_structured_configs_3_config_groups(
 def test_structured_configs_3_config_groups_with_inheritance(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/3_config_groups/my_app_with_inheritance.py",
+        "examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py",
         "hydra.run.dir=" + str(tmpdir),
         "db=mysql",
     ]
@@ -133,7 +133,7 @@ def test_structured_configs_3_config_groups_with_inheritance(tmpdir: Path) -> No
 def test_structured_configs_4_defaults(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/4_defaults/my_app.py",
+        "examples/tutorials/structured_configs/4_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
@@ -151,7 +151,7 @@ def test_structured_configs_4_defaults(tmpdir: Path) -> None:
 def test_structured_configs_5_structured_config_schema(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/structured_configs_tutorial/5_structured_config_schema/my_app.py",
+        "examples/tutorials/structured_configs/5_structured_config_schema/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)

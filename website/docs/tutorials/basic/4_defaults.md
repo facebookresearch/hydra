@@ -11,15 +11,15 @@ You can add a `defaults` list into your config file.
 
 ## Config group defaults
 
-Configuration file: `config.yaml`
-```yaml
+```yaml title="config.yaml"
+# @package: _group_
 defaults:
   - db: mysql
 ```
 
-Remember to specify `config.yaml` as the `config_path`.
+Remember to specify `config` as the `config_name`.
 ```python
-@hydra.main(config_path='conf/config.yaml')
+@hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
@@ -45,7 +45,7 @@ db:
   user: postgre_user
 ```
 
-You can prevent a default from being loaded by assigning `null` to it in the command line:
+You can remove a default entry from the defaults list by assigning `null` to it in the command line:
 ```yaml
 $ python my_app.py db=null
 {}

@@ -221,7 +221,7 @@ def chdir_plugin_root() -> None:
     _chdir_to_dir_containing(target="setup.py")
 
 
-def _chdir_to_dir_containing(target: str, max_up: int = 4) -> None:
+def _chdir_to_dir_containing(target: str, max_up: int = 5) -> None:
     cur = os.getcwd()
     while not os.path.exists(os.path.join(cur, target)) and max_up > 0:
         cur = os.path.relpath(os.path.join(cur, ".."))
