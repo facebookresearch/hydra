@@ -3,13 +3,13 @@ id: config_groups
 title: Config groups
 sidebar_label: Config groups
 ---
-This is the most important concept in Hydra.
+This is one of the most important concepts in Hydra.
 
 Suppose you want to benchmark PostgreSQL and MySQL for your application.
 When running of the application, you will need either MySQL or PostgreSQL - but not both.
 
 The way to do this with Hydra is with a **Config group**.
-A config group is a mutually exclusive set of configuration files.
+A config group is a mutually exclusive set of configurations that are located together.
 
 To create a config group, create a directory. e.g. `db` to hold a file for each database configuration alternative. 
 Since we are expecting to have multiple config groups, we will proactively move all the configuration files 
@@ -21,13 +21,9 @@ Python file: `my_app.py`
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
+`config_path` can specify the root directory for your configuration files relative to the declaring Python file.
 
-
-`config_path` can specify your config file as in the [previous command line example](./1_simple_cli_app.md), or the root directory for your configuration files.
-If a config file is specified, its directory is the root directory.
-
-The directory structure of our application now looks like:
-```text
+``` text title="Directory layout"
 ├── conf
 │   └── db
 │       ├── mysql.yaml
@@ -35,7 +31,7 @@ The directory structure of our application now looks like:
 └── my_app.py
 ```
 
-If you run my_app.py, it prints an empty config because no configuration was specified.
+If you run my_app.py, it prints an empty config because no configuration was specified through `config_name`.
 ```yaml
 $ python my_app.py
 {}
@@ -67,17 +63,4 @@ You can compose your configuration object from multiple configuration files.
 For example, you can add a second config group controlling another aspect of your application:
 ```
 $ python my_app.py db=postgresql walk=depth_first
-```
-
-### Overriding the package
-You can override the package defined in the config file via the command line with the syntax `group@package=choice`,
-for example:
-
-```yaml
-$ python examples/tutorial/3_config_groups/my_app.py db@foo.bar=mysql 
-foo:
-  bar:
-    driver: mysql
-    user: omry
-    pass: secret
 ```
