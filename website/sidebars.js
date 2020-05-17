@@ -10,22 +10,28 @@ module.exports = {
             type: 'category',
             label: 'Basic Tutorial',
             items: [
-                'tutorials/basic/simple_cli',
-                'tutorials/basic/config_file',
-                'tutorials/basic/using_config',
-                'tutorials/basic/strict_mode',
-                'tutorials/basic/config_groups',
-                'tutorials/basic/defaults',
-                'tutorials/basic/composition',
-                'tutorials/basic/tab_completion',
                 {
                     type: 'category',
-                    label: 'Running Hydra Applications',
+                    label: 'Your first Hydra app',
                     items: [
+                        'tutorials/basic/simple_cli',
+                        'tutorials/basic/config_file',
+                        'tutorials/basic/using_config',
+                        'tutorials/basic/config_groups',
+                        'tutorials/basic/defaults',
+                        'tutorials/basic/composition',
+                    ]
+                },
+                {
+                    type: 'category',
+                    label: 'Running your Hydra app',
+                    items: [
+                        'tutorials/basic/strict_mode',
                         'tutorials/basic/multi-run',
                         'tutorials/basic/working_directory',
                         'tutorials/basic/logging',
                         'tutorials/basic/debugging',
+                        'tutorials/basic/tab_completion',
                     ]
                 },
 

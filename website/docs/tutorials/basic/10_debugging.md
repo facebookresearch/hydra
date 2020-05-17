@@ -6,7 +6,7 @@ sidebar_label: Debugging
 Hydra provides a few options to improve debuggability.
 
 ### Printing the configuration
-Print the config that would be used for a application without really running your function by adding  `--cfg` or `-c` to your command line.
+Print the config for your app without running your function by adding `--cfg` or `-c` to the command line.
 
 The `--cfg` option takes one argument indicating which part of the config to print:
 * `job` : Your config
@@ -15,30 +15,23 @@ The `--cfg` option takes one argument indicating which part of the config to pri
 
 ```yaml
 # A normal run:
-$ python tutorial/objects_example/my_app.py
+$ python my_app.py
 MySQL connecting to localhost with user=root and password=1234
 
 # just show the config without running your function:
-$ python tutorial/objects_example/my_app.py -c job
-[2019-09-29 11:09:14,134] -
+$ python my_app.py --cfg job
 db:
-  cls: tutorial.objects_example.my_app.MySQLConnection
-  params:
-    host: localhost
-    password: 1234
-    user: root
+  host: localhost
+  user: root
+  password: 1234
 ```
-The printed config would be the actual config the job received with the rest of the command line arguments:
-```yaml
-$ python tutorial/objects_example/my_app.py db=postgresql db.params.database=tutorial2 --cfg job
-[2019-09-29 11:14:55,977] -
+The printed config includes any modifications done via the command line:
+```yaml {3}
+$ python my_app.py db.host=10.0.0.1 --cfg job
 db:
-  cls: tutorial.objects_example.my_app.PostgreSQLConnection
-  params:
-    database: tutorial2
-    host: localhost
-    password: 1234
-    user: root
+  host: 10.0.0.1
+  user: root
+  password: 1234
 ```
 
 ### Hydra verbose debugging
@@ -48,7 +41,7 @@ This includes:
 * Config search path : The configuration search path
 * Composition trace : Which config files were used to compose your configuration, and in what order.
 
-This is often used with `-c` to just see the config without running the application.
+This is often used with `-c job` to just see the config without running the application.
 Example output:
 ```text
 $ python my_app.py hydra.verbose=hydra --cfg job
