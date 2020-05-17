@@ -1,5 +1,6 @@
-import hydra
 from omegaconf import DictConfig
+
+import hydra
 
 
 @hydra.main(config_name="config")
