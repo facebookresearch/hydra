@@ -1,10 +1,11 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from omegaconf import DictConfig
 
 import hydra
 
 
 @hydra.main(config_name="config")
-def my_app(cfg: DictConfig):
+def my_app(cfg: DictConfig) -> None:
     assert cfg.node.loompa == 10  # attribute style access
     assert cfg["node"]["loompa"] == 10  # dictionary style access
     assert cfg.node.zippity == 10  # Variable interpolation

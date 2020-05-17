@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
 from typing import Any, List, Optional, Type
 
 import pytest
 
+from hydra.core.errors import HydraException
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
@@ -175,6 +177,16 @@ class ConfigSourceTestSuite:
 
     def test_primary_config_with_non_global_package_errors(
         self, type_: Type[ConfigSource], path: str,
-    ):
-        # TODO
-        ...
+    ) -> None:
+        src = type_(provider="foo", path=path)
+        with pytest.raises(
+            HydraException,
+            match=re.escape(
+                "Primary config 'primary_config_with_non_global_package' must be in the _global_ package, "
+                "effective package : 'foo'"
+            ),
+        ):
+            src.load_config(
+                config_path="primary_config_with_non_global_package",
+                is_primary_config=True,
+            )

@@ -31,6 +31,12 @@ class MySQLConfig:
     password: str = MISSING
 
 
+@dataclass
+class TopLevelConfig:
+    normal_yaml_config: bool = MISSING
+    db: MySQLConfig = MySQLConfig()
+
+
 hydra_load_list: List[LoadTrace] = [
     LoadTrace("hydra_config", "structured://", "hydra", None),
     LoadTrace("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
@@ -186,7 +192,6 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == expected
 
-    # TODO: Primary config file default package will be _global_ for Hydra 1.0 and in the future.
     # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
     # TODO: should config_path in @hydra.main be search_path
     # TODO : test packages with nn-config group items
@@ -319,28 +324,35 @@ class TestConfigLoader:
     def test_load_config_with_schema(self, restore_singletons: Any, path: str) -> None:
 
         ConfigStore.instance().store(
-            group="db", name="mysql", node=MySQLConfig, provider="test_provider",
+            name="config", node=TopLevelConfig, provider="this_test"
+        )
+        ConfigStore.instance().store(
+            group="db", name="mysql", node=MySQLConfig, provider="this_test",
         )
 
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
 
-        cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
+        cfg = config_loader.load_configuration(
+            config_name="config", overrides=["db=mysql"]
+        )
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {
+            "normal_yaml_config": True,
             "db": {
                 "driver": "mysql",
                 "host": "???",
                 "port": "???",
                 "user": "omry",
                 "password": "secret",
-            }
+            },
         }
 
         expected = hydra_load_list.copy()
-        expected.append(LoadTrace("db/mysql", path, "main", "test_provider"))
+        expected.append(LoadTrace("config", path, "main", "this_test"))
+        expected.append(LoadTrace("db/mysql", path, "main", "this_test"))
         assert config_loader.get_load_history() == expected
 
         # verify illegal modification is rejected at runtime
@@ -357,30 +369,33 @@ class TestConfigLoader:
         self, restore_singletons: Any, path: str
     ) -> None:
 
-        with ConfigStoreWithProvider("test_provider") as config_store:
-            config_store.store(group="db", name="mysql", node=MySQLConfig, package="db")
+        with ConfigStoreWithProvider("this_test") as cs:
+            cs.store(name="config", node=TopLevelConfig)
+            cs.store(group="db", name="mysql", node=MySQLConfig, package="db")
 
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
-            config_name="db/mysql", overrides=[], strict=False
+            config_name="config", overrides=["db=mysql"], strict=False
         )
 
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {
+            "normal_yaml_config": True,
             "db": {
                 "driver": "mysql",
                 "host": "???",
                 "port": "???",
                 "user": "omry",
                 "password": "secret",
-            }
+            },
         }
 
         expected = hydra_load_list.copy()
-        expected.append(LoadTrace("db/mysql", path, "main", "test_provider"))
+        expected.append(LoadTrace("config", path, "main", "this_test"))
+        expected.append(LoadTrace("db/mysql", path, "main", "this_test"))
         assert config_loader.get_load_history() == expected
 
 
@@ -607,25 +622,30 @@ def test_load_schema_as_config(restore_singletons: Any) -> None:
     Load structured config as a configuration
     """
     ConfigStore.instance().store(
-        group="db", name="mysql", node=MySQLConfig, provider="test_provider",
+        name="config", node=TopLevelConfig, provider="this_test"
+    )
+
+    ConfigStore.instance().store(
+        name="db/mysql", node=MySQLConfig, provider="this_test",
     )
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
-    cfg = config_loader.load_configuration(config_name="db/mysql", overrides=[])
+    cfg = config_loader.load_configuration(config_name="config", overrides=[])
     with open_dict(cfg):
         del cfg["hydra"]
     assert cfg == {
+        "normal_yaml_config": "???",
         "db": {
             "driver": MISSING,
             "host": MISSING,
             "port": MISSING,
             "user": MISSING,
             "password": MISSING,
-        }
+        },
     }
 
     expected = hydra_load_list.copy()
-    expected.extend([LoadTrace("db/mysql", "structured://", "test_provider", None)])
+    expected.extend([LoadTrace("config", "structured://", "this_test", None)])
     assert config_loader.get_load_history() == expected
 
 

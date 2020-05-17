@@ -7,6 +7,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 
+from hydra.core.errors import HydraException
 from omegaconf import Container, OmegaConf
 
 from hydra.core.object_type import ObjectType
@@ -118,14 +119,9 @@ class ConfigSource(Plugin):
         return filename
 
     @staticmethod
-    def _update_package_in_header(
-        header: Dict[str, str],
-        normalized_config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str],
-    ) -> None:
-        config_without_ext = normalized_config_path[0 : -len(".yaml")]
-
+    def _resolve_package(
+        config_without_ext: str, header: Dict[str, str], package_override: Optional[str]
+    ) -> str:
         last = config_without_ext.rfind("/")
         if last == -1:
             group = ""
@@ -134,21 +130,10 @@ class ConfigSource(Plugin):
             group = config_without_ext[0:last]
             name = config_without_ext[last + 1 :]
 
-        if "package" not in header:
-            if is_primary_config:
-                header["package"] = "_global_"
-            else:
-                # Loading a config group option.
-                # Hydra 1.0: default to _global_ and warn.
-                # Hydra 1.1: default will change to _package_ and the warning will be removed.
-                header["package"] = "_global_"
-                msg = (
-                    f"Missing # @package directive in {normalized_config_path}.\n"
-                    f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
-                )
-                warnings.warn(message=msg, category=UserWarning)
-
-        package = header["package"]
+        if "package" in header:
+            package = header["package"]
+        else:
+            package = ""
 
         if package_override is not None:
             package = package_override
@@ -158,6 +143,44 @@ class ConfigSource(Plugin):
         else:
             package = package.replace("_group_", group).replace("/", ".")
             package = package.replace("_name_", name)
+
+        return package
+
+    @staticmethod
+    def _update_package_in_header(
+        header: Dict[str, str],
+        normalized_config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str],
+    ) -> None:
+        config_without_ext = normalized_config_path[0 : -len(".yaml")]
+
+        package = ConfigSource._resolve_package(
+            config_without_ext=config_without_ext,
+            header=header,
+            package_override=package_override,
+        )
+
+        if is_primary_config:
+            if "package" not in header:
+                header["package"] = "_global_"
+            else:
+                if package != "":
+                    raise HydraException(
+                        f"Primary config '{config_without_ext}' must be "
+                        f"in the _global_ package, effective package : '{package}'"
+                    )
+        else:
+            if "package" not in header:
+                # Loading a config group option.
+                # Hydra 1.0: default to _global_ and warn.
+                # Hydra 1.1: default will change to _package_ and the warning will be removed.
+                header["package"] = "_global_"
+                msg = (
+                    f"Missing # @package directive in {normalized_config_path}.\n"
+                    f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+                )
+                warnings.warn(message=msg, category=UserWarning)
 
         header["package"] = package
 
