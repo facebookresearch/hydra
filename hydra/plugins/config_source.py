@@ -168,7 +168,7 @@ class ConfigSource(Plugin):
                 if package != "":
                     raise HydraException(
                         f"Primary config '{config_without_ext}' must be "
-                        f"in the _global_ package, effective package : '{package}'"
+                        f"in the _global_ package; effective package : '{package}'"
                     )
         else:
             if "package" not in header:
