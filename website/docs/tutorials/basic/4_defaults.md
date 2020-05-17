@@ -1,7 +1,6 @@
 ---
 id: defaults
-title: Defaults
-sidebar_label: Defaults
+title: Merging configs by default
 ---
 
 After office politics, you decide that you want to use MySQL by default.

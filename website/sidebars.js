@@ -17,17 +17,24 @@ module.exports = {
                 'tutorials/basic/config_groups',
                 'tutorials/basic/defaults',
                 'tutorials/basic/composition',
-                'tutorials/basic/multi-run',
                 'tutorials/basic/tab_completion',
-                'tutorials/basic/working_directory',
-                'tutorials/basic/logging',
-                'tutorials/basic/debugging',
+                {
+                    type: 'category',
+                    label: 'Running Hydra Applications',
+                    items: [
+                        'tutorials/basic/multi-run',
+                        'tutorials/basic/working_directory',
+                        'tutorials/basic/logging',
+                        'tutorials/basic/debugging',
+                    ]
+                },
+
             ],
           },
 
           {
             type: 'category',
-            label: 'Structured configs tutorial',
+            label: 'Structured Configs Tutorial',
             items: [
                 'tutorials/structured_config/intro',
                 'tutorials/structured_config/minimal_example',
@@ -40,7 +47,7 @@ module.exports = {
           },
         ],
 
-        'Common patterns': [
+        'Common Patterns': [
             'patterns/objects',
             'patterns/specializing_config',
         ],
