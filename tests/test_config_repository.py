@@ -92,13 +92,19 @@ class TestConfigRepository:
                     "optimizer",
                     "package_test",
                     "primary_config",
+                    "primary_config_with_non_global_package",
                 ],
             ),
             ("", ObjectType.GROUP, ["dataset", "level1", "optimizer", "package_test"]),
             (
                 "",
                 ObjectType.CONFIG,
-                ["config_without_group", "dataset", "primary_config"],
+                [
+                    "config_without_group",
+                    "dataset",
+                    "primary_config",
+                    "primary_config_with_non_global_package",
+                ],
             ),
             ("dataset", None, ["cifar10", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
@@ -123,6 +129,8 @@ class TestConfigRepository:
             group_name=config_path, results_filter=results_filter
         )
         assert ret == expected
+
+        # TODO: decide on header comments before the package.
 
 
 @pytest.mark.parametrize("sep", [" ", ":"])  # type: ignore

@@ -63,7 +63,6 @@ s.store(
     group="level1/level2", name="nested2", node={"l1_l2_n2": True}, package="optimizer"
 )
 
-# TODO: remove _global_ once default for config file based package is changed to _group_
 s.store(group="package_test", name="none", node={"foo": "bar"}, package="_global_")
 s.store(group="package_test", name="explicit", node={"foo": "bar"}, package="a.b")
 s.store(group="package_test", name="global", node={"foo": "bar"}, package="_global_")
@@ -76,3 +75,6 @@ s.store(
 )
 s.store(group="package_test", name="name", node={"foo": "bar"}, package="_name_")
 s.store(name="primary_config", node={"primary": True}, package=None)
+s.store(
+    name="primary_config_with_non_global_package", node={"primary": True}, package="foo"
+)
