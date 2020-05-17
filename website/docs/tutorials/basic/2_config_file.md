@@ -1,6 +1,6 @@
 ---
 id: config_file
-title: Using a config file
+title: Specifying a config file
 ---
 
 It can get tedious to type all those command line arguments.

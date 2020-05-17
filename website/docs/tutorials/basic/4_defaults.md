@@ -1,6 +1,6 @@
 ---
 id: defaults
-title: Merging configs by default
+title: Selecting defaults for config groups
 ---
 
 After office politics, you decide that you want to use MySQL by default.
@@ -11,12 +11,11 @@ You can add a `defaults` list into your config file.
 ## Config group defaults
 
 ```yaml title="config.yaml"
-# @package: _group_
 defaults:
   - db: mysql
 ```
 
-Remember to specify `config` as the `config_name`.
+Remember to specify the `config_name`:
 ```python
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
@@ -31,6 +30,18 @@ db:
   pass: secret
   user: omry
 ```
+
+You can have multiple items in the defaults list, e.g
+```yaml
+defaults:
+ - db: mysql
+ - db/mysql/storage_engine: innodb
+```
+
+The defaults are ordered:
+ * If multiple configs define the same value, the last one wins. 
+ * If multiple configs contribute to the same dictionary, the result is the combined dictionary.
+
 
 ### Overriding a config group default
 

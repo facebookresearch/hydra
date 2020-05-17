@@ -1,12 +1,10 @@
 ---
 id: config_groups
-title: Config groups
-sidebar_label: Config groups
+title: Grouping config files
 ---
-### Defining config groups
 Suppose you want to benchmark your application on each of PostgreSQL and MySQL. To do this, use config groups. 
 
-A config group is a named group with a set of valid options.
+A _**Config Group**_ is a named group with a set of valid options.
 
 * The config options are mutually exclusive. Only one can be selected.
 * Selecting a non-existent config option generates an error message with the valid options.
@@ -78,7 +76,7 @@ db:
 ```
 
 ### More advanced usages of config groups
-Config groups can be nested. For example the config group `mysql/storage_engine` can contain `innodb.yaml` and `myisam.yaml`.
+Config groups can be nested. For example the config group `db/mysql/storage_engine` can contain `innodb.yaml` and `myisam.yaml`.
 When selecting an option from a nested config group, use `/`:
 ```
 $ python my_app.py db=mysql db/mysql/storage_engine=innodb
@@ -92,7 +90,7 @@ db:
       max_file_size: 1G
 ```
 
-This simple example demonstrated a very powerful feature of Hydra:
+This simple example also demonstrated a very powerful feature of Hydra:
 You can compose your configuration object from multiple configuration groups.
 
 

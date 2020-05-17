@@ -1,20 +1,17 @@
 ---
 id: composition
-title: Composing a configuration
+title: Putting it all together
 ---
 
 The product manager had an idea:
-She wants my_app to support creating arbitrary database schemas, on all supported databases!
-She also wants to have two kinds of UI - a full UI to create and view databases and a view only UI.
-You are the fall guy. Before you even start, she tells you there are already 3 database schema you need to support, and more are coming soon.
-You also got a feeling that this is only the beginning - who knows what idea she will have next?
+She wants my_app to support 3 schemas on 2 different databases and 2 kinds of UI for start. More will come later.
 
-At this point, you already have 2 supported databases, 3 schemas, and 2 ui modes.
-This is a total of 12 combinations.
-Adding another supported database will bring this to 18 combinations.
-Creating 18 files is not a good idea, if you wanted to make a change such as renaming `db.user` to `db.username` you would have to do it 18 times!
-
-Composition to the rescue! To solve this with Hydra, add a config group for each new dimension (`schema` and `ui`):
+This is easy using config groups.  Each new schema, database, or UI will add a single config file to the corresponding 
+config group.
+Compare this to the common alternative of creating a separate config file for each combination.
+The number of config files would then grow combinatorially.
+Not only that, but if you wanted to make a change such as renaming `db.user` to `db.username` you would have to do it
+ 12 times instead of once!
 
 ``` text title="Directory layout"
 ├── conf
@@ -38,9 +35,6 @@ defaults:
   - ui: full
   - schema: school
 ```
-The defaults are ordered:
- * If multiple configurations define the same value, the last one wins. 
- * If multiple configurations contribute to the same dictionary, the result is the combined dictionary.
 
 The resulting configuration would be a composition of `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):
 ```yaml
@@ -67,12 +61,9 @@ ui:
     view: true
 ```
 
-In much the same way you can compose any of the other 11 configurations by adding appropriate overrides such as `db=postgresql`.
-
 ### Summary
-To summarize this section:
  - The addition of each new db, schema, or ui only requires a single file
  - Each config group can have a default specified in the `defaults` list
- - Any combination can be composed by selecting the desired config from each config group
+ - Any combination can be composed by selecting the desired option from each config group in the `defaults` list or the command line.
 
-Stay tuned for seeing how to run all of the combinations automatically (Multi-run).
+Stay tuned to see how to run all of the combinations automatically ([Multi-run](/tutorials/basic/6_multirun.md)).
