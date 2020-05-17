@@ -46,7 +46,10 @@ class ConfigSource(Plugin):
 
     @abstractmethod
     def load_config(
-        self, config_path: str, package_override: Optional[str] = None
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
     ) -> ConfigResult:
         ...
 
@@ -118,6 +121,7 @@ class ConfigSource(Plugin):
     def _update_package_in_header(
         header: Dict[str, str],
         normalized_config_path: str,
+        is_primary_config: bool,
         package_override: Optional[str],
     ) -> None:
         config_without_ext = normalized_config_path[0 : -len(".yaml")]
@@ -131,12 +135,18 @@ class ConfigSource(Plugin):
             name = config_without_ext[last + 1 :]
 
         if "package" not in header:
-            header["package"] = "_global_"
-            msg = (
-                f"Missing # @package directive in {normalized_config_path}.\n"
-                f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
-            )
-            warnings.warn(message=msg, category=UserWarning)
+            if is_primary_config:
+                header["package"] = "_global_"
+            else:
+                # Loading a config group option.
+                # Hydra 1.0: default to _global_ and warn.
+                # Hydra 1.1: default will change to _package_ and the warning will be removed.
+                header["package"] = "_global_"
+                msg = (
+                    f"Missing # @package directive in {normalized_config_path}.\n"
+                    f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+                )
+                warnings.warn(message=msg, category=UserWarning)
 
         package = header["package"]
 
@@ -144,7 +154,6 @@ class ConfigSource(Plugin):
             package = package_override
 
         if package == "_global_":
-            # default to the global behavior to remain backward compatible.
             package = ""
         else:
             package = package.replace("_group_", group).replace("/", ".")

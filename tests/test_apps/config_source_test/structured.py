@@ -75,3 +75,4 @@ s.store(
     package="foo._group_._name_",
 )
 s.store(group="package_test", name="name", node={"foo": "bar"}, package="_name_")
+s.store(name="primary_config", node={"primary": True}, package=None)

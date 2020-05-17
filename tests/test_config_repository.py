@@ -60,12 +60,17 @@ class TestConfigRepository:
         Plugins.instance()  # initializes
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
-        ret = repo.load_config(config_path="dataset/imagenet.yaml")
+        ret = repo.load_config(
+            config_path="dataset/imagenet.yaml", is_primary_config=False
+        )
         assert ret is not None
         assert ret.config == {
             "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
         }
-        assert repo.load_config(config_path="not_found.yaml") is None
+        assert (
+            repo.load_config(config_path="not_found.yaml", is_primary_config=True)
+            is None
+        )
 
     def test_config_repository_exists(self, restore_singletons: Any, path: str) -> None:
         Plugins.instance()  # initializes
@@ -86,10 +91,15 @@ class TestConfigRepository:
                     "level1",
                     "optimizer",
                     "package_test",
+                    "primary_config",
                 ],
             ),
             ("", ObjectType.GROUP, ["dataset", "level1", "optimizer", "package_test"]),
-            ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
+            (
+                "",
+                ObjectType.CONFIG,
+                ["config_without_group", "dataset", "primary_config"],
+            ),
             ("dataset", None, ["cifar10", "imagenet"]),
             ("dataset", ObjectType.GROUP, []),
             ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
@@ -157,6 +167,3 @@ def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
     else:
         with expected:
             ConfigSource._get_header_dict(cfg_text)
-
-
-# TODO : implement package override via command line and defaults

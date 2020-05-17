@@ -24,18 +24,27 @@ class PackageConfigSource(ConfigSource):
         return "pkg"
 
     def load_config(
-        self, config_path: str, package_override: Optional[str] = None
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
     ) -> ConfigResult:
-        config_path = self._normalize_file_name(filename=config_path)
+        normalized_config_path = self._normalize_file_name(filename=config_path)
         module_name, resource_name = PackageConfigSource._split_module_and_resource(
-            self.concat(self.path, config_path)
+            self.concat(self.path, normalized_config_path)
         )
 
         try:
             with resource_stream(module_name, resource_name) as stream:
                 header_text = stream.read(512)
                 header = ConfigSource._get_header_dict(header_text.decode())
-                self._update_package_in_header(header, config_path, package_override)
+                self._update_package_in_header(
+                    header=header,
+                    normalized_config_path=normalized_config_path,
+                    is_primary_config=is_primary_config,
+                    package_override=package_override,
+                )
+
                 stream.seek(0)
                 cfg = OmegaConf.load(stream)
                 return ConfigResult(

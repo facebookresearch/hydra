@@ -32,13 +32,18 @@ class ConfigRepository:
         return source
 
     def load_config(
-        self, config_path: str, package_override: Optional[str] = None
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
     ) -> Optional[ConfigResult]:
         source = self._find_config(config_path=config_path)
         ret = None
         if source is not None:
             ret = source.load_config(
-                config_path=config_path, package_override=package_override
+                config_path=config_path,
+                is_primary_config=is_primary_config,
+                package_override=package_override,
             )
             # if this source is THE schema source, flag the result as coming from it.
             ret.is_schema_source = (
