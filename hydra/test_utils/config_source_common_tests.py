@@ -182,7 +182,7 @@ class ConfigSourceTestSuite:
         with pytest.raises(
             HydraException,
             match=re.escape(
-                "Primary config 'primary_config_with_non_global_package' must be in the _global_ package, "
+                "Primary config 'primary_config_with_non_global_package' must be in the _global_ package; "
                 "effective package : 'foo'"
             ),
         ):
