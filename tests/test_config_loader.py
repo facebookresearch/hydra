@@ -186,6 +186,11 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == expected
 
+    # TODO: Imlement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
+    # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
+    # TODO: should config_path in @hydra.main be search_path
+    # TODO : test packages with nn-config group items
+
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
