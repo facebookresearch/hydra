@@ -1,7 +1,6 @@
 ---
 id: composition
-title: Config composition
-sidebar_label: Config composition
+title: Composing a configuration
 ---
 
 The product manager had an idea:

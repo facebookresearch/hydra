@@ -12,6 +12,8 @@ module.exports = {
             items: [
                 'tutorials/basic/simple_cli',
                 'tutorials/basic/config_file',
+                'tutorials/basic/using_config',
+                'tutorials/basic/strict_mode',
                 'tutorials/basic/config_groups',
                 'tutorials/basic/defaults',
                 'tutorials/basic/composition',
