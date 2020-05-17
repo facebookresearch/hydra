@@ -5,7 +5,7 @@ title: The package header
 
 ## Overview
 Each config file contains an optional header section at the top.
-The header can contain the `@package` directive.
+Currently the only supported directive in the header is `@package`.
 A `package` is the `path` of a node in the config.
 For example, the `package` of the node `{driver: mysql}` below is `db`.
 ```yaml
@@ -32,7 +32,8 @@ The `package` directive supports the following keywords:
 You can use both `_group_` and `_name_` as a part of the package specification, for example, for the config file `foo/bar/zoo.yaml`, 
 the package `oompa._group_._name_` would equal `oompa.foo.bar.zoo`.
  
-The recommended choice for the `@package` directive is `_group_`, and this will become the default in Hydra 1.1. 
+For primary config files mentioned in `@hydra.main`, the default package is `_global_`.
+For config files in config groups, the recommended choice for the `@package` directive is `_group_`, and it will become the default in Hydra 1.1. 
 
 ## Overriding
 You can override the `@package` directive via the command line or via the defaults list.
