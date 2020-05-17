@@ -15,7 +15,7 @@ from dataclasses import dataclass
 import hydra
 from hydra.core.config_store import ConfigStore
 
-@dataclass
+@dataclassg
 class MySQLConfig:
     host: str = "localhost"
     port: int = 3306
