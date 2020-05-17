@@ -3,25 +3,18 @@ id: config_groups
 title: Config groups
 sidebar_label: Config groups
 ---
-This is one of the most important concepts in Hydra.
+### Defining config groups
+Suppose you want to benchmark your application on each of PostgreSQL and MySQL. To do this, use config groups. 
 
-Suppose you want to benchmark PostgreSQL and MySQL for your application.
-When running of the application, you will need either MySQL or PostgreSQL - but not both.
+A config group is a named group with a set of valid options.
 
-The way to do this with Hydra is with a **Config group**.
-A config group is a mutually exclusive set of configurations that are located together.
+* The config options are mutually exclusive. Only one can be selected.
+* Selecting a non-existent config option generates an error message with the valid options.
 
-To create a config group, create a directory. e.g. `db` to hold a file for each database configuration alternative. 
+To create a config group, create a directory. e.g. `db` to hold a file for each database configuration option. 
 Since we are expecting to have multiple config groups, we will proactively move all the configuration files 
 into a `conf` directory.
 
-Python file: `my_app.py`
-```python
-@hydra.main(config_path="conf")
-def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
-```
-`config_path` can specify the root directory for your configuration files relative to the declaring Python file.
 
 ``` text title="Directory layout"
 ├── conf
@@ -31,13 +24,40 @@ def my_app(cfg: DictConfig) -> None:
 └── my_app.py
 ```
 
-If you run my_app.py, it prints an empty config because no configuration was specified through `config_name`.
+```yaml title="db/mysql.yaml"
+# @package: _group_
+driver: mysql
+user: omry
+password: secret
+```
+The config group determines the `package` of the config content inside the final config object.<br/>
+```yaml title="Interpretation of db/mysql.yaml" {1}
+db:
+  driver: mysql
+  user: omry
+  password: secret 
+```
+In Hydra 1.1 `_group_` will become the default package.<br/>
+For now, add `# @package: _group_` at the top of your config group files.<br/>
+Learn more about packages [here](/advanced/package_header.md). 
+
+### Using config groups
+Since we moved all the configs into the `conf` directory, we need to tell Hydra where to find them using the `config_path` parameter.
+`config_path` is a directory relative to `my_app.py`.
+```python title="my_app.py" {1}
+@hydra.main(config_path="conf")
+def my_app(cfg: DictConfig) -> None:
+    print(cfg.pretty())
+```
+
+
+Running `my_app.py` without requesting a configuration will print an empty config.
 ```yaml
 $ python my_app.py
 {}
 ```
 
-You can now choose which database configuration to use from the command line:
+You can select a database option via the command line:
 ```yaml
 $ python my_app.py db=postgresql
 db:
@@ -57,19 +77,22 @@ db:
   user: postgre_user
 ```
 
+### More advanced usages of config groups
+Config groups can be nested. For example the config group `mysql/storage_engine` can contain `innodb.yaml` and `myisam.yaml`.
+When selecting an option from a nested config group, use `/`:
+```
+$ python my_app.py db=mysql db/mysql/storage_engine=innodb
+db:
+  driver: mysql
+  user: omry
+  password: secret 
+  mysql:
+    storage_engine:
+      innodb_data_file_path: /var/lib/mysql/ibdata1
+      max_file_size: 1G
+```
+
 This simple example demonstrated a very powerful feature of Hydra:
-You can compose your configuration object from multiple configuration files.
+You can compose your configuration object from multiple configuration groups.
 
-For example, you can add a second config group controlling another aspect of your application:
-```
-$ python my_app.py db=postgresql walk=depth_first
-```
 
-TODO:
-
-<div class="alert alert--info" role="alert">
-The <b>@package</b> directive is new in Hydra 1.0.
-This is an advanced topic and we will not cover it in this tutorial, You can learn more about 
-it <a href="../../advanced/package_header">here</a>.<br/>
-For now just put <b># @package: _group_</b> at the top of your config files.
-</div><br/>

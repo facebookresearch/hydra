@@ -1,4 +1,4 @@
 # @package: _group_
 driver: mysql
 user: omry
-pass: secret
+password: secret
