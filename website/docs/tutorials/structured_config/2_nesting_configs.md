@@ -34,28 +34,6 @@ if __name__ == "__main__":
     my_app()
 ```
 
-### Nesting by specifying a package
-If for some reason you do not want to have a top level config class, you can still place MySQLConfig 
-in a specific package in the final configuration object. To do that, use the `package` parameter to specify the package.
-You can use dot-notation to create multiple parent nodes as needed (E.G. `path="foo.bar.baz"`).
-By default, the package parameter is `_group_`.
-
-```python
-@dataclass
-class MySQLConfig:
-    ...
-
-cfg_store = ConfigStore.instance()
-cfg_store.store(name="config", node=MySQLConfig, package="db")
-
-@hydra.main(config_name="config")
-def my_app(cfg: DictConfig) -> None:
-    # mypy does not know the type of cfg.db.
-    # You can optionally help it with a hint to get static type checking.
-    db: MySQLConfig = cfg.db
-    print(f"Host: {db.host}, port: {db.port}")
-```
-
 ### Nesting by creating an ad-hoc config node
 Ad-hoc config nodes can be created using Dictionaries.  While this
 allows great flexibility, it offers reduced type safety.

@@ -78,16 +78,6 @@ def test_structured_configs_2_nesting_configs__with_dataclass(tmpdir: Path) -> N
     assert result.decode().rstrip() == "Host: localhost, port: 3306"
 
 
-def test_structured_configs_2_nesting_configs__with_node_path(tmpdir: Path) -> None:
-    cmd = [
-        sys.executable,
-        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_package.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result = check_output(cmd)
-    assert result.decode().rstrip() == "Host: localhost, port: 3306"
-
-
 def test_structured_configs_2_nesting_configs__with_ad_hoc_node(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
