@@ -64,3 +64,12 @@ For example, you can add a second config group controlling another aspect of you
 ```
 $ python my_app.py db=postgresql walk=depth_first
 ```
+
+TODO:
+
+<div class="alert alert--info" role="alert">
+The <b>@package</b> directive is new in Hydra 1.0.
+This is an advanced topic and we will not cover it in this tutorial, You can learn more about 
+it <a href="../../advanced/package_header">here</a>.<br/>
+For now just put <b># @package: _group_</b> at the top of your config files.
+</div><br/>

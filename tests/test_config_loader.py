@@ -187,9 +187,13 @@ class TestConfigLoader:
         assert cfg == expected
 
     # TODO: Imlement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
+    # TODO: Primary config file default package will be _global_ for Hydra 1.0 and in the future.
     # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
     # TODO: should config_path in @hydra.main be search_path
     # TODO : test packages with nn-config group items
+    # TODO: python tutorials/basic/4_defaults/my_app.py  db=312312 should be an error, not an exception.
+    # TODO: Add tests for new tutorial examples (2.1.using_config, 2.2_strict mode)
+    # TODO: split page 2 into 2.1_using_config and 2.2_strict_mode
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(

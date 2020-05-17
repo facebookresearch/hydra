@@ -1,7 +1,6 @@
 ---
 id: simple_cli
-title: Simple command line application
-sidebar_label: Simple command line application
+title: A simple command line application
 ---
 
 This is a simple Hydra application that prints your configuration.
@@ -21,11 +20,9 @@ def my_app(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     my_app()
 ```
-Hydra creates the `cfg` object and pass it to the function annotated with `@hydra.main`.
-`DictConfig` is a part of <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">OmegaConf</a>.
-You don't need a deep understanding of OmegaConf for this tutorial, but I recommend reading the docs later.
+In this example, Hydra creates an empty `cfg` object and pass it to the function annotated with `@hydra.main`.
 
-You can pass arbitrary command line arguments from which Hydra will create a hierarchical configuration object:
+You can pass command line arguments from which Hydra creates a hierarchical configuration object:
 ```yaml
 $ python my_app.py db.driver=mysql db.user=omry db.pass=secret
 db:
