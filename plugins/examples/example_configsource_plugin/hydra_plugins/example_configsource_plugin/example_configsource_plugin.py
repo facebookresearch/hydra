@@ -16,8 +16,11 @@ class ConfigSourceExample(ConfigSource):
             "package_test/group_name.yaml": {"package": "foo._group_._name_"},
             "package_test/name.yaml": {"package": "_name_"},
             "package_test/none.yaml": {},
+            "primary_config_with_non_global_package.yaml": {"package": "foo"},
         }
         self.configs: Dict[str, Dict[str, Any]] = {
+            "primary_config.yaml": {"primary": True},
+            "primary_config_with_non_global_package.yaml": {"primary": True},
             "config_without_group.yaml": {"group": False},
             "dataset/imagenet.yaml": {
                 "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
@@ -40,7 +43,10 @@ class ConfigSourceExample(ConfigSource):
         return "example"
 
     def load_config(
-        self, config_path: str, package_override: Optional[str] = None
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
     ) -> ConfigResult:
         config_path = self._normalize_file_name(config_path)
         if config_path not in self.configs:
@@ -50,7 +56,10 @@ class ConfigSourceExample(ConfigSource):
             header["package"] = ""
 
         self._update_package_in_header(
-            header, config_path, package_override=package_override
+            header,
+            config_path,
+            is_primary_config=is_primary_config,
+            package_override=package_override,
         )
         cfg = OmegaConf.create(self.configs[config_path])
         return ConfigResult(
