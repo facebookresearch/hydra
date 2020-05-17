@@ -366,7 +366,7 @@ def test_short_module_name(tmpdir: Path) -> None:
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         result = subprocess.check_output(cmd)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {
-            "db": {"driver": "mysql", "pass": "secret", "user": "omry"}
+            "db": {"driver": "mysql", "password": "secret", "user": "omry"}
         }
     finally:
         chdir_hydra_root()
@@ -518,7 +518,7 @@ def test_sweep_complex_defaults(
             """db:
   driver: mysql
   user: root
-  pass: secret
+  password: secret
 
 """,
             id="overriding_help_template:$CONFIG",

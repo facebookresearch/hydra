@@ -79,7 +79,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
         (
             [],
             OmegaConf.create(
-                {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}
+                {"db": {"driver": "mysql", "password": "secret", "user": "omry"}}
             ),
         )
     ],
@@ -133,7 +133,7 @@ def test_tutorial_config_file_bad_key(
                 {
                     "db": {
                         "driver": "postgresql",
-                        "pass": "drowssap",
+                        "password": "drowssap",
                         "timeout": 10,
                         "user": "postgre_user",
                     }
