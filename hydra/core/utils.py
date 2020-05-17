@@ -210,7 +210,7 @@ def split_config_path(
     if config_file is not None:
         if config_name is not None:
             raise ValueError(
-                "Config name should be specified in either config_path or config_name, but not both"
+                "Config name should be specified in either normalized_config_path or config_name, but not both"
             )
         config_name = config_file
 

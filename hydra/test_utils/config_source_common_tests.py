@@ -113,14 +113,15 @@ class ConfigSourceTestSuite:
         config_path: str,
         expected: Any,
         expectation: Any,
+        recwarn: Any,
     ) -> None:
         assert issubclass(type_, ConfigSource)
         src = type_(provider="foo", path=path)
         if expectation is not None:
             with expectation:
-                src.load_config(config_path=config_path)
+                src.load_config(config_path=config_path, is_primary_config=False)
         else:
-            ret = src.load_config(config_path=config_path)
+            ret = src.load_config(config_path=config_path, is_primary_config=False)
             assert ret.config == expected
 
     @pytest.mark.parametrize(  # type: ignore
@@ -161,6 +162,19 @@ class ConfigSourceTestSuite:
         recwarn: Any,
     ) -> None:
         src = type_(provider="foo", path=path)
-        cfg = src.load_config(config_path=config_path)
+        cfg = src.load_config(config_path=config_path, is_primary_config=False)
         assert cfg.header["package"] == expected_package
         assert cfg.config == expected_result
+
+    def test_default_package_for_primary_config(
+        self, type_: Type[ConfigSource], path: str,
+    ) -> None:
+        src = type_(provider="foo", path=path)
+        cfg = src.load_config(config_path="primary_config", is_primary_config=True)
+        assert cfg.header["package"] == ""
+
+    def test_primary_config_with_non_global_package_errors(
+        self, type_: Type[ConfigSource], path: str,
+    ):
+        # TODO
+        ...

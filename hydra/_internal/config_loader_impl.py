@@ -108,10 +108,10 @@ class ConfigLoaderImpl(ConfigLoader):
             )
 
         # Load hydra config
-        hydra_cfg, _load_trace = self._create_cfg(cfg_filename="hydra_config")
+        hydra_cfg, _load_trace = self._load_primary_config(cfg_filename="hydra_config")
 
         # Load job config
-        job_cfg, job_cfg_load_trace = self._create_cfg(
+        job_cfg, job_cfg_load_trace = self._load_primary_config(
             cfg_filename=config_name, record_load=False
         )
 
@@ -346,7 +346,11 @@ class ConfigLoaderImpl(ConfigLoader):
             primary.append(d)
 
     def _load_config_impl(
-        self, input_file: str, package_override: Optional[str], record_load: bool = True
+        self,
+        input_file: str,
+        package_override: Optional[str],
+        is_primary_config: bool,
+        record_load: bool = True,
     ) -> Tuple[Optional[DictConfig], Optional[LoadTrace]]:
         """
         :param input_file:
@@ -373,7 +377,9 @@ class ConfigLoaderImpl(ConfigLoader):
             return trace
 
         ret = self.repository.load_config(
-            config_path=input_file, package_override=package_override
+            config_path=input_file,
+            is_primary_config=is_primary_config,
+            package_override=package_override,
         )
 
         if ret is not None:
@@ -386,7 +392,9 @@ class ConfigLoaderImpl(ConfigLoader):
                     schema_source = self.repository.get_schema_source()
                     config_path = ConfigSource._normalize_file_name(filename=input_file)
                     schema = schema_source.load_config(
-                        config_path, package_override=package_override
+                        config_path,
+                        is_primary_config=is_primary_config,
+                        package_override=package_override,
                     )
 
                     merged = OmegaConf.merge(schema.config, ret.config)
@@ -438,6 +446,7 @@ class ConfigLoaderImpl(ConfigLoader):
         config_group: str,
         name: str,
         required: bool,
+        is_primary_config: bool,
         package_override: Optional[str],
     ) -> DictConfig:
         try:
@@ -447,7 +456,9 @@ class ConfigLoaderImpl(ConfigLoader):
                 new_cfg = name
 
             loaded_cfg, _ = self._load_config_impl(
-                new_cfg, package_override=package_override
+                new_cfg,
+                is_primary_config=is_primary_config,
+                package_override=package_override,
             )
             if loaded_cfg is None:
                 if required:
@@ -513,6 +524,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             config_group=default1.config_group,
                             name=config_name,
                             required=not default1.optional,
+                            is_primary_config=False,
                             package_override=default1.package,
                         )
                 else:
@@ -522,6 +534,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             config_group="",
                             name=config_name,
                             required=True,
+                            is_primary_config=False,
                             package_override=default1.package,
                         )
             return merged_cfg
@@ -540,7 +553,7 @@ class ConfigLoaderImpl(ConfigLoader):
             del hydra_cfg["defaults"]
         return hydra_cfg
 
-    def _create_cfg(
+    def _load_primary_config(
         self, cfg_filename: Optional[str], record_load: bool = True
     ) -> Tuple[DictConfig, Optional[LoadTrace]]:
         if cfg_filename is None:
@@ -549,7 +562,10 @@ class ConfigLoaderImpl(ConfigLoader):
             load_trace = None
         else:
             ret, load_trace = self._load_config_impl(
-                cfg_filename, package_override=None, record_load=record_load
+                cfg_filename,
+                is_primary_config=True,
+                package_override=None,
+                record_load=record_load,
             )
             assert ret is not None
             cfg = ret

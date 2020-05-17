@@ -1,4 +1,3 @@
-# @package: _global_
 defaults:
   - group1: option1
   - group2@pkg1: option1
