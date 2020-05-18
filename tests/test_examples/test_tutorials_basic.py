@@ -15,6 +15,7 @@ from hydra.test_utils.test_utils import (
     does_not_raise,
     verify_dir_outputs,
 )
+from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -390,3 +391,22 @@ def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
     ]
     result = subprocess.check_output(cmd)
     assert result.decode("utf-8").rstrip() == "[INFO] - Info level message"
+
+
+def test_examples_using_the_config_object(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "examples/tutorials/basic/your_first_hydra_app/3_using_the_config_object/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+
+    expected = re.escape(
+        """Missing mandatory value: node.waldo
+	full_key: node.waldo
+	reference_type=Optional[Dict[Any, Any]]
+	object_type=dict
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace"""
+    )
+    result = run_with_error(cmd)
+    assert re.findall(expected, result)
