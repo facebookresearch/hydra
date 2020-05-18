@@ -357,7 +357,9 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
 
 def test_short_module_name(tmpdir: Path) -> None:
     try:
-        os.chdir("examples/tutorials/basic/2_config_file")
+        os.chdir(
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file"
+        )
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         result = subprocess.check_output(cmd)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {
@@ -399,7 +401,9 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     Tests that module name overrides are working.
     """
     try:
-        os.chdir("examples/tutorials/basic/2_config_file")
+        os.chdir(
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file"
+        )
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         modified_env = os.environ.copy()
         modified_env[env_name] = "hydra.test_utils.configs.Foo"
@@ -417,7 +421,9 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
 )
 def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
     try:
-        os.chdir("examples/tutorials/basic/4_defaults")
+        os.chdir(
+            "examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups"
+        )
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir), flag]
         result = subprocess.check_output(cmd)
         conf = OmegaConf.create(str(result.decode("utf-8")))
@@ -493,21 +499,21 @@ def test_sweep_complex_defaults(
     "script, flag, overrides,expected",
     [
         pytest.param(
-            "examples/tutorials/basic/1_simple_cli_app/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/1_a_simple_cli_app/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="simple_cli_app",
         ),
         pytest.param(
-            "examples/tutorials/basic/2_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="overriding_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/2_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
             """db:
@@ -519,7 +525,7 @@ def test_sweep_complex_defaults(
             id="overriding_help_template:$CONFIG",
         ),
         pytest.param(
-            "examples/tutorials/basic/2_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -530,21 +536,21 @@ def test_sweep_complex_defaults(
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python examples/tutorials/basic/2_config_file/my_app.py -sc install=bash)"
+    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python examples/tutorials/basic/2_config_file/my_app.py -sc uninstall=bash)"
+    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=bash)"
 
     Fish - Install:
-    python examples/tutorials/basic/2_config_file/my_app.py -sc install=fish | source
+    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=fish | source
     Fish - Uninstall:
-    python examples/tutorials/basic/2_config_file/my_app.py -sc uninstall=fish | source
+    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
             id="overriding_help_template:$FLAGS_HELP",
         ),
         pytest.param(
-            "examples/tutorials/basic/3_config_groups/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/4_grouping_config_files/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             """db: mysql, postgresql
@@ -553,14 +559,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         pytest.param(
-            "examples/tutorials/basic/2_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
             "foo\n",
             id="overriding_hydra_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/2_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -571,14 +577,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python examples/tutorials/basic/2_config_file/my_app.py -sc install=bash)"
+    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python examples/tutorials/basic/2_config_file/my_app.py -sc uninstall=bash)"
+    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=bash)"
 
     Fish - Install:
-    python examples/tutorials/basic/2_config_file/my_app.py -sc install=fish | source
+    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=fish | source
     Fish - Uninstall:
-    python examples/tutorials/basic/2_config_file/my_app.py -sc uninstall=fish | source
+    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
