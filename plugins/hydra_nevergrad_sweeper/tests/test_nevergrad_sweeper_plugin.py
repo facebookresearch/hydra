@@ -4,13 +4,13 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import nevergrad as ng
-import pytest  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
+import nevergrad as ng
+import pytest  # type: ignore
 from hydra_plugins.hydra_nevergrad_sweeper import core
 
 chdir_plugin_root()
@@ -34,11 +34,6 @@ def test_discovery() -> None:
         ("1:12", ng.p.Scalar, float),
         ("log:0.01:1.0", ng.p.Log, float),
         ("blublu", str, str),
-        (
-            "Scalar(init=12.1).set_mutation(sigma=3).set_integer_casting()",
-            ng.p.Scalar,
-            int,
-        ),
     ],
 )
 def test_make_nevergrad_parameter(string: str, param_cls: Any, value_cls: Any) -> None:

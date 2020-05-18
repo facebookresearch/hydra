@@ -57,6 +57,10 @@ hydra:
           init: 0.02
           step: 2.0
           log: true
+        # a linearly-distributed scalar between 0 and 1
+        dropout:
+          lower: 0.0
+          upper: 1.0
         # an integer scalar going from 4 to 16
         # init and step parameters could also be provided,
         # by default init is set to the middle of the range
@@ -65,8 +69,6 @@ hydra:
           lower: 4
           upper: 16
           integer: true
-        # a custom nevergrad parameter evaluated at runtime (avoid using this whenever possible)
-        dropout: Scalar(lower=0.0, upper=1.0)
 
 db: cifar
 lr: 0.01
@@ -137,7 +139,7 @@ name: nevergrad:
 
 ## Defining the parameters
 
-The plugin can use 3 types of parameters:
+The plugin can use 2 types of parameters:
 
 ### Choices
 
@@ -165,11 +167,4 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
   Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
-
-
-### Custom parameter
-
-You can use the full scope of [Nevergrad parametrization](https://facebookresearch.github.io/nevergrad/parametrization.html) by using a string defining a nevergrad parameter which will be evaluated at runtime 
-(eg.: `lr=Log(lower=0.001, upper=0.1)`). While providing greater flexibility, this comes at the cost of robustness, so avoid it whenever possible.
-
 
