@@ -124,9 +124,6 @@ def make_nevergrad_parameter(description: Any) -> Any:
          - ":"-separated values for ranges of scalars.
            "int" and/or "log" modifiers can be added in front to cast to integer or
            use log-distributed values (Eg: int:log:4:1024)
-         - evaluable nevergrad Parameter definition, which will be evaluated at
-           runtime. This provides full nevergrad flexibility at the cost of robustness.
-           Eg.:"Log(a_min=0.001, a_max=0.1)"
          - anything else will be treated as a constant string
        * a config definition dict for scalar parameters, with potential fields
          init, lower, upper, step, log, integer
@@ -145,13 +142,6 @@ def make_nevergrad_parameter(description: Any) -> Any:
     if isinstance(description, (ListConfig, list)):
         description = ",".join(description)
     if isinstance(description, str):
-        # hacky nevergrad parameter
-        if description.startswith(tuple(dir(ng.p))):
-            param: ng.p.Parameter = eval(  # pylint: disable=eval-used
-                "ng.p." + description
-            )
-            assert isinstance(param, ng.p.Parameter)
-            return param
         # cast to spec if possible
         try:
             description = CommandlineSpec.parse(description)
