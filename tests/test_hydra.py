@@ -496,24 +496,27 @@ def test_sweep_complex_defaults(
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "script, flag, overrides,expected",
+    "workdir, script, flag, overrides,expected",
     [
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/1_a_simple_cli_app/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/1_a_simple_cli_app/",
+            "my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="simple_cli_app",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file",
+            "my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="overriding_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
             """db:
@@ -525,7 +528,8 @@ def test_sweep_complex_defaults(
             id="overriding_help_template:$CONFIG",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -536,21 +540,22 @@ def test_sweep_complex_defaults(
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=bash)"
+    eval "$(python my_app.py -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=bash)"
+    eval "$(python my_app.py -sc uninstall=bash)"
 
     Fish - Install:
-    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=fish | source
+    python my_app.py -sc install=fish | source
     Fish - Uninstall:
-    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=fish | source
+    python my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
             id="overriding_help_template:$FLAGS_HELP",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/4_grouping_config_files/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/4_grouping_config_files/",
+            "my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             """db: mysql, postgresql
@@ -559,14 +564,16 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
             "foo\n",
             id="overriding_hydra_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
@@ -577,14 +584,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell_completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=bash)"
+    eval "$(python my_app.py -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=bash)"
+    eval "$(python my_app.py -sc uninstall=bash)"
 
     Fish - Install:
-    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc install=fish | source
+    python my_app.py -sc install=fish | source
     Fish - Uninstall:
-    python examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/my_app.py -sc uninstall=fish | source
+    python my_app.py -sc uninstall=fish | source
 
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
@@ -593,16 +600,26 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     ],
 )
 def test_help(
-    tmpdir: Path, script: str, flag: str, overrides: List[str], expected: Any
+    workdir: str,
+    tmpdir: Path,
+    script: str,
+    flag: str,
+    overrides: List[str],
+    expected: Any,
 ) -> None:
-    cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
-    cmd.extend(overrides)
-    cmd.append(flag)
-    print(" ".join(cmd))
-    result = str(subprocess.check_output(cmd).decode("utf-8"))
-    # normalize newlines on Windows to make testing easier
-    result = result.replace("\r\n", "\n")
-    assert result == expected
+    try:
+        os.chdir(workdir)
+        cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
+        cmd.extend(overrides)
+        cmd.append(flag)
+        print(" ".join(cmd))
+        result = str(subprocess.check_output(cmd).decode("utf-8"))
+        # normalize newlines on Windows to make testing easier
+        result = result.replace("\r\n", "\n")
+        assert result == expected
+
+    finally:
+        chdir_hydra_root()
 
 
 @pytest.mark.parametrize(  # type: ignore

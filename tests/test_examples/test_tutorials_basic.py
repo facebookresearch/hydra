@@ -71,7 +71,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
     lines = result.decode("utf-8").splitlines()
     assert len(lines) == len(expected)
     for i in range(len(lines)):
-        assert re.findall(expected[i], lines[i])
+        assert re.findall(re.escape(expected[i]), lines[i])
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -400,13 +400,10 @@ def test_examples_using_the_config_object(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
 
-    expected = re.escape(
-        """Missing mandatory value: node.waldo
-	full_key: node.waldo
-	reference_type=Optional[Dict[Any, Any]]
-	object_type=dict
+    expected = """Missing mandatory value: node.waldo
+\tfull_key: node.waldo
+\treference_type=Optional[Dict[Any, Any]]
+\tobject_type=dict"""
 
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace"""
-    )
     result = run_with_error(cmd)
-    assert re.findall(expected, result)
+    assert re.search(re.escape(expected), result)

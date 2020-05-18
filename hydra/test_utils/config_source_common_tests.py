@@ -4,8 +4,8 @@ from typing import Any, List, Optional, Type
 
 import pytest
 
-from hydra.core.errors import HydraException
 from hydra.core.object_type import ObjectType
+from hydra.errors import HydraException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 

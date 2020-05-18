@@ -55,7 +55,7 @@ class PackageConfigSource(ConfigSource):
                 )
         except FileNotFoundError:
             raise ConfigLoadError(
-                f"PackageConfigSource: Config not found: module={module_name}, resource_name={resource_name}"
+                f"Config not found: module={module_name}, resource_name={resource_name}"
             )
 
     @staticmethod

@@ -27,7 +27,7 @@ class FileConfigSource(ConfigSource):
         normalized_config_path = self._normalize_file_name(config_path)
         full_path = os.path.realpath(os.path.join(self.path, normalized_config_path))
         if not os.path.exists(full_path):
-            raise ConfigLoadError(f"FileConfigSource: Config not found : {full_path}")
+            raise ConfigLoadError(f"Config not found : {full_path}")
         with open(full_path) as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
