@@ -3,7 +3,7 @@ id: using_config
 title: Using the config object
 ---
 
-You configuration object is an instance of OmegaConf DictConfig.<br/>
+You configuration object is an instance of OmegaConf's DictConfig.  
 Here are some of the basic features:
 
 ```yaml title="config.yaml"

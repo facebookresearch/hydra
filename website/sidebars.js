@@ -14,24 +14,24 @@ module.exports = {
                     type: 'category',
                     label: 'Your first Hydra app',
                     items: [
-                        'tutorials/basic/simple_cli',
-                        'tutorials/basic/config_file',
-                        'tutorials/basic/using_config',
-                        'tutorials/basic/config_groups',
-                        'tutorials/basic/defaults',
-                        'tutorials/basic/composition',
+                        'tutorials/basic/your_first_app/simple_cli',
+                        'tutorials/basic/your_first_app/using_config',
+                        'tutorials/basic/your_first_app/config_file',
+                        'tutorials/basic/your_first_app/config_groups',
+                        'tutorials/basic/your_first_app/defaults',
+                        'tutorials/basic/your_first_app/composition',
                     ]
                 },
                 {
                     type: 'category',
                     label: 'Running your Hydra app',
                     items: [
-                        'tutorials/basic/strict_mode',
-                        'tutorials/basic/multi-run',
-                        'tutorials/basic/working_directory',
-                        'tutorials/basic/logging',
-                        'tutorials/basic/debugging',
-                        'tutorials/basic/tab_completion',
+                        'tutorials/basic/running_your_app/strict_mode',
+                        'tutorials/basic/running_your_app/multi-run',
+                        'tutorials/basic/running_your_app/working_directory',
+                        'tutorials/basic/running_your_app/logging',
+                        'tutorials/basic/running_your_app/debugging',
+                        'tutorials/basic/running_your_app/tab_completion',
                     ]
                 },
 
@@ -97,6 +97,7 @@ module.exports = {
             label: '0.11 to 1.0',
             items: [
                 'upgrades/0.11_to_1.0/adding_a_package_directive',
+                'upgrades/0.11_to_1.0/strict_mode_flag_deprecated',
             ],
           },
         ],
