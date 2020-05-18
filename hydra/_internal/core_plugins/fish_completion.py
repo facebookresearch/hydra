@@ -16,7 +16,7 @@ class FishCompletion(CompletionPlugin):
     set -lx COMP_LINE (commandline -cp)
 
     # Find out how to call the underlying script
-    set -l parts (string split -n ' ' $COMP_LINE)
+    set -l parts (commandline -cpo)
     if test "$parts[1]" = "python" -o "$parts[1]" = "python3"
         set cmd "$parts[1] $parts[2]"
         if not grep -q "@hydra.main" $parts[2]
