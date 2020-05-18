@@ -14,9 +14,8 @@ from hydra._internal.config_loader_impl import (
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
-from hydra.core.errors import HydraException
 from hydra.core.utils import env_override
-from hydra.errors import MissingConfigException
+from hydra.errors import HydraException, MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -192,10 +191,7 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == expected
 
-    # TODO: Add tests for new tutorial examples (2.1.using_config, 2.2_strict mode)
     # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
-    # TODO : test packages with nn-config group items
-    # TODO: python tutorials/basic/4_defaults/my_app.py  db=312312 should be an error, not an exception.
     # TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:

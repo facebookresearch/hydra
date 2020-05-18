@@ -2,7 +2,11 @@
 from typing import Optional, Sequence
 
 
-class MissingConfigException(IOError):
+class HydraException(Exception):
+    ...
+
+
+class MissingConfigException(IOError, HydraException):
     def __init__(
         self,
         message: str,

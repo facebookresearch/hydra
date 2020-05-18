@@ -7,7 +7,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 
-from hydra.core.errors import HydraException
+from hydra.errors import HydraException
 from omegaconf import Container, OmegaConf
 
 from hydra.core.object_type import ObjectType
@@ -23,7 +23,7 @@ class ConfigResult:
     is_schema_source: bool = False
 
 
-class ConfigLoadError(IOError):
+class ConfigLoadError(HydraException, IOError):
     pass
 
 
