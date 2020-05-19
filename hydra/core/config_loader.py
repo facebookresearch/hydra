@@ -39,10 +39,6 @@ class ConfigLoader(ABC):
         ...
 
     @abstractmethod
-    def exists_in_search_path(self, filepath: str) -> bool:
-        ...
-
-    @abstractmethod
     def get_search_path(self) -> ConfigSearchPath:
         ...
 
