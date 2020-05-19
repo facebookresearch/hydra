@@ -1,4 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+# TODO: print error if source package is not found: python two_packages.py db@MISSING:source1=mysql
+# TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
+# TODO: bad error for:
+#  python examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
+# TODO: final verdict about + and - prefixes for config groups.
+# TODO: decide on header comments before the package.
+# TODO fix error in: python two_packages.py db@destination:backup
+
 from dataclasses import dataclass
 from typing import Any, List
 
@@ -190,11 +199,6 @@ class TestConfigLoader:
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == expected
-
-    # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
-    # TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
-    # TODO: bad error for:
-    #  python examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(

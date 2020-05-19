@@ -130,8 +130,6 @@ class TestConfigRepository:
         )
         assert ret == expected
 
-        # TODO: decide on header comments before the package.
-
 
 @pytest.mark.parametrize("sep", [" "])  # type: ignore
 @pytest.mark.parametrize(  # type: ignore

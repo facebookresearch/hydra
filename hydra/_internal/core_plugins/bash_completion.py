@@ -14,7 +14,6 @@ log = logging.getLogger(__name__)
 
 
 class BashCompletion(CompletionPlugin):
-    # TODO: detect python with path like /foo/bar/python
     def install(self) -> None:
         # Record the old rule for uninstalling
         script = (
