@@ -92,7 +92,10 @@ def test_structured_configs_2_nesting_configs__with_ad_hoc_node(tmpdir: Path) ->
     "overrides,expected",
     [
         ([], {"db": "???"}),
-        (["db=mysql"], {"db": {"driver": "mysql", "host": "localhost", "port": 3306}},),
+        (
+            ["+db=mysql"],
+            {"db": {"driver": "mysql", "host": "localhost", "port": 3306}},
+        ),
     ],
 )
 def test_structured_configs_3_config_groups(
@@ -114,7 +117,7 @@ def test_structured_configs_3_config_groups_with_inheritance(tmpdir: Path) -> No
         sys.executable,
         "examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py",
         "hydra.run.dir=" + str(tmpdir),
-        "db=mysql",
+        "+db=mysql",
     ]
     result = check_output(cmd)
     assert result.decode().rstrip() == "Connecting to MySQL: localhost:3306"

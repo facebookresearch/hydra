@@ -60,38 +60,12 @@ def _save_config(cfg: DictConfig, filename: str, output_dir: Path) -> None:
         file.write(cfg.pretty())
 
 
-def get_overrides_dirname(
-    input_list: Sequence[str],
-    exclude_keys: Sequence[str] = [],
-    item_sep: str = ",",
-    kv_sep: str = "=",
-) -> str:
-    lst = []
-    for x in input_list:
-        key, _val = split_key_val(x)
-        if key not in exclude_keys:
-            lst.append(x)
-
-    lst.sort()
-    ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lst))
-    return ret
-
-
 def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     """
     :param overrides: overrides list
     :return: returning a new overrides list with all the keys starting with hydra. filtered.
     """
     return [x for x in overrides if not x.startswith("hydra.")]
-
-
-def split_key_val(s: str) -> Tuple[str, str]:
-    if "=" not in s:
-        raise ValueError(f"'{s}' not a valid override, expecting key=value format")
-
-    idx = s.find("=")
-    assert idx != -1
-    return s[0:idx], s[idx + 1 :]
 
 
 def run_job(

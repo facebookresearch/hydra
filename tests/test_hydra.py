@@ -293,7 +293,7 @@ def test_app_with_config_groups__override_dataset__wrong(
             calling_module=calling_module,
             config_path="conf",
             config_name=None,
-            overrides=["optimizer=wrong_name"],
+            overrides=["+optimizer=wrong_name"],
         ):
             pass
     assert sorted(ex.value.options) == sorted(["adam", "nesterov"])
@@ -317,7 +317,7 @@ def test_app_with_config_groups__override_all_configs(
         calling_module=calling_module,
         config_path="conf",
         config_name=None,
-        overrides=["optimizer=adam", "optimizer.lr=10"],
+        overrides=["+optimizer=adam", "optimizer.lr=10"],
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             optimizer=dict(type="adam", lr=10, beta=0.01)
@@ -440,7 +440,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
         (None, "tests.test_apps.app_with_config_with_free_group.my_app"),
     ],
 )
-@pytest.mark.parametrize("overrides", [["free_group=opt1,opt2"]])  # type: ignore
+@pytest.mark.parametrize("overrides", [["+free_group=opt1,opt2"]])  # type: ignore
 def test_multirun_with_free_override(
     restore_singletons: Any,
     sweep_runner: TSweepRunner,
@@ -459,9 +459,9 @@ def test_multirun_with_free_override(
     )
     with sweep:
         assert sweep.returns is not None and len(sweep.returns[0]) == 2
-        assert sweep.returns[0][0].overrides == ["free_group=opt1"]
+        assert sweep.returns[0][0].overrides == ["+free_group=opt1"]
         assert sweep.returns[0][0].cfg == {"group_opt1": True, "free_group_opt1": True}
-        assert sweep.returns[0][1].overrides == ["free_group=opt2"]
+        assert sweep.returns[0][1].overrides == ["+free_group=opt2"]
         assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}
 
 

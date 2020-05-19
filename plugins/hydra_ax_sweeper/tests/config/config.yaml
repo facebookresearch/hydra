@@ -1,6 +1,8 @@
 # @package _group_
 defaults:
   - hydra/sweeper: ax
+  - quadratic: null
+  - params: null
 
 quadratic:
   # To be minimized
