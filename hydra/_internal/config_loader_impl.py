@@ -29,13 +29,13 @@ class ParsedOverride:
     pkg2: Optional[str]
     value: Optional[str]
 
-    def _get_subject_package(self) -> Optional[str]:
+    def get_subject_package(self) -> Optional[str]:
         return self.pkg1 if self.pkg2 is None else self.pkg2
 
-    def _is_package_rename(self) -> bool:
+    def is_package_rename(self) -> bool:
         return self.pkg1 is not None and self.pkg2 is not None
 
-    def _is_default_deletion(self) -> bool:
+    def is_delete(self) -> bool:
         return self.value == "null"
 
 
@@ -233,12 +233,14 @@ class ConfigLoaderImpl(ConfigLoader):
     @staticmethod
     def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
         assert override.key == default.config_group
-        if override._is_default_deletion():
-            return override._get_subject_package() == default.package
-        elif override._is_package_rename():
-            return override.pkg1 == default.package
+        if override.is_delete():
+            return override.get_subject_package() == default.package
         else:
-            return default.package is None
+            return override.key == default.config_group and (
+                override.pkg1 == default.package
+                or override.pkg1 == ""
+                and default.package is None
+            )
 
     @staticmethod
     def find_matches(
@@ -248,12 +250,7 @@ class ConfigLoaderImpl(ConfigLoader):
         matches: List[IndexedDefaultElement] = []
         for default in key_to_defaults[override.key]:
             if ConfigLoaderImpl.is_matching(override, default.default):
-                if override._is_package_rename():
-                    for candidate in key_to_defaults[override.key]:
-                        if candidate.default.package == override.pkg1:
-                            matches.append(candidate)
-                else:
-                    matches.append(default)
+                matches.append(default)
         return matches
 
     @staticmethod
@@ -268,10 +265,8 @@ class ConfigLoaderImpl(ConfigLoader):
                 key_to_defaults[default.config_group].append(
                     IndexedDefaultElement(idx=idx, default=default)
                 )
-        # copying overrides list because the loop is mutating it.
-        for override in copy.deepcopy(overrides):
-            assert override.value is not None
-            if "," in override.value:
+        for override in overrides:
+            if override.value is not None and "," in override.value:
                 # If this is a multirun config (comma separated list), flag the default to prevent it from being
                 # loaded until we are constructing the config for individual jobs.
                 override.value = "_SKIP_"
@@ -285,17 +280,18 @@ class ConfigLoaderImpl(ConfigLoader):
 
                 for match in matches:
                     default = match.default
-                    default.config_name = override.value
+                    if override.value is not None:
+                        default.config_name = override.value
                     if override.pkg1 is not None:
-                        default.package = override._get_subject_package()
+                        default.package = override.get_subject_package()
                 if len(matches) == 0 and not (
-                    override._is_package_rename() or override._is_default_deletion()
+                    override.is_package_rename() or override.is_delete()
                 ):
                     defaults.append(
                         DefaultElement(
                             config_group=override.key,
                             config_name=override.value,
-                            package=override._get_subject_package(),
+                            package=override.get_subject_package(),
                         )
                     )
 
