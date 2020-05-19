@@ -193,6 +193,7 @@ class TestConfigLoader:
 
     # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
     # TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
+    # TODO: bad error for: python  examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -754,14 +755,58 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "override, expected",
     [
-        ("key=value", ParsedOverride("key", None, None, "value")),
-        ("key@pkg=value", ParsedOverride("key", "pkg", None, "value")),
-        ("key@pkg1:pkg2=value", ParsedOverride("key", "pkg1", "pkg2", "value")),
-        ("key@a.b.c:x.y.z=value", ParsedOverride("key", "a.b.c", "x.y.z", "value")),
-        ("key@:pkg2=value", ParsedOverride("key", "", "pkg2", "value")),
-        ("key@pkg1:=value", ParsedOverride("key", "pkg1", "", "value")),
-        ("key=null", ParsedOverride("key", None, None, "null")),
-        ("foo/bar=zoo", ParsedOverride("foo/bar", None, None, "zoo")),
+        # changing items
+        pytest.param(
+            "db=postgresql",
+            ParsedOverride(None, "db", None, None, "postgresql"),
+            id="change_option",
+        ),
+        pytest.param(
+            "db@dest=postgresql",
+            ParsedOverride(None, "db", "dest", None, "postgresql"),
+            id="change_option",
+        ),
+        pytest.param(
+            "db@src:dest=postgresql",
+            ParsedOverride(None, "db", "src", "dest", "postgresql"),
+            id="change_both",
+        ),
+        pytest.param(
+            "db@dest",
+            ParsedOverride(None, "db", "dest", None, None),
+            id="change_package",
+        ),
+        pytest.param(
+            "db@src:dest",
+            ParsedOverride(None, "db", "src", "dest", None),
+            id="change_package",
+        ),
+        # adding items
+        pytest.param(
+            "+model=resnet",
+            ParsedOverride("+", "model", None, None, "resnet"),
+            id="add_item",
+        ),
+        pytest.param(
+            "+db@offsite_backup=mysql",
+            ParsedOverride("+", "db", "offsite_backup", None, "mysql"),
+            id="add_item",
+        ),
+        # deleting items
+        pytest.param(
+            "-db", ParsedOverride("-", "db", None, None, None), id="delete_item",
+        ),
+        pytest.param(
+            "-db@src", ParsedOverride("-", "db", "src", None, None), id="delete_item",
+        ),
+        pytest.param(
+            "db=null", ParsedOverride(None, "db", None, None, "null"), id="delete_item",
+        ),
+        pytest.param(
+            "db@src=null",
+            ParsedOverride(None, "db", "src", None, "null"),
+            id="delete_item",
+        ),
     ],
 )
 def test_parse_override(override: str, expected: ParsedOverride) -> None:
