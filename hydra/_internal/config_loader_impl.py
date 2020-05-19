@@ -40,6 +40,12 @@ class ParsedOverride:
 
 
 @dataclass
+class ParsedOverrideWithLine:
+    override: ParsedOverride
+    input_line: str
+
+
+@dataclass
 class DefaultElement:
     config_group: Optional[str]
     config_name: str
@@ -84,6 +90,18 @@ class ConfigLoaderImpl(ConfigLoader):
             config_search_path=config_search_path
         )
 
+    def split_overrides(
+        self, pairs: List[ParsedOverrideWithLine],
+    ) -> Tuple[List[ParsedOverride], List[ParsedOverrideWithLine]]:
+        config_group_overrides = []
+        config_overrides = []
+        for pwd in pairs:
+            if not self.repository.exists(pwd.override.key):
+                config_overrides.append(pwd)
+            else:
+                config_group_overrides.append(pwd.override)
+        return config_group_overrides, config_overrides
+
     def load_configuration(
         self,
         config_name: Optional[str],
@@ -93,7 +111,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if strict is None:
             strict = self.default_strict
 
-        overrides = copy.deepcopy(overrides) or []
+        parsed_overrides = [self._parse_override(override) for override in overrides]
 
         if config_name is not None and not self.repository.exists(config_name):
             # TODO: handle schema as a special case
@@ -133,8 +151,11 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults.append(DefaultElement(config_group=None, config_name="__SELF__"))
         split_at = len(defaults)
 
+        config_group_overrides, config_overrides = self.split_overrides(
+            parsed_overrides
+        )
         self._combine_default_lists(defaults, job_defaults)
-        consumed = self._apply_overrides_to_defaults(overrides, defaults)
+        ConfigLoaderImpl._apply_overrides_to_defaults(config_group_overrides, defaults)
 
         # Load and defaults and merge them into cfg
         cfg = self._merge_defaults_into_config(
@@ -144,21 +165,23 @@ class ConfigLoaderImpl(ConfigLoader):
         OmegaConf.set_struct(cfg, strict)
 
         # Merge all command line overrides after enabling strict flag
-        remaining_overrides = [x for x in overrides if x not in consumed]
         try:
-            merged = OmegaConf.merge(cfg, OmegaConf.from_dotlist(remaining_overrides))
+            lst = [x.input_line for x in config_overrides]
+            merged = OmegaConf.merge(cfg, OmegaConf.from_dotlist(lst))
             assert isinstance(merged, DictConfig)
             cfg = merged
         except OmegaConfBaseException as ex:
             raise HydraException("Error merging overrides") from ex
 
-        remaining = consumed + remaining_overrides
-
-        def is_hydra(x: str) -> bool:
-            return x.startswith("hydra.") or x.startswith("hydra/")
-
-        cfg.hydra.overrides.task = [x for x in remaining if not is_hydra(x)]
-        cfg.hydra.overrides.hydra = [x for x in remaining if is_hydra(x)]
+        for pwl in parsed_overrides:
+            override = pwl.override
+            assert override.value is not None
+            assert override.key is not None
+            key = override.key
+            if key.startswith("hydra.") or key.startswith("hydra/"):
+                cfg.hydra.overrides.hydra.append(pwl.input_line)
+            else:
+                cfg.hydra.overrides.task.append(pwl.input_line)
 
         with open_dict(cfg.hydra.job):
             if "name" not in cfg.hydra.job:
@@ -233,11 +256,11 @@ class ConfigLoaderImpl(ConfigLoader):
                     matches.append(default)
         return matches
 
+    @staticmethod
     def _apply_overrides_to_defaults(
-        self, overrides: List[str], defaults: List[DefaultElement]
-    ) -> List[str]:
+        overrides: List[ParsedOverride], defaults: List[DefaultElement]
+    ) -> None:
 
-        consumed = []
         key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
 
         for idx, default in enumerate(defaults):
@@ -246,11 +269,8 @@ class ConfigLoaderImpl(ConfigLoader):
                     IndexedDefaultElement(idx=idx, default=default)
                 )
         # copying overrides list because the loop is mutating it.
-        for override_str in copy.deepcopy(overrides):
-            override = ConfigLoaderImpl._parse_override(override_str)
-            if not self.repository.exists(override.key):
-                continue
-
+        for override in copy.deepcopy(overrides):
+            assert override.value is not None
             if "," in override.value:
                 # If this is a multirun config (comma separated list), flag the default to prevent it from being
                 # loaded until we are constructing the config for individual jobs.
@@ -279,10 +299,6 @@ class ConfigLoaderImpl(ConfigLoader):
                         )
                     )
 
-            consumed.append(override_str)
-            overrides.remove(override_str)
-        return consumed
-
     @staticmethod
     def _split_group(group_with_package: str) -> Tuple[str, Optional[str]]:
         idx = group_with_package.find("@")
@@ -298,7 +314,7 @@ class ConfigLoaderImpl(ConfigLoader):
         return group, package
 
     @staticmethod
-    def _parse_override(override: str) -> ParsedOverride:
+    def _parse_override(override: str) -> ParsedOverrideWithLine:
         # forms:
         # key=value
         # key@pkg=value
@@ -317,7 +333,8 @@ class ConfigLoaderImpl(ConfigLoader):
             pkg1 = matches.group("pkg1")
             pkg2 = matches.group("pkg2")
             value = matches.group("value")
-            return ParsedOverride(prefix, key, pkg1, pkg2, value)
+            ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
+            return ParsedOverrideWithLine(override=ret, input_line=override)
         else:
             raise HydraException(
                 f"Error parsing command line override : '{override}'\n"

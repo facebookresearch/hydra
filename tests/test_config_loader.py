@@ -193,7 +193,8 @@ class TestConfigLoader:
 
     # TODO: Error if source package is not found: python two_packages.py db@MISSING:source1=mysql
     # TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
-    # TODO: bad error for: python  examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
+    # TODO: bad error for:
+    #  python examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
 
     def test_load_adding_group_not_in_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -807,11 +808,22 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             ParsedOverride(None, "db", "src", None, "null"),
             id="delete_item",
         ),
+        # old
+        ("key@pkg=value", ParsedOverride(None, "key", "pkg", None, "value")),
+        ("key@pkg1:pkg2=value", ParsedOverride(None, "key", "pkg1", "pkg2", "value")),
+        (
+            "key@a.b.c:x.y.z=value",
+            ParsedOverride(None, "key", "a.b.c", "x.y.z", "value"),
+        ),
+        ("key@:pkg2=value", ParsedOverride(None, "key", "", "pkg2", "value")),
+        ("key@pkg1:=value", ParsedOverride(None, "key", "pkg1", "", "value")),
+        ("key=null", ParsedOverride(None, "key", None, None, "null")),
+        ("foo/bar=zoo", ParsedOverride(None, "foo/bar", None, None, "zoo")),
     ],
 )
 def test_parse_override(override: str, expected: ParsedOverride) -> None:
     ret = ConfigLoaderImpl._parse_override(override)
-    assert ret == expected
+    assert ret.override == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
