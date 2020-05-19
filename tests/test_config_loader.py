@@ -1,13 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# TODO: print error if source package is not found: python two_packages.py db@MISSING:source1=mysql
-# TODO: Implement and test: https://docs.google.com/document/d/1I--p8JpIWQujVZuyaM2J910ew9wJ01S0E3ye6uJnTmY/edit#
 # TODO: bad error for:
 #  python examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
-# TODO: final verdict about + and - prefixes for config groups.
-# TODO: decide on header comments before the package.
-# TODO fix error in: python two_packages.py db@destination:backup
-
+# TODO : If not config file is specified, do not require + prefix to add items to defaults or config.
+# TODO: Document command line:
+#   +/~, pacakges, defaults manipulation, the works.
+# completion
+# TODO: Add tests for completion with +prefix (should complete and suggest config groups that are not listed)
+# TODO : Test completion when defaults has a missing mandatory item
+import re
 from dataclasses import dataclass
 from typing import Any, List
 
@@ -18,6 +19,7 @@ from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 from hydra._internal.config_loader_impl import (
     ConfigLoaderImpl,
     DefaultElement,
+    ParsedConfigOverride,
     ParsedOverride,
 )
 from hydra._internal.utils import create_config_search_path
@@ -162,7 +164,7 @@ class TestConfigLoader:
                 id="baseline",
             ),
             pytest.param(
-                ["group1@pkg3=option1"],
+                ["+group1@pkg3=option1"],
                 {
                     "pkg1": {"group1_option1": True},
                     "pkg2": {"group1_option1": True},
@@ -172,6 +174,11 @@ class TestConfigLoader:
             ),
             pytest.param(
                 ["group1@pkg1=null"],
+                {"pkg2": {"group1_option1": True}},
+                id="delete_package",
+            ),
+            pytest.param(
+                ["~group1@pkg1"],
                 {"pkg2": {"group1_option1": True}},
                 id="delete_package",
             ),
@@ -206,7 +213,7 @@ class TestConfigLoader:
         )
         cfg = config_loader.load_configuration(
             config_name="optional-default.yaml",
-            overrides=["group2=file1"],
+            overrides=["+group2=file1"],
             strict=False,
         )
         with open_dict(cfg):
@@ -335,7 +342,7 @@ class TestConfigLoader:
         )
 
         cfg = config_loader.load_configuration(
-            config_name="config", overrides=["db=mysql"]
+            config_name="config", overrides=["+db=mysql"]
         )
         with open_dict(cfg):
             del cfg["hydra"]
@@ -377,7 +384,7 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
-            config_name="config", overrides=["db=mysql"], strict=False
+            config_name="config", overrides=["+db=mysql"], strict=False
         )
 
         with open_dict(cfg):
@@ -692,7 +699,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
     assert OmegaConf.get_type(cfg.plugin) == Plugin
 
     cfg = config_loader.load_configuration(
-        config_name="config", overrides=["plugin=concrete"]
+        config_name="config", overrides=["+plugin=concrete"]
     )
     with open_dict(cfg):
         del cfg["hydra"]
@@ -760,7 +767,7 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "override, expected",
     [
-        # changing items
+        # changing item
         pytest.param(
             "db=postgresql",
             ParsedOverride(None, "db", None, None, "postgresql"),
@@ -786,7 +793,7 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             ParsedOverride(None, "db", "src", "dest", None),
             id="change_package",
         ),
-        # adding items
+        # adding item
         pytest.param(
             "+model=resnet",
             ParsedOverride("+", "model", None, None, "resnet"),
@@ -797,32 +804,21 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             ParsedOverride("+", "db", "offsite_backup", None, "mysql"),
             id="add_item",
         ),
-        # deleting items
+        # deleting item
         pytest.param(
-            "-db", ParsedOverride("-", "db", None, None, None), id="delete_item",
+            "~db", ParsedOverride("~", "db", None, None, None), id="delete_item",
         ),
         pytest.param(
-            "-db@src", ParsedOverride("-", "db", "src", None, None), id="delete_item",
+            "~db@src", ParsedOverride("~", "db", "src", None, None), id="delete_item",
         ),
         pytest.param(
-            "db=null", ParsedOverride(None, "db", None, None, "null"), id="delete_item",
+            "db=null", ParsedOverride("~", "db", None, None, None), id="delete_item",
         ),
         pytest.param(
             "db@src=null",
-            ParsedOverride(None, "db", "src", None, "null"),
+            ParsedOverride("~", "db", "src", None, None),
             id="delete_item",
         ),
-        # old
-        ("key@pkg=value", ParsedOverride(None, "key", "pkg", None, "value")),
-        ("key@pkg1:pkg2=value", ParsedOverride(None, "key", "pkg1", "pkg2", "value")),
-        (
-            "key@a.b.c:x.y.z=value",
-            ParsedOverride(None, "key", "a.b.c", "x.y.z", "value"),
-        ),
-        ("key@:pkg2=value", ParsedOverride(None, "key", "", "pkg2", "value")),
-        ("key@pkg1:=value", ParsedOverride(None, "key", "pkg1", "", "value")),
-        ("key=null", ParsedOverride(None, "key", None, None, "null")),
-        ("foo/bar=zoo", ParsedOverride(None, "foo/bar", None, None, "zoo")),
     ],
 )
 def test_parse_override(override: str, expected: ParsedOverride) -> None:
@@ -830,13 +826,32 @@ def test_parse_override(override: str, expected: ParsedOverride) -> None:
     assert ret.override == expected
 
 
+@pytest.mark.parametrize(  # type: ignore
+    "override, expected",
+    [
+        pytest.param(
+            "x.y.z=abc", ParsedConfigOverride(None, "x.y.z", "abc"), id="change_option",
+        ),
+        pytest.param(
+            "+x.y.z=abc", ParsedConfigOverride("+", "x.y.z", "abc"), id="adding",
+        ),
+        pytest.param(
+            "~x.y.z=abc", ParsedConfigOverride("~", "x.y.z", "abc"), id="adding",
+        ),
+    ],
+)
+def test_parse_config_override(override: str, expected: ParsedConfigOverride) -> None:
+    ret = ConfigLoaderImpl._parse_config_override(override)
+    assert ret == expected
+
+
 defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}]
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "input_defaults,overrides,expected",
     [
-        # change
+        # change item
         pytest.param(
             defaults_list,
             ["db=postgresql"],
@@ -867,6 +882,17 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
         ),
         pytest.param(
             defaults_list,
+            ["db@XXX:dest=postgresql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not rename package. No match for 'db@XXX' in the defaults list."
+                ),
+            ),
+            id="change_both_invalid_package",
+        ),
+        pytest.param(
+            defaults_list,
             ["db@:dest"],
             [{"db@dest": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}],
             id="change_package",
@@ -877,39 +903,226 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             [{"db": "mysql"}, {"db@dest": "mysql"}, {"hydra/launcher": "basic"}],
             id="change_package",
         ),
+        pytest.param(
+            defaults_list,
+            ["db@XXX:dest"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not rename package. No match for 'db@XXX' in the defaults list."
+                ),
+            ),
+            id="change_package_from_invalid",
+        ),
+        # adding item
+        pytest.param([], ["+db=mysql"], [{"db": "mysql"}], id="adding_item"),
+        pytest.param(
+            defaults_list,
+            ["+db@backup=mysql"],
+            [
+                {"db": "mysql"},
+                {"db@src": "mysql"},
+                {"hydra/launcher": "basic"},
+                {"db@backup": "mysql"},
+            ],
+            id="adding_item_at_package",
+        ),
+        pytest.param(
+            defaults_list,
+            ["+db=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not add. An item matching 'db' is already in the defaults list"
+                ),
+            ),
+            id="adding_duplicate_item",
+        ),
+        pytest.param(
+            defaults_list,
+            ["+db@src:foo=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Add syntax does not support package rename, remove + prefix"
+                ),
+            ),
+            id="add_rename_error",
+        ),
+        pytest.param(
+            defaults_list,
+            ["+db@src=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not add. An item matching 'db@src' is already in the defaults list"
+                ),
+            ),
+            id="adding_duplicate_item",
+        ),
+        pytest.param(
+            [],
+            ["db=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not override. No match for 'db' in the defaults list.\n"
+                    "To append to your default list, prefix the override with plus. e.g +db=mysql"
+                ),
+            ),
+            id="adding_without_plus",
+        ),
+        # deleting item
+        pytest.param(
+            [],
+            ["~db=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not delete. No match for 'db' in the defaults list."
+                ),
+            ),
+            id="delete_no_match",
+        ),
+        pytest.param(
+            defaults_list,
+            ["~db"],
+            [{"db@src": "mysql"}, {"hydra/launcher": "basic"}],
+            id="delete",
+        ),
+        pytest.param(
+            defaults_list,
+            ["~db=mysql"],
+            [{"db@src": "mysql"}, {"hydra/launcher": "basic"}],
+            id="delete",
+        ),
+        pytest.param(
+            defaults_list,
+            ["~db=postgresql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not delete. No match for 'db=postgresql' in the defaults list."
+                ),
+            ),
+            id="delete_mismatch_value",
+        ),
+        pytest.param(
+            defaults_list,
+            ["~db@src"],
+            [{"db": "mysql"}, {"hydra/launcher": "basic"}],
+            id="delete",
+        ),
     ],
 )
 def test_apply_overrides_to_defaults(
-    input_defaults: List[str], overrides: List[str], expected: List[Any],
+    input_defaults: List[str], overrides: List[str], expected: Any
 ) -> None:
-    parsed_overrides = [
-        ConfigLoaderImpl._parse_override(override).override for override in overrides
-    ]
-    input_defaults = ConfigLoaderImpl._parse_defaults(
+    defaults = ConfigLoaderImpl._parse_defaults(
         OmegaConf.create({"defaults": input_defaults})
     )
-    expected_defaults = ConfigLoaderImpl._parse_defaults(
-        OmegaConf.create({"defaults": expected})
-    )
-    ConfigLoaderImpl._apply_overrides_to_defaults(
-        overrides=parsed_overrides, defaults=input_defaults
-    )
-    assert input_defaults == expected_defaults
+    parsed_overrides = [
+        ConfigLoaderImpl._parse_override(override) for override in overrides
+    ]
+
+    if isinstance(expected, list):
+        expected_defaults = ConfigLoaderImpl._parse_defaults(
+            OmegaConf.create({"defaults": expected})
+        )
+        ConfigLoaderImpl._apply_overrides_to_defaults(
+            overrides=parsed_overrides, defaults=defaults
+        )
+        assert defaults == expected_defaults
+    else:
+        with expected:
+            ConfigLoaderImpl._apply_overrides_to_defaults(
+                overrides=parsed_overrides, defaults=defaults
+            )
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "overrides, expected",
+    "input_cfg,strict,overrides,expected",
     [
-        # interpreted as a dotlist
-        (["user@hostname=active"], {"user@hostname": "active"}),
-        (["user@hostname.com=active"], {"user@hostname": {"com": "active"}}),
+        # append
+        pytest.param({}, False, ["x=10"], {"x": 10}, id="append"),
+        pytest.param(
+            {},
+            True,
+            ["x=10"],
+            pytest.raises(
+                HydraException, match=re.escape("Error merging override x=10")
+            ),
+            id="append",
+        ),
+        pytest.param({}, True, ["+x=10"], {"x": 10}, id="append"),
+        # append item with @
+        pytest.param(
+            {},
+            False,
+            ["user@hostname=active"],
+            {"user@hostname": "active"},
+            id="append@",
+        ),
+        pytest.param(
+            {},
+            True,
+            ["+user@hostname=active"],
+            {"user@hostname": "active"},
+            id="append@",
+        ),
+        # override
+        pytest.param({"x": 20}, False, ["x=10"], {"x": 10}, id="override"),
+        pytest.param({"x": 20}, True, ["x=10"], {"x": 10}, id="override"),
+        pytest.param(
+            {"x": 20},
+            True,
+            ["+x=10"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not append to config. An item is already at 'x'"
+                ),
+            ),
+            id="override",
+        ),
+        # delete
+        pytest.param({"x": 20}, False, ["~x"], {}, id="delete"),
+        pytest.param({"x": 20}, False, ["~x=20"], {}, id="delete"),
+        pytest.param({"x": {"y": 10}}, False, ["~x"], {}, id="delete"),
+        pytest.param({"x": {"y": 10}}, False, ["~x.y"], {"x": {}}, id="delete"),
+        pytest.param({"x": {"y": 10}}, False, ["~x.y=10"], {"x": {}}, id="delete"),
+        pytest.param(
+            {"x": 20},
+            False,
+            ["~z"],
+            pytest.raises(
+                HydraException,
+                match=re.escape("Could not delete from config. 'z' does not exist."),
+            ),
+            id="delete_error_key",
+        ),
+        pytest.param(
+            {"x": 20},
+            False,
+            ["~x=10"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not delete from config. The value of 'x' is 20 and not 10."
+                ),
+            ),
+            id="delete_error_value",
+        ),
     ],
 )
-def test_override_config_key_with_at_symbol(
-    overrides: List[str], expected: Any
+def test_apply_overrides_to_config(
+    input_cfg: Any, strict: bool, overrides: List[str], expected: Any
 ) -> None:
-    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
-    cfg = config_loader.load_configuration(config_name=None, overrides=overrides)
-    with open_dict(cfg):
-        del cfg["hydra"]
-    assert cfg == expected
+    cfg = OmegaConf.create(input_cfg)
+    OmegaConf.set_struct(cfg, strict)
+    if isinstance(expected, dict):
+        ConfigLoaderImpl._apply_overrides_to_config(overrides=overrides, cfg=cfg)
+        assert cfg == expected
+    else:
+        with expected:
+            ConfigLoaderImpl._apply_overrides_to_config(overrides=overrides, cfg=cfg)

@@ -1,4 +1,6 @@
-# @package _global_
+defaults:
+  - group: null
+
 # a mapping item
 dict:
   key1: val1

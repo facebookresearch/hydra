@@ -137,7 +137,7 @@ class TestCompose:
         (None, [], {}),
         (
             None,
-            ["db=sqlite"],
+            ["+db=sqlite"],
             {
                 "db": {
                     "driver": "sqlite",
@@ -149,12 +149,12 @@ class TestCompose:
         ),
         (
             None,
-            ["db=mysql", "environment=production"],
+            ["+db=mysql", "+environment=production"],
             {"db": {"driver": "mysql", "user": "mysql", "pass": "r4Zn*jQ9JB1Rz2kfz"}},
         ),
         (
             None,
-            ["db=mysql", "environment=production", "application=donkey"],
+            ["+db=mysql", "+environment=production", "+application=donkey"],
             {
                 "db": {"driver": "mysql", "user": "mysql", "pass": "r4Zn*jQ9JB1Rz2kfz"},
                 "donkey": {"name": "kong", "rank": "king"},
@@ -163,9 +163,9 @@ class TestCompose:
         (
             None,
             [
-                "db=mysql",
-                "environment=production",
-                "application=donkey",
+                "+db=mysql",
+                "+environment=production",
+                "+application=donkey",
                 "donkey.name=Dapple",
                 "donkey.rank=squire_donkey",
             ],
