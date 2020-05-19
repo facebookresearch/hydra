@@ -2,38 +2,58 @@
 id: package_header
 title: Upgrading package header
 ---
-The `@package` header is described in details [here](/advanced/package_header.md).
-You are encouraged to read the details, but the TLDR is:
+Hydra 1.0 introduces the concept of a config `package`. A package is the common parent 
+path of all nodes in the config file.
 
-- For configs mentioned in `hydra.main()` (Primary config files), you don't need to do anything.
-- For configs in config groups, read on.
+ - In Hydra 0.11, there was an implicit default of `_global_` ("")
+ - In Hydra 1.1 the default will be `_group_` (the name of the config group).
+ - Hydra 1.0 maintains the implicit default of `_global_` and issues a warning for 
+any config group file without a `@package` header.
 
-### Before
+By adding an explicit `@package` to these configs now, you guarantee that your configs 
+will not break when you upgrade to Hydra 1.1.
+
+The `@package` header is described in details [here](/advanced/package_header.md).  
+
+## Upgrade instructions:
+### Recommended (~10 seconds per config file):
+`Case 1`: For config files where the common parent path matches the config group name:  
+ - Add `# @package _group_` to the top of every config group file
+ - Remove the common parent path config file like in the example below.
+
+`Case 2`: For files without a common parent path:
+ - Add `# @package _global_`.
+
+### Alternative (not recommended):
+ - If you do not want to restructure the config at this time use `Case 2` for all your config files.
+
+### Example for `case 1`:
+
+#### Before
 ```yaml title="db/mysql.yaml"
 db:
   driver: mysql
   host: localhost
   port: 3306
 ```
-### After
-The recommended method is to use the special package `_group_`.
+#### After
 ```yaml title="db/mysql.yaml"
 # @package _group_
 driver: mysql
 host: localhost
 port: 3306
 ```
+The interpretations of the before and after files are identical.
 
-If you do not want to change your config structure, use `@package _global_`. 
-```yaml title="db/mysql.yaml"
+### Example for `case 2`:
+```yaml title="env/prod.yaml"
 # @package _global_
 db:
   driver: mysql
-  host: localhost
+  host: 10.0.0.11
   port: 3306
-```
 
-<div class="alert alert--info" role="alert">
-For configs in config groups, <b>@package _group_</b> will become the default in Hydra 1.1 and you will no longer need to specify it.
-By adding an explicit @package to these configs now, you guarantee that your configs will not break when you upgrade to Hydra 1.1.
-</div>
+webserver:
+  host: 10.0.0.11
+  port: 443
+```
