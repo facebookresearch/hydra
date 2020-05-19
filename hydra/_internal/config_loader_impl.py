@@ -23,10 +23,11 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 @dataclass
 class ParsedOverride:
+    prefix: Optional[str]
     key: str
     pkg1: Optional[str]
     pkg2: Optional[str]
-    value: str
+    value: Optional[str]
 
     def _get_subject_package(self) -> Optional[str]:
         return self.pkg1 if self.pkg2 is None else self.pkg2
@@ -302,20 +303,21 @@ class ConfigLoaderImpl(ConfigLoader):
         # key=value
         # key@pkg=value
         # key@src_pkg:dst_pkg=value
-        # regex code and tests: https://regex101.com/r/LiV6Rf/10
+        # regex code and tests: https://regex101.com/r/LiV6Rf/13
 
         regex = (
-            r"^(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)"
-            r"(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?=(?P<value>.*)$"
+            r"^(?P<prefix>[+-])?(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)"
+            r"(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?(?:=(?P<value>.*))?$"
         )
         matches = re.search(regex, override)
 
         if matches:
+            prefix = matches.group("prefix")
             key = matches.group("key")
             pkg1 = matches.group("pkg1")
             pkg2 = matches.group("pkg2")
             value = matches.group("value")
-            return ParsedOverride(key, pkg1, pkg2, value)
+            return ParsedOverride(prefix, key, pkg1, pkg2, value)
         else:
             raise HydraException(
                 f"Error parsing command line override : '{override}'\n"
