@@ -1,11 +1,11 @@
 ---
-id: package_header
-title: The package header
+id: package_directive
+title: The @package directive
 ---
-
 ## Overview
 Each config file contains an optional header section at the top.
 Currently the only supported directive in the header is `@package`.
+
 A `package` is the `path` of a node in the config.
 For example, the `package` of the node `{driver: mysql}` below is `db`.
 ```yaml
@@ -133,14 +133,14 @@ backup:
   pass: secret
 ```
 
-### The evolution of the `@package` header
+### The evolution of the `@package` directive
 The behavior of the `@package` is changing:
- - Before Hydra 1.0, the `@package` header was not supported, and the default behavior was equivalent to `@package _global_`. 
- - Hydra 1.0 introduces the `@package` header and make `_group_` the recommended choice, but does not change the default behavior.
-If you omit the `@package` header you will receive a warning telling you to add a `@package` header, recommending `_group_`.
+ - Before Hydra 1.0, the `@package` directive was not supported, and the default behavior was equivalent to `@package _global_`. 
+ - Hydra 1.0 introduces the `@package` directive and make `_group_` the recommended choice, but does not change the default behavior.
+If you omit the `@package` directive you will receive a warning telling you to add a `@package` directive, recommending `_group_`.
  - Hydra 1.1 will change the default to `_group_`.
 
-The `@package` header is described in more detail in [this design doc](https://docs.google.com/document/d/10aU2axeJj_p_iv1Hp9VulYLL5qyvhErg89MKFGbkZO4/edit?usp=sharing).
+The `@package` directive is described in more detail in [this design doc](https://docs.google.com/document/d/10aU2axeJj_p_iv1Hp9VulYLL5qyvhErg89MKFGbkZO4/edit?usp=sharing).
 
 ### The config header format
 The config header format is a generic dictionary style block at the top of your config files.
@@ -155,3 +155,16 @@ The resulting header is
 ```
 Both colon and whitespace are accepted as a separator between the key and the value.
 Unrecognized header keys (like `oompa` and `loompa`) are ignored.
+
+
+
+--- 
+Hydra 1.0 introduces the concept of a config package. A package is the common parent path of all nodes in the config file.
+
+In Hydra 0.11, there was an implicit default of _global_ ("")
+In Hydra 1.1 the default will be _group_ (the name of the config group).
+Hydra 1.0 maintains the implicit default of _global_ and issues a warning for any config group file without a @package directive.
+By adding an explicit @package to these configs now, you guarantee that your configs will not break when you upgrade to Hydra 1.1.
+
+The @package directive is described in details here.
+

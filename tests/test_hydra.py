@@ -188,7 +188,7 @@ def test_config_without_package_header_warnings(
         }
 
     msg = (
-        "Missing # @package directive in optimizer/nesterov.yaml.\n"
+        "\nMissing @package directive in optimizer/nesterov.yaml.\n"
         "See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
     )
     assert len(recwarn) == 1
