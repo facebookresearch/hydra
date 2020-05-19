@@ -1,4 +1,3 @@
-# @package _group_
 defaults:
   - dataset: imagenet
   - model: alexnet
