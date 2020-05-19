@@ -177,7 +177,7 @@ class ConfigSource(Plugin):
                 # Hydra 1.1: default will change to _package_ and the warning will be removed.
                 header["package"] = "_global_"
                 msg = (
-                    f"Missing # @package directive in {normalized_config_path}.\n"
+                    f"\nMissing @package directive in {normalized_config_path}.\n"
                     f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
                 )
                 warnings.warn(message=msg, category=UserWarning)

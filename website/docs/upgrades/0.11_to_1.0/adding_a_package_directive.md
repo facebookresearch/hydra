@@ -1,6 +1,6 @@
 ---
-id: package_header
-title: Upgrading package header
+id: adding_a_package_directive
+title: Adding an @package directive
 ---
 Hydra 1.0 introduces the concept of a config `package`. A package is the common parent 
 path of all nodes in the config file.
@@ -8,12 +8,12 @@ path of all nodes in the config file.
  - In Hydra 0.11, there was an implicit default of `_global_` ("")
  - In Hydra 1.1 the default will be `_group_` (the name of the config group).
  - Hydra 1.0 maintains the implicit default of `_global_` and issues a warning for 
-any config group file without a `@package` header.
+any config group file without a `@package` directive.
 
 By adding an explicit `@package` to these configs now, you guarantee that your configs 
 will not break when you upgrade to Hydra 1.1.
 
-The `@package` header is described in details [here](/advanced/package_header.md).  
+The `@package` directive is described in details [here](/advanced/package_directive.md).  
 
 ## Upgrade instructions:
 ### Recommended (~10 seconds per config file):
