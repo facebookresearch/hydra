@@ -210,32 +210,35 @@ class ConfigLoaderImpl(ConfigLoader):
         """
         return copy.deepcopy(self.all_config_checked)
 
+    @staticmethod
+    def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
+        assert override.key == default.config_group
+        if override._is_default_deletion():
+            return override._get_subject_package() == default.package
+        elif override._is_package_rename():
+            return override.pkg1 == default.package
+        else:
+            return default.package is None
+
+    @staticmethod
+    def find_matches(
+        key_to_defaults: Dict[str, List[IndexedDefaultElement]],
+        override: ParsedOverride,
+    ) -> List[IndexedDefaultElement]:
+        matches: List[IndexedDefaultElement] = []
+        for default in key_to_defaults[override.key]:
+            if ConfigLoaderImpl.is_matching(override, default.default):
+                if override._is_package_rename():
+                    for candidate in key_to_defaults[override.key]:
+                        if candidate.default.package == override.pkg1:
+                            matches.append(candidate)
+                else:
+                    matches.append(default)
+        return matches
+
     def _apply_overrides_to_defaults(
         self, overrides: List[str], defaults: List[DefaultElement]
     ) -> List[str]:
-        def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
-            assert override.key == default.config_group
-            if override._is_default_deletion():
-                return override._get_subject_package() == default.package
-            elif override._is_package_rename():
-                return override.pkg1 == default.package
-            else:
-                return default.package is None
-
-        def find_matches(
-            key_to_defaults: Dict[str, List[IndexedDefaultElement]],
-            override: ParsedOverride,
-        ) -> List[IndexedDefaultElement]:
-            matches: List[IndexedDefaultElement] = []
-            for idefault in key_to_defaults[override.key]:
-                if is_matching(override, idefault.default):
-                    if override._is_package_rename():
-                        for candidate in key_to_defaults[override.key]:
-                            if candidate.default.package == override.pkg1:
-                                matches.append(candidate)
-                    else:
-                        matches.append(idefault)
-            return matches
 
         consumed = []
         key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
@@ -257,11 +260,11 @@ class ConfigLoaderImpl(ConfigLoader):
                 override.value = "_SKIP_"
 
             if override.value == "null":
-                matches = find_matches(key_to_defaults, override)
+                matches = ConfigLoaderImpl.find_matches(key_to_defaults, override)
                 for pair in matches:
                     del defaults[pair.idx]
             else:
-                matches = find_matches(key_to_defaults, override)
+                matches = ConfigLoaderImpl.find_matches(key_to_defaults, override)
 
                 for match in matches:
                     default = match.default
