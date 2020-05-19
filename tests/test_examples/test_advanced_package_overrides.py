@@ -29,7 +29,7 @@ def test_advanced_package_override_simple_with_cli_pakcage_override(
         sys.executable,
         "examples/advanced/package_overrides/simple.py",
         "hydra.run.dir=" + str(tmpdir),
-        "db@source=mysql",
+        "db@:source=mysql",
     ]
     result = check_output(cmd)
     assert OmegaConf.create(result.decode("utf-8").rstrip()) == {

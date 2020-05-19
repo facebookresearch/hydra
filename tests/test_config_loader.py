@@ -120,12 +120,12 @@ class TestConfigLoader:
                 id="no_overrides",
             ),
             pytest.param(
-                ["group1@pkg2=option1"],
+                ["group1@:pkg2=option1"],
                 {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
                 id="override_unspecified_pkg_of_default",
             ),
             pytest.param(
-                ["group1@pkg1=option1"],
+                ["group1@:pkg1=option1"],
                 {"pkg1": {"group1_option1": True, "group2_option1": True}},
                 id="override_two_groups_to_same_package",
             ),
@@ -824,6 +824,73 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 def test_parse_override(override: str, expected: ParsedOverride) -> None:
     ret = ConfigLoaderImpl._parse_override(override)
     assert ret.override == expected
+
+
+defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}]
+
+
+@pytest.mark.parametrize(
+    "input_defaults,overrides,expected",
+    [
+        # change
+        pytest.param(
+            defaults_list,
+            ["db=postgresql"],
+            [{"db": "postgresql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}],
+            id="change_option",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@src=postgresql"],
+            [{"db": "mysql"}, {"db@src": "postgresql"}, {"hydra/launcher": "basic"}],
+            id="change_option",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@:dest=postgresql"],
+            [
+                {"db@dest": "postgresql"},
+                {"db@src": "mysql"},
+                {"hydra/launcher": "basic"},
+            ],
+            id="change_both",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@src:dest=postgresql"],
+            [{"db": "mysql"}, {"db@dest": "postgresql"}, {"hydra/launcher": "basic"}],
+            id="change_both",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@:dest"],
+            [{"db@dest": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}],
+            id="change_package",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@src:dest"],
+            [{"db": "mysql"}, {"db@dest": "mysql"}, {"hydra/launcher": "basic"}],
+            id="change_package",
+        ),
+    ],
+)
+def test_apply_overrides_to_defaults(
+    input_defaults: List[str], overrides: List[str], expected: List[Any],
+) -> None:
+    parsed_overrides = [
+        ConfigLoaderImpl._parse_override(override).override for override in overrides
+    ]
+    input_defaults = ConfigLoaderImpl._parse_defaults(
+        OmegaConf.create({"defaults": input_defaults})
+    )
+    expected_defaults = ConfigLoaderImpl._parse_defaults(
+        OmegaConf.create({"defaults": expected})
+    )
+    ConfigLoaderImpl._apply_overrides_to_defaults(
+        overrides=parsed_overrides, defaults=input_defaults
+    )
+    assert input_defaults == expected_defaults
 
 
 @pytest.mark.parametrize(  # type: ignore
