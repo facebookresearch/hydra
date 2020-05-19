@@ -95,7 +95,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
         overrides = copy.deepcopy(overrides) or []
 
-        if config_name is not None and not self.exists_in_search_path(config_name):
+        if config_name is not None and not self.repository.exists(config_name):
             # TODO: handle schema as a special case
             descs = [
                 f"\t{src.path} (from {src.provider})"
@@ -197,9 +197,6 @@ class ConfigLoaderImpl(ConfigLoader):
 
         return sweep_config
 
-    def exists_in_search_path(self, filepath: str) -> bool:
-        return self.repository.exists(filepath)
-
     def get_search_path(self) -> ConfigSearchPath:
         return self.config_search_path
 
@@ -251,7 +248,7 @@ class ConfigLoaderImpl(ConfigLoader):
         # copying overrides list because the loop is mutating it.
         for override_str in copy.deepcopy(overrides):
             override = ConfigLoaderImpl._parse_override(override_str)
-            if not self.exists_in_search_path(override.key):
+            if not self.repository.exists(override.key):
                 continue
 
             if "," in override.value:
