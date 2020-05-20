@@ -13,7 +13,7 @@ A `package` is the parent path of a config node (e.g `hydra.launcher`).
 ```
 # @package PACKAGE_SPEC
   PACKAGE_SPEC: _global_ | COMPONENT[.COMPONENT]*
-  OMPONENT: string | _group_ | _name_
+  COMPONENT: string | _group_ | _name_
 
 Keywords: 
  _global_ : the top level package (equivalent to the empty string).
