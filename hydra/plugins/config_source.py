@@ -206,7 +206,7 @@ class ConfigSource(Plugin):
                 continue
             if re.match("^\\s*#\\s*@", line):
                 line = line.lstrip("#").strip()
-                splits = re.split(" |:", line)
+                splits = re.split(" ", line)
                 splits = list(filter(lambda x: len(x) > 0, splits))
                 if len(splits) < 2:
                     raise ValueError(f"Expected header format: KEY VALUE, got '{line}'")
