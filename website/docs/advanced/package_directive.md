@@ -2,169 +2,85 @@
 id: package_directive
 title: The @package directive
 ---
-## Overview
-Each config file contains an optional header section at the top.
-Currently the only supported directive in the header is `@package`.
 
-A `package` is the `path` of a node in the config.
-For example, the `package` of the node `{driver: mysql}` below is `db`.
+A `@package directive` specifies a common package for all nodes in the config file.
+It must be placed at the top of each `config group file`.
+
+A `package` is the parent path of a config node (e.g `hydra.launcher`).
+
+### Package directive specification
+
+```
+# @package PACKAGE_SPEC
+  PACKAGE_SPEC: _global_ | COMPONENT[.COMPONENT]*
+  OMPONENT: string | _group_ | _name_
+
+Keywords: 
+ _global_ : the top level package (equivalent to the empty string).
+ _group_  : the config group in dot notation: foo/bar/zoo.yaml -> foo.bar
+ _name_   : the config file name: foo/bar/zoo.yaml -> zoo
+```
+
+Package directive examples:
+```python
+# @package foo.bar
+# @package _global_
+# @package _group_
+# @package _group_._name_
+# @package foo._group_._name_
+```
+
+## Goals
+ - Formalize the convention that the package of the config file matches the config group name  
+   (The package of `hydra/launcher/basic.yaml` is `hydra.launcher`).
+ - A config file can be merged into multiple packages in the final config object via package overrides.  
+
+## Interpreting the @package directive
+### A config with a literal package
 ```yaml
+# @package: container
 db:
-  driver: mysql
+  host: localhost
+webserver:
+  domain: example.com
+```
+Is equivalent to:
+```yaml
+container:
+    db:
+      host: localhost
+    webserver:
+      domain: example.com
 ``` 
 
-By adding the `@package` directive to the header of your config, you can control the package for that config:
-The following is equivalent to the previous example:
-```yaml
-# @package: db
-driver: mysql
-```
-
-## Keywords
-The `package` directive supports the following keywords:
-
-`_global_` : The top level package (equivalent to the empty string). This is the default in Hydra 1.0 and older.
-
-`_group_` : The config group of the file, for example, the `_group_` for the config file `foo/bar/zoo.yaml` is `foo.bar`.
-
-`_name_` : The config name, for example - the `_name_` for the config file `foo/bar/zoo.yaml` is`zoo`
-
-You can use both `_group_` and `_name_` as a part of the package specification, for example, for the config file `foo/bar/zoo.yaml`, 
-the package `oompa._group_._name_` would equal `oompa.foo.bar.zoo`.
- 
-For primary config files mentioned in `@hydra.main`, the default package is `_global_`.
-For config files in config groups, the recommended choice for the `@package` directive is `_group_`, and it will become the default in Hydra 1.1. 
-
-## Overriding
-You can override the `@package` directive via the command line or via the defaults list.
-Source code for these examples is available [here](https://github.com/facebookresearch/hydra/tree/master/examples/advances/package_overrides).
-### Examples structure
-```
-$ tree
-├── conf
-│   ├── db
-│   │   ├── mysql.yaml
-│   │   └── postgresql.yaml
-│   ├── simple.yaml
-│   └── two_packages.yaml
-├── simple.py
-└── two_packages.py
-```
-Given the configs and application below
-```yaml title="conf/simple.yaml"
-defaults:
-  - db: mysql
-```
-
-```yaml title="conf/db/mysql.yaml"
-# @package: _group_
-driver: mysql
-user: omry
-pass: secret
-```
-
-```python title="simple.py"
-@hydra.main(config_path="conf", config_name="simple")
-def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
-```
-
-Running the app results in this output.
-```yaml
-$ python simple.py 
+### A config using `_group_` and `_name_`
+```yaml title="env/prod.yaml" {1}
+# @package _group_._name_
 db:
-  driver: mysql
-  user: omry
-  pass: secret
+  host: 10.0.0.11
+webserver:
+  domain: example.com
 ```
-
-### Overriding via command line
-You can override the package of `db/mysql.yaml` from the command line
-```
-$ python my_app.py db@source=mysql 
-source:
-  driver: mysql
-  user: omry
-  pass: secret
-```
-
-### Overriding via defaults list
-You can also override package via the defaults list.
-We are making it more interesting below by adding a second item to the defaults, with a different package 
-```yaml title="two_packages.yaml"
-defaults:
-  - db@source: mysql
-  - db@destination: mysql
-```
-
-```python title="two_packages.py"
-@hydra.main(config_path="conf", config_name="two_packages")
-def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
-```
-Output:
+Is equivalent to:
 ```yaml
-$ python two_packages.py 
-source:
-  driver: mysql
-  user: omry
-  pass: secret
-destination:
-  driver: mysql
-  user: omry
-  pass: secret
+env:
+  prod:
+    db:
+      host: 10.0.0.11
+    webserver:
+      domain: example.com
 ```
 
-### Overriding via the command line, again
-In the above example, db appears twice in the defaults with different package overrides.
-If you wanted to override one of them to a different package, you need to specify exactly which one, and what is the new package.
 
-You can do this with the syntax `GROUP_NAME@SOURCE_PACKAGE@DESTINATION_PACKAGE=OPTION`, for example,
-to rename db@destination to db@backup, use:
-```yaml
-$ python two_packages.py db@destination:backup=mysql
-source:
-  driver: mysql
-  user: omry
-  pass: secret
-backup:
-  driver: mysql
-  user: omry
-  pass: secret
-```
+## Default packages
+The primary config, named in `@hydra.main()` should not have a package directive.
 
-### The evolution of the `@package` directive
-The behavior of the `@package` is changing:
- - Before Hydra 1.0, the `@package` directive was not supported, and the default behavior was equivalent to `@package _global_`. 
- - Hydra 1.0 introduces the `@package` directive and make `_group_` the recommended choice, but does not change the default behavior.
-If you omit the `@package` directive you will receive a warning telling you to add a `@package` directive, recommending `_group_`.
- - Hydra 1.1 will change the default to `_group_`.
+For config files in config groups the default depends on the version:
+ - In Hydra 0.11, there was an implicit default of `_global_`
+ - Hydra 1.0 the default is `_global_`  
+ A warning is issued for each **config group file** without a `@package` directive.
+ - In Hydra 1.1 the default for **config group files** will become `_group_`
 
-The `@package` directive is described in more detail in [this design doc](https://docs.google.com/document/d/10aU2axeJj_p_iv1Hp9VulYLL5qyvhErg89MKFGbkZO4/edit?usp=sharing).
-
-### The config header format
-The config header format is a generic dictionary style block at the top of your config files.
-```yaml
-# @oompa a.b.c
-# @loompa: yup
-x: 10
-```
-The resulting header is 
-```python
-{"oompa": "a.b.c", "loompa": "yup"}
-```
-Both colon and whitespace are accepted as a separator between the key and the value.
-Unrecognized header keys (like `oompa` and `loompa`) are ignored.
-
-
-
---- 
-Hydra 1.0 introduces the concept of a config package. A package is the common parent path of all nodes in the config file.
-
-In Hydra 0.11, there was an implicit default of _global_ ("")
-In Hydra 1.1 the default will be _group_ (the name of the config group).
-Hydra 1.0 maintains the implicit default of _global_ and issues a warning for any config group file without a @package directive.
-By adding an explicit @package to these configs now, you guarantee that your configs will not break when you upgrade to Hydra 1.1.
-
-The @package directive is described in details here.
+By adding an explicit `@package` to your configs files, you guarantee that they  
+will not break when you upgrade to Hydra 1.1.
 
