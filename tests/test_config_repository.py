@@ -133,7 +133,7 @@ class TestConfigRepository:
         # TODO: decide on header comments before the package.
 
 
-@pytest.mark.parametrize("sep", [" ", ":"])  # type: ignore
+@pytest.mark.parametrize("sep", [" "])  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "cfg_text, expected",
     [
