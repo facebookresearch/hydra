@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 db:
   driver: mysql
   user: omry

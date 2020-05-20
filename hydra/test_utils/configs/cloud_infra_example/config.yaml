@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 defaults:
   - db: sqlite
   - cloud_provider: local

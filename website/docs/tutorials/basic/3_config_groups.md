@@ -23,7 +23,7 @@ into a `conf` directory.
 ```
 
 ```yaml title="db/mysql.yaml"
-# @package: _group_
+# @package _group_
 driver: mysql
 user: omry
 password: secret
@@ -36,7 +36,7 @@ db:
   password: secret 
 ```
 In Hydra 1.1 `_group_` will become the default package.<br/>
-For now, add `# @package: _group_` at the top of your config group files.<br/>
+For now, add `# @package _group_` at the top of your config group files.<br/>
 Learn more about packages [here](/advanced/package_header.md). 
 
 ### Using config groups

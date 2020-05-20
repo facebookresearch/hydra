@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 cloud:
   name: aws
   api_key: ${env:AWS_API_KEY}

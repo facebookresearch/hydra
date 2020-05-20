@@ -1,4 +1,4 @@
-# @package: _group_
+# @package _group_
 
 defaults:
   - hydra/launcher: joblib

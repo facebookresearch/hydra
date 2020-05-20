@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 defaults:
   all: wrong
   should_be: list

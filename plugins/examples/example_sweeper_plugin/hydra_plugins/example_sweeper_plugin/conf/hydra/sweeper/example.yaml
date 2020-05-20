@@ -1,4 +1,4 @@
-# @package: _group_
+# @package _group_
 cls: hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper
 params:
   # max number of jobs to run in the same batch.

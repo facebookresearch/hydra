@@ -1,4 +1,4 @@
-# @package: _group_
+# @package _group_
 
 # See https://ax.dev/
 cls: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper

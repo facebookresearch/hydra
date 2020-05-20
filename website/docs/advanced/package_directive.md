@@ -38,7 +38,7 @@ Package directive examples:
 ## Interpreting the @package directive
 ### A config with a literal package
 ```yaml
-# @package: container
+# @package container
 db:
   host: localhost
 webserver:

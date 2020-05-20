@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 optimizer:
   type: adam
   lr: 0.1
