@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 defaults:
   - group1: file1
     optional: true

@@ -39,7 +39,7 @@ This version may contain nuts and bugs and be incompatible with existing plugins
 ### Basic example
 Config:
 ```yaml title="config.yaml"
-# @package: _global_
+# @package _global_
 db:
   driver: mysql
   user: omry
@@ -91,7 +91,7 @@ The directory structure of our application now looks like:
 
 Here is the new config:
 ```yaml title="config.yaml"
-# @package: _global_
+# @package _global_
 defaults:
   - db: mysql
 ```

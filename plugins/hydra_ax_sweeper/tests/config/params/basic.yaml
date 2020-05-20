@@ -1,4 +1,4 @@
-# @package: hydra.sweeper.params.ax_config.params
+# @package hydra.sweeper.params.ax_config.params
 quadratic_x:
   type: range
   bounds: [-1, 1]

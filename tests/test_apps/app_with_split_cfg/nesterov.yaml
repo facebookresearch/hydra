@@ -1,4 +1,4 @@
-# @package: _global_
+# @package _global_
 optimizer:
   type: nesterov
   lr: 0.001
