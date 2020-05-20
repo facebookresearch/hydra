@@ -28,16 +28,16 @@ driver: mysql
 user: omry
 password: secret
 ```
-The config group determines the `package` of the config content inside the final config object.<br/>
+The config group determines the `package` of the config content inside the final config object.  
 ```yaml title="Interpretation of db/mysql.yaml" {1}
 db:
   driver: mysql
   user: omry
   password: secret 
 ```
-In Hydra 1.1 `_group_` will become the default package.<br/>
-For now, add `# @package _group_` at the top of your config group files.<br/>
-Learn more about packages [here](/advanced/package_header.md). 
+In Hydra 1.1 `_group_` will become the default package.  
+For now, add `# @package _group_` at the top of your config group files.  
+Learn more about packages directive [here](/advanced/package_directive.md). 
 
 ### Using config groups
 Since we moved all the configs into the `conf` directory, we need to tell Hydra where to find them using the `config_path` parameter.
