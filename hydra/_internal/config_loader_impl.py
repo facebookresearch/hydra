@@ -372,8 +372,10 @@ class ConfigLoaderImpl(ConfigLoader):
     def _apply_overrides_to_config(overrides: List[str], cfg: DictConfig) -> None:
         loader = _utils.get_yaml_loader()
 
-        def get_value(val: str) -> Any:
-            return yaml.load(val, Loader=loader) if override.value is not None else None
+        def get_value(val_: str) -> Any:
+            return (
+                yaml.load(val_, Loader=loader) if override.value is not None else None
+            )
 
         for line in overrides:
             override = ConfigLoaderImpl._parse_config_override(line)
@@ -393,11 +395,12 @@ class ConfigLoaderImpl(ConfigLoader):
 
                     key = override.key
                     last_dot = key.rfind(".")
-                    if last_dot == -1:
-                        del cfg[key]
-                    else:
-                        node = OmegaConf.select(cfg, key[0:last_dot])
-                        del node[key[last_dot + 1 :]]
+                    with open_dict(cfg):
+                        if last_dot == -1:
+                            del cfg[key]
+                        else:
+                            node = OmegaConf.select(cfg, key[0:last_dot])
+                            del node[key[last_dot + 1 :]]
 
                 elif override.is_add():
                     if (
@@ -462,21 +465,28 @@ class ConfigLoaderImpl(ConfigLoader):
 
         regex = r"^(?P<prefix>[+~])?(?P<key>.*?)(=(?P<value>.*))?$"
         matches = re.search(regex, override)
+        prefix = matches.group("prefix")
+        key = matches.group("key")
+        value = matches.group("value")
+        msg = (
+            f"Error parsing config override : '{override}'"
+            f"\nAccepted forms:"
+            f"\n"
+            f"\n\tOverride:  key=value"
+            f"\n\tAppend:   +key=value"
+            f"\n\tDelete:   ~key=value, ~key"
+        )
+
+        valid = True
         if matches:
-            return ParsedConfigOverride(
-                prefix=matches.group("prefix"),
-                key=matches.group("key"),
-                value=matches.group("value"),
-            )
+            if prefix in (None, "+"):
+                valid = key is not None and value is not None
+            elif prefix == "~":
+                valid = key is not None
+
+        if matches and valid:
+            return ParsedConfigOverride(prefix=prefix, key=key, value=value)
         else:
-            msg = (
-                f"Error parsing config override : '{override}'"
-                f"\nAccepted forms:"
-                f"\n"
-                f"\n\tOverride:\tkey=value"
-                f"\n\tAppend:\t+key=value"
-                f"\n\tDelete:\t~key@pkg"
-            )
             raise HydraException(msg)
 
     @staticmethod
