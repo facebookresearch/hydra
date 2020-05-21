@@ -2,6 +2,7 @@
 
 # TODO : If not configz`g file is specified, do not require + prefix to add items to defaults or config.
 # TODO: Document command line: +/~, pacakges, defaults manipulation, the works.
+# TODO: Deprecate deletion by assigning null
 # TODO: Tab completion: Add tests for completion with +prefix (should suggest config groups that are not listed)
 # TODO: Tab completion: Test completion when defaults has a missing mandatory item
 import re
@@ -1008,6 +1009,16 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             ["~db@src"],
             [{"db": "mysql"}, {"hydra/launcher": "basic"}],
             id="delete",
+        ),
+        # syntax error
+        pytest.param(
+            defaults_list,
+            ["db"],
+            pytest.raises(
+                HydraException,
+                match=re.escape("Error parsing config group override : 'db'"),
+            ),
+            id="syntax_error",
         ),
     ],
 )
