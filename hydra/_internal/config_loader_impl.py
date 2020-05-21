@@ -291,6 +291,12 @@ class ConfigLoaderImpl(ConfigLoader):
                 )
         for owl in overrides:
             override = owl.override
+            if (
+                not (override.is_delete() or override.is_package_rename())
+                and override.value is None
+            ):
+                ConfigLoaderImpl._raise_parse_override_error(owl.input_line)
+
             if override.is_add() and override.is_package_rename():
                 raise HydraException(
                     "Add syntax does not support package rename, remove + prefix"
@@ -419,6 +425,17 @@ class ConfigLoaderImpl(ConfigLoader):
                 raise HydraException(f"Error merging override {line}") from ex
 
     @staticmethod
+    def _raise_parse_override_error(override: str) -> str:
+        msg = (
+            f"Error parsing config group override : '{override}'"
+            f"\nAccepted forms:"
+            f"\n\tOverride: key=value, key@package=value, key@src_pkg:dest_pkg=value, key@src_pkg:dest_pkg"
+            f"\n\tAppend:  +key=value, +key@package=value"
+            f"\n\tDelete:  ~key@pkg, key@pkg=null"
+        )
+        raise HydraException(msg)
+
+    @staticmethod
     def _parse_override(override: str) -> ParsedOverrideWithLine:
         # forms:
         # key=value
@@ -431,14 +448,6 @@ class ConfigLoaderImpl(ConfigLoader):
             r"(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?(?:=(?P<value>.*))?$"
         )
         matches = re.search(regex, override)
-        msg = (
-            f"Error parsing command line override : '{override}'"
-            f"\nAccepted forms:"
-            f"\n"
-            f"\n\tOverride:\tkey=value, key@package=value, key@src_pkg:dest_pkg=value, key@src_pkg:dest_pkg"
-            f"\n\tAppend:\t+key=value, +key@package=value"
-            f"\n\tDelete:\t~key@pkg, key@pkg=null"
-        )
         if matches:
             prefix = matches.group("prefix")
             key = matches.group("key")
@@ -447,13 +456,13 @@ class ConfigLoaderImpl(ConfigLoader):
             value: Optional[str] = matches.group("value")
             if value == "null":
                 if prefix not in (None, "~"):
-                    raise HydraException(msg)
+                    ConfigLoaderImpl._raise_parse_override_error(override)
                 prefix = "~"
                 value = None
             ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
             return ParsedOverrideWithLine(override=ret, input_line=override)
         else:
-            raise HydraException(msg)
+            ConfigLoaderImpl._raise_parse_override_error(override)
 
     @staticmethod
     def _parse_config_override(override: str) -> ParsedConfigOverride:
@@ -471,7 +480,6 @@ class ConfigLoaderImpl(ConfigLoader):
         msg = (
             f"Error parsing config override : '{override}'"
             f"\nAccepted forms:"
-            f"\n"
             f"\n\tOverride:  key=value"
             f"\n\tAppend:   +key=value"
             f"\n\tDelete:   ~key=value, ~key"
