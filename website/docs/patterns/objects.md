@@ -4,7 +4,7 @@ title: Creating objects and calling functions
 sidebar_label: Creating objects and calling functions
 ---
 ### Instantiating objects and calling methods and functions
-Use `hydra.utils.call()` (or its alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods.
+Use `hydra.utils.call()` (or its alias `hydra.utils.instantiate()`) to instantiate objects, call functions and call class methods. While `instantiate` is an alias for `call`, you may prefer to use `call` for invoking functions and class methods, and `instantiate` for creating objects.
 
 ```python
 def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
