@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -165,8 +166,8 @@ def test_app_with_config_file__no_overrides(
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
-        ("tests/test_apps/app_with_cfg_groups_no_header/my_app.py", None),
-        (None, "tests.test_apps.app_with_cfg_groups_no_header.my_app"),
+        ("tests/test_apps/app_with_cfg_groups_no_header/my_app.py", None,),
+        (None, "tests.test_apps.app_with_cfg_groups_no_header.my_app",),
     ],
 )
 def test_config_without_package_header_warnings(
@@ -187,12 +188,10 @@ def test_config_without_package_header_warnings(
             "optimizer": {"type": "nesterov", "lr": 0.001}
         }
 
-    msg = (
-        "\nMissing @package directive in optimizer/nesterov.yaml.\n"
-        "See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
-    )
     assert len(recwarn) == 1
-    assert recwarn.pop().message.args[0] == msg
+    msg = recwarn.pop().message.args[0]
+    assert "Missing @package directive optimizer/nesterov.yaml in " in msg
+    assert "See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header" in msg
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -697,3 +696,33 @@ def test_hydra_env_set(tmpdir: Path) -> None:
         prints="os.environ['foo']",
         expected_outputs="bar",
     )
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "override", [pytest.param("xyz", id="db=xyz"), pytest.param("", id="db=")]
+)
+@pytest.mark.parametrize(  # type: ignore
+    "calling_file, calling_module",
+    [
+        pytest.param("hydra/test_utils/example_app.py", None, id="file"),
+        pytest.param(None, "hydra.test_utils.example_app", id="module"),
+    ],
+)
+def test_override_with_invalid_group_choice(
+    restore_singletons: Any,
+    task_runner: TTaskRunner,
+    calling_file: str,
+    calling_module: str,
+    override: str,
+) -> None:
+    msg = f"""Could not load db/{override}, available options:\ndb:\n\tmysql\n\tpostgresql"""
+
+    with pytest.raises(MissingConfigException, match=re.escape(msg)):
+        with task_runner(
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path="configs",
+            config_name="db_conf",
+            overrides=[f"db={override}"],
+        ):
+            ...

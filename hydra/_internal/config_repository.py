@@ -37,7 +37,9 @@ class ConfigRepository:
         is_primary_config: bool,
         package_override: Optional[str] = None,
     ) -> Optional[ConfigResult]:
-        source = self._find_config(config_path=config_path)
+        source = self._find_object_source(
+            config_path=config_path, object_type=ObjectType.CONFIG
+        )
         ret = None
         if source is not None:
             ret = source.load_config(
@@ -52,8 +54,11 @@ class ConfigRepository:
             )
         return ret
 
-    def exists(self, config_path: str) -> bool:
-        return self._find_config(config_path) is not None
+    def group_exists(self, config_path: str) -> bool:
+        return self._find_object_source(config_path, ObjectType.GROUP) is not None
+
+    def config_exists(self, config_path: str) -> bool:  # TODO: rename to config_exists?
+        return self._find_object_source(config_path, ObjectType.CONFIG) is not None
 
     def get_group_options(
         self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
@@ -69,12 +74,21 @@ class ConfigRepository:
     def get_sources(self) -> List[ConfigSource]:
         return self.sources
 
-    def _find_config(self, config_path: str) -> Optional[ConfigSource]:
+    def _find_object_source(
+        self, config_path: str, object_type: Optional[ObjectType]
+    ) -> Optional[ConfigSource]:
         found_source = None
         for source in self.sources:
-            if source.exists(config_path):
-                found_source = source
-                break
+            if object_type == ObjectType.CONFIG:
+                if source.is_config(config_path):
+                    found_source = source
+                    break
+            elif object_type == ObjectType.GROUP:
+                if source.is_group(config_path):
+                    found_source = source
+                    break
+            else:
+                raise ValueError("Unexpected object_type")
         return found_source
 
     @staticmethod
