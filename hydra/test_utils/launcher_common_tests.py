@@ -4,28 +4,22 @@ Common test functions testing launchers
 """
 import copy
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Set
+from typing import Any, List, Optional, Set
 
 import pytest
-from omegaconf import DictConfig, OmegaConf
-
 from hydra import TaskFunction
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     integration_test,
     verify_dir_outputs,
 )
-
-ValidateSweepType = Callable[[TSweepRunner], None]
+from omegaconf import DictConfig, OmegaConf
 
 
 @pytest.mark.usefixtures("restore_singletons")
 class LauncherTestSuite:
     def task_function(self, cfg: DictConfig) -> Any:
         return 100
-
-    def validate_sweep_1_job(self, sweep: TSweepRunner):
-        return validate_sweep_1_job(sweep)
 
     def test_sweep_1_job(
         self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
@@ -36,7 +30,6 @@ class LauncherTestSuite:
             + overrides,
             strict=False,
             task_function=self.task_function,
-            function_to_validate_sweep=self.validate_sweep_1_job,
         )
 
     def test_sweep_2_jobs(
@@ -227,7 +220,6 @@ def sweep_1_job(
     overrides: List[str],
     strict: bool,
     task_function: Optional[TaskFunction],
-    function_to_validate_sweep: ValidateSweepType,
 ) -> None:
     """
     Runs a sweep with one job
@@ -241,10 +233,7 @@ def sweep_1_job(
         overrides=overrides,
         strict=strict,
     )
-    function_to_validate_sweep(sweep)
 
-
-def validate_sweep_1_job(sweep: TSweepRunner):
     with sweep:
         assert sweep.returns is not None
         job_ret = sweep.returns[0]

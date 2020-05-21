@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 
 from ax import ParameterType  # type: ignore
+from hydra.core.utils import JobReturn
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ class EarlyStopper:
         self.epsilon = epsilon
         self.minimize = minimize
         self.current_best_value: Optional[float] = None
+        self.current_best_return: Optional[JobReturn] = None
         self.current_epochs_without_improvement = 0
 
     def should_stop(

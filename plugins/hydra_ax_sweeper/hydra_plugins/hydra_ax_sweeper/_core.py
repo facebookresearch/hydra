@@ -8,6 +8,7 @@ from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
+from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
@@ -150,6 +151,7 @@ class CoreAxSweeper:
         self.sweep_dir = config.hydra.sweep.dir
 
     def sweep(self, arguments: List[str]) -> None:
+        best_return: JobReturn
         self.job_idx = 0
         ax_client = self.setup_ax_client(arguments)
 
@@ -179,7 +181,7 @@ class CoreAxSweeper:
                     )
                 )
 
-                self.sweep_over_batches(
+                batch_returns = self.sweep_over_batches(
                     ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch,
                 )
 
@@ -205,6 +207,7 @@ class CoreAxSweeper:
             f"{self.sweep_dir}/optimization_results.yaml",
         )
         log.info("Best parameters: " + str(best_parameters))
+        return ([batch_returns], results_to_serialize)
 
     def sweep_over_batches(
         self, ax_client: AxClient, batch_of_trials: BatchOfTrialType,
@@ -224,6 +227,7 @@ class CoreAxSweeper:
                 ax_client.complete_trial(
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
+        return rets[-1]
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""

@@ -4,17 +4,21 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, List, Optional
 
 import pytest
-
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.launcher_common_tests import LauncherTestSuite
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
+from hydra.test_utils.test_utils import (
+    SweepTaskFunction,
+    TSweepRunner,
+    chdir_plugin_root,
+)
 from omegaconf import DictConfig, OmegaConf
+
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
 
@@ -103,7 +107,7 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         strict=True,
     )
     with sweep:
-        assert sweep.returns is None
+        assert sweep.returns is not None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
@@ -129,7 +133,7 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         strict=True,
     )
     with sweep:
-        assert sweep.returns is None
+        assert sweep.returns is not None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
@@ -155,7 +159,7 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         strict=True,
     )
     with sweep:
-        assert sweep.returns is None
+        assert sweep.returns is not None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
@@ -188,7 +192,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert ax_config.max_trials == 2
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True
-        assert sweep.returns is None
+        assert sweep.returns is not None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         best_parameters = returns["ax"]
@@ -232,35 +236,98 @@ def test_example_app(tmpdir: Path) -> None:
 # Run launcher test suite with the basic launcher and this sweeper
 @pytest.mark.parametrize(
     "launcher_name, overrides",
-    [
-        (
-            "basic",
-            [
-                "hydra/sweeper=ax",
-                "quadratic=basic",
-                "quadratic.x=-1.0:1.0",
-                "quadratic.y=-1.0:1.0",
-            ],
-        )
-    ],
+    [("basic", ["hydra/sweeper=ax", "quadratic.x=-1.0:1.0", "quadratic.y=-1.0:1.0"])],
 )
 class TestAxSweeper(LauncherTestSuite):
     def task_function(self, cfg):
-        return 100
-        # return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
+        return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
-    def validate_sweep_1_job(self, sweep: TSweepRunner):
+    def get_sweep(
+        self,
+        sweep_runner: TSweepRunner,
+        overrides: Optional[List[str]],
+        strict: Optional[bool] = None,
+    ) -> SweepTaskFunction:
+        sweep = sweep_runner(
+            calling_file="tests/test_ax_sweeper_plugin.py",
+            calling_module=None,
+            task_function=self.task_function,
+            config_path="config",
+            config_name="config.yaml",
+            overrides=overrides,
+            strict=strict,
+        )
+        return sweep
+
+    def _test_sweep_1_job(
+        self,
+        sweep_runner: TSweepRunner,
+        launcher_name: str,
+        overrides: List[str],
+        strict: bool,
+    ) -> None:
+        sweep = self.get_sweep(
+            sweep_runner=sweep_runner, overrides=overrides, strict=strict
+        )
         with sweep:
-            # assert sweep.returns is not None
-            # job_ret = sweep.returns[0]
-            job_ret = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
-            assert len(job_ret) == 2
-            # assert job_ret[0].overrides == []
-            # assert job_ret[0].cfg == {"foo": 10, "bar": 100}
-            # assert job_ret[0].hydra_cfg.hydra.job.name == "a_module", (
-            #     "Unexpected job name: " + job_ret[0].hydra_cfg.hydra.job.name
-            # )
-            # verify_dir_outputs(sweep.returns[0][0])
+            assert sweep.returns is not None
+            job_rets = sweep.returns[0]
+            assert len(job_rets) == 1
+            job_ret = job_rets[0]
+            assert len(job_ret.overrides) == 2
+            assert "quadratic" in job_ret.cfg
+            assert "x" in job_ret.cfg.quadratic
+            assert "y" in job_ret.cfg.quadratic
+            assert job_ret.hydra_cfg.hydra.job.name == "test_ax_sweeper_plugin", (
+                "Unexpected job name: " + job_ret[0].hydra_cfg.hydra.job.name
+            )
+
+    def test_sweep_1_job(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
+    ) -> None:
+        return self._test_sweep_1_job(
+            sweep_runner=sweep_runner,
+            launcher_name=launcher_name,
+            overrides=overrides,
+            strict=False,
+        )
+
+    def test_not_sweeping_hydra_overrides(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:
+        overrides.extend(["hydra.verbose=true,false"])
+        sweep = self.get_sweep(
+            sweep_runner=sweep_runner, overrides=overrides, strict=None
+        )
+
+        with sweep:
+            assert sweep.returns is not None
+            job_rets = sweep.returns[0]
+            assert len(job_rets) == 1
+            job_ret = job_rets[0]
+            assert len(job_ret.overrides) == 2
+            assert all(("hydra." not in override for override in job_ret.overrides))
+
+    def test_sweep_1_job_strict(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
+    ) -> None:
+        return self._test_sweep_1_job(
+            sweep_runner=sweep_runner,
+            launcher_name=launcher_name,
+            overrides=overrides,
+            strict=True,
+        )
+
+    def test_sweep_1_job_strict_and_bad_key(
+        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+    ) -> None:
+        with pytest.raises(Exception):
+            self._test_sweep_1_job(
+                sweep_runner=sweep_runner,
+                launcher_name=launcher_name,
+                overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
+                strict=True,
+            )
 
 
 @pytest.mark.parametrize(
@@ -284,7 +351,7 @@ def test_jobs_configured_via_nested_config(
         strict=True,
     )
     with sweep:
-        assert sweep.returns is None
+        assert sweep.returns is not None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
