@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# TODO: bad error for:
-#  python examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups/my_app.py  db=
-# TODO : If not config file is specified, do not require + prefix to add items to defaults or config.
+# TODO : If not configz`g file is specified, do not require + prefix to add items to defaults or config.
 # TODO: Document command line:
 #   +/~, pacakges, defaults manipulation, the works.
 # completion

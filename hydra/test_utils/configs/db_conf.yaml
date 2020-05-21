@@ -1,3 +1,2 @@
-# @package _global_
 defaults:
   - db: mysql

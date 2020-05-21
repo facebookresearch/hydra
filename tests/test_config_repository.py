@@ -76,8 +76,8 @@ class TestConfigRepository:
         Plugins.instance()  # initializes
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
-        assert repo.exists("dataset/imagenet.yaml")
-        assert not repo.exists("not_found.yaml")
+        assert repo.config_exists("dataset/imagenet.yaml")
+        assert not repo.config_exists("not_found.yaml")
 
     @pytest.mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",

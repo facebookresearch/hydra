@@ -123,7 +123,7 @@ class ConfigLoaderImpl(ConfigLoader):
         config_group_overrides = []
         config_overrides = []
         for pwd in pairs:
-            if not self.repository.exists(pwd.override.key):
+            if not self.repository.group_exists(pwd.override.key):
                 config_overrides.append(pwd)
             else:
                 config_group_overrides.append(pwd)
@@ -140,7 +140,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
         parsed_overrides = [self._parse_override(override) for override in overrides]
 
-        if config_name is not None and not self.repository.exists(config_name):
+        if config_name is not None and not self.repository.config_exists(config_name):
             # TODO: handle schema as a special case
             descs = [
                 f"\t{src.path} (from {src.provider})"
