@@ -1,11 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 # TODO : If not configz`g file is specified, do not require + prefix to add items to defaults or config.
-# TODO: Document command line:
-#   +/~, pacakges, defaults manipulation, the works.
-# completion
-# TODO: Add tests for completion with +prefix (should complete and suggest config groups that are not listed)
-# TODO : Test completion when defaults has a missing mandatory item
+# TODO: Document command line: +/~, pacakges, defaults manipulation, the works.
+# TODO: Tab completion: Add tests for completion with +prefix (should suggest config groups that are not listed)
+# TODO: Tab completion: Test completion when defaults has a missing mandatory item
 import re
 from dataclasses import dataclass
 from typing import Any, List
@@ -1089,6 +1087,13 @@ def test_apply_overrides_to_defaults(
         pytest.param({"x": {"y": 10}}, False, ["~x"], {}, id="delete"),
         pytest.param({"x": {"y": 10}}, False, ["~x.y"], {"x": {}}, id="delete"),
         pytest.param({"x": {"y": 10}}, False, ["~x.y=10"], {"x": {}}, id="delete"),
+        pytest.param({"x": 20}, True, ["~x"], {}, id="delete_strict"),
+        pytest.param({"x": 20}, True, ["~x=20"], {}, id="delete_strict"),
+        pytest.param({"x": {"y": 10}}, True, ["~x"], {}, id="delete_strict"),
+        pytest.param({"x": {"y": 10}}, True, ["~x.y"], {"x": {}}, id="delete_strict"),
+        pytest.param(
+            {"x": {"y": 10}}, True, ["~x.y=10"], {"x": {}}, id="delete_strict"
+        ),
         pytest.param(
             {"x": 20},
             False,
