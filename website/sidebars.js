@@ -15,8 +15,8 @@ module.exports = {
                     label: 'Your first Hydra app',
                     items: [
                         'tutorials/basic/your_first_app/simple_cli',
-                        'tutorials/basic/your_first_app/using_config',
                         'tutorials/basic/your_first_app/config_file',
+                        'tutorials/basic/your_first_app/using_config',
                         'tutorials/basic/your_first_app/config_groups',
                         'tutorials/basic/your_first_app/defaults',
                         'tutorials/basic/your_first_app/composition',

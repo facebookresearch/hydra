@@ -55,9 +55,10 @@ $ python my_app.py
 {}
 ```
 
-You can select a database option via the command line:
+You can an item from the `db` config group to `defaults list`.  
+The `defaults list` will be described in the next page.
 ```yaml
-$ python my_app.py db=postgresql
+$ python my_app.py +db=postgresql
 db:
   driver: postgresql
   pass: drowssap
@@ -67,7 +68,7 @@ db:
 
 Like before, you can still override individual values in the resulting config:
 ```yaml
-$ python my_app.py db=postgresql db.timeout=20
+$ python my_app.py +db=postgresql db.timeout=20
 db:
   driver: postgresql
   pass: drowssap
@@ -79,7 +80,7 @@ db:
 Config groups can be nested. For example the config group `db/mysql/storage_engine` can contain `innodb.yaml` and `myisam.yaml`.
 When selecting an option from a nested config group, use `/`:
 ```
-$ python my_app.py db=mysql db/mysql/storage_engine=innodb
+$ python my_app.py +db=mysql +db/mysql/storage_engine=innodb
 db:
   driver: mysql
   user: omry

@@ -4,7 +4,7 @@ title: Selecting defaults for config groups
 ---
 
 After office politics, you decide that you want to use MySQL by default.
-You no longer want to type `db=mysql` every time you run your application.
+You no longer want to type `+db=mysql` every time you run your application.
 
 You can add a `defaults` list into your config file.
 
@@ -55,9 +55,9 @@ db:
   user: postgre_user
 ```
 
-You can remove a default entry from the defaults list by assigning `null` to it in the command line:
+You can remove a default entry from the defaults list by prefixing it with ~:
 ```yaml
-$ python my_app.py db=null
+$ python my_app.py ~db
 {}
 ```
 
@@ -68,4 +68,5 @@ You can still load it by default. Here is an example for `some_file.yaml`.
 defaults:
   - some_file
 ```
-Config files that are not part of a config group will always be loaded. They cannot be overridden.
+Config files that are not part of a config group will always be loaded. They cannot be overridden.  
+Prefer using a config group.
