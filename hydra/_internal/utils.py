@@ -214,7 +214,17 @@ def run_hydra(
     )
 
     config_dir, config_name = split_config_path(config_path, config_name)
-    strict = _strict_mode_strategy(strict, config_name)
+
+    if strict is not None:
+        msg = (
+            f"\n@hydra.main(strict) flag is deprecated and will removed in the next version.\n"
+            f"See https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+        )
+        warnings.warn(message=msg, category=UserWarning)
+    else:
+        # default to True. flag will be removed in Hydra 1.1
+        strict = True
+
     task_name = detect_task_name(calling_file, calling_module)
     search_path = create_automatic_config_search_path(
         calling_file, calling_module, config_dir
@@ -346,19 +356,6 @@ def get_args_parser() -> argparse.ArgumentParser:
 
 def get_args(args: Optional[Sequence[str]] = None) -> Any:
     return get_args_parser().parse_args(args=args)
-
-
-def _strict_mode_strategy(strict: Optional[bool], config_name: Optional[str]) -> bool:
-    """Decide how to set strict mode.
-    If a value was provided -- always use it. Otherwise decide based
-    on the existence of config_name.
-    """
-
-    if strict is not None:
-        return strict
-
-    # strict if config_name is present
-    return config_name is not None
 
 
 def get_column_widths(matrix: List[List[str]]) -> List[int]:
