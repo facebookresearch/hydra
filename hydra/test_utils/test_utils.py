@@ -126,7 +126,7 @@ class TTaskRunner(Protocol):
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
-        strict: Optional[bool] = False,
+        strict: Optional[bool] = None,
     ) -> TaskTestFunction:
         ...
 

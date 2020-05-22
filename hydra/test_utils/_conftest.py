@@ -32,7 +32,7 @@ def hydra_global_context() -> Callable[
     def _(
         task_name: str = "task",
         config_dir: Optional[str] = None,
-        strict: Optional[bool] = False,
+        strict: Optional[bool] = None,
     ) -> "GlobalHydraContext":
         ctx = GlobalHydraContext()
         ctx.task_name = task_name
@@ -96,7 +96,7 @@ def task_runner() -> Callable[
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
-        strict: Optional[bool] = False,
+        strict: Optional[bool] = None,
     ) -> TaskTestFunction:
         task = TaskTestFunction()
         task.overrides = overrides or []
