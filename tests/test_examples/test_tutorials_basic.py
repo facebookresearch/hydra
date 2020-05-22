@@ -25,8 +25,10 @@ chdir_hydra_root()
     [
         ([], OmegaConf.create()),
         (
-            ["abc=123", "hello.a=456", "hello.b=5671"],
-            OmegaConf.create(dict(abc=123, hello=dict(a=456, b=5671))),
+            ["+db.driver=mysql", "+db.user=omry", "+db.password=secret"],
+            OmegaConf.create(
+                {"db": {"driver": "mysql", "user": "omry", "password": "secret"}}
+            ),
         ),
     ],
 )

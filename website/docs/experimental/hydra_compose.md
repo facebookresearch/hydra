@@ -15,30 +15,26 @@ from hydra.experimental import compose, initialize
 
 
 if __name__ == "__main__":
-    initialize(
-        config_dir="conf", strict=True,
-    )
+    initialize(config_dir="conf")
 
     cfg = compose("config.yaml", overrides=["db=mysql", "db.user=me"])
     print(cfg.pretty())
 ```
 ### API Documentation
 ```python
-def compose(config_file=None, overrides=[], strict=None):
+def compose(config_file=None, overrides=[]):
     """
     :param config_file: optional config file to load
     :param overrides: list of overrides for config file
-    :param strict: optionally override the default strict mode
     :return: the composed config
     """
 
 
-def initialize(config_dir=None, strict=None, caller_stack_depth=1):
+def initialize(config_dir=None, caller_stack_depth=1):
     """
     Initializes the Hydra sub system
 
     :param config_dir: config directory relative to the calling script
-    :param strict: Default value for strict mode
     :param caller_stack_depth:
     :return:
     """

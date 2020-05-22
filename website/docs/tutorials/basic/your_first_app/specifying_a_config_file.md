@@ -29,7 +29,8 @@ db:
   password: secret
 ```
 
-You can override values in the loaded config from the command line:
+You can override values in the loaded config from the command line.
+When overriding existing parameters, you should not prefix the command line items with '+': 
 ```yaml {4-5}
 $ python my_app.py db.user=root db.password=1234
 db:
