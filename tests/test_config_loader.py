@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 # TODO: Document command line: +/~, pacakges, defaults manipulation, the works.
 # TODO: Deprecate deletion by assigning null
 # TODO: Tab completion: Add tests for completion with +prefix (should suggest config groups that are not listed)
