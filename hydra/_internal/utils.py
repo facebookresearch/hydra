@@ -215,16 +215,6 @@ def run_hydra(
 
     config_dir, config_name = split_config_path(config_path, config_name)
 
-    if strict is not None:
-        msg = (
-            f"\n@hydra.main(strict) flag is deprecated and will removed in the next version.\n"
-            f"See https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
-        )
-        warnings.warn(message=msg, category=UserWarning)
-    else:
-        # default to True. flag will be removed in Hydra 1.1
-        strict = True
-
     task_name = detect_task_name(calling_file, calling_module)
     search_path = create_automatic_config_search_path(
         calling_file, calling_module, config_dir

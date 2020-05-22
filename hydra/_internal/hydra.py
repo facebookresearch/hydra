@@ -3,6 +3,7 @@ import copy
 import logging
 import os
 import string
+import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
@@ -57,6 +58,15 @@ class Hydra:
         config_search_path: ConfigSearchPath,
         strict: Optional[bool],
     ) -> "Hydra":
+
+        if strict is None:
+            strict = True
+        else:
+            msg = (
+                "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
+                "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+            )
+            warnings.warn(message=msg, category=UserWarning)
 
         config_loader: ConfigLoader = ConfigLoaderImpl(
             config_search_path=config_search_path, default_strict=strict

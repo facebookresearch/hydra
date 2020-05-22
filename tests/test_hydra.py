@@ -116,7 +116,7 @@ def test_hydra_main_rerun(
         (None, "tests.test_apps.app_without_config.my_app"),
     ],
 )
-def test_app_without_config__with_overrides(
+def test_app_without_config__with_append(
     restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
@@ -127,7 +127,7 @@ def test_app_without_config__with_overrides(
         calling_module=calling_module,
         config_path="",
         config_name=None,
-        overrides=["abc=123", "a.b=1", "a.a=2"],
+        overrides=["+abc=123", "+a.b=1", "+a.a=2"],
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             abc=123, a=dict(b=1, a=2)
@@ -454,7 +454,6 @@ def test_multirun_with_free_override(
         config_name="config.yaml",
         task_function=None,
         overrides=overrides,
-        strict=True,
     )
     with sweep:
         assert sweep.returns is not None and len(sweep.returns[0]) == 2

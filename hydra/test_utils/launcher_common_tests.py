@@ -29,7 +29,6 @@ class LauncherTestSuite:
             sweep_runner,
             overrides=["hydra/launcher=" + launcher_name, "hydra.sweep.dir=."]
             + overrides,
-            strict=False,
             task_function=self.task_function,
         )
 
@@ -56,7 +55,6 @@ class LauncherTestSuite:
     ) -> None:
         sweep_1_job(
             sweep_runner,
-            strict=True,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
             task_function=self.task_function,
         )
@@ -69,7 +67,6 @@ class LauncherTestSuite:
         with pytest.raises(Exception):
             sweep_1_job(
                 sweep_runner,
-                strict=True,
                 overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
                 task_function=self.task_function,
             )
@@ -94,7 +91,6 @@ class LauncherTestSuite:
             config_path="configs",
             config_name="unspecified_mandatory_default",
             overrides=base_overrides + overrides,
-            strict=True,
         )
         expected_overrides = [["group1=file1"], ["group1=file2"]]
         expected_conf = [OmegaConf.create({"foo": 10}), OmegaConf.create({"foo": 20})]
@@ -127,7 +123,6 @@ class LauncherTestSuite:
             config_path="configs",
             config_name="db_conf.yaml",
             overrides=base_overrides + overrides,
-            strict=True,
         )
         expected_overrides = [
             ["db=mysql", "db.user=someone"],
@@ -170,7 +165,6 @@ class BatchedSweeperTestSuite:
             config_path="configs",
             config_name="compose.yaml",
             overrides=overrides,
-            strict=True,
         )
         expected_overrides = [
             ["group1=file1", "bar=100"],
@@ -219,7 +213,6 @@ class BatchedSweeperTestSuite:
 def sweep_1_job(
     sweep_runner: TSweepRunner,
     overrides: List[str],
-    strict: bool,
     task_function: Optional[TaskFunction],
 ) -> None:
     """
@@ -232,7 +225,6 @@ def sweep_1_job(
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
-        strict=strict,
     )
 
     with sweep:
@@ -255,7 +247,7 @@ def sweep_2_jobs(
     """
     Runs a sweep with two jobs
     """
-    job_overrides = ["a=0,1"]
+    job_overrides = ["+a=0,1"]
     overrides.extend(job_overrides)
     sweep = sweep_runner(
         calling_file=None,
@@ -265,7 +257,7 @@ def sweep_2_jobs(
         config_name=None,
         overrides=overrides,
     )
-    base = OmegaConf.create({"foo": 10, "bar": 100, "a": 0})
+    base_cfg = {"foo": 10, "bar": 100, "a": 0}
 
     with sweep:
         assert sweep.temp_dir is not None
@@ -280,10 +272,9 @@ def sweep_2_jobs(
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
-            expected_conf = OmegaConf.merge(
-                base, OmegaConf.from_dotlist(job_ret.overrides)
-            )
-            assert job_ret.overrides == [f"a={i}"]
+            expected_conf = OmegaConf.create(base_cfg)
+            expected_conf.a = i
+            assert job_ret.overrides == [f"+a={i}"]
             assert job_ret.cfg == expected_conf
             assert job_ret.hydra_cfg.hydra.job.name == "a_module", (
                 "Unexpected job name: " + job_ret.hydra_cfg.hydra.job.name
@@ -302,7 +293,7 @@ def not_sweeping_hydra_overrides(
     """
     Runs a sweep with two jobs
     """
-    overrides.extend(["a=0,1", "hydra.verbose=true,false"])
+    overrides.extend(["+a=0,1", "hydra.verbose=true,false"])
     sweep = sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
@@ -310,7 +301,6 @@ def not_sweeping_hydra_overrides(
         config_path="configs",
         config_name="compose.yaml",
         overrides=overrides,
-        strict=None,
     )
     base = OmegaConf.create({"foo": 10, "bar": 100})
 
@@ -319,10 +309,8 @@ def not_sweeping_hydra_overrides(
         assert len(sweep.returns[0]) == 2
         for i in range(2):
             job_ret = sweep.returns[0][i]
-            expected_conf = OmegaConf.merge(
-                base, OmegaConf.from_dotlist(job_ret.overrides)
-            )
-            assert job_ret.overrides == [f"a={i}"]
+            expected_conf = OmegaConf.merge(base, {"a": i})
+            assert job_ret.overrides == [f"+a={i}"]
             assert job_ret.cfg == expected_conf
             verify_dir_outputs(job_ret, job_ret.overrides)
 

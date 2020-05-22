@@ -18,39 +18,34 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-def test_initialize() -> None:
-    try:
-        assert not GlobalHydra().is_initialized()
-        initialize(config_dir=None, strict=True)
-        assert GlobalHydra().is_initialized()
-    finally:
-        GlobalHydra().clear()
+def test_initialize(restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    initialize(config_dir=None)
+    assert GlobalHydra().is_initialized()
 
 
-def test_initialize_with_config_dir() -> None:
-    try:
-        assert not GlobalHydra().is_initialized()
-        initialize(config_dir="../hydra/test_utils/configs", strict=True)
-        assert GlobalHydra().is_initialized()
+def test_initialize_with_config_dir(restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    initialize(config_dir="../hydra/test_utils/configs")
+    assert GlobalHydra().is_initialized()
 
-        gh = GlobalHydra.instance()
-        assert gh.hydra is not None
-        config_search_path = gh.hydra.config_loader.get_search_path()
-        assert isinstance(config_search_path, ConfigSearchPathImpl)
-        idx = config_search_path.find_first_match(
-            SearchPathQuery(provider="main", search_path=None)
-        )
-        assert idx != -1
-    finally:
-        GlobalHydra().clear()
+    gh = GlobalHydra.instance()
+    assert gh.hydra is not None
+    config_search_path = gh.hydra.config_loader.get_search_path()
+    assert isinstance(config_search_path, ConfigSearchPathImpl)
+    idx = config_search_path.find_first_match(
+        SearchPathQuery(provider="main", search_path=None)
+    )
+    assert idx != -1
 
 
+@pytest.mark.usefixtures("restore_singletons")
 @pytest.mark.parametrize("config_dir", ["../hydra/test_utils/configs"])
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
     [
         (None, [], {}),
-        (None, ["foo=bar"], {"foo": "bar"}),
+        (None, ["+foo=bar"], {"foo": "bar"}),
         ("compose.yaml", [], {"foo": 10, "bar": 100}),
         ("compose.yaml", ["group1=file2"], {"foo": 20, "bar": 100}),
     ],
@@ -90,7 +85,7 @@ class TestCompose:
     ) -> None:
         # default strict True, call is unspecified
         overrides.append("fooooooooo=bar")
-        with hydra_global_context(config_dir=config_dir, strict=True):
+        with hydra_global_context(config_dir=config_dir):
             with pytest.raises(HydraException):
                 compose(config_file, overrides)
 
@@ -101,6 +96,7 @@ class TestCompose:
         config_file: str,
         overrides: List[str],
         expected: Any,
+        recwarn: Any,
     ) -> None:
         # default strict false, but call is strict
         with hydra_global_context(config_dir=config_dir, strict=False):
@@ -120,6 +116,7 @@ class TestCompose:
         config_file: str,
         overrides: List[str],
         expected: Any,
+        recwarn: Any,
     ) -> None:
         # default strict true, but call is false
         with hydra_global_context(config_dir=config_dir, strict=True):
@@ -127,6 +124,16 @@ class TestCompose:
                 compose(config_name=config_file, overrides=overrides, strict=False)
 
 
+def test_strict_deprecation_warning(restore_singletons: Any) -> None:
+    msg = (
+        "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
+        "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+    )
+    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
+        initialize(config_dir=None, strict=True)
+
+
+@pytest.mark.usefixtures("restore_singletons")
 @pytest.mark.parametrize(
     "config_dir", ["../hydra/test_utils/configs/cloud_infra_example"]
 )

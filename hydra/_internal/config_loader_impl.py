@@ -26,7 +26,7 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 class ParsedConfigOverride:
     prefix: Optional[str]
     key: str
-    value: str
+    value: Optional[str]
 
     def is_delete(self) -> bool:
         return self.prefix == "~"
@@ -378,10 +378,8 @@ class ConfigLoaderImpl(ConfigLoader):
     def _apply_overrides_to_config(overrides: List[str], cfg: DictConfig) -> None:
         loader = _utils.get_yaml_loader()
 
-        def get_value(val_: str) -> Any:
-            return (
-                yaml.load(val_, Loader=loader) if override.value is not None else None
-            )
+        def get_value(val_: Optional[str]) -> Any:
+            return yaml.load(val_, Loader=loader) if val_ is not None else None
 
         for line in overrides:
             override = ConfigLoaderImpl._parse_config_override(line)
@@ -463,6 +461,7 @@ class ConfigLoaderImpl(ConfigLoader):
             return ParsedOverrideWithLine(override=ret, input_line=override)
         else:
             ConfigLoaderImpl._raise_parse_override_error(override)
+            assert False
 
     @staticmethod
     def _parse_config_override(override: str) -> ParsedConfigOverride:
@@ -474,9 +473,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
         regex = r"^(?P<prefix>[+~])?(?P<key>.*?)(=(?P<value>.*))?$"
         matches = re.search(regex, override)
-        prefix = matches.group("prefix")
-        key = matches.group("key")
-        value = matches.group("value")
+
+        valid = True
+        prefix = None
+        key = None
+        value = None
         msg = (
             f"Error parsing config override : '{override}'"
             f"\nAccepted forms:"
@@ -484,15 +485,17 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\n\tAppend:   +key=value"
             f"\n\tDelete:   ~key=value, ~key"
         )
-
-        valid = True
         if matches:
+            prefix = matches.group("prefix")
+            key = matches.group("key")
+            value = matches.group("value")
             if prefix in (None, "+"):
                 valid = key is not None and value is not None
             elif prefix == "~":
                 valid = key is not None
 
         if matches and valid:
+            assert key is not None
             return ParsedConfigOverride(prefix=prefix, key=key, value=value)
         else:
             raise HydraException(msg)
