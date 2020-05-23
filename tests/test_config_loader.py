@@ -168,11 +168,6 @@ class TestConfigLoader:
                 id="append",
             ),
             pytest.param(
-                ["group1@pkg1=null"],
-                {"pkg2": {"group1_option1": True}},
-                id="delete_package",
-            ),
-            pytest.param(
                 ["~group1@pkg1"],
                 {"pkg2": {"group1_option1": True}},
                 id="delete_package",
@@ -454,11 +449,11 @@ def test_merge_default_lists(
         # remove from config
         ("removing-hydra-launcher-default.yaml", []),
         # remove from override
-        ("config.yaml", ["hydra/launcher=null"]),
+        ("config.yaml", ["~hydra/launcher"]),
         # remove from both
-        ("removing-hydra-launcher-default.yaml", ["hydra/launcher=null"]),
+        ("removing-hydra-launcher-default.yaml", ["~hydra/launcher"]),
         # second overrides removes
-        ("config.yaml", ["hydra/launcher=submitit", "hydra/launcher=null"]),
+        ("config.yaml", ["hydra/launcher=submitit", "~hydra/launcher"]),
     ],
 )
 def test_default_removal(config_file: str, overrides: List[str]) -> None:
@@ -807,12 +802,10 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             "~db@src", ParsedOverride("~", "db", "src", None, None), id="delete_item",
         ),
         pytest.param(
-            "db=null", ParsedOverride("~", "db", None, None, None), id="delete_item",
+            "~db", ParsedOverride("~", "db", None, None, None), id="delete_item",
         ),
         pytest.param(
-            "db@src=null",
-            ParsedOverride("~", "db", "src", None, None),
-            id="delete_item",
+            "~db@src", ParsedOverride("~", "db", "src", None, None), id="delete_item",
         ),
     ],
 )
@@ -1138,3 +1131,17 @@ def test_apply_overrides_to_config(
     else:
         with expected:
             ConfigLoaderImpl._apply_overrides_to_config(overrides=overrides, cfg=cfg)
+
+
+def test_delete_by_assigning_null_is_deprecated() -> None:
+    msg = (
+        "\nRemoving from the defaults list by assigning 'null' "
+        "is deprecated and will be removed in Hydra 1.1."
+        "\nUse ~db"
+    )
+    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
+        ret = ConfigLoaderImpl._parse_override("db=null")
+        assert ret.override.is_delete()
+        assert ret.override == ParsedOverride(
+            prefix="~", key="db", pkg1=None, pkg2=None, value=None
+        )
