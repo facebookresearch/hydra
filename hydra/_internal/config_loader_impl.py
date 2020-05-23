@@ -5,6 +5,7 @@ Configuration loader
 import copy
 import os
 import re
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
@@ -60,7 +61,7 @@ class ParsedOverride:
         return self.pkg1 is not None and self.pkg2 is not None
 
     def is_delete(self) -> bool:
-        return self.prefix == "~" or self.value == "null"
+        return self.prefix == "~"
 
     def is_add(self) -> bool:
         return self.prefix == "+"
@@ -429,7 +430,7 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\nAccepted forms:"
             f"\n\tOverride: key=value, key@package=value, key@src_pkg:dest_pkg=value, key@src_pkg:dest_pkg"
             f"\n\tAppend:  +key=value, +key@package=value"
-            f"\n\tDelete:  ~key@pkg, key@pkg=null"
+            f"\n\tDelete:  ~key, ~key@pkg, ~key=value, ~key@pkg=value"
         )
         raise HydraException(msg)
 
@@ -457,6 +458,14 @@ class ConfigLoaderImpl(ConfigLoader):
                     ConfigLoaderImpl._raise_parse_override_error(override)
                 prefix = "~"
                 value = None
+
+                msg = (
+                    "\nRemoving from the defaults list by assigning 'null' "
+                    "is deprecated and will be removed in Hydra 1.1."
+                    f"\nUse ~{key}"
+                )
+                warnings.warn(category=UserWarning, message=msg)
+
             ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
             return ParsedOverrideWithLine(override=ret, input_line=override)
         else:
