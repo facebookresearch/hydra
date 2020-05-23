@@ -15,7 +15,6 @@ from hydra.test_utils.test_utils import (
     does_not_raise,
     verify_dir_outputs,
 )
-from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -402,10 +401,4 @@ def test_examples_using_the_config_object(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
 
-    expected = """Missing mandatory value: node.waldo
-\tfull_key: node.waldo
-\treference_type=Optional[Dict[Any, Any]]
-\tobject_type=dict"""
-
-    result = run_with_error(cmd)
-    assert re.search(re.escape(expected), result)
+    subprocess.check_output(cmd)

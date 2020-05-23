@@ -8,10 +8,6 @@ from hydra.plugins.completion_plugin import CompletionPlugin
 
 log = logging.getLogger(__name__)
 
-# TODO:
-# Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
-# Test handling of errors loading config from command line during completion
-
 
 class BashCompletion(CompletionPlugin):
     def install(self) -> None:
