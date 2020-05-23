@@ -1,4 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+# TODO: Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
+# TODO: Add tests for completion with +prefix (should suggest config groups that are not listed)
+# TODO: Test completion when defaults has a missing mandatory item
+
+
 import os
 import re
 import sys

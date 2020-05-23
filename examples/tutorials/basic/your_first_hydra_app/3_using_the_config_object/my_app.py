@@ -1,8 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from omegaconf import DictConfig, open_dict, MissingMandatoryValue
+import pytest
+from omegaconf import DictConfig, MissingMandatoryValue, open_dict
 
 import hydra
-import pytest
 
 
 @hydra.main(config_name="config")

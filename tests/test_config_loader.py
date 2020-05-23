@@ -1,8 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# TODO: Document command line: +/~, package, defaults manipulation, the works.
-# TODO: Proof read upgrades/0.11_to_1.0/strict_mode_flag_deprecated.md
-# TODO: Tab completion: Add tests for completion with +prefix (should suggest config groups that are not listed)
-# TODO: Tab completion: Test completion when defaults has a missing mandatory item
 import re
 from dataclasses import dataclass
 from typing import Any, List
