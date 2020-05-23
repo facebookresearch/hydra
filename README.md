@@ -17,9 +17,9 @@ Check the [website](https://hydra.cc/) for more information.
 Hydra is licensed under [MIT License](LICENSE).
 
 ## Community
-Ask questions in the chat or StackOverflow (Use the tag #fb-hydra):
+Ask questions in the chat or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Chat](https://hydra-framework.zulipchat.com)
-* [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
+* [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
 
