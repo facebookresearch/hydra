@@ -209,6 +209,13 @@ def run_hydra(
 
     from .hydra import Hydra
 
+    args = args_parser.parse_args()
+    if args.config_name is not None:
+        config_name = args.config_name
+
+    if args.config_path is not None:
+        config_path = args.config_path
+
     calling_file, calling_module = detect_calling_file_or_module_from_task_function(
         task_function
     )
@@ -224,7 +231,6 @@ def run_hydra(
         task_name=task_name, config_search_path=search_path, strict=strict
     )
     try:
-        args = args_parser.parse_args()
         if args.help:
             hydra.app_help(config_name=config_name, args_parser=args_parser, args=args)
             sys.exit(0)
@@ -341,6 +347,18 @@ def get_args_parser() -> argparse.ArgumentParser:
         help=f"Install or Uninstall shell completion:\n{_get_completion_help()}",
     )
 
+    parser.add_argument(
+        "--config_path",
+        "-cp",
+        help="""Overrides the config_path specified in hydra.main().
+                    The config_path is relative to the Python file declaring @hydra.main()""",
+    )
+
+    parser.add_argument(
+        "--config_name",
+        "-cn",
+        help="Overrides the config_name specified in hydra.main()",
+    )
     return parser
 
 

@@ -47,7 +47,7 @@ Since we moved all the configs into the `conf` directory, we need to tell Hydra 
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
-
+You can override `config_path` from the command line using the `--config_path` flag.
 
 Running `my_app.py` without requesting a configuration will print an empty config.
 ```yaml
