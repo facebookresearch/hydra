@@ -553,6 +553,9 @@ def test_sweep_complex_defaults(
     Fish - Uninstall:
     python my_app.py -sc uninstall=fish | source
 
+--config_path,-cp : Overrides the config_path specified in hydra.main().
+                    The config_path is relative to the Python file declaring @hydra.main()
+--config_name,-cn : Overrides the config_name specified in hydra.main()
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
             id="overriding_help_template:$FLAGS_HELP",
@@ -597,6 +600,9 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     Fish - Uninstall:
     python my_app.py -sc uninstall=fish | source
 
+--config_path,-cp : Overrides the config_path specified in hydra.main().
+                    The config_path is relative to the Python file declaring @hydra.main()
+--config_name,-cn : Overrides the config_name specified in hydra.main()
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
             id="overriding_hydra_help_template:$FLAGS_HELP",
@@ -731,3 +737,22 @@ def test_override_with_invalid_group_choice(
             overrides=[f"db={override}"],
         ):
             ...
+
+
+@pytest.mark.parametrize("config_path", ["dir1", "dir2"])  # type: ignore
+@pytest.mark.parametrize("config_name", ["cfg1", "cfg2"])  # type: ignore
+def test_config_name_and_path_overrides(
+    tmpdir: Path, config_path: str, config_name: str
+) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/app_with_multiple_config_dirs/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        f"--config_name={config_name}",
+        f"--config_path={config_path}",
+    ]
+    print(" ".join(cmd))
+    result = str(subprocess.check_output(cmd).decode("utf-8")).strip()
+    # normalize newlines on Windows to make testing easier
+    result = result.replace("\r\n", "\n")
+    assert result == f"{config_path}_{config_name}: true"

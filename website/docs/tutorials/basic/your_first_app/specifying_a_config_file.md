@@ -20,6 +20,9 @@ Note that you should omit the `.yaml` extension.
 def my_app(cfg):
     print(cfg.pretty())
 ```
+
+You can override `config_name` from the command line using the `--config_name` flag.
+
 `config.yaml` is loaded automatically when you run your application.
 ```yaml
 $ python my_app.py
