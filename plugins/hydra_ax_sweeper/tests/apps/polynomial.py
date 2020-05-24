@@ -5,7 +5,7 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path="polynomial.yaml")
+@hydra.main(config_name="polynomial")
 def polynomial(cfg: DictConfig) -> Any:
     x = cfg.polynomial.x
     y = cfg.polynomial.y

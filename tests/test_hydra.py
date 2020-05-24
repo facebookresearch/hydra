@@ -57,8 +57,8 @@ def test_missing_conf_file(
         with task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
-            config_path="not_found.yaml",
-            config_name=None,
+            config_path=None,
+            config_name="not_found.yaml",
         ):
             pass
 
@@ -207,18 +207,24 @@ def test_app_with_config_path_backward_compatibility(
     calling_file: str,
     calling_module: str,
 ) -> None:
-    task = task_runner(
-        calling_file=calling_file,
-        calling_module=calling_module,
-        config_path="conf/config.yaml",  # Testing legacy mode, both path and named are in config_path
-        config_name=None,
+    msg = (
+        "\nUsing config_path to specify the config name is deprecated, specify the config name via config_name"
+        "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/config_path_changes"
     )
-    with task:
-        assert task.job_ret is not None and task.job_ret.cfg == {
-            "optimizer": {"type": "nesterov", "lr": 0.001}
-        }
 
-        verify_dir_outputs(task.job_ret)
+    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
+        task = task_runner(
+            calling_file=calling_file,
+            calling_module=calling_module,
+            config_path="conf/config.yaml",  # Testing legacy mode, both path and named are in config_path
+            config_name=None,
+        )
+        with task:
+            assert task.job_ret is not None and task.job_ret.cfg == {
+                "optimizer": {"type": "nesterov", "lr": 0.001}
+            }
+
+            verify_dir_outputs(task.job_ret)
 
 
 @pytest.mark.parametrize(  # type: ignore

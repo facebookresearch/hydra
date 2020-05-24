@@ -253,8 +253,8 @@ def sweep_2_jobs(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         task_function=task_function,
-        config_path="configs/compose.yaml",
-        config_name=None,
+        config_path="configs",
+        config_name="compose",
         overrides=overrides,
     )
     base_cfg = {"foo": 10, "bar": 100, "a": 0}

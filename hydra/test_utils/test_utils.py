@@ -294,7 +294,7 @@ from hydra.core.hydra_config import HydraConfig
 
 $PROLOG
 
-@hydra.main($CONFIG_PATH)
+@hydra.main($CONFIG_NAME)
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
 $PRINTS
@@ -307,19 +307,19 @@ if __name__ == "__main__":
     print_code = _get_statements(indent="        ", statements=prints)
     prolog_code = _get_statements(indent="", statements=prolog)
 
-    config_path = ""
+    config_name = ""
     if task_config is not None:
         cfg_file = tmpdir / "config.yaml"
         with open(str(cfg_file), "w") as f:
             f.write("# @package _global_\n")
             OmegaConf.save(task_config, f)
-        config_path = "config_path='config.yaml'"
+        config_name = "config_name='config'"
     output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
         PRINTS=print_code,
-        CONFIG_PATH=config_path,
+        CONFIG_NAME=config_name,
         OUTPUT_FILE=output_file,
         PROLOG=prolog_code,
     )

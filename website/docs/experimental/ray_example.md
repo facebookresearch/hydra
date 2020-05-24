@@ -22,7 +22,7 @@ def train(overrides, cfg):
     return overrides, 0.9
 
 
-@hydra.main(config_path="conf/config.yaml")
+@hydra.main(config_path="conf", config_name="config")
 def main(cfg):
     ray.init(**cfg.ray.init)
 
