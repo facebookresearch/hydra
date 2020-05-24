@@ -12,12 +12,10 @@ def main(
     strict: Optional[bool] = None,
 ) -> Callable[[TaskFunction], Callable[[], None]]:
     """
-    :param config_path: the config path, can be a directory in which it's used as the config root
-    or a file to load
-    :param config_name: the name of the config (usually file name without extension)
-    :param strict: strict mode, will throw an error if command line overrides are not changing an
-    existing key or
-           if the code is accessing a non existent key
+    :param config_path: the config path, a directory relative to the declaring python file.
+    :param config_name: the name of the config (usually the file name without the .yaml extension)
+    :param strict: (Deprecated) strict mode, will throw an error if command line overrides are not changing an
+    existing key or if the code is accessing a non existent key
     """
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
