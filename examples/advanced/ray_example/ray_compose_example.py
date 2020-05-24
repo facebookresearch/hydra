@@ -16,7 +16,7 @@ def train(overrides: List[str], cfg: DictConfig) -> Tuple[List[str], float]:
     return overrides, 0.9
 
 
-@hydra.main(config_path="conf/config.yaml")
+@hydra.main(config_path="conf", config_name="config")
 def main(cfg: DictConfig) -> None:
     ray.init(**cfg.ray.init)
 

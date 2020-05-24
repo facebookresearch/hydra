@@ -169,7 +169,7 @@ db:
 
 With this, you can instantiate the object from the configuration with a single line of code:
 ```python
-@hydra.main(config_path="conf/config.yaml")
+@hydra.main(config_path="conf", config_name="config")
 def my_app(cfg):
     connection = hydra.utils.instantiate(cfg.db)
     connection.connect()
