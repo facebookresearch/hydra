@@ -98,6 +98,7 @@ module.exports = {
             type: 'category',
             label: '0.11 to 1.0',
             items: [
+                'upgrades/0.11_to_1.0/config_path_changes',
                 'upgrades/0.11_to_1.0/adding_a_package_directive',
                 'upgrades/0.11_to_1.0/strict_mode_flag_deprecated',
             ],
