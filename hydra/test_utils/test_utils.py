@@ -42,7 +42,7 @@ class GlobalHydraContext:
 
     def __enter__(self) -> "GlobalHydraContext":
         hydra.experimental.initialize(
-            config_dir=self.config_dir, strict=self.strict, caller_stack_depth=2
+            config_path=self.config_dir, strict=self.strict, caller_stack_depth=2
         )
         return self
 
