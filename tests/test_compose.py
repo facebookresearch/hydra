@@ -9,6 +9,7 @@ from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
 from hydra.errors import HydraException
 from hydra.experimental import compose, initialize
+from hydra.experimental.compose import initialize_with_file, initialize_with_module
 from hydra.test_utils.test_utils import (
     TGlobalHydraContext,
     chdir_hydra_root,
@@ -20,13 +21,13 @@ chdir_hydra_root()
 
 def test_initialize(restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(config_dir=None)
+    initialize(config_path=None)
     assert GlobalHydra().is_initialized()
 
 
 def test_initialize_with_config_dir(restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(config_dir="../hydra/test_utils/configs")
+    initialize(config_path="../hydra/test_utils/configs")
     assert GlobalHydra().is_initialized()
 
     gh = GlobalHydra.instance()
@@ -130,7 +131,7 @@ def test_strict_deprecation_warning(restore_singletons: Any) -> None:
         "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
     )
     with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
-        initialize(config_dir=None, strict=True)
+        initialize(config_path=None, strict=True)
 
 
 @pytest.mark.usefixtures("restore_singletons")
@@ -231,3 +232,21 @@ def test_missing_init_py_error(hydra_global_context: TGlobalHydraContext) -> Non
             config_dir="../hydra/test_utils/configs/missing_init_py"
         ):
             ...
+
+
+def test_initialize_with_file(restore_singletons: Any) -> None:
+    initialize_with_file(
+        calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+    )
+    assert compose(config_name="config") == {
+        "optimizer": {"type": "nesterov", "lr": 0.001}
+    }
+
+
+def test_initialize_with_module(restore_singletons: Any) -> None:
+    initialize_with_module(
+        calling_module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
+    )
+    assert compose(config_name="config") == {
+        "optimizer": {"type": "nesterov", "lr": 0.001}
+    }
