@@ -250,3 +250,13 @@ def test_initialize_with_module(restore_singletons: Any) -> None:
     assert compose(config_name="config") == {
         "optimizer": {"type": "nesterov", "lr": 0.001}
     }
+
+
+def test_hydra_main_passthrough(restore_singletons: Any) -> None:
+    initialize_with_file(
+        calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+    )
+    from tests.test_apps.app_with_cfg_groups.my_app import my_app
+
+    cfg = compose(config_name="config", overrides=["optimizer.lr=0.1"])
+    assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 0.1}}
