@@ -14,7 +14,10 @@ The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Job
 
 Install with 
 ```
-pip install hydra_joblib_launcher
+$ git clone https://github.com/facebookresearch/hydra.git
+$ cd hydra
+$ pip install .                              # install hydra
+$ pip install plugins/hydra_joblib_launcher  # Install plugin
 ```
 
 <div class="alert alert--info" role="alert">
