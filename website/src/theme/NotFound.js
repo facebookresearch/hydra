@@ -9,7 +9,7 @@ import Layout from '@theme/Layout';
 
 
 function NotFound({location}) {
-    var routing = {
+    const routing = {
         "/redirect-me" : "/still-not-found"
     }
     if (routing[location.pathname] != null){
