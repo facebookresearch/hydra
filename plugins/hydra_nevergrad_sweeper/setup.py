@@ -21,6 +21,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core>=1.0.0rc1", "nevergrad>=0.4.0"],
+        install_requires=["hydra-core>=1.0.0rc1", "nevergrad>=0.4.1.post4"],
         include_package_data=True,
     )
