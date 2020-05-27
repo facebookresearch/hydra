@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from os.path import basename, dirname, splitext
 from pathlib import Path
 from time import localtime, strftime
-from typing import Any, Dict, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
@@ -126,7 +126,7 @@ def get_valid_filename(s: str) -> str:
 
 
 def setup_globals() -> None:
-    def register(name: str, f: Any):
+    def register(name: str, f: Any) -> None:
         try:
             OmegaConf.register_resolver(name, f)
         except AssertionError:
@@ -134,7 +134,10 @@ def setup_globals() -> None:
             pass
 
     register("now", lambda pattern: strftime(pattern, localtime()))
-    register("hydra", lambda path: OmegaConf.select(HydraConfig.get(), path))
+    register(
+        "hydra",
+        lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
+    )
 
 
 @dataclass
