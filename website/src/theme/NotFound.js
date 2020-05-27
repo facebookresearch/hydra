@@ -14,6 +14,7 @@ function NotFound({location}) {
     }
     if (routing[location.pathname] != null){
         window.location.href = routing[location.pathname]
+ 	return
     }
 
   return (
