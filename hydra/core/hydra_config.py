@@ -15,7 +15,7 @@ class HydraConfig(metaclass=Singleton):
         assert cfg is not None
         OmegaConf.set_readonly(cfg.hydra, True)
         assert OmegaConf.get_type(cfg, "hydra") == HydraConf
-        self.cfg = cfg  # type: ignore
+        self.cfg = OmegaConf.masked_copy(cfg, "hydra")  # type: ignore
 
     @staticmethod
     def get() -> HydraConf:

@@ -126,13 +126,15 @@ def get_valid_filename(s: str) -> str:
 
 
 def setup_globals() -> None:
-    try:
-        OmegaConf.register_resolver(
-            "now", lambda pattern: strftime(pattern, localtime())
-        )
-    except AssertionError:
-        # calling it again in no_workers mode will throw. safe to ignore.
-        pass
+    def register(name: str, f: Any):
+        try:
+            OmegaConf.register_resolver(name, f)
+        except AssertionError:
+            # calling it again in no_workers mode will throw. safe to ignore.
+            pass
+
+    register("now", lambda pattern: strftime(pattern, localtime()))
+    register("hydra", lambda path: OmegaConf.select(HydraConfig.get(), path))
 
 
 @dataclass
