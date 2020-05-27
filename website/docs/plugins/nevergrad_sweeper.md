@@ -40,16 +40,26 @@ defaults:
 hydra:
   sweeper:
     params:
+
       # configuration of the optimizer
       optim:
-        # name of the nevergrad optimizer to use
-        # OnePlusOne is good at low budget, but may converge early
+        # name of the Nevergrad optimizer to use. Here is a sample:
+        #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
+        #     tends to converge early.
+        #   - "CMA" very good algorithm, but may require a significant budget (> 120)
+        #   - "TwoPointsDE": an algorithm good in a wide range of settings, for significant
+        #     budgets (> 120).
+        #   - "Shiwa" an algorithm aiming at identifying the best optimizer given your input
+        #     definition (work in progress, it may still be ill-suited for low budget)
+        # find out more within nevergrad's documentation:
+        # https://github.com/facebookresearch/nevergrad/
         optimizer: OnePlusOne
         # total number of function evaluations to perform
         budget: 100
         # number of parallel workers for performing function evaluations
         num_workers: 10
         # maximize: true  # comment out for maximization
+
       # default parametrization of the search space
       parametrization:
         # either one or the other
