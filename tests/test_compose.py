@@ -8,8 +8,12 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
 from hydra.errors import HydraException
-from hydra.experimental import compose, initialize
-from hydra.experimental.compose import initialize_with_file, initialize_with_module
+from hydra.experimental import (
+    compose,
+    initialize,
+    initialize_with_file,
+    initialize_with_module,
+)
 from hydra.test_utils.test_utils import (
     TGlobalHydraContext,
     chdir_hydra_root,
