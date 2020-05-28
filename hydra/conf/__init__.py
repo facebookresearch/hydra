@@ -129,7 +129,8 @@ class HydraConf:
     # Output directory for produced configuration files and overrides.
     # E.g., hydra.yaml, overrides.yaml will go here. Useful for debugging
     # and extra context when looking at past runs.
-    output_subdir: str = ".hydra"
+    # Setting to None will prevent the creation of the output subdir.
+    output_subdir: Optional[str] = ".hydra"
 
     # Those lists will contain runtime overrides
     overrides: OverridesConf = OverridesConf()

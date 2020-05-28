@@ -49,6 +49,11 @@ Inside the configuration output directory we have:
 And in the main output directory:
 * `my_app.log`: A log file created for this run
 
+### Disabling output subdir 
+You can change the `.hydra` subdirectory name by overriding `hydra.output_subdir`.
+You can disable its creation by overriding `hydra.output_subdir` to `null`. 
+
+
 ### Original working directory
 
 You can still access the original working directory if you need to:

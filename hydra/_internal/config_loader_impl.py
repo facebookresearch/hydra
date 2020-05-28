@@ -467,19 +467,6 @@ class ConfigLoaderImpl(ConfigLoader):
             pkg1 = matches.group("pkg1")
             pkg2 = matches.group("pkg2")
             value: Optional[str] = matches.group("value")
-            # if value == "null":
-            #     if prefix not in (None, "~"):
-            #         ConfigLoaderImpl._raise_parse_override_error(override)
-            #     prefix = "~"
-            #     value = None
-            #
-            #     msg = (
-            #         "\nRemoving from the defaults list by assigning 'null' "
-            #         "is deprecated and will be removed in Hydra 1.1."
-            #         f"\nUse ~{key}"
-            #     )
-            #     warnings.warn(category=UserWarning, message=msg)
-
             ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
             return ParsedOverrideWithLine(override=ret, input_line=override)
         else:
