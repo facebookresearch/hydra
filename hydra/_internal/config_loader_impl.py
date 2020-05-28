@@ -61,7 +61,8 @@ class ParsedOverride:
         return self.pkg1 is not None and self.pkg2 is not None
 
     def is_delete(self) -> bool:
-        return self.prefix == "~"
+        legacy_delete = self.value == "null"
+        return self.prefix == "~" or legacy_delete
 
     def is_add(self) -> bool:
         return self.prefix == "+"
@@ -292,6 +293,19 @@ class ConfigLoaderImpl(ConfigLoader):
                 )
         for owl in overrides:
             override = owl.override
+            if override.value == "null":
+                if override.prefix not in (None, "~"):
+                    ConfigLoaderImpl._raise_parse_override_error(owl.input_line)
+                override.prefix = "~"
+                override.value = None
+
+                msg = (
+                    "\nRemoving from the defaults list by assigning 'null' "
+                    "is deprecated and will be removed in Hydra 1.1."
+                    f"\nUse ~{override.key}"
+                )
+                warnings.warn(category=UserWarning, message=msg)
+
             if (
                 not (override.is_delete() or override.is_package_rename())
                 and override.value is None
@@ -453,18 +467,18 @@ class ConfigLoaderImpl(ConfigLoader):
             pkg1 = matches.group("pkg1")
             pkg2 = matches.group("pkg2")
             value: Optional[str] = matches.group("value")
-            if value == "null":
-                if prefix not in (None, "~"):
-                    ConfigLoaderImpl._raise_parse_override_error(override)
-                prefix = "~"
-                value = None
-
-                msg = (
-                    "\nRemoving from the defaults list by assigning 'null' "
-                    "is deprecated and will be removed in Hydra 1.1."
-                    f"\nUse ~{key}"
-                )
-                warnings.warn(category=UserWarning, message=msg)
+            # if value == "null":
+            #     if prefix not in (None, "~"):
+            #         ConfigLoaderImpl._raise_parse_override_error(override)
+            #     prefix = "~"
+            #     value = None
+            #
+            #     msg = (
+            #         "\nRemoving from the defaults list by assigning 'null' "
+            #         "is deprecated and will be removed in Hydra 1.1."
+            #         f"\nUse ~{key}"
+            #     )
+            #     warnings.warn(category=UserWarning, message=msg)
 
             ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
             return ParsedOverrideWithLine(override=ret, input_line=override)
