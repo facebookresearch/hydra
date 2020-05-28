@@ -1,0 +1,6 @@
+# @package _group_
+
+defaults:
+  - hydra/launcher: submitit
+
+task: 1

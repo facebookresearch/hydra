@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import pytest  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -15,9 +15,10 @@ chdir_plugin_root()
 
 
 def test_discovery():
-    launchers = Plugins.discover(Launcher)
-    # discovered plugins are actually different class objects, compare by name
-    assert SubmititLauncher.__name__ in [x.__name__ for x in launchers]
+    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
+    assert SubmititLauncher.__name__ in [
+        x.__name__ for x in Plugins.instance().discover(Launcher)
+    ]
 
 
 @pytest.mark.parametrize(
@@ -28,18 +29,18 @@ class TestSubmititLauncher(LauncherTestSuite):
 
 
 @pytest.mark.parametrize(
-    "task_launcher_cfg, extra_flags, plugin_module",
+    "task_launcher_cfg, extra_flags",
     [
         (
             {
                 "defaults": [
-                    {"hydra/launcher": None},
+                    {"hydra/launcher": "submitit"},
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
                 "hydra": {
                     "launcher": {
-                        "class": "hydra_plugins.submitit.SubmititLauncher",
+                        "cls": "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher",
                         "params": {
                             "queue": "local",
                             "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
@@ -55,7 +56,6 @@ class TestSubmititLauncher(LauncherTestSuite):
                 },
             },
             ["-m"],
-            "hydra_plugins.submitit",
         )
     ],
 )
