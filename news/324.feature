@@ -1,0 +1,1 @@
+Support for disabling the creation of the `.hydra` subdirectory by overriding "hydra.output_subdir" to "null"
