@@ -41,7 +41,7 @@ Learn more about packages directive [here](/advanced/package_directive.md).
 
 ### Using config groups
 Since we moved all the configs into the `conf` directory, we need to tell Hydra where to find them using the `config_path` parameter.
-`config_path` is a directory relative to `my_app.py`.
+**`config_path` is a directory relative to `my_app.py`**.
 ```python title="my_app.py" {1}
 @hydra.main(config_path="conf")
 def my_app(cfg: DictConfig) -> None:

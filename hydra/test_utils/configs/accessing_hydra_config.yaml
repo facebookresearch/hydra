@@ -1,0 +1,3 @@
+cwd: ${hydra:runtime.cwd}
+job_name: ${hydra:job.name}
+config_name: ${hydra:job.config_name}

@@ -4,7 +4,9 @@ title: Overview
 sidebar_label: Introduction
 ---
 
-Many things in Hydra can be customized, this includes:
+Many things in Hydra can be customized. This includes:
+* Launcher configurations
+* Sweeper configuration
 * Logging configuration
 * Run and Multirun output directory patterns
 * Application help (--help and --hydra-help)
@@ -43,14 +45,24 @@ hydra:
 ```
 
 ## Runtime variables
-The following variables are populated at runtime.
-You can access them as config variables.
+The `hydra` package is deleted from your config when the function runs to reduce the amount of noise
+in the config passed to the function.  
+You can still access all config nodes in Hydra through the custom resolver `hydra`. 
+
+For example:
+```yaml
+config_name: ${hydra:job.config_name}
+```
+Pay close attention to the syntax: The resolver name is `hydra`, and the `key` is passed after the colon.
+
+The following variables are some of the variables populated at runtime.  
+You can see the full Hydra config using `--cfg hydra`:
 
 `hydra.job`:
 - *hydra.job.name* : Job name, defaults to python file name without suffix. can be overridden.
 - *hydra.job.override_dirname* : Pathname derived from the overrides for this job
 - *hydra.job.num* : job serial number in sweep
-- *hydra.job.id* : Job ID in the underlying jobs system (Slurm etc) 
+- *hydra.job.id* : Job ID in the underlying jobs system (SLURM etc) 
 
 `hydra.runtime`:
 - *hydra.runtime.version*: Hydra's version

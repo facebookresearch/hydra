@@ -1,0 +1,1 @@
+Hydra config can now be accessed through interpolation using ${hydra:key}, for example ${hydra:job.name}
