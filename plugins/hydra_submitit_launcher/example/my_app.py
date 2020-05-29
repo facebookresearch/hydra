@@ -3,9 +3,8 @@ import logging
 import os
 import time
 
-from omegaconf import DictConfig
-
 import hydra
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 

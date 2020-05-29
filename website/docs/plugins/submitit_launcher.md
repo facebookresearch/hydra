@@ -4,7 +4,11 @@ title: Submitit Launcher plugin
 sidebar_label: Submitit Launcher plugin
 ---
 
-The Submitit Launcher plugin provides a launcher for tasks based on [`Submitit`](https://github.com/facebookincubator/submitit).
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher)
+
+
+The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [`Submitit`](https://github.com/facebookincubator/submitit).
 
 Install with 
 ```

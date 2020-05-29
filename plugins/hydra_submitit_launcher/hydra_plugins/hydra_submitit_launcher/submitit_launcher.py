@@ -1,12 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-from typing import Optional, Dict, List, Sequence
-
-from omegaconf import open_dict, DictConfig, OmegaConf
+from typing import Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
     configure_log,
@@ -14,10 +14,9 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
-from hydra.core.singleton import Singleton
-from hydra.core.config_search_path import ConfigSearchPath
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 log = logging.getLogger(__name__)
 
