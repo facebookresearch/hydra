@@ -178,7 +178,7 @@ class ConfigSource(Plugin):
                 header["package"] = "_global_"
                 msg = (
                     f"\nMissing @package directive {normalized_config_path} in {self.full_path()}.\n"
-                    f"See https://hydra.cc/next/upgrades/0.11_to_1.0/package_header"
+                    f"See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/adding_a_package_directive"
                 )
                 warnings.warn(message=msg, category=UserWarning)
 
