@@ -47,7 +47,6 @@ Since we moved all the configs into the `conf` directory, we need to tell Hydra 
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 ```
-You can override `config_path` from the command line using the `--config_path` flag.
 
 Running `my_app.py` without requesting a configuration will print an empty config.
 ```yaml
@@ -55,8 +54,8 @@ $ python my_app.py
 {}
 ```
 
-You can an item from the `db` config group to `defaults list`.  
-The `defaults list` will be described in the next page.
+You can append an item a config group to the `Defaults List`.  
+The `Defaults List` is described on the next page.
 ```yaml
 $ python my_app.py +db=postgresql
 db:

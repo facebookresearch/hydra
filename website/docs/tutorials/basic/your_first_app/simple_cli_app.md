@@ -22,8 +22,8 @@ if __name__ == "__main__":
 ```
 In this example, Hydra creates an empty `cfg` object and pass it to the function annotated with `@hydra.main`.
 
-You can pass command line arguments from which Hydra creates a hierarchical configuration object.
-Use the `+` prefix with each item in in the command line to indicate that you want to add a new field to the config:
+You can add config values via the command line. The `+` indicates that the field is new.
+
 ```yaml
 $ python my_app.py +db.driver=mysql +db.user=omry +db.password=secret
 db:
