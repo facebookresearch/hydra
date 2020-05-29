@@ -20,7 +20,7 @@ Hydra requires Python 3.6 or newer, and it officially supports Linux, Mac and Wi
 
 ## Quick start guide
 This guide will show you some of the most important features of Hydra.
-Read the [tutorial](tutorials/basic/your_first_app/simple_cli_app.md) to gain a deeper understanding.
+Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
 Install the stable release with 
@@ -136,7 +136,7 @@ website:
     domain: example.com
 ```
 
-There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/your_first_app/simple_cli_app.md) to learn more.
+There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to learn more.
 
 ## Other stuff
 ### Community

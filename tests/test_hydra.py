@@ -362,9 +362,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
 
 def test_short_module_name(tmpdir: Path) -> None:
     try:
-        os.chdir(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file"
-        )
+        os.chdir("examples/tutorials/basic/your_first_hydra_app/2_config_file")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         result = subprocess.check_output(cmd)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {
@@ -406,9 +404,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     Tests that module name overrides are working.
     """
     try:
-        os.chdir(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file"
-        )
+        os.chdir("examples/tutorials/basic/your_first_hydra_app/2_config_file")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
         modified_env = os.environ.copy()
         modified_env[env_name] = "hydra.test_utils.configs.Foo"
@@ -426,9 +422,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
 )
 def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
     try:
-        os.chdir(
-            "examples/tutorials/basic/your_first_hydra_app/5_selecting_defaults_for_config_groups"
-        )
+        os.chdir("examples/tutorials/basic/your_first_hydra_app/5_defaults")
         cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir), flag]
         result = subprocess.check_output(cmd)
         conf = OmegaConf.create(str(result.decode("utf-8")))
@@ -503,7 +497,7 @@ def test_sweep_complex_defaults(
     "workdir, script, flag, overrides,expected",
     [
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/1_a_simple_cli_app/",
+            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/",
             "my_app.py",
             "--help",
             ["hydra.help.template=foo"],
@@ -511,7 +505,7 @@ def test_sweep_complex_defaults(
             id="simple_cli_app",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file",
             "my_app.py",
             "--help",
             ["hydra.help.template=foo"],
@@ -519,7 +513,7 @@ def test_sweep_complex_defaults(
             id="overriding_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
             "my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
@@ -532,7 +526,7 @@ def test_sweep_complex_defaults(
             id="overriding_help_template:$CONFIG",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
             "my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
@@ -561,7 +555,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$FLAGS_HELP",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/4_grouping_config_files/",
+            "examples/tutorials/basic/your_first_hydra_app/4_config_groups/",
             "my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
@@ -571,7 +565,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
             "my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
@@ -579,7 +573,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_hydra_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_specifying_a_config_file/",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
             "my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],

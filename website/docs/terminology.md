@@ -14,7 +14,7 @@ Supported input configs are:
 - [Structured Configs](#structured-config) (Python [@dataclasses](https://docs.python.org/3/library/dataclasses.html))
 
 ### Primary Config
-The input config named in [`@hydra.main()`](tutorials/basic/your_first_app/simple_cli_app.md) or in 
+The input config named in [`@hydra.main()`](tutorials/basic/your_first_app/1_simple_cli.md) or in 
 the [`Compose API`](experimental/hydra_compose.md).  
 The Primary Config is the only config that is allowed to have a [Defaults List](#defaults-list)
 
