@@ -1,0 +1,5 @@
+
+defaults:
+  - hydra/launcher: submitit
+
+task: 1
