@@ -6,9 +6,9 @@ with open("README.md", "r") as fh:
     setup(
         name="hydra-submitit-launcher",
         version="1.0.0rc1",
-        author="Omry Yadan",
-        author_email="omry@fb.com",
-        description="Submitit Hydra Launcher plugin",
+        author="Omry Yadan, Jieru Hu",
+        author_email="omry@fb.com, jieru@fb.com",
+        description="Submitit Launcher for Hydra apps",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookincubator/submitit",

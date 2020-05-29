@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
@@ -21,7 +22,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 log = logging.getLogger(__name__)
 
 
-class SubmititLauncherDefaults(SearchPathPlugin):
+class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
     def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
         search_path.append(
             "hydra-submitit-launcher",
@@ -54,6 +55,7 @@ class SubmititLauncher(Launcher):
         sweep_overrides: List[str],
         job_dir_key: str,
         job_num: int,
+        job_id: str,
         singleton_state: Dict[type, "Singleton"],
     ):
         Singleton.set_state(singleton_state)
@@ -67,7 +69,7 @@ class SubmititLauncher(Launcher):
             if "SLURM_JOB_ID" in os.environ:
                 job.id = os.environ["SLURM_JOB_ID"]
             else:
-                job.id = "unknown"
+                job.id = job_id
             sweep_config.hydra.job.num = job_num
 
         return run_job(
@@ -118,22 +120,27 @@ class SubmititLauncher(Launcher):
         executor.update_parameters(**queue_parameters[self.queue])
 
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
-        path_str = str(self.config.hydra.sweep.dir)
-        os.makedirs(path_str, exist_ok=True)
+        sweep_dir = Path(str(self.config.hydra.sweep.dir))
+        sweep_dir.mkdir(parents=True, exist_ok=True)
         if "mode" in self.config.hydra.sweep:
             mode = int(str(self.config.hydra.sweep.mode), 8)
-            os.chmod(path_str, mode=mode)
+            os.chmod(sweep_dir, mode=mode)
 
         params = []
-        for job_num in range(num_jobs):
-            sweep_override = list(job_overrides[job_num])
-            log.info(
-                "\t#{} : {}".format(
-                    job_num, " ".join(filter_overrides(sweep_override)),
+
+        for idx, overrides in enumerate(job_overrides):
+            idx = initial_job_idx + idx
+            lst = " ".join(filter_overrides(overrides))
+            log.info(f"\t#{idx} : {lst}")
+            params.append(
+                (
+                    list(overrides),
+                    "hydra.sweep.dir",
+                    idx,
+                    f"job_id_for_{idx}",
+                    Singleton.get_state(),
                 )
             )
-            params.append(
-                (sweep_override, "hydra.sweep.dir", job_num, Singleton.get_state(),)
-            )
+
         jobs = executor.map_array(self, *zip(*params))
         return [j.results()[0] for j in jobs]
