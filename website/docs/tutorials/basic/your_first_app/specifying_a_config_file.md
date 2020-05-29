@@ -21,8 +21,6 @@ def my_app(cfg):
     print(cfg.pretty())
 ```
 
-You can override `config_name` from the command line using the `--config_name` flag.
-
 `config.yaml` is loaded automatically when you run your application.
 ```yaml
 $ python my_app.py
@@ -32,8 +30,8 @@ db:
   password: secret
 ```
 
-You can override values in the loaded config from the command line.
-When overriding existing parameters, you should not prefix the command line items with '+': 
+You can override values in the loaded config from the command line.  
+Note the lack of the `+` prefix.
 ```yaml {4-5}
 $ python my_app.py db.user=root db.password=1234
 db:
