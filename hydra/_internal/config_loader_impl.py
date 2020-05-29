@@ -12,7 +12,11 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 from omegaconf import DictConfig, ListConfig, OmegaConf, _utils, open_dict
-from omegaconf.errors import OmegaConfBaseException
+from omegaconf.errors import (
+    ConfigAttributeError,
+    ConfigKeyError,
+    OmegaConfBaseException,
+)
 
 from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
@@ -369,8 +373,8 @@ class ConfigLoaderImpl(ConfigLoader):
                         msg = f"Could not rename package. No match for '{src}' in the defaults list."
                     else:
                         msg = (
-                            f"Could not override. No match for '{src}' in the defaults list."
-                            f"\nTo append to your default list, prefix the override with plus. e.g +{owl.input_line}"
+                            f"Could not override '{src}'. No match in the defaults list."
+                            f"\nTo append to your default list use +{owl.input_line}"
                         )
 
                     raise HydraException(msg)
@@ -433,7 +437,13 @@ class ConfigLoaderImpl(ConfigLoader):
                             f"Could not append to config. An item is already at '{override.key}'."
                         )
                 else:
-                    OmegaConf.update(cfg, override.key, value)
+                    try:
+                        OmegaConf.update(cfg, override.key, value)
+                    except (ConfigAttributeError, ConfigKeyError) as ex:
+                        raise HydraException(
+                            f"Could not override '{override.key}'. No match in config."
+                            f"\nTo append to your config use +{line}"
+                        ) from ex
             except OmegaConfBaseException as ex:
                 raise HydraException(f"Error merging override {line}") from ex
 
