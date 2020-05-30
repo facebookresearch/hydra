@@ -64,9 +64,11 @@ def my_app(cfg: DictConfig) -> None:
 When `db/mysql.yaml` and `db/postgresql.yaml` are loaded, the corresponding configs from the `ConfigStore` are used automatically.
 This can be used to validate that both the configuration files (`mysql.yaml` and `postgresql.yaml`) and the command line overrides are conforming to the schema. 
 
-```bash
-$ python my_app.py  db.port=fail
-Traceback (most recent call last):
-..
-omegaconf.errors.ValidationError: Error setting 'db.port = fail' : Value 'fail' could not be converted to Integer
+```
+$ python my_app.py db.port=fail
+Error merging override db.port=fail
+Value 'fail' could not be converted to Integer
+        full_key: db.port
+        reference_type=Optional[MySQLConfig]
+        object_type=MySQLConfig
 ```

@@ -3,7 +3,7 @@ id: intro
 title: Introduction to Structured Configs
 sidebar_label: Introduction to Structured Configs
 ---
-This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/1_simple_cli_app.md).
+This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/your_first_app/1_simple_cli.md).
 The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs).
 
 Structured Configs use Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
@@ -14,7 +14,7 @@ describe your configuration structure and types. They enable:
 
 #### Structured Configs supports:
 - Primitive types (`int`, `bool`, `float`, `str`, `Enums`) 
-- Nesting of structured configs
+- Nesting of Structured Configs
 - Containers (List and Dict) containing primitives or Structured Configs
 - Optional fields
 
@@ -34,7 +34,7 @@ Structured Configs are a feature of OmegaConf. This tutorial does not assume any
 It is recommended that you visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more later.
 
 <div class="alert alert--info" role="alert">
-1. The APIs and behaviors described in this tutorial are experimental and may change in a future version<br/> 
+1. The APIs and behaviors described in this tutorial are new and are subject to change<br/> 
 2. Structured configs are new, please report any issues<br/>
 </div>
 <br/>

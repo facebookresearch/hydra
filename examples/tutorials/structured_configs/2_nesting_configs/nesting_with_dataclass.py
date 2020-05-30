@@ -14,7 +14,6 @@ class MySQLConfig:
 @dataclass
 class MyConfig:
     db: MySQLConfig = MySQLConfig()
-    verbose: bool = True
 
 
 cs = ConfigStore.instance()

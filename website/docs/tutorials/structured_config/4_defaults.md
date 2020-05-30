@@ -20,14 +20,13 @@ defaults = [
     {"database": "mysql"}
 ]
 
-
 @dataclass
 class Config(DictConfig):
     # this is unfortunately verbose due to @dataclass limitations
     defaults: List[Any] = field(default_factory=lambda: defaults)
-    db: MySQLConfig = MySQLConfig()
 
-
+    # Hydra will populate this field based on the defaults list
+    db: Any = MISSING
 
 cs = ConfigStore.instance()
 cs.store(group="db", name="mysql", node=MySQLConfig)
@@ -43,13 +42,18 @@ def my_app(cfg: Config) -> None:
 if __name__ == "__main__":
     my_app()
 ```
-As expected, running it loads gives you the mysql config.
+Running `my_app.py` loads the mysql config option by default:
 ```yaml
 $ python my_app.py
 db:
   driver: mysql
-  host: localhost
-  password: secret
-  port: 3306
-  user: omry
+  ...
+```
+
+You can override the default option via the command line:
+```yaml
+$ python my_app.py db=postgresql
+db:
+  driver: postgresql
+  ...
 ```
