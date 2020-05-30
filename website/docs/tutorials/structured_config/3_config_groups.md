@@ -1,17 +1,18 @@
 ---
 id: config_groups
-title: Config groups
+title: Config Groups
 ---
+Structured Configs support config groups which are similar to file-based config groups.
+The config options in config groups can be used as building blocks when composing the output config object.
+One difference is that Structured Configs introduce runtime type safety which ensures that the resulting config object
+adheres to the declared types.
 
-This example adds `mysql` and `postgresql` configs into the config group `db`.
-The config group `db` corresponds to the directory name inside the config directory in config-file based examples.
+This example adds `mysql` and `postgresql` configs into the Config Group `db`.
+Like with config files, the configs in the `ConfigStore` acts as building blocks to be used when composing the 
+output config object.
 
-Noteworthy things in the example:
- - The two config classes `MySQLConfig` and `PostGreSQLConfig` have no common superclass
- - The type of the `db` field in `Config` is `Any`, This means it offers *no* type safety (static or runtime)
-
-A good solution here might have been to use a `Union[MySQLConfig, PostGreSQLConfig]`, but Unions are not currently
-supported by Structured Configs, so we use `Any` as a last resort.
+The type of variable `db` in the `Config` is `Any`. This allows both `MySQLConfig` and `PostGreSQLConfig` 
+to be merged into it despite them not having a common superclass.
 
 ```python
 @dataclass
@@ -43,7 +44,7 @@ def my_app(cfg: Config) -> None:
 ```
 You can select the database from the command line:
 ```yaml
-$ python my_app.py db=postgresql
+$ python my_app.py +db=postgresql
 db:
   driver: postgresql
   host: localhost
@@ -56,9 +57,10 @@ db:
 #### Config inheritance
 We can improve on the above example by modeling the configuration with inheritance.
 Noteworthy things in the example:
-- We can move fields to the top level class, reducing repetition of field names, type and default values
-- The type of the `db` field in `Config` is `DBConfig`, this offers static and runtime type safety 
-- We can use OmegaConf.get_type() to obtain the underlying type, and cast() to coerce the type checker to accept it
+- We can move fields to the top level class, reducing repetition of field names, type and default values.
+- The type of the `db` field in `Config` is `DBConfig`. This ensures that only subclasses of `DBConfig` 
+can be merged into db.
+- We can use OmegaConf.get_type() to obtain the underlying type, and cast() to coerce the type checker to accept it.
 
 ```python
 @dataclass
@@ -107,6 +109,6 @@ def my_app(cfg: Config) -> None:
 
 Example output:
 ```
-$ python my_app_with_inheritance.py db=postgresql
+$ python my_app_with_inheritance.py +db=postgresql
 Connecting to PostGreSQL: localhost:5432 (timeout=10)
 ```

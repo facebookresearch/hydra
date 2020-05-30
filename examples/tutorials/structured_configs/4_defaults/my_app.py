@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Any, List
 
-from omegaconf import DictConfig
+from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -37,7 +37,9 @@ defaults = [
 class Config(DictConfig):
     # this is unfortunately verbose due to @dataclass limitations
     defaults: List[Any] = field(default_factory=lambda: defaults)
-    db: MySQLConfig = MySQLConfig()
+
+    # Hydra will populate this field based on the defaults list
+    db: Any = MISSING
 
 
 cs = ConfigStore.instance()

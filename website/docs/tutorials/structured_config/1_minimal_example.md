@@ -53,9 +53,7 @@ With structured configs, Hydra will catch these and runtime errors that mypy can
 A type error in the code:
 ```
 $ python my_app_type_error.py
-Traceback (most recent call last):
-...
-omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
+Key 'pork' not in 'MySQLConfig'
         full_key: pork
         reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
@@ -64,8 +62,8 @@ omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
 A type error in the command line:
 ```
 $ python my_app_type_error.py port=fail
-... 
-omegaconf.errors.ValidationError: Value 'fail' could not be converted to Integer
+Error merging override port=fail
+Value 'fail' could not be converted to Integer
         full_key: port
         reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig

@@ -17,7 +17,7 @@ OPTION    : .*
 # Changing an existing item
 GROUP[@SRC_PKG[:DEST_PKG]][=OPTION]
 
-# Adding a new item
+# Appending a new item
 +GROUP@[SRC_PKG]=OPTION
 
 # Deleting an existing item
@@ -31,7 +31,7 @@ VALUE : .*
 # Changing an existing item
 KEY=VALUE
 
-# Adding a new item
+# Appending a new item
 +KEY=VALUE
 
 # Deleting an existing item
@@ -40,9 +40,9 @@ KEY=VALUE
 
 # Examples
 ## Config values
-- Override config value : `key=value`
-- Add config value : `+key=value`
-- Remove config value : `~key`, `~key=value`,
+- Overriding a config value : `foo.bar=value`
+- Appending a config value : `+foo.bar=value`
+- Removing a config value : `~foo.bar`, `~foo.bar=value`
 
 ## Defaults list
 - Overriding selected Option: `db=mysql`
