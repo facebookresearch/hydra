@@ -28,7 +28,6 @@ module.exports = {
                     label: 'Running your Hydra app',
                     items: [
                         'tutorials/basic/running_your_app/command_line_overrides',
-                        'tutorials/basic/running_your_app/strict_mode',
                         'tutorials/basic/running_your_app/multi-run',
                         'tutorials/basic/running_your_app/working_directory',
                         'tutorials/basic/running_your_app/logging',

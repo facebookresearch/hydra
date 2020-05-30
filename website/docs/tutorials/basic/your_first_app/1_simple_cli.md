@@ -1,6 +1,6 @@
 ---
 id: simple_cli
-title: A simple command line app
+title: A simple command-line application
 ---
 
 This is a simple Hydra application that prints your configuration.
