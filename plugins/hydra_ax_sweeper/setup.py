@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-ax-sweeper",
-        version="1.0.0rc2",
+        version="1.0.0rc4",
         author="Omry Yadan, Shagun Sodhani",
         author_email="omry@fb.com, sshagunsodhani@gmail.com",
         description="Hydra Ax Sweeper plugin",
@@ -20,7 +20,8 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Operating System :: POSIX :: Linux",
+            "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core>=1.0.0-rc1", "ax-platform[mysql]==0.1.9"],
+        install_requires=["hydra-core==1.0.*", "ax-platform[mysql]==0.1.9"],
         include_package_data=True,
     )

@@ -3,32 +3,31 @@ id: submitit_launcher
 title: Submitit Launcher plugin
 sidebar_label: Submitit Launcher plugin
 ---
-
+[![PyPI](https://img.shields.io/pypi/v/hydra-submitit-launcher)](https://pypi.org/project/hydra-submitit-launcher/)
+![PyPI - License](https://img.shields.io/pypi/l/hydra-submitit-launcher)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-submitit-launcher)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-submitit-launcher.svg)](https://pypistats.org/packages/hydra-submitit-launcher)
 [![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example)
 [![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher)
 
+The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [Submitit](https://github.com/facebookincubator/submitit).
 
-The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [`Submitit`](https://github.com/facebookincubator/submitit).
-
-Install with 
-```
-$ git clone https://github.com/facebookresearch/hydra.git
-$ cd hydra
-$ pip install .                              # install hydra
-$ pip install plugins/hydra_submitit_launcher  # Install plugin
+### Installation
+This plugin requires Hydra 1.0 (Release candidate)
+```commandline
+$ pip install hydra-submitit-launcher --pre
 ```
 
-<div class="alert alert--info" role="alert">
-NOTE: This plugin depends on Hydra 1.0 which is not yet released, if you want to try it install Hydra from master
-</div><br/>
-
-
-Once installed, override `hydra/launcher` in your config:
+### Usage
+Once installed, add `hydra/launcher=submitit` to your command line. Alternatively, override `hydra/launcher` in your config:
 
 ```yaml
 defaults:
   - hydra/launcher: submitit
 ```
+
+Note that this plugin expects a valid environment in the target host. usually this means a shared file system between
+the launching host and the target host.
 
 Submitit supports 3 kind of queues: auto, local and slurm. Its config looks like this
 ```python
@@ -69,8 +68,7 @@ params:
 mem_limit: 24
 ```
 
-See [`Submitit` documentation](https://github.com/facebookincubator/submitit) for full details about the parameters above.
-
+See [Submitit documentation](https://github.com/facebookincubator/submitit) for full details about the parameters above.
 
 An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
 
@@ -100,3 +98,4 @@ $ cat 0/my_app.log
 [2020-05-28 15:05:23,511][__main__][INFO] - Process ID 15887 executing task 1 ...
 [2020-05-28 15:05:24,514][submitit][INFO] - Job completed successfully
 ```
+

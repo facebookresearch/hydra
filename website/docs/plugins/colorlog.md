@@ -3,7 +3,6 @@ id: colorlog
 title: Colorlog plugin
 sidebar_label: Colorlog plugin
 ---
-
 [![PyPI](https://img.shields.io/pypi/v/hydra-colorlog)](https://pypi.org/project/hydra-colorlog/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-colorlog)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-colorlog)
@@ -13,12 +12,20 @@ sidebar_label: Colorlog plugin
 
 Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
 
-Install with 
+
+### Installation
+#### Hydra 0.11 - stable
 ```
-pip install hydra_colorlog
+pip install hydra-colorlog --upgrade
 ```
 
-Once installed, override `hydra/job_logging` and `hydra/hydra_logging` your config:
+#### Hydra 1.0 - Release candidate
+```
+pip install hydra_colorlog --upgrade --pre
+```
+
+### Usage
+Override `hydra/job_logging` and `hydra/hydra_logging` your config:
 
 ```yaml
 defaults:

@@ -14,10 +14,12 @@ with open("README.md", "r") as fh:
         url="https://github.com/facebookincubator/submitit",
         packages=find_namespace_packages(include=["hydra_plugins.*"]),
         classifiers=[
+            "License :: OSI Approved :: MIT License",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Operating System :: MacOS",
             "Operating System :: POSIX :: Linux",
+            "Development Status :: 4 - Beta",
         ],
         install_requires=["hydra-core==1.0.*", "submitit>=1.0.0"],
         include_package_data=True,
