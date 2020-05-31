@@ -13,30 +13,29 @@ A framework for elegantly configuring complex applications.
 
 Check the [website](https://hydra.cc/) for more information.
 
-## License
-Hydra is licensed under [MIT License](LICENSE).
-
-## Releases
-### Hydra 0.11
+### Releases
+#### Hydra 0.11
 Hydra 0.11 is the stable version of Hydra.
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
-### Hydra 1.0
+#### Hydra 1.0
 Hydra 1.0 is the next major version of Hydra. It is currently a release candidate.  
 Please report any issues.
 - [Documentation](https://hydra.cc/docs/next/intro)
 - Installation : `pip install hydra-core --upgrade --pre`
 
+### License
+Hydra is licensed under [MIT License](LICENSE).
 
-## Community
+### Community
 Ask questions in the chat or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Chat](https://hydra-framework.zulipchat.com)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
 
-## Citing Hydra
+### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
 ```text
 @Misc{,
