@@ -1,4 +1,3 @@
-# @package _group_
 defaults:
   - hydra/launcher: example
   - db: mysql

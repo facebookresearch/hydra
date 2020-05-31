@@ -15,10 +15,10 @@ with open("README.md", "r") as fh:
         url="https://github.com/facebookresearch/hydra/",
         packages=find_namespace_packages(include=["hydra_plugins.*"]),
         classifiers=[
-            # Feel free to choose another license
+            # Feel free to use another license.
             "License :: OSI Approved :: MIT License",
-            # Python versions are used by the noxfile in Hydra to determine which
-            # python versions to test this plugin with
+            # Hydra uses Python version and Operating system to determine
+            # In which environments to test this plugin
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",

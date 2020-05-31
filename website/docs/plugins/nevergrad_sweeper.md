@@ -3,21 +3,25 @@ id: nevergrad_sweeper
 title: Nevergrad Sweeper plugin
 sidebar_label: Nevergrad Sweeper plugin
 ---
+
+[![PyPI](https://img.shields.io/pypi/v/hydra-nevergrad-sweeper)](https://pypi.org/project/hydra-nevergrad-sweeper/)
+![PyPI - License](https://img.shields.io/pypi/l/hydra-nevergrad-sweeper)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-nevergrad-sweeper)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-nevergrad-sweeper.svg)](https://pypistats.org/packages/hydra-nevergrad-sweeper)
 [![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper/example)
 [![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
 
+
 [Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
 
-This plugin requires Hydra 1.0 which is not yet released.
-To install, checkout Hydra from master, and install both Hydra and this plugin from the checkout directory.
-```bash
-$ git clone https://github.com/facebookresearch/hydra.git
-$ cd hydra
-$ pip install .                               # install hydra
-$ pip install plugins/hydra_nevergrad_sweeper # Install plugin
+### Installation
+This plugin requires Hydra 1.0 (Release candidate)
+```commandline
+$ pip install hydra-joblib-launcher --pre
 ```
 
-Once installed, add `hydra/sweeper=nevergrad` to the cmd command. Alternatively, override `hydra/sweeper` in your config:
+### Usage
+Once installed, add `hydra/sweeper=nevergrad` to your command command. Alternatively, override `hydra/sweeper` in your config:
 
 ```yaml
 defaults:
