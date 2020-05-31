@@ -72,6 +72,7 @@ module.exports = {
             'plugins/colorlog',
             'plugins/joblib_launcher',
             'plugins/nevergrad_sweeper',
+            'plugins/submitit_launcher',
         ],
 
         'Advanced': [
