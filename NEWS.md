@@ -1,3 +1,76 @@
+1.0.0-rc1 (2020-05-31)
+======================
+Hydra 1.0 is a major release introducing many new features and breaking some compatibility.
+
+Features
+--------
+- Upgrade to OmegaConf 2.0 ([Release notes](https://github.com/omry/omegaconf/releases/tag/2.0.0)) ([#623](https://github.com/facebookresearch/hydra/issues/630)
+- Optional config type safety via Structured Configs ([#629](https://github.com/facebookresearch/hydra/issues/629)
+- Improve command line and config composition error reporting ([#349](https://github.com/facebookresearch/hydra/issues/349))
+- Hydra config can now be accessed through interpolation using ${hydra:key}, for example ${hydra:job.name} ([#325](https://github.com/facebookresearch/hydra/issues/325))
+- Support for setting environment variable of running job ([#7](https://github.com/facebookresearch/hydra/issues/7))
+- Changes command line processing (requiring + and ~ prefixes for appending and removing items) ([#598](https://github.com/facebookresearch/hydra/issues/598))
+- Introducing @package header for config files ([#586](https://github.com/facebookresearch/hydra/issues/586))
+- Add command line override flags for `config_path` and `config_name` ([#386](https://github.com/facebookresearch/hydra/issues/386))
+- hydra.main() now take an optional cfg object to passthrough to the function ([#575](https://github.com/facebookresearch/hydra/issues/575))
+- Add hydra.experimental.{initialize_with_file, initialize_with_module} ([#574](https://github.com/facebookresearch/hydra/issues/574))
+- Support for disabling the creation of the `.hydra` subdirectory by overriding "hydra.output_subdir" to "null" ([#324](https://github.com/facebookresearch/hydra/issues/324))
+- Add `hydra.utils.call()` to call methods and functions as well as instantiate objects.  Search module paths more generically. ([#498](https://github.com/facebookresearch/hydra/issues/498))
+- Add support for overriding package from command line and defaults list ([#235](https://github.com/facebookresearch/hydra/issues/235))
+- Config source is now abstracted, allowing additional config sources to be used ([#257](https://github.com/facebookresearch/hydra/issues/257))
+- New ConfigSource plugin API allowing configs to be provided by external plugins ([#367](https://github.com/facebookresearch/hydra/issues/367))
+- Add isort to ensure imports are always sorted ([#340](https://github.com/facebookresearch/hydra/issues/340))
+- Codebase is now passing mypy --strict type checking ([#342](https://github.com/facebookresearch/hydra/issues/342))
+- Improve performance of plugin discovery and instantiation ([#489](https://github.com/facebookresearch/hydra/issues/489))
+- Modules whose name starts with "_" are skipped during plugin discovery ([#494](https://github.com/facebookresearch/hydra/issues/494))
+
+Plugins
+-------
+- Add [Ax](https://ax.dev) Sweeper plugin ([Shagun Sodhani](https://shagunsodhani.com/))
+- Add [nevergrad](https://github.com/facebookresearch/nevergrad) Sweeper plugin ([Jérémy Rapin](https://github.com/jrapin)))
+- Add Joblib Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
+- Add Submitit Launcher plugin to launch jobs to SLURM clusters
+- Add [Fish](https://fishshell.com/) shell Tab Completion plugin ([Binsheng Liu](https://binshengliu.github.io/)) ([#549](https://github.com/facebookresearch/hydra/issues/549))
+
+API Change (Renames, deprecations and removals)
+-----------------------------------------------
+- Drop support Python 2.7 and 3.5 ([#313](https://github.com/facebookresearch/hydra/issues/313))
+- hydra.main() now takes an additional optional config_name and composite-style config_path is deprecated ([#395](https://github.com/facebookresearch/hydra/issues/395))
+- Launcher API launch method now takes an additional initial_job_idx indicating the id of the first job in the batch ([#284](https://github.com/facebookresearch/hydra/issues/284))
+- Singleton metaclass is now exposed at hydra.core.Singleton ([#371](https://github.com/facebookresearch/hydra/issues/371))
+- Moved HydraConfig from hydra.plugins.common.utils to hydra.core ([#371](https://github.com/facebookresearch/hydra/issues/371))
+- Move several formerly internal APIs to hydra/core to ensure plugins does not need to use internal APIs ([#371](https://github.com/facebookresearch/hydra/issues/371))
+- Plugin import now requires explicit name (from hydra.plugins.launcher import Launcher) ([#371](https://github.com/facebookresearch/hydra/issues/371))
+- Object Config "class" field is deprecated in favor of "cls" and will be removed in a future version. ([#389](https://github.com/facebookresearch/hydra/issues/389))
+- Experimental compose API config_file changed to config_name ([#395](https://github.com/facebookresearch/hydra/issues/395))
+- User plugins should be modified to not import twice during plugin discovery. see issue for details. ([#482](https://github.com/facebookresearch/hydra/issues/482))
+- Change hydra.core.plugins.Plugins class to a Singleton. access should be changed to the pattern Plugins.instance().foo() ([#489](https://github.com/facebookresearch/hydra/issues/489))
+- Plugins should now include test fixtures (sweep_runner, task_runner) via a standardized conftest.py ([#521](https://github.com/facebookresearch/hydra/issues/521))
+- Switch Python 3 native namespace packages for plugins (See task for details) ([#534](https://github.com/facebookresearch/hydra/issues/534))
+- Packaged configuration directories now requires an `__init__.py` at their top level ([#536](https://github.com/facebookresearch/hydra/issues/536))
+- Appending config groups to the defaults list via the command line now requires a + prefix ([#598](https://github.com/facebookresearch/hydra/issues/598))
+- Removing an item from the defaults list by assigning null (db=null) is deprecated, use ~db instead ([#598](https://github.com/facebookresearch/hydra/issues/598))
+- Installed Hydra applications no longer need have an additional `entry()` function on the stack ([#92](https://github.com/facebookresearch/hydra/issues/92))
+
+Bug Fixes
+---------
+
+- Fix a bug causing sys.exit() error code to not be propagated ([#351](https://github.com/facebookresearch/hydra/issues/351))
+- Shutdown logging subsystem aftter job finishes to ensure log files are flushed and closed ([#378](https://github.com/facebookresearch/hydra/issues/378))
+- Fix a bug with utils.instantiate() failing if params contains interpolated values. ([#388](https://github.com/facebookresearch/hydra/issues/388))
+- Allow hydra.utils.instantiate() to accept non primitive objects for passthrough by name ([#400](https://github.com/facebookresearch/hydra/issues/400))
+- Fix to work when an Hydra app is executed in Jupyter notebook using the %run command ([#481](https://github.com/facebookresearch/hydra/issues/481))
+- Plugins are no longer imported twice during plugin discovery ([#482](https://github.com/facebookresearch/hydra/issues/482))
+- to_absolute_dir(path) now converts relative path to be relative to os.cwd() when used outside of Hydra ([#496](https://github.com/facebookresearch/hydra/issues/496))
+
+Improved Documentation
+----------------------
+
+- Working examples are provided for all Hydra plugins in [plugins/examples](https://github.com/facebookresearch/hydra/tree/master/plugins/examples) ([#253](https://github.com/facebookresearch/hydra/issues/253))
+- The basic tutorial was rewritten to reflect many changes ([#602](https://github.com/facebookresearch/hydra/issues/602))
+- Added a new tutorial covering Structured Configs ([#628](https://github.com/facebookresearch/hydra/issues/628))
+
+
 0.11.3 (2019-12-29)
 ===================
 

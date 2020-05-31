@@ -1,1 +1,0 @@
-Fix to work when an Hydra app is executed in Jupyter notebook using the %run command

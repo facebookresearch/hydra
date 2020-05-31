@@ -1,1 +1,0 @@
-Change hydra.core.plugins.Plugins class to a Singleton. access should be changed to the pattern Plugins.instance().foo()
