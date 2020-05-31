@@ -1,1 +1,0 @@
-Codebase is now passing mypy --strict type checking

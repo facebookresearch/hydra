@@ -1,2 +1,0 @@
-Launcher API launch method now takes an additional initial_job_idx indicating the id of the first job in the batch
-

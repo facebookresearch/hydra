@@ -1,1 +1,0 @@
-Shutdown logging subsystem aftter job finishes to ensure log files are flushed and closed
