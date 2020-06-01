@@ -62,7 +62,9 @@ params:
       timeout_min: 60
     # auto queue parameters
     auto:
-      max_num_timeout: 0
+      slurm_max_num_timeout: 0
+      gpus_per_node: 1
+      timeout_min: 60
 
 # variables used by queues above
 mem_limit: 24
