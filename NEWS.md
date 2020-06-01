@@ -28,8 +28,8 @@ Plugins
 -------
 - Add [Ax](https://ax.dev) Sweeper plugin ([Shagun Sodhani](https://shagunsodhani.com/))
 - Add [Nevergrad](https://github.com/facebookresearch/nevergrad) Sweeper plugin ([Jérémy Rapin](https://github.com/jrapin))
-- Add Joblib Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
-- Add Submitit Launcher plugin to launch jobs to SLURM clusters
+- Add [Joblib](https://joblib.readthedocs.io/en/latest/) Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
+- Add [Submitit](https://github.com/facebookincubator/submitit) Launcher plugin to launch jobs to SLURM clusters
 - Add [Fish](https://fishshell.com/) shell Tab Completion plugin ([Binsheng Liu](https://binshengliu.github.io/)) ([#549](https://github.com/facebookresearch/hydra/issues/549))
 
 API Change (Renames, deprecations and removals)
