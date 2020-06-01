@@ -18,22 +18,20 @@ The name Hydra comes from its ability to run multiple similar jobs - much like a
 
 Hydra requires Python 3.6 or newer, and it officially supports Linux, Mac and Windows.
 
+|           Version                                 | Release notes                                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [0.11 (Stable)](/docs/intro)                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)        |
+| **1.0 (Release candidate)**                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/hydra-1.0.0rc1)|
+
 ## Quick start guide
 This guide will show you some of the most important features of Hydra.
 Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
-Install the stable release with 
-```
-pip install hydra-core --upgrade
-```
+Install the stable release with `pip install hydra-core --upgrade`.
 
-
-You can install pre-release version with: 
-```
-pip install hydra-core --pre --upgrade
-``` 
-This version may contain nuts and bugs and be incompatible with existing plugins.
+You can install pre-release versions with `pip install hydra-core --pre --upgrade`. 
+Those may contain nuts and bugs and might be incompatible with existing plugins.
 
 
 ### Basic example
