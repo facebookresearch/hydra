@@ -100,15 +100,11 @@ class SubmititLauncher(Launcher):
         OmegaConf.set_struct(queue_parameters, True)
         if self.queue == "auto":
             slurm_max_num_timeout = self.queue_parameters.auto.slurm_max_num_timeout
-            with open_dict(queue_parameters):
-                del queue_parameters.auto["slurm_max_num_timeout"]
             executor = submitit.AutoExecutor(
                 folder=self.folder, slurm_max_num_timeout=slurm_max_num_timeout
             )
         elif self.queue == "slurm":
             max_num_timeout = self.queue_parameters.slurm.max_num_timeout
-            with open_dict(queue_parameters):
-                del queue_parameters.slurm["max_num_timeout"]
             executor = submitit.SlurmExecutor(
                 folder=self.folder, max_num_timeout=max_num_timeout
             )
@@ -117,7 +113,13 @@ class SubmititLauncher(Launcher):
         else:
             raise RuntimeError("Unsupported queue type {}".format(self.queue))
 
-        executor.update_parameters(**queue_parameters[self.queue])
+        executor.update_parameters(
+            **{
+                x: y
+                for x, y in queue_parameters[self.queue].items()
+                if "max_num_timeout" not in x
+            }
+        )
 
         log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
