@@ -14,6 +14,8 @@ class QueueType(Enum):
 
 @dataclass
 class SlurmQueueConf:
+    # Params are used to configure sbatch, for more info check:
+    # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
     nodes: int = 1
     gpus_per_node: int = 1
     ntasks_per_node: int = 1
@@ -38,6 +40,8 @@ class LocalQueueConf:
 
 @dataclass
 class AutoQueueConf:
+    # check the following for more info on slurm_max_num_timeout
+    # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
     slurm_max_num_timeout: int = 0
     gpus_per_node: int = 1
     timeout_min: int = 60
