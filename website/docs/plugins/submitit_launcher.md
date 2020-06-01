@@ -43,7 +43,7 @@ params:
     # slurm queue parameters
     slurm:
       nodes: 1
-      num_gpus: 1
+      gpus_per_node: 1
       ntasks_per_node: 1
       mem: ${hydra.launcher.mem_limit}GB
       cpus_per_task: 10
