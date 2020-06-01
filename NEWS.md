@@ -4,9 +4,9 @@ Hydra 1.0 is a major release introducing many new features and breaking some com
 
 Features
 --------
-- Upgrade to OmegaConf 2.0 ([Release notes](https://github.com/omry/omegaconf/releases/tag/2.0.0)) ([#623](https://github.com/facebookresearch/hydra/issues/630)
-- Optional config type safety via Structured Configs ([#629](https://github.com/facebookresearch/hydra/issues/629)
-- Improve command line and config composition error reporting ([#349](https://github.com/facebookresearch/hydra/issues/349))
+- Upgrade to OmegaConf 2.0 ([Release notes](https://github.com/omry/omegaconf/releases/tag/2.0.0)) (#630)
+- Optional config type safety via Structured Configs (#629)
+- Improve command line and config composition error reporting (#349)
 - Hydra config can now be accessed through interpolation using ${hydra:key}, for example ${hydra:job.name} ([#325](https://github.com/facebookresearch/hydra/issues/325))
 - Support for setting environment variable of running job ([#7](https://github.com/facebookresearch/hydra/issues/7))
 - Changes command line processing (requiring + and ~ prefixes for appending and removing items) ([#598](https://github.com/facebookresearch/hydra/issues/598))
@@ -27,7 +27,7 @@ Features
 Plugins
 -------
 - Add [Ax](https://ax.dev) Sweeper plugin ([Shagun Sodhani](https://shagunsodhani.com/))
-- Add [nevergrad](https://github.com/facebookresearch/nevergrad) Sweeper plugin ([Jérémy Rapin](https://github.com/jrapin)))
+- Add [Nevergrad](https://github.com/facebookresearch/nevergrad) Sweeper plugin ([Jérémy Rapin](https://github.com/jrapin))
 - Add Joblib Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
 - Add Submitit Launcher plugin to launch jobs to SLURM clusters
 - Add [Fish](https://fishshell.com/) shell Tab Completion plugin ([Binsheng Liu](https://binshengliu.github.io/)) ([#549](https://github.com/facebookresearch/hydra/issues/549))
@@ -68,7 +68,7 @@ Improved Documentation
 
 - Working examples are provided for all Hydra plugins in [plugins/examples](https://github.com/facebookresearch/hydra/tree/master/plugins/examples) ([#253](https://github.com/facebookresearch/hydra/issues/253))
 - The basic tutorial was rewritten to reflect many changes ([#602](https://github.com/facebookresearch/hydra/issues/602))
-- Added a new tutorial covering Structured Configs ([#628](https://github.com/facebookresearch/hydra/issues/628))
+- Add a new tutorial covering Structured Configs ([#628](https://github.com/facebookresearch/hydra/issues/628))
 
 
 0.11.3 (2019-12-29)
