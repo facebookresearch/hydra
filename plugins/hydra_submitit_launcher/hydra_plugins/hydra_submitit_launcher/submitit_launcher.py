@@ -19,6 +19,8 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from hydra_plugins.hydra_submitit_launcher.config import QueueType
+
 log = logging.getLogger(__name__)
 
 
@@ -98,17 +100,17 @@ class SubmititLauncher(Launcher):
         # make sure you don't change inplace
         queue_parameters = self.queue_parameters.copy()
         OmegaConf.set_struct(queue_parameters, True)
-        if self.queue == "auto":
+        if self.queue == QueueType.auto:
             slurm_max_num_timeout = self.queue_parameters.auto.slurm_max_num_timeout
             executor = submitit.AutoExecutor(
                 folder=self.folder, slurm_max_num_timeout=slurm_max_num_timeout
             )
-        elif self.queue == "slurm":
+        elif self.queue == QueueType.slurm:
             max_num_timeout = self.queue_parameters.slurm.max_num_timeout
             executor = submitit.SlurmExecutor(
                 folder=self.folder, max_num_timeout=max_num_timeout
             )
-        elif self.queue == "local":
+        elif self.queue == QueueType.local:
             executor = submitit.LocalExecutor(folder=self.folder)
         else:
             raise RuntimeError("Unsupported queue type {}".format(self.queue))
@@ -116,7 +118,7 @@ class SubmititLauncher(Launcher):
         executor.update_parameters(
             **{
                 x: y
-                for x, y in queue_parameters[self.queue].items()
+                for x, y in queue_parameters[self.queue.value].items()
                 if "max_num_timeout" not in x
             }
         )
