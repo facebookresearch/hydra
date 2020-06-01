@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
         version="1.0.0",
         author="Omry Yadan",
         author_email="omry@fb.com",
-        description="Example Hydra Config source plugin",
+        description="Example Hydra ConfigSource plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
@@ -24,7 +24,7 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core==1.0.*"],
+        install_requires=["hydra-core~=1.0.0rc1"],
         # If this plugin is providing configuration files, be sure to include them in the package.
         # See MANIFEST.in.
         # For configurations to be discoverable at runtime, they should also be added to the search path.
