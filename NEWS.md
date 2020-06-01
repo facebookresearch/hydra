@@ -10,7 +10,7 @@ Features
 - Hydra config can now be accessed through interpolation using ${hydra:key}, for example ${hydra:job.name} ([#325](https://github.com/facebookresearch/hydra/issues/325))
 - Support for setting environment variable of running job ([#7](https://github.com/facebookresearch/hydra/issues/7))
 - Changes command line processing (requiring + and ~ prefixes for appending and removing items) ([#598](https://github.com/facebookresearch/hydra/issues/598))
-- Introducing @package header for config files ([#586](https://github.com/facebookresearch/hydra/issues/586))
+- Introducing `@package` header for config files ([#586](https://github.com/facebookresearch/hydra/issues/586))
 - Add command line override flags for `config_path` and `config_name` ([#386](https://github.com/facebookresearch/hydra/issues/386))
 - hydra.main() now take an optional cfg object to passthrough to the function ([#575](https://github.com/facebookresearch/hydra/issues/575))
 - Add hydra.experimental.{initialize_with_file, initialize_with_module} ([#574](https://github.com/facebookresearch/hydra/issues/574))
