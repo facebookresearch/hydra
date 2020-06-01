@@ -29,45 +29,59 @@ defaults:
 Note that this plugin expects a valid environment in the target host. usually this means a shared file system between
 the launching host and the target host.
 
-Submitit supports 3 kind of queues: auto, local and slurm. Its config looks like this
+Submitit supports 3 types of queues: auto, local and slurm. Its config looks like this
 ```python
-# @package _group_
+class QueueType(Enum):
+    auto = "auto"
+    local = "local"
+    slurm = "slurm"
 
-cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher
-params:
-  # one of auto,local and slurm
-  queue: local
 
-  folder: ${hydra.sweep.dir}/.${hydra.launcher.params.queue}
-  queue_parameters:
-    # slurm queue parameters
-    slurm:
-      nodes: 1
-      gpus_per_node: 1
-      ntasks_per_node: 1
-      mem: ${hydra.launcher.mem_limit}GB
-      cpus_per_task: 10
-      time: 60
-      partition: dev
-      signal_delay_s: 120
-      job_name: ${hydra.job.name}
-      # Maximum number of retries on job timeout.
-      # Change this only after you confirmed your code can handle re-submission
-      # by properly resuming from the latest stored checkpoint.
-      max_num_timeout: 0
-    # local queue parameters
-    local:
-      gpus_per_node: 1
-      tasks_per_node: 1
-      timeout_min: 60
-    # auto queue parameters
-    auto:
-      slurm_max_num_timeout: 0
-      gpus_per_node: 1
-      timeout_min: 60
+@dataclass
+class SlurmQueueConf:
+    nodes: int = 1
+    gpus_per_node: int = 1
+    ntasks_per_node: int = 1
+    mem: str = "${hydra.launcher.mem_limit}GB"
+    cpus_per_task: int = 10
+    time: int = 60
+    partition: str = "dev"
+    signal_delay_s: int = 120
+    job_name: str = "${hydra.job.name}"
+    # Maximum number of retries on job timeout.
+    # Change this only after you confirmed your code can handle re-submission
+    # by properly resuming from the latest stored checkpoint.
+    max_num_timeout: int = 0
 
-# variables used by queues above
-mem_limit: 24
+
+@dataclass
+class LocalQueueConf:
+    gpus_per_node: int = 1
+    tasks_per_node: int = 1
+    timeout_min: int = 60
+
+
+@dataclass
+class AutoQueueConf:
+    slurm_max_num_timeout: int = 0
+    gpus_per_node: int = 1
+    timeout_min: int = 60
+
+
+@dataclass
+class QueueParams:
+    slurm: SlurmQueueConf = SlurmQueueConf()
+    local: LocalQueueConf = LocalQueueConf()
+    auto: AutoQueueConf = AutoQueueConf()
+
+
+@dataclass
+class SubmititConf:
+    queue: QueueType = QueueType.local
+
+    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.queue}"
+
+    queue_parameters: QueueParams = QueueParams()
 ```
 
 See [Submitit documentation](https://github.com/facebookincubator/submitit) for full details about the parameters above.
