@@ -17,12 +17,12 @@ class SlurmQueueConf:
     nodes: int = 1
     gpus_per_node: int = 1
     ntasks_per_node: int = 1
-    mem: str = "${hydra:launcher.mem_limit}GB"
+    mem: str = "${hydra.launcher.mem_limit}GB"
     cpus_per_task: int = 10
     time: int = 60
     partition: str = "dev"
     signal_delay_s: int = 120
-    job_name: str = "${hydra:job.name}"
+    job_name: str = "${hydra.job.name}"
     # Maximum number of retries on job timeout.
     # Change this only after you confirmed your code can handle re-submission
     # by properly resuming from the latest stored checkpoint.
@@ -54,7 +54,7 @@ class QueueParams:
 class SubmititConf:
     queue: QueueType = QueueType.local
 
-    folder: str = "${hydra:sweep.dir}/.${hydra:launcher.params.queue}"
+    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.queue}"
 
     queue_parameters: QueueParams = QueueParams()
 
@@ -63,7 +63,7 @@ class SubmititConf:
 class SubmititLauncherConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
     params: SubmititConf = SubmititConf()
-    mem_limit: int = 24
+    mem_limit: int = 2
 
 
 ConfigStore.instance().store(
