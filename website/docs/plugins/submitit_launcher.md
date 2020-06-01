@@ -54,7 +54,7 @@ params:
       # Maximum number of retries on job timeout.
       # Change this only after you confirmed your code can handle re-submission
       # by properly resuming from the latest stored checkpoint.
-      max_num_timeout: 1
+      max_num_timeout: 0
     # local queue parameters
     local:
       gpus_per_node: 1
@@ -62,7 +62,7 @@ params:
       timeout_min: 60
     # auto queue parameters
     auto:
-      max_num_timeout: 1
+      max_num_timeout: 0
 
 # variables used by queues above
 mem_limit: 24
