@@ -17,7 +17,7 @@ sidebar_label: Nevergrad Sweeper plugin
 ### Installation
 This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-$ pip install hydra-joblib-launcher --pre
+$ pip install hydra-nevergrad-sweeper --pre
 ```
 
 ### Usage
