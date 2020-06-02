@@ -15,7 +15,7 @@ The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Job
 ### Installation
 This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-$ pip install hydra-jobliblauncher --pre
+$ pip install hydra-joblib-launcher --pre
 ```
 
 ### Usage
