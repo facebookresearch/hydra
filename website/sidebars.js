@@ -1,4 +1,9 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
+function FBInternalOnly(elements) {
+   return process.env.FB_INTERNAL ? elements : [];
+}
+
 module.exports = {
     Docs: {
         About: [
@@ -104,5 +109,10 @@ module.exports = {
             ],
           },
         ],
+
+        'FB Only': FBInternalOnly([
+            'development/release',
+        ]),
+
     }
 }
