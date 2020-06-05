@@ -122,7 +122,7 @@ class SubmititLauncher(Launcher):
             }
         )
 
-        log.info("Sweep output dir : {}".format(self.config.hydra.sweep.dir))
+        log.info("Submitit '{}' sweep output dir : {}".format(self.queue.value, self.config.hydra.sweep.dir))
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
         if "mode" in self.config.hydra.sweep:

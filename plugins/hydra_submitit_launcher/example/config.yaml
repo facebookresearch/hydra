@@ -1,4 +1,11 @@
 defaults:
   - hydra/launcher: submitit
+hydra:
+  launcher:
+    params:
+      queue: auto
+      queue_parameters:
+        auto:
+          cluster: local
 
 task: 1
