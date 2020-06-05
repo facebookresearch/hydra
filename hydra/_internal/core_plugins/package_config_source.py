@@ -120,6 +120,11 @@ class PackageConfigSource(ConfigSource):
             module_name = resource_name
             resource_name = ""
 
+        # for short module name, convert clean __main__ form
+        if module_name.startswith("__main__."):
+            resource_name = module_name[len("__main__.") :] + "/" + resource_name
+            module_name = "__main__"
+
         return module_name, resource_name
 
     @staticmethod

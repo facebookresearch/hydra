@@ -32,7 +32,7 @@ def _get_module_name_override() -> Optional[str]:
 
 def detect_calling_file_or_module_from_task_function(
     task_function: Any,
-) -> Tuple[Optional[str], Optional[str]]:
+) -> Tuple[Optional[str], Optional[str], str]:
     mdl = _get_module_name_override()
     calling_file: Optional[str]
     calling_module: Optional[str]
@@ -40,13 +40,16 @@ def detect_calling_file_or_module_from_task_function(
         calling_file = None
         # short module name
         if mdl.rfind(".") == -1:
-            mdl = f"__main__.{mdl}"
-        calling_module = mdl
+            calling_module = "__main__"
+        else:
+            calling_module = mdl
     else:
         calling_file = task_function.__code__.co_filename
         calling_module = None
 
-    return calling_file, calling_module
+    task_name = detect_task_name(calling_file, mdl)
+
+    return calling_file, calling_module, task_name
 
 
 def detect_calling_file_or_module_from_stack_frame(
@@ -216,13 +219,14 @@ def run_hydra(
     if args.config_path is not None:
         config_path = args.config_path
 
-    calling_file, calling_module = detect_calling_file_or_module_from_task_function(
-        task_function
-    )
+    (
+        calling_file,
+        calling_module,
+        task_name,
+    ) = detect_calling_file_or_module_from_task_function(task_function)
 
     config_dir, config_name = split_config_path(config_path, config_name)
 
-    task_name = detect_task_name(calling_file, calling_module)
     search_path = create_automatic_config_search_path(
         calling_file, calling_module, config_dir
     )
