@@ -95,7 +95,7 @@ class AutoQueueConf:
     slurm_signal_delay_s: int = 30
     # slurm partition to use on the cluster
     # (depending on the cluster configuration, default "dev" may not exist)
-    partition: str = "dev"
+    slurm_partition: str = "dev"
 
 
 @dataclass
