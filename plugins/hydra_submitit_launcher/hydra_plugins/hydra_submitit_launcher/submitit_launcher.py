@@ -100,26 +100,25 @@ class SubmititLauncher(Launcher):
         # make sure you don't change inplace
         queue_parameters = self.queue_parameters.copy()
         OmegaConf.set_struct(queue_parameters, True)
-        if self.queue == QueueType.auto:
-            slurm_max_num_timeout = self.queue_parameters.auto.slurm_max_num_timeout
-            executor = submitit.AutoExecutor(
-                folder=self.folder, slurm_max_num_timeout=slurm_max_num_timeout
-            )
-        elif self.queue == QueueType.slurm:
-            max_num_timeout = self.queue_parameters.slurm.max_num_timeout
-            executor = submitit.SlurmExecutor(
-                folder=self.folder, max_num_timeout=max_num_timeout
-            )
-        elif self.queue == QueueType.local:
-            executor = submitit.LocalExecutor(folder=self.folder)
-        else:
-            raise RuntimeError("Unsupported queue type {}".format(self.queue))
-
+        executors = {
+            QueueType.auto: submitit.AutoExecutor,
+            QueueType.slurm: submitit.SlurmExecutor,
+            QueueType.local: submitit.LocalExecutor,
+        }
+        init_parameters = {"cluster", "max_num_timeout", "slurm_max_num_timeout"}
+        executor = executors[self.queue](
+            folder=self.folder,
+            **{
+                x: y
+                for x, y in queue_parameters[self.queue.value].items()
+                if x in init_parameters
+            },
+        )
         executor.update_parameters(
             **{
                 x: y
                 for x, y in queue_parameters[self.queue.value].items()
-                if "max_num_timeout" not in x
+                if x not in init_parameters
             }
         )
 
