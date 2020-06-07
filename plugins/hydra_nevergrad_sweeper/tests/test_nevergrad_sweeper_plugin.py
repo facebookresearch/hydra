@@ -59,7 +59,6 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:
             "foo=1,2",
             "bar=4:8",
         ],
-        strict=True,
     )
     with sweep:
         assert sweep.returns is None

@@ -74,7 +74,7 @@ def install_hydra(session, cmd):
 
 
 def pytest_args(session, *args):
-    ret = ["pytest"]
+    ret = ["pytest", "-Werror"]
     ret.extend(args)
     if len(session.posargs) > 0:
         ret.extend(session.posargs)
@@ -348,9 +348,12 @@ def test_jupyter_notebooks(session):
     args = pytest_args(
         session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
     )
+    # Jupyter notebook test on Windows yield warnings
+    args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
     args = pytest_args(session, "--nbval", "examples/notebook/%run_test.ipynb")
+    args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
 
