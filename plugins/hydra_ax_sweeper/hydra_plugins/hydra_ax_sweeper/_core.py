@@ -154,12 +154,12 @@ class CoreAxSweeper:
         ax_client = self.setup_ax_client(arguments)
 
         num_trials_left = self.max_trials
-        recommended_max_parallelism = ax_client.get_recommended_max_parallelism()
+        max_parallelism = ax_client.get_max_parallelism()
         current_parallelism_index = 0
         # Index to track the parallelism value we are using right now.
 
         while num_trials_left > 0:
-            current_parallelism = recommended_max_parallelism[current_parallelism_index]
+            current_parallelism = max_parallelism[current_parallelism_index]
             num_trials, max_parallelism_setting = current_parallelism
             num_trials_so_far = 0
             while (
