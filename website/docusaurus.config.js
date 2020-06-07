@@ -13,6 +13,7 @@ module.exports = {
     favicon: 'img/Hydra-head.svg',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
+    plugins: [require.resolve('docusaurus-plugin-internaldocs-fb')],
     themeConfig: {
         googleAnalytics: {
             trackingID: 'UA-149862507-1',
