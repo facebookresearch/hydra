@@ -132,7 +132,7 @@ class TestCompose:
 def test_strict_deprecation_warning(restore_singletons: Any) -> None:
     msg = (
         "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
-        "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
     )
     with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
         initialize(config_path=None, strict=True)

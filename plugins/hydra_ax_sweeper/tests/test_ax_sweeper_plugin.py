@@ -79,7 +79,6 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
             "hydra.sweeper.params.max_batch_size=2",
             "params=basic",
         ],
-        strict=True,
     )
     with sweep:
         assert isinstance(sweep.temp_dir, str)
@@ -99,7 +98,6 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         config_path="config",
         config_name="config.yaml",
         overrides=["hydra/launcher=basic", "params=basic"],
-        strict=True,
     )
     with sweep:
         assert sweep.returns is None
@@ -125,7 +123,6 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
             "quadratic.y=-2:2",
             "params=basic",
         ],
-        strict=True,
     )
     with sweep:
         assert sweep.returns is None
@@ -151,7 +148,6 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
             "quadratic.x=-5:-2",
             "params=basic",
         ],
-        strict=True,
     )
     with sweep:
         assert sweep.returns is None
@@ -256,7 +252,6 @@ def test_jobs_configured_via_nested_config(
             "params=nested_with_escape_char",
         ]
         + overrides,
-        strict=True,
     )
     with sweep:
         assert sweep.returns is None

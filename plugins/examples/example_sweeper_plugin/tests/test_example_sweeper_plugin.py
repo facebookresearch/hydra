@@ -27,7 +27,6 @@ def test_launched_jobs(sweep_runner: TSweepRunner) -> None:
         config_name="compose.yaml",
         task_function=None,
         overrides=["hydra/sweeper=example", "hydra/launcher=basic", "foo=1,2"],
-        strict=True,
     )
     with sweep:
         assert sweep.returns is not None
