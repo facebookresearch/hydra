@@ -32,7 +32,6 @@ module.exports = {
                     type: 'category',
                     label: 'Running your Hydra app',
                     items: [
-                        'tutorials/basic/running_your_app/command_line_overrides',
                         'tutorials/basic/running_your_app/multi-run',
                         'tutorials/basic/running_your_app/working_directory',
                         'tutorials/basic/running_your_app/logging',
@@ -82,6 +81,7 @@ module.exports = {
 
         'Advanced': [
             'advanced/package_directive',
+            'advanced/command_line_overrides',
             'advanced/search_path',
             'advanced/plugins',
             'advanced/app_packaging',
