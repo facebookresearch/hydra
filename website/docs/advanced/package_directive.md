@@ -2,27 +2,24 @@
 id: package_directive
 title: The @package directive
 ---
-
 A `@package directive` specifies a common package for all nodes in the config file.
 It must be placed at the top of each `config group file`.
 
-A `package` is the parent path of a config node (e.g `hydra.launcher`).
+A `package` is the parent path of a config node (e.g hydra.launcher).
 
 ### Package directive specification
 
-```
+``` text title="Definition"
 # @package PACKAGE_SPEC
-  PACKAGE_SPEC: _global_ | COMPONENT[.COMPONENT]*
-  COMPONENT: string | _group_ | _name_
+PACKAGE_SPEC : _global_ | COMPONENT[.COMPONENT]*
+COMPONENT    : _group_ | _name_ | [a-zA-Z0-9-_]+
 
-Keywords: 
- _global_ : the top level package (equivalent to the empty string).
- _group_  : the config group in dot notation: foo/bar/zoo.yaml -> foo.bar
- _name_   : the config file name: foo/bar/zoo.yaml -> zoo
+_global_     : the top level package (equivalent to the empty string).
+_group_      : the config group in dot notation: foo/bar/zoo.yaml -> foo.bar
+_name_       : the config file name: foo/bar/zoo.yaml -> zoo
 ```
 
-Package directive examples:
-```python
+```python title="Examples"
 # @package foo.bar
 # @package _global_
 # @package _group_
@@ -32,7 +29,7 @@ Package directive examples:
 
 ## Goals
  - Formalize the convention that the package of the config file matches the config group name  
-   (The package of `hydra/launcher/basic.yaml` is `hydra.launcher`).
+   (e.g. The package of `hydra/launcher/basic.yaml` is `hydra.launcher`).
  - A config file can be merged into multiple packages in the final config object via package overrides.  
 
 ## Interpreting the @package directive
