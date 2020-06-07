@@ -37,7 +37,7 @@ db:
 ```
 In Hydra 1.1 `_group_` will become the default package.  
 For now, add `# @package _group_` at the top of your config group files.  
-Learn more about packages directive [here](/advanced/package_directive.md). 
+Learn more about packages directive [here](/advanced/overriding_packages.md). 
 
 ### Using config groups
 Since we moved all the configs into the `conf` directory, we need to tell Hydra where to find them using the `config_path` parameter.

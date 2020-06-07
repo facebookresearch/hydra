@@ -13,7 +13,7 @@ any config group file without a `@package` directive.
 By adding an explicit `@package` to these configs now, you guarantee that your configs 
 will not break when you upgrade to Hydra 1.1.
 
-The `@package` directive is described in details [here](/advanced/package_directive.md).  
+The `@package` directive is described in details [here](/advanced/overriding_packages.md).  
 
 ## Upgrade instructions:
 ### Recommended (~10 seconds per config file):

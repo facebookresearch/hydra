@@ -59,7 +59,7 @@ A Config Node is either a `Value Node` (a primitive type), or a `Container Node`
 A Package is the path of the [Config Node](#config-node) in the [Config Object](#output-config-object). 
 
 ### Package directive
-The [Package Directive](advanced/package_directive.md) specifies the root [Package](#package) of an [Config File](#input-configs)
+The [Package Directive](advanced/overriding_packages.md) specifies the root [Package](#package) of an [Config File](#input-configs)
 
 ### Example
 ```yaml title="Input config: mi6/agent/james_bond.yaml"
