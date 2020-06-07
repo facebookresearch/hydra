@@ -824,6 +824,15 @@ def test_parse_override(override: str, expected: ParsedOverride) -> None:
     assert ret.override == expected
 
 
+config_parse_error_msg = (
+    "Error parsing config override : '{override}'"
+    "\nAccepted forms:"
+    "\n\tOverride:  key=value"
+    "\n\tAppend:   +key=value"
+    "\n\tDelete:   ~key=value, ~key"
+)
+
+
 @pytest.mark.parametrize(  # type: ignore
     "override, expected",
     [
@@ -836,11 +845,24 @@ def test_parse_override(override: str, expected: ParsedOverride) -> None:
         pytest.param(
             "~x.y.z=abc", ParsedConfigOverride("~", "x.y.z", "abc"), id="adding",
         ),
+        pytest.param("~x.y.z=", ParsedConfigOverride("~", "x.y.z", ""), id="adding"),
+        pytest.param(
+            "=a",
+            pytest.raises(
+                HydraException,
+                match=re.escape(config_parse_error_msg.format(override="=a")),
+            ),
+            id="no_key",
+        ),
     ],
 )
-def test_parse_config_override(override: str, expected: ParsedConfigOverride) -> None:
-    ret = ConfigLoaderImpl._parse_config_override(override)
-    assert ret == expected
+def test_parse_config_override(override: str, expected: Any) -> None:
+    if isinstance(expected, ParsedConfigOverride):
+        ret = ConfigLoaderImpl._parse_config_override(override)
+        assert ret == expected
+    else:
+        with expected:
+            ConfigLoaderImpl._parse_config_override(override)
 
 
 defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}]

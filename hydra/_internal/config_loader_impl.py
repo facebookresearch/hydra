@@ -489,9 +489,9 @@ class ConfigLoaderImpl(ConfigLoader):
         # update: key=value
         # append: +key=value
         # delete: ~key=value | ~key
-        # regex code and tests: https://regex101.com/r/JAPVdx/4
+        # regex code and tests: https://regex101.com/r/JAPVdx/9
 
-        regex = r"^(?P<prefix>[+~])?(?P<key>.*?)(=(?P<value>.*))?$"
+        regex = r"^(?P<prefix>[+~])?(?P<key>[\w\.@]+)(?:=(?P<value>.*))?$"
         matches = re.search(regex, override)
 
         valid = True
