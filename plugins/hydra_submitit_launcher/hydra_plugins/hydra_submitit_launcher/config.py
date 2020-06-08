@@ -28,11 +28,10 @@ class SlurmQueueConf:
     ntasks_per_node: int = 1
     # number of nodes to use for the job
     nodes: int = 1
-    # memory to reserve for the job on each node
+    # memory to reserve for the job on each node, in GB
     mem: str = "${hydra.launcher.mem_limit}GB"
     # slurm partition to use on the cluster
-    # (depending on the cluster configuration, default "dev" may not exist)
-    partition: str = "dev"
+    partition: Optional[str] = None
     # USR1 signal delay before timeout
     signal_delay_s: int = 120
     # name of the job
@@ -94,8 +93,7 @@ class AutoQueueConf:
     # USR1 signal delay before timeout for the slurm queue
     slurm_signal_delay_s: int = 30
     # slurm partition to use on the cluster
-    # (depending on the cluster configuration, default "dev" may not exist)
-    slurm_partition: str = "dev"
+    slurm_partition: Optional[str] = None
 
 
 @dataclass

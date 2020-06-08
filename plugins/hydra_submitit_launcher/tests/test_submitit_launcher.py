@@ -39,7 +39,6 @@ class TestSubmititLauncher(LauncherTestSuite):
                 ],
                 "hydra": {
                     "launcher": {
-                        "cls": "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher",
                         "params": {
                             "queue": "local",
                             "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
@@ -66,7 +65,6 @@ class TestSubmititLauncher(LauncherTestSuite):
                 ],
                 "hydra": {
                     "launcher": {
-                        "cls": "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher",
                         "params": {
                             "queue": "auto",
                             "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
