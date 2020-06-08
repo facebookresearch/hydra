@@ -27,14 +27,17 @@ describe your configuration structure and types. They enable:
 - As a [config](/tutorials/structured_config/1_minimal_example.md), in place of configuration files (often a starting place)
 - As a [config schema](/tutorials/structured_config/5_schema.md) validating configuration files (better for complex use cases)
 
-With both patterns, you get everything Hydra has to offer (config composition, Command line overrides etc).
+With both patterns, you still get everything Hydra has to offer (config composition, Command line overrides etc).
 This tutorial covers both. \***Read it in order**\*.
 
-Structured Configs are a feature of OmegaConf. This tutorial does not assume any knowledge of them.
+Hydra supports OmegaConf's Structured Configs via the `ConfigStore` API.
+This tutorial does not assume any knowledge of them.
 It is recommended that you visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more later.
 
+
 <div class="alert alert--info" role="alert">
-1. The APIs and behaviors described in this tutorial are new and are subject to change<br/> 
-2. Structured configs are new, please report any issues<br/>
+1. The ConfigStore API is new and subject to change.<br/>
+2. OmegaConf's Structured Configs are new.<br/>  
+Please report any issues.<br/>
 </div>
 <br/>
