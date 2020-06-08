@@ -116,6 +116,7 @@ class SubmititConf:
 class SubmititLauncherConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
     params: SubmititConf = SubmititConf()
+    # memory to reserve for the job on each node, in GB
     mem_limit: int = 2
 
 
