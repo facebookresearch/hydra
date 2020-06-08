@@ -3,20 +3,21 @@ id: minimal_example
 title: Minimal example
 ---
 
-There are three key elements in this example:
+There are four key elements in this example:
 - A `@dataclass` describes the application's configuration
 - `ConfigStore` manages the Structured Config. 
-- `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig` 
+- `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig`
+- There is a subtle typo in the code, can you spot it?
 
-In this example, the config node stored in the `ConfigStore` replaces the traditional `config.yaml` file. 
+In this example, the config node stored in the `ConfigStore` replaces the traditional `config.yaml` file.  
 
-```python
+```python title="my_app_type_error.py" {18}
 from dataclasses import dataclass
 
 import hydra
 from hydra.core.config_store import ConfigStore
 
-@dataclassg
+@dataclass
 class MySQLConfig:
     host: str = "localhost"
     port: int = 3306
@@ -27,31 +28,26 @@ cs.store(name="config", node=MySQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: MySQLConfig) -> None:
-    print(f"Host: {cfg.host}, port: {cfg.port}")
+    # pork should be port!
+    if cfg.pork == 80:
+        print("Is this a webserver?!")
 
 if __name__ == "__main__":
     my_app()
 ```
 
-If you have a typo in your code, such as pork in the following example:
-```python
-@hydra.main(config_name="config")
-def my_app(cfg: MySQLConfig) -> None:
-    # pork should be port!
-    if cfg.pork == 80:
-        print("Is this a webserver?!")
-```
+### Duck-typing enables static type checking
 
-Static type checkers like `mypy` can catch it:
+Duck-typing the config object as `MySQLConfig` enables static type checkers like `mypy` to catch
+type errors before you run your code: 
 ```
 $ mypy my_app_type_error.py
 my_app_type_error.py:21: error: "MySQLConfig" has no attribute "pork"
 Found 1 error in 1 file (checked 1 source file)
 ```
 
-With structured configs, Hydra will catch these and runtime errors that mypy cannot, such as:
-
-A type error in the code:
+### Structured Configs enable Hydra to catch type errors at runtime.
+If you forget to run `mypy`, Hydra will report the error at runtime:
 ```
 $ python my_app_type_error.py
 Key 'pork' not in 'MySQLConfig'
@@ -60,7 +56,7 @@ Key 'pork' not in 'MySQLConfig'
         object_type=MySQLConfig
 ```
 
-A type error in the command line:
+Hydra will also catch typos, or type errors in the command line:
 ```
 $ python my_app_type_error.py port=fail
 Error merging override port=fail
@@ -69,6 +65,11 @@ Value 'fail' could not be converted to Integer
         reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 ```
+We will see additional types of runtime errors that Hydra can catch later in this tutorial. Such as:
+- Trying to read or write a non existent field in your config object
+- Assigning a value that is incompatible with the declared type
+- Attempting to modify a [frozen config](https://omegaconf.readthedocs.io/en/latest/structured_config.html#frozen)
+
 
 ## Duck typing
 
