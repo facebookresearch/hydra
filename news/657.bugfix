@@ -1,0 +1,1 @@
+Add hydra/py.typed to pip package to enable type checking in downstream projects
