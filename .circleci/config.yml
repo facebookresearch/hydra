@@ -26,7 +26,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS=3.6
             conda activate hydra
-            pip install nox
+            pip install nox dataclasses
             nox
 
   py37_mac:
@@ -99,7 +99,7 @@ jobs:
           name: "Testing Hydra"
           command: |
               export NOX_PYTHON_VERSIONS=3.6
-              pip install nox
+              pip install nox dataclasses
               nox
 
   py37_linux:
@@ -154,7 +154,7 @@ jobs:
           command: |
             conda create -n hydra python=3.6 pywin32 -qy
             conda activate hydra
-            pip install nox
+            pip install nox dataclasses
       - run:
           name: Testing Hydra
           no_output_timeout: 10m

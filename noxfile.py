@@ -3,6 +3,7 @@
 import copy
 import os
 import platform
+from dataclasses import dataclass
 from typing import List
 
 import nox
@@ -28,6 +29,13 @@ SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
+
+
+@dataclass
+class Plugin:
+    name: str
+    path: str
+    module: str
 
 
 def get_current_os() -> str:
@@ -103,7 +111,7 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
-def select_plugins(session):
+def select_plugins(session) -> List[Plugin]:
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
@@ -113,12 +121,12 @@ def select_plugins(session):
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg"]
     example_plugins = [
-        {"name": x, "path": "examples/{}".format(x)}
+        {"dir_name": x, "path": f"examples/{x}"}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
         if x not in blacklist
     ]
     plugins = [
-        {"name": x, "path": x}
+        {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
         if x != "examples"
         if x not in blacklist
@@ -128,15 +136,15 @@ def select_plugins(session):
     ret = []
     skipped = []
     for plugin in available_plugins:
-        if not (plugin["name"] in PLUGINS or PLUGINS == ["ALL"]):
-            skipped.append(f"Deselecting {plugin['name']}: User request")
+        if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
+            skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
         setup_py = os.path.join(BASE, "plugins", plugin["path"], "setup.py")
         classifiers = session.run(
-            "python", setup_py, "--classifiers", silent=True
+            "python", setup_py, "--name", "--classifiers", silent=True
         ).splitlines()
-
+        plugin_name = classifiers.pop(0)
         plugin_python_versions = get_setup_python_versions(classifiers)
         python_supported = session.python in plugin_python_versions
 
@@ -146,7 +154,7 @@ def select_plugins(session):
         if not python_supported:
             py_str = ", ".join(plugin_python_versions)
             skipped.append(
-                f"Deselecting {plugin['name']} : Incompatible Python {session.python}. Supports [{py_str}]"
+                f"Deselecting {plugin['dir_name']} : Incompatible Python {session.python}. Supports [{py_str}]"
             )
             continue
 
@@ -154,16 +162,16 @@ def select_plugins(session):
         if not os_supported:
             os_str = ", ".join(plugin_os_names)
             skipped.append(
-                f"Deselecting {plugin['name']}: Incompatible OS {get_current_os()}. Supports [{os_str}]"
+                f"Deselecting {plugin['dir_name']}: Incompatible OS {get_current_os()}. Supports [{os_str}]"
             )
             continue
 
         ret.append(
-            {
-                "name": plugin["name"],
-                "path": plugin["path"],
-                "module": "hydra_plugins." + plugin["name"],
-            }
+            Plugin(
+                name=plugin_name,
+                path=plugin["path"],
+                module="hydra_plugins." + plugin["dir_name"],
+            )
         )
 
     for msg in skipped:
@@ -209,14 +217,16 @@ def lint_plugins(session):
     plugins = select_plugins(session)
 
     # plugin linting requires the plugins and their dependencies to be installed
-    _install_plugins(session, plugins, install_cmd)
+    for plugin in plugins:
+        cmd = install_cmd + [os.path.join("plugins", plugin.path)]
+        session.run(*cmd, silent=SILENT)
 
     install_lint_deps(session)
 
     session.run("flake8", "--config", ".flake8", "plugins")
     # Mypy for plugins
     for plugin in plugins:
-        session.chdir(os.path.join("plugins", plugin["path"]))
+        session.chdir(os.path.join("plugins", plugin.path))
         blackcmd = ["black", "."]
         isortcmd = ["isort", "."]
         if not FIX:
@@ -264,15 +274,16 @@ def test_plugins(session, install_cmd):
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session)
     for plugin in selected_plugin:
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin["path"])]
+        cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
         session.run(*cmd, silent=SILENT)
+        session.run("pipdeptree", "-p", plugin.name)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)
 
     # Test that we can import all installed plugins
     for plugin in selected_plugin:
-        session.run("python", "-c", f"import {plugin['module']}")
+        session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
     if not SKIP_CORE_TESTS:
@@ -283,7 +294,7 @@ def test_plugins(session, install_cmd):
     # Run tests for all installed plugins
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
-        session.chdir(os.path.join(BASE, "plugins", plugin["path"]))
+        session.chdir(os.path.join(BASE, "plugins", plugin.path))
         run_pytest(session)
 
 
@@ -303,17 +314,13 @@ def coverage(session):
     selected_plugins = select_plugins(session)
     for plugin in selected_plugins:
         session.run(
-            "pip",
-            "install",
-            "-e",
-            os.path.join("plugins", plugin["path"]),
-            silent=SILENT,
+            "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT,
         )
 
     session.run("coverage", "erase", env=coverage_env)
     # run plugin coverage
     for plugin in selected_plugins:
-        session.chdir(os.path.join("plugins", plugin["path"]))
+        session.chdir(os.path.join("plugins", plugin.path))
         cov_args = ["coverage", "run", "--append", "-m"]
         cov_args.extend(pytest_args(session))
         session.run(*cov_args, silent=SILENT, env=coverage_env)
@@ -355,9 +362,3 @@ def test_jupyter_notebooks(session):
     args = pytest_args(session, "--nbval", "examples/notebook/%run_test.ipynb")
     args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
-
-
-def _install_plugins(session, plugins, install_cmd):
-    for plugin in plugins:
-        cmd = install_cmd + [os.path.join("plugins", plugin["path"])]
-        session.run(*cmd, silent=SILENT)
