@@ -10,7 +10,7 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra._internal.utils import get_column_widths
+from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
@@ -21,6 +21,7 @@ from hydra.core.utils import (
     configure_log,
     run_job,
     setup_globals,
+    simple_stdout_log_config,
 )
 from hydra.errors import MissingConfigException
 from hydra.plugins.completion_plugin import CompletionPlugin
@@ -85,16 +86,6 @@ class Hydra:
         """
         setup_globals()
         self.config_loader = config_loader
-
-        for source in config_loader.get_sources():
-            # if specified, make sure main config search path exists
-            if source.provider == "main":
-                if not source.exists(""):
-                    raise MissingConfigException(
-                        missing_cfg_file=source.path,
-                        message=f"Primary config dir not found: {source}",
-                    )
-
         JobRuntime().set("name", task_name)
 
     def run(
@@ -146,18 +137,35 @@ class Hydra:
             del cfg.hydra["help"]
         return cfg
 
-    def show_cfg(
-        self, config_name: Optional[str], overrides: List[str], cfg_type: str
-    ) -> None:
+    def _get_cfg(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        cfg_type: str,
+        with_log_configuration: bool,
+    ) -> DictConfig:
         assert cfg_type in ["job", "hydra", "all"]
         cfg = self.compose_config(
-            config_name=config_name, overrides=overrides, with_log_configuration=True
+            config_name=config_name,
+            overrides=overrides,
+            with_log_configuration=with_log_configuration,
         )
         if cfg_type == "job":
             with open_dict(cfg):
                 del cfg["hydra"]
         elif cfg_type == "hydra":
             cfg = self.get_sanitized_hydra_cfg(cfg)
+        return cfg
+
+    def show_cfg(
+        self, config_name: Optional[str], overrides: List[str], cfg_type: str
+    ) -> None:
+        cfg = self._get_cfg(
+            config_name=config_name,
+            overrides=overrides,
+            cfg_type=cfg_type,
+            with_log_configuration=False,
+        )
         print(cfg.pretty())
 
     @staticmethod
@@ -302,6 +310,11 @@ class Hydra:
         log.debug(prefix + header)
         log.debug(prefix + "".ljust(len(header), filler))
 
+    @staticmethod
+    def _log_footer(header: str, prefix: str = "", filler: str = "-") -> None:
+        assert log is not None
+        log.debug(prefix + "".ljust(len(header), filler))
+
     def _print_plugins(self) -> None:
         assert log is not None
         self._log_header(header="Installed Hydra Plugins", filler="*")
@@ -337,11 +350,11 @@ class Hydra:
             box.append([sp.provider, sp.full_path()])
 
         provider_pad, search_path_pad = get_column_widths(box)
+        header = "| {} | {} |".format(
+            "Provider".ljust(provider_pad), "Search path".ljust(search_path_pad)
+        )
         self._log_header(
-            "| {} | {} |".format(
-                "Provider".ljust(provider_pad), "Search path".ljust(search_path_pad)
-            ),
-            filler="-",
+            header=header, filler="-",
         )
 
         for source in self.config_loader.get_sources():
@@ -351,6 +364,7 @@ class Hydra:
                     source.full_path().ljust(search_path_pad),
                 )
             )
+        self._log_footer(header=header, filler="-")
 
     def _print_composition_trace(self) -> None:
         # Print configurations used to compose the config object
@@ -372,15 +386,13 @@ class Hydra:
         padding = get_column_widths(box)
         del box[0]
 
-        self._log_header(
-            "| {} | {} | {} | {} |".format(
-                "Config name".ljust(padding[0]),
-                "Search path".ljust(padding[1]),
-                "Provider".ljust(padding[2]),
-                "Schema provider".ljust(padding[3]),
-            ),
-            filler="-",
+        header = "| {} | {} | {} | {} |".format(
+            "Config name".ljust(padding[0]),
+            "Search path".ljust(padding[1]),
+            "Provider".ljust(padding[2]),
+            "Schema provider".ljust(padding[3]),
         )
+        self._log_header(header=header, filler="-")
 
         for row in box:
             log.debug(
@@ -391,6 +403,8 @@ class Hydra:
                     row[3].ljust(padding[3]),
                 )
             )
+
+        self._log_footer(header=header, filler="-")
 
     def _print_plugins_profiling_info(self, top_n: int) -> None:
         assert log is not None
@@ -417,9 +431,9 @@ class Hydra:
             filler="-",
         )
 
+        header = f"| {box[0][0].ljust(padding[0])} | {box[0][1].ljust(padding[1])} |"
         self._log_header(
-            f"| {box[0][0].ljust(padding[0])} | {box[0][1].ljust(padding[1])} |",
-            filler="-",
+            header=header, filler="-",
         )
         del box[0]
 
@@ -427,6 +441,8 @@ class Hydra:
             a = row[0].ljust(padding[0])
             b = row[1].ljust(padding[1])
             log.debug(f"| {a} | {b} |")
+
+        self._log_footer(header=header, filler="-")
 
     def _print_debug_info(self) -> None:
         assert log is not None
@@ -452,6 +468,16 @@ class Hydra:
                        otherwise forces specific behavior.
         :return:
         """
+
+        for source in self.config_loader.get_sources():
+            # if specified, make sure main config search path exists
+            if source.provider == "main":
+                if not source.exists(""):
+                    raise MissingConfigException(
+                        missing_cfg_file=source.path,
+                        message=f"Primary config dir not found: {source}",
+                    )
+
         cfg = self.config_loader.load_configuration(
             config_name=config_name, overrides=overrides, strict=strict
         )
@@ -466,3 +492,28 @@ class Hydra:
             log = logging.getLogger(__name__)
             self._print_debug_info()
         return cfg
+
+    def show_info(self, config_name: Optional[str], overrides: List[str]) -> None:
+        from .. import __version__
+
+        simple_stdout_log_config(level=logging.DEBUG)
+        global log
+        log = logging.getLogger(__name__)
+        self._log_header(f"Hydra {__version__}", filler="=")
+        self._print_plugins()
+        self._print_search_path()
+        self._print_plugins_profiling_info(top_n=10)
+
+        cfg = run_and_report(
+            lambda: self._get_cfg(
+                config_name=config_name,
+                overrides=overrides,
+                cfg_type="job",
+                with_log_configuration=False,
+            )
+        )
+        self._print_composition_trace()
+
+        log.debug("\n")
+        self._log_header(header="Config", filler="*")
+        log.debug(cfg.pretty())

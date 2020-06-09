@@ -183,9 +183,9 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     return search_path
 
 
-def run_and_report(func: Any) -> None:
+def run_and_report(func: Any) -> Any:
     try:
-        func()
+        return func()
     except (HydraException, OmegaConfBaseException) as ex:
         if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
             print_exc()
@@ -231,9 +231,12 @@ def run_hydra(
         calling_file, calling_module, config_dir
     )
 
-    hydra = Hydra.create_main_hydra2(
-        task_name=task_name, config_search_path=search_path, strict=strict
+    hydra = run_and_report(
+        lambda: Hydra.create_main_hydra2(
+            task_name=task_name, config_search_path=search_path, strict=strict
+        )
     )
+
     try:
         if args.help:
             hydra.app_help(config_name=config_name, args_parser=args_parser, args=args)
@@ -245,10 +248,12 @@ def run_hydra(
             sys.exit(0)
 
         has_show_cfg = args.cfg is not None
-        num_commands = args.run + has_show_cfg + args.multirun + args.shell_completion
+        num_commands = (
+            args.run + has_show_cfg + args.multirun + args.shell_completion + args.info
+        )
         if num_commands > 1:
             raise ValueError(
-                "Only one of --run, --multirun,  -cfg and --shell_completion can be specified"
+                "Only one of --run, --multirun,  -cfg, --info and --shell_completion can be specified"
             )
         if num_commands == 0:
             args.run = True
@@ -280,6 +285,8 @@ def run_hydra(
                     config_name=config_name, overrides=args.overrides
                 )
             )
+        elif args.info:
+            hydra.show_info(config_name=config_name, overrides=args.overrides)
         else:
             sys.stderr.write("Command not specified\n")
             sys.exit(1)
@@ -362,6 +369,10 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--config_name",
         "-cn",
         help="Overrides the config_name specified in hydra.main()",
+    )
+
+    parser.add_argument(
+        "--info", "-i", action="store_true", help="Print Hydra information",
     )
     return parser
 
