@@ -147,11 +147,11 @@ class ConfigLoaderImpl(ConfigLoader):
         parsed_overrides = [self._parse_override(override) for override in overrides]
 
         if config_name is not None and not self.repository.config_exists(config_name):
-            # TODO: handle schema as a special case
-            descs = [
-                f"\t{src.path} (from {src.provider})"
-                for src in self.repository.get_sources()
-            ]
+            descs = []
+            for src in self.repository.get_sources():
+                if src.provider != "schema":
+                    descs.append(f"\t{repr(src)}")
+
             lines = "\n".join(descs)
             raise MissingConfigException(
                 missing_cfg_file=config_name,

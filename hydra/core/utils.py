@@ -21,6 +21,15 @@ from hydra.types import TaskFunction
 log = logging.getLogger(__name__)
 
 
+def simple_stdout_log_config(level: int = logging.INFO) -> None:
+    root = logging.getLogger()
+    root.setLevel(level)
+    handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter("%(message)s")
+    handler.setFormatter(formatter)
+    root.addHandler(handler)
+
+
 def configure_log(
     log_config: DictConfig, verbose_config: Union[bool, str, Sequence[str]]
 ) -> None:

@@ -34,37 +34,23 @@ db:
   password: 1234
 ```
 
-### Hydra verbose debugging
-Hydra prints some very useful information in `DEBUG` log level.
-This includes:
-* Installed plugins : What Hydra plugins are installed in the environment
-* Config search path : The configuration search path
-* Composition trace : Which config files were used to compose your configuration, and in what order.
-
-This is often used with `-c job` to just see the config without running the application.
-Example output:
+### Info
+Hydra can print information about your plugins, config search path, composition trace and more using the  
+`--info` flag.
 ```text
-$ python my_app.py hydra.verbose=hydra --cfg job
-[2019-09-29 13:35:46,780] - Installed Hydra Plugins
-[2019-09-29 13:35:46,780] - ***********************
-[2019-09-29 13:35:46,780] -     SearchPathPlugin:
-[2019-09-29 13:35:46,780] -     -----------------
-[2019-09-29 13:35:46,781] -     Sweeper:
-[2019-09-29 13:35:46,781] -     --------
-[2019-09-29 13:35:46,782] -             BasicSweeper
-[2019-09-29 13:35:46,782] -     Launcher:
-[2019-09-29 13:35:46,782] -     ---------
-[2019-09-29 13:35:46,783] -             BasicLauncher
-[2019-09-29 13:35:46,783] -
-[2019-09-29 13:35:46,783] - Hydra config search path
-[2019-09-29 13:35:46,783] - ************************
-[2019-09-29 13:35:46,783] - | Provider | Search path                           |
-[2019-09-29 13:35:46,783] - ----------------------------------------------------
-[2019-09-29 13:35:46,783] - | hydra  | pkg://hydra.conf                        |
-[2019-09-29 13:35:46,783] - | main   | /Users/omry/dev/hydra/tutorial/logging  |
-[2019-09-29 13:35:46,783] -
-[2019-09-29 13:35:46,783] - Composition trace
-[2019-09-29 13:35:46,783] - *****************
-[2019-09-29 13:35:46,783] - | Provider | Search path     | File      |
+$ python my_app.py --info
+```
+
+Subset of output (Complete [example](http://paste.ubuntu.com/p/JWh2cKgGtD/))
+```commandline
+Config search path
+...
+Profiling information
+...
+Composition trace
+...
+Config
 ...
 ```
+
+
