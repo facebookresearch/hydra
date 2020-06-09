@@ -117,7 +117,7 @@ class AutoQueueConf:
     # USR1 signal delay before timeout for the slurm queue
     slurm_signal_delay_s: int = 30
     # slurm partition to use on the cluster
-    slurm_partition: Optional[str] = "dev"
+    slurm_partition: Optional[str] = None
 
 
 @dataclass
