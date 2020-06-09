@@ -539,7 +539,7 @@ def test_sweep_complex_defaults(
 --cfg,-c : Show config instead of running [job|hydra|all]
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
---shell_completion,-sc : Install or Uninstall shell completion:
+--shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
     eval "$(python my_app.py -sc install=bash)"
     Bash - Uninstall:
@@ -550,9 +550,9 @@ def test_sweep_complex_defaults(
     Fish - Uninstall:
     python my_app.py -sc uninstall=fish | source
 
---config_path,-cp : Overrides the config_path specified in hydra.main().
+--config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
---config_name,-cn : Overrides the config_name specified in hydra.main()
+--config-name,-cn : Overrides the config_name specified in hydra.main()
 --info,-i : Print Hydra information
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
@@ -587,7 +587,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --cfg,-c : Show config instead of running [job|hydra|all]
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
---shell_completion,-sc : Install or Uninstall shell completion:
+--shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
     eval "$(python my_app.py -sc install=bash)"
     Bash - Uninstall:
@@ -598,9 +598,9 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     Fish - Uninstall:
     python my_app.py -sc uninstall=fish | source
 
---config_path,-cp : Overrides the config_path specified in hydra.main().
+--config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
---config_name,-cn : Overrides the config_name specified in hydra.main()
+--config-name,-cn : Overrides the config_name specified in hydra.main()
 --info,-i : Print Hydra information
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
