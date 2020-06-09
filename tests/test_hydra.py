@@ -747,8 +747,8 @@ def test_config_name_and_path_overrides(
         sys.executable,
         "tests/test_apps/app_with_multiple_config_dirs/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        f"--config_name={config_name}",
-        f"--config_path={config_path}",
+        f"--config-name={config_name}",
+        f"--config-path={config_path}",
     ]
     print(" ".join(cmd))
     result = str(subprocess.check_output(cmd).decode("utf-8")).strip()
