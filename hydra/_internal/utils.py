@@ -352,21 +352,21 @@ def get_args_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--shell_completion",
+        "--shell-completion",
         "-sc",
         action="store_true",
         help=f"Install or Uninstall shell completion:\n{_get_completion_help()}",
     )
 
     parser.add_argument(
-        "--config_path",
+        "--config-path",
         "-cp",
         help="""Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()""",
     )
 
     parser.add_argument(
-        "--config_name",
+        "--config-name",
         "-cn",
         help="Overrides the config_name specified in hydra.main()",
     )
