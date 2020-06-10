@@ -1,1 +1,1 @@
-Unify the CLI parser keyword to dash-style
+Hydra argparse flags are now consistently using dash-style.
