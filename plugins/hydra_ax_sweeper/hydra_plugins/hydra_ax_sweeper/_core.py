@@ -13,6 +13,7 @@ from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
 from ._earlystopper import EarlyStopper
+from .config import AxConfig, ClientConfig, ExperimentConfig
 
 log = logging.getLogger(__name__)
 
@@ -124,12 +125,16 @@ def get_one_batch_of_trials(
 class CoreAxSweeper:
     """Class to interface with the Ax Platform"""
 
-    def __init__(self, ax_config: DictConfig, max_batch_size: Optional[int]):
+    def __init__(self, ax_config: AxConfig, max_batch_size: Optional[int]):
         self.launcher: Optional[Launcher] = None
         self.job_results = None
-        self.experiment = ax_config.experiment
-        self.early_stopper = EarlyStopper(**ax_config.early_stop)
-        self.ax_client_config = ax_config.client
+        self.experiment: ExperimentConfig = ax_config.experiment
+        self.early_stopper: EarlyStopper = EarlyStopper(
+            max_epochs_without_improvement=ax_config.early_stop.max_epochs_without_improvement,
+            epsilon=ax_config.early_stop.epsilon,
+            minimize=ax_config.early_stop.minimize,
+        )
+        self.ax_client_config: ClientConfig = ax_config.client
         self.max_trials = ax_config.max_trials
         self.ax_params: DictConfig = OmegaConf.create({})
         if hasattr(ax_config, "params"):
