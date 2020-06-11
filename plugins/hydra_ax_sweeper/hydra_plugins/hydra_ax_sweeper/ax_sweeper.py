@@ -8,6 +8,8 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
+from .config import AxConfig
+
 
 class AxSweeperSearchPathPlugin(SearchPathPlugin):
     """
@@ -25,7 +27,7 @@ class AxSweeperSearchPathPlugin(SearchPathPlugin):
 class AxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
-    def __init__(self, ax_config: DictConfig, max_batch_size: Optional[int]):
+    def __init__(self, ax_config: AxConfig, max_batch_size: Optional[int]):
         from ._core import CoreAxSweeper
 
         self.sweeper = CoreAxSweeper(ax_config, max_batch_size)
