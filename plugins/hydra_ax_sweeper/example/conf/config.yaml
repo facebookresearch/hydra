@@ -14,6 +14,10 @@ hydra:
   
       # The following part of config is used to setup the Hydra Ax plugin and is optional
       ax_config:
+
+        # max_trials is application-specific. Tune it for your use case
+        max_trials: 20
+
         experiment:
           # Default to minimize, set to false to maximize
           minimize: true
