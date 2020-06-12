@@ -8,7 +8,6 @@ from hydra.types import MISSING, ObjectConf
 
 @dataclass
 class EarlyStopConfig:
-
     minimize: bool = MISSING
 
     max_epochs_without_improvement: int = 10
@@ -19,7 +18,6 @@ class EarlyStopConfig:
 
 @dataclass
 class ExperimentConfig:
-
     # Experiment name
     name: Optional[str] = None
 
@@ -49,13 +47,9 @@ class AxConfig:
 
     # max_trials is application-specific. Tune it for your use case
     max_trials: int = 10
-
     early_stop: EarlyStopConfig = EarlyStopConfig()
-
     experiment: ExperimentConfig = ExperimentConfig()
-
     client: ClientConfig = ClientConfig()
-
     params: Dict[str, Any] = field(default_factory=dict)
 
 
