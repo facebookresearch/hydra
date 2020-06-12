@@ -65,7 +65,7 @@ class AutoQueueConf:
 
     # cluster to use (currently either "slurm" or "local" are supported,
     # None defaults to an available cluster)
-    cluster: Optional[str] = None
+    cluster: str = "slurm"
 
     # maximum time for the job in minutes
     timeout_min: int = 60
@@ -105,7 +105,7 @@ class QueueParams:
 
 @dataclass
 class SubmititConf:
-    queue: QueueType = QueueType.local
+    queue: QueueType = QueueType.slurm
 
     folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.queue}"
 
