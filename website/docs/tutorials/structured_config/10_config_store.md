@@ -18,19 +18,14 @@ class ConfigStore(metaclass=Singleton):
         """
         Stores a config node into the repository
         :param name: config name
-        :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
-        :param group: config group, subgroup separator is '/', for example hydra/launcher
-        :param package: Config node package
-        :param provider: the name of the module/app providing this config. Helps debugging.
+        :param node: config node, can be DictConfig, ListConfig,
+            Structured configs and even dict and list
+        :param group: config group, subgroup separator is '/',
+            for example hydra/launcher
+        :param package: Config node parent hierarchy.
+            Child separator is '.', for example foo.bar.baz
+        :param provider: the name of the module/app providing this config.
+            Helps debugging.
         """
     ...
 ```
-
-
-> TODO: I actually want this in the minimal example.
-#### Overriding default values in the `@dataclass`
-You can use instances of the dataclasses to override default values in the stored config.
-```python
-cs.store(name="config", node=MySQLConfig(user="root", password="1234"))
-```
-If you register more than one config with the same name the last one will replace the previous ones.

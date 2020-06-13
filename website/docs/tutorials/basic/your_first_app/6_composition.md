@@ -41,24 +41,24 @@ The resulting configuration would be a composition of `mysql`, `full` ui and the
 $ python my_app.py
 db:
   driver: mysql
-  pass: secret
   user: omry
-schema:
-  database: school
-  tables:
-  - fields:
-    - name: string
-    - class: int
-    name: students
-  - fields:
-    - profession: string
-    - time: data
-    - class: int
-    name: exams
+  pass: secret
 ui:
   windows:
     create_db: true
     view: true
+schema:
+  database: school
+  tables:
+  - name: students
+    fields:
+    - name: string
+    - class: int
+  - name: exams
+    fields:
+    - profession: string
+    - time: data
+    - class: int
 ```
 
 ### Summary

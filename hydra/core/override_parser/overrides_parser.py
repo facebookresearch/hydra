@@ -558,7 +558,10 @@ class OverridesParser:
             try:
                 parsed = self.parse_rule(override, "override")
             except HydraException as e:
-                raise HydraException(f"Error parsing override '{override}' : {e}")
+                raise HydraException(
+                    f"Error parsing override '{override}' : {e}"
+                    f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
+                )
             assert isinstance(parsed, Override)
             ret.append(parsed)
         return ret

@@ -12,8 +12,16 @@ class MySQLConfig:
 
 
 @dataclass
+class UserInterface:
+    title: str = "My app"
+    width: int = 1024
+    height: int = 768
+
+
+@dataclass
 class MyConfig:
     db: MySQLConfig = MySQLConfig()
+    ui: UserInterface = UserInterface()
 
 
 cs = ConfigStore.instance()
@@ -22,8 +30,7 @@ cs.store(name="config", node=MyConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: MyConfig) -> None:
-    # Python knows that the type of cfg.db is MySQLConfig without any additional hints
-    print(f"Host: {cfg.db.host}, port: {cfg.db.port}")
+    print(f"Title={cfg.ui.title}, size={cfg.ui.width}x{cfg.ui.height} pixels")
 
 
 if __name__ == "__main__":

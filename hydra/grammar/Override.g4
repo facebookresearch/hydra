@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 // Regenerate parser by running 'python setup.py antlr' at project root.
 // If you make changes here be sure to update the documentation (and update the grammar in command_line_syntax.md)
 grammar Override;

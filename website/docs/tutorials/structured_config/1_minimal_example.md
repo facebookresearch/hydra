@@ -70,7 +70,6 @@ We will see additional types of runtime errors that Hydra can catch later in thi
 - Assigning a value that is incompatible with the declared type
 - Attempting to modify a [frozen config](https://omegaconf.readthedocs.io/en/latest/structured_config.html#frozen)
 
-
 ## Duck typing
 
 In the example above `cfg` is duck typed as `MySQLConfig`.
@@ -79,3 +78,10 @@ This reduces development time by catching coding errors before you run your appl
 
 The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the phrase "If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck".
 It can be useful when you care about the methods or attributes of an object, not the actual type of the object.
+
+
+## Overriding default values in the `@dataclass`
+You can use instances of the dataclasses to override default values in the stored config.
+```python
+cs.store(name="config", node=MySQLConfig(user="root", password="1234"))
+```

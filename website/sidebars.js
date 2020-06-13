@@ -49,7 +49,7 @@ module.exports = {
             items: [
                 'tutorials/structured_config/intro',
                 'tutorials/structured_config/minimal_example',
-                'tutorials/structured_config/nesting',
+                'tutorials/structured_config/hierarchical_static_config',
                 'tutorials/structured_config/config_groups',
                 'tutorials/structured_config/defaults',
                 'tutorials/structured_config/schema',
