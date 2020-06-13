@@ -3,12 +3,12 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import MISSING, ObjectConf
+from hydra.types import ObjectConf
 
 
 @dataclass
 class EarlyStopConfig:
-    minimize: bool = MISSING
+    minimize: bool = True
 
     max_epochs_without_improvement: int = 10
 
