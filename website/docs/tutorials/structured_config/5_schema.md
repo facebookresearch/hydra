@@ -2,7 +2,7 @@
 id: schema
 title: Structured config schema
 ---
-We have seen how to use Structured Configs as configuration, but they can also be used as a schema validating configuration files!
+We have seen how to use Structured Configs as configuration, but they can also be used as a schema validating configuration files!  
 When Hydra loads a configuration, it looks for config with the same name in the `ConfigStore`.
 If found, it is used as the schema for the newly loaded config.
 
@@ -21,7 +21,7 @@ conf/
 The Structurd Configs below are stored as db/mysql and db/postgresql. They will be used as schema
 when we load the corresponding config files.
 
-```python
+```python title="my_app.py"
 @dataclass
 class DBConfig:
     driver: str = MISSING
@@ -71,4 +71,10 @@ Value 'fail' could not be converted to Integer
         full_key: db.port
         reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
+```
+
+The defaults list in this example is contained in the config.yaml file.
+```yaml title="config.yaml"
+defaults:
+  - db: mysql
 ```

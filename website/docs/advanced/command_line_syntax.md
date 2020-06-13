@@ -23,8 +23,9 @@ The rest are manipulating the config object.
 - Deleting from defaults: `~db`, `~db=mysql`
 
 ## Grammar
-Hydra supports a rich DSL (Domain specific language). Below are the lexical rules.  
-You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4)
+Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.   
+Below are the lexical rules, and [description](#Description) of the grammar.
+You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4).
 
 ```antlrv4
 grammar Override;
@@ -80,7 +81,7 @@ dictValue: '{' (id_with_ws ':' element (',' id_with_ws ':' element)*)? '}';
 
 listValue: '[' (element(',' element)*)? ']';
 ```
-
+## Description
 ### Key
 Key is the component before the =. A few examples:
 ```shell script

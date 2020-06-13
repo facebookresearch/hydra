@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import cast
 
-from omegaconf import MISSING, DictConfig, OmegaConf
+from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -17,19 +17,21 @@ class DBConfig:
 
 @dataclass
 class MySQLConfig(DBConfig):
-    driver = "mysql"
-    port = 3306
+    driver: str = "mysql"
+    port: int = 3306
 
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
-    driver = "postgresql"
-    port = 5432
+    driver: str = "postgresql"
+    port: int = 5432
     timeout: int = 10
 
 
 @dataclass
-class Config(DictConfig):
+class Config:
+    # We can now annotate db as DBConfig which
+    # improves both static and dynamic type safety.
     db: DBConfig = MISSING
 
 
@@ -39,24 +41,9 @@ cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
-def connect_mysql(cfg: MySQLConfig) -> None:
-    print(f"Connecting to MySQL: {cfg.host}:{cfg.port}")
-
-
-def connect_postgresql(cfg: PostGreSQLConfig) -> None:
-    print(f"Connecting to PostGreSQL: {cfg.host}:{cfg.port} (timeout={cfg.timeout})")
-
-
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    # Remember that the actual type of Config and db inside it is DictConfig.
-    # If you need to get the underlying type of a config object use OmegaConf.get_type:
-    if OmegaConf.get_type(cfg.db) is MySQLConfig:
-        connect_mysql(cast(MySQLConfig, cfg.db))
-    elif OmegaConf.get_type(cfg.db) is PostGreSQLConfig:
-        connect_postgresql(cast(PostGreSQLConfig, cfg.db))
-    else:
-        raise ValueError()
+    print(cast(DictConfig, cfg).pretty())
 
 
 if __name__ == "__main__":

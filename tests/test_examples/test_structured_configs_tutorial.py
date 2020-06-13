@@ -68,24 +68,14 @@ def test_structured_configs_1_basic_override_type_error(tmpdir: Path) -> None:
     assert re.search(re.escape(expected), err) is not None
 
 
-def test_structured_configs_2_nesting_configs__with_dataclass(tmpdir: Path) -> None:
+def test_structured_configs_2_static_complex(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_dataclass.py",
+        "examples/tutorials/structured_configs/2_static_complex/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result = check_output(cmd)
-    assert result.decode().rstrip() == "Host: localhost, port: 3306"
-
-
-def test_structured_configs_2_nesting_configs__with_ad_hoc_node(tmpdir: Path) -> None:
-    cmd = [
-        sys.executable,
-        "examples/tutorials/structured_configs/2_nesting_configs/nesting_with_ad_hoc_node.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result = check_output(cmd)
-    assert result.decode().rstrip() == "Copying localhost:3306 to example.com:3306"
+    assert result.decode().rstrip() == "Title=My app, size=1024x768 pixels"
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -112,15 +102,38 @@ def test_structured_configs_3_config_groups(
     assert res == expected
 
 
-def test_structured_configs_3_config_groups_with_inheritance(tmpdir: Path) -> None:
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,expected",
+    [
+        ([], {"db": "???"}),
+        (
+            ["+db=mysql"],
+            {"db": {"driver": "mysql", "host": "localhost", "port": 3306}},
+        ),
+        (
+            ["+db=postgresql"],
+            {
+                "db": {
+                    "driver": "postgresql",
+                    "host": "localhost",
+                    "port": 5432,
+                    "timeout": 10,
+                }
+            },
+        ),
+    ],
+)
+def test_structured_configs_3_config_groups_with_inheritance(
+    tmpdir: Path, overrides: Any, expected: Any
+) -> None:
     cmd = [
         sys.executable,
         "examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py",
         "hydra.run.dir=" + str(tmpdir),
-        "+db=mysql",
-    ]
+    ] + overrides
     result = check_output(cmd)
-    assert result.decode().rstrip() == "Connecting to MySQL: localhost:3306"
+    res = OmegaConf.create(result.decode().rstrip())
+    assert res == expected
 
 
 def test_structured_configs_4_defaults(tmpdir: Path) -> None:

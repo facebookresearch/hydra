@@ -481,13 +481,14 @@ class ConfigLoaderImpl(ConfigLoader):
 
     @staticmethod
     def _raise_parse_override_error(override: Optional[str]) -> None:
-        # TODO: make about general config override parsing.
         msg = (
             f"Error parsing config group override : '{override}'"
             f"\nAccepted forms:"
             f"\n\tOverride: key=value, key@package=value, key@src_pkg:dest_pkg=value, key@src_pkg:dest_pkg"
             f"\n\tAppend:  +key=value, +key@package=value"
             f"\n\tDelete:  ~key, ~key@pkg, ~key=value, ~key@pkg=value"
+            f"\n"
+            f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
         )
         raise HydraException(msg)
 

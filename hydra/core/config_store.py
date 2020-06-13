@@ -62,10 +62,14 @@ class ConfigStore(metaclass=Singleton):
         """
         Stores a config node into the repository
         :param name: config name
-        :param node: config node, can be DictConfig, ListConfig, Structured configs and even dict and list
-        :param group: config group, subgroup separator is '/', for example hydra/launcher
-        :param package: Config node parent hierarchy. child separator is '.', for example foo.bar.baz
-        :param provider: the name of the module/app providing this config. Helps debugging.
+        :param node: config node, can be DictConfig, ListConfig,
+            Structured configs and even dict and list
+        :param group: config group, subgroup separator is '/',
+            for example hydra/launcher
+        :param package: Config node parent hierarchy.
+            Child separator is '.', for example foo.bar.baz
+        :param provider: the name of the module/app providing this config.
+            Helps debugging.
         """
 
         cur = self.repo
