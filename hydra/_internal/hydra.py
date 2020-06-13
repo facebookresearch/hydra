@@ -3,12 +3,13 @@ import copy
 import logging
 import os
 import string
+import sys
 import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
 
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, open_dict
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -158,7 +159,11 @@ class Hydra:
         return cfg
 
     def show_cfg(
-        self, config_name: Optional[str], overrides: List[str], cfg_type: str
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        cfg_type: str,
+        package: Optional[str],
     ) -> None:
         cfg = self._get_cfg(
             config_name=config_name,
@@ -166,7 +171,24 @@ class Hydra:
             cfg_type=cfg_type,
             with_log_configuration=False,
         )
-        print(cfg.pretty())
+        if package is not None:
+            if package == "_global_":
+                package = ""
+            ret = OmegaConf.select(cfg, package)
+            if ret is None:
+                sys.stderr.write(f"package '{package}' not found in config\n")
+                sys.exit(1)
+            else:
+                if isinstance(ret, Container):
+                    if package == "":
+                        package = "_global_"
+                    print(f"# @package {package}")
+                    sys.stdout.write(ret.pretty())
+                else:
+                    print(ret)
+        else:
+            print("# @package _global_")
+            sys.stdout.write(cfg.pretty())
 
     @staticmethod
     def get_shell_to_plugin_map(
@@ -222,7 +244,7 @@ class Hydra:
             if len(action.option_strings) == 0:
                 overrides = action
             else:
-                s += "{} : {}\n".format(",".join(action.option_strings), action.help)
+                s += f"{','.join(action.option_strings)} : {action.help}\n"
         s += "Overrides : " + overrides.help
         return s
 

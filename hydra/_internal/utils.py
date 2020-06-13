@@ -276,7 +276,10 @@ def run_hydra(
         elif args.cfg:
             run_and_report(
                 lambda: hydra.show_cfg(
-                    config_name=config_name, overrides=args.overrides, cfg_type=args.cfg
+                    config_name=config_name,
+                    overrides=args.overrides,
+                    cfg_type=args.cfg,
+                    package=args.package,
                 )
             )
         elif args.shell_completion:
@@ -340,6 +343,10 @@ def get_args_parser() -> argparse.ArgumentParser:
         "-c",
         choices=["job", "hydra", "all"],
         help="Show config instead of running [job|hydra|all]",
+    )
+
+    parser.add_argument(
+        "--package", "-p", help="Config package to show",
     )
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")

@@ -364,15 +364,15 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
 
 
 def test_short_module_name(tmpdir: Path) -> None:
-    try:
-        os.chdir("examples/tutorials/basic/your_first_hydra_app/2_config_file")
-        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
-        result = subprocess.check_output(cmd)
-        assert OmegaConf.create(str(result.decode("utf-8"))) == {
-            "db": {"driver": "mysql", "password": "secret", "user": "omry"}
-        }
-    finally:
-        chdir_hydra_root()
+    cmd = [
+        sys.executable,
+        "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert OmegaConf.create(str(result.decode("utf-8"))) == {
+        "db": {"driver": "mysql", "password": "secret", "user": "omry"}
+    }
 
 
 def test_hydra_main_module_override_name(tmpdir: Path) -> None:
@@ -406,17 +406,15 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     """
     Tests that module name overrides are working.
     """
-    try:
-        os.chdir("examples/tutorials/basic/your_first_hydra_app/2_config_file")
-        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir)]
-        modified_env = os.environ.copy()
-        modified_env[env_name] = "hydra.test_utils.configs.Foo"
-        result = subprocess.check_output(cmd, env=modified_env)
-        assert OmegaConf.create(str(result.decode("utf-8"))) == {
-            "normal_yaml_config": True
-        }
-    finally:
-        chdir_hydra_root()
+    cmd = [
+        sys.executable,
+        "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    modified_env = os.environ.copy()
+    modified_env[env_name] = "hydra.test_utils.configs.Foo"
+    result = subprocess.check_output(cmd, env=modified_env)
+    assert OmegaConf.create(str(result.decode("utf-8"))) == {"normal_yaml_config": True}
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -424,15 +422,53 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     [("--cfg=all", ["db", "hydra"]), ("--cfg=hydra", ["hydra"]), ("--cfg=job", ["db"])],
 )
 def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
-    try:
-        os.chdir("examples/tutorials/basic/your_first_hydra_app/5_defaults")
-        cmd = [sys.executable, "my_app.py", "hydra.run.dir=" + str(tmpdir), flag]
-        result = subprocess.check_output(cmd)
-        conf = OmegaConf.create(str(result.decode("utf-8")))
-        for key in expected_keys:
-            assert key in conf
-    finally:
-        chdir_hydra_root()
+    cmd = [
+        sys.executable,
+        "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        flag,
+    ]
+    result = subprocess.check_output(cmd)
+    conf = OmegaConf.create(str(result.decode("utf-8")))
+    for key in expected_keys:
+        assert key in conf
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "flags,expected",
+    [
+        (
+            ["--cfg=job", "--package=_global_"],
+            """# @package _global_
+db:
+  driver: mysql
+  user: omry
+  pass: secret
+""",
+        ),
+        (
+            ["--cfg=job", "--package=db"],
+            """# @package db
+driver: mysql
+user: omry
+pass: secret
+""",
+        ),
+        (["--cfg=job", "--package=db.driver"], "mysql\n"),
+    ],
+)
+def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None:
+    cmd = [
+        sys.executable,
+        "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ] + flags
+
+    def norm(s: str) -> str:
+        return s.replace("\r\n", "\n").replace("\r", "\n")
+
+    result = subprocess.check_output(cmd).decode("utf-8")
+    assert norm(result) == norm(expected)
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -497,27 +533,24 @@ def test_sweep_complex_defaults(
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "workdir, script, flag, overrides,expected",
+    "script, flag, overrides,expected",
     [
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="simple_cli_app",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="overriding_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
             """db:
@@ -529,26 +562,26 @@ def test_sweep_complex_defaults(
             id="overriding_help_template:$CONFIG",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
 --hydra-help : Hydra's help
 --version : show program's version number and exit
 --cfg,-c : Show config instead of running [job|hydra|all]
+--package,-p : Config package to show
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python my_app.py -sc install=bash)"
+    eval "$(python {script} -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python my_app.py -sc uninstall=bash)"
+    eval "$(python {script} -sc uninstall=bash)"
 
     Fish - Install:
-    python my_app.py -sc install=fish | source
+    python {script} -sc install=fish | source
     Fish - Uninstall:
-    python my_app.py -sc uninstall=fish | source
+    python {script} -sc uninstall=fish | source
 
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
@@ -559,8 +592,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$FLAGS_HELP",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/4_config_groups/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             """db: mysql, postgresql
@@ -569,34 +601,33 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
             "foo\n",
             id="overriding_hydra_help_template",
         ),
         pytest.param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/",
-            "my_app.py",
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
 --hydra-help : Hydra's help
 --version : show program's version number and exit
 --cfg,-c : Show config instead of running [job|hydra|all]
+--package,-p : Config package to show
 --run,-r : Run a job
 --multirun,-m : Run multiple jobs with the configured launcher
 --shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
-    eval "$(python my_app.py -sc install=bash)"
+    eval "$(python {script} -sc install=bash)"
     Bash - Uninstall:
-    eval "$(python my_app.py -sc uninstall=bash)"
+    eval "$(python {script} -sc uninstall=bash)"
 
     Fish - Install:
-    python my_app.py -sc install=fish | source
+    python {script} -sc install=fish | source
     Fish - Uninstall:
-    python my_app.py -sc uninstall=fish | source
+    python {script} -sc uninstall=fish | source
 
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
@@ -609,26 +640,16 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     ],
 )
 def test_help(
-    workdir: str,
-    tmpdir: Path,
-    script: str,
-    flag: str,
-    overrides: List[str],
-    expected: Any,
+    tmpdir: Path, script: str, flag: str, overrides: List[str], expected: Any,
 ) -> None:
-    try:
-        os.chdir(workdir)
-        cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
-        cmd.extend(overrides)
-        cmd.append(flag)
-        print(" ".join(cmd))
-        result = str(subprocess.check_output(cmd).decode("utf-8"))
-        # normalize newlines on Windows to make testing easier
-        result = result.replace("\r\n", "\n")
-        assert result == expected
-
-    finally:
-        chdir_hydra_root()
+    cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
+    cmd.extend(overrides)
+    cmd.append(flag)
+    print(" ".join(cmd))
+    result = str(subprocess.check_output(cmd).decode("utf-8"))
+    # normalize newlines on Windows to make testing easier
+    result = result.replace("\r\n", "\n")
+    assert result == expected.format(script=script)
 
 
 @pytest.mark.parametrize(  # type: ignore

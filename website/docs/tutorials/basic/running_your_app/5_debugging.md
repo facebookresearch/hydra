@@ -34,6 +34,15 @@ db:
   password: 1234
 ```
 
+You can use `--package` or `-p` to select a a specific config package:
+```yaml
+python my_app.py --cfg hydra --package hydra.job
+# @package hydra.job
+name: my_app
+config_name: config
+...
+```
+
 ### Info
 Hydra can print information about your plugins, config search path, composition trace and more using the  
 `--info` flag.
