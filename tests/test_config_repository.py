@@ -7,6 +7,9 @@ import pytest
 from hydra._internal.config_repository import ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.core_plugins.file_config_source import FileConfigSource
+from hydra._internal.core_plugins.importlib_resources_config_source import (
+    ImportlibResourcesConfigSource,
+)
 from hydra._internal.core_plugins.package_config_source import PackageConfigSource
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.object_type import ObjectType
@@ -30,6 +33,11 @@ chdir_hydra_root()
             PackageConfigSource,
             "pkg://tests.test_apps.config_source_test.dir",
             id="PackageConfigSource",
+        ),
+        pytest.param(
+            ImportlibResourcesConfigSource,
+            "importlib://tests.test_apps.config_source_test.dir",
+            id="ImportlibResourcesConfigSource",
         ),
         pytest.param(
             StructuredConfigSource,
