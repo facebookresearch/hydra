@@ -1,0 +1,5 @@
+# @package _group_
+driver: postgresql
+user: postgre_user
+pass: drowssap
+timeout: 10

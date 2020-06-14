@@ -69,9 +69,10 @@ def compose(
     :param strict: optionally override the default strict mode
     :return: the composed config
     """
-    assert (
-        GlobalHydra().is_initialized()
-    ), "GlobalHydra is not initialized, use @hydra.main() or call hydra.experimental.initialize() first"
+    assert GlobalHydra().is_initialized(), (
+        "GlobalHydra is not initialized, use @hydra.main()"
+        " or call one of the hydra.experimental initialize methods first"
+    )
 
     gh = GlobalHydra.instance()
     assert gh.hydra is not None

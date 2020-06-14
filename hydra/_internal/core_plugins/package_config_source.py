@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 from typing import List, Optional, Tuple
 
 from omegaconf import OmegaConf
@@ -63,7 +64,7 @@ class PackageConfigSource(ConfigSource):
         try:
             if resource_exists(module_name, resource_name):
                 return True
-        except ModuleNotFoundError:
+        except (ModuleNotFoundError, NotImplementedError):
             return False
         except Exception as e:
             raise type(e)(
