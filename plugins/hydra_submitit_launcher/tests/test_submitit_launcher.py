@@ -39,7 +39,6 @@ class TestSubmititLauncher(LauncherTestSuite):
                 ],
                 "hydra": {
                     "launcher": {
-                        "cls": "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher",
                         "params": {
                             "queue": "local",
                             "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
@@ -55,7 +54,34 @@ class TestSubmititLauncher(LauncherTestSuite):
                 },
             },
             ["-m"],
-        )
+        ),
+        # auto queue
+        (
+            {
+                "defaults": [
+                    {"hydra/launcher": "submitit"},
+                    {"hydra/hydra_logging": "hydra_debug"},
+                    {"hydra/job_logging": "disabled"},
+                ],
+                "hydra": {
+                    "launcher": {
+                        "params": {
+                            "queue": "auto",
+                            "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
+                            "queue_parameters": {
+                                "auto": {
+                                    "cluster": "local",
+                                    "gpus_per_node": 0,
+                                    "tasks_per_node": 1,
+                                    "timeout_min": 1,
+                                }
+                            },
+                        },
+                    }
+                },
+            },
+            ["-m"],
+        ),
     ],
 )
 class TestSubmititLauncherIntegration(IntegrationTestSuite):
