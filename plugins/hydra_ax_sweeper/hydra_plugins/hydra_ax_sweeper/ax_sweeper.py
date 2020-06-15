@@ -2,26 +2,11 @@
 from typing import List, Optional
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
-from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
 from .config import AxConfig
-
-
-class AxSweeperSearchPathPlugin(SearchPathPlugin):
-    """
-    This plugin makes the config files (provided by the AxSweeper plugin) discoverable and
-    useable by the AxSweeper plugin.
-    """
-
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        # Appends the search path for this plugin to the end of the search path
-        search_path.append(
-            "hydra-ax-sweeper", "pkg://hydra_plugins.hydra_ax_sweeper.conf"
-        )
 
 
 class AxSweeper(Sweeper):
