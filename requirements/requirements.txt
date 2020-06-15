@@ -1,1 +1,2 @@
 omegaconf>=2.0.1rc7
+importlib-resources;python_version<'3.9'
