@@ -1,4 +1,4 @@
-See issue [#591](https://github.com/facebookresearch/hydra/issues/591#issuecomment-643856511).
+See discussion in issue [#591](https://github.com/facebookresearch/hydra/issues/591#issuecomment-643856511).  Merge this into [#676](https://github.com/facebookresearch/hydra/issues/676).
 ```bash
 $ tree .
 .
