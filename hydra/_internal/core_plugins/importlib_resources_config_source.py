@@ -2,21 +2,22 @@
 import os
 from typing import List, Optional
 
+import importlib_resources
 from omegaconf import OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 
-class FileConfigSource(ConfigSource):
+class ImportlibResourcesConfigSource(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
-        if path.find("://") == -1:
-            path = f"{self.scheme()}://{path}"
         super().__init__(provider=provider, path=path)
+        # normalize to pkg format
+        self.path = self.path.replace("/", ".").rstrip(".")
 
     @staticmethod
     def scheme() -> str:
-        return "file"
+        return "importlib"
 
     def load_config(
         self,
@@ -25,11 +26,11 @@ class FileConfigSource(ConfigSource):
         package_override: Optional[str] = None,
     ) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
-        full_path = os.path.realpath(os.path.join(self.path, normalized_config_path))
-        if not os.path.exists(full_path):
-            raise ConfigLoadError(f"Config not found : {full_path}")
+        res = importlib_resources.files(self.path).joinpath(normalized_config_path)
+        if not res.exists():
+            raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
-        with open(full_path) as f:
+        with res.open() as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
             self._update_package_in_header(
@@ -47,24 +48,34 @@ class FileConfigSource(ConfigSource):
                 header=header,
             )
 
+    @staticmethod
+    def _exists(module_name: str, resource_name: str) -> bool:
+        raise NotImplementedError()
+
     def is_group(self, config_path: str) -> bool:
-        full_path = os.path.realpath(os.path.join(self.path, config_path))
-        return os.path.isdir(full_path)
+        res = importlib_resources.files(self.path).joinpath(config_path)
+        ret = res.exists() and res.is_dir()
+        assert isinstance(ret, bool)
+        return ret
 
     def is_config(self, config_path: str) -> bool:
         config_path = self._normalize_file_name(config_path)
-        full_path = os.path.realpath(os.path.join(self.path, config_path))
-        return os.path.isfile(full_path)
+        res = importlib_resources.files(self.path).joinpath(config_path)
+        ret = res.exists() and res.is_file()
+        assert isinstance(ret, bool)
+        return ret
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
-        full_path = os.path.realpath(os.path.join(self.path, config_path))
-        for file in os.listdir(full_path):
-            file_path = os.path.join(config_path, file)
+        for file in (
+            importlib_resources.files(self.path).joinpath(config_path).iterdir()
+        ):
+            fname = file.name
+            fpath = os.path.join(config_path, fname)
             self._list_add_result(
                 files=files,
-                file_path=file_path,
-                file_name=file,
+                file_path=fpath,
+                file_name=fname,
                 results_filter=results_filter,
             )
 
