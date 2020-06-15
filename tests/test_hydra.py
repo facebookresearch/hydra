@@ -387,18 +387,6 @@ def test_hydra_main_module_override_name(tmpdir: Path) -> None:
     )
 
 
-def test_short_hydra_main_module_override_name(tmpdir: Path) -> None:
-    cfg = OmegaConf.create()
-    integration_test(
-        tmpdir=tmpdir,
-        task_config=cfg,
-        overrides=[],
-        prints="HydraConfig.get().job.name",
-        expected_outputs="Foo",
-        env_override={"HYDRA_MAIN_MODULE": "Foo"},
-    )
-
-
 @pytest.mark.parametrize(  # type: ignore
     "env_name", ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
 )
