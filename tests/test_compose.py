@@ -51,8 +51,8 @@ def test_initialize_with_config_dir(restore_singletons: Any) -> None:
     [
         (None, [], {}),
         (None, ["+foo=bar"], {"foo": "bar"}),
-        ("compose.yaml", [], {"foo": 10, "bar": 100}),
-        ("compose.yaml", ["group1=file2"], {"foo": 20, "bar": 100}),
+        ("compose", [], {"foo": 10, "bar": 100}),
+        ("compose", ["group1=file2"], {"foo": 20, "bar": 100}),
     ],
 )
 class TestCompose:
@@ -186,9 +186,9 @@ def test_strict_deprecation_warning(restore_singletons: Any) -> None:
                 "donkey": {"name": "Dapple", "rank": "squire_donkey"},
             },
         ),
-        # load file
+        # load config
         (
-            "config.yaml",
+            "config",
             [],
             {
                 "db": {
@@ -201,7 +201,7 @@ def test_strict_deprecation_warning(restore_singletons: Any) -> None:
             },
         ),
         (
-            "config.yaml",
+            "config",
             ["environment=production", "db=mysql"],
             {
                 "db": {"driver": "mysql", "user": "mysql", "pass": "r4Zn*jQ9JB1Rz2kfz"},

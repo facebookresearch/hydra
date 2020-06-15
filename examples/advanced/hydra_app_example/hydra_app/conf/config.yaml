@@ -1,0 +1,8 @@
+defaults:
+  - db: mysql
+
+app:
+  user: ${env:USER}
+
+  num1: 10
+  num2: 20
