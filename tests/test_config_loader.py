@@ -40,13 +40,13 @@ class TopLevelConfig:
 
 hydra_load_list: List[LoadTrace] = [
     LoadTrace("hydra_config", "structured://", "hydra", None),
-    LoadTrace("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/job_logging/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/launcher/basic", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", "hydra"),
-    LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/hydra_logging/default", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/job_logging/default", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/launcher/basic", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/sweeper/basic", "importlib://hydra.conf", "hydra", "hydra"),
+    LoadTrace("hydra/output/default", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/help/default", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/hydra_help/default", "importlib://hydra.conf", "hydra", None),
 ]
 
 
@@ -55,6 +55,7 @@ hydra_load_list: List[LoadTrace] = [
     [
         pytest.param("file://hydra/test_utils/configs", id="file"),
         pytest.param("pkg://hydra.test_utils.configs", id="pkg"),
+        pytest.param("importlib://hydra.test_utils.configs", id="importlib"),
     ],
 )
 class TestConfigLoader:
@@ -535,12 +536,16 @@ def test_override_hydra_config_group_from_config_file() -> None:
     # This load history is too different to easily reuse the standard hydra_load_list
     assert config_loader.get_load_history() == [
         LoadTrace("hydra_config", "structured://", "hydra", None),
-        LoadTrace("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", "hydra"),
-        LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+        LoadTrace(
+            "hydra/hydra_logging/hydra_debug", "importlib://hydra.conf", "hydra", None
+        ),
+        LoadTrace(
+            "hydra/job_logging/disabled", "importlib://hydra.conf", "hydra", None
+        ),
+        LoadTrace("hydra/sweeper/basic", "importlib://hydra.conf", "hydra", "hydra"),
+        LoadTrace("hydra/output/default", "importlib://hydra.conf", "hydra", None),
+        LoadTrace("hydra/help/default", "importlib://hydra.conf", "hydra", None),
+        LoadTrace("hydra/hydra_help/default", "importlib://hydra.conf", "hydra", None),
         LoadTrace(
             "overriding_logging_default.yaml",
             "file://hydra/test_utils/configs",

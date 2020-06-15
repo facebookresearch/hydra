@@ -53,14 +53,31 @@ class ImportlibResourcesConfigSource(ConfigSource):
         raise NotImplementedError()
 
     def is_group(self, config_path: str) -> bool:
-        res = importlib_resources.files(self.path).joinpath(config_path)
+        try:
+            files = importlib_resources.files(self.path)
+        except ModuleNotFoundError:
+            return False
+        except Exception as e:
+            raise type(e)(
+                f"Unexpected error checking content of '{self.path}', did you forget an __init__.py?"
+            ) from e
+
+        res = files.joinpath(config_path)
         ret = res.exists() and res.is_dir()
         assert isinstance(ret, bool)
         return ret
 
     def is_config(self, config_path: str) -> bool:
         config_path = self._normalize_file_name(config_path)
-        res = importlib_resources.files(self.path).joinpath(config_path)
+        try:
+            files = importlib_resources.files(self.path)
+        except ModuleNotFoundError:
+            return False
+        except Exception as e:
+            raise type(e)(
+                f"Unexpected error checking content of '{self.path}', did you forget an __init__.py?"
+            ) from e
+        res = files.joinpath(config_path)
         ret = res.exists() and res.is_file()
         assert isinstance(ret, bool)
         return ret

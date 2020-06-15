@@ -271,7 +271,7 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
         ):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
-            hydra.compose_config(config_name=None, overrides=[])
+            hydra.compose_config(config_name="test.yaml", overrides=[])
 
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
@@ -292,6 +292,6 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
 
 
 def test_initialization_root_module(monkeypatch: Any) -> None:
-    monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
+    monkeypatch.chdir("tests/test_apps/test_initializations/init_in_app_without_module")
     subprocess.check_call([sys.executable, "main.py"],)
     subprocess.check_call([sys.executable, "-m", "main"])
