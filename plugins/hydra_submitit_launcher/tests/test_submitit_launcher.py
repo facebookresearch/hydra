@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -8,6 +7,7 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
 
+import pytest  # type: ignore
 from hydra_plugins.hydra_submitit_launcher.submitit_launcher import SubmititLauncher
 
 chdir_plugin_root()
@@ -21,7 +21,7 @@ def test_discovery():
 
 
 @pytest.mark.parametrize(
-    "launcher_name, overrides", [("submitit", ["hydra.launcher.params.queue=local"])]
+    "launcher_name, overrides", [("submitit", ["hydra.launcher.params.executor=local"])]
 )
 class TestSubmititLauncher(LauncherTestSuite):
     pass
@@ -40,44 +40,14 @@ class TestSubmititLauncher(LauncherTestSuite):
                 "hydra": {
                     "launcher": {
                         "params": {
-                            "queue": "local",
-                            "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
-                            "queue_parameters": {
-                                "local": {
-                                    "gpus_per_node": 1,
-                                    "tasks_per_node": 1,
-                                    "timeout_min": 1,
-                                }
+                            "executor": "local",
+                            "params": {
+                                "gpus_per_node": 1,
+                                "tasks_per_node": 1,
+                                "timeout_min": 1,
                             },
                         },
-                    }
-                },
-            },
-            ["-m"],
-        ),
-        # auto queue
-        (
-            {
-                "defaults": [
-                    {"hydra/launcher": "submitit"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ],
-                "hydra": {
-                    "launcher": {
-                        "params": {
-                            "queue": "auto",
-                            "folder": "${hydra.sweep.dir}/.${hydra.launcher.params.queue}",
-                            "queue_parameters": {
-                                "auto": {
-                                    "cluster": "local",
-                                    "gpus_per_node": 0,
-                                    "tasks_per_node": 1,
-                                    "timeout_min": 1,
-                                }
-                            },
-                        },
-                    }
+                    },
                 },
             },
             ["-m"],

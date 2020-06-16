@@ -19,8 +19,6 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra_plugins.hydra_submitit_launcher.config import QueueType
-
 log = logging.getLogger(__name__)
 
 
@@ -33,9 +31,9 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class SubmititLauncher(Launcher):
-    def __init__(self, queue: str, folder: str, queue_parameters: DictConfig) -> None:
-        self.queue = queue
-        self.queue_parameters = queue_parameters
+    def __init__(self, executor: str, folder: str, params: DictConfig) -> None:
+        self.executor = executor
+        self.params = params
         self.folder = folder
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
@@ -66,12 +64,12 @@ class SubmititLauncher(Launcher):
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
+        # lazy import to ensure plugin discovery remains fast
+        import submitit
+
         with open_dict(sweep_config.hydra.job) as job:
             # Populate new job variables
-            if "SLURM_JOB_ID" in os.environ:
-                job.id = os.environ["SLURM_JOB_ID"]
-            else:
-                job.id = job_id
+            job.id = submitit.JobEnvironment().job_id
             sweep_config.hydra.job.num = job_num
 
         return run_job(
@@ -98,33 +96,30 @@ class SubmititLauncher(Launcher):
         assert num_jobs > 0
 
         # make sure you don't change inplace
-        queue_parameters = self.queue_parameters.copy()
+        queue_parameters = self.params.copy()
         OmegaConf.set_struct(queue_parameters, True)
-        executors = {
-            QueueType.auto: submitit.AutoExecutor,
-            QueueType.slurm: submitit.SlurmExecutor,
-            QueueType.local: submitit.LocalExecutor,
-        }
-        init_parameters = {"cluster", "max_num_timeout", "slurm_max_num_timeout"}
-        executor = executors[self.queue](
+        init_parameters = {"max_num_timeout"}
+        executor = submitit.AutoExecutor(
             folder=self.folder,
+            cluster=self.executor.value,
             **{
-                x: y
-                for x, y in queue_parameters[self.queue.value].items()
+                f"{self.executor.value}_{x}": y
+                for x, y in queue_parameters.items()
                 if x in init_parameters
             },
         )
         executor.update_parameters(
             **{
+                # f"{self.executor.value}_{x}": y
                 x: y
-                for x, y in queue_parameters[self.queue.value].items()
+                for x, y in queue_parameters.items()
                 if x not in init_parameters
             }
         )
 
         log.info(
             "Submitit '{}' sweep output dir : {}".format(
-                self.queue.value, self.config.hydra.sweep.dir
+                self.executor, self.config.hydra.sweep.dir
             )
         )
         sweep_dir = Path(str(self.config.hydra.sweep.dir))

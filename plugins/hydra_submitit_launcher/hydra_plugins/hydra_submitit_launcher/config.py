@@ -18,23 +18,23 @@ class BaseSubmititConf:
     """
 
     # maximum time for the job in minutes
-    timeout_min: Optional[int] = None
+    timeout_min: int = 60
     # number of cpus to use for each task
-    cpus_per_task: Optional[int] = None
+    cpus_per_task: int = 1
     # number of gpus to use on each node
-    gpus_per_node: Optional[int] = None
+    gpus_per_node: int = 0
     # number of tasks to spawn on each node
-    tasks_per_node: Optional[int] = None
+    tasks_per_node: int = 1
     # memory to reserve for the job on each node (in GB)
-    mem_gb: Optional[int] = None
+    mem_gb: int = 4
     # number of nodes to use for the job
-    nodes: Optional[int] = None
+    nodes: int = 1
     # name of the job
-    name: Optional[str] = None
+    name: str = "${hydra.job.name}"
 
 
 @dataclass
-class SubmititSlurmConf(BaseSubmititConf):
+class SlurmSubmititConf(BaseSubmititConf):
     """Slurm configuration overrides and specific parameters
     """
 
@@ -63,32 +63,15 @@ class SubmititSlurmConf(BaseSubmititConf):
 
 
 @dataclass
-class SubmititConf(BaseSubmititConf):
-    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.queue}"
+class LocalSubmititConf(BaseSubmititConf):
+    pass
 
-    # executor to use (currently either "slurm" or "local" are supported,
-    # None defaults to an available cluster)
-    executor: ExecutorName = ExecutorName.slurm
 
-    # maximum time for the job in minutes
-    timeout_min: int = 60
-    # number of cpus to use for each task
-    cpus_per_task: int = 1
-    # number of gpus to use on each node
-    gpus_per_node: int = 0
-    # number of tasks to spawn on each node
-    tasks_per_node: int = 1
-    # memory to reserve for the job on each node (in GB)
-    mem_gb: int = 4
-    # number of nodes to use for the job
-    nodes: int = 1
-    # name of the job
-    name: str = "${hydra.job.name}"
-
-    # additional specific parameters and overrides are
-    # provided here
-    local_executor: BaseSubmititConf = BaseSubmititConf()
-    slurm_executor: SubmititSlurmConf = SubmititSlurmConf()
+@dataclass
+class SubmititConf:
+    executor: ExecutorName = ExecutorName.local
+    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor}"
+    params: LocalSubmititConf = LocalSubmititConf()
 
 
 @dataclass
