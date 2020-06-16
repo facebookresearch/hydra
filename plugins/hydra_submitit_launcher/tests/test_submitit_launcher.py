@@ -41,11 +41,9 @@ class TestSubmititLauncher(LauncherTestSuite):
                     "launcher": {
                         "params": {
                             "executor": "local",
-                            "params": {
-                                "gpus_per_node": 1,
-                                "tasks_per_node": 1,
-                                "timeout_min": 1,
-                            },
+                            "gpus_per_node": 1,
+                            "tasks_per_node": 1,
+                            "timeout_min": 1,
                         },
                     },
                 },

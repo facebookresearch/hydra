@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 from hydra.core.config_store import ConfigStore
 from hydra.types import ObjectConf
@@ -13,9 +13,12 @@ class ExecutorName(Enum):
 
 
 @dataclass
-class BaseSubmititConf:
+class SubmititExecutorConf:
     """Configuration shared by all executors
     """
+
+    executor: ExecutorName = ExecutorName.slurm
+    submitit_folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor.value}/%j"
 
     # maximum time for the job in minutes
     timeout_min: int = 60
@@ -34,7 +37,12 @@ class BaseSubmititConf:
 
 
 @dataclass
-class SlurmSubmititConf(BaseSubmititConf):
+class LocalSubmititConf(SubmititExecutorConf):
+    executor: ExecutorName = ExecutorName.local
+
+
+@dataclass
+class SlurmSubmititConf(SubmititExecutorConf):
     """Slurm configuration overrides and specific parameters
     """
 
@@ -62,22 +70,19 @@ class SlurmSubmititConf(BaseSubmititConf):
     max_num_timeout: int = 0
 
 
-@dataclass
-class LocalSubmititConf(BaseSubmititConf):
-    pass
+# eg: https://hydra.cc/docs/next/tutorials/structured_config/config_groups/#config-inheritance
 
 
-@dataclass
-class SubmititConf:
-    executor: ExecutorName = ExecutorName.local
-    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor}"
-    params: LocalSubmititConf = LocalSubmititConf()
+cs = ConfigStore.instance()
+cs.store(name="executor", node=SubmititExecutorConf)
+cs.store(group="params", name="local", node=LocalSubmititConf)
+cs.store(group="params", name="slurm", node=SlurmSubmititConf)
 
 
 @dataclass
 class SubmititLauncherConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
-    params: SubmititConf = SubmititConf()
+    params: LocalSubmititConf = LocalSubmititConf()
 
 
 ConfigStore.instance().store(

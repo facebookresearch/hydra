@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import dataclasses
 import logging
 import os
+from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
@@ -19,6 +21,13 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from .config import (
+    ExecutorName,
+    LocalSubmititConf,
+    SlurmSubmititConf,
+    SubmititExecutorConf,
+)
+
 log = logging.getLogger(__name__)
 
 
@@ -31,10 +40,10 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
 
 
 class SubmititLauncher(Launcher):
-    def __init__(self, executor: str, folder: str, params: DictConfig) -> None:
-        self.executor = executor
-        self.params = params
-        self.folder = folder
+    def __init__(self, **params: Any) -> None:
+        self.params = (
+            LocalSubmititConf if params["executor"] == "local" else SlurmSubmititConf
+        )(**params)
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -94,33 +103,39 @@ class SubmititLauncher(Launcher):
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
+        executor = self.params.executor.value
+        params = dataclasses.asdict(self.params)
 
-        # make sure you don't change inplace
-        queue_parameters = self.params.copy()
-        OmegaConf.set_struct(queue_parameters, True)
-        init_parameters = {"max_num_timeout"}
-        executor = submitit.AutoExecutor(
-            folder=self.folder,
-            cluster=self.executor.value,
+        # build executor
+        init_renamer = dict(executor="cluster", submitit_folder="folder")
+        init_params = {name: params[k] for k, name in init_renamer.items()}
+        init_params = {
+            k: v.value if isinstance(v, Enum) else v for k, v in init_params.items()
+        }
+        specific_init_keys = {"max_num_timeout"}
+        init_params.update(
             **{
-                f"{self.executor.value}_{x}": y
-                for x, y in queue_parameters.items()
-                if x in init_parameters
-            },
+                f"{executor}_{x}": y
+                for x, y in params.items()
+                if x in specific_init_keys
+            }
         )
+        init_keys = specific_init_keys | set(init_renamer)  # used config keys
+        executor = submitit.AutoExecutor(init_params)
+
+        # specify resources/parameters
+        baseconf = SubmititExecutorConf()
         executor.update_parameters(
             **{
-                # f"{self.executor.value}_{x}": y
-                x: y
-                for x, y in queue_parameters.items()
-                if x not in init_parameters
+                x if x in baseconf else f"{executor}_{x}": y
+                for x, y in params.items()
+                if x not in init_keys
             }
         )
 
         log.info(
-            "Submitit '{}' sweep output dir : {}".format(
-                self.executor, self.config.hydra.sweep.dir
-            )
+            f"Submitit '{self.executor.value}' sweep output dir : "
+            f"{self.config.hydra.sweep.dir}"
         )
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
