@@ -13,9 +13,12 @@ class ExecutorName(Enum):
 
 
 @dataclass
-class BaseSubmititConf:
+class BaseParams:
     """Configuration shared by all executors
     """
+
+    executor: ExecutorName = ExecutorName.slurm  # can we get rid of this?
+    submitit_folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor.value}"
 
     # maximum time for the job in minutes
     timeout_min: int = 60
@@ -34,7 +37,7 @@ class BaseSubmititConf:
 
 
 @dataclass
-class SlurmSubmititConf(BaseSubmititConf):
+class SlurmParams(BaseParams):
     """Slurm configuration overrides and specific parameters
     """
 
@@ -63,26 +66,34 @@ class SlurmSubmititConf(BaseSubmititConf):
 
 
 @dataclass
-class LocalSubmititConf(BaseSubmititConf):
-    pass
+class LocalParams(BaseParams):
+    executor: ExecutorName = ExecutorName.local  # can we get rid of this?
 
 
 @dataclass
-class SubmititConf:
-    executor: ExecutorName = ExecutorName.local
-    folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor}"
-    params: LocalSubmititConf = LocalSubmititConf()
-
-
-@dataclass
-class SubmititLauncherConf(ObjectConf):
+class SlurmConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
-    params: SubmititConf = SubmititConf()
+    params: SlurmParams = SlurmParams()
+
+
+@dataclass
+class LocalConf(ObjectConf):
+    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
+    params: LocalParams = LocalParams()
+
+
+# finally, register two different choices:
+ConfigStore.instance().store(
+    group="hydra/launcher",
+    name="submitit_local",
+    node=LocalConf,
+    provider="submitit_launcher",
+)
 
 
 ConfigStore.instance().store(
     group="hydra/launcher",
-    name="submitit",
-    node=SubmititLauncherConf,
+    name="submitit_slurm",
+    node=SlurmConf,
     provider="submitit_launcher",
 )
