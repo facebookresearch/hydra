@@ -6,7 +6,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import chdir_plugin_root
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
@@ -53,8 +53,8 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-def test_example_app(sweep_runner: TSweepRunner) -> None:
-    with sweep_runner(
+def test_example_app(hydra_sweep_runner) -> None:
+    with hydra_sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,

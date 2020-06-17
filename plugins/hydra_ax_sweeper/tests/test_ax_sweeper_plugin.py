@@ -10,7 +10,7 @@ import pytest
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
@@ -65,9 +65,9 @@ def test_chunk_method_for_invalid_inputs(n):
         list(chunk_func(batch, n))
 
 
-def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
+def test_jobs_dirs(hydra_sweep_runner) -> None:
     # Verify that the spawned jobs are not overstepping the directories of one another.
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
@@ -90,8 +90,8 @@ def test_jobs_dirs(sweep_runner: TSweepRunner) -> None:
         assert len(dirs) == 6  # and a total of 6 unique output directories
 
 
-def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
-    sweep = sweep_runner(
+def test_jobs_configured_via_config(hydra_sweep_runner) -> None:
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
@@ -110,8 +110,8 @@ def test_jobs_configured_via_config(sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
-    sweep = sweep_runner(
+def test_jobs_configured_via_cmd(hydra_sweep_runner,) -> None:
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
@@ -135,8 +135,8 @@ def test_jobs_configured_via_cmd(sweep_runner: TSweepRunner,) -> None:
         assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
-    sweep = sweep_runner(
+def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner) -> None:
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
@@ -160,10 +160,8 @@ def test_jobs_configured_via_cmd_and_config(sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
 
 
-def test_configuration_set_via_cmd_and_default_config(
-    sweep_runner: TSweepRunner,
-) -> None:
-    sweep = sweep_runner(
+def test_configuration_set_via_cmd_and_default_config(hydra_sweep_runner,) -> None:
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
@@ -238,9 +236,9 @@ def test_example_app(tmpdir: Path) -> None:
     "overrides", [[], ["quadratic.x_arg=-1:1"]],
 )
 def test_jobs_configured_via_nested_config(
-    sweep_runner: TSweepRunner, overrides: list,
+    hydra_sweep_runner, overrides: list,
 ) -> None:
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=nested_quadratic_with_escape_char,

@@ -23,68 +23,74 @@ class LauncherTestSuite:
         return 100
 
     def test_sweep_1_job(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
+        self,
+        hydra_sweep_runner: TSweepRunner,
+        launcher_name: str,
+        overrides: List[str],
     ) -> None:
         sweep_1_job(
-            sweep_runner,
+            hydra_sweep_runner,
             overrides=["hydra/launcher=" + launcher_name, "hydra.sweep.dir=."]
             + overrides,
             task_function=self.task_function,
         )
 
     def test_sweep_2_jobs(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         sweep_2_jobs(
-            sweep_runner,
+            hydra_sweep_runner,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
             task_function=self.task_function,
         )
 
     def test_not_sweeping_hydra_overrides(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         not_sweeping_hydra_overrides(
-            sweep_runner,
+            hydra_sweep_runner,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
             task_function=self.task_function,
         )
 
     def test_sweep_1_job_strict(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         sweep_1_job(
-            sweep_runner,
+            hydra_sweep_runner,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
             task_function=self.task_function,
         )
 
     def test_sweep_1_job_strict_and_bad_key(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         # Ideally this would be KeyError, This can't be more specific because some launcher plugins
         # like submitit raises a different exception on job failure and not the underlying exception.
         with pytest.raises(Exception):
             sweep_1_job(
-                sweep_runner,
+                hydra_sweep_runner,
                 overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
                 task_function=self.task_function,
             )
 
     def test_sweep_2_optimizers(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         sweep_two_config_groups(
-            sweep_runner,
+            hydra_sweep_runner,
             overrides=["hydra/launcher=" + launcher_name] + overrides,
             task_function=self.task_function,
         )
 
     def test_sweep_over_unspecified_mandatory_default(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
+        self,
+        hydra_sweep_runner: TSweepRunner,
+        launcher_name: str,
+        overrides: List[str],
     ) -> None:
         base_overrides = ["hydra/launcher=" + launcher_name, "group1=file1,file2"]
-        sweep = sweep_runner(
+        sweep = hydra_sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
             task_function=self.task_function,
@@ -104,7 +110,7 @@ class LauncherTestSuite:
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
     def test_sweep_and_override(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
+        self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
         """
         Tests that we can override things in the configs merged in only during the sweep config construction
@@ -116,7 +122,7 @@ class LauncherTestSuite:
             "db=mysql,postgresql",
             "db.user=someone",
         ]
-        sweep = sweep_runner(
+        sweep = hydra_sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
             task_function=None,
@@ -152,13 +158,16 @@ class LauncherTestSuite:
 @pytest.mark.usefixtures("hydra_restore_singletons")
 class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
-        self, sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str],
+        self,
+        hydra_sweep_runner: TSweepRunner,
+        launcher_name: str,
+        overrides: List[str],
     ) -> None:
         job_overrides = ["group1=file1,file2", "bar=100,200,300"]
         hydra_overrides = ["hydra/launcher=" + launcher_name]
         overrides.extend(job_overrides)
         overrides.extend(hydra_overrides)
-        sweep = sweep_runner(
+        sweep = hydra_sweep_runner(
             calling_file=None,
             calling_module="hydra.test_utils.a_module",
             task_function=None,
@@ -211,14 +220,14 @@ class BatchedSweeperTestSuite:
 
 
 def sweep_1_job(
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,
     overrides: List[str],
     task_function: Optional[TaskFunction],
 ) -> None:
     """
     Runs a sweep with one job
     """
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         task_function=task_function,
@@ -240,7 +249,7 @@ def sweep_1_job(
 
 
 def sweep_2_jobs(
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,
     overrides: List[str],
     task_function: Optional[TaskFunction],
 ) -> None:
@@ -249,7 +258,7 @@ def sweep_2_jobs(
     """
     job_overrides = ["+a=0,1"]
     overrides.extend(job_overrides)
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         task_function=task_function,
@@ -286,7 +295,7 @@ def sweep_2_jobs(
 
 
 def not_sweeping_hydra_overrides(
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,
     overrides: List[str],
     task_function: Optional[TaskFunction],
 ) -> None:
@@ -294,7 +303,7 @@ def not_sweeping_hydra_overrides(
     Runs a sweep with two jobs
     """
     overrides.extend(["+a=0,1", "hydra.verbose=true,false"])
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         task_function=task_function,
@@ -316,7 +325,7 @@ def not_sweeping_hydra_overrides(
 
 
 def sweep_two_config_groups(
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,
     overrides: List[str],
     task_function: Optional[TaskFunction],
 ) -> None:
@@ -325,7 +334,7 @@ def sweep_two_config_groups(
     """
     overrides = copy.deepcopy(overrides)
     overrides.extend(["group1=file1,file2"])
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
         task_function=task_function,

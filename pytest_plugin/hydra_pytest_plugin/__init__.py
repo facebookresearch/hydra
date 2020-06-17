@@ -2,12 +2,13 @@
 # Source of truth for version
 __version__ = "1.0.0rc1"
 import copy
-from typing import Any, Callable, Optional
+from typing import Any, Callable, List, Optional
 
 import pytest
 
 from hydra.core.singleton import Singleton
-from hydra.test_utils.test_utils import GlobalHydraContext
+from hydra.test_utils.test_utils import GlobalHydraContext, SweepTaskFunction
+from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
@@ -34,5 +35,40 @@ def hydra_global_context() -> Callable[
         ctx.config_dir = config_dir
         ctx.strict = strict
         return ctx
+
+    return _
+
+
+@pytest.fixture(scope="function")  # type: ignore
+def hydra_sweep_runner() -> Callable[
+    [
+        Optional[str],
+        Optional[str],
+        Optional[TaskFunction],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        Optional[bool],
+    ],
+    SweepTaskFunction,
+]:
+    def _(
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        task_function: Optional[TaskFunction],
+        config_path: Optional[str],
+        config_name: Optional[str],
+        overrides: Optional[List[str]],
+        strict: Optional[bool] = None,
+    ) -> SweepTaskFunction:
+        sweep = SweepTaskFunction()
+        sweep.calling_file = calling_file
+        sweep.calling_module = calling_module
+        sweep.task_function = task_function
+        sweep.config_path = config_path
+        sweep.config_name = config_name
+        sweep.strict = strict
+        sweep.overrides = overrides or []
+        return sweep
 
     return _

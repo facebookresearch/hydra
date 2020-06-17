@@ -9,7 +9,6 @@ import pytest
 from omegaconf import DictConfig, OmegaConf
 
 from hydra.test_utils.test_utils import (
-    TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
     does_not_raise,
@@ -286,9 +285,9 @@ def test_composition_config_example(
 
 
 def test_sweeping_example(
-    hydra_restore_singletons: Any, sweep_runner: TSweepRunner
+    hydra_restore_singletons: Any, hydra_sweep_runner: Any
 ) -> None:
-    with sweep_runner(
+    with hydra_sweep_runner(
         calling_file="examples/tutorials/basic/your_first_hydra_app/6_composition/my_app.py",
         calling_module=None,
         config_path="conf",

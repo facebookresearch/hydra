@@ -11,7 +11,6 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
-    TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
     integration_test,
@@ -481,12 +480,12 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
 @pytest.mark.parametrize("overrides", [["+free_group=opt1,opt2"]])  # type: ignore
 def test_multirun_with_free_override(
     hydra_restore_singletons: Any,
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner,
     calling_file: str,
     calling_module: str,
     overrides: List[str],
 ) -> None:
-    sweep = sweep_runner(
+    sweep = hydra_sweep_runner(
         calling_file=calling_file,
         calling_module=calling_module,
         config_path="conf/",
@@ -515,11 +514,11 @@ def test_multirun_with_free_override(
 )
 def test_sweep_complex_defaults(
     hydra_restore_singletons: Any,
-    sweep_runner: TSweepRunner,
+    hydra_sweep_runner: Any,
     calling_file: str,
     calling_module: str,
 ) -> None:
-    with sweep_runner(
+    with hydra_sweep_runner(
         calling_file=calling_file,
         calling_module=calling_module,
         config_path="conf",

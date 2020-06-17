@@ -203,6 +203,7 @@ def install_lint_deps(session):
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_lint_deps(session)
+    install_hydra(session, ["pip", "install", "-e"])
     session.run("black", "--check", ".", silent=SILENT)
     session.run(
         "isort",
