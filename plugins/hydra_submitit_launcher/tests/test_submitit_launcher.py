@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import pytest  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -7,7 +8,6 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
 
-import pytest  # type: ignore
 from hydra_plugins.hydra_submitit_launcher.submitit_launcher import SubmititLauncher
 
 chdir_plugin_root()
