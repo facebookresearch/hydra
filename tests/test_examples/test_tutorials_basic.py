@@ -9,6 +9,7 @@ import pytest
 from omegaconf import DictConfig, OmegaConf
 
 from hydra.test_utils.test_utils import (
+    TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
     does_not_raise,
@@ -233,11 +234,11 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
 def test_objects_example(
     hydra_restore_singletons: Any,
     tmpdir: Path,
-    task_runner: TTaskRunner,
+    hydra_task_runner: TTaskRunner,
     args: List[str],
     output_conf: DictConfig,
 ) -> None:
-    with task_runner(
+    with hydra_task_runner(
         calling_file="examples/patterns/objects/my_app.py",
         calling_module=None,
         config_path="conf",
@@ -250,9 +251,9 @@ def test_objects_example(
 
 
 def test_composition_config_example(
-    hydra_restore_singletons: Any, task_runner: TTaskRunner
+    hydra_restore_singletons: Any, hydra_task_runner: TTaskRunner
 ) -> None:
-    with task_runner(
+    with hydra_task_runner(
         calling_file="examples/tutorials/basic/your_first_hydra_app/6_composition/my_app.py",
         calling_module=None,
         config_path="conf",
@@ -285,7 +286,7 @@ def test_composition_config_example(
 
 
 def test_sweeping_example(
-    hydra_restore_singletons: Any, hydra_sweep_runner: Any
+    hydra_restore_singletons: Any, hydra_sweep_runner: TSweepRunner
 ) -> None:
     with hydra_sweep_runner(
         calling_file="examples/tutorials/basic/your_first_hydra_app/6_composition/my_app.py",
@@ -308,9 +309,9 @@ def test_sweeping_example(
 
 
 def test_specializing_config_example(
-    hydra_restore_singletons: Any, task_runner: TTaskRunner
+    hydra_restore_singletons: Any, hydra_task_runner: TTaskRunner
 ) -> None:
-    with task_runner(
+    with hydra_task_runner(
         calling_file="examples/patterns/specializing_config/example.py",
         calling_module=None,
         config_path="conf",

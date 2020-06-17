@@ -7,7 +7,11 @@ from typing import Any, Callable, List, Optional
 import pytest
 
 from hydra.core.singleton import Singleton
-from hydra.test_utils.test_utils import GlobalHydraContext, SweepTaskFunction
+from hydra.test_utils.test_utils import (
+    GlobalHydraContext,
+    SweepTaskFunction,
+    TaskTestFunction,
+)
 from hydra.types import TaskFunction
 
 
@@ -70,5 +74,37 @@ def hydra_sweep_runner() -> Callable[
         sweep.strict = strict
         sweep.overrides = overrides or []
         return sweep
+
+    return _
+
+
+@pytest.fixture(scope="function")  # type: ignore
+def hydra_task_runner() -> Callable[
+    [
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        Optional[bool],
+    ],
+    TaskTestFunction,
+]:
+    def _(
+        calling_file: Optional[str],
+        calling_module: Optional[str],
+        config_path: Optional[str],
+        config_name: Optional[str],
+        overrides: Optional[List[str]] = None,
+        strict: Optional[bool] = None,
+    ) -> TaskTestFunction:
+        task = TaskTestFunction()
+        task.overrides = overrides or []
+        task.calling_file = calling_file
+        task.config_name = config_name
+        task.calling_module = calling_module
+        task.config_path = config_path
+        task.strict = strict
+        return task
 
     return _
