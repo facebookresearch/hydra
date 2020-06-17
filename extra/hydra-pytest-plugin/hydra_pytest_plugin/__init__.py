@@ -2,48 +2,23 @@
 # Source of truth for version
 __version__ = "1.0.0rc1"
 import copy
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 import pytest
 
 from hydra.core.singleton import Singleton
-from hydra.test_utils.test_utils import (
-    GlobalHydraContext,
-    InitType,
-    SweepTaskFunction,
-    TaskTestFunction,
-)
+from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_restore_singletons() -> None:
+def hydra_restore_singletons() -> None:  # TODO: expose as a normal context too
     """
     Restore singletons state after the function returns
     """
     state = copy.deepcopy(Singleton.get_state())
     yield
     Singleton.set_state(state)
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[[Any], GlobalHydraContext]:
-    def _(
-        task_name: str = "task",
-        init_type: InitType = InitType.AUTO,
-        calling_module: Optional[str] = None,
-        calling_file: Optional[str] = None,
-        config_path: Optional[str] = None,
-    ) -> Any:
-        ctx = GlobalHydraContext()
-        ctx.init_type = init_type
-        ctx.calling_module = calling_module
-        ctx.calling_file = calling_file
-        ctx.task_name = task_name
-        ctx.config_path = config_path
-        return ctx
-
-    return _
 
 
 @pytest.fixture(scope="function")  # type: ignore

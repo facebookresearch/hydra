@@ -14,10 +14,8 @@ from hydra.experimental import (
     initialize_with_file,
     initialize_with_module,
 )
-from hydra.test_utils.test_utils import (
-    TGlobalHydraContext,
-    chdir_hydra_root,
-)
+from hydra.experimental.compose import initialize_ctx
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
@@ -56,28 +54,18 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
 )
 class TestCompose:
     def test_compose_config(
-        self,
-        config_path: str,
-        hydra_global_context: TGlobalHydraContext,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_path: str, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with hydra_global_context(config_path=config_path):
+        with initialize_ctx(config_path=config_path):
             cfg = compose(config_file, overrides)
             assert cfg == expected
 
     def test_strict_failure_global_strict(
-        self,
-        config_path: str,
-        hydra_global_context: TGlobalHydraContext,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_path: str, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        # default strict True, call is unspecified
-        overrides.append("fooooooooo=bar")
-        with hydra_global_context(config_path=config_path):
+        with initialize_ctx(config_path=config_path):
+            # default strict True, call is unspecified
+            overrides.append("fooooooooo=bar")
             with pytest.raises(HydraException):
                 compose(config_file, overrides)
 
@@ -165,21 +153,14 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
 )
 class TestComposeCloudInfraExample:
     def test_compose(
-        self,
-        config_path: str,
-        hydra_global_context: TGlobalHydraContext,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_path: str, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with hydra_global_context(config_path=config_path):
+        with initialize_ctx(config_path=config_path):
             ret = compose(config_file, overrides)
             assert ret == expected
 
 
-def test_missing_init_py_error(
-    hydra_restore_singletons: Any, hydra_global_context: TGlobalHydraContext
-) -> None:
+def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
     with pytest.raises(
         Exception,
         match=re.escape(
@@ -187,9 +168,7 @@ def test_missing_init_py_error(
             "did you forget an __init__.py?"
         ),
     ):
-        with hydra_global_context(
-            config_path="../hydra/test_utils/configs/missing_init_py"
-        ):
+        with initialize_ctx(config_path="../hydra/test_utils/configs/missing_init_py"):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
             hydra.compose_config(config_name=None, overrides=[])
@@ -197,7 +176,7 @@ def test_missing_init_py_error(
 
 def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
     initialize_with_file(
-        calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
     )
     assert compose(config_name="config") == {
         "optimizer": {"type": "nesterov", "lr": 0.001}
@@ -206,7 +185,7 @@ def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
     initialize_with_module(
-        calling_module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
+        module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
     )
     assert compose(config_name="config") == {
         "optimizer": {"type": "nesterov", "lr": 0.001}
@@ -215,7 +194,7 @@ def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
     initialize_with_file(
-        calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
     )
     from tests.test_apps.app_with_cfg_groups.my_app import my_app
 

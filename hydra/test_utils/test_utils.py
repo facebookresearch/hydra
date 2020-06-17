@@ -11,14 +11,12 @@ import subprocess
 import sys
 import tempfile
 from contextlib import contextmanager
-from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Union
 
 from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
-import hydra.experimental
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, split_config_path
@@ -33,58 +31,6 @@ log = logging.getLogger(__name__)
 @contextmanager
 def does_not_raise(enter_result: Any = None) -> Iterator[Any]:
     yield enter_result
-
-
-class InitType(Enum):
-    AUTO = 1
-    MODULE = 2
-    FILE = 3
-
-
-class GlobalHydraContext:
-    def __init__(self) -> None:
-        self.task_name: Optional[str] = None
-        self.init_type: InitType = InitType.AUTO
-        self.config_path: Optional[str] = None
-        self.calling_module: Optional[str] = None
-        self.calling_file: Optional[str] = None
-
-    def __enter__(self) -> "GlobalHydraContext":
-        if self.init_type == InitType.AUTO:
-            hydra.experimental.initialize(
-                config_path=self.config_path, strict=None, caller_stack_depth=2
-            )
-        elif self.init_type == InitType.FILE:
-            hydra.experimental.initialize_with_file(
-                calling_file=self.calling_file, config_path=self.config_path
-            )
-        elif self.init_type == InitType.MODULE:
-            hydra.experimental.initialize_with_module(
-                calling_module=self.calling_module, config_path=self.config_path
-            )
-        else:
-            raise ValueError(f"Unknown initialization type {self.init_type}")
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
-        GlobalHydra().clear()
-
-
-class TGlobalHydraContext(Protocol):
-    def __call__(
-        self,
-        task_name: str = "task",
-        init_type: InitType = InitType.AUTO,
-        calling_module: Optional[str] = None,
-        calling_file: Optional[str] = None,
-        config_path: Optional[str] = None,
-    ) -> GlobalHydraContext:
-        ...
-
-
-"""
-Task runner fixture
-"""
 
 
 class TaskTestFunction:
@@ -151,11 +97,6 @@ class TTaskRunner(Protocol):
         strict: Optional[bool] = None,
     ) -> TaskTestFunction:
         ...
-
-
-"""
-Sweep runner fixture
-"""
 
 
 class SweepTaskFunction:

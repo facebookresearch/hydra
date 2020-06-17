@@ -12,7 +12,8 @@ class GlobalHydra(metaclass=Singleton):
 
     def initialize(self, hydra: "Hydra") -> None:
         assert isinstance(hydra, Hydra)
-        assert not self.is_initialized(), "GlobalHydra is already initialized"
+        if self.is_initialized():
+            raise ValueError("GlobalHydra is already initialized")
         self.hydra = hydra
 
     def config_loader(self) -> "ConfigLoader":
@@ -28,3 +29,8 @@ class GlobalHydra(metaclass=Singleton):
     @staticmethod
     def instance(*args: Any, **kwargs: Any) -> "GlobalHydra":
         return Singleton.instance(GlobalHydra, *args, **kwargs)  # type: ignore
+
+    @staticmethod
+    def set_instance(instance: "GlobalHydra") -> None:
+        assert isinstance(instance, GlobalHydra)
+        Singleton._instances[GlobalHydra] = instance  # type: ignore
