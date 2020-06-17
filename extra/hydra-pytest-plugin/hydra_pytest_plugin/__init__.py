@@ -9,6 +9,7 @@ import pytest
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import (
     GlobalHydraContext,
+    InitType,
     SweepTaskFunction,
     TaskTestFunction,
 )
@@ -26,18 +27,20 @@ def hydra_restore_singletons() -> None:
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[
-    [str, Optional[str], Optional[bool]], GlobalHydraContext
-]:
+def hydra_global_context() -> Callable[[Any], GlobalHydraContext]:
     def _(
         task_name: str = "task",
-        config_dir: Optional[str] = None,
-        strict: Optional[bool] = None,
+        init_type: InitType = InitType.AUTO,
+        calling_module: Optional[str] = None,
+        calling_file: Optional[str] = None,
+        config_path: Optional[str] = None,
     ) -> Any:
         ctx = GlobalHydraContext()
+        ctx.init_type = init_type
+        ctx.calling_module = calling_module
+        ctx.calling_file = calling_file
         ctx.task_name = task_name
-        ctx.config_dir = config_dir
-        ctx.strict = strict
+        ctx.config_path = config_path
         return ctx
 
     return _
