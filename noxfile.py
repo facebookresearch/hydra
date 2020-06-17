@@ -86,8 +86,10 @@ def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
     session.run(*cmd, ".", silent=SILENT)
-    session.install("pipdeptree", silent=SILENT)
-    session.run("pipdeptree", "-p", "hydra-core")
+    session.run(*cmd, "./pytest_plugin", silent=SILENT)
+    if not SILENT:
+        session.install("pipdeptree", silent=SILENT)
+        session.run("pipdeptree", "-p", "hydra-core")
 
 
 def pytest_args(session, *args):
@@ -287,7 +289,8 @@ def test_plugins(session, install_cmd):
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
         session.run(*cmd, silent=SILENT)
-        session.run("pipdeptree", "-p", plugin.name)
+        if not SILENT:
+            session.run("pipdeptree", "-p", plugin.name)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)

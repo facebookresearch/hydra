@@ -23,13 +23,13 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-def test_initialize(restore_singletons: Any) -> None:
+def test_initialize(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
     initialize(config_path=None)
     assert GlobalHydra().is_initialized()
 
 
-def test_initialize_with_config_dir(restore_singletons: Any) -> None:
+def test_initialize_with_config_dir(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
     initialize(config_path="../hydra/test_utils/configs")
     assert GlobalHydra().is_initialized()
@@ -44,7 +44,7 @@ def test_initialize_with_config_dir(restore_singletons: Any) -> None:
     assert idx != -1
 
 
-@pytest.mark.usefixtures("restore_singletons")
+@pytest.mark.usefixtures("hydra_restore_singletons")
 @pytest.mark.parametrize("config_dir", ["../hydra/test_utils/configs"])
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
@@ -129,7 +129,7 @@ class TestCompose:
                 compose(config_name=config_file, overrides=overrides, strict=False)
 
 
-def test_strict_deprecation_warning(restore_singletons: Any) -> None:
+def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
     msg = (
         "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
         "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
@@ -138,7 +138,7 @@ def test_strict_deprecation_warning(restore_singletons: Any) -> None:
         initialize(config_path=None, strict=True)
 
 
-@pytest.mark.usefixtures("restore_singletons")
+@pytest.mark.usefixtures("hydra_restore_singletons")
 @pytest.mark.parametrize(
     "config_dir", ["../hydra/test_utils/configs/cloud_infra_example"]
 )
@@ -225,7 +225,7 @@ class TestComposeCloudInfraExample:
 
 
 def test_missing_init_py_error(
-    restore_singletons: Any, hydra_global_context: TGlobalHydraContext
+    hydra_restore_singletons: Any, hydra_global_context: TGlobalHydraContext
 ) -> None:
     with pytest.raises(
         Exception,
@@ -242,7 +242,7 @@ def test_missing_init_py_error(
             hydra.compose_config(config_name=None, overrides=[])
 
 
-def test_initialize_with_file(restore_singletons: Any) -> None:
+def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
     initialize_with_file(
         calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
     )
@@ -251,7 +251,7 @@ def test_initialize_with_file(restore_singletons: Any) -> None:
     }
 
 
-def test_initialize_with_module(restore_singletons: Any) -> None:
+def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
     initialize_with_module(
         calling_module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
     )
@@ -260,7 +260,7 @@ def test_initialize_with_module(restore_singletons: Any) -> None:
     }
 
 
-def test_hydra_main_passthrough(restore_singletons: Any) -> None:
+def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
     initialize_with_file(
         calling_file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
     )

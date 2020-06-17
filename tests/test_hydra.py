@@ -25,7 +25,7 @@ chdir_hydra_root()
     "calling_file, calling_module", [(".", None), (None, ".")]
 )
 def test_missing_conf_dir(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -48,7 +48,7 @@ def test_missing_conf_dir(
     ],
 )
 def test_missing_conf_file(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -71,7 +71,7 @@ def test_missing_conf_file(
     ],
 )
 def test_app_without_config___no_overrides(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -94,7 +94,7 @@ def test_app_without_config___no_overrides(
     ],
 )
 def test_hydra_main_rerun(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -117,7 +117,7 @@ def test_hydra_main_rerun(
     ],
 )
 def test_app_without_config__with_append(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -143,7 +143,7 @@ def test_app_without_config__with_append(
     ],
 )
 def test_app_with_config_file__no_overrides(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -171,7 +171,7 @@ def test_app_with_config_file__no_overrides(
     ],
 )
 def test_config_without_package_header_warnings(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -205,7 +205,7 @@ def test_config_without_package_header_warnings(
     ],
 )
 def test_app_with_config_path_backward_compatibility(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -238,7 +238,7 @@ def test_app_with_config_path_backward_compatibility(
     ],
 )
 def test_app_with_config_file__with_overide(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -264,7 +264,7 @@ def test_app_with_config_file__with_overide(
     ],
 )
 def test_app_with_split_config(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -290,7 +290,7 @@ def test_app_with_split_config(
     ],
 )
 def test_app_with_config_groups__override_dataset__wrong(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -315,7 +315,7 @@ def test_app_with_config_groups__override_dataset__wrong(
     ],
 )
 def test_app_with_config_groups__override_all_configs(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -341,7 +341,7 @@ def test_app_with_config_groups__override_all_configs(
     ],
 )
 def test_app_with_sweep_cfg__override_to_basic_launcher(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -480,7 +480,7 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
 )
 @pytest.mark.parametrize("overrides", [["+free_group=opt1,opt2"]])  # type: ignore
 def test_multirun_with_free_override(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     sweep_runner: TSweepRunner,
     calling_file: str,
     calling_module: str,
@@ -514,7 +514,7 @@ def test_multirun_with_free_override(
     ],
 )
 def test_sweep_complex_defaults(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     sweep_runner: TSweepRunner,
     calling_file: str,
     calling_module: str,
@@ -660,7 +660,7 @@ def test_help(
     ],
 )
 def test_interpolating_dir_hydra_to_app(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -740,7 +740,7 @@ def test_hydra_env_set(tmpdir: Path) -> None:
     ],
 )
 def test_override_with_invalid_group_choice(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
@@ -794,7 +794,7 @@ def test_config_name_and_path_overrides(
     ],
 )
 def test_hydra_output_dir(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,

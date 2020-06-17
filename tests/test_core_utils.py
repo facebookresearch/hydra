@@ -9,7 +9,7 @@ from hydra.core import utils
 from hydra.core.hydra_config import HydraConfig
 
 
-def test_accessing_hydra_config(restore_singletons: Any) -> Any:
+def test_accessing_hydra_config(hydra_restore_singletons: Any) -> Any:
     utils.setup_globals()
 
     config_loader = ConfigLoaderImpl(

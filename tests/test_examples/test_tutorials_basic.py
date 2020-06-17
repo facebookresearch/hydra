@@ -232,7 +232,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
     ],
 )
 def test_objects_example(
-    restore_singletons: Any,
+    hydra_restore_singletons: Any,
     tmpdir: Path,
     task_runner: TTaskRunner,
     args: List[str],
@@ -251,7 +251,7 @@ def test_objects_example(
 
 
 def test_composition_config_example(
-    restore_singletons: Any, task_runner: TTaskRunner
+    hydra_restore_singletons: Any, task_runner: TTaskRunner
 ) -> None:
     with task_runner(
         calling_file="examples/tutorials/basic/your_first_hydra_app/6_composition/my_app.py",
@@ -285,7 +285,9 @@ def test_composition_config_example(
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-def test_sweeping_example(restore_singletons: Any, sweep_runner: TSweepRunner) -> None:
+def test_sweeping_example(
+    hydra_restore_singletons: Any, sweep_runner: TSweepRunner
+) -> None:
     with sweep_runner(
         calling_file="examples/tutorials/basic/your_first_hydra_app/6_composition/my_app.py",
         calling_module=None,
@@ -307,7 +309,7 @@ def test_sweeping_example(restore_singletons: Any, sweep_runner: TSweepRunner) -
 
 
 def test_specializing_config_example(
-    restore_singletons: Any, task_runner: TTaskRunner
+    hydra_restore_singletons: Any, task_runner: TTaskRunner
 ) -> None:
     with task_runner(
         calling_file="examples/patterns/specializing_config/example.py",

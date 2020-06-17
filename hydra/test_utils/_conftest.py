@@ -1,28 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 import pytest
 
-from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import (
     GlobalHydraContext,
     SweepTaskFunction,
     TaskTestFunction,
 )
 from hydra.types import TaskFunction
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def restore_singletons() -> Any:
-    """
-    A fixture to restore singletons state after this the function.
-    This is useful for functions that are making a one-off change to singlestons that should not effect
-    other tests
-    """
-    state = copy.deepcopy(Singleton.get_state())
-    yield
-    Singleton.set_state(state)
 
 
 @pytest.fixture(scope="function")  # type: ignore
