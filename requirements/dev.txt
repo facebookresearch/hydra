@@ -1,4 +1,5 @@
 -r requirements.txt
+extra/pytest_plugin
 black
 coverage
 flake8

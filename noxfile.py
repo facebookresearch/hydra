@@ -86,7 +86,7 @@ def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
     session.run(*cmd, ".", silent=SILENT)
-    session.run(*cmd, "./pytest_plugin", silent=SILENT)
+    session.run(*cmd, "extra/pytest_plugin", silent=SILENT)
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
