@@ -122,13 +122,11 @@ class SubmititLauncher(Launcher):
 
         # specify resources/parameters
         baseparams = set(dataclasses.asdict(BaseParams()).keys())
-        print(baseparams)
         params = {
             x if x in baseparams else f"{exec_name}_{x}": y
             for x, y in params.items()
             if x not in init_keys
         }
-        print("all", params)
         executor.update_parameters(**params)
 
         log.info(
