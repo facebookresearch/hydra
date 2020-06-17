@@ -21,12 +21,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from .config import (
-    ExecutorName,
-    LocalSubmititConf,
-    SlurmSubmititConf,
-    SubmititExecutorConf,
-)
+from .config import BaseParams, LocalParams, SlurmParams
 
 log = logging.getLogger(__name__)
 
@@ -41,9 +36,11 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
 
 class SubmititLauncher(Launcher):
     def __init__(self, **params: Any) -> None:
-        self.params = (
-            LocalSubmititConf if params["executor"] == "local" else SlurmSubmititConf
-        )(**params)
+        self.params = OmegaConf.structured(
+            LocalParams if params["executor"].value == "local" else SlurmParams
+        )
+        for key, val in params.items():
+            OmegaConf.update(self.params, key, val if key != "executor" else val.value)
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -103,8 +100,8 @@ class SubmititLauncher(Launcher):
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
-        executor = self.params.executor.value
-        params = dataclasses.asdict(self.params)
+        exec_name = self.params.executor.value
+        params = self.params
 
         # build executor
         init_renamer = dict(executor="cluster", submitit_folder="folder")
@@ -115,26 +112,27 @@ class SubmititLauncher(Launcher):
         specific_init_keys = {"max_num_timeout"}
         init_params.update(
             **{
-                f"{executor}_{x}": y
+                f"{exec_name}_{x}": y
                 for x, y in params.items()
                 if x in specific_init_keys
             }
         )
         init_keys = specific_init_keys | set(init_renamer)  # used config keys
-        executor = submitit.AutoExecutor(init_params)
+        executor = submitit.AutoExecutor(**init_params)
 
         # specify resources/parameters
-        baseconf = SubmititExecutorConf()
-        executor.update_parameters(
-            **{
-                x if x in baseconf else f"{executor}_{x}": y
-                for x, y in params.items()
-                if x not in init_keys
-            }
-        )
+        baseparams = set(dataclasses.asdict(BaseParams()).keys())
+        print(baseparams)
+        params = {
+            x if x in baseparams else f"{exec_name}_{x}": y
+            for x, y in params.items()
+            if x not in init_keys
+        }
+        print("all", params)
+        executor.update_parameters(**params)
 
         log.info(
-            f"Submitit '{self.executor.value}' sweep output dir : "
+            f"Submitit '{exec_name}' sweep output dir : "
             f"{self.config.hydra.sweep.dir}"
         )
         sweep_dir = Path(str(self.config.hydra.sweep.dir))

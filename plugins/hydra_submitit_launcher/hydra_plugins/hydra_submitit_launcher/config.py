@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Optional
+from typing import Optional
 
 from hydra.core.config_store import ConfigStore
 from hydra.types import ObjectConf
@@ -13,12 +13,12 @@ class ExecutorName(Enum):
 
 
 @dataclass
-class SubmititExecutorConf:
+class BaseParams:
     """Configuration shared by all executors
     """
 
-    executor: ExecutorName = ExecutorName.slurm
-    submitit_folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor.value}/%j"
+    executor: ExecutorName = ExecutorName.slurm  # can we get rid of this?
+    submitit_folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor.value}"
 
     # maximum time for the job in minutes
     timeout_min: int = 60
@@ -37,12 +37,7 @@ class SubmititExecutorConf:
 
 
 @dataclass
-class LocalSubmititConf(SubmititExecutorConf):
-    executor: ExecutorName = ExecutorName.local
-
-
-@dataclass
-class SlurmSubmititConf(SubmititExecutorConf):
+class SlurmParams(BaseParams):
     """Slurm configuration overrides and specific parameters
     """
 
@@ -70,24 +65,35 @@ class SlurmSubmititConf(SubmititExecutorConf):
     max_num_timeout: int = 0
 
 
-# eg: https://hydra.cc/docs/next/tutorials/structured_config/config_groups/#config-inheritance
-
-
-cs = ConfigStore.instance()
-cs.store(name="executor", node=SubmititExecutorConf)
-cs.store(group="params", name="local", node=LocalSubmititConf)
-cs.store(group="params", name="slurm", node=SlurmSubmititConf)
+@dataclass
+class LocalParams(BaseParams):
+    executor: ExecutorName = ExecutorName.local  # can we get rid of this?
 
 
 @dataclass
-class SubmititLauncherConf(ObjectConf):
+class SlurmConf(ObjectConf):
     cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
-    params: LocalSubmititConf = LocalSubmititConf()
+    params: SlurmParams = SlurmParams()
+
+
+@dataclass
+class LocalConf(ObjectConf):
+    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
+    params: LocalParams = LocalParams()
+
+
+# finally, register two different choices:
+ConfigStore.instance().store(
+    group="hydra/launcher",
+    name="submitit_local",
+    node=LocalConf,
+    provider="submitit_launcher",
+)
 
 
 ConfigStore.instance().store(
     group="hydra/launcher",
-    name="submitit",
-    node=SubmititLauncherConf,
+    name="submitit_slurm",
+    node=SlurmConf,
     provider="submitit_launcher",
 )
