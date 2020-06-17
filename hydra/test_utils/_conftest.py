@@ -4,7 +4,6 @@ from typing import Callable, List, Optional
 import pytest
 
 from hydra.test_utils.test_utils import (
-    GlobalHydraContext,
     SweepTaskFunction,
     TaskTestFunction,
 )

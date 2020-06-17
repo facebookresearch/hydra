@@ -4,12 +4,12 @@ from typing import Any, Callable, Optional
 
 import pytest
 
+from hydra.test_utils.test_utils import GlobalHydraContext
+from hydra.core.singleton import Singleton
+
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_restore_singletons() -> Any:
-
-    from hydra.core.singleton import Singleton
-
+def hydra_restore_singletons() -> None:
     """
     Restore singletons state after the function returns
     """
@@ -19,14 +19,14 @@ def hydra_restore_singletons() -> Any:
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[[str, Optional[str], Optional[bool]], Any]:
+def hydra_global_context() -> Callable[
+    [str, Optional[str], Optional[bool]], GlobalHydraContext
+]:
     def _(
         task_name: str = "task",
         config_dir: Optional[str] = None,
         strict: Optional[bool] = None,
-    ) -> "GlobalHydraContext":
-        from hydra.test_utils.test_utils import GlobalHydraContext
-
+    ) -> Any:
         ctx = GlobalHydraContext()
         ctx.task_name = task_name
         ctx.config_dir = config_dir
