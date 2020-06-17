@@ -480,7 +480,7 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
 @pytest.mark.parametrize("overrides", [["+free_group=opt1,opt2"]])  # type: ignore
 def test_multirun_with_free_override(
     hydra_restore_singletons: Any,
-    hydra_sweep_runner,
+    hydra_sweep_runner: Any,
     calling_file: str,
     calling_module: str,
     overrides: List[str],
