@@ -1,11 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Source of truth for version
+__version__ = "1.0.0rc1"
 import copy
 from typing import Any, Callable, Optional
 
 import pytest
 
-from hydra.test_utils.test_utils import GlobalHydraContext
 from hydra.core.singleton import Singleton
+from hydra.test_utils.test_utils import GlobalHydraContext
 
 
 @pytest.fixture(scope="function")  # type: ignore

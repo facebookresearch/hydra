@@ -3,10 +3,7 @@ from typing import Callable, List, Optional
 
 import pytest
 
-from hydra.test_utils.test_utils import (
-    SweepTaskFunction,
-    TaskTestFunction,
-)
+from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
 
 
