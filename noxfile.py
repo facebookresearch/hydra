@@ -322,7 +322,7 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
-    session.run("pip", "install", "-e", ".", silent=SILENT)
+    install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase")
 
     selected_plugins = select_plugins(session)

@@ -12,24 +12,6 @@ from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[
-    [str, Optional[str], Optional[bool]], GlobalHydraContext
-]:
-    def _(
-        task_name: str = "task",
-        config_dir: Optional[str] = None,
-        strict: Optional[bool] = None,
-    ) -> "GlobalHydraContext":
-        ctx = GlobalHydraContext()
-        ctx.task_name = task_name
-        ctx.config_dir = config_dir
-        ctx.strict = strict
-        return ctx
-
-    return _
-
-
-@pytest.fixture(scope="function")  # type: ignore
 def sweep_runner() -> Callable[
     [
         Optional[str],
