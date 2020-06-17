@@ -1,5 +1,5 @@
 -r requirements.txt
-extra/pytest_plugin
+extra/hydra-pytest-plugin
 black
 coverage
 flake8
