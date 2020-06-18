@@ -34,13 +34,16 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 
-class SubmititLauncher(Launcher):
+class LocalSubmititLauncher(Launcher):
+
+    _EXECUTOR = "local"
+
     def __init__(self, **params: Any) -> None:
         self.params = OmegaConf.structured(
-            LocalParams if params["executor"].value == "local" else SlurmParams
+            LocalParams if self._EXECUTOR == "local" else SlurmParams
         )
         for key, val in params.items():
-            OmegaConf.update(self.params, key, val if key != "executor" else val.value)
+            OmegaConf.update(self.params, key, val)
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -100,11 +103,10 @@ class SubmititLauncher(Launcher):
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
-        exec_name = self.params.executor.value
         params = self.params
 
         # build executor
-        init_renamer = dict(executor="cluster", submitit_folder="folder")
+        init_renamer = dict(submitit_folder="folder")
         init_params = {name: params[k] for k, name in init_renamer.items()}
         init_params = {
             k: v.value if isinstance(v, Enum) else v for k, v in init_params.items()
@@ -112,25 +114,25 @@ class SubmititLauncher(Launcher):
         specific_init_keys = {"max_num_timeout"}
         init_params.update(
             **{
-                f"{exec_name}_{x}": y
+                f"{self._EXECUTOR}_{x}": y
                 for x, y in params.items()
                 if x in specific_init_keys
             }
         )
         init_keys = specific_init_keys | set(init_renamer)  # used config keys
-        executor = submitit.AutoExecutor(**init_params)
+        executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
 
         # specify resources/parameters
         baseparams = set(dataclasses.asdict(BaseParams()).keys())
         params = {
-            x if x in baseparams else f"{exec_name}_{x}": y
+            x if x in baseparams else f"{self._EXECUTOR}_{x}": y
             for x, y in params.items()
             if x not in init_keys
         }
         executor.update_parameters(**params)
 
         log.info(
-            f"Submitit '{exec_name}' sweep output dir : "
+            f"Submitit '{self._EXECUTOR}' sweep output dir : "
             f"{self.config.hydra.sweep.dir}"
         )
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
@@ -157,3 +159,8 @@ class SubmititLauncher(Launcher):
 
         jobs = executor.map_array(self, *zip(*params))
         return [j.results()[0] for j in jobs]
+
+
+class SlurmSubmititLauncher(LocalSubmititLauncher):
+
+    _EXECUTOR = "slurm"

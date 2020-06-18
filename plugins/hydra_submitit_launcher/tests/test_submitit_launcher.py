@@ -8,14 +8,17 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
 
-from hydra_plugins.hydra_submitit_launcher.submitit_launcher import SubmititLauncher
+from hydra_plugins.hydra_submitit_launcher import submitit_launcher
 
 chdir_plugin_root()
 
 
 def test_discovery():
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert SubmititLauncher.__name__ in [
+    assert submitit_launcher.LocalSubmititLauncher.__name__ in [
+        x.__name__ for x in Plugins.instance().discover(Launcher)
+    ]
+    assert submitit_launcher.SlurmSubmititLauncher.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Launcher)
     ]
 

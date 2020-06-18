@@ -1,15 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from enum import Enum
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
 from hydra.types import ObjectConf
-
-
-class ExecutorName(Enum):
-    local = "local"
-    slurm = "slurm"
 
 
 @dataclass
@@ -17,8 +11,7 @@ class BaseParams:
     """Configuration shared by all executors
     """
 
-    executor: ExecutorName = ExecutorName.slurm  # can we get rid of this?
-    submitit_folder: str = "${hydra.sweep.dir}/.${hydra.launcher.params.executor.value}"
+    submitit_folder: str = "${hydra.sweep.dir}/.submitit/%j"
 
     # maximum time for the job in minutes
     timeout_min: int = 60
@@ -67,18 +60,18 @@ class SlurmParams(BaseParams):
 
 @dataclass
 class LocalParams(BaseParams):
-    executor: ExecutorName = ExecutorName.local  # can we get rid of this?
+    pass
 
 
 @dataclass
 class SlurmConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
+    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmSubmititLauncher"
     params: SlurmParams = SlurmParams()
 
 
 @dataclass
 class LocalConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SubmititLauncher"
+    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalSubmititLauncher"
     params: LocalParams = LocalParams()
 
 
