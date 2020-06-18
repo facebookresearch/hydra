@@ -9,7 +9,6 @@ import pytest
 from hydra.experimental import compose, initialize_with_module_ctx
 from hydra_app.main import add
 
-
 # A few notes about this example:
 # 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
 # 2. This is not sensitive to the working directory.
