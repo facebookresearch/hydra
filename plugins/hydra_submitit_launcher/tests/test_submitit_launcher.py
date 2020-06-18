@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import Type
+
 import pytest  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -13,12 +15,15 @@ from hydra_plugins.hydra_submitit_launcher import submitit_launcher
 chdir_plugin_root()
 
 
-def test_discovery():
-    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert submitit_launcher.LocalSubmititLauncher.__name__ in [
-        x.__name__ for x in Plugins.instance().discover(Launcher)
+@pytest.mark.parametrize(
+    "cls", [
+        submitit_launcher.LocalSubmititLauncher,
+        submitit_launcher.SlurmSubmititLauncher,
     ]
-    assert submitit_launcher.SlurmSubmititLauncher.__name__ in [
+)
+def test_discovery(cls: Type[Launcher]) -> None:
+    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
+    assert cls.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Launcher)
     ]
 
