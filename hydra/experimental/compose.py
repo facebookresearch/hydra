@@ -1,5 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional
+import copy
+from contextlib import contextmanager
+from typing import Any, List, Optional
 
 from omegaconf import DictConfig, open_dict
 
@@ -7,11 +9,13 @@ from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_calling_file_or_module_from_stack_frame
 from hydra.core.global_hydra import GlobalHydra
 
+_default_caller_stack_depth = 1
+
 
 def initialize(
     config_path: Optional[str] = None,
     strict: Optional[bool] = None,
-    caller_stack_depth: int = 1,
+    caller_stack_depth: int = _default_caller_stack_depth,
 ) -> None:
     """
     Initialize automatically detect the calling file or module.
@@ -30,28 +34,28 @@ def initialize(
 
 
 def initialize_with_file(
-    calling_file: Optional[str], config_path: Optional[str] = None
+    file: Optional[str], config_path: Optional[str] = None
 ) -> None:
     """
     Initialize Hydra and add the config_path to the search path.
     The config path is relative to the calling_file.
-    :param calling_file : The file to make the config_path relative to
+    :param file : The file to make the config_path relative to
     :param config_path : The config path
     """
-    Hydra.create_main_hydra_file_or_module(calling_file, None, config_path, None)
+    Hydra.create_main_hydra_file_or_module(file, None, config_path, None)
 
 
 def initialize_with_module(
-    calling_module: Optional[str], config_path: Optional[str] = None
+    module: Optional[str], config_path: Optional[str] = None
 ) -> None:
     """
     Initialize Hydra and add the config_path to the search path.
     The config path is relative to the calling_module.
-    :param calling_module : The module to make the config_path relative to
+    :param module : The module to make the config_path relative to
     :param config_path : The config path
     """
 
-    Hydra.create_main_hydra_file_or_module(None, calling_module, config_path, None)
+    Hydra.create_main_hydra_file_or_module(None, module, config_path, None)
 
 
 def compose(
@@ -80,3 +84,41 @@ def compose(
         with open_dict(cfg):
             del cfg["hydra"]
     return cfg
+
+
+@contextmanager
+def initialize_with_module_ctx(*args: Any, **kwargs: Any) -> Any:
+    assert len(args) == 0, "Please use only named parameters"
+    try:
+        gh = copy.deepcopy(GlobalHydra.instance())
+        initialize_with_module(**kwargs)
+        yield
+    finally:
+        GlobalHydra.set_instance(gh)
+
+
+@contextmanager
+def initialize_with_file_ctx(*args: Any, **kwargs: Any) -> Any:
+    assert len(args) == 0, "Please use only named parameters"
+    try:
+        gh = copy.deepcopy(GlobalHydra.instance())
+        initialize_with_file(**kwargs)
+        yield
+    finally:
+        GlobalHydra.set_instance(gh)
+
+
+@contextmanager
+def initialize_ctx(*args: Any, **kwargs: Any) -> Any:
+    assert len(args) == 0, "Please use only named parameters"
+    try:
+        gh = copy.deepcopy(GlobalHydra.instance())
+        caller_stack_depth = _default_caller_stack_depth
+        if "caller_stack_depth" in kwargs:
+            caller_stack_depth = kwargs["caller_stack_depth"]
+
+        kwargs["caller_stack_depth"] = caller_stack_depth + 1
+        initialize(**kwargs)
+        yield
+    finally:
+        GlobalHydra.set_instance(gh)

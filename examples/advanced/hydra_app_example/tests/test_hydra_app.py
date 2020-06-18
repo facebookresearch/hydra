@@ -11,28 +11,23 @@ from typing import List
 
 import pytest
 
-from hydra.core.global_hydra import GlobalHydra
-from hydra.experimental import compose, initialize_with_module
+from hydra.experimental import compose, initialize_with_module_ctx
 from hydra_app.main import add
 
 # A few notes about this example:
-# 1. We use initialize_with_module(). Hydra will find the config relative to the module.
+# 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
 # 2. This is not sensitive to the working directory.
-# 3. Your config directory should be importable, it need to have a __init__.py (can be empty).
-# 4. If you want to initialize Hydra more than once you need to clear the GlobalHydra singleton.
+# 3. Your config directory should be importable. it needs to have a __init__.py (can be empty).
 
 
 def test_generated_config() -> None:
-    try:
+    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
         # config is relative to a module
-        initialize_with_module(calling_module="hydra_app.main", config_path="conf")
         cfg = compose(config_name="config", overrides=["app.user=test_user"])
         assert cfg == {
             "app": {"user": "test_user", "num1": 10, "num2": 20},
             "db": {"host": "localhost", "port": 3306},
         }
-    finally:
-        GlobalHydra.instance().clear()
 
 
 # Testing app logic with different config combinations
@@ -45,27 +40,20 @@ def test_generated_config() -> None:
     ],
 )
 def test_user_logic(overrides: List[str], expected: int) -> None:
-    try:
-        initialize_with_module(calling_module="hydra_app.main", config_path="conf")
+    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
         cfg = compose(config_name="config", overrides=overrides)
         assert add(cfg.app, "num1", "num2") == expected
-    finally:
-        GlobalHydra.instance().clear()
 
 
 # Some unittest style tests for good measure (pytest runs them)
 class TestWithUnittest(unittest.TestCase):
     def test_generated_config(self) -> None:
-        try:
-            # config is relative to a module
-            initialize_with_module(calling_module="hydra_app.main", config_path="conf")
+        with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
             cfg = compose(config_name="config", overrides=["app.user=test_user"])
             assert cfg == {
                 "app": {"user": "test_user", "num1": 10, "num2": 20},
                 "db": {"host": "localhost", "port": 3306},
             }
-        finally:
-            GlobalHydra.instance().clear()
 
 
 # Tests ensuring the app is runnable as a script and as a console script.

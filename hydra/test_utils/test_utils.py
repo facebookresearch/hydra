@@ -17,7 +17,6 @@ from typing import Any, Dict, Iterator, List, Optional, Union
 from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
-import hydra.experimental
 from hydra._internal.hydra import Hydra
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, split_config_path
@@ -32,37 +31,6 @@ log = logging.getLogger(__name__)
 @contextmanager
 def does_not_raise(enter_result: Any = None) -> Iterator[Any]:
     yield enter_result
-
-
-class GlobalHydraContext:
-    def __init__(self) -> None:
-        self.task_name: Optional[str] = None
-        self.config_dir: Optional[str] = None
-        self.strict: Optional[bool] = None
-
-    def __enter__(self) -> "GlobalHydraContext":
-        hydra.experimental.initialize(
-            config_path=self.config_dir, strict=self.strict, caller_stack_depth=2
-        )
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb) -> None:  # type: ignore
-        GlobalHydra().clear()
-
-
-class TGlobalHydraContext(Protocol):
-    def __call__(
-        self,
-        task_name: str = "task",
-        config_dir: Optional[str] = None,
-        strict: Optional[bool] = False,
-    ) -> GlobalHydraContext:
-        ...
-
-
-"""
-Task runner fixture
-"""
 
 
 class TaskTestFunction:
@@ -129,11 +97,6 @@ class TTaskRunner(Protocol):
         strict: Optional[bool] = None,
     ) -> TaskTestFunction:
         ...
-
-
-"""
-Sweep runner fixture
-"""
 
 
 class SweepTaskFunction:

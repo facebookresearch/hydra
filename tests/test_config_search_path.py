@@ -149,7 +149,7 @@ def test_prepend(
 
 
 @pytest.mark.parametrize(  # type:ignore
-    "calling_file, calling_module, config_dir, expected",
+    "calling_file, calling_module, config_path, expected",
     [
         ("foo.py", None, None, realpath("")),
         ("foo/bar.py", None, None, realpath("foo")),
@@ -169,7 +169,7 @@ def test_prepend(
     ],
 )
 def test_compute_search_path_dir(
-    calling_file: str, calling_module: str, config_dir: str, expected: str
+    calling_file: str, calling_module: str, config_path: str, expected: str
 ) -> None:
-    res = compute_search_path_dir(calling_file, calling_module, config_dir)
+    res = compute_search_path_dir(calling_file, calling_module, config_path)
     assert res == expected

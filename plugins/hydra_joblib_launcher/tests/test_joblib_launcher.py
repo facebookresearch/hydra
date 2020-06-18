@@ -53,8 +53,8 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-def test_example_app(sweep_runner: TSweepRunner) -> None:
-    with sweep_runner(
+def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
+    with hydra_sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
