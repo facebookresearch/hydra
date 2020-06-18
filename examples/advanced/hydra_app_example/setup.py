@@ -13,9 +13,5 @@ setup(
     author_email="your_email@example.com",
     url="http://hydra-app.example.com",
     include_package_data=True,
-    install_requires=[
-        "hydra-core~=1.0.0rc1",
-        # Used by tests
-        "hydra-pytest-plugin~=1.0.0rc1",
-    ],
+    install_requires=["hydra-core~=1.0.0rc1"],
 )
