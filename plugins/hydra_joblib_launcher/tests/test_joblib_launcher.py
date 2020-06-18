@@ -6,7 +6,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import chdir_plugin_root, TSweepRunner
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
