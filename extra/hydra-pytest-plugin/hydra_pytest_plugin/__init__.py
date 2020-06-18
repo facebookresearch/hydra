@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # Source of truth for version
 __version__ = "1.0.0rc1"
-
 import copy
 from typing import Callable, List, Optional
 
@@ -13,7 +12,7 @@ from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_restore_singletons() -> None:  # TODO: expose as a normal context too
+def hydra_restore_singletons() -> None:
     """
     Restore singletons state after the function returns
     """

@@ -11,15 +11,13 @@ from typing import List
 
 import pytest
 
-from hydra.experimental import compose
+from hydra.experimental import compose, initialize_with_module_ctx
+from hydra_app.main import add
 
 # A few notes about this example:
 # 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
 # 2. This is not sensitive to the working directory.
-# 3. Your config directory should be importable, it need to have a __init__.py (can be empty).
-# 4. If you want to initialize Hydra more than once you need to clear the GlobalHydra singleton.
-from hydra.experimental.compose import initialize_with_module_ctx
-from hydra_app.main import add
+# 3. Your config directory should be importable. it needs to have a __init__.py (can be empty).
 
 
 def test_generated_config() -> None:

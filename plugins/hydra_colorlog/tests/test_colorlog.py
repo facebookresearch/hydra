@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.global_hydra import GlobalHydra
-from hydra.experimental.compose import initialize_ctx
+from hydra.experimental import initialize_ctx
 from hydra.test_utils.test_utils import chdir_plugin_root
 
 chdir_plugin_root()

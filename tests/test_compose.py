@@ -11,10 +11,10 @@ from hydra.errors import HydraException
 from hydra.experimental import (
     compose,
     initialize,
+    initialize_ctx,
     initialize_with_file,
     initialize_with_module,
 )
-from hydra.experimental.compose import initialize_ctx
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()

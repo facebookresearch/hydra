@@ -237,6 +237,7 @@ def verify_pytest_plugin_version() -> None:
 
     try:
         import hydra_pytest_plugin  # type: ignore
+
     except ImportError:
         raise ValueError("hydra_pytest_plugin is not installed")
 

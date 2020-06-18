@@ -3,7 +3,7 @@ import pytest
 
 from hydra._internal.core_plugins.package_config_source import PackageConfigSource
 from hydra.core.global_hydra import GlobalHydra
-from hydra.experimental.compose import initialize_ctx
+from hydra.experimental import initialize_ctx
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_plugin_root
 
