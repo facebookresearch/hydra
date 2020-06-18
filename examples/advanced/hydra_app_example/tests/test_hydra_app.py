@@ -1,9 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-"""
-The following tests are testing that the app actually runs as expected
-when installed and executed from the command line.
-You don't need to repeat those tests in your own app.
-"""
 import subprocess
 import sys
 import unittest
@@ -13,6 +8,7 @@ import pytest
 
 from hydra.experimental import compose, initialize_with_module_ctx
 from hydra_app.main import add
+
 
 # A few notes about this example:
 # 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
@@ -56,7 +52,9 @@ class TestWithUnittest(unittest.TestCase):
             }
 
 
-# Tests ensuring the app is runnable as a script and as a console script.
+# The following tests are testing that the app actually runs as expected
+# when installed and executed from the command line.
+# You don't need to repeat those tests in your own app.
 class TestAppOutput:
 
     # Testing the Hydra app as an executable script
