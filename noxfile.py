@@ -216,6 +216,7 @@ def lint(session):
     )
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
+    session.run("yamllint", ".")
     # Mypy for examples
     for pyfile in find_python_files_for_mypy("examples"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)
