@@ -2,7 +2,6 @@
 import dataclasses
 import logging
 import os
-from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -34,16 +33,15 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 
-class LocalSubmititLauncher(Launcher):
+class BaseSubmititLauncher(Launcher):
 
-    _EXECUTOR = "local"
+    _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:
-        self.params = OmegaConf.structured(
-            LocalParams if self._EXECUTOR == "local" else SlurmParams
-        )
-        for key, val in params.items():
-            OmegaConf.update(self.params, key, val)
+        param_classes = {"local": LocalParams, "slurm": SlurmParams}
+        if self._EXECUTOR not in param_classes:
+            raise RuntimeError(f'Non-implemented "{self._EXECUTOR}" executor')
+        self.params = OmegaConf.structured(param_classes[self._EXECUTOR](**params))
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -106,11 +104,7 @@ class LocalSubmititLauncher(Launcher):
         params = self.params
 
         # build executor
-        init_renamer = dict(submitit_folder="folder")
-        init_params = {name: params[k] for k, name in init_renamer.items()}
-        init_params = {
-            k: v.value if isinstance(v, Enum) else v for k, v in init_params.items()
-        }
+        init_params = dict(folder=params.submitit_folder)
         specific_init_keys = {"max_num_timeout"}
         init_params.update(
             **{
@@ -119,7 +113,7 @@ class LocalSubmititLauncher(Launcher):
                 if x in specific_init_keys
             }
         )
-        init_keys = specific_init_keys | set(init_renamer)  # used config keys
+        init_keys = specific_init_keys | {"submitit_folder"}
         executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
 
         # specify resources/parameters
@@ -161,6 +155,9 @@ class LocalSubmititLauncher(Launcher):
         return [j.results()[0] for j in jobs]
 
 
-class SlurmSubmititLauncher(LocalSubmititLauncher):
+class LocalSubmititLauncher(BaseSubmititLauncher):
+    _EXECUTOR = "local"
 
+
+class SlurmSubmititLauncher(BaseSubmititLauncher):
     _EXECUTOR = "slurm"
