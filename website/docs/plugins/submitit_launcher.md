@@ -87,6 +87,28 @@ See [Submitit documentation](https://github.com/facebookincubator/submitit) for 
 
 An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
 
+You can discover the launcher parameters with:
+```text
+$ python my_app.py --cfg hydra --package hydra.launcher
+# @package hydra.launcher
+cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmSubmititLauncher
+params:
+  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+  timeout_min: 60
+  cpus_per_task: 1
+  gpus_per_node: 0
+  tasks_per_node: 1
+  mem_gb: 4
+  nodes: 1
+  name: ${hydra.job.name}
+  partition: null
+  comment: null
+  constraint: null
+  exclude: null
+  signal_delay_s: 120
+  max_num_timeout: 0
+```
+
 Starting the app with `python my_app.py task=1,2,3 -m` will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
 
 ```text
