@@ -1,1 +1,1 @@
-omegaconf>=2.0.1rc6
+omegaconf>=2.0.1rc7
