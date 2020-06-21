@@ -197,7 +197,6 @@ def install_lint_deps(session):
     _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
-    session.install("black")
 
 
 @nox.session(python=PYTHON_VERSIONS)
