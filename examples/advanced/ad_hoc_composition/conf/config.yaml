@@ -1,4 +1,3 @@
----
 defaults:
   - db: mysql
   - ui: full

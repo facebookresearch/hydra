@@ -1,4 +1,3 @@
----
 # @package _group_
 cls: hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper
 params:

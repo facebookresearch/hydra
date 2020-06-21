@@ -1,4 +1,3 @@
----
 # @package _global_
 db:
   user: mysql

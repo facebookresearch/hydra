@@ -1,4 +1,3 @@
----
 # @package _group_
 cls: tutorial.objects_example.my_app.MySQLConnection
 params:

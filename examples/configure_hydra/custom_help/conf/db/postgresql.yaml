@@ -1,4 +1,3 @@
----
 db:
   driver: postgresql
   user: postgre_user

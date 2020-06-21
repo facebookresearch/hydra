@@ -1,4 +1,3 @@
----
 db:
   driver: mysql
   user: omry

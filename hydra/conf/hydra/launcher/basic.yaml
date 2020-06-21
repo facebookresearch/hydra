@@ -1,4 +1,3 @@
----
 # @package _group_
 
 cls: hydra._internal.core_plugins.basic_launcher.BasicLauncher

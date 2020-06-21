@@ -1,4 +1,3 @@
----
 defaults:
   - db@source: mysql
   - db@destination: mysql
