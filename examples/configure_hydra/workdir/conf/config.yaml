@@ -1,3 +1,4 @@
+---
 hydra:
   run:
     dir: ./outputs/custom/${now:%Y-%m-%d}/${now:%H-%M-%S}

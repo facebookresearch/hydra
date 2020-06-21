@@ -1,3 +1,4 @@
+---
 node:                         # Config is hierarchical
   loompa: 10                  # Simple value
   zippity: ${node.loompa}     # Value interpolation

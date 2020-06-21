@@ -1,3 +1,4 @@
+---
 # @package _group_
 
 # A logger config that directs hydra verbose logging to a file
@@ -21,4 +22,4 @@ loggers:
   hydra:
     level: DEBUG
 
-disable_existing_loggers: False
+disable_existing_loggers: false

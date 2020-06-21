@@ -1,3 +1,4 @@
+---
 defaults:
   - group1: file1
     optional: true

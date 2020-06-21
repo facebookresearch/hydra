@@ -1,3 +1,4 @@
+---
 defaults:
   - hydra/launcher: null
   - hydra/hydra_logging: hydra_debug

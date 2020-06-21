@@ -1,3 +1,4 @@
+---
 # @package _group_
 
 # python logging configuration for tasks
@@ -19,4 +20,4 @@ root:
   level: INFO
   handlers: [console, file]
 
-disable_existing_loggers: False
+disable_existing_loggers: false

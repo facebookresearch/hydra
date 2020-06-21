@@ -1,3 +1,4 @@
+---
 # @package _group_
 
 version: 1
@@ -17,4 +18,4 @@ loggers:
   logging_example:
     level: DEBUG
 
-disable_existing_loggers: False
+disable_existing_loggers: false

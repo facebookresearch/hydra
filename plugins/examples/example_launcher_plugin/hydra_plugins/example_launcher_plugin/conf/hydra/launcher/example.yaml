@@ -1,3 +1,4 @@
+---
 # @package _group_
 cls: hydra_plugins.example_launcher_plugin.example_launcher.ExampleLauncher
 params:

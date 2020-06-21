@@ -1,3 +1,4 @@
+---
 # @package _group_
 
 # python logging configuration for tasks
@@ -16,4 +17,3 @@ root:
   handlers: [console]
 
 disable_existing_loggers: false
-

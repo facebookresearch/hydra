@@ -1,3 +1,4 @@
+---
 defaults:
   - group1@pkg1: option1
   - group1@pkg2: option1

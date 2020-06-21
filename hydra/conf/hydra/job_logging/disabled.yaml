@@ -1,6 +1,7 @@
+---
 # @package _group_
 
 version: 1
 root:
   level: ERROR
-disable_existing_loggers: True
+disable_existing_loggers: true

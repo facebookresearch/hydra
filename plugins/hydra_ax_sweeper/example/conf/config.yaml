@@ -1,3 +1,4 @@
+---
 defaults:
   - hydra/sweeper: ax
 
@@ -11,7 +12,7 @@ banana:
 hydra:
   sweeper:
     params:
-  
+
       # The following part of config is used to setup the Hydra Ax plugin and is optional
       ax_config:
 

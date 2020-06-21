@@ -1,3 +1,4 @@
+---
 # @package hydra.sweeper.params.ax_config.params
 quadratic_x\_arg:
   type: range

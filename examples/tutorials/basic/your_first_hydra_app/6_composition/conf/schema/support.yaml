@@ -1,3 +1,4 @@
+---
 # @package _group_
 database: support
 tables:
@@ -8,6 +9,6 @@ tables:
   - name: issues
     fields:
       - title: string
-      - description : string
+      - description: string
       - reported_by: string
       - priority: int
