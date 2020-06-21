@@ -66,7 +66,7 @@ def compose(
     """
     :param config_name: the name of the config (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
-    :param strict: optionally override the default strict mode
+    :param strict: deprecated, will be removed in Hydra 1.1
     :return: the composed config
     """
     assert GlobalHydra().is_initialized(), (
@@ -110,16 +110,18 @@ def initialize_with_file_ctx(*args: Any, **kwargs: Any) -> Any:
 
 
 @contextmanager
-def initialize_ctx(*args: Any, **kwargs: Any) -> Any:
-    assert len(args) == 0, "Please use only named parameters"
+def initialize_ctx(
+    config_path: Optional[str] = None,
+    strict: Optional[bool] = None,
+    caller_stack_depth: int = _default_caller_stack_depth,
+) -> Any:
     try:
         gh = copy.deepcopy(GlobalHydra.instance())
-        caller_stack_depth = _default_caller_stack_depth
-        if "caller_stack_depth" in kwargs:
-            caller_stack_depth = kwargs["caller_stack_depth"]
-
-        kwargs["caller_stack_depth"] = caller_stack_depth + 1
-        initialize(**kwargs)
+        initialize(
+            config_path=config_path,
+            strict=strict,
+            caller_stack_depth=caller_stack_depth + 1,
+        )
         yield
     finally:
         GlobalHydra.set_instance(gh)

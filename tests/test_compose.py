@@ -13,7 +13,9 @@ from hydra.experimental import (
     initialize,
     initialize_ctx,
     initialize_with_file,
+    initialize_with_file_ctx,
     initialize_with_module,
+    initialize_with_module_ctx,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -80,9 +82,6 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
-@pytest.mark.parametrize(
-    "config_path", ["../hydra/test_utils/configs/cloud_infra_example"]
-)
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
     [
@@ -151,11 +150,29 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         ),
     ],
 )
-class TestComposeCloudInfraExample:
-    def test_compose(
-        self, config_path: str, config_file: str, overrides: List[str], expected: Any,
+class TestComposeInits:
+    def test_compose__initialize_auto(
+        self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path=config_path):
+        with initialize_ctx(config_path="../examples/jupyter_notebooks/conf"):
+            ret = compose(config_file, overrides)
+            assert ret == expected
+
+    def test_compose__init_with_file(
+        self, config_file: str, overrides: List[str], expected: Any,
+    ) -> None:
+        with initialize_with_file_ctx(
+            file="examples/jupyter_notebooks/fake_file", config_path="conf"
+        ):
+            ret = compose(config_file, overrides)
+            assert ret == expected
+
+    def test_compose__init_with_module(
+        self, config_file: str, overrides: List[str], expected: Any,
+    ) -> None:
+        with initialize_with_module_ctx(
+            module="examples.jupyter_notebooks.fake_module", config_path="conf"
+        ):
             ret = compose(config_file, overrides)
             assert ret == expected
 

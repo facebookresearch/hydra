@@ -10,7 +10,7 @@ or by calling one of the initialization methods listed below.
 
 Compose is useful when `@hydra.main()` is not applicable.
 ### Examples
- - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/notebook) (hydra_notebook_example.ipynb)
+ - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/jupyter-notebooks) (hydra_notebook_example.ipynb)
  - [Unit testing with compose](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py).
 
 ### Code example
@@ -26,10 +26,15 @@ if __name__ == "__main__":
 ```
 ### API Documentation
 ```python
-def compose(config_file=None, overrides=[]):
+def compose(
+    config_name: Optional[str] = None,
+    overrides: List[str] = [],
+    strict: Optional[bool] = None,
+) -> DictConfig:
     """
-    :param config_file: optional config file to load
+    :param config_name: the name of the config (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
+    :param strict: deprecated, will be removed in Hydra 1.1
     :return: the composed config
     """
     ...

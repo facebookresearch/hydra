@@ -66,7 +66,7 @@ def _upgrade_basic(session):
     )
 
 
-def find_python_files_for_mypy(folder):
+def find_files(path: str, ext: str = ".py"):
     exclude_list = [""]
 
     def excluded(file: str) -> bool:
@@ -75,9 +75,9 @@ def find_python_files_for_mypy(folder):
                 return True
         return False
 
-    for root, folders, files in os.walk(folder):
+    for root, folders, files in os.walk(path):
         for filename in folders + files:
-            if filename.endswith(".py"):
+            if filename.endswith(ext):
                 if excluded(filename):
                     yield os.path.join(root, filename)
 
@@ -217,7 +217,7 @@ def lint(session):
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", ".")
     # Mypy for examples
-    for pyfile in find_python_files_for_mypy("examples"):
+    for pyfile in find_files(path="examples", ext=".py"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)
 
 
@@ -368,12 +368,14 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval", "pyzmq==19.0.0")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
+        session, "--nbval", "examples/jupyter_notebooks/hydra_notebook_example.ipynb"
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
-    args = pytest_args(session, "--nbval", "examples/notebook/%run_test.ipynb")
-    args = [x for x in args if x != "-Werror"]
-    session.run(*args, silent=SILENT)
+    for file in find_files(path="tests/jupyter", ext=".ipynb"):
+        print(file)
+        args = pytest_args(session, "--nbval", file)
+        args = [x for x in args if x != "-Werror"]
+        session.run(*args, silent=SILENT)
