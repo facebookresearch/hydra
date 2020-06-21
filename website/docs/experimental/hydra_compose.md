@@ -19,7 +19,7 @@ from hydra.experimental import compose, initialize
 
 
 if __name__ == "__main__":
-    initialize(config_path="conf")
+    initialize(config_path="conf", job_name="test_app")
 
     cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
     print(cfg.pretty())
@@ -30,18 +30,19 @@ def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
     strict: Optional[bool] = None,
+    return_hydra_config: bool = False,
 ) -> DictConfig:
     """
     :param config_name: the name of the config (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
-    :param strict: deprecated, will be removed in Hydra 1.1
+    :param strict: optionally override the default strict mode
+    :param return_hydra_config: True to return the hydra config node in the resulting config
     :return: the composed config
     """
-    ...
 
 def initialize(
-    config_path: Optional[str],
-    job_name: Optional[str] = None,
+    config_path: Optional[str] = None,
+    job_name: Optional[str] = "app",
     strict: Optional[bool] = None,
     caller_stack_depth: int = 1,
 ) -> None:
@@ -49,16 +50,23 @@ def initialize(
     Initializes Hydra and add the config_path to the config search path.
     config_path is relative to the parent of the caller.
     Hydra detects the caller type automatically at runtime.
-    In addition, Hydra uses the name of the detected caller as the hydra.job.name.
     Supported callers:
     - Python scripts
     - Python modules
     - Unit tests
     - Jupyter notebooks.
     :param config_path: path relative to the caller
-    :param job_name: Optional job name to use instead of the automatically detected one
+    :param job_name: the value for hydra.job.name (default is 'app')
     :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
+    """
+
+def initialize_config_module(config_module: str, job_name: str = "app") -> None:
+    """
+    Initializes Hydra and add the config_module to the config search path.
+    The config module must be importable (an __init__.py must exist at its top level)
+    :param config_module: absolute module name, for example "foo.bar.conf".
+    :param job_name: the value for hydra.job.name (default is 'app')
     """
 
 def initialize_config_dir(
@@ -76,14 +84,6 @@ def initialize_config_dir(
     :param config_dir: file system path relative to the caller or absolute
     :param job_name: Optional job name to use instead of the automatically detected one
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
-    """
-
-def initialize_config_module(config_module: str, job_name: str = "app") -> None:
-    """
-    Initializes Hydra and add the config_module to the config search path.
-    The config module must be importable (an __init__.py must exist at its top level)
-    :param config_module: absolute module name, for example "foo.bar.conf".
-    :param job_name: the value for hydra.job.name (default is 'app')
     """
 ```
 

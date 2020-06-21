@@ -11,8 +11,8 @@ from hydra.errors import HydraException
 
 
 def initialize(
-    config_path: Optional[str],
-    job_name: Optional[str] = None,
+    config_path: Optional[str] = None,
+    job_name: Optional[str] = "app",
     strict: Optional[bool] = None,
     caller_stack_depth: int = 1,
 ) -> None:
@@ -20,14 +20,13 @@ def initialize(
     Initializes Hydra and add the config_path to the config search path.
     config_path is relative to the parent of the caller.
     Hydra detects the caller type automatically at runtime.
-    In addition, Hydra uses the name of the detected caller as the hydra.job.name.
     Supported callers:
     - Python scripts
     - Python modules
     - Unit tests
     - Jupyter notebooks.
     :param config_path: path relative to the caller
-    :param job_name: Optional job name to use instead of the automatically detected one
+    :param job_name: the value for hydra.job.name (default is 'app')
     :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
     """
@@ -94,14 +93,16 @@ def initialize_config_dir(
 # TODO: is it possible to have a callable that also acts as the context? can we eliminate this context?
 @contextmanager
 def initialize_ctx(
-    config_path: str, job_name: Optional[str] = None, caller_stack_depth: int = 1
+    config_path: Optional[str] = None,
+    job_name: Optional[str] = "app",
+    caller_stack_depth: int = 1,
 ) -> Any:
     try:
         gh = copy.deepcopy(GlobalHydra.instance())
         initialize(
             config_path=config_path,
             job_name=job_name,
-            caller_stack_depth=caller_stack_depth + 1,
+            caller_stack_depth=caller_stack_depth + 2,
         )
         yield
     finally:
@@ -120,14 +121,14 @@ def initialize_config_module_ctx(config_module: str, job_name: str = "app") -> A
 
 @contextmanager
 def initialize_config_dir_ctx(
-    config_dir: str, job_name: Optional[str] = None, caller_stack_depth: int = 1,
+    config_dir: str, job_name: Optional[str] = "app", caller_stack_depth: int = 1,
 ) -> Any:
     try:
         gh = copy.deepcopy(GlobalHydra.instance())
         initialize_config_dir(
             config_dir=config_dir,
             job_name=job_name,
-            caller_stack_depth=caller_stack_depth + 1,
+            caller_stack_depth=caller_stack_depth + 2,
         )
         yield
     finally:
