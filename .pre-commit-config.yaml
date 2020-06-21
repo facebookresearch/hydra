@@ -1,3 +1,4 @@
+---
 repos:
   - repo: https://github.com/timothycrosley/isort
     rev: 'c54b3dd'
