@@ -1,4 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import subprocess
+
+import sys
+
 import re
 from typing import Any, List, Optional
 
@@ -184,9 +188,8 @@ class TestComposeInits:
     # TODO: test what happens with initialize_config_dir_ctx when the config dir is not found (contextlib?!)
 
 
-# TODO: contextlib may be wrong here, test again after contexts works in a regular file/module
 @pytest.mark.parametrize(
-    "job_name,expected", [(None, "contextlib"), ("test_job", "test_job")]
+    "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
 )
 class TestInitJobNameOverride:
     def test_initialize_ctx(self, job_name: Optional[str], expected: str) -> None:
@@ -205,14 +208,17 @@ class TestInitJobNameOverride:
             ret = compose(return_hydra_config=True)
             assert ret.hydra.job.name == expected
 
-    def test_initialize_config_module_ctx(
-        self, job_name: Optional[str], expected: str
-    ) -> None:
-        with initialize_config_module_ctx(
-            config_module="examples.jupyter_notebooks.conf", job_name=job_name
-        ):
-            ret = compose(return_hydra_config=True)
-            assert ret.hydra.job.name == expected
+
+def test_initialize_config_module_ctx() -> None:
+    with initialize_config_module_ctx(config_module="examples.jupyter_notebooks.conf"):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "app"
+
+    with initialize_config_module_ctx(
+        config_module="examples.jupyter_notebooks.conf", job_name="test_job"
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
@@ -255,3 +261,19 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
 
     cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
     assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
+
+
+def test_initialize_app1():
+    cmd = [
+        sys.executable,
+        "tests/test_apps/test_initializations/root_module/main.py",
+    ]
+    subprocess.check_call(cmd)
+
+
+def test_initialize_app1():
+    cmd = [
+        sys.executable,
+        "tests/test_apps/test_initializations/full_app/hydra_app/main.py",
+    ]
+    subprocess.check_call(cmd)
