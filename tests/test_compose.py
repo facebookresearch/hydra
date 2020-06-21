@@ -11,11 +11,11 @@ from hydra.errors import HydraException
 from hydra.experimental import (
     compose,
     initialize,
+    initialize_config_dir,
+    initialize_config_dir_ctx,
+    initialize_config_module,
+    initialize_config_module_ctx,
     initialize_ctx,
-    initialize_with_file,
-    initialize_with_file_ctx,
-    initialize_with_module,
-    initialize_with_module_ctx,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -150,31 +150,35 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         ),
     ],
 )
+# TODO: test job name override
 class TestComposeInits:
-    def test_compose__initialize_auto(
+    def test_initialize_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
         with initialize_ctx(config_path="../examples/jupyter_notebooks/conf"):
             ret = compose(config_file, overrides)
             assert ret == expected
 
-    def test_compose__init_with_file(
+    # TODO: test absolute and relative to declaring file (this one)
+    def test_initialize_config_dir_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_with_file_ctx(
-            file="examples/jupyter_notebooks/fake_file", config_path="conf"
+        with initialize_config_dir_ctx(
+            config_dir="../examples/jupyter_notebooks/conf", job_name="job_name"
         ):
             ret = compose(config_file, overrides)
             assert ret == expected
 
-    def test_compose__init_with_module(
+    def test_initialize_config_module_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_with_module_ctx(
-            module="examples.jupyter_notebooks.fake_module", config_path="conf"
+        with initialize_config_module_ctx(
+            config_module="examples.jupyter_notebooks.conf", job_name="job_name"
         ):
             ret = compose(config_file, overrides)
             assert ret == expected
+
+    # TODO: test what happens with initialize_config_dir_ctx when the config dir is not found (contextlib?!)
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
@@ -191,9 +195,9 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
             hydra.compose_config(config_name=None, overrides=[])
 
 
-def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
-    initialize_with_file(
-        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+def test_initialize_config_dir(hydra_restore_singletons: Any) -> None:
+    initialize_config_dir(
+        config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
     )
     assert compose(config_name="config") == {
         "optimizer": {"type": "nesterov", "lr": 0.001}
@@ -201,8 +205,8 @@ def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
 
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
-    initialize_with_module(
-        module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
+    initialize_config_module(
+        config_module="tests.test_apps.app_with_cfg_groups.conf", job_name="my_pp"
     )
     assert compose(config_name="config") == {
         "optimizer": {"type": "nesterov", "lr": 0.001}
@@ -210,10 +214,10 @@ def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
 
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
-    initialize_with_file(
-        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
+    initialize_config_dir(
+        config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
     )
     from tests.test_apps.app_with_cfg_groups.my_app import my_app
 
-    cfg = compose(config_name="config", overrides=["optimizer.lr=0.1"])
-    assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 0.1}}
+    cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
+    assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}

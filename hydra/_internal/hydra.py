@@ -44,14 +44,16 @@ class Hydra:
         cls: Type["Hydra"],
         calling_file: Optional[str],
         calling_module: Optional[str],
-        config_dir: Optional[str],
+        config_path: Optional[str],
+        job_name: Optional[str],
         strict: Optional[bool],
     ) -> "Hydra":
         config_search_path = create_automatic_config_search_path(
-            calling_file, calling_module, config_dir
+            calling_file, calling_module, config_path
         )
-        task_name = detect_task_name(calling_file, calling_module)
-        return Hydra.create_main_hydra2(task_name, config_search_path, strict)
+        if job_name is None:
+            job_name = detect_task_name(calling_file, calling_module)
+        return Hydra.create_main_hydra2(job_name, config_search_path, strict)
 
     @classmethod
     def create_main_hydra2(

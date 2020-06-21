@@ -1,20 +1,20 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from .compose import (
-    compose,
+from .compose import compose
+from .initialize import (
     initialize,
+    initialize_config_dir,
+    initialize_config_dir_ctx,
+    initialize_config_module,
+    initialize_config_module_ctx,
     initialize_ctx,
-    initialize_with_file,
-    initialize_with_file_ctx,
-    initialize_with_module,
-    initialize_with_module_ctx,
 )
 
 __all__ = [
-    "initialize",
     "compose",
-    "initialize_with_file",
-    "initialize_with_module",
+    "initialize",
+    "initialize_config_module",
+    "initialize_config_dir",
     "initialize_ctx",
-    "initialize_with_file_ctx",
-    "initialize_with_module_ctx",
+    "initialize_config_module_ctx",
+    "initialize_config_dir_ctx",
 ]

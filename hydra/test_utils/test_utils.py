@@ -65,7 +65,8 @@ class TaskTestFunction:
             self.hydra = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
-                config_dir=config_dir,
+                config_path=config_dir,
+                job_name=None,
                 strict=self.strict,
             )
             self.temp_dir = tempfile.mkdtemp()
@@ -136,7 +137,8 @@ class SweepTaskFunction:
             hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
-                config_dir=config_dir,
+                config_path=config_dir,
+                job_name=None,
                 strict=self.strict,
             )
 
