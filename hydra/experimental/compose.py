@@ -10,11 +10,13 @@ def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
     strict: Optional[bool] = None,
+    return_hydra_config: bool = False,
 ) -> DictConfig:
     """
     :param config_name: the name of the config (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
     :param strict: optionally override the default strict mode
+    :param return_hydra_config: True to return the hydra config node in the resulting config
     :return: the composed config
     """
     assert GlobalHydra().is_initialized(), (
@@ -29,7 +31,8 @@ def compose(
     )
     assert isinstance(cfg, DictConfig)
 
-    if "hydra" in cfg:
-        with open_dict(cfg):
-            del cfg["hydra"]
+    if not return_hydra_config:
+        if "hydra" in cfg:
+            with open_dict(cfg):
+                del cfg["hydra"]
     return cfg

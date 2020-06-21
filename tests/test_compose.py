@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-from typing import Any, List
+from typing import Any, List, Optional
 
 import pytest
 
@@ -41,6 +41,10 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
         SearchPathQuery(provider="main", search_path=None)
     )
     assert idx != -1
+
+
+def open_dict(cfg):
+    pass
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
@@ -150,7 +154,6 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         ),
     ],
 )
-# TODO: test job name override
 class TestComposeInits:
     def test_initialize_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
@@ -179,6 +182,37 @@ class TestComposeInits:
             assert ret == expected
 
     # TODO: test what happens with initialize_config_dir_ctx when the config dir is not found (contextlib?!)
+
+
+# TODO: contextlib may be wrong here, test again after contexts works in a regular file/module
+@pytest.mark.parametrize(
+    "job_name,expected", [(None, "contextlib"), ("test_job", "test_job")]
+)
+class TestInitJobNameOverride:
+    def test_initialize_ctx(self, job_name: Optional[str], expected: str) -> None:
+        with initialize_ctx(
+            config_path="../examples/jupyter_notebooks/conf", job_name=job_name
+        ):
+            ret = compose(return_hydra_config=True)
+            assert ret.hydra.job.name == expected
+
+    def test_initialize_config_dir_ctx(
+        self, job_name: Optional[str], expected: str
+    ) -> None:
+        with initialize_config_dir_ctx(
+            config_dir="../examples/jupyter_notebooks/conf", job_name=job_name
+        ):
+            ret = compose(return_hydra_config=True)
+            assert ret.hydra.job.name == expected
+
+    def test_initialize_config_module_ctx(
+        self, job_name: Optional[str], expected: str
+    ) -> None:
+        with initialize_config_module_ctx(
+            config_module="examples.jupyter_notebooks.conf", job_name=job_name
+        ):
+            ret = compose(return_hydra_config=True)
+            assert ret.hydra.job.name == expected
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
