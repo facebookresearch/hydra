@@ -6,7 +6,7 @@ from typing import List
 
 import pytest
 
-from hydra.experimental import compose, initialize_with_module_ctx
+from hydra.experimental import compose, initialize_config_module_ctx
 from hydra_app.main import add
 
 # A few notes about this example:
@@ -16,7 +16,7 @@ from hydra_app.main import add
 
 
 def test_generated_config() -> None:
-    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+    with initialize_config_module_ctx(config_module="hydra_app.conf"):
         # config is relative to a module
         cfg = compose(config_name="config", overrides=["app.user=test_user"])
         assert cfg == {
@@ -35,7 +35,7 @@ def test_generated_config() -> None:
     ],
 )
 def test_user_logic(overrides: List[str], expected: int) -> None:
-    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+    with initialize_config_module_ctx(config_module="hydra_app.conf"):
         cfg = compose(config_name="config", overrides=overrides)
         assert add(cfg.app, "num1", "num2") == expected
 
@@ -43,7 +43,7 @@ def test_user_logic(overrides: List[str], expected: int) -> None:
 # Some unittest style tests for good measure (pytest runs them)
 class TestWithUnittest(unittest.TestCase):
     def test_generated_config(self) -> None:
-        with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+        with initialize_config_module_ctx(config_module="hydra_app.conf"):
             cfg = compose(config_name="config", overrides=["app.user=test_user"])
             assert cfg == {
                 "app": {"user": "test_user", "num1": 10, "num2": 20},
