@@ -33,6 +33,7 @@ def initialize(
     calling_file, calling_module = detect_calling_file_or_module_from_stack_frame(
         caller_stack_depth + 1
     )
+    # TODO: fail on absolute path?
     Hydra.create_main_hydra_file_or_module(
         calling_file=calling_file,
         calling_module=calling_module,

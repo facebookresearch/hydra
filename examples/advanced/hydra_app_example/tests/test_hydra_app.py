@@ -6,17 +6,30 @@ from typing import List
 
 import pytest
 
-from hydra.experimental import compose, initialize_config_module_ctx
+from hydra.experimental import compose, initialize_config_module_ctx, initialize_ctx
 from hydra_app.main import add
 
-# A few notes about this example:
-# 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
-# 2. This is not sensitive to the working directory.
-# 3. Your config directory should be importable. it needs to have a __init__.py (can be empty).
 
-
-def test_generated_config() -> None:
+def test_with_initialize_config_module_ctx() -> None:
+    # 1. initialize_with_module_ctx will add the config module to the config search path within the context
+    # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
+    # 3. The module should be absolute (not realative to this file)
+    # 4. This approach is not sensitive to the location of this file.
     with initialize_config_module_ctx(config_module="hydra_app.conf"):
+        # config is relative to a module
+        cfg = compose(config_name="config", overrides=["app.user=test_user"])
+        assert cfg == {
+            "app": {"user": "test_user", "num1": 10, "num2": 20},
+            "db": {"host": "localhost", "port": 3306},
+        }
+
+
+def test_with_initialize_ctx() -> None:
+    # 1. initialize_ctx will add config_path the config search path within the context
+    # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
+    # 3. THe config path is relative to the file calling initialize_ctx (control this with caller_stack_depth)
+    # 4. This approach IS sensitive to the location of this file.
+    with initialize_ctx(config_path="../hydra_app/conf"):
         # config is relative to a module
         cfg = compose(config_name="config", overrides=["app.user=test_user"])
         assert cfg == {

@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import subprocess
 import sys
 from typing import List
@@ -14,7 +15,7 @@ import pytest
             id="run_as_module",
         ),
         pytest.param(
-            [sys.executable, "test_initialization_app/main.py", "module_installed",],
+            [sys.executable, "test_initialization_app/main.py", "module_installed"],
             id="run_as_script",
         ),
     ],

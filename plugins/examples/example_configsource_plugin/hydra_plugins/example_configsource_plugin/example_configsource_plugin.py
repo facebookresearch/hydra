@@ -28,8 +28,8 @@ class ConfigSourceExample(ConfigSource):
             "dataset/cifar10.yaml": {
                 "dataset": {"name": "cifar10", "path": "/datasets/cifar10"}
             },
-            "level1/level2/nested1.yaml": {},
-            "level1/level2/nested2.yaml": {},
+            "level1/level2/nested1.yaml": {"l1_l2_n1": True},
+            "level1/level2/nested2.yaml": {"l1_l2_n2": True},
             "package_test/explicit.yaml": {"foo": "bar"},
             "package_test/global.yaml": {"foo": "bar"},
             "package_test/group.yaml": {"foo": "bar"},
