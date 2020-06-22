@@ -188,6 +188,7 @@ class TestComposeInits:
     # TODO: test what happens with initialize_config_dir_ctx when the config dir is not found (contextlib?!)
 
 
+@pytest.mark.usefixtures("hydra_restore_singletons")
 @pytest.mark.parametrize(
     "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
 )
@@ -209,7 +210,7 @@ class TestInitJobNameOverride:
             assert ret.hydra.job.name == expected
 
 
-def test_initialize_config_module_ctx() -> None:
+def test_initialize_config_module_ctx(hydra_restore_singletons: Any) -> None:
     with initialize_config_module_ctx(config_module="examples.jupyter_notebooks.conf"):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "app"
@@ -261,22 +262,6 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
 
     cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
     assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
-
-
-def test_initialize_root_module_app():
-    cmd = [
-        sys.executable,
-        "tests/test_apps/test_initializations/root_module/main.py",
-    ]
-    subprocess.check_call(cmd)
-
-
-def test_initialization_full_app():
-    cmd = [
-        sys.executable,
-        "tests/test_apps/test_initializations/full_app/hydra_app/main.py",
-    ]
-    subprocess.check_call(cmd)
 
 
 @pytest.mark.parametrize(
@@ -333,3 +318,12 @@ def test_initialization_full_app_installed(
         subprocess.check_call(
             [sys.executable, "-m", "pip", "uninstall", "test-initialization-app", "-y"]
         )
+
+
+def test_initialization_root_module(monkeypatch):
+    subprocess.check_call(
+        [sys.executable, "tests/test_apps/test_initializations/root_module/main.py"],
+    )
+
+    monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
+    subprocess.check_call([sys.executable, "-m", "main"])
