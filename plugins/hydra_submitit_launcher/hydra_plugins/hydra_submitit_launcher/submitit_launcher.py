@@ -104,7 +104,7 @@ class BaseSubmititLauncher(Launcher):
         params = self.params
 
         # build executor
-        init_params = dict(folder=params.submitit_folder)
+        init_params = {"folder" : params.submitit_folder}
         specific_init_keys = {"max_num_timeout"}
         init_params.update(
             **{
