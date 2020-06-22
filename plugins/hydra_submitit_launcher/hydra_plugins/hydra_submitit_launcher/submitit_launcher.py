@@ -9,13 +9,7 @@ from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.singleton import Singleton
-from hydra.core.utils import (
-    JobReturn,
-    configure_log,
-    filter_overrides,
-    run_job,
-    setup_globals,
-)
+from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
@@ -65,14 +59,14 @@ class BaseSubmititLauncher(Launcher):
         job_id: str,
         singleton_state: Dict[type, "Singleton"],
     ):
+        # lazy import to ensure plugin discovery remains fast
+        import submitit
+
         Singleton.set_state(singleton_state)
-        configure_log(self.config.hydra.job_logging, self.config.hydra.verbose)
         setup_globals()
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
-        # lazy import to ensure plugin discovery remains fast
-        import submitit
 
         with open_dict(sweep_config.hydra.job) as job:
             # Populate new job variables
