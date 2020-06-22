@@ -197,7 +197,6 @@ def install_lint_deps(session):
     _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
-    session.install("black")
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -216,6 +215,7 @@ def lint(session):
     )
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
+    session.run("yamllint", ".")
     # Mypy for examples
     for pyfile in find_python_files_for_mypy("examples"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)

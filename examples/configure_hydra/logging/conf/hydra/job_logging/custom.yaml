@@ -11,4 +11,4 @@ handlers:
 root:
   handlers: [console]
 
-disable_existing_loggers: False
+disable_existing_loggers: false

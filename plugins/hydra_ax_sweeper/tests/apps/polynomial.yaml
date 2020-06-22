@@ -10,25 +10,25 @@ polynomial:
 
 hydra:
   sweeper:
-      params:
-        ax_config: 
-          max_trials: 10
+    params:
+      ax_config:
+        max_trials: 10
 
-          experiment:
-            # Defaults to minimize, set to false to maximize
-            minimize: true
+        experiment:
+          # Defaults to minimize, set to false to maximize
+          minimize: true
 
-          early_stop:
-            # Number of epochs without a significant improvement from
-            # the currently known best parameters
-            # An Epoch is defined as a batch of trials executed in parallel
-            max_epochs_without_improvement: 2
+        early_stop:
+          # Number of epochs without a significant improvement from
+          # the currently known best parameters
+          # An Epoch is defined as a batch of trials executed in parallel
+          max_epochs_without_improvement: 2
 
-          params:
-            polynomial_x:
-              type: range
-              bounds: [-1, 1]
+        params:
+          polynomial_x:
+            type: range
+            bounds: [-1, 1]
 
-            polynomial_y:
-              type: choice
-              values: [-1, 1]
+          polynomial_y:
+            type: choice
+            values: [-1, 1]

@@ -8,5 +8,5 @@ tables:
   - name: exams
     fields:
       - profession: string
-      - time : data
+      - time: data
       - class: int

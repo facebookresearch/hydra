@@ -29,4 +29,3 @@ root:
   handlers: [console, file]
 
 disable_existing_loggers: false
-

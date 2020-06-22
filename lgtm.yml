@@ -1,2 +1,2 @@
 queries:
-- exclude: py/import-own-module
+  - exclude: py/import-own-module

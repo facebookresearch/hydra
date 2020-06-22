@@ -41,4 +41,3 @@ db: cifar
 lr: 0.01
 dropout: 0.6
 batch_size: 8
-
