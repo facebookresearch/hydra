@@ -89,6 +89,7 @@ file inside of the ``news/`` directory named after that issue number with one of
 * `docs` : Addition or updates to documentation
 * `plugin` : Addition of changes to a plugin
 * `config` : Changes or addition to the configuration structure
+* `maintenance` : Changes that improve maintainability of the code
 
 If your issue or PR number is ``1234`` and this change is fixing a bug, then you would
 create a file ``news/1234.bugfix``. PRs can span multiple categories by creating
