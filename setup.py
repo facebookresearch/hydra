@@ -12,16 +12,11 @@ from typing import Any, List
 import pkg_resources
 from setuptools import find_packages, setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-
-
-def read(*parts):
-    with codecs.open(os.path.join(here, *parts), "r") as fp:
-        return fp.read()
-
 
 def find_version(*file_paths):
-    version_file = read(*file_paths)
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, *file_paths), "r") as fp:
+        version_file = fp.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
         return version_match.group(1)

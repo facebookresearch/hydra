@@ -5,11 +5,15 @@ sidebar_label: Compose API
 ---
 
 The compose API can compose a configuration similar to `@hydra.main()` anywhere in the code.  
-Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()` or by calling one of the initialization methods listed below.
+Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()`
+or by calling one of the initialization methods listed below.
 
-Here is an [example Jupyter notebook utilizing this API](https://github.com/facebookresearch/hydra/tree/master/examples/notebook).
+Compose is useful when `@hydra.main()` is not applicable.
+### Examples
+ - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/notebook) (hydra_notebook_example.ipynb)
+ - [Unit testing with compose](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py).
 
-### `hydra.experimental.compose()` example
+### Code example
 ```python
 from hydra.experimental import compose, initialize
 
@@ -17,7 +21,7 @@ from hydra.experimental import compose, initialize
 if __name__ == "__main__":
     initialize(config_path="conf")
 
-    cfg = compose("config.yaml", overrides=["db=mysql", "db.user=me"])
+    cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
     print(cfg.pretty())
 ```
 ### API Documentation
@@ -45,23 +49,23 @@ def initialize(
     """
 
 def initialize_with_file(
-    calling_file: Optional[str], config_path: Optional[str] = None
-):
+    file: Optional[str], config_path: Optional[str] = None
+) -> None:
     """
     Initialize Hydra and add the config_path to the search path.
     The config path is relative to the calling_file.
-    :param calling_file : The file to make the config_path relative to
+    :param file : The file to make the config_path relative to
     :param config_path : The config path
     """
     ...
 
 def initialize_with_module(
-    calling_module: Optional[str], config_path: Optional[str] = None
-):
+    module: Optional[str], config_path: Optional[str] = None
+) -> None:
     """
     Initialize Hydra and add the config_path to the search path.
     The config path is relative to the calling_module.
-    :param calling_module : The module to make the config_path relative to
+    :param module : The module to make the config_path relative to
     :param config_path : The config path
     """
     ...

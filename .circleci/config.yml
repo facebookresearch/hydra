@@ -157,7 +157,7 @@ jobs:
             pip install nox dataclasses
       - run:
           name: Testing Hydra
-          no_output_timeout: 10m
+          no_output_timeout: 20m
           command: |
             $env:NOX_PYTHON_VERSIONS=3.6
             $env:PYTHONIOENCODING="utf_8"
@@ -183,7 +183,7 @@ jobs:
             pip install nox
       - run:
           name: Testing Hydra
-          no_output_timeout: 10m
+          no_output_timeout: 20m
           command: |
             $env:NOX_PYTHON_VERSIONS=3.7
             $env:PYTHONIOENCODING="utf_8"
@@ -209,6 +209,7 @@ jobs:
             pip install nox
       - run:
           name: Testing Hydra
+          no_output_timeout: 20m
           command: |
             $env:NOX_PYTHON_VERSIONS=3.8
             $env:PYTHONIOENCODING="utf_8"

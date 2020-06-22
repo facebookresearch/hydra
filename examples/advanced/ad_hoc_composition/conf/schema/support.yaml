@@ -8,6 +8,6 @@ tables:
   - name: issues
     fields:
       - title: string
-      - description : string
+      - description: string
       - reported_by: string
       - priority: int

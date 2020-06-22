@@ -1,24 +1,20 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Source of truth for version
+__version__ = "1.0.0rc1"
 import copy
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 import pytest
 
 from hydra.core.singleton import Singleton
-from hydra.test_utils.test_utils import (
-    GlobalHydraContext,
-    SweepTaskFunction,
-    TaskTestFunction,
-)
+from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def restore_singletons() -> Any:
+def hydra_restore_singletons() -> None:
     """
-    A fixture to restore singletons state after this the function.
-    This is useful for functions that are making a one-off change to singlestons that should not effect
-    other tests
+    Restore singletons state after the function returns
     """
     state = copy.deepcopy(Singleton.get_state())
     yield
@@ -26,25 +22,7 @@ def restore_singletons() -> Any:
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def hydra_global_context() -> Callable[
-    [str, Optional[str], Optional[bool]], GlobalHydraContext
-]:
-    def _(
-        task_name: str = "task",
-        config_dir: Optional[str] = None,
-        strict: Optional[bool] = None,
-    ) -> "GlobalHydraContext":
-        ctx = GlobalHydraContext()
-        ctx.task_name = task_name
-        ctx.config_dir = config_dir
-        ctx.strict = strict
-        return ctx
-
-    return _
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def sweep_runner() -> Callable[
+def hydra_sweep_runner() -> Callable[
     [
         Optional[str],
         Optional[str],
@@ -79,7 +57,7 @@ def sweep_runner() -> Callable[
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def task_runner() -> Callable[
+def hydra_task_runner() -> Callable[
     [
         Optional[str],
         Optional[str],

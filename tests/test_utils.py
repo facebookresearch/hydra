@@ -254,7 +254,7 @@ def test_class_warning() -> None:
     assert utils.instantiate(config) == expected
 
 
-def test_get_original_cwd(restore_singletons: Any) -> None:
+def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
     orig = "/foo/bar"
     cfg = OmegaConf.create({"hydra": HydraConf(runtime=RuntimeConf(cwd=orig))})
     assert isinstance(cfg, DictConfig)
@@ -262,7 +262,7 @@ def test_get_original_cwd(restore_singletons: Any) -> None:
     assert utils.get_original_cwd() == orig
 
 
-def test_get_original_cwd_without_hydra(restore_singletons: Any) -> None:
+def test_get_original_cwd_without_hydra(hydra_restore_singletons: Any) -> None:
     with pytest.raises(ValueError):
         utils.get_original_cwd()
 
@@ -276,7 +276,7 @@ def test_get_original_cwd_without_hydra(restore_singletons: Any) -> None:
     ],
 )
 def test_to_absolute_path(
-    restore_singletons: Any, orig_cwd: str, path: str, expected: str
+    hydra_restore_singletons: Any, orig_cwd: str, path: str, expected: str
 ) -> None:
     # normalize paths to current OS
     orig_cwd = str(Path(orig_cwd))
@@ -297,7 +297,7 @@ def test_to_absolute_path(
     ],
 )
 def test_to_absolute_path_without_hydra(
-    restore_singletons: Any, path: str, expected: str
+    hydra_restore_singletons: Any, path: str, expected: str
 ) -> None:
     # normalize paths to current OS
     path = str(Path(path))

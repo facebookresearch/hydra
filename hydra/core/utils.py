@@ -112,6 +112,12 @@ def run_job(
         hydra_cfg = OmegaConf.masked_copy(config, "hydra")
         assert isinstance(hydra_cfg, DictConfig)
 
+        if config.hydra.output_subdir is not None:
+            hydra_output = Path(config.hydra.output_subdir)
+            _save_config(task_cfg, "config.yaml", hydra_output)
+            _save_config(hydra_cfg, "hydra.yaml", hydra_output)
+            _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
+
         with env_override(hydra_cfg.hydra.job.env_set):
             ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime.instance().get("name")
@@ -119,12 +125,6 @@ def run_job(
         # shut down logging to ensure job log files are closed.
         # If logging is still required after run_job caller is responsible to re-initialize it.
         logging.shutdown()
-
-        if config.hydra.output_subdir is not None:
-            hydra_output = Path(config.hydra.output_subdir)
-            _save_config(task_cfg, "config.yaml", hydra_output)
-            _save_config(hydra_cfg, "hydra.yaml", hydra_output)
-            _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         return ret
     finally:
@@ -230,3 +230,21 @@ def env_override(env: Dict[str, str]) -> Any:
                 del os.environ[key]
             else:
                 os.environ[key] = value
+
+
+def verify_pytest_plugin_version() -> None:
+    from distutils.version import LooseVersion
+
+    try:
+        import hydra_pytest_plugin
+
+    except ImportError:
+        raise ValueError("hydra_pytest_plugin is not installed")
+
+    min_pytest_plugin_version = "1.0"
+    installed_version = hydra_pytest_plugin.__version__
+    if LooseVersion(min_pytest_plugin_version) > LooseVersion(installed_version):
+        raise ValueError(
+            f"Required version for hydra_pytest_plugin is {min_pytest_plugin_version}"
+            f" or newer, installed version is {hydra_pytest_plugin.__version__}"
+        )

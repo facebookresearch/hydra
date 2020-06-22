@@ -115,17 +115,17 @@ def detect_task_name(calling_file: Optional[str], calling_module: Optional[str])
 def compute_search_path_dir(
     calling_file: Optional[str],
     calling_module: Optional[str],
-    config_dir: Optional[str],
+    config_path: Optional[str],
 ) -> str:
     if calling_module is not None:
         last_dot = calling_module.rfind(".")
         if last_dot != -1:
             calling_module = calling_module[0:last_dot]
 
-        if config_dir is not None:
-            config_dir = config_dir.replace(os.path.sep, "/")
-            while str.startswith(config_dir, "../"):
-                config_dir = config_dir[len("../") :]
+        if config_path is not None:
+            config_path = config_path.replace(os.path.sep, "/")
+            while str.startswith(config_path, "../"):
+                config_path = config_path[len("../") :]
                 last_dot = calling_module.rfind(".")
                 if last_dot != -1:
                     calling_module = calling_module[0:last_dot]
@@ -134,16 +134,16 @@ def compute_search_path_dir(
 
         search_path_dir = "pkg://" + calling_module
 
-        if config_dir is not None:
+        if config_path is not None:
             if calling_module != "":
-                search_path_dir = search_path_dir + "/" + config_dir
+                search_path_dir = search_path_dir + "/" + config_path
             else:
-                search_path_dir = search_path_dir + config_dir
+                search_path_dir = search_path_dir + config_path
     elif calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
 
-        if config_dir is not None:
-            search_path_dir = join(abs_base_dir, config_dir)
+        if config_path is not None:
+            search_path_dir = join(abs_base_dir, config_path)
         else:
             search_path_dir = abs_base_dir
         search_path_dir = normpath(search_path_dir)

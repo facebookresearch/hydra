@@ -66,19 +66,30 @@ def _upgrade_basic(session):
     )
 
 
-def find_python_files(folder):
+def find_python_files_for_mypy(folder):
+    exclude_list = [""]
+
+    def excluded(file: str) -> bool:
+        for exclude in exclude_list:
+            if file.startswith(exclude):
+                return True
+        return False
+
     for root, folders, files in os.walk(folder):
         for filename in folders + files:
             if filename.endswith(".py"):
-                yield os.path.join(root, filename)
+                if excluded(filename):
+                    yield os.path.join(root, filename)
 
 
 def install_hydra(session, cmd):
     # clean install hydra
     session.chdir(BASE)
     session.run(*cmd, ".", silent=SILENT)
-    session.install("pipdeptree", silent=SILENT)
-    session.run("pipdeptree", "-p", "hydra-core")
+    session.run(*cmd, "extra/hydra-pytest-plugin", silent=SILENT)
+    if not SILENT:
+        session.install("pipdeptree", silent=SILENT)
+        session.run("pipdeptree", "-p", "hydra-core")
 
 
 def pytest_args(session, *args):
@@ -186,12 +197,12 @@ def install_lint_deps(session):
     _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
     session.run("pip", "install", "-e", ".", silent=SILENT)
-    session.install("black")
 
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_lint_deps(session)
+    install_hydra(session, ["pip", "install", "-e"])
     session.run("black", "--check", ".", silent=SILENT)
     session.run(
         "isort",
@@ -204,9 +215,10 @@ def lint(session):
     )
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
+    session.run("yamllint", ".")
     # Mypy for examples
-    for pyfie in find_python_files("examples"):
-        session.run("mypy", pyfie, "--strict", silent=SILENT)
+    for pyfile in find_python_files_for_mypy("examples"):
+        session.run("mypy", pyfile, "--strict", silent=SILENT)
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -249,6 +261,7 @@ def test_core(session, install_cmd):
     _upgrade_basic(session)
     install_hydra(session, install_cmd)
     session.install("pytest")
+
     run_pytest(session, "tests")
 
     # test discovery_test_plugin
@@ -258,8 +271,9 @@ def test_core(session, install_cmd):
     run_pytest(session, "tests/test_plugins/namespace_pkg_config_source_test")
 
     # Install and test example app
-    session.run(*install_cmd, "examples/advanced/hydra_app_example", silent=SILENT)
-    run_pytest(session, "examples/advanced/hydra_app_example")
+    session.chdir(f"{BASE}/examples/advanced/hydra_app_example")
+    session.run(*install_cmd, ".", silent=SILENT)
+    run_pytest(session, ".")
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -276,7 +290,8 @@ def test_plugins(session, install_cmd):
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
         session.run(*cmd, silent=SILENT)
-        session.run("pipdeptree", "-p", plugin.name)
+        if not SILENT:
+            session.run("pipdeptree", "-p", plugin.name)
 
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)
@@ -308,7 +323,7 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
-    session.run("pip", "install", "-e", ".", silent=SILENT)
+    install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase")
 
     selected_plugins = select_plugins(session)

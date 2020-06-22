@@ -56,7 +56,9 @@ def create_config_search_path(path: str) -> ConfigSearchPathImpl:
     ],
 )
 class TestConfigRepository:
-    def test_config_repository_load(self, restore_singletons: Any, path: str) -> None:
+    def test_config_repository_load(
+        self, hydra_restore_singletons: Any, path: str
+    ) -> None:
         Plugins.instance()  # initializes
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
@@ -72,7 +74,9 @@ class TestConfigRepository:
             is None
         )
 
-    def test_config_repository_exists(self, restore_singletons: Any, path: str) -> None:
+    def test_config_repository_exists(
+        self, hydra_restore_singletons: Any, path: str
+    ) -> None:
         Plugins.instance()  # initializes
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
@@ -116,7 +120,7 @@ class TestConfigRepository:
     )
     def test_config_repository_list(
         self,
-        restore_singletons: Any,
+        hydra_restore_singletons: Any,
         path: str,
         config_path: str,
         results_filter: Optional[ObjectType],

@@ -9,22 +9,20 @@ quadratic:
   y: ???
 
 hydra:
-    sweeper:
-      params:
-        ax_config:
-          client:
-            random_seed: 1
+  sweeper:
+    params:
+      ax_config:
+        client:
+          random_seed: 1
 
-          max_trials: 2
+        max_trials: 2
 
-          experiment:
-            # Defaults to minimize, set to false to maximize
-            minimize: true
+        experiment:
+          # Defaults to minimize, set to false to maximize
+          minimize: true
 
-          early_stop:
-            # Number of epochs without a significant improvement from
-            # the currently known best parameters
-            # An Epoch is defined as a batch of trials executed in parallel
-            max_epochs_without_improvement: 2
-          
-          
+        early_stop:
+          # Number of epochs without a significant improvement from
+          # the currently known best parameters
+          # An Epoch is defined as a batch of trials executed in parallel
+          max_epochs_without_improvement: 2

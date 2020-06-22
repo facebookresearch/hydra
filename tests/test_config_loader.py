@@ -314,7 +314,9 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == {"abc=cde": None, "bar": 100}
 
-    def test_load_config_with_schema(self, restore_singletons: Any, path: str) -> None:
+    def test_load_config_with_schema(
+        self, hydra_restore_singletons: Any, path: str
+    ) -> None:
 
         ConfigStore.instance().store(
             name="config", node=TopLevelConfig, provider="this_test"
@@ -359,7 +361,7 @@ class TestConfigLoader:
             )
 
     def test_load_config_file_with_schema_validation(
-        self, restore_singletons: Any, path: str
+        self, hydra_restore_singletons: Any, path: str
     ) -> None:
 
         with ConfigStoreWithProvider("this_test") as cs:
@@ -392,7 +394,7 @@ class TestConfigLoader:
         assert config_loader.get_load_history() == expected
 
     def test_assign_null(
-        self, restore_singletons: Any, path: str, recwarn: Any
+        self, hydra_restore_singletons: Any, path: str, recwarn: Any
     ) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
@@ -624,7 +626,7 @@ def test_mixed_composition_order() -> None:
     assert config_loader.get_load_history() == expected
 
 
-def test_load_schema_as_config(restore_singletons: Any) -> None:
+def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
     """
     Load structured config as a configuration
     """
@@ -684,7 +686,7 @@ class Config:
     plugin: Plugin = Plugin()
 
 
-def test_overlapping_schemas(restore_singletons: Any) -> None:
+def test_overlapping_schemas(hydra_restore_singletons: Any) -> None:
 
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
@@ -711,7 +713,7 @@ def test_overlapping_schemas(restore_singletons: Any) -> None:
         cfg.plugin = 10
 
 
-def test_invalid_plugin_merge(restore_singletons: Any) -> Any:
+def test_invalid_plugin_merge(hydra_restore_singletons: Any) -> Any:
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
     cs.store(group="plugin", name="invalid", node=InvalidPlugin)
