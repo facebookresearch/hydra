@@ -36,17 +36,15 @@ class TestSubmititLauncher(LauncherTestSuite):
     "task_launcher_cfg, extra_flags",
     [
         (
-            {
-                "defaults": [
-                    {"hydra/launcher": "submitit_local"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ],
-                "hydra": {
-                    "launcher": {"params": {"gpus_per_node": 0, "timeout_min": 1}},
-                },
-            },
-            ["-m"],
+            {},
+            [
+                "-m",
+                "hydra/hydra_logging=disabled",
+                "hydra/job_logging=disabled",
+                "hydra/launcher=submitit_local",
+                "hydra.launcher.params.gpus_per_node=0",
+                "hydra.launcher.params.timeout_min=1",
+            ],
         ),
     ],
 )
