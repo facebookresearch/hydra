@@ -16,8 +16,7 @@ chdir_plugin_root()
 
 
 @pytest.mark.parametrize(
-    "cls",
-    [submitit_launcher.LocalSubmititLauncher, submitit_launcher.SlurmSubmititLauncher],
+    "cls", [submitit_launcher.LocalLauncher, submitit_launcher.SlurmLauncher],
 )
 def test_discovery(cls: Type[Launcher]) -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers

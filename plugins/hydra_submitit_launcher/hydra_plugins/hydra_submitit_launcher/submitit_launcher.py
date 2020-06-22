@@ -155,9 +155,9 @@ class BaseSubmititLauncher(Launcher):
         return [j.results()[0] for j in jobs]
 
 
-class LocalSubmititLauncher(BaseSubmititLauncher):
+class LocalLauncher(BaseSubmititLauncher):
     _EXECUTOR = "local"
 
 
-class SlurmSubmititLauncher(BaseSubmititLauncher):
+class SlurmLauncher(BaseSubmititLauncher):
     _EXECUTOR = "slurm"
