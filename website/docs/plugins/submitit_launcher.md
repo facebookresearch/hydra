@@ -12,6 +12,7 @@ sidebar_label: Submitit Launcher plugin
 
 The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [Submitit](https://github.com/facebookincubator/submitit).
 
+
 ### Installation
 This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
@@ -31,7 +32,6 @@ Note that this plugin expects a valid environment in the target host. usually th
 the launching host and the target host.
 
 Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
-
 
 You can discover the slurm launcher parameters with:
 ```text
@@ -54,7 +54,6 @@ params:
   signal_delay_s: 120
   max_num_timeout: 0
 ```
-
 
 Similarly, you can discover the local launcher parameters with:
 ```text
@@ -104,7 +103,6 @@ $ tree
 ├── 2
 │   └── my_app.log
 └── multirun.yaml
-
 
 $ cat 0/my_app.log 
 [2020-05-28 15:05:23,511][__main__][INFO] - Process ID 15887 executing task 1 ...
