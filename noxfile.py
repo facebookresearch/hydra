@@ -275,6 +275,11 @@ def test_core(session, install_cmd):
     session.run(*install_cmd, ".", silent=SILENT)
     run_pytest(session, ".")
 
+    # Install and test initialization test app
+    session.chdir(f"{BASE}/tests/test_apps/test_initializations/full_app")
+    session.run(*install_cmd, ".", silent=SILENT)
+    run_pytest(session, ".")
+
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
