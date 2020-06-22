@@ -63,23 +63,14 @@ class LocalParams(BaseParams):
     pass
 
 
-@dataclass
-class SlurmConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmSubmititLauncher"
-    params: SlurmParams = SlurmParams()
-
-
-@dataclass
-class LocalConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalSubmititLauncher"
-    params: LocalParams = LocalParams()
-
-
 # finally, register two different choices:
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_local",
-    node=LocalConf,
+    node=ObjectConf(
+        cls="hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher",
+        params=LocalParams(),
+    ),
     provider="submitit_launcher",
 )
 
@@ -87,6 +78,9 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_slurm",
-    node=SlurmConf,
+    node=ObjectConf(
+        cls="hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher",
+        params=SlurmParams(),
+    ),
     provider="submitit_launcher",
 )
