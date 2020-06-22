@@ -1,8 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import dataclasses
 import logging
 import os
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
@@ -19,7 +20,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
-from hydra_plugins.hydra_submitit_launcher.config import QueueType
+from .config import BaseParams, LocalParams, SlurmParams
 
 log = logging.getLogger(__name__)
 
@@ -32,11 +33,15 @@ class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 
-class SubmititLauncher(Launcher):
-    def __init__(self, queue: str, folder: str, queue_parameters: DictConfig) -> None:
-        self.queue = queue
-        self.queue_parameters = queue_parameters
-        self.folder = folder
+class BaseSubmititLauncher(Launcher):
+
+    _EXECUTOR = "abstract"
+
+    def __init__(self, **params: Any) -> None:
+        param_classes = {"local": LocalParams, "slurm": SlurmParams}
+        if self._EXECUTOR not in param_classes:
+            raise RuntimeError(f'Non-implemented "{self._EXECUTOR}" executor')
+        self.params = OmegaConf.structured(param_classes[self._EXECUTOR](**params))
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -66,12 +71,12 @@ class SubmititLauncher(Launcher):
         sweep_config = self.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
+        # lazy import to ensure plugin discovery remains fast
+        import submitit
+
         with open_dict(sweep_config.hydra.job) as job:
             # Populate new job variables
-            if "SLURM_JOB_ID" in os.environ:
-                job.id = os.environ["SLURM_JOB_ID"]
-            else:
-                job.id = job_id
+            job.id = submitit.JobEnvironment().job_id
             sweep_config.hydra.job.num = job_num
 
         return run_job(
@@ -96,36 +101,33 @@ class SubmititLauncher(Launcher):
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
+        params = self.params
 
-        # make sure you don't change inplace
-        queue_parameters = self.queue_parameters.copy()
-        OmegaConf.set_struct(queue_parameters, True)
-        executors = {
-            QueueType.auto: submitit.AutoExecutor,
-            QueueType.slurm: submitit.SlurmExecutor,
-            QueueType.local: submitit.LocalExecutor,
-        }
-        init_parameters = {"cluster", "max_num_timeout", "slurm_max_num_timeout"}
-        executor = executors[self.queue](
-            folder=self.folder,
+        # build executor
+        init_params = {"folder": params.submitit_folder}
+        specific_init_keys = {"max_num_timeout"}
+        init_params.update(
             **{
-                x: y
-                for x, y in queue_parameters[self.queue.value].items()
-                if x in init_parameters
-            },
-        )
-        executor.update_parameters(
-            **{
-                x: y
-                for x, y in queue_parameters[self.queue.value].items()
-                if x not in init_parameters
+                f"{self._EXECUTOR}_{x}": y
+                for x, y in params.items()
+                if x in specific_init_keys
             }
         )
+        init_keys = specific_init_keys | {"submitit_folder"}
+        executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
+
+        # specify resources/parameters
+        baseparams = set(dataclasses.asdict(BaseParams()).keys())
+        params = {
+            x if x in baseparams else f"{self._EXECUTOR}_{x}": y
+            for x, y in params.items()
+            if x not in init_keys
+        }
+        executor.update_parameters(**params)
 
         log.info(
-            "Submitit '{}' sweep output dir : {}".format(
-                self.queue.value, self.config.hydra.sweep.dir
-            )
+            f"Submitit '{self._EXECUTOR}' sweep output dir : "
+            f"{self.config.hydra.sweep.dir}"
         )
         sweep_dir = Path(str(self.config.hydra.sweep.dir))
         sweep_dir.mkdir(parents=True, exist_ok=True)
@@ -151,3 +153,11 @@ class SubmititLauncher(Launcher):
 
         jobs = executor.map_array(self, *zip(*params))
         return [j.results()[0] for j in jobs]
+
+
+class LocalSubmititLauncher(BaseSubmititLauncher):
+    _EXECUTOR = "local"
+
+
+class SlurmSubmititLauncher(BaseSubmititLauncher):
+    _EXECUTOR = "slurm"
