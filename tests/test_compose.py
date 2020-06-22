@@ -279,25 +279,56 @@ def test_initialization_full_app():
     subprocess.check_call(cmd)
 
 
-def test_initialization_full_app_installed():
-    try:
-        subprocess.check_call(
+@pytest.mark.parametrize(
+    "install_cmd",
+    [
+        pytest.param(
             [
                 sys.executable,
                 "-m",
                 "pip",
                 "install",
                 "tests/test_apps/test_initializations/full_app",
-            ]
-        )
-        subprocess.check_call(["test-initialization-app", "module_installed"])
-        # cmd = [
-        #     sys.executable,
-        #     "-m",
-        #     "test_initialization_app.main",
-        #     "module_installed",
-        # ]
-        # subprocess.check_call(cmd)
+            ],
+            id="install",
+        ),
+        pytest.param(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "-e",
+                "tests/test_apps/test_initializations/full_app",
+            ],
+            id="editable",
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    "run_cmd",
+    [
+        pytest.param(["test-initialization-app", "module_installed"], id="run_as_app"),
+        pytest.param(
+            [sys.executable, "-m", "test_initialization_app.main", "module_installed"],
+            id="run_as_module",
+        ),
+        pytest.param(
+            [
+                sys.executable,
+                "tests/test_apps/test_initializations/full_app/test_initialization_app/main.py",
+                "module_installed",
+            ],
+            id="run_as_script",
+        ),
+    ],
+)
+def test_initialization_full_app_installed(
+    install_cmd: List[str], run_cmd: List[str]
+) -> None:
+    try:
+        subprocess.check_call(install_cmd)
+        subprocess.check_call(run_cmd)
     finally:
         subprocess.check_call(
             [sys.executable, "-m", "pip", "uninstall", "test-initialization-app", "-y"]
