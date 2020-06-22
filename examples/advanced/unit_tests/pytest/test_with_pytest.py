@@ -3,7 +3,7 @@ import importlib
 
 import pytest
 
-from hydra.experimental import compose, initialize_with_module, initialize
+from hydra.experimental import compose, initialize, initialize_with_module
 
 
 def test_compose1(hydra_global_context):

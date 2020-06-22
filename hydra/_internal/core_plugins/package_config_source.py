@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 from typing import List, Optional, Tuple
 
 from omegaconf import OmegaConf

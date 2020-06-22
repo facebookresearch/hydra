@@ -1,9 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import subprocess
-
-import sys
-
 import re
+import subprocess
+import sys
 from typing import Any, List, Optional
 
 import pytest
@@ -45,10 +43,6 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
         SearchPathQuery(provider="main", search_path=None)
     )
     assert idx != -1
-
-
-def open_dict(cfg):
-    pass
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
@@ -258,13 +252,13 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
     initialize_config_dir(
         config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
     )
-    from tests.test_apps.app_with_cfg_groups.my_app import my_app
+    from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
 
     cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
     assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
 
 
-def test_initialization_root_module(monkeypatch):
+def test_initialization_root_module(monkeypatch: Any) -> None:
     subprocess.check_call(
         [sys.executable, "tests/test_apps/test_initializations/root_module/main.py"],
     )

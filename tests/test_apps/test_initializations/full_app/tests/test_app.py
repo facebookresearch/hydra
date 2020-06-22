@@ -1,8 +1,6 @@
 import subprocess
-
-from typing import List
-
 import sys
+from typing import List
 
 import pytest
 

@@ -1,12 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 from hydra.experimental import (
-    initialize_ctx,
     compose,
     initialize_config_dir_ctx,
     initialize_config_module_ctx,
+    initialize_ctx,
 )
-
 
 if __name__ == "__main__":
     with initialize_ctx():
