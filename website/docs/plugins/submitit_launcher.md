@@ -18,8 +18,9 @@ This plugin requires Hydra 1.0 (Release candidate)
 $ pip install hydra-submitit-launcher --pre
 ```
 
+
 ### Usage
-Once installed, add `hydra/launcher=submitit` to your command line. Alternatively, override `hydra/launcher` in your config:
+Once installed, add `hydra/launcher=submitit_slurm` to your command line. Alternatively, override `hydra/launcher` in your config:
 
 ```yaml
 defaults:
@@ -29,67 +30,12 @@ defaults:
 Note that this plugin expects a valid environment in the target host. usually this means a shared file system between
 the launching host and the target host.
 
-Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `local` to test locally.
-```python
-@dataclass
-class BaseParams:
-    """Configuration shared by all executors
-    """
-
-    submitit_folder: str = "${hydra.sweep.dir}/.submitit/%j"
-
-    # maximum time for the job in minutes
-    timeout_min: int = 60
-    # number of cpus to use for each task
-    cpus_per_task: int = 1
-    # number of gpus to use on each node
-    gpus_per_node: int = 0
-    # number of tasks to spawn on each node
-    tasks_per_node: int = 1
-    # memory to reserve for the job on each node (in GB)
-    mem_gb: int = 4
-    # number of nodes to use for the job
-    nodes: int = 1
-    # name of the job
-    name: str = "${hydra.job.name}"
+Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
 
 
-@dataclass
-class SlurmParams(BaseParams):
-    """Slurm configuration overrides and specific parameters
-    """
-
-    # Params are used to configure sbatch, for more info check:
-    # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
-
-    # Following parameters are slurm specific
-    # More information: https://slurm.schedmd.com/sbatch.html
-    #
-    # slurm partition to use on the cluster
-    partition: Optional[str] = None
-    comment: Optional[str] = None
-    constraint: Optional[str] = None
-    exclude: Optional[str] = None
-
-    # Following parameters are submitit specifics
-    #
-    # USR1 signal delay before timeout
-    signal_delay_s: int = 120
-    # Maximum number of retries on job timeout.
-    # Change this only after you confirmed your code can handle re-submission
-    # by properly resuming from the latest stored checkpoint.
-    # check the following for more info on slurm_max_num_timeout
-    # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
-    max_num_timeout: int = 0
-```
-
-See [Submitit documentation](https://github.com/facebookincubator/submitit) for full details about the parameters above.
-
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
-
-You can discover the launcher parameters with:
+You can discover the slurm launcher parameters with:
 ```text
-$ python my_app.py --cfg hydra --package hydra.launcher
+$ python foo.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher
 # @package hydra.launcher
 cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmSubmititLauncher
 params:
@@ -108,6 +54,35 @@ params:
   signal_delay_s: 120
   max_num_timeout: 0
 ```
+
+
+Similarly, you can discover the local launcher parameters with:
+```text
+$ python my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher
+# @package hydra.launcher
+cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalSubmititLauncher
+params:
+  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+  timeout_min: 60
+  cpus_per_task: 1
+  gpus_per_node: 0
+  tasks_per_node: 1
+  mem_gb: 4
+  nodes: 1
+  name: ${hydra.job.name} 
+```
+
+You can set all these parameters in your configuration file and/or override them in the commandline: 
+```text
+python foo.py hydra/launcher=submitit_slurm hydra.launcher.params.timeout_min=3
+```
+
+For more details, including descriptions for each parameter, check out the [config file](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py). You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
+
+
+### Example
+
+An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py task=1,2,3 -m` will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
 
