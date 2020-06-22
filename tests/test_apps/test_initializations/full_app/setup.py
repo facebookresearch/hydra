@@ -2,16 +2,17 @@
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="test-initialization-app",
     version="0.1",
-    packages=["hydra_app"],
-    entry_points={"console_scripts": ["test-initialization-app = hydra_app.main:main"]},
-    author="you!",
-    author_email="your_email@example.com",
-    url="http://hydra-app.example.com",
+    packages=find_packages(include=["test_initialization_app"]),
+    entry_points={
+        "console_scripts": [
+            "test-initialization-app = test_initialization_app.main:main"
+        ]
+    },
     include_package_data=True,
     install_requires=["hydra-core~=1.0.0rc1"],
 )

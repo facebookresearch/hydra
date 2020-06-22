@@ -2,12 +2,12 @@
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="hydra-app",
     version="0.1",
-    packages=["hydra_app"],
+    packages=find_packages(include=["hydra_app"]),
     entry_points={"console_scripts": ["hydra_app = hydra_app.main:main"]},
     author="you!",
     author_email="your_email@example.com",

@@ -1,0 +1,4 @@
+recursive-include test_initialization_app *.py
+recursive-include test_initialization_app *.yaml
+global-exclude *.pyc
+global-exclude __pycache__

@@ -263,7 +263,7 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
     assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
 
 
-def test_initialize_app1():
+def test_initialize_root_module_app():
     cmd = [
         sys.executable,
         "tests/test_apps/test_initializations/root_module/main.py",
@@ -271,9 +271,34 @@ def test_initialize_app1():
     subprocess.check_call(cmd)
 
 
-def test_initialize_app1():
+def test_initialization_full_app():
     cmd = [
         sys.executable,
         "tests/test_apps/test_initializations/full_app/hydra_app/main.py",
     ]
     subprocess.check_call(cmd)
+
+
+def test_initialization_full_app_installed():
+    try:
+        subprocess.check_call(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "tests/test_apps/test_initializations/full_app",
+            ]
+        )
+        subprocess.check_call(["test-initialization-app", "module_installed"])
+        # cmd = [
+        #     sys.executable,
+        #     "-m",
+        #     "test_initialization_app.main",
+        #     "module_installed",
+        # ]
+        # subprocess.check_call(cmd)
+    finally:
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "uninstall", "test-initialization-app", "-y"]
+        )

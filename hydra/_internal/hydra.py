@@ -51,6 +51,7 @@ class Hydra:
         config_search_path = create_automatic_config_search_path(
             calling_file, calling_module, config_path
         )
+
         if job_name is None:
             job_name = detect_task_name(calling_file, calling_module)
         return Hydra.create_main_hydra2(job_name, config_search_path, strict)
