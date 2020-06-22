@@ -64,7 +64,7 @@ class PackageConfigSource(ConfigSource):
         try:
             if resource_exists(module_name, resource_name):
                 return True
-        except (ModuleNotFoundError, NotImplementedError):
+        except ModuleNotFoundError:
             return False
         except Exception as e:
             raise type(e)(
