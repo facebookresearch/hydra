@@ -552,7 +552,9 @@ def test_override_hydra_config_group_from_config_file() -> None:
 
 def test_list_groups() -> None:
     config_loader = ConfigLoaderImpl(
-        config_search_path=create_config_search_path("examples/jupyter_notebooks/conf")
+        config_search_path=create_config_search_path(
+            "examples/jupyter_notebooks/cloud_app/conf"
+        )
     )
     groups = config_loader.list_groups("")
     assert sorted(groups) == [

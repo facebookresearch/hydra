@@ -305,7 +305,3 @@ def test_initialization_root_module(monkeypatch: Any) -> None:
 
     monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
     subprocess.check_call([sys.executable, "-m", "main"])
-
-
-# TODO: create minimal repro for bug with warning capture not catching a watching causing other fixtures to not
-# trigger exit
