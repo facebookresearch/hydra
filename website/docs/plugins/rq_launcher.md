@@ -12,7 +12,7 @@ sidebar_label: RQ Launcher plugin
 
 The RQ Launcher plugin provides a launcher for distributed execution and job queuing based on [Redis Queue (RQ)](https://python-rq.org).
 
-RQ launcher allows parallelizing across multiple nodes and scheduling jobs in queues. Usage of this plugin requires a [Redis server](https://redis.io/topics/quickstart). When parallelisation on a single node is intended, the Joblib launcher may be preferrable, since it works without a database.
+RQ launcher allows parallelizing across multiple nodes and scheduling jobs in queues. Usage of this plugin requires a [Redis server](https://redis.io/topics/quickstart). When parallelisation on a single node is intended, the Joblib launcher may be preferable, since it works without a database.
 
 
 ### Installation
@@ -32,7 +32,7 @@ defaults:
   - hydra/launcher: rq
 ```
 
-The configuration packaged with the plugin is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py). The default configuratio is as follows:
+The configuration packaged with the plugin is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py). The default configuration is as follows:
 
 ```yaml
 # @package hydra.launcher
@@ -57,7 +57,7 @@ params:
   wait_polling: 1.0                    # wait time in seconds when polling results
 ```
 
-The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively. 
+The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively.
 
 For example, they might be set as follows when using `bash` or `zsh` as a shell:
 
@@ -98,4 +98,3 @@ $ python my_app.py --multirun task=1,2,3,4,5
 ```
 
 The [RQ documentation](https://python-rq.org/) holds further information on [job monitoring](http://python-rq.org/docs/monitoring/), which can be done via console or [web interfaces](https://github.com/nvie/rq-dashboard), and provides [patterns](https://python-rq.org/patterns/) for worker and exception handling.
-
