@@ -33,7 +33,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 
 from .config_loader_impl import ConfigLoaderImpl
-from .utils import create_automatic_config_search_path, detect_task_name
+from .utils import create_automatic_config_search_path
 
 log: Optional[logging.Logger] = None
 
@@ -45,15 +45,13 @@ class Hydra:
         calling_file: Optional[str],
         calling_module: Optional[str],
         config_path: Optional[str],
-        job_name: Optional[str],
+        job_name: str,
         strict: Optional[bool],
     ) -> "Hydra":
         config_search_path = create_automatic_config_search_path(
             calling_file, calling_module, config_path
         )
 
-        if job_name is None:
-            job_name = detect_task_name(calling_file, calling_module)
         return Hydra.create_main_hydra2(job_name, config_search_path, strict)
 
     @classmethod

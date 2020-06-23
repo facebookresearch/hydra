@@ -236,7 +236,7 @@ def verify_pytest_plugin_version() -> None:
     from distutils.version import LooseVersion
 
     try:
-        import hydra_pytest_plugin
+        import hydra_pytest_plugin  # type: ignore
 
     except ImportError:
         raise ValueError("hydra_pytest_plugin is not installed")

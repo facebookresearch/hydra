@@ -2,9 +2,11 @@
 import re
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any, List, Optional
 
 import pytest
+from omegaconf import OmegaConf
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
@@ -156,16 +158,15 @@ class TestComposeInits:
     def test_initialize_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path="../examples/jupyter_notebooks/conf"):
+        with initialize_ctx(config_path="../examples/jupyter_notebooks/cloud/conf"):
             ret = compose(config_file, overrides)
             assert ret == expected
 
-    # TODO: test absolute and relative to declaring file (this one)
-    def test_initialize_config_dir_ctx(
+    def test_initialize_config_dir_ctx_with_relative_dir(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
         with initialize_config_dir_ctx(
-            config_dir="../examples/jupyter_notebooks/conf", job_name="job_name"
+            config_dir="../examples/jupyter_notebooks/cloud/conf", job_name="job_name"
         ):
             ret = compose(config_file, overrides)
             assert ret == expected
@@ -179,7 +180,20 @@ class TestComposeInits:
             ret = compose(config_file, overrides)
             assert ret == expected
 
-    # TODO: test what happens with initialize_config_dir_ctx when the config dir is not found (contextlib?!)
+
+def test_initialize_config_dir_ctz_with_absolute_dir(tmpdir: Any,) -> None:
+    tmpdir = Path(tmpdir)
+    (tmpdir / "test_group").mkdir(parents=True)
+    cfg = OmegaConf.create({"foo": "bar"})
+
+    cfg_file = tmpdir / "test_group" / "test.yaml"
+    with open(str(cfg_file), "w") as f:
+        f.write("# @package _group_\n")
+        OmegaConf.save(cfg, f)
+
+    with initialize_config_dir_ctx(config_dir=str(tmpdir)):
+        ret = compose(overrides=["+test_group=test"])
+        assert ret == {"test_group": cfg}
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
@@ -189,7 +203,7 @@ class TestComposeInits:
 class TestInitJobNameOverride:
     def test_initialize_ctx(self, job_name: Optional[str], expected: str) -> None:
         with initialize_ctx(
-            config_path="../examples/jupyter_notebooks/conf", job_name=job_name
+            config_path="../examples/jupyter_notebooks/cloud/conf", job_name=job_name
         ):
             ret = compose(return_hydra_config=True)
             assert ret.hydra.job.name == expected
@@ -198,7 +212,7 @@ class TestInitJobNameOverride:
         self, job_name: Optional[str], expected: str
     ) -> None:
         with initialize_config_dir_ctx(
-            config_dir="../examples/jupyter_notebooks/conf", job_name=job_name
+            config_dir="../examples/jupyter_notebooks/cloud/conf", job_name=job_name
         ):
             ret = compose(return_hydra_config=True)
             assert ret.hydra.job.name == expected

@@ -5,9 +5,12 @@ from contextlib import contextmanager
 from typing import Any, Optional
 
 from hydra._internal.hydra import Hydra
-from hydra._internal.utils import detect_calling_file_or_module_from_stack_frame
+from hydra._internal.utils import (
+    create_config_search_path,
+    detect_calling_file_or_module_from_stack_frame,
+    detect_task_name,
+)
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import HydraException
 
 
 def initialize(
@@ -33,6 +36,9 @@ def initialize(
     calling_file, calling_module = detect_calling_file_or_module_from_stack_frame(
         caller_stack_depth + 1
     )
+    if job_name is None:
+        job_name = detect_task_name(calling_file, calling_module)
+
     # TODO: fail on absolute path?
     Hydra.create_main_hydra_file_or_module(
         calling_file=calling_file,
@@ -78,17 +84,28 @@ def initialize_config_dir(
     calling_file, calling_module = detect_calling_file_or_module_from_stack_frame(
         caller_stack_depth + 1
     )
-    if calling_module is not None and os.path.isabs(config_dir):
-        raise HydraException(
-            "initialize_config_dir does not support a module caller with a relative config_dir"
+
+    if job_name is None:
+        job_name = detect_task_name(calling_file, calling_module)
+
+    if os.path.isabs(config_dir):
+        csp = create_config_search_path(search_path_dir=config_dir)
+        Hydra.create_main_hydra2(
+            task_name=job_name, config_search_path=csp, strict=None
         )
-    Hydra.create_main_hydra_file_or_module(
-        calling_file=calling_file,
-        calling_module=calling_module,
-        config_path=config_dir,
-        job_name=job_name,
-        strict=None,
-    )
+    else:
+        # TODO :test this
+        # if calling_module is not None:
+        #     raise HydraException(
+        #         "initialize_config_dir does not support a module caller with a relative config_dir"
+        #     )
+        Hydra.create_main_hydra_file_or_module(
+            calling_file=calling_file,
+            calling_module=None,
+            config_path=config_dir,
+            job_name=job_name,
+            strict=None,
+        )
 
 
 # TODO: is it possible to have a callable that also acts as the context? can we eliminate this context?

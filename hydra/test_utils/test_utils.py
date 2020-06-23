@@ -18,6 +18,7 @@ from omegaconf import DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 from hydra._internal.hydra import Hydra
+from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, split_config_path
 from hydra.types import TaskFunction
@@ -62,11 +63,13 @@ class TaskTestFunction:
                 self.config_path, self.config_name
             )
 
+            job_name = detect_task_name(self.calling_file, self.calling_module)
+
             self.hydra = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
                 config_path=config_dir,
-                job_name=None,
+                job_name=job_name,
                 strict=self.strict,
             )
             self.temp_dir = tempfile.mkdtemp()
@@ -134,11 +137,12 @@ class SweepTaskFunction:
             config_dir, config_name = split_config_path(
                 self.config_path, self.config_name
             )
+            job_name = detect_task_name(self.calling_file, self.calling_module)
             hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
                 config_path=config_dir,
-                job_name=None,
+                job_name=job_name,
                 strict=self.strict,
             )
 
