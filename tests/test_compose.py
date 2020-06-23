@@ -11,6 +11,7 @@ from omegaconf import OmegaConf
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
+from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 from hydra.experimental import (
     compose,
@@ -82,7 +83,10 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
     )
     with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
-        initialize(config_path=None, strict=True)
+        try:
+            initialize(config_path=None, strict=True)
+        finally:
+            GlobalHydra.instance().clear()
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
@@ -189,7 +193,9 @@ class TestComposeInits:
             assert ret == expected
 
 
-def test_initialize_config_dir_ctz_with_absolute_dir(tmpdir: Any,) -> None:
+def test_initialize_config_dir_ctz_with_absolute_dir(
+    hydra_restore_singletons: Any, tmpdir: Any
+) -> None:
     tmpdir = Path(tmpdir)
     (tmpdir / "test_group").mkdir(parents=True)
     cfg = OmegaConf.create({"foo": "bar"})
@@ -269,18 +275,19 @@ def test_initialize_config_dir(hydra_restore_singletons: Any) -> None:
             "initialize_config_dir does not support a module caller with a relative config_dir"
         ),
     ):
-        initialize_config_dir(
+        with initialize_config_dir_ctx(
             config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
-        )
+        ):
+            ...
 
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
-    initialize_config_module(
+    with initialize_config_module_ctx(
         config_module="tests.test_apps.app_with_cfg_groups.conf", job_name="my_pp"
-    )
-    assert compose(config_name="config") == {
-        "optimizer": {"type": "nesterov", "lr": 0.001}
-    }
+    ):
+        assert compose(config_name="config") == {
+            "optimizer": {"type": "nesterov", "lr": 0.001}
+        }
 
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
@@ -298,3 +305,7 @@ def test_initialization_root_module(monkeypatch: Any) -> None:
 
     monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
     subprocess.check_call([sys.executable, "-m", "main"])
+
+
+# TODO: create minimal repro for bug with warning capture not catching a watching causing other fixtures to not
+# trigger exit
