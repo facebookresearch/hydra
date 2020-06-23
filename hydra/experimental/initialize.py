@@ -11,6 +11,7 @@ from hydra._internal.utils import (
     detect_task_name,
 )
 from hydra.core.global_hydra import GlobalHydra
+from hydra.errors import HydraException
 
 
 def initialize(
@@ -76,9 +77,9 @@ def initialize_config_dir(
 
     Supported callers:
     - Python scripts
-    - Unit tests
+    - Modules (Absolute paths only)
+    - Unit tests (Absolute paths only)
     - Jupyter notebooks.
-    If the caller is a Python module and the config dir is relative an error is raised.
     :param config_dir: file system path relative to the caller or absolute
     :param job_name: Optional job name to use instead of the automatically detected one
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
@@ -96,11 +97,10 @@ def initialize_config_dir(
             task_name=job_name, config_search_path=csp, strict=None
         )
     else:
-        # TODO :test this
-        # if calling_module is not None:
-        #     raise HydraException(
-        #         "initialize_config_dir does not support a module caller with a relative config_dir"
-        #     )
+        if calling_module is not None:
+            raise HydraException(
+                "initialize_config_dir does not support a module caller with a relative config_dir"
+            )
         Hydra.create_main_hydra_file_or_module(
             calling_file=calling_file,
             calling_module=None,
@@ -132,6 +132,7 @@ def initialize_ctx(
 @contextmanager
 def initialize_config_module_ctx(config_module: str, job_name: str = "app") -> Any:
     try:
+        assert job_name is not None
         gh = copy.deepcopy(GlobalHydra.instance())
         initialize_config_module(config_module=config_module, job_name=job_name)
         yield

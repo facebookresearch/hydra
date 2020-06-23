@@ -158,24 +158,32 @@ class TestComposeInits:
     def test_initialize_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path="../examples/jupyter_notebooks/cloud/conf"):
+        with initialize_ctx(config_path="../examples/jupyter_notebooks/cloud_app/conf"):
             ret = compose(config_file, overrides)
             assert ret == expected
 
     def test_initialize_config_dir_ctx_with_relative_dir(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_config_dir_ctx(
-            config_dir="../examples/jupyter_notebooks/cloud/conf", job_name="job_name"
+        with pytest.raises(
+            HydraException,
+            match=re.escape(
+                "initialize_config_dir does not support a module caller with a relative config_dir"
+            ),
         ):
-            ret = compose(config_file, overrides)
-            assert ret == expected
+            with initialize_config_dir_ctx(
+                config_dir="../examples/jupyter_notebooks/cloud_app/conf",
+                job_name="job_name",
+            ):
+                ret = compose(config_file, overrides)
+                assert ret == expected
 
     def test_initialize_config_module_ctx(
         self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
         with initialize_config_module_ctx(
-            config_module="examples.jupyter_notebooks.conf", job_name="job_name"
+            config_module="examples.jupyter_notebooks.cloud_app.conf",
+            job_name="job_name",
         ):
             ret = compose(config_file, overrides)
             assert ret == expected
@@ -201,30 +209,40 @@ def test_initialize_config_dir_ctz_with_absolute_dir(tmpdir: Any,) -> None:
     "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
 )
 class TestInitJobNameOverride:
-    def test_initialize_ctx(self, job_name: Optional[str], expected: str) -> None:
+    def test_jobname_override_initialize_ctx(
+        self, job_name: Optional[str], expected: str
+    ) -> None:
         with initialize_ctx(
-            config_path="../examples/jupyter_notebooks/cloud/conf", job_name=job_name
+            config_path="../examples/jupyter_notebooks/cloud_app/conf",
+            job_name=job_name,
         ):
             ret = compose(return_hydra_config=True)
             assert ret.hydra.job.name == expected
 
-    def test_initialize_config_dir_ctx(
-        self, job_name: Optional[str], expected: str
+    def test_jobname_override_initialize_config_dir_ctx(
+        self, job_name: Optional[str], expected: str, tmpdir: Any
     ) -> None:
-        with initialize_config_dir_ctx(
-            config_dir="../examples/jupyter_notebooks/cloud/conf", job_name=job_name
-        ):
+        # initialize_config_dir in unit tests supports only absolute paths
+        with initialize_config_dir_ctx(config_dir=str(tmpdir), job_name=job_name):
             ret = compose(return_hydra_config=True)
             assert ret.hydra.job.name == expected
 
 
 def test_initialize_config_module_ctx(hydra_restore_singletons: Any) -> None:
-    with initialize_config_module_ctx(config_module="examples.jupyter_notebooks.conf"):
+    with initialize_config_module_ctx(
+        config_module="examples.jupyter_notebooks.cloud_app.conf"
+    ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "app"
 
     with initialize_config_module_ctx(
-        config_module="examples.jupyter_notebooks.conf", job_name="test_job"
+        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
+
+    with initialize_config_module_ctx(
+        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "test_job"
@@ -245,12 +263,15 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
 
 
 def test_initialize_config_dir(hydra_restore_singletons: Any) -> None:
-    initialize_config_dir(
-        config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
-    )
-    assert compose(config_name="config") == {
-        "optimizer": {"type": "nesterov", "lr": 0.001}
-    }
+    with pytest.raises(
+        HydraException,
+        match=re.escape(
+            "initialize_config_dir does not support a module caller with a relative config_dir"
+        ),
+    ):
+        initialize_config_dir(
+            config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
+        )
 
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
@@ -263,13 +284,11 @@ def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
 
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
-    initialize_config_dir(
-        config_dir="test_apps/app_with_cfg_groups/conf", job_name="my_app"
-    )
-    from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
+    with initialize_ctx(config_path="test_apps/app_with_cfg_groups/conf"):
+        from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
 
-    cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
-    assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
+        cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
+        assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
 
 
 def test_initialization_root_module(monkeypatch: Any) -> None:
