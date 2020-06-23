@@ -8,10 +8,7 @@ The compose API can compose a configuration similar to `@hydra.main()` anywhere 
 Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()`
 or by calling one of the initialization methods listed below.
 
-Compose is useful when `@hydra.main()` is not applicable.
-### Examples
- - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/jupyter_notebooks) (hydra_notebook_example.ipynb)
- - [Unit testing with compose](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py).
+Compose is useful when `@hydra.main()` is not applicable for example in Unit tests or Jupyter notebooks.
 
 ### Code example
 ```python
