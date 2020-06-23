@@ -1,8 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-from typing import Any, List
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any, List, Optional
 
 import pytest
+from omegaconf import OmegaConf
+from pytest import raises
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
@@ -11,9 +16,8 @@ from hydra.errors import HydraException
 from hydra.experimental import (
     compose,
     initialize,
-    initialize_ctx,
-    initialize_with_file,
-    initialize_with_module,
+    initialize_config_dir,
+    initialize_config_module,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -56,14 +60,14 @@ class TestCompose:
     def test_compose_config(
         self, config_path: str, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path=config_path):
+        with initialize(config_path=config_path):
             cfg = compose(config_file, overrides)
             assert cfg == expected
 
     def test_strict_failure_global_strict(
         self, config_path: str, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path=config_path):
+        with initialize(config_path=config_path):
             # default strict True, call is unspecified
             overrides.append("fooooooooo=bar")
             with pytest.raises(HydraException):
@@ -76,13 +80,13 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
     )
     with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
-        initialize(config_path=None, strict=True)
+        try:
+            initialize(config_path=None, strict=True)
+        finally:
+            GlobalHydra.instance().clear()
 
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
-@pytest.mark.parametrize(
-    "config_path", ["../hydra/test_utils/configs/cloud_infra_example"]
-)
 @pytest.mark.parametrize(
     "config_file, overrides, expected",
     [
@@ -151,13 +155,107 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
         ),
     ],
 )
-class TestComposeCloudInfraExample:
-    def test_compose(
-        self, config_path: str, config_file: str, overrides: List[str], expected: Any,
+class TestComposeInits:
+    def test_initialize_ctx(
+        self, config_file: str, overrides: List[str], expected: Any,
     ) -> None:
-        with initialize_ctx(config_path=config_path):
+        with initialize(config_path="../examples/jupyter_notebooks/cloud_app/conf"):
             ret = compose(config_file, overrides)
             assert ret == expected
+
+    def test_initialize_config_dir_ctx_with_relative_dir(
+        self, config_file: str, overrides: List[str], expected: Any,
+    ) -> None:
+        with pytest.raises(
+            HydraException,
+            match=re.escape(
+                "initialize_config_dir() requires an absolute config_dir as input"
+            ),
+        ):
+            with initialize_config_dir(
+                config_dir="../examples/jupyter_notebooks/cloud_app/conf",
+                job_name="job_name",
+            ):
+                ret = compose(config_file, overrides)
+                assert ret == expected
+
+    def test_initialize_config_module_ctx(
+        self, config_file: str, overrides: List[str], expected: Any,
+    ) -> None:
+        with initialize_config_module(
+            config_module="examples.jupyter_notebooks.cloud_app.conf",
+            job_name="job_name",
+        ):
+            ret = compose(config_file, overrides)
+            assert ret == expected
+
+
+def test_initialize_ctx_with_absolute_dir(
+    hydra_restore_singletons: Any, tmpdir: Any
+) -> None:
+    with raises(
+        HydraException, match=re.escape("config_path in initialize() must be relative")
+    ):
+        with initialize(config_path=str(tmpdir)):
+            compose(overrides=["+test_group=test"])
+
+
+def test_initialize_config_dir_ctx_with_absolute_dir(
+    hydra_restore_singletons: Any, tmpdir: Any
+) -> None:
+    tmpdir = Path(tmpdir)
+    (tmpdir / "test_group").mkdir(parents=True)
+    cfg = OmegaConf.create({"foo": "bar"})
+
+    cfg_file = tmpdir / "test_group" / "test.yaml"
+    with open(str(cfg_file), "w") as f:
+        f.write("# @package _group_\n")
+        OmegaConf.save(cfg, f)
+
+    with initialize_config_dir(config_dir=str(tmpdir)):
+        ret = compose(overrides=["+test_group=test"])
+        assert ret == {"test_group": cfg}
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
+)
+def test_jobname_override_initialize_ctx(
+    hydra_restore_singletons: Any, job_name: Optional[str], expected: str
+) -> None:
+    with initialize(
+        config_path="../examples/jupyter_notebooks/cloud_app/conf", job_name=job_name,
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == expected
+
+
+def test_jobname_override_initialize_config_dir_ctx(
+    hydra_restore_singletons: Any, tmpdir: Any
+) -> None:
+    with initialize_config_dir(config_dir=str(tmpdir), job_name="test_job"):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
+
+
+def test_initialize_config_module_ctx(hydra_restore_singletons: Any) -> None:
+    with initialize_config_module(
+        config_module="examples.jupyter_notebooks.cloud_app.conf"
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "app"
+
+    with initialize_config_module(
+        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
+
+    with initialize_config_module(
+        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
@@ -168,35 +266,30 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
             "did you forget an __init__.py?"
         ),
     ):
-        with initialize_ctx(config_path="../hydra/test_utils/configs/missing_init_py"):
+        with initialize(config_path="../hydra/test_utils/configs/missing_init_py"):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
             hydra.compose_config(config_name=None, overrides=[])
 
 
-def test_initialize_with_file(hydra_restore_singletons: Any) -> None:
-    initialize_with_file(
-        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
-    )
-    assert compose(config_name="config") == {
-        "optimizer": {"type": "nesterov", "lr": 0.001}
-    }
-
-
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
-    initialize_with_module(
-        module="tests.test_apps.app_with_cfg_groups.my_app", config_path="conf"
-    )
-    assert compose(config_name="config") == {
-        "optimizer": {"type": "nesterov", "lr": 0.001}
-    }
+    with initialize_config_module(
+        config_module="tests.test_apps.app_with_cfg_groups.conf", job_name="my_pp"
+    ):
+        assert compose(config_name="config") == {
+            "optimizer": {"type": "nesterov", "lr": 0.001}
+        }
 
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
-    initialize_with_file(
-        file="tests/test_apps/app_with_cfg_groups/my_app.py", config_path="conf"
-    )
-    from tests.test_apps.app_with_cfg_groups.my_app import my_app
+    with initialize(config_path="test_apps/app_with_cfg_groups/conf"):
+        from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
 
-    cfg = compose(config_name="config", overrides=["optimizer.lr=0.1"])
-    assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 0.1}}
+        cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
+        assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}
+
+
+def test_initialization_root_module(monkeypatch: Any) -> None:
+    monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
+    subprocess.check_call([sys.executable, "main.py"],)
+    subprocess.check_call([sys.executable, "-m", "main"])

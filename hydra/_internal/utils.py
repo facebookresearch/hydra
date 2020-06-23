@@ -156,9 +156,9 @@ def compute_search_path_dir(
 def create_automatic_config_search_path(
     calling_file: Optional[str],
     calling_module: Optional[str],
-    config_dir: Optional[str],
+    config_path: Optional[str],
 ) -> ConfigSearchPath:
-    search_path_dir = compute_search_path_dir(calling_file, calling_module, config_dir)
+    search_path_dir = compute_search_path_dir(calling_file, calling_module, config_path)
     return create_config_search_path(search_path_dir)
 
 

@@ -31,4 +31,6 @@ rules:
 
 ignore: |
   **/.hydra/*.yaml
+  **/multirun.yaml
+  website
   .*

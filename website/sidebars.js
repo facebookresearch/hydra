@@ -86,6 +86,8 @@ module.exports = {
             'advanced/search_path',
             'advanced/plugins',
             'advanced/app_packaging',
+            'advanced/jupyter_notebooks',
+            'advanced/unit_testing',
         ],
 
         "Experimental": [

@@ -4,6 +4,7 @@ import copy
 import os
 import platform
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 import nox
@@ -66,7 +67,7 @@ def _upgrade_basic(session):
     )
 
 
-def find_python_files_for_mypy(folder):
+def find_files(path: str, ext: str = ".py"):
     exclude_list = [""]
 
     def excluded(file: str) -> bool:
@@ -75,9 +76,9 @@ def find_python_files_for_mypy(folder):
                 return True
         return False
 
-    for root, folders, files in os.walk(folder):
+    for root, folders, files in os.walk(path):
         for filename in folders + files:
-            if filename.endswith(".py"):
+            if filename.endswith(ext):
                 if excluded(filename):
                     yield os.path.join(root, filename)
 
@@ -217,7 +218,7 @@ def lint(session):
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", ".")
     # Mypy for examples
-    for pyfile in find_python_files_for_mypy("examples"):
+    for pyfile in find_files(path="examples", ext=".py"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)
 
 
@@ -264,16 +265,18 @@ def test_core(session, install_cmd):
 
     run_pytest(session, "tests")
 
-    # test discovery_test_plugin
-    run_pytest(session, "tests/test_plugins/discovery_test_plugin", "--noconftest")
+    standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
+    apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
 
-    # run namespace config loader tests
-    run_pytest(session, "tests/test_plugins/namespace_pkg_config_source_test")
+    apps.append(f"{BASE}/examples/advanced/hydra_app_example")
 
-    # Install and test example app
-    session.chdir(f"{BASE}/examples/advanced/hydra_app_example")
-    session.run(*install_cmd, ".", silent=SILENT)
-    run_pytest(session, ".")
+    session.log("Testing standalone apps")
+    for subdir in apps:
+        session.chdir(subdir)
+        session.run(*install_cmd, ".", silent=SILENT)
+        run_pytest(session, ".")
+
+    session.chdir(BASE)
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -368,12 +371,15 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval", "pyzmq==19.0.0")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        session, "--nbval", "examples/notebook/hydra_notebook_example.ipynb"
+        session,
+        "--nbval",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
-    args = pytest_args(session, "--nbval", "examples/notebook/%run_test.ipynb")
-    args = [x for x in args if x != "-Werror"]
-    session.run(*args, silent=SILENT)
+    for file in find_files(path="tests/jupyter", ext=".ipynb"):
+        args = pytest_args(session, "--nbval", file)
+        args = [x for x in args if x != "-Werror"]
+        session.run(*args, silent=SILENT)

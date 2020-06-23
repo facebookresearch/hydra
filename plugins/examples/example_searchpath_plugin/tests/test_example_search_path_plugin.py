@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.plugins import Plugins
-from hydra.experimental import initialize_ctx
+from hydra.experimental import initialize
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 
 from hydra_plugins.example_searchpath_plugin.example_searchpath_plugin import (
@@ -17,7 +17,7 @@ def test_discovery() -> None:
 
 
 def test_config_installed() -> None:
-    with initialize_ctx():
+    with initialize():
         config_loader = GlobalHydra.instance().config_loader()
         assert "my_default_output_dir" in config_loader.get_group_options(
             "hydra/output"

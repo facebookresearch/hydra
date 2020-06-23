@@ -8,4 +8,4 @@ Experimental features are new features in Hydra that are considered experimental
 stabilized.
 
 Those features should all work, but code relying on them may break in future versions as they evolve.
-Experiemntal features are expected be promoted out of experimental once they deemed stable and complete enough.
+Experimental features are expected be promoted out of experimental once they deemed stable and complete enough.

@@ -32,7 +32,7 @@ class JobLibConf:
     # number of atomic tasks to dispatch at once to each worker
     batch_size: str = "auto"
 
-    # folder used for memmapping large arrays for sharing memory with workers
+    # path used for memmapping large arrays for sharing memory with workers
     temp_folder: Optional[str] = None
 
     # thresholds size of arrays that triggers automated memmapping
