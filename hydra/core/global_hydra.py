@@ -11,9 +11,11 @@ class GlobalHydra(metaclass=Singleton):
         self.hydra: Optional[Hydra] = None
 
     def initialize(self, hydra: "Hydra") -> None:
-        assert isinstance(hydra, Hydra)
+        assert isinstance(hydra, Hydra), f"Unexpected Hydra type : {type(hydra)}"
         if self.is_initialized():
-            raise ValueError("GlobalHydra is already initialized")
+            raise ValueError(
+                "GlobalHydra is already initialized, call GlobalHydra.instance().clear() if you want to re-initialize"
+            )
         self.hydra = hydra
 
     def config_loader(self) -> "ConfigLoader":

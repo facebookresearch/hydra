@@ -2,7 +2,7 @@
 import re
 from typing import Any, List, Optional, Type
 
-import pytest
+from pytest import mark, param, raises
 
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
@@ -10,7 +10,7 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
 class ConfigSourceTestSuite:
-    @pytest.mark.parametrize(  # type: ignore
+    @mark.parametrize(  # type: ignore
         "config_path, expected",
         [
             ("", True),
@@ -30,7 +30,7 @@ class ConfigSourceTestSuite:
         ret = src.is_group(config_path=config_path)
         assert ret == expected
 
-    @pytest.mark.parametrize(  # type: ignore
+    @mark.parametrize(  # type: ignore
         "config_path, expected",
         [
             ("", False),
@@ -52,7 +52,7 @@ class ConfigSourceTestSuite:
         ret = src.is_config(config_path=config_path)
         assert ret == expected
 
-    @pytest.mark.parametrize(  # type: ignore
+    @mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",
         [
             # groups
@@ -77,7 +77,7 @@ class ConfigSourceTestSuite:
             ("dataset", None, ["cifar10", "imagenet"]),
         ],
     )
-    def test_source_list(
+    def test_list(
         self,
         type_: Type[ConfigSource],
         path: str,
@@ -91,21 +91,45 @@ class ConfigSourceTestSuite:
             assert x in ret
         assert ret == sorted(ret)
 
-    @pytest.mark.parametrize(  # type: ignore
+    @mark.parametrize(  # type: ignore
         "config_path,expected,expectation",
         [
-            ("config_without_group", {"group": False}, None),
-            (
+            param(
+                "config_without_group",
+                {"group": False},
+                None,
+                id="config_without_group",
+            ),
+            param(
                 "dataset/imagenet",
                 {"dataset": {"name": "imagenet", "path": "/datasets/imagenet"}},
                 None,
+                id="dataset/imagenet",
             ),
-            (
+            param(
                 "dataset/cifar10",
                 {"dataset": {"name": "cifar10", "path": "/datasets/cifar10"}},
                 None,
+                id="dataset/cifar10",
             ),
-            ("dataset/not_found", None, pytest.raises(ConfigLoadError)),
+            param(
+                "dataset/not_found",
+                None,
+                raises(ConfigLoadError),
+                id="dataset/not_found",
+            ),
+            param(
+                "level1/level2/nested1",
+                {"l1_l2_n1": True},
+                None,
+                id="level1/level2/nested1",
+            ),
+            param(
+                "level1/level2/nested2",
+                {"l1_l2_n2": True},
+                None,
+                id="level1/level2/nested2",
+            ),
         ],
     )
     def test_source_load_config(
@@ -126,32 +150,30 @@ class ConfigSourceTestSuite:
             ret = src.load_config(config_path=config_path, is_primary_config=False)
             assert ret.config == expected
 
-    @pytest.mark.parametrize(  # type: ignore
+    @mark.parametrize(  # type: ignore
         "config_path, expected_result, expected_package",
         [
-            pytest.param("package_test/none", {"foo": "bar"}, "", id="none"),
-            pytest.param(
+            param("package_test/none", {"foo": "bar"}, "", id="none"),
+            param(
                 "package_test/explicit",
                 {"a": {"b": {"foo": "bar"}}},
                 "a.b",
                 id="explicit",
             ),
-            pytest.param("package_test/global", {"foo": "bar"}, "", id="global"),
-            pytest.param(
+            param("package_test/global", {"foo": "bar"}, "", id="global"),
+            param(
                 "package_test/group",
                 {"package_test": {"foo": "bar"}},
                 "package_test",
                 id="group",
             ),
-            pytest.param(
+            param(
                 "package_test/group_name",
                 {"foo": {"package_test": {"group_name": {"foo": "bar"}}}},
                 "foo.package_test.group_name",
                 id="group_name",
             ),
-            pytest.param(
-                "package_test/name", {"name": {"foo": "bar"}}, "name", id="name"
-            ),
+            param("package_test/name", {"name": {"foo": "bar"}}, "name", id="name"),
         ],
     )
     def test_package_behavior(
@@ -179,7 +201,7 @@ class ConfigSourceTestSuite:
         self, type_: Type[ConfigSource], path: str,
     ) -> None:
         src = type_(provider="foo", path=path)
-        with pytest.raises(
+        with raises(
             HydraException,
             match=re.escape(
                 "Primary config 'primary_config_with_non_global_package' must be in the _global_ package; "

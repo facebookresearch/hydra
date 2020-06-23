@@ -57,7 +57,7 @@ class ConfigRepository:
     def group_exists(self, config_path: str) -> bool:
         return self._find_object_source(config_path, ObjectType.GROUP) is not None
 
-    def config_exists(self, config_path: str) -> bool:  # TODO: rename to config_exists?
+    def config_exists(self, config_path: str) -> bool:
         return self._find_object_source(config_path, ObjectType.CONFIG) is not None
 
     def get_group_options(

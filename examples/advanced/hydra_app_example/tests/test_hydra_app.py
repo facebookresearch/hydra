@@ -6,17 +6,30 @@ from typing import List
 
 import pytest
 
-from hydra.experimental import compose, initialize_with_module_ctx
+from hydra.experimental import compose, initialize, initialize_config_module
 from hydra_app.main import add
 
-# A few notes about this example:
-# 1. We use initialize_with_module_ctx. Hydra will find the config relative to the module.
-# 2. This is not sensitive to the working directory.
-# 3. Your config directory should be importable. it needs to have a __init__.py (can be empty).
+
+def test_with_initialize_config_module_ctx() -> None:
+    # 1. initialize_with_module_ctx will add the config module to the config search path within the context
+    # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
+    # 3. The module should be absolute (not realative to this file)
+    # 4. This approach is not sensitive to the location of this file.
+    with initialize_config_module(config_module="hydra_app.conf"):
+        # config is relative to a module
+        cfg = compose(config_name="config", overrides=["app.user=test_user"])
+        assert cfg == {
+            "app": {"user": "test_user", "num1": 10, "num2": 20},
+            "db": {"host": "localhost", "port": 3306},
+        }
 
 
-def test_generated_config() -> None:
-    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+def test_with_initialize_ctx() -> None:
+    # 1. initialize will add config_path the config search path within the context
+    # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
+    # 3. THe config path is relative to the file calling initialize (control this with caller_stack_depth)
+    # 4. This approach IS sensitive to the location of this file.
+    with initialize(config_path="../hydra_app/conf"):
         # config is relative to a module
         cfg = compose(config_name="config", overrides=["app.user=test_user"])
         assert cfg == {
@@ -35,7 +48,7 @@ def test_generated_config() -> None:
     ],
 )
 def test_user_logic(overrides: List[str], expected: int) -> None:
-    with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+    with initialize_config_module(config_module="hydra_app.conf"):
         cfg = compose(config_name="config", overrides=overrides)
         assert add(cfg.app, "num1", "num2") == expected
 
@@ -43,7 +56,7 @@ def test_user_logic(overrides: List[str], expected: int) -> None:
 # Some unittest style tests for good measure (pytest runs them)
 class TestWithUnittest(unittest.TestCase):
     def test_generated_config(self) -> None:
-        with initialize_with_module_ctx(module="hydra_app.main", config_path="conf"):
+        with initialize_config_module(config_module="hydra_app.conf"):
             cfg = compose(config_name="config", overrides=["app.user=test_user"])
             assert cfg == {
                 "app": {"user": "test_user", "num1": 10, "num2": 20},

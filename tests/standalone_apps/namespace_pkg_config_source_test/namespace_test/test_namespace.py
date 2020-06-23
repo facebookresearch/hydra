@@ -3,7 +3,7 @@ import pytest
 
 from hydra._internal.core_plugins.package_config_source import PackageConfigSource
 from hydra.core.global_hydra import GlobalHydra
-from hydra.experimental import initialize_ctx
+from hydra.experimental import initialize
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_plugin_root
 
@@ -25,7 +25,7 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def test_config_in_dir() -> None:
-    with initialize_ctx(config_path="../some_namespace/namespace_test/dir"):
+    with initialize(config_path="../some_namespace/namespace_test/dir"):
         config_loader = GlobalHydra.instance().config_loader()
         assert "cifar10" in config_loader.get_group_options("dataset")
         assert "imagenet" in config_loader.get_group_options("dataset")
