@@ -10,6 +10,12 @@ or by calling one of the initialization methods listed below.
 
 Compose is useful when `@hydra.main()` is not applicable for example in Unit tests or Jupyter notebooks.
 
+<div class="alert alert--info" role="alert">
+<strong>NOTE: </strong>
+It is highly recommended that you <b>do not</b> use the Compose API as an alternative to <b>@hydra.main()</b>.
+Doing so forfeits many of the benefits of Hydra (e.g., Tab completion, parameter sweeps, help integration and more)
+</div>
+
 ### Code example
 ```python
 from hydra.experimental import compose, initialize

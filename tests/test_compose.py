@@ -11,14 +11,11 @@ from omegaconf import OmegaConf
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.global_hydra import GlobalHydra
-from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
 from hydra.experimental import (
     compose,
     initialize,
-    initialize_config_dir,
     initialize_config_dir_ctx,
-    initialize_config_module,
     initialize_config_module_ctx,
     initialize_ctx,
 )
@@ -172,7 +169,7 @@ class TestComposeInits:
         with pytest.raises(
             HydraException,
             match=re.escape(
-                "initialize_config_dir does not support a module caller with a relative config_dir"
+                "initialize_config_dir() requires an absolute config_dir as input"
             ),
         ):
             with initialize_config_dir_ctx(
@@ -210,28 +207,25 @@ def test_initialize_config_dir_ctx_with_absolute_dir(
         assert ret == {"test_group": cfg}
 
 
-@pytest.mark.usefixtures("hydra_restore_singletons")
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
 )
-class TestInitJobNameOverride:
-    def test_jobname_override_initialize_ctx(
-        self, job_name: Optional[str], expected: str
-    ) -> None:
-        with initialize_ctx(
-            config_path="../examples/jupyter_notebooks/cloud_app/conf",
-            job_name=job_name,
-        ):
-            ret = compose(return_hydra_config=True)
-            assert ret.hydra.job.name == expected
+def test_jobname_override_initialize_ctx(
+    hydra_restore_singletons: Any, job_name: Optional[str], expected: str
+) -> None:
+    with initialize_ctx(
+        config_path="../examples/jupyter_notebooks/cloud_app/conf", job_name=job_name,
+    ):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == expected
 
-    def test_jobname_override_initialize_config_dir_ctx(
-        self, job_name: Optional[str], expected: str, tmpdir: Any
-    ) -> None:
-        # initialize_config_dir in unit tests supports only absolute paths
-        with initialize_config_dir_ctx(config_dir=str(tmpdir), job_name=job_name):
-            ret = compose(return_hydra_config=True)
-            assert ret.hydra.job.name == expected
+
+def test_jobname_override_initialize_config_dir_ctx(
+    hydra_restore_singletons: Any, tmpdir: Any
+) -> None:
+    with initialize_config_dir_ctx(config_dir=str(tmpdir), job_name="test_job"):
+        ret = compose(return_hydra_config=True)
+        assert ret.hydra.job.name == "test_job"
 
 
 def test_initialize_config_module_ctx(hydra_restore_singletons: Any) -> None:
@@ -272,7 +266,7 @@ def test_initialize_config_dir(hydra_restore_singletons: Any) -> None:
     with pytest.raises(
         HydraException,
         match=re.escape(
-            "initialize_config_dir does not support a module caller with a relative config_dir"
+            "initialize_config_dir() requires an absolute config_dir as input"
         ),
     ):
         with initialize_config_dir_ctx(
@@ -299,9 +293,6 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
 
 
 def test_initialization_root_module(monkeypatch: Any) -> None:
-    subprocess.check_call(
-        [sys.executable, "tests/test_apps/test_initializations/root_module/main.py"],
-    )
-
     monkeypatch.chdir("tests/test_apps/test_initializations/root_module")
+    subprocess.check_call([sys.executable, "main.py"],)
     subprocess.check_call([sys.executable, "-m", "main"])

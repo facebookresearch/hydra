@@ -373,14 +373,15 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval", "pyzmq==19.0.0")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        session, "--nbval", "examples/jupyter_notebooks/hydra_notebook_example.ipynb"
+        session,
+        "--nbval",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
     for file in find_files(path="tests/jupyter", ext=".ipynb"):
-        print(file)
         args = pytest_args(session, "--nbval", file)
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
