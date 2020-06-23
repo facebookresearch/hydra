@@ -2,7 +2,7 @@
 from setuptools import find_namespace_packages, setup
 
 setup(
-    name="hydra-namespace-test-plugin",
+    name="hydra-namespace-test-app",
     version="0.1.0",
     author="Omry Yadan",
     author_email="omry@fb.com",

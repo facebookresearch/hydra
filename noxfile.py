@@ -1,6 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # type: ignore
 import copy
+from pathlib import Path
+
 import os
 import platform
 from dataclasses import dataclass
@@ -264,21 +266,18 @@ def test_core(session, install_cmd):
 
     run_pytest(session, "tests")
 
-    # test discovery_test_plugin
-    run_pytest(session, "tests/test_plugins/discovery_test_plugin", "--noconftest")
+    standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
+    apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
 
-    # run namespace config loader tests
-    run_pytest(session, "tests/test_plugins/namespace_pkg_config_source_test")
+    apps.append(f"{BASE}/examples/advanced/hydra_app_example")
 
-    # Install and test example app
-    session.chdir(f"{BASE}/examples/advanced/hydra_app_example")
-    session.run(*install_cmd, ".", silent=SILENT)
-    run_pytest(session, ".")
+    session.log("Testing standalone apps")
+    for subdir in apps:
+        session.chdir(subdir)
+        session.run(*install_cmd, ".", silent=SILENT)
+        run_pytest(session, ".")
 
-    # Install and test initialization test app
-    session.chdir(f"{BASE}/tests/test_apps/test_initializations/full_app")
-    session.run(*install_cmd, ".", silent=SILENT)
-    run_pytest(session, ".")
+    session.chdir(BASE)
 
 
 @nox.session(python=PYTHON_VERSIONS)

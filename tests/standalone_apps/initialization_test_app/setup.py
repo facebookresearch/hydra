@@ -5,12 +5,12 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="test-initialization-app",
+    name="initialization-test-app",
     version="0.1",
-    packages=find_packages(include=["test_initialization_app"]),
+    packages=find_packages(include=["initialization_test_app"]),
     entry_points={
         "console_scripts": [
-            "test-initialization-app = test_initialization_app.main:main"
+            "initialization-test-app = initialization_test_app.main:main"
         ]
     },
     include_package_data=True,
