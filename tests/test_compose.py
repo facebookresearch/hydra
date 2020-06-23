@@ -193,7 +193,7 @@ class TestComposeInits:
             assert ret == expected
 
 
-def test_initialize_config_dir_ctz_with_absolute_dir(
+def test_initialize_config_dir_ctx_with_absolute_dir(
     hydra_restore_singletons: Any, tmpdir: Any
 ) -> None:
     tmpdir = Path(tmpdir)
