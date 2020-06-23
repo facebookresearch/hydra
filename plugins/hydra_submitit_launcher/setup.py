@@ -5,9 +5,9 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-submitit-launcher",
-        version="1.0.0rc3",
-        author="Omry Yadan, Jieru Hu",
-        author_email="omry@fb.com, jieru@fb.com",
+        version="1.0.0rc4",
+        author="Jeremy Rapin, Jieru Hu, Omry Yadan",
+        author_email="jrapin@fb.com, jieru@fb.com, omry@fb.com",
         description="Submitit Launcher for Hydra apps",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
