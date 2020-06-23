@@ -8,7 +8,7 @@ from hydra.experimental import (
     initialize_ctx,
 )
 
-
+# TODO: move all nox tested standalone apps into tests/standalone_apps
 def main() -> None:
     with initialize_ctx(config_path="conf"):
         cfg = compose(config_name="config", return_hydra_config=True)

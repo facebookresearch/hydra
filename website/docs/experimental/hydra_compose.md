@@ -57,7 +57,7 @@ def initialize(
     - Python modules
     - Unit tests
     - Jupyter notebooks.
-    :param config_path: path relative to the caller
+    :param config_path: path relative to the parent of the caller
     :param job_name: the value for hydra.job.name (default is 'app')
     :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
@@ -72,26 +72,15 @@ def initialize_config_module(config_module: str, job_name: str = "app") -> None:
     :param config_module: absolute module name, for example "foo.bar.conf".
     :param job_name: the value for hydra.job.name (default is 'app')
     """
-
 ```
 ```python title="Initialzing with config directory"
-def initialize_config_dir(
-    config_dir: str, job_name: Optional[str] = None, caller_stack_depth: int = 1,
-) -> None:
+def initialize_config_dir(config_dir: str, job_name: str = "app") -> None:
     """
-    Initializes Hydra and add the config_path to the config search path.
-    The config_path is always a path on the file system.
-    The config_path can either be an absolute path on the file system or a file
-    relative to the caller.
-
-    Supported callers:
-    - Python scripts
-    - Unit tests
-    - Jupyter notebooks.
-    If the caller is a Python module and the config dir is relative an error is raised.
-    :param config_dir: file system path relative to the caller or absolute
-    :param job_name: Optional job name to use instead of the automatically detected one
-    :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
+    Initializes Hydra and add an absolute config dir to the to the config search path.
+    The config_dir is always a path on the file system and is must be an absolute path.
+    Relative paths will result in an error.
+    :param config_dir: absolute file system path
+    :param job_name: the value for hydra.job.name (default is 'app')
     """
 ```
 
