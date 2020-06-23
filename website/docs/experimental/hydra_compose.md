@@ -10,7 +10,7 @@ or by calling one of the initialization methods listed below.
 
 Compose is useful when `@hydra.main()` is not applicable.
 ### Examples
- - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/jupyter-notebooks) (hydra_notebook_example.ipynb)
+ - [Jupyter notebook with compose](https://github.com/facebookresearch/hydra/tree/master/examples/jupyter_notebooks) (hydra_notebook_example.ipynb)
  - [Unit testing with compose](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py).
 
 ### Code example
@@ -25,7 +25,8 @@ if __name__ == "__main__":
     print(cfg.pretty())
 ```
 ### API Documentation
-```python
+
+```python title="Compose API"
 def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
@@ -33,13 +34,16 @@ def compose(
     return_hydra_config: bool = False,
 ) -> DictConfig:
     """
-    :param config_name: the name of the config (usually the file name without the .yaml extension)
+    :param config_name: the name of the config
+           (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
     :param strict: optionally override the default strict mode
-    :param return_hydra_config: True to return the hydra config node in the resulting config
+    :param return_hydra_config: True to return the hydra config node in the result
     :return: the composed config
     """
+```
 
+```python title="Relative initialization"
 def initialize(
     config_path: Optional[str] = None,
     job_name: Optional[str] = "app",
@@ -50,6 +54,7 @@ def initialize(
     Initializes Hydra and add the config_path to the config search path.
     config_path is relative to the parent of the caller.
     Hydra detects the caller type automatically at runtime.
+
     Supported callers:
     - Python scripts
     - Python modules
@@ -60,7 +65,9 @@ def initialize(
     :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
     """
+```
 
+```python title="Initialzing with config module"
 def initialize_config_module(config_module: str, job_name: str = "app") -> None:
     """
     Initializes Hydra and add the config_module to the config search path.
@@ -69,18 +76,22 @@ def initialize_config_module(config_module: str, job_name: str = "app") -> None:
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 
+```
+```python title="Initialzing with config directory"
 def initialize_config_dir(
     config_dir: str, job_name: Optional[str] = None, caller_stack_depth: int = 1,
 ) -> None:
     """
     Initializes Hydra and add the config_path to the config search path.
     The config_path is always a path on the file system.
-    The config_path can either be an absolute path on the file system or a file relative to the caller.
+    The config_path can either be an absolute path on the file system or a file
+    relative to the caller.
+
     Supported callers:
     - Python scripts
     - Unit tests
     - Jupyter notebooks.
-    If the caller is a Python module and the config dir is relative an error will be raised.
+    If the caller is a Python module and the config dir is relative an error is raised.
     :param config_dir: file system path relative to the caller or absolute
     :param job_name: Optional job name to use instead of the automatically detected one
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).

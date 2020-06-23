@@ -71,12 +71,14 @@ def initialize_config_dir(
     """
     Initializes Hydra and add the config_path to the config search path.
     The config_path is always a path on the file system.
-    The config_path can either be an absolute path on the file system or a file relative to the caller.
+    The config_path can either be an absolute path on the file system or a file
+    relative to the caller.
+
     Supported callers:
     - Python scripts
     - Unit tests
     - Jupyter notebooks.
-    If the caller is a Python module and the config dir is relative an error will be raised.
+    If the caller is a Python module and the config dir is relative an error is raised.
     :param config_dir: file system path relative to the caller or absolute
     :param job_name: Optional job name to use instead of the automatically detected one
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
