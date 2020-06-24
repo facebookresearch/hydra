@@ -1,6 +1,6 @@
 ---
 id: jupyter_notebooks
-title: Composing configs in Jupyter notebooks
+title: Hydra in Jupyter Notebooks
 ---
 
 Hydra supports config composition inside Jupyter notebooks via the [Compose API](../experimental/hydra_compose.md).  
