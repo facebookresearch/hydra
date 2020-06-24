@@ -14,7 +14,7 @@ def main() -> None:
     with initialize(config_path="conf"):
         cfg = compose(config_name="config", return_hydra_config=True)
         assert cfg.config == {"hello": "world"}
-        assert cfg.hydra.job.name == "app"
+        assert cfg.hydra.job.name == "main"
 
     with initialize(config_path="conf", job_name="test_job"):
         cfg = compose(config_name="config", return_hydra_config=True)
