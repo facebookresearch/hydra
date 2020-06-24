@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
 import unittest
 from typing import List
 
+import pytest
+
 import hydra_app.main
 from hydra.experimental import compose, initialize, initialize_config_module
+
 
 # 1. initialize will add config_path the config search path within the context
 # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
