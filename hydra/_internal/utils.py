@@ -58,7 +58,7 @@ def detect_calling_file_or_module_from_stack_frame(
 
     stack = inspect.stack()
     frame = stack[stack_depth]
-    if is_notebook():
+    if is_notebook() and "_dh" in frame[0].f_globals:
         pynb_dir = frame[0].f_globals["_dh"][0]
         calling_file = join(pynb_dir, "notebook.ipynb")
         return calling_file, None
@@ -113,7 +113,15 @@ def compute_search_path_dir(
     calling_module: Optional[str],
     config_path: Optional[str],
 ) -> str:
-    if calling_module is not None:
+    if calling_file is not None:
+        abs_base_dir = realpath(dirname(calling_file))
+
+        if config_path is not None:
+            search_path_dir = join(abs_base_dir, config_path)
+        else:
+            search_path_dir = abs_base_dir
+        search_path_dir = normpath(search_path_dir)
+    elif calling_module is not None:
         last_dot = calling_module.rfind(".")
         if last_dot != -1:
             calling_module = calling_module[0:last_dot]
@@ -135,14 +143,6 @@ def compute_search_path_dir(
                 search_path_dir = search_path_dir + "/" + config_path
             else:
                 search_path_dir = search_path_dir + config_path
-    elif calling_file is not None:
-        abs_base_dir = realpath(dirname(calling_file))
-
-        if config_path is not None:
-            search_path_dir = join(abs_base_dir, config_path)
-        else:
-            search_path_dir = abs_base_dir
-        search_path_dir = normpath(search_path_dir)
     else:
         raise ValueError()
 

@@ -5,7 +5,7 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 import nox
 from nox.logger import logger
@@ -67,12 +67,15 @@ def _upgrade_basic(session):
     )
 
 
-def find_files(path: str, ext: str = ".py"):
-    exclude_list = [""]
+def find_files(path: str, ext: str = ".py", exclude: Union[List[str], str] = []):
+    if isinstance(exclude, str):
+        exclude_list = [exclude]
+    else:
+        exclude_list = exclude
 
     def excluded(file: str) -> bool:
-        for exclude in exclude_list:
-            if file.startswith(exclude):
+        for item in exclude_list:
+            if file.startswith(item):
                 return True
         return False
 
@@ -379,7 +382,10 @@ def test_jupyter_notebooks(session):
     args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
-    for file in find_files(path="tests/jupyter", ext=".ipynb"):
-        args = pytest_args(session, "--nbval", file)
+    notebooks_dir = Path("tests/jupyter")
+    for notebook in [
+        file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
+    ]:
+        args = pytest_args(session, "--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)

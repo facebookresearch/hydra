@@ -78,6 +78,9 @@ class initialize:
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         restore_gh_from_backup(self._gh_backup)
 
+    def __repr__(self) -> str:
+        return "hydra.experimental.initialize()"
+
 
 class initialize_config_module:
     """
@@ -103,6 +106,9 @@ class initialize_config_module:
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         restore_gh_from_backup(self._gh_backup)
+
+    def __repr__(self) -> str:
+        return "hydra.experimental.initialize_config_module()"
 
 
 class initialize_config_dir:
@@ -133,3 +139,6 @@ class initialize_config_dir:
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         restore_gh_from_backup(self._gh_backup)
+
+    def __repr__(self) -> str:
+        return "hydra.experimental.initialize_config_dir()"

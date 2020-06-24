@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 from os.path import realpath
 from typing import List, Optional, Tuple
 
@@ -165,7 +166,12 @@ def test_prepend(
         (None, "package.module", "../conf", "pkg://conf"),
         (None, "package1.package2.module", "../conf", "pkg://package1/conf"),
         # prefer package
-        ("foo", "package1.package2.module", "../conf", "pkg://package1/conf"),
+        (
+            "foo",
+            "package1.package2.module",
+            "../conf",
+            os.path.realpath(os.path.join(os.getcwd(), "../conf")),
+        ),
     ],
 )
 def test_compute_search_path_dir(
