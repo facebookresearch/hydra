@@ -8,7 +8,7 @@ Use the [Compose API](../experimental/hydra_compose.md) to compose configs insid
 Each of the 3 initialization methods: `initialize()`, `initialize_config_module()` and `initialize_config_dir()` has a
 corresponding context that can be used in unit tests.
 
-Check the [example test](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py) to see
+Check the [example test](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_example.py) to see
 them in action.
 
 ```python
