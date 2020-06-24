@@ -1,0 +1,1 @@
+Fix initilzation of Hydra in a module imported from a Jupyter Notebook

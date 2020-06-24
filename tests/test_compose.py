@@ -266,7 +266,9 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
             "did you forget an __init__.py?"
         ),
     ):
-        with initialize(config_path="../hydra/test_utils/configs/missing_init_py"):
+        with initialize_config_module(
+            config_module="hydra.test_utils.configs.missing_init_py"
+        ):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
             hydra.compose_config(config_name=None, overrides=[])
