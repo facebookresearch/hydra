@@ -55,8 +55,6 @@ def detect_calling_file_or_module_from_task_function(
 def detect_calling_file_or_module_from_stack_frame(
     stack_depth: int,
 ) -> Tuple[Optional[str], Optional[str]]:
-    calling_file = None
-    calling_module = None
 
     stack = inspect.stack()
     frame = stack[stack_depth]
@@ -65,10 +63,8 @@ def detect_calling_file_or_module_from_stack_frame(
         calling_file = join(pynb_dir, "notebook.ipynb")
         return calling_file, None
 
-    try:
-        calling_file = frame[0].f_locals["__file__"]
-    except KeyError:
-        pass
+    calling_file = frame.filename
+    calling_module = None
     try:
         calling_module = _get_module_name_override()
         if calling_module is None:
