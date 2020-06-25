@@ -136,7 +136,7 @@ def compute_search_path_dir(
                 else:
                     calling_module = ""
 
-        search_path_dir = "importlib://" + calling_module
+        search_path_dir = "pkg://" + calling_module
 
         if config_path is not None:
             if calling_module != "":
@@ -163,7 +163,7 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     from hydra.plugins.search_path_plugin import SearchPathPlugin
 
     search_path = ConfigSearchPathImpl()
-    search_path.append("hydra", "importlib://hydra.conf")
+    search_path.append("hydra", "pkg://hydra.conf")
 
     if search_path_dir is not None:
         search_path.append("main", search_path_dir)

@@ -24,7 +24,6 @@ from hydra.core.utils import (
     setup_globals,
     simple_stdout_log_config,
 )
-from hydra.errors import MissingConfigException
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
@@ -492,14 +491,7 @@ class Hydra:
         :return:
         """
 
-        for source in self.config_loader.get_sources():
-            # if specified, make sure main config search path exists
-            if source.provider == "main":
-                if not source.exists(""):
-                    raise MissingConfigException(
-                        missing_cfg_file=source.path,
-                        message=f"Primary config dir not found: {source}",
-                    )
+        self.config_loader.ensure_main_config_source_available()
 
         cfg = self.config_loader.load_configuration(
             config_name=config_name, overrides=overrides, strict=strict

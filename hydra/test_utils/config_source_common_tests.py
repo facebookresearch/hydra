@@ -10,6 +10,14 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
 class ConfigSourceTestSuite:
+    def test_not_available(self, type_: Type[ConfigSource], path: str,) -> None:
+        scheme = type_(provider="foo", path=path).scheme()
+        # Test is meaningless for StructuredConfigSource
+        if scheme == "structured":
+            return
+        src = type_(provider="foo", path=f"{scheme}://___NOT_FOUND___")
+        assert not src.available()
+
     @mark.parametrize(  # type: ignore
         "config_path, expected",
         [

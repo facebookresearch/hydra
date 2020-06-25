@@ -3,7 +3,6 @@ import re
 from dataclasses import dataclass
 from typing import Any, List
 
-import pkg_resources
 import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 
@@ -40,13 +39,13 @@ class TopLevelConfig:
 
 hydra_load_list: List[LoadTrace] = [
     LoadTrace("hydra_config", "structured://", "hydra", None),
-    LoadTrace("hydra/hydra_logging/default", "importlib://hydra.conf", "hydra", None),
-    LoadTrace("hydra/job_logging/default", "importlib://hydra.conf", "hydra", None),
-    LoadTrace("hydra/launcher/basic", "importlib://hydra.conf", "hydra", None),
-    LoadTrace("hydra/sweeper/basic", "importlib://hydra.conf", "hydra", "hydra"),
-    LoadTrace("hydra/output/default", "importlib://hydra.conf", "hydra", None),
-    LoadTrace("hydra/help/default", "importlib://hydra.conf", "hydra", None),
-    LoadTrace("hydra/hydra_help/default", "importlib://hydra.conf", "hydra", None),
+    LoadTrace("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/job_logging/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/launcher/basic", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", "hydra"),
+    LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
 ]
 
 
@@ -55,7 +54,6 @@ hydra_load_list: List[LoadTrace] = [
     [
         pytest.param("file://hydra/test_utils/configs", id="file"),
         pytest.param("pkg://hydra.test_utils.configs", id="pkg"),
-        pytest.param("importlib://hydra.test_utils.configs", id="importlib"),
     ],
 )
 class TestConfigLoader:
@@ -496,23 +494,6 @@ def test_defaults_not_list_exception() -> None:
         )
 
 
-@pytest.mark.parametrize(  # type:ignore
-    "module_name, resource_name",
-    [
-        ("hydra.test_utils", ""),
-        ("hydra.test_utils", "__init__.py"),
-        ("hydra.test_utils", "configs"),
-        ("hydra.test_utils", "configs/config.yaml"),
-        ("hydra.test_utils.configs", ""),
-        ("hydra.test_utils.configs", "config.yaml"),
-        ("hydra.test_utils.configs", "group1"),
-        ("hydra.test_utils.configs", "group1/file1.yaml"),
-    ],
-)
-def test_resource_exists(module_name: str, resource_name: str) -> None:
-    assert pkg_resources.resource_exists(module_name, resource_name) is True
-
-
 def test_override_hydra_config_value_from_config_file() -> None:
     config_loader = ConfigLoaderImpl(
         config_search_path=create_config_search_path("hydra/test_utils/configs")
@@ -536,16 +517,12 @@ def test_override_hydra_config_group_from_config_file() -> None:
     # This load history is too different to easily reuse the standard hydra_load_list
     assert config_loader.get_load_history() == [
         LoadTrace("hydra_config", "structured://", "hydra", None),
-        LoadTrace(
-            "hydra/hydra_logging/hydra_debug", "importlib://hydra.conf", "hydra", None
-        ),
-        LoadTrace(
-            "hydra/job_logging/disabled", "importlib://hydra.conf", "hydra", None
-        ),
-        LoadTrace("hydra/sweeper/basic", "importlib://hydra.conf", "hydra", "hydra"),
-        LoadTrace("hydra/output/default", "importlib://hydra.conf", "hydra", None),
-        LoadTrace("hydra/help/default", "importlib://hydra.conf", "hydra", None),
-        LoadTrace("hydra/hydra_help/default", "importlib://hydra.conf", "hydra", None),
+        LoadTrace("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra", None),
+        LoadTrace("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra", None),
+        LoadTrace("hydra/sweeper/basic", "pkg://hydra.conf", "hydra", "hydra"),
+        LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
+        LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
+        LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
         LoadTrace(
             "overriding_logging_default.yaml",
             "file://hydra/test_utils/configs",

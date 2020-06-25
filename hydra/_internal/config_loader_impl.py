@@ -135,6 +135,45 @@ class ConfigLoaderImpl(ConfigLoader):
                 config_group_overrides.append(pwd)
         return config_group_overrides, config_overrides
 
+    def missing_config_error(
+        self, config_name: Optional[str], msg: str, with_search_path: bool
+    ) -> None:
+        def add_search_path(msg: str) -> str:
+            descs = []
+            for src in self.repository.get_sources():
+                if src.provider != "schema":
+                    descs.append(f"\t{repr(src)}")
+            lines = "\n".join(descs)
+
+            if with_search_path:
+                return msg + "\nSearch path:" + f"\n{lines}"
+            else:
+                return msg
+
+        raise MissingConfigException(
+            missing_cfg_file=config_name, message=add_search_path(msg)
+        )
+
+    def ensure_main_config_source_available(self) -> None:
+        for source in self.get_sources():
+            # if specified, make sure main config search path exists
+            if source.provider == "main":
+                if not source.available():
+                    if source.scheme() == "pkg":
+                        msg = (
+                            f"Primary config module '{source.path}' not found."
+                            f"\nCheck that it's correct and contains an __init__.py file"
+                        )
+                    else:
+                        msg = (
+                            f"Primary config directory not found."
+                            f"\nCheck that the config directory '{source.path}' exists and readable"
+                        )
+
+                    self.missing_config_error(
+                        config_name=None, msg=msg, with_search_path=False,
+                    )
+
     def load_configuration(
         self,
         config_name: Optional[str],
@@ -147,15 +186,10 @@ class ConfigLoaderImpl(ConfigLoader):
         parsed_overrides = [self._parse_override(override) for override in overrides]
 
         if config_name is not None and not self.repository.config_exists(config_name):
-            descs = []
-            for src in self.repository.get_sources():
-                if src.provider != "schema":
-                    descs.append(f"\t{repr(src)}")
-
-            lines = "\n".join(descs)
-            raise MissingConfigException(
-                missing_cfg_file=config_name,
-                message=f"Cannot find primary config file: {config_name}\nSearch path:\n{lines}",
+            self.missing_config_error(
+                config_name=config_name,
+                msg=f"Cannot find primary config : {config_name}, check that it's in your config search path",
+                with_search_path=True,
             )
 
         # Load hydra config
