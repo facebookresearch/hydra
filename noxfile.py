@@ -196,26 +196,41 @@ def select_plugins(session) -> List[Plugin]:
     return ret
 
 
-def install_lint_deps(session):
+def install_dev_deps(session):
     _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
-    session.run("pip", "install", "-e", ".", silent=SILENT)
+
+
+def _black_cmd():
+    black = ["black", "."]
+    if not FIX:
+        black += ["--check"]
+    return black
+
+
+def _isort_cmd():
+    isort = ["isort", "."]
+    if not FIX:
+        isort += ["--check", "--diff"]
+    return isort
 
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
-    install_lint_deps(session)
+    install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
-    session.run("black", "--check", ".", silent=SILENT)
-    session.run(
-        "isort",
-        "--check",
-        "--diff",
-        ".",
-        "--skip=plugins",
-        "--skip=.nox",
-        silent=SILENT,
-    )
+
+    apps = _get_standalone_apps_dir()
+    session.log("Installing standalone apps")
+    for subdir in apps:
+        session.chdir(str(subdir))
+        session.run(*_black_cmd(), silent=SILENT)
+        session.run(*_isort_cmd(), silent=SILENT)
+        session.chdir(BASE)
+
+    session.run(*_black_cmd(), silent=SILENT)
+    session.run(*_isort_cmd() + ["--skip=plugins", "--skip=.nox"], silent=SILENT)
+
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", ".")
@@ -236,22 +251,24 @@ def lint_plugins(session):
         cmd = install_cmd + [os.path.join("plugins", plugin.path)]
         session.run(*cmd, silent=SILENT)
 
-    install_lint_deps(session)
+    install_dev_deps(session)
 
     session.run("flake8", "--config", ".flake8", "plugins")
     # Mypy for plugins
     for plugin in plugins:
         session.chdir(os.path.join("plugins", plugin.path))
-        blackcmd = ["black", "."]
-        isortcmd = ["isort", "."]
-        if not FIX:
-            blackcmd += ["--check"]
-            isortcmd += ["--check", "--diff"]
-        session.run(*blackcmd, silent=SILENT)
-        session.run(*isortcmd, silent=SILENT)
+        session.run(*_black_cmd(), silent=SILENT)
+        session.run(*_isort_cmd(), silent=SILENT)
         session.chdir(BASE)
 
     session.run("mypy", ".", "--strict", silent=SILENT)
+
+
+def _get_standalone_apps_dir():
+    standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
+    apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
+    apps.append(f"{BASE}/examples/advanced/hydra_app_example")
+    return apps
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -267,11 +284,7 @@ def test_core(session, install_cmd):
 
     run_pytest(session, "tests")
 
-    standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
-    apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
-
-    apps.append(f"{BASE}/examples/advanced/hydra_app_example")
-
+    apps = _get_standalone_apps_dir()
     session.log("Testing standalone apps")
     for subdir in apps:
         session.chdir(subdir)
