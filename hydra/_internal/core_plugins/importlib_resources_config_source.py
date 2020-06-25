@@ -17,7 +17,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     @staticmethod
     def scheme() -> str:
-        return "importlib"
+        return "pkg"
 
     def load_config(
         self,
@@ -48,19 +48,19 @@ class ImportlibResourcesConfigSource(ConfigSource):
                 header=header,
             )
 
-    @staticmethod
-    def _exists(module_name: str, resource_name: str) -> bool:
-        raise NotImplementedError()
+    def available(self) -> bool:
+        try:
+            ret = importlib_resources.is_resource(self.path, "__init__.py")
+            assert isinstance(ret, bool)
+            return ret
+        except ModuleNotFoundError:
+            return False
 
     def is_group(self, config_path: str) -> bool:
         try:
             files = importlib_resources.files(self.path)
-        except ModuleNotFoundError:
+        except Exception:
             return False
-        except Exception as e:
-            raise type(e)(
-                f"Unexpected error checking content of '{self.path}', did you forget an __init__.py?"
-            ) from e
 
         res = files.joinpath(config_path)
         ret = res.exists() and res.is_dir()
@@ -71,12 +71,8 @@ class ImportlibResourcesConfigSource(ConfigSource):
         config_path = self._normalize_file_name(config_path)
         try:
             files = importlib_resources.files(self.path)
-        except ModuleNotFoundError:
+        except Exception:
             return False
-        except Exception as e:
-            raise type(e)(
-                f"Unexpected error checking content of '{self.path}', did you forget an __init__.py?"
-            ) from e
         res = files.joinpath(config_path)
         ret = res.exists() and res.is_file()
         assert isinstance(ret, bool)

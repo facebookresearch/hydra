@@ -9,7 +9,7 @@ from hydra_plugins.example_configsource_plugin.example_configsource_plugin impor
 )
 
 
-@pytest.mark.parametrize("type_, path", [(ConfigSourceExample, "example://some_path")])
+@pytest.mark.parametrize("type_, path", [(ConfigSourceExample, "example://valid_path")])
 class TestCoreConfigSources(ConfigSourceTestSuite):
     pass
 

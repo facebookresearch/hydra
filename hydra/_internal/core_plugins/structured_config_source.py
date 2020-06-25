@@ -58,6 +58,9 @@ class StructuredConfigSource(ConfigSource):
             header=header,
         )
 
+    def available(self) -> bool:
+        return True
+
     def is_group(self, config_path: str) -> bool:
         type_ = self.store.get_type(config_path.rstrip("/"))
         return type_ == ObjectType.GROUP

@@ -66,6 +66,13 @@ class ConfigSource(Plugin):
     def is_config(self, config_path: str) -> bool:
         ...
 
+    @abstractmethod
+    def available(self) -> bool:
+        """
+        :return: True is this config source is pointing to a valid location
+        """
+        ...
+
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         """
         List items under the specified config path

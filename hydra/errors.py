@@ -10,7 +10,7 @@ class MissingConfigException(IOError, HydraException):
     def __init__(
         self,
         message: str,
-        missing_cfg_file: str,
+        missing_cfg_file: Optional[str],
         options: Optional[Sequence[str]] = None,
     ) -> None:
         super(MissingConfigException, self).__init__(message)

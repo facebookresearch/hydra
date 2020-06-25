@@ -69,6 +69,12 @@ class ConfigSourceExample(ConfigSource):
             header=header,
         )
 
+    def available(self) -> bool:
+        """
+        :return: True is this config source is pointing to a valid location
+        """
+        return self.path == "valid_path"
+
     def is_group(self, config_path: str) -> bool:
         groups = {"", "dataset", "optimizer", "level1", "level1/level2"}
         return config_path in groups

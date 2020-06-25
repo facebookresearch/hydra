@@ -1,12 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 
-from hydra.experimental import (
-    compose,
-    initialize,
-    initialize_config_dir,
-    initialize_config_module,
-)
+from hydra.experimental import compose, initialize, initialize_config_dir
 
 if __name__ == "__main__":
     with initialize():

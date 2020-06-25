@@ -59,3 +59,7 @@ class ConfigLoader(ABC):
         self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
     ) -> List[str]:
         ...
+
+    @abstractmethod
+    def ensure_main_config_source_available(self) -> None:
+        ...

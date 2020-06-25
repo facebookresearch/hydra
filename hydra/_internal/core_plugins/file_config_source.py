@@ -47,6 +47,9 @@ class FileConfigSource(ConfigSource):
                 header=header,
             )
 
+    def available(self) -> bool:
+        return self.is_group("")
+
     def is_group(self, config_path: str) -> bool:
         full_path = os.path.realpath(os.path.join(self.path, config_path))
         return os.path.isdir(full_path)
