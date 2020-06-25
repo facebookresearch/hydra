@@ -98,10 +98,10 @@ def execute_job(
         working_dir = os.getcwd()
         lst = " ".join([f'{k}={v}' for k, v in task_cfg.items()])
         cmd = f"{cmd_prefix} {lst}"
-        log.info(f"\t#{idx} : {lst} -> {cmd}")
+        log.info(f"\t#{idx} : {lst}")
         cmd = f"cd {hydra.utils.get_original_cwd()} && {cmd} hydra.run.dir={working_dir}"
         job_id = int(subprocess.check_output(cmd, shell=True).rstrip())
-        log.info(f"Submitted {job_id} to TaskSpooler")
+        log.info(f"Submitted {idx} to TaskSpooler with task ID {job_id} -> {cmd}")
         return job_id
 
     ret = run_job(
