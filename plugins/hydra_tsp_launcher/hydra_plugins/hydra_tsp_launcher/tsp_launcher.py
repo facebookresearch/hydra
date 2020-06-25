@@ -100,19 +100,9 @@ def execute_job(
         cmd = f"{cmd_prefix} {lst}"
         log.info(f"\t#{idx} : {lst} -> {cmd}")
         cmd = f"cd {hydra.utils.get_original_cwd()} && {cmd} hydra.run.dir={working_dir}"
-        log.info(cmd)
         job_id = int(subprocess.check_output(cmd, shell=True).rstrip())
-        job_status = _get_job_status(tsp_prefix, job_id)
-        log.info(f"{job_id} has status {job_status}")
-
-        while job_status == 'queued':
-            time.sleep(1)
-            job_status = _get_job_status(tsp_prefix, job_id)
-        
-        log.info(f"{job_id} has status {job_status}")
-        subprocess.call(
-            f"{tsp_prefix} -t {job_id}", shell=True
-        )
+        log.info(f"Submitted {job_id} to TaskSpooler")
+        return job_id
 
     ret = run_job(
         config=sweep_config,
@@ -158,6 +148,17 @@ class TaskSpoolerLauncher(Launcher):
         self.tsp_prefix = look_for_task_spooler()
         self.cmd_prefix = f"{self.tsp_prefix} {self.cmd_prefix}"
 
+    def tail_job(self, job_id):
+        job_status = _get_job_status(self.tsp_prefix, job_id)
+        while job_status == 'queued':
+            time.sleep(1)
+            job_status = _get_job_status(self.tsp_prefix, job_id)
+        
+        log.info(f"{job_id} has status {job_status}")
+        subprocess.call(
+            f"{self.tsp_prefix} -t {job_id}", shell=True
+        )
+
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
@@ -181,8 +182,8 @@ class TaskSpoolerLauncher(Launcher):
         runs = []
         singleton_state = Singleton.get_state()        
 
-        runs = Parallel(n_jobs=len(job_overrides), backend='threading')(
-            delayed(execute_job)(
+        for idx, overrides in enumerate(job_overrides):
+            ret = execute_job(
                 initial_job_idx + idx,
                 overrides,
                 self.config_loader,
@@ -192,11 +193,17 @@ class TaskSpoolerLauncher(Launcher):
                 self.cmd_prefix,
                 self.tsp_prefix,
             )
-            for idx, overrides in enumerate(job_overrides)
-        )
+            runs.append(ret)
         
         assert isinstance(runs, List)
         for run in runs:
             assert isinstance(run, JobReturn)
+
+        runs = Parallel(n_jobs=len(job_overrides), backend='threading')(
+            delayed(self.tail_job)(
+                run.return_value
+            )
+            for run in runs
+        )
         
         return runs
