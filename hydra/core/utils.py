@@ -230,21 +230,3 @@ def env_override(env: Dict[str, str]) -> Any:
                 del os.environ[key]
             else:
                 os.environ[key] = value
-
-
-def verify_pytest_plugin_version() -> None:
-    from distutils.version import LooseVersion
-
-    try:
-        import hydra_pytest_plugin
-
-    except ImportError:
-        raise ValueError("hydra_pytest_plugin is not installed")
-
-    min_pytest_plugin_version = "1.0"
-    installed_version = hydra_pytest_plugin.__version__
-    if LooseVersion(min_pytest_plugin_version) > LooseVersion(installed_version):
-        raise ValueError(
-            f"Required version for hydra_pytest_plugin is {min_pytest_plugin_version}"
-            f" or newer, installed version is {hydra_pytest_plugin.__version__}"
-        )

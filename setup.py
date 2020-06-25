@@ -110,6 +110,7 @@ with open("README.md", "r") as fh:
             "Operating System :: Microsoft :: Windows",
         ],
         install_requires=install_requires,
+        entry_points={"pytest11": ["hydra_pytest = hydra.extra.pytest_plugin"]},
         # Install development dependencies with
         # pip install -r requirements/dev.txt -e .
     )
