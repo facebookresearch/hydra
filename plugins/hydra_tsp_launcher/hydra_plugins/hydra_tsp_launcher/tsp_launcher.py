@@ -101,7 +101,7 @@ def execute_job(
         log.info(f"\t#{idx} : {lst}")
         cmd = f"cd {hydra.utils.get_original_cwd()} && {cmd} hydra.run.dir={working_dir}"
         job_id = int(subprocess.check_output(cmd, shell=True).rstrip())
-        log.info(f"Submitted {idx} to TaskSpooler with task ID {job_id} -> {cmd}")
+        log.info(f"Submitted {idx} to TaskSpooler. View logs: {tsp_prefix} -t {job_id}")
         return job_id
 
     ret = run_job(
@@ -127,11 +127,10 @@ class TaskSpoolerLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 class TaskSpoolerLauncher(Launcher):
-    def __init__(self, max_workers : int = None, time_between_submit : int = 0) -> None:
+    def __init__(self, time_between_submit : int = 0) -> None:
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
-        self.max_workers = max_workers
         self.time_between_submit = time_between_submit
 
     def setup(
@@ -194,6 +193,7 @@ class TaskSpoolerLauncher(Launcher):
                 self.tsp_prefix,
             )
             runs.append(ret)
+            time.sleep(self.time_between_submit)
         
         assert isinstance(runs, List)
         for run in runs:
