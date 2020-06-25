@@ -80,7 +80,6 @@ def execute_job(
     singleton_state: Dict[Any, Any],
     cmd_prefix: str,
     tsp_prefix: str,
-    working_dir: str = None
 ) -> JobReturn:
     """Calls `run_job` in parallel
     """
@@ -96,8 +95,8 @@ def execute_job(
     HydraConfig.instance().set_config(sweep_config)
 
     def tsp_task_function(task_cfg):
+        working_dir = os.getcwd()
         lst = " ".join([f'{k}={v}' for k, v in task_cfg.items()])
-        print(working_dir)
         cmd = f"{cmd_prefix} {lst}"
         log.info(f"\t#{idx} : {lst} -> {cmd}")
         cmd = f"cd {hydra.utils.get_original_cwd()} && {cmd} hydra.run.dir={working_dir}"
@@ -114,14 +113,10 @@ def execute_job(
         subprocess.call(
             f"{tsp_prefix} -t {job_id}", shell=True
         )
-    
-    def get_working_dir(task_cfg):
-        return os.getcwd()
 
-    _task_function = tsp_task_function if working_dir is not None else get_working_dir
     ret = run_job(
         config=sweep_config,
-        task_function=_task_function,
+        task_function=tsp_task_function,
         job_dir_key="hydra.sweep.dir",
         job_subdir_key="hydra.sweep.subdir",
     )
@@ -184,20 +179,7 @@ class TaskSpoolerLauncher(Launcher):
         )
         log.info(f"Sweep output dir : {sweep_dir}")
         runs = []
-        singleton_state = Singleton.get_state()
-
-        working_dirs = [
-            execute_job(
-                initial_job_idx + idx,
-                overrides,
-                self.config_loader,
-                self.config,
-                self.task_function,
-                singleton_state,
-                self.cmd_prefix,
-                self.tsp_prefix
-            ).return_value for idx, overrides in enumerate(job_overrides)]
-        
+        singleton_state = Singleton.get_state()        
 
         runs = Parallel(n_jobs=len(job_overrides), backend='threading')(
             delayed(execute_job)(
@@ -209,7 +191,6 @@ class TaskSpoolerLauncher(Launcher):
                 singleton_state,
                 self.cmd_prefix,
                 self.tsp_prefix,
-                working_dir=working_dirs[idx]
             )
             for idx, overrides in enumerate(job_overrides)
         )
