@@ -158,8 +158,7 @@ def test_prepend(
         ("foo/bar.py", None, "../conf", realpath("conf")),
         ("c:/foo/bar.py", None, "conf", realpath("c:/foo/conf")),
         ("c:/foo/bar.py", None, "../conf", realpath("c:/conf")),
-        # short module name, keep it to avoid empty module error
-        (None, "module", None, "pkg://module"),
+        (None, "module", None, "pkg://"),
         (None, "package.module", None, "pkg://package"),
         (None, "package.module", "conf", "pkg://package/conf"),
         # This is an unusual one. this behavior is intentional.

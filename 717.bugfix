@@ -1,0 +1,1 @@
+Fix handling of main module override via HYDRA_MAIN_MODULE

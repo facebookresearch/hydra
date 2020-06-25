@@ -4,7 +4,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, List, Set
+from typing import Any, List, Optional, Set
 
 import pytest
 from omegaconf import DictConfig, OmegaConf
@@ -17,6 +17,7 @@ from hydra.test_utils.test_utils import (
     integration_test,
     verify_dir_outputs,
 )
+from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -800,3 +801,31 @@ def test_hydra_output_dir(
         path = Path(task.temp_dir)
         files = set([str(x)[len(task.temp_dir) + 1 :] for x in path.iterdir()])
         assert files == expected_files
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "directory,file,module, error",
+    [
+        ("tests/test_apps/run_as_module/1", "my_app.py", "my_app", "Empty module name"),
+        ("tests/test_apps/run_as_module/2", "my_app.py", "my_app", None),
+        ("tests/test_apps/run_as_module/3", "module/my_app.py", "module.my_app", None),
+        ("tests/test_apps/run_as_module/4", "module/my_app.py", "module.my_app", None),
+    ],
+)
+def test_module_run(
+    tmpdir: Any, directory: str, file: str, module: str, error: Optional[str]
+) -> None:
+    cmd = [
+        sys.executable,
+        directory + "/" + file,
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    modified_env = os.environ.copy()
+    modified_env["PYTHONPATH"] = directory
+    modified_env["HYDRA_MAIN_MODULE"] = module
+    if error is not None:
+        ret = run_with_error(cmd, modified_env)
+        assert re.search(re.escape(error), ret) is not None
+    else:
+        result = subprocess.check_output(cmd, env=modified_env)
+        assert OmegaConf.create(str(result.decode("utf-8"))) == {"x": 10}

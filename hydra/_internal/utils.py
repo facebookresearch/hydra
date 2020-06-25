@@ -38,11 +38,7 @@ def detect_calling_file_or_module_from_task_function(
     calling_module: Optional[str]
     if mdl is not None:
         calling_file = None
-        # short module name
-        if mdl.rfind(".") == -1:
-            calling_module = "__main__"
-        else:
-            calling_module = mdl
+        calling_module = mdl
     else:
         calling_file = task_function.__code__.co_filename
         calling_module = None
@@ -125,6 +121,8 @@ def compute_search_path_dir(
         last_dot = calling_module.rfind(".")
         if last_dot != -1:
             calling_module = calling_module[0:last_dot]
+        else:
+            calling_module = ""
 
         if config_path is not None:
             config_path = config_path.replace(os.path.sep, "/")
