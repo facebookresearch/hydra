@@ -1,1 +1,1 @@
-Add a unit testing example in the [Hydra example application](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/hydra_app_example/tests/test_hydra_app.py)
+Add a unit testing example in the [Hydra example application](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/hydra_app_example/tests/test_example.py)

@@ -1,3 +1,0 @@
-include hydra_pytest_plugin/py.typed
-global-exclude *.pyc
-global-exclude __pycache__
