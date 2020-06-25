@@ -1,0 +1,4 @@
+defaults:
+  - hydra/launcher: tsp
+
+task: 1
