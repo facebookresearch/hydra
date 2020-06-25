@@ -199,7 +199,7 @@ class TaskSpoolerLauncher(Launcher):
         for run in runs:
             assert isinstance(run, JobReturn)
 
-        runs = Parallel(n_jobs=len(job_overrides), backend='threading')(
+        Parallel(n_jobs=len(job_overrides), backend='threading')(
             delayed(self.tail_job)(
                 run.return_value
             )
