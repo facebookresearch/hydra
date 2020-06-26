@@ -16,8 +16,8 @@ class PostGreSQLConfig:
     ...
 
 defaults = [
-    # Load the config "mysql" from the config group "database"
-    {"database": "mysql"}
+    # Load the config "mysql" from the config group "db"
+    {"db": "mysql"}
 ]
 
 @dataclass
