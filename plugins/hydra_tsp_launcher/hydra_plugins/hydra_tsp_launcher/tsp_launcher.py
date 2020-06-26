@@ -23,6 +23,7 @@ import os
 import sys
 import hydra
 import time
+import copy
 
 from joblib import Parallel, delayed
 
@@ -86,7 +87,7 @@ def execute_job(
     setup_globals()
     Singleton.set_state(singleton_state)
 
-    lst = " ".join(filter_overrides(overrides))
+    lst = " ".join(overrides)
 
     sweep_config = config_loader.load_sweep_config(config, list(overrides))
     with open_dict(sweep_config):
@@ -96,7 +97,6 @@ def execute_job(
 
     def tsp_task_function(task_cfg):
         working_dir = os.getcwd()
-        lst = " ".join([f'{k}={v}' for k, v in task_cfg.items()])
         cmd = f"{cmd_prefix} {lst}"
         log.info(f"\t#{idx} : {lst}")
         cmd = f"cd {hydra.utils.get_original_cwd()} && {cmd} hydra.run.dir={working_dir}"
@@ -110,6 +110,7 @@ def execute_job(
         job_dir_key="hydra.sweep.dir",
         job_subdir_key="hydra.sweep.subdir",
     )
+    ret.id = ret.return_value
 
     return ret
 
@@ -127,7 +128,7 @@ class TaskSpoolerLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 class TaskSpoolerLauncher(Launcher):
-    def __init__(self, tail_jobs : bool = False, 
+    def __init__(self, tail_jobs : bool = True, 
                  time_between_submit : int = 0) -> None:
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
@@ -145,6 +146,12 @@ class TaskSpoolerLauncher(Launcher):
         self.config_loader = config_loader
         self.task_function = task_function
 
+        hydra_overrides = []
+        for arg in sys.argv:
+            if '=' in arg and arg.startswith('hydra.'):
+                hydra_overrides.append(arg)
+
+        self.hydra_overrides = hydra_overrides
         self.cmd_prefix = f"{sys.executable} {sys.argv[0]}"
         self.tsp_prefix = look_for_task_spooler()
         self.cmd_prefix = f"{self.tsp_prefix} {self.cmd_prefix}"
@@ -184,6 +191,10 @@ class TaskSpoolerLauncher(Launcher):
         singleton_state = Singleton.get_state()        
 
         for idx, overrides in enumerate(job_overrides):
+            overrides = list(overrides)
+            overrides.extend(self.hydra_overrides)
+            overrides = tuple(overrides)
+
             ret = execute_job(
                 initial_job_idx + idx,
                 overrides,
