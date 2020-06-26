@@ -127,11 +127,13 @@ class TaskSpoolerLauncherSearchPathPlugin(SearchPathPlugin):
         )
 
 class TaskSpoolerLauncher(Launcher):
-    def __init__(self, time_between_submit : int = 0) -> None:
+    def __init__(self, tail_jobs : bool = False, 
+                 time_between_submit : int = 0) -> None:
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
         self.time_between_submit = time_between_submit
+        self.tail_jobs = tail_jobs
 
     def setup(
         self,
@@ -199,11 +201,11 @@ class TaskSpoolerLauncher(Launcher):
         for run in runs:
             assert isinstance(run, JobReturn)
 
-        Parallel(n_jobs=len(job_overrides), backend='threading')(
-            delayed(self.tail_job)(
-                run.return_value
+        if self.tail_jobs:
+            Parallel(n_jobs=len(job_overrides), backend='threading')(
+                delayed(self.tail_job)(
+                    run.return_value
+                )
+                for run in runs
             )
-            for run in runs
-        )
-        
         return runs
