@@ -85,7 +85,7 @@ def initialize(
     - Unit tests
     - Jupyter notebooks.
     :param config_path: path relative to the parent of the caller
-    :param job_name: the value for hydra.job.name (default is 'app')
+    :param job_name: the value for hydra.job.name (By default it is automatically detected based on the caller)
     :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
     """
