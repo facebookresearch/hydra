@@ -55,7 +55,7 @@ class RQConf:
 
 @dataclass
 class RQLauncherConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
+    target: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
     params: RQConf = RQConf()
 
 

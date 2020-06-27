@@ -29,7 +29,7 @@ from hydra.types import ObjectConf, TaskFunction
 
 @dataclass
 class BasicSweeperConf(ObjectConf):
-    cls: str = MISSING
+    target: str = MISSING
 
     @dataclass
     class Params:

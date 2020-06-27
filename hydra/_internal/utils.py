@@ -8,7 +8,17 @@ import sys
 import warnings
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
+from typing import (
+    Any,
+    Callable,
+    List,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 
 from omegaconf import DictConfig, OmegaConf, _utils, read_write
 from omegaconf.errors import OmegaConfBaseException
@@ -454,18 +464,22 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
 
 
 def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
-    # copy config to avoid mutating it when merging with kwargs
-    config_copy = copy.deepcopy(config)
 
-    # Manually set parent as deepcopy does not currently handles it (https://github.com/omry/omegaconf/issues/130)
-    # noinspection PyProtectedMember
-    config_copy._set_parent(config._get_parent())  # type: ignore
-    config = config_copy
+    if isinstance(config, ObjectConf):
+        config = OmegaConf.structured(config)
+    else:
+        config = copy.deepcopy(config)
 
-    params = config.params if "params" in config else OmegaConf.create()
+    params = config.params if hasattr(config, "params") else {}
+
     assert isinstance(
-        params, DictConfig
+        params, MutableMapping
     ), f"Input config params are expected to be a mapping, found {type(config.params).__name__}"
+
+    if isinstance(config, DictConfig):
+        assert isinstance(params, DictConfig)
+        params._set_parent(config)
+
     primitives = {}
     rest = {}
     for k, v in kwargs.items():
@@ -474,8 +488,9 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
         else:
             rest[k] = v
     final_kwargs = {}
+
     with read_write(params):
-        params.merge_with(OmegaConf.create(primitives))
+        params.merge_with(primitives)
 
     for k, v in params.items():
         final_kwargs[k] = v
@@ -486,20 +501,52 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
 
 
 def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
-    if "class" in config:
-        warnings.warn(
-            "\n"
-            "ObjectConf field 'class' is deprecated since Hydra 1.0.0 and will be removed in a future Hydra version.\n"
-            "Offending config class:\n"
-            f"\tclass={config['class']}\n"
-            "Change your config to use 'cls' instead of 'class'.\n",
-            category=UserWarning,
-        )
-        classname = config["class"]
+    def _warn(field: str) -> None:
+        if isinstance(config, DictConfig):
+            warnings.warn(
+                f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+Use 'target' instead of '{field}'.""",
+                category=UserWarning,
+            )
+        else:
+            warnings.warn(
+                f"""
+ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+Use 'target' instead of '{field}'.""",
+                category=UserWarning,
+            )
+
+    def _getcls(field: str) -> str:
+        classname = getattr(config, field)
         assert isinstance(classname, str)
         return classname
-    else:
-        if "cls" in config:
-            return config.cls
+
+    def _has_field(field: str) -> bool:
+        if isinstance(config, DictConfig):
+            if field in config:
+                ret = config[field] != "???"
+                assert isinstance(ret, bool)
+                return ret
+            else:
+                return False
         else:
-            raise ValueError("Input config does not have a cls field")
+            if hasattr(config, field):
+                ret = getattr(config, field) != "???"
+                assert isinstance(ret, bool)
+                return ret
+            else:
+                return False
+
+    if _has_field(field="class"):
+        _warn(field="class")
+    elif _has_field(field="cls"):
+        _warn(field="cls")
+
+    if _has_field(field="target"):
+        return _getcls(field="target")
+    elif _has_field(field="cls"):
+        return _getcls(field="cls")
+    elif _has_field(field="class"):
+        return _getcls(field="class")
+    else:
+        raise ValueError("Input config does not have a target field")

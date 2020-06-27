@@ -1,13 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Tuple
 
 import pytest
 from omegaconf import DictConfig, OmegaConf
 
-import hydra._internal.utils as internal_utils
 from hydra import utils
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
@@ -16,6 +16,21 @@ from hydra.types import ObjectConf
 
 def some_method() -> int:
     return 42
+
+
+class Parameters:
+    def __init__(self, params: List[float]):
+        self.params = params
+
+
+@dataclass
+class Adam:
+    params: Parameters
+    lr: float = 0.001
+    betas: Tuple[float, ...] = (0.9, 0.999)
+    eps: float = 1e-08
+    weight_decay: int = 0
+    amsgrad: bool = False
 
 
 class Bar:
@@ -64,8 +79,8 @@ class Foo:
 
 class Baz(Foo):
     @classmethod
-    def class_method(self, y: int) -> Any:
-        return self(y + 1)
+    def class_method(cls, y: int) -> Any:
+        return cls(y + 1)
 
     @staticmethod
     def static_method(z: int) -> int:
@@ -123,115 +138,115 @@ def test_get_static_method(path: str, return_value: Any) -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "input_conf, key_to_get_config, kwargs_to_pass, expected",
+    "input_conf, kwargs_to_pass, expected",
     [
-        (
+        pytest.param(
             {
-                "cls": "tests.test_utils.Bar",
+                "target": "tests.test_utils.Bar",
                 "params": {"a": 10, "b": 20, "c": 30, "d": 40},
             },
-            None,
             {},
             Bar(10, 20, 30, 40),
+            id="class",
         ),
-        (
+        pytest.param(
+            {"target": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}},
+            {"a": 10, "d": 40},
+            Bar(10, 20, 30, 40),
+            id="class+override",
+        ),
+        pytest.param(
             {
-                "all_params": {
-                    "main": {
-                        "cls": "tests.test_utils.Bar",
-                        "params": {"a": 10, "b": 20, "c": "${all_params.aux.c}"},
-                    },
-                    "aux": {"c": 30},
-                }
+                "target": "tests.test_utils.Bar",
+                "params": {"b": 200, "c": "${params.b}"},
             },
-            "all_params.main",
-            {"d": 40},
-            Bar(10, 20, 30, 40),
-        ),
-        (
-            {"cls": "tests.test_utils.Bar", "params": {"b": 20, "c": 30}},
-            None,
-            {"a": 10, "d": 40},
-            Bar(10, 20, 30, 40),
-        ),
-        (
-            {"cls": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
-            None,
-            {"a": 10, "d": 40},
-            Bar(10, 200, 200, 40),
+            {"a": 10, "b": 99, "d": 40},
+            Bar(10, 99, 99, 40),
+            id="class+override+interpolation",
         ),
         # Check class and static methods
-        (
-            {"cls": "tests.test_utils.Baz.class_method", "params": {"y": 10}},
-            None,
+        pytest.param(
+            {"target": "tests.test_utils.Baz.class_method", "params": {"y": 10}},
             {},
             Baz(11),
+            id="class_method",
         ),
-        (
-            {"cls": "tests.test_utils.Baz.static_method", "params": {"z": 43}},
-            None,
+        pytest.param(
+            {"target": "tests.test_utils.Baz.static_method", "params": {"z": 43}},
             {},
             43,
+            id="static_method",
         ),
         # Check nested types and static methods
-        ({"cls": "tests.test_utils.Fii", "params": {}}, None, {}, Fii(Baz(10)),),
-        (
-            {"cls": "tests.test_utils.fii.a.class_method", "params": {"y": 10}},
-            None,
+        pytest.param(
+            {"target": "tests.test_utils.Fii", "params": {}},
+            {},
+            Fii(Baz(10)),
+            id="class_with_nested_class",
+        ),
+        pytest.param(
+            {"target": "tests.test_utils.fii.a.class_method", "params": {"y": 10}},
             {},
             Baz(11),
+            id="class_method_on_an_object_nested_in_a_global",
         ),
-        (
-            {"cls": "tests.test_utils.fii.a.static_method", "params": {"z": 43}},
-            None,
+        pytest.param(
+            {"target": "tests.test_utils.fii.a.static_method", "params": {"z": 43}},
             {},
             43,
+            id="static_method_on_an_object_nested_in_a_global",
         ),
         # Check that default value is respected
-        (
-            {"cls": "tests.test_utils.Bar", "params": {"b": 200, "c": "${params.b}"}},
-            None,
+        pytest.param(
+            {
+                "target": "tests.test_utils.Bar",
+                "params": {"b": 200, "c": "${params.b}"},
+            },
             {"a": 10},
             Bar(10, 200, 200, "default_value"),
+            id="instantiate_respects_default_value",
         ),
-        (
-            {"cls": "tests.test_utils.Bar", "params": {}},
-            None,
+        pytest.param(
+            {"target": "tests.test_utils.Bar", "params": {}},
             {"a": 10, "b": 20, "c": 30},
             Bar(10, 20, 30, "default_value"),
+            id="instantiate_respects_default_value",
         ),
         # call a function from a module
-        ({"cls": "tests.test_utils.fum", "params": {"k": 43}}, None, {}, 44,),
+        pytest.param(
+            {"target": "tests.test_utils.fum", "params": {"k": 43}},
+            {},
+            44,
+            id="call_function_in_module",
+        ),
         # Check builtins
-        ({"cls": "builtins.str", "params": {"object": 43}}, None, {}, "43",),
+        pytest.param(
+            {"target": "builtins.str", "params": {"object": 43}},
+            {},
+            "43",
+            id="builtin_types",
+        ),
     ],
 )
 def test_class_instantiate(
-    input_conf: Dict[str, Any],
-    key_to_get_config: Optional[str],
-    kwargs_to_pass: Dict[str, Any],
-    expected: Any,
+    input_conf: Any, kwargs_to_pass: Dict[str, Any], expected: Any,
 ) -> Any:
     conf = OmegaConf.create(input_conf)
     assert isinstance(conf, DictConfig)
-    if key_to_get_config is None:
-        config_to_pass = conf
-    else:
-        config_to_pass = OmegaConf.select(conf, key_to_get_config)
-    config_to_pass_copy = copy.deepcopy(config_to_pass)
-    obj = utils.instantiate(config_to_pass, **kwargs_to_pass)
+    conf_copy = copy.deepcopy(conf)
+    obj = utils.instantiate(conf, **kwargs_to_pass)
     assert obj == expected
     # make sure config is not modified by instantiate
-    assert config_to_pass == config_to_pass_copy
+    assert conf == conf_copy
 
 
 def test_class_instantiate_pass_omegaconf_node() -> Any:
-    pc = ObjectConf()
-    # This is a bit clunky because it exposes a problem with the backport of dataclass on Python 3.6
-    # see: https://github.com/ericvsmith/dataclasses/issues/155
-    pc.cls = "tests.test_utils.Bar"
-    pc.params = {"b": 200, "c": {"x": 10, "y": "${params.b}"}}
-    conf = OmegaConf.structured(pc)
+    conf = OmegaConf.structured(
+        ObjectConf(
+            target="tests.test_utils.Bar",
+            params={"b": 200, "c": {"x": 10, "y": "${params.b}"}},
+        )
+    )
     obj = utils.instantiate(conf, **{"a": 10, "d": Foo(99)})
     assert obj == Bar(10, 200, {"x": 10, "y": 200}, Foo(99))
     assert OmegaConf.is_config(obj.c)
@@ -248,8 +263,20 @@ def test_class_warning() -> None:
         )
         assert utils.instantiate(config) == expected
 
+    with pytest.warns(UserWarning):
+        config = OmegaConf.structured(
+            {
+                "cls": "tests.test_utils.Bar",
+                "params": {"a": 10, "b": 20, "c": 30, "d": 40},
+            }
+        )
+        assert utils.instantiate(config) == expected
+
     config = OmegaConf.structured(
-        {"cls": "tests.test_utils.Bar", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
+        {
+            "target": "tests.test_utils.Bar",
+            "params": {"a": 10, "b": 20, "c": 30, "d": 40},
+        }
     )
     assert utils.instantiate(config) == expected
 
@@ -305,18 +332,18 @@ def test_to_absolute_path_without_hydra(
     assert utils.to_absolute_path(path) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "matrix,expected",
-    [
-        ([["a"]], [1]),
-        ([["a", "bb"]], [1, 2]),
-        ([["a", "bb"], ["aa", "b"]], [2, 2]),
-        ([["a"], ["aa", "b"]], [2, 1]),
-        ([["a", "aa"], ["bb"]], [2, 2]),
-        ([["a"]], [1]),
-        ([["a"]], [1]),
-        ([["a"]], [1]),
-    ],
-)
-def test_get_column_widths(matrix: Any, expected: Any) -> None:
-    assert internal_utils.get_column_widths(matrix) == expected
+def test_instantiate_adam() -> None:
+    with pytest.raises(Exception):
+        # can't instantiate without passing params
+        utils.instantiate(ObjectConf(target="tests.test_utils.Adam"))
+
+    adam_params = Parameters([1, 2, 3])
+    res = utils.instantiate(
+        ObjectConf(target="tests.test_utils.Adam"), params=adam_params
+    )
+    assert res == Adam(params=adam_params)
+
+
+def test_pass_extra_variables() -> None:
+    cfg = ObjectConf(target="tests.test_utils.Bar", params={"a": 10, "b": 20})
+    assert utils.instantiate(cfg, c=30) == Bar(a=10, b=20, c=30)

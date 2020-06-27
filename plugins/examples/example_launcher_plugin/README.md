@@ -7,7 +7,7 @@ The configuration for this launcher is in packages with the plugin:
 ```yaml
 hydra:
   launcher:
-    cls: hydra_plugins.example_launcher_plugin.ExampleLauncher
+    target: hydra_plugins.example_launcher_plugin.ExampleLauncher
     params:
       foo: 10
       bar: abcde
