@@ -68,7 +68,7 @@ ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_local",
     node=ObjectConf(
-        cls="hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher",
+        target="hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher",
         params=LocalParams(),
     ),
     provider="submitit_launcher",
@@ -79,7 +79,7 @@ ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_slurm",
     node=ObjectConf(
-        cls="hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher",
+        target="hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher",
         params=SlurmParams(),
     ),
     provider="submitit_launcher",

@@ -1,0 +1,1 @@
+deprecated cls in favor of target in hydra.utils.{instantiate()/call{}}

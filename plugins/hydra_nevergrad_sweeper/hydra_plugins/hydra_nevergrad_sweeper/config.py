@@ -84,7 +84,7 @@ class NevergradConf:
 
 @dataclass
 class NevergradSweeperConf(ObjectConf):
-    cls: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
+    target: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
     params: NevergradConf = NevergradConf()
 
 
