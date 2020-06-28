@@ -10,7 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra._internal import utils
 from hydra._internal.utils import _locate
 from hydra.types import ObjectConf
-from tests import Adam, Bar, Baz, Fii, Foo, Parameters
+from tests import AClass, Adam, AnotherClass, ASubclass, NestingClass, Parameters
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -89,10 +89,10 @@ def test_cls() -> None:
     [
         ("tests.Adam", Adam),
         ("tests.Parameters", Parameters),
-        ("tests.Bar", Bar),
-        ("tests.Baz", Baz),
-        ("tests.Fii", Fii),
-        ("tests.Foo", Foo),
+        ("tests.AClass", AClass),
+        ("tests.ASubclass", ASubclass),
+        ("tests.NestingClass", NestingClass),
+        ("tests.AnotherClass", AnotherClass),
         ("", pytest.raises(ImportError, match=re.escape("Empty path"))),
         (
             "not_found",
@@ -103,7 +103,7 @@ def test_cls() -> None:
         (
             "tests.b.c.Door",
             pytest.raises(
-                ImportError, match=re.escape("Error loading module 'tests.b.c.Door'")
+                ImportError, match=re.escape("Could not locate 'tests.b.c.Door'")
             ),
         ),
     ],

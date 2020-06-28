@@ -13,6 +13,7 @@ from hydra._internal.utils import (
     _locate,
 )
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraException
 from hydra.types import ObjectConf
 
 log = logging.getLogger(__name__)
@@ -34,8 +35,7 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
             assert callable(type_or_callable)
             return _call_callable(type_or_callable, config, *args, **kwargs)
     except Exception as e:
-        log.error(f"Error instantiating '{cls}' : {e}")
-        raise e
+        raise HydraException(f"Error instantiating '{cls}' : {e}") from e
 
 
 # Alias for call
