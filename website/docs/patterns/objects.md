@@ -22,15 +22,15 @@ ObjectConf is defined in `hydra.types.ObjectConf`:
 @dataclass
 class ObjectConf(Dict[str, Any]):
     # class, class method or function name
-    cls: str = MISSING
-    # parameters to pass to cls when calling it
+    target: str = MISSING
+    # parameters to pass to target when calling it
     params: Any = field(default_factory=dict)
 ```
 
 ### Example config node
 ```yaml
 # target class name, function name or class method fully qualified name
-cls: foo.Bar
+target: foo.Bar
 # optional parameters dictionary to pass when calling the target
 params:
   x: 10
@@ -60,23 +60,23 @@ def bar(z: int) -> int:
 config.yaml
 ```yaml
 myobject:
-  cls: models.Foo
+  target: models.Foo
   params:
     x: 10
     y: 20
     
 myclassmethod:
-  cls: models.Foo.class_method
+  target: models.Foo.class_method
   params:
     z: 5
 
 mystaticmethod:
-  cls: models.Foo.static_method
+  target: models.Foo.static_method
   params:
     z: 15
 
 myfunction:
-  cls: models.bar
+  target: models.bar
   params:
     z: 15
 ```
@@ -150,7 +150,7 @@ defaults:
 Config file: `db/mysql.yaml`
 ```yaml
 db:
-  cls: tutorial.objects_example.objects.MySQLConnection
+  target: tutorial.objects_example.objects.MySQLConnection
   params:
     host: localhost
     user: root
@@ -159,7 +159,7 @@ db:
 db/postgresql.yaml:
 ```yaml
 db:
-  cls: tutorial.objects_example.objects.PostgreSQLConnection
+  target: tutorial.objects_example.objects.PostgreSQLConnection
   params:
     host: localhost
     user: root

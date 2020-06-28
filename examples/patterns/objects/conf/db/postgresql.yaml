@@ -1,5 +1,5 @@
 # @package _group_
-cls: tutorial.objects_example.my_app.PostgreSQLConnection
+target: tutorial.objects_example.my_app.PostgreSQLConnection
 params:
   host: localhost
   user: root

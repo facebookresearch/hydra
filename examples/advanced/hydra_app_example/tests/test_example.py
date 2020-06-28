@@ -2,9 +2,9 @@
 import unittest
 from typing import List
 
+import hydra_app.main
 import pytest
 
-import hydra_app.main
 from hydra.experimental import compose, initialize, initialize_config_module
 
 
