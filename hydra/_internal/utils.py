@@ -427,6 +427,8 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     This is similar to the pydoc function `locate`, except that it checks for
     the module from the given path from back to front.
     """
+    if path == "":
+        raise ImportError("Empty path")
     import builtins
     from importlib import import_module
 
@@ -434,11 +436,11 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     module = None
     for n in reversed(range(len(parts))):
         try:
-            module = import_module(".".join(parts[:n]))
+            mod = ".".join(parts[:n])
+            module = import_module(mod)
         except Exception as e:
             if n == 0:
-                log.error(f"Error loading module {path} : {e}")
-                raise e
+                raise ImportError(f"Error loading module '{path}'") from e
             continue
         if module:
             break

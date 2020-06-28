@@ -95,16 +95,14 @@ def install_hydra(session, cmd):
         session.run("pipdeptree", "-p", "hydra-core")
 
 
-def pytest_args(session, *args):
+def pytest_args(*args):
     ret = ["pytest", "-Werror"]
     ret.extend(args)
-    if len(session.posargs) > 0:
-        ret.extend(session.posargs)
     return ret
 
 
 def run_pytest(session, directory=".", *args):
-    pytest_cmd = pytest_args(session, directory, *args)
+    pytest_cmd = pytest_args(directory, *args)
     session.run(*pytest_cmd, silent=SILENT)
 
 
@@ -285,7 +283,10 @@ def test_core(session, install_cmd):
     install_hydra(session, install_cmd)
     session.install("pytest")
 
-    run_pytest(session, "tests")
+    if not SKIP_CORE_TESTS:
+        run_pytest(session, "tests", *session.posargs)
+    else:
+        session.log("Skipping Hydra core tests")
 
     apps = _get_standalone_apps_dir()
     session.log("Testing standalone apps")
@@ -358,7 +359,7 @@ def coverage(session):
     for plugin in selected_plugins:
         session.chdir(os.path.join("plugins", plugin.path))
         cov_args = ["coverage", "run", "--append", "-m"]
-        cov_args.extend(pytest_args(session))
+        cov_args.extend(pytest_args())
         session.run(*cov_args, silent=SILENT, env=coverage_env)
         session.chdir(BASE)
 
@@ -370,7 +371,7 @@ def coverage(session):
         "-m",
         silent=SILENT,
         env=coverage_env,
-        *pytest_args(session),
+        *pytest_args(),
     )
 
     # Increase the fail_under as coverage improves
@@ -389,9 +390,7 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval", "pyzmq==19.0.0")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        session,
-        "--nbval",
-        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
+        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]
@@ -401,6 +400,6 @@ def test_jupyter_notebooks(session):
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args(session, "--nbval", str(notebook))
+        args = pytest_args("--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
