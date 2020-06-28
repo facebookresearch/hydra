@@ -20,7 +20,7 @@ from typing import (
     Union,
 )
 
-from omegaconf import DictConfig, OmegaConf, _utils, read_write
+from omegaconf import DictConfig, OmegaConf, read_write
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -450,9 +450,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         obj = builtins
     for part in parts[n:]:
         if not hasattr(obj, part):
-            raise ValueError(
-                f"Error finding attribute ({part}) in class ({obj.__name__}): {path}"
-            )
+            raise ImportError(f"Could not locate '{path}'")
         obj = getattr(obj, part)
     if isinstance(obj, type):
         obj_type: type = obj
@@ -472,7 +470,11 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     else:
         config = copy.deepcopy(config)
 
-    params = config.params if hasattr(config, "params") else {}
+    params = (
+        config.params
+        if hasattr(config, "params") and config.params is not None
+        else OmegaConf.create()
+    )
 
     assert isinstance(
         params, MutableMapping
@@ -482,22 +484,22 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
         assert isinstance(params, DictConfig)
         params._set_parent(config)
 
-    primitives = {}
-    rest = {}
+    config_overrides = {}
+    passthrough = {}
     for k, v in kwargs.items():
-        if _utils.is_primitive_type(v) or isinstance(v, (dict, list)):
-            primitives[k] = v
+        if k in params:
+            config_overrides[k] = v
         else:
-            rest[k] = v
+            passthrough[k] = v
     final_kwargs = {}
 
     with read_write(params):
-        params.merge_with(primitives)
+        params.merge_with(config_overrides)
 
     for k, v in params.items():
         final_kwargs[k] = v
 
-    for k, v in rest.items():
+    for k, v in passthrough.items():
         final_kwargs[k] = v
     return final_kwargs
 
