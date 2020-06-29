@@ -10,12 +10,15 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-alpha.56",
-    "@docusaurus/preset-classic": "^2.0.0-alpha.56",
+    "@docusaurus/core": "^2.0.0-alpha.58",
+    "@docusaurus/preset-classic": "^2.0.0-alpha.58",
     "classnames": "^2.2.6",
     "docusaurus-plugin-internaldocs-fb": "^0.3.3",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"
+  },
+  "resolutions": {
+    "prism-react-renderer": "1.1.0"
   },
   "browserslist": {
     "production": [

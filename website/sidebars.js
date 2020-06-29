@@ -5,7 +5,7 @@ function FBInternalOnly(elements) {
 }
 
 module.exports = {
-    Docs: {
+    docs: {
         About: [
             'intro',
             'terminology',
