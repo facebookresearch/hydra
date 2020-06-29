@@ -29,7 +29,7 @@ from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import RunMode, TaskFunction
 
 from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
@@ -96,7 +96,10 @@ class Hydra:
         overrides: List[str],
     ) -> JobReturn:
         cfg = self.compose_config(
-            config_name=config_name, overrides=overrides, with_log_configuration=True
+            config_name=config_name,
+            overrides=overrides,
+            with_log_configuration=True,
+            run_mode=RunMode.RUN,
         )
         HydraConfig.instance().set_config(cfg)
         return run_job(
@@ -118,6 +121,7 @@ class Hydra:
             overrides=overrides,
             strict=False,
             with_log_configuration=True,
+            run_mode=RunMode.MULTIRUN,
         )
         HydraConfig.instance().set_config(cfg)
         sweeper = Plugins.instance().instantiate_sweeper(
@@ -149,6 +153,7 @@ class Hydra:
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
+            run_mode=RunMode.RUN,
             with_log_configuration=with_log_configuration,
         )
         if cfg_type == "job":
@@ -304,6 +309,7 @@ class Hydra:
         cfg = self.compose_config(
             config_name=config_name,
             overrides=args.overrides,
+            run_mode=RunMode.RUN,
             with_log_configuration=True,
         )
         help_cfg = cfg.hydra.hydra_help
@@ -317,6 +323,7 @@ class Hydra:
         cfg = self.compose_config(
             config_name=config_name,
             overrides=args.overrides,
+            run_mode=RunMode.RUN,
             with_log_configuration=True,
         )
         help_cfg = cfg.hydra.help
@@ -478,13 +485,14 @@ class Hydra:
         self,
         config_name: Optional[str],
         overrides: List[str],
+        run_mode: RunMode,
         strict: Optional[bool] = None,
         with_log_configuration: bool = False,
     ) -> DictConfig:
         """
-        :param self:
         :param config_name:
         :param overrides:
+        :param run_mode: compose config for run or for multirun?
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param strict: None for default behavior (default to true for config file, false if no config file).
                        otherwise forces specific behavior.
@@ -494,7 +502,10 @@ class Hydra:
         self.config_loader.ensure_main_config_source_available()
 
         cfg = self.config_loader.load_configuration(
-            config_name=config_name, overrides=overrides, strict=strict
+            config_name=config_name,
+            overrides=overrides,
+            strict=strict,
+            run_mode=run_mode,
         )
         with open_dict(cfg):
             from hydra import __version__

@@ -4,6 +4,7 @@ from typing import List, Optional
 from omegaconf import DictConfig, open_dict
 
 from hydra.core.global_hydra import GlobalHydra
+from hydra.types import RunMode
 
 
 def compose(
@@ -28,7 +29,10 @@ def compose(
     gh = GlobalHydra.instance()
     assert gh.hydra is not None
     cfg = gh.hydra.compose_config(
-        config_name=config_name, overrides=overrides, strict=strict
+        config_name=config_name,
+        overrides=overrides,
+        run_mode=RunMode.RUN,
+        strict=strict,
     )
     assert isinstance(cfg, DictConfig)
 

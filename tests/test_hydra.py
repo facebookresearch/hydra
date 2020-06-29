@@ -149,7 +149,6 @@ def test_app_with_config_file__no_overrides(
     calling_file: str,
     calling_module: str,
 ) -> None:
-
     task = hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
@@ -426,7 +425,17 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "flags,expected",
     [
-        (
+        pytest.param(
+            ["--cfg=job"],
+            """# @package _global_
+db:
+  driver: mysql
+  user: omry
+  pass: secret
+""",
+            id="no-package",
+        ),
+        pytest.param(
             ["--cfg=job", "--package=_global_"],
             """# @package _global_
 db:
@@ -434,16 +443,20 @@ db:
   user: omry
   pass: secret
 """,
+            id="package=_global_",
         ),
-        (
+        pytest.param(
             ["--cfg=job", "--package=db"],
             """# @package db
 driver: mysql
 user: omry
 pass: secret
 """,
+            id="package=db",
         ),
-        (["--cfg=job", "--package=db.driver"], "mysql\n"),
+        pytest.param(
+            ["--cfg=job", "--package=db.driver"], "mysql\n", id="package=db.driver"
+        ),
     ],
 )
 def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None:
@@ -735,7 +748,12 @@ def test_override_with_invalid_group_choice(
     calling_module: str,
     override: str,
 ) -> None:
-    msg = f"""Could not load db/{override}, available options:\ndb:\n\tmysql\n\tpostgresql"""
+    msg = (
+        f"Could not load db/{override}."
+        f"\nAvailable options:"
+        f"\n\tmysql"
+        f"\n\tpostgresql"
+    )
 
     with pytest.raises(MissingConfigException, match=re.escape(msg)):
         with hydra_task_runner(
@@ -829,3 +847,55 @@ def test_module_run(
     else:
         result = subprocess.check_output(cmd, env=modified_env)
         assert OmegaConf.create(str(result.decode("utf-8"))) == {"x": 10}
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,error,expected",
+    [
+        (["test.param=1"], False, "1\n"),
+        (
+            ["test.param=1,2"],
+            True,
+            "'test.param=1,2' is a sweeper override, did you forget to to use --multirun|-m ?",
+        ),
+        (["test.param=1", "-m"], False, "1\n"),
+        (["test.param=1,2", "-m"], False, "1\n2\n"),
+    ],
+)
+def test_multirun_structured_conflict(
+    tmpdir: Any, overrides: List[str], error: bool, expected: Any
+) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/multirun_structured_conflict/my_app.py",
+        "hydra/hydra_logging=disabled",
+        "hydra.sweep.dir=" + str(tmpdir),
+    ]
+    cmd.extend(overrides)
+    if error:
+        assert re.search(re.escape(expected), run_with_error(cmd)) is not None
+    else:
+        assert str(subprocess.check_output(cmd).decode("utf-8")) == expected
+
+
+@pytest.mark.parametrize(
+    "sweep", [pytest.param(False, id="run"), pytest.param(True, id="sweep")]
+)
+def test_run_with_missing_default(tmpdir: Any, sweep: bool) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/simple_app/my_app.py",
+        "--config-name=unspecified_mandatory_default",
+        "--config-path=../../../hydra/test_utils/configs",
+        "hydra/hydra_logging=disabled",
+        "hydra.sweep.dir=" + str(tmpdir),
+    ]
+    if sweep:
+        cmd.append("-m")
+    expected = """You must specify 'group1', e.g, group1=<OPTION>
+Available options:
+\tabc.cde
+\tfile1
+\tfile2"""
+    ret = run_with_error(cmd)
+    assert re.search(re.escape(expected), ret) is not None

@@ -8,6 +8,7 @@ from omegaconf import DictConfig
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigSource
+from hydra.types import RunMode
 
 
 @dataclass
@@ -28,6 +29,7 @@ class ConfigLoader(ABC):
         self,
         config_name: Optional[str],
         overrides: List[str],
+        run_mode: RunMode,
         strict: Optional[bool] = None,
     ) -> DictConfig:
         ...

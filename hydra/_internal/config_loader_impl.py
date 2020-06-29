@@ -25,6 +25,12 @@ from hydra.core.object_type import ObjectType
 from hydra.core.utils import JobRuntime
 from hydra.errors import HydraException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
+from hydra.types import RunMode
+
+
+class UnspecifiedMandatoryDefault(Exception):
+    def __init__(self, config_group: str,) -> None:
+        self.config_group = config_group
 
 
 @dataclass
@@ -76,6 +82,9 @@ class ParsedOverride:
 class ParsedOverrideWithLine:
     override: ParsedOverride
     input_line: str
+
+    def __repr__(self) -> str:
+        return f"[Parsed] {self.input_line}"
 
 
 @dataclass
@@ -178,12 +187,30 @@ class ConfigLoaderImpl(ConfigLoader):
         self,
         config_name: Optional[str],
         overrides: List[str],
+        run_mode: RunMode,
         strict: Optional[bool] = None,
     ) -> DictConfig:
         if strict is None:
             strict = self.default_strict
 
         parsed_overrides = [self._parse_override(override) for override in overrides]
+        filtered_parsed_overrides = []
+        for x in parsed_overrides:
+            if ConfigLoaderImpl._is_sweeper_override(x.override):
+                if run_mode == RunMode.RUN:
+                    raise HydraException(
+                        f"'{x.input_line}' is a sweeper override, did you forget to to use --multirun|-m ?"
+                    )
+                elif run_mode == RunMode.MULTIRUN:
+                    # filter, the sweeper will pass pass concrete overrides to individual jobs
+                    if x.override.key.startswith("hydra."):
+                        raise HydraException(
+                            f"Sweeping over Hydra configuration is not supported : '{x.input_line}'"
+                        )
+
+                    pass
+            else:
+                filtered_parsed_overrides.append(x)
 
         if config_name is not None and not self.repository.config_exists(config_name):
             self.missing_config_error(
@@ -219,15 +246,32 @@ class ConfigLoaderImpl(ConfigLoader):
         split_at = len(defaults)
 
         config_group_overrides, config_overrides = self.split_overrides(
-            parsed_overrides
+            filtered_parsed_overrides
         )
+
         self._combine_default_lists(defaults, job_defaults)
         ConfigLoaderImpl._apply_overrides_to_defaults(config_group_overrides, defaults)
 
         # Load and defaults and merge them into cfg
-        cfg = self._merge_defaults_into_config(
-            hydra_cfg, job_cfg, job_cfg_load_trace, defaults, split_at
-        )
+        try:
+            cfg = self._merge_defaults_into_config(
+                hydra_cfg,
+                job_cfg,
+                job_cfg_load_trace,
+                defaults,
+                split_at,
+                run_mode=run_mode,
+            )
+        except UnspecifiedMandatoryDefault as e:
+            options = self.get_group_options(e.config_group)
+            opt_list = "\n".join(["\t" + x for x in options])
+            msg = (
+                f"You must specify '{e.config_group}', e.g, {e.config_group}=<OPTION>"
+                f"\nAvailable options:"
+                f"\n{opt_list}"
+            )
+            raise HydraException(msg) from e
+
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
@@ -274,6 +318,7 @@ class ConfigLoaderImpl(ConfigLoader):
             config_name=master_config.hydra.job.config_name,
             strict=self.default_strict,
             overrides=overrides,
+            run_mode=RunMode.RUN,
         )
 
         with open_dict(sweep_config):
@@ -317,6 +362,11 @@ class ConfigLoaderImpl(ConfigLoader):
                 matches.append(default)
         return matches
 
+    # TODO: should be a function in the sweeper. somehow.
+    @staticmethod
+    def _is_sweeper_override(override: ParsedOverride) -> bool:
+        return override.value is not None and "," in override.value
+
     @staticmethod
     def _apply_overrides_to_defaults(
         overrides: List[ParsedOverrideWithLine], defaults: List[DefaultElement],
@@ -354,11 +404,6 @@ class ConfigLoaderImpl(ConfigLoader):
                 raise HydraException(
                     "Add syntax does not support package rename, remove + prefix"
                 )
-
-            if override.value is not None and "," in override.value:
-                # If this is a multirun config (comma separated list), flag the default to prevent it from being
-                # loaded until we are constructing the config for individual jobs.
-                override.value = "_SKIP_"
 
             matches = ConfigLoaderImpl.find_matches(key_to_defaults, override)
 
@@ -696,8 +741,11 @@ class ConfigLoaderImpl(ConfigLoader):
                     else:
                         options = self.get_group_options(config_group)
                         if options:
-                            lst = "\n\t".join(options)
-                            msg = f"Could not load {new_cfg}, available options:\n{config_group}:\n\t{lst}"
+                            opt_list = "\n".join(["\t" + x for x in options])
+                            msg = (
+                                f"Could not load {new_cfg}.\nAvailable options:"
+                                f"\n{opt_list}"
+                            )
                         else:
                             msg = f"Could not load {new_cfg}"
                         raise MissingConfigException(msg, new_cfg, options)
@@ -718,6 +766,7 @@ class ConfigLoaderImpl(ConfigLoader):
         job_cfg_load_trace: Optional[LoadTrace],
         defaults: List[DefaultElement],
         split_at: int,
+        run_mode: RunMode,
     ) -> DictConfig:
         def merge_defaults_list_into_config(
             merged_cfg: DictConfig, def_list: List[DefaultElement]
@@ -734,7 +783,19 @@ class ConfigLoaderImpl(ConfigLoader):
 
             for idx, default1 in enumerate(def_list):
                 if default1.config_group is not None:
-                    config_name = dict_with_list.defaults[idx][default1.config_group]
+                    if OmegaConf.is_missing(
+                        dict_with_list.defaults[idx], default1.config_group
+                    ):
+                        if run_mode == RunMode.RUN:
+                            raise UnspecifiedMandatoryDefault(
+                                config_group=default1.config_group
+                            )
+                        else:
+                            config_name = "???"
+                    else:
+                        config_name = dict_with_list.defaults[idx][
+                            default1.config_group
+                        ]
                 else:
                     config_name = dict_with_list.defaults[idx]
 
@@ -746,7 +807,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     if job_cfg_load_trace is not None:
                         self.all_config_checked.append(job_cfg_load_trace)
                 elif default1.config_group is not None:
-                    if default1.config_name not in (None, "_SKIP_"):
+                    if default1.config_name not in (None, "_SKIP_", "???"):
                         merged_cfg = self._merge_config(
                             cfg=merged_cfg,
                             config_group=default1.config_group,
