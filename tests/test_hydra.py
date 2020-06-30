@@ -17,6 +17,7 @@ from hydra.test_utils.test_utils import (
     integration_test,
     verify_dir_outputs,
 )
+from tests import normalize_newlines
 from tests.test_examples import run_with_error
 
 chdir_hydra_root()
@@ -466,11 +467,8 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
         "hydra.run.dir=" + str(tmpdir),
     ] + flags
 
-    def norm(s: str) -> str:
-        return s.replace("\r\n", "\n").replace("\r", "\n")
-
     result = subprocess.check_output(cmd).decode("utf-8")
-    assert norm(result) == norm(expected)
+    assert normalize_newlines(result) == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -875,7 +873,10 @@ def test_multirun_structured_conflict(
     if error:
         assert re.search(re.escape(expected), run_with_error(cmd)) is not None
     else:
-        assert str(subprocess.check_output(cmd).decode("utf-8")) == expected
+        assert (
+            normalize_newlines(str(subprocess.check_output(cmd).decode("utf-8")))
+            == expected
+        )
 
 
 @pytest.mark.parametrize(  # type: ignore
