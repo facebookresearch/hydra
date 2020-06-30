@@ -878,7 +878,7 @@ def test_multirun_structured_conflict(
         assert str(subprocess.check_output(cmd).decode("utf-8")) == expected
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "sweep", [pytest.param(False, id="run"), pytest.param(True, id="sweep")]
 )
 def test_run_with_missing_default(tmpdir: Any, sweep: bool) -> None:
