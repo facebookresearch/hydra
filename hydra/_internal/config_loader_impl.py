@@ -207,8 +207,6 @@ class ConfigLoaderImpl(ConfigLoader):
                         raise HydraException(
                             f"Sweeping over Hydra configuration is not supported : '{x.input_line}'"
                         )
-
-                    pass
             else:
                 filtered_parsed_overrides.append(x)
 
