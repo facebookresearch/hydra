@@ -22,6 +22,7 @@ from omegaconf import (
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
+from hydra.types import RunMode
 
 
 class CompletionPlugin(Plugin):
@@ -211,7 +212,7 @@ class CompletionPlugin(Plugin):
             words = words[0:-1]
 
         config = self.config_loader.load_configuration(
-            config_name=config_name, overrides=words, strict=True
+            config_name=config_name, overrides=words, run_mode=RunMode.RUN, strict=True
         )
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)

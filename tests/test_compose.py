@@ -270,7 +270,7 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
         ):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
-            hydra.compose_config(config_name="test.yaml", overrides=[])
+            compose(config_name="test.yaml", overrides=[])
 
 
 def test_missing_bad_config_dir_error(hydra_restore_singletons: Any) -> None:
@@ -283,7 +283,7 @@ def test_missing_bad_config_dir_error(hydra_restore_singletons: Any) -> None:
         with initialize_config_dir(config_dir="/no_way_in_hell_1234567890"):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
-            hydra.compose_config(config_name="test.yaml", overrides=[])
+            compose(config_name="test.yaml", overrides=[])
 
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:

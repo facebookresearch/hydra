@@ -3,6 +3,7 @@
 Common test functions testing launchers
 """
 import copy
+import re
 from pathlib import Path
 from typing import Any, List, Optional, Set
 
@@ -10,6 +11,7 @@ import pytest
 from omegaconf import DictConfig, OmegaConf
 
 from hydra import TaskFunction
+from hydra.errors import HydraException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     integration_test,
@@ -47,11 +49,26 @@ class LauncherTestSuite:
     def test_not_sweeping_hydra_overrides(
         self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
     ) -> None:
-        not_sweeping_hydra_overrides(
-            hydra_sweep_runner,
-            overrides=["hydra/launcher=" + launcher_name] + overrides,
-            task_function=self.task_function,
-        )
+        with pytest.raises(
+            HydraException,
+            match=re.escape(
+                "Sweeping over Hydra configuration is not supported : 'hydra.verbose=true,false'"
+            ),
+        ):
+            with hydra_sweep_runner(
+                calling_file=None,
+                calling_module="hydra.test_utils.a_module",
+                task_function=None,
+                config_path="configs",
+                config_name="compose.yaml",
+                overrides=overrides
+                + [
+                    "hydra/launcher=" + launcher_name,
+                    "+a=0,1",
+                    "hydra.verbose=true,false",
+                ],
+            ):
+                pass
 
     def test_sweep_1_job_strict(
         self, hydra_sweep_runner: TSweepRunner, launcher_name: str, overrides: List[str]
@@ -292,36 +309,6 @@ def sweep_2_jobs(
             path = temp_dir / str(i)
             lst = [x for x in temp_dir.iterdir() if x.is_dir()]
             assert path.exists(), f"'{path}' does not exist, dirs: {lst}"
-
-
-def not_sweeping_hydra_overrides(
-    hydra_sweep_runner: TSweepRunner,
-    overrides: List[str],
-    task_function: Optional[TaskFunction],
-) -> None:
-    """
-    Runs a sweep with two jobs
-    """
-    overrides.extend(["+a=0,1", "hydra.verbose=true,false"])
-    sweep = hydra_sweep_runner(
-        calling_file=None,
-        calling_module="hydra.test_utils.a_module",
-        task_function=task_function,
-        config_path="configs",
-        config_name="compose.yaml",
-        overrides=overrides,
-    )
-    base = OmegaConf.create({"foo": 10, "bar": 100})
-
-    with sweep:
-        assert sweep.returns is not None
-        assert len(sweep.returns[0]) == 2
-        for i in range(2):
-            job_ret = sweep.returns[0][i]
-            expected_conf = OmegaConf.merge(base, {"a": i})
-            assert job_ret.overrides == [f"+a={i}"]
-            assert job_ret.cfg == expected_conf
-            verify_dir_outputs(job_ret, job_ret.overrides)
 
 
 def sweep_two_config_groups(

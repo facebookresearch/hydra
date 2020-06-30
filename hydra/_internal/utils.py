@@ -196,7 +196,7 @@ def run_and_report(func: Any) -> Any:
         else:
             sys.stderr.write(str(ex) + "\n")
             if ex.__cause__ is not None:
-                sys.stderr.write(str(ex.__cause__) + "\n")
+                sys.stderr.write(str(ex.__cause__))
 
             sys.stderr.write(
                 "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\n"

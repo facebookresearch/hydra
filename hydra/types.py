@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Callable, Dict
 
 from omegaconf import MISSING
@@ -23,3 +24,8 @@ class ObjectConf(Dict[str, Any]):
     # class is deprecated, use target, class will be removed in Hydra 1.1
     # (class is Python keyword and is only supported through DictConfig)
     # class: str = MISSING
+
+
+class RunMode(Enum):
+    RUN = 1
+    MULTIRUN = 2

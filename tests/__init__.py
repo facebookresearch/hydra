@@ -3,6 +3,15 @@ from dataclasses import dataclass
 from typing import Any, List, Tuple
 
 
+def normalize_newlines(s: str) -> str:
+    """
+    Normalizes new lines such they are comparable across different operating systems
+    :param s:
+    :return:
+    """
+    return s.replace("\r\n", "\n").replace("\r", "\n")
+
+
 def verify_hydra_pytest_plugin_not_installed() -> None:
     try:
         # This check can be removed in 1.1
