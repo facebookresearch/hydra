@@ -6,7 +6,7 @@ import hydra
 
 @hydra.main()
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
+    print(cfg.pretty(resolve=True))
 
 
 if __name__ == "__main__":

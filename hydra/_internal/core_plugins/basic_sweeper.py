@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
 from omegaconf import MISSING, DictConfig, OmegaConf
+from omegaconf._utils import get_yaml_loader
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
@@ -72,17 +73,22 @@ class BasicSweeper(Sweeper):
             config=config, config_loader=config_loader, task_function=task_function
         )
 
+    loader = get_yaml_loader()
+
     @staticmethod
     def split_overrides_to_chunks(
-        lst: Sequence[Sequence[str]], n: Optional[int]
-    ) -> Iterable[Sequence[Sequence[str]]]:
+        lst: List[List[str]], n: Optional[int]
+    ) -> Iterable[List[List[str]]]:
         if n is None or n == -1:
             n = len(lst)
         assert n > 0
         for i in range(0, len(lst), n):
             yield lst[i : i + n]
 
-    def initialize_arguments(self, arguments: List[str]) -> None:
+    @staticmethod
+    def split_arguments(
+        arguments: List[str], max_batch_size: Optional[int]
+    ) -> List[List[List[str]]]:
         parser = OverridesParser()
         parsed = parser.parse_overrides(arguments)
 
@@ -98,19 +104,20 @@ class BasicSweeper(Sweeper):
                 key = override.get_key_element()
                 value = override.get_value_element()
                 lists.append([f"{key}={value}"])
-        all_batches = list(itertools.product(*lists))
-        assert self.max_batch_size is None or self.max_batch_size > 0
-        if self.max_batch_size is None:
-            self.overrides = [all_batches]
+        all_batches = [list(x) for x in itertools.product(*lists)]
+        assert max_batch_size is None or max_batch_size > 0
+        if max_batch_size is None:
+            return [all_batches]
         else:
-            self.overrides = list(
-                self.split_overrides_to_chunks(all_batches, self.max_batch_size)
+            chunks_iter = BasicSweeper.split_overrides_to_chunks(
+                all_batches, max_batch_size
             )
+            return [x for x in chunks_iter]
 
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
-        self.initialize_arguments(arguments)
+        self.overrides = self.split_arguments(arguments, self.max_batch_size)
         returns: List[Sequence[JobReturn]] = []
 
         # Save sweep run config in top level sweep working directory
