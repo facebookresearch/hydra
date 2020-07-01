@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
 import os
+import warnings
 from pathlib import Path
 from typing import Any, Callable, Union
 
@@ -8,6 +9,7 @@ from omegaconf import DictConfig
 
 from hydra._internal.utils import (
     _call_callable,
+    _get_callable_name,
     _get_cls_name,
     _instantiate_class,
     _locate,
@@ -15,21 +17,27 @@ from hydra._internal.utils import (
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException
 from hydra.types import ObjectConf
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 
 
 def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
     """
-    :param config: An ObjectConf or DictConfig describing what to call and what params to use
+    :param config: An ObjectConf or DictConfig describing what method to call and what params to use
     :param args: optional positional parameters pass-through
     :param kwargs: optional named parameters pass-through
-    :return: the return value from the specified class or method
+    :return: the return value from the specified method
     """
     try:
-        cls = _get_cls_name(config)
+        cls = _get_callable_name(config)
         type_or_callable = _locate(cls)
         if isinstance(type_or_callable, type):
+            warnings.warn(
+                """Use of `hydra.utils.call` for instantiating objects is deprecated since Hydra 1.0 and support will be removed in
+                Hydra 1.1. For instantiating objects, use `hydra.utils.instantiate`""",
+                category=UserWarning,
+            )
             return _instantiate_class(type_or_callable, config, *args, **kwargs)
         else:
             assert callable(type_or_callable)
@@ -38,8 +46,30 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
         raise HydraException(f"Error instantiating '{cls}' : {e}") from e
 
 
-# Alias for call
-instantiate = call
+def instantiate(
+    config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
+) -> Any:
+    """
+    :param config: An ObjectConf or DictConfig describing what class to instantiate and what params to use
+    :param args: optional positional parameters pass-through
+    :param kwargs: optional named parameters pass-through
+    :return: the return value from the specified class
+    """
+    try:
+        cls = _get_cls_name(config)
+        type_or_callable = _locate(cls)
+        if isinstance(type_or_callable, type):
+            return _instantiate_class(type_or_callable, config, *args, **kwargs)
+        else:
+            warnings.warn(
+                """Use of `hydra.utils.instantiate` for invoking callables is deprecated since Hydra 1.0 and support will be removed
+                in Hydra 1.1. For invoking callables, use `hydra.utils.call`""",
+                category=UserWarning,
+            )
+            assert callable(type_or_callable)
+            return _call_callable(type_or_callable, config, *args, **kwargs)
+    except Exception as e:
+        raise HydraException(f"Error instantiating '{cls}' : {e}") from e
 
 
 def get_class(path: str) -> type:

@@ -20,14 +20,13 @@ from typing import (
     Union,
 )
 
-from omegaconf import DictConfig, OmegaConf, read_write
-from omegaconf.errors import OmegaConfBaseException
-
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.errors import HydraException
 from hydra.types import ObjectConf, TaskFunction
+from omegaconf import DictConfig, OmegaConf, read_write
+from omegaconf.errors import OmegaConfBaseException
 
 log = logging.getLogger(__name__)
 
@@ -504,19 +503,36 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     return final_kwargs
 
 
+def _has_field(config: Union[ObjectConf, DictConfig], field: str) -> bool:
+    if isinstance(config, DictConfig):
+        if field in config:
+            ret = config[field] != "???"
+            assert isinstance(ret, bool)
+            return ret
+        else:
+            return False
+    else:
+        if hasattr(config, field):
+            ret = getattr(config, field) != "???"
+            assert isinstance(ret, bool)
+            return ret
+        else:
+            return False
+
+
 def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
                 f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'target' instead of '{field}'.""",
+Use 'type' instead of '{field}'.""",
                 category=UserWarning,
             )
         else:
             warnings.warn(
                 f"""
 ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'target' instead of '{field}'.""",
+Use 'type' instead of '{field}'.""",
                 category=UserWarning,
             )
 
@@ -525,32 +541,60 @@ Use 'target' instead of '{field}'.""",
         assert isinstance(classname, str)
         return classname
 
-    def _has_field(field: str) -> bool:
-        if isinstance(config, DictConfig):
-            if field in config:
-                ret = config[field] != "???"
-                assert isinstance(ret, bool)
-                return ret
-            else:
-                return False
-        else:
-            if hasattr(config, field):
-                ret = getattr(config, field) != "???"
-                assert isinstance(ret, bool)
-                return ret
-            else:
-                return False
-
-    if _has_field(field="class"):
+    if _has_field(config=config, field="class"):
         _warn(field="class")
-    elif _has_field(field="cls"):
+    elif _has_field(config=config, field="cls"):
         _warn(field="cls")
+    elif _has_field(config=config, field="target"):
+        _warn(field="target")
 
-    if _has_field(field="target"):
+    if _has_field(config=config, field="type"):
+        return _getcls(field="type")
+    elif _has_field(config=config, field="target"):
         return _getcls(field="target")
-    elif _has_field(field="cls"):
+    elif _has_field(config=config, field="cls"):
         return _getcls(field="cls")
-    elif _has_field(field="class"):
+    elif _has_field(config=config, field="class"):
         return _getcls(field="class")
     else:
-        raise ValueError("Input config does not have a target field")
+        raise ValueError("Input config does not have a type field")
+
+
+def _get_callable_name(config: Union[ObjectConf, DictConfig]) -> str:
+    def _warn(field: str) -> None:
+        if isinstance(config, DictConfig):
+            warnings.warn(
+                f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+Use 'callable' instead of '{field}'.""",
+                category=UserWarning,
+            )
+        else:
+            warnings.warn(
+                f"""
+ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+Use 'callable' instead of '{field}'.""",
+                category=UserWarning,
+            )
+
+    def _get_callable(field: str) -> str:
+        callable_name = getattr(config, field)
+        assert isinstance(callable_name, str)
+        return callable_name
+
+    if _has_field(config=config, field="class"):
+        _warn(field="class")
+    elif _has_field(config=config, field="cls"):
+        _warn(field="cls")
+    elif _has_field(config=config, field="target"):
+        _warn(field="target")
+
+    if _has_field(config=config, field="callable"):
+        return _get_callable(field="callable")
+    elif _has_field(config=config, field="target"):
+        return _get_callable(field="target")
+    elif _has_field(config=config, field="cls"):
+        return _get_callable(field="cls")
+    elif _has_field(config=config, field="class"):
+        return _get_callable(field="class")
+    else:
+        raise ValueError("Input config does not have a callable field")

@@ -5,13 +5,12 @@ from subprocess import check_output
 from typing import Any, List
 
 import pytest
-from omegaconf import DictConfig
-
 from hydra.test_utils.test_utils import (
     TTaskRunner,
     chdir_hydra_root,
     verify_dir_outputs,
 )
+from omegaconf import DictConfig
 
 chdir_hydra_root()
 
@@ -56,7 +55,7 @@ def test_specializing_config_example(
             [],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.MySQLConnection",
+                    "type": "examples.patterns.objects.my_app.MySQLConnection",
                     "params": {"host": "localhost", "user": "root", "password": 1234},
                 }
             },
@@ -65,7 +64,7 @@ def test_specializing_config_example(
             ["db=postgresql"],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.PostgreSQLConnection",
+                    "type": "examples.patterns.objects.my_app.PostgreSQLConnection",
                     "params": {
                         "host": "localhost",
                         "user": "root",

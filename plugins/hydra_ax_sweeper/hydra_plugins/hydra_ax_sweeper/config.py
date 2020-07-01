@@ -62,7 +62,7 @@ class AxSweeperParams:
 
 @dataclass
 class AxSweeperConf(ObjectConf):
-    target: str = "hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper"
+    type: str = "hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper"
     params: AxSweeperParams = AxSweeperParams()
 
 

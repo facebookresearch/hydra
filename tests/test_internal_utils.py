@@ -5,11 +5,11 @@ from typing import Any, Union
 
 import pytest
 from _pytest.python_api import RaisesContext  # type: ignore
-from omegaconf import DictConfig, OmegaConf
-
 from hydra._internal import utils
 from hydra._internal.utils import _locate
 from hydra.types import ObjectConf
+from omegaconf import DictConfig, OmegaConf
+
 from tests import AClass, Adam, AnotherClass, ASubclass, NestingClass, Parameters
 
 
@@ -33,7 +33,7 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "config, expected, warning",
     [
-        pytest.param(ObjectConf(target="foo"), "foo", False, id="ObjectConf:target"),
+        pytest.param(ObjectConf(type="foo"), "foo", False, id="ObjectConf:type"),
         pytest.param(
             OmegaConf.create({"cls": "foo"}), "foo", "cls", id="DictConfig:cls"
         ),
@@ -41,19 +41,19 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
             OmegaConf.create({"class": "foo"}), "foo", "class", id="DictConfig:class"
         ),
         pytest.param(
-            OmegaConf.create({"target": "foo"}), "foo", False, id="DictConfig:target",
+            OmegaConf.create({"type": "foo"}), "foo", False, id="DictConfig:type",
         ),
         pytest.param(
-            OmegaConf.create({"cls": "foo", "target": "bar"}),
+            OmegaConf.create({"cls": "foo", "type": "bar"}),
             "bar",
             False,
-            id="DictConfig:cls_target",
+            id="DictConfig:cls_type",
         ),
         pytest.param(
-            OmegaConf.create({"class": "foo", "target": "bar"}),
+            OmegaConf.create({"class": "foo", "type": "bar"}),
             "bar",
             "class",
-            id="DictConfig:class_target",
+            id="DictConfig:class_type",
         ),
     ],
 )
@@ -65,11 +65,11 @@ def test_get_class_name(
         deprecated = "is deprecated since Hydra 1.0 and will be removed in Hydra 1.1"
         if isinstance(config, DictConfig):
             exp = f"""Config key '{config._get_full_key(warning)}' {deprecated}.
-Use 'target' instead of '{warning}'."""
+Use 'type' instead of '{warning}'."""
         else:
             exp = f"""
 ObjectConf field '{warning}' {deprecated}.
-Use 'target' instead of '{warning}'."""
+Use 'type' instead of '{warning}'."""
 
         assert len(recwarn) == 1
         assert recwarn[0].category == UserWarning
@@ -81,7 +81,7 @@ def test_cls() -> None:
     with pytest.warns(expected_warning=UserWarning):
         assert utils._get_cls_name(ObjectConf(cls="foo")) == "foo"
     with pytest.warns(expected_warning=UserWarning):
-        assert utils._get_cls_name(ObjectConf(cls="foo", target="bar")) == "bar"
+        assert utils._get_cls_name(ObjectConf(cls="foo", type="bar")) == "bar"
 
 
 @pytest.mark.parametrize(  # type: ignore

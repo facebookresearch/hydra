@@ -1,5 +1,5 @@
 # @package _group_
-target: examples.patterns.objects.my_app.PostgreSQLConnection
+type: examples.patterns.objects.my_app.PostgreSQLConnection
 params:
   host: localhost
   user: root

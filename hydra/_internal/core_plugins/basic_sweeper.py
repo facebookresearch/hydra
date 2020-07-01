@@ -18,18 +18,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import MISSING, DictConfig, OmegaConf
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.utils import JobReturn
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import ObjectConf, TaskFunction
+from omegaconf import MISSING, DictConfig, OmegaConf
 
 
 @dataclass
 class BasicSweeperConf(ObjectConf):
-    target: str = MISSING
+    type: str = MISSING
 
     @dataclass
     class Params:
