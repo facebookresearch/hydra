@@ -5,12 +5,13 @@ from subprocess import check_output
 from typing import Any, List
 
 import pytest
+from omegaconf import DictConfig
+
 from hydra.test_utils.test_utils import (
     TTaskRunner,
     chdir_hydra_root,
     verify_dir_outputs,
 )
-from omegaconf import DictConfig
 
 chdir_hydra_root()
 

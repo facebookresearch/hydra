@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Any, List, Optional, Set
 
 import pytest
+from omegaconf import DictConfig, OmegaConf
+
 from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
@@ -15,8 +17,6 @@ from hydra.test_utils.test_utils import (
     integration_test,
     verify_dir_outputs,
 )
-from omegaconf import DictConfig, OmegaConf
-
 from tests import normalize_newlines
 from tests.test_examples import run_with_error
 

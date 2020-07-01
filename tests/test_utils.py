@@ -5,12 +5,12 @@ from pathlib import Path
 from typing import Any, Dict
 
 import pytest
+from omegaconf import DictConfig, OmegaConf
+
 from hydra import utils
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.types import ObjectConf
-from omegaconf import DictConfig, OmegaConf
-
 from tests import (
     AClass,
     Adam,

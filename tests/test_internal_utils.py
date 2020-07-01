@@ -5,11 +5,11 @@ from typing import Any, Union
 
 import pytest
 from _pytest.python_api import RaisesContext  # type: ignore
+from omegaconf import DictConfig, OmegaConf
+
 from hydra._internal import utils
 from hydra._internal.utils import _locate
 from hydra.types import ObjectConf
-from omegaconf import DictConfig, OmegaConf
-
 from tests import AClass, Adam, AnotherClass, ASubclass, NestingClass, Parameters
 
 

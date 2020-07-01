@@ -20,13 +20,14 @@ from typing import (
     Union,
 )
 
+from omegaconf import DictConfig, OmegaConf, read_write
+from omegaconf.errors import OmegaConfBaseException
+
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.utils import get_valid_filename, split_config_path
 from hydra.errors import HydraException
 from hydra.types import ObjectConf, TaskFunction
-from omegaconf import DictConfig, OmegaConf, read_write
-from omegaconf.errors import OmegaConfBaseException
 
 log = logging.getLogger(__name__)
 
