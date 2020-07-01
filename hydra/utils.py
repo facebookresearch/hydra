@@ -17,7 +17,6 @@ from hydra._internal.utils import (
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException
 from hydra.types import ObjectConf
-from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 
