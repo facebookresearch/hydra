@@ -7,7 +7,6 @@ from typing import Any, Dict, List, Sequence
 
 import cloudpickle
 from fakeredis import FakeStrictRedis
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
@@ -28,21 +27,13 @@ log = logging.getLogger(__name__)
 
 
 def execute_job(
-    idx: int,
-    overrides: Sequence[str],
-    config_loader: ConfigLoader,
-    config: DictConfig,
+    sweep_config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
-    redis_job_id: str,
 ) -> JobReturn:
     setup_globals()
     Singleton.set_state(singleton_state)
 
-    sweep_config = config_loader.load_sweep_config(config, list(overrides))
-    with open_dict(sweep_config):
-        sweep_config.hydra.job.id = redis_job_id
-        sweep_config.hydra.job.num = idx
     HydraConfig.instance().set_config(sweep_config)
 
     ret = run_job(
@@ -115,15 +106,18 @@ def launch(
         if enqueue_keywords["description"] is None:
             enqueue_keywords["description"] = description
 
+        sweep_config = launcher.config_loader.load_sweep_config(
+            launcher.config, list(overrides)
+        )
+        with open_dict(sweep_config):
+            sweep_config.hydra.job.id = enqueue_keywords["job_id"]
+            sweep_config.hydra.job.num = initial_job_idx + idx
+
         job = queue.enqueue(
             execute_job,
-            idx=initial_job_idx + idx,
-            overrides=overrides,
-            config_loader=launcher.config_loader,
-            config=launcher.config,
+            sweep_config=sweep_config,
             task_function=launcher.task_function,
             singleton_state=singleton_state,
-            redis_job_id=enqueue_keywords["job_id"],
             **enqueue_keywords,
         )
         jobs.append(job)
