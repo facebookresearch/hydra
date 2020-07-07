@@ -39,10 +39,10 @@ The configuration packaged with the plugin is defined [here](https://github.com/
 cls: hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher
 params:
   enqueue:
-    job_timeout: null                  # maximum runtime of the job before it's interrupted and marked as failed (in sec)
-    ttl: null                          # maximum queued time before the job before is discarded (in sec)
-    result_ttl: 864000                 # how long successful jobs and their results are kept (in sec), default: 10 days
-    failure_ttl: 8640000               # specifies how long failed jobs are kept (in sec), default: 100 days
+    job_timeout: null                  # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    ttl: null                          # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    result_ttl: null                   # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    failure_ttl: null                  # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
     at_front: false                    # place job at the front of the queue, instead of the back
     job_id: null                       # job id, will be overidden automatically by a uuid unless specified explicitly
     description: null                  # description, will be overidden automatically unless specified explicitly
