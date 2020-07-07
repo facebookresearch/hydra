@@ -23,14 +23,14 @@ class RedisConf:
 
 @dataclass
 class EnqueueConf:
-    # maximum runtime of the job before it's interrupted and marked as failed (in sec)
-    job_timeout: Optional[int] = None
-    # maximum queued time before the job before is discarded (in sec)
-    ttl: Optional[int] = None
-    # how long successful jobs and their results are kept (in sec), default: 10 days
-    result_ttl: int = 864000
-    # specifies how long failed jobs are kept (in sec), default: 100 days
-    failure_ttl: int = 8640000
+    # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    job_timeout: Optional[str] = None
+    # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    ttl: Optional[str] = None
+    # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    result_ttl: Optional[str] = None
+    # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+    failure_ttl: Optional[str] = None
     # place job at the front of the queue, instead of the back
     at_front: bool = False
     # job id, will be overidden automatically by a uuid unless specified explicitly

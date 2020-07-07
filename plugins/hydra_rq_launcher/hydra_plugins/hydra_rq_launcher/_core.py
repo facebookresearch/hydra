@@ -101,6 +101,12 @@ def launch(
         description = " ".join(filter_overrides(overrides))
 
         enqueue_keywords = OmegaConf.to_container(rq_cfg.enqueue, resolve=True)
+        if enqueue_keywords["job_timeout"] is None:
+            enqueue_keywords["job_timeout"] = -1
+        if enqueue_keywords["result_ttl"] is None:
+            enqueue_keywords["result_ttl"] = -1
+        if enqueue_keywords["failure_ttl"] is None:
+            enqueue_keywords["failure_ttl"] = -1
         if enqueue_keywords["job_id"] is None:
             enqueue_keywords["job_id"] = str(uuid.uuid4())
         if enqueue_keywords["description"] is None:
