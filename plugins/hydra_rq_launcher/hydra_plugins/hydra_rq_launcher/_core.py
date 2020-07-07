@@ -113,6 +113,12 @@ def launch(
             sweep_config.hydra.job.id = enqueue_keywords["job_id"]
             sweep_config.hydra.job.num = initial_job_idx + idx
 
+        # Remove environment variables from cache, e.g., used when resolving sweep_dir
+        config_cache = OmegaConf.get_cache(sweep_config)
+        if "env" in config_cache:
+            del config_cache["env"]
+            OmegaConf.set_cache(sweep_config, config_cache)
+
         job = queue.enqueue(
             execute_job,
             sweep_config=sweep_config,
