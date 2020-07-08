@@ -43,10 +43,15 @@ def _get_module_name_override() -> Optional[str]:
 def detect_calling_file_or_module_from_task_function(
     task_function: Any,
 ) -> Tuple[Optional[str], Optional[str], str]:
-    mdl = _get_module_name_override()
+
+    mdl = task_function.__module__
+    override = _get_module_name_override()
+    if override is not None:
+        mdl = override
+
     calling_file: Optional[str]
     calling_module: Optional[str]
-    if mdl is not None:
+    if mdl not in (None, "__main__"):
         calling_file = None
         calling_module = mdl
     else:
