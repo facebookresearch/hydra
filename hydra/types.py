@@ -13,8 +13,8 @@ TaskFunction = Callable[[Any], Any]
 # Once support for class field removed this can stop extending Dict.
 class ObjectConf(Dict[str, Any]):
     # class, class method or function name
-    # target: str = MISSING
-    # callable: str = MISSING
+    target: str = MISSING
+    callable: str = MISSING
     type: str = MISSING
 
     # parameters to pass to cls when calling it

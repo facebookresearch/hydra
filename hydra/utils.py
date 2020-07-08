@@ -33,8 +33,8 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
         type_or_callable = _locate(cls)
         if isinstance(type_or_callable, type):
             warnings.warn(
-                """Use of `hydra.utils.call` for instantiating objects is deprecated since Hydra 1.0 and support will be removed in
-                Hydra 1.1. For instantiating objects, use `hydra.utils.instantiate`""",
+                """Use of `hydra.utils.call` for instantiating classes is deprecated since Hydra 1.0 and support will be removed in
+                Hydra 1.1. For instantiating classes, use `hydra.utils.instantiate`""",
                 category=UserWarning,
             )
             return _instantiate_class(type_or_callable, config, *args, **kwargs)

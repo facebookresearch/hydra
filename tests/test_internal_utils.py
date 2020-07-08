@@ -33,7 +33,6 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "config, expected, warning",
     [
-        pytest.param(ObjectConf(type="foo"), "foo", False, id="ObjectConf:type"),
         pytest.param(
             OmegaConf.create({"cls": "foo"}), "foo", "cls", id="DictConfig:cls"
         ),
@@ -42,6 +41,9 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
         ),
         pytest.param(
             OmegaConf.create({"type": "foo"}), "foo", False, id="DictConfig:type",
+        ),
+        pytest.param(
+            OmegaConf.create({"target": "foo"}), "foo", False, id="ObjectConf:type"
         ),
         pytest.param(
             OmegaConf.create({"cls": "foo", "type": "bar"}),
@@ -54,6 +56,30 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
             "bar",
             "class",
             id="DictConfig:class_type",
+        ),
+        pytest.param(
+            OmegaConf.create({"cls": "foo", "target": "bar"}),
+            "bar",
+            "cls",
+            id="DictConfig:cls_target",
+        ),
+        pytest.param(
+            OmegaConf.create({"class": "foo", "target": "bar"}),
+            "bar",
+            "class",
+            id="DictConfig:class_target",
+        ),
+        pytest.param(
+            OmegaConf.create({"target": "foo", "type": "bar"}),
+            "bar",
+            False,
+            id="DictConfig:target_type",
+        ),
+        pytest.param(
+            OmegaConf.create({"type": "bar", "target": "foo"}),
+            "bar",
+            False,
+            id="DictConfig:type_target",
         ),
     ],
 )

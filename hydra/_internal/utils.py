@@ -525,8 +525,8 @@ def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated for `instantiate` since Hydra 1.0
-                 and will be removed in Hydra 1.1.
+                f"""Config key '{config._get_full_key(field)}' is deprecated for `instantiate` since Hydra 1.0 \
+and will be removed in Hydra 1.1.
 Use 'type' instead of '{field}'.""",
                 category=UserWarning,
             )
@@ -568,8 +568,8 @@ def _get_callable_name(config: Union[ObjectConf, DictConfig]) -> str:
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated for `call` since Hydra 1.0
-                 and will be removed in Hydra 1.1.
+                f"""Config key '{config._get_full_key(field)}' is deprecated for `call` since Hydra 1.0 \
+and will be removed in Hydra 1.1.
 Use 'callable' instead of '{field}'.""",
                 category=UserWarning,
             )
