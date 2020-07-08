@@ -42,7 +42,7 @@ params:
 models.py
 ```python
 class Foo:
-  def __init__(x: int, y: int) -> None:
+  def __init__(self, x: int, y: int) -> None:
     self.x = x
     self.y = y
 
