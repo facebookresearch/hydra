@@ -525,14 +525,15 @@ def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+                f"""Config key '{config._get_full_key(field)}' is deprecated for `instantiate` since Hydra 1.0
+                 and will be removed in Hydra 1.1.
 Use 'type' instead of '{field}'.""",
                 category=UserWarning,
             )
         else:
             warnings.warn(
                 f"""
-ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+ObjectConf field '{field}' is deprecated for `instantiate` since Hydra 1.0 and will be removed in Hydra 1.1.
 Use 'type' instead of '{field}'.""",
                 category=UserWarning,
             )
@@ -546,13 +547,15 @@ Use 'type' instead of '{field}'.""",
         _warn(field="class")
     elif _has_field(config=config, field="cls"):
         _warn(field="cls")
-    elif _has_field(config=config, field="target"):
-        _warn(field="target")
+    elif _has_field(config=config, field="callable"):
+        _warn(field="callable")
 
     if _has_field(config=config, field="type"):
         return _getcls(field="type")
     elif _has_field(config=config, field="target"):
         return _getcls(field="target")
+    elif _has_field(config=config, field="callable"):
+        return _getcls(field="callable")
     elif _has_field(config=config, field="cls"):
         return _getcls(field="cls")
     elif _has_field(config=config, field="class"):
@@ -565,14 +568,15 @@ def _get_callable_name(config: Union[ObjectConf, DictConfig]) -> str:
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+                f"""Config key '{config._get_full_key(field)}' is deprecated for `call` since Hydra 1.0
+                 and will be removed in Hydra 1.1.
 Use 'callable' instead of '{field}'.""",
                 category=UserWarning,
             )
         else:
             warnings.warn(
                 f"""
-ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
+ObjectConf field '{field}' is deprecated for `call` since Hydra 1.0 and will be removed in Hydra 1.1.
 Use 'callable' instead of '{field}'.""",
                 category=UserWarning,
             )
@@ -586,13 +590,15 @@ Use 'callable' instead of '{field}'.""",
         _warn(field="class")
     elif _has_field(config=config, field="cls"):
         _warn(field="cls")
-    elif _has_field(config=config, field="target"):
-        _warn(field="target")
+    elif _has_field(config=config, field="type"):
+        _warn(field="type")
 
     if _has_field(config=config, field="callable"):
         return _get_callable(field="callable")
     elif _has_field(config=config, field="target"):
         return _get_callable(field="target")
+    elif _has_field(config=config, field="type"):
+        return _get_callable(field="type")
     elif _has_field(config=config, field="cls"):
         return _get_callable(field="cls")
     elif _has_field(config=config, field="class"):

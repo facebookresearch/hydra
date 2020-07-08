@@ -50,9 +50,33 @@ def test_get_class(path: str, expected_type: type) -> None:
             AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}},
+            {},
+            AClass(10, 20, 30, 40),
+            id="class",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 20, "c": 30}},
+            {"a": 10, "d": 40},
+            AClass(10, 20, 30, 40),
+            id="class+override",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
+            {"a": 10, "b": 99, "d": 40},
+            AClass(10, 99, 99, 40),
+            id="class+override+interpolation",
+        ),
         # Check nested types
         pytest.param(
             {"type": "tests.NestingClass", "params": {}},
+            {},
+            NestingClass(ASubclass(10)),
+            id="class_with_nested_class",
+        ),
+        pytest.param(
+            {"target": "tests.NestingClass", "params": {}},
             {},
             NestingClass(ASubclass(10)),
             id="class_with_nested_class",
@@ -70,9 +94,27 @@ def test_get_class(path: str, expected_type: type) -> None:
             AClass(10, 20, 30, "default_value"),
             id="instantiate_respects_default_value",
         ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
+            {"a": 10},
+            AClass(10, 200, 200, "default_value"),
+            id="instantiate_respects_default_value",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {}},
+            {"a": 10, "b": 20, "c": 30},
+            AClass(10, 20, 30, "default_value"),
+            id="instantiate_respects_default_value",
+        ),
         # Check builtins
         pytest.param(
             {"type": "builtins.str", "params": {"object": 43}},
+            {},
+            "43",
+            id="builtin_types",
+        ),
+        pytest.param(
+            {"target": "builtins.str", "params": {"object": 43}},
             {},
             "43",
             id="builtin_types",
@@ -86,6 +128,18 @@ def test_get_class(path: str, expected_type: type) -> None:
         ),
         pytest.param(
             {"type": "tests.AClass"},
+            {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
+            AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
+            id="passthrough",
+        ),
+        pytest.param(
+            {"target": "tests.AClass"},
+            {"a": 10, "b": 20, "c": 30},
+            AClass(a=10, b=20, c=30),
+            id="passthrough",
+        ),
+        pytest.param(
+            {"target": "tests.AClass"},
             {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
             AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
             id="passthrough",
@@ -120,6 +174,18 @@ def test_class_instantiate(
             43,
             id="static_method",
         ),
+        pytest.param(
+            {"target": "tests.ASubclass.class_method", "params": {"y": 10}},
+            {},
+            ASubclass(11),
+            id="class_method",
+        ),
+        pytest.param(
+            {"target": "tests.AClass.static_method", "params": {"z": 43}},
+            {},
+            43,
+            id="static_method",
+        ),
         # Check static methods for nested types
         pytest.param(
             {"callable": "tests.nesting.a.class_method", "params": {"y": 10}},
@@ -133,9 +199,27 @@ def test_class_instantiate(
             43,
             id="static_method_on_an_object_nested_in_a_global",
         ),
+        pytest.param(
+            {"target": "tests.nesting.a.class_method", "params": {"y": 10}},
+            {},
+            ASubclass(11),
+            id="class_method_on_an_object_nested_in_a_global",
+        ),
+        pytest.param(
+            {"target": "tests.nesting.a.static_method", "params": {"z": 43}},
+            {},
+            43,
+            id="static_method_on_an_object_nested_in_a_global",
+        ),
         # call a function from a module
         pytest.param(
             {"callable": "tests.module_function", "params": {"x": 43}},
+            {},
+            43,
+            id="call_function_in_module",
+        ),
+        pytest.param(
+            {"target": "tests.module_function", "params": {"x": 43}},
             {},
             43,
             id="call_function_in_module",
@@ -181,7 +265,7 @@ def test_instantiate_deprecations() -> None:
 
     with pytest.warns(UserWarning):
         config = OmegaConf.structured(
-            {"target": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
+            {"callable": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
         )
         assert utils.instantiate(config) == expected
 
@@ -189,6 +273,42 @@ def test_instantiate_deprecations() -> None:
         {"type": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
     )
     assert utils.instantiate(config) == expected
+
+    config = OmegaConf.structured(
+        {"target": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}}
+    )
+    assert utils.instantiate(config) == expected
+
+
+def test_callable_deprecations() -> None:
+    expected = ASubclass(11)
+    with pytest.warns(UserWarning):
+        config = OmegaConf.structured(
+            {"class": "tests.ASubclass.class_method", "params": {"y": 10}}
+        )
+        assert utils.call(config) == expected
+
+    with pytest.warns(UserWarning):
+        config = OmegaConf.structured(
+            {"cls": "tests.ASubclass.class_method", "params": {"y": 10}}
+        )
+        assert utils.call(config) == expected
+
+    with pytest.warns(UserWarning):
+        config = OmegaConf.structured(
+            {"type": "tests.ASubclass.class_method", "params": {"y": 10}}
+        )
+        assert utils.call(config) == expected
+
+    config = OmegaConf.structured(
+        {"callable": "tests.ASubclass.class_method", "params": {"y": 10}}
+    )
+    assert utils.call(config) == expected
+
+    config = OmegaConf.structured(
+        {"target": "tests.ASubclass.class_method", "params": {"y": 10}}
+    )
+    assert utils.call(config) == expected
 
 
 def test_get_original_cwd(hydra_restore_singletons: Any) -> None:

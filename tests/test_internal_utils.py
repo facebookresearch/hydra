@@ -62,7 +62,7 @@ def test_get_class_name(
 ) -> None:
     assert utils._get_cls_name(config) == expected
     if warning is not False:
-        deprecated = "is deprecated since Hydra 1.0 and will be removed in Hydra 1.1"
+        deprecated = "is deprecated for `instantiate` since Hydra 1.0 and will be removed in Hydra 1.1"
         if isinstance(config, DictConfig):
             exp = f"""Config key '{config._get_full_key(warning)}' {deprecated}.
 Use 'type' instead of '{warning}'."""
