@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
+
 import subprocess
 import sys
 
@@ -29,6 +31,11 @@ class TestAppOutput:
                 ["hydra_app", f"hydra.run.dir={tmpdir}", "app.user=test_user"]
             )
         )
+
+    # test that installed app configs are loaded via pkg://hydra_app.conf
+    def test_installed_run_searchpath(self, tmpdir: str) -> None:
+        output = subprocess.check_output(["hydra_app", "--info"]).decode("utf-8")
+        assert re.search(re.escape("pkg://hydra_app.conf"), output) is not None
 
     @staticmethod
     def verify_output(result: bytes) -> None:
