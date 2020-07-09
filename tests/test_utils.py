@@ -119,6 +119,8 @@ def test_get_class(path: str, expected_type: type) -> None:
             "43",
             id="builtin_types",
         ),
+        # Check that none is instantiated correctly
+        pytest.param(None, {}, None, id="instantiate_none",),
         # passthrough
         pytest.param(
             {"type": "tests.AClass"},
@@ -224,6 +226,8 @@ def test_class_instantiate(
             43,
             id="call_function_in_module",
         ),
+        # Check that none is called correctly
+        pytest.param(None, {}, None, id="call_none",),
     ],
 )
 def test_function_call(
