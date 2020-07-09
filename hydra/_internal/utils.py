@@ -532,19 +532,18 @@ def _get_callable_name(config: Union[ObjectConf, DictConfig]) -> str:
 def _get_cls_or_callable_name(
     config: Union[ObjectConf, DictConfig], should_get_cls: bool
 ) -> str:
-    """Since the logic for getting class or callable name is very similar,
-    we use this wrapper function to avoid code-duplication. if `should_get_cls` is set to True,
-    the function returns the name of class, else it returns the name of callable.
+    """if `should_get_cls` is set to True, the function returns the
+        name of class, else it returns the name of callable.
     """
 
     if should_get_cls:
         fn_name = "instantiate"
         key_name = "type"
-        key_name_to_depriciate = "callable"
+        key_name_to_deprecate = "callable"
     else:
         fn_name = "call"
         key_name = "callable"
-        key_name_to_depriciate = "type"
+        key_name_to_deprecate = "type"
 
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
@@ -571,15 +570,15 @@ Use '{key_name}' instead of '{field}'.""",
         _warn(field="class")
     elif _has_field(config=config, field="cls"):
         _warn(field="cls")
-    elif _has_field(config=config, field=key_name_to_depriciate):
-        _warn(field=key_name_to_depriciate)
+    elif _has_field(config=config, field=key_name_to_deprecate):
+        _warn(field=key_name_to_deprecate)
 
     if _has_field(config=config, field=key_name):
         return _get_name(field=key_name)
     elif _has_field(config=config, field="target"):
         return _get_name(field="target")
-    elif _has_field(config=config, field=key_name_to_depriciate):
-        return _get_name(field=key_name_to_depriciate)
+    elif _has_field(config=config, field=key_name_to_deprecate):
+        return _get_name(field=key_name_to_deprecate)
     elif _has_field(config=config, field="cls"):
         return _get_name(field="cls")
     elif _has_field(config=config, field="class"):
