@@ -584,4 +584,4 @@ Use '{key_name}' instead of '{field}'.""",
     elif _has_field(config=config, field="class"):
         return _get_name(field="class")
     else:
-        raise ValueError("Input config does not have a {key_name} field")
+        raise ValueError(f"Input config does not have a `{key_name}` field")

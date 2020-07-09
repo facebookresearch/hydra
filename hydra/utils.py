@@ -29,8 +29,8 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
     :return: the return value from the specified method
     """
     try:
-        cls = _get_callable_name(config)
-        type_or_callable = _locate(cls)
+        callable_name = _get_callable_name(config)
+        type_or_callable = _locate(callable_name)
         if isinstance(type_or_callable, type):
             warnings.warn(
                 """Use of `hydra.utils.call` for instantiating classes is deprecated since Hydra 1.0 and support will be removed in
@@ -41,8 +41,10 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
         else:
             assert callable(type_or_callable)
             return _call_callable(type_or_callable, config, *args, **kwargs)
+    except ValueError as e:
+        raise HydraException(f"Error calling function : {e}") from e
     except Exception as e:
-        raise HydraException(f"Error instantiating '{cls}' : {e}") from e
+        raise HydraException(f"Error calling '{callable_name}' : {e}") from e
 
 
 def instantiate(
@@ -67,6 +69,8 @@ def instantiate(
             )
             assert callable(type_or_callable)
             return _call_callable(type_or_callable, config, *args, **kwargs)
+    except ValueError as e:
+        raise HydraException(f"Error instantiating class : {e}") from e
     except Exception as e:
         raise HydraException(f"Error instantiating '{cls}' : {e}") from e
 
