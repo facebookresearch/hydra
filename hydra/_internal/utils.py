@@ -522,86 +522,67 @@ def _has_field(config: Union[ObjectConf, DictConfig], field: str) -> bool:
 
 
 def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
-    def _warn(field: str) -> None:
-        if isinstance(config, DictConfig):
-            warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated for `instantiate` since Hydra 1.0 \
-and will be removed in Hydra 1.1.
-Use 'type' instead of '{field}'.""",
-                category=UserWarning,
-            )
-        else:
-            warnings.warn(
-                f"""
-ObjectConf field '{field}' is deprecated for `instantiate` since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'type' instead of '{field}'.""",
-                category=UserWarning,
-            )
-
-    def _getcls(field: str) -> str:
-        classname = getattr(config, field)
-        assert isinstance(classname, str)
-        return classname
-
-    if _has_field(config=config, field="class"):
-        _warn(field="class")
-    elif _has_field(config=config, field="cls"):
-        _warn(field="cls")
-    elif _has_field(config=config, field="callable"):
-        _warn(field="callable")
-
-    if _has_field(config=config, field="type"):
-        return _getcls(field="type")
-    elif _has_field(config=config, field="target"):
-        return _getcls(field="target")
-    elif _has_field(config=config, field="callable"):
-        return _getcls(field="callable")
-    elif _has_field(config=config, field="cls"):
-        return _getcls(field="cls")
-    elif _has_field(config=config, field="class"):
-        return _getcls(field="class")
-    else:
-        raise ValueError("Input config does not have a type field")
+    return _get_cls_or_callable_name(config=config, should_get_cls=True)
 
 
 def _get_callable_name(config: Union[ObjectConf, DictConfig]) -> str:
+    return _get_cls_or_callable_name(config=config, should_get_cls=False)
+
+
+def _get_cls_or_callable_name(
+    config: Union[ObjectConf, DictConfig], should_get_cls: bool
+) -> str:
+    """Since the logic for getting class or callable name is very similar,
+    we use this wrapper function to avoid code-duplication. if `should_get_cls` is set to True,
+    the function returns the name of class, else it returns the name of callable.
+    """
+
+    if should_get_cls:
+        fn_name = "instantiate"
+        key_name = "type"
+        key_name_to_depriciate = "callable"
+    else:
+        fn_name = "call"
+        key_name = "callable"
+        key_name_to_depriciate = "type"
+
     def _warn(field: str) -> None:
         if isinstance(config, DictConfig):
             warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated for `call` since Hydra 1.0 \
+                f"""Config key '{config._get_full_key(field)}' is deprecated for `{fn_name}` since Hydra 1.0 \
 and will be removed in Hydra 1.1.
-Use 'callable' instead of '{field}'.""",
+Use '{key_name}' instead of '{field}'.""",
                 category=UserWarning,
             )
         else:
             warnings.warn(
                 f"""
-ObjectConf field '{field}' is deprecated for `call` since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'callable' instead of '{field}'.""",
+ObjectConf field '{field}' is deprecated for `{fn_name}` since Hydra 1.0 and will be removed in Hydra 1.1.
+Use '{key_name}' instead of '{field}'.""",
                 category=UserWarning,
             )
 
-    def _get_callable(field: str) -> str:
-        callable_name = getattr(config, field)
-        assert isinstance(callable_name, str)
-        return callable_name
+    def _get_name(field: str) -> str:
+        name = getattr(config, field)
+        assert isinstance(name, str)
+        return name
 
     if _has_field(config=config, field="class"):
         _warn(field="class")
     elif _has_field(config=config, field="cls"):
         _warn(field="cls")
-    elif _has_field(config=config, field="type"):
-        _warn(field="type")
+    elif _has_field(config=config, field=key_name_to_depriciate):
+        _warn(field=key_name_to_depriciate)
 
-    if _has_field(config=config, field="callable"):
-        return _get_callable(field="callable")
+    if _has_field(config=config, field=key_name):
+        return _get_name(field=key_name)
     elif _has_field(config=config, field="target"):
-        return _get_callable(field="target")
-    elif _has_field(config=config, field="type"):
-        return _get_callable(field="type")
+        return _get_name(field="target")
+    elif _has_field(config=config, field=key_name_to_depriciate):
+        return _get_name(field=key_name_to_depriciate)
     elif _has_field(config=config, field="cls"):
-        return _get_callable(field="cls")
+        return _get_name(field="cls")
     elif _has_field(config=config, field="class"):
-        return _get_callable(field="class")
+        return _get_name(field="class")
     else:
-        raise ValueError("Input config does not have a callable field")
+        raise ValueError("Input config does not have a {key_name} field")
