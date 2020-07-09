@@ -36,8 +36,10 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
         else:
             assert callable(type_or_callable)
             return _call_callable(type_or_callable, config, *args, **kwargs)
+    except ValueError as e:
+        raise HydraException(f"Error calling function : {e}") from e
     except Exception as e:
-        raise HydraException(f"Error instantiating '{cls}' : {e}") from e
+        raise HydraException(f"Error calling '{cls}' : {e}") from e
 
 
 # Alias for call
