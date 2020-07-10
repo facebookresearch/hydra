@@ -447,7 +447,7 @@ class TestConfigLoader:
         assert cfg == {"normal_yaml_config": True, "abc": None}
         assert len(recwarn) == 0
 
-    def test_sweep_config_cache(self, path: str) -> None:
+    def test_sweep_config_cache(self, path: str, monkeypatch: Any) -> None:
         setup_globals()
 
         config_loader = ConfigLoaderImpl(
@@ -476,8 +476,8 @@ class TestConfigLoader:
         sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)
         assert len(sweep_cfg_cache.keys()) == 1 and "now" in sweep_cfg_cache.keys()
         assert sweep_cfg_cache["now"] == master_cfg_cache["now"]
-        os.environ["HOME"] = "/another/home/dir/"
-        assert sweep_cfg.home == "/another/home/dir/"
+        monkeypatch.setenv("HOME", "/another/home/dir/")
+        assert sweep_cfg.home == os.getenv("HOME")
 
 
 @pytest.mark.parametrize(  # type:ignore
