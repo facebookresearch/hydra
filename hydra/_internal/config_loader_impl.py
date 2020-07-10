@@ -322,8 +322,13 @@ class ConfigLoaderImpl(ConfigLoader):
         with open_dict(sweep_config):
             sweep_config.hydra.runtime.merge_with(master_config.hydra.runtime)
 
-        # Copy old config cache to ensure we get the same resolved values (for things like timestamps etc)
-        OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
+        # Partial copy of master config cache, to ensure we get the same resolved values for timestamps
+        cache: Dict[str, Any] = defaultdict(dict, {})
+        cache_master_config = OmegaConf.get_cache(master_config)
+        for k in ["now"]:
+            if k in cache_master_config:
+                cache[k] = cache_master_config[k]
+        OmegaConf.set_cache(sweep_config, cache)
 
         return sweep_config
 

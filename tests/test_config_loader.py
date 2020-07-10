@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import re
 from dataclasses import dataclass
 from typing import Any, List
@@ -15,7 +16,7 @@ from hydra._internal.config_loader_impl import (
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
-from hydra.core.utils import env_override
+from hydra.core.utils import env_override, setup_globals
 from hydra.errors import HydraException, MissingConfigException
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.types import RunMode
@@ -445,6 +446,38 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == {"normal_yaml_config": True, "abc": None}
         assert len(recwarn) == 0
+
+    def test_sweep_config_cache(self, path: str, monkeypatch: Any) -> None:
+        setup_globals()
+
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+        master_cfg = config_loader.load_configuration(
+            config_name="config.yaml",
+            strict=False,
+            overrides=["time='${now:%H-%M-%S}'", "home='${env:HOME}'"],
+            run_mode=RunMode.RUN,
+        )
+
+        # trigger resolution by type assertion
+        assert type(master_cfg.time) == str
+        assert type(master_cfg.home) == str
+
+        master_cfg_cache = OmegaConf.get_cache(master_cfg)
+        assert "now" in master_cfg_cache.keys() and "env" in master_cfg_cache.keys()
+        assert master_cfg.home == os.environ["HOME"]
+
+        sweep_cfg = config_loader.load_sweep_config(
+            master_config=master_cfg,
+            sweep_overrides=["time='${now:%H-%M-%S}'", "home='${env:HOME}'"],
+        )
+
+        sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)
+        assert len(sweep_cfg_cache.keys()) == 1 and "now" in sweep_cfg_cache.keys()
+        assert sweep_cfg_cache["now"] == master_cfg_cache["now"]
+        monkeypatch.setenv("HOME", "/another/home/dir/")
+        assert sweep_cfg.home == os.getenv("HOME")
 
 
 @pytest.mark.parametrize(  # type:ignore
