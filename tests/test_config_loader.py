@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import re
 from dataclasses import dataclass
 from typing import Any, List
@@ -459,20 +460,24 @@ class TestConfigLoader:
             run_mode=RunMode.RUN,
         )
 
-        # trigger resolution and check types
+        # trigger resolution by type assertion
         assert type(master_cfg.time) == str
         assert type(master_cfg.home) == str
 
         master_cfg_cache = OmegaConf.get_cache(master_cfg)
-        assert "now" in master_cfg_cache.keys()
-        assert "env" in master_cfg_cache.keys()
+        assert "now" in master_cfg_cache.keys() and "env" in master_cfg_cache.keys()
+        assert master_cfg.home == os.environ["HOME"]
 
         sweep_cfg = config_loader.load_sweep_config(
-            master_config=master_cfg, sweep_overrides=["abc=123"]
+            master_config=master_cfg,
+            sweep_overrides=["time='${now:%H-%M-%S}'", "home='${env:HOME}'"],
         )
+
         sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)
-        assert "now" in sweep_cfg_cache.keys() and len(sweep_cfg_cache.keys()) == 1
+        assert len(sweep_cfg_cache.keys()) == 1 and "now" in sweep_cfg_cache.keys()
         assert sweep_cfg_cache["now"] == master_cfg_cache["now"]
+        os.environ["HOME"] = "/another/home/dir/"
+        assert sweep_cfg.home == "/another/home/dir/"
 
 
 @pytest.mark.parametrize(  # type:ignore
