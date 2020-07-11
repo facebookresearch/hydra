@@ -1,2 +1,3 @@
 defaults:
+  - hydra/hydra_logging: disabled
   - test: default
