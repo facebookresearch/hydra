@@ -93,7 +93,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish
+            sudo apt-get install -y expect fish openjdk-11-jre
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -111,7 +111,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish
+            sudo apt-get install -y expect fish openjdk-11-jre
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -129,7 +129,7 @@ jobs:
           name: "Preparing environment"
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish
+            sudo apt-get install -y expect fish openjdk-11-jre
             sudo pip install nox
       - run:
           name: "Testing Hydra"
@@ -144,11 +144,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Installing Conda
+          name: Preparing system
           command: |
-            choco install miniconda3 -y
+            choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install openssl -y
+            choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing conda environment
           command: |
@@ -170,11 +170,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Installing Conda
+          name: Preparing system
           command: |
-            choco install miniconda3 -y
+            choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install openssl -y
+            choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing conda environment
           command: |
@@ -196,11 +196,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Installing Conda
+          name: Preparing system
           command: |
-            choco install miniconda3 -y
+            choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install openssl -y
+            choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing conda environment
           command: |

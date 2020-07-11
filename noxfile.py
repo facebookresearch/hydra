@@ -227,7 +227,8 @@ def lint(session):
         session.chdir(BASE)
 
     session.run(*_black_cmd(), silent=SILENT)
-    skiplist = apps + ["plugins", ".nox"]
+
+    skiplist = apps + [".git", "website", "plugins", ".nox", "hydra/grammar/gen"]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 
     session.run(*isort, silent=SILENT)
@@ -284,7 +285,7 @@ def test_core(session, install_cmd):
     session.install("pytest")
 
     if not SKIP_CORE_TESTS:
-        run_pytest(session, "tests", *session.posargs)
+        run_pytest(session, "tests", "build_helpers", *session.posargs)
     else:
         session.log("Skipping Hydra core tests")
 
