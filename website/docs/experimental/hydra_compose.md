@@ -19,7 +19,7 @@ For example:
 - If you want to compose multiple configuration objects
 
 <div class="alert alert--info" role="alert">
-Please avoid using the compose API in cases where <b>@hydra.main()</b> can be used.  
+Please avoid using the Compose API in cases where <b>@hydra.main()</b> can be used.  
 Doing so forfeits many of the benefits of Hydra
 (e.g., Tab completion, Multirun, Working directory management, Logging management and more)
 </div>

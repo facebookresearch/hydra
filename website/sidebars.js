@@ -82,7 +82,7 @@ module.exports = {
 
         'Advanced': [
             'advanced/overriding_packages',
-            'advanced/command_line_overrides',
+            'advanced/command_line_syntax',
             'advanced/search_path',
             'advanced/plugins',
             'advanced/app_packaging',

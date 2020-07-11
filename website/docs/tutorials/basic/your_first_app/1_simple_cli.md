@@ -32,3 +32,4 @@ db:
   password: secret
 ```
 
+The command line syntax is fully covered in [Advanced/Command-line syntax](/advanced/command_line_syntax.md).
