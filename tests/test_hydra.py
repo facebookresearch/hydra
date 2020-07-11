@@ -850,14 +850,23 @@ def test_module_run(
 @pytest.mark.parametrize(  # type: ignore
     "overrides,error,expected",
     [
-        (["test.param=1"], False, "1\n"),
-        (
+        pytest.param(["test.param=1"], False, "1", id="run:value"),
+        pytest.param(
             ["test.param=1,2"],
             True,
-            "'test.param=1,2' is a sweeper override, did you forget to to use --multirun|-m ?",
+            """Ambiguous value for argument 'test.param=1,2'
+1. To use it as a list, use test.param=[1,2]
+2. To use it as string use test.param=\\'1,2\\'
+3. To sweep over it, add --multirun to your command line
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",
+            id="run:choice_sweep",
         ),
-        (["test.param=1", "-m"], False, "1\n"),
-        (["test.param=1,2", "-m"], False, "1\n2\n"),
+        pytest.param(["test.param=[1,2]"], False, "[1, 2]", id="run:list_value"),
+        pytest.param(["test.param=1", "-m"], False, "1", id="multirun:value"),
+        pytest.param(
+            ["test.param=1,2", "-m"], False, "1\n2", id="multirun:choice_sweep"
+        ),
     ],
 )
 def test_multirun_structured_conflict(
@@ -866,17 +875,17 @@ def test_multirun_structured_conflict(
     cmd = [
         sys.executable,
         "tests/test_apps/multirun_structured_conflict/my_app.py",
-        "hydra/hydra_logging=disabled",
         "hydra.sweep.dir=" + str(tmpdir),
     ]
     cmd.extend(overrides)
     if error:
-        assert re.search(re.escape(expected), run_with_error(cmd)) is not None
+        ret = run_with_error(cmd)
+        assert re.search(re.escape(expected), ret) is not None
     else:
-        assert (
-            normalize_newlines(str(subprocess.check_output(cmd).decode("utf-8")))
-            == expected
-        )
+        ret = normalize_newlines(
+            str(subprocess.check_output(cmd).decode("utf-8"))
+        ).strip()
+        assert ret == expected
 
 
 @pytest.mark.parametrize(  # type: ignore

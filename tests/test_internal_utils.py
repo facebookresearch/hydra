@@ -76,7 +76,9 @@ Use 'target' instead of '{warning}'."""
         assert recwarn[0].message.args[0] == exp
 
 
-@pytest.mark.skipif(sys.version_info < (3, 7), reason="requires python3.7")  # type: ignore
+@pytest.mark.skipif(  # type: ignore
+    sys.version_info < (3, 7), reason="requires python3.7"
+)
 def test_cls() -> None:
     with pytest.warns(expected_warning=UserWarning):
         assert utils._get_cls_name(ObjectConf(cls="foo")) == "foo"
