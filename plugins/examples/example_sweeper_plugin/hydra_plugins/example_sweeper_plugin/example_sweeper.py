@@ -6,6 +6,7 @@ from typing import Any, Iterable, List, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
@@ -68,22 +69,35 @@ class ExampleSweeper(Sweeper):
         sweep_dir.mkdir(parents=True, exist_ok=True)
         OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
 
-        # Construct list of overrides per job we want to launch
-        src_lists = []
-        for s in arguments:
-            key, value = s.split("=")
-            # for each argument, create a list. if the argument has , (aka - is a sweep), add an element for each
-            # option to that list, otherwise add a single element with the value
-            src_lists.append([f"{key}={val}" for val in value.split(",")])
+        parser = OverridesParser()
+        parsed = parser.parse_overrides(arguments)
 
-        batches = list(itertools.product(*src_lists))
+        lists = []
+        for override in parsed:
+            if override.is_sweep_override():
+                # Sweepers must manipulate only overrides that return true to is_sweep_override()
+                # This syntax is shared across all sweepers, so it may limiting.
+                # Sweeper must respect this though: failing to do so will cause all sorts of hard to debug issues.
+                # If you would like to propose an extension to the grammar (enabling new types of sweep overrides)
+                # Please file an issue and describe the use case and the proposed syntax.
+                # Be aware that syntax extensions are potentially breaking compatibility for existing users and the
+                # use case will be scrutinized heavily before the syntax is changed.
+                sweep_choices = override.choices_as_strings()
+                assert isinstance(sweep_choices, list)
+                key = override.get_key_element()
+                sweep = [f"{key}={val}" for val in sweep_choices]
+                lists.append(sweep)
+            else:
+                key = override.get_key_element()
+                value = override.get_value_element()
+                lists.append([f"{key}={value}"])
+        batches = list(itertools.product(*lists))
 
         # some sweepers will launch multiple bathes.
         # for such sweepers, it is important that they pass the proper initial_job_idx when launching
         # each batch. see example below.
         # This is required to ensure that working that the job gets a unique job id
         # (which in turn can be used for other things, like the working directory)
-
         def chunks(
             lst: Sequence[Sequence[str]], n: Optional[int]
         ) -> Iterable[Sequence[Sequence[str]]]:
