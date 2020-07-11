@@ -488,6 +488,7 @@ class Hydra:
         run_mode: RunMode,
         strict: Optional[bool] = None,
         with_log_configuration: bool = False,
+        from_shell: bool = True,
     ) -> DictConfig:
         """
         :param config_name:
@@ -496,6 +497,7 @@ class Hydra:
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param strict: None for default behavior (default to true for config file, false if no config file).
                        otherwise forces specific behavior.
+        :param from_shell: True if the parameters are passed from the shell. used for more helpful error messages
         :return:
         """
 
@@ -506,6 +508,7 @@ class Hydra:
             overrides=overrides,
             strict=strict,
             run_mode=run_mode,
+            from_shell=from_shell,
         )
         with open_dict(cfg):
             from hydra import __version__

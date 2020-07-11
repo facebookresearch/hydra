@@ -31,6 +31,7 @@ class ConfigLoader(ABC):
         overrides: List[str],
         run_mode: RunMode,
         strict: Optional[bool] = None,
+        from_shell: bool = True,
     ) -> DictConfig:
         ...
 

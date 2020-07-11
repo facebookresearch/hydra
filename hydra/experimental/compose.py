@@ -33,6 +33,7 @@ def compose(
         overrides=overrides,
         run_mode=RunMode.RUN,
         strict=strict,
+        from_shell=False,
     )
     assert isinstance(cfg, DictConfig)
 
