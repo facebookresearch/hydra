@@ -10,8 +10,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
-import yaml
-from omegaconf import DictConfig, ListConfig, OmegaConf, _utils, open_dict
+from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -22,6 +21,11 @@ from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
+from hydra.core.override_parser.overrides_parser import (
+    Override,
+    OverridesParser,
+    OverrideType,
+)
 from hydra.core.utils import JobRuntime
 from hydra.errors import HydraException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
@@ -31,60 +35,6 @@ from hydra.types import RunMode
 class UnspecifiedMandatoryDefault(Exception):
     def __init__(self, config_group: str,) -> None:
         self.config_group = config_group
-
-
-@dataclass
-class ParsedConfigOverride:
-    prefix: Optional[str]
-    key: str
-    value: Optional[str]
-
-    def is_delete(self) -> bool:
-        return self.prefix == "~"
-
-    def is_add(self) -> bool:
-        return self.prefix == "+"
-
-
-@dataclass
-class ParsedOverride:
-    prefix: Optional[str]
-    key: str
-    pkg1: Optional[str]
-    pkg2: Optional[str]
-    value: Optional[str]
-
-    def get_source_package(self) -> Optional[str]:
-        return self.pkg1
-
-    def get_subject_package(self) -> Optional[str]:
-        return self.pkg1 if self.pkg2 is None else self.pkg2
-
-    def get_source_item(self) -> str:
-        pkg = self.get_source_package()
-        if pkg is None:
-            return self.key
-        else:
-            return f"{self.key}@{pkg}"
-
-    def is_package_rename(self) -> bool:
-        return self.pkg1 is not None and self.pkg2 is not None
-
-    def is_delete(self) -> bool:
-        legacy_delete = self.value == "null"
-        return self.prefix == "~" or legacy_delete
-
-    def is_add(self) -> bool:
-        return self.prefix == "+"
-
-
-@dataclass
-class ParsedOverrideWithLine:
-    override: ParsedOverride
-    input_line: str
-
-    def __repr__(self) -> str:
-        return f"[Parsed] {self.input_line}"
 
 
 @dataclass
@@ -133,21 +83,21 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     def split_overrides(
-        self, pairs: List[ParsedOverrideWithLine],
-    ) -> Tuple[List[ParsedOverrideWithLine], List[ParsedOverrideWithLine]]:
+        self, overrides: List[Override],
+    ) -> Tuple[List[Override], List[Override]]:
         config_group_overrides = []
         config_overrides = []
-        for pwd in pairs:
-            if not self.repository.group_exists(pwd.override.key):
-                config_overrides.append(pwd)
+        for override in overrides:
+            if not self.repository.group_exists(override.key_or_group):
+                config_overrides.append(override)
             else:
-                config_group_overrides.append(pwd)
+                config_group_overrides.append(override)
         return config_group_overrides, config_overrides
 
     def missing_config_error(
         self, config_name: Optional[str], msg: str, with_search_path: bool
     ) -> None:
-        def add_search_path(msg: str) -> str:
+        def add_search_path() -> str:
             descs = []
             for src in self.repository.get_sources():
                 if src.provider != "schema":
@@ -160,7 +110,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 return msg
 
         raise MissingConfigException(
-            missing_cfg_file=config_name, message=add_search_path(msg)
+            missing_cfg_file=config_name, message=add_search_path()
         )
 
     def ensure_main_config_source_available(self) -> None:
@@ -189,24 +139,34 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides: List[str],
         run_mode: RunMode,
         strict: Optional[bool] = None,
+        from_shell: bool = True,
     ) -> DictConfig:
         if strict is None:
             strict = self.default_strict
 
-        parsed_overrides = [self._parse_override(override) for override in overrides]
+        parser = OverridesParser()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
         filtered_parsed_overrides = []
         for x in parsed_overrides:
-            if ConfigLoaderImpl._is_sweeper_override(x.override):
+            if x.is_sweep_override():
+                if from_shell:
+                    quoted = f"{x.get_key_element()}=\\'{x.get_value_string()}\\'"
+                else:
+                    quoted = f"{x.get_key_element()}='{x.get_value_string()}'"
                 if run_mode == RunMode.RUN:
-                    raise HydraException(
-                        f"'{x.input_line}' is a sweeper override, did you forget to to use --multirun|-m ?"
-                    )
+                    msg = f"""Ambiguous value for argument '{x.input_line}'
+1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
+2. To use it as string use {quoted}
+3. To sweep over it, add --multirun to your command line"""
+                    raise HydraException(msg)
                 elif run_mode == RunMode.MULTIRUN:
-                    # filter, the sweeper will pass pass concrete overrides to individual jobs
-                    if x.override.key.startswith("hydra."):
+                    if x.is_hydra_override():
                         raise HydraException(
-                            f"Sweeping over Hydra configuration is not supported : '{x.input_line}'"
+                            f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
                         )
+                    else:
+                        # filter, the sweeper will pass pass concrete overrides to individual jobs
+                        pass
             else:
                 filtered_parsed_overrides.append(x)
 
@@ -273,27 +233,22 @@ class ConfigLoaderImpl(ConfigLoader):
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
-        # Merge all command line overrides after enabling strict flag
-        ConfigLoaderImpl._apply_overrides_to_config(
-            [x.input_line for x in config_overrides], cfg
-        )
+        # Apply command line overrides after enabling strict flag
+        ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
 
         app_overrides = []
-        for pwl in parsed_overrides:
-            override = pwl.override
-            assert override.key is not None
-            key = override.key
-            if key.startswith("hydra.") or key.startswith("hydra/"):
-                cfg.hydra.overrides.hydra.append(pwl.input_line)
+        for override in parsed_overrides:
+            if override.is_hydra_override():
+                cfg.hydra.overrides.hydra.append(override.input_line)
             else:
-                cfg.hydra.overrides.task.append(pwl.input_line)
-                app_overrides.append(pwl)
+                cfg.hydra.overrides.task.append(override.input_line)
+                app_overrides.append(override)
 
         with open_dict(cfg.hydra.job):
             if "name" not in cfg.hydra.job:
                 cfg.hydra.job.name = JobRuntime().get("name")
             cfg.hydra.job.override_dirname = get_overrides_dirname(
-                input_list=app_overrides,
+                overrides=app_overrides,
                 kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
                 item_sep=cfg.hydra.job.config.override_dirname.item_sep,
                 exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
@@ -343,12 +298,12 @@ class ConfigLoaderImpl(ConfigLoader):
         return copy.deepcopy(self.all_config_checked)
 
     @staticmethod
-    def is_matching(override: ParsedOverride, default: DefaultElement) -> bool:
-        assert override.key == default.config_group
+    def is_matching(override: Override, default: DefaultElement) -> bool:
+        assert override.key_or_group == default.config_group
         if override.is_delete():
             return override.get_subject_package() == default.package
         else:
-            return override.key == default.config_group and (
+            return override.key_or_group == default.config_group and (
                 override.pkg1 == default.package
                 or override.pkg1 == ""
                 and default.package is None
@@ -356,23 +311,17 @@ class ConfigLoaderImpl(ConfigLoader):
 
     @staticmethod
     def find_matches(
-        key_to_defaults: Dict[str, List[IndexedDefaultElement]],
-        override: ParsedOverride,
+        key_to_defaults: Dict[str, List[IndexedDefaultElement]], override: Override,
     ) -> List[IndexedDefaultElement]:
         matches: List[IndexedDefaultElement] = []
-        for default in key_to_defaults[override.key]:
+        for default in key_to_defaults[override.key_or_group]:
             if ConfigLoaderImpl.is_matching(override, default.default):
                 matches.append(default)
         return matches
 
-    # TODO: should be a function in the sweeper. somehow.
-    @staticmethod
-    def _is_sweeper_override(override: ParsedOverride) -> bool:
-        return override.value is not None and "," in override.value
-
     @staticmethod
     def _apply_overrides_to_defaults(
-        overrides: List[ParsedOverrideWithLine], defaults: List[DefaultElement],
+        overrides: List[Override], defaults: List[DefaultElement],
     ) -> None:
 
         key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
@@ -382,26 +331,26 @@ class ConfigLoaderImpl(ConfigLoader):
                 key_to_defaults[default.config_group].append(
                     IndexedDefaultElement(idx=idx, default=default)
                 )
-        for owl in overrides:
-            override = owl.override
-            if override.value == "null":
-                if override.prefix not in (None, "~"):
-                    ConfigLoaderImpl._raise_parse_override_error(owl.input_line)
-                override.prefix = "~"
-                override.value = None
+        for override in overrides:
+            value = override.value()
+            if value is None:
+                if override.is_add():
+                    ConfigLoaderImpl._raise_parse_override_error(override.input_line)
 
-                msg = (
-                    "\nRemoving from the defaults list by assigning 'null' "
-                    "is deprecated and will be removed in Hydra 1.1."
-                    f"\nUse ~{override.key}"
-                )
-                warnings.warn(category=UserWarning, message=msg)
+                if not override.is_delete():
+                    override.type = OverrideType.DEL
+                    msg = (
+                        "\nRemoving from the defaults list by assigning 'null' "
+                        "is deprecated and will be removed in Hydra 1.1."
+                        f"\nUse ~{override.key_or_group}"
+                    )
+                    warnings.warn(category=UserWarning, message=msg)
 
             if (
                 not (override.is_delete() or override.is_package_rename())
-                and override.value is None
+                and value is None
             ):
-                ConfigLoaderImpl._raise_parse_override_error(owl.input_line)
+                ConfigLoaderImpl._raise_parse_override_error(override.input_line)
 
             if override.is_add() and override.is_package_rename():
                 raise HydraException(
@@ -410,6 +359,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
             matches = ConfigLoaderImpl.find_matches(key_to_defaults, override)
 
+            if isinstance(value, (list, dict)):
+                raise HydraException(
+                    f"Config group override value type cannot be a {type(value).__name__}"
+                )
+
             if override.is_delete():
                 src = override.get_source_item()
                 if len(matches) == 0:
@@ -417,12 +371,9 @@ class ConfigLoaderImpl(ConfigLoader):
                         f"Could not delete. No match for '{src}' in the defaults list."
                     )
                 for pair in matches:
-                    if (
-                        override.value is not None
-                        and override.value != defaults[pair.idx].config_name
-                    ):
+                    if value is not None and value != defaults[pair.idx].config_name:
                         raise HydraException(
-                            f"Could not delete. No match for '{src}={override.value}' in the defaults list."
+                            f"Could not delete. No match for '{src}={value}' in the defaults list."
                         )
 
                     del defaults[pair.idx]
@@ -432,21 +383,21 @@ class ConfigLoaderImpl(ConfigLoader):
                     raise HydraException(
                         f"Could not add. An item matching '{src}' is already in the defaults list."
                     )
-                assert override.value is not None
+                assert value is not None
                 defaults.append(
                     DefaultElement(
-                        config_group=override.key,
-                        config_name=override.value,
+                        config_group=override.key_or_group,
+                        config_name=str(value),
                         package=override.get_subject_package(),
                     )
                 )
             else:
+                assert value is not None
                 # override
                 for match in matches:
                     default = match.default
-                    if override.value is not None:
-                        default.config_name = override.value
-                    if override.pkg1 is not None:
+                    default.config_name = str(value)
+                    if override.is_package_rename():
                         default.package = override.get_subject_package()
 
                 if len(matches) == 0:
@@ -456,7 +407,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     else:
                         msg = (
                             f"Could not override '{src}'. No match in the defaults list."
-                            f"\nTo append to your default list use +{owl.input_line}"
+                            f"\nTo append to your default list use +{override.input_line}"
                         )
 
                     raise HydraException(msg)
@@ -476,29 +427,29 @@ class ConfigLoaderImpl(ConfigLoader):
         return group, package
 
     @staticmethod
-    def _apply_overrides_to_config(overrides: List[str], cfg: DictConfig) -> None:
-        loader = _utils.get_yaml_loader()
+    def _apply_overrides_to_config(overrides: List[Override], cfg: DictConfig) -> None:
+        for override in overrides:
+            if override.get_subject_package() is not None:
+                raise HydraException(
+                    f"Override {override.input_line} looks like a config group override, "
+                    f"but config group '{override.key_or_group}' does not exist."
+                )
 
-        def get_value(val_: Optional[str]) -> Any:
-            return yaml.load(val_, Loader=loader) if val_ is not None else None
-
-        for line in overrides:
-            override = ConfigLoaderImpl._parse_config_override(line)
+            key = override.key_or_group
+            value = override.value()
             try:
-                value = get_value(override.value)
                 if override.is_delete():
-                    val = OmegaConf.select(cfg, override.key, throw_on_missing=False)
-                    if val is None:
+                    config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
+                    if config_val is None:
                         raise HydraException(
-                            f"Could not delete from config. '{override.key}' does not exist."
+                            f"Could not delete from config. '{override.key_or_group}' does not exist."
                         )
-                    elif value is not None and value != val:
+                    elif value is not None and value != config_val:
                         raise HydraException(
                             f"Could not delete from config."
-                            f" The value of '{override.key}' is {val} and not {override.value}."
+                            f" The value of '{override.key_or_group}' is {config_val} and not {value}."
                         )
 
-                    key = override.key
                     last_dot = key.rfind(".")
                     with open_dict(cfg):
                         if last_dot == -1:
@@ -508,29 +459,29 @@ class ConfigLoaderImpl(ConfigLoader):
                             del node[key[last_dot + 1 :]]
 
                 elif override.is_add():
-                    if (
-                        OmegaConf.select(cfg, override.key, throw_on_missing=False)
-                        is None
-                    ):
+                    if OmegaConf.select(cfg, key, throw_on_missing=False) is None:
                         with open_dict(cfg):
-                            OmegaConf.update(cfg, override.key, value)
+                            OmegaConf.update(cfg, key, value)
                     else:
                         raise HydraException(
-                            f"Could not append to config. An item is already at '{override.key}'."
+                            f"Could not append to config. An item is already at '{override.key_or_group}'."
                         )
                 else:
                     try:
-                        OmegaConf.update(cfg, override.key, value)
+                        OmegaConf.update(cfg, key, value)
                     except (ConfigAttributeError, ConfigKeyError) as ex:
                         raise HydraException(
-                            f"Could not override '{override.key}'. No match in config."
-                            f"\nTo append to your config use +{line}"
+                            f"Could not override '{override.key_or_group}'. No match in config."
+                            f"\nTo append to your config use +{override.input_line}"
                         ) from ex
             except OmegaConfBaseException as ex:
-                raise HydraException(f"Error merging override {line}") from ex
+                raise HydraException(
+                    f"Error merging override {override.input_line}"
+                ) from ex
 
     @staticmethod
-    def _raise_parse_override_error(override: str) -> str:
+    def _raise_parse_override_error(override: Optional[str]) -> None:
+        # TODO: make about general config override parsing.
         msg = (
             f"Error parsing config group override : '{override}'"
             f"\nAccepted forms:"
@@ -539,68 +490,6 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\n\tDelete:  ~key, ~key@pkg, ~key=value, ~key@pkg=value"
         )
         raise HydraException(msg)
-
-    @staticmethod
-    def _parse_override(override: str) -> ParsedOverrideWithLine:
-        # forms:
-        # key=value
-        # key@pkg=value
-        # key@src_pkg:dst_pkg=value
-        # regex code and tests: https://regex101.com/r/LiV6Rf/14
-
-        regex = (
-            r"^(?P<prefix>[+~])?(?P<key>[A-Za-z0-9_.-/]+)(?:@(?P<pkg1>[A-Za-z0-9_\.-]*)"
-            r"(?::(?P<pkg2>[A-Za-z0-9_\.-]*)?)?)?(?:=(?P<value>.*))?$"
-        )
-        matches = re.search(regex, override)
-        if matches:
-            prefix = matches.group("prefix")
-            key = matches.group("key")
-            pkg1 = matches.group("pkg1")
-            pkg2 = matches.group("pkg2")
-            value: Optional[str] = matches.group("value")
-            ret = ParsedOverride(prefix, key, pkg1, pkg2, value)
-            return ParsedOverrideWithLine(override=ret, input_line=override)
-        else:
-            ConfigLoaderImpl._raise_parse_override_error(override)
-            assert False
-
-    @staticmethod
-    def _parse_config_override(override: str) -> ParsedConfigOverride:
-        # forms:
-        # update: key=value
-        # append: +key=value
-        # delete: ~key=value | ~key
-        # regex code and tests: https://regex101.com/r/JAPVdx/9
-
-        regex = r"^(?P<prefix>[+~])?(?P<key>[\w\.@]+)(?:=(?P<value>.*))?$"
-        matches = re.search(regex, override)
-
-        valid = True
-        prefix = None
-        key = None
-        value = None
-        msg = (
-            f"Error parsing config override : '{override}'"
-            f"\nAccepted forms:"
-            f"\n\tOverride:  key=value"
-            f"\n\tAppend:   +key=value"
-            f"\n\tDelete:   ~key=value, ~key"
-        )
-        if matches:
-            prefix = matches.group("prefix")
-            key = matches.group("key")
-            value = matches.group("value")
-            if prefix in (None, "+"):
-                valid = key is not None and value is not None
-            elif prefix == "~":
-                valid = key is not None
-
-        if matches and valid:
-            assert key is not None
-            return ParsedConfigOverride(prefix=prefix, key=key, value=value)
-        else:
-            raise HydraException(msg)
 
     @staticmethod
     def _combine_default_lists(
@@ -926,16 +815,16 @@ class ConfigLoaderImpl(ConfigLoader):
 
 
 def get_overrides_dirname(
-    input_list: List[ParsedOverrideWithLine],
-    exclude_keys: List[str] = [],
-    item_sep: str = ",",
-    kv_sep: str = "=",
+    overrides: List[Override], exclude_keys: List[str], item_sep: str, kv_sep: str,
 ) -> str:
     lines = []
-    for x in input_list:
-        if x.override.key not in exclude_keys:
-            lines.append(x.input_line)
+    for override in overrides:
+        if override.key_or_group not in exclude_keys:
+            line = override.input_line
+            assert line is not None
+            lines.append(line)
 
+    # TODO: no way this is correct
     lines.sort()
     ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
     return ret

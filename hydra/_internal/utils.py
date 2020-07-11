@@ -204,7 +204,7 @@ def run_and_report(func: Any) -> Any:
                 sys.stderr.write(str(ex.__cause__))
 
             sys.stderr.write(
-                "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\n"
+                "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
             )
         sys.exit(1)
 

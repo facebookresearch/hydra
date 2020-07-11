@@ -52,7 +52,7 @@ class LauncherTestSuite:
         with pytest.raises(
             HydraException,
             match=re.escape(
-                "Sweeping over Hydra configuration is not supported : 'hydra.verbose=true,false'"
+                "Sweeping over Hydra's configuration is not supported : 'hydra.verbose=true,false'"
             ),
         ):
             with hydra_sweep_runner(

@@ -22,6 +22,7 @@ from omegaconf import MISSING, DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import JobReturn
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import ObjectConf, TaskFunction
@@ -82,11 +83,21 @@ class BasicSweeper(Sweeper):
             yield lst[i : i + n]
 
     def initialize_arguments(self, arguments: List[str]) -> None:
-        lists = []
-        for s in arguments:
-            key, value = s.split("=")
-            lists.append([f"{key}={val}" for val in value.split(",")])
+        parser = OverridesParser()
+        parsed = parser.parse_overrides(arguments)
 
+        lists = []
+        for override in parsed:
+            if override.is_sweep_override():
+                sweep_choices = override.choices_as_strings()
+                assert isinstance(sweep_choices, list)
+                key = override.get_key_element()
+                sweep = [f"{key}={val}" for val in sweep_choices]
+                lists.append(sweep)
+            else:
+                key = override.get_key_element()
+                value = override.get_value_element()
+                lists.append([f"{key}={value}"])
         all_batches = list(itertools.product(*lists))
         assert self.max_batch_size is None or self.max_batch_size > 0
         if self.max_batch_size is None:
