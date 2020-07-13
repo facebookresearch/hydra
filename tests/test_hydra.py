@@ -985,11 +985,6 @@ bar: 100
             "hydra.sweep.dir=" + str(tmpdir),
             "+foo=[1,2,3]",
         ]
-        expected = """foo:
-- 1
-- 2
-- 3
-
-"""
+        expected = {"foo": [1, 2, 3]}
         ret = str(subprocess.check_output(cmd).decode("utf-8"))
-        assert ret == normalize_newlines(expected)
+        assert OmegaConf.create(ret) == OmegaConf.create(expected)
