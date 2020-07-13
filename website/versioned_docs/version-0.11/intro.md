@@ -3,6 +3,9 @@ id: intro
 title: Getting started
 sidebar_label: Getting started
 ---
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import Link from '@docusaurus/Link';
+
 ## Introduction
 Hydra is an open-source Python framework that simplifies the development of research and other complex applications.
 The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. 
@@ -17,12 +20,13 @@ The name Hydra comes from its ability to run multiple similar jobs - much like a
 * Run multiple jobs with different arguments with a single command
 
 ## Versions
+
 Hydra supports Linux, Mac and Windows.
 
-|        |     Version               | Docs                          | Release notes                                                                          | Python Version    |
-| -------|---------------------------|------------------------------- | ------------------------------------------------------------------------------------- | ----------------- |
-| &#9658;| 0.11 (Stable)             | 0.11 Docs         | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)                     | **2.7, 3.5+**     |
-|        | 1.0 (Release candidate)   | [1.0 docs](../docs/next/intro)| [Release notes](https://github.com/facebookresearch/hydra/releases/tag/hydra-1.0.0rc1) | 3.6+              |
+|        |          Version          | Docs                          | Release notes                                                                                                       | Python Version   |
+| -------|---------------------------|------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------------- |
+| &#9658;| 0.11 (Stable)             | 0.11 Doc                                                                | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)          | **2.7, 3.5+**    |
+|        | 1.0 (Release candidate)   | <Link to={useBaseUrl("/docs/next/intro")}>**Switch to 1.0 Docs**</Link> | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/hydra-1.0.0rc1)  | 3.6+             | 
 
 
 ## Quick start guide
