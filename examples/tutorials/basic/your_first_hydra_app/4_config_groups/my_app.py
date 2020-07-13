@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 import hydra
 
 
-@hydra.main(config_path="conf")
+@hydra.main(config_path="config.yaml")
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
 
