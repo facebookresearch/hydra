@@ -940,7 +940,7 @@ bar: 20
 
 """
         ret = str(subprocess.check_output(cmd).decode("utf-8"))
-        assert ret == normalize_newlines(expected)
+        assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_config_overrides_evaluated_lazily(
         self, cmd_base: List[str], tmpdir: Any
@@ -960,7 +960,7 @@ bar: 20
 
 """
         ret = str(subprocess.check_output(cmd).decode("utf-8"))
-        assert ret == normalize_newlines(expected)
+        assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_defaults_override(self, cmd_base: List[str], tmpdir: Any) -> None:
         cmd = cmd_base + [
@@ -978,7 +978,7 @@ bar: 100
 
 """
         ret = str(subprocess.check_output(cmd).decode("utf-8"))
-        assert ret == normalize_newlines(expected)
+        assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_run_pass_list(self, cmd_base: List[str], tmpdir: Any) -> None:
         cmd = cmd_base + [
