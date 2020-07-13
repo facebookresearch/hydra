@@ -83,7 +83,7 @@ For more details, including descriptions for each parameter, check out the [conf
 
 An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
 
-Starting the app with `python my_app.py task=1,2,3 -m` will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
+Starting the app with `python my_app.py task=1,2,3 -m` (where `-m` is a shortcut for `--multirun`) will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
 
 ```text
 $ python my_app.py task=1,2,3 -m
