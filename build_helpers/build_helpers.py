@@ -1,16 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import codecs
-import distutils.cmd
 import distutils.log
 import errno
 import os
 import re
 import shutil
 import subprocess
-from distutils import cmd
 from os.path import abspath, basename, dirname, exists, isdir, join
 from typing import List, Optional
 
+from setuptools import Command
 from setuptools.command import build_py, develop, sdist  # type: ignore
 
 
@@ -87,7 +86,7 @@ def find(
     )
 
 
-class CleanCommand(cmd.Command):
+class CleanCommand(Command):  # type: ignore
     """
     Our custom command to clean out junk files.
     """
@@ -131,7 +130,7 @@ class CleanCommand(cmd.Command):
         pass
 
 
-def run_antlr(cmd: cmd.Command) -> None:
+def run_antlr(cmd: Command) -> None:
     try:
         cmd.announce("Generating parsers with antlr4", level=distutils.log.FATAL)
         cmd.run_command("antlr")
@@ -166,7 +165,7 @@ class SDistCommand(sdist.sdist):  # type: ignore
         sdist.sdist.run(self)
 
 
-class ANTLRCommand(distutils.cmd.Command):
+class ANTLRCommand(Command):  # type: ignore
     """Generate parsers using ANTLR."""
 
     description = "Run ANTLR"
