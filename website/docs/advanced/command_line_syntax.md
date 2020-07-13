@@ -2,24 +2,24 @@
 id: command_line_syntax
 title: Command-line syntax
 ---
-You can manipulate your configuration via the command line. This includes:
-- Manipulation of the defaults list
-- Manipulation of the resulting config object
+You can modify your configuration via the command line. This includes:
+- Modifying the the `Defaults List`
+- Modifying the config object
 
-Command line overrides matching a Config group are manipulating the Defaults List;
+Command line overrides matching a Config group are modifying the `Defaults List`;
 The rest are manipulating the config object.
 
-### Basic examples
-#### Config values
+## Basic examples
+### Modifying the Config Object
 - Overriding a config value : `foo.bar=value`
 - Appending a config value : `+foo.bar=value`
 - Removing a config value : `~foo.bar`, `~foo.bar=value`
 
-### Defaults list
+### Modifying the Defaults List
 - Overriding selected Option: `db=mysql`
-- Overriding selected Option and renaming package: `db@src_pkg:dst_pkg=mysql`
-- Renaming package: `db@src_pkg:dst_pkg`
-- Appending to defaults: `+experiment=exp1`
+- Changing a package: `db@src_pkg:dst_pkg`
+- Overriding selected Option and changing the package: `db@src_pkg:dst_pkg=mysql`
+- Appending to defaults: `+db=mysql`
 - Deleting from defaults: `~db`, `~db=mysql`
 
 ## Grammar
@@ -42,44 +42,38 @@ key :
     | packageOrGroup '@:' package               // group@:pkg2
 ;
 
+packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
+package: (ID | DOT_PATH);                       // db, hydra.launcher
+
 value: element | choiceSweep;
-
-choiceSweep: element (',' element)+;
-
-package: (ID | DOT_PATH);
-
-packageOrGroup: package | ID ('/' ID)+;
-
 element:
       primitive
     | listValue
     | dictValue
 ;
+choiceSweep: element (',' element)+;            // value1,value2,value3
 
 primitive:
-    WS? (QUOTED_VALUE |
-        ( ID
-        | NULL
-        | INT
-        | FLOAT
-        | BOOL
-        | DOT_PATH
-        | INTERPOLATION
-        | '\\'
-        | '/'
-        | ':'
-        | '-'
-        | '+'
-        | '.'
-        | '$'
+    WS? (QUOTED_VALUE |                         // 'hello world', "hello world"
+        ( ID                                    // foo_10
+        | NULL                                  // null, NULL
+        | INT                                   // 0, 10, -20, 1_000_000
+        | FLOAT                                 // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                  // true, TrUe, false, False
+        | DOT_PATH                              // foo.bar
+        | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
+        | '/' | ':' | '-' | '\\'
+        | '+' | '.' | '$'
         )+
     )
     WS?;
 
-id_with_ws: WS? ID WS?;
-dictValue: '{' (id_with_ws ':' element (',' id_with_ws ':' element)*)? '}';
+listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
+dictValue: '{'                                  // {}, {a:10,b:20}
+    (id_ws ':' element (',' id_ws ':' element)*)?
+'}';
 
-listValue: '[' (element(',' element)*)? ']';
+id_ws: WS? ID WS?;
 ```
 ## Description
 ### Key
@@ -88,7 +82,7 @@ Key is the component before the =. A few examples:
 foo.bar           # A config key
 hydra/launcher    # A config group
 group@pkg         # A config group assigned to the package pkg
-group@pkg1:pkg2   # A config group renaming the package from pkg1 to pkg2
+group@pkg1:pkg2   # A config group changing the package from pkg1 to pkg2
 ```
 
 ### Quoted values
@@ -133,7 +127,7 @@ To include a single quote in a single quoted string escape it : `\'`. Same for d
 
 Constants (null, true, false, inf, nan) are case insensitive. 
 
-**IMPORTANT** Always single-quote overrides that contains interpolations in the shell.
+**IMPORTANT** Always single-quote interpolations in the shell.
 
 ### Lists
 ```python
