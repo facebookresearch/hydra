@@ -238,7 +238,7 @@ class Override:
 
 
 class CLIVisitor(OverrideVisitor):  # type: ignore
-    def visitId_with_ws(self, ctx: OverrideParser.Id_with_wsContext) -> str:
+    def visitId_ws(self, ctx: OverrideParser.Id_wsContext) -> str:
         return ctx.getText().strip()  # type: ignore
 
     def visitPackage(self, ctx: OverrideParser.PackageContext) -> str:
@@ -362,7 +362,7 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
                 if not first and item.symbol.text == ",":
                     continue
 
-            pkey = self.visitId_with_ws(item)
+            pkey = self.visitId_ws(item)
 
             sep = next(children)
             assert sep.symbol.text == ":"

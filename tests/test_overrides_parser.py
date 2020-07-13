@@ -127,7 +127,7 @@ def test_list_value(value: str, expected: Any) -> None:
     ],
 )
 def test_id_with_ws(value: str, prefix: str, suffix: str) -> None:
-    ret = OverridesParser.parse_rule(prefix + value + suffix, "id_with_ws")
+    ret = OverridesParser.parse_rule(prefix + value + suffix, "id_ws")
     assert ret == value
 
 
