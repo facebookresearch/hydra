@@ -6,7 +6,7 @@ title: Putting it all together
 As software gets more complex, we resort to modularity and composition to keep it manageable. 
 We can do the same with configs: suppose we want our working example to support multiple databases, with
 multiple schemas per database, and different UIs. We wouldn't write a separate class
-for any permutation of db, schema and UI, so we shouldn't write separate configs either. We use 
+for each permutation of db, schema and UI, so we shouldn't write separate configs either. We use 
 the same solution in configuration as in writing the underlying software: composition. 
 
 To do this in Hydra, we first add a `schema` and a `ui` config group:
