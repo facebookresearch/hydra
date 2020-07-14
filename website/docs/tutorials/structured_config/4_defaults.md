@@ -3,7 +3,7 @@ id: defaults
 title: Defaults
 ---
 
-You can define a defaults list in your primary (structured) config just like you can in your primary (YAML) config file.
+You can define a defaults list in your primary Structured Config just like you can in your primary `config.yaml` file.
 The example below extends the previous example by adding a defaults list that will load `db=mysql` by default.
 
 <div class="alert alert--info" role="alert">
