@@ -38,7 +38,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 # config here is config.yaml under the conf directory.
-# config.yaml will compose in database: mysql by default (per the defaults list),
+# config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
