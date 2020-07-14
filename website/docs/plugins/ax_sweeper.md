@@ -26,7 +26,7 @@ defaults:
   - hydra/sweeper: ax
 ```
 
-We include an example of how to use this plugin. The file [`example/banana.py`](plugins/hydra_ax/example/banana.py) implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). The return value of the function should be the value that we want to optimize.
+We include an example of how to use this plugin. The file [`example/banana.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ax_sweeper/example/banana.py) implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). The return value of the function should be the value that we want to optimize.
 
 To compute the best parameters for the Banana function, clone the code and run the following command in the `plugins/hydra_ax_sweeper` directory:
 
