@@ -3,7 +3,7 @@ id: schema
 title: Structured config schema
 ---
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
-When Hydra loads a configuration file, it looks for a config with the same name in the `ConfigStore`.
+When Hydra loads a configuration, it looks for a config with the same name in the `ConfigStore`.
 If found, it is used as the schema for the newly loaded config.
 
 This is an example of defining and storing one schema for db/mysql and another for db/postgresql.
