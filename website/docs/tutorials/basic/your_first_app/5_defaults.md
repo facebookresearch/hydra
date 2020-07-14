@@ -3,8 +3,7 @@ id: defaults
 title: Selecting defaults for config groups
 ---
 
-After office politics, you decide that you want to use MySQL by default.
-You no longer want to type `+db=mysql` every time you run your application.
+Suppose that you want to use MySQL by default -- you no longer want to type `+db=mysql` every time you run your application.
 
 You can add a `defaults` list into your config file.
 
