@@ -61,3 +61,11 @@ db:
   driver: postgresql
   ...
 ```
+
+Note also that the `db` command line argument can be made mandatory by using `MISSING` as default value:
+```python
+defaults = [
+    # An error will be raised if the user forgets to specify `db=...`
+    {"db": MISSING}
+]
+```
