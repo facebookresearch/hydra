@@ -55,6 +55,19 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
             "class",
             id="DictConfig:class_target",
         ),
+        # check that `target` is prioritized over `cls`/`class`.
+        pytest.param(
+            OmegaConf.create({"cls": "foo", "target": "bar"}),
+            "bar",
+            "cls",
+            id="DictConfig:cls_target",
+        ),
+        pytest.param(
+            OmegaConf.create({"class": "foo", "target": "bar"}),
+            "bar",
+            "class",
+            id="DictConfig:class_target",
+        ),
     ],
 )
 def test_get_class_name(
