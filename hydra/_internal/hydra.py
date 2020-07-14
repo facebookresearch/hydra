@@ -127,7 +127,8 @@ class Hydra:
         sweeper = Plugins.instance().instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
         )
-        task_overrides = cfg.hydra.overrides.task
+        task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
+        assert isinstance(task_overrides, list)
         return sweeper.sweep(arguments=task_overrides)
 
     @staticmethod

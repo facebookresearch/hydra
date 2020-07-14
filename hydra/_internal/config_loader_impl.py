@@ -82,7 +82,7 @@ class ConfigLoaderImpl(ConfigLoader):
             config_search_path=config_search_path
         )
 
-    def split_overrides(
+    def split_by_override_type(
         self, overrides: List[Override],
     ) -> Tuple[List[Override], List[Override]]:
         config_group_overrides = []
@@ -141,41 +141,51 @@ class ConfigLoaderImpl(ConfigLoader):
         strict: Optional[bool] = None,
         from_shell: bool = True,
     ) -> DictConfig:
-        if strict is None:
-            strict = self.default_strict
-
-        parser = OverridesParser()
-        parsed_overrides = parser.parse_overrides(overrides=overrides)
-        filtered_parsed_overrides = []
-        for x in parsed_overrides:
-            if x.is_sweep_override():
-                if from_shell:
-                    quoted = f"{x.get_key_element()}=\\'{x.get_value_string()}\\'"
-                else:
-                    quoted = f"{x.get_key_element()}='{x.get_value_string()}'"
-                if run_mode == RunMode.RUN:
-                    msg = f"""Ambiguous value for argument '{x.input_line}'
-1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
-2. To use it as string use {quoted}
-3. To sweep over it, add --multirun to your command line"""
-                    raise HydraException(msg)
-                elif run_mode == RunMode.MULTIRUN:
-                    if x.is_hydra_override():
-                        raise HydraException(
-                            f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
-                        )
-                    else:
-                        # filter, the sweeper will pass pass concrete overrides to individual jobs
-                        pass
-            else:
-                filtered_parsed_overrides.append(x)
-
         if config_name is not None and not self.repository.config_exists(config_name):
             self.missing_config_error(
                 config_name=config_name,
                 msg=f"Cannot find primary config : {config_name}, check that it's in your config search path",
                 with_search_path=True,
             )
+
+        if strict is None:
+            strict = self.default_strict
+
+        parser = OverridesParser()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
+        config_overrides = []
+        sweep_overrides = []
+        for x in parsed_overrides:
+            if x.is_sweep_override():
+                if run_mode == RunMode.MULTIRUN:
+                    if x.is_hydra_override():
+                        raise HydraException(
+                            f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
+                        )
+                    sweep_overrides.append(x)
+                elif run_mode == RunMode.RUN:
+                    if from_shell:
+                        example_override = (
+                            f"{x.get_key_element()}=\\'{x.get_value_string()}\\'"
+                        )
+                    else:
+                        example_override = (
+                            f"{x.get_key_element()}='{x.get_value_string()}'"
+                        )
+
+                    msg = f"""Ambiguous value for argument '{x.input_line}'
+1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
+2. To use it as string use {example_override}
+3. To sweep over it, add --multirun to your command line"""
+                    raise HydraException(msg)
+                else:
+                    assert False
+            else:
+                config_overrides.append(x)
+
+        config_group_overrides, config_overrides = self.split_by_override_type(
+            config_overrides
+        )
 
         # Load hydra config
         hydra_cfg, _load_trace = self._load_primary_config(cfg_filename="hydra_config")
@@ -202,10 +212,6 @@ class ConfigLoaderImpl(ConfigLoader):
         if config_name is not None:
             defaults.append(DefaultElement(config_group=None, config_name="__SELF__"))
         split_at = len(defaults)
-
-        config_group_overrides, config_overrides = self.split_overrides(
-            filtered_parsed_overrides
-        )
 
         self._combine_default_lists(defaults, job_defaults)
         ConfigLoaderImpl._apply_overrides_to_defaults(config_group_overrides, defaults)
@@ -345,7 +351,6 @@ class ConfigLoaderImpl(ConfigLoader):
                         f"\nUse ~{override.key_or_group}"
                     )
                     warnings.warn(category=UserWarning, message=msg)
-
             if (
                 not (override.is_delete() or override.is_package_rename())
                 and value is None

@@ -213,7 +213,7 @@ def test_app_with_config_path_backward_compatibility(
 ) -> None:
     msg = (
         "\nUsing config_path to specify the config name is deprecated, specify the config name via config_name"
-        "\nSee https://hydra.cc/next/upgrades/0.11_to_1.0/config_path_changes"
+        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes"
     )
 
     with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
@@ -888,24 +888,103 @@ def test_multirun_structured_conflict(
         assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "sweep", [pytest.param(False, id="run"), pytest.param(True, id="sweep")]
+@pytest.mark.parametrize(
+    "cmd_base",
+    [
+        (
+            [
+                sys.executable,
+                "tests/test_apps/simple_app/my_app.py",
+                "hydra/hydra_logging=disabled",
+            ]
+        )
+    ],
 )
-def test_run_with_missing_default(tmpdir: Any, sweep: bool) -> None:
-    cmd = [
-        sys.executable,
-        "tests/test_apps/simple_app/my_app.py",
-        "--config-name=unspecified_mandatory_default",
-        "--config-path=../../../hydra/test_utils/configs",
-        "hydra/hydra_logging=disabled",
-        "hydra.sweep.dir=" + str(tmpdir),
-    ]
-    if sweep:
-        cmd.append("-m")
-    expected = """You must specify 'group1', e.g, group1=<OPTION>
+class TestVariousRuns:
+    @pytest.mark.parametrize(  # type: ignore
+        "sweep", [pytest.param(False, id="run"), pytest.param(True, id="sweep")]
+    )
+    def test_run_with_missing_default(
+        self, cmd_base: List[str], tmpdir: Any, sweep: bool
+    ) -> None:
+        cmd = cmd_base + [
+            "hydra.sweep.dir=" + str(tmpdir),
+            "--config-name=unspecified_mandatory_default",
+            "--config-path=../../../hydra/test_utils/configs",
+        ]
+        if sweep:
+            cmd.append("-m")
+        expected = """You must specify 'group1', e.g, group1=<OPTION>
 Available options:
 \tabc.cde
 \tfile1
 \tfile2"""
-    ret = run_with_error(cmd)
-    assert re.search(re.escape(expected), ret) is not None
+        ret = run_with_error(cmd)
+        assert re.search(re.escape(expected), ret) is not None
+
+    def test_command_line_interpolations_evaluated_lazily(
+        self, cmd_base: List[str], tmpdir: Any
+    ) -> None:
+
+        cmd = cmd_base + [
+            "hydra.sweep.dir=" + str(tmpdir),
+            "+foo=10,20",
+            "+bar=${foo}",
+            "--multirun",
+        ]
+        expected = """foo: 10
+bar: 10
+
+foo: 20
+bar: 20
+
+"""
+        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+        assert normalize_newlines(ret) == normalize_newlines(expected)
+
+    def test_multirun_config_overrides_evaluated_lazily(
+        self, cmd_base: List[str], tmpdir: Any
+    ) -> None:
+
+        cmd = cmd_base + [
+            "hydra.sweep.dir=" + str(tmpdir),
+            "+foo=10,20",
+            "+bar=${foo}",
+            "--multirun",
+        ]
+        expected = """foo: 10
+bar: 10
+
+foo: 20
+bar: 20
+
+"""
+        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+        assert normalize_newlines(ret) == normalize_newlines(expected)
+
+    def test_multirun_defaults_override(self, cmd_base: List[str], tmpdir: Any) -> None:
+        cmd = cmd_base + [
+            "hydra.sweep.dir=" + str(tmpdir),
+            "group1=file1,file2",
+            "--multirun",
+            "--config-path=../../../hydra/test_utils/configs",
+            "--config-name=compose",
+        ]
+        expected = """foo: 10
+bar: 100
+
+foo: 20
+bar: 100
+
+"""
+        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+        assert normalize_newlines(ret) == normalize_newlines(expected)
+
+    def test_run_pass_list(self, cmd_base: List[str], tmpdir: Any) -> None:
+        cmd = cmd_base + [
+            "hydra.sweep.dir=" + str(tmpdir),
+            "+foo=[1,2,3]",
+        ]
+        expected = {"foo": [1, 2, 3]}
+        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+        assert OmegaConf.create(ret) == OmegaConf.create(expected)
