@@ -48,6 +48,9 @@ db:
   user: postgre_user
 ```
 
+In the above example we need the `+` because there is no default choice for which config to load in the `db` group, so we are effectively _adding_ a new config element rather than _overriding_ an existing one.
+The next page in this tutorial will show how to add such a default choice, thus removing the need for `+` on the command line.
+
 ### Config inheritance
 Standard Python inheritance can be used to get improved type safety, and to move common fields to the parent class.
 
