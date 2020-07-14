@@ -6,7 +6,7 @@ We have seen how to use Structured Configs as configuration, but they can also b
 When Hydra loads a configuration file, it looks for a config with the same name in the `ConfigStore`.
 If found, it is used as the schema for the newly loaded config.
 
-This is an example of defining and stores one schema for db/mysql and another for db/postgresql.
+This is an example of defining and storing one schema for db/mysql and another for db/postgresql.
 
 Given a config directory structure like:
 ```text
@@ -19,7 +19,7 @@ conf/
 ```
 
 The Structurd Configs below are stored as db/mysql and db/postgresql. They will be used as schema
-when we load the corresponding config files.
+when we load their corresponding config files.
 
 ```python title="my_app.py"
 @dataclass
@@ -73,7 +73,7 @@ Value 'fail' could not be converted to Integer
         object_type=MySQLConfig
 ```
 
-The defaults list in this example is contained in the config.yaml file.
+The defaults list in this example is contained in the config.yaml file:
 ```yaml title="config.yaml"
 defaults:
   - db: mysql
