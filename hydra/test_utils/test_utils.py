@@ -109,6 +109,9 @@ class SweepTaskFunction:
     """
 
     def __init__(self) -> None:
+        """
+        if sweep_dir is None,  we use a temp dir, else we will create dir with the path from sweep_dir.
+        """
         self.temp_dir: Optional[str] = None
         self.overrides: Optional[List[str]] = None
         self.calling_file: Optional[str] = None
@@ -129,15 +132,20 @@ class SweepTaskFunction:
         return 100
 
     def __enter__(self) -> "SweepTaskFunction":
-        self.temp_dir = tempfile.mkdtemp()
         overrides = copy.deepcopy(self.overrides)
         assert overrides is not None
+        if self.temp_dir:
+            Path(self.temp_dir).mkdir(parents=True, exist_ok=True)
+        else:
+            self.temp_dir = tempfile.mkdtemp()
         overrides.append(f"hydra.sweep.dir={self.temp_dir}")
+
         try:
             config_dir, config_name = split_config_path(
                 self.config_path, self.config_name
             )
             job_name = detect_task_name(self.calling_file, self.calling_module)
+
             hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
@@ -171,6 +179,7 @@ class TSweepRunner(Protocol):
         config_name: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
+        temp_dir: Optional[Path] = None,
     ) -> SweepTaskFunction:
         ...
 
@@ -248,6 +257,7 @@ def integration_test(
     env_override: Dict[str, str] = {},
     clean_environment: bool = False,
 ) -> str:
+    Path(tmpdir).mkdir(parents=True, exist_ok=True)
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
     if isinstance(task_config, (list, dict)):
