@@ -3,11 +3,11 @@ id: defaults
 title: Defaults
 ---
 
-You can define a defaults list in your primary config just like you can in your primary config file.
-The example below extends the previous example by adding a defaults list that will load db=mysql by default.
+You can define a defaults list in your primary (structured) config just like you can in your primary (YAML) config file.
+The example below extends the previous example by adding a defaults list that will load `db=mysql` by default.
 
 <div class="alert alert--info" role="alert">
-NOTE: You can still place your defaults list in your primary config file (Example in next page).
+NOTE: You can still place your defaults list in your primary (YAML) config file (Example in next page).
 </div><br/>
 
 ```python
@@ -54,7 +54,7 @@ db:
   ...
 ```
 
-You can override the default option via the command line:
+You can override the default option via the command line (note how we do not need `+` anymore, compared to the previous example):
 ```yaml
 $ python my_app.py db=postgresql
 db:
