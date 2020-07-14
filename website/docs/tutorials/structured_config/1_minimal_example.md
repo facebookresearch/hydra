@@ -83,5 +83,5 @@ It can be useful when you care about the methods or attributes of an object, not
 ## Overriding default values in the `@dataclass`
 You can use instances of the dataclasses to override default values in the stored config.
 ```python
-cs.store(name="config", node=MySQLConfig(host="anotherhost", port=80))
+cs.store(name="config", node=MySQLConfig(host="test.db", port=3307))
 ```
