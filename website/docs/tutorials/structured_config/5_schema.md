@@ -40,20 +40,20 @@ class MySQLConfig(DBConfig):
 @dataclass
 class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
-    port: int = 5432
     user: str = MISSING
+    port: int = 5432
     password: str = MISSING
     timeout: int = 10
 
 
 # registering db/mysql and db/postgresql schemas.
-ss = ConfigStore.instance()
-ss.store(group="db", name="mysql", node=MySQLConfig)
-ss.store(group="db", name="postgresql", node=PostGreSQLConfig)
+cs = ConfigStore.instance()
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 # config here is config.yaml under the conf directory.
-# config.yaml will compose in db: mysql by default (per the defaults list),
+# config.yaml will compose in database: mysql by default (per the defaults list),
 # and it will be validated against the schema
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
