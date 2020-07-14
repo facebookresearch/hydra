@@ -2,6 +2,7 @@
 # Source of truth for version
 __version__ = "1.0.0rc1"
 import copy
+from pathlib import Path
 from typing import Callable, List, Optional
 
 import pytest
@@ -31,6 +32,7 @@ def hydra_sweep_runner() -> Callable[
         Optional[str],
         Optional[List[str]],
         Optional[bool],
+        Optional[Path],
     ],
     SweepTaskFunction,
 ]:
@@ -42,6 +44,7 @@ def hydra_sweep_runner() -> Callable[
         config_name: Optional[str],
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
+        temp_dir: Optional[Path] = None,
     ) -> SweepTaskFunction:
         sweep = SweepTaskFunction()
         sweep.calling_file = calling_file
@@ -51,6 +54,7 @@ def hydra_sweep_runner() -> Callable[
         sweep.config_name = config_name
         sweep.strict = strict
         sweep.overrides = overrides or []
+        sweep.temp_dir = str(temp_dir)
         return sweep
 
     return _
