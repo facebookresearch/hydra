@@ -34,3 +34,4 @@ ignore: |
   **/multirun.yaml
   website
   .*
+  .nox
