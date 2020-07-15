@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
 import sys
 from pathlib import Path
 from subprocess import check_output
@@ -12,6 +13,7 @@ from hydra.test_utils.test_utils import (
     chdir_hydra_root,
     verify_dir_outputs,
 )
+from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -94,3 +96,16 @@ def test_objects_example(
         assert task.job_ret is not None
         assert task.job_ret.cfg == output_conf
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+def test_frozen(tmpdir: Any) -> None:
+    cmd = [
+        sys.executable,
+        "examples/patterns/write_protect_config_node/frozen.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "data_bits=10",
+    ]
+
+    expected = """Error merging override data_bits=10\nCannot change read-only config container"""
+    err = run_with_error(cmd)
+    assert re.search(re.escape(expected), err) is not None
