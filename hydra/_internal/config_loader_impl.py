@@ -10,7 +10,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
-from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
+from omegaconf import Container, DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -201,8 +201,13 @@ class ConfigLoaderImpl(ConfigLoader):
         job_cfg_type = OmegaConf.get_type(job_cfg)
         if job_cfg_type is not None and not issubclass(job_cfg_type, dict):
             hydra_cfg._promote(job_cfg_type)
+
+            # during the regular merge later the config will retain the readonly flag.
+            _recursive_unset_readonly(hydra_cfg)
             # this is breaking encapsulation a bit. can potentially be implemented in OmegaConf
             hydra_cfg._metadata.ref_type = job_cfg._metadata.ref_type
+
+            OmegaConf.set_readonly(hydra_cfg.hydra, False)
 
         # if defaults are re-introduced by the promotion, remove it.
         if "defaults" in hydra_cfg:
@@ -834,3 +839,14 @@ def get_overrides_dirname(
     lines.sort()
     ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
     return ret
+
+
+def _recursive_unset_readonly(cfg: Container) -> None:
+    if isinstance(cfg, DictConfig):
+        OmegaConf.set_readonly(cfg, None)
+        for k, v in cfg.items_ex(resolve=False):
+            _recursive_unset_readonly(v)
+    elif isinstance(cfg, ListConfig):
+        OmegaConf.set_readonly(cfg, None)
+        for item in cfg:
+            _recursive_unset_readonly(item)

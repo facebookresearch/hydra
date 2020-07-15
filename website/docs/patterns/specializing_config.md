@@ -1,7 +1,6 @@
 ---
 id: specializing_config
 title: Specializing configuration
-sidebar_label: Specializing configuration
 ---
 In some cases the desired configuration should depend on other configuration choices.
 For example, You may want to use only 5 layers in your Alexnet model if the dataset of choice is cifar10, and the dafault 7 otherwise.

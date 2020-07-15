@@ -30,8 +30,9 @@ rules:
     level: warning
 
 ignore: |
+  build
+  website
   **/.hydra/*.yaml
   **/multirun.yaml
-  website
   .*
   .nox

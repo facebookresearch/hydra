@@ -61,6 +61,7 @@ module.exports = {
         'Common Patterns': [
             'patterns/objects',
             'patterns/specializing_config',
+            'patterns/write_protect_config_node',
         ],
 
         'Configuring Hydra': [

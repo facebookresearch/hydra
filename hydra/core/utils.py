@@ -12,7 +12,7 @@ from pathlib import Path
 from time import localtime, strftime
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -96,8 +96,9 @@ def run_job(
         ret = JobReturn()
         ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
-        with open_dict(task_cfg):
-            del task_cfg["hydra"]
+        with read_write(task_cfg):
+            with open_dict(task_cfg):
+                del task_cfg["hydra"]
         ret.cfg = task_cfg
         ret.hydra_cfg = OmegaConf.create({"hydra": HydraConfig.get()})
         overrides = OmegaConf.to_container(config.hydra.overrides.task)
