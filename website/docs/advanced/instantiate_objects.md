@@ -44,21 +44,31 @@ class ObjectConf(Dict[str, Any]):
 models.py
 ```python
 class Foo:
-  def __init__(self, x: int, y: int) -> None:
+
+  # target: models.Foo
+  def __init__(self, x: int, y: int, z:int = 3) -> None:
     self.x = x
     self.y = y
+    self.z = z
 
+  # target: models.Foo.class_method
   @classmethod
-  def class_method(self, z: int) -> Any:
-    return self(z, 10)
-
+  def class_method(self, x: int) -> Any:
+    return self(x, 10)
+    
+  # target: models.Foo.static_method
   @staticmethod
   def static_method(z: int) -> int:
     return z + 1
 
+# target: models.bar
 def bar(z: int) -> int:
   return z + 2
+
 ```
+
+For example, to instantiate a models.Foo object:
+
 config.yaml
 ```yaml
 myobject:
@@ -66,44 +76,26 @@ myobject:
   params:
     x: 10
     y: 20
-    
-myclassmethod:
-  target: models.Foo.class_method
-  params:
-    z: 5
-
-mystaticmethod:
-  target: models.Foo.static_method
-  params:
-    z: 15
-
-myfunction:
-  target: models.bar
-  params:
-    z: 15
 ```
 
 Now to test these, `instantiate` (or `call`) them as follows:
-
 ```python
-import hydra
-
-@hydra.main(config_path="config.yaml")
-def app(cfg):
-  foo1: Foo = hydra.utils.instantiate(cfg.myobject)  # Foo(10, 20)
-  foo2: Foo = hydra.utils.instantiate(cfg.myclassmethod)  # Foo(5, 10)
-  ret1: int = hydra.utils.instantiate(cfg.mystaticmethod)  # 16
-  ret2: int = hydra.utils.instantiate(cfg.myfunction)  # 17
+# foo is as described in the config
+foo : Foo = hydra.utils.instantiate(cfg.myobject)
+# you can also override the config values on the callsite:
+foo2 : Foo = hydra.utils.instantiate(cfg.myobject, x=100)
+# and even pass additional fields that are not in the config. 
+foo3 : Foo = hydra.utils.instantiate(cfg.myobject, z=100)
 ```
 
-These methods also support functions built into the standard library:
+We can also call functions from the standard library:
 
 ```yaml
-# fully qualified name of the in-built function
-target: builtins.str
-# optional parameters dictionary to pass when calling the target
-params:
-  object: 42
+myobject:
+  target: builtins.str
+  params:
+    object: 42
+```  
 
 ```python
 import hydra
@@ -114,17 +106,13 @@ def app(cfg):
 
 ```
 
-Another useful scenario is when we want to create the `None` object. In that case, set `target = None`:
+We can create the `None` object by setting the config to `None`:
 
 ```yaml
-target: None
-# parameters are ignored when target is set to None
-params:
-  object: 42
-
+myobject: null
 ```python
 import hydra
 
 @hydra.main(config_path="config.yaml")
 def app(cfg):
-  foo = hydra.utils.instantiate(cfg)  # None
+  foo = hydra.utils.instantiate(cfg.myobject)  # None
