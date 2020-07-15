@@ -2,6 +2,7 @@
 import copy
 import logging
 import os
+import platform
 import re
 import sys
 import warnings
@@ -150,6 +151,9 @@ def setup_globals() -> None:
     register(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
+    )
+    register(
+        "python_version", lambda: platform.python_version()[:-2],
     )
 
     vi = sys.version_info

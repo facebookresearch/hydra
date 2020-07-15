@@ -39,7 +39,12 @@ commands:
             brew install fish
             brew cleanup
       - run:
+<<<<<<< HEAD
           name: Preparing environment - Hydra
+=======
+          name: "Testing Hydra"
+          no_output_timeout: 20m
+>>>>>>> hydra ray launcher
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox --progress-bar off
@@ -66,12 +71,27 @@ commands:
           name: Preparing environment - Other dependency
           command: |
             sudo apt-get update
+<<<<<<< HEAD
             sudo apt-get install -y expect fish openjdk-11-jre
       - run:
           name: Preparing environment - Hydra
           command: |
             ~/miniconda3/bin/conda init bash
             ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
+=======
+            sudo apt-get install -y expect fish openjdk-11-jre rsyn
+            sudo pip install nox
+<<<<<<< HEAD
+=======
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 20m
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            pip install nox dataclasses
+            nox
+>>>>>>> hydra ray launcher
+>>>>>>> hydra ray launcher
 
 
   win:
