@@ -4,17 +4,7 @@ title: Instantiate objects and calling functions
 sidebar_label: Instantiate objects and calling functions
 ---
 
-Hydra provides `hydra.utils.call()` (and its alias `hydra.utils.instantiate()`) for instantiating objects and calling functions While `instantiate` is an alias for `call`, you may prefer to use `call` for invoking functions and class methods, and `instantiate` for creating objects.	
-
-```python
-def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
-    """
-    :param config: An ObjectConf or DictConfig describing what to call and what params to use
-    :param args: optional positional parameters pass-through
-    :param kwargs: optional named parameters pass-through
-    :return: the return value from the specified method
-    """
-```
+Hydra provides `hydra.utils.instantiate()` (and its alias `hydra.utils.call()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.
 
 ```python
 def instantiate(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
@@ -26,11 +16,18 @@ def instantiate(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
     """
 ```
 
-For using these functions, the config must have a key called `target`. Older versions of Hydra also supported the `cls` and `class` key but they are deprecated now (hence not recommended) and will be removed in Hydra 1.1 . If both `target` and `cls` (or `class`) keys are present, `target` key will be used.
+For using these functions, the config must have a key called `target`. If a key called `params` is also present, its value is passed as keyword arguments to class/function specificed by `target`.
 
-If a key called `params` is also present, its value is passed as keyword arguments to class/function specificed by `target`. 
+### Example config
+```yaml
+# target function name or class method fully qualified name
+target: foo.Bar
+# optional parameters dictionary to pass when calling the target
+params:
+  x: 10
+```
 
-### ObjectConf definition for hydra.utils.instantiate
+### Example ObjectConf definition
 ObjectConf is defined in `hydra.types.ObjectConf`:
 ```python
 @dataclass
@@ -41,14 +38,6 @@ class ObjectConf(Dict[str, Any]):
     params: Any = field(default_factory=dict)
 ```
 
-### Example config node for hydra.utils.call
-```yaml
-# target function name or class method fully qualified name
-target: foo.Bar
-# optional parameters dictionary to pass when calling the target
-params:
-  x: 10
-```
 
 #### Example usage
 
@@ -94,17 +83,17 @@ myfunction:
     z: 15
 ```
 
-Now to test these, `call` (or `instantiate`) them as follows:
+Now to test these, `instantiate` (or `call`) them as follows:
 
 ```python
 import hydra
 
 @hydra.main(config_path="config.yaml")
 def app(cfg):
-  foo1: Foo = hydra.utils.call(cfg.myobject)  # Foo(10, 20)
-  foo2: Foo = hydra.utils.call(cfg.myclassmethod)  # Foo(5, 10)
-  ret1: int = hydra.utils.call(cfg.mystaticmethod)  # 16
-  ret2: int = hydra.utils.call(cfg.myfunction)  # 17
+  foo1: Foo = hydra.utils.instantiate(cfg.myobject)  # Foo(10, 20)
+  foo2: Foo = hydra.utils.instantiate(cfg.myclassmethod)  # Foo(5, 10)
+  ret1: int = hydra.utils.instantiate(cfg.mystaticmethod)  # 16
+  ret2: int = hydra.utils.instantiate(cfg.myfunction)  # 17
 ```
 
 These methods also support functions built into the standard library:
@@ -121,7 +110,7 @@ import hydra
 
 @hydra.main(config_path="config.yaml")
 def app(cfg):
-  foo: str = hydra.utils.call(cfg)  # "42"
+  foo: str = hydra.utils.instantiate(cfg)  # "42"
 
 ```
 
@@ -138,4 +127,4 @@ import hydra
 
 @hydra.main(config_path="config.yaml")
 def app(cfg):
-  foo = hydra.utils.call(cfg)  # None
+  foo = hydra.utils.instantiate(cfg)  # None

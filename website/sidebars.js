@@ -1,7 +1,7 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 function FBInternalOnly(elements) {
-   return process.env.FB_INTERNAL ? elements : [];
+    return process.env.FB_INTERNAL ? elements : [];
 }
 
 module.exports = {
@@ -11,51 +11,51 @@ module.exports = {
             'terminology',
         ],
         Tutorials: [
-          'tutorials/intro',
-          {
-            type: 'category',
-            label: 'Basic Tutorial',
-            items: [
-                {
-                    type: 'category',
-                    label: 'Your first Hydra app',
-                    items: [
-                        'tutorials/basic/your_first_app/simple_cli',
-                        'tutorials/basic/your_first_app/config_file',
-                        'tutorials/basic/your_first_app/using_config',
-                        'tutorials/basic/your_first_app/config_groups',
-                        'tutorials/basic/your_first_app/defaults',
-                        'tutorials/basic/your_first_app/composition',
-                    ]
-                },
-                {
-                    type: 'category',
-                    label: 'Running your Hydra app',
-                    items: [
-                        'tutorials/basic/running_your_app/multi-run',
-                        'tutorials/basic/running_your_app/working_directory',
-                        'tutorials/basic/running_your_app/logging',
-                        'tutorials/basic/running_your_app/debugging',
-                        'tutorials/basic/running_your_app/tab_completion',
-                    ]
-                },
+            'tutorials/intro',
+            {
+                type: 'category',
+                label: 'Basic Tutorial',
+                items: [
+                    {
+                        type: 'category',
+                        label: 'Your first Hydra app',
+                        items: [
+                            'tutorials/basic/your_first_app/simple_cli',
+                            'tutorials/basic/your_first_app/config_file',
+                            'tutorials/basic/your_first_app/using_config',
+                            'tutorials/basic/your_first_app/config_groups',
+                            'tutorials/basic/your_first_app/defaults',
+                            'tutorials/basic/your_first_app/composition',
+                        ]
+                    },
+                    {
+                        type: 'category',
+                        label: 'Running your Hydra app',
+                        items: [
+                            'tutorials/basic/running_your_app/multi-run',
+                            'tutorials/basic/running_your_app/working_directory',
+                            'tutorials/basic/running_your_app/logging',
+                            'tutorials/basic/running_your_app/debugging',
+                            'tutorials/basic/running_your_app/tab_completion',
+                        ]
+                    },
 
-            ],
-          },
+                ],
+            },
 
-          {
-            type: 'category',
-            label: 'Structured Configs Tutorial',
-            items: [
-                'tutorials/structured_config/intro',
-                'tutorials/structured_config/minimal_example',
-                'tutorials/structured_config/hierarchical_static_config',
-                'tutorials/structured_config/config_groups',
-                'tutorials/structured_config/defaults',
-                'tutorials/structured_config/schema',
-                'tutorials/structured_config/config_store',
-            ],
-          },
+            {
+                type: 'category',
+                label: 'Structured Configs Tutorial',
+                items: [
+                    'tutorials/structured_config/intro',
+                    'tutorials/structured_config/minimal_example',
+                    'tutorials/structured_config/hierarchical_static_config',
+                    'tutorials/structured_config/config_groups',
+                    'tutorials/structured_config/defaults',
+                    'tutorials/structured_config/schema',
+                    'tutorials/structured_config/config_store',
+                ],
+            },
         ],
 
         'Common Patterns': [
@@ -89,6 +89,7 @@ module.exports = {
             'advanced/app_packaging',
             'advanced/jupyter_notebooks',
             'advanced/unit_testing',
+            'advanced/instantiate_objects',
         ],
 
         "Experimental": [
@@ -103,15 +104,15 @@ module.exports = {
         ],
 
         Upgrades: [
-          {
-            type: 'category',
-            label: '0.11 to 1.0',
-            items: [
-                'upgrades/0.11_to_1.0/config_path_changes',
-                'upgrades/0.11_to_1.0/adding_a_package_directive',
-                'upgrades/0.11_to_1.0/strict_mode_flag_deprecated',
-            ],
-          },
+            {
+                type: 'category',
+                label: '0.11 to 1.0',
+                items: [
+                    'upgrades/0.11_to_1.0/config_path_changes',
+                    'upgrades/0.11_to_1.0/adding_a_package_directive',
+                    'upgrades/0.11_to_1.0/strict_mode_flag_deprecated',
+                ],
+            },
         ],
 
         'FB Only': FBInternalOnly([
