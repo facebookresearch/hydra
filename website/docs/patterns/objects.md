@@ -1,9 +1,9 @@
 ---
 id: objects
-title: Creating objects and calling functions
-sidebar_label: Creating objects and calling functions
+title: Instantiating objects and calling functions
+sidebar_label: Instantiating objects and calling functions
 ---
-One of the best ways to drive different behavior in the application is to instantiate different implementations of an interface.
+One of the best ways to drive different behavior in an application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
 is determined by the actual object instance.
 
@@ -85,15 +85,4 @@ def my_app(cfg):
     connection.connect()
 ```
 
-MySQL is the default per the `config.yaml` file:
-```text
-$ python my_app.py
-MySQL connecting to localhost with user=root and password=1234
-```
-Change the instantiated object class and override values from the command line:
-```text
-$ python my_app.py db=postgresql db.params.password=abcde
-PostgreSQL connecting to localhost with user=root and password=abcde and database=tutorial
-```
-
-Learn more about instantiating objects and functions [here](advanced/instantiate).
+Learn more about instantiating objects and functions [here](../advanced/instantiate).

@@ -1,7 +1,7 @@
 ---
 id: instantiate
-title: Instantiate objects and calling functions
-sidebar_label: Instantiate objects and calling functions
+title: Instantiating objects and calling functions
+sidebar_label: Instantiate
 ---
 
 Hydra provides `hydra.utils.instantiate()` (and its alias `hydra.utils.call()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.
@@ -16,7 +16,7 @@ def instantiate(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
     """
 ```
 
-For using these functions, the config must have a key called `target`. If a key called `params` is also present, its value is passed as keyword arguments to class/function specificed by `target`.
+For using these functions, the config must have a key called `target`. If a key called `params` is also present, its value is passed as keyword arguments to class/function specified by `target`.
 
 ### Example config
 ```yaml
@@ -41,51 +41,53 @@ class ObjectConf(Dict[str, Any]):
 
 #### Example usage
 
-models.py
+example.py
 ```python
 class Foo:
 
-  # target: models.Foo
-  def __init__(self, x: int, y: int, z:int = 3) -> None:
+  # target: example.Foo
+  def __init__(self, x: int, y: int, z:int = 30) -> None:
     self.x = x
     self.y = y
     self.z = z
 
-  # target: models.Foo.class_method
+  # target: example.Foo.class_method
   @classmethod
   def class_method(self, x: int) -> Any:
     return self(x, 10)
     
-  # target: models.Foo.static_method
+  # target: example.Foo.static_method
   @staticmethod
   def static_method(z: int) -> int:
     return z + 1
 
-# target: models.bar
+# target: example.bar
 def bar(z: int) -> int:
   return z + 2
 
 ```
 
-For example, to instantiate a models.Foo object:
+To instantiate a `example.Foo` object:
 
 config.yaml
 ```yaml
-myobject:
-  target: models.Foo
+foo:
+  target: example.Foo
   params:
     x: 10
     y: 20
 ```
 
-Now to test these, `instantiate` (or `call`) them as follows:
+Now, to test these, `instantiate` (or `call`) them as follows:
+
 ```python
+from hydra.utils import instantiate
 # foo is as described in the config
-foo : Foo = hydra.utils.instantiate(cfg.myobject)
+foo: Foo = instantiate(cfg.foo) # Foo(x = 10, y = 20, z = 30)
 # you can also override the config values on the callsite:
-foo2 : Foo = hydra.utils.instantiate(cfg.myobject, x=100)
+foo2: Foo = instantiate(cfg.foo, x=100) # Foo(x = 100, y = 20, z = 30)
 # and even pass additional fields that are not in the config. 
-foo3 : Foo = hydra.utils.instantiate(cfg.myobject, z=100)
+foo3: Foo = instantiate(cfg.foo, z=100) # Foo(x = 10, y = 20, z = 100)
 ```
 
 We can also call functions from the standard library:
@@ -110,6 +112,8 @@ We can create the `None` object by setting the config to `None`:
 
 ```yaml
 myobject: null
+```
+
 ```python
 import hydra
 
