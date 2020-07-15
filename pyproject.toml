@@ -55,15 +55,15 @@ include = '\.pyi?$'
 exclude = '''
 (
   /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \hydra/grammar/gen
-    | \.tox
-    | \.nox
-    | \website
-    | \.venv
+      .eggs         # exclude a few common directories in the
+    | .git          # root of the project
+    | .hg
+    | .mypy_cache
+    | hydra/grammar/gen
+    | .tox
+    | .nox
+    | website
+    | .venv
     | _build
     | dist
   )
