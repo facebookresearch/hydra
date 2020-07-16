@@ -1,7 +1,7 @@
 ---
 id: instantiate_objects_reference
-title: Reference for instantiating objects
-sidebar_label: Reference for instantiating objects
+title: Reference
+sidebar_label: Reference
 ---
 
 Hydra provides `hydra.utils.instantiate()` (and its alias `hydra.utils.call()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.

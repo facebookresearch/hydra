@@ -1,7 +1,7 @@
 ---
 id: instantiate_objects_overview
-title: Overview of instantiating objects
-sidebar_label: Overview of instantiating objects
+title: Overview
+sidebar_label: Overview
 ---
 One of the best ways to drive different behavior in an application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
