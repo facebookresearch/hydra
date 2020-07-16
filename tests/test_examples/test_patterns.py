@@ -106,6 +106,5 @@ def test_frozen(tmpdir: Any) -> None:
         "data_bits=10",
     ]
 
-    expected = """Error merging override data_bits=10\nCannot change read-only config container"""
     err = run_with_error(cmd)
-    assert re.search(re.escape(expected), err) is not None
+    assert re.search(re.escape("Error merging override data_bits=10"), err) is not None

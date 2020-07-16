@@ -141,6 +141,25 @@ class ConfigLoaderImpl(ConfigLoader):
         strict: Optional[bool] = None,
         from_shell: bool = True,
     ) -> DictConfig:
+        try:
+            return self._load_configuration(
+                config_name=config_name,
+                overrides=overrides,
+                run_mode=run_mode,
+                strict=strict,
+                from_shell=from_shell,
+            )
+        except OmegaConfBaseException as e:
+            raise HydraException() from e
+
+    def _load_configuration(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode,
+        strict: Optional[bool] = None,
+        from_shell: bool = True,
+    ) -> DictConfig:
         if config_name is not None and not self.repository.config_exists(config_name):
             self.missing_config_error(
                 config_name=config_name,

@@ -879,7 +879,8 @@ def test_multirun_structured_conflict(
     ]
     cmd.extend(overrides)
     if error:
-        ret = run_with_error(cmd)
+        expected = normalize_newlines(expected)
+        ret = normalize_newlines(run_with_error(cmd))
         assert re.search(re.escape(expected), ret) is not None
     else:
         ret = normalize_newlines(
@@ -925,7 +926,6 @@ Available options:
     def test_command_line_interpolations_evaluated_lazily(
         self, cmd_base: List[str], tmpdir: Any
     ) -> None:
-
         cmd = cmd_base + [
             "hydra.sweep.dir=" + str(tmpdir),
             "+foo=10,20",
@@ -945,7 +945,6 @@ bar: 20
     def test_multirun_config_overrides_evaluated_lazily(
         self, cmd_base: List[str], tmpdir: Any
     ) -> None:
-
         cmd = cmd_base + [
             "hydra.sweep.dir=" + str(tmpdir),
             "+foo=10,20",
@@ -988,3 +987,26 @@ bar: 100
         expected = {"foo": [1, 2, 3]}
         ret = str(subprocess.check_output(cmd).decode("utf-8"))
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
+
+
+def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
+    monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
+    cmd = [
+        sys.executable,
+        "my_app.py",
+        "hydra.sweep.dir=" + str(tmpdir),
+    ]
+    expected = """Traceback (most recent call last):
+  File "my_app.py", line 13, in my_app
+    foo(cfg)
+  File "my_app.py", line 8, in foo
+    cfg.foo = "bar"  # does not exist in the config
+omegaconf.errors.ConfigAttributeError: Key 'foo' is not in struct
+\tfull_key: foo
+\treference_type=Optional[Dict[Any, Any]]
+\tobject_type=dict
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
+
+    ret = run_with_error(cmd)
+    assert normalize_newlines(expected) == normalize_newlines(ret)
