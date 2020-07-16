@@ -5,11 +5,11 @@ title: Minimal example
 
 There are four key elements in this example:
 - A `@dataclass` describes the application's configuration
-- `ConfigStore` manages the Structured Config. 
+- `ConfigStore` manages the Structured Config
 - `cfg` is `duck typed` as a `MySQLConfig` instead of a `DictConfig`
-- There is a subtle typo in the code, can you spot it?
+- There is a subtle typo in the code below, can you spot it?
 
-In this example, the config node stored in the `ConfigStore` replaces the traditional `config.yaml` file.  
+In this example, the config node stored in the `ConfigStore` replaces the traditional `config.yaml` file.
 
 ```python title="my_app_type_error.py" {18}
 from dataclasses import dataclass
@@ -23,7 +23,7 @@ class MySQLConfig:
     port: int = 3306
 
 cs = ConfigStore.instance()
-# Registering the Config class with the name 'config'. 
+# Registering the Config class with the name 'config'.
 cs.store(name="config", node=MySQLConfig)
 
 @hydra.main(config_name="config")
@@ -39,14 +39,14 @@ if __name__ == "__main__":
 ### Duck-typing enables static type checking
 
 Duck-typing the config object as `MySQLConfig` enables static type checkers like `mypy` to catch
-type errors before you run your code: 
+type errors before you run your code:
 ```
 $ mypy my_app_type_error.py
 my_app_type_error.py:21: error: "MySQLConfig" has no attribute "pork"
 Found 1 error in 1 file (checked 1 source file)
 ```
 
-### Structured Configs enable Hydra to catch type errors at runtime.
+### Structured Configs enable Hydra to catch type errors at runtime
 If you forget to run `mypy`, Hydra will report the error at runtime:
 ```
 $ python my_app_type_error.py
@@ -83,5 +83,5 @@ It can be useful when you care about the methods or attributes of an object, not
 ## Overriding default values in the `@dataclass`
 You can use instances of the dataclasses to override default values in the stored config.
 ```python
-cs.store(name="config", node=MySQLConfig(user="root", password="1234"))
+cs.store(name="config", node=MySQLConfig(host="test.db", port=3307))
 ```

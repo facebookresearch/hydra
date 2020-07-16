@@ -33,14 +33,12 @@ class PostGreSQLConfig(DBConfig):
 
 # registering db/mysql and db/postgresql schemas.
 cs = ConfigStore.instance()
-cs.store(group="db", name="mysql", node=MySQLConfig, provider="main")
-cs.store(
-    group="db", name="postgresql", node=PostGreSQLConfig, provider="main",
-)
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 # config here is config.yaml under the conf directory.
-# config.yaml will compose in database: mysql by default (per the defaults list),
+# config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:

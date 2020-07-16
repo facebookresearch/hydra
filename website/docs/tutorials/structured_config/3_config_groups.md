@@ -48,6 +48,9 @@ db:
   user: postgre_user
 ```
 
+The `+` above is required because there is no default choice for the config group `db`.
+The next page will re-introduce the Defaults List, eliminating the need for the `+`.
+
 ### Config inheritance
 Standard Python inheritance can be used to get improved type safety, and to move common fields to the parent class.
 

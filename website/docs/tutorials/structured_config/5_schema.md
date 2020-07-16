@@ -2,11 +2,11 @@
 id: schema
 title: Structured config schema
 ---
-We have seen how to use Structured Configs as configuration, but they can also be used as a schema validating configuration files!  
-When Hydra loads a configuration, it looks for config with the same name in the `ConfigStore`.
+We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
+When Hydra loads a configuration, it looks for a config with the same name in the `ConfigStore`.
 If found, it is used as the schema for the newly loaded config.
 
-This is an example of defining and stores one schema for db/mysql and another for db/postgresql.
+This is an example of defining and storing one schema for db/mysql and another for db/postgresql.
 
 Given a config directory structure like:
 ```text
@@ -19,7 +19,7 @@ conf/
 ```
 
 The Structurd Configs below are stored as db/mysql and db/postgresql. They will be used as schema
-when we load the corresponding config files.
+when we load their corresponding config files.
 
 ```python title="my_app.py"
 @dataclass
@@ -40,16 +40,16 @@ class MySQLConfig(DBConfig):
 @dataclass
 class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
-    port: int = 5432
     user: str = MISSING
+    port: int = 5432
     password: str = MISSING
     timeout: int = 10
 
 
 # registering db/mysql and db/postgresql schemas.
-ss = ConfigStore.instance()
-ss.store(group="db", name="mysql", node=MySQLConfig)
-ss.store(group="db", name="postgresql", node=PostGreSQLConfig)
+cs = ConfigStore.instance()
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 # config here is config.yaml under the conf directory.
@@ -73,7 +73,7 @@ Value 'fail' could not be converted to Integer
         object_type=MySQLConfig
 ```
 
-The defaults list in this example is contained in the config.yaml file.
+The defaults list in this example is contained in the config.yaml file:
 ```yaml title="config.yaml"
 defaults:
   - db: mysql
