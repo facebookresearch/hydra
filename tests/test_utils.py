@@ -109,6 +109,8 @@ def test_get_class(path: str, expected_type: type) -> None:
             "43",
             id="builtin_types",
         ),
+        # Check that none is instantiated correctly
+        pytest.param(None, {}, None, id="instantiate_none",),
         # passthrough
         pytest.param(
             {"target": "tests.AClass"},

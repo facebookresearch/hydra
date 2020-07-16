@@ -59,7 +59,14 @@ module.exports = {
         ],
 
         'Common Patterns': [
-            'patterns/objects',
+            {
+                type: 'category',
+                label: 'Instantiating Objects',
+                items: [
+                    'patterns/instantiate_objects/instantiate_objects_overview',
+                    'patterns/instantiate_objects/instantiate_objects_reference',
+                 ]   
+             },
             'patterns/specializing_config',
             'patterns/write_protect_config_node',
         ],

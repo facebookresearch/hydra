@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Union
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 from hydra._internal.utils import (
     _call_callable,
@@ -26,6 +26,8 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
     :param kwargs: optional named parameters pass-through
     :return: the return value from the specified class or method
     """
+    if OmegaConf.is_none(config):
+        return None
     try:
         cls = _get_cls_name(config)
         type_or_callable = _locate(cls)
@@ -35,7 +37,7 @@ def call(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> An
             assert callable(type_or_callable)
             return _call_callable(type_or_callable, config, *args, **kwargs)
     except Exception as e:
-        raise HydraException(f"Error instantiating '{cls}' : {e}") from e
+        raise HydraException(f"Error calling '{cls}' : {e}") from e
 
 
 # Alias for call

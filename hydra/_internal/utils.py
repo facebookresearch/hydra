@@ -617,4 +617,4 @@ Use 'target' instead of '{field}'.""",
     elif _has_field(field="class"):
         return _getcls(field="class")
     else:
-        raise ValueError("Input config does not have a target field")
+        raise HydraException("Input config does not have a `target` field")
