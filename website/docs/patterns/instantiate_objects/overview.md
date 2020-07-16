@@ -1,7 +1,7 @@
 ---
-id: objects
-title: Instantiating objects and calling functions
-sidebar_label: Instantiating objects and calling functions
+id: instantiate_objects_overview
+title: Overview of instantiating objects
+sidebar_label: Overview of instantiating objects
 ---
 One of the best ways to drive different behavior in an application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
@@ -85,4 +85,4 @@ def my_app(cfg):
     connection.connect()
 ```
 
-Learn more about instantiating objects and functions [here](../advanced/instantiate).
+Learn more about instantiating objects and functions [here](instantiate_objects_reference).
