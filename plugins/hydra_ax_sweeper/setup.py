@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "ax-platform[mysql]>=0.1.12"],
+        install_requires=["hydra-core~=1.0.0rc1", "ax-platform>=0.1.13"],
         include_package_data=True,
     )
