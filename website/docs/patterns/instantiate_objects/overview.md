@@ -84,5 +84,3 @@ def my_app(cfg):
     connection = hydra.utils.instantiate(cfg.db)
     connection.connect()
 ```
-
-Learn more about instantiating objects and functions [here](instantiate_objects_reference).
