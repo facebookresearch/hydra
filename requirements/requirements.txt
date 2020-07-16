@@ -1,3 +1,3 @@
-omegaconf>=2.0.1rc9
+omegaconf>=2.0.1rc10
 antlr4-python3-runtime==4.8
 importlib-resources;python_version<'3.9'

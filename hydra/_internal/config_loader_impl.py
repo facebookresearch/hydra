@@ -521,6 +521,26 @@ class ConfigLoaderImpl(ConfigLoader):
         )
         raise HydraException(msg)
 
+    def _record_loading(
+        self,
+        name: str,
+        path: Optional[str],
+        provider: Optional[str],
+        schema_provider: Optional[str],
+        record_load: bool,
+    ) -> Optional[LoadTrace]:
+        trace = LoadTrace(
+            filename=name,
+            path=path,
+            provider=provider,
+            schema_provider=schema_provider,
+        )
+
+        if record_load:
+            self.all_config_checked.append(trace)
+
+        return trace
+
     @staticmethod
     def _combine_default_lists(
         primary: List[DefaultElement], merged_list: List[DefaultElement]
@@ -553,24 +573,6 @@ class ConfigLoaderImpl(ConfigLoader):
         :return: the loaded config or None if it was not found
         """
 
-        def record_loading(
-            name: str,
-            path: Optional[str],
-            provider: Optional[str],
-            schema_provider: Optional[str],
-        ) -> Optional[LoadTrace]:
-            trace = LoadTrace(
-                filename=name,
-                path=path,
-                provider=provider,
-                schema_provider=schema_provider,
-            )
-
-            if record_load:
-                self.all_config_checked.append(trace)
-
-            return trace
-
         ret = self.repository.load_config(
             config_path=input_file,
             is_primary_config=is_primary_config,
@@ -596,11 +598,12 @@ class ConfigLoaderImpl(ConfigLoader):
                     assert isinstance(merged, DictConfig)
                     return (
                         merged,
-                        record_loading(
+                        self._record_loading(
                             name=input_file,
                             path=ret.path,
                             provider=ret.provider,
                             schema_provider=schema.provider,
+                            record_load=record_load,
                         ),
                     )
 
@@ -610,18 +613,23 @@ class ConfigLoaderImpl(ConfigLoader):
 
             return (
                 ret.config,
-                record_loading(
+                self._record_loading(
                     name=input_file,
                     path=ret.path,
                     provider=ret.provider,
                     schema_provider=None,
+                    record_load=record_load,
                 ),
             )
         else:
             return (
                 None,
-                record_loading(
-                    name=input_file, path=None, provider=None, schema_provider=None
+                self._record_loading(
+                    name=input_file,
+                    path=None,
+                    provider=None,
+                    schema_provider=None,
+                    record_load=record_load,
                 ),
             )
 
@@ -863,9 +871,11 @@ def get_overrides_dirname(
 def _recursive_unset_readonly(cfg: Container) -> None:
     if isinstance(cfg, DictConfig):
         OmegaConf.set_readonly(cfg, None)
-        for k, v in cfg.items_ex(resolve=False):
-            _recursive_unset_readonly(v)
+        if not cfg._is_missing():
+            for k, v in cfg.items_ex(resolve=False):
+                _recursive_unset_readonly(v)
     elif isinstance(cfg, ListConfig):
         OmegaConf.set_readonly(cfg, None)
-        for item in cfg:
-            _recursive_unset_readonly(item)
+        if not cfg._is_missing():
+            for item in cfg:
+                _recursive_unset_readonly(item)
