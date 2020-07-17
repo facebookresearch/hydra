@@ -18,13 +18,15 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
+from omegaconf import MISSING, DictConfig, OmegaConf
+
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import JobReturn
+from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import ObjectConf, TaskFunction
-from omegaconf import MISSING, DictConfig, OmegaConf
 
 
 @dataclass
@@ -56,7 +58,10 @@ class BasicSweeper(Sweeper):
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
-        self.config_loader = None  # TODO: update example sweeper with validation
+
+        self.config_loader: Optional[ConfigLoader] = None
+        self.config: Optional[DictConfig] = None
+        self.launcher: Optional[Launcher] = None
 
     def setup(
         self,

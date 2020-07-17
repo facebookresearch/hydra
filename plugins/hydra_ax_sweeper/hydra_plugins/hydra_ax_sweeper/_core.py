@@ -127,7 +127,10 @@ class CoreAxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(self, ax_config: AxConfig, max_batch_size: Optional[int]):
+        self.config_loader: Optional[ConfigLoader] = None
+        self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
+
         self.job_results = None
         self.experiment: ExperimentConfig = ax_config.experiment
         self.early_stopper: EarlyStopper = EarlyStopper(
@@ -150,6 +153,8 @@ class CoreAxSweeper(Sweeper):
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
+        self.config = config
+        self.config_loader = config_loader
         self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
