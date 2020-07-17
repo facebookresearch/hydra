@@ -18,15 +18,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
-from omegaconf import MISSING, DictConfig, OmegaConf
-from omegaconf._utils import get_yaml_loader
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import JobReturn
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import ObjectConf, TaskFunction
+from omegaconf import MISSING, DictConfig, OmegaConf
 
 
 @dataclass
@@ -58,6 +56,7 @@ class BasicSweeper(Sweeper):
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
+        self.config_loader = None  # TODO: update example sweeper with validation
 
     def setup(
         self,
@@ -67,13 +66,12 @@ class BasicSweeper(Sweeper):
     ) -> None:
         from hydra.core.plugins import Plugins
 
+        self.config_loader = config_loader
         self.config = config
 
         self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
-
-    loader = get_yaml_loader()
 
     @staticmethod
     def split_overrides_to_chunks(
@@ -128,6 +126,7 @@ class BasicSweeper(Sweeper):
         initial_job_idx = 0
         while not self.is_done():
             batch = self.get_job_batch()
+            self.validate_batch_is_legal(batch)
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
             initial_job_idx += len(batch)
             returns.append(results)

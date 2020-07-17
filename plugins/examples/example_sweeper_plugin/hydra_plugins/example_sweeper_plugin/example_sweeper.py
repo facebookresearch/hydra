@@ -93,7 +93,7 @@ class ExampleSweeper(Sweeper):
                 lists.append([f"{key}={value}"])
         batches = list(itertools.product(*lists))
 
-        # some sweepers will launch multiple bathes.
+        # some sweepers will launch multiple batches.
         # for such sweepers, it is important that they pass the proper initial_job_idx when launching
         # each batch. see example below.
         # This is required to ensure that working that the job gets a unique job id
@@ -114,6 +114,7 @@ class ExampleSweeper(Sweeper):
         returns = []
         initial_job_idx = 0
         for batch in chunked_batches:
+            self.validate_batch_is_legal(batch)
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
             initial_job_idx += len(batch)
             returns.append(results)

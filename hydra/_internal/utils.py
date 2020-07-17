@@ -216,12 +216,14 @@ def run_and_report(func: Any) -> Any:
                 # strip Hydra frames from start of stack
                 # will strip until it hits run_job()
                 while search_max > 0:
+                    if tb is None:
+                        break
                     frame = tb.tb_frame
                     tb = tb.tb_next
                     search_max = search_max - 1
                     if inspect.getframeinfo(frame).function == "run_job":
                         break
-                if search_max == 0:
+                if search_max == 0 or tb is None:
                     sys.stderr.write("WARNING, failed to detect relevant stack start\n")
                     tb = ex.__traceback__
 
