@@ -6,7 +6,11 @@ class HydraException(Exception):
     ...
 
 
-class MissingConfigException(IOError, HydraException):
+class ConfigCompositionException(HydraException):
+    ...
+
+
+class MissingConfigException(IOError, ConfigCompositionException):
     def __init__(
         self,
         message: str,
