@@ -27,7 +27,7 @@ from omegaconf import DictConfig, OmegaConf, read_write
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.utils import get_valid_filename, split_config_path
-from hydra.errors import HydraException
+from hydra.errors import ConfigCompositionException, HydraException
 from hydra.types import ObjectConf, TaskFunction
 
 log = logging.getLogger(__name__)
@@ -200,7 +200,7 @@ def run_and_report(func: Any) -> Any:
         if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
             print_exc()
         else:
-            if isinstance(ex, HydraException):
+            if isinstance(ex, ConfigCompositionException):
                 sys.stderr.write(str(ex) + os.linesep)
                 if ex.__cause__ is not None:
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
@@ -216,12 +216,14 @@ def run_and_report(func: Any) -> Any:
                 # strip Hydra frames from start of stack
                 # will strip until it hits run_job()
                 while search_max > 0:
+                    if tb is None:
+                        break
                     frame = tb.tb_frame
                     tb = tb.tb_next
                     search_max = search_max - 1
                     if inspect.getframeinfo(frame).function == "run_job":
                         break
-                if search_max == 0:
+                if search_max == 0 or tb is None:
                     sys.stderr.write("WARNING, failed to detect relevant stack start\n")
                     tb = ex.__traceback__
 

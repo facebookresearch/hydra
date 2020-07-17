@@ -27,7 +27,7 @@ from hydra.core.override_parser.overrides_parser import (
     OverrideType,
 )
 from hydra.core.utils import JobRuntime
-from hydra.errors import HydraException, MissingConfigException
+from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 from hydra.types import RunMode
 
@@ -150,7 +150,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 from_shell=from_shell,
             )
         except OmegaConfBaseException as e:
-            raise HydraException() from e
+            raise ConfigCompositionException() from e
 
     def _load_configuration(
         self,
@@ -178,7 +178,7 @@ class ConfigLoaderImpl(ConfigLoader):
             if x.is_sweep_override():
                 if run_mode == RunMode.MULTIRUN:
                     if x.is_hydra_override():
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
                         )
                     sweep_overrides.append(x)
@@ -196,7 +196,7 @@ class ConfigLoaderImpl(ConfigLoader):
 1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
 2. To use it as string use {example_override}
 3. To sweep over it, add --multirun to your command line"""
-                    raise HydraException(msg)
+                    raise ConfigCompositionException(msg)
                 else:
                     assert False
             else:
@@ -258,7 +258,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 f"\nAvailable options:"
                 f"\n{opt_list}"
             )
-            raise HydraException(msg) from e
+            raise ConfigCompositionException(msg) from e
 
         OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
@@ -382,26 +382,26 @@ class ConfigLoaderImpl(ConfigLoader):
                 ConfigLoaderImpl._raise_parse_override_error(override.input_line)
 
             if override.is_add() and override.is_package_rename():
-                raise HydraException(
+                raise ConfigCompositionException(
                     "Add syntax does not support package rename, remove + prefix"
                 )
 
             matches = ConfigLoaderImpl.find_matches(key_to_defaults, override)
 
             if isinstance(value, (list, dict)):
-                raise HydraException(
+                raise ConfigCompositionException(
                     f"Config group override value type cannot be a {type(value).__name__}"
                 )
 
             if override.is_delete():
                 src = override.get_source_item()
                 if len(matches) == 0:
-                    raise HydraException(
+                    raise ConfigCompositionException(
                         f"Could not delete. No match for '{src}' in the defaults list."
                     )
                 for pair in matches:
                     if value is not None and value != defaults[pair.idx].config_name:
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Could not delete. No match for '{src}={value}' in the defaults list."
                         )
 
@@ -409,7 +409,7 @@ class ConfigLoaderImpl(ConfigLoader):
             elif override.is_add():
                 if len(matches) > 0:
                     src = override.get_source_item()
-                    raise HydraException(
+                    raise ConfigCompositionException(
                         f"Could not add. An item matching '{src}' is already in the defaults list."
                     )
                 assert value is not None
@@ -439,7 +439,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             f"\nTo append to your default list use +{override.input_line}"
                         )
 
-                    raise HydraException(msg)
+                    raise ConfigCompositionException(msg)
 
     @staticmethod
     def _split_group(group_with_package: str) -> Tuple[str, Optional[str]]:
@@ -459,7 +459,7 @@ class ConfigLoaderImpl(ConfigLoader):
     def _apply_overrides_to_config(overrides: List[Override], cfg: DictConfig) -> None:
         for override in overrides:
             if override.get_subject_package() is not None:
-                raise HydraException(
+                raise ConfigCompositionException(
                     f"Override {override.input_line} looks like a config group override, "
                     f"but config group '{override.key_or_group}' does not exist."
                 )
@@ -470,11 +470,11 @@ class ConfigLoaderImpl(ConfigLoader):
                 if override.is_delete():
                     config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
                     if config_val is None:
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Could not delete from config. '{override.key_or_group}' does not exist."
                         )
                     elif value is not None and value != config_val:
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Could not delete from config."
                             f" The value of '{override.key_or_group}' is {config_val} and not {value}."
                         )
@@ -492,19 +492,19 @@ class ConfigLoaderImpl(ConfigLoader):
                         with open_dict(cfg):
                             OmegaConf.update(cfg, key, value)
                     else:
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Could not append to config. An item is already at '{override.key_or_group}'."
                         )
                 else:
                     try:
                         OmegaConf.update(cfg, key, value)
                     except (ConfigAttributeError, ConfigKeyError) as ex:
-                        raise HydraException(
+                        raise ConfigCompositionException(
                             f"Could not override '{override.key_or_group}'. No match in config."
                             f"\nTo append to your config use +{override.input_line}"
                         ) from ex
             except OmegaConfBaseException as ex:
-                raise HydraException(
+                raise ConfigCompositionException(
                     f"Error merging override {override.input_line}"
                 ) from ex
 
@@ -519,7 +519,7 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\n"
             f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
         )
-        raise HydraException(msg)
+        raise ConfigCompositionException(msg)
 
     def _record_loading(
         self,
@@ -687,7 +687,9 @@ class ConfigLoaderImpl(ConfigLoader):
                 assert isinstance(ret, DictConfig)
                 return ret
         except OmegaConfBaseException as ex:
-            raise HydraException(f"Error merging {config_group}={name}") from ex
+            raise ConfigCompositionException(
+                f"Error merging {config_group}={name}"
+            ) from ex
 
     def _merge_defaults_into_config(
         self,

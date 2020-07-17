@@ -229,6 +229,7 @@ class NevergradSweeper(Sweeper):
     ) -> None:
         self.job_idx = 0
         self.config = config
+        self.config_loader = config_loader
         self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
@@ -271,6 +272,7 @@ class NevergradSweeper(Sweeper):
             overrides = list(
                 tuple(f"{x}={y}" for x, y in c.value.items()) for c in candidates
             )
+            self.validate_batch_is_legal(overrides)
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             # would have been nice to avoid waiting for all jobs to finish

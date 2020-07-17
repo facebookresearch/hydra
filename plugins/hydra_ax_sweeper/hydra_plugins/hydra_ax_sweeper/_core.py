@@ -9,6 +9,7 @@ from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
+from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
@@ -122,11 +123,14 @@ def get_one_batch_of_trials(
     return batch_of_trials
 
 
-class CoreAxSweeper:
+class CoreAxSweeper(Sweeper):
     """Class to interface with the Ax Platform"""
 
     def __init__(self, ax_config: AxConfig, max_batch_size: Optional[int]):
+        self.config_loader: Optional[ConfigLoader] = None
+        self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
+
         self.job_results = None
         self.experiment: ExperimentConfig = ax_config.experiment
         self.early_stopper: EarlyStopper = EarlyStopper(
@@ -149,6 +153,8 @@ class CoreAxSweeper:
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
+        self.config = config
+        self.config_loader = config_loader
         self.launcher = Plugins.instance().instantiate_launcher(
             config=config, config_loader=config_loader, task_function=task_function
         )
@@ -162,7 +168,7 @@ class CoreAxSweeper:
         max_parallelism = ax_client.get_max_parallelism()
         current_parallelism_index = 0
         # Index to track the parallelism value we are using right now.
-
+        best_parameters = {}
         while num_trials_left > 0:
             current_parallelism = max_parallelism[current_parallelism_index]
             num_trials, max_parallelism_setting = current_parallelism
@@ -220,6 +226,7 @@ class CoreAxSweeper:
         chunked_batches = self.chunks(batch_of_trials, self.max_batch_size)
         for batch in chunked_batches:
             overrides = [x.overrides for x in batch]
+            self.validate_batch_is_legal(overrides)
             rets = self.launcher.launch(
                 job_overrides=overrides, initial_job_idx=self.job_idx
             )
