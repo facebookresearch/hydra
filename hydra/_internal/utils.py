@@ -204,8 +204,6 @@ def run_and_report(func: Any) -> Any:
                 sys.stderr.write(str(ex) + os.linesep)
                 if ex.__cause__ is not None:
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
-
-                sys.stderr.write(os.linesep)
             else:
                 # Custom printing that strips the Hydra related stack frames from the top
                 # And any omegaconf frames from the bottom.
@@ -223,9 +221,12 @@ def run_and_report(func: Any) -> Any:
                     search_max = search_max - 1
                     if inspect.getframeinfo(frame).function == "run_job":
                         break
+
                 if search_max == 0 or tb is None:
-                    sys.stderr.write("WARNING, failed to detect relevant stack start\n")
-                    tb = ex.__traceback__
+                    # could not detect run_job, probably a runtime exception before we got there.
+                    # do not sanitize the stack trace.
+                    print_exc()
+                    sys.exit(1)
 
                 # strip OmegaConf frames from bottom of stack
                 end = tb
@@ -265,7 +266,7 @@ def run_and_report(func: Any) -> Any:
 
                 print_exception(etype=None, value=ex, tb=final_tb)  # type: ignore
             sys.stderr.write(
-                "Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
+                "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
             )
         sys.exit(1)
 
