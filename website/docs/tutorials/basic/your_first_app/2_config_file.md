@@ -40,4 +40,4 @@ db:
   password: 1234
 ```
 
-You can enable [tab completion](/tutorials/basic/7_tab_completion.md) for your Hydra applications.
+You can enable [tab completion](/tutorials/basic/running_your_app/6_tab_completion.md) for your Hydra applications.
