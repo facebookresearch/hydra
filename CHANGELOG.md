@@ -1,1 +1,1 @@
-Please see NEWS.rst for an updated change log
+Please see [NEWS.md](/NEWS.md) for an updated change log.
