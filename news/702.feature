@@ -1,1 +1,0 @@
-Improve the Compose API initialization methods
