@@ -260,6 +260,7 @@ def test_package_or_group(value: str, expected: Any) -> None:
         pytest.param("abc", Key(key_or_group="abc"), id="abc"),
         pytest.param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
         pytest.param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
+        pytest.param("list.0", Key(key_or_group="list.0"), id="list.0"),
         pytest.param(
             "package_or_group@pkg1",
             Key(key_or_group="package_or_group", pkg1="pkg1"),
@@ -293,6 +294,9 @@ def test_key(value: str, expected: Any) -> None:
     [
         pytest.param("a", "a", id="a"),
         pytest.param("abc10", "abc10", id="abc10"),
+        pytest.param("a.b.c", "a.b.c", id="a.b.c"),
+        pytest.param("list.0.bar", "list.0.bar", id="list.0.bar"),
+        pytest.param("0.foo", "0.foo", id="0.foo"),
         pytest.param("10", 10, id="10"),
         pytest.param("10abc", "10abc", id="10abc"),
         pytest.param("abc-cde", "abc-cde", id="abc-cde"),
