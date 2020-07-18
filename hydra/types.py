@@ -18,13 +18,6 @@ class ObjectConf(Dict[str, Any]):
     # parameters to pass to cls when calling it
     params: Any = field(default_factory=dict)
 
-    # cls is deprecated, use target, cls will be removed in Hydra 1.1
-    cls: str = MISSING
-
-    # class is deprecated, use target, class will be removed in Hydra 1.1
-    # (class is Python keyword and is only supported through DictConfig)
-    # class: str = MISSING
-
 
 class RunMode(Enum):
     RUN = 1

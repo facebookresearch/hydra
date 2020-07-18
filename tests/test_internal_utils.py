@@ -94,8 +94,6 @@ Use 'target' instead of '{warning}'."""
 )
 def test_cls() -> None:
     with pytest.warns(expected_warning=UserWarning):
-        assert utils._get_cls_name(ObjectConf(cls="foo")) == "foo"
-    with pytest.warns(expected_warning=UserWarning):
         assert utils._get_cls_name(ObjectConf(cls="foo", target="bar")) == "bar"
 
 
