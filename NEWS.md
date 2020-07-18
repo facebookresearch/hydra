@@ -4,7 +4,7 @@
 Features
 --------
 
-- Introducing a DSL for the command line override syntax ([#752](https://github.com/facebookresearch/hydra/issues/752))
+- Introducing a DSL for the command line override syntax ([#797](https://github.com/facebookresearch/hydra/issues/797))
 - Sanitize exception messages by default, showing only interesting stack frames ([#646](https://github.com/facebookresearch/hydra/issues/646))
 - Add a new --info flag to show Hydra debug information without running the user function. ([#662](https://github.com/facebookresearch/hydra/issues/662))
 - Add --package flag, can be used with --cfg to print a specific config package ([#674](https://github.com/facebookresearch/hydra/issues/674))
