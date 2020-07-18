@@ -4,41 +4,41 @@
 Features
 --------
 
+- Introducing a DSL for the command line override syntax ([#752](https://github.com/facebookresearch/hydra/issues/752))
 - Sanitize exception messages by default, showing only interesting stack frames ([#646](https://github.com/facebookresearch/hydra/issues/646))
 - Add a new --info flag to show Hydra debug information without running the user function. ([#662](https://github.com/facebookresearch/hydra/issues/662))
 - Add --package flag, can be used with --cfg to print a specific config package ([#674](https://github.com/facebookresearch/hydra/issues/674))
-- Added contexts to help initialize Hydra in a localized context (Mostly for Unit Tests and Jupyter Notebooks) ([#687](https://github.com/facebookresearch/hydra/issues/687))
-- Hydra provides pytest fixtures (hydra_sweep_runner, hydra_task_runner, hydra_restore_singletons) ([#687](https://github.com/facebookresearch/hydra/issues/687))
 - Improve the Compose API initialization methods ([#702](https://github.com/facebookresearch/hydra/issues/702))
 - Switch internal package resource loader from pkg_resources to importlb_resources ([#719](https://github.com/facebookresearch/hydra/issues/719))
-- Introducing a DSL for the command line override syntax ([#752](https://github.com/facebookresearch/hydra/issues/752))
 - Allow interpolation in the Hydra config node to access the application config ([#771](https://github.com/facebookresearch/hydra/issues/771))
+- Hydra provides pytest fixtures (hydra_sweep_runner, hydra_task_runner, hydra_restore_singletons) ([#687](https://github.com/facebookresearch/hydra/issues/687))
+- Added contexts to help initialize Hydra in a localized context (Mostly for Unit Tests and Jupyter Notebooks) ([#687](https://github.com/facebookresearch/hydra/issues/687))
+- Prints error when command line override looks like a sweep but --multirun is not specified ([#712](https://github.com/facebookresearch/hydra/issues/712))
+- Frozen Structured Configs are respected during composition command line overrides ([#724](https://github.com/facebookresearch/hydra/issues/724))
 
 API Change (Renames, deprecations and removals)
 -----------------------------------------------
 
 - Hydra argparse flags are now consistently using dash-style. ([#661](https://github.com/facebookresearch/hydra/issues/661))
 - Restructure the configuration of the Submitit launcher ([#682](https://github.com/facebookresearch/hydra/issues/682))
-- deprecated cls in favor of target in hydra.utils.{instantiate()/call{}} ([#721](https://github.com/facebookresearch/hydra/issues/721))
+- Deprecated cls in favor of target in hydra.utils.{instantiate()/call{}} ([#721](https://github.com/facebookresearch/hydra/issues/721))
 
 Bug Fixes
 ---------
 
 - Add hydra/py.typed to pip package to enable type checking in downstream projects ([#657](https://github.com/facebookresearch/hydra/issues/657))
-- Save .hydra/*.yaml before task execution ([#678](https://github.com/facebookresearch/hydra/issues/678))
 - Fix initilzation of Hydra in a module imported from a Jupyter Notebook ([#695](https://github.com/facebookresearch/hydra/issues/695))
-- Prints error when command line override looks like a sweep but --multirun is not specified ([#712](https://github.com/facebookresearch/hydra/issues/712))
 - Fix handling of main module override via HYDRA_MAIN_MODULE ([#717](https://github.com/facebookresearch/hydra/issues/717))
-- Frozen Structured Configs are respected during composition command line overrides ([#724](https://github.com/facebookresearch/hydra/issues/724))
 - Fix interpoaltions in overrides to evaluate lazily ([#725](https://github.com/facebookresearch/hydra/issues/725))
 - Fixed handling of multirun when target config node is introduced by composition ([#726](https://github.com/facebookresearch/hydra/issues/726))
 - Sweepers are now validating config composition before launching ([#775](https://github.com/facebookresearch/hydra/issues/775))
+- Save `.hydra/*.yaml` before task execution ([#678](https://github.com/facebookresearch/hydra/issues/678))
 
 Plugins
 -------
 
-- Upgrade ax-platform used by Ax sweeper plugin to 0.1.13 or newer
 - Add [Redis Queue](https://python-rq.org/) Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
+- Upgrade ax-platform used by Ax sweeper plugin to 0.1.13 or newer
 
 Improved Documentation
 ----------------------
@@ -80,7 +80,7 @@ Features
 - Add isort to ensure imports are always sorted ([#340](https://github.com/facebookresearch/hydra/issues/340))
 - Codebase is now passing mypy --strict type checking ([#342](https://github.com/facebookresearch/hydra/issues/342))
 - Improve performance of plugin discovery and instantiation ([#489](https://github.com/facebookresearch/hydra/issues/489))
-- Modules whose name starts with "_" are skipped during plugin discovery ([#494](https://github.com/facebookresearch/hydra/issues/494))
+- Modules whose name starts with "\_" are skipped during plugin discovery ([#494](https://github.com/facebookresearch/hydra/issues/494))
 
 Plugins
 -------
