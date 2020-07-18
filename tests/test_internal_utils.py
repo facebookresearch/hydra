@@ -92,9 +92,6 @@ Use 'target' instead of '{warning}'."""
 @pytest.mark.skipif(  # type: ignore
     sys.version_info < (3, 7), reason="requires python3.7"
 )
-def test_cls() -> None:
-    with pytest.warns(expected_warning=UserWarning):
-        assert utils._get_cls_name(ObjectConf(cls="foo", target="bar")) == "bar"
 
 
 @pytest.mark.parametrize(  # type: ignore
