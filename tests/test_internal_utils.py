@@ -92,8 +92,6 @@ Use 'target' instead of '{warning}'."""
 @pytest.mark.skipif(  # type: ignore
     sys.version_info < (3, 7), reason="requires python3.7"
 )
-
-
 @pytest.mark.parametrize(  # type: ignore
     "name,expected",
     [
