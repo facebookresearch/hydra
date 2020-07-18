@@ -73,7 +73,7 @@ See `nox -l`. a few examples:
 * `nox -s "test_plugins-3.8(pip install -e)"` : Test plugins on Python 3.8 with `pip install -e` as installation method
 
 ## NEWS Entries
-The `NEWS.rst` file is managed using `towncrier` and all non trivial changes
+The [`NEWS.md`](https://github.com/facebookresearch/hydra/blob/master/NEWS.md) file is managed using `towncrier` and all non trivial changes
 must be accompanied by a news entry.
 
 To add an entry to the news file, first you need to have created an issue
