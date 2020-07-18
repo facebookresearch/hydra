@@ -84,7 +84,7 @@ The config for the application. It is a dictionary of [Config Nodes](#config-nod
 ## Misc
 ### Config Search Path
 The [Config Search Path](advanced/search_path.md) is a list of paths that are searched in order to find configs. It is similar to
-the Python PYTHONPATH.
+the Python [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH).
 
 ### Plugins
 [Plugins](advanced/plugins.md) extend Hydra's capabilities. Some examples are Launcher and Sweeper.

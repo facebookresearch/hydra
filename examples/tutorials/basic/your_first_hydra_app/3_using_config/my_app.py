@@ -10,7 +10,7 @@ def my_app(cfg: DictConfig) -> None:
     assert cfg.node.loompa == 10  # attribute style access
     assert cfg["node"]["loompa"] == 10  # dictionary style access
     assert cfg.node.zippity == 10  # Variable interpolation
-    assert type(cfg.node.zippity) == int  # Variable interpolation inherits the type
+    assert isinstance(cfg.node.zippity, int)  # Variable interpolation inherits the type
     assert cfg.node.do == "oompa 10"  # string interpolation
 
     # Accessing a field that is not in the config results in an exception:

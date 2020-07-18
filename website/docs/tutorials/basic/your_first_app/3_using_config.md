@@ -21,7 +21,7 @@ def my_app(cfg: DictConfig):
     assert cfg["node"]["loompa"] == 10    # dictionary style access
 
     assert cfg.node.zippity == 10         # Value interpolation
-    assert type(cfg.node.zippity) == int  # Value interpolation type
+    assert isinstance(cfg.node.zippity, int)  # Value interpolation type
     assert cfg.node.do == "oompa 10"      # string interpolation
 
     cfg.node.waldo                        # raises an exception
