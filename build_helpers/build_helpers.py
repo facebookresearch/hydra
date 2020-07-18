@@ -132,7 +132,7 @@ class CleanCommand(Command):  # type: ignore
 
 def run_antlr(cmd: Command) -> None:
     try:
-        cmd.announce("Generating parsers with antlr4", level=distutils.log.FATAL)
+        cmd.announce("Generating parsers with antlr4", level=distutils.log.INFO)
         cmd.run_command("antlr")
     except OSError as e:
         if e.errno == errno.ENOENT:
@@ -147,6 +147,7 @@ def run_antlr(cmd: Command) -> None:
 class BuildPyCommand(build_py.build_py):  # type: ignore
     def run(self) -> None:
         if not self.dry_run:
+            self.run_command("clean")
             run_antlr(self)
         build_py.build_py.run(self)
 
@@ -161,6 +162,7 @@ class Develop(develop.develop):  # type: ignore
 class SDistCommand(sdist.sdist):  # type: ignore
     def run(self) -> None:
         if not self.dry_run:
+            self.run_command("clean")
             run_antlr(self)
         sdist.sdist.run(self)
 
