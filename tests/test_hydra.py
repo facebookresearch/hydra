@@ -1010,3 +1010,16 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
 
     ret = run_with_error(cmd)
     assert normalize_newlines(expected) == normalize_newlines(ret)
+
+
+def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/hydra_to_cfg_interpolation/my_app.py",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "b=${a}",
+        "a=foo",
+    ]
+    expected = "override_a=foo,b=foo"
+    result = subprocess.check_output(cmd)
+    assert str(result.decode("utf-8")).strip() == expected.strip()
