@@ -67,7 +67,8 @@ NULL: [Nn][Uu][Ll][Ll];
 
 fragment CHAR: [a-zA-Z];
 ID : (CHAR|'_') (CHAR|DIGIT|'_')*;
-DOT_PATH: ID ('.' ID)+;
+fragment LIST_INDEX: '0' | [1-9][0-9]*;
+DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
 
 WS: (' ' | '\t')+;
 
