@@ -21,7 +21,7 @@ class HydraConfig(metaclass=Singleton):
         # The motivation is that this allows for interpolations from the hydra node
         # into the user's config.
         self.cfg = OmegaConf.masked_copy(cfg, "hydra")  # type: ignore
-        self.cfg.hydra._set_parent(cfg)
+        self.cfg.hydra._set_parent(cfg)  # type: ignore
 
     @staticmethod
     def get() -> HydraConf:
