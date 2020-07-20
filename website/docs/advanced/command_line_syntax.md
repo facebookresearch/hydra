@@ -27,7 +27,7 @@ Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_langua
 Below are the lexical rules, and [description](#Description) of the grammar.
 You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4).
 
-```antlrv4
+```antlr4
 grammar Override;
 
 override: (
@@ -155,7 +155,7 @@ key={a:10, b:20},{c:30,d:40}  # and even dictionaries: ChoiceSweep([a,b], [c,d])
 **IMPORTANT** You may need to quote your choice sweep in the shell
 
 ## Working with your shell
-All interprets command line inputs and may what is passed to the process.
+All shells interprets command line inputs and may change what is passed to the process.
 A good way to determine what the shell is doing to your command is to `echo` it.
 ```shell script
 # bash output
@@ -176,7 +176,7 @@ $ echo '"hello world"'
 You can use some shell specific commands to change their behavior, but the cost will be that their behavior will change.
 ### Bash
 You can disable braces expansion, filename generation (globing) and hist expansion. Please note that this will change
-your shell behavior for the current session. 
+your shell behavior for the current session.
 ```shell script
 $ set +o braceexpand -o noglob +o histexpand
 $ echo key1={a:10,b:20} key2=${HOME} key=[b]*
