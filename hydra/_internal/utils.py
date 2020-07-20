@@ -516,8 +516,17 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     else:
         obj = builtins
     for part in parts[n:]:
+        mod = mod + "." + part
         if not hasattr(obj, part):
-            raise ImportError(f"Could not locate '{path}'")
+            # Check if there was an import error
+            try:
+                import_module(mod)
+            except Exception as e:
+                raise ImportError(
+                    f"Encountered error: `{e}` when loading module '{path}'"
+                ) from e
+            else:
+                raise ImportError(f"Could not locate '{path}'")
         obj = getattr(obj, part)
     if isinstance(obj, type):
         obj_type: type = obj
