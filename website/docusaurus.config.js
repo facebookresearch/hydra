@@ -23,6 +23,9 @@ module.exports = {
             indexName: 'hydra',
             algoliaOptions: {},
         },
+		prism: {
+		  additionalLanguages: ['antlr4'],
+		},
         navbar: {
             title: 'Hydra',
             logo: {
