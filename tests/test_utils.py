@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict
 
@@ -10,12 +11,14 @@ from omegaconf import DictConfig, OmegaConf
 from hydra import utils
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraException
 from hydra.types import ObjectConf
 from tests import (
     AClass,
     Adam,
     AnotherClass,
     ASubclass,
+    ClassWithMissingModule,
     IllegalType,
     NestingClass,
     Parameters,
@@ -229,6 +232,15 @@ def test_instantiate_adam() -> None:
     adam_params = Parameters([1, 2, 3])
     res = utils.instantiate(ObjectConf(target="tests.Adam"), params=adam_params)
     assert res == Adam(params=adam_params)
+
+
+def test_instantiate_with_missing_module() -> None:
+
+    with pytest.raises(
+        HydraException, match=re.escape(" No module named 'some_missing_module'")
+    ):
+        # can't instantiate when importing a missing module
+        utils.instantiate(ObjectConf(target="tests.ClassWithMissingModule"))
 
 
 def test_pass_extra_variables() -> None:
