@@ -68,3 +68,17 @@ You can see the full Hydra config using `--cfg hydra`:
 - *hydra.runtime.version*: Hydra's version
 - *hydra.runtime.cwd*: Original working directory the app was executed from
 
+## Hydra default OmegaConf resolvers
+OmegaConf supports [interpolations](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation) via [resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#custom-interpolations). Hydra supports the following resolvers by default.
+```yaml title="resolver.yaml"
+current_date: ${now:%Y-%m-%d}                              # call time.localtime() with pattern "%Y-%m-%d", eg: 2020-07-15
+current_time: ${now:%H-%M-%S}                              # call time.localtime() with pattern "%H-%M-%S", eg: 17-04-11
+job_working_dir: ${hydra:runtime.cwd}                      # get hydra config "runtime.cwd"
+job_name: ${hydra:job.name}                                # get hydra config "job.name"
+python_version: ${python_version:}                         # runtime python version, eg: 3.8
+major_version: ${python_version:major}                     # runtime python major version, eg: 3
+minor_version: ${python_version:minor}                     # runtime python version in the format major.minor, eg: 3.8
+micro_version: ${python_version:micro}                     # runtime python version in the format major.minor.micro, eg: 3.8.2
+```
+
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.
