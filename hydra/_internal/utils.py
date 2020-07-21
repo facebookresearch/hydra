@@ -520,7 +520,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         if not hasattr(obj, part):
             try:
                 import_module(mod)
-            except ImportError as e:
+            except Exception as e:
                 raise e
         obj = getattr(obj, part)
     if isinstance(obj, type):
