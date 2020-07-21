@@ -293,6 +293,7 @@ def test_key(value: str, expected: Any) -> None:
     "value,expected",
     [
         pytest.param("a", "a", id="a"),
+        pytest.param("/:+.$*", "/:+.$*", id="accepted_specials"),
         pytest.param("abc10", "abc10", id="abc10"),
         pytest.param("a.b.c", "a.b.c", id="a.b.c"),
         pytest.param("list.0.bar", "list.0.bar", id="list.0.bar"),
