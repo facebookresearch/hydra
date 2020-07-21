@@ -1,3 +1,5 @@
+<p align="center"><img src="https://hydra.cc/img/logo.svg" alt="logo" width="318px" /></p>
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-core)](https://pypi.org/project/hydra-core/)
 [![CircleCI](https://img.shields.io/circleci/build/github/facebookresearch/hydra?token=af199cd2deca9e70e53776f9ded96284b10687e9)](https://circleci.com/gh/facebookresearch/hydra)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-core)
