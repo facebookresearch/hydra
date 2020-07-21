@@ -37,7 +37,7 @@ primitive:
         | DOT_PATH                              // foo.bar
         | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
         | '/' | ':' | '-' | '\\'
-        | '+' | '.' | '$'
+        | '+' | '.' | '$' | '*'
         )+
     )
     WS?;
