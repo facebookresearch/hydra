@@ -518,7 +518,10 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     for part in parts[n:]:
         mod = mod + "." + part
         if not hasattr(obj, part):
-            raise import_module(mod)
+            try:
+                import_module(mod)
+            except ImportError as e:
+                raise e
         obj = getattr(obj, part)
     if isinstance(obj, type):
         obj_type: type = obj
