@@ -7,8 +7,9 @@ from typing import Any, Dict, List, Optional, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
+from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
 
-from hydra.errors import HydraException
+from hydra.errors import HydraException, OverrideParseException
 
 try:
     from hydra.grammar.gen.OverrideLexer import (
@@ -482,7 +483,10 @@ class HydraErrorListener(ErrorListener):  # type: ignore
         msg: Any,
         e: Any,
     ) -> None:
-        raise HydraException(msg)
+        if msg is not None:
+            raise HydraException(msg) from e
+        else:
+            raise HydraException(str(e)) from e
 
     def reportAmbiguity(
         self,
@@ -495,7 +499,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
         configs: Any,
     ) -> None:
         warnings.warn(
-            message="reportAmbiguity: please file an issue with minimal repro instuctions",
+            message="reportAmbiguity: please file an issue with minimal repro instructions",
             category=UserWarning,
         )
 
@@ -509,7 +513,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
         configs: Any,
     ) -> None:
         warnings.warn(
-            message="reportAttemptingFullContext: please file an issue with a minimal repro",
+            message="reportAttemptingFullContext: please file an issue with a minimal repro instructions",
             category=UserWarning,
         )
 
@@ -523,7 +527,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
         configs: Any,
     ) -> None:
         warnings.warn(
-            message="reportContextSensitivity: please file an issue with minimal a repro",
+            message="reportContextSensitivity: please file an issue with minimal a repro instructions",
             category=UserWarning,
         )
 
@@ -558,10 +562,25 @@ class OverridesParser:
             try:
                 parsed = self.parse_rule(override, "override")
             except HydraException as e:
-                raise HydraException(
-                    f"Error parsing override '{override}' : {e}"
-                    f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
-                )
+                cause = e.__cause__
+                if isinstance(cause, LexerNoViableAltException):
+                    prefix = "LexerNoViableAltException: "
+                    start = len(prefix) + cause.startIndex + 1
+                    msg = f"{prefix}{override}" f"\n{'^'.rjust(start)}"
+                    e.__cause__ = None
+                elif isinstance(cause, RecognitionException):
+                    prefix = f"{e}: "
+                    offending_token: Token = cause.offendingToken
+                    start = len(prefix) + offending_token.start + 1
+                    msg = f"{prefix}{override}" f"\n{'^'.rjust(start)}"
+                    e.__cause__ = None
+                else:
+                    msg = f"Error parsing override '{override}'" f"\n{e}"
+                raise OverrideParseException(
+                    override=override,
+                    message=f"{msg}"
+                    f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details",
+                ) from e.__cause__
             assert isinstance(parsed, Override)
             ret.append(parsed)
         return ret
