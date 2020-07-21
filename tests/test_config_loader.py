@@ -1002,7 +1002,7 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             ["db"],
             pytest.raises(
                 HydraException,
-                match=re.escape("Error parsing override 'db' : missing '=' at '<EOF>'"),
+                match=re.escape("Error parsing override 'db'\nmissing '=' at '<EOF>'"),
             ),
             id="syntax_error",
         ),
