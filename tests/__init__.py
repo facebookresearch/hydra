@@ -89,7 +89,7 @@ nesting = NestingClass()
 
 
 class ClassWithMissingModule:
-    def __init__(self):
-        import some_missing_module  # noqa: F401
+    def __init__(self) -> None:
+        import some_missing_module  # type: ignore # noqa: F401
 
         self.x = 1

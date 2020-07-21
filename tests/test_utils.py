@@ -18,7 +18,6 @@ from tests import (
     Adam,
     AnotherClass,
     ASubclass,
-    ClassWithMissingModule,
     IllegalType,
     NestingClass,
     Parameters,
