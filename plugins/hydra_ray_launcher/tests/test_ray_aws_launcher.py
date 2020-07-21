@@ -17,8 +17,8 @@ from hydra.test_utils.test_utils import chdir_plugin_root
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (
     ray_down,
-    ray_up,
     ray_new_dir,
+    ray_up,
 )
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
 
