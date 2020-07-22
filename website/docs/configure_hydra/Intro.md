@@ -77,7 +77,7 @@ Creates a string representing the current time using [strftime](https://docs.pyt
 For example, for formatting the time you can use something like`${now:%H-%M-%S}`.
 
 ### `hydra`
-Returns a string from Hydra config.q
+Interpolates into the `hydra` config node.
 For example, use `${hydra:job.name}` to get the Hydra job name.
 
 ### `python_version`
