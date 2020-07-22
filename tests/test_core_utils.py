@@ -28,15 +28,14 @@ def test_accessing_hydra_config(hydra_restore_singletons: Any) -> Any:
     assert cfg.config_name == "accessing_hydra_config"
 
 
-def test_py_version_resolver(hydra_restore_singletons: Any, monkeypatch: Any) -> Any:
+def test_py_version_resolver(
+    hydra_restore_singletons: Any, monkeypatch: Any, restore_resolvers: Any
+) -> Any:
     Version = namedtuple("Version", "major minor micro")
-    with monkeypatch.context() as m:
-        m.setattr(sys, "version_info", Version(3, 7, 2))
-        OmegaConf.clear_resolvers()
-        utils.setup_globals()
-        assert OmegaConf.create({"key": "${python_version:}"}).key == "3.7"
-        assert OmegaConf.create({"key": "${python_version:major}"}).key == "3"
-        assert OmegaConf.create({"key": "${python_version:minor}"}).key == "3.7"
-        assert OmegaConf.create({"key": "${python_version:micro}"}).key == "3.7.2"
-    # reset OmegaConf resolver with no patching
+    monkeypatch.setattr(sys, "version_info", Version(3, 7, 2))
+    OmegaConf.clear_resolvers()
     utils.setup_globals()
+    assert OmegaConf.create({"key": "${python_version:}"}).key == "3.7"
+    assert OmegaConf.create({"key": "${python_version:major}"}).key == "3"
+    assert OmegaConf.create({"key": "${python_version:minor}"}).key == "3.7"
+    assert OmegaConf.create({"key": "${python_version:micro}"}).key == "3.7.2"
