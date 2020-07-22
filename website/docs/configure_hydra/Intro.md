@@ -68,13 +68,22 @@ You can see the full Hydra config using `--cfg hydra`:
 - *hydra.runtime.version*: Hydra's version
 - *hydra.runtime.cwd*: Original working directory the app was executed from
 
-## Hydra default OmegaConf resolvers
-OmegaConf supports [interpolations](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation) via [resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#custom-interpolations). Hydra supports the following resolvers by default.
-```yaml title="resolver.yaml"
-current_date: ${now:%Y-%m-%d}                              # call time.localtime() with pattern "%Y-%m-%d", eg: 2020-07-15
-current_time: ${now:%H-%M-%S}                              # call time.localtime() with pattern "%H-%M-%S", eg: 17-04-11
-job_working_dir: ${hydra:runtime.cwd}                      # get hydra config "runtime.cwd"
-job_name: ${hydra:job.name}                                # get hydra config "job.name"
+## Hydra resolvers
+
+Hydra supports [several OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
+
+### `now`
+Creates a string representing the current time using [strftime](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior).
+For example, for formatting the time you can use something like`${now:%H-%M-%S}`.
+
+### `hydra`
+Returns a string from Hydra config.q
+For example, use `${hydra:job.name}` to get the Hydra job name.
+
+### `python_version`
+Return a string representing the runtime python version by calling `sys.version_info`.
+You can pass in a parameter to specify level of version returned. By default, the resolver returns the major and minor version.
+```yaml
 python_version: ${python_version:}                         # runtime python version, eg: 3.8
 major_version: ${python_version:major}                     # runtime python major version, eg: 3
 minor_version: ${python_version:minor}                     # runtime python version in the format major.minor, eg: 3.8
