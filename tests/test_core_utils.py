@@ -12,7 +12,9 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.types import RunMode
 
 
-def test_accessing_hydra_config(hydra_restore_singletons: Any) -> Any:
+def test_accessing_hydra_config(
+    hydra_restore_singletons: Any, restore_resolvers: Any
+) -> Any:
     utils.setup_globals()
 
     config_loader = ConfigLoaderImpl(
@@ -33,7 +35,6 @@ def test_py_version_resolver(
 ) -> Any:
     Version = namedtuple("Version", "major minor micro")
     monkeypatch.setattr(sys, "version_info", Version(3, 7, 2))
-    OmegaConf.clear_resolvers()
     utils.setup_globals()
     assert OmegaConf.create({"key": "${python_version:}"}).key == "3.7"
     assert OmegaConf.create({"key": "${python_version:major}"}).key == "3"
