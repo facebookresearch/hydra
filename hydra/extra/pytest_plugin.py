@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional
 
 import pytest
-from omegaconf.basecontainer import BaseContainer
+from omegaconf import OmegaConf
 
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
@@ -14,17 +14,9 @@ from hydra.types import TaskFunction
 
 
 @pytest.fixture(scope="function")  # type: ignore
-def restore_resolvers() -> Any:
-    """
-    A fixture to restore singletons state after this the function.
-    This is useful for functions that are making a one-off change to singlestons that should not effect
-    other tests
-
-    TODO this was copied from OmegaConf. Remove this when OmegaConf introduces a pytest plugin.
-    """
-    state = copy.deepcopy(BaseContainer._resolvers)
+def clear_resolvers() -> Any:
     yield
-    BaseContainer._resolvers = state
+    OmegaConf.clear_resolvers()
 
 
 @pytest.fixture(scope="function")  # type: ignore

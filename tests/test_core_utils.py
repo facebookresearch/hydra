@@ -13,7 +13,7 @@ from hydra.types import RunMode
 
 
 def test_accessing_hydra_config(
-    hydra_restore_singletons: Any, restore_resolvers: Any
+    hydra_restore_singletons: Any, clear_resolvers: Any
 ) -> Any:
     utils.setup_globals()
 
@@ -31,7 +31,7 @@ def test_accessing_hydra_config(
 
 
 def test_py_version_resolver(
-    hydra_restore_singletons: Any, monkeypatch: Any, restore_resolvers: Any
+    hydra_restore_singletons: Any, monkeypatch: Any, clear_resolvers: Any
 ) -> Any:
     Version = namedtuple("Version", "major minor micro")
     monkeypatch.setattr(sys, "version_info", Version(3, 7, 2))
