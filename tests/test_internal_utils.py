@@ -110,9 +110,7 @@ Use 'target' instead of '{warning}'."""
         ),
         (
             "tests.b.c.Door",
-            pytest.raises(
-                ImportError, match=re.escape("Could not locate 'tests.b.c.Door'")
-            ),
+            pytest.raises(ImportError, match=re.escape("No module named 'tests.b'")),
         ),
     ],
 )
