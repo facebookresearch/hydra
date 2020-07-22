@@ -68,3 +68,26 @@ You can see the full Hydra config using `--cfg hydra`:
 - *hydra.runtime.version*: Hydra's version
 - *hydra.runtime.cwd*: Original working directory the app was executed from
 
+## Hydra resolvers
+
+Hydra supports [several OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
+
+### `now`
+Creates a string representing the current time using [strftime](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior).
+For example, for formatting the time you can use something like`${now:%H-%M-%S}`.
+
+### `hydra`
+Interpolates into the `hydra` config node.
+For example, use `${hydra:job.name}` to get the Hydra job name.
+
+### `python_version`
+Return a string representing the runtime python version by calling `sys.version_info`.
+You can pass in a parameter to specify level of version returned. By default, the resolver returns the major and minor version.
+```yaml
+python_version: ${python_version:}                         # runtime python version, eg: 3.8
+major_version: ${python_version:major}                     # runtime python major version, eg: 3
+minor_version: ${python_version:minor}                     # runtime python version in the format major.minor, eg: 3.8
+micro_version: ${python_version:micro}                     # runtime python version in the format major.minor.micro, eg: 3.8.2
+```
+
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.

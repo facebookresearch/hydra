@@ -145,6 +145,7 @@ def setup_globals() -> None:
             # calling it again in no_workers mode will throw. safe to ignore.
             pass
 
+    # please add documentation when you add a new resolver
     register("now", lambda pattern: strftime(pattern, localtime()))
     register(
         "hydra",
