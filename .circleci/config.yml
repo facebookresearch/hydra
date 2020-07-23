@@ -6,6 +6,8 @@ commands:
     parameters:
       py_version:
         type: string
+      nox_session:
+        type: string
     steps:
       - checkout
       - run:
@@ -29,12 +31,14 @@ commands:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox dataclasses
-            nox
+            nox -s << parameters.nox_session >>
 
   linux:
     description: "Commands run on Linux"
     parameters:
       py_version:
+        type: string
+      nox_session:
         type: string
     steps:
       - checkout
@@ -49,13 +53,15 @@ commands:
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox dataclasses
-            nox
+            nox -s << parameters.nox_session >>
 
 
   win:
     description: "Commands run on Windows"
     parameters:
       py_version:
+        type: string
+      nox_session:
         type: string
     steps:
       - checkout
@@ -78,7 +84,7 @@ commands:
             $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
-            nox
+            nox -s << parameters.nox_session >>
             exit $LASTEXITCODE
 
 
@@ -100,30 +106,39 @@ jobs:
     parameters:
       py_version:
         type: string
+      nox_session:
+        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
+          nox_session: << parameters.nox_session >>
 
   test_linux:
     parameters:
       py_version:
+        type: string
+      nox_session:
         type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
+          nox_session: << parameters.nox_session >>
 
   test_win:
     parameters:
       py_version:
         type: string
+      nox_session:
+        type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
+          nox_session: << parameters.nox_session >>
 
   # Misc
   coverage:
@@ -142,14 +157,24 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+<<<<<<< HEAD
+=======
+              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
+      - deploy-website:
+          filters:
+            branches:
+              only: master
+>>>>>>> Parameterize nox session
 
 orbs:
   win: circleci/windows@1.0.0
