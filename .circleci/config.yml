@@ -157,19 +157,23 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
+              nox_session: ["lint test_core", "lint_plugins test_plugins", "test_jupyter_notebooks"]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
+              nox_session: ["lint test_core", "lint_plugins test_plugins", "test_jupyter_notebooks"]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
               nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
+=======
+              nox_session: ["lint test_core", "lint_plugins test_plugins", "test_jupyter_notebooks"]
+>>>>>>> combine some jobs
       - deploy-website:
           filters:
             branches:
