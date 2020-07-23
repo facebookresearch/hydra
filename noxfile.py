@@ -5,7 +5,11 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
+<<<<<<< HEAD
 from typing import List
+=======
+from typing import List, Union, Optional
+>>>>>>> separate ray launcher into its own session
 
 import nox
 from nox.logger import logger
@@ -118,16 +122,22 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
+<<<<<<< HEAD
 def select_plugins(session, directory: str) -> List[Plugin]:
+=======
+def select_plugins(session, exclude: List[str] = [], plugin_filter: List[str] = []) -> List[Plugin]:
+>>>>>>> separate ray launcher into its own session
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
     as well as the user plugins selection (via the PLUGINS environment variable).
+
     """
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg", "examples"]
     plugins = [
         {"dir_name": x, "path": x}
+<<<<<<< HEAD
 <<<<<<< HEAD
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
@@ -140,12 +150,19 @@ def select_plugins(session, directory: str) -> List[Plugin]:
             os.listdir(os.path.join(BASE, "plugins")),
             key=lambda x: 0 if x == "hydra_ray_launcher" else 1,
         )
+=======
+        for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
+>>>>>>> separate ray launcher into its own session
         if x != "examples"
         if x not in blacklist
+        if x not in exclude
     ]
 
     available_plugins = plugins + example_plugins
 >>>>>>> hydra ray launcher
+
+    if plugin_filter:
+        available_plugins = filter(lambda p: p in plugin_filter, available_plugins)
 
     ret = []
     skipped = []
@@ -381,6 +398,7 @@ def test_core(session):
 
 
 @nox.session(python=PYTHON_VERSIONS)
+<<<<<<< HEAD
 def test_plugins(session):
     test_plugins_in_directory(
         session=session,
@@ -402,11 +420,37 @@ def test_plugins_in_directory(
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
 =======
     selected_plugin = select_plugins(session)
+=======
+@nox.parametrize(
+    "install_cmd",
+    PLUGINS_INSTALL_COMMANDS,
+    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+)
+@nox.parametrize(
+    'exclude',
+    ["hydra-ray-launcher"]
+)
+def test_plugins(session, install_cmd, exclude):
+    run_plugin_tests(session, install_cmd, exclude=exclude)
 
-    # Ray launcher will be first in plugin list if exists.
-    # Test ray launcher before other plugins installed so we won't need to
-    # pickle other plugins locally and unpickle on remote machines. This is
-    # to avoid the need to install non Ray plugins on remote machines.
+
+@nox.session(python=PYTHON_VERSIONS)
+@nox.parametrize(
+    "install_cmd",
+    PLUGINS_INSTALL_COMMANDS,
+    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+)
+def test_ray_plugin(session, install_cmd):
+    run_plugin_tests(session=session, install_cmd=install_cmd,  plugin_filter=["hydra_ray_launcher"])
+
+
+def run_plugin_tests(session, install_cmd, exclude, plugin_filter):
+    _upgrade_basic(session)
+    session.install("pytest")
+    install_hydra(session, install_cmd)
+    selected_plugin = select_plugins(session, exclude=exclude, plugin_filter=plugin_filter)
+>>>>>>> separate ray launcher into its own session
+
     for plugin in selected_plugin:
         # install plugin
         cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
@@ -445,6 +489,7 @@ def test_plugins_in_directory(
 
 =======
 >>>>>>> hydra ray launcher
+
 
 @nox.session(python="3.8")
 def coverage(session):
