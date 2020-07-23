@@ -179,7 +179,9 @@ def select_plugins(session, exclude=None, plugin_filter=None) -> List[Plugin]:
 >>>>>>> hydra ray launcher
 
     if plugin_filter:
-        available_plugins = filter(lambda p: p in plugin_filter, available_plugins)
+        available_plugins = filter(
+            lambda p: p["dir_name"] in plugin_filter, available_plugins
+        )
 
     ret = []
     skipped = []
@@ -443,7 +445,7 @@ def test_plugins_in_directory(
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("exclude", ["hydra-ray-launcher"])
+@nox.parametrize("exclude", [["hydra-ray-launcher"]])
 def test_plugins(session, install_cmd, exclude):
     run_plugin_tests(session, install_cmd, exclude=exclude)
 
