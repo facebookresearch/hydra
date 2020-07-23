@@ -119,10 +119,16 @@ class ConfigLoaderImpl(ConfigLoader):
             if source.provider == "main":
                 if not source.available():
                     if source.scheme() == "pkg":
-                        msg = (
-                            f"Primary config module '{source.path}' not found."
-                            f"\nCheck that it's correct and contains an __init__.py file"
-                        )
+                        if source.path == "":
+                            msg = (
+                                "Primary config module is empty."
+                                "\nPython requires resources to be in a module with an __init__.py file"
+                            )
+                        else:
+                            msg = (
+                                f"Primary config module '{source.path}' not found."
+                                f"\nCheck that it's correct and contains an __init__.py file"
+                            )
                     else:
                         msg = (
                             f"Primary config directory not found."

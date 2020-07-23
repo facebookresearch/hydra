@@ -53,6 +53,8 @@ class ImportlibResourcesConfigSource(ConfigSource):
             ret = importlib_resources.is_resource(self.path, "__init__.py")
             assert isinstance(ret, bool)
             return ret
+        except ValueError:
+            return False
         except ModuleNotFoundError:
             return False
 
