@@ -445,7 +445,7 @@ def test_plugins_in_directory(
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize("exclude", [["hydra-ray-launcher"]])
+@nox.parametrize("exclude", [["hydra_ray_launcher"]])
 def test_plugins(session, install_cmd, exclude):
     run_plugin_tests(session, install_cmd, exclude=exclude)
 
