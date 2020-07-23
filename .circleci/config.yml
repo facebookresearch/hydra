@@ -72,6 +72,7 @@ commands:
           command: |
             sudo apt-get update
 <<<<<<< HEAD
+<<<<<<< HEAD
             sudo apt-get install -y expect fish openjdk-11-jre
       - run:
           name: Preparing environment - Hydra
@@ -80,6 +81,9 @@ commands:
             ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
 =======
             sudo apt-get install -y expect fish openjdk-11-jre rsyn
+=======
+            sudo apt-get install -y expect fish openjdk-11-jre rsync
+>>>>>>> fix circleCI file
             sudo pip install nox
 <<<<<<< HEAD
 =======
