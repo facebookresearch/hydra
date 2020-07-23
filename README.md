@@ -8,10 +8,14 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/facebookresearch/hydra/context:python)
 [![](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://hydra-framework.zulipchat.com)
 
+
+
 # Hydra
 A framework for elegantly configuring complex applications.
+<img src="./website/static/img/logo.svg" align="right" width="20%"/>
 
 Check the [website](https://hydra.cc/) for more information.
+
 
 ### Releases
 #### Release candidate
