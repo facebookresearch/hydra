@@ -1,221 +1,129 @@
 version: 2.1
 
+commands:
+  macos:
+    description: "Commands run on MacOS"
+    parameters:
+      py_version:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: "Installing Conda"
+          command: |
+            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            ~/miniconda3/bin/conda init bash
+      - run:
+          name: "Preparing environment"
+          command: |
+            brew update
+            brew install fish
+            conda create -n hydra python=<< parameters.py_version >> -yq
+            conda run -n hydra pip install nox
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            conda activate hydra
+            pip install nox dataclasses
+            nox
+
+  linux:
+    description: "Commands run on Linux"
+    parameters:
+      py_version:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: "Preparing environment"
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y expect fish openjdk-11-jre
+            sudo pip install nox
+      - run:
+          name: "Testing Hydra"
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            pip install nox dataclasses
+            nox
+
+
+  win:
+    description: "Commands run on Windows"
+    parameters:
+      py_version:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Preparing system
+          command: |
+            choco install -y --no-progress miniconda3
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+            choco install -y --no-progress openssl javaruntime
+      - run:
+          name: Preparing conda environment
+          command: |
+            conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
+            conda activate hydra
+            pip install nox dataclasses
+      - run:
+          name: Testing Hydra
+          no_output_timeout: 20m
+          command: |
+            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox
+            exit $LASTEXITCODE
+
+
+executors:
+  macos:
+    macos:
+      xcode: "10.0.0"
+  linux:
+    parameters:
+      py_version:
+        type: string
+    docker:
+      - image: circleci/python:<< parameters.py_version >>
+  win: win/default
+
+
 jobs:
-  # Mac
-  py36_mac:
+  test_macos:
+    parameters:
+      py_version:
+        type: string
     macos:
       xcode: "10.0.0"
     steps:
-      - checkout
-      - run:
-          name: "Installing Conda"
-          command: |
-            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
-            ~/miniconda3/bin/conda init bash
-      - run:
-          name: "Preparing environment"
-          command: |
-            brew update
-            brew install fish
-            conda create -n hydra python=3.6 -yq
-            conda run -n hydra pip install nox
-      - run:
-          name: "Testing Hydra"
-          no_output_timeout: 10m
-          command: |
-            export NOX_PYTHON_VERSIONS=3.6
-            conda activate hydra
-            pip install nox dataclasses
-            nox
+      - macos:
+          py_version: << parameters.py_version >>
 
-  py37_mac:
-    macos:
-      xcode: "10.0.0"
-    steps:
-      - checkout
-      - run:
-          name: "Installing Conda"
-          command: |
-            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
-            ~/miniconda3/bin/conda init bash
-      - run:
-          name: "Preparing environment"
-          command: |
-            brew update
-            brew install fish
-            conda create -n hydra python=3.7 -yq
-            conda run -n hydra pip install nox
-      - run:
-          name: "Testing Hydra"
-          no_output_timeout: 10m
-          command: |
-            export NOX_PYTHON_VERSIONS=3.7
-            conda activate hydra
-            pip install nox
-            nox
-
-  py38_mac:
-    macos:
-      xcode: "10.0.0"
-    steps:
-      - checkout
-      - run:
-          name: "Installing Conda"
-          command: |
-            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
-            ~/miniconda3/bin/conda init bash
-      - run:
-          name: "Preparing environment"
-          command: |
-            brew update
-            brew install fish
-            conda create -n hydra python=3.8 -yq
-            conda run -n hydra pip install nox
-      - run:
-          name: "Testing Hydra"
-          no_output_timeout: 10m
-          command: |
-            export NOX_PYTHON_VERSIONS=3.8
-            conda activate hydra
-            pip install nox
-            nox
-
-  # Linux
-  py36_linux:
+  test_linux:
+    parameters:
+      py_version:
+        type: string
     docker:
-      - image: circleci/python:3.6
+      - image: circleci/python:<< parameters.py_version >>
     steps:
-      - checkout
-      - run:
-          name: "Preparing environment"
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox
-      - run:
-          name: "Testing Hydra"
-          command: |
-              export NOX_PYTHON_VERSIONS=3.6
-              pip install nox dataclasses
-              nox
+      - linux:
+          py_version: << parameters.py_version >>
 
-  py37_linux:
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - run:
-          name: "Preparing environment"
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox
-      - run:
-          name: "Testing Hydra"
-          command: |
-              export NOX_PYTHON_VERSIONS=3.7
-              pip install nox
-              nox
-
-  py38_linux:
-    docker:
-      - image: circleci/python:3.8
-    steps:
-      - checkout
-      - run:
-          name: "Preparing environment"
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox
-      - run:
-          name: "Testing Hydra"
-          command: |
-              export NOX_PYTHON_VERSIONS=3.8
-              pip install nox
-              nox
-
-  # windows
-  py36_win:
+  test_win:
+    parameters:
+      py_version:
+        type: string
     executor: win/default
     steps:
-      - checkout
-      - run:
-          name: Preparing system
-          command: |
-            choco install -y --no-progress miniconda3
-            C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install -y --no-progress openssl javaruntime
-      - run:
-          name: Preparing conda environment
-          command: |
-            conda create -n hydra python=3.6 pywin32 -qy
-            conda activate hydra
-            pip install nox dataclasses
-      - run:
-          name: Testing Hydra
-          no_output_timeout: 20m
-          command: |
-            $env:NOX_PYTHON_VERSIONS=3.6
-            $env:PYTHONIOENCODING="utf_8"
-            conda activate hydra
-            nox
-            exit $LASTEXITCODE
+      - win:
+          py_version: << parameters.py_version >>
 
-  py37_win:
-    executor: win/default
-    steps:
-      - checkout
-      - run:
-          name: Preparing system
-          command: |
-            choco install -y --no-progress miniconda3
-            C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install -y --no-progress openssl javaruntime
-      - run:
-          name: Preparing conda environment
-          command: |
-            conda create -n hydra python=3.7 pywin32 -qy
-            conda activate hydra
-            pip install nox
-      - run:
-          name: Testing Hydra
-          no_output_timeout: 20m
-          command: |
-            $env:NOX_PYTHON_VERSIONS=3.7
-            $env:PYTHONIOENCODING="utf_8"
-            conda activate hydra
-            nox
-            exit $LASTEXITCODE
-
-  py38_win:
-    executor: win/default
-    steps:
-      - checkout
-      - run:
-          name: Preparing system
-          command: |
-            choco install -y --no-progress miniconda3
-            C:\tools\miniconda3\Scripts\conda.exe init powershell
-            choco install -y --no-progress openssl javaruntime
-      - run:
-          name: Preparing conda environment
-          command: |
-            conda create -n hydra python=3.8 pywin32 -qy
-            conda activate hydra
-            pip install nox
-      - run:
-          name: Testing Hydra
-          no_output_timeout: 20m
-          command: |
-            $env:NOX_PYTHON_VERSIONS=3.8
-            $env:PYTHONIOENCODING="utf_8"
-            conda activate hydra
-            nox
-            exit $LASTEXITCODE
   # Misc
   coverage:
     docker:
@@ -256,18 +164,18 @@ workflows:
   version: 2
   build:
     jobs:
-      # linux
-      - py36_linux
-      - py37_linux
-      - py38_linux
-      # mac
-      - py36_mac
-      - py37_mac
-      - py38_mac
-      # windows
-      - py36_win
-      - py37_win
-      - py38_win
+      - test_macos:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+      - test_linux:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+      - test_win:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
       - deploy-website:
           filters:
             branches:
