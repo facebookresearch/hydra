@@ -6,10 +6,14 @@ import platform
 from dataclasses import dataclass
 from pathlib import Path
 <<<<<<< HEAD
+<<<<<<< HEAD
 from typing import List
 =======
 from typing import List, Union, Optional
 >>>>>>> separate ray launcher into its own session
+=======
+from typing import List, Union
+>>>>>>> commit
 
 import nox
 from nox.logger import logger
@@ -123,16 +127,29 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def select_plugins(session, directory: str) -> List[Plugin]:
 =======
 def select_plugins(session, exclude: List[str] = [], plugin_filter: List[str] = []) -> List[Plugin]:
 >>>>>>> separate ray launcher into its own session
+=======
+def select_plugins(session, exclude=None, plugin_filter=None) -> List[Plugin]:
+>>>>>>> commit
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
     as well as the user plugins selection (via the PLUGINS environment variable).
 
     """
+<<<<<<< HEAD
+=======
+
+    if plugin_filter is None:
+        plugin_filter = []
+    if exclude is None:
+        exclude = []
+
+>>>>>>> commit
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg", "examples"]
     plugins = [
@@ -426,10 +443,7 @@ def test_plugins_in_directory(
     PLUGINS_INSTALL_COMMANDS,
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
-@nox.parametrize(
-    'exclude',
-    ["hydra-ray-launcher"]
-)
+@nox.parametrize("exclude", ["hydra-ray-launcher"])
 def test_plugins(session, install_cmd, exclude):
     run_plugin_tests(session, install_cmd, exclude=exclude)
 
@@ -441,15 +455,23 @@ def test_plugins(session, install_cmd, exclude):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_ray_plugin(session, install_cmd):
-    run_plugin_tests(session=session, install_cmd=install_cmd,  plugin_filter=["hydra_ray_launcher"])
+    run_plugin_tests(
+        session=session, install_cmd=install_cmd, plugin_filter=["hydra_ray_launcher"]
+    )
 
 
-def run_plugin_tests(session, install_cmd, exclude, plugin_filter):
+def run_plugin_tests(session, install_cmd, exclude=[], plugin_filter=[]):
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
+<<<<<<< HEAD
     selected_plugin = select_plugins(session, exclude=exclude, plugin_filter=plugin_filter)
 >>>>>>> separate ray launcher into its own session
+=======
+    selected_plugin = select_plugins(
+        session, exclude=exclude, plugin_filter=plugin_filter
+    )
+>>>>>>> commit
 
     for plugin in selected_plugin:
         # install plugin
@@ -489,7 +511,6 @@ def run_plugin_tests(session, install_cmd, exclude, plugin_filter):
 
 =======
 >>>>>>> hydra ray launcher
-
 
 @nox.session(python="3.8")
 def coverage(session):
