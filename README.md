@@ -31,12 +31,16 @@
   <a href="https://hydra-framework.zulipchat.com">
     <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="zulip" />
   </a>
+  <p align="center">
+    <i>A framework for elegantly configuring complex applications.</i>
+  </p>
+  <p align="center">
+    <i>Check the <a href="https://hydra.cc/">website</a> for more information.</i>
+  </p>
 </p>
 
+----------------------
 
-A framework for elegantly configuring complex applications.
-
-Check the [website](https://hydra.cc/) for more information.
 
 ### Releases
 #### Release candidate
