@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
-import re
 from pathlib import Path
 from typing import Any, Dict
 
@@ -11,7 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra import utils
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
-from hydra.errors import HydraException
+from hydra.errors import InstantiateException
 from hydra.types import ObjectConf
 from tests import (
     AClass,
@@ -233,13 +232,29 @@ def test_instantiate_adam() -> None:
     assert res == Adam(params=adam_params)
 
 
-def test_instantiate_with_missing_module() -> None:
+@pytest.mark.parametrize(  # type: ignore
+    "target, error, cause",
+    [
+        (
+            "tests.file_with_missing_module.AClass",
+            "Error calling 'tests.file_with_missing_module.AClass'",
+            (
+                "Encountered error: `No module named 'some_missing_module'`"
+                " when loading module 'tests.file_with_missing_module.AClass'"
+            ),
+        ),
+        (
+            "tests.ClassWithMissingModule",
+            "Error calling 'tests.ClassWithMissingModule'",
+            "No module named 'some_missing_module'",
+        ),
+    ],
+)
+def test_instantiate_with_missing_module(target: str, error: str, cause: str) -> None:
 
-    with pytest.raises(
-        HydraException, match=re.escape("Error calling 'tests.ClassWithMissingModule'")
-    ):
-        # can't instantiate when importing a missing module
-        utils.instantiate(ObjectConf(target="tests.ClassWithMissingModule"))
+    with pytest.raises(InstantiateException, match=error,) as ex:
+        utils.instantiate(ObjectConf(target=target))
+    assert ex.value.__cause__.msg == cause
 
 
 def test_pass_extra_variables() -> None:

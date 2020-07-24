@@ -200,7 +200,7 @@ def run_and_report(func: Any) -> Any:
         if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
             print_exc()
         else:
-            if isinstance(ex, CompactHydraException,):
+            if isinstance(ex, CompactHydraException):
                 sys.stderr.write(str(ex) + os.linesep)
                 if ex.__cause__ is not None:
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
