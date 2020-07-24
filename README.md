@@ -1,4 +1,4 @@
-<p align="center"><img src="https://hydra.cc/img/logo.svg" alt="logo" width="318px" /></p>
+<p align="center"><img src="https://hydra.cc/img/Hydra-Final_sticker_with_url_final.svg" alt="logo" width="20%" /></p>
 <h1 align="center">
   Hydra
 </h1>
