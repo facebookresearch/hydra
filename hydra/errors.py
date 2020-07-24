@@ -17,6 +17,10 @@ class ConfigCompositionException(HydraException):
     ...
 
 
+class InstantiateErrorException(HydraException):
+    ...
+
+
 class MissingConfigException(IOError, ConfigCompositionException):
     def __init__(
         self,
