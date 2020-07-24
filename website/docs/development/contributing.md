@@ -31,18 +31,17 @@ pip install -r requirements/dev.txt -e .
 
 ### Website setup
 
-The website is built using [Docusaurus 2](https://v2.docusaurus.io/).
+The website is built using [Docusaurus 2](https://v2.docusaurus.io/).  
+Run the following commands from the `website` directory.
 
 #### Install
 
 ```
-$ cd website
 $ yarn
 ```
 #### Local Development
 
 ```
-$ cd website
 $ yarn start
 ```
 
