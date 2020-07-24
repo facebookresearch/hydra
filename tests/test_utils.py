@@ -236,7 +236,7 @@ def test_instantiate_adam() -> None:
 def test_instantiate_with_missing_module() -> None:
 
     with pytest.raises(
-        HydraException, match=re.escape(" No module named 'some_missing_module'")
+        HydraException, match=re.escape("Error calling 'tests.ClassWithMissingModule'")
     ):
         # can't instantiate when importing a missing module
         utils.instantiate(ObjectConf(target="tests.ClassWithMissingModule"))

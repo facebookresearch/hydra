@@ -6,18 +6,18 @@ class HydraException(Exception):
     ...
 
 
-class OverrideParseException(HydraException):
+class CompactHydraException(HydraException):
+    ...
+
+
+class OverrideParseException(CompactHydraException):
     def __init__(self, override: str, message: str) -> None:
         super(OverrideParseException, self).__init__(message)
         self.override = override
         self.message = message
 
 
-class ConfigCompositionException(HydraException):
-    ...
-
-
-class InstantiateErrorException(HydraException):
+class ConfigCompositionException(CompactHydraException):
     ...
 
 

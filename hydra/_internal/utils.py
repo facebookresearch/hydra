@@ -27,12 +27,7 @@ from omegaconf import DictConfig, OmegaConf, read_write
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.utils import get_valid_filename, split_config_path
-from hydra.errors import (
-    ConfigCompositionException,
-    HydraException,
-    InstantiateErrorException,
-    OverrideParseException,
-)
+from hydra.errors import CompactHydraException, HydraException
 from hydra.types import ObjectConf, TaskFunction
 
 log = logging.getLogger(__name__)
@@ -205,14 +200,7 @@ def run_and_report(func: Any) -> Any:
         if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
             print_exc()
         else:
-            if isinstance(
-                ex,
-                (
-                    ConfigCompositionException,
-                    OverrideParseException,
-                    InstantiateErrorException,
-                ),
-            ):
+            if isinstance(ex, CompactHydraException,):
                 sys.stderr.write(str(ex) + os.linesep)
                 if ex.__cause__ is not None:
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
