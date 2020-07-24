@@ -53,8 +53,8 @@ class Foo:
 
   # target: example.Foo.class_method
   @classmethod
-  def class_method(self, x: int) -> Any:
-    return self(x, 10)
+  def class_method(cls, x: int) -> Any:
+    return cls(x, 10)
     
   # target: example.Foo.static_method
   @staticmethod
