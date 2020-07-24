@@ -36,6 +36,7 @@ The website is built using [Docusaurus 2](https://v2.docusaurus.io/).
 **Install**
 
 ```
+$ cd website
 $ yarn
 ```
 
