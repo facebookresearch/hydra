@@ -28,6 +28,29 @@ From the source tree, install Hydra in development mode with the following comma
 ```
 pip install -r requirements/dev.txt -e .
 ```
+
+### Website setup
+
+The website is built using [Docusaurus 2](https://v2.docusaurus.io/).
+
+**Install**
+
+```
+$ yarn
+```
+
+**Local Development**
+
+```
+$ cd website
+$ yarn start
+```
+
+This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
+
+For more details, refer [here](https://github.com/facebookresearch/hydra/blob/master/website/README.md).
+
+
 ## Nox
 Hydra is using a test automation tool called [nox](https://github.com/theacodes/nox) to manage tests, linting, code coverage etc.
 `nox` will run all the configured sessions. You can see the full list of nox sessions with `nox -l` and run specific sessions
