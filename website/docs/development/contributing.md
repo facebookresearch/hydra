@@ -33,14 +33,13 @@ pip install -r requirements/dev.txt -e .
 
 The website is built using [Docusaurus 2](https://v2.docusaurus.io/).
 
-**Install**
+#### Install
 
 ```
 $ cd website
 $ yarn
 ```
-
-**Local Development**
+#### Local Development
 
 ```
 $ cd website
