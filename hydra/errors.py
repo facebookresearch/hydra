@@ -5,7 +5,8 @@ from typing import Optional, Sequence
 class HydraException(Exception):
     ...
 
-
+# Compact exceptions are printed in a user friendly way when they
+# are intercepted by @hydra.main()
 class CompactHydraException(HydraException):
     ...
 
