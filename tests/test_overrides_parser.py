@@ -6,12 +6,14 @@ from typing import Any
 import pytest
 
 from hydra.core.override_parser.overrides_parser import (
+    ChoiceSweep,
     Key,
     Override,
     OverridesParser,
     OverrideType,
     Quote,
     QuotedString,
+    RangeSweep,
     ValueType,
 )
 from hydra.errors import HydraException
@@ -65,12 +67,24 @@ def test_element(value: str, expected: Any) -> None:
         pytest.param("[1,2,3]", [1, 2, 3], id="value:list"),
         pytest.param("[1 ]", [1], id="value:list1_ws"),
         pytest.param("[1, 2, 3]", [1, 2, 3], id="value:list_ws"),
-        pytest.param("1,2,3", [1, 2, 3], id="sweep:int"),
-        pytest.param("1, 2, 3", [1, 2, 3], id="sweep:int_ws"),
         pytest.param(
-            "${a}, ${b}, ${c}", ["${a}", "${b}", "${c}"], id="sweep:interpolations"
+            "1,2,3", ChoiceSweep(choices=[1, 2, 3], simple_form=True), id="sweep:int"
         ),
-        pytest.param("[a,b],[c,d]", [["a", "b"], ["c", "d"]], id="sweep:lists"),
+        pytest.param(
+            "1, 2, 3",
+            ChoiceSweep(choices=[1, 2, 3], simple_form=True),
+            id="sweep:int_ws",
+        ),
+        pytest.param(
+            "${a}, ${b}, ${c}",
+            ChoiceSweep(choices=["${a}", "${b}", "${c}"], simple_form=True),
+            id="sweep:interpolations",
+        ),
+        pytest.param(
+            "[a,b],[c,d]",
+            ChoiceSweep(choices=[["a", "b"], ["c", "d"]], simple_form=True),
+            id="sweep:lists",
+        ),
         # bool
         pytest.param("true", True, id="value:bool"),
         pytest.param("True", True, id="value:bool"),
@@ -152,21 +166,73 @@ def test_dict_value(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
-        pytest.param("a,b", ["a", "b"], id="sweep:values"),
-        pytest.param("[a,b],[c,d]", [["a", "b"], ["c", "d"]], id="sweep:lists"),
+        pytest.param(
+            "a,b", ChoiceSweep(simple_form=True, choices=["a", "b"]), id="sweep:values"
+        ),
+        pytest.param(
+            "[a,b],[c,d]",
+            ChoiceSweep(simple_form=True, choices=[["a", "b"], ["c", "d"]]),
+            id="sweep:lists",
+        ),
         pytest.param(
             "'a','b'",
-            [
-                QuotedString(text="a", quote=Quote.single),
-                QuotedString(text="b", quote=Quote.single),
-            ],
+            ChoiceSweep(
+                choices=[
+                    QuotedString(text="a", quote=Quote.single),
+                    QuotedString(text="b", quote=Quote.single),
+                ],
+                simple_form=True,
+            ),
             id="sweep:lists_quoted_elements",
+        ),
+        pytest.param(
+            "choice(a,b)",
+            ChoiceSweep(choices=["a", "b"], simple_form=False),
+            id="sweep:choice(a,b)",
         ),
     ],
 )
 def test_choice_sweep_parsing(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "choiceSweep")
     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
+        pytest.param("range(10,11)", RangeSweep(start=10, end=11, step=1), id="ints"),
+        pytest.param(
+            "range(1,10,2)", RangeSweep(start=1, end=10, step=2), id="ints_with_ste"
+        ),
+        pytest.param(
+            "range(1.0, 3.14)", RangeSweep(start=1.0, end=3.14, step=1), id="floats"
+        ),
+        pytest.param(
+            "range(1.0, 3.14, 0.1)",
+            RangeSweep(start=1.0, end=3.14, step=0.1),
+            id="floats_with_step",
+        ),
+        # TODO : support backward ranges
+        pytest.param(
+            "range(10,0)", pytest.raises(HydraException), id="error_start_gt_end",
+        ),
+        pytest.param(
+            "range(1,2,0)", pytest.raises(HydraException), id="error_non_positive_step",
+        ),
+        pytest.param(
+            "range(1,2,-1)",
+            pytest.raises(HydraException),
+            id="error_non_positive_step",
+        ),
+    ],
+)
+def test_range_sweep_parsing(value: str, expected: Any) -> None:
+    if isinstance(expected, RangeSweep):
+        ret = OverridesParser.parse_rule(value, "rangeSweep")
+        assert ret == expected
+    else:
+        with expected:
+            OverridesParser.parse_rule(value, "rangeSweep")
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -293,7 +359,7 @@ def test_key(value: str, expected: Any) -> None:
     "value,expected",
     [
         pytest.param("a", "a", id="a"),
-        pytest.param("/:+.$*", "/:+.$*", id="accepted_specials"),
+        pytest.param("/:+.$*=", "/:+.$*=", id="accepted_specials"),
         pytest.param("abc10", "abc10", id="abc10"),
         pytest.param("a.b.c", "a.b.c", id="a.b.c"),
         pytest.param("list.0.bar", "list.0.bar", id="list.0.bar"),
@@ -438,6 +504,22 @@ def test_primitive(value: str, prefix: str, suffix: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
+        pytest.param("10", 10, id="int"),
+        pytest.param(" 10", 10, id="int"),
+        pytest.param("10 ", 10, id="int"),
+        pytest.param("3.14", 3.14, id="float"),
+        pytest.param(" 3.14", 3.14, id="float"),
+        pytest.param("3.14 ", 3.14, id="float"),
+    ],
+)
+def test_number(value: str, expected: Any) -> None:
+    ret = OverridesParser.parse_rule(value, "number")
+    assert eq(ret, expected)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
         pytest.param("abc=xyz", False, id="no_rename"),
         pytest.param("abc@pkg=xyz", False, id="no_rename"),
         pytest.param("abc@pkg1:pkg2=xyz", True, id="rename"),
@@ -500,10 +582,28 @@ def test_key_rename(value: str, expected: bool) -> None:
             id="quoted_value",
         ),
         pytest.param(
-            "key=1,2,3", "key", [1, 2, 3], ValueType.CHOICE_SWEEP, id="choice_sweep",
+            "key=1,2,3",
+            "key",
+            [1, 2, 3],
+            ValueType.SIMPLE_CHOICE_SWEEP,
+            id="choice_sweep",
+        ),
+        pytest.param(
+            "key=choice(1,2,3)",
+            "key",
+            [1, 2, 3],
+            ValueType.CHOICE_SWEEP,
+            id="choice_sweep",
         ),
         pytest.param(
             "key=[1,2],[3,4]",
+            "key",
+            [[1, 2], [3, 4]],
+            ValueType.SIMPLE_CHOICE_SWEEP,
+            id="choice_sweep",
+        ),
+        pytest.param(
+            "key=choice([1,2],[3,4])",
             "key",
             [[1, 2], [3, 4]],
             ValueType.CHOICE_SWEEP,
@@ -567,7 +667,7 @@ def test_override_del(value: str, expected: Any) -> None:
 
 
 def test_overrides_parser() -> None:
-    overrides = ["x=10", "y=[1,2]", "z=a,b,c"]
+    overrides = ["x=10", "y=[1,2]", "z=a,b,c", "z=choice(a,b,c)"]
     expected = [
         Override(
             type=OverrideType.CHANGE,
@@ -586,9 +686,16 @@ def test_overrides_parser() -> None:
         Override(
             type=OverrideType.CHANGE,
             key_or_group="z",
-            value_type=ValueType.CHOICE_SWEEP,
+            value_type=ValueType.SIMPLE_CHOICE_SWEEP,
             _value=["a", "b", "c"],
             input_line=overrides[2],
+        ),
+        Override(
+            type=OverrideType.CHANGE,
+            key_or_group="z",
+            value_type=ValueType.CHOICE_SWEEP,
+            _value=["a", "b", "c"],
+            input_line=overrides[3],
         ),
     ]
     parser = OverridesParser()

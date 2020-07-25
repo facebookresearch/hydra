@@ -19,13 +19,21 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | choiceSweep;
+value: element | choiceSweep | rangeSweep;
 element:
       primitive
     | listValue
     | dictValue
 ;
-choiceSweep: element (',' element)+;            // value1,value2,value3
+
+choiceSweep:
+      element (',' element)+                      // value1,value2,value3
+    | 'choice(' element (',' element)+ ')'        // choice(value1,value2,value3)
+;
+
+rangeSweep:
+    'range(' number ',' number (',' number)?')' // range(start,end), range(start,end,step)
+;
 
 primitive:
     WS? (QUOTED_VALUE |                         // 'hello world', "hello world"
@@ -38,9 +46,12 @@ primitive:
         | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
         | '/' | ':' | '-' | '\\'
         | '+' | '.' | '$' | '*'
+        | '='
         )+
     )
     WS?;
+
+number: WS? (INT | FLOAT) WS?;
 
 listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
 dictValue: '{'                                  // {}, {a:10,b:20}

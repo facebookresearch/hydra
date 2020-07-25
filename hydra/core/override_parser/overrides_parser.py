@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional, Union
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
 from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
+from antlr4.tree.Tree import ParseTree
 
 from hydra.errors import HydraException, OverrideParseException
 
@@ -54,6 +55,37 @@ ElementType = Union[str, int, bool, float, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
 
 
+@dataclass
+class Sweep:
+    ...
+
+
+@dataclass
+class ChoiceSweep(Sweep):
+    # simple form: a,b,c
+    # explicit form: choices(a,b,c)
+    simple_form: bool
+    choices: List[ParsedElementType]
+
+
+@dataclass
+class RangeSweep(Sweep):
+    """
+    Discrete range of numbers
+    """
+
+    start: Union[int, float]
+    end: Union[int, float]
+    step: Union[int, float] = 1
+
+    def __post_init__(self) -> None:
+        if self.start >= self.end:
+            raise HydraException("range.start >= range.end")
+
+        if self.step <= 0:
+            raise HydraException("range.step <= 0")
+
+
 class OverrideType(Enum):
     CHANGE = 1
     ADD = 2
@@ -63,6 +95,7 @@ class OverrideType(Enum):
 class ValueType(Enum):
     ELEMENT = 1
     CHOICE_SWEEP = 2
+    SIMPLE_CHOICE_SWEEP = 3
 
 
 @dataclass
@@ -138,7 +171,10 @@ class Override:
         Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
         value component of overrides (the part after the =)
         """
-        assert self.value_type == ValueType.CHOICE_SWEEP
+        assert self.value_type in (
+            ValueType.CHOICE_SWEEP,
+            ValueType.SIMPLE_CHOICE_SWEEP,
+        )
         assert isinstance(self._value, list)
         return [
             Override._get_value_element(Override._convert_value(x)) for x in self._value
@@ -155,7 +191,10 @@ class Override:
         return self.pkg2 is not None
 
     def is_sweep_override(self) -> bool:
-        return self.value_type == ValueType.CHOICE_SWEEP
+        return self.value_type in (
+            ValueType.CHOICE_SWEEP,
+            ValueType.SIMPLE_CHOICE_SWEEP,
+        )
 
     def is_hydra_override(self) -> bool:
         kog = self.key_or_group
@@ -275,21 +314,33 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
 
         return Key(key_or_group=key, pkg1=pkg1, pkg2=pkg2)
 
+    def is_ws(self, c: Any) -> bool:
+        return isinstance(c, TerminalNode) and c.symbol.type == OverrideLexer.WS
+
+    def visitNumber(self, ctx: OverrideParser.NumberContext) -> Union[int, float]:
+        node = ctx.getChild(0)
+        if self.is_ws(node):
+            node = ctx.getChild(1)
+
+        if node.symbol.type == OverrideLexer.INT:
+            return int(node.symbol.text)
+        elif node.symbol.type == OverrideLexer.FLOAT:
+            return float(node.symbol.text)
+        else:
+            assert False
+
     def visitPrimitive(
         self, ctx: OverrideParser.PrimitiveContext
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
 
         ret: Optional[Union[int, bool, float, str]]
 
-        def is_ws(c: Any) -> bool:
-            return isinstance(c, TerminalNode) and c.symbol.type == OverrideLexer.WS
-
         first_idx = 0
         last_idx = ctx.getChildCount()
         # skip first if whitespace
-        if is_ws(ctx.getChild(0)):
+        if self.is_ws(ctx.getChild(0)):
             first_idx = 1
-        if is_ws(ctx.getChild(-1)):
+        if self.is_ws(ctx.getChild(-1)):
             last_idx = last_idx - 1
         num = last_idx - first_idx
         if num > 1:
@@ -430,14 +481,13 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             assert eq_node.symbol.text == "="
             value_node = next(children)
             value = self.visitValue(value_node)
-
-            if value_node.getChildCount() == 1:
-                if isinstance(
-                    value_node.getChild(0), OverrideParser.ChoiceSweepContext
-                ):
-                    value_type = ValueType.CHOICE_SWEEP
+            if isinstance(value, ChoiceSweep):
+                if value.simple_form:
+                    value_type = ValueType.SIMPLE_CHOICE_SWEEP
                 else:
-                    value_type = ValueType.ELEMENT
+                    value_type = ValueType.CHOICE_SWEEP
+
+                value = value.choices
             else:
                 value_type = ValueType.ELEMENT
 
@@ -450,20 +500,42 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             pkg2=key.pkg2,
         )
 
-    def visitChoiceSweep(
-        self, ctx: OverrideParser.ChoiceSweepContext
-    ) -> List[ParsedElementType]:
-        ret: List[ParsedElementType] = []
-        for child in ctx.getChildren():
-            if isinstance(child, TerminalNode):
-                assert child.symbol.text == ","
-                continue
-            if isinstance(child, OverrideParser.ElementContext):
-                ret.append(self.visitElement(child))
-            else:
-                assert False
+    def is_matching_terminal(self, node: ParseTree, text: str) -> bool:
+        return isinstance(node, TerminalNode) and node.getText() == text
 
-        return ret
+    def visitRangeSweep(self, ctx: OverrideParser.RangeSweepContext) -> RangeSweep:
+        assert self.is_matching_terminal(ctx.getChild(0), "range(")
+        assert self.is_matching_terminal(ctx.getChild(2), ",")
+        start = self.visitNumber(ctx.number(0))
+        end = self.visitNumber(ctx.number(1))
+        step_ctx = ctx.number(2)
+        if step_ctx is not None:
+            step = self.visitNumber(step_ctx)
+            return RangeSweep(start=start, end=end, step=step)
+        else:
+            return RangeSweep(start=start, end=end)
+
+    def visitChoiceSweep(self, ctx: OverrideParser.ChoiceSweepContext) -> ChoiceSweep:
+        def collect(start: int, end: int, simple_form: bool) -> ChoiceSweep:
+            ret: List[ParsedElementType] = []
+            for idx in range(start, end):
+                child = ctx.getChild(idx)
+                if isinstance(child, TerminalNode):
+                    assert child.symbol.text == ","
+                    continue
+                if isinstance(child, OverrideParser.ElementContext):
+                    ret.append(self.visitElement(child))
+                else:
+                    assert False
+            return ChoiceSweep(choices=ret, simple_form=simple_form)
+
+        if (
+            isinstance(ctx.getChild(0), TerminalNode)
+            and ctx.getChild(0).symbol.text == "choice("
+        ):
+            return collect(1, ctx.getChildCount() - 1, simple_form=False)
+        else:
+            return collect(0, ctx.getChildCount(), simple_form=True)
 
     def aggregateResult(self, aggregate: List[Any], nextResult: Any) -> List[Any]:
         aggregate.append(nextResult)
