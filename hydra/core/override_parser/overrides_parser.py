@@ -29,6 +29,20 @@ except ModuleNotFoundError:
     sys.exit(1)
 
 
+class OverrideType(Enum):
+    CHANGE = 1
+    ADD = 2
+    DEL = 3
+
+
+class ValueType(Enum):
+    ELEMENT = 1
+    CHOICE_SWEEP = 2
+    SIMPLE_CHOICE_SWEEP = 3
+    RANGE_SWEEP = 4
+    INTERVAL_SWEEP = 5
+
+
 class Quote(Enum):
     single = 0
     double = 1
@@ -84,6 +98,12 @@ class RangeSweep(Sweep):
     step: Union[int, float] = 1
 
 
+@dataclass
+class IntervalSweep(Sweep):
+    start: float
+    end: float
+
+
 def float_range(start: float, stop: float, step: float) -> Iterable[float]:
     dstart = decimal.Decimal(start)
     dstop = decimal.Decimal(stop)
@@ -100,19 +120,6 @@ def float_range(start: float, stop: float, step: float) -> Iterable[float]:
         raise HydraException(
             f"Invalid range values (start:{start}, stop:{stop}, step:{step})"
         )
-
-
-class OverrideType(Enum):
-    CHANGE = 1
-    ADD = 2
-    DEL = 3
-
-
-class ValueType(Enum):
-    ELEMENT = 1
-    CHOICE_SWEEP = 2
-    SIMPLE_CHOICE_SWEEP = 3
-    RANGE_SWEEP = 4
 
 
 @dataclass
@@ -216,6 +223,9 @@ class Override:
 
     def is_range_sweep(self) -> bool:
         return self.value_type == ValueType.RANGE_SWEEP
+
+    def is_interval_sweep(self) -> bool:
+        return self.value_type == ValueType.INTERVAL_SWEEP
 
     def is_hydra_override(self) -> bool:
         kog = self.key_or_group
@@ -508,6 +518,8 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
                 else:
                     value_type = ValueType.CHOICE_SWEEP
                 value = value.choices
+            elif isinstance(value, IntervalSweep):
+                value_type = ValueType.INTERVAL_SWEEP
             elif isinstance(value, RangeSweep):
                 value_type = ValueType.RANGE_SWEEP
                 start = value.start
@@ -553,6 +565,15 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             return RangeSweep(start=start, stop=stop, step=step)
         else:
             return RangeSweep(start=start, stop=stop)
+
+    def visitIntervalSweep(
+        self, ctx: OverrideParser.IntervalSweepContext
+    ) -> IntervalSweep:
+        assert self.is_matching_terminal(ctx.getChild(0), "interval(")
+        assert self.is_matching_terminal(ctx.getChild(2), ",")
+        start = self.visitNumber(ctx.number(0))
+        end = self.visitNumber(ctx.number(1))
+        return IntervalSweep(start=start, end=end)
 
     def visitChoiceSweep(self, ctx: OverrideParser.ChoiceSweepContext) -> ChoiceSweep:
         def collect(start: int, end: int, simple_form: bool) -> ChoiceSweep:

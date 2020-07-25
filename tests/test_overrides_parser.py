@@ -7,6 +7,7 @@ import pytest
 
 from hydra.core.override_parser.overrides_parser import (
     ChoiceSweep,
+    IntervalSweep,
     Key,
     Override,
     OverridesParser,
@@ -196,6 +197,11 @@ def test_dict_value(value: str, expected: Any) -> None:
             ChoiceSweep(choices=["a", "b"], simple_form=False),
             id="sweep:choice(a,b)",
         ),
+        pytest.param(
+            "choice( 10 , 20 )",
+            ChoiceSweep(choices=[10, 20], simple_form=False),
+            id="sweep:choice( 10 , 20 )",
+        ),
     ],
 )
 def test_choice_sweep_parsing(value: str, expected: Any) -> None:
@@ -218,20 +224,27 @@ def test_choice_sweep_parsing(value: str, expected: Any) -> None:
             RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
         ),
-        pytest.param(
-            "range(1,2,-1)",
-            pytest.raises(HydraException),
-            id="error_non_positive_step",
-        ),
     ],
 )
 def test_range_sweep_parsing(value: str, expected: Any) -> None:
-    if isinstance(expected, RangeSweep):
-        ret = OverridesParser.parse_rule(value, "rangeSweep")
-        assert ret == expected
-    else:
-        with expected:
-            OverridesParser.parse_rule(value, "rangeSweep")
+    ret = OverridesParser.parse_rule(value, "rangeSweep")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
+        pytest.param(
+            "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="ints_autocast"
+        ),
+        pytest.param(
+            "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="floats",
+        ),
+    ],
+)
+def test_interval_sweep_parsing(value: str, expected: Any) -> None:
+    ret = OverridesParser.parse_rule(value, "intervalSweep")
+    assert ret == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -627,6 +640,13 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             range(1, 5, 2),
             ValueType.RANGE_SWEEP,
+            id="range_sweep",
+        ),
+        pytest.param(
+            "key=interval(0,1)",
+            "key",
+            IntervalSweep(0.0, 1.0),
+            ValueType.INTERVAL_SWEEP,
             id="range_sweep",
         ),
     ],

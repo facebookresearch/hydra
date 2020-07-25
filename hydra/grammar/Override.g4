@@ -5,7 +5,7 @@
 grammar Override;
 
 override: (
-      key '=' value?                             // key=value
+      key '=' value?                             // key=value, key= (for empty value)
     | '~' key ('=' value?)?                      // ~key | ~key=value
     | '+' key '=' value?                         // +key= | +key=value
 ) EOF;
@@ -19,7 +19,7 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | choiceSweep | rangeSweep;
+value: element | choiceSweep | rangeSweep | intervalSweep;
 element:
       primitive
     | listValue
@@ -32,7 +32,11 @@ choiceSweep:
 ;
 
 rangeSweep:
-    'range(' number ',' number (',' number)?')' // range(start,stop), range(start,stop,step)
+    'range(' number ',' number (',' number)?')' // range(start,stop,[step]), range(1,10), range(1,10,2)
+;
+
+intervalSweep:
+    'interval(' number ',' number ')'           // interval(1,4), interval(1.0,4.0)
 ;
 
 primitive:

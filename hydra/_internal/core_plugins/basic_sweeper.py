@@ -119,7 +119,7 @@ class BasicSweeper(Sweeper):
                 else:
                     assert override.value_type is not None
                     raise HydraException(
-                        f"Unsupported sweep type : {override.value_type.name}"
+                        f"{BasicSweeper.__name__} does not support sweep type : {override.value_type.name}"
                     )
             else:
                 key = override.get_key_element()
