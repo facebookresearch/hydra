@@ -41,7 +41,7 @@ If you use Hydra in your research please use the following BibTeX entry:
 ```text
 @Misc{,
   author =       {Omry Yadan},
-  title =        {A framework for elegantly configuring complex applications},
+  title =        {Hydra - A framework for elegantly configuring complex applications},
   howpublished = {Github},
   year =         {2019},
   url =          {https://github.com/facebookresearch/hydra}
