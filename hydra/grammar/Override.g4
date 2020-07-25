@@ -28,11 +28,11 @@ element:
 
 choiceSweep:
       element (',' element)+                      // value1,value2,value3
-    | 'choice(' element (',' element)+ ')'        // choice(value1,value2,value3)
+    | 'choice(' element (',' element)* ')'        // choice(value1,value2,value3)
 ;
 
 rangeSweep:
-    'range(' number ',' number (',' number)?')' // range(start,end), range(start,end,step)
+    'range(' number ',' number (',' number)?')' // range(start,stop), range(start,stop,step)
 ;
 
 primitive:

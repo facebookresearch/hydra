@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import math
 import re
-from typing import Any
+from typing import Any, List
 
 import pytest
 
@@ -15,6 +15,7 @@ from hydra.core.override_parser.overrides_parser import (
     QuotedString,
     RangeSweep,
     ValueType,
+    float_range,
 )
 from hydra.errors import HydraException
 
@@ -186,6 +187,11 @@ def test_dict_value(value: str, expected: Any) -> None:
             id="sweep:lists_quoted_elements",
         ),
         pytest.param(
+            "choice(a)",
+            ChoiceSweep(choices=["a"], simple_form=False),
+            id="sweep:choice(a)",
+        ),
+        pytest.param(
             "choice(a,b)",
             ChoiceSweep(choices=["a", "b"], simple_form=False),
             id="sweep:choice(a,b)",
@@ -200,24 +206,17 @@ def test_choice_sweep_parsing(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
-        pytest.param("range(10,11)", RangeSweep(start=10, end=11, step=1), id="ints"),
+        pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
         pytest.param(
-            "range(1,10,2)", RangeSweep(start=1, end=10, step=2), id="ints_with_ste"
+            "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_ste"
         ),
         pytest.param(
-            "range(1.0, 3.14)", RangeSweep(start=1.0, end=3.14, step=1), id="floats"
+            "range(1.0, 3.14)", RangeSweep(start=1.0, stop=3.14, step=1), id="floats"
         ),
         pytest.param(
             "range(1.0, 3.14, 0.1)",
-            RangeSweep(start=1.0, end=3.14, step=0.1),
+            RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
-        ),
-        # TODO : support backward ranges
-        pytest.param(
-            "range(10,0)", pytest.raises(HydraException), id="error_start_gt_end",
-        ),
-        pytest.param(
-            "range(1,2,0)", pytest.raises(HydraException), id="error_non_positive_step",
         ),
         pytest.param(
             "range(1,2,-1)",
@@ -589,6 +588,13 @@ def test_key_rename(value: str, expected: bool) -> None:
             id="choice_sweep",
         ),
         pytest.param(
+            "key=choice(1)",
+            "key",
+            [1],
+            ValueType.CHOICE_SWEEP,
+            id="choice_sweep_1_element",
+        ),
+        pytest.param(
             "key=choice(1,2,3)",
             "key",
             [1, 2, 3],
@@ -608,6 +614,20 @@ def test_key_rename(value: str, expected: bool) -> None:
             [[1, 2], [3, 4]],
             ValueType.CHOICE_SWEEP,
             id="choice_sweep",
+        ),
+        pytest.param(
+            "key=range(0,2)",
+            "key",
+            range(0, 2),
+            ValueType.RANGE_SWEEP,
+            id="range_sweep",
+        ),
+        pytest.param(
+            "key=range(1,5,2)",
+            "key",
+            range(1, 5, 2),
+            ValueType.RANGE_SWEEP,
+            id="range_sweep",
         ),
     ],
 )
@@ -781,3 +801,29 @@ def test_override_get_value_element_method(
 def test_override_value_method(override: str, expected: str) -> None:
     ret = OverridesParser.parse_rule(override, "override")
     assert ret.value() == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "start,stop,step,expected",
+    [
+        # empty
+        pytest.param(0, 0, 1, [], id="float_range:empty"),
+        pytest.param(0, 0, -1, [], id="float_range:empty"),
+        pytest.param(10, 0, 1, [], id="float_range:empty"),
+        pytest.param(0, 10, -1, [], id="float_range:empty"),
+        # up
+        pytest.param(0, 2, 1, [0.0, 1.0], id="float_range:up"),
+        pytest.param(0, 2, 0.5, [0.0, 0.5, 1.0, 1.5], id="float_range:up"),
+        pytest.param(0, 2, 1, [0.0, 1.0], id="float_range:up"),
+        # down
+        pytest.param(2, 0, -1, [2.0, 1.0], id="float_range:down"),
+        pytest.param(10.0, 5.0, -2, [10.0, 8.0, 6.0], id="float_range:down"),
+    ],
+)
+def test_float_range(
+    start: float, stop: float, step: float, expected: List[float]
+) -> None:
+    res = list(float_range(start, stop, step))
+    assert len(res) == len(expected)
+    for i in range(len(res)):
+        assert math.fabs(res[i] - expected[i]) < 10e-6

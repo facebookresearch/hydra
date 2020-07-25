@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import decimal
 import sys
 import warnings
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -51,8 +52,12 @@ class QuotedString:
 
 # Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem
 # to support recursive type definitions.
-ElementType = Union[str, int, bool, float, List[Any], Dict[str, Any]]
-ParsedElementType = Optional[Union[ElementType, QuotedString]]
+ElementType = Union[
+    str, int, bool, float, List[Any], Dict[str, Any], Iterable[float], Iterable[int]
+]
+ParsedElementType = Optional[
+    Union[ElementType, QuotedString, Iterable[int], Iterable[float]]
+]
 
 
 @dataclass
@@ -75,15 +80,26 @@ class RangeSweep(Sweep):
     """
 
     start: Union[int, float]
-    end: Union[int, float]
+    stop: Union[int, float]
     step: Union[int, float] = 1
 
-    def __post_init__(self) -> None:
-        if self.start >= self.end:
-            raise HydraException("range.start >= range.end")
 
-        if self.step <= 0:
-            raise HydraException("range.step <= 0")
+def float_range(start: float, stop: float, step: float) -> Iterable[float]:
+    dstart = decimal.Decimal(start)
+    dstop = decimal.Decimal(stop)
+    dstep = decimal.Decimal(step)
+    if step > 0:
+        while dstart < dstop:
+            yield float(dstart)
+            dstart += dstep
+    elif step < 0:
+        while dstart > dstop:
+            yield float(dstart)
+            dstart += dstep
+    else:
+        raise HydraException(
+            f"Invalid range values (start:{start}, stop:{stop}, step:{step})"
+        )
 
 
 class OverrideType(Enum):
@@ -96,6 +112,7 @@ class ValueType(Enum):
     ELEMENT = 1
     CHOICE_SWEEP = 2
     SIMPLE_CHOICE_SWEEP = 3
+    RANGE_SWEEP = 4
 
 
 @dataclass
@@ -114,9 +131,7 @@ class Override:
     # the config-group or config dot-path
     key_or_group: str
 
-    # The type of the value.
-    # ELEMENT: passed as is
-    # CHOICE_SWEEP: handled by the sweeper
+    # The type of the value, None if there is no value
     value_type: Optional[ValueType]
 
     # The parsed value (component after the =).
@@ -191,10 +206,16 @@ class Override:
         return self.pkg2 is not None
 
     def is_sweep_override(self) -> bool:
+        return self.value_type != ValueType.ELEMENT
+
+    def is_choice_sweep(self) -> bool:
         return self.value_type in (
-            ValueType.CHOICE_SWEEP,
             ValueType.SIMPLE_CHOICE_SWEEP,
+            ValueType.CHOICE_SWEEP,
         )
+
+    def is_range_sweep(self) -> bool:
+        return self.value_type == ValueType.RANGE_SWEEP
 
     def is_hydra_override(self) -> bool:
         kog = self.key_or_group
@@ -468,7 +489,7 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             key_node = first_node
 
         key = self.visitKey(key_node)
-
+        value: ParsedElementType
         eq_node = next(children)
         if (
             override_type == OverrideType.DEL
@@ -486,8 +507,26 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
                     value_type = ValueType.SIMPLE_CHOICE_SWEEP
                 else:
                     value_type = ValueType.CHOICE_SWEEP
-
                 value = value.choices
+            elif isinstance(value, RangeSweep):
+                value_type = ValueType.RANGE_SWEEP
+                start = value.start
+                stop = value.stop
+                step = value.step
+                if (
+                    isinstance(start, int)
+                    and isinstance(stop, int)
+                    and (step is None or isinstance(step, int))
+                ):
+                    if step is not None:
+                        value = range(start, stop, step)
+                    else:
+                        value = range(start, stop)
+                else:
+                    if step is not None:
+                        value = float_range(start, stop, step)
+                    else:
+                        value = float_range(start, stop)
             else:
                 value_type = ValueType.ELEMENT
 
@@ -507,13 +546,13 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         assert self.is_matching_terminal(ctx.getChild(0), "range(")
         assert self.is_matching_terminal(ctx.getChild(2), ",")
         start = self.visitNumber(ctx.number(0))
-        end = self.visitNumber(ctx.number(1))
+        stop = self.visitNumber(ctx.number(1))
         step_ctx = ctx.number(2)
         if step_ctx is not None:
             step = self.visitNumber(step_ctx)
-            return RangeSweep(start=start, end=end, step=step)
+            return RangeSweep(start=start, stop=stop, step=step)
         else:
-            return RangeSweep(start=start, end=end)
+            return RangeSweep(start=start, stop=stop)
 
     def visitChoiceSweep(self, ctx: OverrideParser.ChoiceSweepContext) -> ChoiceSweep:
         def collect(start: int, end: int, simple_form: bool) -> ChoiceSweep:

@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 """
+# TODO: update to reflect range()
 Basic sweeper can generate cartesian products of multiple input commands, each with a
 comma separated list of values.
 for example, for:
@@ -14,6 +15,8 @@ Basic Sweeper would generate 6 jobs:
 3,20
 """
 import itertools
+import logging
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
@@ -24,6 +27,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import JobReturn
+from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import ObjectConf, TaskFunction
@@ -43,6 +47,9 @@ class BasicSweeperConf(ObjectConf):
 ConfigStore.instance().store(
     group="hydra/sweeper", name="basic", node=BasicSweeperConf, provider="hydra",
 )
+
+
+log = logging.getLogger(__name__)
 
 
 class BasicSweeper(Sweeper):
@@ -98,11 +105,22 @@ class BasicSweeper(Sweeper):
         lists = []
         for override in parsed:
             if override.is_sweep_override():
-                sweep_choices = override.choices_as_strings()
-                assert isinstance(sweep_choices, list)
-                key = override.get_key_element()
-                sweep = [f"{key}={val}" for val in sweep_choices]
-                lists.append(sweep)
+                if override.is_choice_sweep():
+                    sweep_choices = override.choices_as_strings()
+                    key = override.get_key_element()
+                    sweep = [f"{key}={val}" for val in sweep_choices]
+                    lists.append(sweep)
+                elif override.is_range_sweep():
+                    key = override.get_key_element()
+                    iter = override.value()
+                    assert isinstance(iter, Iterable)
+                    sweep = [f"{key}={val}" for val in list(iter)]
+                    lists.append(sweep)
+                else:
+                    assert override.value_type is not None
+                    raise HydraException(
+                        f"Unsupported sweep type : {override.value_type.name}"
+                    )
             else:
                 key = override.get_key_element()
                 value = override.get_value_element()
@@ -131,7 +149,14 @@ class BasicSweeper(Sweeper):
         initial_job_idx = 0
         while not self.is_done():
             batch = self.get_job_batch()
+            tic = time.perf_counter()
+            # Validate that jobs can be safely composed. This catches composition errors early.
+            # This can be a bit slow for large jobs. can potentially allow disabling from the config.
             self.validate_batch_is_legal(batch)
+            elapsed = time.perf_counter() - tic
+            log.debug(
+                f"Validated configs of {len(batch)} jobs in {elapsed:0.2f} seconds, {len(batch)/elapsed:.2f} / second)"
+            )
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
             initial_job_idx += len(batch)
             returns.append(results)
