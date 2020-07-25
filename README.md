@@ -1,7 +1,4 @@
-<p align="center"><img src="website/static/img/Hydra-Final_sticker_with_url_final.svg" alt="logo" width="20%" /></p>
-<h1 align="center">
-  Hydra
-</h1>
+<p align="center"><img src="https://zulip-uploads.s3.amazonaws.com/17032/gTNOPCaYOW3F3OE5co8zv94q/110312328_3065319063581162_7080196658226057295_n.png?AWSAccessKeyId=AKIAIEVMBCAT2WD3M5KQ&Signature=HSFHKnOoAgcDZePptj3LycHLDgI%3D&Expires=1595696972" alt="logo" width="60%" /></p>
 
 <p align="center">
   <a href="https://pypi.org/project/hydra-core/">
