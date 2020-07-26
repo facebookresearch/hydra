@@ -1,17 +1,43 @@
-[![PyPI](https://img.shields.io/pypi/v/hydra-core)](https://pypi.org/project/hydra-core/)
-[![CircleCI](https://img.shields.io/circleci/build/github/facebookresearch/hydra?token=af199cd2deca9e70e53776f9ded96284b10687e9)](https://circleci.com/gh/facebookresearch/hydra)
-![PyPI - License](https://img.shields.io/pypi/l/hydra-core)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-core)
-[![Downloads](https://pepy.tech/badge/hydra-core/month)](https://pepy.tech/project/hydra-core/month?versions=0.11.*&versions=1.0.*)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/facebookresearch/hydra/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/facebookresearch/hydra/context:python)
-[![](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://hydra-framework.zulipchat.com)
+<p align="center"><img src="website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
 
-# Hydra
-A framework for elegantly configuring complex applications.
+<p align="center">
+  <a href="https://pypi.org/project/hydra-core/">
+    <img src="https://img.shields.io/pypi/v/hydra-core" alt="PyPI" />
+  </a>
+  <a href="https://circleci.com/gh/facebookresearch/hydra">
+    <img src="https://img.shields.io/circleci/build/github/facebookresearch/hydra?token=af199cd2deca9e70e53776f9ded96284b10687e9" alt="CircleCI" />
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" />
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/pypi/pyversions/hydra-core" alt="PyPI - Python Version" />
+  </a>
+  <a href="https://pepy.tech/project/hydra-core/month?versions=0.11.*&versions=1.0.*">
+    <img src="https://pepy.tech/badge/hydra-core/month" alt="Downloads" />
+  </a>
+  <a href="https://github.com/psf/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
+  </a>
+  <a href="https://lgtm.com/projects/g/facebookresearch/hydra/alerts/">
+    <img src="https://img.shields.io/lgtm/alerts/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18" alt="Total alerts" />
+  </a>
+  <a href="https://lgtm.com/projects/g/facebookresearch/hydra/context:python">
+    <img src="https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18" alt="Language grade: Python" />
+  </a>
+  <a href="https://hydra-framework.zulipchat.com">
+    <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="zulip" />
+  </a>
+  <p align="center">
+    <i>A framework for elegantly configuring complex applications.</i>
+  </p>
+  <p align="center">
+    <i>Check the <a href="https://hydra.cc/">website</a> for more information.</i>
+  </p>
+</p>
 
-Check the [website](https://hydra.cc/) for more information.
+----------------------
+
 
 ### Releases
 #### Release candidate
