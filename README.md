@@ -1,7 +1,4 @@
 <p align="center"><img src="website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
-<h1 align="center">
-  Hydra
-</h1>
 
 <p align="center">
   <a href="https://pypi.org/project/hydra-core/">
