@@ -112,9 +112,9 @@ class BasicSweeper(Sweeper):
                     lists.append(sweep)
                 elif override.is_range_sweep():
                     key = override.get_key_element()
-                    iter = override.value()
-                    assert isinstance(iter, Iterable)
-                    sweep = [f"{key}={val}" for val in list(iter)]
+                    v = override.value()
+                    assert isinstance(v, Iterable)
+                    sweep = [f"{key}={val}" for val in list(v)]
                     lists.append(sweep)
                 else:
                     assert override.value_type is not None

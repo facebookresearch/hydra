@@ -213,7 +213,7 @@ class Override:
         return self.pkg2 is not None
 
     def is_sweep_override(self) -> bool:
-        return self.value_type != ValueType.ELEMENT
+        return self.value_type is not None and self.value_type != ValueType.ELEMENT
 
     def is_choice_sweep(self) -> bool:
         return self.value_type in (
