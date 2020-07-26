@@ -22,6 +22,11 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: POSIX :: Linux",
         ],
-        install_requires=["cloudpickle", "fakeredis", "hydra-core~=1.0.0rc1", "rq"],
+        install_requires=[
+            "cloudpickle",
+            "fakeredis",
+            "hydra-core~=1.0.0rc1",
+            "rq==1.4.3",
+        ],
         include_package_data=True,
     )
