@@ -822,7 +822,12 @@ def test_hydra_output_dir(
 @pytest.mark.parametrize(  # type: ignore
     "directory,file,module, error",
     [
-        ("tests/test_apps/run_as_module/1", "my_app.py", "my_app", "Empty module name"),
+        (
+            "tests/test_apps/run_as_module/1",
+            "my_app.py",
+            "my_app",
+            "Primary config module is empty",
+        ),
         ("tests/test_apps/run_as_module/2", "my_app.py", "my_app", None),
         ("tests/test_apps/run_as_module/3", "module/my_app.py", "module.my_app", None),
         ("tests/test_apps/run_as_module/4", "module/my_app.py", "module.my_app", None),
