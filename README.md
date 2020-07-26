@@ -1,4 +1,4 @@
-<p align="center"><img src="website/static/img/Hydra-Readme-logo2.svgz" alt="logo" width="70%" /></p>
+<p align="center"><img src="website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
 <h1 align="center">
   Hydra
 </h1>
