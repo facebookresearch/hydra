@@ -458,11 +458,16 @@ def test_plugins(session, install_cmd, exclude):
 )
 def test_ray_plugin(session, install_cmd):
     run_plugin_tests(
-        session=session, install_cmd=install_cmd, plugin_filter=["hydra_ray_launcher"]
+        session=session,
+        install_cmd=install_cmd,
+        plugin_filter=["hydra_ray_launcher"],
+        pytest_cmd=["pytest", "-s", "."],
     )
 
 
-def run_plugin_tests(session, install_cmd, exclude=[], plugin_filter=[]):
+def run_plugin_tests(
+    session, install_cmd, exclude=[], plugin_filter=[], pytest_cmd=None
+):
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
@@ -488,8 +493,8 @@ def run_plugin_tests(session, install_cmd, exclude=[], plugin_filter=[]):
 
         # test plugin
         session.chdir(os.path.join(BASE, "plugins", plugin.path))
-        if plugin.name == "hydra-ray-launcher":
-            session.run("pytest", "-s", ".", silent=False)
+        if pytest_cmd:
+            session.run(pytest_cmd, silent=SILENT)
         else:
             run_pytest(session)
         session.chdir(BASE)
@@ -548,24 +553,18 @@ def coverage(session):
             session.chdir(BASE)
 =======
     selected_plugins = select_plugins(session)
-
-    # Ray launcher will be first in plugin list if exists.
-    # Test ray launcher before other plugins installed so we won't need to
-    # pickle other plugins locally and unpickle on remote machines. This is
-    # to avoid the need to install non Ray plugins on remote machines.
     for plugin in selected_plugins:
         session.run(
             "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT,
         )
-        session.run("coverage", "erase", env=coverage_env)
+
+    session.run("coverage", "erase", env=coverage_env)
+    # run plugin coverage
+    for plugin in selected_plugins:
         session.chdir(os.path.join("plugins", plugin.path))
         cov_args = ["coverage", "run", "--append", "-m"]
         cov_args.extend(pytest_args())
-        if plugin.name == "hydra-ray-launcher":
-            cov_args = [x for x in cov_args if x != "-Werror"]
-            session.run(*cov_args, silent=False, env=coverage_env)
-        else:
-            session.run(*cov_args, silent=SILENT, env=coverage_env)
+        session.run(*cov_args, silent=SILENT, env=coverage_env)
         session.chdir(BASE)
 >>>>>>> hydra ray launcher
 
