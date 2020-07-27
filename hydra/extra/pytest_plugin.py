@@ -3,20 +3,14 @@
 __version__ = "1.0.0rc1"
 import copy
 from pathlib import Path
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 import pytest
-from omegaconf import OmegaConf
+from omegaconf.basecontainer import BaseContainer
 
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
-
-
-@pytest.fixture(scope="function")  # type: ignore
-def clear_resolvers() -> Any:
-    yield
-    OmegaConf.clear_resolvers()
 
 
 @pytest.fixture(scope="function")  # type: ignore
@@ -25,8 +19,10 @@ def hydra_restore_singletons() -> None:
     Restore singletons state after the function returns
     """
     state = copy.deepcopy(Singleton.get_state())
+    resolvers = copy.deepcopy(BaseContainer._resolvers)
     yield
     Singleton.set_state(state)
+    BaseContainer._resolvers = resolvers
 
 
 @pytest.fixture(scope="function")  # type: ignore

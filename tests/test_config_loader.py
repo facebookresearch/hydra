@@ -443,7 +443,9 @@ class TestConfigLoader:
         assert cfg == {"normal_yaml_config": True, "abc": None}
         assert len(recwarn) == 0
 
-    def test_sweep_config_cache(self, path: str, monkeypatch: Any) -> None:
+    def test_sweep_config_cache(
+        self, hydra_restore_singletons: Any, path: str, monkeypatch: Any
+    ) -> None:
         setup_globals()
 
         config_loader = ConfigLoaderImpl(

@@ -12,9 +12,7 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.types import RunMode
 
 
-def test_accessing_hydra_config(
-    hydra_restore_singletons: Any, clear_resolvers: Any
-) -> Any:
+def test_accessing_hydra_config(hydra_restore_singletons: Any) -> Any:
     utils.setup_globals()
 
     config_loader = ConfigLoaderImpl(
@@ -30,9 +28,7 @@ def test_accessing_hydra_config(
     assert cfg.config_name == "accessing_hydra_config"
 
 
-def test_py_version_resolver(
-    hydra_restore_singletons: Any, monkeypatch: Any, clear_resolvers: Any
-) -> Any:
+def test_py_version_resolver(hydra_restore_singletons: Any, monkeypatch: Any) -> Any:
     Version = namedtuple("Version", "major minor micro")
     monkeypatch.setattr(sys, "version_info", Version(3, 7, 2))
     utils.setup_globals()
