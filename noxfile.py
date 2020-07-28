@@ -494,7 +494,8 @@ def run_plugin_tests(
         # test plugin
         session.chdir(os.path.join(BASE, "plugins", plugin.path))
         if pytest_cmd:
-            session.run(pytest_cmd, silent=SILENT)
+
+            session.run(*pytest_cmd, silent=SILENT)
         else:
             run_pytest(session)
         session.chdir(BASE)
