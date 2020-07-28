@@ -169,25 +169,6 @@ def test_dict_value(value: str, expected: Any) -> None:
     "value,expected",
     [
         pytest.param(
-            "a,b", ChoiceSweep(simple_form=True, choices=["a", "b"]), id="sweep:values"
-        ),
-        pytest.param(
-            "[a,b],[c,d]",
-            ChoiceSweep(simple_form=True, choices=[["a", "b"], ["c", "d"]]),
-            id="sweep:lists",
-        ),
-        pytest.param(
-            "'a','b'",
-            ChoiceSweep(
-                choices=[
-                    QuotedString(text="a", quote=Quote.single),
-                    QuotedString(text="b", quote=Quote.single),
-                ],
-                simple_form=True,
-            ),
-            id="sweep:lists_quoted_elements",
-        ),
-        pytest.param(
             "choice(a)",
             ChoiceSweep(choices=["a"], simple_form=False),
             id="sweep:choice(a)",
@@ -552,14 +533,17 @@ def test_key_rename(value: str, expected: bool) -> None:
     ],
 )
 @pytest.mark.parametrize(  # type: ignore
-    "value,expected_key,expected_value,expected_value_type",
+    "value,expected_key,expected_value,expected_value_type,tags",
     [
-        pytest.param("key=value", "key", "value", ValueType.ELEMENT, id="simple_value"),
+        pytest.param(
+            "key=value", "key", "value", ValueType.ELEMENT, set(), id="simple_value"
+        ),
         pytest.param(
             "key='1,2,3'",
             "key",
             QuotedString(text="1,2,3", quote=Quote.single),
             ValueType.ELEMENT,
+            set(),
             id="simple_value",
         ),
         pytest.param(
@@ -567,23 +551,30 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             QuotedString(text="שלום", quote=Quote.single),
             ValueType.ELEMENT,
+            set(),
             id="unicode",
         ),
         pytest.param(
-            "key=value-123", "key", "value-123", ValueType.ELEMENT, id="id-int"
+            "key=value-123", "key", "value-123", ValueType.ELEMENT, set(), id="id-int"
         ),
         pytest.param(
-            "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, id="id-float"
+            "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, set(), id="id-float"
         ),
         pytest.param(
-            "key=value-true", "key", "value-true", ValueType.ELEMENT, id="id-bool"
+            "key=value-true",
+            "key",
+            "value-true",
+            ValueType.ELEMENT,
+            set(),
+            id="id-bool",
         ),
-        pytest.param("key=", "key", "", ValueType.ELEMENT, id="empty_value"),
+        pytest.param("key=", "key", "", ValueType.ELEMENT, set(), id="empty_value"),
         pytest.param(
             "key='foo,bar'",
             "key",
             QuotedString(text="foo,bar", quote=Quote.single),
             ValueType.ELEMENT,
+            set(),
             id="quoted_value",
         ),
         pytest.param(
@@ -591,6 +582,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             QuotedString(text="foo , bar", quote=Quote.single),
             ValueType.ELEMENT,
+            set(),
             id="quoted_value",
         ),
         pytest.param(
@@ -598,6 +590,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             [1, 2, 3],
             ValueType.SIMPLE_CHOICE_SWEEP,
+            set(),
             id="choice_sweep",
         ),
         pytest.param(
@@ -605,6 +598,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             [1],
             ValueType.CHOICE_SWEEP,
+            set(),
             id="choice_sweep_1_element",
         ),
         pytest.param(
@@ -612,6 +606,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             [1, 2, 3],
             ValueType.CHOICE_SWEEP,
+            set(),
             id="choice_sweep",
         ),
         pytest.param(
@@ -619,6 +614,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             [[1, 2], [3, 4]],
             ValueType.SIMPLE_CHOICE_SWEEP,
+            set(),
             id="choice_sweep",
         ),
         pytest.param(
@@ -626,6 +622,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             [[1, 2], [3, 4]],
             ValueType.CHOICE_SWEEP,
+            set(),
             id="choice_sweep",
         ),
         pytest.param(
@@ -633,6 +630,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             range(0, 2),
             ValueType.RANGE_SWEEP,
+            set(),
             id="range_sweep",
         ),
         pytest.param(
@@ -640,6 +638,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             range(1, 5, 2),
             ValueType.RANGE_SWEEP,
+            set(),
             id="range_sweep",
         ),
         pytest.param(
@@ -647,7 +646,33 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             IntervalSweep(0.0, 1.0),
             ValueType.INTERVAL_SWEEP,
+            set(),
             id="range_sweep",
+        ),
+        # tags
+        pytest.param(
+            "key=tag(a,b,choice([1,2],[3,4]))",
+            "key",
+            [[1, 2], [3, 4]],
+            ValueType.CHOICE_SWEEP,
+            {"a", "b"},
+            id="choice_sweep:tags",
+        ),
+        pytest.param(
+            "key=tag(a,b,interval(0,1))",
+            "key",
+            IntervalSweep(0.0, 1.0, {"a", "b"}),
+            ValueType.INTERVAL_SWEEP,
+            {"a", "b"},
+            id="range_sweep:tags",
+        ),
+        pytest.param(
+            "key=tag(a,b,interval(0,1))",
+            "key",
+            IntervalSweep(0.0, 1.0, {"a", "b"}),
+            ValueType.INTERVAL_SWEEP,
+            {"a", "b"},
+            id="range_sweep:tags",
         ),
     ],
 )
@@ -658,6 +683,7 @@ def test_override_parsing(
     expected_key: str,
     expected_value: Any,
     expected_value_type: ValueType,
+    tags: Any,
 ) -> None:
     line = prefix + value
     ret = OverridesParser.parse_rule(line, "override")
@@ -667,6 +693,7 @@ def test_override_parsing(
         key_or_group=expected_key,
         _value=expected_value,
         value_type=expected_value_type,
+        tags=tags,
     )
     assert ret == expected
 
@@ -847,3 +874,71 @@ def test_float_range(
     assert len(res) == len(expected)
     for i in range(len(res)):
         assert math.fabs(res[i] - expected[i]) < 10e-6
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
+        pytest.param("a", {"a"}, id="tag"),
+        pytest.param("a,b,c", {"a", "b", "c"}, id="tags"),
+    ],
+)
+def test_tag_list(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "tagList")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
+        pytest.param(
+            "choice(a,b)",
+            ChoiceSweep(choices=["a", "b"], simple_form=False),
+            id="choice",
+        ),
+        pytest.param("range(1,10)", RangeSweep(start=1, stop=10), id="range"),
+        pytest.param("range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="range"),
+        pytest.param(
+            "interval(0,3.14)", IntervalSweep(start=0, end=3.14), id="interval"
+        ),
+    ],
+)
+def test_sweep(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "sweep")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
+        pytest.param(
+            "tag(choice(a,b))",
+            ChoiceSweep(simple_form=False, choices=["a", "b"]),
+            id="choice:no_tags",
+        ),
+        pytest.param(
+            "tag(tag1,tag2,choice(a,b))",
+            ChoiceSweep(simple_form=False, choices=["a", "b"], tags={"tag1", "tag2"}),
+            id="choice",
+        ),
+        pytest.param(
+            "tag(range(1,2))", RangeSweep(start=1, stop=2), id="range:no_tags",
+        ),
+        pytest.param(
+            "tag(tag1,tag2,range(1,2))",
+            RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
+            id="range",
+        ),
+        pytest.param(
+            "tag(interval(0,2))", IntervalSweep(start=0, end=2), id="interval:no_tags",
+        ),
+        pytest.param(
+            "tag(tag1,tag2,interval(0,2))",
+            IntervalSweep(start=0, end=2, tags={"tag1", "tag2"}),
+            id="interval",
+        ),
+    ],
+)
+def test_tagged_sweep(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "taggedSweep")
+    assert ret == expected

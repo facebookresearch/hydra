@@ -19,24 +19,36 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | choiceSweep | rangeSweep | intervalSweep;
+value:
+      element
+    | simpleChoiceSweep                         // a,b,c
+    | sweep                                     // choice(a,b,c), range(1,10,2), interval(0,3)
+    | taggedSweep                               // tag(log,interval(1, 1000)), tag(fidelity,range(1,100))
+;
+
+sweep: choiceSweep | rangeSweep | intervalSweep;
 element:
       primitive
     | listValue
     | dictValue
 ;
 
+simpleChoiceSweep: element (',' element)+;          // value1,value2,value3
+
 choiceSweep:
-      element (',' element)+                      // value1,value2,value3
-    | 'choice(' element (',' element)* ')'        // choice(value1,value2,value3)
+    'choice(' element (',' element)* ')'            // choice(value1,value2,value3)
 ;
 
 rangeSweep:
-    'range(' number ',' number (',' number)?')' // range(start,stop,[step]), range(1,10), range(1,10,2)
+    'range(' number ',' number (',' number)?')'     // range(start,stop,[step])
 ;
 
 intervalSweep:
-    'interval(' number ',' number ')'           // interval(1,4), interval(1.0,4.0)
+    'interval(' number ',' number ')'               // interval(1,4), interval(1.0,4.0)
+;
+
+taggedSweep:
+    'tag(' (tagList ',')? sweep ')'
 ;
 
 primitive:
@@ -56,6 +68,7 @@ primitive:
     WS?;
 
 number: WS? (INT | FLOAT) WS?;
+tagList : id_ws (',' id_ws)*;
 
 listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
 dictValue: '{'                                  // {}, {a:10,b:20}

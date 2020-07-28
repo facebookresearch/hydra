@@ -2,9 +2,9 @@
 import decimal
 import sys
 import warnings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Set, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -85,6 +85,7 @@ class ChoiceSweep(Sweep):
     # explicit form: choices(a,b,c)
     simple_form: bool
     choices: List[ParsedElementType]
+    tags: Set[str] = field(default_factory=set)
 
 
 @dataclass
@@ -96,12 +97,14 @@ class RangeSweep(Sweep):
     start: Union[int, float]
     stop: Union[int, float]
     step: Union[int, float] = 1
+    tags: Set[str] = field(default_factory=set)
 
 
 @dataclass
 class IntervalSweep(Sweep):
     start: float
     end: float
+    tags: Set[str] = field(default_factory=set)
 
 
 def float_range(start: float, stop: float, step: float) -> Iterable[float]:
@@ -149,6 +152,9 @@ class Override:
     pkg1: Optional[str] = None
     # When updating a config group, the second package (used when renaming a package)
     pkg2: Optional[str] = None
+
+    # Optional tags, only supported for sweep overrides
+    tags: Set[str] = field(default_factory=set)
 
     # Input line used to construct this
     input_line: Optional[str] = None
@@ -303,6 +309,9 @@ class Override:
         :return:
         """
         return Override._get_value_element(self._value, space_after_sep=space_after_sep)
+
+    def is_tagged(self, tag_name: str) -> bool:
+        return tag_name in self.tags
 
     def __repr__(self) -> str:
         return f"{self.input_line} ({type(self._value).__name__})"
@@ -473,7 +482,7 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             assert False
         return ret
 
-    def visitValue(self, ctx: OverrideParser.ValueContext) -> ElementType:
+    def visitValue(self, ctx: OverrideParser.ValueContext) -> ParsedElementType:
         child_ret = self.visitChildren(ctx)
         if len(child_ret) == 0:
             return ""
@@ -500,6 +509,7 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
 
         key = self.visitKey(key_node)
         value: ParsedElementType
+        tags: Set[str] = set()
         eq_node = next(children)
         if (
             override_type == OverrideType.DEL
@@ -513,14 +523,17 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             value_node = next(children)
             value = self.visitValue(value_node)
             if isinstance(value, ChoiceSweep):
+                tags = value.tags
                 if value.simple_form:
                     value_type = ValueType.SIMPLE_CHOICE_SWEEP
                 else:
                     value_type = ValueType.CHOICE_SWEEP
                 value = value.choices
             elif isinstance(value, IntervalSweep):
+                tags = value.tags
                 value_type = ValueType.INTERVAL_SWEEP
             elif isinstance(value, RangeSweep):
+                tags = value.tags
                 value_type = ValueType.RANGE_SWEEP
                 start = value.start
                 stop = value.stop
@@ -549,10 +562,20 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             value_type=value_type,
             pkg1=key.pkg1,
             pkg2=key.pkg2,
+            tags=tags,
         )
 
     def is_matching_terminal(self, node: ParseTree, text: str) -> bool:
         return isinstance(node, TerminalNode) and node.getText() == text
+
+    def visitSweep(
+        self, ctx: OverrideParser.SweepContext
+    ) -> Union[ChoiceSweep, RangeSweep, IntervalSweep]:
+        ret = self.visitChildren(ctx)
+        assert isinstance(ret, list) and len(ret) == 1
+        r = ret[0]
+        assert isinstance(r, (ChoiceSweep, RangeSweep, IntervalSweep))
+        return r
 
     def visitRangeSweep(self, ctx: OverrideParser.RangeSweepContext) -> RangeSweep:
         assert self.is_matching_terminal(ctx.getChild(0), "range(")
@@ -574,6 +597,16 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         start = self.visitNumber(ctx.number(0))
         end = self.visitNumber(ctx.number(1))
         return IntervalSweep(start=start, end=end)
+
+    def visitSimpleChoiceSweep(
+        self, ctx: OverrideParser.SimpleChoiceSweepContext
+    ) -> ChoiceSweep:
+        ret = []
+        for child in ctx.getChildren(
+            predicate=lambda x: not self.is_matching_terminal(x, ",")
+        ):
+            ret.append(self.visitValue(child))
+        return ChoiceSweep(simple_form=True, choices=ret)
 
     def visitChoiceSweep(self, ctx: OverrideParser.ChoiceSweepContext) -> ChoiceSweep:
         def collect(start: int, end: int, simple_form: bool) -> ChoiceSweep:
@@ -600,6 +633,22 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def aggregateResult(self, aggregate: List[Any], nextResult: Any) -> List[Any]:
         aggregate.append(nextResult)
         return aggregate
+
+    def visitTagList(self, ctx: OverrideParser.TagListContext) -> Set[str]:
+        ret = set()
+
+        for child in ctx.getChildren(
+            predicate=lambda x: not self.is_matching_terminal(x, ",")
+        ):
+            ret.add(child.getText().strip())
+
+        return ret
+
+    def visitTaggedSweep(self, ctx: OverrideParser.TaggedSweepContext) -> Sweep:
+        taglist = ctx.tagList()
+        sweep = self.visitSweep(ctx.sweep())
+        sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
+        return sweep
 
     def defaultResult(self) -> List[Any]:
         return []
@@ -666,7 +715,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
 
 class OverridesParser:
     @staticmethod
-    def parse_rule(s: str, rule: str) -> Any:
+    def parse_rule(s: str, rule_name: str) -> Any:
         error_listener = HydraErrorListener()
         istream = InputStream(s)
         lexer = OverrideLexer(istream)
@@ -677,7 +726,8 @@ class OverridesParser:
         parser.removeErrorListeners()
         parser.addErrorListener(error_listener)
         visitor = CLIVisitor()
-        tree = getattr(parser, rule)()
+        rule = getattr(parser, rule_name)
+        tree = rule()
         ret = visitor.visit(tree)
         if isinstance(ret, Override):
             ret.input_line = s
