@@ -24,6 +24,7 @@ if __name__ == "__main__":
 The `cfg` is an <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">OmegaConf</a>
 object that holds the configuration for your function.
 You don't need a deep understanding of OmegaConf for this tutorial.
+Note that hydra does not preserve the return value of `@hydra.main()` functions for the sake of enabling more complex features, such as [multirun](https://hydra.cc/docs/tutorial/multi-run). 
 
 We can pass arbitrary command line arguments from which Hydra creates a hierarchical configuration object:
 ```yaml
