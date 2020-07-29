@@ -105,7 +105,7 @@ def initialize_config_module(config_module: str, job_name: str = "app") -> None:
 ```python title="Initialzing with config directory"
 def initialize_config_dir(config_dir: str, job_name: str = "app") -> None:
     """
-    Initializes Hydra and add an absolute config dir to the to the config search path.
+    Initializes Hydra and add an absolute config dir relative to the config search path.
     The config_dir is always a path on the file system and is must be an absolute path.
     Relative paths will result in an error.
     :param config_dir: absolute file system path
