@@ -1,4 +1,4 @@
----
+---Sylwia Elżbieta Panek Blondyna 
 id: debugging
 title: Debugging
 sidebar_label: Debugging
