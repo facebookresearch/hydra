@@ -154,9 +154,9 @@ def setup_globals() -> None:
 
     vi = sys.version_info
     version_dict = {
-        "major": f"{vi.major}",
-        "minor": f"{vi.major}.{vi.minor}",
-        "micro": f"{vi.major}.{vi.minor}.{vi.micro}",
+        "major": f"{vi[0]}",
+        "minor": f"{vi[0]}.{vi[1]}",
+        "micro": f"{vi[0]}.{vi[1]}.{vi[2]}",
     }
     register("python_version", lambda level="minor": version_dict.get(level))
 

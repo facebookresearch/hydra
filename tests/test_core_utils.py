@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
-from collections import namedtuple
 from typing import Any
 
 from omegaconf import OmegaConf, open_dict
@@ -29,8 +28,7 @@ def test_accessing_hydra_config(hydra_restore_singletons: Any) -> Any:
 
 
 def test_py_version_resolver(hydra_restore_singletons: Any, monkeypatch: Any) -> Any:
-    Version = namedtuple("Version", "major minor micro")
-    monkeypatch.setattr(sys, "version_info", Version(3, 7, 2))
+    monkeypatch.setattr(sys, "version_info", (3, 7, 2))
     utils.setup_globals()
     assert OmegaConf.create({"key": "${python_version:}"}).key == "3.7"
     assert OmegaConf.create({"key": "${python_version:major}"}).key == "3"
