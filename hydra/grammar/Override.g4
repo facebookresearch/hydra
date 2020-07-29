@@ -52,30 +52,27 @@ taggedSweep:
 ;
 
 primitive:
-    WS? (QUOTED_VALUE |                         // 'hello world', "hello world"
-        ( ID                                    // foo_10
-        | NULL                                  // null, NULL
-        | INT                                   // 0, 10, -20, 1_000_000
-        | FLOAT                                 // 3.14, -20.0, 1e-1, -10e3
-        | BOOL                                  // true, TrUe, false, False
-        | DOT_PATH                              // foo.bar
-        | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
+       QUOTED_VALUE                                 // 'hello world', "hello world"
+    | (   ID                                        // foo_10
+        | NULL                                      // null, NULL
+        | INT                                       // 0, 10, -20, 1_000_000
+        | FLOAT                                     // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                      // true, TrUe, false, False
+        | DOT_PATH                                  // foo.bar
+        | INTERPOLATION                             // ${foo.bar}, ${env:USER,me}
         | '/' | ':' | '-' | '\\'
         | '+' | '.' | '$' | '*'
         | '='
-        )+
-    )
-    WS?;
+    )+;
 
-number: WS? (INT | FLOAT) WS?;
-tagList : id_ws (',' id_ws)*;
+number: INT | FLOAT;
+tagList : ID (',' ID)*;
 
 listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
 dictValue: '{'                                  // {}, {a:10,b:20}
-    (id_ws ':' element (',' id_ws ':' element)*)?
+    (ID ':' element (',' ID ':' element)*)?
 '}';
 
-id_ws: WS? ID WS?;
 // Types
 fragment DIGIT: [0-9_];
 fragment NZ_DIGIT: [1-9];
@@ -98,7 +95,7 @@ ID : (CHAR|'_') (CHAR|DIGIT|'_')*;
 fragment LIST_INDEX: '0' | [1-9][0-9]*;
 DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
 
-WS: (' ' | '\t')+;
+WS: (' ' | '\t')+ -> channel(HIDDEN);
 
 QUOTED_VALUE:
       '\'' ('\\\''|.)*? '\''  // Single quoted string. can contain escaped single quote : /'

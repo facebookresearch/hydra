@@ -129,25 +129,6 @@ def test_list_value(value: str, expected: Any) -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "prefix", [pytest.param("", id="none"), pytest.param(" ", id="ws")]
-)
-@pytest.mark.parametrize(  # type: ignore
-    "suffix", [pytest.param("", id="none"), pytest.param(" ", id="ws")]
-)
-@pytest.mark.parametrize(  # type: ignore
-    "value",
-    [
-        pytest.param("abc", id="abc"),
-        pytest.param("a10", id="a10"),
-        pytest.param("abc_10", id="abc_10"),
-    ],
-)
-def test_id_with_ws(value: str, prefix: str, suffix: str) -> None:
-    ret = OverridesParser.parse_rule(prefix + value + suffix, "id_ws")
-    assert ret == value
-
-
-@pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
         pytest.param("{}", {}, id="dict"),
@@ -696,7 +677,7 @@ def test_key_rename(value: str, expected: bool) -> None:
         ),
     ],
 )
-def test_override_parsing(
+def test_parse_override(
     prefix: str,
     value: str,
     override_type: OverrideType,
@@ -753,7 +734,7 @@ def test_override_del(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-def test_overrides_parser() -> None:
+def test_parse_overrides() -> None:
     overrides = ["x=10", "y=[1,2]", "z=a,b,c", "z=choice(a,b,c)"]
     expected = [
         Override(
