@@ -362,6 +362,9 @@ def test_core(session, install_cmd):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "separate all plugins"
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
@@ -369,6 +372,7 @@ def test_core(session, install_cmd):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_plugins(session, install_cmd):
+<<<<<<< HEAD
     test_plugins_in_directory(
         session=session,
         install_cmd=install_cmd,
@@ -384,6 +388,12 @@ def test_plugins_in_directory(
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
+=======
+    _upgrade_basic(session)
+    session.install("pytest")
+    install_hydra(session, install_cmd)
+    selected_plugin = select_plugins(session)
+>>>>>>> Revert "separate all plugins"
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
@@ -481,4 +491,8 @@ def test_jupyter_notebooks(session):
     ]:
         args = pytest_args("--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
+<<<<<<< HEAD
         session.run(*args, silent=SILENT)
+=======
+        session.run(*args, silent=SILENT)
+>>>>>>> Revert "separate all plugins"
