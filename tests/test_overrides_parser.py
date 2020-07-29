@@ -193,6 +193,26 @@ def test_choice_sweep_parsing(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
+        pytest.param(
+            "a,b",
+            ChoiceSweep(choices=["a", "b"], simple_form=True),
+            id="sweep:choice(a)",
+        ),
+        pytest.param(
+            "a , b",
+            ChoiceSweep(choices=["a", "b"], simple_form=True),
+            id="sweep:choice(a)",
+        ),
+    ],
+)
+def test_simple_choice_sweep_parsing(value: str, expected: Any) -> None:
+    ret = OverridesParser.parse_rule(value, "simpleChoiceSweep")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
         pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
         pytest.param(
             "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_ste"
