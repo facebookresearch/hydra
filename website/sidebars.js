@@ -65,7 +65,8 @@ module.exports = {
                 items: [
                     'patterns/instantiate_objects/instantiate_objects_overview',
                     'patterns/instantiate_objects/instantiate_objects_reference',
-                 ]   
+                    'patterns/instantiate_objects/instantiate_with_structured_config',
+                 ]
              },
             'patterns/specializing_config',
             'patterns/write_protect_config_node',
