@@ -157,16 +157,17 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
+              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_example_plugins", "test_hydra_ax_sweeper", "test_hydra_colorlog", "test_hydra_joblib_launcher", "test_hydra_nevergrad_sweeper", "test_hydra_rq_launcher","test_hydra_submitit_launcher" ]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
+              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_example_plugins", "test_hydra_ax_sweeper", "test_hydra_colorlog", "test_hydra_joblib_launcher", "test_hydra_nevergrad_sweeper", "test_hydra_rq_launcher","test_hydra_submitit_launcher" ]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -182,6 +183,9 @@ workflows:
 =======
               nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
 >>>>>>> Address comments
+=======
+              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_example_plugins", "test_hydra_ax_sweeper", "test_hydra_colorlog", "test_hydra_joblib_launcher", "test_hydra_nevergrad_sweeper", "test_hydra_rq_launcher","test_hydra_submitit_launcher" ]
+>>>>>>> separate all plugins
       - deploy-website:
           filters:
             branches:

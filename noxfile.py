@@ -361,6 +361,7 @@ def test_core(session, install_cmd):
     )
 
 
+<<<<<<< HEAD
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
