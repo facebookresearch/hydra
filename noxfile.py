@@ -388,7 +388,8 @@ def test_jupyter_notebooks(session):
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
     # pyzmq 19.0.1 has installation issues on Windows
-    session.install("jupyter", "nbval", "pyzmq==19.0.0")
+    # pytest 6.0 makes deprecation warnings wail on errors, breaking nbval due to a deprecated API usage
+    session.install("jupyter", "nbval", "pyzmq==19.0.0", "pytest==5.4.3")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
