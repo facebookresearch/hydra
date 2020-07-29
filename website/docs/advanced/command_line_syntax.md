@@ -134,7 +134,7 @@ Constants (null, true, false, inf, nan) are case insensitive.
 foo=[1,2,3]
 nested=[a,[b,[c]]]
 ```
-**IMPORTANT** Always single-quote overrides that contains lists in the shell.
+**IMPORTANT** Always single-quote overrides that contains lists in the shell.  Also, note the *no spaces* between list elements, otherwise you might get a `hydra.errors.OverrideParseException: no viable alternative at input` error.
 
 ### Dictionaries
 ```python
