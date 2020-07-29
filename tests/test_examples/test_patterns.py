@@ -79,7 +79,7 @@ def test_specializing_config_example(
         ),
     ],
 )
-def test_objects_example(
+def test_instantiate_objects_example(
     hydra_restore_singletons: Any,
     tmpdir: Path,
     hydra_task_runner: TTaskRunner,
@@ -87,7 +87,7 @@ def test_objects_example(
     output_conf: DictConfig,
 ) -> None:
     with hydra_task_runner(
-        calling_file="examples/patterns/objects/my_app.py",
+        calling_file="examples/patterns/instantiate/objects/my_app.py",
         calling_module=None,
         config_path="conf",
         config_name="config.yaml",
