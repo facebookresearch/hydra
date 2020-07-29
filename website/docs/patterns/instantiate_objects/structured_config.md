@@ -34,21 +34,34 @@ class PostGreSQLConfig(DBConfig):
 
 defaults = [
     # Load the config "mysql" from the config group "db"
-    {"params": "mysql",}
+    {"db": "mysql",}
 ]
 
 
 @dataclass
 class Config(DictConfig):
     defaults: List[Any] = field(default_factory=lambda: defaults)
-    target: str = "connect"
-    params: DBConfig = MISSING
+    db: ObjectConf = MISSING
 
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="params", name="mysql", node=MySQLConfig)
-cs.store(group="params", name="postgresql", node=PostGreSQLConfig)
+cs.store(
+    group="db",
+    name="mysql",
+    node=ObjectConf(
+        target="examples.patterns.instantiate.structured_config.my_app.MySQLConnection",
+        params=MySQLConfig,
+    ),
+)
+cs.store(
+    group="db",
+    name="postgresql",
+    node=ObjectConf(
+        target="examples.patterns.instantiate.structured_config.my_app.PostgreSQLConnection",
+        params=PostGreSQLConfig,
+    ),
+)
 
 def connect(cfg: DBConfig):
   ...

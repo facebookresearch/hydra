@@ -6,7 +6,7 @@ from subprocess import check_output
 from typing import Any, List
 
 import pytest
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 from hydra.test_utils.test_utils import (
     TTaskRunner,
@@ -96,6 +96,29 @@ def test_instantiate_objects_example(
         assert task.job_ret is not None
         assert task.job_ret.cfg == output_conf
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,output",
+    [
+        ([], "MySQL connecting to localhost with user=root and password=1234"),
+        (
+            ["db=postgresql"],
+            "PostgreSQL connecting to localhost with user=root and password=1234 and database=tutorial",
+        ),
+    ],
+)
+def test_instantiate_structured_config_example(
+    tmpdir: Path, overrides: List[str], output: str,
+) -> None:
+
+    cmd = [
+        sys.executable,
+        "examples/patterns/instantiate/structured_config/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ] + overrides
+    result = check_output(cmd)
+    assert result.decode("utf-8").rstrip() == output
 
 
 def test_frozen(tmpdir: Any) -> None:

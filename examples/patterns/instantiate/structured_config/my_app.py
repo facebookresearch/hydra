@@ -6,6 +6,7 @@ from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
+from hydra.types import ObjectConf
 
 
 class DBConnection:
@@ -68,26 +69,39 @@ class PostGreSQLConfig(DBConfig):
 
 defaults = [
     # Load the config "mysql" from the config group "db"
-    {"params": "mysql",}
+    {"db": "mysql",}
 ]
 
 
 @dataclass
 class Config(DictConfig):
     defaults: List[Any] = field(default_factory=lambda: defaults)
-    target: str = "examples.patterns.instantiate.structured_config.my_app.MySQLConnection"
-    params: DBConfig = MISSING
+    db: ObjectConf = MISSING
 
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(group="params", name="mysql", node=MySQLConfig)
-cs.store(group="params", name="postgresql", node=PostGreSQLConfig)
+cs.store(
+    group="db",
+    name="mysql",
+    node=ObjectConf(
+        target="examples.patterns.instantiate.structured_config.my_app.MySQLConnection",
+        params=MySQLConfig,
+    ),
+)
+cs.store(
+    group="db",
+    name="postgresql",
+    node=ObjectConf(
+        target="examples.patterns.instantiate.structured_config.my_app.PostgreSQLConnection",
+        params=PostGreSQLConfig,
+    ),
+)
 
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    connection = hydra.utils.instantiate(cfg)
+    connection = hydra.utils.instantiate(cfg.db)
     connection.connect()
 
 
