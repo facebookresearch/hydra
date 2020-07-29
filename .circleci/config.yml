@@ -6,8 +6,6 @@ commands:
     parameters:
       py_version:
         type: string
-      nox_session:
-        type: string
     steps:
       - checkout
       - run:
@@ -24,21 +22,12 @@ commands:
             brew install fish
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
-      - run:
-          name: "Testing Hydra"
-          no_output_timeout: 10m
-          command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            conda activate hydra
-            pip install nox dataclasses
-            nox -s << parameters.nox_session >>
+
 
   linux:
     description: "Commands run on Linux"
     parameters:
       py_version:
-        type: string
-      nox_session:
         type: string
     steps:
       - checkout
@@ -48,20 +37,12 @@ commands:
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre
             sudo pip install nox
-      - run:
-          name: "Testing Hydra"
-          command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            pip install nox dataclasses
-            nox -s << parameters.nox_session >>
 
 
   win:
     description: "Commands run on Windows"
     parameters:
       py_version:
-        type: string
-      nox_session:
         type: string
     steps:
       - checkout
@@ -77,28 +58,6 @@ commands:
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
             pip install nox dataclasses
-      - run:
-          name: Testing Hydra
-          no_output_timeout: 20m
-          command: |
-            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            $env:PYTHONIOENCODING="utf_8"
-            conda activate hydra
-            nox -s << parameters.nox_session >>
-            exit $LASTEXITCODE
-
-
-executors:
-  macos:
-    macos:
-      xcode: "10.0.0"
-  linux:
-    parameters:
-      py_version:
-        type: string
-    docker:
-      - image: circleci/python:<< parameters.py_version >>
-  win: win/default
 
 
 jobs:
@@ -106,39 +65,118 @@ jobs:
     parameters:
       py_version:
         type: string
-      nox_session:
-        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
-          nox_session: << parameters.nox_session >>
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            conda activate hydra
+            pip install nox dataclasses
+            nox -s lint test_core test_jupyter_notebooks
+
 
   test_linux:
     parameters:
       py_version:
-        type: string
-      nox_session:
         type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
-          nox_session: << parameters.nox_session >>
+      - run:
+          name: "Testing Hydra"
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            pip install nox dataclasses
+            nox -s lint test_core test_jupyter_notebooks
+
 
   test_win:
     parameters:
       py_version:
         type: string
-      nox_session:
+    executor: win/default
+    steps:
+      - win:
+          py_version: << parameters.py_version >>
+      - run:
+          name: Testing Hydra
+          no_output_timeout: 20m
+          command: |
+            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox -s lint test_core test_jupyter_notebooks
+            exit $LASTEXITCODE
+
+
+  test_plugin_macos:
+    parameters:
+      py_version:
+        type: string
+      plugins:
+        type: string
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - macos:
+          py_version: << parameters.py_version >>
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            export PLUGINS=<< parameters.plugins >>
+            conda activate hydra
+            pip install nox dataclasses
+            nox -s lint_plugins test_plugins
+
+  test_plugin_linux:
+    parameters:
+      py_version:
+        type: string
+      plugins:
+        type: string
+    docker:
+      - image: circleci/python:<< parameters.py_version >>
+    steps:
+      - linux:
+          py_version: << parameters.py_version >>
+      - run:
+          name: "Testing Hydra"
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            export PLUGINS=<< parameters.plugins >>
+            pip install nox dataclasses
+            nox -s lint_plugins test_plugins
+
+
+  test_plugin_win:
+    parameters:
+      py_version:
+        type: string
+      plugins:
         type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
-          nox_session: << parameters.nox_session >>
+      - run:
+          name: Testing Hydra
+          no_output_timeout: 20m
+          command: |
+            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:PYTHONIOENCODING="utf_8"
+            $env:PLUGINS="<< parameters.plugins >>"
+            conda activate hydra
+            nox -s lint_plugins test_plugins
+            exit $LASTEXITCODE
 
   # Misc
   coverage:
@@ -157,16 +195,15 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -190,6 +227,23 @@ workflows:
 =======
               nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
 >>>>>>> Revert "separate all plugins"
+=======
+      - test_plugin_macos:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              plugins: ["examples", "hydra_ax_sweeper", "hydra_colorlog", "hydra_joblib_launcher", "hydra_nevergrad_sweeper", "hydra_rq_launcher", "hydra_submitit_launcher"]
+      - test_plugin_linux:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              plugins: ["examples", "hydra_ax_sweeper", "hydra_colorlog", "hydra_joblib_launcher", "hydra_nevergrad_sweeper", "hydra_rq_launcher", "hydra_submitit_launcher"]
+      - test_plugin_win:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              plugins: ["examples", "hydra_ax_sweeper", "hydra_colorlog", "hydra_joblib_launcher", "hydra_nevergrad_sweeper", "hydra_rq_launcher", "hydra_submitit_launcher"]
+>>>>>>> re-org circleCI file
       - deploy-website:
           filters:
             branches:

@@ -127,8 +127,17 @@ def select_plugins(session, directory: str) -> List[Plugin]:
 
     ret = []
     skipped = []
+<<<<<<< HEAD
     for plugin in plugins:
         if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
+=======
+    for plugin in available_plugins:
+        if not (
+            plugin["dir_name"] in PLUGINS
+            or PLUGINS == ["ALL"]
+            or ("examples" in PLUGINS and "examples/" in plugin["path"])
+        ):
+>>>>>>> re-org circleCI file
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
@@ -446,7 +455,7 @@ def coverage(session):
             )
 
         # run plugin coverage
-        for plugin in selected_plugins:
+        for plugin in selected_plugins:a
             session.chdir(os.path.join(directory, plugin.path))
             cov_args = ["coverage", "run", "--append", "-m"]
             cov_args.extend(pytest_args())
