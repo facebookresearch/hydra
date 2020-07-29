@@ -58,7 +58,7 @@ def test_specializing_config_example(
             [],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.MySQLConnection",
+                    "target": "examples.patterns.instantiate.objects.my_app.MySQLConnection",
                     "params": {"host": "localhost", "user": "root", "password": 1234},
                 }
             },
@@ -67,7 +67,7 @@ def test_specializing_config_example(
             ["db=postgresql"],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.PostgreSQLConnection",
+                    "target": "examples.patterns.instantiate.objects.my_app.PostgreSQLConnection",
                     "params": {
                         "host": "localhost",
                         "user": "root",
