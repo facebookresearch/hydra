@@ -4,7 +4,7 @@ import sys
 from typing import Any, Union
 
 import pytest
-from _pytest.python_api import RaisesContext  # type: ignore
+from _pytest.python_api import RaisesContext
 from omegaconf import DictConfig, OmegaConf
 
 from hydra._internal import utils
