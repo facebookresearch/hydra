@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable, List, Optional
 
 import pytest
+from omegaconf.basecontainer import BaseContainer
 
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
@@ -18,8 +19,10 @@ def hydra_restore_singletons() -> None:
     Restore singletons state after the function returns
     """
     state = copy.deepcopy(Singleton.get_state())
+    resolvers = copy.deepcopy(BaseContainer._resolvers)
     yield
     Singleton.set_state(state)
+    BaseContainer._resolvers = resolvers
 
 
 @pytest.fixture(scope="function")  # type: ignore

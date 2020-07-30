@@ -152,6 +152,14 @@ def setup_globals() -> None:
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
     )
 
+    vi = sys.version_info
+    version_dict = {
+        "major": f"{vi[0]}",
+        "minor": f"{vi[0]}.{vi[1]}",
+        "micro": f"{vi[0]}.{vi[1]}.{vi[2]}",
+    }
+    register("python_version", lambda level="minor": version_dict.get(level))
+
 
 @dataclass
 class JobReturn:
