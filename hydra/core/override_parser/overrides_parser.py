@@ -107,21 +107,108 @@ class IntervalSweep(Sweep):
     tags: Set[str] = field(default_factory=set)
 
 
+class CastType(Enum):
+    INT = 1
+    FLOAT = 2
+    BOOL = 3
+    STR = 4
+
+
+@dataclass
+class Cast:
+    CastValueType = Union[
+        str,
+        int,
+        bool,
+        float,
+        List[Any],
+        Dict[str, Any],
+        ChoiceSweep,
+        RangeSweep,
+        IntervalSweep,
+    ]
+
+    cast_type: CastType
+    value: CastValueType
+
+    def convert(self) -> CastValueType:
+        try:
+            return self._convert(value=self.value, cast_type=self.cast_type)
+        except (ValueError, OverflowError) as e:
+            raise HydraException(
+                f"Error casting `{self.value}` ({type(self.value).__name__}) to {self.cast_type.name.lower()} : {e}"
+            ) from e
+
+    @staticmethod
+    def _convert(value: CastValueType, cast_type: CastType) -> CastValueType:
+        if isinstance(value, list):
+            ret_list = []
+            for item in value:
+                ret_list.append(Cast._convert(value=item, cast_type=cast_type))
+            return ret_list
+        elif isinstance(value, dict):
+            ret_dict: Dict[str, Any] = {}
+            for key, value in value.items():
+                ret_dict[key] = Cast._convert(value=value, cast_type=cast_type)
+            return ret_dict
+        elif isinstance(value, ChoiceSweep):
+            choices = []
+            for item in value.choices:
+                choice = Cast._convert(value=item, cast_type=cast_type)
+                assert isinstance(choice, (str, int, bool, float, list, dict))
+                choices.append(choice)
+            return ChoiceSweep(simple_form=value.simple_form, choices=list(choices))
+        elif isinstance(value, IntervalSweep):
+            raise HydraException(
+                "Intervals are always interpreted as floating-point intervals and cannot be casted"
+            )
+        elif isinstance(value, RangeSweep):
+            if cast_type not in (CastType.INT, CastType.FLOAT):
+                raise HydraException("Range can only be casted to int or float")
+            start = Cast._convert(value.start, cast_type=cast_type)
+            stop = Cast._convert(value.stop, cast_type=cast_type)
+            step = Cast._convert(value.step, cast_type=cast_type)
+            assert isinstance(start, (int, float))
+            assert isinstance(stop, (int, float))
+            assert isinstance(step, (int, float))
+            return RangeSweep(start=start, stop=stop, step=step)
+
+        if cast_type == CastType.INT:
+            return int(value)
+        elif cast_type == CastType.FLOAT:
+            return float(value)
+        elif cast_type == CastType.BOOL:
+            if isinstance(value, str) and value.lower() == "false":
+                return False
+            else:
+                return bool(value)
+        elif cast_type == CastType.STR:
+            if isinstance(value, bool):
+                return str(value).lower()
+            else:
+                return str(value)
+        else:
+            assert False
+
+
 @dataclass
 class FloatRange(object):
     start: Union[decimal.Decimal, float]
     stop: Union[decimal.Decimal, float]
     step: Union[decimal.Decimal, float]
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.start = decimal.Decimal(self.start)
         self.stop = decimal.Decimal(self.stop)
         self.step = decimal.Decimal(self.step)
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         return self
 
-    def __next__(self):
+    def __next__(self) -> float:
+        assert isinstance(self.start, decimal.Decimal)
+        assert isinstance(self.stop, decimal.Decimal)
+        assert isinstance(self.step, decimal.Decimal)
         if self.step > 0:
             if self.start < self.stop:
                 ret = float(self.start)
@@ -335,6 +422,9 @@ class Override:
 
 
 class CLIVisitor(OverrideVisitor):  # type: ignore
+    def defaultResult(self) -> List[Any]:
+        return []
+
     def visitPackage(self, ctx: OverrideParser.PackageContext) -> str:
         return ctx.getText()  # type: ignore
 
@@ -503,6 +593,8 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         else:
             assert len(child_ret) == 1
             ret = child_ret[0]
+            if isinstance(ret, Cast):
+                ret = ret.convert()
             return ret  # type: ignore
 
     def visitOverride(self, ctx: OverrideParser.OverrideContext) -> Override:
@@ -661,8 +753,27 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
         return sweep
 
-    def defaultResult(self) -> List[Any]:
-        return []
+    def visitCast(self, ctx: OverrideParser.CastContext) -> Cast:
+        cast_node = ctx.getChild(0)
+        if self.is_matching_terminal(cast_node, "int"):
+            cast_type = CastType.INT
+        elif self.is_matching_terminal(cast_node, "float"):
+            cast_type = CastType.FLOAT
+        elif self.is_matching_terminal(cast_node, "str"):
+            cast_type = CastType.STR
+        elif self.is_matching_terminal(cast_node, "bool"):
+            cast_type = CastType.BOOL
+        else:
+            assert False
+        assert self.is_matching_terminal(ctx.getChild(1), "(")
+        value = self.visitValue(ctx.value())
+        if isinstance(value, QuotedString):
+            value = value.text
+        assert isinstance(
+            value,
+            (int, float, bool, str, list, dict, ChoiceSweep, RangeSweep, IntervalSweep),
+        )
+        return Cast(cast_type=cast_type, value=value)
 
 
 class HydraErrorListener(ErrorListener):  # type: ignore

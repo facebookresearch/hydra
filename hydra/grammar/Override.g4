@@ -24,6 +24,7 @@ value:
     | simpleChoiceSweep                         // a,b,c
     | sweep                                     // choice(a,b,c), range(1,10,2), interval(0,3)
     | taggedSweep                               // tag(log,interval(1, 1000)), tag(fidelity,range(1,100))
+    | cast
 ;
 
 sweep: choiceSweep | rangeSweep | intervalSweep;
@@ -32,6 +33,8 @@ element:
     | listValue
     | dictValue
 ;
+
+cast : ('int' | 'float' | 'str' | 'bool') '(' value ')';
 
 simpleChoiceSweep: element (',' element)+;          // value1,value2,value3
 

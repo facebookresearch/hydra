@@ -1,11 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import math
 import re
-from typing import Any, List
+from dataclasses import dataclass
+from typing import Any, Dict, List, Union
 
 import pytest
+from _pytest.python_api import RaisesContext
 
 from hydra.core.override_parser.overrides_parser import (
+    Cast,
+    CastType,
     ChoiceSweep,
     FloatRange,
     IntervalSweep,
@@ -16,6 +20,7 @@ from hydra.core.override_parser.overrides_parser import (
     Quote,
     QuotedString,
     RangeSweep,
+    Sweep,
     ValueType,
 )
 from hydra.errors import HydraException
@@ -96,6 +101,12 @@ def test_element(value: str, expected: Any) -> None:
         pytest.param("False", False, id="value:bool"),
         pytest.param("FALSE", False, id="value:bool"),
         pytest.param("faLse", False, id="value:bool"),
+        # casts
+        pytest.param("int(10.0)", 10, id="int(10.0)"),
+        pytest.param("str(10.0)", "10.0", id="str(10.0)"),
+        pytest.param("bool(10.0)", True, id="bool(10.0)"),
+        pytest.param("float(10)", 10.0, id="float(10)"),
+        pytest.param("float(float(10))", 10.0, id="float(float(10))"),
     ],
 )
 def test_value(value: str, expected: Any) -> None:
@@ -951,3 +962,369 @@ def test_sweep(value: str, expected: str) -> None:
 def test_tagged_sweep(value: str, expected: str) -> None:
     ret = OverridesParser.parse_rule(value, "taggedSweep")
     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "cast_type",
+    [
+        pytest.param(CastType.INT, id="int-cast"),
+        pytest.param(CastType.FLOAT, id="float-cast"),
+        pytest.param(CastType.BOOL, id="bool-cast"),
+        pytest.param(CastType.STR, id="str-cast"),
+    ],
+)
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected_value",
+    [
+        pytest.param("x", "x", id="str"),
+        pytest.param("10", 10, id="int"),
+        pytest.param("3.14", 3.14, id="float"),
+        pytest.param("true", True, id="bool"),
+        pytest.param(
+            "a,b", ChoiceSweep(simple_form=True, choices=["a", "b"]), id="choice"
+        ),
+        pytest.param(
+            "choice(a,b)",
+            ChoiceSweep(simple_form=False, choices=["a", "b"]),
+            id="choice",
+        ),
+        pytest.param("range(1,20,2)", RangeSweep(start=1, stop=20, step=2), id="range"),
+        pytest.param(
+            "interval(0.5, 1.5)", IntervalSweep(start=0.5, end=1.5,), id="interval"
+        ),
+    ],
+)
+def test_type_cast(value: str, expected_value: Any, cast_type: CastType) -> None:
+    def cast(v: Any, space: bool) -> str:
+        if cast_type == CastType.INT:
+            if space:
+                return f"int ( {v} )"
+            else:
+                return f"int({v})"
+        elif cast_type == CastType.FLOAT:
+            if space:
+                return f"float ( {v} )"
+            else:
+                return f"float({v})"
+        elif cast_type == CastType.BOOL:
+            if space:
+                return f"bool ( {v} )"
+            else:
+                return f"bool({v})"
+        elif cast_type == CastType.STR:
+            if space:
+                return f"str ( {v} )"
+            else:
+                return f"str({v})"
+        else:
+            assert False
+
+    ret1 = OverridesParser.parse_rule(cast(value, space=False), "cast")
+    ret2 = OverridesParser.parse_rule(cast(value, space=True), "cast")
+    assert ret1 == Cast(cast_type=cast_type, value=expected_value)
+    assert ret2 == Cast(cast_type=cast_type, value=expected_value)
+
+
+@dataclass
+class CastResults:
+    int: Union[
+        int,
+        List[Union[int, List[int]]],
+        Dict[str, Any],
+        Sweep,
+        RaisesContext[HydraException],
+    ]
+    float: Union[
+        float,
+        List[Union[float, List[float]]],
+        Dict[str, Any],
+        Sweep,
+        RaisesContext[HydraException],
+    ]
+    bool: Union[
+        bool,
+        List[Union[bool, List[bool]]],
+        Dict[str, Any],
+        Sweep,
+        RaisesContext[HydraException],
+    ]
+    str: Union[
+        str,
+        List[Union[str, List[str]]],
+        Dict[str, Any],
+        Sweep,
+        RaisesContext[HydraException],
+    ]
+
+    @staticmethod
+    def error(msg: str) -> Any:
+        return pytest.raises(HydraException, match=f"^{re.escape(msg)}")
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected_value",
+    [
+        # int
+        pytest.param(10, CastResults(int=10, float=10.0, str="10", bool=True), id="10"),
+        pytest.param(0, CastResults(int=0, float=0.0, str="0", bool=False), id="0"),
+        # float
+        pytest.param(
+            10.0, CastResults(int=10, float=10.0, str="10.0", bool=True), id="10.0"
+        ),
+        pytest.param(
+            0.0, CastResults(int=0, float=0.0, str="0.0", bool=False), id="0.0"
+        ),
+        pytest.param(
+            "inf",
+            CastResults(
+                int=CastResults.error("Error casting `inf` (float) to int"),
+                float=math.inf,
+                str="inf",
+                bool=True,
+            ),
+            id="inf",
+        ),
+        pytest.param(
+            "nan",
+            CastResults(
+                int=CastResults.error("Error casting `nan` (float) to int"),
+                float=math.nan,
+                str="nan",
+                bool=True,
+            ),
+            id="nan",
+        ),
+        pytest.param(
+            "1e6",
+            CastResults(int=1000000, float=1e6, str="1000000.0", bool=True),
+            id="1e6",
+        ),
+        pytest.param(
+            "''",
+            CastResults(
+                int=CastResults.error("Error casting `` (str) to int"),
+                float=CastResults.error("Error casting `` (str) to float"),
+                str="",
+                bool=False,
+            ),
+            id="''",
+        ),
+        # string
+        pytest.param(
+            "'10'", CastResults(int=10, float=10.0, str="10", bool=True), id="'10'"
+        ),
+        pytest.param(
+            "'10.0'",
+            CastResults(
+                int=CastResults.error("Error casting `10.0` (str) to int"),
+                float=10.0,
+                str="10.0",
+                bool=True,
+            ),
+            id="'10.0'",
+        ),
+        pytest.param(
+            "'true'",
+            CastResults(
+                int=CastResults.error("Error casting `true` (str) to int"),
+                float=CastResults.error("Error casting `true` (str) to float"),
+                str="true",
+                bool=True,
+            ),
+            id="'true'",
+        ),
+        pytest.param(
+            "'false'",
+            CastResults(
+                int=CastResults.error("Error casting `false` (str) to int"),
+                float=CastResults.error("Error casting `false` (str) to float"),
+                str="false",
+                bool=False,
+            ),
+            id="'false'",
+        ),
+        pytest.param(
+            "'[1,2,3]'",
+            CastResults(
+                int=CastResults.error("Error casting `[1,2,3]` (str) to int"),
+                float=CastResults.error("Error casting `[1,2,3]` (str) to float"),
+                str="[1,2,3]",
+                bool=True,
+            ),
+            id="'[1,2,3]'",
+        ),
+        pytest.param(
+            "'{a:10}'",
+            CastResults(
+                int=CastResults.error("Error casting `{a:10}` (str) to int"),
+                float=CastResults.error("Error casting `{a:10}` (str) to float"),
+                str="{a:10}",
+                bool=True,
+            ),
+            id="'{a:10}'",
+        ),
+        # bool
+        pytest.param(
+            "true", CastResults(int=1, float=1.0, str="true", bool=True), id="true"
+        ),
+        pytest.param(
+            "false", CastResults(int=0, float=0.0, str="false", bool=False), id="false"
+        ),
+        # list
+        pytest.param("[]", CastResults(int=[], float=[], str=[], bool=[]), id="[]"),
+        pytest.param(
+            "[0,1,2]",
+            CastResults(
+                int=[0, 1, 2],
+                float=[0.0, 1.0, 2.0],
+                str=["0", "1", "2"],
+                bool=[False, True, True],
+            ),
+            id="[1,2,3]",
+        ),
+        pytest.param(
+            "[1,[2]]",
+            CastResults(
+                int=[1, [2]], float=[1.0, [2.0]], str=["1", ["2"]], bool=[True, [True]]
+            ),
+            id="[1,[2]]",
+        ),
+        pytest.param(
+            "[a,1]",
+            CastResults(
+                int=CastResults.error("Error casting `['a', 1]` (list) to int"),
+                float=CastResults.error("Error casting `['a', 1]` (list) to float"),
+                str=["a", "1"],
+                bool=[True, True],
+            ),
+            id="[a,1]",
+        ),
+        # dicts
+        pytest.param("{}", CastResults(int={}, float={}, str={}, bool={}), id="{}"),
+        pytest.param(
+            "{a:10}",
+            CastResults(
+                int={"a": 10}, float={"a": 10.0}, str={"a": "10"}, bool={"a": True}
+            ),
+            id="{a:10}",
+        ),
+        pytest.param(
+            "{a:[0,1,2]}",
+            CastResults(
+                int={"a": [0, 1, 2]},
+                float={"a": [0.0, 1.0, 2.0]},
+                str={"a": ["0", "1", "2"]},
+                bool={"a": [False, True, True]},
+            ),
+            id="{a:[0,1,2]}",
+        ),
+        pytest.param(
+            "{a:10,b:xyz}",
+            CastResults(
+                int=CastResults.error(
+                    "Error casting `{'a': 10, 'b': 'xyz'}` (dict) to int"
+                ),
+                float=CastResults.error(
+                    "Error casting `{'a': 10, 'b': 'xyz'}` (dict) to float"
+                ),
+                str={"a": "10", "b": "xyz"},
+                bool={"a": True, "b": True},
+            ),
+            id="{a:10,b:xyz}",
+        ),
+        pytest.param(
+            "choice(0,1)",
+            CastResults(
+                int=ChoiceSweep(simple_form=False, choices=[0, 1]),
+                float=ChoiceSweep(simple_form=False, choices=[0.0, 1.0]),
+                str=ChoiceSweep(simple_form=False, choices=["0", "1"]),
+                bool=ChoiceSweep(simple_form=False, choices=[False, True]),
+            ),
+            id="choice(0,1)",
+        ),
+        pytest.param(
+            "choice(a,b)",
+            CastResults(
+                int=CastResults.error(
+                    "Error casting `ChoiceSweep(simple_form=False, choices=['a', 'b'], tags=set())`"
+                    " (ChoiceSweep) to int"
+                ),
+                float=CastResults.error(
+                    "Error casting `ChoiceSweep(simple_form=False, choices=['a', 'b'], tags=set())`"
+                    " (ChoiceSweep) to float"
+                ),
+                str=ChoiceSweep(simple_form=False, choices=["a", "b"]),
+                bool=ChoiceSweep(simple_form=False, choices=[True, True]),
+            ),
+            id="choice(a,b)",
+        ),
+        pytest.param(
+            "choice(1,a)",
+            CastResults(
+                int=CastResults.error(
+                    "Error casting `ChoiceSweep(simple_form=False, choices=[1, 'a'], tags=set())` "
+                    "(ChoiceSweep) to int"
+                ),
+                float=CastResults.error(
+                    "Error casting `ChoiceSweep(simple_form=False, choices=[1, 'a'], tags=set())` "
+                    "(ChoiceSweep) to float"
+                ),
+                str=ChoiceSweep(simple_form=False, choices=["1", "a"]),
+                bool=ChoiceSweep(simple_form=False, choices=[True, True]),
+            ),
+            id="choice(1,a)",
+        ),
+        pytest.param(
+            "interval(1.0, 2.0)",
+            CastResults(
+                int=CastResults.error(
+                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                ),
+                float=CastResults.error(
+                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                ),
+                str=CastResults.error(
+                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                ),
+                bool=CastResults.error(
+                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                ),
+            ),
+            id="interval(1.0, 2.0)",
+        ),
+        pytest.param(
+            "range(1,10)",
+            CastResults(
+                int=RangeSweep(start=1, stop=10, step=1),
+                float=RangeSweep(start=1.0, stop=10.0, step=1.0),
+                str=CastResults.error("Range can only be casted to int or float"),
+                bool=CastResults.error("Range can only be casted to int or float"),
+            ),
+            id="choice(1,10)",
+        ),
+        pytest.param(
+            "range(1.0,10.0)",
+            CastResults(
+                int=RangeSweep(start=1, stop=10, step=1),
+                float=RangeSweep(start=1.0, stop=10.0, step=1.0),
+                str=CastResults.error("Range can only be casted to int or float"),
+                bool=CastResults.error("Range can only be casted to int or float"),
+            ),
+            id="choice(1.0,10.0)",
+        ),
+    ],
+)
+def test_cast_conversions(value: Any, expected_value: Any) -> None:
+    for cast_type in (CastType.INT, CastType.FLOAT, CastType.BOOL, CastType.STR):
+        field = cast_type.name.lower()
+        ret = OverridesParser.parse_rule(f"{field}({value})", "cast")
+        expected = getattr(expected_value, field)
+        if isinstance(expected, RaisesContext):
+            with expected:
+                ret.convert()
+        else:
+            result = ret.convert()
+            assert eq(result, expected), f"{field} cast result mismatch"
+            assert type(result) == type(
+                expected
+            ), f"{field}({value}) cast type mismatch"
