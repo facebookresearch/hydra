@@ -69,7 +69,7 @@ class PostGreSQLConfig(DBConfig):
 
 defaults = [
     # Load the config "mysql" from the config group "db"
-    {"db": "mysql",}
+    {"db": "mysql"}
 ]
 
 

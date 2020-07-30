@@ -6,7 +6,7 @@ from subprocess import check_output
 from typing import Any, List
 
 import pytest
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 
 from hydra.test_utils.test_utils import (
     TTaskRunner,
