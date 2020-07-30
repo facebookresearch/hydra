@@ -85,7 +85,7 @@ cs.store(
     group="db",
     name="mysql",
     node=ObjectConf(
-        target="examples.patterns.instantiate.structured_config.my_app.MySQLConnection",
+        target="my_app.MySQLConnection",
         params=MySQLConfig,
     ),
 )
@@ -93,7 +93,7 @@ cs.store(
     group="db",
     name="postgresql",
     node=ObjectConf(
-        target="examples.patterns.instantiate.structured_config.my_app.PostgreSQLConnection",
+        target="my_app.PostgreSQLConnection",
         params=PostGreSQLConfig,
     ),
 )
