@@ -84,18 +84,12 @@ cs.store(name="config", node=Config)
 cs.store(
     group="db",
     name="mysql",
-    node=ObjectConf(
-        target="my_app.MySQLConnection",
-        params=MySQLConfig,
-    ),
+    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig,),
 )
 cs.store(
     group="db",
     name="postgresql",
-    node=ObjectConf(
-        target="my_app.PostgreSQLConnection",
-        params=PostGreSQLConfig,
-    ),
+    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig,),
 )
 
 
