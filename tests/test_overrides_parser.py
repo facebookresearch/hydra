@@ -7,6 +7,7 @@ import pytest
 
 from hydra.core.override_parser.overrides_parser import (
     ChoiceSweep,
+    FloatRange,
     IntervalSweep,
     Key,
     Override,
@@ -16,7 +17,6 @@ from hydra.core.override_parser.overrides_parser import (
     QuotedString,
     RangeSweep,
     ValueType,
-    float_range,
 )
 from hydra.errors import HydraException
 
@@ -643,6 +643,14 @@ def test_key_rename(value: str, expected: bool) -> None:
             id="range_sweep",
         ),
         pytest.param(
+            "key=range(10.0, 11.0)",
+            "key",
+            FloatRange(10, 11.0, 1),
+            ValueType.RANGE_SWEEP,
+            set(),
+            id="range_sweep",
+        ),
+        pytest.param(
             "key=interval(0,1)",
             "key",
             IntervalSweep(0.0, 1.0),
@@ -855,23 +863,23 @@ def test_override_value_method(override: str, expected: str) -> None:
     "start,stop,step,expected",
     [
         # empty
-        pytest.param(0, 0, 1, [], id="float_range:empty"),
-        pytest.param(0, 0, -1, [], id="float_range:empty"),
-        pytest.param(10, 0, 1, [], id="float_range:empty"),
-        pytest.param(0, 10, -1, [], id="float_range:empty"),
+        pytest.param(0, 0, 1, [], id="FloatRange:empty"),
+        pytest.param(0, 0, -1, [], id="FloatRange:empty"),
+        pytest.param(10, 0, 1, [], id="FloatRange:empty"),
+        pytest.param(0, 10, -1, [], id="FloatRange:empty"),
         # up
-        pytest.param(0, 2, 1, [0.0, 1.0], id="float_range:up"),
-        pytest.param(0, 2, 0.5, [0.0, 0.5, 1.0, 1.5], id="float_range:up"),
-        pytest.param(0, 2, 1, [0.0, 1.0], id="float_range:up"),
+        pytest.param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
+        pytest.param(0, 2, 0.5, [0.0, 0.5, 1.0, 1.5], id="FloatRange:up"),
+        pytest.param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
         # down
-        pytest.param(2, 0, -1, [2.0, 1.0], id="float_range:down"),
-        pytest.param(10.0, 5.0, -2, [10.0, 8.0, 6.0], id="float_range:down"),
+        pytest.param(2, 0, -1, [2.0, 1.0], id="FloatRange:down"),
+        pytest.param(10.0, 5.0, -2, [10.0, 8.0, 6.0], id="FloatRange:down"),
     ],
 )
 def test_float_range(
     start: float, stop: float, step: float, expected: List[float]
 ) -> None:
-    res = list(float_range(start, stop, step))
+    res = list(FloatRange(start, stop, step))
     assert len(res) == len(expected)
     for i in range(len(res)):
         assert math.fabs(res[i] - expected[i]) < 10e-6

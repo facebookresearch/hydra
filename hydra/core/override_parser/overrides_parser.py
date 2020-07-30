@@ -107,22 +107,39 @@ class IntervalSweep(Sweep):
     tags: Set[str] = field(default_factory=set)
 
 
-def float_range(start: float, stop: float, step: float) -> Iterable[float]:
-    dstart = decimal.Decimal(start)
-    dstop = decimal.Decimal(stop)
-    dstep = decimal.Decimal(step)
-    if step > 0:
-        while dstart < dstop:
-            yield float(dstart)
-            dstart += dstep
-    elif step < 0:
-        while dstart > dstop:
-            yield float(dstart)
-            dstart += dstep
-    else:
-        raise HydraException(
-            f"Invalid range values (start:{start}, stop:{stop}, step:{step})"
-        )
+@dataclass
+class FloatRange(object):
+    start: Union[decimal.Decimal, float]
+    stop: Union[decimal.Decimal, float]
+    step: Union[decimal.Decimal, float]
+
+    def __post_init__(self):
+        self.start = decimal.Decimal(self.start)
+        self.stop = decimal.Decimal(self.stop)
+        self.step = decimal.Decimal(self.step)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.step > 0:
+            if self.start < self.stop:
+                ret = float(self.start)
+                self.start += self.step
+                return ret
+            else:
+                raise StopIteration
+        elif self.step < 0:
+            if self.start > self.stop:
+                ret = float(self.start)
+                self.start += self.step
+                return ret
+            else:
+                raise StopIteration
+        else:
+            raise HydraException(
+                f"Invalid range values (start:{self.start}, stop:{self.stop}, step:{self.step})"
+            )
 
 
 @dataclass
@@ -540,15 +557,12 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
                     and isinstance(stop, int)
                     and (step is None or isinstance(step, int))
                 ):
-                    if step is not None:
-                        value = range(start, stop, step)
-                    else:
-                        value = range(start, stop)
+                    value = range(start, stop, step)
                 else:
                     if step is not None:
-                        value = float_range(start, stop, step)
+                        value = FloatRange(start, stop, step)
                     else:
-                        value = float_range(start, stop)
+                        value = FloatRange(start, stop)
             else:
                 value_type = ValueType.ELEMENT
 
