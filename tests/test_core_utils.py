@@ -1,9 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
-<<<<<<< HEAD
-=======
-from collections import namedtuple
->>>>>>> Add resolver for runtime python version
 from typing import Any
 
 from omegaconf import OmegaConf, open_dict
