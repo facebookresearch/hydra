@@ -1,6 +1,6 @@
 defaults:
   - hydra/launcher: ray_local
-  - ray_mode: local
+
 
 random_seed: 0
 checkpoint_path: checkpoint

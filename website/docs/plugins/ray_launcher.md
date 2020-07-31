@@ -35,34 +35,37 @@ An example using the ray local launcher by default is provided in the plugin rep
 $ pwd
 <project_root>/hydra_ray_launcher/example/
 
-$ python train.py hydra/launcher=ray_local random_seed=1 -m
- [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-05-18/15-00-07
- [HYDRA] Ray not initialized, init with config: {'num_cpus': 1, 'num_gpus': 0}
-  INFO resource_spec.py:204 -- Starting Ray with 9.03 GiB memory available for workers and up to 4.54 GiB for objects. You can adjust these settings with ray.init(memory=<bytes>, object_store_memory=<bytes>).
- INFO services.py:1168 -- View the Ray dashboard at localhost:8265
- [HYDRA]        #0 : mode=local random_seed=1
-(pid=19442) [__main__][INFO] - Start training...
-(pid=19442) [model.my_model][INFO] - Init my model
+$ python train.py -m
+[2020-07-31 16:50:03,360][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-07-31/16-50-02
+[2020-07-31 16:50:03,360][HYDRA] Initializing ray with config: {'num_cpus': 2, 'num_gpus': 0}
+2020-07-31 16:50:03,371 INFO resource_spec.py:204 -- Starting Ray with 8.64 GiB memory available for workers and up to 4.34 GiB for objects. You can adjust these settings with ray.init(memory=<bytes>, object_store_memory=<bytes>).
+2020-07-31 16:50:03,749 INFO services.py:1168 -- View the Ray dashboard at localhost:8265
+[2020-07-31 16:50:04,302][HYDRA]        #0 : random_seed=1
+(pid=45515) [2020-07-31 16:50:04,614][__main__][INFO] - Start training...
+(pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Init my model
+(pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Created dir for checkpoints. dir=/Users/jieru/workspace/hydra-fork/hydra/plugins/hydra_ray_launcher/example/multirun/2020-07-31/16-50-02/0/checkpoint
 ```
+
 Override `ray_init_cfg` to start ray with specific `ray.init()` config:
 ```commandline
-$ python train.py hydra/launcher=ray_local mode=local hydra.launcher.params.ray_init_cfg.num_cpus=2 random_seed=1 -m
+$ python train.py hydra.launcher.params.ray_init_cfg.num_cpus=2 random_seed=1 -m
 ...
-[HYDRA] Ray not initialized, init with config: {'num_cpus': 2, 'num_gpus': 0}
+[HYDRA]Initializing ray with config: {'num_cpus': 2, 'num_gpus': 0}
 ...
 
 ```
-
 
  
 #### ray_aws launcher
 
 `ray_aws` launcher is built on top of ray's [autoscaler cli](https://docs.ray.io/en/latest/autoscaling.html). To get started, you need to 
 config your AWS credentials first, tutorials can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-To verify you've configured AWS correctly, run the following and make sure there's no errors. 
+Please make sure your AWS IAM user/role has `AmazonEC2FullAccess` and `IAMFullAccess` to avoid potential permission issues.
+You can run an initial check on credential configuration running the following command.
 ```commandline
  python -c 'import boto3;boto3.client("ec2")'
 ```
+
 
 `ray autoscaler` expects a yaml file to provide specs for the new cluster, which we've schematized in `hydra_ray_launcher.hydra_plugins.hydra_ray_launcher.conf.__init__.RayClusterConf`, 
 The plugin defaults are in `conf/hydra/launcher/ray_aws.yaml`. You can override the default values in your app config or from command line.
@@ -82,7 +85,7 @@ $ tree -L 1
 ├── model
 └── train.py
 
-$ python train.py hydra/launcher=ray_aws ray_mode=aws random_seed=1,2,3 -m
+$ python train.py hydra/launcher=ray_aws +ray_mode=aws random_seed=1,2,3 -m
 ...
 [HYDRA] Ray Launcher is launching 3 jobs, 
 [HYDRA]        #0 : ray_mode=aws random_seed=1

@@ -43,7 +43,7 @@ class RayAutoScalingMode(Enum):
 
 
 @dataclass
-class RayDockerConf(Dict[str, Any]):
+class RayDockerConf:
     """
     This executes all commands on all nodes in the docker container,
     and opens all the necessary ports to support the Ray cluster.
@@ -108,7 +108,7 @@ class RsyncConf:
 
 
 @dataclass
-class RayClusterConf(Dict[str, Any]):
+class RayClusterConf:
     """
     This class maps to a Ray cluster config, e.g:
     https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/aws/example-full.yaml
@@ -143,7 +143,7 @@ class RayClusterConf(Dict[str, Any]):
     # If a node is idle for this many minutes, it will be removed.
     idle_timeout_minutes: int = 5
 
-    docker: RayDockerConf = field(default_factory=RayDockerConf)
+    docker: RayDockerConf = RayDockerConf()
 
     provider: RayProviderConf = field(default_factory=RayProviderConf)
 
@@ -173,7 +173,7 @@ class RayClusterConf(Dict[str, Any]):
 
 @dataclass
 class RayAWSConf(RayConf):
-    ray_cluster_cfg: RayClusterConf = field(default_factory=RayClusterConf)
+    ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.
     # (Cluster will remain provisioned and can be started with "ray up cluster.yaml").

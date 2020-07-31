@@ -21,7 +21,7 @@ JOB_RETURN_PICKLE = "returns.pkl"
 
 def start_ray(ray_init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
-        log.info(f"Ray not initialized, init with config: {ray_init_cfg}")
+        log.info(f"Initializing ray with config: {ray_init_cfg}")
         if ray_init_cfg:
             ray.init(**ray_init_cfg)
         else:
@@ -67,15 +67,11 @@ def launch_job_on_ray(
 
 def _run_command(args: Any) -> Tuple[str, str]:
     with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
+        log.info(f"Running command: {args}")
         out, err = proc.communicate()
         out_str = out.decode().strip() if out is not None else ""
         err_str = err.decode().strip() if err is not None else ""
-        debug_str = f"command ran: {args}\n"
-        if out_str:
-            debug_str += f"out: {out_str} \n"
-        if err_str:
-            debug_str += f"err: {err_str} \n"
-        log.info(debug_str)
+        log.info(f"Output: {out_str} \n Error: {err_str}")
         return out_str, err_str
 
 
@@ -83,7 +79,6 @@ def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
     args = ["ray", "rsync-down"]
     args += [yaml_path, remote_dir, local_dir]
     _run_command(args)
-    log.info(f"rsync down from remote dir {remote_dir} to local dir {local_dir}")
 
 
 @contextmanager
@@ -115,28 +110,23 @@ def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> str:
 
 def ray_rsync_up(yaml_path: str, local_dir: str, remote_dir: str) -> None:
     _run_command(["ray", "rsync-up", yaml_path, local_dir, remote_dir])
-    log.info(f"rsync dir to ray cluster. source : {local_dir}, target: {remote_dir}")
 
 
 def ray_down(yaml_path: str) -> None:
     _run_command(["ray", "down", "-y", yaml_path])
-    log.info(f"ray down -y {yaml_path}")
 
 
 def ray_up(yaml_path: str) -> None:
-    log.info(f"ray up -y {yaml_path} ...")
     _run_command(["ray", "up", "-y", yaml_path])
 
 
 def ray_exec(yaml_path: str, docker: bool, file_path: str, pickle_path: str) -> None:
     command = f"python {file_path} {pickle_path}"
-    log.info(f"Issuing command on remote server: {command}")
     args = ["ray", "exec"]
     if docker:
         args += "--docker"
     args += [yaml_path, command]
     _run_command(args)
-    log.info(f"ray exec {yaml_path} {command}")
 
 
 def _ray_get_head_ip(yaml_path: str) -> str:
@@ -182,5 +172,4 @@ def rsync(
     else:
         source = f"{user}@{remote_ip}:{source}"
     args += [source, target]
-    log.info(f"rsync: {args}")
     _run_command(args)
