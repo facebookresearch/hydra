@@ -681,8 +681,9 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         return r
 
     def visitRangeSweep(self, ctx: OverrideParser.RangeSweepContext) -> RangeSweep:
-        assert self.is_matching_terminal(ctx.getChild(0), "range(")
-        assert self.is_matching_terminal(ctx.getChild(2), ",")
+        assert self.is_matching_terminal(ctx.getChild(0), "range")
+        assert self.is_matching_terminal(ctx.getChild(1), "(")
+        assert self.is_matching_terminal(ctx.getChild(3), ",")
         start = self.visitNumber(ctx.number(0))
         stop = self.visitNumber(ctx.number(1))
         step_ctx = ctx.number(2)
@@ -695,8 +696,9 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitIntervalSweep(
         self, ctx: OverrideParser.IntervalSweepContext
     ) -> IntervalSweep:
-        assert self.is_matching_terminal(ctx.getChild(0), "interval(")
-        assert self.is_matching_terminal(ctx.getChild(2), ",")
+        assert self.is_matching_terminal(ctx.getChild(0), "interval")
+        assert self.is_matching_terminal(ctx.getChild(1), "(")
+        assert self.is_matching_terminal(ctx.getChild(3), ",")
         start = self.visitNumber(ctx.number(0))
         end = self.visitNumber(ctx.number(1))
         return IntervalSweep(start=start, end=end)
@@ -725,11 +727,8 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
                     assert False
             return ChoiceSweep(choices=ret, simple_form=simple_form)
 
-        if (
-            isinstance(ctx.getChild(0), TerminalNode)
-            and ctx.getChild(0).symbol.text == "choice("
-        ):
-            return collect(1, ctx.getChildCount() - 1, simple_form=False)
+        if self.is_matching_terminal(ctx.getChild(0), "choice"):
+            return collect(2, ctx.getChildCount() - 1, simple_form=False)
         else:
             return collect(0, ctx.getChildCount(), simple_form=True)
 

@@ -39,19 +39,19 @@ cast : ('int' | 'float' | 'str' | 'bool') '(' value ')';
 simpleChoiceSweep: element (',' element)+;          // value1,value2,value3
 
 choiceSweep:
-    'choice(' element (',' element)* ')'            // choice(value1,value2,value3)
+    'choice' '(' element (',' element)* ')'            // choice(value1,value2,value3)
 ;
 
 rangeSweep:
-    'range(' number ',' number (',' number)?')'     // range(start,stop,[step])
+    'range' '(' number ',' number (',' number)?')'     // range(start,stop,[step])
 ;
 
 intervalSweep:
-    'interval(' number ',' number ')'               // interval(1,4), interval(1.0,4.0)
+    'interval' '(' number ',' number ')'               // interval(1,4), interval(1.0,4.0)
 ;
 
 taggedSweep:
-    'tag(' (tagList ',')? sweep ')'
+    'tag' '(' (tagList ',')? sweep ')'
 ;
 
 primitive:

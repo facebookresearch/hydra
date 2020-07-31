@@ -171,6 +171,11 @@ def test_dict_value(value: str, expected: Any) -> None:
             id="sweep:choice(a,b)",
         ),
         pytest.param(
+            "choice (a,b)",
+            ChoiceSweep(choices=["a", "b"], simple_form=False),
+            id="sweep:choice (a,b)",
+        ),
+        pytest.param(
             "choice( 10 , 20 )",
             ChoiceSweep(choices=[10, 20], simple_form=False),
             id="sweep:choice( 10 , 20 )",
@@ -206,6 +211,7 @@ def test_simple_choice_sweep_parsing(value: str, expected: Any) -> None:
     "value,expected",
     [
         pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
+        pytest.param("range (10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
         pytest.param(
             "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_ste"
         ),
@@ -229,6 +235,9 @@ def test_range_sweep_parsing(value: str, expected: Any) -> None:
     [
         pytest.param(
             "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="ints_autocast"
+        ),
+        pytest.param(
+            "interval (10,11)", IntervalSweep(start=10.0, end=11.0), id="ints_autocast"
         ),
         pytest.param(
             "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="floats",
@@ -937,6 +946,11 @@ def test_sweep(value: str, expected: str) -> None:
             id="choice:no_tags",
         ),
         pytest.param(
+            "tag (choice(a,b))",
+            ChoiceSweep(simple_form=False, choices=["a", "b"]),
+            id="choice:no_tags",
+        ),
+        pytest.param(
             "tag(tag1,tag2,choice(a,b))",
             ChoiceSweep(simple_form=False, choices=["a", "b"], tags={"tag1", "tag2"}),
             id="choice",
@@ -946,6 +960,11 @@ def test_sweep(value: str, expected: str) -> None:
         ),
         pytest.param(
             "tag(tag1,tag2,range(1,2))",
+            RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
+            id="range",
+        ),
+        pytest.param(
+            "tag (tag1,tag2,range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
             id="range",
         ),
