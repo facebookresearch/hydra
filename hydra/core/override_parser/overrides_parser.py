@@ -178,10 +178,15 @@ class Cast:
         elif cast_type == CastType.FLOAT:
             return float(value)
         elif cast_type == CastType.BOOL:
-            if isinstance(value, str) and value.lower() == "false":
-                return False
-            else:
-                return bool(value)
+            if isinstance(value, str):
+                if value.lower() == "false":
+                    return False
+                elif value.lower() == "true":
+                    return True
+                else:
+                    raise HydraException(f"Cannot cast '{value}' to bool")
+            return bool(value)
+
         elif cast_type == CastType.STR:
             if isinstance(value, bool):
                 return str(value).lower()
