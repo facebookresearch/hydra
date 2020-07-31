@@ -180,6 +180,11 @@ def test_dict_value(value: str, expected: Any) -> None:
             ChoiceSweep(choices=[10, 20], simple_form=False),
             id="sweep:choice( 10 , 20 )",
         ),
+        pytest.param(
+            "choice(list=[10,20])",
+            ChoiceSweep(choices=[10, 20], simple_form=False),
+            id="sweep:choice:named",
+        ),
     ],
 )
 def test_choice_sweep_parsing(value: str, expected: Any) -> None:
@@ -213,7 +218,12 @@ def test_simple_choice_sweep_parsing(value: str, expected: Any) -> None:
         pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
         pytest.param("range (10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
         pytest.param(
-            "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_ste"
+            "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_step"
+        ),
+        pytest.param(
+            "range(start=1,stop=10,step=2)",
+            RangeSweep(start=1, stop=10, step=2),
+            id="ints_with_step",
         ),
         pytest.param(
             "range(1.0, 3.14)", RangeSweep(start=1.0, stop=3.14, step=1), id="floats"
@@ -241,6 +251,11 @@ def test_range_sweep_parsing(value: str, expected: Any) -> None:
         ),
         pytest.param(
             "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="floats",
+        ),
+        pytest.param(
+            "interval(start=2.72,end=3.14)",
+            IntervalSweep(start=2.72, end=3.14),
+            id="floats:named",
         ),
     ],
 )
@@ -702,6 +717,14 @@ def test_key_rename(value: str, expected: bool) -> None:
             ValueType.INTERVAL_SWEEP,
             {"a", "b"},
             id="range_sweep:tags",
+        ),
+        pytest.param(
+            "key=tag(tags=[a,b],sweep=interval(0,1))",
+            "key",
+            IntervalSweep(0.0, 1.0, {"a", "b"}),
+            ValueType.INTERVAL_SWEEP,
+            {"a", "b"},
+            id="range_sweep:tags:named",
         ),
     ],
 )

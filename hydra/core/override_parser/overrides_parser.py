@@ -688,7 +688,6 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitRangeSweep(self, ctx: OverrideParser.RangeSweepContext) -> RangeSweep:
         assert self.is_matching_terminal(ctx.getChild(0), "range")
         assert self.is_matching_terminal(ctx.getChild(1), "(")
-        assert self.is_matching_terminal(ctx.getChild(3), ",")
         start = self.visitNumber(ctx.number(0))
         stop = self.visitNumber(ctx.number(1))
         step_ctx = ctx.number(2)
@@ -702,8 +701,6 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         self, ctx: OverrideParser.IntervalSweepContext
     ) -> IntervalSweep:
         assert self.is_matching_terminal(ctx.getChild(0), "interval")
-        assert self.is_matching_terminal(ctx.getChild(1), "(")
-        assert self.is_matching_terminal(ctx.getChild(3), ",")
         start = self.visitNumber(ctx.number(0))
         end = self.visitNumber(ctx.number(1))
         return IntervalSweep(start=start, end=end)
@@ -733,9 +730,15 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             return ChoiceSweep(choices=ret, simple_form=simple_form)
 
         if self.is_matching_terminal(ctx.getChild(0), "choice"):
-            return collect(2, ctx.getChildCount() - 1, simple_form=False)
+            if self.is_matching_terminal(ctx.getChild(2), "list"):
+                assert self.is_matching_terminal(ctx.getChild(3), "=")
+                assert self.is_matching_terminal(ctx.getChild(4), "[")
+                assert self.is_matching_terminal(ctx.getChild(-2), "]")
+                return collect(5, ctx.getChildCount() - 2, simple_form=False)
+            else:
+                return collect(2, ctx.getChildCount() - 1, simple_form=False)
         else:
-            return collect(0, ctx.getChildCount(), simple_form=True)
+            return self.visitSimpleChoiceSweep(ctx)
 
     def aggregateResult(self, aggregate: List[Any], nextResult: Any) -> List[Any]:
         aggregate.append(nextResult)
