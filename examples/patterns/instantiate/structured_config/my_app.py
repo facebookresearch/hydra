@@ -7,64 +7,47 @@ from omegaconf import MISSING, DictConfig
 import hydra
 from hydra.core.config_store import ConfigStore
 from hydra.types import ObjectConf
+from hydra.utils import instantiate
 
 
 class DBConnection:
+    def __init__(self, host: str, port: int) -> None:
+        self.driver = "driver"
+        self.host = host
+        self.port = port
+
     def connect(self) -> None:
-        pass
+        print(f"{self.driver} connecting to {self.host} on port={self.port}")
 
 
 class MySQLConnection(DBConnection):
-    def __init__(self, host: str, port: int, user: str, password: str) -> None:
+    def __init__(self, host: str, port: int) -> None:
         self.driver = "MySQL"
         self.host = host
         self.port = port
-        self.user = user
-        self.password = password
-
-    def connect(self) -> None:
-        print(
-            f"{self.driver} connecting to {self.host} with user={self.user} and password={self.password}"
-        )
 
 
 class PostgreSQLConnection(DBConnection):
-    def __init__(
-        self, host: str, port: int, user: str, password: str, database: str
-    ) -> None:
+    def __init__(self, host: str, port: int,) -> None:
         self.driver = "PostgreSQL"
         self.host = host
         self.port = port
-        self.user = user
-        self.password = password
-        self.database = database
-
-    def connect(self) -> None:
-        print(
-            f"{self.driver} connecting to {self.host} with user={self.user} "
-            f"and password={self.password} and database={self.database}"
-        )
 
 
 @dataclass
 class DBConfig:
     host: str = "localhost"
     port: int = 80
-    user: str = MISSING
-    password: str = "1234"
 
 
 @dataclass
 class MySQLConfig(DBConfig):
-    user: str = "root"
-    password: str = "1234"
+    port: int = 1234
 
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
-    user: str = "root"
-    password: str = "1234"
-    database: str = "tutorial"
+    port: int = 5678
 
 
 defaults = [
@@ -95,7 +78,7 @@ cs.store(
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    connection = hydra.utils.instantiate(cfg.db)
+    connection = instantiate(cfg.db)
     connection.connect()
 
 

@@ -101,11 +101,8 @@ def test_instantiate_objects_example(
 @pytest.mark.parametrize(  # type: ignore
     "overrides,output",
     [
-        ([], "MySQL connecting to localhost with user=root and password=1234"),
-        (
-            ["db=postgresql"],
-            "PostgreSQL connecting to localhost with user=root and password=1234 and database=tutorial",
-        ),
+        ([], "MySQL connecting to localhost on port=1234"),
+        (["db=postgresql"], "PostgreSQL connecting to localhost on port=5678",),
     ],
 )
 def test_instantiate_structured_config_example(

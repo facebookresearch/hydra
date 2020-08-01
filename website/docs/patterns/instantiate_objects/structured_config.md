@@ -8,29 +8,23 @@ Structured Configs can be used with `hydra.utils.instantiate()`. A complete, sta
 
 #### Example usage
 
-my_app.py
-```python
+
+```python title="my_app.py" {18}
 
 # Base class for the database config
 @dataclass
 class DBConfig:
     host: str = "localhost"
     port: int = 80
-    user: str = MISSING
-    password: str = "1234"
 
 
 @dataclass
 class MySQLConfig(DBConfig):
-    user: str = "root"
-    password: str = "1234"
-
+    port: int = 1234
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
-    user: str = "root"
-    password: str = "1234"
-    database: str = "tutorial"
+    port: int = 5678
 
 defaults = [
     # Load the config "mysql" from the config group "db"
@@ -49,28 +43,39 @@ cs.store(name="config", node=Config)
 cs.store(
     group="db",
     name="mysql",
-    node=ObjectConf(
-        target="examples.patterns.instantiate.structured_config.my_app.MySQLConnection",
-        params=MySQLConfig,
-    ),
+    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig,),
 )
 cs.store(
     group="db",
     name="postgresql",
-    node=ObjectConf(
-        target="examples.patterns.instantiate.structured_config.my_app.PostgreSQLConnection",
-        params=PostGreSQLConfig,
-    ),
+    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig,),
 )
 
-def connect(cfg: DBConfig):
-  ...
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
-  connection = hydra.utils.instantiate(cfg)
-    ...
+    connection = instantiate(cfg.db)
+    connection.connect()
 
 if __name__ == "__main__":
     my_app()
 ```
+
+#### Sample Output
+<div className="row">
+<div className="col col--6">
+
+```yaml title="python my_app.py" {1-2}
+MySQL connecting to localhost on port=1234
+```
+
+</div>
+
+<div className="col col--6">
+
+```yaml title="python my_app.py db=postgresql" {1-2}
+PostgreSQL connecting to localhost on port=5678
+```
+
+</div>
+</div>
