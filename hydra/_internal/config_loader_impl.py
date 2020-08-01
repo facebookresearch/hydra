@@ -191,18 +191,15 @@ class ConfigLoaderImpl(ConfigLoader):
                     sweep_overrides.append(x)
                 elif run_mode == RunMode.RUN:
                     if x.value_type == ValueType.SIMPLE_CHOICE_SWEEP:
+                        vals = "value1,value2"
                         if from_shell:
-                            example_override = (
-                                f"{x.get_key_element()}=\\'{x.get_value_string()}\\'"
-                            )
+                            example_override = f"key=\\'{vals}\\'"
                         else:
-                            example_override = (
-                                f"{x.get_key_element()}='{x.get_value_string()}'"
-                            )
+                            example_override = f"key='{vals}'"
 
                         msg = f"""Ambiguous value for argument '{x.input_line}'
-1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
-2. To use it as string use {example_override}
+1. To use it as a list, use key=[value1,value2]
+2. To use it as string, quote the value: {example_override}
 3. To sweep over it, add --multirun to your command line"""
                         raise ConfigCompositionException(msg)
                     else:

@@ -860,8 +860,8 @@ def test_module_run(
             ["test.param=1,2"],
             True,
             """Ambiguous value for argument 'test.param=1,2'
-1. To use it as a list, use test.param=[1,2]
-2. To use it as string use test.param=\\'1,2\\'
+1. To use it as a list, use key=[value1,value2]
+2. To use it as string, quote the value: key=\\'value1,value2\\'
 3. To sweep over it, add --multirun to your command line
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",

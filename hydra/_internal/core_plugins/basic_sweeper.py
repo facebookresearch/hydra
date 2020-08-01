@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 """
-# TODO: update to reflect range()
 Basic sweeper can generate cartesian products of multiple input commands, each with a
 comma separated list of values.
 for example, for:
@@ -13,6 +12,9 @@ Basic Sweeper would generate 6 jobs:
 2,20
 3,10
 3,20
+
+The Basic Sweeper also support, the following is equivalent to the above.
+python foo.py a=range(1,4) b=10,20
 """
 import itertools
 import logging
@@ -25,7 +27,7 @@ from omegaconf import MISSING, DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
-from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.overrides_parser import OverridesParser, RangeSweep
 from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
@@ -112,9 +114,9 @@ class BasicSweeper(Sweeper):
                     lists.append(sweep)
                 elif override.is_range_sweep():
                     key = override.get_key_element()
-                    v = override.value()
-                    assert isinstance(v, Iterable)
-                    sweep = [f"{key}={val}" for val in list(v)]
+                    range_sweep = override.value()
+                    assert isinstance(range_sweep, RangeSweep)
+                    sweep = [f"{key}={val}" for val in list(range_sweep.range())]
                     lists.append(sweep)
                 else:
                     assert override.value_type is not None
@@ -123,7 +125,7 @@ class BasicSweeper(Sweeper):
                     )
             else:
                 key = override.get_key_element()
-                value = override.get_value_element()
+                value = override.get_value_element_as_str()
                 lists.append([f"{key}={value}"])
         all_batches = [list(x) for x in itertools.product(*lists)]
         assert max_batch_size is None or max_batch_size > 0

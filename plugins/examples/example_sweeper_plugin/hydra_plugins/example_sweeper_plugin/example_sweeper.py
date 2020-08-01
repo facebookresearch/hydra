@@ -90,7 +90,7 @@ class ExampleSweeper(Sweeper):
                 lists.append(sweep)
             else:
                 key = override.get_key_element()
-                value = override.get_value_element()
+                value = override.get_value_element_as_str()
                 lists.append([f"{key}={value}"])
         batches = list(itertools.product(*lists))
 

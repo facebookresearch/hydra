@@ -19,29 +19,34 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value:
-      element
-    | simpleChoiceSweep                         // a,b,c
-    | sweep                                     // choice(a,b,c), range(1,10,2), interval(0,3)
-    | taggedSweep                               // tag(log,interval(1, 1000)), tag(fidelity,range(1,100))
-    | cast
-;
+value: element | sweep;
 
-sweep: choiceSweep | rangeSweep | intervalSweep;
 element:
       primitive
     | listValue
     | dictValue
 ;
 
-cast : ('int' | 'float' | 'str' | 'bool') '(' value ')';
+sweep:
+      choiceSweep                               // choice(a,b,c)
+    | simpleChoiceSweep                         // a,b,c
+    | rangeSweep                                // range(1,10), range(0,3,0.5)
+    | intervalSweep                             // interval(0,3)
+    | castSweep
+    | sortSweep
+;
 
-simpleChoiceSweep: element (',' element)+;          // value1,value2,value3
+
+simpleChoiceSweep:
+    element (',' element)+                        // value1,value2,value3
+;
 
 choiceSweep:
-    'choice' '('
-        (element (',' element)* | 'list' '=' '[' element (',' element)* ']')
-    ')'
+    'choice' '(' (
+          (element | simpleChoiceSweep)                     // choice(a), choice(a,c)
+        | 'list' '=' '[' (element | simpleChoiceSweep) ']'  // choice(list=[a,b,c])
+    ) ')'
+    | taggedChoiceSweep                             // tag(log,choice(1,10,100))
 ;
 
 rangeSweep:                                         // range(start,stop,[step])
@@ -49,6 +54,7 @@ rangeSweep:                                         // range(start,stop,[step])
         ('start' '=')? number ','                   // range(start=1,stop=10,step=2)
         ('stop' '=')? number
         (',' ('step' '=')? number)?')'
+    | taggedRangeSweep
 ;
 
 intervalSweep:                                      // interval(start,end)
@@ -56,16 +62,29 @@ intervalSweep:                                      // interval(start,end)
         ('start' '=' )? number ','
         ('end' '='   )? number
     ')'
+    | taggedIntervalSweep
 ;
 
 taggedSweep:
-    'tag' '('
-        (tagList ',' | 'tags' '=' '[' tagList ']' ',')? ('sweep' '=')? sweep
-    ')'
+    taggedChoiceSweep
+    | taggedRangeSweep
+    | taggedIntervalSweep
 ;
 
+taggedChoiceSweep:
+    'tag' '(' (tagList ',')? ('sweep' '=')? choiceSweep ')';
+
+taggedRangeSweep:
+    'tag' '(' (tagList ',')? ('sweep' '=')? rangeSweep ')';
+
+taggedIntervalSweep:
+    'tag' '(' (tagList ',')? ('sweep' '=')? intervalSweep ')';
+
+tagList: ID (',' ID)* | 'tags' '=' '[' (ID (',' ID)*)? ']';
+
 primitive:
-       QUOTED_VALUE                                 // 'hello world', "hello world"
+      castPrimitive
+    | QUOTED_VALUE                                 // 'hello world', "hello world"
     | (   ID                                        // foo_10
         | NULL                                      // null, NULL
         | INT                                       // 0, 10, -20, 1_000_000
@@ -78,13 +97,40 @@ primitive:
         | '='
     )+;
 
-number: INT | FLOAT;
-tagList : ID (',' ID)*;
 
-listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
-dictValue: '{'                                  // {}, {a:10,b:20}
-    (ID ':' element (',' ID ':' element)*)?
-'}';
+number: INT | FLOAT;
+
+listValue:
+      '[' (element(',' element)*)? ']'              // [], [1,2,3], [a,b,[1,2]]
+    | sortList                                      // sort([1,2,3])
+    | castList                                      // str([1,2,3])
+;
+
+dictValue:
+      '{' (ID ':' element (',' ID ':' element)*)? '}'   // {}, {a:10,b:20}
+    | castDict
+;
+
+cast : castPrimitive | castSweep | castList | castDict;
+castSweep : ('int' | 'float' | 'str' | 'bool') '(' sweep ')';
+castPrimitive : ('int' | 'float' | 'str' | 'bool') '(' primitive ')';
+castList : ('int' | 'float' | 'str' | 'bool') '(' listValue ')';
+castDict : ('int' | 'float' | 'str' | 'bool') '(' dictValue ')';
+
+ordering: sort | shuffle;
+
+sort : sortList | sortSweep;
+sortList : 'sort' '(' ('list' '=')? listValue (',' 'reverse' '=' BOOL)? ')';
+sortSweep : 'sort' '(' ('sweep' '=')? sweep (',' 'reverse' '=' BOOL)? ')';
+
+
+shuffle:
+    'shuffle' '('
+          primitive (',' primitive)+
+        | 'list' '=' '[' (primitive (',' primitive)*)? ']'
+    ')'
+;
+
 
 // Types
 fragment DIGIT: [0-9_];
@@ -121,3 +167,4 @@ INTERPOLATION:
           // custom interpolation
         | ID ':' (ID | QUOTED_VALUE) (',' (ID | QUOTED_VALUE))*
     ) '}';
+

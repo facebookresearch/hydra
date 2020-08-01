@@ -1053,7 +1053,6 @@ def test_apply_overrides_to_defaults(
             )
 
 
-# TODO: that normal ~test remove does not trigger deprecation
 def test_delete_by_assigning_null_is_deprecated() -> None:
     msg = (
         "\nRemoving from the defaults list by assigning 'null' "

@@ -2,11 +2,12 @@
 import decimal
 import sys
 import warnings
+from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, Iterable, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from antlr4 import TerminalNode, Token
+from antlr4 import RuleContext, TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
 from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
 from antlr4.tree.Tree import ParseTree
@@ -66,12 +67,8 @@ class QuotedString:
 
 # Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem
 # to support recursive type definitions.
-ElementType = Union[
-    str, int, bool, float, List[Any], Dict[str, Any], Iterable[float], Iterable[int]
-]
-ParsedElementType = Optional[
-    Union[ElementType, QuotedString, Iterable[int], Iterable[float]]
-]
+ElementType = Union[str, int, bool, float, List[Any], Dict[str, Any]]
+ParsedElementType = Optional[Union[ElementType, QuotedString]]
 
 
 @dataclass
@@ -83,117 +80,9 @@ class Sweep:
 class ChoiceSweep(Sweep):
     # simple form: a,b,c
     # explicit form: choices(a,b,c)
-    simple_form: bool
-    choices: List[ParsedElementType]
+    list: List[ParsedElementType]
     tags: Set[str] = field(default_factory=set)
-
-
-@dataclass
-class RangeSweep(Sweep):
-    """
-    Discrete range of numbers
-    """
-
-    start: Union[int, float]
-    stop: Union[int, float]
-    step: Union[int, float] = 1
-    tags: Set[str] = field(default_factory=set)
-
-
-@dataclass
-class IntervalSweep(Sweep):
-    start: float
-    end: float
-    tags: Set[str] = field(default_factory=set)
-
-
-class CastType(Enum):
-    INT = 1
-    FLOAT = 2
-    BOOL = 3
-    STR = 4
-
-
-@dataclass
-class Cast:
-    CastValueType = Union[
-        str,
-        int,
-        bool,
-        float,
-        List[Any],
-        Dict[str, Any],
-        ChoiceSweep,
-        RangeSweep,
-        IntervalSweep,
-    ]
-
-    cast_type: CastType
-    value: CastValueType
-
-    def convert(self) -> CastValueType:
-        try:
-            return self._convert(value=self.value, cast_type=self.cast_type)
-        except (ValueError, OverflowError) as e:
-            raise HydraException(
-                f"Error casting `{self.value}` ({type(self.value).__name__}) to {self.cast_type.name.lower()} : {e}"
-            ) from e
-
-    @staticmethod
-    def _convert(value: CastValueType, cast_type: CastType) -> CastValueType:
-        if isinstance(value, list):
-            ret_list = []
-            for item in value:
-                ret_list.append(Cast._convert(value=item, cast_type=cast_type))
-            return ret_list
-        elif isinstance(value, dict):
-            ret_dict: Dict[str, Any] = {}
-            for key, value in value.items():
-                ret_dict[key] = Cast._convert(value=value, cast_type=cast_type)
-            return ret_dict
-        elif isinstance(value, ChoiceSweep):
-            choices = []
-            for item in value.choices:
-                choice = Cast._convert(value=item, cast_type=cast_type)
-                assert isinstance(choice, (str, int, bool, float, list, dict))
-                choices.append(choice)
-            return ChoiceSweep(simple_form=value.simple_form, choices=list(choices))
-        elif isinstance(value, IntervalSweep):
-            raise HydraException(
-                "Intervals are always interpreted as floating-point intervals and cannot be casted"
-            )
-        elif isinstance(value, RangeSweep):
-            if cast_type not in (CastType.INT, CastType.FLOAT):
-                raise HydraException("Range can only be casted to int or float")
-            start = Cast._convert(value.start, cast_type=cast_type)
-            stop = Cast._convert(value.stop, cast_type=cast_type)
-            step = Cast._convert(value.step, cast_type=cast_type)
-            assert isinstance(start, (int, float))
-            assert isinstance(stop, (int, float))
-            assert isinstance(step, (int, float))
-            return RangeSweep(start=start, stop=stop, step=step)
-
-        if cast_type == CastType.INT:
-            return int(value)
-        elif cast_type == CastType.FLOAT:
-            return float(value)
-        elif cast_type == CastType.BOOL:
-            if isinstance(value, str):
-                if value.lower() == "false":
-                    return False
-                elif value.lower() == "true":
-                    return True
-                else:
-                    raise HydraException(f"Cannot cast '{value}' to bool")
-            return bool(value)
-
-        elif cast_type == CastType.STR:
-            if isinstance(value, bool):
-                return str(value).lower()
-            else:
-                return str(value)
-        else:
-            assert False
+    simple_form: bool = False
 
 
 @dataclass
@@ -235,11 +124,176 @@ class FloatRange(object):
 
 
 @dataclass
+class RangeSweep(Sweep):
+    """
+    Discrete range of numbers
+    """
+
+    start: Union[int, float]
+    stop: Union[int, float]
+    step: Union[int, float] = 1
+    tags: Set[str] = field(default_factory=set)
+
+    def range(self) -> Union[range, FloatRange]:
+        start = self.start
+        stop = self.stop
+        step = self.step
+        if (
+            isinstance(start, int)
+            and isinstance(stop, int)
+            and (step is None or isinstance(step, int))
+        ):
+            return range(start, stop, step)
+        else:
+            if step is not None:
+                return FloatRange(start, stop, step)
+            else:
+                return FloatRange(start, stop)
+
+
+@dataclass
+class IntervalSweep(Sweep):
+    start: float
+    end: float
+    tags: Set[str] = field(default_factory=set)
+
+
+class CastType(Enum):
+    INT = 1
+    FLOAT = 2
+    BOOL = 3
+    STR = 4
+
+
+@dataclass
+class Cast:
+    CastValueType = Union[
+        str,
+        int,
+        bool,
+        float,
+        List[Any],
+        Dict[str, Any],
+        ChoiceSweep,
+        RangeSweep,
+        IntervalSweep,
+    ]
+
+    cast_type: CastType
+    value: CastValueType
+    input_line: str
+
+    def convert(self) -> CastValueType:
+        try:
+            value: Any
+            if isinstance(self.value, QuotedString):
+                value = self.value.text
+            else:
+                value = self.value
+            return self._convert(value=value, cast_type=self.cast_type)
+        except (ValueError, OverflowError) as e:
+            raise HydraException(f"Error evaluating `{self.input_line}` : {e}") from e
+
+    @staticmethod
+    def _convert(value: CastValueType, cast_type: CastType) -> CastValueType:
+        if isinstance(value, list):
+            ret_list = []
+            for item in value:
+                ret_list.append(Cast._convert(value=item, cast_type=cast_type))
+            return ret_list
+        elif isinstance(value, dict):
+            ret_dict: Dict[str, Any] = {}
+            for key, value in value.items():
+                ret_dict[key] = Cast._convert(value=value, cast_type=cast_type)
+            return ret_dict
+        elif isinstance(value, ChoiceSweep):
+            choices = []
+            for item in value.list:
+                choice = Cast._convert(value=item, cast_type=cast_type)
+                assert isinstance(choice, (str, int, bool, float, list, dict))
+                choices.append(choice)
+            return ChoiceSweep(simple_form=value.simple_form, list=list(choices))
+        elif isinstance(value, IntervalSweep):
+            raise HydraException(
+                "Intervals are always interpreted as floating-point intervals and cannot be casted"
+            )
+        elif isinstance(value, RangeSweep):
+            if cast_type not in (CastType.INT, CastType.FLOAT):
+                raise HydraException("Range can only be casted to int or float")
+            start = Cast._convert(value.start, cast_type=cast_type)
+            stop = Cast._convert(value.stop, cast_type=cast_type)
+            step = Cast._convert(value.step, cast_type=cast_type)
+            assert isinstance(start, (int, float))
+            assert isinstance(stop, (int, float))
+            assert isinstance(step, (int, float))
+            return RangeSweep(start=start, stop=stop, step=step)
+        elif isinstance(value, QuotedString):
+            value = value.text
+        if cast_type == CastType.INT:
+            return int(value)
+        elif cast_type == CastType.FLOAT:
+            return float(value)
+        elif cast_type == CastType.BOOL:
+            if isinstance(value, str):
+                if value.lower() == "false":
+                    return False
+                elif value.lower() == "true":
+                    return True
+                else:
+                    raise ValueError(f"Cannot cast '{value}' to bool")
+            return bool(value)
+
+        elif cast_type == CastType.STR:
+            if isinstance(value, bool):
+                return str(value).lower()
+            else:
+                return str(value)
+        else:
+            assert False
+
+
+@dataclass
 class Key:
     # the config-group or config dot-path
     key_or_group: str
     pkg1: Optional[str] = None
     pkg2: Optional[str] = None
+
+
+@dataclass
+class Ordering:
+    list_or_sweep: Union[List[ParsedElementType], ChoiceSweep, RangeSweep]
+
+    def order(self) -> Union[List[ParsedElementType], ChoiceSweep, RangeSweep]:
+        raise NotImplementedError()
+
+
+@dataclass
+class Sort(Ordering):
+
+    reverse: bool = False
+
+    def order(self) -> Union[List[ParsedElementType], ChoiceSweep, RangeSweep]:
+        def _sorted(lst: List[Any]) -> List[Any]:
+            try:
+                return sorted(lst, reverse=self.reverse)
+            except TypeError as e:
+                raise HydraException(f"Error sorting: {e}") from e
+
+        if isinstance(self.list_or_sweep, ChoiceSweep):
+            ret = copy(self.list_or_sweep)
+            ret.list = _sorted(self.list_or_sweep.list)
+            return ret
+        elif isinstance(self.list_or_sweep, RangeSweep):
+            assert False  # TODO
+        else:
+            return _sorted(self.list_or_sweep)
+
+
+@dataclass
+class Shuffle(Ordering):
+    def order(self) -> Union[List[ParsedElementType], ChoiceSweep, RangeSweep]:
+        assert False  # TODO
 
 
 @dataclass
@@ -254,16 +308,12 @@ class Override:
     value_type: Optional[ValueType]
 
     # The parsed value (component after the =).
-    # Can be a string, quoted string, int, float, bool list and dict
-    _value: ParsedElementType
+    _value: Union[ParsedElementType, ChoiceSweep, RangeSweep, IntervalSweep]
 
     # When updating a config group option, the first package
     pkg1: Optional[str] = None
     # When updating a config group, the second package (used when renaming a package)
     pkg2: Optional[str] = None
-
-    # Optional tags, only supported for sweep overrides
-    tags: Set[str] = field(default_factory=set)
 
     # Input line used to construct this
     input_line: Optional[str] = None
@@ -297,11 +347,16 @@ class Override:
         else:
             return value
 
-    def value(self) -> Optional[ElementType]:
+    def value(
+        self,
+    ) -> Optional[Union[ElementType, ChoiceSweep, RangeSweep, IntervalSweep]]:
         """
         :return: the value. replaces Quoted strings by regular strings
         """
-        return Override._convert_value(self._value)
+        if isinstance(self._value, Sweep):
+            return self._value
+        else:
+            return Override._convert_value(self._value)
 
     def choices_as_strings(self) -> List[str]:
         """
@@ -312,9 +367,15 @@ class Override:
             ValueType.CHOICE_SWEEP,
             ValueType.SIMPLE_CHOICE_SWEEP,
         )
-        assert isinstance(self._value, list)
+        if isinstance(self._value, list):
+            lst = self._value
+        elif isinstance(self._value, ChoiceSweep):
+            lst = self._value.list
+        else:
+            assert False
+
         return [
-            Override._get_value_element(Override._convert_value(x)) for x in self._value
+            Override._get_value_element_as_str(Override._convert_value(x)) for x in lst
         ]
 
     def get_source_item(self) -> str:
@@ -368,7 +429,7 @@ class Override:
         return f"{get_prefix()}{get_key()}"
 
     @staticmethod
-    def _get_value_element(
+    def _get_value_element_as_str(
         value: ParsedElementType, space_after_sep: bool = False
     ) -> str:
         # str, QuotedString, int, bool, float, List[Any], Dict[str, Any]
@@ -381,7 +442,9 @@ class Override:
         elif isinstance(value, list):
             s = comma.join(
                 [
-                    Override._get_value_element(x, space_after_sep=space_after_sep)
+                    Override._get_value_element_as_str(
+                        x, space_after_sep=space_after_sep
+                    )
                     for x in value
                 ]
             )
@@ -389,7 +452,7 @@ class Override:
         elif isinstance(value, dict):
             s = comma.join(
                 [
-                    f"{k}{colon}{Override._get_value_element(v, space_after_sep=space_after_sep)}"
+                    f"{k}{colon}{Override._get_value_element_as_str(v, space_after_sep=space_after_sep)}"
                     for k, v in value.items()
                 ]
             )
@@ -410,26 +473,22 @@ class Override:
         else:
             return self.input_line[idx + 1 :]
 
-    def get_value_element(self, space_after_sep: bool = False) -> str:
+    def get_value_element_as_str(self, space_after_sep: bool = False) -> str:
         """
         Returns a string representation of the value in this override
         (similar to the part after the = in the input string)
         :param space_after_sep: True to append space after commas and colons
         :return:
         """
-        return Override._get_value_element(self._value, space_after_sep=space_after_sep)
-
-    def is_tagged(self, tag_name: str) -> bool:
-        return tag_name in self.tags
-
-    def __repr__(self) -> str:
-        return f"{self.input_line} ({type(self._value).__name__})"
+        if isinstance(self._value, Sweep):
+            # This should not be called for sweeps
+            raise HydraException("Cannot convert sweep to str")
+        return Override._get_value_element_as_str(
+            self._value, space_after_sep=space_after_sep
+        )
 
 
 class CLIVisitor(OverrideVisitor):  # type: ignore
-    def defaultResult(self) -> List[Any]:
-        return []
-
     def visitPackage(self, ctx: OverrideParser.PackageContext) -> str:
         return ctx.getText()  # type: ignore
 
@@ -481,8 +540,12 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitPrimitive(
         self, ctx: OverrideParser.PrimitiveContext
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
-
         ret: Optional[Union[int, bool, float, str]]
+
+        if ctx.castPrimitive() is not None:
+            cast = self.visitCastPrimitive(ctx.castPrimitive()).convert()
+            assert isinstance(cast, (int, bool, float, str))
+            return cast
 
         first_idx = 0
         last_idx = ctx.getChildCount()
@@ -530,7 +593,19 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitListValue(
         self, ctx: OverrideParser.ListValueContext
     ) -> List[ParsedElementType]:
+        if ctx.sortList():
+            ordered = self.visitSortList(ctx.sortList()).order()
+            assert isinstance(ordered, list)
+            return ordered
+
+        if ctx.castList():
+            cast = self.visitCastList(ctx.castList()).convert()
+            assert isinstance(cast, list)
+            return cast
+
         ret: List[ParsedElementType] = []
+
+        # TODO: simplify
         children = ctx.getChildren()
         first = next(children)
         assert isinstance(first, TerminalNode) and first.symbol.text == "["
@@ -550,6 +625,11 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitDictValue(
         self, ctx: OverrideParser.DictValueContext
     ) -> Dict[str, ParsedElementType]:
+        if ctx.castDict():
+            cast = self.visitCastDict(ctx.castDict()).convert()
+            assert isinstance(cast, dict)
+            return cast
+
         ret = {}
         children = ctx.getChildren()
         open = next(children)
@@ -580,27 +660,37 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitElement(self, ctx: OverrideParser.ElementContext) -> ParsedElementType:
         assert ctx.getChildCount() == 1
         ret: ParsedElementType
-        child = ctx.getChild(0)
-        if isinstance(child, OverrideParser.ListValueContext):
-            ret = self.visitListValue(child)
-        elif isinstance(child, OverrideParser.DictValueContext):
-            ret = self.visitDictValue(child)
-        elif isinstance(child, OverrideParser.PrimitiveContext):
-            return self.visitPrimitive(child)
+
+        if ctx.listValue() is not None:
+            ret = self.visitListValue(ctx.listValue())
+        elif ctx.dictValue() is not None:
+            ret = self.visitDictValue(ctx.dictValue())
+        elif ctx.primitive() is not None:
+            return self.visitPrimitive(ctx.primitive())
+        elif ctx.sort() is not None:
+            sorted_element = self.visitSort(ctx.sort()).order()
+            assert isinstance(
+                sorted_element, (str, int, bool, float, list, dict, QuotedString)
+            )
+            return sorted_element
+        elif ctx.cast() is not None:
+            cast = self.visitCast(ctx.cast()).convert()
+            assert isinstance(cast, (str, int, bool, float, list, dict, QuotedString))
+            return cast
         else:
             assert False
         return ret
 
-    def visitValue(self, ctx: OverrideParser.ValueContext) -> ParsedElementType:
-        child_ret = self.visitChildren(ctx)
-        if len(child_ret) == 0:
+    def visitValue(
+        self, ctx: OverrideParser.ValueContext
+    ) -> Union[ChoiceSweep, RangeSweep, IntervalSweep, ParsedElementType]:
+        if self.is_matching_terminal(ctx, "<EOF>"):
             return ""
-        else:
-            assert len(child_ret) == 1
-            ret = child_ret[0]
-            if isinstance(ret, Cast):
-                ret = ret.convert()
-            return ret  # type: ignore
+        if ctx.element() is not None:
+            return self.visitElement(ctx.element())
+        if ctx.sweep() is not None:
+            return self.visitSweep(ctx.sweep())
+        assert False
 
     def visitOverride(self, ctx: OverrideParser.OverrideContext) -> Override:
         override_type = OverrideType.CHANGE
@@ -619,8 +709,7 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             key_node = first_node
 
         key = self.visitKey(key_node)
-        value: ParsedElementType
-        tags: Set[str] = set()
+        value: Union[ChoiceSweep, RangeSweep, IntervalSweep, ParsedElementType]
         eq_node = next(children)
         if (
             override_type == OverrideType.DEL
@@ -630,38 +719,23 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             value = None
             value_type = None
         else:
-            assert eq_node.symbol.text == "="
-            value_node = next(children)
-            value = self.visitValue(value_node)
-            if isinstance(value, ChoiceSweep):
-                tags = value.tags
-                if value.simple_form:
-                    value_type = ValueType.SIMPLE_CHOICE_SWEEP
-                else:
-                    value_type = ValueType.CHOICE_SWEEP
-                value = value.choices
-            elif isinstance(value, IntervalSweep):
-                tags = value.tags
-                value_type = ValueType.INTERVAL_SWEEP
-            elif isinstance(value, RangeSweep):
-                tags = value.tags
-                value_type = ValueType.RANGE_SWEEP
-                start = value.start
-                stop = value.stop
-                step = value.step
-                if (
-                    isinstance(start, int)
-                    and isinstance(stop, int)
-                    and (step is None or isinstance(step, int))
-                ):
-                    value = range(start, stop, step)
-                else:
-                    if step is not None:
-                        value = FloatRange(start, stop, step)
-                    else:
-                        value = FloatRange(start, stop)
-            else:
+            assert self.is_matching_terminal(eq_node, "=")
+            if ctx.value() is None:
+                value = ""
                 value_type = ValueType.ELEMENT
+            else:
+                value = self.visitValue(ctx.value())
+                if isinstance(value, ChoiceSweep):
+                    if value.simple_form:
+                        value_type = ValueType.SIMPLE_CHOICE_SWEEP
+                    else:
+                        value_type = ValueType.CHOICE_SWEEP
+                elif isinstance(value, IntervalSweep):
+                    value_type = ValueType.INTERVAL_SWEEP
+                elif isinstance(value, RangeSweep):
+                    value_type = ValueType.RANGE_SWEEP
+                else:
+                    value_type = ValueType.ELEMENT
 
         return Override(
             type=override_type,
@@ -670,7 +744,6 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
             value_type=value_type,
             pkg1=key.pkg1,
             pkg2=key.pkg2,
-            tags=tags,
         )
 
     def is_matching_terminal(self, node: ParseTree, text: str) -> bool:
@@ -679,13 +752,28 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitSweep(
         self, ctx: OverrideParser.SweepContext
     ) -> Union[ChoiceSweep, RangeSweep, IntervalSweep]:
-        ret = self.visitChildren(ctx)
-        assert isinstance(ret, list) and len(ret) == 1
-        r = ret[0]
-        assert isinstance(r, (ChoiceSweep, RangeSweep, IntervalSweep))
-        return r
+        if ctx.simpleChoiceSweep() is not None:
+            return self.visitSimpleChoiceSweep(ctx.simpleChoiceSweep())
+        elif ctx.choiceSweep() is not None:
+            return self.visitChoiceSweep(ctx.choiceSweep())
+        elif ctx.rangeSweep() is not None:
+            return self.visitRangeSweep(ctx.rangeSweep())
+        elif ctx.intervalSweep() is not None:
+            return self.visitIntervalSweep(ctx.intervalSweep())
+        elif ctx.castSweep():
+            cast = self.visitCastSweep(ctx.castSweep()).convert()
+            assert isinstance(cast, (ChoiceSweep, RangeSweep, IntervalSweep))
+            return cast
+        elif ctx.sortSweep():
+            srt = self.visitSortSweep(ctx.sortSweep()).order()
+            assert isinstance(srt, (ChoiceSweep, RangeSweep, IntervalSweep))
+            return srt
+        assert False
 
     def visitRangeSweep(self, ctx: OverrideParser.RangeSweepContext) -> RangeSweep:
+        if ctx.taggedRangeSweep():
+            return self.visitTaggedRangeSweep(ctx.taggedRangeSweep())
+
         assert self.is_matching_terminal(ctx.getChild(0), "range")
         assert self.is_matching_terminal(ctx.getChild(1), "(")
         start = self.visitNumber(ctx.number(0))
@@ -700,6 +788,9 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
     def visitIntervalSweep(
         self, ctx: OverrideParser.IntervalSweepContext
     ) -> IntervalSweep:
+        if ctx.taggedIntervalSweep() is not None:
+            return self.visitTaggedIntervalSweep(ctx.taggedIntervalSweep())
+
         assert self.is_matching_terminal(ctx.getChild(0), "interval")
         start = self.visitNumber(ctx.number(0))
         end = self.visitNumber(ctx.number(1))
@@ -712,45 +803,34 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         for child in ctx.getChildren(
             predicate=lambda x: not self.is_matching_terminal(x, ",")
         ):
-            ret.append(self.visitValue(child))
-        return ChoiceSweep(simple_form=True, choices=ret)
+            ret.append(self.visitElement(child))
+        return ChoiceSweep(simple_form=True, list=ret)
 
     def visitChoiceSweep(self, ctx: OverrideParser.ChoiceSweepContext) -> ChoiceSweep:
-        def collect(start: int, end: int, simple_form: bool) -> ChoiceSweep:
-            ret: List[ParsedElementType] = []
-            for idx in range(start, end):
-                child = ctx.getChild(idx)
-                if isinstance(child, TerminalNode):
-                    assert child.symbol.text == ","
-                    continue
-                if isinstance(child, OverrideParser.ElementContext):
-                    ret.append(self.visitElement(child))
-                else:
-                    assert False
-            return ChoiceSweep(choices=ret, simple_form=simple_form)
+        if ctx.taggedChoiceSweep() is not None:
+            return self.visitTaggedChoiceSweep(ctx.taggedChoiceSweep())
 
-        if self.is_matching_terminal(ctx.getChild(0), "choice"):
-            if self.is_matching_terminal(ctx.getChild(2), "list"):
-                assert self.is_matching_terminal(ctx.getChild(3), "=")
-                assert self.is_matching_terminal(ctx.getChild(4), "[")
-                assert self.is_matching_terminal(ctx.getChild(-2), "]")
-                return collect(5, ctx.getChildCount() - 2, simple_form=False)
-            else:
-                return collect(2, ctx.getChildCount() - 1, simple_form=False)
-        else:
-            return self.visitSimpleChoiceSweep(ctx)
+        if ctx.element():
+            return ChoiceSweep(list=[self.visitElement(ctx.element())])
 
-    def aggregateResult(self, aggregate: List[Any], nextResult: Any) -> List[Any]:
-        aggregate.append(nextResult)
-        return aggregate
+        if ctx.simpleChoiceSweep() is not None:
+            sweep = self.visitSimpleChoiceSweep(ctx.simpleChoiceSweep())
+            sweep.simple_form = False
+            return sweep
+
+        assert False
 
     def visitTagList(self, ctx: OverrideParser.TagListContext) -> Set[str]:
         ret = set()
+        start = 0
+        stop = None
+        if self.is_matching_terminal(ctx.getChild(0), "tags"):
+            start = 3
+            stop = -1
 
-        for child in ctx.getChildren(
-            predicate=lambda x: not self.is_matching_terminal(x, ",")
-        ):
-            ret.add(child.getText().strip())
+        for child in ctx.children[start:stop]:
+            if not self.is_matching_terminal(child, ","):
+                ret.add(child.getText())
 
         return ret
 
@@ -760,27 +840,113 @@ class CLIVisitor(OverrideVisitor):  # type: ignore
         sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
         return sweep
 
+    def visitTaggedChoiceSweep(
+        self, ctx: OverrideParser.TaggedChoiceSweepContext
+    ) -> ChoiceSweep:
+        sweep = self.visitChoiceSweep(ctx.choiceSweep())
+        taglist = ctx.tagList()
+        sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
+        return sweep
+
+    def visitTaggedIntervalSweep(
+        self, ctx: OverrideParser.TaggedIntervalSweepContext
+    ) -> IntervalSweep:
+        sweep = self.visitIntervalSweep(ctx.intervalSweep())
+        taglist = ctx.tagList()
+        sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
+        return sweep
+
+    def visitTaggedRangeSweep(
+        self, ctx: OverrideParser.TaggedRangeSweepContext
+    ) -> RangeSweep:
+        sweep = self.visitRangeSweep(ctx.rangeSweep())
+        taglist = ctx.tagList()
+        sweep.tags = self.visitTagList(taglist) if taglist is not None else set()
+        return sweep
+
+    def _get_cast_type(self, node: ParseTree) -> CastType:
+        if self.is_matching_terminal(node, "int"):
+            return CastType.INT
+        elif self.is_matching_terminal(node, "float"):
+            return CastType.FLOAT
+        elif self.is_matching_terminal(node, "str"):
+            return CastType.STR
+        elif self.is_matching_terminal(node, "bool"):
+            return CastType.BOOL
+        else:
+            assert False, f"Unexpected cast type : {node.getText()}"
+
     def visitCast(self, ctx: OverrideParser.CastContext) -> Cast:
-        cast_node = ctx.getChild(0)
-        if self.is_matching_terminal(cast_node, "int"):
-            cast_type = CastType.INT
-        elif self.is_matching_terminal(cast_node, "float"):
-            cast_type = CastType.FLOAT
-        elif self.is_matching_terminal(cast_node, "str"):
-            cast_type = CastType.STR
-        elif self.is_matching_terminal(cast_node, "bool"):
-            cast_type = CastType.BOOL
+        if ctx.castPrimitive():
+            return self.visitCastPrimitive(ctx.castPrimitive())
+        elif ctx.castList():
+            return self.visitCastList(ctx.castList())
+        elif ctx.castDict():
+            return self.visitCastDict(ctx.castDict())
+        elif ctx.castSweep() is not None:
+            return self.visitCastSweep(ctx.castSweep())
         else:
             assert False
-        assert self.is_matching_terminal(ctx.getChild(1), "(")
-        value = self.visitValue(ctx.value())
-        if isinstance(value, QuotedString):
-            value = value.text
-        assert isinstance(
-            value,
-            (int, float, bool, str, list, dict, ChoiceSweep, RangeSweep, IntervalSweep),
+
+    def visitCastPrimitive(self, ctx: OverrideParser.CastPrimitiveContext) -> Cast:
+        return self._cast(
+            ctx, "primitive", (int, float, bool, str, QuotedString, dict, list)
         )
-        return Cast(cast_type=cast_type, value=value)
+
+    def visitCastList(self, ctx: OverrideParser.CastListContext) -> Cast:
+        return self._cast(ctx, "listValue", list)
+
+    def visitCastDict(self, ctx: OverrideParser.CastDictContext) -> Cast:
+        return self._cast(ctx, "dictValue", dict)
+
+    def visitCastSweep(self, ctx: OverrideParser.CastSweepContext) -> Cast:
+        return self._cast(ctx, "sweep", Sweep)
+
+    def _cast(
+        self,
+        ctx: RuleContext,
+        child_type: str,
+        expected_types: Union[Type[Any], Tuple[Type[Any], ...]],
+    ) -> Cast:
+        cast_type = self._get_cast_type(ctx.getChild(0))
+        node = ctx.getChild(2)
+        child_type = child_type.replace(child_type[0], child_type[0].upper(), 1)
+        value = getattr(self, f"visit{child_type}")(node)
+        assert isinstance(value, expected_types)
+        return Cast(cast_type=cast_type, value=value, input_line=ctx.getText())
+
+    def visitSort(self, ctx: OverrideParser.SortContext) -> Sort:
+        if ctx.sortList():
+            return self.visitSortList(ctx.sortList())
+        elif ctx.sortSweep():
+            return self.visitSortSweep(ctx.sortSweep())
+        else:
+            assert False
+
+    def visitSortList(self, ctx: OverrideParser.SortListContext) -> Sort:
+        if self.is_matching_terminal(ctx.getChild(-4), "reverse"):
+            reverse = ctx.getChild(-2).getText().lower() == "true"
+        else:
+            reverse = False
+
+        if ctx.listValue():
+            lst = self.visitListValue(ctx.listValue())
+            return Sort(list_or_sweep=lst, reverse=reverse)
+        else:
+            assert False
+
+    def visitSortSweep(self, ctx: OverrideParser.SortSweepContext) -> Sort:
+        if self.is_matching_terminal(ctx.getChild(-4), "reverse"):
+            reverse = ctx.getChild(-2).getText().lower() == "true"
+        else:
+            reverse = False
+
+        if ctx.sweep():
+            sweep = self.visitSweep(ctx.sweep())
+            assert isinstance(sweep, (ChoiceSweep, RangeSweep))
+            return Sort(list_or_sweep=sweep, reverse=reverse)
+        else:
+            assert False
 
 
 class HydraErrorListener(ErrorListener):  # type: ignore

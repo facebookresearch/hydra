@@ -20,6 +20,7 @@ from hydra.core.override_parser.overrides_parser import (
     Quote,
     QuotedString,
     RangeSweep,
+    Sort,
     Sweep,
     ValueType,
 )
@@ -33,10 +34,6 @@ def eq(item1: Any, item2: Any) -> bool:
         return item1 == item2  # type: ignore
 
 
-# element:
-#       primitive
-#     | listValue
-#     | dictValue
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
@@ -58,6 +55,11 @@ def eq(item1: Any, item2: Any) -> bool:
         # bool
         pytest.param("true", True, id="value:bool"),
         pytest.param(".", ".", id="value:dot"),
+        pytest.param("str(1)", "1", id="cast:str(1)"),
+        pytest.param("float(10)", 10.0, id="cast:float(10)"),
+        pytest.param("str('foo')", "foo", id="cast:str('foo')"),
+        pytest.param("str([1])", ["1"], id="cast:str([1])"),
+        pytest.param("str({a:10})", {"a": "10"}, id="cast:str({a:10})"),
     ],
 )
 def test_element(value: str, expected: Any) -> None:
@@ -75,21 +77,19 @@ def test_element(value: str, expected: Any) -> None:
         pytest.param("[1 ]", [1], id="value:list1_ws"),
         pytest.param("[1, 2, 3]", [1, 2, 3], id="value:list_ws"),
         pytest.param(
-            "1,2,3", ChoiceSweep(choices=[1, 2, 3], simple_form=True), id="sweep:int"
+            "1,2,3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int"
         ),
         pytest.param(
-            "1, 2, 3",
-            ChoiceSweep(choices=[1, 2, 3], simple_form=True),
-            id="sweep:int_ws",
+            "1, 2, 3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int_ws",
         ),
         pytest.param(
             "${a}, ${b}, ${c}",
-            ChoiceSweep(choices=["${a}", "${b}", "${c}"], simple_form=True),
+            ChoiceSweep(list=["${a}", "${b}", "${c}"], simple_form=True),
             id="sweep:interpolations",
         ),
         pytest.param(
             "[a,b],[c,d]",
-            ChoiceSweep(choices=[["a", "b"], ["c", "d"]], simple_form=True),
+            ChoiceSweep(list=[["a", "b"], ["c", "d"]], simple_form=True),
             id="sweep:lists",
         ),
         # bool
@@ -107,11 +107,54 @@ def test_element(value: str, expected: Any) -> None:
         pytest.param("bool(10.0)", True, id="bool(10.0)"),
         pytest.param("float(10)", 10.0, id="float(10)"),
         pytest.param("float(float(10))", 10.0, id="float(float(10))"),
+        # ordering
+        pytest.param("sort([2,3,1])", [1, 2, 3], id="sort([3,2,1])"),
+        pytest.param(
+            "sort(3,2,1)",
+            ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
+            id="sort(3,2,1)",
+        ),
+        pytest.param(
+            "sort(a,c,b,reverse=true)",
+            ChoiceSweep(simple_form=True, list=["c", "b", "a"], tags=set()),
+            id="sort(a,c,b,reverse=true)",
+        ),
+        pytest.param(
+            "sort(10)",
+            pytest.raises(
+                HydraException, match=re.escape("mismatched input ')' expecting ','"),
+            ),
+            id="sort(10)",
+        ),
+        pytest.param(
+            "float(sort(3,2,1))",
+            ChoiceSweep(simple_form=True, list=[1.0, 2.0, 3.0], tags=set()),
+            id="float(sort(3,2,1))",
+        ),
+        pytest.param(
+            "sort(float(3,2,1))",
+            ChoiceSweep(simple_form=True, list=[1.0, 2.0, 3.0], tags=set()),
+            id="sort(float(3,2,1))",
+        ),
+        pytest.param(
+            "sort(3,2,str(1))",
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Error sorting: '<' not supported between instances of 'str' and 'int'"
+                ),
+            ),
+            id="sort(3,2,str(1))",
+        ),
     ],
 )
 def test_value(value: str, expected: Any) -> None:
-    ret = OverridesParser.parse_rule(value, "value")
-    assert ret == expected
+    if isinstance(expected, RaisesContext):
+        with expected:
+            OverridesParser.parse_rule(value, "value")
+    else:
+        ret = OverridesParser.parse_rule(value, "value")
+        assert ret == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -160,34 +203,27 @@ def test_dict_value(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
+        pytest.param("choice(a)", ChoiceSweep(list=["a"]), id="sweep:choice(a)"),
         pytest.param(
-            "choice(a)",
-            ChoiceSweep(choices=["a"], simple_form=False),
-            id="sweep:choice(a)",
+            "choice(a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice(a,b)",
         ),
         pytest.param(
-            "choice(a,b)",
-            ChoiceSweep(choices=["a", "b"], simple_form=False),
-            id="sweep:choice(a,b)",
-        ),
-        pytest.param(
-            "choice (a,b)",
-            ChoiceSweep(choices=["a", "b"], simple_form=False),
-            id="sweep:choice (a,b)",
+            "choice (a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice (a,b)",
         ),
         pytest.param(
             "choice( 10 , 20 )",
-            ChoiceSweep(choices=[10, 20], simple_form=False),
+            ChoiceSweep(list=[10, 20]),
             id="sweep:choice( 10 , 20 )",
         ),
         pytest.param(
-            "choice(list=[10,20])",
-            ChoiceSweep(choices=[10, 20], simple_form=False),
-            id="sweep:choice:named",
+            "choice(list=[10,20])", ChoiceSweep(list=[10, 20]), id="sweep:choice:named",
+        ),
+        pytest.param(
+            "choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))",
         ),
     ],
 )
-def test_choice_sweep_parsing(value: str, expected: Any) -> None:
+def test_choice_sweep(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "choiceSweep")
     assert ret == expected
 
@@ -195,19 +231,18 @@ def test_choice_sweep_parsing(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
+        pytest.param("a,b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a,b",),
         pytest.param(
-            "a,b",
-            ChoiceSweep(choices=["a", "b"], simple_form=True),
-            id="sweep:choice(a)",
+            "a,10,3.14",
+            ChoiceSweep(list=["a", 10, 3.14], simple_form=True),
+            id="a,10,3.14",
         ),
         pytest.param(
-            "a , b",
-            ChoiceSweep(choices=["a", "b"], simple_form=True),
-            id="sweep:choice(a)",
+            "a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b",
         ),
     ],
 )
-def test_simple_choice_sweep_parsing(value: str, expected: Any) -> None:
+def test_simple_choice_sweep(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "simpleChoiceSweep")
     assert ret == expected
 
@@ -244,22 +279,31 @@ def test_range_sweep_parsing(value: str, expected: Any) -> None:
     "value,expected",
     [
         pytest.param(
-            "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="ints_autocast"
+            "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="interval(10,11)"
         ),
         pytest.param(
-            "interval (10,11)", IntervalSweep(start=10.0, end=11.0), id="ints_autocast"
+            "tag(log,interval(0.0,1.0))",
+            IntervalSweep(start=0, end=1.0, tags={"log"}),
+            id="tag(log,interval(0.0,1.0))",
         ),
         pytest.param(
-            "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="floats",
+            "interval (10,11)",
+            IntervalSweep(start=10.0, end=11.0),
+            id="interval (10,11)",
+        ),
+        pytest.param(
+            "interval(2.72,3.14)",
+            IntervalSweep(start=2.72, end=3.14),
+            id="interval(2.72,3.14)",
         ),
         pytest.param(
             "interval(start=2.72,end=3.14)",
             IntervalSweep(start=2.72, end=3.14),
-            id="floats:named",
+            id="interval(start=2.72,end=3.14)",
         ),
     ],
 )
-def test_interval_sweep_parsing(value: str, expected: Any) -> None:
+def test_interval_sweep(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "intervalSweep")
     assert ret == expected
 
@@ -520,6 +564,7 @@ def test_key(value: str, expected: Any) -> None:
             QuotedString(text="false", quote=Quote.single),
             id="value:bool:quoted",
         ),
+        pytest.param("int('10')", 10, id="int('10')"),
     ],
 )
 def test_primitive(value: str, prefix: str, suffix: str, expected: Any) -> None:
@@ -569,17 +614,14 @@ def test_key_rename(value: str, expected: bool) -> None:
     ],
 )
 @pytest.mark.parametrize(  # type: ignore
-    "value,expected_key,expected_value,expected_value_type,tags",
+    "value,expected_key,expected_value,expected_value_type",
     [
-        pytest.param(
-            "key=value", "key", "value", ValueType.ELEMENT, set(), id="simple_value"
-        ),
+        pytest.param("key=value", "key", "value", ValueType.ELEMENT, id="simple_value"),
         pytest.param(
             "key='1,2,3'",
             "key",
             QuotedString(text="1,2,3", quote=Quote.single),
             ValueType.ELEMENT,
-            set(),
             id="simple_value",
         ),
         pytest.param(
@@ -587,30 +629,23 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             QuotedString(text="שלום", quote=Quote.single),
             ValueType.ELEMENT,
-            set(),
             id="unicode",
         ),
         pytest.param(
-            "key=value-123", "key", "value-123", ValueType.ELEMENT, set(), id="id-int"
+            "key=value-123", "key", "value-123", ValueType.ELEMENT, id="id-int"
         ),
         pytest.param(
-            "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, set(), id="id-float"
+            "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, id="id-float"
         ),
         pytest.param(
-            "key=value-true",
-            "key",
-            "value-true",
-            ValueType.ELEMENT,
-            set(),
-            id="id-bool",
+            "key=value-true", "key", "value-true", ValueType.ELEMENT, id="id-bool",
         ),
-        pytest.param("key=", "key", "", ValueType.ELEMENT, set(), id="empty_value"),
+        pytest.param("key=", "key", "", ValueType.ELEMENT, id="empty_value"),
         pytest.param(
             "key='foo,bar'",
             "key",
             QuotedString(text="foo,bar", quote=Quote.single),
             ValueType.ELEMENT,
-            set(),
             id="quoted_value",
         ),
         pytest.param(
@@ -618,124 +653,105 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key",
             QuotedString(text="foo , bar", quote=Quote.single),
             ValueType.ELEMENT,
-            set(),
             id="quoted_value",
         ),
         pytest.param(
             "key=1,2,3",
             "key",
-            [1, 2, 3],
+            ChoiceSweep(list=[1, 2, 3], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
-            set(),
-            id="choice_sweep",
+            id="choice",
         ),
         pytest.param(
             "key=choice(1)",
             "key",
-            [1],
+            ChoiceSweep(list=[1]),
             ValueType.CHOICE_SWEEP,
-            set(),
-            id="choice_sweep_1_element",
+            id="choice_1_element",
         ),
         pytest.param(
             "key=choice(1,2,3)",
             "key",
-            [1, 2, 3],
+            ChoiceSweep(list=[1, 2, 3]),
             ValueType.CHOICE_SWEEP,
-            set(),
             id="choice_sweep",
         ),
         pytest.param(
             "key=[1,2],[3,4]",
             "key",
-            [[1, 2], [3, 4]],
+            ChoiceSweep(list=[[1, 2], [3, 4]], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
-            set(),
-            id="choice_sweep",
+            id="choice",
         ),
         pytest.param(
             "key=choice([1,2],[3,4])",
             "key",
-            [[1, 2], [3, 4]],
+            ChoiceSweep(list=[[1, 2], [3, 4]]),
             ValueType.CHOICE_SWEEP,
-            set(),
-            id="choice_sweep",
+            id="choice",
         ),
         pytest.param(
             "key=range(0,2)",
             "key",
-            range(0, 2),
+            RangeSweep(start=0, stop=2),
             ValueType.RANGE_SWEEP,
-            set(),
-            id="range_sweep",
+            id="range",
         ),
         pytest.param(
             "key=range(1,5,2)",
             "key",
-            range(1, 5, 2),
+            RangeSweep(start=1, stop=5, step=2),
             ValueType.RANGE_SWEEP,
-            set(),
-            id="range_sweep",
+            id="range",
         ),
         pytest.param(
             "key=range(10.0, 11.0)",
             "key",
-            FloatRange(10, 11.0, 1),
+            RangeSweep(start=10.0, stop=11.0, step=1.0),
             ValueType.RANGE_SWEEP,
-            set(),
-            id="range_sweep",
+            id="range",
         ),
         pytest.param(
             "key=interval(0,1)",
             "key",
             IntervalSweep(0.0, 1.0),
             ValueType.INTERVAL_SWEEP,
-            set(),
-            id="range_sweep",
+            id="interval",
         ),
         # tags
         pytest.param(
             "key=tag(a,b,choice([1,2],[3,4]))",
             "key",
-            [[1, 2], [3, 4]],
+            ChoiceSweep(list=[[1, 2], [3, 4]], tags={"a", "b"}),
             ValueType.CHOICE_SWEEP,
-            {"a", "b"},
-            id="choice_sweep:tags",
+            id="choice:tags",
         ),
         pytest.param(
             "key=tag(a,b,interval(0,1))",
             "key",
             IntervalSweep(0.0, 1.0, {"a", "b"}),
             ValueType.INTERVAL_SWEEP,
-            {"a", "b"},
-            id="range_sweep:tags",
-        ),
-        pytest.param(
-            "key=tag(a,b,interval(0,1))",
-            "key",
-            IntervalSweep(0.0, 1.0, {"a", "b"}),
-            ValueType.INTERVAL_SWEEP,
-            {"a", "b"},
-            id="range_sweep:tags",
+            id="interval:tags",
         ),
         pytest.param(
             "key=tag(tags=[a,b],sweep=interval(0,1))",
             "key",
             IntervalSweep(0.0, 1.0, {"a", "b"}),
             ValueType.INTERVAL_SWEEP,
-            {"a", "b"},
-            id="range_sweep:tags:named",
+            id="interval:tags:named",
+        ),
+        pytest.param(
+            "key=str([1,2])", "key", ["1", "2"], ValueType.ELEMENT, id="casted_list",
         ),
     ],
 )
-def test_parse_override(
+def test_override(
     prefix: str,
     value: str,
     override_type: OverrideType,
     expected_key: str,
     expected_value: Any,
     expected_value_type: ValueType,
-    tags: Any,
 ) -> None:
     line = prefix + value
     ret = OverridesParser.parse_rule(line, "override")
@@ -745,7 +761,6 @@ def test_parse_override(
         key_or_group=expected_key,
         _value=expected_value,
         value_type=expected_value_type,
-        tags=tags,
     )
     assert ret == expected
 
@@ -806,14 +821,14 @@ def test_parse_overrides() -> None:
             type=OverrideType.CHANGE,
             key_or_group="z",
             value_type=ValueType.SIMPLE_CHOICE_SWEEP,
-            _value=["a", "b", "c"],
+            _value=ChoiceSweep(list=["a", "b", "c"], simple_form=True),
             input_line=overrides[2],
         ),
         Override(
             type=OverrideType.CHANGE,
             key_or_group="z",
             value_type=ValueType.CHOICE_SWEEP,
-            _value=["a", "b", "c"],
+            _value=ChoiceSweep(list=["a", "b", "c"]),
             input_line=overrides[3],
         ),
     ]
@@ -873,7 +888,7 @@ def test_override_get_value_element_method(
     override: str, expected: str, space_after_sep: bool
 ) -> None:
     ret = OverridesParser.parse_rule(override, "override")
-    assert ret.get_value_element(space_after_sep=space_after_sep) == expected
+    assert ret.get_value_element_as_str(space_after_sep=space_after_sep) == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -933,6 +948,8 @@ def test_float_range(
     [
         pytest.param("a", {"a"}, id="tag"),
         pytest.param("a,b,c", {"a", "b", "c"}, id="tags"),
+        pytest.param("tags=[]", set(), id="tags"),
+        pytest.param("tags=[a,b,c]", {"a", "b", "c"}, id="tags"),
     ],
 )
 def test_tag_list(value: str, expected: str) -> None:
@@ -943,15 +960,18 @@ def test_tag_list(value: str, expected: str) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value, expected",
     [
-        pytest.param(
-            "choice(a,b)",
-            ChoiceSweep(choices=["a", "b"], simple_form=False),
-            id="choice",
-        ),
         pytest.param("range(1,10)", RangeSweep(start=1, stop=10), id="range"),
         pytest.param("range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="range"),
         pytest.param(
-            "interval(0,3.14)", IntervalSweep(start=0, end=3.14), id="interval"
+            "tag(tag1,tag2,range(1,2))",
+            RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
+            id="range",
+        ),
+        pytest.param(
+            "str(choice(1,2))", ChoiceSweep(list=["1", "2"]), id="str(choice(1,2))",
+        ),
+        pytest.param(
+            "sort(choice(2,1))", ChoiceSweep(list=[1, 2]), id="sort(choice(2,1))",
         ),
     ],
 )
@@ -964,20 +984,26 @@ def test_sweep(value: str, expected: str) -> None:
     "value, expected",
     [
         pytest.param(
-            "tag(choice(a,b))",
-            ChoiceSweep(simple_form=False, choices=["a", "b"]),
-            id="choice:no_tags",
+            "tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="choice:no_tags",
         ),
         pytest.param(
-            "tag (choice(a,b))",
-            ChoiceSweep(simple_form=False, choices=["a", "b"]),
-            id="choice:no_tags",
+            "tag (choice(a,b))", ChoiceSweep(list=["a", "b"]), id="choice:no_tags",
         ),
         pytest.param(
             "tag(tag1,tag2,choice(a,b))",
-            ChoiceSweep(simple_form=False, choices=["a", "b"], tags={"tag1", "tag2"}),
+            ChoiceSweep(list=["a", "b"], tags={"tag1", "tag2"}),
             id="choice",
         ),
+    ],
+)
+def test_tagged_choice_sweep(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "taggedChoiceSweep")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
         pytest.param(
             "tag(range(1,2))", RangeSweep(start=1, stop=2), id="range:no_tags",
         ),
@@ -991,6 +1017,16 @@ def test_sweep(value: str, expected: str) -> None:
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
             id="range",
         ),
+    ],
+)
+def test_tagged_range_sweep(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "taggedRangeSweep")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
         pytest.param(
             "tag(interval(0,2))", IntervalSweep(start=0, end=2), id="interval:no_tags",
         ),
@@ -1001,8 +1037,144 @@ def test_sweep(value: str, expected: str) -> None:
         ),
     ],
 )
-def test_tagged_sweep(value: str, expected: str) -> None:
-    ret = OverridesParser.parse_rule(value, "taggedSweep")
+def test_tagged_interval_sweep(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "taggedIntervalSweep")
+    assert ret == expected
+
+
+#  TODO: is this still needed after cleanup?
+# @pytest.mark.parametrize(  # type: ignore
+#     "value, expected",
+#     [
+#         pytest.param(
+#             "sort(1,2,3)",
+#             Sort(
+#                 list_or_sweep=ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
+#                 reverse=False,
+#             ),
+#             id="sort:choice:simple",
+#         ),
+#         pytest.param(
+#             "sort(choice(1,2,3))",
+#             Sort(
+#                 list_or_sweep=ChoiceSweep(
+#                      list=[1, 2, 3], tags=set()
+#                 ),
+#                 reverse=False,
+#             ),
+#             id="sort:choice",
+#         ),
+#         pytest.param(
+#             "sort(range(10,1))",
+#             Sort(list_or_sweep=RangeSweep(start=10, stop=1), reverse=False),
+#             id="sort:range",
+#         ),
+#     ],
+# )
+# def test_sweep_sort(value: str, expected: str) -> None:
+#     ret = OverridesParser.parse_rule(value, "sweepSort")
+#     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
+        # list
+        pytest.param(
+            "sort([1,2,3])",
+            Sort(list_or_sweep=[1, 2, 3], reverse=False),
+            id="sort:list",
+        ),
+        pytest.param(
+            "sort(list=[1,2,3])",
+            Sort(list_or_sweep=[1, 2, 3], reverse=False),
+            id="sort:list:named",
+        ),
+        pytest.param(
+            "sort(list=[])",
+            Sort(list_or_sweep=[], reverse=False),
+            id="sort:list:named:empty",
+        ),
+        pytest.param(
+            "sort(list=[1,2,3], reverse=True)",
+            Sort(list_or_sweep=[1, 2, 3], reverse=True),
+            id="sort:list:named:rev",
+        ),
+        # simple choice sweep
+        pytest.param(
+            "sort(1,2,3)",
+            Sort(
+                list_or_sweep=ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
+                reverse=False,
+            ),
+            id="sort:choice:simple",
+        ),
+        pytest.param(
+            "sort(1,2,3,reverse=True)",
+            Sort(
+                list_or_sweep=ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
+                reverse=True,
+            ),
+            id="sort:choice:simple:rev",
+        ),
+        # choice sweep
+        pytest.param(
+            "sort(choice(1,2,3))",
+            Sort(list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set()), reverse=False,),
+            id="sort:choice",
+        ),
+        pytest.param(
+            "sort(choice(1,2,3), reverse=True)",
+            Sort(list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set()), reverse=True,),
+            id="sort:choice:rev",
+        ),
+        pytest.param(
+            "sort(tag(a,b,choice(1,2,3)), reverse=True)",
+            Sort(
+                list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags={"a", "b"}),
+                reverse=True,
+            ),
+            id="sort:tag:choice:rev",
+        ),
+        # range sweep
+        pytest.param(
+            "sort(float(range(10,1))))",
+            Sort(list_or_sweep=RangeSweep(start=10.0, stop=1.0), reverse=False),
+            id="sort:float:range",
+        ),
+        pytest.param(
+            "sort(range(10,1))",
+            Sort(list_or_sweep=RangeSweep(start=10, stop=1), reverse=False),
+            id="sort:range",
+        ),
+        pytest.param(
+            "sort(tag(a,b,range(1,10,2)), reverse=True)",
+            Sort(
+                list_or_sweep=RangeSweep(start=1, stop=10, step=2, tags={"a", "b"}),
+                reverse=True,
+            ),
+            id="rev_sort:tag:range",
+        ),
+    ],
+)
+def test_sort(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "sort")
+    assert ret == expected
+
+
+# TODO: add shuffle example
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected",
+    [
+        pytest.param(
+            "sort([1,2,3])",
+            Sort(list_or_sweep=[1, 2, 3], reverse=False),
+            id="sort:list",
+        ),
+    ],
+)
+def test_ordering(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "ordering")
     assert ret == expected
 
 
@@ -1023,48 +1195,33 @@ def test_tagged_sweep(value: str, expected: str) -> None:
         pytest.param("3.14", 3.14, id="float"),
         pytest.param("true", True, id="bool"),
         pytest.param(
-            "a,b", ChoiceSweep(simple_form=True, choices=["a", "b"]), id="choice"
+            "a,b", ChoiceSweep(simple_form=True, list=["a", "b"]), id="choice"
         ),
-        pytest.param(
-            "choice(a,b)",
-            ChoiceSweep(simple_form=False, choices=["a", "b"]),
-            id="choice",
-        ),
+        pytest.param("choice(a,b)", ChoiceSweep(list=["a", "b"]), id="choice",),
         pytest.param("range(1,20,2)", RangeSweep(start=1, stop=20, step=2), id="range"),
         pytest.param(
-            "interval(0.5, 1.5)", IntervalSweep(start=0.5, end=1.5,), id="interval"
+            "interval(0.0,1.0)", IntervalSweep(start=0.0, end=1.0), id="interval"
         ),
+        pytest.param("[a,b,c]", ["a", "b", "c"], id="list"),
+        pytest.param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
     ],
 )
-def test_type_cast(value: str, expected_value: Any, cast_type: CastType) -> None:
-    def cast(v: Any, space: bool) -> str:
+def test_cast(value: str, expected_value: Any, cast_type: CastType) -> None:
+    def cast(v: Any) -> str:
         if cast_type == CastType.INT:
-            if space:
-                return f"int ( {v} )"
-            else:
-                return f"int({v})"
+            return f"int({v})"
         elif cast_type == CastType.FLOAT:
-            if space:
-                return f"float ( {v} )"
-            else:
-                return f"float({v})"
+            return f"float({v})"
         elif cast_type == CastType.BOOL:
-            if space:
-                return f"bool ( {v} )"
-            else:
-                return f"bool({v})"
+            return f"bool({v})"
         elif cast_type == CastType.STR:
-            if space:
-                return f"str ( {v} )"
-            else:
-                return f"str({v})"
+            return f"str({v})"
         else:
             assert False
 
-    ret1 = OverridesParser.parse_rule(cast(value, space=False), "cast")
-    ret2 = OverridesParser.parse_rule(cast(value, space=True), "cast")
-    assert ret1 == Cast(cast_type=cast_type, value=expected_value)
-    assert ret2 == Cast(cast_type=cast_type, value=expected_value)
+    cast_str = cast(value)
+    ret1 = OverridesParser.parse_rule(cast_str, "cast")
+    assert ret1 == Cast(cast_type=cast_type, value=expected_value, input_line=cast_str)
 
 
 @dataclass
@@ -1119,7 +1276,9 @@ class CastResults:
         pytest.param(
             "inf",
             CastResults(
-                int=CastResults.error("Error casting `inf` (float) to int"),
+                int=CastResults.error(
+                    "Error evaluating `int(inf)` : cannot convert float infinity to integer"
+                ),
                 float=math.inf,
                 str="inf",
                 bool=True,
@@ -1129,7 +1288,9 @@ class CastResults:
         pytest.param(
             "nan",
             CastResults(
-                int=CastResults.error("Error casting `nan` (float) to int"),
+                int=CastResults.error(
+                    "Error evaluating `int(nan)` : cannot convert float NaN to integer"
+                ),
                 float=math.nan,
                 str="nan",
                 bool=True,
@@ -1144,10 +1305,16 @@ class CastResults:
         pytest.param(
             "''",
             CastResults(
-                int=CastResults.error("Error casting `` (str) to int"),
-                float=CastResults.error("Error casting `` (str) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int('')` : invalid literal for int() with base 10: ''"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float('')` : could not convert string to float: ''"
+                ),
                 str="",
-                bool=CastResults.error("Cannot cast '' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool('')` : Cannot cast '' to bool"
+                ),
             ),
             id="''",
         ),
@@ -1158,25 +1325,35 @@ class CastResults:
                 int=10,
                 float=10.0,
                 str="10",
-                bool=CastResults.error("Cannot cast '10' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool('10')` : Cannot cast '10' to bool"
+                ),
             ),
             id="'10'",
         ),
         pytest.param(
             "'10.0'",
             CastResults(
-                int=CastResults.error("Error casting `10.0` (str) to int"),
+                int=CastResults.error(
+                    "Error evaluating `int('10.0')` : invalid literal for int() with base 10: '10.0'"
+                ),
                 float=10.0,
                 str="10.0",
-                bool=CastResults.error("Cannot cast '10.0' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool('10.0')` : Cannot cast '10.0' to bool"
+                ),
             ),
             id="'10.0'",
         ),
         pytest.param(
             "'true'",
             CastResults(
-                int=CastResults.error("Error casting `true` (str) to int"),
-                float=CastResults.error("Error casting `true` (str) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int('true')` : invalid literal for int() with base 10: 'true'"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float('true')` : could not convert string to float: 'true'"
+                ),
                 str="true",
                 bool=True,
             ),
@@ -1185,8 +1362,12 @@ class CastResults:
         pytest.param(
             "'false'",
             CastResults(
-                int=CastResults.error("Error casting `false` (str) to int"),
-                float=CastResults.error("Error casting `false` (str) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int('false')` : invalid literal for int() with base 10: 'false'"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float('false')` : could not convert string to float: 'false'"
+                ),
                 str="false",
                 bool=False,
             ),
@@ -1195,20 +1376,32 @@ class CastResults:
         pytest.param(
             "'[1,2,3]'",
             CastResults(
-                int=CastResults.error("Error casting `[1,2,3]` (str) to int"),
-                float=CastResults.error("Error casting `[1,2,3]` (str) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int('[1,2,3]')` : invalid literal for int() with base 10: '[1,2,3]'"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float('[1,2,3]')` : could not convert string to float: '[1,2,3]'"
+                ),
                 str="[1,2,3]",
-                bool=CastResults.error("Cannot cast '[1,2,3]' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool('[1,2,3]')` : Cannot cast '[1,2,3]' to bool"
+                ),
             ),
             id="'[1,2,3]'",
         ),
         pytest.param(
             "'{a:10}'",
             CastResults(
-                int=CastResults.error("Error casting `{a:10}` (str) to int"),
-                float=CastResults.error("Error casting `{a:10}` (str) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int('{a:10}')` : invalid literal for int() with base 10: '{a:10}'"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float('{a:10}')` : could not convert string to float: '{a:10}'"
+                ),
                 str="{a:10}",
-                bool=CastResults.error("Cannot cast '{a:10}' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool('{a:10}')` : Cannot cast '{a:10}' to bool"
+                ),
             ),
             id="'{a:10}'",
         ),
@@ -1241,10 +1434,16 @@ class CastResults:
         pytest.param(
             "[a,1]",
             CastResults(
-                int=CastResults.error("Error casting `['a', 1]` (list) to int"),
-                float=CastResults.error("Error casting `['a', 1]` (list) to float"),
+                int=CastResults.error(
+                    "Error evaluating `int([a,1])` : invalid literal for int() with base 10: 'a'"
+                ),
+                float=CastResults.error(
+                    "Error evaluating `float([a,1])` : could not convert string to float: 'a'"
+                ),
                 str=["a", "1"],
-                bool=CastResults.error("Cannot cast 'a' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool([a,1])` : Cannot cast 'a' to bool"
+                ),
             ),
             id="[a,1]",
         ),
@@ -1271,23 +1470,25 @@ class CastResults:
             "{a:10,b:xyz}",
             CastResults(
                 int=CastResults.error(
-                    "Error casting `{'a': 10, 'b': 'xyz'}` (dict) to int"
+                    "Error evaluating `int({a:10,b:xyz})` : invalid literal for int() with base 10: 'xyz'"
                 ),
                 float=CastResults.error(
-                    "Error casting `{'a': 10, 'b': 'xyz'}` (dict) to float"
+                    "Error evaluating `float({a:10,b:xyz})` : could not convert string to float: 'xyz'"
                 ),
                 str={"a": "10", "b": "xyz"},
-                bool=CastResults.error("Cannot cast 'xyz' to bool"),
+                bool=CastResults.error(
+                    "Error evaluating `bool({a:10,b:xyz})` : Cannot cast 'xyz' to bool"
+                ),
             ),
             id="{a:10,b:xyz}",
         ),
         pytest.param(
             "choice(0,1)",
             CastResults(
-                int=ChoiceSweep(simple_form=False, choices=[0, 1]),
-                float=ChoiceSweep(simple_form=False, choices=[0.0, 1.0]),
-                str=ChoiceSweep(simple_form=False, choices=["0", "1"]),
-                bool=ChoiceSweep(simple_form=False, choices=[False, True]),
+                int=ChoiceSweep(list=[0, 1]),
+                float=ChoiceSweep(list=[0.0, 1.0]),
+                str=ChoiceSweep(list=["0", "1"]),
+                bool=ChoiceSweep(list=[False, True]),
             ),
             id="choice(0,1)",
         ),
@@ -1295,15 +1496,15 @@ class CastResults:
             "choice(a,b)",
             CastResults(
                 int=CastResults.error(
-                    "Error casting `ChoiceSweep(simple_form=False, choices=['a', 'b'], tags=set())`"
-                    " (ChoiceSweep) to int"
+                    "Error evaluating `int(choice(a,b))` : invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error casting `ChoiceSweep(simple_form=False, choices=['a', 'b'], tags=set())`"
-                    " (ChoiceSweep) to float"
+                    "Error evaluating `float(choice(a,b))` : could not convert string to float: 'a'"
                 ),
-                str=ChoiceSweep(simple_form=False, choices=["a", "b"]),
-                bool=CastResults.error("Cannot cast 'a' to bool"),
+                str=ChoiceSweep(list=["a", "b"]),
+                bool=CastResults.error(
+                    "Error evaluating `bool(choice(a,b))` : Cannot cast 'a' to bool"
+                ),
             ),
             id="choice(a,b)",
         ),
@@ -1311,15 +1512,15 @@ class CastResults:
             "choice(1,a)",
             CastResults(
                 int=CastResults.error(
-                    "Error casting `ChoiceSweep(simple_form=False, choices=[1, 'a'], tags=set())` "
-                    "(ChoiceSweep) to int"
+                    "Error evaluating `int(choice(1,a))` : invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error casting `ChoiceSweep(simple_form=False, choices=[1, 'a'], tags=set())` "
-                    "(ChoiceSweep) to float"
+                    "Error evaluating `float(choice(1,a))` : could not convert string to float: 'a'"
                 ),
-                str=ChoiceSweep(simple_form=False, choices=["1", "a"]),
-                bool=CastResults.error("Cannot cast 'a' to bool"),
+                str=ChoiceSweep(list=["1", "a"]),
+                bool=CastResults.error(
+                    "Error evaluating `bool(choice(1,a))` : Cannot cast 'a' to bool"
+                ),
             ),
             id="choice(1,a)",
         ),
@@ -1349,7 +1550,7 @@ class CastResults:
                 str=CastResults.error("Range can only be casted to int or float"),
                 bool=CastResults.error("Range can only be casted to int or float"),
             ),
-            id="choice(1,10)",
+            id="range(1,10)",
         ),
         pytest.param(
             "range(1.0,10.0)",
@@ -1359,14 +1560,15 @@ class CastResults:
                 str=CastResults.error("Range can only be casted to int or float"),
                 bool=CastResults.error("Range can only be casted to int or float"),
             ),
-            id="choice(1.0,10.0)",
+            id="range(1.0,10.0)",
         ),
     ],
 )
 def test_cast_conversions(value: Any, expected_value: Any) -> None:
     for cast_type in (CastType.INT, CastType.FLOAT, CastType.BOOL, CastType.STR):
         field = cast_type.name.lower()
-        ret = OverridesParser.parse_rule(f"{field}({value})", "cast")
+        cast_str = f"{field}({value})"
+        ret = OverridesParser.parse_rule(cast_str, "cast")
         expected = getattr(expected_value, field)
         if isinstance(expected, RaisesContext):
             with expected:

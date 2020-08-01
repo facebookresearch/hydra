@@ -41,11 +41,13 @@ from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
             [[["a=1", "b=10"], ["a=1", "b=11"]], [["a=2", "b=10"], ["a=2", "b=11"]]],
             id="batches_of_2",
         ),
+        pytest.param(["a=range(0,3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range"),
     ],
 )
 def test_split(
     args: List[str], max_batch_size: Optional[int], expected: List[List[List[str]]]
 ) -> None:
+
     ret = BasicSweeper.split_arguments(args, max_batch_size=max_batch_size)
     lret = [list(x) for x in ret]
     assert lret == expected
