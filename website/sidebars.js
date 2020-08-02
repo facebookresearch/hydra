@@ -105,7 +105,10 @@ module.exports = {
         ],
 
         'Development': [
-            'development/contributing',
+            'development/overview',
+            'development/testing',
+            'development/style_guide',
+            'development/documentation',
             'development/release',
         ],
 

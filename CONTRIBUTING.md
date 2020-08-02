@@ -2,7 +2,7 @@
 We want to make contributing to this project as easy and transparent as
 possible.
 
-Please see the [developer guide](https://hydra.cc/docs/development/contributing/) on the website.
+Please see the [developer guide](https://hydra.cc/docs/development/overview/) on the website.
 
 ## Pull Requests
 We welcome your pull requests.
