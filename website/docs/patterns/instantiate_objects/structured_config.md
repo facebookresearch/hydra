@@ -6,8 +6,11 @@ sidebar_label: Structured Configs with instantiate
 
 Structured Configs can be used with `hydra.utils.instantiate()`. A complete, standalone example is available [here](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate/structured_configs).
 
-#### Example usage
+<div className="row">
 
+<div className="col col--6">
+
+#### Example usage
 
 ```python title="my_app.py" {18}
 
@@ -61,17 +64,15 @@ if __name__ == "__main__":
     my_app()
 ```
 
-#### Sample Output
-<div className="row">
+</div>
+
 <div className="col col--6">
+
+#### Sample Output
 
 ```yaml title="python my_app.py" {1-2}
 MySQL connecting to localhost on port=1234
 ```
-
-</div>
-
-<div className="col col--6">
 
 ```yaml title="python my_app.py db=postgresql" {1-2}
 PostgreSQL connecting to localhost on port=5678
