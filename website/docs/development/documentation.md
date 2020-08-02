@@ -4,26 +4,6 @@ title: Documentation
 sidebar_label: Documentation
 ---
 
-## Website setup
-
-The website is built using [Docusaurus 2](https://v2.docusaurus.io/).  
-Run the following commands from the `website` directory.
-
-### Install
-
-```
-$ yarn
-```
-### Local Development
-
-```
-$ yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-For more details, refer [here](https://github.com/facebookresearch/hydra/blob/master/website/README.md).
-
 ## NEWS Entries
 The [`NEWS.md`](https://github.com/facebookresearch/hydra/blob/master/NEWS.md) file is managed using `towncrier` and all non-trivial changes
 must be accompanied by a news entry.
@@ -66,3 +46,23 @@ summary line in an imperative tone followed by a blank line separating it
 from a description of the feature/change in one or more paragraphs, each wrapped
 at 80 characters. Remember that a news entry is meant for end users and should
 only contain details relevant to an end user.
+
+## Website setup
+
+The website is built using [Docusaurus 2](https://v2.docusaurus.io/).  
+Run the following commands from the `website` directory.
+
+### Install
+
+```
+$ yarn
+```
+### Local Development
+
+```
+$ yarn start
+```
+
+This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+
+For more details, refer [here](https://github.com/facebookresearch/hydra/blob/master/website/README.md).

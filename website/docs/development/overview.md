@@ -10,14 +10,12 @@ It is recommended that you install Hydra in a virtual environment like [conda](h
 ## Environment setup
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and create an empty Conda environment with:
 ```
-conda create -n hydra38 python=3.8 -y
+conda create -n hydra38 python=3.8 -qy
 ```
 
-<div class="alert alert--info" role="alert">
-<strong>NOTE</strong>:
+:::info NOTE
 The core Hydra framework supports Python 3.6 or newer. You may need to create additional environments for different Python versions if CI detect issues on a supported version of Python.
-</div>
-<br/>
+:::
 
 Activate the environment:
 ```

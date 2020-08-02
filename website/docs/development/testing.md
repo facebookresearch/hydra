@@ -11,10 +11,9 @@ with `nox -s NAME` (you may need to quote the session name in some cases)
 ## With pytest
 Run `pytest` at the repository root to run all the Hydra core tests.
 To run the tests of individual plugins, use `pytest plugins/NAME`.
-<div class="alert alert--info" role="alert">
-<strong>NOTE</strong>:
+:::info NOTE
 Some plugins support fewer versions of Python than the Hydra core.
-</div>
+:::
 
 ## With nox
 See `nox -l`. a few examples:
