@@ -22,16 +22,14 @@ class DBConnection:
 
 class MySQLConnection(DBConnection):
     def __init__(self, host: str, port: int) -> None:
+        super().__init__(host=host, port=port)
         self.driver = "MySQL"
-        self.host = host
-        self.port = port
 
 
 class PostgreSQLConnection(DBConnection):
     def __init__(self, host: str, port: int,) -> None:
+        super().__init__(host=host, port=port)
         self.driver = "PostgreSQL"
-        self.host = host
-        self.port = port
 
 
 @dataclass
