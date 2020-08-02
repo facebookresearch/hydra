@@ -4,7 +4,7 @@ title: Overview
 sidebar_label: Overview
 ---
 
-This guide assumes you have forked and checked-out the [repository](https://github.com/facebookresearch/hydra).
+This guide assumes you have checked-out the [repository](https://github.com/facebookresearch/hydra).
 It is recommended that you install Hydra in a virtual environment like [conda](https://docs.conda.io/en/latest/) or [virtualenv](https://virtualenv.pypa.io/en/latest/).
 
 ## Environment setup
