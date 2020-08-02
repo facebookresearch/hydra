@@ -70,12 +70,14 @@ if __name__ == "__main__":
 
 #### Sample Output
 
-```yaml title="python my_app.py" {1-2}
-MySQL connecting to localhost on port=1234
+```bash
+$ python my_app.py
+MySQL connecting on port=1234
 ```
 
-```yaml title="python my_app.py db=postgresql" {1-2}
-PostgreSQL connecting to localhost on port=5678
+```bash
+$ python my_app.py db=postgresql
+PostgreSQL connecting on port=5678
 ```
 
 </div>
