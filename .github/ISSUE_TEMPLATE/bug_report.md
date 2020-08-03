@@ -12,8 +12,8 @@ assignees: ''
 <!-- A clear and concise description of what the bug is. -->
 
 ## Checklist
-[ ] I checked on the latest version of Hydra
-[ ] I created a minimal repro
+- [ ] I checked on the latest version of Hydra
+- [ ] I created a minimal repro
 
 ## To reproduce
 
