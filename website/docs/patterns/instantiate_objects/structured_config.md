@@ -8,7 +8,7 @@ Structured Configs can be used with `hydra.utils.instantiate()`. A complete, sta
 
 #### Example usage
 
-```python title="my_app.py" {18}
+```python title="my_app.py"
 
 # Base class for the database config
 @dataclass
