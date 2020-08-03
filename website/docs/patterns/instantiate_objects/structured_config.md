@@ -28,11 +28,9 @@ class PostGreSQLConfig(DBConfig):
     port: int = 5678
     timeout: int = 10
 
-defaults = [{"db": "mysql",}]
-
 @dataclass
 class Config(DictConfig):
-    defaults: List[Any] = field(default_factory=lambda: defaults)
+    defaults: List[Any] = field(default_factory=lambda: [{"db": "mysql"}])
     db: ObjectConf = MISSING
 
 cs = ConfigStore.instance()
