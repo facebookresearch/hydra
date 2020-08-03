@@ -58,7 +58,7 @@ def test_specializing_config_example(
             [],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.MySQLConnection",
+                    "target": "examples.patterns.instantiate.objects.my_app.MySQLConnection",
                     "params": {"host": "localhost", "user": "root", "password": 1234},
                 }
             },
@@ -67,7 +67,7 @@ def test_specializing_config_example(
             ["db=postgresql"],
             {
                 "db": {
-                    "target": "examples.patterns.objects.my_app.PostgreSQLConnection",
+                    "target": "examples.patterns.instantiate.objects.my_app.PostgreSQLConnection",
                     "params": {
                         "host": "localhost",
                         "user": "root",
@@ -79,7 +79,7 @@ def test_specializing_config_example(
         ),
     ],
 )
-def test_objects_example(
+def test_instantiate_objects_example(
     hydra_restore_singletons: Any,
     tmpdir: Path,
     hydra_task_runner: TTaskRunner,
@@ -87,7 +87,7 @@ def test_objects_example(
     output_conf: DictConfig,
 ) -> None:
     with hydra_task_runner(
-        calling_file="examples/patterns/objects/my_app.py",
+        calling_file="examples/patterns/instantiate/objects/my_app.py",
         calling_module=None,
         config_path="conf",
         config_name="config.yaml",
@@ -96,6 +96,26 @@ def test_objects_example(
         assert task.job_ret is not None
         assert task.job_ret.cfg == output_conf
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,output",
+    [
+        ([], "MySQL connecting to localhost:1234"),
+        (["db=postgresql"], "PostgreSQL connecting to localhost:5678"),
+    ],
+)
+def test_instantiate_structured_config_example(
+    tmpdir: Path, overrides: List[str], output: str,
+) -> None:
+
+    cmd = [
+        sys.executable,
+        "examples/patterns/instantiate/structured_config/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ] + overrides
+    result = check_output(cmd)
+    assert result.decode("utf-8").rstrip() == output
 
 
 def test_frozen(tmpdir: Any) -> None:
