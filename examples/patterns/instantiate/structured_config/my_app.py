@@ -11,41 +11,44 @@ from hydra.utils import instantiate
 
 
 class DBConnection:
-    def __init__(self, host: str, port: int) -> None:
-        self.driver = "driver"
+    def __init__(self, driver: str, host: str, port: int) -> None:
+        self.driver = driver
         self.host = host
         self.port = port
 
     def connect(self) -> None:
-        print(f"{self.driver} connecting to {self.host} on port={self.port}")
+        print(f"{self.driver} connecting to {self.host}:{self.port}")
 
 
 class MySQLConnection(DBConnection):
-    def __init__(self, host: str, port: int) -> None:
-        super().__init__(host=host, port=port)
-        self.driver = "MySQL"
+    def __init__(self, driver: str, host: str, port: int) -> None:
+        super().__init__(driver=driver, host=host, port=port)
 
 
 class PostgreSQLConnection(DBConnection):
-    def __init__(self, host: str, port: int,) -> None:
-        super().__init__(host=host, port=port)
-        self.driver = "PostgreSQL"
+    def __init__(self, driver: str, host: str, port: int, timeout: int) -> None:
+        super().__init__(driver=driver, host=host, port=port)
+        self.timeout = timeout
 
 
 @dataclass
 class DBConfig:
+    driver: MISSING
     host: str = "localhost"
     port: int = 80
 
 
 @dataclass
 class MySQLConfig(DBConfig):
+    driver: str = "MySQL"
     port: int = 1234
 
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
+    driver: str = "PostgreSQL"
     port: int = 5678
+    timeout: int = 10
 
 
 defaults = [
@@ -65,12 +68,12 @@ cs.store(name="config", node=Config)
 cs.store(
     group="db",
     name="mysql",
-    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig,),
+    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig),
 )
 cs.store(
     group="db",
     name="postgresql",
-    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig,),
+    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig),
 )
 
 

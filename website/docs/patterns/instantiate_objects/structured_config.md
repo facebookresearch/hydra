@@ -17,17 +17,21 @@ Structured Configs can be used with `hydra.utils.instantiate()`. A complete, sta
 # Base class for the database config
 @dataclass
 class DBConfig:
+    driver: MISSING
     host: str = "localhost"
     port: int = 80
 
 
 @dataclass
 class MySQLConfig(DBConfig):
+    driver: str = "MySQL"
     port: int = 1234
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
+    driver: str = "PostgreSQL"
     port: int = 5678
+    timeout: int = 10
 
 defaults = [
     # Load the config "mysql" from the config group "db"
@@ -46,12 +50,12 @@ cs.store(name="config", node=Config)
 cs.store(
     group="db",
     name="mysql",
-    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig,),
+    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig),
 )
 cs.store(
     group="db",
     name="postgresql",
-    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig,),
+    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig),
 )
 
 
@@ -72,12 +76,10 @@ if __name__ == "__main__":
 
 ```bash
 $ python my_app.py
-MySQL connecting on port=1234
-```
+MySQL connecting on localhost:1234
 
-```bash
 $ python my_app.py db=postgresql
-PostgreSQL connecting on port=5678
+PostgreSQL connecting on localhost:5678
 ```
 
 </div>
