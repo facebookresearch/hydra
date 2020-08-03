@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 # 🐛 Bug
-
+## Description
 <!-- A clear and concise description of what the bug is. -->
 
 ## Checklist
@@ -18,7 +18,6 @@ assignees: ''
 ## To reproduce
 
 ** Minimal Code/Config snippet to reproduce **
-
 
 ** Stack trace/error message **
 ```
