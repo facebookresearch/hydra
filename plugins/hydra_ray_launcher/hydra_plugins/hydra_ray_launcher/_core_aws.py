@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import ray.cloudpickle as cloudpickle  # type: ignore
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import open_dict
@@ -88,10 +89,14 @@ def launch(
                 f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."
             )
 
-            return launch_jobs(launcher, local_tmp_dir)
+            return launch_jobs(
+                launcher, local_tmp_dir, Path(str(HydraConfig.get().sweep.dir))
+            )
 
 
-def launch_jobs(launcher: RayAWSLauncher, local_tmp_dir: str) -> Sequence[JobReturn]:
+def launch_jobs(
+    launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
+) -> Sequence[JobReturn]:
     ray_up(launcher.ray_yaml_path)
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
@@ -134,16 +139,33 @@ def launch_jobs(launcher: RayAWSLauncher, local_tmp_dir: str) -> Sequence[JobRet
                 local_tmp_download_dir,
             )
 
-            if launcher.sync_down.source_dir:
-                target_dir = Path(_get_abs_code_dir(launcher.sync_down.target_dir))
+            sync_down_cfg = launcher.sync_down
+
+            if (
+                sync_down_cfg.target_dir
+                or sync_down_cfg.source_dir
+                or sync_down_cfg.include
+                or sync_down_cfg.exclude
+            ):
+                source_dir = (
+                    sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
+                )
+                target_dir = (
+                    sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
+                )
+                target_dir = Path(_get_abs_code_dir(target_dir))
                 target_dir.mkdir(parents=True, exist_ok=True)
+
                 rsync(
                     launcher.ray_yaml_path,
                     launcher.sync_down.include,
                     launcher.sync_down.exclude,
-                    os.path.join(launcher.sync_down.source_dir),
+                    os.path.join(source_dir),
                     str(target_dir),
                     up=False,
+                )
+                log.info(
+                    f"Syncing outputs from remote dir: {source_dir} to local dir: {target_dir.absolute()} "
                 )
 
         if launcher.stop_cluster:

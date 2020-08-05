@@ -8,12 +8,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
-from hydra_plugins.hydra_ray_launcher.conf import (
-    RayClusterConf,
-    RayInitConf,
-    RayRemoteConf,
-    RsyncConf,
-)
+from hydra_plugins.hydra_ray_launcher.conf import RayClusterConf, RsyncConf
 
 log = logging.getLogger(__name__)
 
@@ -21,8 +16,8 @@ log = logging.getLogger(__name__)
 class RayAWSLauncher(Launcher):
     def __init__(
         self,
-        ray_init_cfg: RayInitConf,
-        ray_remote_cfg: RayRemoteConf,
+        ray_init_cfg: DictConfig,
+        ray_remote_cfg: DictConfig,
         ray_cluster_cfg: RayClusterConf,
         stop_cluster: bool,
         sync_up: RsyncConf,

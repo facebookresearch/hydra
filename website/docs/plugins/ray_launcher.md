@@ -35,7 +35,7 @@ An example using the ray local launcher by default is provided in the plugin rep
 $ pwd
 <project_root>/hydra_ray_launcher/example/
 
-$ python train.py -m
+$ python train.py --multirun
 [2020-07-31 16:50:03,360][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-07-31/16-50-02
 [2020-07-31 16:50:03,360][HYDRA] Initializing ray with config: {'num_cpus': 2, 'num_gpus': 0}
 2020-07-31 16:50:03,371 INFO resource_spec.py:204 -- Starting Ray with 8.64 GiB memory available for workers and up to 4.34 GiB for objects. You can adjust these settings with ray.init(memory=<bytes>, object_store_memory=<bytes>).
@@ -45,16 +45,20 @@ $ python train.py -m
 (pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Init my model
 (pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Created dir for checkpoints. dir=/Users/jieru/workspace/hydra-fork/hydra/plugins/hydra_ray_launcher/example/multirun/2020-07-31/16-50-02/0/checkpoint
 ```
+You can discover the ray local launcher parameters with:
 
-Override `ray_init_cfg` to start ray with specific `ray.init()` config:
 ```commandline
-$ python train.py hydra.launcher.params.ray_init_cfg.num_cpus=2 random_seed=1 -m
-...
-[HYDRA]Initializing ray with config: {'num_cpus': 2, 'num_gpus': 0}
-...
-
+$ python train.py --cfg hydra -p hydra.launcher
+# @package hydra.launcher
+target: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
+params:
+  ray_init_cfg:
+    num_cpus: 1
+    num_gpus: 0
+  ray_remote_cfg:
+    num_cpus: 1
+    num_gpus: 0
 ```
-
  
 #### ray_aws launcher
 
@@ -85,12 +89,12 @@ $ tree -L 1
 ├── model
 └── train.py
 
-$ python train.py hydra/launcher=ray_aws +ray_mode=aws random_seed=1,2,3 -m
+$ python train.py --multirun hydra/launcher=ray_aws +ray_mode=aws random_seed=1,2,3 
 ...
 [HYDRA] Ray Launcher is launching 3 jobs, 
-[HYDRA]        #0 : ray_mode=aws random_seed=1
-[HYDRA]        #1 : ray_mode=aws random_seed=2
-[HYDRA]        #2 : ray_mode=aws random_seed=3
+[HYDRA]        #0 : +ray_mode=aws random_seed=1
+[HYDRA]        #1 : +ray_mode=aws random_seed=2
+[HYDRA]        #2 : +ray_mode=aws random_seed=3
 ...
 (pid=17975) [__main__][INFO] - Start training...
 (pid=17975) [model.my_model][INFO] - Init my model.
@@ -99,6 +103,8 @@ $ python train.py hydra/launcher=ray_aws +ray_mode=aws random_seed=1,2,3 -m
 (pid=17976) [__main__][INFO] - Start training...
 (pid=17976) [model.my_model][INFO] - Init my model. 
 .....
+[HYDRA] Syncing outputs from remote dir: multirun/2020-08-05/11-41-04 to local dir: multirun/2020-08-05/11-41-04
+...
 [HYDRA] Stopped AWS cluster. since you've set your provider.cache_stopped_nodes to be True, we are not deleting the cluster.
 ```
 
@@ -108,14 +114,13 @@ In the example app config, we've configured the launcher to download ``*.pt`` fi
 $ tree -L 1
 .
 ├── conf
-├── downloads # Created by example app train.py
+├── multirun # Created by example app train.py
 ├── model
 ├── multirun
 └── train.py
 
-$ tree downloads/
-downloads/
-└── multirun
+$ tree multirun/
+multirun
     └── 2020-05-18
         └── 15-17-08
             ├── 0

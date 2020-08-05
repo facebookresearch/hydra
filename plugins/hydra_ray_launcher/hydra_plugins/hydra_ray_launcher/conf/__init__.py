@@ -8,25 +8,14 @@ from hydra.types import ObjectConf
 from omegaconf import MISSING
 
 
-@dataclass
-class RayInitConf(Dict[str, Any]):
-    """ parameters for ray.init()"""
-
-    pass
-
-
-@dataclass
-class RayRemoteConf(Dict[str, Any]):
-    """ parameters for @ray.remote() """
-
-    num_cpus: Optional[int] = 1
-    num_gpus: Optional[int] = 0
+def default_field(obj):
+    return field(default_factory=lambda: obj)
 
 
 @dataclass
 class RayConf:
-    ray_init_cfg: RayInitConf = field(default_factory=RayInitConf)
-    ray_remote_cfg: RayRemoteConf = field(default_factory=RayRemoteConf)
+    ray_init_cfg: Dict[str, str] = field(default_factory=dict)
+    ray_remote_cfg: Dict[str, Any] = default_field({"num_cpus": 1, "num_gpus": 0})
 
 
 @dataclass
@@ -63,27 +52,12 @@ class RayDockerConf:
 
 
 @dataclass
-class RayProviderConf(Dict[str, Any]):
+class RayProviderConf:
     type: str = "aws"
     region: str = "us-west-2"
     availability_zone: str = "us-west-2a,us-west-2b"
     cache_stopped_nodes: bool = False
-
-
-@dataclass
-class RayAuthConf(Dict[str, Any]):
-    ssh_user: str = "ubuntu"
-
-
-@dataclass
-class RayNodeConf(Dict[str, Any]):
-    """
-    Additional options in boto docs.
-    https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html
-    """
-
-    InstanceType: str = "m5.large"
-    ImageId: str = "ami-008d8ed4bd7dc2485"
+    key_pair: str = "hydra_ray_aws"
 
 
 @dataclass
@@ -145,13 +119,23 @@ class RayClusterConf:
 
     docker: RayDockerConf = RayDockerConf()
 
-    provider: RayProviderConf = field(default_factory=RayProviderConf)
+    provider: RayProviderConf = RayProviderConf()
 
-    auth: RayAuthConf = field(default_factory=RayAuthConf)
+    # For additional options, check:
+    # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/aws/example-full.yaml
+    auth: Dict[str, str] = default_field({"ssh_user": "ubuntu"})
 
-    head_node: RayNodeConf = field(default_factory=RayNodeConf)
+    """
+    Additional options in boto docs.
+    https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html
+    """
+    head_node: Dict[str, str] = default_field(
+        {"InstanceType": "m5.large", "ImageId": "ami-008d8ed4bd7dc2485"}
+    )
 
-    worker_nodes: RayNodeConf = field(default_factory=RayNodeConf)
+    worker_nodes: Dict[str, str] = default_field(
+        {"InstanceType": "m5.large", "ImageId": "ami-008d8ed4bd7dc2485"}
+    )
 
     # Files or directories to copy to the head and worker nodes. The format is a
     # dictionary from REMOTE_PATH: LOCAL_PATH, e.g.
@@ -173,6 +157,7 @@ class RayClusterConf:
 
 @dataclass
 class RayAWSConf(RayConf):
+    ray_init_cfg: Dict[str, Any] = default_field({"address": "local"})
     ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.

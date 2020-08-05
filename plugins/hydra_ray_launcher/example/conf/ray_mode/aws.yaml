@@ -17,16 +17,8 @@ hydra:
         # No need to sync up config files.
         exclude: ["*"]
       sync_down:
-        # relative path to the output of os.getcwd() on remote cluster
-        # for now we only support syncing from one dir.
-        # multirun is the default output dir for sweeper
-        source_dir: multirun
-        # local machine dir, relative path to the output of hydra.utils.get_original_cwd()
-        # will be created if not already exists
-        # empty dir will not be downloaded by default
-        target_dir: downloads
         include: ["*.pt", "*/"]
-        # No need to sync up config files.
+        # No need to sync down config files.
         exclude: ["*", "*/"]
       stop_cluster: true
       ray_cluster_cfg:
