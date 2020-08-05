@@ -23,8 +23,8 @@ params:
       - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:}/bin:$PATH"' >> ~/.bashrc
       # install needed dependency for launcher.
       - python3 -m pip install --ignore-installed PyYAML
-      - python3 -m pip install ray==0.8.5
-      - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.0rc2-py3-none-any.whl
+      - python3 -m pip install ray>=0.8.6
+      - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.0rc3-py3-none-any.whl
       - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
 
     # Custom commands that will be run on the head node after common setup.
