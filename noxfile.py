@@ -5,7 +5,11 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
+<<<<<<< HEAD
 from typing import List
+=======
+from typing import List, Union, Dict
+>>>>>>> Iterate over all plugins
 
 import nox
 from nox.logger import logger
@@ -111,6 +115,7 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
+<<<<<<< HEAD
 def select_plugins(session, directory: str) -> List[Plugin]:
     """
     Select all plugins that should be tested in this session.
@@ -119,11 +124,36 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     """
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg", "examples"]
+=======
+def get_available_plugin() -> object:
+    blacklist = [".isort.cfg"]
+    example_plugins = [
+        {"dir_name": x, "path": f"examples/{x}"}
+        for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
+        if x not in blacklist
+    ]
+>>>>>>> Iterate over all plugins
     plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
+<<<<<<< HEAD
+=======
+    return plugins + example_plugins
+
+
+def select_plugins(session) -> List[Plugin]:
+    """
+    Select all plugins that should be tested in this session.
+    Considers the current Python version and operating systems against the supported ones,
+    as well as the user plugins selection (via the PLUGINS environment variable).
+    """
+
+    assert session.python is not None, "Session python version is not specified"
+
+    available_plugins = get_available_plugin()
+>>>>>>> Iterate over all plugins
 
     ret = []
     skipped = []
