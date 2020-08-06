@@ -141,7 +141,7 @@ jobs:
     parameters:
       py_version:
         type: string
-      plugin:
+      test_plugin:
         type: string
     macos:
       xcode: "10.0.0"
@@ -149,11 +149,11 @@ jobs:
       - macos:
           py_version: << parameters.py_version >>
       - run:
-          name: "Testing Hydra"
+          name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            export PLUGINS=<< parameters.plugin >>
+            export PLUGINS=<< parameters.test_plugin >>
             conda activate hydra
             pip install nox dataclasses
             nox -s lint_plugins test_plugins
@@ -163,7 +163,7 @@ jobs:
     parameters:
       py_version:
         type: string
-      plugin:
+      test_plugin:
         type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
@@ -171,10 +171,10 @@ jobs:
       - linux:
           py_version: << parameters.py_version >>
       - run:
-          name: << pipeline.parameters.plugin >>
+          name: << parameters.test_plugin >>
           command: |
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-              export PLUGINS=<< parameters.plugin >>
+              export PLUGINS=<< parameters.test_plugin >>
               pip install nox dataclasses
               nox -s lint_plugins test_plugins
 
@@ -183,19 +183,19 @@ jobs:
     parameters:
       py_version:
         type: string
-      plugin:
+      test_plugin:
         type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
       - run:
-          name: Testing Hydra
+          name: << parameters.test_plugin >>
           no_output_timeout: 20m
           command: |
             $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             $env:PYTHONIOENCODING="utf_8"
-            $env:PLUGINS="<< parameters.plugin >>"
+            $env:PLUGINS="<< parameters.test_plugin >>"
             conda activate hydra
             nox -s lint_plugins test_plugins
             exit $LASTEXITCODE
@@ -267,16 +267,17 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              plugin: << pipeline.parameters.plugin >>
+              test_plugin: [<< pipeline.parameters.plugin >>]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              plugin: << pipeline.parameters.plugin >>
+              test_plugin: [<< pipeline.parameters.plugin >>]
       - test_plugin_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+<<<<<<< HEAD
 <<<<<<< HEAD
               plugins: ["examples", "hydra_ax_sweeper", "hydra_colorlog", "hydra_joblib_launcher", "hydra_nevergrad_sweeper", "hydra_rq_launcher", "hydra_submitit_launcher"]
 >>>>>>> re-org circleCI file
@@ -287,6 +288,9 @@ workflows:
 >>>>>>> Parameterize nox session
 =======
               plugin: << pipeline.parameters.plugin >>
+=======
+              test_plugin: [<< pipeline.parameters.plugin >>]
+>>>>>>> fix testplugin
 
 >>>>>>> test out the script
 
