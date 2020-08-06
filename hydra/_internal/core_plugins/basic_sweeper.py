@@ -27,7 +27,7 @@ from omegaconf import MISSING, DictConfig, OmegaConf
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
-from hydra.core.override_parser.overrides_parser import OverridesParser, RangeSweep
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
@@ -107,16 +107,9 @@ class BasicSweeper(Sweeper):
         lists = []
         for override in parsed:
             if override.is_sweep_override():
-                if override.is_choice_sweep():
-                    sweep_choices = override.choices_as_strings()
+                if override.is_discrete_sweep():
                     key = override.get_key_element()
-                    sweep = [f"{key}={val}" for val in sweep_choices]
-                    lists.append(sweep)
-                elif override.is_range_sweep():
-                    key = override.get_key_element()
-                    range_sweep = override.value()
-                    assert isinstance(range_sweep, RangeSweep)
-                    sweep = [f"{key}={val}" for val in list(range_sweep.range())]
+                    sweep = [f"{key}={val}" for val in override.sweep_string_iterator()]
                     lists.append(sweep)
                 else:
                     assert override.value_type is not None

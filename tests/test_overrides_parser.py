@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import math
 import re
+from builtins import isinstance
 from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
@@ -20,6 +21,7 @@ from hydra.core.override_parser.overrides_parser import (
     Quote,
     QuotedString,
     RangeSweep,
+    Shuffle,
     Sort,
     Sweep,
     ValueType,
@@ -146,6 +148,16 @@ def test_element(value: str, expected: Any) -> None:
             ),
             id="sort(3,2,str(1))",
         ),
+        pytest.param(
+            "shuffle(1,2,3)",
+            ChoiceSweep(list=[1, 2, 3], shuffle=True, simple_form=True),
+            id="shuffle(1,2,3)",
+        ),
+        pytest.param(
+            "shuffle(choice(1,2,3))",
+            ChoiceSweep(list=[1, 2, 3], shuffle=True),
+            id="shuffle(1,2,3)",
+        ),
     ],
 )
 def test_value(value: str, expected: Any) -> None:
@@ -175,11 +187,65 @@ def test_value(value: str, expected: Any) -> None:
         pytest.param("[[a]]", [["a"]], id="list:nested_list"),
         pytest.param("[[[a]]]", [[["a"]]], id="list:double_nested_list"),
         pytest.param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
+        pytest.param("sort([c,b,a])", ["a", "b", "c"], id="list:sort"),
     ],
 )
 def test_list_value(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "listValue")
     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
+        pytest.param("x=shuffle([1,2,3])", [1, 2, 3], id="shuffle:list"),
+        pytest.param(
+            "x=shuffle(1,2,3)",
+            ChoiceSweep(list=[1, 2, 3], simple_form=True, shuffle=True),
+            id="x=shuffle:choice:simple",
+        ),
+        pytest.param(
+            "x=shuffle(choice(1,2,3))",
+            ChoiceSweep(list=[1, 2, 3], shuffle=True),
+            id="shuffle:choice",
+        ),
+        pytest.param(
+            "x=shuffle(range(1,10))",
+            RangeSweep(start=1, stop=10, shuffle=True),
+            id="shuffle:range",
+        ),
+    ],
+)
+def test_shuffle_sequence(value: str, expected: Any) -> None:
+    parser = OverridesParser()
+
+    ret = parser.parse_override(value)
+    if isinstance(expected, Sweep):
+        actual = list(ret.sweep_string_iterator())
+        if isinstance(expected, ChoiceSweep):
+            expected_str_list = list(map(str, expected.list))
+        elif isinstance(expected, RangeSweep):
+            expected_str_list = list(map(str, expected.range()))
+        else:
+            assert False
+
+        assert sorted(expected_str_list) == sorted(actual)
+
+        for i in range(1, 10):
+            actual = list(ret.sweep_string_iterator())
+            if actual != expected_str_list:
+                return
+        assert False
+    else:
+        val = ret.value()
+        assert isinstance(val, list)
+        assert sorted(val) == expected
+
+        for i in range(1, 10):
+            ret1 = parser.parse_override(value).value()
+            if ret1 != expected:
+                return
+        assert False
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -221,6 +287,14 @@ def test_dict_value(value: str, expected: Any) -> None:
         pytest.param(
             "choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))",
         ),
+        pytest.param(
+            "sort(choice(2,1))", ChoiceSweep(list=[1, 2]), id="sort(choice(2,1))",
+        ),
+        pytest.param(
+            "shuffle(choice(10,20))",
+            ChoiceSweep(list=[10, 20], shuffle=True),
+            id="shuffle(choice(10,20))",
+        ),
     ],
 )
 def test_choice_sweep(value: str, expected: Any) -> None:
@@ -239,6 +313,11 @@ def test_choice_sweep(value: str, expected: Any) -> None:
         ),
         pytest.param(
             "a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b",
+        ),
+        pytest.param(
+            "shuffle(1,10)",
+            ChoiceSweep(list=[1, 10], simple_form=True, shuffle=True),
+            id="simple_choice:shuffle",
         ),
     ],
 )
@@ -268,9 +347,51 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
             RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
         ),
+        # sort integer range
+        pytest.param(
+            "sort(range(1, 10))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(range(1, 10))",
+        ),
+        pytest.param(
+            "sort(range(9,0,-1))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(range(1, 10))",
+        ),
+        pytest.param(
+            "sort(range(1,10),reverse=True)",
+            RangeSweep(start=9, stop=0, step=-1),
+            id="sort(range(1,10),reverse=True)",
+        ),
+        pytest.param(
+            "sort(sort(range(1, 10),reverse=true))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(sort(range(1, 10),reverse=true))",
+        ),
+        # sort float range
+        pytest.param(
+            "sort(range(0,2,0.5))",
+            RangeSweep(start=0, stop=2, step=0.5),
+            id="sort(range(0,2,0.5))",
+        ),
+        pytest.param(
+            "sort(range(1.5,-0.5,-0.5))",
+            RangeSweep(start=0.0, stop=2.0, step=0.5),
+            id="sort(range(1.5,-0.5,-0.5))",
+        ),
+        pytest.param(
+            "sort(range(0,2,0.5),reverse=true)",
+            RangeSweep(start=1.5, stop=-0.5, step=-0.5),
+            id="range:sort:reverse)",
+        ),
+        pytest.param(
+            "shuffle(range(1, 10))",
+            RangeSweep(start=1, stop=10, step=1, shuffle=True),
+            id="range:shuffle",
+        ),
     ],
 )
-def test_range_sweep_parsing(value: str, expected: Any) -> None:
+def test_range_sweep(value: str, expected: Any) -> None:
     ret = OverridesParser.parse_rule(value, "rangeSweep")
     assert ret == expected
 
@@ -768,13 +889,14 @@ def test_override(
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
-        (
+        pytest.param(
             "~x",
             Override(
                 type=OverrideType.DEL, key_or_group="x", value_type=None, _value=None,
             ),
+            id="bare_del",
         ),
-        (
+        pytest.param(
             "~x=10",
             Override(
                 type=OverrideType.DEL,
@@ -782,8 +904,9 @@ def test_override(
                 value_type=ValueType.ELEMENT,
                 _value=10,
             ),
+            id="specific_del",
         ),
-        (
+        pytest.param(
             "~x=",
             Override(
                 type=OverrideType.DEL,
@@ -791,6 +914,7 @@ def test_override(
                 value_type=ValueType.ELEMENT,
                 _value="",
             ),
+            id="specifid_del_empty_string",
         ),
     ],
 )
@@ -963,15 +1087,13 @@ def test_tag_list(value: str, expected: str) -> None:
         pytest.param("range(1,10)", RangeSweep(start=1, stop=10), id="range"),
         pytest.param("range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="range"),
         pytest.param(
+            "str(choice(1,2))", ChoiceSweep(list=["1", "2"]), id="str(choice(1,2))",
+        ),
+        # TODO move to range tests
+        pytest.param(
             "tag(tag1,tag2,range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
             id="range",
-        ),
-        pytest.param(
-            "str(choice(1,2))", ChoiceSweep(list=["1", "2"]), id="str(choice(1,2))",
-        ),
-        pytest.param(
-            "sort(choice(2,1))", ChoiceSweep(list=[1, 2]), id="sort(choice(2,1))",
         ),
     ],
 )
@@ -1042,58 +1164,16 @@ def test_tagged_interval_sweep(value: str, expected: str) -> None:
     assert ret == expected
 
 
-#  TODO: is this still needed after cleanup?
-# @pytest.mark.parametrize(  # type: ignore
-#     "value, expected",
-#     [
-#         pytest.param(
-#             "sort(1,2,3)",
-#             Sort(
-#                 list_or_sweep=ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
-#                 reverse=False,
-#             ),
-#             id="sort:choice:simple",
-#         ),
-#         pytest.param(
-#             "sort(choice(1,2,3))",
-#             Sort(
-#                 list_or_sweep=ChoiceSweep(
-#                      list=[1, 2, 3], tags=set()
-#                 ),
-#                 reverse=False,
-#             ),
-#             id="sort:choice",
-#         ),
-#         pytest.param(
-#             "sort(range(10,1))",
-#             Sort(list_or_sweep=RangeSweep(start=10, stop=1), reverse=False),
-#             id="sort:range",
-#         ),
-#     ],
-# )
-# def test_sweep_sort(value: str, expected: str) -> None:
-#     ret = OverridesParser.parse_rule(value, "sweepSort")
-#     assert ret == expected
-
-
 @pytest.mark.parametrize(  # type: ignore
     "value, expected",
     [
         # list
+        pytest.param("sort([1,2,3])", Sort(list_or_sweep=[1, 2, 3]), id="sort:list",),
         pytest.param(
-            "sort([1,2,3])",
-            Sort(list_or_sweep=[1, 2, 3], reverse=False),
-            id="sort:list",
+            "sort(list=[1,2,3])", Sort(list_or_sweep=[1, 2, 3]), id="sort:list:named",
         ),
         pytest.param(
-            "sort(list=[1,2,3])",
-            Sort(list_or_sweep=[1, 2, 3], reverse=False),
-            id="sort:list:named",
-        ),
-        pytest.param(
-            "sort(list=[])",
-            Sort(list_or_sweep=[], reverse=False),
-            id="sort:list:named:empty",
+            "sort(list=[])", Sort(list_or_sweep=[]), id="sort:list:named:empty",
         ),
         pytest.param(
             "sort(list=[1,2,3], reverse=True)",
@@ -1120,8 +1200,13 @@ def test_tagged_interval_sweep(value: str, expected: str) -> None:
         # choice sweep
         pytest.param(
             "sort(choice(1,2,3))",
-            Sort(list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set()), reverse=False,),
+            Sort(list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set()),),
             id="sort:choice",
+        ),
+        pytest.param(
+            "sort(sweep=choice(1,2,3))",
+            Sort(list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set()),),
+            id="sort:choice:named",
         ),
         pytest.param(
             "sort(choice(1,2,3), reverse=True)",
@@ -1139,12 +1224,12 @@ def test_tagged_interval_sweep(value: str, expected: str) -> None:
         # range sweep
         pytest.param(
             "sort(float(range(10,1))))",
-            Sort(list_or_sweep=RangeSweep(start=10.0, stop=1.0), reverse=False),
+            Sort(list_or_sweep=RangeSweep(start=10.0, stop=1.0)),
             id="sort:float:range",
         ),
         pytest.param(
             "sort(range(10,1))",
-            Sort(list_or_sweep=RangeSweep(start=10, stop=1), reverse=False),
+            Sort(list_or_sweep=RangeSweep(start=10, stop=1)),
             id="sort:range",
         ),
         pytest.param(
@@ -1162,19 +1247,84 @@ def test_sort(value: str, expected: str) -> None:
     assert ret == expected
 
 
-# TODO: add shuffle example
 @pytest.mark.parametrize(  # type: ignore
     "value, expected",
     [
+        # list
         pytest.param(
-            "sort([1,2,3])",
-            Sort(list_or_sweep=[1, 2, 3], reverse=False),
-            id="sort:list",
+            "shuffle([1,2,3])", Shuffle(list_or_sweep=[1, 2, 3]), id="shuffle:list",
+        ),
+        pytest.param(
+            "shuffle(list=[1,2,3])",
+            Shuffle(list_or_sweep=[1, 2, 3]),
+            id="shuffle:list:named",
+        ),
+        pytest.param(
+            "shuffle(list=[])",
+            Shuffle(list_or_sweep=[]),
+            id="shuffle:list:named:empty",
+        ),
+        pytest.param(
+            "shuffle(list=[1,2,3])",
+            Shuffle(list_or_sweep=[1, 2, 3]),
+            id="shuffle:list:named:rev",
+        ),
+        # simple choice sweep
+        pytest.param(
+            "shuffle(1,2,3)",
+            Shuffle(
+                list_or_sweep=ChoiceSweep(
+                    simple_form=True, list=[1, 2, 3], tags=set(), shuffle=True
+                ),
+            ),
+            id="shuffle:choice:simple",
+        ),
+        # choice sweep
+        pytest.param(
+            "shuffle(choice(1,2,3))",
+            Shuffle(
+                list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set(), shuffle=True)
+            ),
+            id="shuffle:choice",
+        ),
+        pytest.param(
+            "shuffle(choice(1,2,3))",
+            Shuffle(
+                list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags=set(), shuffle=True)
+            ),
+            id="shuffle:choice:rev",
+        ),
+        pytest.param(
+            "shuffle(tag(a,b,choice(1,2,3)))",
+            Shuffle(
+                list_or_sweep=ChoiceSweep(list=[1, 2, 3], tags={"a", "b"}, shuffle=True)
+            ),
+            id="shuffle:tag:choice:rev",
+        ),
+        # range sweep
+        pytest.param(
+            "shuffle(float(range(10,1))))",
+            Shuffle(list_or_sweep=RangeSweep(start=10.0, stop=1.0, shuffle=True)),
+            id="shuffle:float:range",
+        ),
+        pytest.param(
+            "shuffle(range(10,1))",
+            Shuffle(list_or_sweep=RangeSweep(start=10, stop=1, shuffle=True)),
+            id="shuffle:range",
+        ),
+        pytest.param(
+            "shuffle(tag(a,b,range(1,10,2)))",
+            Shuffle(
+                list_or_sweep=RangeSweep(
+                    start=1, stop=10, step=2, tags={"a", "b"}, shuffle=True
+                ),
+            ),
+            id="rev_shuffle:tag:range",
         ),
     ],
 )
-def test_ordering(value: str, expected: str) -> None:
-    ret = OverridesParser.parse_rule(value, "ordering")
+def test_shuffle(value: str, expected: str) -> None:
+    ret = OverridesParser.parse_rule(value, "shuffle")
     assert ret == expected
 
 
@@ -1528,16 +1678,16 @@ class CastResults:
             "interval(1.0, 2.0)",
             CastResults(
                 int=CastResults.error(
-                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                    "Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 float=CastResults.error(
-                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                    "Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 str=CastResults.error(
-                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                    "Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 bool=CastResults.error(
-                    "Intervals are always interpreted as floating-point intervals and cannot be casted"
+                    "Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
             ),
             id="interval(1.0, 2.0)",

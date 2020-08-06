@@ -83,7 +83,7 @@ class ExampleSweeper(Sweeper):
                 # Please file an issue and describe the use case and the proposed syntax.
                 # Be aware that syntax extensions are potentially breaking compatibility for existing users and the
                 # use case will be scrutinized heavily before the syntax is changed.
-                sweep_choices = override.choices_as_strings()
+                sweep_choices = override.sweep_string_iterator()
                 assert isinstance(sweep_choices, list)
                 key = override.get_key_element()
                 sweep = [f"{key}={val}" for val in sweep_choices]
