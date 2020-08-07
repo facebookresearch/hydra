@@ -73,7 +73,7 @@ params:
 
 You can set all these parameters in your configuration file and/or override them in the commandline: 
 ```text
-python foo.py hydra/launcher=submitit_slurm hydra.launcher.params.timeout_min=3
+python foo.py -m hydra/launcher=submitit_slurm hydra.launcher.params.timeout_min=3
 ```
 
 For more details, including descriptions for each parameter, check out the [config file](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py). You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
