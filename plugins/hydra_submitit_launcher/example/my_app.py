@@ -4,9 +4,9 @@ import os
 import time
 
 import hydra
+import submitit
 from omegaconf import DictConfig
 
-import submitit
 
 log = logging.getLogger(__name__)
 
