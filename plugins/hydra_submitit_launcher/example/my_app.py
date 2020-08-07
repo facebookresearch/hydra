@@ -7,7 +7,6 @@ import hydra
 import submitit
 from omegaconf import DictConfig
 
-
 log = logging.getLogger(__name__)
 
 
