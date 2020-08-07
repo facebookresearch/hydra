@@ -101,7 +101,7 @@ class BasicSweeper(Sweeper):
     def split_arguments(
         arguments: List[str], max_batch_size: Optional[int]
     ) -> List[List[List[str]]]:
-        parser = OverridesParser()
+        parser = OverridesParser.create()
         parsed = parser.parse_overrides(arguments)
 
         lists = []

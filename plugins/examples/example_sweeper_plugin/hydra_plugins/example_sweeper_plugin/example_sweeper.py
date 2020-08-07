@@ -70,7 +70,7 @@ class ExampleSweeper(Sweeper):
         sweep_dir.mkdir(parents=True, exist_ok=True)
         OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
 
-        parser = OverridesParser()
+        parser = OverridesParser.create()
         parsed = parser.parse_overrides(arguments)
 
         lists = []
@@ -84,7 +84,6 @@ class ExampleSweeper(Sweeper):
                 # Be aware that syntax extensions are potentially breaking compatibility for existing users and the
                 # use case will be scrutinized heavily before the syntax is changed.
                 sweep_choices = override.sweep_string_iterator()
-                assert isinstance(sweep_choices, list)
                 key = override.get_key_element()
                 sweep = [f"{key}={val}" for val in sweep_choices]
                 lists.append(sweep)

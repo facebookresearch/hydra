@@ -1035,7 +1035,7 @@ def test_apply_overrides_to_defaults(
         OmegaConf.create({"defaults": input_defaults})
     )
 
-    parser = OverridesParser()
+    parser = OverridesParser.create()
     if isinstance(expected, list):
         parsed_overrides = parser.parse_overrides(overrides=overrides)
         expected_defaults = ConfigLoaderImpl._parse_defaults(
@@ -1064,7 +1064,7 @@ def test_delete_by_assigning_null_is_deprecated() -> None:
         OmegaConf.create({"defaults": [{"db": "mysql"}]})
     )
 
-    parser = OverridesParser()
+    parser = OverridesParser.create()
 
     override = parser.parse_override("db=null")
 
@@ -1166,7 +1166,7 @@ def test_apply_overrides_to_config(
 ) -> None:
     cfg = OmegaConf.create(input_cfg)
     OmegaConf.set_struct(cfg, True)
-    parser = OverridesParser()
+    parser = OverridesParser.create()
     parsed = parser.parse_overrides(overrides=overrides)
 
     if isinstance(expected, dict):

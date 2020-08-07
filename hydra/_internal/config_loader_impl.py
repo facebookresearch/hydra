@@ -177,7 +177,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if strict is None:
             strict = self.default_strict
 
-        parser = OverridesParser()
+        parser = OverridesParser.create()
         parsed_overrides = parser.parse_overrides(overrides=overrides)
         config_overrides = []
         sweep_overrides = []
