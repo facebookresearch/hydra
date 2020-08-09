@@ -1,4 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import subprocess
+import sys
+from pathlib import Path
 from typing import Type
 
 import pytest  # type: ignore
@@ -49,3 +52,14 @@ class TestSubmititLauncher(LauncherTestSuite):
 )
 class TestSubmititLauncherIntegration(IntegrationTestSuite):
     pass
+
+
+def test_example(tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "example/my_app.py",
+        "-m",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra/launcher=submitit_local",
+    ]
+    subprocess.check_call(cmd)

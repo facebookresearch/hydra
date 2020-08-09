@@ -4,6 +4,7 @@ import os
 import time
 
 import hydra
+import submitit
 from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
@@ -11,8 +12,8 @@ log = logging.getLogger(__name__)
 
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig):
-    log.info(f"Process ID {os.getpid()} executing task {cfg.task} ...")
-
+    env = submitit.JobEnvironment()
+    log.info(f"Process ID {os.getpid()} executing task {cfg.task}, with {env}")
     time.sleep(1)
 
 
