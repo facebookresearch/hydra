@@ -221,17 +221,6 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1], type = float" in result
 
 
-# TODO: enable this and make sure it runs reasonable fast
-# # Run launcher test suite with the basic launcher and this sweeper
-# @pytest.mark.parametrize(
-#     "launcher_name, overrides",
-#     [("basic", ["hydra/sweeper=ax", "quadratic.x=-1.0:1.0", "quadratic.y=-1.0:1.0"])],
-# )
-# class TestAxSweeper(LauncherTestSuite):
-#     def task_function(self, cfg):
-#         return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
-
-
 @pytest.mark.parametrize(
     "overrides", [[], ["quadratic.x_arg=-1:1"]],
 )

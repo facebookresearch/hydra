@@ -701,6 +701,14 @@ def test_sys_exit(tmpdir: Path) -> None:
             ["app.a=20"],
             "foo-app.a=20",
         ),
+        (
+            {
+                "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
+                "app": {"a": 1, "b": 2},
+            },
+            ["app.b=10", "app.a=20"],
+            "foo-app.a=20,app.b=10",
+        ),
     ],
 )
 def test_local_run_workdir(

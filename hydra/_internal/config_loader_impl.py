@@ -21,12 +21,8 @@ from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
-from hydra.core.override_parser.overrides_parser import (
-    Override,
-    OverridesParser,
-    OverrideType,
-    ValueType,
-)
+from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Override, OverrideType, ValueType
 from hydra.core.utils import JobRuntime
 from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
@@ -873,7 +869,6 @@ def get_overrides_dirname(
             assert line is not None
             lines.append(line)
 
-    # TODO: no way this is correct
     lines.sort()
     ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
     return ret

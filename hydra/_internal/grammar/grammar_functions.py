@@ -4,7 +4,7 @@ import random
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from hydra.core.override_parser.functions import is_type_matching
+from hydra._internal.grammar.utils import is_type_matching
 from hydra.core.override_parser.types import (
     ChoiceSweep,
     IntervalSweep,
@@ -189,14 +189,17 @@ def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     return IntervalSweep(start=start, end=end)
 
 
-def tag(*args: Union[str, Union[ChoiceSweep, RangeSweep, IntervalSweep]]) -> Sweep:
+def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None,) -> Sweep:
     if len(args) < 1:
         raise ValueError("Not enough arguments to tag, must take at least a sweep")
+
+    if sweep is not None:
+        return tag(*(list(args) + [sweep]))
 
     sweep = args[-1]
     if not isinstance(sweep, Sweep):
         raise ValueError(
-            "Last argument to tag() must be a choice(), range() or interval()"
+            f"Last argument to tag() must be a choice(), range() or interval(), got {type(sweep).__name__}"
         )
 
     tags = set()

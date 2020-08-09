@@ -8,23 +8,23 @@ from typing import Any, Callable, Dict, List, Union
 import pytest
 from _pytest.python_api import RaisesContext
 
-from hydra.core.override_parser.functions import Functions
+from hydra._internal.grammar.functions import Functions
 from hydra.core.override_parser.overrides_parser import (
-    Key,
-    Override,
     OverridesParser,
-    OverrideType,
-    ValueType,
     create_functions,
 )
 from hydra.core.override_parser.types import (
     ChoiceSweep,
     FloatRange,
     IntervalSweep,
+    Key,
+    Override,
+    OverrideType,
     Quote,
     QuotedString,
     RangeSweep,
     Sweep,
+    ValueType,
 )
 from hydra.errors import HydraException
 
@@ -63,11 +63,6 @@ def eq(item1: Any, item2: Any) -> bool:
         # bool
         pytest.param("true", True, id="value:bool"),
         pytest.param(".", ".", id="value:dot"),
-        pytest.param("str(1)", "1", id="cast:str(1)"),
-        pytest.param("float(10)", 10.0, id="cast:float(10)"),
-        pytest.param("str('foo')", "foo", id="cast:str('foo')"),
-        pytest.param("str([1])", ["1"], id="cast:str([1])"),
-        pytest.param("str({a:10})", {"a": "10"}, id="cast:str({a:10})"),
     ],
 )
 def test_element(value: str, expected: Any) -> None:
@@ -199,8 +194,10 @@ def test_list_value(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
+        # list
         pytest.param("x=shuffle([1,2,3])", [1, 2, 3], id="shuffle:list"),
         pytest.param("x=shuffle(list=[1,2,3])", [1, 2, 3], id="shuffle:list",),
+        # choice
         pytest.param(
             "x=shuffle(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], simple_form=True, shuffle=True),
@@ -211,14 +208,10 @@ def test_list_value(value: str, expected: Any) -> None:
             ChoiceSweep(list=[1, 2, 3], shuffle=True),
             id="shuffle:choice",
         ),
+        # range
         pytest.param(
             "x=shuffle(range(1,10))",
             ChoiceSweep(list=[1, 2, 3, 4, 5, 6, 7, 8, 9], shuffle=True),
-            id="shuffle:range",
-        ),
-        pytest.param(
-            "x=tag(abc, shuffle(range(1,10)))",
-            ChoiceSweep(list=[1, 2, 3, 4, 5, 6, 7, 8, 9], tags={"abc"}, shuffle=True),
             id="shuffle:range",
         ),
     ],
@@ -289,14 +282,6 @@ def test_dict_value(value: str, expected: Any) -> None:
         pytest.param(
             "choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))",
         ),
-        pytest.param(
-            "sort(choice(2,1))", ChoiceSweep(list=[1, 2]), id="sort(choice(2,1))",
-        ),
-        pytest.param(
-            "shuffle(choice(10,20))",
-            ChoiceSweep(list=[10, 20], shuffle=True),
-            id="shuffle(choice(10,20))",
-        ),
     ],
 )
 def test_choice_sweep(value: str, expected: Any) -> None:
@@ -335,7 +320,6 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
             "range(start=1,stop=10,step=2)",
             RangeSweep(start=1, stop=10, step=2),
             id="ints_with_step",
-            marks=pytest.mark.skip,
         ),
         pytest.param(
             "range(1.0, 3.14)", RangeSweep(start=1.0, stop=3.14, step=1), id="floats"
@@ -345,59 +329,9 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
             RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
         ),
-        # sort integer range
-        pytest.param(
-            "sort(range(1, 10))",
-            RangeSweep(start=1, stop=10, step=1),
-            id="sort(range(1, 10))",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "sort(range(9,0,-1))",
-            RangeSweep(start=1, stop=10, step=1),
-            id="sort(range(1, 10))",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "sort(range(1,10),reverse=True)",
-            RangeSweep(start=9, stop=0, step=-1),
-            id="sort(range(1,10),reverse=True)",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "sort(sort(range(1, 10),reverse=true))",
-            RangeSweep(start=1, stop=10, step=1),
-            id="sort(sort(range(1, 10),reverse=true))",
-            marks=pytest.mark.skip,
-        ),
-        # sort float range
-        pytest.param(
-            "sort(range(0,2,0.5))",
-            RangeSweep(start=0, stop=2, step=0.5),
-            id="sort(range(0,2,0.5))",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "sort(range(1.5,-0.5,-0.5))",
-            RangeSweep(start=0.0, stop=2.0, step=0.5),
-            id="sort(range(1.5,-0.5,-0.5))",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "sort(range(0,2,0.5),reverse=true)",
-            RangeSweep(start=1.5, stop=-0.5, step=-0.5),
-            id="range:sort:reverse)",
-            marks=pytest.mark.skip,
-        ),
-        pytest.param(
-            "shuffle(range(1, 10))",
-            RangeSweep(start=1, stop=10, step=1, shuffle=True),
-            id="range:shuffle",
-            marks=pytest.mark.skip,
-        ),
     ],
 )
-def range_sweep(value: str, expected: Any) -> None:
+def test_range_sweep(value: str, expected: Any) -> None:
     ret = parse_rule(value, "function")
     assert ret == expected
 
@@ -1037,68 +971,43 @@ def test_float_range(
         assert math.fabs(res[i] - expected[i]) < 10e-6
 
 
-# TODO : consolidate this somewhere else
 @pytest.mark.parametrize(  # type: ignore
     "value, expected",
     [
-        pytest.param("range(1,10)", RangeSweep(start=1, stop=10), id="range"),
-        pytest.param("range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="range"),
+        # choice
         pytest.param(
-            "str(choice(1,2))", ChoiceSweep(list=["1", "2"]), id="str(choice(1,2))",
-        ),
-        pytest.param(
-            "tag(tag1,tag2,range(1,2))",
-            RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
-            id="range",
-        ),
-    ],
-)
-def test_sweep(value: str, expected: str) -> None:
-    ret = parse_rule(value, "function")
-    assert ret == expected
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "value, expected",
-    [
-        pytest.param(
-            "tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="choice:no_tags",
-        ),
-        pytest.param(
-            "tag (choice(a,b))", ChoiceSweep(list=["a", "b"]), id="choice:no_tags",
+            "tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="tag(choice(a,b))",
         ),
         pytest.param(
             "tag(tag1,tag2,choice(a,b))",
             ChoiceSweep(list=["a", "b"], tags={"tag1", "tag2"}),
-            id="choice",
+            id="tag(tag1,tag2,choice(a,b))",
         ),
+        # interval
         pytest.param(
-            "tag(interval(0,2))", IntervalSweep(start=0, end=2), id="interval:no_tags",
+            "tag(interval(0,2))",
+            IntervalSweep(start=0, end=2),
+            id="tag(interval(0,2))",
         ),
         pytest.param(
             "tag(tag1,tag2,interval(0,2))",
             IntervalSweep(start=0, end=2, tags={"tag1", "tag2"}),
-            id="interval",
+            id="tag(tag1,tag2,interval(0,2))",
         ),
+        # range
         pytest.param(
-            "tag(range(1,2))", RangeSweep(start=1, stop=2), id="range:no_tags",
+            "tag(range(1,2))", RangeSweep(start=1, stop=2), id="tag(range(1,2))",
         ),
         pytest.param(
             "tag(tag1,tag2,range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
-            id="range",
+            id="tag(tag1,tag2,range(1,2))",
         ),
         pytest.param(
-            "tag (tag1,tag2,range(1,2))",
+            "tag(tag1,tag2,sweep=range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
-            id="range",
+            id="tag(tag1,tag2,sweep=range(1,2))",
         ),
-        # TODO
-        # pytest.param(
-        #     "tag (tag1,tag2,sweep=range(1,2))",
-        #     RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
-        #     id="range",
-        # ),
     ],
 )
 def test_tag_sweep(value: str, expected: str) -> None:
@@ -1146,26 +1055,47 @@ def test_tag_sweep(value: str, expected: str) -> None:
             ChoiceSweep(list=[3, 2, 1], tags={"a", "b"}),
             id="sort:tag:choice:rev",
         ),
-        # range sweep
+        # sort integer range
         pytest.param(
-            "sort(range(0,10))",
-            RangeSweep(start=0, stop=10, step=1),
-            id="sort(range(0,10))",
+            "sort(range(1, 10))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(range(1, 10))",
         ),
         pytest.param(
-            "sort(range(0,10),reverse=true)",
-            RangeSweep(start=9, stop=-1, step=-1),
-            id="sort(range(0,10),reverse=true)",
+            "sort(range(9,0,-1))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(range(1, 10))",
         ),
         pytest.param(
-            "sort(range(9,-1,-1))",
-            RangeSweep(start=0, stop=10, step=1),
-            id="sort:range",
+            "sort(range(1,10),reverse=True)",
+            RangeSweep(start=9, stop=0, step=-1),
+            id="sort(range(1,10),reverse=True)",
         ),
         pytest.param(
-            "sort(tag(a,b,range(1,10,2)))",
-            RangeSweep(start=1, stop=10, step=2, tags={"a", "b"}),
-            id="rev_sort:tag:range",
+            "sort(sort(range(1, 10),reverse=true))",
+            RangeSweep(start=1, stop=10, step=1),
+            id="sort(sort(range(1, 10),reverse=true))",
+        ),
+        # sort float range
+        pytest.param(
+            "sort(range(0,2,0.5))",
+            RangeSweep(start=0, stop=2, step=0.5),
+            id="sort(range(0,2,0.5))",
+        ),
+        pytest.param(
+            "sort(range(1.5,-0.5,-0.5))",
+            RangeSweep(start=0.0, stop=2.0, step=0.5),
+            id="sort(range(1.5,-0.5,-0.5))",
+        ),
+        pytest.param(
+            "sort(range(0,2,0.5),reverse=true)",
+            RangeSweep(start=1.5, stop=-0.5, step=-0.5),
+            id="range:sort:reverse)",
+        ),
+        pytest.param(
+            "shuffle(range(1, 10))",
+            RangeSweep(start=1, stop=10, step=1, shuffle=True),
+            id="range:shuffle",
         ),
     ],
 )

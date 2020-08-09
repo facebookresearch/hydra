@@ -19,7 +19,7 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | sweep;
+value: element | simpleChoiceSweep;
 
 element:
       primitive
@@ -32,10 +32,6 @@ argName: ID '=';
 function: ID '('
     (argName? element (',' argName? element )* )?
 ')';
-
-sweep: // TODO: simplify (get rid of one?)
-      simpleChoiceSweep                         // a,b,c
-;
 
 simpleChoiceSweep:
       element (',' element)+                      // value1,value2,value3
@@ -54,13 +50,11 @@ primitive:
         | '+' | '.' | '$' | '*'
     )+;
 
-listValue:
-      '[' (element(',' element)*)? ']'              // [], [1,2,3], [a,b,[1,2]]
-;
+listValue: '[' (element(',' element)*)? ']';        // [], [1,2,3], [a,b,[1,2]]
 
-dictValue:
-      '{' (ID ':' element (',' ID ':' element)*)? '}'   // {}, {a:10,b:20}
-;
+dictValue: '{'
+    (ID ':' element (',' ID ':' element)*)?         // {}, {a:10,b:20}
+'}';
 
 // Types
 fragment DIGIT: [0-9_];
