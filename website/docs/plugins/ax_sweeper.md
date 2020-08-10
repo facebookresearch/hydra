@@ -15,7 +15,7 @@ This plugin provides a mechanism for Hydra applications to use the [Adaptive Exp
 ### Installation
 This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-$ pip install hydra-ax-sweeper --pre
+pip install hydra-ax-sweeper --pre
 ```
 
 ### Usage
