@@ -740,7 +740,7 @@ def test_key_rename(value: str, expected: bool) -> None:
         pytest.param(
             "key=interval(0,1)",
             "key",
-            IntervalSweep(0.0, 1.0),
+            IntervalSweep(start=0.0, end=1.0),
             ValueType.INTERVAL_SWEEP,
             id="interval",
         ),
@@ -755,7 +755,7 @@ def test_key_rename(value: str, expected: bool) -> None:
         pytest.param(
             "key=tag(a,b,interval(0,1))",
             "key",
-            IntervalSweep(0.0, 1.0, {"a", "b"}),
+            IntervalSweep(tags={"a", "b"}, start=0.0, end=1.0),
             ValueType.INTERVAL_SWEEP,
             id="interval:tags",
         ),

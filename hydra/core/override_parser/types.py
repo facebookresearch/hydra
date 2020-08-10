@@ -34,15 +34,14 @@ class QuotedString:
 
 @dataclass
 class Sweep:
-    ...
+    tags: Set[str] = field(default_factory=set)
 
 
 @dataclass
 class ChoiceSweep(Sweep):
     # simple form: a,b,c
     # explicit form: choices(a,b,c)
-    list: List["ParsedElementType"]
-    tags: Set[str] = field(default_factory=set)
+    list: List["ParsedElementType"] = field(default_factory=list)
     simple_form: bool = False
     shuffle: bool = False
 
@@ -91,14 +90,16 @@ class RangeSweep(Sweep):
     Discrete range of numbers
     """
 
-    start: Union[int, float]
-    stop: Union[int, float]
+    start: Optional[Union[int, float]] = None
+    stop: Optional[Union[int, float]] = None
     step: Union[int, float] = 1
-    tags: Set[str] = field(default_factory=set)
 
     shuffle: bool = False
 
     def range(self) -> Union[range, FloatRange]:
+        assert self.start is not None
+        assert self.stop is not None
+
         start = self.start
         stop = self.stop
         step = self.step
@@ -114,9 +115,8 @@ class RangeSweep(Sweep):
 
 @dataclass
 class IntervalSweep(Sweep):
-    start: float
-    end: float
-    tags: Set[str] = field(default_factory=set)
+    start: Optional[float] = None
+    end: Optional[float] = None
 
 
 # Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem

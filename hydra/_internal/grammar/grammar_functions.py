@@ -189,28 +189,29 @@ def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     return IntervalSweep(start=start, end=end)
 
 
-def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None,) -> Sweep:
+def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep:
     if len(args) < 1:
         raise ValueError("Not enough arguments to tag, must take at least a sweep")
 
     if sweep is not None:
         return tag(*(list(args) + [sweep]))
 
-    sweep = args[-1]
-    if not isinstance(sweep, Sweep):
+    last = args[-1]
+    if isinstance(last, Sweep):
+        sweep = last
+        tags = set()
+        for tag_ in args[0:-1]:
+            if not isinstance(tag_, str):
+                raise ValueError(
+                    f"tag arguments type must be string, got {type(tag_).__name__}"
+                )
+            tags.add(tag_)
+        sweep.tags = tags
+        return sweep
+    else:
         raise ValueError(
             f"Last argument to tag() must be a choice(), range() or interval(), got {type(sweep).__name__}"
         )
-
-    tags = set()
-    for tag_ in args[0:-1]:
-        if not isinstance(tag_, str):
-            raise ValueError(
-                f"tag arguments type must be string, got {type(tag_).__name__}"
-            )
-        tags.add(tag_)
-    sweep.tags = tags
-    return sweep
 
 
 def shuffle(
@@ -289,10 +290,13 @@ def _sort_sweep(
     sweep: Union[ChoiceSweep, RangeSweep], reverse: bool
 ) -> Union[ChoiceSweep, RangeSweep]:
     sweep = copy(sweep)
+
     if isinstance(sweep, ChoiceSweep):
         sweep.list = sorted(sweep.list, reverse=reverse)
         return sweep
     elif isinstance(sweep, RangeSweep):
+        assert sweep.start is not None
+        assert sweep.stop is not None
         if not reverse:
             # ascending
             if sweep.start > sweep.stop:
