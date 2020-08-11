@@ -90,7 +90,7 @@ def launch(
             )
 
             return launch_jobs(
-                launcher, local_tmp_dir, Path(str(HydraConfig.get().sweep.dir))
+                launcher, local_tmp_dir, Path(HydraConfig.get().sweep.dir)
             )
 
 

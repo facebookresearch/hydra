@@ -8,14 +8,12 @@ from hydra.types import ObjectConf
 from omegaconf import MISSING
 
 
-def default_field(obj):
-    return field(default_factory=lambda: obj)
-
-
 @dataclass
 class RayConf:
     ray_init_cfg: Dict[str, str] = field(default_factory=dict)
-    ray_remote_cfg: Dict[str, Any] = default_field({"num_cpus": 1, "num_gpus": 0})
+    ray_remote_cfg: Dict[str, Any] = field(
+        default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
+    )
 
 
 @dataclass
@@ -123,18 +121,24 @@ class RayClusterConf:
 
     # For additional options, check:
     # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/aws/example-full.yaml
-    auth: Dict[str, str] = default_field({"ssh_user": "ubuntu"})
+    auth: Dict[str, str] = field(default_factory=lambda: {"ssh_user": "ubuntu"})
 
     """
     Additional options in boto docs.
     https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html
     """
-    head_node: Dict[str, str] = default_field(
-        {"InstanceType": "m5.large", "ImageId": "ami-008d8ed4bd7dc2485"}
+    head_node: Dict[str, str] = field(
+        default_factory=lambda: {
+            "InstanceType": "m5.large",
+            "ImageId": "ami-008d8ed4bd7dc2485",
+        }
     )
 
-    worker_nodes: Dict[str, str] = default_field(
-        {"InstanceType": "m5.large", "ImageId": "ami-008d8ed4bd7dc2485"}
+    worker_nodes: Dict[str, str] = field(
+        default_factory=lambda: {
+            "InstanceType": "m5.large",
+            "ImageId": "ami-008d8ed4bd7dc2485",
+        }
     )
 
     # Files or directories to copy to the head and worker nodes. The format is a
@@ -157,7 +161,7 @@ class RayClusterConf:
 
 @dataclass
 class RayAWSConf(RayConf):
-    ray_init_cfg: Dict[str, Any] = default_field({"address": "local"})
+    ray_init_cfg: Dict[str, Any] = field(default_factory=lambda: {"address": "local"})
     ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.
