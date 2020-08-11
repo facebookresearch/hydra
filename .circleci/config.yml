@@ -7,21 +7,45 @@ commands:
       py_version:
         type: string
     steps:
+      - restore_cache:
+          keys:
+            - -v0-source-{{ .Branch }}-{{ .Revision }}
+            - -v0-source-{{ .Branch }}-
+            - -v0-source-
       - checkout
+      - save_cache:
+          key: -v0-source--{{ .Branch }}-{{ .Revision }}
+          paths:
+            - project
+            - ".git"
+      - restore_cache:
+          key: -v0-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Installing Conda"
+          name: "Set up Conda"
           command: |
-            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
+              echo "miniconda installed already."
+            else
+              curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+              bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            fi
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing environment"
+          name: "Brew"
           command: |
             brew update
             brew upgrade git
             brew install fish
+      - run:
+          name: "Hydra Conda"
+          command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
+      - save_cache:
+          key: -v0-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          paths:
+            - ~/miniconda3
+            - /usr/local/Homebrew
 
 
   linux:
@@ -46,6 +70,8 @@ commands:
         type: string
     steps:
       - checkout
+      - restore_cache:
+          key: -v0-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: Preparing system
           command: |
@@ -58,7 +84,10 @@ commands:
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
             pip install nox dataclasses
-
+      - save_cache:
+          key: -v0-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          paths:
+            - C:\tools\miniconda3
 
 parameters:
   plugin_test:
@@ -128,8 +157,7 @@ jobs:
     docker:
       - image: circleci/python:3.8
     steps:
-      - linux:
-          py_version: "3.8"
+      - checkout
       - run:
           name: "Kick off Plugin tests."
           command: |
