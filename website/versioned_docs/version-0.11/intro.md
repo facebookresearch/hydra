@@ -79,7 +79,7 @@ db:
 ```
 
 ### Composition example
-You may want to alternate between two different databases. to support this create a `config group` named db,
+You may want to alternate between two different databases. To support this create a `config group` named db,
 and place one config file for each alternative inside:
 The directory structure of our application now looks like:
 ```text
