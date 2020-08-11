@@ -6,6 +6,7 @@ from typing import Any
 import pytest
 
 from hydra.test_utils.test_utils import chdir_hydra_root
+from tests import normalize_newlines
 from tests.test_examples import run_with_error
 
 chdir_hydra_root()
@@ -54,8 +55,11 @@ def test_cli_error(tmpdir: Any, monkeypatch: Any, override: Any, expected: str) 
     if isinstance(override, str):
         override = [override]
     cmd = [sys.executable, "my_app.py", "hydra.sweep.dir=" + str(tmpdir)] + override
-    ret = run_with_error(cmd)
-    assert re.search("^" + re.escape(expected.strip()), ret) is not None, (
+    ret = normalize_newlines(run_with_error(cmd))
+    assert (
+        re.search("^" + re.escape(normalize_newlines(expected.strip())), ret)
+        is not None
+    ), (
         f"Result:"
         f"\n---"
         f"\n{ret}"
