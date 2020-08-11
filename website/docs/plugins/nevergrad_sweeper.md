@@ -33,8 +33,7 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 
 ## Example of training using Nevergrad hyperparameter search
 
-We include an example of how to use this plugin. The file [`example/dummy_training.py`](plugins/hydra_nevergrad_sweeper/example/dummy_training.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
-
+We include an example of how to use this plugin. The file [`example/dummy_training.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/dummy_training.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
 
 This application has the following configuration:
 ```yaml

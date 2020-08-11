@@ -32,7 +32,7 @@ module.exports = {
                 alt: 'Hydra logo',
                 src: 'img/logo.svg',
             },
-            links: [
+            items: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
                 {to: 'versions', label: 'Versions', position: 'left'},
                 {to: 'blog', label: 'Blog', position: 'left'},
