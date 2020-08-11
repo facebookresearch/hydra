@@ -70,10 +70,7 @@ def test_run_dir() -> None:
         sys.executable,
         "tests/test_apps/run_dir_test/my_app.py",
     ]
-    result = subprocess.check_output(cmd)
-    result = result.decode("utf-8").strip().split("\n")
-    assert len(result) == 2
-    assert result[0] == result[1]
+    subprocess.check_output(cmd)
 
 
 @pytest.mark.parametrize(  # type: ignore
