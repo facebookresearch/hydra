@@ -34,7 +34,7 @@ module.exports = {
             },
             items: [
                 {to: 'docs/intro', label: 'Docs', position: 'left'},
-                {to: 'versions', label: 'Versions', position: 'left'},
+                {position: 'left', type: 'docsVersionDropdown'},
                 {to: 'blog', label: 'Blog', position: 'left'},
                 {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
             ],
