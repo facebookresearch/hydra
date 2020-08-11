@@ -14,7 +14,6 @@ from hydra.core.override_parser.types import (
     RangeSweep,
     Sweep,
 )
-from hydra.errors import HydraException
 
 ElementType = Union[str, int, bool, float, list, dict]
 
@@ -49,7 +48,7 @@ def cast_interval(value: IntervalSweep, _function: Callable[..., Any]) -> None:
 
 def cast_range(value: RangeSweep, function: Callable[..., Any]) -> RangeSweep:
     if function not in (cast_float, cast_int):
-        raise HydraException("Range can only be cast to int or float")
+        raise ValueError("Range can only be cast to int or float")
     return RangeSweep(
         start=function(value.start),
         stop=function(value.stop),
@@ -172,11 +171,12 @@ def choice(
         raise ValueError("empty choice is not legal")
     if len(args) == 1:
         first = args[0]
-        if isinstance(first, ChoiceSweep) and first.simple_form:
-            first.simple_form = False
-            return first
-        else:
-            raise ValueError("nesting choices is not supported")
+        if isinstance(first, ChoiceSweep):
+            if first.simple_form:
+                first.simple_form = False
+                return first
+            else:
+                raise ValueError("nesting choices is not supported")
 
     return ChoiceSweep(list=list(args))  # type: ignore
 

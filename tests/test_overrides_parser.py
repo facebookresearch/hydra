@@ -141,7 +141,8 @@ def test_element(value: str, expected: Any) -> None:
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'sort(3,2,str(1))': '<' not supported between instances of 'str' and 'int'"
+                    "TypeError while evaluating 'sort(3,2,str(1))':"
+                    " '<' not supported between instances of 'str' and 'int'"
                 ),
             ),
             id="sort(3,2,str(1))",
@@ -1019,6 +1020,9 @@ def test_tag_sweep(value: str, expected: str) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value, expected",
     [
+        # value
+        pytest.param("sort(1)", 1, id="sort:value"),
+        pytest.param("sort({a:10})", {"a": 10}, id="sort:value"),
         # list
         pytest.param("sort([1])", [1], id="sort:list"),
         pytest.param("sort([1,2,3])", [1, 2, 3], id="sort:list"),
@@ -1028,9 +1032,6 @@ def test_tag_sweep(value: str, expected: str) -> None:
             "sort(list=[1,2,3], reverse=True)", [3, 2, 1], id="sort:list:named:rev",
         ),
         # simple choice sweep
-        pytest.param(
-            "sort(1)", ChoiceSweep(list=[1], simple_form=True), id="sort:choice:simple",
-        ),
         pytest.param(
             "sort(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], simple_form=True),
@@ -1205,7 +1206,7 @@ class CastResults:
             "inf",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(inf)': cannot convert float infinity to integer"
+                    "OverflowError while evaluating 'int(inf)': cannot convert float infinity to integer"
                 ),
                 float=math.inf,
                 str="inf",
@@ -1217,7 +1218,7 @@ class CastResults:
             "nan",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(nan)': cannot convert float NaN to integer"
+                    "ValueError while evaluating 'int(nan)': cannot convert float NaN to integer"
                 ),
                 float=math.nan,
                 str="nan",
@@ -1234,14 +1235,14 @@ class CastResults:
             "''",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('')': invalid literal for int() with base 10:"
+                    "ValueError while evaluating 'int('')': invalid literal for int() with base 10:"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float('')': could not convert string to float:"
+                    "ValueError while evaluating 'float('')': could not convert string to float:"
                 ),
                 str="",
                 bool=CastResults.error(
-                    "Error evaluating 'bool('')': Cannot cast '' to bool"
+                    "ValueError while evaluating 'bool('')': Cannot cast '' to bool"
                 ),
             ),
             id="''",
@@ -1254,7 +1255,7 @@ class CastResults:
                 float=10.0,
                 str="10",
                 bool=CastResults.error(
-                    "Error evaluating 'bool('10')': Cannot cast '10' to bool"
+                    "ValueError while evaluating 'bool('10')': Cannot cast '10' to bool"
                 ),
             ),
             id="'10'",
@@ -1263,12 +1264,12 @@ class CastResults:
             "'10.0'",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('10.0')': invalid literal for int() with base 10: '10.0'"
+                    "ValueError while evaluating 'int('10.0')': invalid literal for int() with base 10: '10.0'"
                 ),
                 float=10.0,
                 str="10.0",
                 bool=CastResults.error(
-                    "Error evaluating 'bool('10.0')': Cannot cast '10.0' to bool"
+                    "ValueError while evaluating 'bool('10.0')': Cannot cast '10.0' to bool"
                 ),
             ),
             id="'10.0'",
@@ -1277,10 +1278,10 @@ class CastResults:
             "'true'",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('true')': invalid literal for int() with base 10: 'true'"
+                    "ValueError while evaluating 'int('true')': invalid literal for int() with base 10: 'true'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float('true')': could not convert string to float: 'true'"
+                    "ValueError while evaluating 'float('true')': could not convert string to float: 'true'"
                 ),
                 str="true",
                 bool=True,
@@ -1291,10 +1292,10 @@ class CastResults:
             "'false'",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('false')': invalid literal for int() with base 10: 'false'"
+                    "ValueError while evaluating 'int('false')': invalid literal for int() with base 10: 'false'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float('false')': could not convert string to float: 'false'"
+                    "ValueError while evaluating 'float('false')': could not convert string to float: 'false'"
                 ),
                 str="false",
                 bool=False,
@@ -1305,14 +1306,14 @@ class CastResults:
             "'[1,2,3]'",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('[1,2,3]')': invalid literal for int() with base 10: '[1,2,3]'"
+                    "ValueError while evaluating 'int('[1,2,3]')': invalid literal for int() with base 10: '[1,2,3]'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float('[1,2,3]')': could not convert string to float: '[1,2,3]'"
+                    "ValueError while evaluating 'float('[1,2,3]')': could not convert string to float: '[1,2,3]'"
                 ),
                 str="[1,2,3]",
                 bool=CastResults.error(
-                    "Error evaluating 'bool('[1,2,3]')': Cannot cast '[1,2,3]' to bool"
+                    "ValueError while evaluating 'bool('[1,2,3]')': Cannot cast '[1,2,3]' to bool"
                 ),
             ),
             id="'[1,2,3]'",
@@ -1321,14 +1322,14 @@ class CastResults:
             "'{a:10}'",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int('{a:10}')': invalid literal for int() with base 10: '{a:10}'"
+                    "ValueError while evaluating 'int('{a:10}')': invalid literal for int() with base 10: '{a:10}'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float('{a:10}')': could not convert string to float: '{a:10}'"
+                    "ValueError while evaluating 'float('{a:10}')': could not convert string to float: '{a:10}'"
                 ),
                 str="{a:10}",
                 bool=CastResults.error(
-                    "Error evaluating 'bool('{a:10}')': Cannot cast '{a:10}' to bool"
+                    "ValueError while evaluating 'bool('{a:10}')': Cannot cast '{a:10}' to bool"
                 ),
             ),
             id="'{a:10}'",
@@ -1363,14 +1364,14 @@ class CastResults:
             "[a,1]",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int([a,1])': invalid literal for int() with base 10: 'a'"
+                    "ValueError while evaluating 'int([a,1])': invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float([a,1])': could not convert string to float: 'a'"
+                    "ValueError while evaluating 'float([a,1])': could not convert string to float: 'a'"
                 ),
                 str=["a", "1"],
                 bool=CastResults.error(
-                    "Error evaluating 'bool([a,1])': Cannot cast 'a' to bool"
+                    "ValueError while evaluating 'bool([a,1])': Cannot cast 'a' to bool"
                 ),
             ),
             id="[a,1]",
@@ -1398,14 +1399,14 @@ class CastResults:
             "{a:10,b:xyz}",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int({a:10,b:xyz})': invalid literal for int() with base 10: 'xyz'"
+                    "ValueError while evaluating 'int({a:10,b:xyz})': invalid literal for int() with base 10: 'xyz'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float({a:10,b:xyz})': could not convert string to float: 'xyz'"
+                    "ValueError while evaluating 'float({a:10,b:xyz})': could not convert string to float: 'xyz'"
                 ),
                 str={"a": "10", "b": "xyz"},
                 bool=CastResults.error(
-                    "Error evaluating 'bool({a:10,b:xyz})': Cannot cast 'xyz' to bool"
+                    "ValueError while evaluating 'bool({a:10,b:xyz})': Cannot cast 'xyz' to bool"
                 ),
             ),
             id="{a:10,b:xyz}",
@@ -1435,18 +1436,19 @@ class CastResults:
             "a,'b',1,1.0,true,[a,b],{a:10}",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(a,'b',1,1.0,true,[a,b],{a:10})':"
+                    "ValueError while evaluating 'int(a,'b',1,1.0,true,[a,b],{a:10})':"
                     " invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float(a,'b',1,1.0,true,[a,b],{a:10})': could not convert string to float: 'a'"
+                    "ValueError while evaluating 'float(a,'b',1,1.0,true,[a,b],{a:10})':"
+                    " could not convert string to float: 'a'"
                 ),
                 str=ChoiceSweep(
                     list=["a", "b", "1", "1.0", "true", ["a", "b"], {"a": "10"}],
                     simple_form=True,
                 ),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(a,'b',1,1.0,true,[a,b],{a:10})': Cannot cast 'a' to bool"
+                    "ValueError while evaluating 'bool(a,'b',1,1.0,true,[a,b],{a:10})': Cannot cast 'a' to bool"
                 ),
             ),
             id="simple_choice:types",
@@ -1455,14 +1457,14 @@ class CastResults:
             "choice(a,b)",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(choice(a,b))': invalid literal for int() with base 10: 'a'"
+                    "ValueError while evaluating 'int(choice(a,b))': invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float(choice(a,b))': could not convert string to float: 'a'"
+                    "ValueError while evaluating 'float(choice(a,b))': could not convert string to float: 'a'"
                 ),
                 str=ChoiceSweep(list=["a", "b"]),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(choice(a,b))': Cannot cast 'a' to bool"
+                    "ValueError while evaluating 'bool(choice(a,b))': Cannot cast 'a' to bool"
                 ),
             ),
             id="choice(a,b)",
@@ -1471,14 +1473,14 @@ class CastResults:
             "choice(1,a)",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(choice(1,a))': invalid literal for int() with base 10: 'a'"
+                    "ValueError while evaluating 'int(choice(1,a))': invalid literal for int() with base 10: 'a'"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float(choice(1,a))': could not convert string to float: 'a'"
+                    "ValueError while evaluating 'float(choice(1,a))': could not convert string to float: 'a'"
                 ),
                 str=ChoiceSweep(list=["1", "a"]),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(choice(1,a))': Cannot cast 'a' to bool"
+                    "ValueError while evaluating 'bool(choice(1,a))': Cannot cast 'a' to bool"
                 ),
             ),
             id="choice(1,a)",
@@ -1488,19 +1490,19 @@ class CastResults:
             "interval(1.0, 2.0)",
             CastResults(
                 int=CastResults.error(
-                    "Error evaluating 'int(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'int(interval(1.0,2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 float=CastResults.error(
-                    "Error evaluating 'float(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'float(interval(1.0,2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 str=CastResults.error(
-                    "Error evaluating 'str(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'str(interval(1.0,2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'bool(interval(1.0,2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
             ),
@@ -1513,10 +1515,10 @@ class CastResults:
                 int=RangeSweep(start=1, stop=10, step=1),
                 float=RangeSweep(start=1.0, stop=10.0, step=1.0),
                 str=CastResults.error(
-                    "Error evaluating 'str(range(1,10))': Range can only be cast to int or float"
+                    "ValueError while evaluating 'str(range(1,10))': Range can only be cast to int or float"
                 ),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(range(1,10))': Range can only be cast to int or float"
+                    "ValueError while evaluating 'bool(range(1,10))': Range can only be cast to int or float"
                 ),
             ),
             id="range(1,10)",
@@ -1527,10 +1529,10 @@ class CastResults:
                 int=RangeSweep(start=1, stop=10, step=1),
                 float=RangeSweep(start=1.0, stop=10.0, step=1.0),
                 str=CastResults.error(
-                    "Error evaluating 'str(range(1.0,10.0))': Range can only be cast to int or float"
+                    "ValueError while evaluating 'str(range(1.0,10.0))': Range can only be cast to int or float"
                 ),
                 bool=CastResults.error(
-                    "Error evaluating 'bool(range(1.0,10.0))': Range can only be cast to int or float"
+                    "ValueError while evaluating 'bool(range(1.0,10.0))': Range can only be cast to int or float"
                 ),
             ),
             id="range(1.0,10.0)",
@@ -1688,7 +1690,7 @@ def test_eval(
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'foo(true)':"
+                    "TypeError while evaluating 'foo(true)':"
                     " mismatch type argument value: bool is incompatible with int"
                 ),
             ),
@@ -1701,7 +1703,7 @@ def test_eval(
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'foo(value=true)':"
+                    "TypeError while evaluating 'foo(value=true)':"
                     " mismatch type argument value: bool is incompatible with int"
                 ),
             ),
@@ -1714,7 +1716,7 @@ def test_eval(
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'empty(no_such_name=10)': missing a required argument: 'value'"
+                    "TypeError while evaluating 'empty(no_such_name=10)': missing a required argument: 'value'"
                 ),
             ),
             id="empty(no_such_name=10)",
@@ -1726,7 +1728,7 @@ def test_eval(
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'empty(value=10,no_such_name=10)':"
+                    "TypeError while evaluating 'empty(value=10,no_such_name=10)':"
                     " got an unexpected keyword argument 'no_such_name'"
                 ),
             ),
@@ -1739,7 +1741,8 @@ def test_eval(
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Error evaluating 'sum(true)': mismatch type argument args[0]: bool is incompatible with int"
+                    "TypeError while evaluating 'sum(true)':"
+                    " mismatch type argument args[0]: bool is incompatible with int"
                 ),
             ),
             id="sum(true)",
