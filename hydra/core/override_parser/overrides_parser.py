@@ -1,12 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
-from typing import Any, List
+from typing import Any, List, Optional
 
 from antlr4 import Token
 from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
 
 from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
+from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_visitor import (
     HydraErrorListener,
     HydraOverrideVisitor,
@@ -33,11 +34,15 @@ class OverridesParser:
     functions: Functions
 
     @classmethod
-    def create(cls) -> "OverridesParser":
-        return cls(create_functions())
+    def create(cls, config_loader: Optional[ConfigLoader] = None) -> "OverridesParser":
+        functions = create_functions()
+        return cls(functions=functions, config_loader=config_loader)
 
-    def __init__(self, functions: Functions):
+    def __init__(
+        self, functions: Functions, config_loader: Optional[ConfigLoader] = None
+    ):
         self.functions = functions
+        self.config_loader = config_loader
 
     def parse_rule(self, s: str, rule_name: str) -> Any:
         error_listener = HydraErrorListener()
@@ -88,6 +93,7 @@ class OverridesParser:
                     f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details",
                 ) from e.__cause__
             assert isinstance(parsed, Override)
+            parsed.config_loader = self.config_loader
             ret.append(parsed)
         return ret
 
@@ -107,4 +113,5 @@ def create_functions() -> Functions:
     functions.register(name="tag", func=grammar_functions.tag)
     functions.register(name="sort", func=grammar_functions.sort)
     functions.register(name="shuffle", func=grammar_functions.shuffle)
+    functions.register(name="glob", func=grammar_functions.glob)
     return functions

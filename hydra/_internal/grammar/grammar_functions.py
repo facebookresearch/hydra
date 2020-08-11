@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Union
 from hydra._internal.grammar.utils import is_type_matching
 from hydra.core.override_parser.types import (
     ChoiceSweep,
+    Glob,
     IntervalSweep,
     ParsedElementType,
     QuotedString,
@@ -316,3 +317,17 @@ def _sort_sweep(
         return sweep
     else:
         assert False
+
+
+def glob(
+    include: Union[List[str], str], exclude: Optional[Union[List[str], str]] = None
+) -> Glob:
+
+    if isinstance(include, str):
+        include = [include]
+    if exclude is None:
+        exclude = []
+    elif isinstance(exclude, str):
+        exclude = [exclude]
+
+    return Glob(include=include, exclude=exclude)

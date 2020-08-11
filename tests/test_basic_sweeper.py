@@ -4,6 +4,7 @@ from typing import List, Optional
 import pytest
 
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
+from hydra.core.override_parser.overrides_parser import OverridesParser
 
 
 @pytest.mark.parametrize(  # type:ignore
@@ -47,7 +48,9 @@ from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 def test_split(
     args: List[str], max_batch_size: Optional[int], expected: List[List[List[str]]]
 ) -> None:
-
-    ret = BasicSweeper.split_arguments(args, max_batch_size=max_batch_size)
+    parser = OverridesParser.create()
+    ret = BasicSweeper.split_arguments(
+        parser.parse_overrides(args), max_batch_size=max_batch_size
+    )
     lret = [list(x) for x in ret]
     assert lret == expected

@@ -16,6 +16,7 @@ from hydra.core.override_parser.overrides_parser import (
 from hydra.core.override_parser.types import (
     ChoiceSweep,
     FloatRange,
+    Glob,
     IntervalSweep,
     Key,
     Override,
@@ -1759,3 +1760,48 @@ def test_eval_errors(
     parser = OverridesParser(functions)
     with expected:
         parser.parse_rule(value, "function")
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
+        pytest.param("glob(*)", Glob(include=["*"], exclude=[])),
+        pytest.param("glob(include=*)", Glob(include=["*"], exclude=[])),
+        pytest.param("glob(include=[*])", Glob(include=["*"], exclude=[])),
+        pytest.param(
+            "glob(include=[a*, b*], exclude=c*)",
+            Glob(include=["a*", "b*"], exclude=["c*"]),
+        ),
+    ],
+)
+def test_glob(value: str, expected: Any) -> None:
+    ret = parse_rule(value, "function")
+    assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "include,exclude,expected",
+    [
+        pytest.param(
+            ["*"],
+            [],
+            ["the", "quick", "brown", "fox", "jumped", "under", "the", "lazy", "dog"],
+            id="include=*",
+        ),
+        pytest.param(
+            ["*"],
+            ["quick", "under"],
+            ["the", "brown", "fox", "jumped", "the", "lazy", "dog"],
+            id="include=*, exclude=[quick,under]]",
+        ),
+        pytest.param(
+            ["*"], ["*d*"], ["the", "quick", "brown", "fox", "the", "lazy"], id="=*",
+        ),
+        pytest.param(["t*"], [], ["the", "the"], id="=*",),
+    ],
+)
+def test_glob_filter(
+    include: List[str], exclude: List[str], expected: List[str]
+) -> None:
+    strings = ["the", "quick", "brown", "fox", "jumped", "under", "the", "lazy", "dog"]
+    assert Glob(include=include, exclude=exclude).filter(strings) == expected

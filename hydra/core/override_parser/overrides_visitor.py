@@ -10,6 +10,7 @@ from antlr4.tree.Tree import TerminalNodeImpl
 from hydra._internal.grammar.functions import FunctionCall, Functions
 from hydra.core.override_parser.types import (
     ChoiceSweep,
+    Glob,
     IntervalSweep,
     Key,
     Override,
@@ -227,6 +228,8 @@ class HydraOverrideVisitor(OverrideVisitor):  # type: ignore
                         value_type = ValueType.SIMPLE_CHOICE_SWEEP
                     else:
                         value_type = ValueType.CHOICE_SWEEP
+                elif isinstance(value, Glob):
+                    value_type = ValueType.GLOB_CHOICE_SWEEP
                 elif isinstance(value, IntervalSweep):
                     value_type = ValueType.INTERVAL_SWEEP
                 elif isinstance(value, RangeSweep):

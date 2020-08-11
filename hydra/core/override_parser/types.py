@@ -1,11 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import decimal
+import fnmatch
 from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
 from typing import Any, Dict, Iterator, List, Optional, Set, Union
 
+from omegaconf import OmegaConf
+from omegaconf._utils import is_structured_config
+
+from hydra.core.config_loader import ConfigLoader
+from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
 
 
@@ -134,9 +140,10 @@ class OverrideType(Enum):
 class ValueType(Enum):
     ELEMENT = 1
     CHOICE_SWEEP = 2
-    SIMPLE_CHOICE_SWEEP = 3
-    RANGE_SWEEP = 4
-    INTERVAL_SWEEP = 5
+    GLOB_CHOICE_SWEEP = 3
+    SIMPLE_CHOICE_SWEEP = 4
+    RANGE_SWEEP = 5
+    INTERVAL_SWEEP = 6
 
 
 @dataclass
@@ -145,6 +152,26 @@ class Key:
     key_or_group: str
     pkg1: Optional[str] = None
     pkg2: Optional[str] = None
+
+
+@dataclass
+class Glob:
+    include: List[str] = field(default_factory=list)
+    exclude: List[str] = field(default_factory=list)
+
+    def filter(self, names: List[str]) -> List[str]:
+        def match(s: str, globs: List[str]) -> bool:
+            for g in globs:
+                if fnmatch.fnmatch(s, g):
+                    return True
+            return False
+
+        res = []
+        for name in names:
+            if match(name, self.include) and not match(name, self.exclude):
+                res.append(name)
+
+        return res
 
 
 @dataclass
@@ -168,6 +195,9 @@ class Override:
 
     # Input line used to construct this
     input_line: Optional[str] = None
+
+    # Configs repo
+    config_loader: Optional[ConfigLoader] = None
 
     def is_delete(self) -> bool:
         """
@@ -217,6 +247,7 @@ class Override:
         if self.value_type not in (
             ValueType.CHOICE_SWEEP,
             ValueType.SIMPLE_CHOICE_SWEEP,
+            ValueType.GLOB_CHOICE_SWEEP,
             ValueType.RANGE_SWEEP,
         ):
             raise HydraException(
@@ -239,6 +270,14 @@ class Override:
                 lst = iter(lst)
             else:
                 lst = self._value.range()
+        elif isinstance(self._value, Glob):
+            if self.config_loader is None:
+                raise HydraException("ConfigLoader is not set")
+
+            ret = self.config_loader.get_group_options(
+                self.key_or_group, results_filter=ObjectType.CONFIG
+            )
+            return iter(self._value.filter(ret))
         else:
             assert False
 
@@ -261,6 +300,7 @@ class Override:
         return self.value_type in (
             ValueType.SIMPLE_CHOICE_SWEEP,
             ValueType.CHOICE_SWEEP,
+            ValueType.GLOB_CHOICE_SWEEP,
         )
 
     def is_discrete_sweep(self) -> bool:
@@ -331,6 +371,11 @@ class Override:
             return "{" + s + "}"
         elif isinstance(value, (str, int, bool, float)):
             return str(value)
+        elif is_structured_config(value):
+            print(value)
+            return Override._get_value_element_as_str(
+                OmegaConf.to_container(OmegaConf.structured(value))
+            )
         else:
             assert False
 

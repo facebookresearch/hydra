@@ -28,6 +28,7 @@ from omegaconf import MISSING, DictConfig, OmegaConf
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Override
 from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
@@ -99,13 +100,11 @@ class BasicSweeper(Sweeper):
 
     @staticmethod
     def split_arguments(
-        arguments: List[str], max_batch_size: Optional[int]
+        overrides: List[Override], max_batch_size: Optional[int]
     ) -> List[List[List[str]]]:
-        parser = OverridesParser.create()
-        parsed = parser.parse_overrides(arguments)
 
         lists = []
-        for override in parsed:
+        for override in overrides:
             if override.is_sweep_override():
                 if override.is_discrete_sweep():
                     key = override.get_key_element()
@@ -120,6 +119,7 @@ class BasicSweeper(Sweeper):
                 key = override.get_key_element()
                 value = override.get_value_element_as_str()
                 lists.append([f"{key}={value}"])
+
         all_batches = [list(x) for x in itertools.product(*lists)]
         assert max_batch_size is None or max_batch_size > 0
         if max_batch_size is None:
@@ -133,7 +133,11 @@ class BasicSweeper(Sweeper):
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
-        self.overrides = self.split_arguments(arguments, self.max_batch_size)
+
+        parser = OverridesParser.create(config_loader=self.config_loader)
+        overrides = parser.parse_overrides(arguments)
+
+        self.overrides = self.split_arguments(overrides, self.max_batch_size)
         returns: List[Sequence[JobReturn]] = []
 
         # Save sweep run config in top level sweep working directory
