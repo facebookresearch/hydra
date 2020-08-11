@@ -1020,6 +1020,7 @@ def test_tag_sweep(value: str, expected: str) -> None:
     "value, expected",
     [
         # list
+        pytest.param("sort([1])", [1], id="sort:list"),
         pytest.param("sort([1,2,3])", [1, 2, 3], id="sort:list"),
         pytest.param("sort(list=[1,2,3])", [1, 2, 3], id="sort:list:named"),
         pytest.param("sort(list=[])", [], id="sort:list:named:empty"),
@@ -1027,6 +1028,9 @@ def test_tag_sweep(value: str, expected: str) -> None:
             "sort(list=[1,2,3], reverse=True)", [3, 2, 1], id="sort:list:named:rev",
         ),
         # simple choice sweep
+        pytest.param(
+            "sort(1)", ChoiceSweep(list=[1], simple_form=True), id="sort:choice:simple",
+        ),
         pytest.param(
             "sort(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], simple_form=True),

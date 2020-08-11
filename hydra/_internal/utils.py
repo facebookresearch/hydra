@@ -23,6 +23,7 @@ from typing import (
 )
 
 from omegaconf import DictConfig, OmegaConf, read_write
+from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath
@@ -206,7 +207,7 @@ def run_and_report(func: Any) -> Any:
         else:
             if isinstance(ex, (ConfigCompositionException, OverrideParseException)):
                 sys.stderr.write(str(ex) + os.linesep)
-                if ex.__cause__ is not None:
+                if isinstance(ex.__cause__, OmegaConfBaseException):
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
             else:
                 # Custom printing that strips the Hydra related stack frames from the top

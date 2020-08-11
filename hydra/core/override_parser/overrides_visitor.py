@@ -289,8 +289,9 @@ class HydraOverrideVisitor(OverrideVisitor):  # type: ignore
         try:
             return self.functions.eval(function)
         except Exception as e:
-            text = ctx.getText()
-            raise HydraException(f"Error evaluating '{text}': {e}") from e
+            raise HydraException(
+                f"{type(e).__name__} while evaluating '{ctx.getText()}': {e}"
+            ) from e
 
 
 class HydraErrorListener(ErrorListener):  # type: ignore

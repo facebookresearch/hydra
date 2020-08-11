@@ -2,7 +2,6 @@
 import sys
 from typing import Any, List, Optional
 
-from antlr4 import Token
 from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
 
 from hydra._internal.grammar import grammar_functions
@@ -80,10 +79,8 @@ class OverridesParser:
                     msg = f"{prefix}{override}" f"\n{'^'.rjust(start)}"
                     e.__cause__ = None
                 elif isinstance(cause, RecognitionException):
-                    prefix = f"{e}: "
-                    offending_token: Token = cause.offendingToken
-                    start = len(prefix) + offending_token.start + 1
-                    msg = f"{prefix}{override}" f"\n{'^'.rjust(start)}"
+                    prefix = f"{e}"
+                    msg = f"{prefix}"
                     e.__cause__ = None
                 else:
                     msg = f"Error parsing override '{override}'" f"\n{e}"

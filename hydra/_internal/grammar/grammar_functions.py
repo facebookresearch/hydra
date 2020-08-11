@@ -168,15 +168,16 @@ def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
 def choice(
     *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep]
 ) -> ChoiceSweep:
+    if len(args) == 0:
+        raise ValueError("empty choice is not legal")
     if len(args) == 1:
         first = args[0]
         if isinstance(first, ChoiceSweep) and first.simple_form:
             first.simple_form = False
             return first
+        else:
+            raise ValueError("nesting choices is not supported")
 
-    for arg in args:
-        if isinstance(arg, ChoiceSweep):
-            raise HydraException("Only a simple choice sweep is supported")
     return ChoiceSweep(list=list(args))  # type: ignore
 
 
@@ -252,14 +253,24 @@ def shuffle(
 def sort(
     *args: Union[ElementType, ChoiceSweep, RangeSweep],
     sweep: Optional[Union[ChoiceSweep, RangeSweep]] = None,
-    reverse: bool = False,
     list: Optional[List[Any]] = None,
+    reverse: bool = False,
 ) -> Any:
     """
-    sort(1,3,2)
-    sort(1,3,2,reverse=true)
-    sort([1,3,2])
-    sort(lst=[1,3,2])
+    # sweep
+    sort(1,3,2)                         -> ChoiceSweep(1,2,3)
+    sort(1,3,2,reverse=true)            -> ChoiceSweep(3,2,1)
+    sort(choice(1,2,3))                 -> ChoiceSweep(1,2,3)
+    sort(sweep=choice(1,2,3))           -> ChoiceSweep(1,2,3)
+    sort(choice(1,2,3),reverse=true)    -> ChoiceSweep(3,2,1)
+    sort(range(10,1))                   -> RangeSweep representing the same numbers in ascending order
+    sort(range(1,10),reverse=true)      -> RangeSweep representing the same numbers in descending order
+    # lists
+    sort([1,3,2])                       -> [1,2,3]
+    sort(list=[1,3,2])                  -> [1,2,3]
+    sort(list=[1,3,2], reverse=true)    -> [3,2,1]
+    # single value returned as is
+    sort(1) -> 1
     """
 
     if list is not None:
@@ -275,6 +286,8 @@ def sort(
             return _sort_sweep(arg, reverse)
         elif isinstance(arg, builtins.list):
             return sorted(arg, reverse=reverse)
+        elif is_type_matching(arg, ParsedElementType):
+            return arg
         else:
             raise TypeError(f"Invalid arguments: {args}")
     else:
@@ -282,9 +295,11 @@ def sort(
         for arg in args:
             if not isinstance(arg, primitives):
                 raise TypeError(f"Invalid arguments: {args}")
-
-        cw = _list_to_simple_choice(*args)
-        return _sort_sweep(cw, reverse)
+        if len(args) == 0:
+            raise ValueError("empty sort input")
+        elif len(args) > 1:
+            cw = _list_to_simple_choice(*args)
+            return _sort_sweep(cw, reverse)
 
 
 def _sort_sweep(
