@@ -69,4 +69,4 @@ schema:
  - Each config group can have a default specified in the `defaults` list
  - Any combination can be composed by selecting the desired option from each config group in the `defaults` list or the command line.
 
-Stay tuned to see how to run all of the combinations automatically ([Multi-run](/tutorials/basic/6_multirun.md)).
+Stay tuned to see how to run all of the combinations automatically ([Multi-run](/tutorials/basic/running_your_app/2_multirun.md)).
