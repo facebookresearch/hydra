@@ -35,11 +35,7 @@ class BashCompletion(CompletionPlugin):
 
     EXECUTABLE=($(command -v $helper))
     if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
-        printf "\\nhelper='$helper'\\n"
-        printf "EXECUTABLE='$EXECUTABLE'\\n"
         printf "EXECUTABLE_FIRST='${EXECUTABLE[0]}'\\n"
-        printf "EXECUTABLE AS ARRAY:\\n"
-        printf "\\t%s\\n" ${EXECUTABLE[@]}
     fi
     if ! [ -x "${EXECUTABLE[0]}" ]; then
         false
