@@ -87,7 +87,7 @@ class OverridesParser:
                 raise OverrideParseException(
                     override=override,
                     message=f"{msg}"
-                    f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details",
+                    f"\nSee https://hydra.cc/docs/next/advanced/override_grammar/basic for details",
                 ) from e.__cause__
             assert isinstance(parsed, Override)
             parsed.config_loader = self.config_loader

@@ -47,7 +47,7 @@ Improved Documentation
 - New [Terminology](https://hydra.cc/docs/next/terminology) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 - New [Advanced/Hydra in Jupyter Notebooks](https://hydra.cc/docs/next/advanced/jupyter_notebooks) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 - New [Advanced/Hydra in Unit Tests](https://hydra.cc/docs/next/advanced/unit_testing) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
-- New [Advanced/Command-line syntax](https://hydra.cc/docs/next/advanced/command_line_syntax) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
+- New [Advanced/Override Grammar/Basic](https://hydra.cc/docs/next/advanced/override_grammar/basic) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 
 Maintenance Changes
 -------------------

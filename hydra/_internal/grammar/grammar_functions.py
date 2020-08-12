@@ -167,6 +167,9 @@ def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
 def choice(
     *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep]
 ) -> ChoiceSweep:
+    """
+    A choice sweep over the specified values
+    """
     if len(args) == 0:
         raise ValueError("empty choice is not legal")
     if len(args) == 1:
@@ -184,14 +187,28 @@ def choice(
 def range(
     start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
 ) -> RangeSweep:
+    """
+    Range is defines a sweeep over a range of integer or floating point values.
+    For a positive step, the contents of a range r are determined by the formula
+     r[i] = start + step*i where i >= 0 and r[i] < stop.
+    For a negative step, the contents of the range are still determined by the formula
+     r[i] = start + step*i, but the constraints are i >= 0 and r[i] > stop.
+    """
     return RangeSweep(start=start, stop=stop, step=step)
 
 
 def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
+    """
+    A continuous interval between two floating point values.
+    value=interval(x,y) is interpreted as x <= value < y
+    """
     return IntervalSweep(start=start, end=end)
 
 
 def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep:
+    """
+    Tags the sweep with a list of string tags.
+    """
     if len(args) < 1:
         raise ValueError("Not enough arguments to tag, must take at least a sweep")
 
@@ -222,10 +239,7 @@ def shuffle(
     list: Optional[List[Any]] = None,
 ) -> Union[List[Any], ChoiceSweep, RangeSweep]:
     """
-    simple choice:  shuffle(a,b,c)
-    choice:         shuffle(choice(a,b,c)), shuffle(sweep=choice(a,b,c))
-    range:          shuffle(range(1,10)),   shuffle(sweep=range(1,10))
-    list:           shuffle([a,b,c]),       shuffle(list=[a,b,c])
+    Shuffle input list or sweep (does not support interval)
     """
     if list is not None:
         return shuffle(list)
@@ -257,20 +271,8 @@ def sort(
     reverse: bool = False,
 ) -> Any:
     """
-    # sweep
-    sort(1,3,2)                         -> ChoiceSweep(1,2,3)
-    sort(1,3,2,reverse=true)            -> ChoiceSweep(3,2,1)
-    sort(choice(1,2,3))                 -> ChoiceSweep(1,2,3)
-    sort(sweep=choice(1,2,3))           -> ChoiceSweep(1,2,3)
-    sort(choice(1,2,3),reverse=true)    -> ChoiceSweep(3,2,1)
-    sort(range(10,1))                   -> RangeSweep representing the same numbers in ascending order
-    sort(range(1,10),reverse=true)      -> RangeSweep representing the same numbers in descending order
-    # lists
-    sort([1,3,2])                       -> [1,2,3]
-    sort(list=[1,3,2])                  -> [1,2,3]
-    sort(list=[1,3,2], reverse=true)    -> [3,2,1]
-    # single value returned as is
-    sort(1) -> 1
+    Sort an input list or sweep.
+    reverse=True reverses the order
     """
 
     if list is not None:
@@ -337,6 +339,12 @@ def _sort_sweep(
 def glob(
     include: Union[List[str], str], exclude: Optional[Union[List[str], str]] = None
 ) -> Glob:
+    """
+    A glob selects from all options in the config group.
+    inputs are in glob format. e.g: *, foo*, *foo.
+    :param include: a string or a list of strings to use as include globs
+    :param exclude: a string or a list of strings to use as exclude globs
+    """
 
     if isinstance(include, str):
         include = [include]

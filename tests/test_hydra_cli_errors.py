@@ -42,7 +42,7 @@ ValueError while evaluating 'choice()': empty choice is not legal""",
             ["+key=choice(choice(a,b))", "-m"],
             """Error parsing override '+key=choice(choice(a,b))'
 ValueError while evaluating 'choice(choice(a,b))': nesting choices is not supported
-See https://hydra.cc/docs/next/advanced/command_line_syntax for details
+See https://hydra.cc/docs/next/advanced/override_grammar/basic for details
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 """,

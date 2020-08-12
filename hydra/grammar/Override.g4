@@ -81,8 +81,8 @@ DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
 WS: (' ' | '\t')+ -> channel(HIDDEN);
 
 QUOTED_VALUE:
-      '\'' ('\\\''|.)*? '\''  // Single quoted string. can contain escaped single quote : /'
-    | '"' ('\\"'|.)*? '"' ;   // Double quoted string. can contain escaped double quote : /"
+      '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
+    | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
 
 INTERPOLATION:
     '${' (

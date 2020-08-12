@@ -522,7 +522,7 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\n\tAppend:  +key=value, +key@package=value"
             f"\n\tDelete:  ~key, ~key@pkg, ~key=value, ~key@pkg=value"
             f"\n"
-            f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
+            f"\nSee https://hydra.cc/docs/next/advanced/override_grammar/basic for details"
         )
         raise ConfigCompositionException(msg)
 
