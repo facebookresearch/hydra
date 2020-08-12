@@ -36,7 +36,7 @@ def get_available_plugin() -> List[str]:
     ]
     plugins = [p["path"] for p in ps] + ["examples"]
     random.shuffle(plugins)
-    return [','.join(w) for w in list(chunk(plugins, 3))]
+    return [",".join(w) for w in list(chunk(plugins, 3))]
 
 
 def run(branch: str, git_repo: str) -> None:
