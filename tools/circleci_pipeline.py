@@ -2,6 +2,7 @@
 # type: ignore
 import json
 import os
+import random
 import re
 import sys
 from os.path import dirname
@@ -17,6 +18,13 @@ git_repo_pattern = (
 
 BASE = dirname(os.path.abspath(os.path.dirname(__file__)))
 
+from itertools import islice
+
+
+def chunk(it, size):
+    it = iter(it)
+    return iter(lambda: tuple(islice(it, size)), ())
+
 
 def get_available_plugin() -> List[str]:
     blacklist = [".isort.cfg"]
@@ -26,7 +34,9 @@ def get_available_plugin() -> List[str]:
         if x != "examples"
         if x not in blacklist
     ]
-    return [p["path"] for p in ps] + ["examples"]
+    plugins = [p["path"] for p in ps] + ["examples"]
+    random.shuffle(plugins)
+    return [','.join(w) for w in list(chunk(plugins, 3))]
 
 
 def run(branch: str, git_repo: str) -> None:
