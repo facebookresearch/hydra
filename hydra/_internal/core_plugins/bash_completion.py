@@ -32,7 +32,7 @@ class BashCompletion(CompletionPlugin):
         helper="${words[0]}"
         true
     fi
-    
+
     EXECUTABLE=($(command -v $helper))
     if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
         printf "\\n"
