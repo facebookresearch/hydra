@@ -57,20 +57,20 @@ def test_bash_completion_with_dot_in_path():
 """
 bash -l <<- 'HEREDOC'
 # Navigate to app with minimal configuration
-cd .
+cd ./test_apps/app_with_cfg/
 
 # Locate python
 PYTHON=$(command -v python)
 
 # Setup hydra bash completion
-eval "$(python simple.py -sc install=bash)"
+eval "$(python my_app.py -sc install=bash)"
 
 # Setup debugging
 export HYDRA_COMP_DEBUG=1
 export PATH=$PATH:.
 
 # Do actual test
-test=$(COMP_LINE='python simple.py' hydra_bash_completion | grep EXECUTABLE_FIRST | awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
+test=$(COMP_LINE='python my_app.py' hydra_bash_completion | grep EXECUTABLE_FIRST | awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
 
 if [ $test == $PYTHON ]; then
     echo TRUE
