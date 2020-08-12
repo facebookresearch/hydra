@@ -600,7 +600,13 @@ class ConfigLoaderImpl(ConfigLoader):
                         package_override=package_override,
                     )
 
-                    merged = OmegaConf.merge(schema.config, ret.config)
+                    try:
+                        merged = OmegaConf.merge(schema.config, ret.config)
+                    except OmegaConfBaseException as e:
+                        raise ConfigCompositionException(
+                            f"Error merging '{input_file}' with schema"
+                        ) from e
+
                     assert isinstance(merged, DictConfig)
                     return (
                         merged,
