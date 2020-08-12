@@ -29,8 +29,8 @@ PYTHON_VERSIONS = os.environ.get(
 
 INSTALL_EDITABLE_MODE = os.environ.get("INSTALL_EDITABLE_MODE", 0)
 
-PLUGINS_INSTALL_COMMANDS = (
-    (["pip", "install", "-e"]) if INSTALL_EDITABLE_MODE else (["pip", "install"])
+INSTALL_COMMAND = (
+    ["pip", "install", "-e"] if INSTALL_EDITABLE_MODE else ["pip", "install"]
 )
 
 # Allow limiting testing to specific plugins
@@ -259,7 +259,7 @@ def _isort_cmd():
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_dev_deps(session)
-    install_hydra(session, ["pip", "install", "-e"])
+    install_hydra(session, INSTALL_COMMAND)
 
     apps = _get_standalone_apps_dirs()
     session.log("Installing standalone apps")
@@ -315,7 +315,7 @@ def lint_plugins(session):
 
 def lint_plugins_in_dir(session, directory: str) -> None:
 
-    install_cmd = ["pip", "install", "-e"]
+    install_cmd = INSTALL_COMMAND
     install_hydra(session, install_cmd)
     plugins = select_plugins(session=session, directory=directory)
 
@@ -393,9 +393,7 @@ def _get_standalone_apps_dirs():
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+    "install_cmd", (INSTALL_COMMAND,), ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
 )
 def test_core(session, install_cmd):
     _upgrade_basic(session)
@@ -430,9 +428,7 @@ def test_core(session, install_cmd):
 >>>>>>> Revert "separate all plugins"
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+    "install_cmd", (INSTALL_COMMAND,), ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
 )
 def test_plugins(session, install_cmd):
 <<<<<<< HEAD
@@ -494,6 +490,7 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
+<<<<<<< HEAD
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
@@ -507,6 +504,17 @@ def coverage(session):
                 os.path.join(directory, plugin.path),
                 silent=SILENT,
             )
+=======
+    install_hydra(session, INSTALL_COMMAND)
+    session.run("coverage", "erase")
+
+    selected_plugins = select_plugins(session)
+    for plugin in selected_plugins:
+        command = INSTALL_COMMAND.extend(os.path.join("plugins", plugin.path))
+        session.run(
+            *command, silent=SILENT,
+        )
+>>>>>>> align all install commands
 
         # run plugin coverage
         for plugin in selected_plugins:a
@@ -539,8 +547,15 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
+<<<<<<< HEAD
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
+=======
+    # pyzmq 19.0.1 has installation issues on Windows
+    # pytest 6.0 makes deprecation warnings wail on errors, breaking nbval due to a deprecated API usage
+    session.install("jupyter", "nbval", "pyzmq==19.0.0", "pytest==5.4.3")
+    install_hydra(session, INSTALL_COMMAND)
+>>>>>>> align all install commands
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
     )
