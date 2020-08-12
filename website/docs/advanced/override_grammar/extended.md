@@ -1,5 +1,6 @@
 ---
 id: extended
+sidebar_label: Extended Override syntax
 hide_title: true
 ---
 

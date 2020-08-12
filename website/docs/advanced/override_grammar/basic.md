@@ -1,6 +1,7 @@
 ---
 id: basic
 hide_title: true
+sidebar_label: Basic Override syntax
 ---
 ## Basic Override syntax
 You can manipulate your configuration with overrides (via the command line or the Compose API). This includes:
