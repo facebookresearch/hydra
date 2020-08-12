@@ -52,6 +52,42 @@ def create_config_loader() -> ConfigLoaderImpl:
         )
     )
 
+def test_bash_completion_with_dot_in_path():
+    process = subprocess.Popen(
+"""
+bash -l <<- 'HEREDOC'
+# Navigate to app with minimal configuration
+cd .
+
+# Locate python
+PYTHON=$(command -v python)
+
+# Setup hydra bash completion
+eval "$(python simple.py -sc install=bash)"
+
+# Setup debugging
+export HYDRA_COMP_DEBUG=1
+export PATH=$PATH:.
+
+# Do actual test
+test=$(COMP_LINE='python simple.py' hydra_bash_completion | grep EXECUTABLE_FIRST | awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
+
+if [ $test == $PYTHON ]; then
+    echo TRUE
+else
+    echo FALSE
+fi
+HEREDOC
+"""
+    ,
+    shell=True,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    )
+    stdout, stderr = process.communicate()
+    assert stderr == b''
+    assert stdout == b'TRUE\n'
+    return
 
 base_completion_list: List[str] = [
     "dict.",
