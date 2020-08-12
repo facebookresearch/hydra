@@ -13,11 +13,7 @@ from hydra.utils import get_original_cwd
 def my_app(_: DictConfig) -> None:
     run_dir = str(Path.cwd().relative_to(get_original_cwd()))
     time.sleep(2)
-    run_dir_after_sleep = HydraConfig.get().run.dir
-    print(run_dir)
-    print(type(run_dir))
-    print(run_dir_after_sleep)
-    print(type(run_dir_after_sleep))
+    run_dir_after_sleep = str(Path(HydraConfig.get().run.dir))
     assert run_dir == run_dir_after_sleep
 
 
