@@ -61,11 +61,11 @@ In this example, we set the range of `x` parameter as an integer in `[-5, 5]` an
 The values of the `x` and `y` parameters can also be set using the config file `plugins/hydra_ax_sweeper/example/conf/config.yaml`. For instance, the configuration corresponding to the parameter `x` is as follows:
 
 ```
-banana.x:
+banana_x:
  type: range
  bounds: [-5, 5]
 
-banana.y:
+banana_y:
  type: range
  bounds: [-5, 10.1]
 ```
