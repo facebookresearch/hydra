@@ -1,25 +1,38 @@
 ---
 id: extended
-title: Extended Override syntax
+hide_title: true
 ---
-## Overview
-Hydra supports a set of functions in the command line.
 
-Functions are defined as `function_name(param1,...paramn)`.
-When calling a function, one can optionally name parameters. This is following the Python convention of naming parameters.
-The function:
-```python
-def func(param1:int, param2:str) -> bool:
+##  Extended Override syntax
+Hydra Overrides supports functions.
+When calling a function, one can optionally name parameters. This is following the Python 
+convention of naming parameters.
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Example function"
+def func(a:int, b:str) -> bool:
     ...
+
+
 ```
-Can be called in the following forms:
-```python
-func(10,foo)                 # Positional only
-func(10,param2=foo)          # Mixed positional and named
-func(param1=10,param2=foo)   # Named only
-func(param1=10,foo)          # error: positional argument follows keyword argument
+</div>
+
+<div className="col  col--6">
+
+```python title="Calling function"
+func(10,foo)     # Positional only
+func(a=10,b=foo) # Named only
+func(10,b=foo)   # Mixed
+func(a=10,foo)   # Error
 ```
-Note lack of quotes in the examples above. Despite some similarities, this is not Python.
+
+</div>
+</div>
+
+
+Note the lack of quotes in the examples above. Despite some similarities, this is **not Python**.
 
 :::important
 Hydra supports very specific functions. If you would like to have
@@ -27,13 +40,13 @@ another function added please file an issue and explain the use case.
 :::
 
 ## Sweeps
-Sweepers are using sweeps to determine what to do. For example, one can instruct the basic sweeper to sweep over all
-combinations of the lists `num1=range(0,3)` `num2=range(0,3)`, which will result in `9` jobs, each getting a 
+Sweep overrides are used by Sweepers to determine what to do. For example, 
+one can instruct the Basic Sweeper to sweep over all combinations of the 
+ranges `num1=range(0,3)` and `num2=range(0,3)` - resulting in `9` jobs, each getting a 
 different pair of numbers from `0`, `1` and `2`.
 
 ### Choice sweep
-#### Signature
-```python
+```python title="Signature"
 def choice(
     *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep]
 ) -> ChoiceSweep:
@@ -41,16 +54,14 @@ def choice(
     A choice sweep over the specified values
     """
 ```
-#### Examples
 Choice sweeps are the most common sweeps.
 A choice sweep is described in one of two equivalent forms.
-```yaml
+```yaml title="Examples"
 db=mysql,postgresql          # a comma separated list of two or more elements. 
 db=choice(mysql,postgresql)  # choice
 ```
 ### Glob choice sweep
-#### Signature
-```python
+```python title="Signature"
 def glob(
     include: Union[List[str], str], exclude: Optional[Union[List[str], str]] = None
 ) -> Glob:
@@ -62,17 +73,15 @@ def glob(
     :return: A Glob object
     """
 ```
-#### Examples
 Assuming the config group schema with the options school, support and warehouse:
-```yaml
+```yaml title="Examples"
 schema=glob(*)                                # school,support,warehouse
 schema=glob(*,exclude=support)                # school,warehouse
 schema=glob([s*,w*],exclude=school)           # support,warehouse
 ```
 
 ### Range sweep
-#### Signature
-```python
+```python title="Signature"
 def range(
     start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
 ) -> RangeSweep:
@@ -84,8 +93,8 @@ def range(
      r[i] = start + step*i, but the constraints are i >= 0 and r[i] > stop.
     """
 ```
-#### Examples
-```yaml
+
+```yaml title="Examples"
 num=range(0,5)                        # 0,1,2,3,4
 num=range(0,5,2)                      # 0,2,4
 num=range(0,10,3.3)                   # 0.0,3.3,6.6,9.9
@@ -95,32 +104,27 @@ num=range(0,10,3.3)                   # 0.0,3.3,6.6,9.9
 An interval sweep represents all the floating point value between two values.
 This is used by optimizing sweepers like Ax and Nevergrad. The basic sweeper does not support interval.
  
-#### Signature
-```python
+```python title="Signature"
 def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     """
     A continuous interval between two floating point values.
     value=interval(x,y) is interpreted as x <= value < y
     """
 ```
-#### Examples
-```yaml
+```yaml title="Examples"
 #interval(1.0,5.0)  # 1.0 <= x < 5.0
 #interval(1,5)      # 1.0 <= x < 5.0, auto-cast to floats
 ```
 
 ### Tag
-
-#### Signature
 Tagging allows advanced sweepers to add arbitrary metadata to a sweep.
-```python
+```python title="Signature"
 def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep:
     """
     Tags the sweep with a list of string tags.
     """
 ```
-#### Examples
-```yaml
+```yaml title="Examples"
 #tag(log,interval(0,1))          # 1.0 <= x < 1.0, tags=[log]
 #tag(foo,bar,interval(0,1))      # 1.0 <= x < 1.0, tags=[foo,bar]
 ```
@@ -128,8 +132,7 @@ def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep
 ## Reordering lists and sweeps
 
 ### sort
-#### Signature
-```python
+```python title="Signature"
 def sort(
     *args: Union[ElementType, ChoiceSweep, RangeSweep],
     sweep: Optional[Union[ChoiceSweep, RangeSweep]] = None,
@@ -141,8 +144,7 @@ def sort(
     reverse=True reverses the order
     """
 ```
-#### Examples
-```yaml
+```yaml title="Examples"
 # sweep
 sort(1,3,2)                         # ChoiceSweep(1,2,3)
 sort(1,3,2,reverse=true)            # ChoiceSweep(3,2,1)
@@ -162,8 +164,7 @@ sort(1)                             # 1
 ```
 
 ### shuffle
-#### Signature
-```python
+```python title="Signature"
 def shuffle(
     *args: Union[ElementType, ChoiceSweep, RangeSweep],
     sweep: Optional[Union[ChoiceSweep, RangeSweep]] = None,
@@ -173,8 +174,7 @@ def shuffle(
     Shuffle input list or sweep (does not support interval)
     """
 ```
-#### Examples
-```yaml
+```yaml title="Examples"
 shuffle(a,b,c)                                       # shuffled a,b,c
 shuffle(choice(a,b,c)), shuffle(sweep=choice(a,b,c)) # shuffled choice(a,b,c)
 shuffle(range(1,10))                                 # shuffled range(1,10)
@@ -182,18 +182,10 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-Casts an input to int, float, bool or str.
-#### Signature
-```python
-def cast_int(*args: CastType, value: Optional[CastType] = None) -> Any
-def cast_float(*args: CastType, value: Optional[CastType] = None) -> Any
-def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any
-def cast_str(*args: CastType, value: Optional[CastType] = None) -> Any
-```
-
-#### Examples
-```yaml
+You can cast values, and sweeps to int, float, bool or str.
+```yaml title="Example"
 int(3.14)                  # 3 (int)
+int(value=3.14)            # 3 (int)
 float(10)                  # 10.0 (float)
 str(10)                    # "10" (str)
 bool(1)                    # true (bool)
