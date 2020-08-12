@@ -5,6 +5,7 @@ import os
 import random
 import re
 import sys
+from itertools import islice
 from os.path import dirname
 from typing import List
 
@@ -17,8 +18,6 @@ git_repo_pattern = (
 )
 
 BASE = dirname(os.path.abspath(os.path.dirname(__file__)))
-
-from itertools import islice
 
 
 def chunk(it, size):
