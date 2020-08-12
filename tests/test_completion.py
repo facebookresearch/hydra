@@ -57,7 +57,7 @@ def test_bash_completion_with_dot_in_path():
 """
 bash -l <<- 'HEREDOC'
 # Navigate to app with minimal configuration
-cd ./test_apps/app_with_cfg/
+cd tests/test_apps/app_with_cfg/
 
 # Locate python
 PYTHON=$(command -v python)
