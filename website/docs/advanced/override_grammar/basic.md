@@ -1,12 +1,14 @@
 ---
-id: command_line_syntax
-title: Command-line syntax
+id: basic
+hide_title: true
+sidebar_label: Basic Override syntax
 ---
-You can modify your configuration via the command line. This includes:
+## Basic Override syntax
+You can manipulate your configuration with overrides (via the command line or the Compose API). This includes:
 - Modifying the the `Defaults List`
 - Modifying the config object
 
-Command line overrides matching a Config group are modifying the `Defaults List`;
+Overrides matching a config group are modifying the `Defaults List`;
 The rest are manipulating the config object.
 
 ## Basic examples
@@ -24,14 +26,14 @@ The rest are manipulating the config object.
 
 ## Grammar
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.   
-Below are the lexical rules, and [description](#Description) of the grammar.
+Below are the parser rules from grammar.
 You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4).
 
 ```antlr4
 grammar Override;
 
 override: (
-      key '=' value?                             // key=value
+      key '=' value?                             // key=value, key= (for empty value)
     | '~' key ('=' value?)?                      // ~key | ~key=value
     | '+' key '=' value?                         // +key= | +key=value
 ) EOF;
@@ -45,37 +47,45 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | choiceSweep;
+value: element | simpleChoiceSweep;
+
 element:
       primitive
     | listValue
     | dictValue
+    | function
 ;
-choiceSweep: element (',' element)+;            // value1,value2,value3
+
+argName: ID '=';
+function: ID '('
+    (argName? element (',' argName? element )* )?
+')';
+
+simpleChoiceSweep:
+      element (',' element)+                      // value1,value2,value3
+;
 
 primitive:
-    WS? (QUOTED_VALUE |                         // 'hello world', "hello world"
-        ( ID                                    // foo_10
-        | NULL                                  // null, NULL
-        | INT                                   // 0, 10, -20, 1_000_000
-        | FLOAT                                 // 3.14, -20.0, 1e-1, -10e3
-        | BOOL                                  // true, TrUe, false, False
-        | DOT_PATH                              // foo.bar
-        | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
+      QUOTED_VALUE                                 // 'hello world', "hello world"
+    | (   ID                                        // foo_10
+        | NULL                                      // null, NULL
+        | INT                                       // 0, 10, -20, 1_000_000
+        | FLOAT                                     // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                      // true, TrUe, false, False
+        | DOT_PATH                                  // foo.bar
+        | INTERPOLATION                             // ${foo.bar}, ${env:USER,me}
         | '/' | ':' | '-' | '\\'
-        | '+' | '.' | '$'
-        )+
-    )
-    WS?;
+        | '+' | '.' | '$' | '*'
+    )+;
 
-listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
-dictValue: '{'                                  // {}, {a:10,b:20}
-    (id_ws ':' element (',' id_ws ':' element)*)?
+listValue: '[' (element(',' element)*)? ']';        // [], [1,2,3], [a,b,[1,2]]
+
+dictValue: '{'
+    (ID ':' element (',' ID ':' element)*)?         // {}, {a:10,b:20}
 '}';
-
-id_ws: WS? ID WS?;
 ```
-## Description
+
+## Elements
 ### Key
 Key is the component before the =. A few examples:
 ```shell script
@@ -142,8 +152,8 @@ foo={a:10,b:20}
 nested={a:10,b:{c:30,d:40}}
 ```
 **IMPORTANT** Always single-quote overrides that contains dicts in the shell.
-### Sweeper syntax
 
+### Sweeper syntax
 A choice sweep is comma separated list with two or more elements: 
 ```shell script
 key=a,b                       # Simple sweep: ChoiceSweep(a, b)
@@ -151,8 +161,13 @@ key="a,b","c,d"               # Elements can be quoted strings, ChoiceSweep("a,b
 key=[a,b],[c,d]               # Elements can be real lists, ChoiceSweep([a,b], [c,d])
 key={a:10, b:20},{c:30,d:40}  # and even dictionaries: ChoiceSweep([a,b], [c,d]){a,b}}
 ```
+More sweeping options are described in the [Extended Grammar page](extended).
 
 **IMPORTANT** You may need to quote your choice sweep in the shell
+
+### Functions
+Hydra supports several functions in the command line.
+See the [Extended Grammar page](extended) for more information. 
 
 ## Working with your shell
 All shells interprets command line inputs and may change what is passed to the process.

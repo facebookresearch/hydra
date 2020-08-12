@@ -21,11 +21,8 @@ from hydra._internal.config_repository import ConfigRepository
 from hydra.core.config_loader import ConfigLoader, LoadTrace
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
-from hydra.core.override_parser.overrides_parser import (
-    Override,
-    OverridesParser,
-    OverrideType,
-)
+from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Override, OverrideType, ValueType
 from hydra.core.utils import JobRuntime
 from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
@@ -176,7 +173,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if strict is None:
             strict = self.default_strict
 
-        parser = OverridesParser()
+        parser = OverridesParser.create()
         parsed_overrides = parser.parse_overrides(overrides=overrides)
         config_overrides = []
         sweep_overrides = []
@@ -189,20 +186,22 @@ class ConfigLoaderImpl(ConfigLoader):
                         )
                     sweep_overrides.append(x)
                 elif run_mode == RunMode.RUN:
-                    if from_shell:
-                        example_override = (
-                            f"{x.get_key_element()}=\\'{x.get_value_string()}\\'"
-                        )
-                    else:
-                        example_override = (
-                            f"{x.get_key_element()}='{x.get_value_string()}'"
-                        )
+                    if x.value_type == ValueType.SIMPLE_CHOICE_SWEEP:
+                        vals = "value1,value2"
+                        if from_shell:
+                            example_override = f"key=\\'{vals}\\'"
+                        else:
+                            example_override = f"key='{vals}'"
 
-                    msg = f"""Ambiguous value for argument '{x.input_line}'
-1. To use it as a list, use {x.get_key_element()}=[{x.get_value_string()}]
-2. To use it as string use {example_override}
+                        msg = f"""Ambiguous value for argument '{x.input_line}'
+1. To use it as a list, use key=[value1,value2]
+2. To use it as string, quote the value: {example_override}
 3. To sweep over it, add --multirun to your command line"""
-                    raise ConfigCompositionException(msg)
+                        raise ConfigCompositionException(msg)
+                    else:
+                        raise ConfigCompositionException(
+                            f"Sweep parameters '{x.input_line}' requires --multirun"
+                        )
                 else:
                     assert False
             else:
@@ -523,7 +522,7 @@ class ConfigLoaderImpl(ConfigLoader):
             f"\n\tAppend:  +key=value, +key@package=value"
             f"\n\tDelete:  ~key, ~key@pkg, ~key=value, ~key@pkg=value"
             f"\n"
-            f"\nSee https://hydra.cc/docs/next/advanced/command_line_syntax for details"
+            f"\nSee https://hydra.cc/docs/next/advanced/override_grammar/basic for details"
         )
         raise ConfigCompositionException(msg)
 
@@ -876,7 +875,6 @@ def get_overrides_dirname(
             assert line is not None
             lines.append(line)
 
-    # TODO: no way this is correct
     lines.sort()
     ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
     return ret

@@ -5,7 +5,7 @@
 grammar Override;
 
 override: (
-      key '=' value?                             // key=value
+      key '=' value?                             // key=value, key= (for empty value)
     | '~' key ('=' value?)?                      // ~key | ~key=value
     | '+' key '=' value?                         // +key= | +key=value
 ) EOF;
@@ -19,35 +19,43 @@ key :
 packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
 package: (ID | DOT_PATH);                       // db, hydra.launcher
 
-value: element | choiceSweep;
+value: element | simpleChoiceSweep;
+
 element:
       primitive
     | listValue
     | dictValue
+    | function
 ;
-choiceSweep: element (',' element)+;            // value1,value2,value3
+
+argName: ID '=';
+function: ID '('
+    (argName? element (',' argName? element )* )?
+')';
+
+simpleChoiceSweep:
+      element (',' element)+                      // value1,value2,value3
+;
 
 primitive:
-    WS? (QUOTED_VALUE |                         // 'hello world', "hello world"
-        ( ID                                    // foo_10
-        | NULL                                  // null, NULL
-        | INT                                   // 0, 10, -20, 1_000_000
-        | FLOAT                                 // 3.14, -20.0, 1e-1, -10e3
-        | BOOL                                  // true, TrUe, false, False
-        | DOT_PATH                              // foo.bar
-        | INTERPOLATION                         // ${foo.bar}, ${env:USER,me}
+      QUOTED_VALUE                                 // 'hello world', "hello world"
+    | (   ID                                        // foo_10
+        | NULL                                      // null, NULL
+        | INT                                       // 0, 10, -20, 1_000_000
+        | FLOAT                                     // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                      // true, TrUe, false, False
+        | DOT_PATH                                  // foo.bar
+        | INTERPOLATION                             // ${foo.bar}, ${env:USER,me}
         | '/' | ':' | '-' | '\\'
         | '+' | '.' | '$' | '*'
-        )+
-    )
-    WS?;
+    )+;
 
-listValue: '[' (element(',' element)*)? ']';    // [], [1,2,3], [a,b,[1,2]]
-dictValue: '{'                                  // {}, {a:10,b:20}
-    (id_ws ':' element (',' id_ws ':' element)*)?
+listValue: '[' (element(',' element)*)? ']';        // [], [1,2,3], [a,b,[1,2]]
+
+dictValue: '{'
+    (ID ':' element (',' ID ':' element)*)?         // {}, {a:10,b:20}
 '}';
 
-id_ws: WS? ID WS?;
 // Types
 fragment DIGIT: [0-9_];
 fragment NZ_DIGIT: [1-9];
@@ -70,11 +78,11 @@ ID : (CHAR|'_') (CHAR|DIGIT|'_')*;
 fragment LIST_INDEX: '0' | [1-9][0-9]*;
 DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
 
-WS: (' ' | '\t')+;
+WS: (' ' | '\t')+ -> channel(HIDDEN);
 
 QUOTED_VALUE:
-      '\'' ('\\\''|.)*? '\''  // Single quoted string. can contain escaped single quote : /'
-    | '"' ('\\"'|.)*? '"' ;   // Double quoted string. can contain escaped double quote : /"
+      '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
+    | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
 
 INTERPOLATION:
     '${' (

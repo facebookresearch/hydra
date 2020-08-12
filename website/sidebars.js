@@ -91,7 +91,14 @@ module.exports = {
 
         'Advanced': [
             'advanced/overriding_packages',
-            'advanced/command_line_syntax',
+            {
+                type: 'category',
+                label: 'Override grammar',
+                items: [
+                    'advanced/override_grammar/basic',
+                    'advanced/override_grammar/extended',
+                ]
+            },
             'advanced/search_path',
             'advanced/plugins',
             'advanced/app_packaging',

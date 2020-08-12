@@ -709,6 +709,14 @@ def test_sys_exit(tmpdir: Path) -> None:
             ["app.a=20"],
             "foo-app.a=20",
         ),
+        (
+            {
+                "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
+                "app": {"a": 1, "b": 2},
+            },
+            ["app.b=10", "app.a=20"],
+            "foo-app.a=20,app.b=10",
+        ),
     ],
 )
 def test_local_run_workdir(
@@ -868,8 +876,8 @@ def test_module_run(
             ["test.param=1,2"],
             True,
             """Ambiguous value for argument 'test.param=1,2'
-1. To use it as a list, use test.param=[1,2]
-2. To use it as string use test.param=\\'1,2\\'
+1. To use it as a list, use key=[value1,value2]
+2. To use it as string, quote the value: key=\\'value1,value2\\'
 3. To sweep over it, add --multirun to your command line
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",

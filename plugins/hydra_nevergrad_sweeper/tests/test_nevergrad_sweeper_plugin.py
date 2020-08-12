@@ -95,19 +95,3 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     # check that all job folders are created
     last_job = max(int(fp.name) for fp in Path(tmpdir).iterdir() if fp.name.isdigit())
     assert last_job == budget - 1
-
-
-# # TODO: enable this and make sure it runs reasonable fast
-# # Run launcher test suite with the basic launcher and this sweeper
-# @pytest.mark.parametrize(
-#     "launcher_name, overrides",
-#     [
-#         (
-#             "basic",
-#             ["hydra/sweeper=nevergrad", "quadratic.x=-1.0:1.0", "quadratic.y=-1.0:1.0"],
-#         )
-#     ],
-# )
-# class TestAxSweeper(LauncherTestSuite):
-#     def task_function(self, cfg):
-#         return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
