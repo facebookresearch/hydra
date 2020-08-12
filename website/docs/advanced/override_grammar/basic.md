@@ -8,7 +8,7 @@ You can manipulate your configuration with overrides (via the command line or th
 - Modifying the the `Defaults List`
 - Modifying the config object
 
-Command line overrides matching a Config group are modifying the `Defaults List`;
+Overrides matching a config group are modifying the `Defaults List`;
 The rest are manipulating the config object.
 
 ## Basic examples
@@ -26,7 +26,7 @@ The rest are manipulating the config object.
 
 ## Grammar
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.   
-Blow are the parser rules from teh actual grammar.
+Below are the parser rules from grammar.
 You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4).
 
 ```antlr4
