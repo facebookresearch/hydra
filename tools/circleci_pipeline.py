@@ -39,7 +39,7 @@ def get_available_plugin() -> List[str]:
 
 
 def run(branch: str, git_repo: str) -> None:
-    assert auth != "0", "Please set your CIRCLECI_TOKEN for your project."
+    assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
     p = re.compile(git_repo_pattern)
     m = re.search(p, git_repo)
     repo_name = m.group(m.groups().index(".git"))
