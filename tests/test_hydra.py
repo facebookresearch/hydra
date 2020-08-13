@@ -575,11 +575,11 @@ def test_sweep_complex_defaults(
             ["hydra.help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
 --hydra-help : Hydra's help
---version : show program's version number and exit
+--version : Show Hydra's version and exit
 --cfg,-c : Show config instead of running [job|hydra|all]
 --package,-p : Config package to show
 --run,-r : Run a job
---multirun,-m : Run multiple jobs with the configured launcher
+--multirun,-m : Run multiple jobs with the configured launcher and sweeper
 --shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
     eval "$(python {script} -sc install=bash)"
@@ -594,6 +594,7 @@ def test_sweep_complex_defaults(
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
 --config-name,-cn : Overrides the config_name specified in hydra.main()
+--config-dir,-cd : Adds an additional config dir to the config search path
 --info,-i : Print Hydra information
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
@@ -621,11 +622,11 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             """--help,-h : Application's help
 --hydra-help : Hydra's help
---version : show program's version number and exit
+--version : Show Hydra's version and exit
 --cfg,-c : Show config instead of running [job|hydra|all]
 --package,-p : Config package to show
 --run,-r : Run a job
---multirun,-m : Run multiple jobs with the configured launcher
+--multirun,-m : Run multiple jobs with the configured launcher and sweeper
 --shell-completion,-sc : Install or Uninstall shell completion:
     Bash - Install:
     eval "$(python {script} -sc install=bash)"
@@ -640,6 +641,7 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
 --config-name,-cn : Overrides the config_name specified in hydra.main()
+--config-dir,-cd : Adds an additional config dir to the config search path
 --info,-i : Print Hydra information
 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
 """,
@@ -1044,3 +1046,30 @@ def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
     expected = "override_a=foo,b=foo"
     result = subprocess.check_output(cmd)
     assert str(result.decode("utf-8")).strip() == expected.strip()
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides,expected",
+    [
+        pytest.param(
+            ["dataset=imagenet"], {"dataset": {"name": "imagenet"}}, id="no_conf_dir"
+        ),
+        pytest.param(
+            ["dataset=cifar10", "--config-dir=user-dir"],
+            {"dataset": {"name": "cifar10"}},
+            id="no_conf_dir",
+        ),
+    ],
+)
+def test_config_dir_argument(
+    monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: DictConfig
+) -> None:
+    monkeypatch.chdir("tests/test_apps/user-config-dir")
+    cmd = [
+        sys.executable,
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    cmd.extend(overrides)
+    result = subprocess.check_output(cmd)
+    assert OmegaConf.create(str(result.decode("utf-8"))) == expected

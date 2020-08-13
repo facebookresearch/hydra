@@ -9,7 +9,7 @@ A parameter sweep is a method of evaluating a function (or a program) with a pre
 The examples below will clarify what this means.
 
 To run a parameter sweep, use the `--multirun` (`-m`) flag and pass a comma separated list for each
-dimension you want to sweep.
+dimension you want to sweep.  
 
 To run your program with the 3 different schemas in schema config group:
 ```
@@ -30,6 +30,11 @@ Output does not contain the configuration prints.
 [2019-10-01 14:44:16,527] -     #4 : schema=school db=mysql
 [2019-10-01 14:44:16,602] -     #5 : schema=school db=postgresql
 ```
+
+:::info
+Hydra supports other kind of sweeps, for example a range sweep: **x=range(1,10)** or a glob: **support=glob(*)**.  
+See the [Extended Override syntax](/advanced/override_grammar/extended.md) for details.
+:::
 
 ### Sweeper
 The sweeping logic is implemented by a simple sweeper that is built into Hydra.

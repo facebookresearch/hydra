@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -47,6 +48,14 @@ See https://hydra.cc/docs/next/advanced/override_grammar/basic for details
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 """,
             id="empty choice",
+        ),
+        pytest.param(
+            "--config-dir=/dir/not/found",
+            f"""Additional config directory '{Path('/dir/not/found').absolute()}' not found
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+""",
+            id="config_dir_not_found",
         ),
     ],
 )

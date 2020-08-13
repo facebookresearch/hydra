@@ -90,7 +90,7 @@ module.exports = {
         ],
 
         'Advanced': [
-            'advanced/overriding_packages',
+            'advanced/hydra-command-line-flags',
             {
                 type: 'category',
                 label: 'Override grammar',
@@ -99,6 +99,7 @@ module.exports = {
                     'advanced/override_grammar/extended',
                 ]
             },
+            'advanced/overriding_packages',
             'advanced/search_path',
             'advanced/plugins',
             'advanced/app_packaging',

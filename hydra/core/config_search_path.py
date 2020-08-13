@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Optional, Sequence
 
 
@@ -15,14 +16,14 @@ class SearchPathElement:
         return f"provider={self.provider}, path={self.path}"
 
 
+@dataclass
 class SearchPathQuery:
     """
     Used in append and prepend API
     """
 
-    def __init__(self, provider: Optional[str], search_path: Optional[str]):
-        self.provider = provider
-        self.path = search_path
+    provider: Optional[str] = None
+    path: Optional[str] = None
 
 
 class ConfigSearchPath(ABC):
