@@ -7,17 +7,7 @@ commands:
       py_version:
         type: string
     steps:
-      - restore_cache:
-          keys:
-            - -v0-source-{{ .Branch }}-{{ .Revision }}
-            - -v0-source-{{ .Branch }}-
-            - -v0-source-
       - checkout
-      - save_cache:
-          key: -v0-source--{{ .Branch }}-{{ .Revision }}
-          paths:
-            - project
-            - ".git"
       - restore_cache:
           key: -v0-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
