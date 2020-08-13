@@ -26,13 +26,9 @@ from omegaconf import DictConfig, OmegaConf, read_write
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
-from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
 from hydra.core.utils import get_valid_filename, split_config_path
-from hydra.errors import (
-    ConfigCompositionException,
-    HydraException,
-    OverrideParseException,
-)
+from hydra.errors import CompactHydraException, HydraException, SearchPathException
 from hydra.types import ObjectConf, TaskFunction
 
 log = logging.getLogger(__name__)
@@ -205,7 +201,7 @@ def run_and_report(func: Any) -> Any:
         if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
             print_exc()
         else:
-            if isinstance(ex, (ConfigCompositionException, OverrideParseException)):
+            if isinstance(ex, CompactHydraException):
                 sys.stderr.write(str(ex) + os.linesep)
                 if isinstance(ex.__cause__, OmegaConfBaseException):
                     sys.stderr.write(str(ex.__cause__) + os.linesep)
@@ -276,7 +272,7 @@ def run_and_report(func: Any) -> Any:
         sys.exit(1)
 
 
-def run_hydra(
+def _run_hydra(
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
@@ -307,6 +303,20 @@ def run_hydra(
         calling_file, calling_module, config_dir
     )
 
+    def add_conf_dir() -> None:
+        if args.config_dir is not None:
+            abs_config_dir = os.path.abspath(args.config_dir)
+            if not os.path.isdir(abs_config_dir):
+                raise SearchPathException(
+                    f"Additional config directory '{abs_config_dir}' not found"
+                )
+            search_path.prepend(
+                provider="command-line",
+                path=f"file://{abs_config_dir}",
+                anchor=SearchPathQuery(provider="schema"),
+            )
+
+    run_and_report(add_conf_dir)
     hydra = run_and_report(
         lambda: Hydra.create_main_hydra2(
             task_name=task_name, config_search_path=search_path, strict=strict
@@ -375,7 +385,7 @@ def run_hydra(
 
 def _get_exec_command() -> str:
     if sys.argv[0].endswith(".py"):
-        return "python {}".format(sys.argv[0])
+        return f"python {sys.argv[0]}"
     else:
         # Running as an installed app (setuptools entry point)
         executable = os.path.basename(sys.argv[0])
@@ -406,7 +416,10 @@ def get_args_parser() -> argparse.ArgumentParser:
     parser.add_argument("--help", "-h", action="store_true", help="Application's help")
     parser.add_argument("--hydra-help", action="store_true", help="Hydra's help")
     parser.add_argument(
-        "--version", action="version", version="Hydra {}".format(__version__)
+        "--version",
+        action="version",
+        help="Show Hydra's version and exit",
+        version=f"Hydra {__version__}",
     )
     parser.add_argument(
         "overrides",
@@ -431,7 +444,7 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--multirun",
         "-m",
         action="store_true",
-        help="Run multiple jobs with the configured launcher",
+        help="Run multiple jobs with the configured launcher and sweeper",
     )
 
     parser.add_argument(
@@ -452,6 +465,12 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--config-name",
         "-cn",
         help="Overrides the config_name specified in hydra.main()",
+    )
+
+    parser.add_argument(
+        "--config-dir",
+        "-cd",
+        help="Adds an additional config dir to the config search path",
     )
 
     parser.add_argument(

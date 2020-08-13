@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig
 
-from ._internal.utils import get_args_parser, run_hydra
+from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
 
@@ -29,7 +29,7 @@ def main(
                 args = get_args_parser()
                 # no return value from run_hydra() as it may sometime actually run the task_function
                 # multiple times (--multirun)
-                run_hydra(
+                _run_hydra(
                     args_parser=args,
                     task_function=task_function,
                     config_path=config_path,

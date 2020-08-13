@@ -40,7 +40,7 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
     config_search_path = gh.hydra.config_loader.get_search_path()
     assert isinstance(config_search_path, ConfigSearchPathImpl)
     idx = config_search_path.find_first_match(
-        SearchPathQuery(provider="main", search_path=None)
+        SearchPathQuery(provider="main", path=None)
     )
     assert idx != -1
 

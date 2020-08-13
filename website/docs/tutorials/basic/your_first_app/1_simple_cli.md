@@ -32,4 +32,5 @@ db:
   password: secret
 ```
 
-The command line syntax is fully covered in [Advanced/Override Grammar](/advanced/override_grammar/basic.md).
+See [Hydra's command line flags](advanced/hydra-command-line-flags.md) and 
+[Basic Override Syntax](advanced/override_grammar/basic.md) for more information about the command line.

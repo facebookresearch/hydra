@@ -1,10 +1,14 @@
 ---
 id: job
-title: Job configuration
+sidebar_label: Job cnfiguration
+hide_title: true
 ---
+## Job configuration
 
 The job configuration resides in `hydra.job`.
-The structure definition is below, you can fine the latest definition [in the code](https://github.com/facebookresearch/hydra/blob/master/hydra/conf/__init__.py).
+The structure definition is below, the latest definition [in the code](https://github.com/facebookresearch/hydra/blob/master/hydra/conf/__init__.py).
+
+
 ## Definition
 ```python
 # job runtime information will be populated here
