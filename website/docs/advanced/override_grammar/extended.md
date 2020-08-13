@@ -82,6 +82,8 @@ schema=glob([s*,w*],exclude=school)           # support,warehouse
 ```
 
 ### Range sweep
+Unlike Python, Hydra's range can be on both integer and floating point numbers.
+In both cases the range represents a discrete list of values.
 ```python title="Signature"
 def range(
     start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
@@ -183,7 +185,7 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-You can cast values, and sweeps to int, float, bool or str.
+You can cast values, and sweeps to `int`, `float`, `bool` or `str`.
 ```yaml title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
@@ -195,9 +197,150 @@ str([1,2,3])               # ['1','2','3']
 str({a:10})                # {a:'10'}
 ```
 
+Below are psuedo code snippets that illustrates the differences between Python's casting and Hydra's casting.
+
+#### Casting string to bool
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Python"
+def bool(value: Any) -> bool:
+    if isinstance(value, str):
+        return len(value) > 0
+    else:
+        return bool(value)
+
+
+
+
+```
+</div>
+
+<div className="col  col--6">
+
+```python title="Hydra" 
+def bool(s: str) -> bool:
+    if isinstance(value, str):
+        if value.lower() == "false":
+            return False
+        elif value.lower() == "true":
+            return True
+        else:
+            raise ValueError()
+    return bool(value)
+```
+
+</div>
+</div>
+
+#### Casting lists
+Casting lists is resulting with a list where each element is recursively cast.
+Failure to cast an element in the list fails the cast of the list.
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Python"
+def cast_int(value: Any):
+    if isinstance(value, list):
+        raise TypeError()
+    else:
+        return int(v)
+
+
+```
+</div>
+
+<div className="col  col--6">
+
+```python title="Hydra" 
+def cast_int(value: Any):
+    if isinstance(v, list):
+        return list(map(cast_int, v))
+    else:
+        return int(v)
+
+
+```
+
+</div>
+</div>
+
+
+#### Casting dicts
+Casting dicts is resulting in a dict values are recursively cast but keys are unchanged.
+Failure to cast a value in the dict fails the cast of the dict.
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Python"
+def cast_int(value: Any):
+    if isinstance(value, dict):
+        raise TypeError()
+    else:
+        return int(v)
+
+
+```
+</div>
+
+<div className="col  col--6">
+
+```python title="Hydra" 
+def cast_int(value: Any):
+    if isinstance(value, dict):
+        return apply_to_values(
+            value, cast_int
+        )
+    else:
+        return int(v)
+```
+
+</div>
+</div>
+
+#### Casting ranges
+Ranges can be cast to float or int, resulting in start,stop and step being cast and thus the range elements being cast.
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Python"
+def cast_int(value: Any):
+    if isinstance(value, RangeSweep):
+        raise TypeError()
+    else:
+        return int(v)
+
+
+
+
+```
+</div>
+
+<div className="col  col--6">
+
+```python title="Hydra" 
+def cast_int(value: Any):
+    if isinstance(value, RangeSweep):
+        return RangeSweep(
+            start=cast_int(value.start),
+            stop=cast_int(value.stop),
+            step=cast_int(value.step),
+        )
+    else:
+        return int(v)
+```
+
+</div>
+</div>
+
 ### Conversion matrix
 Below is the conversion matrix from various inputs to all supported types.
 Input are grouped by type.
+
 
 [//]: # (Convertion matrix source: https://docs.google.com/document/d/1JDZGHKk4PrZHqsTTS6ao-DQOu2eVD4ULR6uAxVUR-WI/edit#)
 
