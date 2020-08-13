@@ -19,7 +19,11 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
+INSTALL_EDITABLE_MODE = os.environ.get("INSTALL_EDITABLE_MODE", 0)
+
+INSTALL_COMMAND = (
+    ["pip", "install", "-e"] if INSTALL_EDITABLE_MODE else ["pip", "install"]
+)
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
@@ -52,6 +56,7 @@ print(f"PLUGINS\t\t\t:\t{PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
+print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
 
 
 def _upgrade_basic(session):
@@ -131,6 +136,7 @@ def select_plugins(session) -> List[Plugin]:
     """
 
     assert session.python is not None, "Session python version is not specified"
+
     blacklist = [".isort.cfg"]
     example_plugins = [
         {"dir_name": x, "path": f"examples/{x}"}
@@ -143,12 +149,17 @@ def select_plugins(session) -> List[Plugin]:
         if x != "examples"
         if x not in blacklist
     ]
+
     available_plugins = plugins + example_plugins
 
     ret = []
     skipped = []
     for plugin in available_plugins:
-        if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
+        if not (
+            plugin["dir_name"] in PLUGINS
+            or PLUGINS == ["ALL"]
+            or ("examples" in PLUGINS and "examples/" in plugin["path"])
+        ):
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
@@ -216,7 +227,7 @@ def _isort_cmd():
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_dev_deps(session)
-    install_hydra(session, ["pip", "install", "-e"])
+    install_hydra(session, INSTALL_COMMAND)
 
     apps = _get_standalone_apps_dir()
     session.log("Installing standalone apps")
@@ -244,7 +255,7 @@ def lint(session):
 @nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
 
-    install_cmd = ["pip", "install", "-e"]
+    install_cmd = INSTALL_COMMAND
     install_hydra(session, install_cmd)
     plugins = select_plugins(session)
 
@@ -275,9 +286,7 @@ def _get_standalone_apps_dir():
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+    "install_cmd", (INSTALL_COMMAND,), ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
 )
 def test_core(session, install_cmd):
     _upgrade_basic(session)
@@ -301,9 +310,7 @@ def test_core(session, install_cmd):
 
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
+    "install_cmd", (INSTALL_COMMAND,), ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
 )
 def test_plugins(session, install_cmd):
     _upgrade_basic(session)
@@ -346,13 +353,14 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
-    install_hydra(session, ["pip", "install", "-e"])
+    install_hydra(session, INSTALL_COMMAND)
     session.run("coverage", "erase")
 
     selected_plugins = select_plugins(session)
     for plugin in selected_plugins:
+        command = INSTALL_COMMAND.extend(os.path.join("plugins", plugin.path))
         session.run(
-            "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT,
+            *command, silent=SILENT,
         )
 
     session.run("coverage", "erase", env=coverage_env)
@@ -390,7 +398,7 @@ def test_jupyter_notebooks(session):
     # pyzmq 19.0.1 has installation issues on Windows
     # pytest 6.0 makes deprecation warnings wail on errors, breaking nbval due to a deprecated API usage
     session.install("jupyter", "nbval", "pyzmq==19.0.0", "pytest==5.4.3")
-    install_hydra(session, ["pip", "install", "-e"])
+    install_hydra(session, INSTALL_COMMAND)
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
