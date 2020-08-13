@@ -26,7 +26,7 @@ from hydra.errors import HydraException
 try:
     from hydra.grammar.gen.OverrideLexer import OverrideLexer
     from hydra.grammar.gen.OverrideParser import OverrideParser
-    from hydra.grammar.gen.OverrideVisitor import OverrideVisitor
+    from hydra.grammar.gen.OverrideParserVisitor import OverrideParserVisitor
 
 except ModuleNotFoundError:
     print(
@@ -35,7 +35,7 @@ except ModuleNotFoundError:
     sys.exit(1)
 
 
-class HydraOverrideVisitor(OverrideVisitor):  # type: ignore
+class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def __init__(self, functions: Functions):
         self.functions = functions
 

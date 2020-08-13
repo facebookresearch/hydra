@@ -178,7 +178,8 @@ class ANTLRCommand(Command):  # type: ignore
         root_dir = abspath(dirname(__file__))
         project_root = abspath(dirname(basename(__file__)))
         for grammar in [
-            "hydra/grammar/Override.g4",
+            "hydra/grammar/OverrideLexer.g4",
+            "hydra/grammar/OverrideParser.g4",
         ]:
             command = [
                 "java",
