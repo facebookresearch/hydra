@@ -39,7 +39,7 @@ def get_available_plugin() -> List[str]:
 
 
 def run(branch: str, git_repo: str) -> None:
-    assert auth != "0"
+    assert (auth != "0"), "Please set your CIRCLECI_TOKEN for your project."
     p = re.compile(git_repo_pattern)
     m = re.search(p, git_repo)
     repo_name = m.group(m.groups().index(".git"))
@@ -52,7 +52,7 @@ def run(branch: str, git_repo: str) -> None:
             headers=headers,
             data=json.dumps(data),
         )
-
+        assert (r.status_code == 201), f"Unexpected response while submitting CIRCLECI jobs. response: {r.json()}"
         print(f"Trigger pipeline for plugin {p}, response: {r.json()}")
 
 
