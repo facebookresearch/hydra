@@ -1,0 +1,17 @@
+# @package _group_
+
+# python logging configuration for tasks
+version: 1
+formatters:
+  simple:
+    format: '%(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: simple
+    stream: ext://sys.stdout
+root:
+  level: INFO
+  handlers: [console]
+
+disable_existing_loggers: false
