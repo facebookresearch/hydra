@@ -4,28 +4,50 @@
 // If you make changes here be sure to update the documentation (and update the grammar in command_line_syntax.md)
 lexer grammar OverrideLexer;
 
-EQUAL: '=';
+
+// Re-usable fragments.
+fragment DIGIT: [0-9_];
+fragment WS_: [ \t]+;
+
+/////////
+// KEY //
+/////////
+
+mode KEY;
+
+EQUAL: '=' WS_? -> mode(ARGS);
+
 TILDE: '~';
 PLUS: '+';
 AT: '@';
 COLON: ':';
 ATCOLON: '@:';
 SLASH: '/';
-PARENTHESIS_OPEN: '(';
-COMMA: ',';
-PARENTHESIS_CLOSE: ')';
-DASH: '-';
-BACKSLASH: '\\';
-DOT: '.';
-DOLLAR: '$';
-STAR: '*';
-BRACKET_OPEN: '[';
-BRACKET_CLOSE: ']';
-BRACE_OPEN: '{';
-BRACE_CLOSE: '}';
+
+fragment CHAR: [a-zA-Z];
+ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
+fragment LIST_INDEX: '0' | [1-9][0-9]*;
+DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
+
+WS: WS_ -> skip;
+
+//////////
+// ARGS //
+//////////
+
+mode ARGS;
+
+PARENTHESIS_OPEN: WS_? '(' WS_?;  // whitespaces before to allow `func (x)`
+COMMA: WS_? ',' WS_?;
+PARENTHESIS_CLOSE: WS_? ')';
+BRACKET_OPEN: '[' WS_?;
+BRACKET_CLOSE: WS_? ']';
+BRACE_OPEN: '{' WS_?;
+BRACE_CLOSE: WS_? '}';
+ARGS_COLON: WS_? ':' WS_? -> type(COLON);
+ARGS_EQUAL: WS_? '=' WS_? -> type(EQUAL);
 
 // Types
-fragment DIGIT: [0-9_];
 fragment NZ_DIGIT: [1-9];
 fragment INT_PART: DIGIT+;
 fragment FRACTION: '.' DIGIT+;
@@ -41,12 +63,10 @@ BOOL:
 
 NULL: [Nn][Uu][Ll][Ll];
 
-fragment CHAR: [a-zA-Z];
-ID : (CHAR|'_') (CHAR|DIGIT|'_')*;
-fragment LIST_INDEX: '0' | [1-9][0-9]*;
-DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
-
-WS: (' ' | '\t')+ -> channel(HIDDEN);
+OTHER_CHAR: [/\-\\+.$*];  // other characters allowed in unquoted strings
+ARGS_ID: ID -> type(ID);
+ARGS_DOT_PATH: DOT_PATH -> type(DOT_PATH);
+ARGS_WS: WS_ -> type(WS);
 
 QUOTED_VALUE:
       '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'

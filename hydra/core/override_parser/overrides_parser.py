@@ -28,6 +28,21 @@ except ModuleNotFoundError:
     )
     sys.exit(1)
 
+# Mappings between lexer modes and parser rules.
+MODE_TO_RULES = {
+    "KEY": ["key", "override", "package", "packageOrGroup"],
+    "ARGS": [
+        "dictValue",
+        "element",
+        "function",
+        "listValue",
+        "primitive",
+        "simpleChoiceSweep",
+        "value",
+    ],
+}
+RULE_TO_MODE = {rule: mode for mode, rules in MODE_TO_RULES.items() for rule in rules}
+
 
 class OverridesParser:
     functions: Functions
@@ -49,6 +64,16 @@ class OverridesParser:
         lexer = OverrideLexer(istream)
         lexer.removeErrorListeners()
         lexer.addErrorListener(error_listener)
+
+        # Set the lexer in the correct mode to parse the desired rule.
+        try:
+            lexer_mode = RULE_TO_MODE[rule_name]
+        except KeyError:
+            # To fix this error just add the rule you want to parse to the
+            # proper lexer mode in `MODE_TO_RULES`.
+            raise NotImplementedError(rule_name)
+        lexer.mode(getattr(OverrideLexer, lexer_mode))
+
         stream = CommonTokenStream(lexer)
         parser = OverrideParser(stream)
         parser.removeErrorListeners()

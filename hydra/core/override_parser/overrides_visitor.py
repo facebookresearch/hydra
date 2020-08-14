@@ -83,6 +83,11 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         last_idx = ctx.getChildCount()
         # skip first if whitespace
         if self.is_ws(ctx.getChild(0)):
+            if last_idx == 1:
+                # Only whitespaces => this is not allowed.
+                raise HydraException(
+                    "Trying to parse a primitive that is all whitespaces"
+                )
             first_idx = 1
         if self.is_ws(ctx.getChild(-1)):
             last_idx = last_idx - 1
@@ -144,18 +149,18 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     ) -> Dict[str, ParsedElementType]:
         ret = {}
         children = ctx.getChildren()
-        assert self.is_matching_terminal(next(children), "{")
+        assert self.is_matching_terminal(next(children), OverrideLexer.BRACE_OPEN)
         first = True
         while True:
             item = next(children)
-            if self.is_matching_terminal(item, "}"):
+            if self.is_matching_terminal(item, OverrideLexer.BRACE_CLOSE):
                 break
-            if not first and self.is_matching_terminal(item, ","):
+            if not first and self.is_matching_terminal(item, OverrideLexer.COMMA):
                 continue
 
             pkey = item.getText()
 
-            assert self.is_matching_terminal(next(children), ":")
+            assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
 
             value = next(children)
             if isinstance(value, OverrideParser.ElementContext):
@@ -217,7 +222,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             value = None
             value_type = None
         else:
-            assert self.is_matching_terminal(eq_node, "=")
+            assert self.is_matching_terminal(eq_node, OverrideLexer.EQUAL)
             if ctx.value() is None:
                 value = ""
                 value_type = ValueType.ELEMENT
@@ -246,15 +251,15 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             pkg2=key.pkg2,
         )
 
-    def is_matching_terminal(self, node: Any, text: str) -> bool:
-        return isinstance(node, TerminalNodeImpl) and node.getText() == text
+    def is_matching_terminal(self, node: Any, symbol_type: int) -> bool:
+        return isinstance(node, TerminalNodeImpl) and node.symbol.type == symbol_type
 
     def visitSimpleChoiceSweep(
         self, ctx: OverrideParser.SimpleChoiceSweepContext
     ) -> ChoiceSweep:
         ret = []
         for child in ctx.getChildren(
-            predicate=lambda x: not self.is_matching_terminal(x, ",")
+            predicate=lambda x: not self.is_matching_terminal(x, OverrideLexer.COMMA)
         ):
             ret.append(self.visitElement(child))
         return ChoiceSweep(simple_form=True, list=ret)
@@ -264,11 +269,11 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         kwargs = {}
         children = ctx.getChildren()
         func_name = next(children).getText()
-        assert self.is_matching_terminal(next(children), "(")
+        assert self.is_matching_terminal(next(children), OverrideLexer.PARENTHESIS_OPEN)
         in_kwargs = False
         while True:
             cur = next(children)
-            if self.is_matching_terminal(cur, ")"):
+            if self.is_matching_terminal(cur, OverrideLexer.PARENTHESIS_CLOSE):
                 break
 
             if isinstance(cur, OverrideParser.ArgNameContext):
@@ -278,7 +283,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 value = self.visitElement(cur)
                 kwargs[name] = value
             else:
-                if self.is_matching_terminal(cur, ","):
+                if self.is_matching_terminal(cur, OverrideLexer.COMMA):
                     continue
                 if in_kwargs:
                     raise HydraException("positional argument follows keyword argument")

@@ -47,8 +47,9 @@ primitive:
         | BOOL                                   // true, TrUe, false, False
         | DOT_PATH                               // foo.bar
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
-        | SLASH | COLON | DASH | BACKSLASH 
-        | PLUS | DOT | DOLLAR | STAR
+        | OTHER_CHAR                             // /, -, \, +, ., $, *
+        | COLON                                  // :
+        | WS                                     // whitespaces
     )+;
 
 listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
