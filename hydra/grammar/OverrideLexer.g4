@@ -7,7 +7,8 @@ lexer grammar OverrideLexer;
 
 
 // Re-usable fragments.
-fragment DIGIT: [0-9_];
+fragment DIGIT: [0-9];
+fragment INT_UNSIGNED: '0' | [1-9] (('_')? DIGIT)*;
 
 /////////
 // KEY //
@@ -44,14 +45,11 @@ VALUE_COLON: WS? ':' WS? -> type(COLON);
 VALUE_EQUAL: WS? '=' WS? -> type(EQUAL);
 
 // Types
-fragment NZ_DIGIT: [1-9];
-fragment INT_PART: DIGIT+;
-fragment FRACTION: '.' DIGIT+;
-fragment POINT_FLOAT: INT_PART? FRACTION | INT_PART '.';
-fragment EXPONENT: [eE] [+-]? DIGIT+;
-fragment EXPONENT_FLOAT: ( INT_PART | POINT_FLOAT) EXPONENT;
-FLOAT: [-]?(POINT_FLOAT | EXPONENT_FLOAT | [Ii][Nn][Ff] | [Nn][Aa][Nn]);
-INT: [-]? ('0' | (NZ_DIGIT DIGIT*));
+
+fragment POINT_FLOAT: INT_UNSIGNED '.' | INT_UNSIGNED? '.' DIGIT (('_')? DIGIT)*;
+fragment EXPONENT_FLOAT: (INT_UNSIGNED | POINT_FLOAT) [eE] [+-]? INT_UNSIGNED;
+FLOAT: [+-]? (POINT_FLOAT | EXPONENT_FLOAT | [Ii][Nn][Ff] | [Nn][Aa][Nn]);
+INT: [+-]? INT_UNSIGNED;
 
 BOOL:
       [Tt][Rr][Uu][Ee]      // TRUE

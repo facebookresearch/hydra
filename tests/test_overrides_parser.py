@@ -62,9 +62,12 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param("null", None, id="value:null"),
         # int
         pytest.param("1", 1, id="value:int:pos"),
+        pytest.param("+1", 1, id="value:int:explicit_pos"),
+        pytest.param("1___0___", "1___0___", id="value:int:not_an_int"),
         # float
         pytest.param("0.51", 0.51, id="value:float:positive"),
         pytest.param("10e0", 10.0, id="value:float:exp"),
+        pytest.param("+inf", math.inf, id="value:float:plus_inf"),
         # bool
         pytest.param("true", True, id="value:bool"),
         pytest.param(".", ".", id="value:dot"),
