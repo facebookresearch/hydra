@@ -37,6 +37,7 @@ PARENTHESIS_CLOSE;
 simpleChoiceSweep:
       element (COMMA element)+                   // value1,value2,value3
 ;
+sequence: element (COMMA element)*;
 
 primitive:
       QUOTED_VALUE                               // 'hello world', "hello world"
@@ -52,10 +53,6 @@ primitive:
         | WS                                     // whitespaces
     )+;
 
-listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
-    (element(COMMA element)*)?
-BRACKET_CLOSE; 
-
-dictValue: BRACE_OPEN
-    (ID COLON element (COMMA ID COLON element)*)?  // {}, {a:10,b:20}
-BRACE_CLOSE;
+listValue: BRACKET_OPEN sequence? BRACKET_CLOSE;                          // [], [1,2,3], [a,b,[1,2]]
+dictValue: BRACE_OPEN (keyValuePair (COMMA keyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
+keyValuePair: ID COLON element;

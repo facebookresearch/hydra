@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -132,8 +132,15 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitListValue(
         self, ctx: OverrideParser.ListValueContext
     ) -> List[ParsedElementType]:
-        ret: List[ParsedElementType] = []
+        return (
+            []
+            if ctx.getChildCount() == 2
+            else list(self.visitSequence(ctx.getChild(1)))
+        )
 
+    def visitSequence(
+        self, ctx: OverrideParser.SequenceContext
+    ) -> Iterable[ParsedElementType]:
         idx = 0
         while True:
             element = ctx.element(idx)
@@ -141,35 +148,30 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 break
             else:
                 idx = idx + 1
-                ret.append(self.visitElement(element))
-        return ret
+                yield self.visitElement(element)
 
     def visitDictValue(
         self, ctx: OverrideParser.DictValueContext
     ) -> Dict[str, ParsedElementType]:
-        ret = {}
+        assert self.is_matching_terminal(ctx.getChild(0), OverrideLexer.BRACE_OPEN)
+        return dict(
+            self.visitKeyValuePair(ctx.getChild(i))
+            for i in range(1, ctx.getChildCount() - 1, 2)
+        )
+
+    def visitKeyValuePair(
+        self, ctx: OverrideParser.KeyValuePairContext
+    ) -> Tuple[str, ParsedElementType]:
         children = ctx.getChildren()
-        assert self.is_matching_terminal(next(children), OverrideLexer.BRACE_OPEN)
-        first = True
-        while True:
-            item = next(children)
-            if self.is_matching_terminal(item, OverrideLexer.BRACE_CLOSE):
-                break
-            if not first and self.is_matching_terminal(item, OverrideLexer.COMMA):
-                continue
-
-            pkey = item.getText()
-
-            assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
-
-            value = next(children)
-            if isinstance(value, OverrideParser.ElementContext):
-                ret[pkey] = self.visitElement(value)
-            else:
-                assert False
-            first = False
-
-        return ret
+        item = next(children)
+        # We should never visit dictionaries that have interpolations as keys
+        # (these are only allowed within interpolations, which we do not visit).
+        assert self.is_matching_terminal(item, OverrideLexer.ID)
+        pkey = item.getText()
+        assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
+        value = next(children)
+        assert isinstance(value, OverrideParser.ElementContext)
+        return pkey, self.visitElement(value)
 
     def visitElement(self, ctx: OverrideParser.ElementContext) -> ParsedElementType:
         assert isinstance(ctx, OverrideParser.ElementContext)
