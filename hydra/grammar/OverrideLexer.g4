@@ -60,8 +60,11 @@ BOOL:
 
 NULL: [Nn][Uu][Ll][Ll];
 
+// Strings.
+
 OTHER_CHAR: [/\-\\+.$*];  // other characters allowed in unquoted strings
 ARGS_ID: ID -> type(ID);
+ESC: ('\\\\' | '\\,' | '\\ ' | '\\\t')+;
 
 ARGS_WS: WS_ -> type(WS);
 

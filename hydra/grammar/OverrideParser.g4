@@ -49,6 +49,7 @@ primitive:
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
         | OTHER_CHAR                             // /, -, \, +, ., $, *
         | COLON                                  // :
+        | ESC                                    // \\, \, \ , \\t
         | WS                                     // whitespaces
     )+;
 
