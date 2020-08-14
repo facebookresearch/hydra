@@ -1,0 +1,31 @@
+{{ header }}
+from dataclasses import dataclass
+from typing import *
+
+from hydra.types import ObjectConf
+from omegaconf import MISSING
+
+
+@dataclass
+class {{class_name}}Params:
+{% for param in params %}
+{% if param.default is not empty %}
+{% if param.passthrough %}
+    # [passthrough] {{ param.name }}: {{ param.type_str }} = {{ param.default }}
+{% else %}
+    {{ param.name }}: {{ param.type_str }} = {{ param.default }}
+{% endif %}
+{% else %}
+{% if param.passthrough %}
+    # [passthrough] {{ param.name }}: {{ param.type_str }}
+{% else %}
+    {{ param.name }}: {{ param.type_str }} = MISSING
+{% endif %}
+{% endif %}
+{% endfor %}
+
+
+@dataclass
+class {{class_name}}Conf(ObjectConf):
+    target: str = {{ target }}
+    params: {{class_name}}Params = MISSING

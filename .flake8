@@ -1,5 +1,11 @@
 [flake8]
-exclude = .git,.nox,build,hydra/grammar/gen,dist
+exclude = 
+    .git
+    ,.nox,build
+    ,hydra/grammar/gen
+    ,dist
+    ,tools/configen/example/gen
+    ,tools/configen/tests/test_modules/expected
 max-line-length = 119
 copyright-check = True
 select = E,F,W,C

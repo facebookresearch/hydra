@@ -1,0 +1,5 @@
+recursive-include configen *.py
+recursive-include configen *.yaml
+recursive-include configen *.j2
+global-exclude *.pyc
+global-exclude __pycache__
