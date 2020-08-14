@@ -35,6 +35,7 @@ MODE_TO_RULES = {
         "dictValue",
         "element",
         "function",
+        "interpolation",
         "listValue",
         "primitive",
         "simpleChoiceSweep",

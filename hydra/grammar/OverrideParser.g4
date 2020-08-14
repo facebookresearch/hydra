@@ -37,6 +37,12 @@ PARENTHESIS_CLOSE;
 simpleChoiceSweep:
       element (COMMA element)+                   // value1,value2,value3
 ;
+// Interpolations.
+interpolation: interpolationNode | interpolationResolver;
+interpolationNode: INTERPOLATION_OPEN configKey (DOT configKey)* INTERPOLATION_CLOSE;
+interpolationResolver: INTERPOLATION_OPEN (interpolation | ID) COLON sequence? BRACE_CLOSE;
+
+configKey: interpolation | ID | LIST_INDEX;
 sequence: element (COMMA element)*;
 
 primitive:
@@ -46,13 +52,13 @@ primitive:
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
-        | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
         | OTHER_CHAR                             // /, -, \, +, ., $, *
         | COLON                                  // :
         | ESC                                    // \\, \, \ , \\t
         | WS                                     // whitespaces
+        | interpolation
     )+;
 
 listValue: BRACKET_OPEN sequence? BRACKET_CLOSE;                          // [], [1,2,3], [a,b,[1,2]]
 dictValue: BRACE_OPEN (keyValuePair (COMMA keyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
-keyValuePair: ID COLON element;
+keyValuePair: (ID | interpolation) COLON element;

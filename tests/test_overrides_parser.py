@@ -3,10 +3,11 @@ import math
 import re
 from builtins import isinstance
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 import pytest
 from _pytest.python_api import RaisesContext
+from omegaconf import OmegaConf
 
 from hydra._internal.grammar.functions import Functions
 from hydra.core.override_parser.overrides_parser import (
@@ -1824,3 +1825,352 @@ def test_glob_filter(
 ) -> None:
     strings = ["the", "quick", "brown", "fox", "jumped", "under", "the", "lazy", "dog"]
     assert Glob(include=include, exclude=exclude).filter(strings) == expected
+
+
+# Dummy assignments to allow copy-paste of `TEST_CONFIG_DATA` below from
+# OmegaConf, and properly identify parsing error cases.
+InterpolationSyntaxError = HydraException
+# The OmegaConf exceptions below cannot be identified at parsing time.
+ConfigKeyError = InterpolationTypeError = UnsupportedInterpolationType = None
+
+# DO NOT EDIT `TEST_CONFIG_DATA`!
+# It should be copied regularly from OmegaConf to ensure Hydra's grammar is able
+# to parse similar expressions as OmegaConf's.
+TEST_CONFIG_DATA: List[Tuple[str, Any, Any]] = [
+    # Not interpolations (just building blocks for below).
+    ("prim_str", "hi", ...),
+    ("prim_str_space", "hello world", ...),
+    ("id", "identity", ...),
+    ("id_partial", "entity", ...),
+    ("prim_list", [-1, "a", 1.1], ...),
+    ("prim_dict", {"a": 0, "b": 1}, ...),
+    ("FalsE", {"TruE": True}, ...),  # used to test keys with bool names
+    # Primitive types.
+    ("null", "${identity:null}", None),
+    ("true", "${identity:TrUe}", True),
+    ("false", "${identity:falsE}", False),
+    ("truefalse", "${identity:true_false}", "true_false"),
+    ("unquoted_str_space", "${identity:hello world}", "hello world"),
+    ("unquoted_str_esc_space", r"${identity:\ hello\ world\ }", " hello world "),
+    ("unquoted_str_esc_comma", r"${identity:hello\, world}", "hello, world"),
+    ("unquoted_other_char", f"${{identity:{chr(200)}}}", InterpolationSyntaxError),
+    ("unquoted_emoji", f"${{identity:{chr(129299)}}}", InterpolationSyntaxError),
+    ("unquoted_dot", "${identity:.}", "."),
+    ("unquoted_esc", r"${identity:\{}", InterpolationSyntaxError),
+    ("quoted_str_single", "${identity:'!@#$%^&*()[]:.,\"'}", '!@#$%^&*()[]:.,"',),
+    ("quoted_str_double", '${identity:"!@#$%^&*()[]:.,\'"}', "!@#$%^&*()[]:.,'",),
+    ("quote_outer_ws_single", "${identity: '  a \t'}", "  a \t"),
+    ("int", "${identity:123}", 123),
+    ("int_pos", "${identity:+123}", 123),
+    ("int_neg", "${identity:-123}", -123),
+    ("int_underscore", "${identity:1_000}", 1000),
+    ("int_underscore_bad_1", "${identity:1_000_}", "1_000_"),
+    ("int_underscore_bad_2", "${identity:1__000}", "1__000"),
+    ("int_underscore_bad_3", "${identity:_1000}", "_1000"),
+    ("int_zero_start", "${identity:007}", "007"),
+    ("float", "${identity:1.1}", 1.1),
+    ("float_no_int", "${identity:.1}", 0.1),
+    ("float_no_decimal", "${identity:1.}", 1.0),
+    ("float_plus", "${identity:+1.01}", 1.01),
+    ("float_minus", "${identity:-.2}", -0.2),
+    ("float_underscore", "${identity:1.1_1}", 1.11),
+    ("float_bad_1", "${identity:1.+2}", "1.+2"),
+    ("float_bad_2", r"${identity:1\.2}", r"1\.2"),
+    ("float_bad_3", "${identity:1.2_}", "1.2_"),
+    ("float_exp_1", "${identity:-1e2}", -100.0),
+    ("float_exp_2", "${identity:+1E-2}", 0.01),
+    ("float_exp_3", "${identity:1_0e1_0}", 10e10),
+    ("float_exp_4", "${identity:1.07e+2}", 107.0),
+    ("float_exp_bad_1", "${identity:e-2}", "e-2"),
+    ("float_exp_bad_2", "${identity:01e2}", "01e2"),
+    ("float_exp_bad_3", "${identity:1e+03}", "1e+03"),
+    ("float_inf", "${identity:inf}", math.inf),
+    ("float_plus_inf", "${identity:+inf}", math.inf),
+    ("float_minus_inf", "${identity:-inf}", -math.inf),
+    ("float_nan", "${identity:nan}", math.nan),
+    ("float_plus_nan", "${identity:+nan}", math.nan),
+    ("float_minus_nan", "${identity:-nan}", math.nan),
+    # Node interpolations.
+    ("list_access_1", "${prim_list.0}", -1),
+    ("list_access_2", "${identity:${prim_list.1},${prim_list.2}}", ["a", 1.1]),
+    ("list_access_underscore", "${prim_list.1_000}", ConfigKeyError),
+    ("list_access_negative", "${prim_list.-1}", InterpolationSyntaxError),
+    ("dict_access", "${prim_dict.a}", 0),
+    ("bool_like_keys", "${FalsE.TruE}", True),
+    ("invalid_type", "${prim_dict.${float}}", InterpolationTypeError),
+    # Resolver interpolations.
+    ("space_in_args", "${identity:a, b c}", ["a", "b c"]),
+    ("list_as_input", "${identity:[a, b], 0, [1.1]}", [["a", "b"], 0, [1.1]]),
+    ("dict_as_input_1", "${identity:{a: 1.1, b: b}}", {"a": 1.1, "b": "b"}),
+    ("dict_as_input_2", "${identity:{'a': 1.1, b: b}}", InterpolationSyntaxError),
+    ("dict_typo_colons", "${identity:{'a': 1.1, b:: b}}", InterpolationSyntaxError,),
+    ("dict_unhashable", "${identity:{[0]: 1}}", InterpolationSyntaxError),
+    ("missing_resolver", "${MiSsInG_ReSoLvEr:0}", UnsupportedInterpolationType),
+    ("non_str_resolver", "${${bool}:}", InterpolationTypeError),
+    ("resolver_special", "${infnannulltruefalse:}", "ok"),
+    # Env resolver.
+    ("env_int", "${env:OMEGACONF_TEST_ENV_INT}", 123),
+    ("env_missing_str", "${env:OMEGACONF_TEST_MISSING,miss}", "miss"),
+    ("env_missing_int", "${env:OMEGACONF_TEST_MISSING,123}", 123),
+    ("env_missing_float", "${env:OMEGACONF_TEST_MISSING,1e-2}", 0.01),
+    ("env_missing_quoted_int", "${env:OMEGACONF_TEST_MISSING,'1'}", "1"),
+    # Unmatched braces.
+    ("missing_brace", "${identity:${prim_str}", InterpolationSyntaxError),
+    ("extra_brace", "${identity:${prim_str}}}", "hi}"),
+    # String interpolations (top-level).
+    ("str_top_basic", "bonjour ${prim_str}", "bonjour hi"),
+    ("str_top_quoted_single", "'bonjour ${prim_str}'", "'bonjour hi'",),
+    ("str_top_quoted_double", '"bonjour ${prim_str}"', '"bonjour hi"',),
+    (
+        "str_top_keep_quotes_double",
+        '"My name is ${prim_str}", I said.',
+        '"My name is hi", I said.',
+    ),
+    (
+        "str_top_keep_quotes_single",
+        "'My name is ${prim_str}', I said.",
+        "'My name is hi', I said.",
+    ),
+    ("str_top_any_char", "${prim_str} !@\\#$%^&*})][({,/?;", "hi !@\\#$%^&*})][({,/?;"),
+    ("str_top_missing_end_quote_single", "'${prim_str}", "'hi"),
+    ("str_top_missing_end_quote_double", '"${prim_str}', '"hi',),
+    ("str_top_missing_start_quote_double", '${prim_str}"', 'hi"'),
+    ("str_top_missing_start_quote_single", "${prim_str}'", "hi'"),
+    ("str_top_middle_quote_single", "I'd like ${prim_str}", "I'd like hi"),
+    ("str_top_middle_quote_double", 'I"d like ${prim_str}', 'I"d like hi'),
+    ("str_top_middle_quotes_single", "I like '${prim_str}'", "I like 'hi'"),
+    ("str_top_esc_inter", r"Esc: \${prim_str}", "Esc: ${prim_str}",),
+    ("str_top_esc_inter_wrong_1", r"Wrong: $\{prim_str\}", r"Wrong: $\{prim_str\}",),
+    ("str_top_esc_inter_wrong_2", r"Wrong: \${prim_str\}", r"Wrong: ${prim_str\}",),
+    ("str_top_esc_backslash", r"Esc: \\${prim_str}", r"Esc: \hi",),
+    ("str_top_quoted_braces", r"Braced: \{${prim_str}\}", r"Braced: \{hi\}",),
+    ("str_top_leading_dollars", r"$$${prim_str}", "$$hi"),
+    ("str_top_trailing_dollars", r"${prim_str}$$$$", "hi$$$$"),
+    ("str_top_leading_escapes", r"\\\\\${prim_str}", r"\\${prim_str}"),
+    ("str_top_middle_escapes", r"abc\\\\\${prim_str}", r"abc\\${prim_str}"),
+    ("str_top_trailing_escapes", "${prim_str}" + "\\" * 5, "hi" + "\\" * 3),
+    ("str_top_concat_interpolations", "${true}${float}", "True1.1"),
+    # Quoted strings (within interpolations).
+    ("str_no_other", "${identity:hi_${prim_str_space}}", "hi_hello world"),
+    (
+        "str_quoted_double",
+        '${identity:"I say "${prim_str_space}}',
+        InterpolationSyntaxError,
+    ),
+    (
+        "str_quoted_single",
+        "${identity:'I say '${prim_str_space}}",
+        InterpolationSyntaxError,
+    ),
+    (
+        "str_quoted_mixed",
+        "${identity:'I '\"say \"${prim_str_space}}",
+        InterpolationSyntaxError,
+    ),
+    ("str_quoted_int", "${identity:'123'}", "123"),
+    ("str_quoted_null", "${identity:'null'}", "null"),
+    ("str_quoted_bool", "${identity:'truE', \"FalSe\"}", ["truE", "FalSe"]),
+    ("str_quoted_list", "${identity:'[a,b, c]'}", "[a,b, c]"),
+    ("str_quoted_dict", '${identity:"{a:b, c: d}"}', "{a:b, c: d}"),
+    ("str_quoted_inter", "${identity:'${null}'}", "None"),
+    (
+        "str_quoted_inter_nested",
+        "${identity:'${identity:\"L=${prim_list}\"}'}",
+        "L=[-1, 'a', 1.1]",
+    ),
+    ("str_quoted_esc_single_1", r"${identity:'ab\'cd\'\'${prim_str}'}", "ab'cd''hi"),
+    ("str_quoted_esc_single_2", "${identity:'\"\\\\\\\\\\${foo}\\\\ '}", r'"\${foo}\ '),
+    ("str_quoted_esc_double", r'${identity:"ab\"cd\"\"${prim_str}"}', 'ab"cd""hi'),
+    ("str_quoted_esc_double_2", '${identity:"\'\\\\\\\\\\${foo}\\ "}', r"'\${foo}\ "),
+    ("str_quoted_backslash_noesc_single", r"${identity:'a\b'}", r"a\b"),
+    ("str_quoted_backslash_noesc_double", r'${identity:"a\b"}', r"a\b"),
+    ("str_legal_noquote", "${identity:a/-\\+.$*, \\\\}", ["a/-\\+.$*", "\\"]),
+    ("str_equal_noquote", "${identity:a,=b}", InterpolationSyntaxError),
+    ("str_quoted_equal", "${identity:a,'=b'}", ["a", "=b"]),
+    ("str_quoted_too_many_1", "${identity:''a'}", InterpolationSyntaxError),
+    ("str_quoted_too_many_2", "${identity:'a''}", InterpolationSyntaxError),
+    ("str_quoted_too_many_3", "${identity:''a''}", InterpolationSyntaxError),
+    # Unquoted strings (within interpolations).
+    ("str_dollar", "${identity:$}", "$"),
+    ("str_dollar_inter", "${identity:$$${prim_str}}", "$$hi"),
+    ("str_colon", "${identity::}", ":"),
+    ("str_backslash_noesc", r"${identity:ab\cd}", r"ab\cd"),
+    ("str_esc_inter_1", r"${identity:\${foo\}}", InterpolationSyntaxError),
+    ("str_esc_inter_2", r"${identity:\${}", InterpolationSyntaxError),
+    ("str_esc_brace", r"${identity:$\{foo\}}", InterpolationSyntaxError),
+    ("str_esc_backslash", r"${identity:\\}", "\\"),
+    ("str_esc_ws", "${identity:\\ \\,\\\t}", " ,\t"),
+    ("str_esc_quotes", "${identity:\\'\\\"}", InterpolationSyntaxError),
+    ("str_esc_many", r"${identity:\\,\,\{,\]\null}", InterpolationSyntaxError),
+    ("str_esc_mixed", r"${identity:\,\:\\\{foo\}\[\]}", InterpolationSyntaxError),
+    # Structured interpolations.
+    ("list", "${identity:[0, 1]}", [0, 1]),
+    (
+        "dict_1",
+        "${identity:{x: 1, a: 'b', y: 1e2, null2: 0.1, true3: false, inf4: true}}",
+        {"x": 1, "a": "b", "y": 100.0, "null2": 0.1, "true3": False, "inf4": True},
+    ),
+    (
+        "dict_2",
+        "${identity:{0: 1, 'a': 'b', 1.1: 1e2, null: 0.1, true: false, -inf: true}}",
+        InterpolationSyntaxError,
+    ),
+    (
+        "dict_with_interpolation_key",
+        "${identity:{${prim_str}: 0, ${null}: 1, ${int}: 2}}",
+        {"hi": 0, None: 1, 123: 2},
+    ),
+    ("empties", "${identity:[],{}}", [[], {}]),
+    (
+        "structured_mixed",
+        "${identity:10,str,3.14,true,false,inf,[1,2,3], 'quoted', \"quoted\", 'a,b,c'}",
+        [
+            10,
+            "str",
+            3.14,
+            True,
+            False,
+            math.inf,
+            [1, 2, 3],
+            "quoted",
+            "quoted",
+            "a,b,c",
+        ],
+    ),
+    (
+        "structured_deep_1",
+        "${identity:{null0: [0, 3.14, false], true1: {a: [0, 1, 2], b: {}}}}",
+        {"null0": [0, 3.14, False], "true1": {"a": [0, 1, 2], "b": {}}},
+    ),
+    (
+        "structured_deep_2",
+        '${identity:{null: [0, 3.14, false], true: {"a": [0, 1, 2], "b": {}}}}',
+        InterpolationSyntaxError,
+    ),
+    # Chained interpolations.
+    ("null_chain", "${null}", None),
+    ("true_chain", "${true}", True),
+    ("int_chain", "${int}", 123),
+    ("list_chain_1", "${${prim_list}.0}", InterpolationTypeError),
+    ("dict_chain_1", "${${prim_dict}.a}", InterpolationTypeError),
+    ("prim_list_copy", "${prim_list}", OmegaConf.create([-1, "a", 1.1])),
+    ("prim_dict_copy", "${prim_dict}", OmegaConf.create({"a": 0, "b": 1})),
+    ("list_chain_2", "${prim_list_copy.0}", ConfigKeyError),
+    ("dict_chain_2", "${prim_dict_copy.a}", ConfigKeyError),
+    # Nested interpolations.
+    ("ref_prim_str", "prim_str", "prim_str"),
+    ("nested_simple", "${${ref_prim_str}}", "hi"),
+    ("plans", {"plan A": "awesome plan", "plan B": "crappy plan"}, ...),
+    ("selected_plan", "plan A", ...),
+    (
+        "nested_dotted",
+        r"I choose: ${plans.${selected_plan}}",
+        "I choose: awesome plan",
+    ),
+    ("nested_deep", "${identity:${${identity:${ref_prim_str}}}}", "hi"),
+    ("nested_resolver", "${${id}:a, b, c}", ["a", "b", "c"]),
+    (
+        "nested_resolver_combined",
+        "${id${id_partial}:a, b, c}",
+        InterpolationSyntaxError,
+    ),
+    # Whitespaces.
+    ("ws_toplevel_1", "  \tab  ${prim_str} cd  \t", "  \tab  hi cd  \t"),
+    ("ws_toplevel_2", "\t${identity:foo}\t${float}\t${null}\t", "\tfoo\t1.1\tNone\t"),
+    ("ws_inter_node_outer", "${ \tprim_dict.a  \t}", 0),
+    ("ws_inter_node_around_dot", "${prim_dict .\ta}", 0),
+    ("ws_inter_node_inside_id", "${prim _ dict.a}", InterpolationSyntaxError),
+    ("ws_inter_res_outer", "${\t identity:foo\t  }", "foo"),
+    ("ws_inter_res_around_colon", "${identity\t  : \tfoo}", "foo"),
+    ("ws_inter_res_inside_id", "${id entity:foo}", InterpolationSyntaxError),
+    ("ws_inter_res_inside_args", "${identity:f o o}", "f o o"),
+    ("ws_list", "${identity:[\t a,   b,  ''\t  ]}", ["a", "b", ""]),
+    ("ws_dict", "${identity:{\t a   : 1\t  , b:  \t''}}", {"a": 1, "b": ""}),
+    ("ws_quoted_single", "${identity:  \t'foo'\t }", "foo"),
+    ("ws_quoted_double", '${identity:  \t"foo"\t }', "foo"),
+    # ##### Unusual / edge cases below #####
+    # Unquoted `.` and/or `:` on the left of a string interpolation.
+    ("str_other_left", "${identity:.:${prim_str_space}}", ".:hello world"),
+    # Quoted interpolation (=> not actually an interpolation).
+    ("fake_interpolation", "'${prim_str}'", "'hi'"),
+    # Same as previous, but combined with a "real" interpolation.
+    (
+        "fake_and_real_interpolations",
+        "'${'${identity:prim_str}'}'",
+        InterpolationSyntaxError,
+    ),
+    # Un-matched top-level opening brace in quoted ${
+    (
+        "interpolation_in_quoted_str",
+        "'${'${identity:prim_str}",
+        InterpolationSyntaxError,
+    ),
+    # Special IDs as keys.
+    ("None", {"True": 1}, ...),
+    ("special_key_exact_spelling", "${None.True}", 1),
+    ("special_key_alternate_not_a_container", "${null.true}", ConfigKeyError),
+    ("special_key_alternate_missing", "${NuLL.trUE}", ConfigKeyError),
+    ("special_key_quoted", "${'None'.'True'}", InterpolationSyntaxError),
+    ("special_key_quoted_bad", "${'None.True'}", InterpolationSyntaxError),
+    # Resolvers with special IDs (resolvers are registered with all of these strings).
+    ("int_resolver_quoted", "${'0':1,2,3}", InterpolationSyntaxError),
+    ("int_resolver_noquote", "${0:1,2,3}", InterpolationSyntaxError),
+    ("float_resolver_quoted", "${'1.1':1,2,3}", InterpolationSyntaxError),
+    ("float_resolver_noquote", "${1.1:1,2,3}", InterpolationSyntaxError),
+    ("float_resolver_exp", "${1e1:1,2,3}", InterpolationSyntaxError),
+    ("bool_resolver_bad_case", "${FALSE:1,2,3}", ["FALSE", 1, 2, 3]),
+    ("bool_resolver_good_case", "${True:1,2,3}", ["True", 1, 2, 3]),
+    ("null_resolver", "${null:1,2,3}", ["null", 1, 2, 3]),
+    # Special IDs as default values to `env:` resolver.
+    ("env_missing_null_quoted", "${env:OMEGACONF_TEST_MISSING,'null'}", "null"),
+    ("env_missing_null_noquote", "${env:OMEGACONF_TEST_MISSING,null}", None),
+    ("env_missing_bool_quoted", "${env:OMEGACONF_TEST_MISSING,'True'}", "True"),
+    ("env_missing_bool_noquote", "${env:OMEGACONF_TEST_MISSING,True}", True),
+    # Special IDs as dictionary keys.
+    (
+        "dict_special_null",
+        "${identity:{null: null, 'null': 'null'}}",
+        InterpolationSyntaxError,
+    ),
+    (
+        "dict_special_bool",
+        "${identity:{true: true, 'false': 'false'}}",
+        InterpolationSyntaxError,
+    ),
+    # Having an unquoted string made only of `.` and `:`.
+    ("str_otheronly_noquote", "${identity:a, .:}", ["a", ".:"]),
+    # Using an integer as config key.
+    ("0", 42, ...),
+    ("1", {"2": 12}, ...),
+    ("int_key_in_interpolation_noquote", "${0}", 42),
+    ("int_key_in_interpolation_quoted", "${'0'}", InterpolationSyntaxError),
+    ("int_key_in_interpolation_x2_noquote", "${1.2}", 12),
+    ("int_key_in_interpolation_x2_quoted", "${'1.2'}", InterpolationSyntaxError,),
+]
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "definition, is_exception",
+    [
+        # We only keep the `definition` field because we only care about the ability
+        # to build the parse tree for the given expression, not resolve it.
+        pytest.param(definition, expected is HydraException, id=key)
+        for key, definition, expected in TEST_CONFIG_DATA
+        # We also filter out expressions that are not direct interpolations because
+        # Hydra's grammar is not meant to parse OmegaConf's top-level strings.
+        if isinstance(definition, str)
+        and definition.startswith("${")
+        and definition.endswith("}")
+        and key
+        != "extra_brace"  # skip this one, it is valid in OmegaConf but not Hydra
+    ],
+)
+def test_omegaconf_interpolations(definition: str, is_exception: bool) -> None:
+    def run() -> None:
+        parse_rule(value=definition, rule_name="interpolation")
+
+    if is_exception:
+        with pytest.raises(HydraException):
+            run()
+    else:
+        run()

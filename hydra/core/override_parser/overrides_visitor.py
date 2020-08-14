@@ -95,17 +95,22 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         if num > 1:
             # Concatenate, but un-escaping as needed.
             tokens = [
-                n.symbol.text[1::2]
-                if n.symbol.type == OverrideLexer.ESC
-                else n.symbol.text
+                n.getText()
+                if isinstance(n, OverrideParser.InterpolationContext)
+                or n.symbol.type != OverrideLexer.ESC
+                else n.symbol.text[1::2]
                 for i, n in enumerate(ctx.getChildren())
                 # Skip leading / trailing whitespaces.
-                if n.symbol.type != OverrideLexer.WS or first_idx <= i < last_idx
+                if first_idx <= i < last_idx
+                or isinstance(n, OverrideParser.InterpolationContext)
+                or n.symbol.type != OverrideLexer.WS
             ]
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
-            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
+            if isinstance(node, OverrideParser.InterpolationContext):
+                ret = node.getText()
+            elif node.symbol.type == OverrideLexer.QUOTED_VALUE:
                 text = node.getText()
                 qc = text[0]
                 text = text[1:-1]
