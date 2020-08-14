@@ -6,9 +6,11 @@ lexer grammar OverrideLexer;
 
 
 // Re-usable fragments.
+fragment CHAR: [a-zA-Z];
 fragment DIGIT: [0-9];
 fragment INT_UNSIGNED: '0' | [1-9] (('_')? DIGIT)*;
 fragment WS_: [ \t]+;
+fragment ESC_BACKSLASH_: '\\\\';  // escaped backslash
 
 /////////
 // KEY //
@@ -25,7 +27,6 @@ COLON: ':';
 ATCOLON: '@:';
 SLASH: '/';
 
-fragment CHAR: [a-zA-Z];
 ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
 DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
 
@@ -66,12 +67,14 @@ BRACKET_CLOSE: WS_? ']';
 ARGS_COLON: WS_? ':' WS_? -> type(COLON);
 ARGS_EQUAL: WS_? '=' WS_? -> type(EQUAL);
 
-// Types
+// Numbers.
 
 fragment POINT_FLOAT: INT_UNSIGNED? '.' DIGIT (('_')? DIGIT)* | INT_UNSIGNED '.';
 fragment EXPONENT_FLOAT: (INT_UNSIGNED | POINT_FLOAT) [eE] [+-]? INT_UNSIGNED;
 FLOAT: [+-]? (POINT_FLOAT | EXPONENT_FLOAT | [Ii][Nn][Ff] | [Nn][Aa][Nn]);
 INT: [+-]? INT_UNSIGNED;
+
+// Other reserved keywords.
 
 BOOL:
       [Tt][Rr][Uu][Ee]      // TRUE
@@ -83,7 +86,7 @@ NULL: [Nn][Uu][Ll][Ll];
 
 OTHER_CHAR: [/\-\\+.$*];  // other characters allowed in unquoted strings
 ARGS_ID: ID -> type(ID);
-ESC: ('\\\\' | '\\,' | '\\ ' | '\\\t')+;
+ESC: (ESC_BACKSLASH_ | '\\,' | '\\ ' | '\\\t')+;
 
 ARGS_WS: WS_ -> type(WS);
 
