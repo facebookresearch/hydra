@@ -1073,3 +1073,17 @@ def test_config_dir_argument(
     cmd.extend(overrides)
     result = subprocess.check_output(cmd)
     assert OmegaConf.create(str(result.decode("utf-8"))) == expected
+
+
+def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
+    monkeypatch.chdir("tests/test_apps/schema-overrides-hydra")
+    cmd = [
+        sys.executable,
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = subprocess.check_output(cmd)
+    assert (
+        result.decode("utf-8").strip()
+        == "job_name: test, name: James Bond, age: 7, group: a"
+    )

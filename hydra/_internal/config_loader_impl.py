@@ -600,7 +600,21 @@ class ConfigLoaderImpl(ConfigLoader):
                     )
 
                     try:
+                        if is_primary_config:
+                            # Add as placeholders for hydra and defaults to allow
+                            # overriding them from the config even if not in schema
+                            schema.config = OmegaConf.merge(
+                                {"hydra": None, "defaults": []}, schema.config,
+                            )
+
                         merged = OmegaConf.merge(schema.config, ret.config)
+
+                        # remove placeholders if unused
+                        with open_dict(merged):
+                            if "hydra" in merged and merged.hydra is None:
+                                del merged["hydra"]
+                            if "defaults" in merged and merged["defaults"] == []:
+                                del merged["defaults"]
                     except OmegaConfBaseException as e:
                         raise ConfigCompositionException(
                             f"Error merging '{input_file}' with schema"

@@ -1,0 +1,9 @@
+age: 7
+name: James Bond
+
+hydra:
+  job:
+    name: test
+
+defaults:
+  - group: a
