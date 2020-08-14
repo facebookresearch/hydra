@@ -6,6 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import List
+import textwrap
 
 import pytest
 from packaging import version
@@ -52,42 +53,45 @@ def create_config_loader() -> ConfigLoaderImpl:
         )
     )
 
-def test_bash_completion_with_dot_in_path():
+
+def test_bash_completion_with_dot_in_path() -> None:
     process = subprocess.Popen(
-"""
-bash -l <<- 'HEREDOC'
-# Navigate to app with minimal configuration
-cd tests/test_apps/app_with_cfg/
+        textwrap.dedent(
+            """
+		bash <<- 'HEREDOC'
+		# Navigate to app with minimal configuration
+		cd tests/test_apps/app_with_cfg/
 
-# Locate python
-PYTHON=$(command -v python)
+		# Locate python
+		PYTHON=$(command -v python)
 
-# Setup hydra bash completion
-eval "$(python my_app.py -sc install=bash)"
+		# Setup hydra bash completion
+		eval "$(python my_app.py -sc install=bash)"
 
-# Setup debugging
-export HYDRA_COMP_DEBUG=1
-export PATH=$PATH:.
+		# Setup debugging
+		export HYDRA_COMP_DEBUG=1
+		export PATH=$PATH:.
 
-# Do actual test
-test=$(COMP_LINE='python my_app.py' hydra_bash_completion | grep EXECUTABLE_FIRST | awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
+		# Do actual test
+		test=$(COMP_LINE='python my_app.py' hydra_bash_completion | grep EXECUTABLE_FIRST | awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
 
-if [ $test == $PYTHON ]; then
-    echo TRUE
-else
-    echo FALSE
-fi
-HEREDOC
-"""
-    ,
-    shell=True,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+		if [ $test == $PYTHON ]; then
+		    echo TRUE
+		else
+		    echo FALSE
+		fi
+		HEREDOC
+		"""
+        ),
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
     stdout, stderr = process.communicate()
-    assert stderr == b''
-    assert stdout == b'TRUE\n'
+    assert stderr == b""
+    assert stdout == b"TRUE\n"
     return
+
 
 base_completion_list: List[str] = [
     "dict.",
