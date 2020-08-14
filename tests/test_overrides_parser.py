@@ -49,6 +49,9 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param("abc", "abc", id="value:id"),
         pytest.param("abc123", "abc123", id="value:idint"),
         pytest.param("abc-123", "abc-123", id="value:id-int"),
+        pytest.param("a b c\t-\t1 2 3", "a b c\t-\t1 2 3", id="value:str-ws-in"),
+        pytest.param(" abc-123 ", "abc-123", id="value:str-ws-out"),
+        pytest.param("123abc", "123abc", id="value:str-int-id"),
         pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
         pytest.param(
             "${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"
