@@ -268,9 +268,9 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         pytest.param("{a:10}", {"a": 10}, id="dict"),
         pytest.param("{a:[a,10]}", {"a": ["a", 10]}, id="dict"),
         pytest.param("{a:[true,10]}", {"a": [True, 10]}, id="dict"),
-        pytest.param("{a:10,b:20}}", {"a": 10, "b": 20}, id="dict"),
-        pytest.param("{a:10,b:{}}}", {"a": 10, "b": {}}, id="dict"),
-        pytest.param("{a:10,b:{c:[1,2]}}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
+        pytest.param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
+        pytest.param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
+        pytest.param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
     ],
 )
 def test_dict_value(value: str, expected: Any) -> None:
