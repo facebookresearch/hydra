@@ -25,8 +25,7 @@ SLASH: '/';
 
 fragment CHAR: [a-zA-Z];
 ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
-fragment LIST_INDEX: '0' | [1-9][0-9]*;
-DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
+DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
 
 ///////////
 // VALUE //
