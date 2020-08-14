@@ -31,15 +31,21 @@ class PostGreSQLConfig(DBConfig):
     timeout: int = 10
 
 
-# registering db/mysql and db/postgresql schemas.
+@dataclass
+class Config(DictConfig):
+    # Note the lack of defaults list here.
+    # In this example it comes from config.yaml
+    db: DBConfig = MISSING
+
+
 cs = ConfigStore.instance()
+cs.store(name="config", node=Config)
 cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
-
 # config here is config.yaml under the conf directory.
 # config.yaml will compose in db: mysql by default (per the defaults list),
-# and it will be validated against the schema
+# and it will be validated against the schema from the Config class
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(cfg.pretty())
