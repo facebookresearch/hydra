@@ -58,7 +58,6 @@ NULL: [Nn][Uu][Ll][Ll];
 
 UNQUOTED_CHAR: [/\-\\+.$*];  // other characters allowed in unquoted strings
 VALUE_ID: ID -> type(ID);
-VALUE_DOT_PATH: DOT_PATH -> type(DOT_PATH);
 WS: [ \t]+;
 
 QUOTED_VALUE:
