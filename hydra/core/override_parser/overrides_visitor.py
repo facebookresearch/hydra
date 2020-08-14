@@ -187,8 +187,6 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitValue(
         self, ctx: OverrideParser.ValueContext
     ) -> Union[ChoiceSweep, RangeSweep, IntervalSweep, ParsedElementType]:
-        if self.is_matching_terminal(ctx, "<EOF>"):
-            return ""
         if ctx.element():
             return self.visitElement(ctx.element())
         elif ctx.simpleChoiceSweep() is not None:
