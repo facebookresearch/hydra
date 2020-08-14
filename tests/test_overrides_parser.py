@@ -417,7 +417,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key",
             "foo@",
             pytest.raises(
-                HydraException, match=re.escape("missing {ID, DOT_PATH} at '<EOF>'")
+                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
             ),
             id="error:left_overs",
         ),
@@ -425,7 +425,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key",
             "foo@abc:",
             pytest.raises(
-                HydraException, match=re.escape("missing {ID, DOT_PATH} at '<EOF>'")
+                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
             ),
             id="error:left_overs",
         ),
