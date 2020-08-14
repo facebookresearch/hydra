@@ -34,13 +34,15 @@ DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
 
 mode VALUE_MODE;
 
+INTER_OPEN: '${' -> pushMode(INTERPOLATION_MODE);
+BRACE_OPEN: '{' WS? -> pushMode(VALUE_MODE);  // must keep track of braces to detect end of interpolation
+BRACE_CLOSE: WS? '}' -> popMode;
+
 POPEN: WS? '(' WS?;  // whitespaces before to allow `func (x)`
 COMMA: WS? ',' WS?;
 PCLOSE: WS? ')';
 BRACKET_OPEN: '[' WS?;
 BRACKET_CLOSE: WS? ']';
-BRACE_OPEN: '{' WS?;
-BRACE_CLOSE: WS? '}';
 VALUE_COLON: WS? ':' WS? -> type(COLON);
 VALUE_EQUAL: WS? '=' WS? -> type(EQUAL);
 
@@ -69,4 +71,17 @@ QUOTED_VALUE:
       '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
     | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
 
-INTERPOLATION: '${' ~('}')+ '}';
+////////////////////////
+// INTERPOLATION_MODE //
+////////////////////////
+
+mode INTERPOLATION_MODE;
+
+NESTED_INTER_OPEN: INTER_OPEN -> type(INTER_OPEN), pushMode(INTERPOLATION_MODE);
+INTER_COLON: ':' WS? -> type(COLON), mode(VALUE_MODE);
+INTER_CLOSE: '}' -> popMode;
+
+DOT: '.';
+INTER_ID: ID -> type(ID);
+LIST_INDEX: INT_UNSIGNED;
+INTER_WS: WS -> skip;

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -96,20 +96,25 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             # Concatenate, while un-escaping as needed.
             tokens = []
             for i, n in enumerate(ctx.getChildren()):
-                if n.symbol.type == OverrideLexer.WS and (
+                if isinstance(n, OverrideParser.InterpolationContext):
+                    tokens.append(n.getText())
+                elif n.symbol.type == OverrideLexer.WS and (
                     i < first_idx or i >= last_idx
                 ):
                     # Skip leading / trailing whitespaces.
-                    continue
-                tokens.append(
-                    n.symbol.text[1::2]  # un-escape by skipping every other char
-                    if n.symbol.type == OverrideLexer.ESC
-                    else n.symbol.text
-                )
+                    pass
+                else:
+                    tokens.append(
+                        n.symbol.text[1::2]  # un-escape by skipping every other char
+                        if n.symbol.type == OverrideLexer.ESC
+                        else n.symbol.text
+                    )
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
-            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
+            if isinstance(node, OverrideParser.InterpolationContext):
+                ret = node.getText()
+            elif node.symbol.type == OverrideLexer.QUOTED_VALUE:
                 text = node.getText()
                 qc = text[0]
                 text = text[1:-1]
@@ -122,7 +127,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 else:
                     assert False
                 return QuotedString(text=text, quote=quote)
-            elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
+            elif node.symbol.type == OverrideLexer.ID:
                 ret = node.symbol.text
             elif node.symbol.type == OverrideLexer.INT:
                 ret = int(node.symbol.text)
@@ -147,8 +152,15 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitListValue(
         self, ctx: OverrideParser.ListValueContext
     ) -> List[ParsedElementType]:
-        ret: List[ParsedElementType] = []
+        return (
+            []
+            if ctx.getChildCount() == 2
+            else list(self.visitSequence(ctx.getChild(1)))
+        )
 
+    def visitSequence(
+        self, ctx: OverrideParser.SequenceContext
+    ) -> Iterable[ParsedElementType]:
         idx = 0
         while True:
             element = ctx.element(idx)
@@ -156,8 +168,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 break
             else:
                 idx = idx + 1
-                ret.append(self.visitElement(element))
-        return ret
+                yield self.visitElement(element)
 
     def visitDictValue(
         self, ctx: OverrideParser.DictValueContext

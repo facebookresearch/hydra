@@ -47,12 +47,17 @@ function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
 
 // Data structures.
 
-listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
-    (element(COMMA element)*)?
-BRACKET_CLOSE;
-
+listValue: BRACKET_OPEN sequence? BRACKET_CLOSE;                          // [], [1,2,3], [a,b,[1,2]]
 dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
 dictKeyValuePair: ID COLON element;
+sequence: element (COMMA element)*;
+
+// Interpolations.
+
+interpolation: interpolationNode | interpolationResolver;
+interpolationNode: INTER_OPEN DOT* configKey (DOT configKey)* INTER_CLOSE;
+interpolationResolver: INTER_OPEN (interpolation | ID) COLON sequence? BRACE_CLOSE;
+configKey: interpolation | ID | LIST_INDEX;
 
 // Primitive types.
 
@@ -63,9 +68,9 @@ primitive:
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
-        | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
         | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *
         | COLON                                  // :
         | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
-    )+;
+        | interpolation
+      )+;
