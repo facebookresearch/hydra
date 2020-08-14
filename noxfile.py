@@ -228,7 +228,15 @@ def lint(session):
 
     session.run(*_black_cmd(), silent=SILENT)
 
-    skiplist = apps + [".git", "website", "plugins", ".nox", "hydra/grammar/gen"]
+    skiplist = apps + [
+        ".git",
+        "website",
+        "plugins",
+        ".nox",
+        "hydra/grammar/gen",
+        "tools/configen/example/gen",
+        "tools/configen/tests/test_modules/expected",
+    ]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 
     session.run(*isort, silent=SILENT)
@@ -405,3 +413,27 @@ def test_jupyter_notebooks(session):
         args = pytest_args("--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
+
+
+@nox.session(python=PYTHON_VERSIONS)
+def test_tools(session):
+    install_cmd = ["pip", "install"]
+    _upgrade_basic(session)
+    session.install("pytest")
+    install_hydra(session, install_cmd)
+
+    tools = [
+        x
+        for x in sorted(os.listdir(os.path.join(BASE, "tools")))
+        if not os.path.isfile(x)
+    ]
+
+    for tool in tools:
+        tool_path = os.path.join("tools", tool)
+        session.chdir(BASE)
+        cmd = list(install_cmd) + ["-e", tool_path]
+        session.run(*cmd, silent=SILENT)
+
+        session.run("pytest", tool_path)
+
+    session.chdir(BASE)

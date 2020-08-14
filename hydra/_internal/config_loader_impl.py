@@ -608,6 +608,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             )
 
                         merged = OmegaConf.merge(schema.config, ret.config)
+                        assert isinstance(merged, DictConfig)
 
                         # remove placeholders if unused
                         with open_dict(merged):

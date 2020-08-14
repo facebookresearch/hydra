@@ -184,12 +184,15 @@ class TSweepRunner(Protocol):
         ...
 
 
-def chdir_hydra_root() -> None:
+def chdir_hydra_root(subdir: Optional[str] = None) -> None:
     """
     Change the cwd to the root of the hydra project.
     used from unit tests to make them runnable from anywhere in the tree.
     """
     _chdir_to_dir_containing(target="ATTRIBUTION")
+
+    if subdir is not None:
+        os.chdir(subdir)
 
 
 def chdir_plugin_root() -> None:
@@ -199,8 +202,10 @@ def chdir_plugin_root() -> None:
     _chdir_to_dir_containing(target="setup.py")
 
 
-def _chdir_to_dir_containing(target: str, max_up: int = 6) -> None:
-    cur = os.getcwd()
+def _chdir_to_dir_containing(
+    target: str, max_up: int = 6, initial_dir: str = os.getcwd()
+) -> None:
+    cur = initial_dir
     while not os.path.exists(os.path.join(cur, target)) and max_up > 0:
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1

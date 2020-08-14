@@ -43,6 +43,7 @@ cs.store(name="config", node=Config)
 cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
+
 # config here is config.yaml under the conf directory.
 # config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema from the Config class
