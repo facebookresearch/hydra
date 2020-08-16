@@ -53,46 +53,48 @@ def create_config_loader() -> ConfigLoaderImpl:
         )
     )
 
+
 @pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
-def test_bash_completion_with_dot_in_path() -> None:
-    process = subprocess.Popen(
-        textwrap.dedent(
-            """
-        bash <<- 'HEREDOC'
-        # Navigate to app with minimal configuration
-        cd tests/test_apps/app_with_cfg/
+class TestDotInPathCompletion:
+    def test_bash_completion_with_dot_in_path(self) -> None:
+        process = subprocess.Popen(
+            textwrap.dedent(
+                """
+                bash <<- 'HEREDOC'
+                # Navigate to app with minimal configuration
+                cd tests/test_apps/app_with_cfg/
 
-        # Locate python
-        PYTHON=$(command -v python)
+                # Locate python
+                PYTHON=$(command -v python)
 
-        # Setup hydra bash completion
-        eval "$(python my_app.py -sc install=bash)"
+                # Setup hydra bash completion
+                eval "$(python my_app.py -sc install=bash)"
 
-        # Setup debugging
-        export HYDRA_COMP_DEBUG=1
-        export PATH=$PATH:.
+                # Setup debugging
+                export HYDRA_COMP_DEBUG=1
+                export PATH=$PATH:.
 
-        # Do actual test
-        test=$(COMP_LINE='python my_app.py' hydra_bash_completion |\
-               grep EXECUTABLE_FIRST |\
-               awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
+                # Do actual test
+                test=$(COMP_LINE='python my_app.py' hydra_bash_completion |\
+                    grep EXECUTABLE_FIRST |\
+                    awk '{split($0,a,"=");b=substr(a[2],2,length(a[2])-2);print b}')
 
-        if [ $test == $PYTHON ]; then
-            echo TRUE
-        else
-            echo FALSE
-        fi
-        HEREDOC
-        """
-        ),
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    stdout, stderr = process.communicate()
-    assert stderr == b""
-    assert stdout == b"TRUE\n"
-    return
+                if [ $test == $PYTHON ]; then
+                    echo TRUE
+                else
+                    echo FALSE
+                fi
+                HEREDOC
+                """
+            ),
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout, stderr = process.communicate()
+        assert stderr == b""
+        assert stdout == b"TRUE\n"
+        return
 
 
 base_completion_list: List[str] = [
