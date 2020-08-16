@@ -27,8 +27,7 @@ def test_discovery(cls: Type[Launcher]) -> None:
 
 
 @pytest.mark.parametrize(
-    "launcher_name, overrides",
-    [("submitit_local", ["hydra.launcher.params.timeout_min=2"])],
+    "launcher_name, overrides", [("submitit_local", ["hydra.launcher.timeout_min=2"])],
 )
 class TestSubmititLauncher(LauncherTestSuite):
     pass
@@ -44,8 +43,8 @@ class TestSubmititLauncher(LauncherTestSuite):
                 "hydra/hydra_logging=disabled",
                 "hydra/job_logging=disabled",
                 "hydra/launcher=submitit_local",
-                "hydra.launcher.params.gpus_per_node=0",
-                "hydra.launcher.params.timeout_min=1",
+                "hydra.launcher.gpus_per_node=0",
+                "hydra.launcher.timeout_min=1",
             ],
         ),
     ],

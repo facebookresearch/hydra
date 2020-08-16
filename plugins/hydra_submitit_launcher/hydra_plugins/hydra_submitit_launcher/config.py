@@ -3,11 +3,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 
 
 @dataclass
-class BaseParams:
+class BaseTarget(TargetConf):
     """Configuration shared by all executors
     """
 
@@ -30,9 +30,11 @@ class BaseParams:
 
 
 @dataclass
-class SlurmParams(BaseParams):
+class SlurmTarget(BaseTarget):
     """Slurm configuration overrides and specific parameters
     """
+
+    _target_: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
 
     # Params are used to configure sbatch, for more info check:
     # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
@@ -59,18 +61,15 @@ class SlurmParams(BaseParams):
 
 
 @dataclass
-class LocalParams(BaseParams):
-    pass
+class LocalTarget(BaseTarget):
+    _target_: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher"
 
 
 # finally, register two different choices:
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_local",
-    node=ObjectConf(
-        target="hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher",
-        params=LocalParams(),
-    ),
+    node=LocalTarget(),
     provider="submitit_launcher",
 )
 
@@ -78,9 +77,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_slurm",
-    node=ObjectConf(
-        target="hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher",
-        params=SlurmParams(),
-    ),
+    node=SlurmTarget(),
     provider="submitit_launcher",
 )
