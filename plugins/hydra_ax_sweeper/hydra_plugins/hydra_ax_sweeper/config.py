@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 
 
 @dataclass
@@ -54,16 +54,11 @@ class AxConfig:
 
 
 @dataclass
-class AxSweeperParams:
+class AxSweeperConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper"
     # Maximum number of trials to run in parallel
     max_batch_size: Optional[int] = None
     ax_config: AxConfig = AxConfig()
-
-
-@dataclass
-class AxSweeperConf(ObjectConf):
-    target: str = "hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper"
-    params: AxSweeperParams = AxSweeperParams()
 
 
 ConfigStore.instance().store(
