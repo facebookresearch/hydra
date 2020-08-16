@@ -3,11 +3,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 
 
 @dataclass
-class JobLibConf:
+class JobLibLauncherConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher"
+
     # maximum number of concurrently running jobs. if -1, all CPUs are used
     n_jobs: int = -1
 
@@ -40,12 +42,6 @@ class JobLibConf:
 
     # memmapping mode for numpy arrays passed to workers
     mmap_mode: str = "r"
-
-
-@dataclass
-class JobLibLauncherConf(ObjectConf):
-    target: str = "hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher"
-    params: JobLibConf = JobLibConf()
 
 
 ConfigStore.instance().store(

@@ -25,56 +25,25 @@ Once installed, add `hydra/launcher=joblib` to your command line. Alternatively,
 defaults:
   - hydra/launcher: joblib
 ```
-
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
-The default configuration packaged with the plugin is:
-```python
-@dataclass
-class JobLibLauncherConf(PluginConf):
-    cls: str = "hydra_plugins.hydra_joblib_launcher.JoblibLauncher"
-    params: JobLibConf = JobLibConf() 
-```
+The JobLibLauncherConf backing the config is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
 
-The JobLibConf class is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
-
-It looks like this: 
-
-```python
-@dataclass
-class JobLibConf:
-    # maximum number of concurrently running jobs. if -1, all CPUs are used
-    n_jobs: int = -1
-
-    # allows to hard-code backend, otherwise inferred based on prefer and require
-    backend: Optional[str] = None
-
-    # processes or threads, soft hint to choose backend
-    prefer: str = "processes"
-
-    # null or sharedmem, sharedmem will select thread-based backend
-    require: Optional[str] = None
-
-    # if greater than zero, prints progress messages
-    verbose: int = 0
-
-    # timeout limit for each task
-    timeout: Optional[int] = None
-
-    # number of batches to be pre-dispatched
-    pre_dispatch: str = "2*n_jobs"
-
-    # number of atomic tasks to dispatch at once to each worker
-    batch_size: str = "auto"
-
-    # path used for memmapping large arrays for sharing memory with workers
-    temp_folder: Optional[str] = None
-
-    # thresholds size of arrays that triggers automated memmapping
-    max_nbytes: Optional[str] = None
-
-    # memmapping mode for numpy arrays passed to workers
-    mmap_mode: str = "r"
+You can discover the Joblib Launcher parameters with:
+```yaml title="$ python your_app.py hydra/launcher=joblib --cfg hydra -p hydra.launcher"
+# @package hydra.launcher
+_target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
+n_jobs: 10
+backend: null
+prefer: processes
+require: null
+verbose: 0
+timeout: null
+pre_dispatch: 2*n_jobs
+batch_size: auto
+temp_folder: null
+max_nbytes: null
+mmap_mode: r
 ```
 
 See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details about the parameters above.
