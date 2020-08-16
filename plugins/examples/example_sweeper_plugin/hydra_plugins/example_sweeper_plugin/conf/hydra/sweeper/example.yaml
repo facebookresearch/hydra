@@ -1,7 +1,6 @@
 # @package _group_
-target: hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper
-params:
-  # max number of jobs to run in the same batch.
-  max_batch_size: null
-  foo: 10
-  bar: abcde
+_target_: hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper
+# max number of jobs to run in the same batch.
+max_batch_size: null
+foo: 10
+bar: abcde

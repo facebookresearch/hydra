@@ -33,16 +33,10 @@ class TestExampleLauncher(LauncherTestSuite):
         (
             {
                 "defaults": [
-                    {"hydra/launcher": None},
+                    {"hydra/launcher": "example"},
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ],
-                "hydra": {
-                    "launcher": {
-                        "target": "hydra_plugins.example_launcher_plugin.example_launcher.ExampleLauncher",
-                        "params": {"foo": 10, "bar": "abcde"},
-                    }
-                },
             },
             ["-m"],
         )
