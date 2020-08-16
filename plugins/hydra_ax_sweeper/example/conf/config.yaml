@@ -10,28 +10,26 @@ banana:
 
 hydra:
   sweeper:
-    params:
+    # The following part of config is used to setup the Hydra Ax plugin and is optional
+    ax_config:
 
-      # The following part of config is used to setup the Hydra Ax plugin and is optional
-      ax_config:
+      # max_trials is application-specific. Tune it for your use case
+      max_trials: 20
 
-        # max_trials is application-specific. Tune it for your use case
-        max_trials: 20
+      experiment:
+        # Default to minimize, set to false to maximize
+        minimize: true
 
-        experiment:
-          # Default to minimize, set to false to maximize
-          minimize: true
+      early_stop:
+        # Number of epochs without a significant improvement from
+        # the currently known best parameters
+        # An Epoch is defined as a batch of trials executed in parallel
+        max_epochs_without_improvement: 10
 
-        early_stop:
-          # Number of epochs without a significant improvement from
-          # the currently known best parameters
-          # An Epoch is defined as a batch of trials executed in parallel
-          max_epochs_without_improvement: 10
-
-        params:
-          banana_x:
-            type: range
-            bounds: [-5, 5]
-          banana_y:
-            type: range
-            bounds: [-5, 10.1]
+      params:
+        banana_x:
+          type: range
+          bounds: [-5, 5]
+        banana_y:
+          type: range
+          bounds: [-5, 10.1]

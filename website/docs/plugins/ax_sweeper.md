@@ -82,18 +82,26 @@ Note that when using the config file, the parameter type (int, float, string, et
 
 The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. The most important parameters are listed below:
 
-```
+You can discover the Ax Sweeper parameters with:
+```yaml title="$ python your_app.py hydra/sweeper=ax --cfg hydra -p hydra.sweeper"
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper
+max_batch_size: null
 ax_config:
-    experiment:
-      # Defaults to minimize, set to false to maximize
-      minimize: true
-
-    early_stop:
-      # Number of epochs without a significant improvement from
-      # the currently known best parameters
-      # An Epoch is defined as a batch of trials executed in parallel
-      max_epochs_without_improvement: 100
-
-      # An improvement larger than epsilon is considered significant
-      epsilon: 0.00001
+  max_trials: 10
+  early_stop:
+    minimize: true
+    max_epochs_without_improvement: 10
+    epsilon: 1.0e-05
+  experiment:
+    name: null
+    objective_name: objective
+    minimize: true
+    parameter_constraints: null
+    outcome_constraints: null
+    status_quo: null
+  client:
+    verbose_logging: false
+    random_seed: null
+  params: {}
 ```

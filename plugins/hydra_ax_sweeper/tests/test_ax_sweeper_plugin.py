@@ -144,7 +144,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner) -> None:
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.max_trials=2",
+            "hydra.sweeper.ax_config.max_trials=2",
             "quadratic.x=-5:-2",
             "params=basic",
         ],
@@ -169,15 +169,15 @@ def test_configuration_set_via_cmd_and_default_config(hydra_sweep_runner,) -> No
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.max_trials=2",
-            "hydra.sweeper.params.ax_config.early_stop.max_epochs_without_improvement=2",
+            "hydra.sweeper.ax_config.max_trials=2",
+            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=2",
             "quadratic=basic",
             "quadratic.x=-5:-2",
             "quadratic.y=-1:1",
         ],
     )
     with sweep:
-        ax_config = HydraConfig.get().sweeper.params.ax_config
+        ax_config = HydraConfig.get().sweeper.ax_config
         assert ax_config.max_trials == 2
         assert ax_config.early_stop.max_epochs_without_improvement == 2
         assert ax_config.experiment.minimize is True
@@ -198,7 +198,7 @@ def test_ax_logging(tmpdir: Path) -> None:
         "polynomial.x=-5:-2",
         "polynomial.y=-1,1",
         "polynomial.z=10",
-        "hydra.sweeper.params.ax_config.max_trials=2",
+        "hydra.sweeper.ax_config.max_trials=2",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5, -2], type = int" in result
@@ -214,7 +214,7 @@ def test_example_app(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
         "banana.x=-5:5",
         "banana.y=-5:10.1",
-        "hydra.sweeper.params.ax_config.max_trials=2",
+        "hydra.sweeper.ax_config.max_trials=2",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "banana.x: range=[-5, 5], type = int" in result
