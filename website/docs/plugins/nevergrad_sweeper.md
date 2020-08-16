@@ -35,62 +35,19 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 
 We include an example of how to use this plugin. The file [`example/dummy_training.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/dummy_training.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
 
-This application has the following configuration:
-```yaml
-defaults:
-  - hydra/sweeper: nevergrad
-
-hydra:
-  sweeper:
-    params:
-
-      # configuration of the optimizer
-      optim:
-        # name of the Nevergrad optimizer to use. Here is a sample:
-        #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
-        #     tends to converge early.
-        #   - "CMA" very good algorithm, but may require a significant budget (> 120)
-        #   - "TwoPointsDE": an algorithm good in a wide range of settings, for significant
-        #     budgets (> 120).
-        #   - "Shiwa" an algorithm aiming at identifying the best optimizer given your input
-        #     definition (work in progress, it may still be ill-suited for low budget)
-        # find out more within nevergrad's documentation:
-        # https://github.com/facebookresearch/nevergrad/
-        optimizer: OnePlusOne
-        # total number of function evaluations to perform
-        budget: 100
-        # number of parallel workers for performing function evaluations
-        num_workers: 10
-        # maximize: true  # comment out for maximization
-
-      # default parametrization of the search space
-      parametrization:
-        # either one or the other
-        db:
-          - mnist
-          - cifar
-        # a log-distributed positive scalar, evolving by factors of 2 on average
-        lr:
-          init: 0.02
-          step: 2.0
-          log: true
-        # a linearly-distributed scalar between 0 and 1
-        dropout:
-          lower: 0.0
-          upper: 1.0
-        # an integer scalar going from 4 to 16
-        # init and step parameters could also be provided,
-        # by default init is set to the middle of the range
-        # and step is set to a sixth of the range
-        batch_size:
-          lower: 4
-          upper: 16
-          integer: true
-
-db: cifar
-lr: 0.01
-batch_size: 8
-dropout: 0.6
+You can discover the Nevergrad sweeper parameters with:
+```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper
+optim:
+  optimizer: OnePlusOne
+  budget: 80
+  num_workers: 10
+  noisy: false
+  maximize: false
+  seed: null
+parametrization: {}
+version: 1
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -151,7 +108,7 @@ best_evaluated_params:
   dropout: 0.381
   lr: 0.094
 
-name: nevergrad:
+name: nevergrad
 ```
 
 ## Defining the parameters

@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 
 
 @dataclass
@@ -24,7 +24,7 @@ class ScalarConfigSpec:
 
     # step size for an update
     # defaults to 1 if unbounded
-    # or 1/6 of the range if completely bounderd
+    # or 1/6 of the range if completely bounded
     step: Optional[float] = None
 
     # cast to integer
@@ -66,7 +66,8 @@ class OptimConf:
 
 
 @dataclass
-class NevergradConf:
+class NevergradSweeperConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
 
     # configuration of the optimizer
     optim: OptimConf = OptimConf()
@@ -80,12 +81,6 @@ class NevergradConf:
 
     # version of the commandline API
     version: int = 1
-
-
-@dataclass
-class NevergradSweeperConf(ObjectConf):
-    target: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
-    params: NevergradConf = NevergradConf()
 
 
 ConfigStore.instance().store(
