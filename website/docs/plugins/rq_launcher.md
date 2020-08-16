@@ -34,27 +34,26 @@ defaults:
 
 The configuration packaged with the plugin is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py). The default configuration is as follows:
 
-```yaml
+```yaml title="$ python your_app.py hydra/launcher=rq --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
-cls: hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher
-params:
-  enqueue:
-    job_timeout: null                  # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-    ttl: null                          # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-    result_ttl: null                   # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-    failure_ttl: null                  # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-    at_front: false                    # place job at the front of the queue, instead of the back
-    job_id: null                       # job id, will be overidden automatically by a uuid unless specified explicitly
-    description: null                  # description, will be overidden automatically unless specified explicitly
-  queue: default                       # queue name
-  redis:
-    host: ${env:REDIS_HOST,localhost}  # host address via REDIS_HOST environment variable, default: localhost
-    port: ${env:REDIS_PORT,6379}       # port via REDIS_PORT environment variable, default: 6379
-    db: ${env:REDIS_DB,0}              # database via REDIS_DB environment variable, default: 0
-    password: ${env:REDIS_PASSWORD,}   # password via REDIS_PASSWORD environment variable, default: no password
-    mock: ${env:REDIS_MOCK,False}      # switch to run without redis server in single thread, for testing purposes only
-  stop_after_enqueue: false            # stop after enqueueing by raising custom exception
-  wait_polling: 1.0                    # wait time in seconds when polling results
+_target_: hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher
+enqueue:
+  job_timeout: null                  # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  ttl: null                          # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  result_ttl: null                   # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  failure_ttl: null                  # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  at_front: false                    # place job at the front of the queue, instead of the back
+  job_id: null                       # job id, will be overidden automatically by a uuid unless specified explicitly
+  description: null                  # description, will be overidden automatically unless specified explicitly
+queue: default                       # queue name
+redis:
+  host: ${env:REDIS_HOST,localhost}  # host address via REDIS_HOST environment variable, default: localhost
+  port: ${env:REDIS_PORT,6379}       # port via REDIS_PORT environment variable, default: 6379
+  db: ${env:REDIS_DB,0}              # database via REDIS_DB environment variable, default: 0
+  password: ${env:REDIS_PASSWORD,}   # password via REDIS_PASSWORD environment variable, default: no password
+  mock: ${env:REDIS_MOCK,False}      # switch to run without redis server in single thread, for testing purposes only
+stop_after_enqueue: false            # stop after enqueueing by raising custom exception
+wait_polling: 1.0                    # wait time in seconds when polling results
 ```
 
 The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively.

@@ -1,4 +1,3 @@
 # @package _group_
-params:
-  enqueue:
-    job_timeout: '1d'
+enqueue:
+  job_timeout: '1d'

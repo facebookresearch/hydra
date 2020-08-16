@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 from omegaconf import II
 
 
@@ -40,7 +40,8 @@ class EnqueueConf:
 
 
 @dataclass
-class RQConf:
+class RQLauncherConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
     # enqueue configuration
     enqueue: EnqueueConf = EnqueueConf()
     # queue name
@@ -51,12 +52,6 @@ class RQConf:
     stop_after_enqueue: bool = False
     # wait time in seconds when polling results
     wait_polling: float = 1.0
-
-
-@dataclass
-class RQLauncherConf(ObjectConf):
-    target: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
-    params: RQConf = RQConf()
 
 
 ConfigStore.instance().store(

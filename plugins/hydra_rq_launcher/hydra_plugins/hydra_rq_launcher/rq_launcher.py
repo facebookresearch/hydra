@@ -8,7 +8,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
-from .config import RQConf
+from .config import RQLauncherConf
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class RQLauncher(Launcher):
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
 
-        self.rq = OmegaConf.structured(RQConf(**params))
+        self.rq = OmegaConf.structured(RQLauncherConf(**params))
 
     def setup(
         self,
