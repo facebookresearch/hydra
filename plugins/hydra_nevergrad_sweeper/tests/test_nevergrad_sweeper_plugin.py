@@ -54,8 +54,8 @@ def test_launched_jobs(hydra_sweep_runner) -> None:
         overrides=[
             "hydra/sweeper=nevergrad",
             "hydra/launcher=basic",
-            f"hydra.sweeper.params.optim.budget={budget}",  # small budget to test fast
-            "hydra.sweeper.params.optim.num_workers=3",
+            f"hydra.sweeper.optim.budget={budget}",  # small budget to test fast
+            "hydra.sweeper.optim.num_workers=3",
             "foo=1,2",
             "bar=4:8",
         ],
@@ -72,9 +72,9 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/dummy_training.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
-        f"hydra.sweeper.params.optim.budget={budget}",  # small budget to test fast
-        f"hydra.sweeper.params.optim.num_workers={min(8, budget)}",
-        "hydra.sweeper.params.optim.seed=12",  # avoid random failures
+        f"hydra.sweeper.optim.budget={budget}",  # small budget to test fast
+        f"hydra.sweeper.optim.num_workers={min(8, budget)}",
+        "hydra.sweeper.optim.seed=12",  # avoid random failures
     ]
     if with_commandline:
         cmd += [
