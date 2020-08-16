@@ -12,9 +12,9 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, open_dict
 
-from .config import BaseParams, LocalParams, SlurmParams
+from .config import BaseTarget
 
 log = logging.getLogger(__name__)
 
@@ -32,10 +32,7 @@ class BaseSubmititLauncher(Launcher):
     _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:
-        param_classes = {"local": LocalParams, "slurm": SlurmParams}
-        if self._EXECUTOR not in param_classes:
-            raise RuntimeError(f'Non-implemented "{self._EXECUTOR}" executor')
-        self.params = OmegaConf.structured(param_classes[self._EXECUTOR](**params))
+        self.params = params
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -96,10 +93,10 @@ class BaseSubmititLauncher(Launcher):
         num_jobs = len(job_overrides)
         assert num_jobs > 0
         params = self.params
-
         # build executor
-        init_params = {"folder": params.submitit_folder}
+        init_params = {"folder": self.params["submitit_folder"]}
         specific_init_keys = {"max_num_timeout"}
+
         init_params.update(
             **{
                 f"{self._EXECUTOR}_{x}": y
@@ -111,7 +108,7 @@ class BaseSubmititLauncher(Launcher):
         executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
 
         # specify resources/parameters
-        baseparams = set(dataclasses.asdict(BaseParams()).keys())
+        baseparams = set(dataclasses.asdict(BaseTarget()).keys())
         params = {
             x if x in baseparams else f"{self._EXECUTOR}_{x}": y
             for x, y in params.items()

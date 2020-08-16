@@ -33,47 +33,44 @@ the launching host and the target host.
 
 Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
 
-You can discover the slurm launcher parameters with:
-```text
-$ python foo.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher
+You can discover the SLURM Launcher parameters with:
+```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
-cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmSubmititLauncher
-params:
-  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
-  timeout_min: 60
-  cpus_per_task: 1
-  gpus_per_node: 0
-  tasks_per_node: 1
-  mem_gb: 4
-  nodes: 1
-  name: ${hydra.job.name}
-  partition: null
-  comment: null
-  constraint: null
-  exclude: null
-  signal_delay_s: 120
-  max_num_timeout: 0
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+timeout_min: 60
+cpus_per_task: 1
+gpus_per_node: 0
+tasks_per_node: 1
+mem_gb: 4
+nodes: 1
+name: ${hydra.job.name}
+partition: null
+comment: null
+constraint: null
+exclude: null
+signal_delay_s: 120
+max_num_timeout: 0
+
 ```
 
 Similarly, you can discover the local launcher parameters with:
-```text
-$ python my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher
+```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
-cls: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalSubmititLauncher
-params:
-  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
-  timeout_min: 60
-  cpus_per_task: 1
-  gpus_per_node: 0
-  tasks_per_node: 1
-  mem_gb: 4
-  nodes: 1
-  name: ${hydra.job.name} 
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+timeout_min: 60
+cpus_per_task: 1
+gpus_per_node: 0
+tasks_per_node: 1
+mem_gb: 4
+nodes: 1
+name: ${hydra.job.name}
 ```
 
 You can set all these parameters in your configuration file and/or override them in the commandline: 
 ```text
-python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.params.timeout_min=3
+python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
 For more details, including descriptions for each parameter, check out the [config file](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py). You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
 
