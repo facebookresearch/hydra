@@ -4,40 +4,63 @@ title: Reference
 sidebar_label: Reference
 ---
 
-Hydra provides `hydra.utils.instantiate()` (and its alias `hydra.utils.call()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.
+Hydra provides `hydra.utils.call()` (and its alias `hydra.utils.instantiate()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.
 
 ```python
-def instantiate(config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any) -> Any:
+def call(
+    config: Union[ObjectConf, TargetConf, DictConfig, Dict[Any, Any]],
+    *args: Any,
+    **kwargs: Any,
+) -> Any:
     """
-    :param config: An ObjectConf or DictConfig describing what to instantiate and what params to use
+    :param config: An object describing what to call and what params to use
     :param args: optional positional parameters pass-through
     :param kwargs: optional named parameters pass-through
-    :return: the return value from the specified class
+    :return: the return value from the specified class or method
     """
+    ...
+
+# Alias for call
+instantiate = call
 ```
 
-For using these functions, the config must have a key called `target`. If a key called `params` is also present, its value is passed as keyword arguments to class/function specified by `target`.
+For using these functions, the config must have a key called `_target_`. Any additional parameters are passed as keyword arguments to class/function specified by `_target_`.
 
 ### Example config
 ```yaml
 # target function name or class method fully qualified name
-target: foo.Bar
-# optional parameters dictionary to pass when calling the target
-params:
-  x: 10
+_target_: foo.Bar
+# additional parameters to pass when calling the target
+x: 10
 ```
 
 ### Example ObjectConf definition
-ObjectConf is defined in `hydra.types.ObjectConf`:
-```python
+`TargetConf` is defined in `hydra.types.TargetConf`:
+
+<div className="row">
+
+<div className="col col--6">
+
+```python title="Definition"
 @dataclass
-class ObjectConf(Dict[str, Any]):
-    # class, class method or function name
-    target: str = MISSING
-    # parameters to pass to target when calling it
-    params: Any = field(default_factory=dict)
+class TargetConf:
+    # class or function name
+    _target_: str = MISSING
+
 ```
 
+</div><div className="col col--6">
+
+```python title="Use it by subclassing and adding fields" 
+@dataclass
+class UserConf(TargetConf):
+    _target_ : str = "module.User"
+    name: str = MISSING
+    age: int = MISSING
+```
+
+</div>
+</div>
 
 #### Example usage
 
@@ -72,10 +95,9 @@ To instantiate a `example.Foo` object:
 config.yaml
 ```yaml
 foo:
-  target: example.Foo
-  params:
-    x: 10
-    y: 20
+  _target_: example.Foo
+  x: 10
+  y: 20
 ```
 
 Now, to test these, `instantiate` (or `call`) them as follows:
@@ -94,9 +116,8 @@ We can also call functions from the standard library:
 
 ```yaml
 myobject:
-  target: builtins.str
-  params:
-    object: 42
+  _target_: builtins.str
+  object: 42
 ```  
 
 ```python

@@ -28,7 +28,11 @@ from omegaconf.errors import OmegaConfBaseException
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
 from hydra.core.utils import get_valid_filename, split_config_path
-from hydra.errors import CompactHydraException, HydraException, SearchPathException
+from hydra.errors import (
+    CompactHydraException,
+    InstantiationException,
+    SearchPathException,
+)
 from hydra.types import ObjectConf, TaskFunction
 
 log = logging.getLogger(__name__)
@@ -498,6 +502,7 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
 def _instantiate_class(
     clazz: Type[Any], config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
 ) -> Any:
+    # TODO: pull out to caller?
     final_kwargs = _get_kwargs(config, **kwargs)
     return clazz(*args, **final_kwargs)
 
@@ -564,14 +569,25 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
 
     if isinstance(config, ObjectConf):
         config = OmegaConf.structured(config)
+        if config.params is not None:
+            params = config.params
+        else:
+            params = OmegaConf.create()
     else:
         config = copy.deepcopy(config)
-
-    params = (
-        config.params
-        if hasattr(config, "params") and config.params is not None
-        else OmegaConf.create()
-    )
+        if "params" in config:
+            msg = (
+                "\nField 'params' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1."
+                "\nInline the content of params directly at the containing node."
+                "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
+            )
+            warnings.warn(category=UserWarning, message=msg)
+            params = config.params
+        else:
+            params = OmegaConf.create()
+            for k, v in config.items():
+                if k != "_target_":
+                    params[k] = v
 
     assert isinstance(
         params, MutableMapping
@@ -601,53 +617,31 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     return final_kwargs
 
 
-def _get_cls_name(config: Union[ObjectConf, DictConfig]) -> str:
-    def _warn(field: str) -> None:
-        if isinstance(config, DictConfig):
-            warnings.warn(
-                f"""Config key '{config._get_full_key(field)}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'target' instead of '{field}'.""",
-                category=UserWarning,
-            )
-        else:
-            warnings.warn(
-                f"""
-ObjectConf field '{field}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1.
-Use 'target' instead of '{field}'.""",
-                category=UserWarning,
-            )
-
+def _get_cls_name(config: DictConfig, pop: bool = True) -> str:
     def _getcls(field: str) -> str:
-        classname = getattr(config, field)
-        assert isinstance(classname, str)
+        if pop:
+            classname = config.pop(field)
+        else:
+            classname = config[field]
+        if not isinstance(classname, str):
+            raise InstantiationException(f"_target_ field '{field}' must be a string")
         return classname
 
-    def _has_field(field: str) -> bool:
-        if isinstance(config, DictConfig):
-            if field in config:
-                ret = config[field] != "???"
-                assert isinstance(ret, bool)
-                return ret
-            else:
-                return False
-        else:
-            if hasattr(config, field):
-                ret = getattr(config, field) != "???"
-                assert isinstance(ret, bool)
-                return ret
-            else:
-                return False
+    for field in ["target", "cls", "class"]:
+        if field in config:
+            key = config._get_full_key(field)
+            msg = (
+                f"\nConfig key '{key}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1."
+                f"\nUse '_target_' instead of '{field}'."
+                f"\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
+            )
+            warnings.warn(message=msg, category=UserWarning)
 
-    if _has_field(field="class"):
-        _warn(field="class")
-    elif _has_field(field="cls"):
-        _warn(field="cls")
+    if "_target_" in config:
+        return _getcls("_target_")
 
-    if _has_field(field="target"):
-        return _getcls(field="target")
-    elif _has_field(field="cls"):
-        return _getcls(field="cls")
-    elif _has_field(field="class"):
-        return _getcls(field="class")
-    else:
-        raise HydraException("Input config does not have a `target` field")
+    for field in ["target", "cls", "class"]:
+        if field in config:
+            return _getcls(field)
+
+    raise InstantiationException("Input config does not have a `_target_` field")

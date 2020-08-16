@@ -6,7 +6,7 @@ from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import TargetConf
 from hydra.utils import instantiate
 
 
@@ -17,7 +17,7 @@ class DBConnection:
         self.port = port
 
     def connect(self) -> None:
-        print(f"{self.driver} connecting to {self.host}:{self.port}")
+        print(f"{self.driver} connecting to {self.host}")
 
 
 class MySQLConnection(DBConnection):
@@ -32,49 +32,37 @@ class PostgreSQLConnection(DBConnection):
 
 
 @dataclass
-class DBConfig:
-    driver: MISSING
+class DBConfig(TargetConf):
+    driver: str = MISSING
     host: str = "localhost"
     port: int = 80
 
 
 @dataclass
 class MySQLConfig(DBConfig):
+    _target_: str = "my_app.MySQLConnection"
     driver: str = "MySQL"
     port: int = 1234
 
 
 @dataclass
 class PostGreSQLConfig(DBConfig):
+    _target_: str = "my_app.PostgreSQLConnection"
     driver: str = "PostgreSQL"
     port: int = 5678
     timeout: int = 10
 
 
-defaults = [
-    # Load the config "mysql" from the config group "db"
-    {"db": "mysql"}
-]
-
-
 @dataclass
 class Config(DictConfig):
-    defaults: List[Any] = field(default_factory=lambda: defaults)
-    db: ObjectConf = MISSING
+    defaults: List[Any] = field(default_factory=lambda: [{"db": "mysql"}])
+    db: DBConfig = MISSING
 
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
-cs.store(
-    group="db",
-    name="mysql",
-    node=ObjectConf(target="my_app.MySQLConnection", params=MySQLConfig),
-)
-cs.store(
-    group="db",
-    name="postgresql",
-    node=ObjectConf(target="my_app.PostgreSQLConnection", params=PostGreSQLConfig),
-)
+cs.store(group="db", name="mysql", node=MySQLConfig)
+cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 @hydra.main(config_name="config")

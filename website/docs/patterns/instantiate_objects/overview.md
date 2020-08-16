@@ -12,35 +12,27 @@ A Database connection interface may have a `connect()` method, implemented by di
 ```python
 class DBConnection:
     def connect(self):
-        pass
+        ...
 
 class MySQLConnection(DBConnection):
-    def __init__(self, host, user, password):
+    def __init__(self, host: str, user: str, password: str) -> None:
         self.host = host
         self.user = user
         self.password = password
 
-    def connect(self):
-        print(
-            "MySQL connecting to {} with user={} and password={}".format(
-                self.host, self.user, self.password
-            )
-        )
+    def connect(self) -> None:
+        print(f"MySQL connecting to {self.host}")
+
 
 class PostgreSQLConnection(DBConnection):
-    def __init__(self, host, user, password, database):
+    def __init__(self, host: str, user: str, password: str, database: str) -> None:
         self.host = host
         self.user = user
         self.password = password
         self.database = database
 
-    def connect(self):
-        print(
-            "PostgreSQL connecting to {} "
-            "with user={} and password={} and database={}".format(
-                self.host, self.user, self.password, self.database
-            )
-        )
+    def connect(self) -> None:
+        print(f"PostgreSQL connecting to {self.host}")
 ```
 
 To support this, we can have a parallel config structure:
@@ -59,22 +51,20 @@ defaults:
 ```
 Config file: `db/mysql.yaml`
 ```yaml
-db:
-  target: tutorial.objects_example.objects.MySQLConnection
-  params:
-    host: localhost
-    user: root
-    password: 1234
+# @package _group_
+_target_: my_app.MySQLConnection
+host: localhost
+user: root
+password: 1234
 ```
 db/postgresql.yaml:
 ```yaml
-db:
-  target: tutorial.objects_example.objects.PostgreSQLConnection
-  params:
-    host: localhost
-    user: root
-    password: 1234
-    database: tutorial
+# @package _group_
+_target_: my_app.PostgreSQLConnection
+host: localhost
+user: root
+password: 1234
+database: tutorial
 ```
 
 With this, you can instantiate the object from the configuration with a single line of code:

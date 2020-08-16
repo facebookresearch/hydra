@@ -12,6 +12,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
+from subprocess import PIPE, Popen, check_output
 from typing import Any, Dict, Iterator, List, Optional, Union
 
 from omegaconf import DictConfig, OmegaConf
@@ -337,3 +338,22 @@ if __name__ == "__main__":
         return file_str
     finally:
         os.chdir(orig_dir)
+
+
+def run_with_error(cmd: Any, env: Any = None) -> str:
+    cmd = [sys.executable, "-Werror"] + cmd
+    with Popen(cmd, stdout=PIPE, stderr=PIPE, env=env) as p:
+        _stdout, stderr = p.communicate()
+        err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
+        assert p.returncode == 1
+    return err
+
+
+def get_run_output(cmd: Any, env: Any = None) -> str:
+    cmd = [sys.executable, "-Werror"] + cmd
+    try:
+        return check_output(cmd, env=env).decode().rstrip()
+    except Exception as e:
+        cmd = " ".join(cmd)
+        print(f"==Error executing==\n{cmd}\n===================")
+        raise e

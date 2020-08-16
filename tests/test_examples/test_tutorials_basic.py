@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any, List
 
@@ -13,6 +12,7 @@ from hydra.test_utils.test_utils import (
     TTaskRunner,
     chdir_hydra_root,
     does_not_raise,
+    get_run_output,
     verify_dir_outputs,
 )
 
@@ -35,23 +35,21 @@ def test_tutorial_simple_cli_app(
     tmpdir: Path, args: List[str], output_conf: DictConfig
 ) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == output_conf
 
 
 def test_tutorial_working_directory(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "Working directory : {}".format(tmpdir)
+    result = get_run_output(cmd)
+    assert result == "Working directory : {}".format(tmpdir)
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -63,13 +61,12 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
 )
 def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/running_your_hydra_app/4_logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    lines = result.decode("utf-8").splitlines()
+    result = get_run_output(cmd)
+    lines = result.splitlines()
     assert len(lines) == len(expected)
     for i in range(len(lines)):
         assert re.findall(re.escape(expected[i]), lines[i])
@@ -88,13 +85,12 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
 )
 def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == output_conf
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -117,12 +113,11 @@ def test_tutorial_config_file_bad_key(
     """ Similar to the previous test, but also tests exception values"""
     with expected:
         cmd = [
-            sys.executable,
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
         ]
         cmd.extend(args)
-        subprocess.check_output(cmd)
+        get_run_output(cmd)
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -148,13 +143,12 @@ def test_tutorial_config_groups(
     tmpdir: Path, args: List[str], output_conf: DictConfig
 ) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == output_conf
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == output_conf
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -187,13 +181,12 @@ def test_tutorial_config_groups(
 )
 def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
 def test_composition_config_example(
@@ -287,49 +280,44 @@ def test_advanced_ad_hoc_composition(
     tmpdir: Path, args: List[str], expected: Any
 ) -> None:
     cmd = [
-        sys.executable,
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == OmegaConf.create(expected)
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
 def test_examples_configure_hydra_job_name_no_config_override(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/configure_hydra/job_name/no_config_file_override.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "no_config_file_override"
+    result = get_run_output(cmd)
+    assert result == "no_config_file_override"
 
 
 def test_examples_configure_hydra_job_name_with_config_override(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/configure_hydra/job_name/with_config_file_override.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "name_from_config_file"
+    result = get_run_output(cmd)
+    assert result == "name_from_config_file"
 
 
 def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/configure_hydra/logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert result.decode("utf-8").rstrip() == "[INFO] - Info level message"
+    result = get_run_output(cmd)
+    assert result == "[INFO] - Info level message"
 
 
 def test_examples_using_the_config_object(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
 
-    subprocess.check_output(cmd)
+    get_run_output(cmd)
