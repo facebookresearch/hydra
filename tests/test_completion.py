@@ -53,7 +53,7 @@ def create_config_loader() -> ConfigLoaderImpl:
         )
     )
 
-
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
 def test_bash_completion_with_dot_in_path() -> None:
     process = subprocess.Popen(
         textwrap.dedent(
