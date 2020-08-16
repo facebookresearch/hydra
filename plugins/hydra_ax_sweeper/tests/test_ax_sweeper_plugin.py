@@ -75,8 +75,8 @@ def test_jobs_dirs(hydra_sweep_runner) -> None:
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.params.ax_config.max_trials=6",
-            "hydra.sweeper.params.max_batch_size=2",
+            "hydra.sweeper.ax_config.max_trials=6",
+            "hydra.sweeper.max_batch_size=2",
             "params=basic",
         ],
     )

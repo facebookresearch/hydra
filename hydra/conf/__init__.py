@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
 
 hydra_defaults = [
     # Hydra's logging config
@@ -117,9 +116,9 @@ class HydraConf:
     job_logging: Any = MISSING
 
     # Sweeper configuration
-    sweeper: ObjectConf = field(default_factory=ObjectConf)
+    sweeper: Any = MISSING
     # Launcher configuration
-    launcher: ObjectConf = field(default_factory=ObjectConf)
+    launcher: Any = MISSING
 
     # Program Help template
     help: HelpConf = HelpConf()

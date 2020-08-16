@@ -6,7 +6,7 @@ import hydra
 
 class DBConnection:
     def connect(self) -> None:
-        pass
+        ...
 
 
 class MySQLConnection(DBConnection):
@@ -16,9 +16,7 @@ class MySQLConnection(DBConnection):
         self.password = password
 
     def connect(self) -> None:
-        print(
-            f"MySQL connecting to {self.host} with user={self.user} and password={self.password}"
-        )
+        print(f"MySQL connecting to {self.host}")
 
 
 class PostgreSQLConnection(DBConnection):
@@ -29,10 +27,7 @@ class PostgreSQLConnection(DBConnection):
         self.database = database
 
     def connect(self) -> None:
-        print(
-            f"PostgreSQL connecting to {self.host} with user={self.user} "
-            f"and password={self.password} and database={self.database}"
-        )
+        print(f"PostgreSQL connecting to {self.host}")
 
 
 @hydra.main(config_path="conf", config_name="config")

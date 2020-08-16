@@ -2,6 +2,8 @@
 from dataclasses import dataclass
 from typing import Any, List, Tuple
 
+from hydra.types import TargetConf
+
 
 def normalize_newlines(s: str) -> str:
     """
@@ -93,3 +95,19 @@ class ClassWithMissingModule:
         import some_missing_module  # type: ignore # noqa: F401
 
         self.x = 1
+
+
+@dataclass
+class AdamConf(TargetConf):
+    _target_: str = "tests.Adam"
+    lr: float = 0.001
+    betas: Tuple[float, ...] = (0.9, 0.999)
+    eps: float = 1e-08
+    weight_decay: int = 0
+    amsgrad: bool = False
+
+
+@dataclass
+class BadAdamConf(TargetConf):
+    # Missing str annotation
+    _target_ = "tests.Adam"

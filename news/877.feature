@@ -1,1 +1,1 @@
-Allow overriding of defaults list and hydra node regardless of node schema
+Allow overriding of the `defaults` and `hydra` nodes in primary Structured Configs that does not mentioned `defaults` and `hydra`.

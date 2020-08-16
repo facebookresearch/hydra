@@ -1,14 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from hydra.test_utils.test_utils import chdir_hydra_root
+from hydra.test_utils.test_utils import chdir_hydra_root, run_with_error
 from tests import normalize_newlines
-from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -63,7 +61,7 @@ def test_cli_error(tmpdir: Any, monkeypatch: Any, override: Any, expected: str) 
     monkeypatch.chdir("tests/test_apps/app_without_config/")
     if isinstance(override, str):
         override = [override]
-    cmd = [sys.executable, "my_app.py", "hydra.sweep.dir=" + str(tmpdir)] + override
+    cmd = ["my_app.py", "hydra.sweep.dir=" + str(tmpdir)] + override
     ret = normalize_newlines(run_with_error(cmd))
     assert (
         re.search("^" + re.escape(normalize_newlines(expected.strip())), ret)

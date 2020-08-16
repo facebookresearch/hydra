@@ -14,11 +14,12 @@ from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
+    get_run_output,
     integration_test,
+    run_with_error,
     verify_dir_outputs,
 )
 from tests import normalize_newlines
-from tests.test_examples import run_with_error
 
 chdir_hydra_root()
 
@@ -66,11 +67,7 @@ def test_missing_conf_file(
 
 
 def test_run_dir() -> None:
-    cmd = [
-        sys.executable,
-        "tests/test_apps/run_dir_test/my_app.py",
-    ]
-    subprocess.check_output(cmd)
+    get_run_output(["tests/test_apps/run_dir_test/my_app.py"])
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -366,20 +363,18 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
         assert task.job_ret.hydra_cfg is not None
         hydra_cfg = task.job_ret.hydra_cfg
         assert (
-            hydra_cfg.hydra.launcher.target
+            hydra_cfg.hydra.launcher._target_
             == "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
         )
-        assert len(task.job_ret.hydra_cfg.hydra.launcher.params) == 0
+        assert len(task.job_ret.hydra_cfg.hydra.launcher) == 1
 
 
 def test_short_module_name(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == {
+    assert OmegaConf.create(get_run_output(cmd)) == {
         "db": {"driver": "mysql", "password": "secret", "user": "omry"}
     }
 
@@ -404,14 +399,13 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     Tests that module name overrides are working.
     """
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     modified_env = os.environ.copy()
     modified_env[env_name] = "hydra.test_utils.configs.Foo"
-    result = subprocess.check_output(cmd, env=modified_env)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == {"normal_yaml_config": True}
+    result = get_run_output(cmd, env=modified_env)
+    assert OmegaConf.create(result) == {"normal_yaml_config": True}
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -420,13 +414,12 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
 )
 def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         flag,
     ]
-    result = subprocess.check_output(cmd)
-    conf = OmegaConf.create(str(result.decode("utf-8")))
+    result = get_run_output(cmd)
+    conf = OmegaConf.create(result)
     for key in expected_keys:
         assert key in conf
 
@@ -470,13 +463,12 @@ pass: secret
 )
 def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None:
     cmd = [
-        sys.executable,
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ] + flags
 
-    result = subprocess.check_output(cmd).decode("utf-8")
-    assert normalize_newlines(result) == expected
+    result = get_run_output(cmd)
+    assert normalize_newlines(result) == expected.rstrip()
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -652,14 +644,12 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
 def test_help(
     tmpdir: Path, script: str, flag: str, overrides: List[str], expected: Any,
 ) -> None:
-    cmd = [sys.executable, script, "hydra.run.dir=" + str(tmpdir)]
+    cmd = [script, "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(overrides)
     cmd.append(flag)
-    print(" ".join(cmd))
-    result = str(subprocess.check_output(cmd).decode("utf-8"))
+    result = normalize_newlines(get_run_output(cmd))
     # normalize newlines on Windows to make testing easier
-    result = result.replace("\r\n", "\n")
-    assert result == expected.format(script=script)
+    assert result == normalize_newlines(expected.format(script=script)).rstrip()
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -691,6 +681,7 @@ def test_interpolating_dir_hydra_to_app(
 def test_sys_exit(tmpdir: Path) -> None:
     cmd = [
         sys.executable,
+        "-Werror",
         "tests/test_apps/sys_exit/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
@@ -788,14 +779,13 @@ def test_config_name_and_path_overrides(
     tmpdir: Path, config_path: str, config_name: str
 ) -> None:
     cmd = [
-        sys.executable,
         "tests/test_apps/app_with_multiple_config_dirs/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         f"--config-name={config_name}",
         f"--config-path={config_path}",
     ]
     print(" ".join(cmd))
-    result = str(subprocess.check_output(cmd).decode("utf-8")).strip()
+    result = get_run_output(cmd)
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
     assert result == f"{config_path}_{config_name}: true"
@@ -855,7 +845,6 @@ def test_module_run(
     tmpdir: Any, directory: str, file: str, module: str, error: Optional[str]
 ) -> None:
     cmd = [
-        sys.executable,
         directory + "/" + file,
         "hydra.run.dir=" + str(tmpdir),
     ]
@@ -866,8 +855,8 @@ def test_module_run(
         ret = run_with_error(cmd, modified_env)
         assert re.search(re.escape(error), ret) is not None
     else:
-        result = subprocess.check_output(cmd, env=modified_env)
-        assert OmegaConf.create(str(result.decode("utf-8"))) == {"x": 10}
+        result = get_run_output(cmd, env=modified_env)
+        assert OmegaConf.create(result) == {"x": 10}
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -896,7 +885,6 @@ def test_multirun_structured_conflict(
     tmpdir: Any, overrides: List[str], error: bool, expected: Any
 ) -> None:
     cmd = [
-        sys.executable,
         "tests/test_apps/multirun_structured_conflict/my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
     ]
@@ -906,23 +894,13 @@ def test_multirun_structured_conflict(
         ret = normalize_newlines(run_with_error(cmd))
         assert re.search(re.escape(expected), ret) is not None
     else:
-        ret = normalize_newlines(
-            str(subprocess.check_output(cmd).decode("utf-8"))
-        ).strip()
+        ret = normalize_newlines(get_run_output(cmd))
         assert ret == expected
 
 
 @pytest.mark.parametrize(
     "cmd_base",
-    [
-        (
-            [
-                sys.executable,
-                "tests/test_apps/simple_app/my_app.py",
-                "hydra/hydra_logging=disabled",
-            ]
-        )
-    ],
+    [(["tests/test_apps/simple_app/my_app.py", "hydra/hydra_logging=disabled"])],
 )
 class TestVariousRuns:
     @pytest.mark.parametrize(  # type: ignore
@@ -959,10 +937,8 @@ Available options:
 bar: 10
 
 foo: 20
-bar: 20
-
-"""
-        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+bar: 20"""
+        ret = get_run_output(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_config_overrides_evaluated_lazily(
@@ -978,10 +954,8 @@ bar: 20
 bar: 10
 
 foo: 20
-bar: 20
-
-"""
-        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+bar: 20"""
+        ret = get_run_output(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_defaults_override(self, cmd_base: List[str], tmpdir: Any) -> None:
@@ -996,10 +970,8 @@ bar: 20
 bar: 100
 
 foo: 20
-bar: 100
-
-"""
-        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+bar: 100"""
+        ret = get_run_output(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_run_pass_list(self, cmd_base: List[str], tmpdir: Any) -> None:
@@ -1008,14 +980,13 @@ bar: 100
             "+foo=[1,2,3]",
         ]
         expected = {"foo": [1, 2, 3]}
-        ret = str(subprocess.check_output(cmd).decode("utf-8"))
+        ret = get_run_output(cmd)
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
 
 
 def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
     monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
     cmd = [
-        sys.executable,
         "my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
     ]
@@ -1037,15 +1008,14 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
 
 def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
     cmd = [
-        sys.executable,
         "tests/test_apps/hydra_to_cfg_interpolation/my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
         "b=${a}",
         "a=foo",
     ]
     expected = "override_a=foo,b=foo"
-    result = subprocess.check_output(cmd)
-    assert str(result.decode("utf-8")).strip() == expected.strip()
+    result = get_run_output(cmd)
+    assert result == expected.strip()
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -1066,24 +1036,19 @@ def test_config_dir_argument(
 ) -> None:
     monkeypatch.chdir("tests/test_apps/user-config-dir")
     cmd = [
-        sys.executable,
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(overrides)
-    result = subprocess.check_output(cmd)
-    assert OmegaConf.create(str(result.decode("utf-8"))) == expected
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == expected
 
 
 def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
     monkeypatch.chdir("tests/test_apps/schema-overrides-hydra")
     cmd = [
-        sys.executable,
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = subprocess.check_output(cmd)
-    assert (
-        result.decode("utf-8").strip()
-        == "job_name: test, name: James Bond, age: 7, group: a"
-    )
+    result = get_run_output(cmd)
+    assert result == "job_name: test, name: James Bond, age: 7, group: a"

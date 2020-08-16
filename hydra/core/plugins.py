@@ -2,6 +2,7 @@
 import importlib
 import inspect
 import pkgutil
+import sys
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -19,7 +20,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import ObjectConf, TaskFunction
+from hydra.types import TaskFunction
 
 
 @dataclass
@@ -67,10 +68,10 @@ class Plugins(metaclass=Singleton):
             assert issubclass(source, ConfigSource)
             SourcesRegistry.instance().register(source)
 
-    def _instantiate(self, config: ObjectConf) -> Plugin:
+    def _instantiate(self, config: DictConfig) -> Plugin:
         from hydra._internal import utils as internal_utils
 
-        classname = internal_utils._get_cls_name(config)
+        classname = internal_utils._get_cls_name(config, pop=False)
         try:
             if classname is None:
                 raise ImportError("class not configured")
@@ -165,8 +166,22 @@ class Plugins(metaclass=Singleton):
                         continue
                     import_time = timer()
                     m = importer.find_module(modname)
-                    loaded_mod = m.load_module(modname)
+                    with warnings.catch_warnings(record=True) as recorded_warnings:
+                        loaded_mod = m.load_module(modname)
                     import_time = timer() - import_time
+                    if len(recorded_warnings) > 0:
+                        sys.stderr.write(
+                            f"[Hydra plugins scanner] : warnings from '{modname}'. Please report to plugin author.\n"
+                        )
+                        for w in recorded_warnings:
+                            warnings.showwarning(
+                                message=w.message,  # type: ignore
+                                category=w.category,
+                                filename=w.filename,
+                                lineno=w.lineno,
+                                file=w.file,
+                                line=w.line,
+                            )
 
                     stats.total_modules_import_time += import_time
 

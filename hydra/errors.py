@@ -17,6 +17,10 @@ class OverrideParseException(CompactHydraException):
         self.message = message
 
 
+class InstantiationException(CompactHydraException):
+    ...
+
+
 class ConfigCompositionException(CompactHydraException):
     ...
 

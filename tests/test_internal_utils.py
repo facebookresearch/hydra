@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-import sys
-from typing import Any, Union
+from typing import Any
 
 import pytest
 from _pytest.python_api import RaisesContext
@@ -33,7 +32,9 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "config, expected, warning",
     [
-        pytest.param(ObjectConf(target="foo"), "foo", False, id="ObjectConf:target"),
+        pytest.param(
+            OmegaConf.create({"_target_": "foo"}), "foo", False, id="ObjectConf:target"
+        ),
         pytest.param(
             OmegaConf.create({"cls": "foo"}), "foo", "cls", id="DictConfig:cls"
         ),
@@ -41,57 +42,66 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
             OmegaConf.create({"class": "foo"}), "foo", "class", id="DictConfig:class"
         ),
         pytest.param(
-            OmegaConf.create({"target": "foo"}), "foo", False, id="DictConfig:target",
+            OmegaConf.create({"target": "foo"}),
+            "foo",
+            "target",
+            id="DictConfig:target",
         ),
         pytest.param(
-            OmegaConf.create({"cls": "foo", "target": "bar"}),
+            OmegaConf.create({"cls": "foo", "_target_": "bar"}),
             "bar",
             False,
             id="DictConfig:cls_target",
         ),
         pytest.param(
-            OmegaConf.create({"class": "foo", "target": "bar"}),
+            OmegaConf.create({"class": "foo", "_target_": "bar"}),
             "bar",
             "class",
             id="DictConfig:class_target",
         ),
         # check that `target` is prioritized over `cls`/`class`.
         pytest.param(
-            OmegaConf.create({"cls": "foo", "target": "bar"}),
+            OmegaConf.create({"cls": "foo", "_target_": "bar"}),
             "bar",
             "cls",
-            id="DictConfig:cls_target",
+            id="DictConfig:pri_cls",
         ),
         pytest.param(
-            OmegaConf.create({"class": "foo", "target": "bar"}),
+            OmegaConf.create({"class": "foo", "_target_": "bar"}),
             "bar",
             "class",
-            id="DictConfig:class_target",
+            id="DictConfig:pri_class",
+        ),
+        pytest.param(
+            OmegaConf.create({"target": "foo", "_target_": "bar"}),
+            "bar",
+            "target",
+            id="DictConfig:pri_target",
         ),
     ],
 )
 def test_get_class_name(
-    config: Union[ObjectConf, DictConfig], expected: Any, warning: Any, recwarn: Any
+    config: DictConfig, expected: Any, warning: Any, recwarn: Any
 ) -> None:
     assert utils._get_cls_name(config) == expected
+
+    target_field_deprecated = (
+        "\nConfig key '{key}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1."
+        "\nUse '_target_' instead of '{field}'."
+        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
+    )
+
     if warning is not False:
-        deprecated = "is deprecated since Hydra 1.0 and will be removed in Hydra 1.1"
-        if isinstance(config, DictConfig):
-            exp = f"""Config key '{config._get_full_key(warning)}' {deprecated}.
-Use 'target' instead of '{warning}'."""
-        else:
-            exp = f"""
-ObjectConf field '{warning}' {deprecated}.
-Use 'target' instead of '{warning}'."""
-
-        assert len(recwarn) == 1
         assert recwarn[0].category == UserWarning
-        assert recwarn[0].message.args[0] == exp
+        assert recwarn[0].message.args[0] == target_field_deprecated.format(
+            key=warning, field=warning
+        )
 
 
-@pytest.mark.skipif(  # type: ignore
-    sys.version_info < (3, 7), reason="requires python3.7"
-)
+# TODO: why?
+# @pytest.mark.skipif(  # type: ignore
+#     sys.version_info < (3, 7), reason="requires python3.7"
+# )
 @pytest.mark.parametrize(  # type: ignore
     "name,expected",
     [
@@ -120,3 +130,15 @@ def test_locate(name: str, expected: Any) -> None:
             _locate(name)
     else:
         assert _locate(name) == expected
+
+
+def test_object_conf_deprecated() -> None:
+    msg = (
+        "\nObjectConf is deprecated in favor of TargetConf since Hydra 1.0.0rc3 and will be removed in Hydra 1.1."
+        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
+    )
+
+    with pytest.warns(
+        expected_warning=UserWarning, match=msg,
+    ):
+        ObjectConf(target="foo")

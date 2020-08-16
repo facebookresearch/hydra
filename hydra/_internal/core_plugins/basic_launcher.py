@@ -1,11 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Sequence
 
 from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.config_store import ConfigStore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.utils import (
     JobReturn,
@@ -15,9 +17,19 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.types import TaskFunction
+from hydra.types import TargetConf, TaskFunction
 
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class BasicLauncherConf(TargetConf):
+    _target_: str = "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
+
+
+ConfigStore.instance().store(
+    group="hydra/launcher", name="basic", node=BasicLauncherConf, provider="hydra",
+)
 
 
 class BasicLauncher(Launcher):
