@@ -3,14 +3,11 @@
 This plugin provides an example for how to write a custom Launcher for Hydra.
 The configuration for this launcher is in packages with the plugin:
 
-`hydra_plugins/example_launcher_plugiun/conf/hydra/launcher/example.yaml`:
-```yaml
-hydra:
-  launcher:
-    target: hydra_plugins.example_launcher_plugin.ExampleLauncher
-    params:
-      foo: 10
-      bar: abcde
+```yaml title="hydra_plugins/example_launcher_plugiun/conf/hydra/launcher/example.yaml"
+# @package _group_
+_target_: hydra_plugins.example_launcher_plugin.example_launcher.ExampleLauncher
+foo: 10
+bar: abcde
 ```
 The example application is overriding the Launcher used by Hydra.
 When the launcher is initialized, its "using" the foo and bar parameters.
