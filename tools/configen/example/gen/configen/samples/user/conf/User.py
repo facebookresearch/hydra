@@ -7,17 +7,11 @@
 from dataclasses import dataclass
 from typing import *
 
-from hydra.types import ObjectConf
 from omegaconf import MISSING
 
 
 @dataclass
-class UserParams:
+class UserConf:
+    _target_: str = "configen.samples.user.User"
     age: int = MISSING
     name: str = MISSING
-
-
-@dataclass
-class UserConf(ObjectConf):
-    target: str = "configen.samples.user.User"
-    params: UserParams = MISSING

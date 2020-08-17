@@ -1,4 +1,3 @@
 user:
-  params:
-    age: 7
-    name: Bond
+  age: 7
+  name: Bond
