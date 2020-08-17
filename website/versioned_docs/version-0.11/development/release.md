@@ -13,3 +13,7 @@ The release process may be automated in the future.
 - Upload pip package: `python -m twine upload dist/*`
 - Optional - Release plugins that needs to depend on new version of Hydra
 - Bump repo version
+
+Announce release:
+- Release on GitHub
+- Announce on Twitter and Zulip
