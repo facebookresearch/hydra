@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-nevergrad-sweeper",
-        version="1.0.0rc4",
+        version="1.0.0rc5",
         author="Jeremy Rapin, Omry Yadan",
         author_email="jrapin@fb.com, omry@fb.com",
         description="Hydra Nevergrad Sweeper plugin",
@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "nevergrad>=0.4.1.post4"],
+        install_requires=["hydra-core~=1.0.0rc3", "nevergrad>=0.4.1.post4"],
         include_package_data=True,
     )

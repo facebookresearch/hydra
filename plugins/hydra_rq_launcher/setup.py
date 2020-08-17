@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-rq-launcher",
-        version="1.0.0rc2",
+        version="1.0.0rc4",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
         description="Redis Queue (RQ) Launcher for Hydra apps",
@@ -25,7 +25,7 @@ with open("README.md", "r") as fh:
         install_requires=[
             "cloudpickle",
             "fakeredis",
-            "hydra-core~=1.0.0rc1",
+            "hydra-core~=1.0.0rc3",
             "rq==1.4.3",
         ],
         include_package_data=True,

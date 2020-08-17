@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-colorlog",
-        version="1.0.0rc3",
+        version="1.0.0rc4",
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="Enables colorlog for Hydra apps",
@@ -21,6 +21,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["colorlog", "hydra-core~=1.0.0rc1"],
+        install_requires=["colorlog", "hydra-core~=1.0.0rc3"],
         include_package_data=True,
     )

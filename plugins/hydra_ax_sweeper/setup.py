@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-ax-sweeper",
-        version="1.0.0rc5",
+        version="1.0.0rc6",
         author="Omry Yadan, Shagun Sodhani",
         author_email="omry@fb.com, sshagunsodhani@gmail.com",
         description="Hydra Ax Sweeper plugin",
@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "ax-platform>=0.1.13"],
+        install_requires=["hydra-core~=1.0.0rc3", "ax-platform>=0.1.13"],
         include_package_data=True,
     )

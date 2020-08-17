@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-submitit-launcher",
-        version="1.0.0rc5",
+        version="1.0.0rc6",
         author="Jeremy Rapin, Jieru Hu, Omry Yadan",
         author_email="jrapin@fb.com, jieru@fb.com, omry@fb.com",
         description="Submitit Launcher for Hydra apps",
@@ -21,6 +21,6 @@ with open("README.md", "r") as fh:
             "Operating System :: POSIX :: Linux",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "submitit>=1.0.0"],
+        install_requires=["hydra-core~=1.0.0rc3", "submitit>=1.0.0"],
         include_package_data=True,
     )

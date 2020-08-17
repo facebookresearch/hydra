@@ -1,16 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# Source of truth for version
-__version__ = "1.0.0rc1"
 import copy
 from pathlib import Path
 from typing import Callable, List, Optional
 
 import pytest
-from omegaconf.basecontainer import BaseContainer
-
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
+from omegaconf.basecontainer import BaseContainer
 
 
 @pytest.fixture(scope="function")  # type: ignore

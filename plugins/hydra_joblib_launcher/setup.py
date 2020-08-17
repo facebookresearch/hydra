@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-joblib-launcher",
-        version="1.1.0rc3",
+        version="1.1.0rc4",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
         description="Joblib Launcher for Hydra apps",
@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: Microsoft :: Windows",
             "Operating System :: POSIX :: Linux",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "joblib>=0.14.0"],
+        install_requires=["hydra-core~=1.0.0rc3", "joblib>=0.14.0"],
         include_package_data=True,
     )
