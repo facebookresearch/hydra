@@ -2,12 +2,12 @@
 from dataclasses import dataclass
 from typing import *
 
-from hydra.types import ObjectConf
 from omegaconf import MISSING
 
 
 @dataclass
-class {{class_name}}Params:
+class {{class_name}}Conf:
+    _target_: str = {{ target }}
 {% for param in params %}
 {% if param.default is not empty %}
 {% if param.passthrough %}
@@ -23,9 +23,3 @@ class {{class_name}}Params:
 {% endif %}
 {% endif %}
 {% endfor %}
-
-
-@dataclass
-class {{class_name}}Conf(ObjectConf):
-    target: str = {{ target }}
-    params: {{class_name}}Params = MISSING
