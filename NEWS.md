@@ -1,3 +1,31 @@
+1.0.0rc3 (2020-08-17)
+=====================
+
+Features
+--------
+
+- Extended Override grammar supports range(),glob(),type casts,shuffle, sort and more. ([#752](https://github.com/facebookresearch/hydra/issues/752))
+- Add support for specifying an additional config dir in the command line ([#874](https://github.com/facebookresearch/hydra/issues/874))
+- Allow overriding of the `defaults` and `hydra` nodes in primary Structured Configs that does not mentioned `defaults` and `hydra`. ([#877](https://github.com/facebookresearch/hydra/issues/877))
+
+API Change (Renames, deprecations and removals)
+-----------------------------------------------
+
+- ObjectConf is deprecated for TargetConf. See [upgrade page](https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes). ([#882](https://github.com/facebookresearch/hydra/issues/882))
+- All plugins updated to use TargetConf. Be sure to update all your Hydra plugins ([#882](https://github.com/facebookresearch/hydra/issues/882))
+- Instantiated objects no longer have a params node in the conf. keys like hydra.launcher.params.foo are changed to hydra.launcher.foo. Update your configs and overrides if you were overriding such parameters. ([#882](https://github.com/facebookresearch/hydra/issues/882))
+
+Bug Fixes
+---------
+
+- Fixed parsing of two nested lists with whitespace between them: [[a], [b]] ([#836](https://github.com/facebookresearch/hydra/issues/836))
+
+Improved Documentation
+----------------------
+
+- New Extended command line syntax page ([#752](https://github.com/facebookresearch/hydra/issues/752))
+
+
 1.0.0rc2 (2020-07-18)
 =====================
 
