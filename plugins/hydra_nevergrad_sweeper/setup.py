@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc1", "nevergrad>=0.4.1.post4"],
+        install_requires=["hydra-core~=1.0.0rc3", "nevergrad>=0.4.1.post4"],
         include_package_data=True,
     )

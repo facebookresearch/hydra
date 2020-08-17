@@ -25,7 +25,7 @@ with open("README.md", "r") as fh:
         install_requires=[
             "cloudpickle",
             "fakeredis",
-            "hydra-core~=1.0.0rc1",
+            "hydra-core~=1.0.0rc3",
             "rq==1.4.3",
         ],
         include_package_data=True,
