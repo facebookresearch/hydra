@@ -1,8 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import cast
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING, OmegaConf
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -43,7 +42,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    print(cast(DictConfig, cfg).pretty())
+    print(OmegaConf.to_yaml(cfg))
 
 
 if __name__ == "__main__":

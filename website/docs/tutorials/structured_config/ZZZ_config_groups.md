@@ -28,9 +28,8 @@ class PostGreSQLConfig:
     port: int = 5432
     timeout: int = 10
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below
 @dataclass
-class Config(DictConfig):
+class Config:
     db: Any = MISSING
 
 cs = ConfigStore.instance()
@@ -40,7 +39,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 You can select the database from the command line:
 ```yaml

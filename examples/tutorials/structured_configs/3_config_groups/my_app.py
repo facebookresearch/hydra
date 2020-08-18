@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING, OmegaConf
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -23,9 +23,8 @@ class PostGreSQLConfig:
     timeout: int = 10
 
 
-# Config is extending DictConfig to allow type safe access to the pretty() function below
 @dataclass
-class Config(DictConfig):
+class Config:
     db: Any = MISSING
 
 
@@ -37,7 +36,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 
 
 if __name__ == "__main__":

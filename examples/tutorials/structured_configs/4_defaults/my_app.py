@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Any, List
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING, OmegaConf
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -34,7 +34,7 @@ defaults = [
 
 
 @dataclass
-class Config(DictConfig):
+class Config:
     # this is unfortunately verbose due to @dataclass limitations
     defaults: List[Any] = field(default_factory=lambda: defaults)
 
@@ -50,7 +50,7 @@ cs.store(name="config", node=Config)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 
 
 if __name__ == "__main__":

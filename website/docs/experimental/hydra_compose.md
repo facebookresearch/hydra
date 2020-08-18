@@ -37,18 +37,18 @@ When used as contexts, they are initializing Hydra within the context can be use
 ### Code example
 ```python
 from hydra.experimental import compose, initialize
-
+from omegaconf import OmegaConf
 
 if __name__ == "__main__":
     # context initialization
     with initialize(config_path="conf", job_name="test_app"):
         cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
-        print(cfg.pretty())
+        print(OmegaConf.to_yaml(cfg))
 
     # global initialization
     initialize(config_path="conf", job_name="test_app")
     cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 ### API Documentation
 

@@ -22,7 +22,7 @@ Python file: `my_app.py`
 ```python
 @hydra.main(config_path='config.yaml')
 def my_app(cfg):
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 `config.yaml` is loaded automatically when you run your application

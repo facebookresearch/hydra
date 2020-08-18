@@ -63,7 +63,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 # and it will be validated against the schema from the Config class
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 

@@ -10,12 +10,12 @@ We will slowly evolve this example to showcase more Hydra features.
 The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic).
 
 ```python title="my_app.py"
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 import hydra
 
 @hydra.main()
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
+        print(OmegaConf.to_yaml(cfg))
 
 if __name__ == "__main__":
     my_app()

@@ -13,11 +13,11 @@ import hydra
 from hydra.experimental import compose
 import ray
 import time
-
+from omegaconf import OmegaConf
 
 @ray.remote
 def train(overrides, cfg):
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
     time.sleep(5)
     return overrides, 0.9
 

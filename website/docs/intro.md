@@ -52,7 +52,7 @@ from omegaconf import DictConfig
 
 @hydra.main(config_name="config")
 def my_app(cfg : DictConfig) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 
 if __name__ == "__main__":
     my_app()
