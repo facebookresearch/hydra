@@ -39,12 +39,11 @@ def call(
     if isinstance(config, (dict, ObjectConf, TargetConf)):
         config = OmegaConf.structured(config)
 
-    assert isinstance(config, DictConfig)
-
     if OmegaConf.is_none(config):
         return None
     cls = "<unknown>"
     try:
+        assert isinstance(config, DictConfig)
         # make a copy to ensure we do not change the provided object
         config = copy.deepcopy(config)
         OmegaConf.set_readonly(config, False)
