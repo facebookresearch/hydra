@@ -122,7 +122,7 @@ def test_get_class(path: str, expected_type: type) -> None:
             {"_target_": "builtins.str", "object": 43}, {}, "43", id="builtin_types",
         ),
         # Check that none is instantiated correctly
-        pytest.param(None, {}, None, id="instantiate_none",),
+        pytest.param(None, {}, None, id="instantiate_none"),
         # passthrough
         pytest.param(
             {"_target_": "tests.AClass"},
@@ -141,13 +141,15 @@ def test_get_class(path: str, expected_type: type) -> None:
 def test_class_instantiate(
     input_conf: Any, passthrough: Dict[str, Any], expected: Any
 ) -> Any:
-    conf = OmegaConf.create(input_conf)
-    assert isinstance(conf, DictConfig)
-    conf_copy = copy.deepcopy(conf)
-    obj = utils.instantiate(conf, **passthrough)
-    assert obj == expected
-    # make sure config is not modified by instantiate
-    assert conf == conf_copy
+    def test(conf: Any) -> None:
+        conf_copy = copy.deepcopy(conf)
+        obj = utils.instantiate(conf, **passthrough)
+        assert obj == expected
+        # make sure config is not modified by instantiate
+        assert conf == conf_copy
+
+    test(input_conf)
+    test(OmegaConf.create(input_conf))
 
 
 @pytest.mark.parametrize(  # type: ignore
