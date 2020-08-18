@@ -67,7 +67,7 @@ def configure_log(
 def _save_config(cfg: DictConfig, filename: str, output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     with open(str(output_dir / filename), "w") as file:
-        file.write(cfg.pretty())
+        file.write(OmegaConf.to_yaml(cfg))
 
 
 def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:

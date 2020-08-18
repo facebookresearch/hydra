@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING, DictConfig, OmegaConf
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -36,7 +36,7 @@ cs.store(name="config", node=Config, provider="main")
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 
 
 if __name__ == "__main__":

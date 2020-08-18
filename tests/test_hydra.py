@@ -997,7 +997,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     cfg.foo = "bar"  # does not exist in the config
 omegaconf.errors.ConfigAttributeError: Key 'foo' is not in struct
 \tfull_key: foo
-\treference_type=Optional[Dict[Any, Any]]
+\treference_type=Optional[Dict[Union[str, Enum], Any]]
 \tobject_type=dict
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""

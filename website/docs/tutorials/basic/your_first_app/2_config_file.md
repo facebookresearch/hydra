@@ -18,7 +18,7 @@ Note that you should omit the `.yaml` extension.
 ```python title="my_app.py" {1}
 @hydra.main(config_name='config')
 def my_app(cfg):
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 `config.yaml` is loaded automatically when you run your application.

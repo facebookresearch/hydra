@@ -20,7 +20,7 @@ if __name__ == "__main__":
     )
 
     cfg = compose("config.yaml", overrides=["db=mysql", "db.user=me"])
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 ### API Documentation
 ```python

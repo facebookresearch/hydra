@@ -20,7 +20,7 @@ Python file: `my_app.py`
 ```python
 @hydra.main(config_path="conf")
 def my_app(cfg):
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 

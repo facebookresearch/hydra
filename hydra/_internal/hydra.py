@@ -189,12 +189,12 @@ class Hydra:
                     if package == "":
                         package = "_global_"
                     print(f"# @package {package}")
-                    sys.stdout.write(ret.pretty())
+                    sys.stdout.write(OmegaConf.to_yaml(ret))
                 else:
                     print(ret)
         else:
             print("# @package _global_")
-            sys.stdout.write(cfg.pretty())
+            sys.stdout.write(OmegaConf.to_yaml(cfg))
 
     @staticmethod
     def get_shell_to_plugin_map(
@@ -300,7 +300,7 @@ class Hydra:
             APP_CONFIG_GROUPS=self.format_config_groups(
                 lambda x: not x.startswith("hydra/")
             ),
-            CONFIG=cfg.pretty(resolve=False),
+            CONFIG=OmegaConf.to_yaml(cfg, resolve=False),
         )
         return help_text
 
@@ -546,4 +546,4 @@ class Hydra:
 
         log.debug("\n")
         self._log_header(header="Config", filler="*")
-        log.debug(cfg.pretty())
+        print(OmegaConf.to_yaml(cfg))

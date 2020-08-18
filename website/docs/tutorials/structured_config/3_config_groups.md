@@ -32,8 +32,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
 def my_app(cfg: Config) -> None:
-    # cast cfg to DictConfig to get type safe access to pretty()
-    print(cast(DictConfig, cfg).pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 You can select the database from the command line:

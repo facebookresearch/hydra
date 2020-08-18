@@ -3,7 +3,7 @@ import time
 from typing import List, Tuple
 
 import ray
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 import hydra
 from hydra.experimental import compose
@@ -11,7 +11,7 @@ from hydra.experimental import compose
 
 @ray.remote  # type: ignore
 def train(overrides: List[str], cfg: DictConfig) -> Tuple[List[str], float]:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
     time.sleep(5)
     return overrides, 0.9
 

@@ -19,7 +19,7 @@ Remember to specify the `config_name`:
 ```python
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(cfg.pretty())
+    print(OmegaConf.to_yaml(cfg))
 ```
 
 When you run the updated application, MySQL is loaded by default.
