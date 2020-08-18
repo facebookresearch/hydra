@@ -1,0 +1,3 @@
+# @package _group_
+name: imagenet
+path: /datasets/imagenet

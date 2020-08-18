@@ -1052,3 +1052,15 @@ def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
     ]
     result = get_run_output(cmd)
     assert result == "job_name: test, name: James Bond, age: 7, group: a"
+
+
+def test_defaults_pkg_with_dot(monkeypatch: Any, tmpdir: Path) -> None:
+    monkeypatch.chdir("tests/test_apps/defaults_pkg_with_dot")
+    cmd = [
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result = get_run_output(cmd)
+    assert OmegaConf.create(result) == {
+        "dataset": {"test": {"name": "imagenet", "path": "/datasets/imagenet"}}
+    }

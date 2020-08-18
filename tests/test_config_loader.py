@@ -2,7 +2,7 @@
 import os
 import re
 from dataclasses import dataclass
-from typing import Any, List
+from typing import Any, Dict, List
 
 import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
@@ -109,28 +109,37 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == {"foo": 10}
 
-    def test_load_changing_group_in_default(self, path: str) -> None:
+    @pytest.mark.parametrize(  # type: ignore
+        "override,expected",
+        [
+            ("group1@:xyz=file2", {"xyz": {"foo": 20}}),
+            ("group1@:a.b=file2", {"a": {"b": {"foo": 20}}}),
+        ],
+    )
+    def test_load_changing_group_in_default(
+        self, path: str, override: str, expected: Dict[Any, Any]
+    ) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
             config_name="optional-default",
-            overrides=["group1=file2"],
+            overrides=[override],
             strict=False,
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
             del cfg["hydra"]
-        assert cfg == {"foo": 20}
+        assert cfg == expected
 
     @pytest.mark.parametrize(  # type: ignore
         "overrides,expected",
         [
-            # pytest.param(
-            #     [],
-            #     {"group1_option1": True, "pkg1": {"group2_option1": True}},
-            #     id="no_overrides",
-            # ),
+            pytest.param(
+                [],
+                {"group1_option1": True, "pkg1": {"group2_option1": True}},
+                id="no_overrides",
+            ),
             pytest.param(
                 ["group1@:pkg2=option1"],
                 {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
