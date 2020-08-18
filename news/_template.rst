@@ -1,15 +1,12 @@
 {% for section in sections %}
-{% set underline = "-" %}
 {% if section %}
 {{section}}
-{{ underline * section|length }}{% set underline = "~" %}
 
 {% endif %}
 {% if sections[section] %}
 {% for category, val in definitions.items() if category in sections[section] and category != 'trivial' %}
 
-{{ definitions[category]['name'] }}
-{{ underline * definitions[category]['name']|length }}
+### {{ definitions[category]['name'] }}
 
 {% if definitions[category]['showcontent'] %}
 {% for text, values in sections[section][category]|dictsort(by='value') %}

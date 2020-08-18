@@ -1,1 +1,0 @@
-Fix instantiate to return None when None config is passed

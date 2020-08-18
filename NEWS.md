@@ -1,27 +1,36 @@
+1.0.0rc4 (2020-08-18)
+=====================
+
+### Features
+
+- Upgrade to OmegaConf 2.0.1rc12 ([#889](https://github.com/facebookresearch/hydra/issues/889))
+
+### Bug Fixes
+
+- Fix bug with bash autocompletion for the users who has `.` in their PATH environment variable ([#868](https://github.com/facebookresearch/hydra/issues/868))
+- Fix instantiate to return None when None config is passed ([#887](https://github.com/facebookresearch/hydra/issues/887))
+
+
 1.0.0rc3 (2020-08-17)
 =====================
 
-Features
---------
+### Features
 
 - Extended Override grammar supports range(),glob(),type casts,shuffle, sort and more. ([#752](https://github.com/facebookresearch/hydra/issues/752))
 - Add support for specifying an additional config dir in the command line ([#874](https://github.com/facebookresearch/hydra/issues/874))
 - Allow overriding of the `defaults` and `hydra` nodes in primary Structured Configs that does not mentioned `defaults` and `hydra`. ([#877](https://github.com/facebookresearch/hydra/issues/877))
 
-API Change (Renames, deprecations and removals)
------------------------------------------------
+### API Change (Renames, deprecations and removals)
 
 - ObjectConf is deprecated for TargetConf. See [upgrade page](https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes). ([#882](https://github.com/facebookresearch/hydra/issues/882))
 - All plugins updated to use TargetConf. Be sure to update all your Hydra plugins ([#882](https://github.com/facebookresearch/hydra/issues/882))
 - Instantiated objects no longer have a params node in the conf. keys like hydra.launcher.params.foo are changed to hydra.launcher.foo. Update your configs and overrides if you were overriding such parameters. ([#882](https://github.com/facebookresearch/hydra/issues/882))
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fixed parsing of two nested lists with whitespace between them: [[a], [b]] ([#836](https://github.com/facebookresearch/hydra/issues/836))
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - New Extended command line syntax page ([#752](https://github.com/facebookresearch/hydra/issues/752))
 
@@ -29,8 +38,7 @@ Improved Documentation
 1.0.0rc2 (2020-07-18)
 =====================
 
-Features
---------
+### Features
 
 - Introducing a DSL for the command line override syntax ([#797](https://github.com/facebookresearch/hydra/issues/797))
 - Sanitize exception messages by default, showing only interesting stack frames ([#646](https://github.com/facebookresearch/hydra/issues/646))
@@ -44,15 +52,13 @@ Features
 - Prints error when command line override looks like a sweep but --multirun is not specified ([#712](https://github.com/facebookresearch/hydra/issues/712))
 - Frozen Structured Configs are respected during composition command line overrides ([#724](https://github.com/facebookresearch/hydra/issues/724))
 
-API Change (Renames, deprecations and removals)
------------------------------------------------
+## API Change (Renames, deprecations and removals)
 
 - Hydra argparse flags are now consistently using dash-style. ([#661](https://github.com/facebookresearch/hydra/issues/661))
 - Restructure the configuration of the Submitit launcher ([#682](https://github.com/facebookresearch/hydra/issues/682))
 - Deprecated cls in favor of target in hydra.utils.{instantiate()/call{}} ([#721](https://github.com/facebookresearch/hydra/issues/721))
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Add hydra/py.typed to pip package to enable type checking in downstream projects ([#657](https://github.com/facebookresearch/hydra/issues/657))
 - Fix initilzation of Hydra in a module imported from a Jupyter Notebook ([#695](https://github.com/facebookresearch/hydra/issues/695))
@@ -62,14 +68,12 @@ Bug Fixes
 - Sweepers are now validating config composition before launching ([#775](https://github.com/facebookresearch/hydra/issues/775))
 - Save `.hydra/*.yaml` before task execution ([#678](https://github.com/facebookresearch/hydra/issues/678))
 
-Plugins
--------
+### Plugins
 
 - Add [Redis Queue](https://python-rq.org/) Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
 - Upgrade ax-platform used by Ax sweeper plugin to 0.1.13 or newer
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Add a unit testing example in the [Hydra example application](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/hydra_app_example/tests/test_example.py) ([#687](https://github.com/facebookresearch/hydra/issues/687))
 - New [Terminology](https://hydra.cc/docs/next/terminology) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
@@ -77,8 +81,7 @@ Improved Documentation
 - New [Advanced/Hydra in Unit Tests](https://hydra.cc/docs/next/advanced/unit_testing) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 - New [Advanced/Override Grammar/Basic](https://hydra.cc/docs/next/advanced/override_grammar/basic) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 
-Maintenance Changes
--------------------
+### Maintenance Changes
 
 - Integrate [yamllint](https://yamllint.readthedocs.io/) ([#693](https://github.com/facebookresearch/hydra/issues/693))
 - Upgrade to OmegaConf 2.0.1rc11 which solves multiple bugs ([#755](https://github.com/facebookresearch/hydra/issues/755))
@@ -88,8 +91,7 @@ Maintenance Changes
 ======================
 Hydra 1.0 is a major release introducing many new features and breaking some compatibility.
 
-Features
---------
+### Features
 - Upgrade to OmegaConf 2.0 ([Release notes](https://github.com/omry/omegaconf/releases/tag/2.0.0)) (#630)
 - Optional config type safety via Structured Configs (#629)
 - Improve command line and config composition error reporting (#349)
@@ -110,16 +112,14 @@ Features
 - Improve performance of plugin discovery and instantiation ([#489](https://github.com/facebookresearch/hydra/issues/489))
 - Modules whose name starts with "\_" are skipped during plugin discovery ([#494](https://github.com/facebookresearch/hydra/issues/494))
 
-Plugins
--------
+### Plugins
 - Add [Ax](https://ax.dev) Sweeper plugin ([Shagun Sodhani](https://shagunsodhani.com/))
 - Add [Nevergrad](https://github.com/facebookresearch/nevergrad) Sweeper plugin ([Jérémy Rapin](https://github.com/jrapin))
 - Add [Joblib](https://joblib.readthedocs.io/en/latest/) Launcher plugin ([Jan-Matthis](https://github.com/jan-matthis))
 - Add [Submitit](https://github.com/facebookincubator/submitit) Launcher plugin to launch jobs to SLURM clusters
 - Add [Fish](https://fishshell.com/) shell Tab Completion plugin ([Binsheng Liu](https://binshengliu.github.io/)) ([#549](https://github.com/facebookresearch/hydra/issues/549))
 
-API Change (Renames, deprecations and removals)
------------------------------------------------
+### API Change (Renames, deprecations and removals)
 - Drop support Python 2.7 and 3.5 ([#313](https://github.com/facebookresearch/hydra/issues/313))
 - hydra.main() now takes an additional optional config_name and composite-style config_path is deprecated ([#395](https://github.com/facebookresearch/hydra/issues/395))
 - Launcher API launch method now takes an additional initial_job_idx indicating the id of the first job in the batch ([#284](https://github.com/facebookresearch/hydra/issues/284))
@@ -138,8 +138,7 @@ API Change (Renames, deprecations and removals)
 - Removing an item from the defaults list by assigning null (db=null) is deprecated, use ~db instead ([#598](https://github.com/facebookresearch/hydra/issues/598))
 - Installed Hydra applications no longer need have an additional `entry()` function on the stack ([#92](https://github.com/facebookresearch/hydra/issues/92))
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fix a bug causing sys.exit() error code to not be propagated ([#351](https://github.com/facebookresearch/hydra/issues/351))
 - Shutdown logging subsystem aftter job finishes to ensure log files are flushed and closed ([#378](https://github.com/facebookresearch/hydra/issues/378))
@@ -149,8 +148,7 @@ Bug Fixes
 - Plugins are no longer imported twice during plugin discovery ([#482](https://github.com/facebookresearch/hydra/issues/482))
 - to_absolute_dir(path) now converts relative path to be relative to os.cwd() when used outside of Hydra ([#496](https://github.com/facebookresearch/hydra/issues/496))
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Working examples are provided for all Hydra plugins in [plugins/examples](https://github.com/facebookresearch/hydra/tree/master/plugins/examples) ([#253](https://github.com/facebookresearch/hydra/issues/253))
 - The basic tutorial was rewritten to reflect many changes ([#602](https://github.com/facebookresearch/hydra/issues/602))
@@ -160,13 +158,11 @@ Improved Documentation
 0.11.3 (2019-12-29)
 ===================
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Pin Hydra 0.11 to OmegaConf 1.4 to avoid breaking compatibility when OmegaConf 2.0 is released ([#334](https://github.com/facebookresearch/hydra/issues/334))
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Document a simple Ray example ([#317](https://github.com/facebookresearch/hydra/issues/317))
 
@@ -174,13 +170,11 @@ Improved Documentation
 0.11.2 (2019-12-04)
 ===================
 
-Features
---------
+### Features
 
 - Change website from cli.dev to hydra.cc (#314)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fixes --cfg command line flag not working (#305)
 
@@ -188,8 +182,7 @@ Bug Fixes
 0.11.0 (2019-11-19)
 ===================
 
-Features
---------
+### Features
 
 - Add hydra.experimental API for composing configuration on demand (hydra.experimental.compose) (#219)
 - Add hydra.utils.get_original_cwd() to access original working directory and hydra.utils.to_absolute_path() to convert a path to absolute path (#251)
@@ -199,20 +192,17 @@ Features
 - Experimental support for Jupyter notebooks via compose API (#281)
 - Allow configuring override_dirname via hydra.job.config.override_dirname to exclude specific keys or change separator characters (#95)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fix a bug that caused out of order composition when mixing config-groups with non-config-group in the defaults block (#261)
 - Allow '=' to be used in the value of an override, eg. foo=bar=10 (key foo, value bar=10). (#266)
 - Allow composing config files with dot in their name (foo.bar.yaml) (#271)
 
-Plugins
--------
+### Plugins
 
 - hydra-colorlog plugin adds colored log output.
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Document utils.get_original_cwd() and utils.to_absolute_path("foo") (#251)
 
@@ -220,13 +210,11 @@ Improved Documentation
 0.10.0 (2019-10-19)
 ===================
 
-Configuration structure changes
--------------------------------
+### Configuration structure changes
 
 - Change the default sweep subdir from ${hydra.job.num}_${hydra.job.id} to ${hydra.job.num} (#150)
 
-Features
---------
+### Features
 
 - App help now contains config groups and generated config
   App help can now be customized
@@ -234,15 +222,13 @@ Features
 - Simplify install and uninstall commands for tab completion (#200)
 - hydra.runtime.cwd now contains the original working directory the app was launched from (#244)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fix an error with tab completion that occurred when a TAB was pressed after two spaces (#203)
 - Fix a bug when sweeping over groups that are used in an interpolation in defaults (#206)
 - Fix tab completion for cases where app name looks like foo.par (#213)
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Describe news fragment types in more details in development/contributing (#150)
 - Examples dir now mirrors the structure of the website docs (#209)
@@ -251,13 +237,11 @@ Improved Documentation
 0.9.0 (2019-10-01)
 ==================
 
-Deprecations and Removals
--------------------------
+### Deprecations and Removals
 
 - Old demos directory was removed and a new tutorial directory as added (#167)
 
-Features
---------
+### Features
 
 - Make strict mode the default when a config file is specified directly (#150)
 - Replace --verbose with a standard override (hydra.verbose) (#161)
@@ -266,15 +250,13 @@ Features
 - Hydra is now hosted on https://cli.dev! (#75)
 - Move all Hydra configuration files to a subfolder (.hydra by default) under the output folder (#77)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fix a bug in tab completion of missing mandatory values. (#145)
 - Fix a bug with multirun overriding free config groups (not in defaults) when strict mode is enabled (#181)
 - Fix a bug that prevented sweeping over an unspecified ('???') default group (#187)
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Updated the primary tutorial on the web site and added a brand new tutorial directory (#58)
 - Documented debugging methods in website (#6)
@@ -283,20 +265,17 @@ Improved Documentation
 0.1.5 (2019-09-22)
 ==================
 
-Deprecations and Removals
--------------------------
+### Deprecations and Removals
 
 - Move FAIRTask, Submititit and FAIR-cluster-defaults plugins to fairinternal/hydra-fair-plugins repository (#138)
 - Remove Fairtask and Submitit example configs from demos as they are no longer needed (#146)
 
-Features
---------
+### Features
 
 - Created hydra-core pip package, Hydra can now installed with 'pip install hydra-core' (#143)
 - Finalized submitit support (#18)
 
-Plugins
--------
+### Plugins
 
 - Add default launcher config for Fairtask and Submitit launcher plugins
 
@@ -304,14 +283,12 @@ Plugins
 0.1.4 (2019-09-18)
 ==================
 
-Features
---------
+### Features
 
 - hydra.utils.instantiate() can now take an additional optional kwargs dictionary to pass to constructor of the instantiated object (#142)
 - Initial support for bash completion, see documentation for details (#8)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fixed Town Crier to generate correct links to issues in generated news file. (#122)
 - Fixed bug with overriding hydra defaults from user config file. (#123)
@@ -323,34 +300,29 @@ Bug Fixes
 0.1.3 (2019-09-02)
 ==================
 
-Configuration structure changes
--------------------------------
+### Configuration structure changes
 
 - Changed Hydra core defaults to be more appropriate for open source use. To get the FAIR cluster defaults install the fair_cluster plugin (#103)
 - Changed output directories default to group by day (output/DAY/TIME instead of output/DAY_TIME) (#121)
 
-Features
---------
+### Features
 
 - Added the ability to prevent a default from being merged it by assigning null to it (hydra/launcher=null) (#106)
 - Implemented Plugin discovery mechanism, this can be used to find all installed plugins that implement a specific interface (#119)
 - Implemented an API to for manipulating the config search path (#120)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Fixed config loading to properly support the use case in demos/8_specializing_config (#104)
 - Fixed error message when the user config contains defaults that is a mapping and not a list (#107)
 - Fixed config loading order to allow properly overriding Hydra config groups from user config (#115)
 
-Plugins
--------
+### Plugins
 
 - New plugin: fair_cluster
   Change Hydra defaults to be appropriate for the FAIR cluster
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Initial search path and plugins documentation (#103)
 
@@ -358,14 +330,12 @@ Improved Documentation
 0.1.2 (2019-08-26)
 ==================
 
-Deprecations and Removals
--------------------------
+### Deprecations and Removals
 
 - Hydra config groups were moved to the hydra/namespace (#101)
 - Removed support for .hydra directory, Hydra can be configured directly from the job config. (#91)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - Config loading rewrite fixed #88 (#88)
 
@@ -373,23 +343,20 @@ Bug Fixes
 0.1.1 (2019-08-22)
 ==================
 
-Deprecations and Removals
--------------------------
+### Deprecations and Removals
 
 - Move non-public APIs into hydra._internal:
     - Moved non-API code into hydra._interanl to flag it as private.
     - Moved plugin interfaces into hydra.plugins.
     - Moved code meant to be used by plugins to hydra.plugins.common. (#78)
 
-Features
---------
+### Features
 
 - Integrated towncrier to bring you this news! (#45)
 - Hydra is now compatible with Windows (#63)
 - Hydra apps can now be packaged and installed along with their configuration files. (#87)
 
-Bug Fixes
----------
+### Bug Fixes
 
 - It is now possible to use ${override_dirname} in the output directory of a local job (#31)
 - Override_dirname separator changed from : to =, for example: foo/a:10,b:10 => foo/a=10,b=10 (#63)
@@ -402,8 +369,7 @@ Bug Fixes
     - Improved integration-tests debuggability by switching hydra to debug logging in them
     - Added selective plugin testing to nox using env, for example PLUGINS=fairtask would only test fairtask. (#87)
 
-Improved Documentation
-----------------------
+### Improved Documentation
 
 - Improved the contributing docs (#45)
 - Documented Hydra app packaging under Deployment/Application packaging (#87)
