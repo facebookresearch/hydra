@@ -1,5 +1,6 @@
 1.0.0rc4 (2020-08-18)
 =====================
+Be aware that `cfg.pretty()` is now deprecated and you should use `OmegeConf.to_yaml(cfg)` instead.
 
 ### Features
 
