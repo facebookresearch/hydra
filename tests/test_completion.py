@@ -53,6 +53,21 @@ def create_config_loader() -> ConfigLoaderImpl:
     )
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="does not run on windows")
+class TestDotInPathCompletion:
+    def test_bash_completion_with_dot_in_path(self) -> None:
+        process = subprocess.Popen(
+            "tests/scripts/test_bash_dot_in_path.bash",
+            shell=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout, stderr = process.communicate()
+        assert stderr == b""
+        assert stdout == b"TRUE\n"
+        return
+
+
 base_completion_list: List[str] = [
     "dict.",
     "dict_prefix=",

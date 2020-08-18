@@ -1,0 +1,1 @@
+Fix bug with bash autocompletion for the users who has `.` in their PATH environment variable

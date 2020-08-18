@@ -33,7 +33,11 @@ class BashCompletion(CompletionPlugin):
         true
     fi
 
-    if ! [ -x "$(command -v $helper)" ]; then
+    EXECUTABLE=($(command -v $helper))
+    if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
+        printf "EXECUTABLE_FIRST='${EXECUTABLE[0]}'\\n"
+    fi
+    if ! [ -x "${EXECUTABLE[0]}" ]; then
         false
     fi
 
