@@ -66,12 +66,12 @@ $ python my_app.py
 db:
   driver: mysql
   pass: secret
-  user: omry
+  user: Abdul
 ```
 
 You can override values in the loaded config from the command line:
 ```yaml {4-5}
-$ python my_app.py db.user=root db.pass=1234
+$ python my_app.py db.user=root db.pass=1245
 db:
   driver: mysql
   user: root
