@@ -9,8 +9,6 @@ import os
 import re
 import sys
 from abc import abstractmethod
-from typing import Any, List, Optional, Tuple, Union
-
 from omegaconf import (
     Container,
     DictConfig,
@@ -18,6 +16,7 @@ from omegaconf import (
     OmegaConf,
     ListConfig,
 )
+from typing import Any, List, Optional, Tuple, Union
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -181,9 +180,7 @@ class CompletionPlugin(Plugin):
                 exact_match = True
         elif results_filter == ObjectType.GROUP:
             for match in all_matched_groups:
-                name = (
-                    "{}/{}".format(parent_group, match) if parent_group != "" else match
-                )
+                name = f"{parent_group}/{match}" if parent_group != "" else match
                 if name.startswith(word):
                     files = self.config_loader.get_group_options(
                         group_name=name, results_filter=ObjectType.CONFIG
@@ -211,8 +208,9 @@ class CompletionPlugin(Plugin):
             word = words[-1]
             words = words[0:-1]
 
+        run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
         config = self.config_loader.load_configuration(
-            config_name=config_name, overrides=words, run_mode=RunMode.RUN, strict=True
+            config_name=config_name, overrides=words, run_mode=run_mode, strict=True
         )
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)

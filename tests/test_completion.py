@@ -80,7 +80,7 @@ base_completion_list: List[str] = [
 ]
 
 
-@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 ", "-r "])
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
     "line,num_tabs,expected",
     [
@@ -131,15 +131,21 @@ base_completion_list: List[str] = [
         ("group=", 2, ["group=dict", "group=list"]),
         ("group=dict group.dict=", 2, ["group.dict=true"]),
         ("group=dict group=", 2, ["group=dict", "group=list"]),
+        ("group=dict group=", 2, ["group=dict", "group=list"]),
     ],
 )
-class TestCompletion:
+class TestRunCompletion:
     def test_completion_plugin(
         self, line_prefix: str, num_tabs: int, line: str, expected: List[str]
     ) -> None:
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
         ret = bc._query(config_name="config.yaml", line=line_prefix + line)
+        assert ret == expected
+
+        ret = bc._query(
+            config_name="config.yaml", line="--multirun " + line_prefix + line
+        )
         assert ret == expected
 
     @pytest.mark.skipif(  # type: ignore
@@ -197,6 +203,43 @@ class TestCompletion:
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
         subprocess.check_call(cmd)
+
+
+@pytest.mark.parametrize(
+    "line,expected",
+    [
+        pytest.param("", base_completion_list, id="empty_multirun"),
+        pytest.param("gro", ["group="], id="group_name"),
+        pytest.param("group", ["group="], id="group_eq"),
+        pytest.param("group=", ["group=dict", "group=list"], id="group_options"),
+        pytest.param("group=dic", ["group=dict"], id="group_option"),
+        pytest.param("group=dict", ["group=dict"], id="group_option"),
+        pytest.param("group=dict,list", [], id="multirun"),
+        pytest.param(
+            "group=dict dict.",
+            ["dict.key1=", "dict.key2=", "dict.key3="],
+            id="complete_node_from_group",
+        ),
+        pytest.param(
+            "group=dict,list list.", ["list.0=", "list.1=", "list.2="], id="multirun"
+        ),
+        # Not currently supported.
+        # This will actually take using the OverrideParser in some kind of partial parsing mode
+        # because during typing there will be many overrides that are malformed.
+        # Concretely group=dict, is not a valid override.
+        # We can't just naively split on , because of things like: key=[1,2],[3,4]
+        # Supporting this is likely a significant effort to extend the grammar to parse partial overrides
+        pytest.param(
+            "group=dict,", ["group=dict,list"], id="multirun", marks=pytest.mark.xfail
+        ),
+    ],
+)
+class TestMultirunCompletion:
+    def test_completion_plugin_multirun(self, line: str, expected: List[str]) -> None:
+        config_loader = create_config_loader()
+        bc = DefaultCompletionPlugin(config_loader)
+        ret = bc._query(config_name="config.yaml", line="--multirun " + line)
+        assert ret == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
