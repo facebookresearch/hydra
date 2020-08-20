@@ -140,7 +140,7 @@ def make_nevergrad_parameter(description: Any) -> Any:
     # revert config parsing
 
     if isinstance(description, (ListConfig, list)):
-        description = ",".join(description)
+        description = ",".join(str(x) for x in description)
     if isinstance(description, str):
         # cast to spec if possible
         try:

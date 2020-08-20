@@ -23,10 +23,12 @@ def test_discovery() -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "string,param_cls,value_cls",
+    "description,param_cls,value_cls",
     [
         ("blu,blublu", ng.p.Choice, str),
+        (["blu", "blublu"], ng.p.Choice, str),
         ("0,1,2", ng.p.TransitionChoice, float),
+        ([0, 1, 2], ng.p.TransitionChoice, float),
         ("int:0,1,2", ng.p.TransitionChoice, int),
         ("str:0,1,2", ng.p.Choice, str),
         ("0.0,12.0,2.0", ng.p.Choice, float),
@@ -36,8 +38,10 @@ def test_discovery() -> None:
         ("blublu", str, str),
     ],
 )
-def test_make_nevergrad_parameter(string: str, param_cls: Any, value_cls: Any) -> None:
-    param = core.make_nevergrad_parameter(string)
+def test_make_nevergrad_parameter(
+    description: Any, param_cls: Any, value_cls: Any
+) -> None:
+    param = core.make_nevergrad_parameter(description)
     assert isinstance(param, param_cls)
     if param_cls is not str:
         assert isinstance(param.value, value_cls)
