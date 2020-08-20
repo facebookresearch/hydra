@@ -1,0 +1,1 @@
+Update the signature of hydra.utils.instantiate() allow input configs of Any type

@@ -28,7 +28,7 @@ class PostgreSQLConnection(DBConnection):
         self.timeout = timeout
 
 @dataclass
-class DBConfig(TargetConf):
+class DBConfig:
     driver: str = MISSING
     host: str = "localhost"
     port: int = 80
@@ -47,7 +47,7 @@ class PostGreSQLConfig(DBConfig):
     timeout: int = 10
 
 @dataclass
-class Config(DictConfig):
+class Config:
     defaults: List[Any] = field(default_factory=lambda: [{"db": "mysql"}])
     db: DBConfig = MISSING
 
@@ -58,7 +58,7 @@ cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(config_name="config")
-def my_app(cfg: DictConfig) -> None:
+def my_app(cfg: Config) -> None:
     connection = instantiate(cfg.db)
     connection.connect()
 

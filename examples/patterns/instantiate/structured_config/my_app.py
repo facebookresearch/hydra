@@ -2,11 +2,10 @@
 from dataclasses import dataclass, field
 from typing import Any, List
 
-from omegaconf import MISSING, DictConfig
+from omegaconf import MISSING
 
 import hydra
 from hydra.core.config_store import ConfigStore
-from hydra.types import TargetConf
 from hydra.utils import instantiate
 
 
@@ -32,7 +31,7 @@ class PostgreSQLConnection(DBConnection):
 
 
 @dataclass
-class DBConfig(TargetConf):
+class DBConfig:
     driver: str = MISSING
     host: str = "localhost"
     port: int = 80
@@ -66,7 +65,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
 @hydra.main(config_name="config")
-def my_app(cfg: DictConfig) -> None:
+def my_app(cfg: Config) -> None:
     connection = instantiate(cfg.db)
     connection.connect()
 
