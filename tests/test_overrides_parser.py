@@ -49,6 +49,9 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param("abc", "abc", id="value:id"),
         pytest.param("abc123", "abc123", id="value:idint"),
         pytest.param("abc-123", "abc-123", id="value:id-int"),
+        pytest.param("a b c\t-\t1 2 3", "a b c\t-\t1 2 3", id="value:str-ws-in"),
+        pytest.param(" abc-123 ", "abc-123", id="value:str-ws-out"),
+        pytest.param("123abc", "123abc", id="value:str-int-id"),
         pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
         pytest.param(
             "${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"
@@ -1813,3 +1816,81 @@ def test_glob_filter(
 ) -> None:
     strings = ["the", "quick", "brown", "fox", "jumped", "under", "the", "lazy", "dog"]
     assert Glob(include=include, exclude=exclude).filter(strings) == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected_key,expected_value,expected_value_type",
+    [
+        pytest.param(
+            "key= \tvalue \t", "key", "value", ValueType.ELEMENT, id="leading+trailing",
+        ),
+        pytest.param(
+            "key=value \t 123",
+            "key",
+            "value \t 123",
+            ValueType.ELEMENT,
+            id="inside_primitive",
+        ),
+        pytest.param(
+            "key='  foo,bar\t'",
+            "key",
+            QuotedString(text="  foo,bar\t", quote=Quote.single),
+            ValueType.ELEMENT,
+            id="inside_quoted_value_outer",
+        ),
+        pytest.param(
+            "key='foo , \t\t bar'",
+            "key",
+            QuotedString(text="foo , \t\t bar", quote=Quote.single),
+            ValueType.ELEMENT,
+            id="inside_quoted_value_inter",
+        ),
+        pytest.param(
+            "key=1 ,  2,\t\t3",
+            "key",
+            ChoiceSweep(list=[1, 2, 3], simple_form=True),
+            ValueType.SIMPLE_CHOICE_SWEEP,
+            id="around_commas",
+        ),
+        pytest.param(
+            "key=choice\t(  1\t\t )",
+            "key",
+            ChoiceSweep(list=[1]),
+            ValueType.CHOICE_SWEEP,
+            id="function_one_arg",
+        ),
+        pytest.param(
+            "key=choice(\t\t1,   2, \t 3 )",
+            "key",
+            ChoiceSweep(list=[1, 2, 3]),
+            ValueType.CHOICE_SWEEP,
+            id="function_many_args",
+        ),
+        pytest.param(
+            "key=[1  ,\t2\t],[\t3\t   ,4  ]",
+            "key",
+            ChoiceSweep(list=[[1, 2], [3, 4]], simple_form=True),
+            ValueType.SIMPLE_CHOICE_SWEEP,
+            id="in_lists",
+        ),
+        pytest.param(
+            "key=str(\t  [  1,\t2  ]\t   )",
+            "key",
+            ["1", "2"],
+            ValueType.ELEMENT,
+            id="mixed",
+        ),
+    ],
+)
+def test_whitespaces(
+    value: str, expected_key: str, expected_value: Any, expected_value_type: ValueType,
+) -> None:
+    ret = parse_rule(value, "override")
+    expected = Override(
+        input_line=value,
+        type=OverrideType.CHANGE,
+        key_or_group=expected_key,
+        _value=expected_value,
+        value_type=expected_value_type,
+    )
+    assert ret == expected
