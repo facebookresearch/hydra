@@ -25,27 +25,27 @@ The rest are manipulating the config object.
 - Deleting from defaults: `~db`, `~db=mysql`
 
 ## Grammar
-Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.   
+Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.
 Below are the parser rules from grammar.
-You can see the full grammar [here](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/Override.g4).
+You can see the full grammar on GitHub
+([lexer](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideLexer.g4) and
+[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4))
 
-```antlr4
-grammar Override;
-
+```antlr4 title="OverrideParser.g4"
 override: (
-      key '=' value?                             // key=value, key= (for empty value)
-    | '~' key ('=' value?)?                      // ~key | ~key=value
-    | '+' key '=' value?                         // +key= | +key=value
+      key EQUAL value?                           // key=value, key= (for empty value)
+    | TILDE key (EQUAL value?)?                  // ~key | ~key=value
+    | PLUS key EQUAL value?                      // +key= | +key=value
 ) EOF;
 
 key :
-    packageOrGroup                              // key
-    | packageOrGroup '@' package (':' package)? // group@pkg | group@pkg1:pkg2
-    | packageOrGroup '@:' package               // group@:pkg2
+    packageOrGroup                               // key
+    | packageOrGroup AT package (COLON package)? // group@pkg | group@pkg1:pkg2
+    | packageOrGroup ATCOLON package             // group@:pkg2
 ;
 
-packageOrGroup: package | ID ('/' ID)+;         // db, hydra/launcher
-package: (ID | DOT_PATH);                       // db, hydra.launcher
+packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
+package: (ID | DOT_PATH);                        // db, hydra.launcher
 
 value: element | simpleChoiceSweep;
 
@@ -56,33 +56,34 @@ element:
     | function
 ;
 
-argName: ID '=';
-function: ID '('
-    (argName? element (',' argName? element )* )?
-')';
+argName: ID EQUAL;
+function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
 
 simpleChoiceSweep:
-      element (',' element)+                      // value1,value2,value3
+      element (COMMA element)+                   // value1,value2,value3
 ;
 
 primitive:
-      QUOTED_VALUE                                 // 'hello world', "hello world"
-    | (   ID                                        // foo_10
-        | NULL                                      // null, NULL
-        | INT                                       // 0, 10, -20, 1_000_000
-        | FLOAT                                     // 3.14, -20.0, 1e-1, -10e3
-        | BOOL                                      // true, TrUe, false, False
-        | DOT_PATH                                  // foo.bar
-        | INTERPOLATION                             // ${foo.bar}, ${env:USER,me}
-        | '/' | ':' | '-' | '\\'
-        | '+' | '.' | '$' | '*'
+      QUOTED_VALUE                               // 'hello world', "hello world"
+    | (   ID                                     // foo_10
+        | NULL                                   // null, NULL
+        | INT                                    // 0, 10, -20, 1_000_000
+        | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                   // true, TrUe, false, False
+        | DOT_PATH                               // foo.bar
+        | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, *
+        | COLON                                  // :
+        | WS                                     // whitespaces
     )+;
 
-listValue: '[' (element(',' element)*)? ']';        // [], [1,2,3], [a,b,[1,2]]
+listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
+    (element(COMMA element)*)?
+BRACKET_CLOSE;
 
-dictValue: '{'
-    (ID ':' element (',' ID ':' element)*)?         // {}, {a:10,b:20}
-'}';
+dictValue: BRACE_OPEN
+    (ID COLON element (COMMA ID COLON element)*)?  // {}, {a:10,b:20}
+BRACE_CLOSE;
 ```
 
 ## Elements
@@ -125,7 +126,22 @@ To include a single quote in a single quoted string escape it : `\'`. Same for d
 </div>
 </div>
 
- 
+### Whitespaces in unquoted values
+Unquoted Override values can contain non leading or trailing whitespaces.
+For example, `msg=hello world` is a legal override (key is `msg` and value is the string `hello world`).
+Normally, your shell will interpret values with whitespaces as being multiple parameters (`key=a b` would be interpreted as `key=a` and `b`).
+To prevent this you can quote them with a single quote. For example:
+
+```shell
+$ python my_app.py 'msg=hello world'
+```
+
+Note that trailing and leading whitespace are ignored, the above is equivalent to:
+
+```shell
+$ python my_app.py 'msg=    hello world    '
+```
+
 ### Primitives
 - `id` : oompa10, loompa_12
 - `null`: null
@@ -135,7 +151,7 @@ To include a single quote in a single quoted string escape it : `\'`. Same for d
 - `dot_path`: foo.bar
 - `interpolation`: ${foo.bar}, ${env:USER,me}
 
-Constants (null, true, false, inf, nan) are case insensitive. 
+Constants (null, true, false, inf, nan) are case insensitive.
 
 **IMPORTANT** Always single-quote interpolations in the shell.
 
@@ -154,7 +170,7 @@ nested={a:10,b:{c:30,d:40}}
 **IMPORTANT** Always single-quote overrides that contains dicts in the shell.
 
 ### Sweeper syntax
-A choice sweep is comma separated list with two or more elements: 
+A choice sweep is comma separated list with two or more elements:
 ```shell script
 key=a,b                       # Simple sweep: ChoiceSweep(a, b)
 key="a,b","c,d"               # Elements can be quoted strings, ChoiceSweep("a,b", "c,d")
@@ -167,7 +183,7 @@ More sweeping options are described in the [Extended Grammar page](extended).
 
 ### Functions
 Hydra supports several functions in the command line.
-See the [Extended Grammar page](extended) for more information. 
+See the [Extended Grammar page](extended) for more information.
 
 ## Working with your shell
 All shells interprets command line inputs and may change what is passed to the process.
@@ -180,7 +196,7 @@ $ echo 'foo_{a:10,b:20}' '${HOME}' '[b,c]*'
 foo_{a:10,b:20} ${HOME} [b,c]*
 ```
 
-If in doubt, quote a command line element with a **single quote** (`'`).  
+If in doubt, quote a command line element with a **single quote** (`'`).
 
 If you want to pass quotes to Hydra in a shell quoted string, it's best to pass double quotes.
 ```shell script
