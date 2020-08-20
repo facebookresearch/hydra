@@ -265,7 +265,6 @@ class ConfigLoaderImpl(ConfigLoader):
             )
             raise ConfigCompositionException(msg) from e
 
-        OmegaConf.set_struct(cfg.hydra, True)
         OmegaConf.set_struct(cfg, strict)
 
         # Apply command line overrides after enabling strict flag

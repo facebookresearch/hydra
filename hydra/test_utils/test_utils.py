@@ -15,7 +15,7 @@ from pathlib import Path
 from subprocess import PIPE, Popen, check_output
 from typing import Any, Dict, Iterator, List, Optional, Union
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import Container, DictConfig, OmegaConf
 from typing_extensions import Protocol
 
 from hydra._internal.hydra import Hydra
@@ -254,7 +254,7 @@ def _get_statements(indent: str, statements: Union[None, str, List[str]]) -> str
 
 def integration_test(
     tmpdir: Path,
-    task_config: DictConfig,
+    task_config: Any,
     overrides: List[str],
     prints: Union[str, List[str]],
     expected_outputs: Union[str, List[str]],
@@ -266,7 +266,7 @@ def integration_test(
     Path(tmpdir).mkdir(parents=True, exist_ok=True)
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
-    if isinstance(task_config, (list, dict)):
+    if not isinstance(task_config, Container):
         task_config = OmegaConf.create(task_config)
     if isinstance(prints, str):
         prints = [prints]
