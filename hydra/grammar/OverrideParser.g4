@@ -1,7 +1,8 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 // Regenerate parser by running 'python setup.py antlr' at project root.
-// If you make changes here be sure to update the documentation (and update the grammar in command_line_syntax.md)
+// If you make changes here be sure to update the documentation
+// (and update the grammar in website/docs/advanced/override_grammar/*.md)
 parser grammar OverrideParser;
 options {tokenVocab = OverrideLexer;}
 
@@ -30,9 +31,7 @@ element:
 ;
 
 argName: ID EQUAL;
-function: ID PARENTHESIS_OPEN
-    (argName? element (COMMA argName? element )* )?
-PARENTHESIS_CLOSE;
+function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
 
 simpleChoiceSweep:
       element (COMMA element)+                   // value1,value2,value3
@@ -47,8 +46,9 @@ primitive:
         | BOOL                                   // true, TrUe, false, False
         | DOT_PATH                               // foo.bar
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
-        | SLASH | COLON | DASH | BACKSLASH 
-        | PLUS | DOT | DOLLAR | STAR
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, *
+        | COLON                                  // :
+        | WS                                     // whitespaces
     )+;
 
 listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]

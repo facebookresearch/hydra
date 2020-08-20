@@ -367,7 +367,8 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "primitive",
             " ",
             pytest.raises(
-                HydraException, match=re.escape("mismatched input '<EOF>' expecting"),
+                HydraException,
+                match=re.escape("Trying to parse a primitive that is all whitespaces"),
             ),
             id="error:value:whitespace",
         ),
@@ -1490,19 +1491,19 @@ class CastResults:
             "interval(1.0, 2.0)",
             CastResults(
                 int=CastResults.error(
-                    "ValueError while evaluating 'int(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'int(interval(1.0, 2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 float=CastResults.error(
-                    "ValueError while evaluating 'float(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'float(interval(1.0, 2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 str=CastResults.error(
-                    "ValueError while evaluating 'str(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'str(interval(1.0, 2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
                 bool=CastResults.error(
-                    "ValueError while evaluating 'bool(interval(1.0,2.0))':"
+                    "ValueError while evaluating 'bool(interval(1.0, 2.0))':"
                     " Intervals are always interpreted as floating-point intervals and cannot be cast"
                 ),
             ),

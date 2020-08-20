@@ -28,6 +28,9 @@ except ModuleNotFoundError:
     )
     sys.exit(1)
 
+# The set of parser rules that require the lexer to be in lexical mode `KEY`.
+KEY_RULES = {"key", "override", "package", "packageOrGroup"}
+
 
 class OverridesParser:
     functions: Functions
@@ -49,6 +52,11 @@ class OverridesParser:
         lexer = OverrideLexer(istream)
         lexer.removeErrorListeners()
         lexer.addErrorListener(error_listener)
+
+        # Set the lexer in the correct mode to parse the desired rule.
+        lexer_mode = "KEY" if rule_name in KEY_RULES else "VALUE"
+        lexer.mode(getattr(OverrideLexer, lexer_mode))
+
         stream = CommonTokenStream(lexer)
         parser = OverrideParser(stream)
         parser.removeErrorListeners()
