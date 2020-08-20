@@ -3,9 +3,10 @@ import copy
 import logging.config
 import os
 from pathlib import Path
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable
 
 from omegaconf import DictConfig, OmegaConf
+from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import (
     _call_callable,
@@ -15,32 +16,38 @@ from hydra._internal.utils import (
 )
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
-from hydra.types import ObjectConf, TargetConf
+from hydra.types import TargetConf
 
 log = logging.getLogger(__name__)
 
 
-def call(
-    config: Union[ObjectConf, TargetConf, DictConfig, Dict[Any, Any]],
-    *args: Any,
-    **kwargs: Any,
-) -> Any:
+def call(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
-    :param config: An object describing what to call and what params to use
+    :param config: An object describing what to call and what params to use. needs to have a _target_ field.
     :param args: optional positional parameters pass-through
     :param kwargs: optional named parameters pass-through
     :return: the return value from the specified class or method
     """
-    if isinstance(config, TargetConf) and config._target_ == "???":
-        raise InstantiationException(
-            f"Missing _target_ value. Check that you specified it in '{type(config).__name__}'"
-            f" and that the type annotation is correct: '_target_: str = ...'"
-        )
-    if isinstance(config, (dict, ObjectConf, TargetConf)):
-        config = OmegaConf.structured(config)
 
     if OmegaConf.is_none(config):
         return None
+
+    if isinstance(config, TargetConf) and config._target_ == "???":
+        # Specific check to give a good warning about failure to annotate _target_ as a string.
+        raise InstantiationException(
+            f"Missing value for {type(config).__name__}._target_. Check that it's properly annotated and overridden."
+            f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
+        )
+
+    if (
+        isinstance(config, dict)
+        or OmegaConf.is_config(config)
+        or is_structured_config(config)
+    ):
+        config = OmegaConf.structured(config)
+    else:
+        raise HydraException(f"Unsupported config type : {type(config).__name__}")
+
     cls = "<unknown>"
     try:
         assert isinstance(config, DictConfig)

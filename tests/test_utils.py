@@ -427,10 +427,12 @@ def test_instantiate_adam_conf() -> None:
 
 
 def test_instantiate_bad_adam_conf() -> None:
+    msg = (
+        "Missing value for BadAdamConf._target_. Check that it's properly annotated and overridden."
+        "\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
+    )
     with pytest.raises(
-        InstantiationException,
-        match="Missing _target_ value. Check that you specified it in 'BadAdamConf'"
-        " and that the type annotation is correct: '_target_: str = ...'",
+        InstantiationException, match=re.escape(msg),
     ):
         utils.instantiate(BadAdamConf())
 
