@@ -18,7 +18,7 @@ conf/
     └── postgresql.yaml
 ```
 
-The Structurd Configs below are stored as db/mysql and db/postgresql. They will be used as schema
+The Structured Configs below are stored as db/mysql and db/postgresql. They will be used as schema
 when we load their corresponding config files.
 
 ```python title="my_app.py"
@@ -47,7 +47,7 @@ class PostGreSQLConfig(DBConfig):
 
 
 @dataclass
-class Config(DictConfig):
+class Config:
     # Note the lack of defaults list here.
     # In this example it comes from config.yaml
     db: DBConfig = MISSING

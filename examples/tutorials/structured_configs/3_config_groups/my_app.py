@@ -25,6 +25,7 @@ class PostGreSQLConfig:
 
 @dataclass
 class Config:
+    # Keep db omegaconf.MISSING. We will populate it using composition.
     db: Any = MISSING
 
 

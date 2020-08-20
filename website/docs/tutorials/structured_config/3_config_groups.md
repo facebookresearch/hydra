@@ -21,7 +21,7 @@ class PostGreSQLConfig:
 
 @dataclass
 class Config:
-    # Keep db MISSING. We will populate it using composition.
+    # Keep db omegaconf.MISSING. We will populate it using composition.
     db: Any = MISSING
 
 # Create config group `db` with options 'mysql' and 'postgreqsl'
@@ -34,6 +34,10 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
 ```
+
+:::info
+The *Config* class is **NOT** the Defaults list We will see the Defaults list in the next page.
+:::
 
 You can select the database from the command line:
 ```yaml

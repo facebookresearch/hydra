@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Any, List
 
-from omegaconf import MISSING, OmegaConf
+from omegaconf import MISSING, OmegaConf  # Do not confuse with dataclass.MISSING
 
 import hydra
 from hydra.core.config_store import ConfigStore

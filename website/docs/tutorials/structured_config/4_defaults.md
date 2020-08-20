@@ -11,6 +11,8 @@ NOTE: You can still place your defaults list in your primary (YAML) config file 
 </div><br/>
 
 ```python
+from omegaconf import MISSING, OmegaConf  # Do not confuse with dataclass.MISSING
+
 @dataclass
 class MySQLConfig:
     ...
@@ -25,7 +27,7 @@ defaults = [
 ]
 
 @dataclass
-class Config(DictConfig):
+class Config:
     # this is unfortunately verbose due to @dataclass limitations
     defaults: List[Any] = field(default_factory=lambda: defaults)
 
