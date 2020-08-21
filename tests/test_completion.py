@@ -170,7 +170,9 @@ class TestRunCompletion:
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
-        ret = subprocess.check_output(["which", "python"], env=os.environ)
+        ret = subprocess.check_output(
+            ["python", "-c", "import sys; print(sys.executable)"], env=os.environ
+        )
         assert os.path.realpath(ret.decode("utf-8").strip()) == os.path.realpath(
             sys.executable.strip()
         )
