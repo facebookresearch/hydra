@@ -306,6 +306,11 @@ def test_choice_sweep(value: str, expected: Any) -> None:
         pytest.param(
             "a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b",
         ),
+        pytest.param(
+            "${a},${b}",
+            ChoiceSweep(list=["${a}", "${b}"], simple_form=True),
+            id="${a},${a}",
+        ),
     ],
 )
 def test_simple_choice_sweep(value: str, expected: Any) -> None:
@@ -613,6 +618,12 @@ def test_key(value: str, expected: Any) -> None:
             QuotedString(text="false", quote=Quote.single),
             id="value:bool:quoted",
         ),
+        # interpolations:
+        pytest.param("${a}", "${a}", id="primitive:interpolation"),
+        pytest.param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
+        pytest.param("${foo:a}", "${foo:a}", id="primitive:interpolation"),
+        pytest.param("${foo:1,2,3}", "${foo:1,2,3}", id="primitive:interpolation"),
+        pytest.param("${foo:[1,2,3]}", "${foo:[1,2,3]}", id="primitive:interpolation"),
     ],
 )
 def test_primitive(value: str, expected: Any) -> None:
