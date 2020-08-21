@@ -37,7 +37,7 @@ Note the lack of quotes in the examples above. Despite some similarities, this i
 
 :::important
 Hydra supports very specific functions. If you would like to have
-another function added please file an issue and explain the use case.
+another function added, please file an issue and explain the use case.
 :::
 
 ## Sweeps
@@ -82,14 +82,14 @@ schema=glob([s*,w*],exclude=school)           # support,warehouse
 ```
 
 ### Range sweep
-Unlike Python, Hydra's range can be on both integer and floating point numbers.
-In both cases the range represents a discrete list of values.
+Unlike Python, Hydra's range can be used with both integer and floating-point numbers.
+In both cases, the range represents a discrete list of values.
 ```python title="Signature"
 def range(
     start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
 ) -> RangeSweep:
     """
-    Range is defines a sweeep over a range of integer or floating point values.
+    Range is defines a sweeep over a range of integer or floating-point values.
     For a positive step, the contents of a range r are determined by the formula
      r[i] = start + step*i where i >= 0 and r[i] < stop.
     For a negative step, the contents of the range are still determined by the formula
@@ -185,7 +185,7 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-You can cast values, and sweeps to `int`, `float`, `bool` or `str`.
+You can cast values and sweeps to `int`, `float`, `bool` or `str`.
 ```yaml title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
@@ -235,7 +235,7 @@ def bool(s: str) -> bool:
 </div>
 
 #### Casting lists
-Casting lists is resulting with a list where each element is recursively cast.
+Casting lists results in a list where each element is recursively cast.
 Failure to cast an element in the list fails the cast of the list.
 
 <div className="row">
@@ -269,8 +269,8 @@ def cast_int(value: Any):
 
 
 #### Casting dicts
-Casting dicts is resulting in a dict values are recursively cast but keys are unchanged.
-Failure to cast a value in the dict fails the cast of the dict.
+Casting dicts results in a dict where values are recursively cast, but keys are unchanged.
+Failure to cast a value in the dict fails the cast of the entire dict.
 
 <div className="row">
 <div className="col col--6">
@@ -302,7 +302,7 @@ def cast_int(value: Any):
 </div>
 
 #### Casting ranges
-Ranges can be cast to float or int, resulting in start,stop and step being cast and thus the range elements being cast.
+Ranges can be cast to float or int, resulting in start, stop and step being cast and thus the range elements being cast.
 
 <div className="row">
 <div className="col col--6">
@@ -368,7 +368,7 @@ Input are grouped by type.
 |       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	|
 |        [a,1]       	| error       	| error             	| [“a”,”1”]         	| [true,true]           	|
 |         {}         	| {}          	| {}                	| {}                	| {}                    	|
-|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| true                  	|
+|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	|
 |     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	|
 |    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	|
 |     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	|
