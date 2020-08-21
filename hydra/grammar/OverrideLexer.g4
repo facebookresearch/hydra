@@ -13,9 +13,7 @@ fragment DIGIT: [0-9_];
 // KEY //
 /////////
 
-mode KEY;
-
-EQUAL: '=' WS? -> mode(VALUE);
+EQUAL: '=' WS? -> mode(VALUE_MODE);
 
 TILDE: '~';
 PLUS: '+';
@@ -33,7 +31,7 @@ DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
 // VALUE //
 ///////////
 
-mode VALUE;
+mode VALUE_MODE;
 
 POPEN: WS? '(' WS?;  // whitespaces before to allow `func (x)`
 COMMA: WS? ',' WS?;
