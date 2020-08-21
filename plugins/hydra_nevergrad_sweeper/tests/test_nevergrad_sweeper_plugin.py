@@ -5,13 +5,17 @@ from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
-import pytest
+
+import pytest  # type: ignore
+
+from hydra.core.override_parser.types import Override
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import core
+from tests import get_override_sweep, get_override_element
 
 chdir_plugin_root()
 
@@ -23,25 +27,23 @@ def test_discovery() -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "description,param_cls,value_cls",
+    "override,param_cls,value_cls",
     [
-        ("blu,blublu", ng.p.Choice, str),
-        (["blu", "blublu"], ng.p.Choice, str),
-        ("0,1,2", ng.p.TransitionChoice, float),
-        ([0, 1, 2], ng.p.TransitionChoice, float),
-        ("int:0,1,2", ng.p.TransitionChoice, int),
-        ("str:0,1,2", ng.p.Choice, str),
-        ("0.0,12.0,2.0", ng.p.Choice, float),
-        ("int:1:12", ng.p.Scalar, int),
-        ("1:12", ng.p.Scalar, float),
-        ("log:0.01:1.0", ng.p.Log, float),
-        ("blublu", str, str),
+        # (get_override_sweep(["blu", "blublu"]), ng.p.Choice, str),
+        # (get_override_sweep([0, 1, 2]), ng.p.TransitionChoice, int),
+        # (get_override_element("int:0,1,2"), ng.p.Choice, int),
+        # (get_override_element("str:0,1,2"), ng.p.Choice, int),
+        # (get_override_sweep([0.0, 12.0, 2.0]), ng.p.Choice, float),
+        # (get_override_element("int:1:12"), ng.p.Scalar, int),
+        # (get_override_element("1:12"), ng.p.Scalar, float),
+        # (get_override_element("log:0.01:1.0"), ng.p.Log, float),
+        (get_override_element("blublu"), str, str),
     ],
 )
 def test_make_nevergrad_parameter(
-    description: Any, param_cls: Any, value_cls: Any
+    override: Override, param_cls: Any, value_cls: Any
 ) -> None:
-    param = core.make_nevergrad_parameter(description)
+    param = core.make_nevergrad_parameter(override)
     assert isinstance(param, param_cls)
     if param_cls is not str:
         assert isinstance(param.value, value_cls)

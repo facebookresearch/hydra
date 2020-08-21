@@ -15,6 +15,7 @@ hydra:
     # default parametrization of the search space
     parametrization:
       # either one or the other
+      # db=choice(mnist, cifar)
       db:
         - mnist
         - cifar
@@ -24,6 +25,7 @@ hydra:
         step: 2.0
         log: true
       # a linearly-distributed scalar between 0 and 1
+      # dropout=interval(0.0, 1.0)
       dropout:
         lower: 0.0
         upper: 1.0
@@ -31,6 +33,7 @@ hydra:
       # init and step parameters could also be provided,
       # by default init is set to the middle of the range
       # and step is set to a sixth of the range
+      # batch_size = range(4,16,2)
       batch_size:
         lower: 4
         upper: 16

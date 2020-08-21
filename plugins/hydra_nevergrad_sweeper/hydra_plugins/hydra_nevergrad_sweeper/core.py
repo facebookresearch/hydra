@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Override
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -59,8 +61,55 @@ class CommandlineSpec:
         if self.options is not None and self.log:
             raise ValueError("Inconsistent 'log' specification for choice parameter")
 
+    # @classmethod
+    # def parse_override(cls, override: Override) -> "CommandlineSpec":
+    #     """Parses a commandline argument string
+    #
+    #     Parameter
+    #     ---------
+    #     override: [Override, str]
+    #
+    #         Colon-separated  str can be appended to:
+    #          - cast to int/str/float (always defaults to float):
+    #            Eg: "float:0,4,10", "int:0:10"
+    #          - set log distribution for scalars
+    #            Eg: "int:log:4:1024"
+    #     """
+    #     pass
+    #     available_modifiers = {"log", "float", "int", "str"}
+    #
+    #     if override.is_choice_sweep():
+    #         vals = override.value().list
+    #         if len(vals) < 2:
+    #             raise ValueError( "At least 2 options are required" )
+    #         cast = type(vals[0]).__name__
+    #         if not cast in available_modifiers:
+    #             raise ValueError(f"Type {cast} not supported.")
+    #         return cls(options=vals, cast=cast)
+    #     elif not override.is_sweep_override():
+    #         val = override.value()
+    #         colon_split = val.split( ":" )
+    #         modifiers = set(
+    #             itertools.takewhile( available_modifiers.__contains__, colon_split )
+    #         )
+    #         remain = colon_split[len( modifiers ):]
+    #         casts = list( modifiers - {"log"} )
+    #         if len( remain ) not in {1, 2}:
+    #             raise ValueError(
+    #                 "Can't interpret non-speficiations: {}.\nthis needs to be "
+    #                 "either colon or coma-separated values".format( ":".join( remain ) )
+    #             )
+    #         if len( casts ) > 1:
+    #             raise ValueError( f"Inconsistent specifications: {casts}" )
+    #
+    #         # bounded argument
+    #         bounds: Tuple[float, float] = tuple( float( x ) for x in remain )  # type: ignore
+    #         cast = casts[0] if casts else "float"
+    #         return cls( bounds=bounds, cast=cast, log="log" in modifiers )
+
+
     @classmethod
-    def parse(cls, string: str) -> "CommandlineSpec":
+    def parse(cls, override: Override) -> "CommandlineSpec":
         """Parses a commandline argument string
 
         Parameter
@@ -77,36 +126,85 @@ class CommandlineSpec:
              - set log distribution for scalars
                Eg: "int:log:4:1024"
         """
+        # if string == "0:1":
+        #     import  pdb;pdb.set_trace()
+        #
+        # available_modifiers = {"log", "float", "int", "str"}
+        # colon_split = string.split(":")
+        # modifiers = set(
+        #     itertools.takewhile(available_modifiers.__contains__, colon_split)
+        # )
+        # remain = colon_split[len(modifiers) :]
+        # casts = list(modifiers - {"log"})
+        # if len(remain) not in {1, 2}:
+        #     raise ValueError(
+        #         "Can't interpret non-speficiations: {}.\nthis needs to be "
+        #         "either colon or coma-separated values".format(":".join(remain))
+        #     )
+        # if len(casts) > 1:
+        #     raise ValueError(f"Inconsistent specifications: {casts}")
+        # if len(remain) == 1:  # choice argument
+        #     cast = casts[0] if casts else "str"
+        #     options = remain[0].split(",")
+        #     if len(options) < 2:
+        #         raise ValueError("At least 2 options are required")
+        #     if not casts:
+        #         try:  # default to float if possible and no spec provided
+        #             _ = [float(x) for x in options]
+        #             cast = "float"
+        #         except ValueError:
+        #             pass
+        #     return cls(options=options, cast=cast)
+        # # bounded argument
+        # bounds: Tuple[float, float] = tuple(float(x) for x in remain)  # type: ignore
+        # cast = casts[0] if casts else "float"
+        # return cls(bounds=bounds, cast=cast, log="log" in modifiers)
         available_modifiers = {"log", "float", "int", "str"}
-        colon_split = string.split(":")
-        modifiers = set(
-            itertools.takewhile(available_modifiers.__contains__, colon_split)
-        )
-        remain = colon_split[len(modifiers) :]
-        casts = list(modifiers - {"log"})
-        if len(remain) not in {1, 2}:
-            raise ValueError(
-                "Can't interpret non-speficiations: {}.\nthis needs to be "
-                "either colon or coma-separated values".format(":".join(remain))
+
+        if override.is_choice_sweep():
+            vals = override.value().list
+            if len(vals) < 2:
+                raise ValueError( "At least 2 options are required" )
+            cast = type(vals[0]).__name__
+            if not cast in available_modifiers:
+                raise ValueError(f"Type {cast} not supported.")
+            return cls(options=[str(v) for v in vals], cast=cast)
+        elif not override.is_sweep_override():
+            print("IS NOT HERE ")
+            val = override.value()
+            print(f"VALUE {val}")
+            colon_split = val.split( ":" )
+            modifiers = set(
+                itertools.takewhile( available_modifiers.__contains__, colon_split )
             )
-        if len(casts) > 1:
-            raise ValueError(f"Inconsistent specifications: {casts}")
-        if len(remain) == 1:  # choice argument
-            cast = casts[0] if casts else "str"
-            options = remain[0].split(",")
-            if len(options) < 2:
-                raise ValueError("At least 2 options are required")
-            if not casts:
-                try:  # default to float if possible and no spec provided
-                    _ = [float(x) for x in options]
-                    cast = "float"
-                except ValueError:
-                    pass
-            return cls(options=options, cast=cast)
-        # bounded argument
-        bounds: Tuple[float, float] = tuple(float(x) for x in remain)  # type: ignore
-        cast = casts[0] if casts else "float"
-        return cls(bounds=bounds, cast=cast, log="log" in modifiers)
+            remain = colon_split[len( modifiers ):]
+            casts = list( modifiers - {"log"} )
+            if len( remain ) not in {1, 2}:
+                raise ValueError(
+                    "Can't interpret non-speficiations: {}.\nthis needs to be "
+                    "either colon or coma-separated values".format( ":".join( remain ) )
+                )
+            if len( casts ) > 1:
+                raise ValueError( f"Inconsistent specifications: {casts}" )
+            if len(remain) == 1:  # choice argument
+                print("REMAIN")
+                cast = casts[0] if casts else "str"
+                options = remain[0].split(",")
+                if len(options) < 2:
+                    raise ValueError("At least 2 options are required")
+                if not casts:
+                    try:  # default to float if possible and no spec provided
+                        _ = [float(x) for x in options]
+                        cast = "float"
+                    except ValueError:
+                        pass
+                print("RETURN HERE")
+                return cls(options=options, cast=cast)
+            # bounded argument
+            bounds: Tuple[float, float] = tuple( float( x ) for x in remain )  # type: ignore
+            cast = casts[0] if casts else "float"
+            return cls( bounds=bounds, cast=cast, log="log" in modifiers )
+
 
 
 # pylint: disable=too-many-branches
@@ -141,7 +239,7 @@ def make_nevergrad_parameter(description: Any) -> Any:
 
     if isinstance(description, (ListConfig, list)):
         description = ",".join(str(x) for x in description)
-    if isinstance(description, str):
+    if isinstance(description, Override):
         # cast to spec if possible
         try:
             description = CommandlineSpec.parse(description)
@@ -158,7 +256,9 @@ def make_nevergrad_parameter(description: Any) -> Any:
     # convert scalar config specs to dict
     # convert dict to Scalar parameter instance
     if isinstance(description, (dict, DictConfig)):
+        # this is uesful for YAML
         description = ScalarConfigSpec(**description)
+
     if isinstance(description, ScalarConfigSpec):
         init = ["init", "lower", "upper"]
         init_params = {x: getattr(description, x) for x in init}
@@ -178,6 +278,8 @@ def make_nevergrad_parameter(description: Any) -> Any:
                     "For integers with 6 or fewer values, use a choice instead"
                 )
         return scalar
+
+
     # choices
     if isinstance(description, CommandlineSpec):
         assert description.options is not None
@@ -186,9 +288,13 @@ def make_nevergrad_parameter(description: Any) -> Any:
         ordered = all(isinstance(c, (int, float)) for c in choices)
         ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))
         return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
+
     # constant
     if isinstance(description, (str, int, float)):
         return description
+
+    print("DESCIRPTION")
+    print(description)
     raise TypeError(f"Unexpected parameter configuration: {description}")
 
 
@@ -245,9 +351,51 @@ class NevergradSweeper(Sweeper):
         name = "maximization" if self.opt_config.maximize else "minimization"
         # Override the parametrization from commandline
         params = dict(self.parametrization)
-        for s in arguments:
-            key, value = s.split("=", 1)
-            params[key] = make_nevergrad_parameter(value)
+
+        parser = OverridesParser.create()
+        parsed = parser.parse_overrides(arguments)
+
+
+        lists = []
+        for override in parsed:
+            print("OVERRIDE")
+            print(override)
+            params[override.get_key_element()] = make_nevergrad_parameter(override)
+
+            # print("TYPE")
+            # print(type(override.type))
+            # override.is_choice_sweep()
+            # print(override)
+            # if override.is_sweep_override():
+            #     # Sweepers must manipulate only overrides that return true to is_sweep_override()
+            #     # This syntax is shared across all sweepers, so it may limiting.
+            #     # Sweeper must respect this though: failing to do so will cause all sorts of hard to debug issues.
+            #     # If you would like to propose an extension to the grammar (enabling new types of sweep overrides)
+            #     # Please file an issue and describe the use case and the proposed syntax.
+            #     # Be aware that syntax extensions are potentially breaking compatibility for existing users and the
+            #     # use case will be scrutinized heavily before the syntax is changed.
+            #     sweep_choices = override.sweep_string_iterator()
+            #     key = override.get_key_element()
+            #     sweep = [f"{key}={val}" for val in sweep_choices]
+            #     lists.append(sweep)
+            # else:
+            #     key = override.get_key_element()
+            #     value = override.get_value_element_as_str()
+            #     lists.append([f"{key}={value}"])
+
+
+
+        # for s in arguments:
+        #     key, value = s.split("=", 1)
+        #     print(f"ARGUMENTS {s}")
+        #     print(f"KEY = {key}, VALUE = {value}")
+        #     params[key] = make_nevergrad_parameter(value)
+        #     print(f"POST CHANGE KEY = {key}, VALUE = {params[key]}")
+        #
+        # print("PROD NOW")
+        # print(params)
+
+        # return
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
         parametrization.random_state.seed(self.opt_config.seed)
