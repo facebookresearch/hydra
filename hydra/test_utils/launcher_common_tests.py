@@ -208,6 +208,39 @@ class LauncherTestSuite:
                 assert job_ret.cfg == expected_conf[i]
                 verify_dir_outputs(job_ret, job_ret.overrides)
 
+    def test_sweep_with_custom_resolver(
+        self,
+        hydra_sweep_runner: TSweepRunner,
+        launcher_name: str,
+        overrides: List[str],
+        tmpdir: Path,
+    ) -> None:
+
+        overrides1 = ["hydra/launcher=" + launcher_name] + overrides
+
+        def task_func(c: DictConfig) -> Any:
+            return c.x
+
+        sweep = hydra_sweep_runner(
+            calling_file=None,
+            calling_module="hydra.test_utils.a_module",
+            task_function=task_func,
+            config_path="configs",
+            config_name="custom_resolver",
+            overrides=overrides1,
+            temp_dir=tmpdir,
+        )
+
+        def my_custom_resolver() -> Any:
+            return "foo"
+
+        OmegaConf.register_resolver("my_custom_resolver", my_custom_resolver)
+        with sweep:
+            assert sweep.returns is not None
+            job_ret = sweep.returns[0]
+            assert len(job_ret) == 1
+            assert job_ret[0].return_value == "foo"
+
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
 class BatchedSweeperTestSuite:
