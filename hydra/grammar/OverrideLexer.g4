@@ -68,10 +68,4 @@ QUOTED_VALUE:
       '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
     | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
 
-INTERPOLATION:
-    '${' (
-          // interpolation
-          (ID | DOT_PATH)
-          // custom interpolation
-        | ID ':' (ID | QUOTED_VALUE) (',' (ID | QUOTED_VALUE))*
-    ) '}';
+INTERPOLATION: '${' ~('}')+ '}';
