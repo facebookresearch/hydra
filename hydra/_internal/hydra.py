@@ -86,6 +86,7 @@ class Hydra:
         :param config_loader: config loader
         """
         setup_globals()
+
         self.config_loader = config_loader
         JobRuntime().set("name", task_name)
 

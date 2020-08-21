@@ -1,5 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from copy import deepcopy
 from typing import Any, Dict
+
+from omegaconf.basecontainer import BaseContainer
 
 
 class Singleton(type):
@@ -14,9 +17,13 @@ class Singleton(type):
         return cls(*args, **kwargs)
 
     @staticmethod
-    def get_state() -> Dict[type, "Singleton"]:
-        return Singleton._instances
+    def get_state() -> Any:
+        return {
+            "instances": Singleton._instances,
+            "omegaconf_resolvers": deepcopy(BaseContainer._resolvers),
+        }
 
     @staticmethod
-    def set_state(instances: Dict[type, "Singleton"]) -> None:
-        Singleton._instances = instances
+    def set_state(state: Any) -> None:
+        Singleton._instances = state["instances"]
+        BaseContainer._resolvers = deepcopy(state["omegaconf_resolvers"])

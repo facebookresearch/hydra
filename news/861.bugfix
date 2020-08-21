@@ -1,0 +1,1 @@
+Fix OmegaConf custom resolvers not being propagated to Sweepers properly
