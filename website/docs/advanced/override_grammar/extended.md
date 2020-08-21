@@ -185,7 +185,7 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-You can cast values and sweeps to `int`, `float`, `bool`, or `str`.
+You can cast values and sweeps to `int`, `float`, `bool` or `str`.
 ```yaml title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
@@ -302,7 +302,7 @@ def cast_int(value: Any):
 </div>
 
 #### Casting ranges
-Ranges can be cast to float or int, resulting in start, stop, and step being cast and thus the range elements being cast.
+Ranges can be cast to float or int, resulting in start, stop and step being cast and thus the range elements being cast.
 
 <div className="row">
 <div className="col col--6">
