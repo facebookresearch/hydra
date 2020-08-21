@@ -54,8 +54,8 @@ class OverridesParser:
         lexer.addErrorListener(error_listener)
 
         # Set the lexer in the correct mode to parse the desired rule.
-        lexer_mode = "KEY" if rule_name in KEY_RULES else "VALUE"
-        lexer.mode(getattr(OverrideLexer, lexer_mode))
+        if rule_name in KEY_RULES:
+            lexer.mode(getattr(OverrideLexer, "KEY"))
 
         stream = CommonTokenStream(lexer)
         parser = OverrideParser(stream)

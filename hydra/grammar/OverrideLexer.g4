@@ -9,32 +9,6 @@ lexer grammar OverrideLexer;
 // Re-usable fragments.
 fragment DIGIT: [0-9_];
 
-/////////
-// KEY //
-/////////
-
-mode KEY;
-
-EQUAL: '=' WS? -> mode(VALUE);
-
-TILDE: '~';
-PLUS: '+';
-AT: '@';
-COLON: ':';
-ATCOLON: '@:';
-SLASH: '/';
-
-fragment CHAR: [a-zA-Z];
-ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
-fragment LIST_INDEX: '0' | [1-9][0-9]*;
-DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
-
-///////////
-// VALUE //
-///////////
-
-mode VALUE;
-
 POPEN: WS? '(' WS?;  // whitespaces before to allow `func (x)`
 COMMA: WS? ',' WS?;
 PCLOSE: WS? ')';
@@ -77,3 +51,24 @@ INTERPOLATION:
           // custom interpolation
         | ID ':' (ID | QUOTED_VALUE) (',' (ID | QUOTED_VALUE))*
     ) '}';
+    
+
+/////////
+// KEY //
+/////////
+
+mode KEY;
+
+EQUAL: '=' WS? -> mode(DEFAULT_MODE);
+
+TILDE: '~';
+PLUS: '+';
+AT: '@';
+COLON: ':';
+ATCOLON: '@:';
+SLASH: '/';
+
+fragment CHAR: [a-zA-Z];
+ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
+fragment LIST_INDEX: '0' | [1-9][0-9]*;
+DOT_PATH: (ID | LIST_INDEX) ('.' (ID | LIST_INDEX))+;
