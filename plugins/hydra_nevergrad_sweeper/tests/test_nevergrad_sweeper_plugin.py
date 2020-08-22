@@ -29,14 +29,14 @@ def test_discovery() -> None:
 @pytest.mark.parametrize(  # type: ignore
     "override,param_cls,value_cls",
     [
-        # (get_override_sweep(["blu", "blublu"]), ng.p.Choice, str),
-        # (get_override_sweep([0, 1, 2]), ng.p.TransitionChoice, int),
-        # (get_override_element("int:0,1,2"), ng.p.Choice, int),
-        # (get_override_element("str:0,1,2"), ng.p.Choice, int),
-        # (get_override_sweep([0.0, 12.0, 2.0]), ng.p.Choice, float),
-        # (get_override_element("int:1:12"), ng.p.Scalar, int),
-        # (get_override_element("1:12"), ng.p.Scalar, float),
-        # (get_override_element("log:0.01:1.0"), ng.p.Log, float),
+        (get_override_sweep(["blu", "blublu"]), ng.p.Choice, str),
+        (get_override_sweep([0, 1, 2]), ng.p.TransitionChoice, int),
+        (get_override_element("int:0,1,2"), ng.p.TransitionChoice, int),
+        (get_override_element("str:0,1,2"), ng.p.Choice, str),
+        (get_override_sweep([0.0, 12.0, 2.0]), ng.p.Choice, float),
+        (get_override_element("int:1:12"), ng.p.Scalar, int),
+        (get_override_element("1:12"), ng.p.Scalar, float),
+        (get_override_element("log:0.01:1.0"), ng.p.Log, float),
         (get_override_element("blublu"), str, str),
     ],
 )
@@ -70,7 +70,11 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
+<<<<<<< HEAD
 @pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
+=======
+@pytest.mark.parametrize("with_commandline", (False,))  # type: ignore
+>>>>>>> Move nevergrad to the new parser
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
@@ -84,8 +88,13 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     ]
     if with_commandline:
         cmd += [
+<<<<<<< HEAD
             "db=mnist,cifar",
             "batch_size=4,8,12,16",
+=======
+            "db=[mnist,cifar]",
+            "batch_size=[4,8,12,16]",
+>>>>>>> Move nevergrad to the new parser
             "lr=log:0.001:1.0",
             "dropout=0:1",
         ]
