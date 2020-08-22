@@ -198,6 +198,7 @@ def test_composition_config_example(
         config_path="conf",
         config_name="config.yaml",
         overrides=["schema=school"],
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None
         assert task.job_ret.cfg == {

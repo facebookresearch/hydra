@@ -50,6 +50,7 @@ class TaskTestFunction:
         self.strict: Optional[bool] = None
         self.hydra: Optional[Hydra] = None
         self.job_ret: Optional[JobReturn] = None
+        self.configure_logging: bool = False
 
     def __call__(self, cfg: DictConfig) -> Any:
         """
@@ -78,17 +79,21 @@ class TaskTestFunction:
             assert overrides is not None
             overrides.append(f"hydra.run.dir={self.temp_dir}")
             self.job_ret = self.hydra.run(
-                config_name=config_name, task_function=self, overrides=overrides
+                config_name=config_name,
+                task_function=self,
+                overrides=overrides,
+                with_log_configuration=self.configure_logging,
             )
             return self
         finally:
             GlobalHydra().clear()
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        # release log file handles
-        logging.shutdown()
+        # release log file handles.
+        if self.configure_logging:
+            logging.shutdown()
         assert self.temp_dir is not None
-        shutil.rmtree(self.temp_dir)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
 
 class TTaskRunner(Protocol):
@@ -100,6 +105,7 @@ class TTaskRunner(Protocol):
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
         strict: Optional[bool] = None,
+        configure_logging: bool = False,
     ) -> TaskTestFunction:
         ...
 
@@ -123,6 +129,7 @@ class SweepTaskFunction:
         self.strict: Optional[bool] = None
         self.sweeps = None
         self.returns = None
+        self.configure_logging: bool = False
 
     def __call__(self, cfg: DictConfig) -> Any:
         """
@@ -156,7 +163,10 @@ class SweepTaskFunction:
             )
 
             self.returns = hydra_.multirun(
-                config_name=config_name, task_function=self, overrides=overrides
+                config_name=config_name,
+                task_function=self,
+                overrides=overrides,
+                with_log_configuration=self.configure_logging,
             )
         finally:
             GlobalHydra().clear()
@@ -164,8 +174,10 @@ class SweepTaskFunction:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        if self.configure_logging:
+            logging.shutdown()
         assert self.temp_dir is not None
-        shutil.rmtree(self.temp_dir)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
 
 class TSweepRunner(Protocol):

@@ -83,6 +83,7 @@ def run_job(
     task_function: TaskFunction,
     job_dir_key: str,
     job_subdir_key: Optional[str],
+    configure_logging: bool = True,
 ) -> "JobReturn":
     old_cwd = os.getcwd()
     working_dir = str(OmegaConf.select(config, job_dir_key))
@@ -108,7 +109,8 @@ def run_job(
         Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
         os.chdir(working_dir)
 
-        configure_log(config.hydra.job_logging, config.hydra.verbose)
+        if configure_logging:
+            configure_log(config.hydra.job_logging, config.hydra.verbose)
 
         hydra_cfg = OmegaConf.masked_copy(config, "hydra")
         assert isinstance(hydra_cfg, DictConfig)
@@ -123,9 +125,7 @@ def run_job(
             ret.return_value = task_function(task_cfg)
         ret.task_name = JobRuntime.instance().get("name")
 
-        # shut down logging to ensure job log files are closed.
-        # If logging is still required after run_job caller is responsible to re-initialize it.
-        logging.shutdown()
+        _flush_loggers()
 
         return ret
     finally:
@@ -240,3 +240,10 @@ def env_override(env: Dict[str, str]) -> Any:
                 del os.environ[key]
             else:
                 os.environ[key] = value
+
+
+def _flush_loggers() -> None:
+    # Python logging does not have an official API to flush all loggers.
+    # This will have to do.
+    for h_weak_ref in logging._handlerList:  # type: ignore
+        h_weak_ref().flush()

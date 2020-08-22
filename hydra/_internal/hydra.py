@@ -95,11 +95,12 @@ class Hydra:
         config_name: Optional[str],
         task_function: TaskFunction,
         overrides: List[str],
+        with_log_configuration: bool = True,
     ) -> JobReturn:
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
-            with_log_configuration=True,
+            with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
         )
         HydraConfig.instance().set_config(cfg)
@@ -108,6 +109,7 @@ class Hydra:
             task_function=task_function,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
+            configure_logging=with_log_configuration,
         )
 
     def multirun(
@@ -115,13 +117,14 @@ class Hydra:
         config_name: Optional[str],
         task_function: TaskFunction,
         overrides: List[str],
+        with_log_configuration: bool = True,
     ) -> Any:
         # Initial config is loaded without strict (individual job configs may have strict).
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
             strict=False,
-            with_log_configuration=True,
+            with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
         HydraConfig.instance().set_config(cfg)
