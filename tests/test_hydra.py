@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+from logging import getLogger
 from pathlib import Path
 from typing import Any, List, Optional, Set
 
@@ -135,6 +136,7 @@ def test_app_without_config__with_append(
         config_path="",
         config_name=None,
         overrides=["+abc=123", "+a.b=1", "+a.a=2"],
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             abc=123, a=dict(b=1, a=2)
@@ -160,6 +162,7 @@ def test_app_with_config_file__no_overrides(
         calling_module=calling_module,
         config_path=None,  # Testing legacy mode, both path and named are in config_path
         config_name="config.yaml",
+        configure_logging=True,
     )
     with task:
         assert task.job_ret is not None and task.job_ret.cfg == {
@@ -227,6 +230,7 @@ def test_app_with_config_path_backward_compatibility(
             calling_module=calling_module,
             config_path="conf/config.yaml",  # Testing legacy mode, both path and named are in config_path
             config_name=None,
+            configure_logging=True,
         )
         with task:
             assert task.job_ret is not None and task.job_ret.cfg == {
@@ -255,6 +259,7 @@ def test_app_with_config_file__with_overide(
         config_path=None,
         config_name="config.yaml",
         overrides=["dataset.path=/datasets/imagenet2"],
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet2")
@@ -280,6 +285,7 @@ def test_app_with_split_config(
         calling_module=calling_module,
         config_path=None,
         config_name="config.yaml",
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             dataset=dict(name="imagenet", path="/datasets/imagenet"),
@@ -332,6 +338,7 @@ def test_app_with_config_groups__override_all_configs(
         config_path="conf",
         config_name=None,
         overrides=["+optimizer=adam", "optimizer.lr=10"],
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             optimizer=dict(type="adam", lr=10, beta=0.01)
@@ -804,9 +811,9 @@ def test_config_name_and_path_overrides(
 @pytest.mark.parametrize(  # type: ignore
     "overrides, expected_files",
     [
-        ([], {"my_app.log", ".hydra"}),
-        (["hydra.output_subdir=foo"], {"my_app.log", "foo"}),
-        (["hydra.output_subdir=null"], {"my_app.log"}),
+        ([], {".hydra"}),
+        (["hydra.output_subdir=foo"], {"foo"}),
+        (["hydra.output_subdir=null"], set()),
     ],
 )
 @pytest.mark.parametrize(  # type: ignore
@@ -1074,3 +1081,21 @@ def test_defaults_pkg_with_dot(monkeypatch: Any, tmpdir: Path) -> None:
     assert OmegaConf.create(result) == {
         "dataset": {"test": {"name": "imagenet", "path": "/datasets/imagenet"}}
     }
+
+
+class TestTaskRunnerLogging:
+    def test_1(
+        self, hydra_restore_singletons: Any, hydra_task_runner: TTaskRunner
+    ) -> None:
+        with hydra_task_runner(
+            calling_file=None,
+            calling_module="tests.test_apps.app_without_config.my_app",
+            config_path=None,
+            config_name=None,
+        ):
+            logger = getLogger(__name__)
+            logger.info("test_1")
+
+    def test_2(self) -> None:
+        logger = getLogger(__name__)
+        logger.info("test_2")

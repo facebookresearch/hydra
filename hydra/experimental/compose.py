@@ -34,6 +34,7 @@ def compose(
         run_mode=RunMode.RUN,
         strict=strict,
         from_shell=False,
+        with_log_configuration=False,
     )
     assert isinstance(cfg, DictConfig)
 

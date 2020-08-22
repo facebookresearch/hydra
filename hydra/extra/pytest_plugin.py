@@ -34,6 +34,7 @@ def hydra_sweep_runner() -> Callable[
         Optional[List[str]],
         Optional[bool],
         Optional[Path],
+        bool,
     ],
     SweepTaskFunction,
 ]:
@@ -46,6 +47,7 @@ def hydra_sweep_runner() -> Callable[
         overrides: Optional[List[str]],
         strict: Optional[bool] = None,
         temp_dir: Optional[Path] = None,
+        configure_logging: bool = False,
     ) -> SweepTaskFunction:
         sweep = SweepTaskFunction()
         sweep.calling_file = calling_file
@@ -56,6 +58,7 @@ def hydra_sweep_runner() -> Callable[
         sweep.strict = strict
         sweep.overrides = overrides or []
         sweep.temp_dir = str(temp_dir)
+        sweep.configure_logging = configure_logging
         return sweep
 
     return _
@@ -70,6 +73,7 @@ def hydra_task_runner() -> Callable[
         Optional[str],
         Optional[List[str]],
         Optional[bool],
+        bool,
     ],
     TaskTestFunction,
 ]:
@@ -80,6 +84,7 @@ def hydra_task_runner() -> Callable[
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
         strict: Optional[bool] = None,
+        configure_logging: bool = False,
     ) -> TaskTestFunction:
         task = TaskTestFunction()
         task.overrides = overrides or []
@@ -88,6 +93,7 @@ def hydra_task_runner() -> Callable[
         task.calling_module = calling_module
         task.config_path = config_path
         task.strict = strict
+        task.configure_logging = configure_logging
         return task
 
     return _

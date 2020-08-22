@@ -25,6 +25,7 @@ def test_specializing_config_example(
         config_path="conf",
         config_name="config.yaml",
         overrides=["dataset=cifar10"],
+        configure_logging=True,
     ) as task:
         assert task.job_ret is not None and task.job_ret.cfg == dict(
             dataset=dict(name="cifar10", path="/datasets/cifar10"),
