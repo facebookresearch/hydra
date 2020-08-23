@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
 import logging.config
 import os
 from pathlib import Path
@@ -39,20 +38,22 @@ def call(config: Any, *args: Any, **kwargs: Any) -> Any:
             f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
         )
 
-    if (
+    if not (
         isinstance(config, dict)
         or OmegaConf.is_config(config)
         or is_structured_config(config)
     ):
-        config = OmegaConf.structured(config)
-    else:
         raise HydraException(f"Unsupported config type : {type(config).__name__}")
+
+    # make a copy to ensure we do not change the provided object
+    config_copy = OmegaConf.structured(config)
+    if OmegaConf.is_config(config):
+        config_copy._set_parent(config._get_parent())
+    config = config_copy
 
     cls = "<unknown>"
     try:
         assert isinstance(config, DictConfig)
-        # make a copy to ensure we do not change the provided object
-        config = copy.deepcopy(config)
         OmegaConf.set_readonly(config, False)
         OmegaConf.set_struct(config, False)
         cls = _get_cls_name(config)
