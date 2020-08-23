@@ -156,6 +156,34 @@ def test_class_instantiate(
     "input_conf, passthrough, expected",
     [
         pytest.param(
+            {
+                "node": {
+                    "_target_": "tests.AClass",
+                    "a": "${value}",
+                    "b": 20,
+                    "c": 30,
+                    "d": 40,
+                },
+                "value": 99,
+            },
+            {},
+            AClass(99, 20, 30, 40),
+            id="interpolation_into_parent",
+        ),
+    ],
+)
+def test_interpolation_accessing_parent(
+    input_conf: Any, passthrough: Dict[str, Any], expected: Any
+) -> Any:
+    input_conf = OmegaConf.create(input_conf)
+    obj = utils.instantiate(input_conf.node, **passthrough)
+    assert obj == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, passthrough, expected",
+    [
+        pytest.param(
             {"_target_": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
             {"a": 10},
             AClass(10, 200, 200, "default_value"),
@@ -164,115 +192,6 @@ def test_class_instantiate(
     ],
 )
 def test_instantiate_respects_default_value_with_params(
-    input_conf: Any, passthrough: Dict[str, Any], expected: Any, recwarn: Any
-) -> Any:
-    conf = OmegaConf.create(input_conf)
-    assert isinstance(conf, DictConfig)
-    conf_copy = copy.deepcopy(conf)
-    obj = utils.instantiate(conf, **passthrough)
-    assert obj == expected
-    # make sure config is not modified by instantiate
-    assert conf == conf_copy
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "input_conf, passthrough, expected",
-    [
-        pytest.param(
-            {"target": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}},
-            {},
-            AClass(10, 20, 30, 40),
-            id="class",
-        ),
-        pytest.param(
-            {"target": "tests.AClass", "params": {"b": 20, "c": 30}},
-            {"a": 10, "d": 40},
-            AClass(10, 20, 30, 40),
-            id="class+override",
-        ),
-        pytest.param(
-            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
-            {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 99, 40),
-            id="class+override+interpolation",
-        ),
-        # Check class and static methods
-        pytest.param(
-            {"target": "tests.ASubclass.class_method", "params": {"y": 10}},
-            {},
-            ASubclass(11),
-            id="class_method",
-        ),
-        pytest.param(
-            {"target": "tests.AClass.static_method", "params": {"z": 43}},
-            {},
-            43,
-            id="static_method",
-        ),
-        # Check nested types and static methods
-        pytest.param(
-            {"target": "tests.NestingClass", "params": {}},
-            {},
-            NestingClass(ASubclass(10)),
-            id="class_with_nested_class",
-        ),
-        pytest.param(
-            {"target": "tests.nesting.a.class_method", "params": {"y": 10}},
-            {},
-            ASubclass(11),
-            id="class_method_on_an_object_nested_in_a_global",
-        ),
-        pytest.param(
-            {"target": "tests.nesting.a.static_method", "params": {"z": 43}},
-            {},
-            43,
-            id="static_method_on_an_object_nested_in_a_global",
-        ),
-        # Check that default value is respected
-        pytest.param(
-            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
-            {"a": 10},
-            AClass(10, 200, 200, "default_value"),
-            id="instantiate_respects_default_value",
-        ),
-        pytest.param(
-            {"target": "tests.AClass", "params": {}},
-            {"a": 10, "b": 20, "c": 30},
-            AClass(10, 20, 30, "default_value"),
-            id="instantiate_respects_default_value",
-        ),
-        # call a function from a module
-        pytest.param(
-            {"target": "tests.module_function", "params": {"x": 43}},
-            {},
-            43,
-            id="call_function_in_module",
-        ),
-        # Check builtins
-        pytest.param(
-            {"target": "builtins.str", "params": {"object": 43}},
-            {},
-            "43",
-            id="builtin_types",
-        ),
-        # Check that none is instantiated correctly
-        pytest.param(None, {}, None, id="instantiate_none",),
-        # passthrough
-        pytest.param(
-            {"target": "tests.AClass"},
-            {"a": 10, "b": 20, "c": 30},
-            AClass(a=10, b=20, c=30),
-            id="passthrough",
-        ),
-        pytest.param(
-            {"target": "tests.AClass"},
-            {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
-            AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
-            id="passthrough",
-        ),
-    ],
-)
-def test_class_instantiate_deprecated(
     input_conf: Any, passthrough: Dict[str, Any], expected: Any, recwarn: Any
 ) -> Any:
     conf = OmegaConf.create(input_conf)
@@ -460,6 +379,120 @@ def test_pass_extra_variables_objectconf() -> None:
     assert recwarn[1].message.args[0] == target_field_deprecated.format(field="target")
 
 
+##################################
+# Testing deprecated logic below #
+##################################
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, passthrough, expected",
+    [
+        pytest.param(
+            {"target": "tests.AClass", "params": {"a": 10, "b": 20, "c": 30, "d": 40}},
+            {},
+            AClass(10, 20, 30, 40),
+            id="class",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 20, "c": 30}},
+            {"a": 10, "d": 40},
+            AClass(10, 20, 30, 40),
+            id="class+override",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
+            {"a": 10, "b": 99, "d": 40},
+            AClass(10, 99, 99, 40),
+            id="class+override+interpolation",
+        ),
+        # Check class and static methods
+        pytest.param(
+            {"target": "tests.ASubclass.class_method", "params": {"y": 10}},
+            {},
+            ASubclass(11),
+            id="class_method",
+        ),
+        pytest.param(
+            {"target": "tests.AClass.static_method", "params": {"z": 43}},
+            {},
+            43,
+            id="static_method",
+        ),
+        # Check nested types and static methods
+        pytest.param(
+            {"target": "tests.NestingClass", "params": {}},
+            {},
+            NestingClass(ASubclass(10)),
+            id="class_with_nested_class",
+        ),
+        pytest.param(
+            {"target": "tests.nesting.a.class_method", "params": {"y": 10}},
+            {},
+            ASubclass(11),
+            id="class_method_on_an_object_nested_in_a_global",
+        ),
+        pytest.param(
+            {"target": "tests.nesting.a.static_method", "params": {"z": 43}},
+            {},
+            43,
+            id="static_method_on_an_object_nested_in_a_global",
+        ),
+        # Check that default value is respected
+        pytest.param(
+            {"target": "tests.AClass", "params": {"b": 200, "c": "${params.b}"}},
+            {"a": 10},
+            AClass(10, 200, 200, "default_value"),
+            id="instantiate_respects_default_value",
+        ),
+        pytest.param(
+            {"target": "tests.AClass", "params": {}},
+            {"a": 10, "b": 20, "c": 30},
+            AClass(10, 20, 30, "default_value"),
+            id="instantiate_respects_default_value",
+        ),
+        # call a function from a module
+        pytest.param(
+            {"target": "tests.module_function", "params": {"x": 43}},
+            {},
+            43,
+            id="call_function_in_module",
+        ),
+        # Check builtins
+        pytest.param(
+            {"target": "builtins.str", "params": {"object": 43}},
+            {},
+            "43",
+            id="builtin_types",
+        ),
+        # Check that none is instantiated correctly
+        pytest.param(None, {}, None, id="instantiate_none",),
+        # passthrough
+        pytest.param(
+            {"target": "tests.AClass"},
+            {"a": 10, "b": 20, "c": 30},
+            AClass(a=10, b=20, c=30),
+            id="passthrough",
+        ),
+        pytest.param(
+            {"target": "tests.AClass"},
+            {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
+            AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
+            id="passthrough",
+        ),
+    ],
+)
+def test_class_instantiate_deprecated(
+    input_conf: Any, passthrough: Dict[str, Any], expected: Any, recwarn: Any
+) -> Any:
+    conf = OmegaConf.create(input_conf)
+    assert isinstance(conf, DictConfig)
+    conf_copy = copy.deepcopy(conf)
+    obj = utils.instantiate(conf, **passthrough)
+    assert obj == expected
+    # make sure config is not modified by instantiate
+    assert conf == conf_copy
+
+
 def test_object_conf_deprecated() -> None:
     with pytest.warns(UserWarning) as recwarn:
         cfg = ObjectConf(target="tests.AClass", params={"a": 10, "b": 20})
@@ -467,3 +500,28 @@ def test_object_conf_deprecated() -> None:
     assert ret == AClass(a=10, b=20, c=30)
     assert recwarn[0].message.args[0] == objectconf_depreacted
     assert recwarn[1].message.args[0] == target_field_deprecated.format(field="target")
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, passthrough, expected",
+    [
+        pytest.param(
+            {
+                "node": {
+                    "cls": "tests.AClass",
+                    "params": {"a": "${value}", "b": 20, "c": 30, "d": 40},
+                },
+                "value": 99,
+            },
+            {},
+            AClass(99, 20, 30, 40),
+            id="deprecated:interpolation_into_parent",
+        ),
+    ],
+)
+def test_interpolation_accessing_parent_deprecated(
+    input_conf: Any, passthrough: Dict[str, Any], expected: Any, recwarn: Any
+) -> Any:
+    input_conf = OmegaConf.create(input_conf)
+    obj = utils.instantiate(input_conf.node, **passthrough)
+    assert obj == expected
