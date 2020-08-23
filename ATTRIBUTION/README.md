@@ -7,6 +7,6 @@ Released under [Apache license](LICENSE-sample-namespace-packages)
 
 ## ANTLR
 Hydra is using ANTLR4 for various data parsing tasks.
-The ANTLR4 tool is included in the repository and in addition the repository contains code generated it. 
+The ANTLR4 tool is included in the repository and in addition the packaged library contains ANTLR4 generated code. 
 
 Released under [BSD and MIT licenses](LICENSE-antlr4)
