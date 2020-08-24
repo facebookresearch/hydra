@@ -175,7 +175,7 @@ A choice sweep is comma separated list with two or more elements:
 key=a,b                       # Simple sweep: ChoiceSweep(a, b)
 key="a,b","c,d"               # Elements can be quoted strings, ChoiceSweep("a,b", "c,d")
 key=[a,b],[c,d]               # Elements can be real lists, ChoiceSweep([a,b], [c,d])
-key={a:10, b:20},{c:30,d:40}  # and even dictionaries: ChoiceSweep([a,b], [c,d]){a,b}}
+key={a:10, b:20},{c:30,d:40}  # And dictionaries: ChoiceSweep({a:10, b:20}, {c:30,d:40})
 ```
 More sweeping options are described in the [Extended Grammar page](extended).
 
