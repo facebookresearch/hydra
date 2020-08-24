@@ -409,15 +409,6 @@ def create_fixed_param_from_element_override(override):
     elif isinstance(value, str):
         parameter_type = ParameterType.STRING
 
-    if (
-        isinstance(value.start, float)
-        or isinstance(value.stop, float)
-        or isinstance(value.end, float)
-    ):
-        parameter_type = ParameterType.FLOAT
-    else:
-        parameter_type = ParameterType.INT
-
     param = {
         "name": key,
         "type": "fixed",

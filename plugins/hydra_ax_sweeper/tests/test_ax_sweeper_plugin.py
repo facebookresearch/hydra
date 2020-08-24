@@ -174,8 +174,8 @@ def test_configuration_set_via_cmd_and_default_config(
             "hydra.sweeper.ax_config.max_trials=2",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=2",
             "quadratic=basic",
-            "quadratic.x=-5:-2",
-            "quadratic.y=-1:1",
+            "quadratic.x=interval(-5, -2)",
+            "quadratic.y=interval(-1, 1)",
         ],
     )
     with sweep:
@@ -214,8 +214,8 @@ def test_example_app(tmpdir: Path) -> None:
         "example/banana.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
-        "banana.x=-5:5",
-        "banana.y=-5:10.1",
+        "banana.x=interval(-5, 5)",
+        "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
@@ -223,9 +223,13 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1], type = float" in result
 
 
-@pytest.mark.parametrize("overrides", [[], ["quadratic.x_arg=-1:1"]])  # type: ignore
+@pytest.mark.parametrize(
+    "overrides",
+    [[], ["quadratic.x_arg=interval(-1, 1)"]],
+)
 def test_jobs_configured_via_nested_config(
-    hydra_sweep_runner: TSweepRunner, overrides: List[str]
+    hydra_sweep_runner,
+    overrides: list,
 ) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
