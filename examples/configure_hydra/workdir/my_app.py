@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
-import sys
 
 from omegaconf import DictConfig
 
@@ -13,4 +12,4 @@ def experiment(_cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(experiment())
+    experiment()

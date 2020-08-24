@@ -5,8 +5,11 @@ from typing import Any
 
 import pytest
 
-from hydra.test_utils.test_utils import chdir_hydra_root, run_with_error
-from tests import normalize_newlines
+from hydra.test_utils.test_utils import (
+    chdir_hydra_root,
+    normalize_newlines,
+    run_with_error,
+)
 
 chdir_hydra_root()
 

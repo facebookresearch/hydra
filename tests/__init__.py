@@ -5,15 +5,6 @@ from typing import Any, List, Tuple
 from hydra.types import TargetConf
 
 
-def normalize_newlines(s: str) -> str:
-    """
-    Normalizes new lines such they are comparable across different operating systems
-    :param s:
-    :return:
-    """
-    return s.replace("\r\n", "\n").replace("\r", "\n")
-
-
 def verify_hydra_pytest_plugin_not_installed() -> None:
     try:
         # This check can be removed in 1.1
@@ -92,8 +83,6 @@ nesting = NestingClass()
 
 class ClassWithMissingModule:
     def __init__(self) -> None:
-        import some_missing_module  # type: ignore # noqa: F401
-
         self.x = 1
 
 

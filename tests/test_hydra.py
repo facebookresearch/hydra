@@ -17,10 +17,10 @@ from hydra.test_utils.test_utils import (
     chdir_hydra_root,
     get_run_output,
     integration_test,
+    normalize_newlines,
     run_with_error,
     verify_dir_outputs,
 )
-from tests import normalize_newlines
 
 chdir_hydra_root()
 

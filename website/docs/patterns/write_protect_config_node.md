@@ -2,7 +2,7 @@
 id: write_protect_config_node
 title: Read-only config
 ---
-[![Example code](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/write_protect_config_node)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/write_protect_config_node)
 ### Problem
 Sometimes you want to prevent a config node from being changed accidentally.
 

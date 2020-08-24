@@ -1,6 +1,6 @@
 ---
 id: job
-sidebar_label: Job cnfiguration
+sidebar_label: Job Configuration
 hide_title: true
 ---
 ## Job configuration
@@ -8,8 +8,8 @@ hide_title: true
 The job configuration resides in `hydra.job`.
 The structure definition is below, the latest definition [in the code](https://github.com/facebookresearch/hydra/blob/master/hydra/conf/__init__.py).
 
+<details><summary>Expand definition</summary>
 
-## Definition
 ```python
 # job runtime information will be populated here
 @dataclass
@@ -50,12 +50,15 @@ class JobConf:
 
     config: JobConfig = JobConfig()
 ```
+</details>
 
 ## Documentation
 ### hydra.job.name
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/job_name)
+
 The job name is used by different things in Hydra, such as the log file name (`${hydra.job.name}.log`).
-It is automatically set with  Python file name (file: `train.py` -> name: `train`), but you can override
-it you specify it via the command line or your config file. 
+It is normally derived from the Python file name (file: `train.py` -> name: `train`).
+You can override it via the command line or your config file. 
 
 ### hydra.job.override_dirname
 This field is populated automatically using your command line arguments and is typically being used as a part of your 
@@ -128,7 +131,7 @@ in the sweep.
 hydra:
   job:
     env_set:
-      RANK: ${hydra.job.num}
+      RANK: ${hydra:job.num}
 ```
 
 ### hydra.job.env_copy

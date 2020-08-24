@@ -3,6 +3,8 @@ id: instantiate_objects_overview
 title: Overview
 sidebar_label: Overview
 ---
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate/objects)
+
 One of the best ways to drive different behavior in an application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior
 is determined by the actual object instance.

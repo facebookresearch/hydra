@@ -4,7 +4,9 @@ title: Structured Configs with instantiate
 sidebar_label: Structured Configs with instantiate
 ---
 
-Structured Configs can be used with `hydra.utils.instantiate()`. A complete, standalone example is available [here](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate/structured_config/my_app.py).
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate/structured_config/my_app.py)
+
+Structured Configs can be used with `hydra.utils.instantiate()`.
 
 #### Example usage
 

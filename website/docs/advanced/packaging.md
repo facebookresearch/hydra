@@ -3,6 +3,7 @@ id: app_packaging
 title: Application packaging
 sidebar_label: Application packaging 
 ---
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example)
 
 You can package your Hydra application along with its configuration.
 There is a working example [here](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example).

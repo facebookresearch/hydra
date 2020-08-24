@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 from contextlib import contextmanager
+from difflib import unified_diff
 from pathlib import Path
 from subprocess import PIPE, Popen, check_output
 from typing import Any, Dict, Iterator, List, Optional, Union
@@ -25,6 +26,7 @@ from hydra.core.utils import JobReturn, split_config_path
 from hydra.types import TaskFunction
 
 # CircleCI does not have the environment variable USER, breaking the tests.
+
 os.environ["USER"] = "test_user"
 
 log = logging.getLogger(__name__)
@@ -364,8 +366,39 @@ def run_with_error(cmd: Any, env: Any = None) -> str:
 def get_run_output(cmd: Any, env: Any = None) -> str:
     cmd = [sys.executable, "-Werror"] + cmd
     try:
-        return check_output(cmd, env=env).decode().rstrip()
+        ret = check_output(cmd, env=env).decode().rstrip()
+        return normalize_newlines(ret)
     except Exception as e:
         cmd = " ".join(cmd)
         print(f"==Error executing==\n{cmd}\n===================")
         raise e
+
+
+def normalize_newlines(s: str) -> str:
+    """
+    Normalizes new lines such they are comparable across different operating systems
+    :param s:
+    :return:
+    """
+    return s.replace("\r\n", "\n").replace("\r", "\n")
+
+
+def assert_text_same(actual: str, expected: str) -> None:
+    actual = normalize_newlines(actual)
+    expected = normalize_newlines(expected)
+    lines = [
+        line
+        for line in unified_diff(
+            a=actual.splitlines(),
+            b=expected.splitlines(),
+            fromfile="Expected",
+            tofile="Actual",
+        )
+    ]
+
+    diff = "\n".join(lines)
+    if len(diff) > 0:
+        print("------------ DIFF -------------")
+        print(diff)
+        print("-------------------------------")
+        assert False, "Mismatch between expected and actual text"

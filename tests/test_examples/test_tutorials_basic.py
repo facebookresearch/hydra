@@ -288,33 +288,6 @@ def test_advanced_ad_hoc_composition(
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
-def test_examples_configure_hydra_job_name_no_config_override(tmpdir: Path) -> None:
-    cmd = [
-        "examples/configure_hydra/job_name/no_config_file_override.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result = get_run_output(cmd)
-    assert result == "no_config_file_override"
-
-
-def test_examples_configure_hydra_job_name_with_config_override(tmpdir: Path) -> None:
-    cmd = [
-        "examples/configure_hydra/job_name/with_config_file_override.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result = get_run_output(cmd)
-    assert result == "name_from_config_file"
-
-
-def test_examples_configure_hydra_logging(tmpdir: Path) -> None:
-    cmd = [
-        "examples/configure_hydra/logging/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result = get_run_output(cmd)
-    assert result == "[INFO] - Info level message"
-
-
 def test_examples_using_the_config_object(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",

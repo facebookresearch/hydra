@@ -3,6 +3,8 @@ id: app_help
 title: Customizing Application's help
 sidebar_label: Customizing Application's help
 ---
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/custom_help)
+
 Hydra provides two different help options:
 * `--help` : Application specific help
 * `--hydra-help` Hydra specific help. 
@@ -10,64 +12,73 @@ Hydra provides two different help options:
 Example output of `--help`:
 ```text
 $ python my_app.py --help
-my_app is powered by Hydra.
+== AwesomeApp ==
 
+This is AwesomeApp!
+You can choose a db driver by appending
 == Configuration groups ==
-Compose your configuration from those groups (group=option)
+Compose your configuration from those groups (db=mysql)
 
 db: mysql, postgresql
 
 
 == Config ==
-Override anything in the config (foo.bar=value)
-
+This is the config generated for this run.
+You can override everything, for example:
+python my_app.py db.user=foo db.pass=bar
+-------
 db:
   driver: mysql
-  pass: secret
   user: omry
+  pass: secret
 
+-------
 
 Powered by Hydra (https://hydra.cc)
 Use --hydra-help to view Hydra specific help
 ```
 
-This output is generated from the following default configuration.
-You can override the individual components like `hydra.help.app_name` or the whole template. 
-```yaml
-hydra:
-  help:
-    # App name, override to match the name your app is known by
-    app_name: ${hydra.job.name}
+This output is generated from the following config group option (selected in `config.yaml` to be used by default): 
+```yaml title="hydra/help/my_app_help.yaml"
+# @package _group_
 
-    # Help header, customize to describe your app to your users
-    header: |
-      ${hydra.help.app_name} is powered by Hydra.
+# App name, override to match the name your app is known by
+app_name: AwesomeApp
 
-    footer: |
-      Powered by Hydra (https://hydra.cc)
-      Use --hydra-help to view Hydra specific help
+# Help header, customize to describe your app to your users
+header: == ${hydra.help.app_name} ==
 
-    # Basic Hydra flags:
-    #   $FLAGS_HELP
-    #
-    # Config groups, choose one of:
-    #   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
-    #   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
-    #
-    # Configuration generated with overrides:
-    #   $CONFIG : Generated config
-    #
-    template: |
-      ${hydra.help.header}
-      == Configuration groups ==
-      Compose your configuration from those groups (group=option)
+footer: |-
+  Powered by Hydra (https://hydra.cc)
+  Use --hydra-help to view Hydra specific help
 
-      $APP_CONFIG_GROUPS
+# Basic Hydra flags:
+#   $FLAGS_HELP
+#
+# Config groups, choose one of:
+#   $APP_CONFIG_GROUPS: All config groups that does not start with hydra/.
+#   $HYDRA_CONFIG_GROUPS: All the Hydra config groups (starts with hydra/)
+#
+# Configuration generated with overrides:
+#   $CONFIG : Generated config
+#
+template: |-
+  ${hydra.help.header}
 
-      == Config ==
-      Override anything in the config (foo.bar=value)
+  This is ${hydra.help.app_name}!
+  You can choose a db driver by appending
+  == Configuration groups ==
+  Compose your configuration from those groups (db=mysql)
 
-      $CONFIG
+  $APP_CONFIG_GROUPS
 
-      ${hydra.help.footer}
+  == Config ==
+  This is the config generated for this run.
+  You can override everything, for example:
+  python my_app.py db.user=foo db.pass=bar
+  -------
+  $CONFIG
+  -------
+  
+  ${hydra.help.footer}
 ```
