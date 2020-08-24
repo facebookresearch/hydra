@@ -191,20 +191,22 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic_y" in best_parameters
 
 
-def test_ax_logging(tmpdir: Path) -> None:
+@pytest.mark.parametrize(
+    "cmd_arg", ["polynomial.y=choice(-1, 0, 1)", "polynomial.y=range(-1, 2)"],
+)
+def test_ax_logging(tmpdir: Path, cmd_arg) -> None:
     cmd = [
         sys.executable,
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "polynomial.x=interval(-5, -2)",
-        "polynomial.y=choice(-1,1)",
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
-    ]
+    ] + [cmd_arg]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5, -2], type = int" in result
-    assert "polynomial.y: choice=[-1, 1], type = int" in result
+    assert "polynomial.y: choice=[-1, 0, 1], type = int" in result
     assert "polynomial.z: fixed=10, type = int" in result
 
 

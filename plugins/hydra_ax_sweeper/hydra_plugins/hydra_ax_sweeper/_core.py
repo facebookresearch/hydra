@@ -383,7 +383,7 @@ def create_choice_param_from_range_override(override):
     if (
         isinstance(value.start, float)
         or isinstance(value.stop, float)
-        or isinstance(value.end, float)
+        or isinstance(value.step, float)
     ):
         parameter_type = ParameterType.FLOAT
     else:
