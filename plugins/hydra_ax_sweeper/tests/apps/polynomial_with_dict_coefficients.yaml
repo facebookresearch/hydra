@@ -2,9 +2,7 @@ defaults:
   - hydra/sweeper: ax
 
 polynomial:
-  x: ???
-  y: ???
-  z: ???
+  coefficients: ???
 
 hydra:
   sweeper:
@@ -16,8 +14,3 @@ hydra:
 
       early_stop:
         max_epochs_without_improvement: 2
-
-      params:
-        polynomial_x:
-          type: range
-          bounds: [-1, 1]
