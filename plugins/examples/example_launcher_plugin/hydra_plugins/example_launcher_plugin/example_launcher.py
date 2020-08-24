@@ -6,6 +6,7 @@ from typing import Optional, Sequence
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
+from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
     configure_log,
@@ -99,6 +100,17 @@ class ExampleLauncher(Launcher):
                 sweep_config.hydra.job.id = f"job_id_for_{idx}"
                 sweep_config.hydra.job.num = idx
             HydraConfig.instance().set_config(sweep_config)
+
+            # If your launcher is executing code in a different process, it is important to restore
+            # the singleton state in the new process.
+            # To do this, you will likely need to serialize the singleton state along with the other
+            # parameters passed to the child process.
+
+            # happening on launcher process
+            state = Singleton.get_state()
+
+            # happening on the spawned process
+            Singleton.set_state(state)
 
             ret = run_job(
                 config=sweep_config,
