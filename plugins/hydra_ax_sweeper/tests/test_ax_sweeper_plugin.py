@@ -119,8 +119,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "quadratic.x=-5:-2",
-            "quadratic.y=-2:2",
+            "quadratic.x=interval(-5, -2)",
+            "quadratic.y=interval(-2, 2)",
             "params=basic",
         ],
     )
@@ -145,7 +145,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         overrides=[
             "hydra/launcher=basic",
             "hydra.sweeper.ax_config.max_trials=2",
-            "quadratic.x=-5:-2",
+            "quadratic.x=interval(-5, -2)",
             "params=basic",
         ],
     )
@@ -197,8 +197,8 @@ def test_ax_logging(tmpdir: Path) -> None:
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
-        "polynomial.x=-5:-2",
-        "polynomial.y=-1,1",
+        "polynomial.x=interval(-5, -2)",
+        "polynomial.y=choice(-1,1)",
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
