@@ -39,11 +39,10 @@ def cast_choice(value: ChoiceSweep, function: Callable[..., Any]) -> ChoiceSweep
     return ChoiceSweep(simple_form=value.simple_form, list=choices)
 
 
-def cast_interval(value: IntervalSweep, _function: Callable[..., Any]) -> None:
-    if isinstance(value, IntervalSweep):
-        raise ValueError(
-            "Intervals are always interpreted as floating-point intervals and cannot be cast"
-        )
+def cast_interval(value: IntervalSweep, function: Callable[..., Any]) -> IntervalSweep:
+    return IntervalSweep(
+        start=function(value.start), end=function(value.end), tags=copy(value.tags)
+    )
 
 
 def cast_range(value: RangeSweep, function: Callable[..., Any]) -> RangeSweep:
@@ -130,7 +129,7 @@ def cast_str(*args: CastType, value: Optional[CastType] = None) -> Any:
     elif isinstance(value, RangeSweep):
         return cast_range(value, cast_str)
     elif isinstance(value, IntervalSweep):
-        return cast_interval(value, cast_str)
+        raise ValueError("Intervals cannot be cast to str")
 
     assert isinstance(value, (int, float, bool, str))
     if isinstance(value, bool):
@@ -152,7 +151,7 @@ def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
     elif isinstance(value, RangeSweep):
         return cast_range(value, cast_bool)
     elif isinstance(value, IntervalSweep):
-        return cast_interval(value, cast_bool)
+        raise ValueError("Intervals cannot be cast to bool")
 
     if isinstance(value, str):
         if value.lower() == "false":
