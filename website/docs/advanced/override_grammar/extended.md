@@ -57,7 +57,7 @@ def choice(
 ```
 Choice sweeps are the most common sweeps.
 A choice sweep is described in one of two equivalent forms.
-```yaml title="Examples"
+```python title="Examples"
 db=mysql,postgresql          # a comma separated list of two or more elements. 
 db=choice(mysql,postgresql)  # choice
 ```
@@ -74,8 +74,8 @@ def glob(
     :return: A Glob object
     """
 ```
-Assuming the config group schema with the options school, support and warehouse:
-```yaml title="Examples"
+Assuming the config group **schema** with the options **school**, **support** and **warehouse**:
+```python title="Examples"
 schema=glob(*)                                # school,support,warehouse
 schema=glob(*,exclude=support)                # school,warehouse
 schema=glob([s*,w*],exclude=school)           # support,warehouse
@@ -97,7 +97,7 @@ def range(
     """
 ```
 
-```yaml title="Examples"
+```python title="Examples"
 num=range(0,5)                        # 0,1,2,3,4
 num=range(0,5,2)                      # 0,2,4
 num=range(0,10,3.3)                   # 0.0,3.3,6.6,9.9
@@ -114,22 +114,22 @@ def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     value=interval(x,y) is interpreted as x <= value < y
     """
 ```
-```yaml title="Examples"
-#interval(1.0,5.0)  # 1.0 <= x < 5.0
-#interval(1,5)      # 1.0 <= x < 5.0, auto-cast to floats
+```python title="Examples"
+interval(1.0,5.0)  # 1.0 <= x < 5.0
+interval(1,5)      # 1.0 <= x < 5.0, auto-cast to floats
 ```
 
 ### Tag
-Tagging allows advanced sweepers to add arbitrary metadata to a sweep.
+With tags you can add arbitrary metadata to a sweep. The metadata can be used by advanced sweepers.
 ```python title="Signature"
 def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep:
     """
     Tags the sweep with a list of string tags.
     """
 ```
-```yaml title="Examples"
-#tag(log,interval(0,1))          # 1.0 <= x < 1.0, tags=[log]
-#tag(foo,bar,interval(0,1))      # 1.0 <= x < 1.0, tags=[foo,bar]
+```python title="Examples"
+tag(log,interval(0,1))          # 1.0 <= x < 1.0, tags=[log]
+tag(foo,bar,interval(0,1))      # 1.0 <= x < 1.0, tags=[foo,bar]
 ```
 
 ## Reordering lists and sweeps
@@ -147,7 +147,7 @@ def sort(
     reverse=True reverses the order
     """
 ```
-```yaml title="Examples"
+```python title="Examples"
 # sweep
 sort(1,3,2)                         # ChoiceSweep(1,2,3)
 sort(1,3,2,reverse=true)            # ChoiceSweep(3,2,1)
@@ -177,7 +177,7 @@ def shuffle(
     Shuffle input list or sweep (does not support interval)
     """
 ```
-```yaml title="Examples"
+```python title="Examples"
 shuffle(a,b,c)                                       # shuffled a,b,c
 shuffle(choice(a,b,c)), shuffle(sweep=choice(a,b,c)) # shuffled choice(a,b,c)
 shuffle(range(1,10))                                 # shuffled range(1,10)
@@ -186,7 +186,7 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 
 ## Type casting
 You can cast values and sweeps to `int`, `float`, `bool` or `str`.
-```yaml title="Example"
+```python title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
 float(10)                  # 10.0 (float)
@@ -374,7 +374,8 @@ Input are grouped by type.
 |     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	|
 |     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| choice(true,true)     	|
 |     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| choice(true,true)     	|
-| interval(1.0, 2.0) 	| error       	| error             	| error             	| error                 	|
+| interval(1.0, 2.0) 	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
+| interval(1, 2)     	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
 |     range(1,10)    	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
 |  range(1.0, 10.0)  	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
 

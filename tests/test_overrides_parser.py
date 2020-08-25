@@ -1504,21 +1504,13 @@ class CastResults:
         pytest.param(
             "interval(1.0, 2.0)",
             CastResults(
-                int=CastResults.error(
-                    "ValueError while evaluating 'int(interval(1.0, 2.0))':"
-                    " Intervals are always interpreted as floating-point intervals and cannot be cast"
-                ),
-                float=CastResults.error(
-                    "ValueError while evaluating 'float(interval(1.0, 2.0))':"
-                    " Intervals are always interpreted as floating-point intervals and cannot be cast"
-                ),
+                int=IntervalSweep(start=1, end=2),
+                float=IntervalSweep(start=1.0, end=2.0),
                 str=CastResults.error(
-                    "ValueError while evaluating 'str(interval(1.0, 2.0))':"
-                    " Intervals are always interpreted as floating-point intervals and cannot be cast"
+                    "ValueError while evaluating 'str(interval(1.0, 2.0))': Intervals cannot be cast to str"
                 ),
                 bool=CastResults.error(
-                    "ValueError while evaluating 'bool(interval(1.0, 2.0))':"
-                    " Intervals are always interpreted as floating-point intervals and cannot be cast"
+                    "ValueError while evaluating 'bool(interval(1.0, 2.0))': Intervals cannot be cast to bool"
                 ),
             ),
             id="interval(1.0, 2.0)",
