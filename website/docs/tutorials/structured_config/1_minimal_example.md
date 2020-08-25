@@ -2,6 +2,7 @@
 id: minimal_example
 title: Minimal example
 ---
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/1_minimal/)
 
 There are four key elements in this example:
 - A `@dataclass` describes the application's configuration

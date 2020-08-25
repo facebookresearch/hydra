@@ -4,6 +4,8 @@ title: Logging
 sidebar_label: Logging
 ---
 
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/blob/master/examples/tutorials/basic/running_your_hydra_app/4_logging/my_app.py)
+
 People often do not use Python logging due to the setup cost.
 Hydra solves that by configuring the Python logging for you.
 

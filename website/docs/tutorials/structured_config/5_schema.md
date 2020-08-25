@@ -2,6 +2,8 @@
 id: schema
 title: Structured config schema
 ---
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/5_structured_config_schema/)
+
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
 When Hydra loads a configuration, it looks for a config with the same name in the `ConfigStore`.
 If found, it is used as the schema for the newly loaded config.
@@ -36,7 +38,6 @@ class MySQLConfig(DBConfig):
     user: str = MISSING
     password: str = MISSING
 
-
 @dataclass
 class PostGreSQLConfig(DBConfig):
     driver: str = "postgresql"
@@ -45,24 +46,23 @@ class PostGreSQLConfig(DBConfig):
     password: str = MISSING
     timeout: int = 10
 
-
 @dataclass
 class Config:
     # Note the lack of defaults list here.
     # In this example it comes from config.yaml
     db: DBConfig = MISSING
 
-
 cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
 cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
-# config here is config.yaml under the conf directory.
+# The config name matches both config.yaml under the conf directory and and the stored config
+# stored in the ConfigStore.
 # config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema from the Config class
 @hydra.main(config_path="conf", config_name="config")
-def my_app(cfg: DictConfig) -> None:
+def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
 ```
 
