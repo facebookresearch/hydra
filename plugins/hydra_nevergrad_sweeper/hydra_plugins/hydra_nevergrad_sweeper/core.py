@@ -1,12 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import itertools
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import Override
+from hydra.core.override_parser.types import Override, ValueType
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -26,43 +25,37 @@ class CommandlineSpec:
 
     Attributes
     ----------
-    bounds: Optional[Tuple[float, float]]
+    bounds: Optional[Tuple[Any, Any]]
         if present, this defines a bounded scalar between bounds[0]
         and bounds[1]
     options: Optional[List[Any]]
         if present, this defines the options/choices of a categorical
         variable
-    cast: str
-        the name of the variable type to cast it to ("int", "str"
-        or "float")
     log: bool
         for bounded scalars, whether it is log-distributed
-
+    step: float
+        if range sweep contains step in the tag, then return
     Note
     ----
     Exactly one of bounds or options must be provided
     """
 
-    bounds: Optional[Tuple[float, float]] = None
-    options: Optional[List[str]] = None
-    cast: str = "float"
+    bounds: Optional[Tuple[Any, Any]] = None
+    options: Optional[List[Any]] = None
+    step: Optional[float] = None
     log: bool = False
 
     def __post_init__(self) -> None:
         if not (self.bounds is None) ^ (self.options is None):
             raise ValueError("Exactly one of bounds or options must be specified")
         if self.bounds is not None:
-            if self.cast == "str":
-                raise ValueError(
-                    "Inconsistent specifications 'str' for bounded values."
-                )
             if self.bounds[0] > self.bounds[1]:
                 raise ValueError(f"Bounds must be ordered, but got {self.bounds}")
         if self.options is not None and self.log:
             raise ValueError("Inconsistent 'log' specification for choice parameter")
 
     @classmethod
-    def parse(cls, override: Union[Override, str]) -> "CommandlineSpec":
+    def parse(cls, override: Override) -> Any:
         """Parses a commandline argument string
 
         Parameter
@@ -79,53 +72,32 @@ class CommandlineSpec:
              - set log distribution for scalars
                Eg: "int:log:4:1024"
         """
-        available_modifiers = {"log", "float", "int", "str"}
-
-        if isinstance(override, Override) and override.is_choice_sweep():
-            vals = override.value().list
-            if len(vals) < 2:
+        if override.is_choice_sweep():
+            choices = override.value().list
+            if len(choices) < 2:
                 raise ValueError("At least 2 options are required")
-            cast = type(vals[0]).__name__
-            if cast not in available_modifiers:
-                raise ValueError(f"Type {cast} not supported.")
-            return cls(options=[str(v) for v in vals], cast=cast)
+            return cls(options=choices)
+        elif override.is_range_sweep():
+            available_tags = {"log", "step"}
+            # the only valid tag for now is log and step, is step is present, we will set the value
+            value = override.value()
+            tags = value.tags
+            for t in tags:
+                if t not in available_tags:
+                    raise ValueError(
+                        f"Tag {t} not supported. Only {available_tags} are supported."
+                    )
+            step = float(value.step) if "step" in tags else None
+            return cls(bounds=(value.start, value.stop), log=("log" in tags), step=step)
+        elif override.value_type == ValueType.ELEMENT:
+            return override.value()
         else:
-            val = override.value() if isinstance(override, Override) else override
-            colon_split = val.split(":")
-            modifiers = set(
-                itertools.takewhile(available_modifiers.__contains__, colon_split)
-            )
-            remain = colon_split[len(modifiers) :]
-            casts = list(modifiers - {"log"})
-            if len(remain) not in {1, 2}:
-                raise ValueError(
-                    "Can't interpret non-speficiations: {}.\nthis needs to be "
-                    "either colon or coma-separated values".format(":".join(remain))
-                )
-            if len(casts) > 1:
-                raise ValueError(f"Inconsistent specifications: {casts}")
-            if len(remain) == 1:  # choice argument
-                cast = casts[0] if casts else "str"
-                options = remain[0].split(",")
-                if len(options) < 2:
-                    raise ValueError("At least 2 options are required")
-                if not casts:
-                    try:  # default to float if possible and no spec provided
-                        _ = [float(x) for x in options]
-                        cast = "float"
-                    except ValueError:
-                        pass
-                return cls(options=options, cast=cast)
-            # bounded argument
-            bounds: Tuple[float, float] = tuple(float(x) for x in remain)  # type: ignore
-            cast = casts[0] if casts else "float"
-            return cls(bounds=bounds, cast=cast, log="log" in modifiers)
+            raise ValueError(f"Unsupported Override: {override}")
 
 
 # pylint: disable=too-many-branches
 def make_nevergrad_parameter(description: Any) -> Any:
     """Returns a Nevergrad parameter from a definition string or object.
-
     Parameters
     ----------
     description: Any
@@ -141,7 +113,6 @@ def make_nevergrad_parameter(description: Any) -> Any:
        * a config definition dict for scalar parameters, with potential fields
          init, lower, upper, step, log, integer
        * a list for option parameters defined in config file
-
     Returns
     -------
     Parameter or str
@@ -150,17 +121,7 @@ def make_nevergrad_parameter(description: Any) -> Any:
     # lazy initialization to avoid overhead when loading hydra
     import nevergrad as ng
 
-    # revert config parsing
-
-    if isinstance(description, (ListConfig, list)):
-<<<<<<< HEAD
-        description = ",".join(str(x) for x in description)
     if isinstance(description, Override):
-=======
-        # list is needed for parsing YAML
-        description = ",".join(description)
-    if isinstance(description, Override) or isinstance(description, str):
->>>>>>> Move nevergrad to the new parser
         # cast to spec if possible
         try:
             description = CommandlineSpec.parse(description)
@@ -172,14 +133,12 @@ def make_nevergrad_parameter(description: Any) -> Any:
             lower=description.bounds[0],
             upper=description.bounds[1],
             log=description.log,
-            integer=description.cast == "int",
+            integer=(type(description.bounds[0]).__name__ == "int"),
         )
     # convert scalar config specs to dict
     # convert dict to Scalar parameter instance
     if isinstance(description, (dict, DictConfig)):
-        # this is uesful for YAML
         description = ScalarConfigSpec(**description)
-
     if isinstance(description, ScalarConfigSpec):
         init = ["init", "lower", "upper"]
         init_params = {x: getattr(description, x) for x in init}
@@ -199,23 +158,20 @@ def make_nevergrad_parameter(description: Any) -> Any:
                     "For integers with 6 or fewer values, use a choice instead"
                 )
         return scalar
-
     # choices
-    if isinstance(description, CommandlineSpec):
-        assert description.options is not None
-        caster = {"int": int, "str": str, "float": float}[description.cast]
-        choices = [caster(x) for x in description.options]
+    if isinstance(description, (CommandlineSpec, ListConfig, list)):
+        choices = (
+            description.options
+            if isinstance(description, CommandlineSpec)
+            else [x for x in description]
+        )
+        assert choices is not None
         ordered = all(isinstance(c, (int, float)) for c in choices)
         ordered &= all(c0 <= c1 for c0, c1 in zip(choices[:-1], choices[1:]))
         return ng.p.TransitionChoice(choices) if ordered else ng.p.Choice(choices)
-
     # constant
     if isinstance(description, (str, int, float)):
         return description
-
-    if isinstance(description, Override):
-        return description.value()
-
     raise TypeError(f"Unexpected parameter configuration: {description}")
 
 
@@ -279,7 +235,6 @@ class NevergradSweeper(Sweeper):
         for override in parsed:
             params[override.get_key_element()] = make_nevergrad_parameter(override)
 
-        # return
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
         parametrization.random_state.seed(self.opt_config.seed)
