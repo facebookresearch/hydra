@@ -43,7 +43,11 @@
 #### Release candidate
 **Hydra 1.0** is the next major version of Hydra. It is currently a release candidate and is recommended for all users.
 Please report any issues.
-- [Release notes](https://github.com/facebookresearch/hydra/releases/tag/hydra-1.0.0rc1)
+- Release notes:
+  - [1.0.0rc1](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)
+  - [1.0.0rc2](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc2)
+  - [1.0.0rc3](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc3)
+  - [1.0.0rc4](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc4)
 - [Documentation](https://hydra.cc/docs/next/intro)
 - Installation : `pip install hydra-core --upgrade --pre`
 
