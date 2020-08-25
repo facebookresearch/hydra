@@ -9,8 +9,7 @@ This is optional at two levels:
 # Setup
 Configen requires config file per project. The config indicates what classes to generate code for, where to put
 the generated code etc.
-Configen will suggest creating a config on the first run.
-Upon first run it will suggest to create one:
+Configen will suggest creating a config on the first run:
 ```
 $ configen 
 [2020-08-14 12:06:11,359][configen.configen][ERROR] - Use --config-dir DIR.
