@@ -201,7 +201,7 @@ def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     A continuous interval between two floating point values.
     value=interval(x,y) is interpreted as x <= value < y
     """
-    return IntervalSweep(start=start, end=end)
+    return IntervalSweep(start=float(start), end=float(end))
 
 
 def tag(*args: Union[str, Union[Sweep]], sweep: Optional[Sweep] = None) -> Sweep:
