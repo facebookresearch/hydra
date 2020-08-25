@@ -363,7 +363,9 @@ def test_range_sweep(value: str, expected: Any) -> None:
     ],
 )
 def test_interval_sweep(value: str, expected: Any) -> None:
-    ret = parse_rule(value, "function")
+    ret: IntervalSweep = parse_rule(value, "function")
+    assert type(ret.start) is float
+    assert type(ret.end) is float
     assert ret == expected
 
 
@@ -1003,12 +1005,12 @@ def test_float_range(
         # interval
         pytest.param(
             "tag(interval(0,2))",
-            IntervalSweep(start=0, end=2),
+            IntervalSweep(start=0.0, end=2.0),
             id="tag(interval(0,2))",
         ),
         pytest.param(
             "tag(tag1,tag2,interval(0,2))",
-            IntervalSweep(start=0, end=2, tags={"tag1", "tag2"}),
+            IntervalSweep(start=0.0, end=2.0, tags={"tag1", "tag2"}),
             id="tag(tag1,tag2,interval(0,2))",
         ),
         # range

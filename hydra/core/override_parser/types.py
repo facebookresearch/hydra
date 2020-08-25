@@ -124,6 +124,23 @@ class IntervalSweep(Sweep):
     start: Optional[float] = None
     end: Optional[float] = None
 
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, IntervalSweep):
+            eq = (
+                self.start == other.start
+                and self.end == other.end
+                and self.tags == other.tags
+            )
+
+            st = type(self.start)
+            ost = type(other.start)
+            et = type(self.end)
+            ose = type(other.end)
+            eq = eq and st == ost and et is ose
+            return eq
+        else:
+            return NotImplemented
+
 
 # Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem
 # to support recursive type definitions.
