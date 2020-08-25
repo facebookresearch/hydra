@@ -1,5 +1,0 @@
-# @package _group_
-driver: mysql
-host: localhost
-user: test
-password: test
