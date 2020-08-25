@@ -2,6 +2,9 @@
 id: config_groups
 title: Grouping config files
 ---
+
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/4_config_groups)
+
 Suppose you want to benchmark your application on each of PostgreSQL and MySQL. To do this, use config groups. 
 
 A _**Config Group**_ is a named group with a set of valid options.

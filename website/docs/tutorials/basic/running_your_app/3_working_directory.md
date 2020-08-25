@@ -4,6 +4,8 @@ title: Output/Working directory
 sidebar_label: Output/Working directory
 ---
 
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/running_your_hydra_app/3_working_directory)
+
 Hydra solves the problem of your needing to specify a new output directory for each run, by 
 creating a directory for each run and executing your code within that working directory.
 

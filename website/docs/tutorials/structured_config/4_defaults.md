@@ -3,6 +3,8 @@ id: defaults
 title: Defaults
 ---
 
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/4_defaults/)
+
 You can define a defaults list in your primary Structured Config just like you can in your primary `config.yaml` file.
 The example below extends the previous example by adding a defaults list that will load `db=mysql` by default.
 

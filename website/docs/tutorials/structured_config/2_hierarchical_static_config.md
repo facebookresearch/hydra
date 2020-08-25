@@ -3,6 +3,8 @@ id: hierarchical_static_config
 title: A hierarchical static configuration
 ---
 
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/2_static_complex/)
+
 Dataclasses can be nested and then accessed via a common root.  The entire tree is type checked.
 
 ```python
