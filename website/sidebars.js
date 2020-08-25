@@ -110,7 +110,6 @@ module.exports = {
         "Experimental": [
             "experimental/intro",
             'experimental/compose_api',
-            'experimental/ray_example',
         ],
 
         'Development': [

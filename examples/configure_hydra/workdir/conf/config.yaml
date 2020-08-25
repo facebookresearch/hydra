@@ -1,6 +1,7 @@
+# @package _global_
 hydra:
   run:
-    dir: ./outputs/custom/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: run_dir
   sweep:
-    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}/${hydra.job.name}
-    subdir: ${hydra.job.num}_${hydra.job.override_dirname}
+    dir: sweep_dir
+    subdir: ${hydra.job.num}

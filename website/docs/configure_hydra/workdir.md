@@ -3,6 +3,9 @@ id: workdir
 title: Customizing working directory pattern
 sidebar_label: Customizing working directory pattern
 ---
+
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/workdir)
+
 Below are a few examples of customizing output directory patterns.
 
 Run output directory grouped by day:

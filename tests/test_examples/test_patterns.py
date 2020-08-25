@@ -66,7 +66,7 @@ def test_instantiate_structured_config_example(
     assert result == output
 
 
-def test_frozen(tmpdir: Any) -> None:
+def test_write_protect_config_node(tmpdir: Any) -> None:
     cmd = [
         "examples/patterns/write_protect_config_node/frozen.py",
         "hydra.run.dir=" + str(tmpdir),
