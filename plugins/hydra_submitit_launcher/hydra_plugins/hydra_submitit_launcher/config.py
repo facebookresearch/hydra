@@ -8,8 +8,7 @@ from hydra.types import TargetConf
 
 @dataclass
 class BaseTarget(TargetConf):
-    """Configuration shared by all executors
-    """
+    """Configuration shared by all executors"""
 
     submitit_folder: str = "${hydra.sweep.dir}/.submitit/%j"
 
@@ -31,10 +30,11 @@ class BaseTarget(TargetConf):
 
 @dataclass
 class SlurmTarget(BaseTarget):
-    """Slurm configuration overrides and specific parameters
-    """
+    """Slurm configuration overrides and specific parameters"""
 
-    _target_: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
+    _target_: str = (
+        "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
+    )
 
     # Params are used to configure sbatch, for more info check:
     # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
@@ -62,7 +62,9 @@ class SlurmTarget(BaseTarget):
 
 @dataclass
 class LocalTarget(BaseTarget):
-    _target_: str = "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher"
+    _target_: str = (
+        "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher"
+    )
 
 
 # finally, register two different choices:

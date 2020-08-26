@@ -388,7 +388,8 @@ class Hydra:
             "Provider".ljust(provider_pad), "Search path".ljust(search_path_pad)
         )
         self._log_header(
-            header=header, filler="-",
+            header=header,
+            filler="-",
         )
 
         for source in self.config_loader.get_sources():
@@ -467,7 +468,8 @@ class Hydra:
 
         header = f"| {box[0][0].ljust(padding[0])} | {box[0][1].ljust(padding[1])} |"
         self._log_header(
-            header=header, filler="-",
+            header=header,
+            filler="-",
         )
         del box[0]
 

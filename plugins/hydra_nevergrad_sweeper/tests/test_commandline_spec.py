@@ -18,7 +18,10 @@ from hydra_plugins.hydra_nevergrad_sweeper.core import CommandlineSpec
         ),
         ("int:1:12", CommandlineSpec(bounds=(1.0, 12.0), cast="int")),
         ("1:12", CommandlineSpec(bounds=(1.0, 12.0), cast="float")),
-        ("log:0.01:1.0", CommandlineSpec(bounds=(0.01, 1.0), cast="float", log=True),),
+        (
+            "log:0.01:1.0",
+            CommandlineSpec(bounds=(0.01, 1.0), cast="float", log=True),
+        ),
         (
             "int:log:1:1200",
             CommandlineSpec(bounds=(1.0, 1200.0), cast="int", log=True),

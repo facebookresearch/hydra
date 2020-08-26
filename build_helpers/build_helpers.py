@@ -194,7 +194,8 @@ class ANTLRCommand(Command):  # type: ignore
             ]
 
             self.announce(
-                f"Generating parser for Python3: {command}", level=distutils.log.INFO,
+                f"Generating parser for Python3: {command}",
+                level=distutils.log.INFO,
             )
 
             subprocess.check_call(command)

@@ -139,6 +139,7 @@ def test_object_conf_deprecated() -> None:
     )
 
     with pytest.warns(
-        expected_warning=UserWarning, match=msg,
+        expected_warning=UserWarning,
+        match=msg,
     ):
         ObjectConf(target="foo")

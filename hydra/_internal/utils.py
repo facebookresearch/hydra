@@ -439,7 +439,9 @@ def get_args_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--package", "-p", help="Config package to show",
+        "--package",
+        "-p",
+        help="Config package to show",
     )
 
     parser.add_argument("--run", "-r", action="store_true", help="Run a job")
@@ -478,7 +480,10 @@ def get_args_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--info", "-i", action="store_true", help="Print Hydra information",
+        "--info",
+        "-i",
+        action="store_true",
+        help="Print Hydra information",
     )
     return parser
 

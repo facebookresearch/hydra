@@ -175,8 +175,14 @@ def test_app_with_config_file__no_overrides(
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
-        ("tests/test_apps/app_with_cfg_groups_no_header/my_app.py", None,),
-        (None, "tests.test_apps.app_with_cfg_groups_no_header.my_app",),
+        (
+            "tests/test_apps/app_with_cfg_groups_no_header/my_app.py",
+            None,
+        ),
+        (
+            None,
+            "tests.test_apps.app_with_cfg_groups_no_header.my_app",
+        ),
     ],
 )
 def test_config_without_package_header_warnings(
@@ -649,7 +655,11 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     ],
 )
 def test_help(
-    tmpdir: Path, script: str, flag: str, overrides: List[str], expected: Any,
+    tmpdir: Path,
+    script: str,
+    flag: str,
+    overrides: List[str],
+    expected: Any,
 ) -> None:
     cmd = [script, "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(overrides)

@@ -33,7 +33,9 @@ def to_tuples_list(
     ],
 )
 def test_find_last_match(
-    input_list: List[Tuple[str, str]], reference: str, expected_idx: int,
+    input_list: List[Tuple[str, str]],
+    reference: str,
+    expected_idx: int,
 ) -> None:
     csp = create_search_path(input_list)
     assert (
@@ -52,7 +54,9 @@ def test_find_last_match(
     ],
 )
 def test_find_first_match(
-    input_list: List[Tuple[str, str]], reference: str, expected_idx: int,
+    input_list: List[Tuple[str, str]],
+    reference: str,
+    expected_idx: int,
 ) -> None:
     csp = create_search_path(input_list)
     sp = SearchPathQuery(reference[0], reference[1])

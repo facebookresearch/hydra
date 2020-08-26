@@ -204,7 +204,10 @@ class NevergradSweeper(Sweeper):
     """
 
     def __init__(
-        self, optim: OptimConf, version: int, parametrization: Optional[DictConfig],
+        self,
+        optim: OptimConf,
+        version: int,
+        parametrization: Optional[DictConfig],
     ):
         assert (
             version == 1

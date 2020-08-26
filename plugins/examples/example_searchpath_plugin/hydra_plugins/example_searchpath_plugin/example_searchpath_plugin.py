@@ -12,5 +12,6 @@ class ExampleSearchPathPlugin(SearchPathPlugin):
         # Remember to verify the config is packaged properly (build sdist and look inside,
         # and verify MANIFEST.in is correct).
         search_path.append(
-            provider="example-searchpath-plugin", path="pkg://arbitrary_package/conf",
+            provider="example-searchpath-plugin",
+            path="pkg://arbitrary_package/conf",
         )

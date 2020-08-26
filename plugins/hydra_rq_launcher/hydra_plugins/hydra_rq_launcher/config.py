@@ -55,5 +55,8 @@ class RQLauncherConf(TargetConf):
 
 
 ConfigStore.instance().store(
-    group="hydra/launcher", name="rq", node=RQLauncherConf, provider="rq_launcher",
+    group="hydra/launcher",
+    name="rq",
+    node=RQLauncherConf,
+    provider="rq_launcher",
 )

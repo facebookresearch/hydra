@@ -62,5 +62,8 @@ class AxSweeperConf(TargetConf):
 
 
 ConfigStore.instance().store(
-    group="hydra/sweeper", name="ax", node=AxSweeperConf, provider="ax_sweeper",
+    group="hydra/sweeper",
+    name="ax",
+    node=AxSweeperConf,
+    provider="ax_sweeper",
 )
