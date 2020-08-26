@@ -218,9 +218,7 @@ class CoreAxSweeper(Sweeper):
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self,
-        ax_client: AxClient,
-        batch_of_trials: BatchOfTrialType,
+        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None

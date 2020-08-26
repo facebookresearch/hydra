@@ -221,10 +221,7 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1], type = float" in result
 
 
-@pytest.mark.parametrize(
-    "overrides",
-    [[], ["quadratic.x_arg=-1:1"]],
-)
+@pytest.mark.parametrize("overrides", [[], ["quadratic.x_arg=-1:1"]])
 def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",

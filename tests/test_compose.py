@@ -157,10 +157,7 @@ def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
 )
 class TestComposeInits:
     def test_initialize_ctx(
-        self,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_file: str, overrides: List[str], expected: Any
     ) -> None:
         with initialize(config_path="../examples/jupyter_notebooks/cloud_app/conf"):
             ret = compose(config_file, overrides)
@@ -227,8 +224,7 @@ def test_jobname_override_initialize_ctx(
     hydra_restore_singletons: Any, job_name: Optional[str], expected: str
 ) -> None:
     with initialize(
-        config_path="../examples/jupyter_notebooks/cloud_app/conf",
-        job_name=job_name,
+        config_path="../examples/jupyter_notebooks/cloud_app/conf", job_name=job_name
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == expected

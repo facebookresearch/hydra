@@ -87,9 +87,7 @@ def test_element(value: str, expected: Any) -> None:
             "1,2,3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int"
         ),
         pytest.param(
-            "1, 2, 3",
-            ChoiceSweep(list=[1, 2, 3], simple_form=True),
-            id="sweep:int_ws",
+            "1, 2, 3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int_ws"
         ),
         pytest.param(
             "${a}, ${b}, ${c}",
@@ -203,11 +201,7 @@ def test_list_value(value: str, expected: Any) -> None:
     [
         # list
         pytest.param("x=shuffle([1,2,3])", [1, 2, 3], id="shuffle:list"),
-        pytest.param(
-            "x=shuffle(list=[1,2,3])",
-            [1, 2, 3],
-            id="shuffle:list",
-        ),
+        pytest.param("x=shuffle(list=[1,2,3])", [1, 2, 3], id="shuffle:list"),
         # choice
         pytest.param(
             "x=shuffle(1,2,3)",
@@ -280,25 +274,17 @@ def test_dict_value(value: str, expected: Any) -> None:
     [
         pytest.param("choice(a)", ChoiceSweep(list=["a"]), id="sweep:choice(a)"),
         pytest.param(
-            "choice(a,b)",
-            ChoiceSweep(list=["a", "b"]),
-            id="sweep:choice(a,b)",
+            "choice(a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice(a,b)"
         ),
         pytest.param(
-            "choice (a,b)",
-            ChoiceSweep(list=["a", "b"]),
-            id="sweep:choice (a,b)",
+            "choice (a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice (a,b)"
         ),
         pytest.param(
             "choice( 10 , 20 )",
             ChoiceSweep(list=[10, 20]),
             id="sweep:choice( 10 , 20 )",
         ),
-        pytest.param(
-            "choice(str(10))",
-            ChoiceSweep(list=["10"]),
-            id="choice(str(10))",
-        ),
+        pytest.param("choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))"),
     ],
 )
 def test_choice_sweep(value: str, expected: Any) -> None:
@@ -309,20 +295,14 @@ def test_choice_sweep(value: str, expected: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "value,expected",
     [
-        pytest.param(
-            "a,b",
-            ChoiceSweep(list=["a", "b"], simple_form=True),
-            id="a,b",
-        ),
+        pytest.param("a,b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a,b"),
         pytest.param(
             "a,10,3.14",
             ChoiceSweep(list=["a", 10, 3.14], simple_form=True),
             id="a,10,3.14",
         ),
         pytest.param(
-            "a , b",
-            ChoiceSweep(list=["a", "b"], simple_form=True),
-            id="a , b",
+            "a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b"
         ),
         pytest.param(
             "${a},${b}",
@@ -371,9 +351,7 @@ def test_range_sweep(value: str, expected: Any) -> None:
             "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="interval(10,11)"
         ),
         pytest.param(
-            "interval(2.72,3.14)",
-            IntervalSweep(start=2.72, end=3.14),
-            id="interval",
+            "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="interval"
         ),
         pytest.param(
             "interval(start=2.72,end=3.14)",
@@ -406,8 +384,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "value",
             "[",
             pytest.raises(
-                HydraException,
-                match=re.escape("no viable alternative at input '['"),
+                HydraException, match=re.escape("no viable alternative at input '['")
             ),
             id="error:partial_list",
         ),
@@ -415,8 +392,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "override",
             "key=[]aa",
             pytest.raises(
-                HydraException,
-                match=re.escape("extraneous input 'aa' expecting <EOF>"),
+                HydraException, match=re.escape("extraneous input 'aa' expecting <EOF>")
             ),
             id="error:left_overs",
         ),
@@ -424,8 +400,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "override",
             "key=[1,2,3]'",
             pytest.raises(
-                HydraException,
-                match=re.escape("token recognition error at: '''"),
+                HydraException, match=re.escape("token recognition error at: '''")
             ),
             id="error:left_overs",
         ),
@@ -705,11 +680,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, id="id-float"
         ),
         pytest.param(
-            "key=value-true",
-            "key",
-            "value-true",
-            ValueType.ELEMENT,
-            id="id-bool",
+            "key=value-true", "key", "value-true", ValueType.ELEMENT, id="id-bool"
         ),
         pytest.param("key=", "key", "", ValueType.ELEMENT, id="empty_value"),
         pytest.param(
@@ -805,11 +776,7 @@ def test_key_rename(value: str, expected: bool) -> None:
             id="interval:tags",
         ),
         pytest.param(
-            "key=str([1,2])",
-            "key",
-            ["1", "2"],
-            ValueType.ELEMENT,
-            id="cast_list",
+            "key=str([1,2])", "key", ["1", "2"], ValueType.ELEMENT, id="cast_list"
         ),
         pytest.param(
             "choice=reverse",
@@ -846,10 +813,7 @@ def test_override(
         pytest.param(
             "~x",
             Override(
-                type=OverrideType.DEL,
-                key_or_group="x",
-                value_type=None,
-                _value=None,
+                type=OverrideType.DEL, key_or_group="x", value_type=None, _value=None
             ),
             id="bare_del",
         ),
@@ -1033,9 +997,7 @@ def test_float_range(
     [
         # choice
         pytest.param(
-            "tag(choice(a,b))",
-            ChoiceSweep(list=["a", "b"]),
-            id="tag(choice(a,b))",
+            "tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="tag(choice(a,b))"
         ),
         pytest.param(
             "tag(tag1,tag2,choice(a,b))",
@@ -1055,9 +1017,7 @@ def test_float_range(
         ),
         # range
         pytest.param(
-            "tag(range(1,2))",
-            RangeSweep(start=1, stop=2),
-            id="tag(range(1,2))",
+            "tag(range(1,2))", RangeSweep(start=1, stop=2), id="tag(range(1,2))"
         ),
         pytest.param(
             "tag(tag1,tag2,range(1,2))",
@@ -1088,9 +1048,7 @@ def test_tag_sweep(value: str, expected: str) -> None:
         pytest.param("sort(list=[1,2,3])", [1, 2, 3], id="sort:list:named"),
         pytest.param("sort(list=[])", [], id="sort:list:named:empty"),
         pytest.param(
-            "sort(list=[1,2,3], reverse=True)",
-            [3, 2, 1],
-            id="sort:list:named:rev",
+            "sort(list=[1,2,3], reverse=True)", [3, 2, 1], id="sort:list:named:rev"
         ),
         # simple choice sweep
         pytest.param(

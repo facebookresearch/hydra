@@ -38,17 +38,11 @@ def test_specializing_config_example(
     "overrides,output",
     [
         ([], "MySQL connecting to localhost"),
-        (
-            ["db=postgresql"],
-            "PostgreSQL connecting to localhost",
-        ),
+        (["db=postgresql"], "PostgreSQL connecting to localhost"),
     ],
 )
 def test_instantiate_objects_example(
-    monkeypatch: Any,
-    tmpdir: Path,
-    overrides: List[str],
-    output: str,
+    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
 ) -> None:
     monkeypatch.chdir("examples/patterns/instantiate/objects/")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
@@ -60,17 +54,11 @@ def test_instantiate_objects_example(
     "overrides,output",
     [
         ([], "MySQL connecting to localhost"),
-        (
-            ["db=postgresql"],
-            "PostgreSQL connecting to localhost",
-        ),
+        (["db=postgresql"], "PostgreSQL connecting to localhost"),
     ],
 )
 def test_instantiate_structured_config_example(
-    monkeypatch: Any,
-    tmpdir: Path,
-    overrides: List[str],
-    output: str,
+    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
 ) -> None:
     monkeypatch.chdir("examples/patterns/instantiate/structured_config/")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides

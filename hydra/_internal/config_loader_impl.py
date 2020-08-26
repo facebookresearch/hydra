@@ -80,8 +80,7 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     def split_by_override_type(
-        self,
-        overrides: List[Override],
+        self, overrides: List[Override]
     ) -> Tuple[List[Override], List[Override]]:
         config_group_overrides = []
         config_overrides = []
