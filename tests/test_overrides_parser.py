@@ -912,12 +912,7 @@ def test_get_key_element(override: str, expected: str) -> None:
         pytest.param("key=value", "value", False, id="str"),
         pytest.param("key='value'", "'value'", False, id="single_quoted"),
         pytest.param('key="value"', '"value"', False, id="double_quoted"),
-        pytest.param(
-            "key='שלום'",
-            "'שלום'",
-            False,
-            id="quoted_unicode",
-        ),
+        pytest.param("key='שלום'", "'שלום'", False, id="quoted_unicode"),
         pytest.param("key=10", "10", False, id="int"),
         pytest.param("key=3.1415", "3.1415", False, id="float"),
         pytest.param("key=[]", "[]", False, id="list"),
@@ -1612,18 +1607,10 @@ class F:
     [
         pytest.param("foo_1", F.foo1, "foo_1(10)", "int:10", id="foo_1(10)"),
         pytest.param(
-            "foo_1",
-            F.foo1,
-            "foo_1(value=10)",
-            "int:10",
-            id="foo_1(value=10)",
+            "foo_1", F.foo1, "foo_1(value=10)", "int:10", id="foo_1(value=10)"
         ),
         pytest.param(
-            "foo_2",
-            F.foo2,
-            "foo_2('10',10)",
-            "str:10,int:10",
-            id="foo_2('10',10)",
+            "foo_2", F.foo2, "foo_2('10',10)", "str:10,int:10", id="foo_2('10',10)"
         ),
         pytest.param("empty", F.empty, "empty()", 10, id="empty()"),
         pytest.param("sum", F.sum, "sum()", 0, id="sum()"),
@@ -1671,13 +1658,7 @@ class F:
             "res:range(start=10,stop=20,step=5)",
             id="range(10,step=5,stop=20)",
         ),
-        pytest.param(
-            "sort",
-            F.sort,
-            "sort(10,1,5)",
-            [1, 5, 10],
-            id="sort(10,1,5)",
-        ),
+        pytest.param("sort", F.sort, "sort(10,1,5)", [1, 5, 10], id="sort(10,1,5)"),
         pytest.param(
             "sort",
             F.sort,
@@ -1704,8 +1685,7 @@ def test_eval(
             F.empty,
             "empty(100)",
             pytest.raises(
-                HydraException,
-                match=re.escape("too many positional arguments"),
+                HydraException, match=re.escape("too many positional arguments")
             ),
             id="empty(100)",
         ),
@@ -1828,17 +1808,9 @@ def test_glob(value: str, expected: Any) -> None:
             id="include=*, exclude=[quick,under]]",
         ),
         pytest.param(
-            ["*"],
-            ["*d*"],
-            ["the", "quick", "brown", "fox", "the", "lazy"],
-            id="=*",
+            ["*"], ["*d*"], ["the", "quick", "brown", "fox", "the", "lazy"], id="=*"
         ),
-        pytest.param(
-            ["t*"],
-            [],
-            ["the", "the"],
-            id="=*",
-        ),
+        pytest.param(["t*"], [], ["the", "the"], id="=*"),
     ],
 )
 def test_glob_filter(
@@ -1852,11 +1824,7 @@ def test_glob_filter(
     "value,expected_key,expected_value,expected_value_type",
     [
         pytest.param(
-            "key= \tvalue \t",
-            "key",
-            "value",
-            ValueType.ELEMENT,
-            id="leading+trailing",
+            "key= \tvalue \t", "key", "value", ValueType.ELEMENT, id="leading+trailing"
         ),
         pytest.param(
             "key=value \t 123",
@@ -1917,10 +1885,7 @@ def test_glob_filter(
     ],
 )
 def test_whitespaces(
-    value: str,
-    expected_key: str,
-    expected_value: Any,
-    expected_value_type: ValueType,
+    value: str, expected_key: str, expected_value: Any, expected_value_type: ValueType
 ) -> None:
     ret = parse_rule(value, "override")
     expected = Override(
