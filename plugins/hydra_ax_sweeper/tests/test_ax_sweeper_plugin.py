@@ -192,9 +192,28 @@ def test_configuration_set_via_cmd_and_default_config(
 
 
 @pytest.mark.parametrize(
-    "cmd_arg", ["polynomial.y=choice(-1, 0, 1)", "polynomial.y=range(-1, 2)"],
+    "cmd_arg",
+    [
+        (
+            "polynomial.y=choice(-1, 0, 1)",
+            "polynomial.y: choice=[-1, 0, 1], type = int",
+        ),
+        ("polynomial.y=range(-1, 2)", "polynomial.y: choice=[-1, 0, 1], type = int"),
+        (
+            "polynomial.y=tag(int, interval(-1, 2))",
+            "polynomial.y: range=[-1, 2], type = int",
+        ),
+        (
+            "polynomial.y=tag(interval(-1, 2))",
+            "polynomial.y: range=[-1.0, 2.0], type = float",
+        ),
+        (
+            "polynomial.y=interval(-1, 2)",
+            "polynomial.y: range=[-1.0, 2.0], type = float",
+        ),
+    ],
 )
-def test_ax_logging(tmpdir: Path, cmd_arg) -> None:
+def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     cmd = [
         sys.executable,
         "tests/apps/polynomial.py",
@@ -206,7 +225,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg) -> None:
     ] + [cmd_arg]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5, -2], type = int" in result
-    assert "polynomial.y: choice=[-1, 0, 1], type = int" in result
+    assert expected_str in result
     assert "polynomial.z: fixed=10, type = int" in result
 
 
