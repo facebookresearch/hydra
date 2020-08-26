@@ -84,11 +84,7 @@ class ConfigStore(metaclass=Singleton):
         assert isinstance(cur, dict)
         cfg = OmegaConf.structured(node)
         cur[name] = ConfigNode(
-            name=name,
-            node=cfg,
-            group=group,
-            package=package,
-            provider=provider,
+            name=name, node=cfg, group=group, package=package, provider=provider
         )
 
     def load(self, config_path: str) -> ConfigNode:

@@ -58,22 +58,14 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
 )
 class TestCompose:
     def test_compose_config(
-        self,
-        config_path: str,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_path: str, config_file: str, overrides: List[str], expected: Any
     ) -> None:
         with initialize(config_path=config_path):
             cfg = compose(config_file, overrides)
             assert cfg == expected
 
     def test_strict_failure_global_strict(
-        self,
-        config_path: str,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_path: str, config_file: str, overrides: List[str], expected: Any
     ) -> None:
         with initialize(config_path=config_path):
             # default strict True, call is unspecified
@@ -175,10 +167,7 @@ class TestComposeInits:
             assert ret == expected
 
     def test_initialize_config_dir_ctx_with_relative_dir(
-        self,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_file: str, overrides: List[str], expected: Any
     ) -> None:
         with pytest.raises(
             HydraException,
@@ -194,10 +183,7 @@ class TestComposeInits:
                 assert ret == expected
 
     def test_initialize_config_module_ctx(
-        self,
-        config_file: str,
-        overrides: List[str],
-        expected: Any,
+        self, config_file: str, overrides: List[str], expected: Any
     ) -> None:
         with initialize_config_module(
             config_module="examples.jupyter_notebooks.cloud_app.conf",
@@ -323,7 +309,5 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
 
 def test_initialization_root_module(monkeypatch: Any) -> None:
     monkeypatch.chdir("tests/test_apps/init_in_app_without_module")
-    subprocess.check_call(
-        [sys.executable, "main.py"],
-    )
+    subprocess.check_call([sys.executable, "main.py"])
     subprocess.check_call([sys.executable, "-m", "main"])

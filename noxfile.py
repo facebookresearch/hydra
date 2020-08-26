@@ -384,11 +384,7 @@ def coverage(session):
     selected_plugins = select_plugins(session)
     for plugin in selected_plugins:
         session.run(
-            "pip",
-            "install",
-            "-e",
-            os.path.join("plugins", plugin.path),
-            silent=SILENT,
+            "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT
         )
 
     session.run("coverage", "erase", env=coverage_env)
@@ -426,8 +422,7 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        "--nbval",
-        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
+        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]

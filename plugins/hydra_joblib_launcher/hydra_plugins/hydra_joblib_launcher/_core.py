@@ -22,6 +22,10 @@ from .joblib_launcher import JoblibLauncher
 log = logging.getLogger(__name__)
 
 
+class Foo:
+    """foo"""
+
+
 def execute_job(
     idx: int,
     overrides: Sequence[str],
