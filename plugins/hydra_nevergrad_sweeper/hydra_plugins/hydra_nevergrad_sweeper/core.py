@@ -95,6 +95,30 @@ class CommandlineSpec:
             raise ValueError(f"Unsupported Override: {override}")
 
 
+def get_nevergrad_params(override: Override) -> Any:
+
+    """
+
+   choice(1,2,3)  ==>  ng.p.Choice([["Helium", "Nitrogen", "Oxygen"]])
+   tag(transition,choice(2,3,4))  ==> ng.p.TransitionChoice(["Solid", "Liquid", "Gas"])
+   tag(transition, range(1, 11, 2)) ==> ng.p.TransitionChoice([1, 3, 5 ...])
+   range(1,5) ==>  ng.p.Scalar(lower=1, upper=12).set_integer_casting(),
+   interval(1.0,5.0) ==> np.p.Scalar(lower=1.0, upper=5.0)
+   tag(log, interval(0.1, 1)) ==> np.p.Log(lower=0.1, upper=1)
+    """
+    if override.is_sweep_override():
+        if override.is_choice_sweep(): # discrete variable
+            pass
+        elif override.is_range_sweep(): # discrete variable
+            pass
+        elif override.is_interval_sweep(): # continuous variable
+            pass
+    elif not override.is_hydra_override():
+        pass
+
+
+
+
 # pylint: disable=too-many-branches
 def make_nevergrad_parameter(description: Any) -> Any:
     """Returns a Nevergrad parameter from a definition string or object.
