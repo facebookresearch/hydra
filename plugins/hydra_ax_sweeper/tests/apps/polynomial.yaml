@@ -27,4 +27,3 @@ hydra:
         polynomial_x:
           type: range
           bounds: [-1, 1]
-
