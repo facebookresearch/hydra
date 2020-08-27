@@ -14,7 +14,7 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.types import TaskFunction
-from joblib import Parallel, delayed
+from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
 
 from .joblib_launcher import JoblibLauncher
@@ -54,7 +54,7 @@ def launch(
     launcher: JoblibLauncher,
     job_overrides: Sequence[Sequence[str]],
     initial_job_idx: int,
-) -> JobReturn:
+) -> Sequence[JobReturn]:
     """
     :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.
     :param initial_job_idx: Initial job idx in batch.

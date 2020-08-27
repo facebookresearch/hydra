@@ -272,9 +272,8 @@ def lint_plugins(session):
         session.chdir(os.path.join("plugins", plugin.path))
         session.run(*_black_cmd(), silent=SILENT)
         session.run(*_isort_cmd(), silent=SILENT)
+        session.run("mypy", ".", "--strict", "--namespace-packages", silent=SILENT)
         session.chdir(BASE)
-
-    session.run("mypy", ".", "--strict", silent=SILENT)
 
 
 @nox.session(python=PYTHON_VERSIONS)

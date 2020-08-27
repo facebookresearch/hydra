@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from copy import copy
 from typing import Any, Dict, List, Optional
 
 from hydra.core.object_type import ObjectType
@@ -9,7 +10,7 @@ from omegaconf import OmegaConf
 class ConfigSourceExample(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
-        self.headers = {
+        self.headers: Dict[str, Dict[str, str]] = {
             "package_test/explicit.yaml": {"package": "a.b"},
             "package_test/global.yaml": {"package": "_global_"},
             "package_test/group.yaml": {"package": "_group_"},
@@ -51,7 +52,7 @@ class ConfigSourceExample(ConfigSource):
         config_path = self._normalize_file_name(config_path)
         if config_path not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
-        header = self.headers[config_path].copy() if config_path in self.headers else {}
+        header = copy(self.headers[config_path]) if config_path in self.headers else {}
         if "package" not in header:
             header["package"] = ""
 

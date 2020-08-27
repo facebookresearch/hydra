@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import asdict
 
-import pytest  # type: ignore
+import pytest
 
 from hydra_plugins.hydra_nevergrad_sweeper.core import CommandlineSpec
 
