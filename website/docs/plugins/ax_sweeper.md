@@ -30,7 +30,7 @@ We include an example of how to use this plugin. The file [`example/banana.py`](
 To compute the best parameters for the Banana function, clone the code and run the following command in the `plugins/hydra_ax_sweeper` directory:
 
 ```
-python example/banana.py -m banana.x=interval(-5, 5) banana.y=interval(-5, 10.1)
+python example/banana.py -m 'banana.x=int(interval(-5, 5))' 'banana.y=interval(-5, 10.1)'
 ```
 
 The output of a run looks like:
@@ -42,20 +42,20 @@ banana.y: range=[-5.0, 10.1], type = float
 ax.modelbridge.dispatch_utils: Using Bayesian Optimization generation strategy: GenerationStrategy(name='Sobol+GPEI', steps=[Sobol for 5 arms, GPEI for subsequent arms], generated 0 arm(s) so far). Iterations after 5 will take longer to generate due to model-fitting.
 AxSweeper is launching 5 jobs
 [HYDRA] Launching 5 jobs locally
-[HYDRA] 	#0 : banana.x=4 banana.y=-1.484
+[HYDRA]   #0 : banana.x=4 banana.y=-1.484
 [__main__][INFO] - Banana_Function(x=4, y=-1.484)=30581.473
-[HYDRA] 	#1 : banana.x=3 banana.y=-3.653
+[HYDRA]   #1 : banana.x=3 banana.y=-3.653
 [__main__][INFO] - Banana_Function(x=3, y=-3.653)=16014.261
-[HYDRA] 	#2 : banana.x=0 banana.y=9.409
+[HYDRA]   #2 : banana.x=0 banana.y=9.409
 [__main__][INFO] - Banana_Function(x=0, y=9.409)=8855.340
-[HYDRA] 	#3 : banana.x=-4 banana.y=2.059
+[HYDRA]   #3 : banana.x=-4 banana.y=2.059
 [__main__][INFO] - Banana_Function(x=-4, y=2.059)=19459.063
-[HYDRA] 	#4 : banana.x=-3 banana.y=-1.338
+[HYDRA]   #4 : banana.x=-3 banana.y=-1.338
 [__main__][INFO] - Banana_Function(x=-3, y=-1.338)=10704.497
 [HYDRA] New best value: 8855.340, best parameters: {'banana.x': 0, 'banana.y': 9.409}
 ```
 
-In this example, we set the range of `x` parameter as an integer in the interval `[-5, 5]` and the range of `y` parameter as a float in the interval `[-5, 10.1]`. Note that in the case of `x`, both the upper and the lower range values are integers, and hence only integers are sampled. In the case of `y`, the lower range value is an int while the upper range value is a float. The lower range value is promoted to float as well, and floating-point numbers are sampled from the interval. Other supported formats are fixed parameters (eg `banana.x=5.0`) and choice parameters (eg `banana.x=choice(1,2,3)`). Note that `interval`, `choice` etc. are functions provided by Hydra, and you can read more about them [here](https://hydra.cc/docs/next/advanced/override_grammar/extended/). An important thing to remember is, use [`interval`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#interval-sweep) when we want Ax to sample values from an interval. [`RangeParameter`(https://ax.dev/api/ax.html#ax.RangeParameter) in Ax is equivalent to `interval` in Hydra. [`range`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#range-sweep) can be used as an alternate way of specifying choice parameters. For example `python example/banana.py -m banana.x=choice(1, 2, 3, 4)` is equivalent to `python example/banana.py -m banana.x=range(1, 5)`.
+In this example, we set the range of `x` parameter as an integer in the interval `[-5, 5]` and the range of `y` parameter as a float in the interval `[-5, 10.1]`. Note that in the case of `x`, we used `int(interval(...))` and hence only integers are sampled. In the case of `y`, we used `interval(...)` which refers to a floating-point interval. Other supported formats are fixed parameters (e.g.` banana.x=5.0`), choice parameters (eg `banana.x=choice(1,2,3)`) and range (eg `banana.x=range(1, 10)`). Note that `interval`, `choice` etc. are functions provided by Hydra, and you can read more about them [here](https://hydra.cc/docs/next/advanced/override_grammar/extended/). An important thing to remember is, use [`interval`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#interval-sweep) when we want Ax to sample values from an interval. [`RangeParameter`(https://ax.dev/api/ax.html#ax.RangeParameter) in Ax is equivalent to `interval` in Hydra. Remember to use `int(interval(...))` if you want to sample only integer points from the interval. [`range`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#range-sweep) can be used as an alternate way of specifying choice parameters. For example `python example/banana.py -m banana.x=choice(1, 2, 3, 4)` is equivalent to `python example/banana.py -m banana.x=range(1, 5)`.
 
 
 The values of the `x` and `y` parameters can also be set using the config file `plugins/hydra_ax_sweeper/example/conf/config.yaml`. For instance, the configuration corresponding to the parameter `x` is as follows:
@@ -78,7 +78,7 @@ The `x` parameter takes on a "range" of integer values, in the interval `[-5, 5]
 * `values` - Required only for the `choice` parameters. It should be a list of values.
 * `value` - Required only for the `fixed` parameters. It should be a single value. 
 
-Note that when using the config file, the parameter type (int, float, string, etc.) is set via the [`parameter_type` attribute](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter). One important thing to note is how mixed types (float + int) are handled. For the `y` parameter, the bounds were set to be `-5` to `10.1`. Both the values were upcasted to a float (irrespective of whether the range was set via the command line or the config file). In case the user provides the `parameter_type` attribute in the config, the attribute is not changed when type casting is done. If the user wants to sample integers in the interval `-5` to `5`, they need to specify the range as `interval(-5, 5)` (in the command line) or `[-5, 5]` (in config). If they want to sample floats in range `-5` to `5`, they need to specify the range as `interval(-5.0, 5.0)` (in the command line) or `[-5.0, 5.0]` (in config). The type casted values, and unchanged attributes are passed to the Ax Client.
+Note that if you want to sample integers in the interval `-5` to `5`, you need to specify the range as `int(interval(-5, 5))` (in the command line) or `[-5, 5]` (in config). If you want to sample floats in range `-5` to `5`, you need to specify the range as `interval(-5, 5)` (in the command line) or `[-5.0, 5.0]` (in config).
 
 The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. The most important parameters are listed below:
 
