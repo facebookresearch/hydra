@@ -1,6 +1,6 @@
 ---
 id: defaults
-title: Defaults
+title: Defaults List
 ---
 
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/4_defaults/)
@@ -12,7 +12,7 @@ The example below extends the previous example by adding a defaults list that wi
 NOTE: You can still place your defaults list in your primary (YAML) config file (Example in next page).
 </div><br/>
 
-```python
+```python {11-14,19,25}
 from omegaconf import MISSING, OmegaConf  # Do not confuse with dataclass.MISSING
 
 @dataclass
@@ -58,7 +58,7 @@ db:
   ...
 ```
 
-You can override the default option via the command line (note how we do not need `+` anymore, compared to the previous example):
+You can override the default option via the command line:
 ```yaml
 $ python my_app.py db=postgresql
 db:
@@ -66,10 +66,33 @@ db:
   ...
 ```
 
-Note also that the `db` command line argument can be made mandatory by using `MISSING` as default value:
-```python
+#### Requiring users to specify a default list value
+
+Set `db` as `MISSING` to require the user to specify a value on the command line.
+
+<div className="row">
+<div className="col col--6">
+
+```python title="Defaults list with a missing db"
 defaults = [
-    # An error will be raised if the user forgets to specify `db=...`
     {"db": MISSING}
 ]
+
+
 ```
+
+</div>
+
+<div className="col  col--6">
+
+```text title="Output"
+$ python my_app.py
+You must specify 'db', e.g, db=<OPTION>
+Available options:
+        mysql
+        postgresql
+```
+
+
+</div>
+</div>
