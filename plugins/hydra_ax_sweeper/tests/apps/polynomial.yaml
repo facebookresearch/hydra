@@ -28,6 +28,3 @@ hydra:
           type: range
           bounds: [-1, 1]
 
-        polynomial_y:
-          type: choice
-          values: [-1, 1]

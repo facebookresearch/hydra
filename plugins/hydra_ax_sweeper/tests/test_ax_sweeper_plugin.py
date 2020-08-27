@@ -119,8 +119,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "quadratic.x=interval(-5, -2)",
-            "quadratic.y=interval(-2, 2)",
+            "quadratic.x=int(interval(-5, -2))",
+            "quadratic.y=int(interval(-2, 2))",
             "params=basic",
         ],
     )
@@ -131,8 +131,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x"], -2, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], 2, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -145,7 +145,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         overrides=[
             "hydra/launcher=basic",
             "hydra.sweeper.ax_config.max_trials=2",
-            "quadratic.x=interval(-5, -2)",
+            "quadratic.x=int(interval(-5, -2))",
             "params=basic",
         ],
     )
@@ -158,6 +158,9 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         best_parameters = returns["ax"]
         assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
+
+        assert math.isclose(best_parameters["quadratic_x"], -2, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], 1, abs_tol=1e-4)
 
 
 def test_configuration_set_via_cmd_and_default_config(
@@ -192,24 +195,39 @@ def test_configuration_set_via_cmd_and_default_config(
 
 
 @pytest.mark.parametrize(
-    "cmd_arg",
+    "cmd_arg, expected_str",
     [
         (
             "polynomial.y=choice(-1, 0, 1)",
-            "polynomial.y: choice=[-1, 0, 1], type = int",
-        ),
-        ("polynomial.y=range(-1, 2)", "polynomial.y: choice=[-1, 0, 1], type = int"),
-        (
-            "polynomial.y=tag(int, interval(-1, 2))",
-            "polynomial.y: range=[-1, 2], type = int",
+            "polynomial.y: choice=[-1, 0, 1]",
         ),
         (
-            "polynomial.y=tag(interval(-1, 2))",
-            "polynomial.y: range=[-1.0, 2.0], type = float",
+            "polynomial.y=range(-1, 2)",
+            "polynomial.y: choice=[-1, 0, 1]",
+        ),
+        (
+            "polynomial.y=range(-1, 3, 1)",
+            "polynomial.y: choice=[-1, 0, 1, 2]",
+        ),
+        (
+            "polynomial.y=range(-1, 2, 0.5)",
+            "polynomial.y: choice=[-1.0, -0.5, 0.0, 0.5, 1.0, 1.5]",
+        ),
+        (
+            "polynomial.y=int(interval(-1, 2))",
+            "polynomial.y: range=[-1, 2]",
         ),
         (
             "polynomial.y=interval(-1, 2)",
-            "polynomial.y: range=[-1.0, 2.0], type = float",
+            "polynomial.y: range=[-1.0, 2.0]",
+        ),
+        (
+            "polynomial.y=2",
+            "polynomial.y: fixed=2",
+        ),
+        (
+            "polynomial.y=2.0",
+            "polynomial.y: fixed=2.0",
         ),
     ],
 )
@@ -224,9 +242,9 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
-    assert "polynomial.x: range=[-5, -2], type = int" in result
+    assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
-    assert "polynomial.z: fixed=10, type = int" in result
+    assert "polynomial.z: fixed=10" in result
 
 
 def test_example_app(tmpdir: Path) -> None:
@@ -235,18 +253,18 @@ def test_example_app(tmpdir: Path) -> None:
         "example/banana.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
-        "banana.x=interval(-5, 5)",
+        "banana.x=int(interval(-5, 5))",
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
-    assert "banana.x: range=[-5, 5], type = int" in result
-    assert "banana.y: range=[-5.0, 10.1], type = float" in result
+    assert "banana.x: range=[-5, 5]" in result
+    assert "banana.y: range=[-5.0, 10.1]" in result
 
 
 @pytest.mark.parametrize(
     "overrides",
-    [[], ["quadratic.x_arg=interval(-1, 1)"]],
+    [[], ["quadratic.x_arg=int(interval(-1, 1))"]],
 )
 def test_jobs_configured_via_nested_config(
     hydra_sweep_runner,
