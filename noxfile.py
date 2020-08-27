@@ -248,6 +248,9 @@ def lint(session):
     for pyfile in find_files(path="examples", ext=".py"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)
 
+    # bandit static security analysis
+    session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".")
+
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
