@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest  # type: ignore
+import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.config_source import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite

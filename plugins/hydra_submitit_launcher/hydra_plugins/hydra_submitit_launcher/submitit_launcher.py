@@ -43,7 +43,7 @@ class BaseSubmititLauncher(Launcher):
         config: DictConfig,
         config_loader: ConfigLoader,
         task_function: TaskFunction,
-    ):
+    ) -> None:
         self.config = config
         self.config_loader = config_loader
         self.task_function = task_function
@@ -54,10 +54,14 @@ class BaseSubmititLauncher(Launcher):
         job_dir_key: str,
         job_num: int,
         job_id: str,
-        singleton_state: Dict[type, "Singleton"],
-    ):
+        singleton_state: Dict[type, Singleton],
+    ) -> JobReturn:
         # lazy import to ensure plugin discovery remains fast
         import submitit
+
+        assert self.config_loader is not None
+        assert self.config is not None
+        assert self.task_function is not None
 
         Singleton.set_state(singleton_state)
         setup_globals()
@@ -67,7 +71,7 @@ class BaseSubmititLauncher(Launcher):
 
         with open_dict(sweep_config.hydra.job) as job:
             # Populate new job variables
-            job.id = submitit.JobEnvironment().job_id
+            job.id = submitit.JobEnvironment().job_id  # type: ignore
             sweep_config.hydra.job.num = job_num
 
         return run_job(
@@ -77,7 +81,7 @@ class BaseSubmititLauncher(Launcher):
             job_subdir_key="hydra.sweep.subdir",
         )
 
-    def checkpoint(self, *args, **kwargs):
+    def checkpoint(self, *args: Any, **kwargs: Any) -> Any:
         """Resubmit the current callable at its current state with the same initial arguments."""
         # lazy import to ensure plugin discovery remains fast
         import submitit
@@ -89,6 +93,8 @@ class BaseSubmititLauncher(Launcher):
     ) -> Sequence[JobReturn]:
         # lazy import to ensure plugin discovery remains fast
         import submitit
+
+        assert self.config is not None
 
         num_jobs = len(job_overrides)
         assert num_jobs > 0
@@ -126,13 +132,12 @@ class BaseSubmititLauncher(Launcher):
             mode = int(str(self.config.hydra.sweep.mode), 8)
             os.chmod(sweep_dir, mode=mode)
 
-        params = []
-
+        job_params: List[Any] = []
         for idx, overrides in enumerate(job_overrides):
             idx = initial_job_idx + idx
             lst = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {lst}")
-            params.append(
+            job_params.append(
                 (
                     list(overrides),
                     "hydra.sweep.dir",
@@ -142,7 +147,7 @@ class BaseSubmititLauncher(Launcher):
                 )
             )
 
-        jobs = executor.map_array(self, *zip(*params))
+        jobs = executor.map_array(self, *zip(*job_params))
         return [j.results()[0] for j in jobs]
 
 

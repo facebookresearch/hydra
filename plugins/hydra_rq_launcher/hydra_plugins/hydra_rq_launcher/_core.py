@@ -5,8 +5,8 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
-import cloudpickle
-from fakeredis import FakeStrictRedis
+import cloudpickle  # type: ignore
+from fakeredis import FakeStrictRedis  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
@@ -19,7 +19,7 @@ from hydra.core.utils import (
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 from redis import Redis
-from rq import Queue
+from rq import Queue  # type: ignore
 
 from .rq_launcher import RQLauncher
 
@@ -48,7 +48,7 @@ def execute_job(
 
 def launch(
     launcher: RQLauncher, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
-) -> JobReturn:
+) -> Sequence[JobReturn]:
     """
     :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.
     :param initial_job_idx: Initial job idx in batch.
@@ -86,7 +86,7 @@ def launch(
     )
 
     # Enqueue jobs
-    jobs = []
+    jobs: List[Any] = []
     singleton_state = Singleton.get_state()
     log.info(
         f"RQ Launcher is enqueuing {len(job_overrides)} job(s) in queue : {rq_cfg.queue}"
@@ -101,6 +101,7 @@ def launch(
         description = " ".join(filter_overrides(overrides))
 
         enqueue_keywords = OmegaConf.to_container(rq_cfg.enqueue, resolve=True)
+        assert isinstance(enqueue_keywords, dict)
         if enqueue_keywords["job_timeout"] is None:
             enqueue_keywords["job_timeout"] = -1
         if enqueue_keywords["result_ttl"] is None:
@@ -145,14 +146,10 @@ def launch(
         else:
             time.sleep(rq_cfg.wait_polling)
 
-    runs = []
+    runs: List[JobReturn] = []
     for job in jobs:
         result = job.result if job.result is not None else None
         runs.append(result)
-
-    assert isinstance(runs, List)
-    for run in runs:
-        assert isinstance(run, JobReturn)
 
     return runs
 

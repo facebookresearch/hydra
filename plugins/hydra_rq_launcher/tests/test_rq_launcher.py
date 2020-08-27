@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest  # type: ignore
+import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -47,7 +47,7 @@ class TestRQLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-@pytest.mark.filterwarnings(
+@pytest.mark.filterwarnings(  # type: ignore
     "ignore::DeprecationWarning"
 )  # https://github.com/rq/rq/issues/1244
 def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:

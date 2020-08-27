@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest  # type: ignore
+import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.launcher_common_tests import (
@@ -7,6 +7,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
+from hydra.test_utils.test_utils import TSweepRunner
 
 from hydra_plugins.example_sweeper_plugin.example_sweeper import ExampleSweeper
 
@@ -18,7 +19,7 @@ def test_discovery() -> None:
     ]
 
 
-def test_launched_jobs(hydra_sweep_runner) -> None:
+def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
         calling_module="hydra.test_utils.a_module",
