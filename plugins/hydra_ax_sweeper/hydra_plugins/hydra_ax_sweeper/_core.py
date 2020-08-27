@@ -3,7 +3,6 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
-from ax import ParameterType  # type: ignore
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
@@ -29,62 +28,24 @@ class Trial:
 BatchOfTrialType = List[Trial]
 
 
-def _is_int(string_inp: str) -> bool:
-    """Method to check if the given string input can be parsed as integer"""
-    try:
-        int(string_inp)
-        return True
-    except ValueError:
-        return False
-
-
-def _is_float(string_inp: str) -> bool:
-    """Method to check if the given string input can be parsed as a float"""
-    try:
-        float(string_inp)
-        return True
-    except ValueError:
-        return False
-
-
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     """Convert a list of params into a string"""
-
-    mandatory_keys = set(
-        ["name", "type", "bounds", "values", "value", "parameter_type"]
-    )
+    mandatory_keys = set(["name", "type", "bounds", "values", "value"])
     parameter_log_string = ""
     for parameter in parameters:
         parameter_log_string += "\n"
         parameter_log_string += f"{parameter['name']}: {parameter['type']}="
         if parameter["type"] == "range":
-            parameter_log_string += f"{parameter['bounds']}, "
+            parameter_log_string += f"{parameter['bounds']}"
         elif parameter["type"] == "choice":
-            parameter_log_string += f"{parameter['values']}, "
+            parameter_log_string += f"{parameter['values']}"
         elif parameter["type"] == "fixed":
-            parameter_log_string += f"{parameter['value']}, "
-
-        parameter_log_string += f"type = {parameter['parameter_type'].name.lower()}"
+            parameter_log_string += f"{parameter['value']}"
 
         for key, value in parameter.items():
             if key not in mandatory_keys:
                 parameter_log_string += f", {key} = {value}"
     return parameter_log_string
-
-
-def infer_parameter_type(parameter: Dict[str, Any]) -> ParameterType:
-    if parameter["type"] == "range":
-        value = parameter["bounds"][0]
-    elif parameter["type"] == "choice":
-        value = parameter["values"][0]
-    elif parameter["type"] == "fixed":
-        value = parameter["value"]
-
-    if isinstance(value, int):
-        return ParameterType.INT
-    if isinstance(value, float):
-        return ParameterType.FLOAT
-    return ParameterType.STRING
 
 
 def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List[str]:
@@ -245,8 +206,6 @@ class CoreAxSweeper(Sweeper):
             key = normalize_key(key, str_to_replace="_", str_to_replace_with=".")
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)
-            if "parameter_type" not in param:
-                param["parameter_type"] = infer_parameter_type(param)
             if param["type"] == "range":
                 bounds = param["bounds"]
                 if not (all(isinstance(x, int) for x in bounds)):
@@ -272,7 +231,6 @@ class CoreAxSweeper(Sweeper):
             verbose_logging=self.ax_client_config.verbose_logging,
             random_seed=self.ax_client_config.random_seed,
         )
-
         ax_client.create_experiment(parameters=parameters, **self.experiment)
 
         return ax_client
@@ -328,72 +286,32 @@ def normalize_key(key: str, str_to_replace: str, str_to_replace_with: str) -> st
 def create_range_param_using_interval_override(override):
     key = override.get_key_element()
     value = override.value()
-    if isinstance(value.start, float) or isinstance(value.end, float):
-        # value.start and value.end are of type either int or float. If either
-        # of the two is of type float, we promote the other one to be of type float
-        # as well.
-        param = {
-            "name": key,
-            "type": "range",
-            "bounds": [float(value.start), float(value.end)],
-            "parameter_type": ParameterType.FLOAT,
-        }
-    else:
-        param = {
-            "name": key,
-            "type": "range",
-            "bounds": [value.start, value.end],
-            "parameter_type": ParameterType.INT,
-        }
+    param = {
+        "name": key,
+        "type": "range",
+        "bounds": [value.start, value.end],
+    }
     return param
 
 
 def create_choice_param_from_choice_override(override):
     key = override.get_key_element()
     value = override.value()
-    if all(isinstance(val, int) for val in value.list):
-        param = {
-            "name": key,
-            "type": "choice",
-            "values": value.list,
-            "parameter_type": ParameterType.INT,
-        }
-    elif all(isinstance(val, float) or isinstance(val, int) for val in value.list):
-        # If all the values are not int, check if all the values are of type float/int.
-        param = {
-            "name": key,
-            "type": "choice",
-            "values": [float(val) for val in value.list],
-            "parameter_type": ParameterType.FLOAT,
-        }
-    else:
-        # If some of the values are neither float nor int, cast everything as string.
-        param = {
-            "name": key,
-            "type": "choice",
-            "values": [str(val) for val in value.list],
-            "parameter_type": ParameterType.STRING,
-        }
+    param = {
+        "name": key,
+        "type": "choice",
+        "values": value.list,
+    }
     return param
 
 
 def create_choice_param_from_range_override(override):
     key = override.get_key_element()
     value = override.value()
-    if (
-        isinstance(value.start, float)
-        or isinstance(value.stop, float)
-        or isinstance(value.step, float)
-    ):
-        parameter_type = ParameterType.FLOAT
-    else:
-        parameter_type = ParameterType.INT
-
     param = {
         "name": key,
         "type": "choice",
         "values": [val for val in value.range()],
-        "parameter_type": parameter_type,
     }
 
     return param
@@ -402,18 +320,10 @@ def create_choice_param_from_range_override(override):
 def create_fixed_param_from_element_override(override):
     key = override.get_key_element()
     value = override.value()
-    if isinstance(value, int):
-        parameter_type = ParameterType.INT
-    elif isinstance(value, float):
-        parameter_type = ParameterType.FLOAT
-    elif isinstance(value, str):
-        parameter_type = ParameterType.STRING
-
     param = {
         "name": key,
         "type": "fixed",
         "value": value,
-        "parameter_type": parameter_type,
     }
 
     return param
