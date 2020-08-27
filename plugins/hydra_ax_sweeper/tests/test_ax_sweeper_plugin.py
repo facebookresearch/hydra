@@ -4,16 +4,16 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import pytest
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import chdir_plugin_root
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
-from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
 
 chdir_plugin_root()
 
@@ -36,7 +36,7 @@ def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
     return 100 * (cfg.quadratic.x_arg ** 2) + 1 * cfg.quadratic.y_arg
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "n,expected",
     [
         (None, [[1, 2, 3, 4, 5]]),
@@ -46,8 +46,8 @@ def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
         (6, [[1, 2, 3, 4, 5]]),
     ],
 )
-def test_chunk_method_for_valid_inputs(n, expected):
-    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
+def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> None:
+    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper  # type: ignore
 
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
@@ -55,8 +55,8 @@ def test_chunk_method_for_valid_inputs(n, expected):
     assert out == expected
 
 
-@pytest.mark.parametrize("n", [-1, -11, 0])
-def test_chunk_method_for_invalid_inputs(n):
+@pytest.mark.parametrize("n", [-1, -11, 0])  # type: ignore
+def test_chunk_method_for_invalid_inputs(n: int) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
@@ -65,7 +65,7 @@ def test_chunk_method_for_invalid_inputs(n):
         list(chunk_func(batch, n))
 
 
-def test_jobs_dirs(hydra_sweep_runner) -> None:
+def test_jobs_dirs(hydra_sweep_runner: TSweepRunner) -> None:
     # Verify that the spawned jobs are not overstepping the directories of one another.
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
@@ -90,7 +90,7 @@ def test_jobs_dirs(hydra_sweep_runner) -> None:
         assert len(dirs) == 6  # and a total of 6 unique output directories
 
 
-def test_jobs_configured_via_config(hydra_sweep_runner) -> None:
+def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -110,7 +110,7 @@ def test_jobs_configured_via_config(hydra_sweep_runner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd(hydra_sweep_runner) -> None:
+def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -135,7 +135,7 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner) -> None:
+def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -160,7 +160,9 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
 
 
-def test_configuration_set_via_cmd_and_default_config(hydra_sweep_runner) -> None:
+def test_configuration_set_via_cmd_and_default_config(
+    hydra_sweep_runner: TSweepRunner,
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -221,8 +223,10 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1], type = float" in result
 
 
-@pytest.mark.parametrize("overrides", [[], ["quadratic.x_arg=-1:1"]])
-def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) -> None:
+@pytest.mark.parametrize("overrides", [[], ["quadratic.x_arg=-1:1"]])  # type: ignore
+def test_jobs_configured_via_nested_config(
+    hydra_sweep_runner: TSweepRunner, overrides: List[str]
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -247,7 +251,7 @@ def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) 
         assert math.isclose(best_parameters["quadratic_y_arg"], -1.0, abs_tol=1e-4)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "inp, str_to_replace, str_to_replace_with, expected",
     [
         ("apple", ".", "_", "apple"),
@@ -259,7 +263,7 @@ def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) 
 )
 def test_process_key_method(
     inp: str, str_to_replace: str, str_to_replace_with: str, expected: str
-):
+) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import normalize_key
 
     assert normalize_key(inp, str_to_replace, str_to_replace_with) == expected

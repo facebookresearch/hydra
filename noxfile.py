@@ -123,7 +123,7 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
-def select_plugins(session) -> List[Plugin]:
+def select_plugins(session, directory: str) -> List[Plugin]:
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
@@ -139,8 +139,7 @@ def select_plugins(session) -> List[Plugin]:
     # ]
     plugins = [
         {"dir_name": x, "path": x}
-        for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
-        if x != "examples"
+        for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
     # available_plugins = plugins + example_plugins
@@ -152,7 +151,7 @@ def select_plugins(session) -> List[Plugin]:
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
-        setup_py = os.path.join(BASE, "plugins", plugin["path"], "setup.py")
+        setup_py = os.path.join(BASE, directory, plugin["path"], "setup.py")
         classifiers = session.run(
             "python", setup_py, "--name", "--classifiers", silent=True
         ).splitlines()
@@ -218,7 +217,7 @@ def lint(session):
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
 
-    apps = _get_standalone_apps_dir()
+    apps = _get_standalone_apps_dirs()
     session.log("Installing standalone apps")
     for subdir in apps:
         session.chdir(str(subdir))
@@ -248,32 +247,63 @@ def lint(session):
     for pyfile in find_files(path="examples", ext=".py"):
         session.run("mypy", pyfile, "--strict", silent=SILENT)
 
+    # lint example plugins
+    lint_plugins_in_dir(session=session, directory="examples/plugins")
+
     # bandit static security analysis
-    session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".")
+    session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".", silent=SILENT)
 
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
+    lint_plugins_in_dir(session, "plugins")
+
+
+def lint_plugins_in_dir(session, directory: str) -> None:
 
     install_cmd = ["pip", "install", "-e"]
     install_hydra(session, install_cmd)
-    plugins = select_plugins(session)
+    plugins = select_plugins(session, directory=directory)
 
     # plugin linting requires the plugins and their dependencies to be installed
     for plugin in plugins:
-        cmd = install_cmd + [os.path.join("plugins", plugin.path)]
+        cmd = install_cmd + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
 
     install_dev_deps(session)
 
-    session.run("flake8", "--config", ".flake8", "plugins")
+    session.run("flake8", "--config", ".flake8", directory)
     # Mypy for plugins
     for plugin in plugins:
-        session.chdir(os.path.join("plugins", plugin.path))
+        path = os.path.join(directory, plugin.path)
+        session.chdir(path)
         session.run(*_black_cmd(), silent=SILENT)
         session.run(*_isort_cmd(), silent=SILENT)
-        session.run("mypy", ".", "--strict", "--namespace-packages", silent=SILENT)
         session.chdir(BASE)
+
+        files = []
+        for file in ["tests", "example"]:
+            abs = os.path.join(path, file)
+            if os.path.exists(abs):
+                files.append(abs)
+
+        session.run(
+            "mypy",
+            "--strict",
+            f"{path}/hydra_plugins",
+            "--config-file",
+            f"{BASE}/.mypy.ini",
+            silent=SILENT,
+        )
+        session.run(
+            "mypy",
+            "--strict",
+            "--namespace-packages",
+            "--config-file",
+            f"{BASE}/.mypy.ini",
+            *files,
+            silent=SILENT,
+        )
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -300,7 +330,7 @@ def test_tools(session):
     session.chdir(BASE)
 
 
-def _get_standalone_apps_dir():
+def _get_standalone_apps_dirs():
     standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
     apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
     apps.append(f"{BASE}/examples/advanced/hydra_app_example")
@@ -323,7 +353,7 @@ def test_core(session, install_cmd):
     else:
         session.log("Skipping Hydra core tests")
 
-    apps = _get_standalone_apps_dir()
+    apps = _get_standalone_apps_dirs()
     session.log("Testing standalone apps")
     for subdir in apps:
         session.chdir(subdir)
@@ -331,6 +361,13 @@ def test_core(session, install_cmd):
         run_pytest(session, ".")
 
     session.chdir(BASE)
+
+    test_plugins_in_directory(
+        session,
+        install_cmd=install_cmd,
+        directory="examples/plugins",
+        test_hydra_core=False,
+    )
 
 
 @nox.session(python=PYTHON_VERSIONS)
@@ -340,12 +377,18 @@ def test_core(session, install_cmd):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_plugins(session, install_cmd):
+    test_plugins_in_directory(session, directory="plugins", test_hydra_core=True)
+
+
+def test_plugins_in_directory(
+    session, install_cmd, directory: str, test_hydra_core: bool
+):
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
-    selected_plugin = select_plugins(session)
+    selected_plugin = select_plugins(session, directory=directory)
     for plugin in selected_plugin:
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
+        cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
         if not SILENT:
             session.run("pipdeptree", "-p", plugin.name)
@@ -358,15 +401,16 @@ def test_plugins(session, install_cmd):
         session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
-    if not SKIP_CORE_TESTS:
-        run_pytest(session, "tests")
-    else:
-        session.log("Skipping Hydra core tests")
+    if test_hydra_core:
+        if not SKIP_CORE_TESTS:
+            run_pytest(session, "tests")
+        else:
+            session.log("Skipping Hydra core tests")
 
     # Run tests for all installed plugins
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
-        session.chdir(os.path.join(BASE, "plugins", plugin.path))
+        session.chdir(os.path.join(BASE, directory, plugin.path))
         run_pytest(session)
 
 

@@ -4,12 +4,13 @@ import os
 import time
 
 import hydra
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 
 
 @hydra.main(config_name="config")
-def my_app(cfg):
+def my_app(cfg: DictConfig) -> None:
     log.info(f"Process ID {os.getpid()} executing task {cfg.task} ...")
 
     time.sleep(1)
