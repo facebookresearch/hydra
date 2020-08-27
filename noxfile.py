@@ -129,20 +129,13 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     Considers the current Python version and operating systems against the supported ones,
     as well as the user plugins selection (via the PLUGINS environment variable).
     """
-
     assert session.python is not None, "Session python version is not specified"
-    blacklist = [".isort.cfg"]
-    # example_plugins = [
-    #     {"dir_name": x, "path": f"examples/{x}"}
-    #     for x in sorted(os.listdir(os.path.join(BASE, "examples/plugins")))
-    #     if x not in blacklist
-    # ]
+    blacklist = [".isort.cfg", "examples"]
     plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
-    # available_plugins = plugins + example_plugins
 
     ret = []
     skipped = []
@@ -263,7 +256,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
 
     install_cmd = ["pip", "install", "-e"]
     install_hydra(session, install_cmd)
-    plugins = select_plugins(session, directory=directory)
+    plugins = select_plugins(session=session, directory=directory)
 
     # plugin linting requires the plugins and their dependencies to be installed
     for plugin in plugins:
@@ -377,7 +370,12 @@ def test_core(session, install_cmd):
     ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
 )
 def test_plugins(session, install_cmd):
-    test_plugins_in_directory(session, directory="plugins", test_hydra_core=True)
+    test_plugins_in_directory(
+        session=session,
+        install_cmd=install_cmd,
+        directory="plugins",
+        test_hydra_core=True,
+    )
 
 
 def test_plugins_in_directory(
@@ -386,7 +384,7 @@ def test_plugins_in_directory(
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
-    selected_plugin = select_plugins(session, directory=directory)
+    selected_plugin = select_plugins(session=session, directory=directory)
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
@@ -425,22 +423,26 @@ def coverage(session):
     _upgrade_basic(session)
     session.install("coverage", "pytest")
     install_hydra(session, ["pip", "install", "-e"])
-    session.run("coverage", "erase")
-
-    selected_plugins = select_plugins(session)
-    for plugin in selected_plugins:
-        session.run(
-            "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT
-        )
-
     session.run("coverage", "erase", env=coverage_env)
-    # run plugin coverage
-    for plugin in selected_plugins:
-        session.chdir(os.path.join("plugins", plugin.path))
-        cov_args = ["coverage", "run", "--append", "-m"]
-        cov_args.extend(pytest_args())
-        session.run(*cov_args, silent=SILENT, env=coverage_env)
-        session.chdir(BASE)
+
+    for directory in ["plugins", "examples/plugins"]:
+        selected_plugins = select_plugins(session=session, directory=directory)
+        for plugin in selected_plugins:
+            session.run(
+                "pip",
+                "install",
+                "-e",
+                os.path.join(directory, plugin.path),
+                silent=SILENT,
+            )
+
+        # run plugin coverage
+        for plugin in selected_plugins:
+            session.chdir(os.path.join(directory, plugin.path))
+            cov_args = ["coverage", "run", "--append", "-m"]
+            cov_args.extend(pytest_args())
+            session.run(*cov_args, silent=SILENT, env=coverage_env)
+            session.chdir(BASE)
 
     # run hydra-core coverage
     session.run(
