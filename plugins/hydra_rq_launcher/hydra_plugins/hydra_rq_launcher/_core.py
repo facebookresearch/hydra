@@ -47,7 +47,7 @@ def execute_job(
 
 
 def launch(
-    launcher: RQLauncher, job_overrides: Sequence[Sequence[str]], initial_job_idx: int,
+    launcher: RQLauncher, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
 ) -> JobReturn:
     """
     :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.

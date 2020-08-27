@@ -30,7 +30,7 @@ from hydra.types import RunMode
 
 
 class UnspecifiedMandatoryDefault(Exception):
-    def __init__(self, config_group: str,) -> None:
+    def __init__(self, config_group: str) -> None:
         self.config_group = config_group
 
 
@@ -80,7 +80,7 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     def split_by_override_type(
-        self, overrides: List[Override],
+        self, overrides: List[Override]
     ) -> Tuple[List[Override], List[Override]]:
         config_group_overrides = []
         config_overrides = []
@@ -133,7 +133,7 @@ class ConfigLoaderImpl(ConfigLoader):
                         )
 
                     self.missing_config_error(
-                        config_name=None, msg=msg, with_search_path=False,
+                        config_name=None, msg=msg, with_search_path=False
                     )
 
     def load_configuration(
@@ -345,7 +345,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
     @staticmethod
     def find_matches(
-        key_to_defaults: Dict[str, List[IndexedDefaultElement]], override: Override,
+        key_to_defaults: Dict[str, List[IndexedDefaultElement]], override: Override
     ) -> List[IndexedDefaultElement]:
         matches: List[IndexedDefaultElement] = []
         for default in key_to_defaults[override.key_or_group]:
@@ -355,7 +355,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
     @staticmethod
     def _apply_overrides_to_defaults(
-        overrides: List[Override], defaults: List[DefaultElement],
+        overrides: List[Override], defaults: List[DefaultElement]
     ) -> None:
 
         key_to_defaults: Dict[str, List[IndexedDefaultElement]] = defaultdict(list)
@@ -603,7 +603,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             # Add as placeholders for hydra and defaults to allow
                             # overriding them from the config even if not in schema
                             schema.config = OmegaConf.merge(
-                                {"hydra": None, "defaults": []}, schema.config,
+                                {"hydra": None, "defaults": []}, schema.config
                             )
 
                         merged = OmegaConf.merge(schema.config, ret.config)
@@ -880,7 +880,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
 
 def get_overrides_dirname(
-    overrides: List[Override], exclude_keys: List[str], item_sep: str, kv_sep: str,
+    overrides: List[Override], exclude_keys: List[str], item_sep: str, kv_sep: str
 ) -> str:
     lines = []
     for override in overrides:

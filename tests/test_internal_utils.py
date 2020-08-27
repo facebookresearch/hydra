@@ -138,7 +138,5 @@ def test_object_conf_deprecated() -> None:
         "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
     )
 
-    with pytest.warns(
-        expected_warning=UserWarning, match=msg,
-    ):
+    with pytest.warns(expected_warning=UserWarning, match=msg):
         ObjectConf(target="foo")

@@ -10,7 +10,7 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
 class ConfigSourceTestSuite:
-    def test_not_available(self, type_: Type[ConfigSource], path: str,) -> None:
+    def test_not_available(self, type_: Type[ConfigSource], path: str) -> None:
         scheme = type_(provider="foo", path=path).scheme()
         # Test is meaningless for StructuredConfigSource
         if scheme == "structured":
@@ -67,19 +67,19 @@ class ConfigSourceTestSuite:
             ("", ObjectType.GROUP, ["dataset", "level1", "optimizer"]),
             ("dataset", ObjectType.GROUP, []),
             ("optimizer", ObjectType.GROUP, []),
-            ("level1", ObjectType.GROUP, ["level2"],),
+            ("level1", ObjectType.GROUP, ["level2"]),
             ("level1/level2", ObjectType.GROUP, []),
             # Configs
             ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
-            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"],),
-            ("optimizer", ObjectType.CONFIG, ["adam", "nesterov"],),
-            ("level1", ObjectType.CONFIG, [],),
+            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
+            ("optimizer", ObjectType.CONFIG, ["adam", "nesterov"]),
+            ("level1", ObjectType.CONFIG, []),
             ("level1/level2", ObjectType.CONFIG, ["nested1", "nested2"]),
             # both
             ("", None, ["config_without_group", "dataset", "level1", "optimizer"]),
             ("dataset", None, ["cifar10", "imagenet"]),
             ("optimizer", None, ["adam", "nesterov"]),
-            ("level1", None, ["level2"],),
+            ("level1", None, ["level2"]),
             ("level1/level2", None, ["nested1", "nested2"]),
             ("", None, ["config_without_group", "dataset", "level1", "optimizer"]),
             ("dataset", None, ["cifar10", "imagenet"]),
@@ -199,14 +199,14 @@ class ConfigSourceTestSuite:
         assert cfg.config == expected_result
 
     def test_default_package_for_primary_config(
-        self, type_: Type[ConfigSource], path: str,
+        self, type_: Type[ConfigSource], path: str
     ) -> None:
         src = type_(provider="foo", path=path)
         cfg = src.load_config(config_path="primary_config", is_primary_config=True)
         assert cfg.header["package"] == ""
 
     def test_primary_config_with_non_global_package_errors(
-        self, type_: Type[ConfigSource], path: str,
+        self, type_: Type[ConfigSource], path: str
     ) -> None:
         src = type_(provider="foo", path=path)
         with raises(

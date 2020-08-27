@@ -364,7 +364,7 @@ class TestConfigLoader:
             name="config", node=TopLevelConfig, provider="this_test"
         )
         ConfigStore.instance().store(
-            group="db", name="mysql", node=MySQLConfig, provider="this_test",
+            group="db", name="mysql", node=MySQLConfig, provider="this_test"
         )
 
         config_loader = ConfigLoaderImpl(
@@ -712,7 +712,7 @@ def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
     )
 
     ConfigStore.instance().store(
-        name="db/mysql", node=MySQLConfig, provider="this_test",
+        name="db/mysql", node=MySQLConfig, provider="this_test"
     )
 
     config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))

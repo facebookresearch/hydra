@@ -191,7 +191,7 @@ class CoreAxSweeper(Sweeper):
                 )
 
                 self.sweep_over_batches(
-                    ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch,
+                    ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch
                 )
 
                 num_trials_so_far += len(batch_of_trials_to_launch)
@@ -207,7 +207,7 @@ class CoreAxSweeper(Sweeper):
             current_parallelism_index += 1
 
         best_parameters = {
-            normalize_key(key, str_to_replace=".", str_to_replace_with="_",): value
+            normalize_key(key, str_to_replace=".", str_to_replace_with="_"): value
             for key, value in best_parameters.items()
         }
         results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
@@ -218,7 +218,7 @@ class CoreAxSweeper(Sweeper):
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType,
+        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None

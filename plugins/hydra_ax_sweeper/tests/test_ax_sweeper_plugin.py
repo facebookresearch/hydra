@@ -110,7 +110,7 @@ def test_jobs_configured_via_config(hydra_sweep_runner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd(hydra_sweep_runner,) -> None:
+def test_jobs_configured_via_cmd(hydra_sweep_runner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -160,7 +160,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner) -> None:
         assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
 
 
-def test_configuration_set_via_cmd_and_default_config(hydra_sweep_runner,) -> None:
+def test_configuration_set_via_cmd_and_default_config(hydra_sweep_runner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -221,12 +221,8 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1], type = float" in result
 
 
-@pytest.mark.parametrize(
-    "overrides", [[], ["quadratic.x_arg=-1:1"]],
-)
-def test_jobs_configured_via_nested_config(
-    hydra_sweep_runner, overrides: list,
-) -> None:
+@pytest.mark.parametrize("overrides", [[], ["quadratic.x_arg=-1:1"]])
+def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,

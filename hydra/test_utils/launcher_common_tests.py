@@ -596,7 +596,7 @@ class IntegrationTestSuite:
         )
 
     def test_get_orig_dir_multirun(
-        self, tmpdir: Path, task_launcher_cfg: DictConfig, extra_flags: List[str],
+        self, tmpdir: Path, task_launcher_cfg: DictConfig, extra_flags: List[str]
     ) -> None:
         overrides = extra_flags
         task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore

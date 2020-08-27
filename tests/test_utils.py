@@ -119,7 +119,10 @@ def test_get_class(path: str, expected_type: type) -> None:
         ),
         # Check builtins
         pytest.param(
-            {"_target_": "builtins.str", "object": 43}, {}, "43", id="builtin_types",
+            {"_target_": "builtins.str", "object": 43},
+            {},
+            "43",
+            id="builtin_types",
         ),
         # Check that none is instantiated correctly
         pytest.param(None, {}, None, id="instantiate_none"),
@@ -351,7 +354,8 @@ def test_instantiate_bad_adam_conf() -> None:
         "\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
     )
     with pytest.raises(
-        InstantiationException, match=re.escape(msg),
+        InstantiationException,
+        match=re.escape(msg),
     ):
         utils.instantiate(BadAdamConf())
 
@@ -465,7 +469,12 @@ def test_pass_extra_variables_objectconf() -> None:
             id="builtin_types",
         ),
         # Check that none is instantiated correctly
-        pytest.param(None, {}, None, id="instantiate_none",),
+        pytest.param(
+            None,
+            {},
+            None,
+            id="instantiate_none",
+        ),
         # passthrough
         pytest.param(
             {"target": "tests.AClass"},

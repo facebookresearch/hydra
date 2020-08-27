@@ -28,7 +28,7 @@ class BasicLauncherConf(TargetConf):
 
 
 ConfigStore.instance().store(
-    group="hydra/launcher", name="basic", node=BasicLauncherConf, provider="hydra",
+    group="hydra/launcher", name="basic", node=BasicLauncherConf, provider="hydra"
 )
 
 

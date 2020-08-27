@@ -30,8 +30,7 @@ def execute_job(
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
 ) -> JobReturn:
-    """Calls `run_job` in parallel
-    """
+    """Calls `run_job` in parallel"""
     setup_globals()
     Singleton.set_state(singleton_state)
 
@@ -77,7 +76,8 @@ def launch(
 
     log.info(
         "Joblib.Parallel({}) is launching {} jobs".format(
-            ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]), len(job_overrides),
+            ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
+            len(job_overrides),
         )
     )
     log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))

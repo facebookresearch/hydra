@@ -19,7 +19,7 @@ chdir_plugin_root()
 
 
 @pytest.mark.parametrize(
-    "cls", [submitit_launcher.LocalLauncher, submitit_launcher.SlurmLauncher],
+    "cls", [submitit_launcher.LocalLauncher, submitit_launcher.SlurmLauncher]
 )
 def test_discovery(cls: Type[Launcher]) -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
@@ -27,7 +27,7 @@ def test_discovery(cls: Type[Launcher]) -> None:
 
 
 @pytest.mark.parametrize(
-    "launcher_name, overrides", [("submitit_local", ["hydra.launcher.timeout_min=2"])],
+    "launcher_name, overrides", [("submitit_local", ["hydra.launcher.timeout_min=2"])]
 )
 class TestSubmititLauncher(LauncherTestSuite):
     pass

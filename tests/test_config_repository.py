@@ -148,12 +148,12 @@ class TestConfigRepository:
         ("#@package{sep}foo.bar ", {"package": "foo.bar"}),
         (
             "#@package{sep}foo.bar bah",
-            pytest.raises(ValueError, match=re.escape("Too many components in"),),
+            pytest.raises(ValueError, match=re.escape("Too many components in")),
         ),
         (
             "#@package",
             pytest.raises(
-                ValueError, match=re.escape("Expected header format: KEY VALUE, got"),
+                ValueError, match=re.escape("Expected header format: KEY VALUE, got")
             ),
         ),
         (
