@@ -927,7 +927,7 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Could not add. An item matching 'db' is already in the defaults list"
+                    "Could not add 'db=mysql'. 'db' is already in the defaults list."
                 ),
             ),
             id="adding_duplicate_item",
@@ -949,7 +949,7 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Could not add. An item matching 'db@src' is already in the defaults list"
+                    "Could not add 'db@src=mysql'. 'db@src' is already in the defaults list."
                 ),
             ),
             id="adding_duplicate_item",

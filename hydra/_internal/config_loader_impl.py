@@ -414,7 +414,8 @@ class ConfigLoaderImpl(ConfigLoader):
                 if len(matches) > 0:
                     src = override.get_source_item()
                     raise ConfigCompositionException(
-                        f"Could not add. An item matching '{src}' is already in the defaults list."
+                        f"Could not add '{src}={override.get_value_string()}'."
+                        f" '{src}' is already in the defaults list."
                     )
                 assert value is not None
                 defaults.append(
