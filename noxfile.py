@@ -132,22 +132,22 @@ def select_plugins(session) -> List[Plugin]:
 
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg"]
-    example_plugins = [
-        {"dir_name": x, "path": f"examples/{x}"}
-        for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
-        if x not in blacklist
-    ]
+    # example_plugins = [
+    #     {"dir_name": x, "path": f"examples/{x}"}
+    #     for x in sorted(os.listdir(os.path.join(BASE, "examples/plugins")))
+    #     if x not in blacklist
+    # ]
     plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
         if x != "examples"
         if x not in blacklist
     ]
-    available_plugins = plugins + example_plugins
+    # available_plugins = plugins + example_plugins
 
     ret = []
     skipped = []
-    for plugin in available_plugins:
+    for plugin in plugins:
         if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
