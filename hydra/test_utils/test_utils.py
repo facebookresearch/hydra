@@ -384,7 +384,7 @@ def normalize_newlines(s: str) -> str:
 
 
 def assert_text_same(
-    from_line: str, to_line: str, from_name="Expected", to_name="Actual"
+    from_line: str, to_line: str, from_name: str = "Expected", to_name: str = "Actual"
 ) -> None:
     from_line = normalize_newlines(from_line)
     to_line = normalize_newlines(to_line)

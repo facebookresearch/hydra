@@ -48,7 +48,7 @@ def test_custom_help(tmpdir: Path) -> None:
             Use --hydra-help to view Hydra specific help
 """
     )
-    assert_text_same(actual=result, expected=expected)
+    assert_text_same(from_line=expected, to_line=result)
 
 
 def test_job_name_no_config_override(tmpdir: Path) -> None:

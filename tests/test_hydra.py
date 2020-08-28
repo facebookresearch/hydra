@@ -1103,7 +1103,7 @@ class TestTaskRunnerLogging:
         logger.info("test_2")
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "expected",
     [
         (
