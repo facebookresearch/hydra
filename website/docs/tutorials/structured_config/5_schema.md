@@ -5,14 +5,14 @@ title: Structured config schema
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/5_structured_config_schema/)
 
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
-When Hydra loads a configuration, it looks for a config with the same name in the `ConfigStore`.
+
+When Hydra loads a config file, it looks in the `ConfigStore` for a Structured Config with a matching name and group.
 If found, it is used as the schema for the newly loaded config.
+ 
+This page shows how to validate `db/mysql.yaml` and `db/postgresql.yaml` files against a pre-defined schema.
 
-This is an example of defining and storing one schema for db/mysql and another for db/postgresql.
-
-Given a config directory structure like:
+Given the config directory structure:
 ```text
-$ tree conf/
 conf/
 ├── config.yaml
 └── db
@@ -20,7 +20,10 @@ conf/
     └── postgresql.yaml
 ```
 
-The Structured Configs below are stored as db/mysql and db/postgresql. They will be used as schema
+We can add Structured Configs for `mysql.yaml` and `postgresql.yaml`, providing a schema for validating them.
+
+
+The Structured Configs below are stored as `db/mysql` and `db/postgresql`. They will be used as schema
 when we load their corresponding config files.
 
 ```python title="my_app.py"
@@ -57,8 +60,8 @@ cs.store(name="config", node=Config)
 cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
-# The config name matches both config.yaml under the conf directory and and the stored config
-# stored in the ConfigStore.
+# The config name matches both 'config.yaml' under the conf directory
+# and 'config' stored in the ConfigStore.
 # config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema from the Config class
 @hydra.main(config_path="conf", config_name="config")
@@ -79,7 +82,7 @@ Value 'fail' could not be converted to Integer
         object_type=MySQLConfig
 ```
 
-The defaults list in this example is contained in the config.yaml file:
+Unlike the example in the previous page, the Defaults List here is `config.yaml` and **not** in the `Config` class.
 ```yaml title="config.yaml"
 defaults:
   - db: mysql
