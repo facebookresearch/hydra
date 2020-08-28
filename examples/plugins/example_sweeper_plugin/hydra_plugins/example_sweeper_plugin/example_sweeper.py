@@ -1,15 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from dataclasses import dataclass
+
 import itertools
 import logging
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
-from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
@@ -25,17 +26,18 @@ from omegaconf import DictConfig, OmegaConf
 log = logging.getLogger(__name__)
 
 
-class ExampleSweeperSearchPathPlugin(SearchPathPlugin):
-    """
-    This plugin is allowing configuration files provided by the ExampleSweeper plugin to be discovered
-    and used once the ExampleSweeper plugin is installed
-    """
+@dataclass
+class LauncherConfig:
+    _target_: str = (
+        "hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper"
+    )
+    # max number of jobs to run in the same batch.
+    max_batch_size: Optional[int] = None
+    foo: int = 10
+    bar: str = "abcde"
 
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        # Appends the search path for this plugin to the end of the search path
-        search_path.append(
-            "hydra-example-sweeper", "pkg://hydra_plugins.example_sweeper_plugin.conf"
-        )
+
+ConfigStore.instance().store(group="hydra/sweeper", name="example", node=LauncherConfig)
 
 
 class ExampleSweeper(Sweeper):
