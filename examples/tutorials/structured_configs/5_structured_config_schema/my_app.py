@@ -44,8 +44,8 @@ cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 
-# The config name matches both config.yaml under the conf directory and and the stored config
-# stored in the ConfigStore.
+# The config name matches both 'config.yaml' under the conf directory
+# and 'config' stored in the ConfigStore.
 # config.yaml will compose in db: mysql by default (per the defaults list),
 # and it will be validated against the schema from the Config class
 @hydra.main(config_path="conf", config_name="config")
