@@ -198,12 +198,16 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     return search_path
 
 
+def _is_env_set(name: str) -> bool:
+    return name in os.environ and os.environ[name] == "1"
+
+
 def run_and_report(func: Any) -> Any:
     try:
         return func()
     except Exception as ex:
-        if "HYDRA_FULL_ERROR" in os.environ and os.environ["HYDRA_FULL_ERROR"] == "1":
-            print_exc()
+        if _is_env_set("HYDRA_FULL_ERROR"):
+            raise ex
         else:
             if isinstance(ex, CompactHydraException):
                 sys.stderr.write(str(ex) + os.linesep)

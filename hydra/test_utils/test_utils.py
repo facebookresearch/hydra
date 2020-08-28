@@ -359,7 +359,7 @@ def run_with_error(cmd: Any, env: Any = None) -> str:
     with Popen(cmd, stdout=PIPE, stderr=PIPE, env=env) as p:
         _stdout, stderr = p.communicate()
         err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
-        assert p.returncode == 1
+        assert p.returncode != 0
     return err
 
 
@@ -383,22 +383,24 @@ def normalize_newlines(s: str) -> str:
     return s.replace("\r\n", "\n").replace("\r", "\n")
 
 
-def assert_text_same(actual: str, expected: str) -> None:
-    actual = normalize_newlines(actual)
-    expected = normalize_newlines(expected)
+def assert_text_same(
+    from_line: str, to_line: str, from_name="Expected", to_name="Actual"
+) -> None:
+    from_line = normalize_newlines(from_line)
+    to_line = normalize_newlines(to_line)
     lines = [
         line
         for line in unified_diff(
-            a=actual.splitlines(),
-            b=expected.splitlines(),
-            fromfile="Expected",
-            tofile="Actual",
+            a=from_line.splitlines(),
+            b=to_line.splitlines(),
+            fromfile=from_name,
+            tofile=to_name,
         )
     ]
 
     diff = "\n".join(lines)
     if len(diff) > 0:
-        print("------------ DIFF -------------")
+        print("\n------------ DIFF -------------")
         print(diff)
         print("-------------------------------")
         assert False, "Mismatch between expected and actual text"

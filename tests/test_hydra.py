@@ -5,6 +5,7 @@ import subprocess
 import sys
 from logging import getLogger
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, List, Optional, Set
 
 import pytest
@@ -14,6 +15,7 @@ from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
+    assert_text_same,
     chdir_hydra_root,
     get_run_output,
     integration_test,
@@ -1099,3 +1101,32 @@ class TestTaskRunnerLogging:
     def test_2(self) -> None:
         logger = getLogger(__name__)
         logger.info("test_2")
+
+
+@pytest.mark.parametrize(
+    "expected",
+    [
+        (
+            dedent(
+                """\
+                Traceback (most recent call last):
+                  File "my_app.py", line 9, in my_app
+                    1 / 0
+                ZeroDivisionError: division by zero
+
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+                """
+            )
+        ),
+    ],
+)
+def test_hydra_exception(monkeypatch: Any, tmpdir: Any, expected: str) -> None:
+    monkeypatch.chdir("tests/test_apps/app_exception")
+    ret = run_with_error(["my_app.py", f"hydra.run.dir={tmpdir}"])
+
+    assert_text_same(
+        from_line=expected,
+        to_line=ret,
+        from_name="Expected output",
+        to_name="Actual output",
+    )
