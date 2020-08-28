@@ -5,7 +5,7 @@ sidebar_label: Hydra plugins
 ---
 
 Hydra can be extended via plugins.
-You can see example plugins [here](https://github.com/facebookresearch/hydra/tree/master/plugins/examples).
+You can see example plugins [here](https://github.com/facebookresearch/hydra/tree/master/examples/plugins).
 
 <div class="alert alert--info" role="alert">
 <strong>NOTE</strong>:

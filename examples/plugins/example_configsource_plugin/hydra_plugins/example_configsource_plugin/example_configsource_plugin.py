@@ -8,7 +8,7 @@ from omegaconf import OmegaConf
 
 
 class ConfigSourceExample(ConfigSource):
-    def __init__(self, provider: str, path: str) -> None:
+    def __init__(self, provider: str, path: str):
         super().__init__(provider=provider, path=path)
         self.headers: Dict[str, Dict[str, str]] = {
             "package_test/explicit.yaml": {"package": "a.b"},
