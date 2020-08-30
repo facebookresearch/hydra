@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import TargetConf
 from omegaconf import II
 
 
@@ -40,7 +39,7 @@ class EnqueueConf:
 
 
 @dataclass
-class RQLauncherConf(TargetConf):
+class RQLauncherConf:
     _target_: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
     # enqueue configuration
     enqueue: EnqueueConf = EnqueueConf()

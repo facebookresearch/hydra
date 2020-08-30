@@ -33,7 +33,7 @@ class TargetConf:
     Use by subclassing and adding fields
     e.g:
     @dataclass
-    class UserConf(TargetConf):
+    class UserConf:
         _target_ : str = "module.User"
         name: str = MISSING
         age: int = MISSING
