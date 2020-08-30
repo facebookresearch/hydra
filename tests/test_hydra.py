@@ -885,15 +885,32 @@ def test_module_run(
         pytest.param(
             ["test.param=1,2"],
             True,
-            """Ambiguous value for argument 'test.param=1,2'
-1. To use it as a list, use key=[value1,value2]
-2. To use it as string, quote the value: key=\\'value1,value2\\'
-3. To sweep over it, add --multirun to your command line
+            dedent(
+                """\
+            Ambiguous value for argument 'test.param=1,2'
+            1. To use it as a list, use key=[value1,value2]
+            2. To use it as string, quote the value: key=\\'value1,value2\\'
+            3. To sweep over it, add --multirun to your command line
 
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",
+            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
+            ),
             id="run:choice_sweep",
         ),
-        pytest.param(["test.param=[1,2]"], False, "[1, 2]", id="run:list_value"),
+        pytest.param(
+            ["test.param=[1,2]"],
+            True,
+            dedent(
+                """\
+                Error merging override test.param=[1,2]
+                Value '[1, 2]' could not be converted to Integer
+                \tfull_key: test.param
+                \treference_type=Optional[TestConfig]
+                \tobject_type=TestConfig
+
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
+            ),
+            id="run:list_value",
+        ),
         pytest.param(["test.param=1", "-m"], False, "1", id="multirun:value"),
         pytest.param(
             ["test.param=1,2", "-m"], False, "1\n2", id="multirun:choice_sweep"

@@ -44,7 +44,7 @@ def test_specializing_config_example(
 def test_instantiate_objects_example(
     monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
 ) -> None:
-    monkeypatch.chdir("examples/patterns/instantiate/objects/")
+    monkeypatch.chdir("examples/patterns/instantiate_objects/")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
     result = get_run_output(cmd)
     assert result == output
@@ -60,7 +60,7 @@ def test_instantiate_objects_example(
 def test_instantiate_structured_config_example(
     monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
 ) -> None:
-    monkeypatch.chdir("examples/patterns/instantiate/structured_config/")
+    monkeypatch.chdir("examples/patterns/instantiate_structured_config/")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
     result = get_run_output(cmd)
     assert result == output
