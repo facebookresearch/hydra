@@ -5,7 +5,7 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Union
+from typing import List
 
 import nox
 from nox.logger import logger
@@ -67,23 +67,11 @@ def _upgrade_basic(session):
     )
 
 
-def find_files(path: str, ext: str = ".py", exclude: Union[List[str], str] = []):
-    if isinstance(exclude, str):
-        exclude_list = [exclude]
-    else:
-        exclude_list = exclude
-
-    def excluded(file: str) -> bool:
-        for item in exclude_list:
-            if file.startswith(item):
-                return True
-        return False
-
-    for root, folders, files in os.walk(path):
-        for filename in folders + files:
-            if filename.endswith(ext):
-                if excluded(filename):
-                    yield os.path.join(root, filename)
+def find_dirs(path: str):
+    for file in os.listdir(path):
+        fullname = os.path.join(path, file)
+        if os.path.isdir(fullname):
+            yield fullname
 
 
 def install_hydra(session, cmd):
@@ -236,9 +224,19 @@ def lint(session):
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", ".")
-    # Mypy for examples
-    for pyfile in find_files(path="examples", ext=".py"):
-        session.run("mypy", pyfile, "--strict", silent=SILENT)
+
+    example_dirs = [
+        "examples/advanced/",
+        "examples/configure_hydra",
+        "examples/patterns",
+        "examples/tutorials/basic/your_first_hydra_app",
+        "examples/tutorials/basic/running_your_hydra_app",
+        "examples/tutorials/structured_configs/",
+    ]
+    for edir in example_dirs:
+        dirs = find_dirs(path=edir)
+        for d in dirs:
+            session.run("mypy", d, "--strict", silent=SILENT)
 
     # lint example plugins
     lint_plugins_in_dir(session=session, directory="examples/plugins")
