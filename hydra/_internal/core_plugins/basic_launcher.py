@@ -17,13 +17,13 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.types import TargetConf, TaskFunction
+from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
 
 
 @dataclass
-class BasicLauncherConf(TargetConf):
+class BasicLauncherConf:
     _target_: str = "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
 
 

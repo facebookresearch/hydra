@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import dataclasses
 import logging
 import os
 from pathlib import Path
@@ -12,9 +11,9 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
-from omegaconf import DictConfig, open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict
 
-from .config import BaseTarget
+from .config import BaseQueueConf
 
 log = logging.getLogger(__name__)
 
@@ -114,7 +113,7 @@ class BaseSubmititLauncher(Launcher):
         executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
 
         # specify resources/parameters
-        baseparams = set(dataclasses.asdict(BaseTarget()).keys())
+        baseparams = set(OmegaConf.structured(BaseQueueConf).keys())
         params = {
             x if x in baseparams else f"{self._EXECUTOR}_{x}": y
             for x, y in params.items()
