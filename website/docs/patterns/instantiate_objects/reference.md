@@ -7,7 +7,7 @@ sidebar_label: Reference
 Hydra provides `hydra.utils.call()` (and its alias `hydra.utils.instantiate()`) for instantiating objects and calling functions. Prefer `instantiate` for creating objects and `call` for invoking functions.
 
 Call/instantiate supports:
-- Class names : Call the __init__ method
+- Class names : Call the `__init__` method
 - Callables like functions, static functions, class methods and objects
 
 ```python
