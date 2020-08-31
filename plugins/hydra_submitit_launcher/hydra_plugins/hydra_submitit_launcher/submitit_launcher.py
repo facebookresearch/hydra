@@ -11,7 +11,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
-from omegaconf import DictConfig, open_dict, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from .config import BaseQueueConf
 
