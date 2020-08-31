@@ -4,9 +4,6 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from omegaconf import DictConfig, OmegaConf
-from omegaconf._utils import is_structured_config
-
 from hydra._internal.utils import (
     _call_callable,
     _get_cls_name,
@@ -16,13 +13,16 @@ from hydra._internal.utils import (
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
 from hydra.types import TargetConf
+from omegaconf import DictConfig, OmegaConf
+from omegaconf._utils import is_structured_config
 
 log = logging.getLogger(__name__)
 
 
 def call(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
-    :param config: An object describing what to call and what params to use. needs to have a _target_ field.
+    :param config: An object describing what to call and what params to use.
+                   Must have a _target_ field.
     :param args: optional positional parameters pass-through
     :param kwargs: optional named parameters pass-through
     :return: the return value from the specified class or method

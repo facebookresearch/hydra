@@ -4,8 +4,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Sequence
 
-from omegaconf import DictConfig, open_dict
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.hydra_config import HydraConfig
@@ -17,13 +15,14 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.types import TargetConf, TaskFunction
+from hydra.types import TaskFunction
+from omegaconf import DictConfig, open_dict
 
 log = logging.getLogger(__name__)
 
 
 @dataclass
-class BasicLauncherConf(TargetConf):
+class BasicLauncherConf:
     _target_: str = "hydra._internal.core_plugins.basic_launcher.BasicLauncher"
 
 
