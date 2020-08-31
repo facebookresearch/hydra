@@ -23,6 +23,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
+from omegaconf import DictConfig, OmegaConf
+
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -32,7 +34,6 @@ from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, OmegaConf
 
 
 @dataclass

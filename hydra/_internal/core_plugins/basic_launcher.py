@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Sequence
 
+from omegaconf import DictConfig, open_dict
+
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.hydra_config import HydraConfig
@@ -16,7 +18,6 @@ from hydra.core.utils import (
 )
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, open_dict
 
 log = logging.getLogger(__name__)
 
