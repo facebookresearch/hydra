@@ -22,8 +22,7 @@ log = logging.getLogger(__name__)
 
 def call(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
-    :param config: An object describing what to call and what params to use.
-                   Must have a _target_ field.
+    :param config: An object describing what to call and what params to use. needs to have a _target_ field.
     :param args: optional positional parameters pass-through
     :param kwargs: optional named parameters pass-through
     :return: the return value from the specified class or method

@@ -3,10 +3,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import TargetConf
 
 
 @dataclass
-class JobLibLauncherConf:
+class JobLibLauncherConf(TargetConf):
     _target_: str = "hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher"
 
     # maximum number of concurrently running jobs. if -1, all CPUs are used

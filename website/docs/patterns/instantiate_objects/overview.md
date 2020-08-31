@@ -46,25 +46,21 @@ conf/
     └── postgresql.yaml
 ```
 
-Config files:
-<div className="row">
-
-<div className="col col--6">
-
-```yaml title="db/mysql.yaml"
+Config file: `config.yaml`
+```yaml
+defaults:
+  - db: mysql
+```
+Config file: `db/mysql.yaml`
+```yaml
 # @package _group_
 _target_: my_app.MySQLConnection
 host: localhost
 user: root
 password: 1234
-
 ```
-
-</div>
-
-<div className="col col--6">
-
-```yaml title="db/postgresql.yaml"
+db/postgresql.yaml:
+```yaml
 # @package _group_
 _target_: my_app.PostgreSQLConnection
 host: localhost
@@ -72,17 +68,6 @@ user: root
 password: 1234
 database: tutorial
 ```
-
-</div>
-</div>
-
-
-```yaml title="config.yaml"
-defaults:
-  - db: mysql
-```
-
-
 
 With this, you can instantiate the object from the configuration with a single line of code:
 ```python

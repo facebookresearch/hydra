@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import TargetConf
 
 
 @dataclass
@@ -65,7 +66,7 @@ class OptimConf:
 
 
 @dataclass
-class NevergradSweeperConf:
+class NevergradSweeperConf(TargetConf):
     _target_: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
 
     # configuration of the optimizer

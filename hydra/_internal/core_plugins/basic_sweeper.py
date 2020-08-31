@@ -33,11 +33,11 @@ from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import TargetConf, TaskFunction
 
 
 @dataclass
-class BasicSweeperConf:
+class BasicSweeperConf(TargetConf):
     _target_: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
     max_batch_size: Optional[int] = None
 

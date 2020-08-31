@@ -3,10 +3,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import TargetConf
 
 
 @dataclass
-class BaseQueueConf:
+class BaseTarget(TargetConf):
     """Configuration shared by all executors"""
 
     submitit_folder: str = "${hydra.sweep.dir}/.submitit/%j"
@@ -28,7 +29,7 @@ class BaseQueueConf:
 
 
 @dataclass
-class SlurmQueueConf(BaseQueueConf):
+class SlurmTarget(BaseTarget):
     """Slurm configuration overrides and specific parameters"""
 
     _target_: str = (
@@ -60,7 +61,7 @@ class SlurmQueueConf(BaseQueueConf):
 
 
 @dataclass
-class LocalQueueConf(BaseQueueConf):
+class LocalTarget(BaseTarget):
     _target_: str = (
         "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher"
     )
@@ -70,7 +71,7 @@ class LocalQueueConf(BaseQueueConf):
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_local",
-    node=LocalQueueConf(),
+    node=LocalTarget(),
     provider="submitit_launcher",
 )
 
@@ -78,6 +79,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/launcher",
     name="submitit_slurm",
-    node=SlurmQueueConf(),
+    node=SlurmTarget(),
     provider="submitit_launcher",
 )
