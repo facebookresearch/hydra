@@ -136,6 +136,8 @@ multirun
 
 Same as the `ray_local` launcher, you can discover the `ray_aws` launcher's config with:
 
+<details><summary>Ray AWS Launcher config</summary>
+
 ```commandline
 $ python train.py  hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 # @package hydra.launcher
@@ -207,6 +209,8 @@ params:
     include: []
     exclude: []
 ```
+
+</details>
 
 
 ##### Manage Cluster LifeCycle

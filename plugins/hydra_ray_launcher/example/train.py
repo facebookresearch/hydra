@@ -16,7 +16,7 @@ def main(cfg: DictConfig) -> None:
     log.info("Start training...")
     model = MyModel(cfg.random_seed)
     # save checkpoint to current working dir.
-    model.save(Path(os.getcwd()) / cfg.get("checkpoint_path"))
+    model.save(model.save(cfg.checkpoint_path))
 
 
 if __name__ == "__main__":
