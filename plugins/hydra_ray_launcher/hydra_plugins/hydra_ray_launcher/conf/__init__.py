@@ -127,10 +127,14 @@ class RayClusterConf:
     Additional options in boto docs.
     https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html
     """
-    head_node: Dict[str, str] = field(
+    head_node: Dict[str, Any] = field(
         default_factory=lambda: {
             "InstanceType": "m5.large",
             "ImageId": "ami-008d8ed4bd7dc2485",
+            "IamInstanceProfile":
+                {
+                    "Arn": "arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1"
+                }
         }
     )
 
@@ -149,7 +153,7 @@ class RayClusterConf:
 
     setup_commands: List[str] = MISSING
 
-    head_setup_commands: List[str] = MISSING
+    head_setup_commands: List[str] = field(default_factory=list)
 
     worker_setup_commands: List[str] = field(default_factory=list)
 

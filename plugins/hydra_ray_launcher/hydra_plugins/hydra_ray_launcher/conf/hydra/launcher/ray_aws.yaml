@@ -1,7 +1,7 @@
 # @package _group_
 
 # This yaml will be validated against RayAWSLauncherConf
-target: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
+_target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
 params:
   ray_init_cfg:
     address: auto
@@ -24,12 +24,8 @@ params:
       # install needed dependency for launcher.
       - python3 -m pip install --ignore-installed PyYAML
       - python3 -m pip install ray>=0.8.6
-      - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.0rc3-py3-none-any.whl
+      - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.0rc4-py3-none-any.whl
       - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
-
-    # Custom commands that will be run on the head node after common setup.
-    head_setup_commands:
-      - pip install boto3==1.12.34  # 1.4.8 adds InstanceMarketOptions
 
     # Command to start ray on the head node. You don't need to change this.
     head_start_ray_commands:
