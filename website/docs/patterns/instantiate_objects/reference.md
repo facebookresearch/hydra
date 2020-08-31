@@ -66,7 +66,7 @@ assert user.age == 7
 </div>
 
 
-For convenience, `None` passed to instantiate/call returns `None`.
+For convenience, instantiate/call returns `None` when receiving `None` as input.
 ```python
 assert instantiate(None) is None
 ```
