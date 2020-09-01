@@ -96,25 +96,50 @@ class CommandlineSpec:
 
 
 def get_nevergrad_params(override: Override) -> Any:
-
     """
+     # regardless of the choice values, choice is always unordered p.Choice:
+     choice(a,b,c)  =>  ng.p.Choice(["a", "b", "c"])
 
-   choice(1,2,3)  ==>  ng.p.Choice([["Helium", "Nitrogen", "Oxygen"]])
-   tag(transition,choice(2,3,4))  ==> ng.p.TransitionChoice(["Solid", "Liquid", "Gas"])
-   tag(transition, range(1, 11, 2)) ==> ng.p.TransitionChoice([1, 3, 5 ...])
-   range(1,5) ==>  ng.p.Scalar(lower=1, upper=12).set_integer_casting(),
-   interval(1.0,5.0) ==> np.p.Scalar(lower=1.0, upper=5.0)
-   tag(log, interval(0.1, 1)) ==> np.p.Log(lower=0.1, upper=1)
-    """
+     # We can support forcing a choice to be ordered by tagging it:
+     # (I prefer order over transition(al). at least to me it's clearer.
+     tag(ordered, choice(a,b,c)) ==> ng.p.TransitionChoice(["a","b","c"])
+
+     # ranges are always ordered:
+     range(1,5)  =>  ng.p.TransitionChoice([1,2,3,4])
+
+     # unless they are shuffled (There is a flag shuffle in the RangeSweep object.
+     shuffle(range(1,5)) ->  =>  ng.p.Choice([4,2,1,3])
+
+     # intervals are scalars:
+     # Note: by intervals are always interpreted as floats (even for int start and end values).
+     interval(0,1)     -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
+     interval(0.0,1.0) -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
+
+     # a user can cast the interval to int to override that:
+     int(interval(0,1) -> RangeSweep(start=0, end=1) -> ng.p.Scalar(lower=0.0, upper=1.0).set_integer_casting()
+
+     """
+    import nevergrad as ng
     if override.is_sweep_override():
+        val = override.value()
         if override.is_choice_sweep(): # discrete variable
-            pass
+            if "ordered" in val.tags:
+                return ng.p.TransitionChoice(val.list)
+            else:
+                return ng.p.Choice(val.list)
         elif override.is_range_sweep(): # discrete variable
-            pass
+            if val.shuffle:
+                return ng.p.Choice(val.list)
+            else:
+                return ng.p.TransitionChoice(val.list)
         elif override.is_interval_sweep(): # continuous variable
-            pass
+            return ng.p.Scalar(lower=val.start, upper=val.end)
+
+        # int(interval(0,1) -> RangeSweep(start=0, end=1) -> ng.p.Scalar(lower=0.0, upper=1.0).set_integer_casting()
     elif not override.is_hydra_override():
         pass
+
+
 
 
 
@@ -257,7 +282,13 @@ class NevergradSweeper(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[override.get_key_element()] = make_nevergrad_parameter(override)
+            if override.key_or_group == "batch_size":
+                import pdb;pdb.set_trace()
+                print(override)
+
+        return
+        params[override.get_key_element()] = make_nevergrad_parameter(override)
+
 
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
