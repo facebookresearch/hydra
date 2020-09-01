@@ -5,7 +5,7 @@ from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union
 
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
@@ -146,7 +146,7 @@ class IntervalSweep(Sweep):
 # to support recursive type definitions.
 ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
-TransformerType = Callable[[ParsedElementType], Any]
+ElementTransformerType = Callable[[ParsedElementType, Any], Optional[ElementType]]
 
 
 class OverrideType(Enum):
@@ -276,13 +276,12 @@ class Override:
             return Override._convert_value(self._value)
 
     def sweep_iterator(
-        self, transformer: TransformerType = Transformer.identity
+        self, transformer: Union[str, ElementTransformerType] = "identity"
     ) -> Iterator[ElementType]:
         """
-        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and
-        RANGE_SWEEP to a List[Elements] that can be used in the value component
-        of overrides (the part after the =). A transformer may be provided for
-        converting each element to support the needs of different sweepers
+        Converts the sweep_choices from a List[ParsedElements] to a List[Elements] that can be used in the
+        value component of overrides (the part after the =). A transformer function can be passed to
+        transform the elements.
         """
         if self.value_type not in (
             ValueType.CHOICE_SWEEP,
@@ -321,16 +320,21 @@ class Override:
         else:
             assert False
 
-        return map(transformer, lst)
+        if isinstance(transformer, str):
+            if transformer == "identity":
+                return map(Override._convert_value, lst)
+            elif transformer == "str":
+                return map(Override._get_value_element_as_str, lst)
+            # should I raise a value error here?
+        else:
+            return map(transformer, lst)
 
     def sweep_string_iterator(self) -> Iterator[str]:
         """
-        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP
-        to a List of strings that can be used in the value component of overrides (the
-        part after the =)
+        Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
+        value component of overrides (the part after the =)
         """
-        iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
-        return iterator
+        return self.sweep_iterator(transformer=Override._get_value_element_as_str)
 
     def get_source_item(self) -> str:
         pkg = self.get_source_package()
