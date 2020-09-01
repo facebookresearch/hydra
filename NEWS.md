@@ -62,9 +62,9 @@ Be aware that `cfg.pretty()` is now deprecated and you should use `OmegeConf.to_
 ### Bug Fixes
 
 - Add hydra/py.typed to pip package to enable type checking in downstream projects ([#657](https://github.com/facebookresearch/hydra/issues/657))
-- Fix initilzation of Hydra in a module imported from a Jupyter Notebook ([#695](https://github.com/facebookresearch/hydra/issues/695))
+- Fix initialization of Hydra in a module imported from a Jupyter Notebook ([#695](https://github.com/facebookresearch/hydra/issues/695))
 - Fix handling of main module override via HYDRA_MAIN_MODULE ([#717](https://github.com/facebookresearch/hydra/issues/717))
-- Fix interpoaltions in overrides to evaluate lazily ([#725](https://github.com/facebookresearch/hydra/issues/725))
+- Fix interpolations in overrides to evaluate lazily ([#725](https://github.com/facebookresearch/hydra/issues/725))
 - Fixed handling of multirun when target config node is introduced by composition ([#726](https://github.com/facebookresearch/hydra/issues/726))
 - Sweepers are now validating config composition before launching ([#775](https://github.com/facebookresearch/hydra/issues/775))
 - Save `.hydra/*.yaml` before task execution ([#678](https://github.com/facebookresearch/hydra/issues/678))
