@@ -131,8 +131,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x"], -2, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], 2, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -197,38 +197,17 @@ def test_configuration_set_via_cmd_and_default_config(
 @pytest.mark.parametrize(
     "cmd_arg, expected_str",
     [
-        (
-            "polynomial.y=choice(-1, 0, 1)",
-            "polynomial.y: choice=[-1, 0, 1]",
-        ),
-        (
-            "polynomial.y=range(-1, 2)",
-            "polynomial.y: choice=[-1, 0, 1]",
-        ),
-        (
-            "polynomial.y=range(-1, 3, 1)",
-            "polynomial.y: choice=[-1, 0, 1, 2]",
-        ),
+        ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
+        ("polynomial.y=range(-1, 2)", "polynomial.y: choice=[-1, 0, 1]"),
+        ("polynomial.y=range(-1, 3, 1)", "polynomial.y: choice=[-1, 0, 1, 2]"),
         (
             "polynomial.y=range(-1, 2, 0.5)",
             "polynomial.y: choice=[-1.0, -0.5, 0.0, 0.5, 1.0, 1.5]",
         ),
-        (
-            "polynomial.y=int(interval(-1, 2))",
-            "polynomial.y: range=[-1, 2]",
-        ),
-        (
-            "polynomial.y=interval(-1, 2)",
-            "polynomial.y: range=[-1.0, 2.0]",
-        ),
-        (
-            "polynomial.y=2",
-            "polynomial.y: fixed=2",
-        ),
-        (
-            "polynomial.y=2.0",
-            "polynomial.y: fixed=2.0",
-        ),
+        ("polynomial.y=int(interval(-1, 2))", "polynomial.y: range=[-1, 2]"),
+        ("polynomial.y=interval(-1, 2)", "polynomial.y: range=[-1.0, 2.0]"),
+        ("polynomial.y=2", "polynomial.y: fixed=2"),
+        ("polynomial.y=2.0", "polynomial.y: fixed=2.0"),
     ],
 )
 def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
@@ -266,10 +245,7 @@ def test_example_app(tmpdir: Path) -> None:
     "overrides",
     [[], ["quadratic.x_arg=int(interval(-1, 1))"]],
 )
-def test_jobs_configured_via_nested_config(
-    hydra_sweep_runner,
-    overrides: list,
-) -> None:
+def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,

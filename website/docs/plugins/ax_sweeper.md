@@ -70,7 +70,7 @@ banana_y:
  bounds: [-5, 10.1]
 ```
 
-The `x` parameter takes on a "range" of integer values, in the interval `[-5, 5]`. The `y` parameter takes on a range of floating-point values in the interval `[-5, 10.1]`. In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
+The `x` parameter takes on a range of integer values, between `-5` to `5`. The `y` parameter takes on a range of floating-point values between `-5` to `10.1`. In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
 
 * `name` - Name of the parameter. It is of type string.
 * `type` - Type of the parameter. It can take the following values: `range`, `fixed`, or `choice`.
@@ -78,7 +78,7 @@ The `x` parameter takes on a "range" of integer values, in the interval `[-5, 5]
 * `values` - Required only for the `choice` parameters. It should be a list of values.
 * `value` - Required only for the `fixed` parameters. It should be a single value. 
 
-Note that if you want to sample integers in the interval `-5` to `5`, you need to specify the range as `int(interval(-5, 5))` (in the command line) or `[-5, 5]` (in config). If you want to sample floats in range `-5` to `5`, you need to specify the range as `interval(-5, 5)` (in the command line) or `[-5.0, 5.0]` (in config).
+Note that if you want to sample integers in the range `-5` to `5`, you need to specify the range as `int(interval(-5, 5))` (in the command line) or `[-5, 5]` (in config). If you want to sample floats in range `-5` to `5`, you need to specify the range as `interval(-5, 5)` (in the command line) or `[-5.0, 5.0]` (in config).
 
 The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. The most important parameters are listed below:
 
