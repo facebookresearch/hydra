@@ -295,23 +295,22 @@ def create_range_param_using_interval_override(override):
 
 
 def create_choice_param_from_choice_override(override):
+
     key = override.get_key_element()
-    value = override.value()
     param = {
         "name": key,
         "type": "choice",
-        "values": value.list,
+        "values": list(override.sweep_iterator(transformer="identity")),
     }
     return param
 
 
 def create_choice_param_from_range_override(override):
     key = override.get_key_element()
-    value = override.value()
     param = {
         "name": key,
         "type": "choice",
-        "values": [val for val in value.range()],
+        "values": [val for val in override.sweep_iterator(transformer="identity")],
     }
 
     return param
@@ -319,11 +318,10 @@ def create_choice_param_from_range_override(override):
 
 def create_fixed_param_from_element_override(override):
     key = override.get_key_element()
-    value = override.value()
     param = {
         "name": key,
         "type": "fixed",
-        "value": value,
+        "value": override.value(),
     }
 
     return param
