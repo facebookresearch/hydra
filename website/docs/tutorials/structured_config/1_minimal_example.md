@@ -41,20 +41,23 @@ if __name__ == "__main__":
 
 Duck-typing the config object as `MySQLConfig` enables static type checkers like `mypy` to catch
 type errors before you run your code:
-```
-$ mypy my_app_type_error.py
-my_app_type_error.py:21: error: "MySQLConfig" has no attribute "pork"
+```text title="$ mypy my_app_type_error.py" 
+my_app_type_error.py:22: error: "MySQLConfig" has no attribute "pork"
 Found 1 error in 1 file (checked 1 source file)
 ```
 
 ### Structured Configs enable Hydra to catch type errors at runtime
 If you forget to run `mypy`, Hydra will report the error at runtime:
-```
-$ python my_app_type_error.py
-Key 'pork' not in 'MySQLConfig'
+``` text title="$ python my_app_type_error.py"
+Traceback (most recent call last):
+  File "my_app_type_error.py", line 22, in my_app
+    if cfg.pork == 80:
+omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
         full_key: pork
         reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 ```
 
 Hydra will also catch typos, or type errors in the command line:
@@ -81,8 +84,3 @@ The name [Duck typing](https://en.wikipedia.org/wiki/Duck_typing) comes from the
 It can be useful when you care about the methods or attributes of an object, not the actual type of the object.
 
 
-## Overriding default values in the `@dataclass`
-You can use instances of the dataclasses to override default values in the stored config.
-```python
-cs.store(name="config", node=MySQLConfig(host="test.db", port=3307))
-```

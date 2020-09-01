@@ -5,7 +5,7 @@ title: Config Groups
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/3_config_groups/)
 
 Structured Configs can be used to implement config groups. Special care needs to be taken when specifying a 
-default value for a config group. We will look at why below.
+default value for fields populated by a config group. We will look at why below.
 
 ```python title="Defining a config group for database" {16-17,22-23}
 @dataclass
@@ -38,7 +38,7 @@ def my_app(cfg: Config) -> None:
 ```
 
 :::info
-The *Config* class is **NOT** the Defaults list We will see the Defaults list in the next page.
+The *Config* class is **NOT** the Defaults list. We will see the Defaults list in the next page.
 :::
 
 You can select the database from the command line:
@@ -54,7 +54,7 @@ db:
 ```
 
 The `+` above is required because there is no default choice for the config group `db`.
-The next page will re-introduce the Defaults List, eliminating the need for the `+`.
+The next page will reintroduce the Defaults List, eliminating the need for the `+`.
 
 ### Config inheritance
 Standard Python inheritance can be used to get improved type safety, and to move common fields to the parent class.

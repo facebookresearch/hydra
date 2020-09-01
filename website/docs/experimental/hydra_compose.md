@@ -26,9 +26,9 @@ Doing so forfeits many of the benefits of Hydra
 
 ### Initialization methods
 There are 3 initialization methods:
-- initialize: Initialize with a config path relative to the caller
-- initialize_config_module : Initialize with config_module (absolute)
-- initialize_config_dir : Initialize with a config_dir on the file system (absolute)
+- `initialize()`: Initialize with a config path relative to the caller
+- `initialize_config_module()` : Initialize with config_module (absolute)
+- `initialize_config_dir()` : Initialize with a config_dir on the file system (absolute)
 
 All 3 can be used as methods or contexts.
 When used as methods, they are are initializing Hydra globally and should only be called once.

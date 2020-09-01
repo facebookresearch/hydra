@@ -4,7 +4,7 @@ title: Config path changes
 ---
 
 ## Overview
-Hydra 1.0 adds a new `config_name` parameter to `@hydra.main()` and changes the meaning of the `config_path`.  
+Hydra 1.0 adds a new `config_name` parameter to `@hydra.main()` and changes the meaning of the `config_path`.
 Previously, `config_path` encapsulated two things:
 - Search path relative to the declaring python file.
 - Optional config file (.yaml) to load.
@@ -19,24 +19,20 @@ This change is backward compatible, but support for the old style is deprecated 
 
 ## Migration examples
 
-```python
-# old
+```python title="Hydra 0.11"
 @hydra.main(config_path="config.yaml")
 ```
 Becomes: 
-```python
-# new
+```python title="Hydra 1.0"
 @hydra.main(config_name="config")
 ```
 
 And
-```python
-# old
+```python title="Hydra 0.11"
 @hydra.main(config_path="conf/config.yaml")
 ```
 
 Becomes:
-```python
-# new
+```python title="Hydra 1.0"
 @hydra.main(config_path="conf", config_name="config")
 ```
