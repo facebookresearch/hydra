@@ -81,7 +81,7 @@ db:
 </div></div>
 
 ### Overriding the package via the defaults list
-The following example adds the `mysql` config in under the packages `src` and `dst`.
+The following example adds the `mysql` config in the packages `db.src` and `db.dst`.
 
 
 <div className="row">

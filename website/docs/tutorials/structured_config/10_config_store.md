@@ -5,6 +5,9 @@ title: Config Store API
 `ConfigStore` is a singleton storing configs in memory.
 The primary API for interacting with the `ConfigStore` is the store method described below.
 
+
+
+### API
 ```python
 class ConfigStore(metaclass=Singleton):
     def store(
@@ -28,4 +31,20 @@ class ConfigStore(metaclass=Singleton):
             Helps debugging.
         """
     ...
+```
+
+### Example node values
+A few examples of supported node values parameters:
+```python
+@dataclass
+class MySQLConfig:
+    host: str = "localhost"
+    port: int = 3306
+
+# Using the type
+cs.store(name="config1", node=MySQLConfig)
+# Using an instance, overriding some default values
+cs.store(name="config2", node=MySQLConfig(host="test.db", port=3307))
+# Using a dictionary, forfeiting runtime type safety
+cs.store(name="config3", node={"host": "localhost", "port": 3308})
 ```
