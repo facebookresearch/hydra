@@ -96,4 +96,7 @@ $ python my_app.py --multirun task=1,2,3,4,5
 [HYDRA] Polling job statuses every 1.0 sec
 ```
 
+Note that any third party library dependencies need to be installed on all nodes. For serialization of jobs the plugin uses [`cloudpickle`](https://github.com/cloudpickle/cloudpickle). 
+
 The [RQ documentation](https://python-rq.org/) holds further information on [job monitoring](http://python-rq.org/docs/monitoring/), which can be done via console or [web interfaces](https://github.com/nvie/rq-dashboard), and provides [patterns](https://python-rq.org/patterns/) for worker and exception handling.
+
