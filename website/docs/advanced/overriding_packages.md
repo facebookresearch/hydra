@@ -112,8 +112,10 @@ db:
 ### Overriding the package via the command line
 Overriding the package for `db` specified in the defaults list from `db.dst` to `backup`: 
 ```bash
+# Change the package
 $ python my_app.py db@db.dst:backup
-$ python my_app.py db@db.dst:backup=postgresql # And change the config group option
+# Change both the package and config group option
+$ python my_app.py db@db.dst:backup=postgresql
 ```
 
 Overriding the package of a config group option not in the defaults list:
