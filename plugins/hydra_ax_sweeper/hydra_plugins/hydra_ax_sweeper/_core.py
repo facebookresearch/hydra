@@ -300,7 +300,7 @@ def create_choice_param_from_choice_override(override):
     param = {
         "name": key,
         "type": "choice",
-        "values": list(override.sweep_iterator(transformer="identity")),
+        "values": list(override.sweep_iterator(transformer="str")),
     }
     return param
 

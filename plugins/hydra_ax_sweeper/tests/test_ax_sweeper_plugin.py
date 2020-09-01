@@ -197,7 +197,7 @@ def test_configuration_set_via_cmd_and_default_config(
 @pytest.mark.parametrize(
     "cmd_arg, expected_str",
     [
-        ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
+        ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=['-1', '0', '1']"),
         ("polynomial.y=range(-1, 2)", "polynomial.y: choice=[-1, 0, 1]"),
         ("polynomial.y=range(-1, 3, 1)", "polynomial.y: choice=[-1, 0, 1, 2]"),
         (
@@ -224,6 +224,28 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
+
+
+@pytest.mark.parametrize(
+    "cmd_arg",
+    [
+        ("polynomial.coefficients=choice([-1, 0, 1],[2, 3, 4],[5, 6, 7])"),
+    ],
+)
+def test_jobs_using_choice_between_lists(tmpdir: Path, cmd_arg: str) -> None:
+    cmd = [
+        sys.executable,
+        "tests/apps/polynomial_with_list_coefficients.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweeper.ax_config.max_trials=3",
+    ] + [cmd_arg]
+    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    assert (
+        "polynomial.coefficients: choice=['[-1,0,1]', '[2,3,4]', '[5,6,7]']" in result
+    )
+    assert "'polynomial.coefficients': '[-1,0,1]'" in result
+    assert "New best value: 101.0" in result
 
 
 def test_example_app(tmpdir: Path) -> None:
