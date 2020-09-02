@@ -22,6 +22,6 @@ with open("README.md", "r") as fh:
             "Operating System :: POSIX :: Linux",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core~=1.0.0rc3", "submitit>=1.0.0"],
+        install_requires=["hydra-core>=1.0.0", "submitit>=1.0.0"],
         include_package_data=True,
     )
