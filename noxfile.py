@@ -5,19 +5,7 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 from typing import List
-=======
-from typing import List, Union, Dict
->>>>>>> Iterate over all plugins
-=======
-from typing import List, Union
->>>>>>> fix stuff
-=======
-from typing import List
->>>>>>> fix nox file
 
 import nox
 from nox.logger import logger
@@ -34,7 +22,8 @@ PYTHON_VERSIONS = os.environ.get(
 INSTALL_EDITABLE_MODE = os.environ.get("INSTALL_EDITABLE_MODE", 0)
 
 INSTALL_COMMAND = (
-    ["pip", "install", "-e"] if INSTALL_EDITABLE_MODE else ["pip", "install"])
+    ["pip", "install", "-e"] if INSTALL_EDITABLE_MODE else ["pip", "install"]
+)
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
@@ -127,90 +116,24 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 def select_plugins(session, directory: str) -> List[Plugin]:
-=======
-def select_plugins(session) -> List[Plugin]:
->>>>>>> fix stuff
-=======
-def select_plugins(session, directory: str) -> List[Plugin]:
->>>>>>> fix nox file
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
     as well as the user plugins selection (via the PLUGINS environment variable).
     """
-<<<<<<< HEAD
-<<<<<<< HEAD
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg", "examples"]
-=======
-def get_available_plugin() -> object:
-=======
-
-    assert session.python is not None, "Session python version is not specified"
-
->>>>>>> fix stuff
-    blacklist = [".isort.cfg"]
-    example_plugins = [
-        {"dir_name": x, "path": f"examples/{x}"}
-        for x in sorted(os.listdir(os.path.join(BASE, "plugins/examples")))
-        if x not in blacklist
-    ]
->>>>>>> Iterate over all plugins
-=======
-    assert session.python is not None, "Session python version is not specified"
-    blacklist = [".isort.cfg", "examples"]
->>>>>>> fix nox file
     plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    return plugins + example_plugins
 
-
-def select_plugins(session) -> List[Plugin]:
-    """
-    Select all plugins that should be tested in this session.
-    Considers the current Python version and operating systems against the supported ones,
-    as well as the user plugins selection (via the PLUGINS environment variable).
-    """
-
-    assert session.python is not None, "Session python version is not specified"
-
-    available_plugins = get_available_plugin()
->>>>>>> Iterate over all plugins
-=======
-
-<<<<<<< HEAD
-    available_plugins = plugins + example_plugins
->>>>>>> fix stuff
-
-    ret = []
-    skipped = []
-<<<<<<< HEAD
-    for plugin in plugins:
-        if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
-=======
-    for plugin in available_plugins:
-        if not (
-            plugin["dir_name"] in PLUGINS
-            or PLUGINS == ["ALL"]
-            or ("examples" in PLUGINS and "examples/" in plugin["path"])
-        ):
->>>>>>> re-org circleCI file
-=======
     ret = []
     skipped = []
     for plugin in plugins:
         if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
->>>>>>> fix nox file
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
@@ -278,7 +201,7 @@ def _isort_cmd():
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_dev_deps(session)
-    install_hydra(session, INSTALL_COMMAND)
+    install_hydra(session, ["pip", "install", "-e"])
 
     apps = _get_standalone_apps_dirs()
     session.log("Installing standalone apps")
@@ -334,7 +257,7 @@ def lint_plugins(session):
 
 def lint_plugins_in_dir(session, directory: str) -> None:
 
-    install_cmd = INSTALL_COMMAND
+    install_cmd = ["pip", "install", "-e"]
     install_hydra(session, install_cmd)
     plugins = select_plugins(session=session, directory=directory)
 
@@ -359,27 +282,6 @@ def lint_plugins_in_dir(session, directory: str) -> None:
             abs = os.path.join(path, file)
             if os.path.exists(abs):
                 files.append(abs)
-<<<<<<< HEAD
-=======
-
-        session.run(
-            "mypy",
-            "--strict",
-            f"{path}/hydra_plugins",
-            "--config-file",
-            f"{BASE}/.mypy.ini",
-            silent=SILENT,
-        )
-        session.run(
-            "mypy",
-            "--strict",
-            "--namespace-packages",
-            "--config-file",
-            f"{BASE}/.mypy.ini",
-            *files,
-            silent=SILENT,
-        )
->>>>>>> fix nox file
 
         session.run(
             "mypy",
@@ -399,10 +301,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
             silent=SILENT,
         )
 
-<<<<<<< HEAD
 
-=======
->>>>>>> fix nox file
 @nox.session(python=PYTHON_VERSIONS)
 def test_tools(session):
     install_cmd = ["pip", "install"]
@@ -467,10 +366,6 @@ def test_core(session, install_cmd):
     )
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Revert "separate all plugins"
 @nox.session(python=PYTHON_VERSIONS)
 @nox.parametrize(
     "install_cmd",
@@ -478,10 +373,6 @@ def test_core(session, install_cmd):
     ids=[" ".join(x) for x in INSTALL_COMMAND],
 )
 def test_plugins(session, install_cmd):
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fix nox file
     test_plugins_in_directory(
         session=session,
         install_cmd=install_cmd,
@@ -493,23 +384,10 @@ def test_plugins(session, install_cmd):
 def test_plugins_in_directory(
     session, install_cmd, directory: str, test_hydra_core: bool
 ):
-<<<<<<< HEAD
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
-=======
-    _upgrade_basic(session)
-    session.install("pytest")
-    install_hydra(session, install_cmd)
-    selected_plugin = select_plugins(session)
->>>>>>> Revert "separate all plugins"
-=======
-    _upgrade_basic(session)
-    session.install("pytest")
-    install_hydra(session, install_cmd)
-    selected_plugin = select_plugins(session=session, directory=directory)
->>>>>>> fix nox file
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
@@ -547,7 +425,6 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
-<<<<<<< HEAD
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
@@ -561,36 +438,9 @@ def coverage(session):
                 os.path.join(directory, plugin.path),
                 silent=SILENT,
             )
-=======
-    install_hydra(session, INSTALL_COMMAND)
-    session.run("coverage", "erase", env=coverage_env)
-
-<<<<<<< HEAD
-    selected_plugins = select_plugins(session)
-    for plugin in selected_plugins:
-        command = INSTALL_COMMAND.extend(os.path.join("plugins", plugin.path))
-        session.run(
-            *command, silent=SILENT,
-        )
->>>>>>> align all install commands
-
-        # run plugin coverage
-        for plugin in selected_plugins:a
-=======
-    for directory in ["plugins", "examples/plugins"]:
-        selected_plugins = select_plugins(session=session, directory=directory)
-        for plugin in selected_plugins:
-            session.run(
-                "pip",
-                "install",
-                "-e",
-                os.path.join(directory, plugin.path),
-                silent=SILENT,
-            )
 
         # run plugin coverage
         for plugin in selected_plugins:
->>>>>>> fix nox file
             session.chdir(os.path.join(directory, plugin.path))
             cov_args = ["coverage", "run", "--append", "-m"]
             cov_args.extend(pytest_args())
@@ -620,19 +470,8 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
-<<<<<<< HEAD
-<<<<<<< HEAD
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
-=======
-    # pyzmq 19.0.1 has installation issues on Windows
-    # pytest 6.0 makes deprecation warnings wail on errors, breaking nbval due to a deprecated API usage
-    session.install("jupyter", "nbval", "pyzmq==19.0.0", "pytest==5.4.3")
-=======
-    session.install("jupyter", "nbval")
->>>>>>> fix nox file
-    install_hydra(session, INSTALL_COMMAND)
->>>>>>> align all install commands
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
     )
@@ -646,12 +485,4 @@ def test_jupyter_notebooks(session):
     ]:
         args = pytest_args("--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
-<<<<<<< HEAD
-<<<<<<< HEAD
         session.run(*args, silent=SILENT)
-=======
-        session.run(*args, silent=SILENT)
->>>>>>> Revert "separate all plugins"
-=======
-        session.run(*args, silent=SILENT)
->>>>>>> fix nox file
