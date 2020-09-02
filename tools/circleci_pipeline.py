@@ -30,10 +30,9 @@ def get_available_plugin() -> List[str]:
     ps = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
-        if x != "examples"
         if x not in blacklist
     ]
-    plugins = [p["path"] for p in ps] + ["examples"]
+    plugins = [p["path"] for p in ps]
     random.shuffle(plugins)
     return [",".join(w) for w in list(chunk(plugins, 4))]
 
