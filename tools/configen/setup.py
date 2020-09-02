@@ -13,5 +13,5 @@ setup(
     author_email="omry@fb.com",
     url="http://hydra.cc",
     include_package_data=True,
-    install_requires=["hydra-core~=1.0.0rc3", "jinja2"],
+    install_requires=["hydra-core>=1.0.0", "jinja2"],
 )
