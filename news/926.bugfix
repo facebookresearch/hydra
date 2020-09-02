@@ -1,1 +1,0 @@
-Apps will now raise underlying exception if env HYDRA_FULL_ERROR=1

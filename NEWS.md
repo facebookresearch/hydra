@@ -1,3 +1,50 @@
+1.0.0 (2020-09-02)
+==================
+Hydra 1.0 is out!
+See [blog post](https://hydra.cc/blog/2020/09/02/Hydra_1.0) for high level details.
+
+Major new features in Hydra 1.0
+* Config type safety via Structured Configs
+* More powerful command line
+* New plugins enabling remote launching and hyper parameter optimization
+* Improved error reporting
+* Reduce nesting levels with config packages
+
+These release notes are covering the changes since 1.0.0rc4.
+
+To see the complete release notes for 1.0 take a look at the release notes of:
+- [1.0.0rc1](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)
+- [1.0.0rc2](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc2)
+- [1.0.0rc3](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc3)
+- [1.0.0rc4](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc4)
+- 1.0.0 (just below this line)
+
+### Features
+
+- Add support for casting interval to ints and floats ([#915](https://github.com/facebookresearch/hydra/issues/915))
+
+### Bug Fixes
+
+- Fix to flush logging instead of shutting it down at job end ([#833](https://github.com/facebookresearch/hydra/issues/833))
+- compose() no longer initialized logging subsystem ([#833](https://github.com/facebookresearch/hydra/issues/833))
+- Fix overriding of hydra.job.env_set from the command line ([#854](https://github.com/facebookresearch/hydra/issues/854))
+- Fix tab completion to not output errors in some cases when using --multirun ([#856](https://github.com/facebookresearch/hydra/issues/856))
+- Fix OmegaConf custom resolvers not being propagated to Sweepers properly ([#861](https://github.com/facebookresearch/hydra/issues/861))
+- Interpolation accepts any char between ${ and } ([#891](https://github.com/facebookresearch/hydra/issues/891))
+- Update the signature of hydra.utils.instantiate() allow input configs of Any type ([#896](https://github.com/facebookresearch/hydra/issues/896))
+- Fix instantiate to work correctly when parameters are interpolations into a parent node ([#904](https://github.com/facebookresearch/hydra/issues/904))
+- Apps will now raise underlying exception if env HYDRA_FULL_ERROR=1 ([#926](https://github.com/facebookresearch/hydra/issues/926))
+
+### Plugins
+
+- Fix integer/float choice from spec in the Nevergrad plugin
+
+### Improved Documentation
+
+- New page in Structured Configs tutorial: Static schema with many configs ([#918](https://github.com/facebookresearch/hydra/issues/918))
+- New page in Structured Configs tutorial: Dynamic schema with many configs ([#918](https://github.com/facebookresearch/hydra/issues/918))
+
+
 1.0.0rc4 (2020-08-18)
 =====================
 Be aware that `cfg.pretty()` is now deprecated and you should use `OmegeConf.to_yaml(cfg)` instead.
