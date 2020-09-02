@@ -7,41 +7,69 @@ from typing import Any
 import nevergrad as ng
 
 import pytest  # type: ignore
-from hydra.core.override_parser.types import Override
+
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
-from hydra_plugins.hydra_nevergrad_sweeper import core
-from tests import get_choice_sweep, get_override_element, get_range_sweep
+from hydra_plugins.hydra_nevergrad_sweeper import _core
+from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper  # type: ignore
 
 chdir_plugin_root()
 
 
 def test_discovery() -> None:
-    assert core.NevergradSweeper.__name__ in [
+    assert NevergradSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "override,param_cls,value_cls",
+    "params,param_cls,value_cls",
     [
-        (get_choice_sweep(["blu", "blublu"]), ng.p.Choice, str),
-        (get_choice_sweep([0, 1, 2]), ng.p.TransitionChoice, int),
-        (get_choice_sweep(["0", "1", "2"]), ng.p.Choice, str),
-        (get_choice_sweep([0.0, 12.0, 2.0]), ng.p.Choice, float),
-        (get_range_sweep(start=1.0, stop=12.0), ng.p.Scalar, float),
-        (get_range_sweep(start=1, stop=12), ng.p.Scalar, int),
-        (get_range_sweep(tags={"log"}, start=0.01, stop=1.0), ng.p.Log, float),
-        (get_override_element("blublu"), str, str),
+        ([1, 2, 3], ng.p.Choice, int),
+        (["1", "2", "3"], ng.p.Choice, str),
+        ({"lower": 1, "upper": 2, "log": True}, ng.p.Log, float),
+        ({"lower": 1, "upper": 2}, ng.p.Scalar, float),
+        ({"lower": 1, "upper": 12, "integer": True}, ng.p.Scalar, int),
+        ({"lower": 1, "upper": 12, "log": True, "integer": True}, ng.p.Log, int),
     ],
 )
-def test_make_nevergrad_parameter(
-    override: Override, param_cls: Any, value_cls: Any
+def test_get_nevergrad_parameter_from_config(
+    params: str, param_cls: Any, value_cls: Any
 ) -> None:
-    param = core.make_nevergrad_parameter(override)
+    param = _core.get_nevergrad_parameter(params)
+    assert isinstance(param, param_cls)
+    if param_cls is not str:
+        assert isinstance(param.value, value_cls)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "override,param_cls,value_cls",
+    [
+        ("key=choice(1,2)", ng.p.Choice, int),
+        ("key=choice('hello','world')", ng.p.Choice, str),
+        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice, int),
+        (
+            "key=tag(ordered, choice('hello','world', 'nevergrad'))",
+            ng.p.TransitionChoice,
+            str,
+        ),
+        ("key=range(1,12)", ng.p.Scalar, int),
+        ("key=interval(1,12)", ng.p.Scalar, float),
+        ("key=int(interval(1,12))", ng.p.Scalar, int),
+        ("key=tag(log, interval(1,12))", ng.p.Log, float),
+        ("key=tag(log, int(interval(1,12)))", ng.p.Log, int),
+    ],
+)
+def test_get_nevergrad_parameter_from_override(
+    override: str, param_cls: Any, value_cls: Any
+) -> None:
+    parser = OverridesParser.create()
+    parsed = parser.parse_overrides([override])[0]
+    param = _core.get_nevergrad_parameter(parsed)
     assert isinstance(param, param_cls)
     if param_cls is not str:
         assert isinstance(param.value, value_cls)
@@ -84,8 +112,8 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         cmd += [
             "db=choice(mnist,cifar)",
             "batch_size=choice(4,8,12,16)",
-            "lr=tag(log, range(0.001, 1.0))",
-            "dropout=float(range(0,1))",
+            "lr=tag(log, interval(0.001, 1.0))",
+            "dropout=interval(0,1)",
         ]
     subprocess.check_call(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")

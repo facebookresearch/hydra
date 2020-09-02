@@ -66,7 +66,7 @@ class OptimConf:
 
 @dataclass
 class NevergradSweeperConf:
-    _target_: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
+    _target_: str = "hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper.NevergradSweeper"
 
     # configuration of the optimizer
     optim: OptimConf = OptimConf()
