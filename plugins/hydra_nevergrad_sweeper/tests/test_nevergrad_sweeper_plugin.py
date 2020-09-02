@@ -5,9 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
-
 import pytest  # type: ignore
-
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -15,7 +13,9 @@ from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import core
-from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper  # type: ignore
+from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import (
+    NevergradSweeper,  # type: ignore
+)
 
 chdir_plugin_root()
 

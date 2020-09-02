@@ -1,12 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Optional, List
-
-from hydra_plugins.hydra_nevergrad_sweeper.config import OptimConf
-from omegaconf import DictConfig
+from typing import List, Optional
 
 from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.sweeper import Sweeper
+from omegaconf import DictConfig
+
+from hydra_plugins.hydra_nevergrad_sweeper.config import OptimConf
 
 
 class NevergradSweeper(Sweeper):
