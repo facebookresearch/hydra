@@ -20,25 +20,25 @@ log = logging.getLogger(__name__)
 
 def get_nevergrad_parameter(description: Any) -> Any:
     """
-     Maps Hydra override to nevergrad params
-     # regardless of the choice values, choice is always unordered p.Choice:
-     choice(a,b,c)  =>  ng.p.Choice(["a", "b", "c"])
+    Maps Hydra override to nevergrad params
+    # regardless of the choice values, choice is always unordered p.Choice:
+    choice(a,b,c)  =>  ng.p.Choice(["a", "b", "c"])
 
-     # We can support forcing a choice to be ordered by tagging it:
-     # (I prefer order over transition(al). at least to me it's clearer.
-     tag(ordered, choice(a,b,c)) ==> ng.p.TransitionChoice(["a","b","c"])
+    # We can support forcing a choice to be ordered by tagging it:
+    # (I prefer order over transition(al). at least to me it's clearer.
+    tag(ordered, choice(a,b,c)) ==> ng.p.TransitionChoice(["a","b","c"])
 
-     # ranges are always ordered:
-     range(1,12)  =>  ng.p.Scalar(lower=1, upper=12, step=1)
+    # ranges are always ordered:
+    range(1,12)  =>  ng.p.Scalar(lower=1, upper=12, step=1)
 
-     # intervals are scalars:
-     # Note: by intervals are always interpreted as floats (even for int start and end values).
-     interval(0,1)     -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
-     interval(0.0,1.0) -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
+    # intervals are scalars:
+    # Note: by intervals are always interpreted as floats (even for int start and end values).
+    interval(0,1)     -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
+    interval(0.0,1.0) -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
 
-     # a user can cast the interval to int to override that:
-     int(interval(0,1) -> RangeSweep(start=0, end=1) -> ng.p.Scalar(lower=0.0, upper=1.0).set_integer_casting()
-     """
+    # a user can cast the interval to int to override that:
+    int(interval(0,1) -> RangeSweep(start=0, end=1) -> ng.p.Scalar(lower=0.0, upper=1.0).set_integer_casting()
+    """
     scalar = None
     if isinstance(description, Override):
         override = description
