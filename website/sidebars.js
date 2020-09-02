@@ -65,9 +65,9 @@ module.exports = {
                 type: 'category',
                 label: 'Instantiating Objects',
                 items: [
-                    'patterns/instantiate_objects/instantiate_objects_overview',
-                    'patterns/instantiate_objects/instantiate_objects_reference',
-                    'patterns/instantiate_objects/instantiate_with_structured_config',
+                    'patterns/instantiate_objects/overview',
+                    'patterns/instantiate_objects/config_files',
+                    'patterns/instantiate_objects/structured_config',
                  ]
              },
             'patterns/specializing_config',
