@@ -35,7 +35,7 @@ hydra-submitit==0.2.0
 <details>
 <summary>1.0 (Release candidate), compatible with Hydra 1.0rc</summary>
 
-With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher). Read this [doc](https://hydra.cc/docs/next/plugins/submitit_launcher/) on installation/usage info.
+With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher). Read this [doc](/docs/plugins/submitit_launcher/) on installation/usage info.
 
 ### Clean Install
  
@@ -50,7 +50,7 @@ pip install hydra-fair-plugins  --pre --upgrade --upgrade-strategy=eager
 pip uninstall hydra-submitit -y
 pip install hydra-fair-plugins  --pre --upgrade --upgrade-strategy=eager
 ```
-Check out [Hydra documentation](https://hydra.cc/docs/next/plugins/submitit_launcher) for  more info on ```Submitit``` launcher plugin.
+Check out [Hydra documentation](/docs/plugins/submitit_launcher) for  more info on ```Submitit``` launcher plugin.
 
 
 The depedency looks like 
@@ -63,7 +63,7 @@ hydra-fairtask==1.0.0rc1
 hydra-submitit-launcher==1.0.0rc3
 ```
 
-Please refer to [Hydra upgrades](https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes) on what changes are needed for your app for upgrading to Hydra 1.0
+Please refer to [Hydra upgrades](/docs/upgrades/0.11_to_1.0/config_path_changes) on what changes are needed for your app for upgrading to Hydra 1.0
 </details>
 
 <details>
@@ -111,6 +111,6 @@ For 1.0, ```fairtask``` usage remains the same. To use ```Submitit```, the comma
 python my_app.py -m hydra/launcher=submitit_slurm db=mysql,postgresql
 ```
 
-More info on ```Submitit``` launcher can be found [here](https://hydra.cc/docs/next/plugins/submitit_launcher)
+More info on ```Submitit``` launcher can be found [here](/docs/plugins/submitit_launcher)
 
 </details>
