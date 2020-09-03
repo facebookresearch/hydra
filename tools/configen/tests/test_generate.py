@@ -82,5 +82,5 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         f"hydra.run.dir={tmpdir}",
         "user.name=Batman",
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert result == "User: name=Batman, age=7"

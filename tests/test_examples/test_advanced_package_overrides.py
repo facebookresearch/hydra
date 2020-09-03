@@ -13,7 +13,7 @@ def test_advanced_package_override_simple(tmpdir: Path) -> None:
         "examples/advanced/package_overrides/simple.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {"driver": "mysql", "user": "omry", "pass": "secret"}
     }
@@ -27,7 +27,7 @@ def test_advanced_package_override_simple_with_cli_pakcage_override(
         "hydra.run.dir=" + str(tmpdir),
         "db@:source=mysql",
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "source": {"driver": "mysql", "user": "omry", "pass": "secret"}
     }
@@ -38,7 +38,7 @@ def test_advanced_package_override_two_packages(tmpdir: Path) -> None:
         "examples/advanced/package_overrides/two_packages.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "source": {"driver": "mysql", "user": "omry", "pass": "secret"},
         "destination": {"driver": "mysql", "user": "omry", "pass": "secret"},
@@ -51,7 +51,7 @@ def test_advanced_package_override_two_packages_with_cli_override(tmpdir: Path) 
         "hydra.run.dir=" + str(tmpdir),
         "db@destination:backup=mysql",
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "source": {"driver": "mysql", "user": "omry", "pass": "secret"},
         "backup": {"driver": "mysql", "user": "omry", "pass": "secret"},

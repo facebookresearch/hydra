@@ -12,7 +12,7 @@ chdir_hydra_root()
 
 
 def test_1_basic_run(tmpdir: Path) -> None:
-    result = get_run_output(
+    result, _err = get_run_output(
         [
             "examples/tutorials/structured_configs/1_minimal/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
@@ -36,7 +36,7 @@ def test_1_basic_run_with_override_error(tmpdir: Path) -> None:
 
 
 def test_1_basic_override(tmpdir: Path) -> None:
-    result = get_run_output(
+    result, _err = get_run_output(
         [
             "examples/tutorials/structured_configs/1_minimal/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
@@ -63,7 +63,7 @@ def test_1_basic_override_type_error(tmpdir: Path) -> None:
 
 
 def test_2_static_complex(tmpdir: Path) -> None:
-    result = get_run_output(
+    result, _err = get_run_output(
         [
             "examples/tutorials/structured_configs/2_static_complex/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
@@ -88,7 +88,7 @@ def test_3_config_groups(tmpdir: Path, overrides: Any, expected: Any) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(overrides)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     res = OmegaConf.create(result)
     assert res == expected
 
@@ -121,7 +121,7 @@ def test_3_config_groups_with_inheritance(
         "examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py",
         "hydra.run.dir=" + str(tmpdir),
     ] + overrides
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     res = OmegaConf.create(result)
     assert res == expected
 
@@ -131,7 +131,7 @@ def test_4_defaults(tmpdir: Path) -> None:
         "examples/tutorials/structured_configs/4_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {
             "driver": "mysql",
@@ -148,7 +148,7 @@ def test_5_structured_config_schema(tmpdir: Path) -> None:
         "examples/tutorials/structured_configs/5_structured_config_schema/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {
             "driver": "mysql",
@@ -166,7 +166,7 @@ def test_6_one_schema_many_configs(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
         "db=prod",
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {
             "driver": "mysql",
@@ -182,7 +182,7 @@ def test_7_multiple_schemas_multiple_configs(tmpdir: Path) -> None:
         "examples/tutorials/structured_configs/7_dynamic_schema_many_configs/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {"driver": "mysql", "host": "mysql001.staging", "encoding": "utf-8"}
     }

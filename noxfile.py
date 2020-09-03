@@ -313,10 +313,10 @@ def test_tools(session):
     for tool in tools:
         tool_path = os.path.join("tools", tool)
         session.chdir(BASE)
-        cmd = list(install_cmd) + ["-e", tool_path]
-        session.run(*cmd, silent=SILENT)
-
-        session.run("pytest", tool_path)
+        if (Path(tool_path) / "setup.py").exists():
+            cmd = list(install_cmd) + ["-e", tool_path]
+            session.run(*cmd, silent=SILENT)
+            session.run("pytest", tool_path)
 
     session.chdir(BASE)
 
