@@ -13,8 +13,8 @@ import tempfile
 from contextlib import contextmanager
 from difflib import unified_diff
 from pathlib import Path
-from subprocess import PIPE, Popen, check_output
-from typing import Any, Dict, Iterator, List, Optional, Union
+from subprocess import PIPE, Popen
+from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
 from omegaconf import Container, DictConfig, OmegaConf
 from typing_extensions import Protocol
@@ -220,13 +220,20 @@ def chdir_plugin_root() -> None:
 def _chdir_to_dir_containing(
     target: str, max_up: int = 6, initial_dir: str = os.getcwd()
 ) -> None:
+    cur = find_parent_dir_containing(target, max_up, initial_dir)
+    os.chdir(cur)
+
+
+def find_parent_dir_containing(
+    target: str, max_up: int = 6, initial_dir: str = os.getcwd()
+) -> str:
     cur = initial_dir
     while not os.path.exists(os.path.join(cur, target)) and max_up > 0:
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1
     if max_up == 0:
         raise IOError(f"Could not find {target} in parents of {os.getcwd()}")
-    os.chdir(cur)
+    return cur
 
 
 def verify_dir_outputs(
@@ -363,11 +370,28 @@ def run_with_error(cmd: Any, env: Any = None) -> str:
     return err
 
 
-def get_run_output(cmd: Any, env: Any = None) -> str:
-    cmd = [sys.executable, "-Werror"] + cmd
+def get_run_output(
+    cmd: Any, env: Any = None, allow_warnings: bool = False
+) -> Tuple[str, str]:
+    if allow_warnings:
+        cmd = [sys.executable] + cmd
+    else:
+        cmd = [sys.executable, "-Werror"] + cmd
+
     try:
-        ret = check_output(cmd, env=env).decode().rstrip()
-        return normalize_newlines(ret)
+        process = subprocess.Popen(
+            args=cmd,
+            shell=False,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout, stderr = process.communicate()
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+        return normalize_newlines(stdout.decode().rstrip()), normalize_newlines(
+            stderr.decode().rstrip()
+        )
     except Exception as e:
         cmd = " ".join(cmd)
         print(f"==Error executing==\n{cmd}\n===================")

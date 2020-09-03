@@ -1,0 +1,8 @@
+packages:
+  - .  # hydra
+  - plugins/hydra_ax_sweeper
+  - plugins/hydra_colorlog
+  - plugins/hydra_joblib_launcher
+  - plugins/hydra_nevergrad_sweeper
+  - plugins/hydra_rq_launcher
+  - plugins/hydra_submitit_launcher

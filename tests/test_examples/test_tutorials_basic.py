@@ -39,7 +39,7 @@ def test_tutorial_simple_cli_app(
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -48,7 +48,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert result == "Working directory : {}".format(tmpdir)
 
 
@@ -65,7 +65,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     lines = result.splitlines()
     assert len(lines) == len(expected)
     for i in range(len(lines)):
@@ -89,7 +89,7 @@ def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -147,7 +147,7 @@ def test_tutorial_config_groups(
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -185,7 +185,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
@@ -284,7 +284,7 @@ def test_advanced_ad_hoc_composition(
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result = get_run_output(cmd)
+    result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
