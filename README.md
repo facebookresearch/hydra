@@ -47,8 +47,6 @@
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
-If you were using an older version of Hydra, ou can follow the migration guide, starting [here](https://hydra.cc/docs/upgrades/0.11_to_1.0/config_path_changes).
-
 ### License
 Hydra is licensed under [MIT License](LICENSE).
 
