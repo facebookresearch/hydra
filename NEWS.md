@@ -1,7 +1,7 @@
-1.0.0 (2020-09-02)
+1.0.0 (2020-09-03)
 ==================
 Hydra 1.0 is out!
-See [blog post](https://hydra.cc/blog/2020/09/02/Hydra_1.0) for high level details.
+See [blog post](https://hydra.cc/blog/2020/09/03/Hydra_1.0) for high level details.
 
 Major new features in Hydra 1.0
 * Config type safety via Structured Configs
