@@ -90,7 +90,7 @@ def build_package(cfg: Config, pkg_path: str) -> None:
         prev = os.getcwd()
         os.chdir(pkg_path)
         log.info(f"Building {get_package_info('.').name}")
-        shutil.rmtree("dist")
+        shutil.rmtree("dist", ignore_errors=True)
         get_run_output(
             cmd=["setup.py", "build", *cfg.build_targets], allow_warnings=True
         )

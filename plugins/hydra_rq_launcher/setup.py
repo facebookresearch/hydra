@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-rq-launcher",
-        version="1.0.0rc4",
+        version="1.0.0",
         author="Jan-Matthis Lueckmann, Omry Yadan",
         author_email="mail@jan-matthis.de, omry@fb.com",
         description="Redis Queue (RQ) Launcher for Hydra apps",
