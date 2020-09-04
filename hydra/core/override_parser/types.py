@@ -147,6 +147,7 @@ class IntervalSweep(Sweep):
 ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
 ElementTransformerType = Callable[[ParsedElementType, Any], Optional[ElementType]]
+# revisit this variable
 
 
 class OverrideType(Enum):
@@ -194,19 +195,19 @@ class Glob:
 
 class Transformer:
     @staticmethod
-    def identity(x: ParsedElementType) -> ParsedElementType:
+    def identity(x: Any):
         return x
 
     @staticmethod
-    def str(x: ParsedElementType) -> str:
+    def str(x: Any):
         return Override._get_value_element_as_str(x)
 
     @staticmethod
-    def encode(x: ParsedElementType) -> ParsedElementType:
+    def encode(x: Any):
         # use identity transformation for the primitive types
         # and str transformation for others
-        if isinstance(x, (str, int, float, bool)):
-            return x
+        if any(isinstance(x, _type) for _type in [str, int, float]):
+            return Transformer.identity(x)
         return Transformer.str(x)
 
 
@@ -276,7 +277,7 @@ class Override:
             return Override._convert_value(self._value)
 
     def sweep_iterator(
-        self, transformer: Union[str, ElementTransformerType] = "identity"
+        self, transformer: ElementTransformerType = Transformer.identity
     ) -> Iterator[ElementType]:
         """
         Converts the sweep_choices from a List[ParsedElements] to a List[Elements] that can be used in the
@@ -320,21 +321,14 @@ class Override:
         else:
             assert False
 
-        if isinstance(transformer, str):
-            if transformer == "identity":
-                return map(Override._convert_value, lst)
-            elif transformer == "str":
-                return map(Override._get_value_element_as_str, lst)
-            # should I raise a value error here?
-        else:
-            return map(transformer, lst)
+        return map(transformer, lst)
 
     def sweep_string_iterator(self) -> Iterator[str]:
         """
         Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
         value component of overrides (the part after the =)
         """
-        return self.sweep_iterator(transformer=Override._get_value_element_as_str)
+        return self.sweep_iterator(transformer=Transformer.str)
 
     def get_source_item(self) -> str:
         pkg = self.get_source_package()

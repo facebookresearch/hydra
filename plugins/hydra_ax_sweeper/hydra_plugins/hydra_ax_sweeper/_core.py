@@ -7,6 +7,7 @@ from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Transformer
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -295,12 +296,11 @@ def create_range_param_using_interval_override(override):
 
 
 def create_choice_param_from_choice_override(override):
-
     key = override.get_key_element()
     param = {
         "name": key,
         "type": "choice",
-        "values": list(override.sweep_iterator(transformer="str")),
+        "values": list(override.sweep_iterator(transformer=Transformer.encode)),
     }
     return param
 
@@ -310,7 +310,7 @@ def create_choice_param_from_range_override(override):
     param = {
         "name": key,
         "type": "choice",
-        "values": [val for val in override.sweep_iterator(transformer="identity")],
+        "values": [val for val in override.sweep_iterator()],
     }
 
     return param

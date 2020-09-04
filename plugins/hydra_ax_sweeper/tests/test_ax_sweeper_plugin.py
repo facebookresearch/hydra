@@ -197,7 +197,7 @@ def test_configuration_set_via_cmd_and_default_config(
 @pytest.mark.parametrize(
     "cmd_arg, expected_str",
     [
-        ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=['-1', '0', '1']"),
+        ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
         ("polynomial.y=range(-1, 2)", "polynomial.y: choice=[-1, 0, 1]"),
         ("polynomial.y=range(-1, 3, 1)", "polynomial.y: choice=[-1, 0, 1, 2]"),
         (
@@ -220,6 +220,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
+    print(" ".join(cmd))
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
@@ -227,12 +228,29 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "cmd_arg",
+    "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
-        ("polynomial.coefficients=choice([-1, 0, 1],[2, 3, 4],[5, 6, 7])"),
+        (
+            "polynomial.coefficients=[-1, 0, 1],[2, 3, 4],[5, 6, 7]",
+            "choice=['[-1,0,1]', '[2,3,4]', '[5,6,7]']",
+            "'[-1,0,1]'",
+            101.0,
+        ),
+        (
+            "polynomial.coefficients=choice([8, 12, 11],[-1, -1, 1000], [-2, 4, 7])",
+            "choice=['[8,12,11]', '[-1,-1,1000]', '[-2,4,7]']",
+            "'[-2,4,7]'",
+            447,
+        ),
     ],
 )
-def test_jobs_using_choice_between_lists(tmpdir: Path, cmd_arg: str) -> None:
+def test_jobs_using_choice_between_lists(
+    tmpdir: Path,
+    cmd_arg: str,
+    serialized_encoding: str,
+    best_coefficients,
+    best_value: float,
+) -> None:
     cmd = [
         sys.executable,
         "tests/apps/polynomial_with_list_coefficients.py",
@@ -241,11 +259,48 @@ def test_jobs_using_choice_between_lists(tmpdir: Path, cmd_arg: str) -> None:
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
     result = subprocess.check_output(cmd).decode("utf-8").rstrip()
-    assert (
-        "polynomial.coefficients: choice=['[-1,0,1]', '[2,3,4]', '[5,6,7]']" in result
-    )
-    assert "'polynomial.coefficients': '[-1,0,1]'" in result
-    assert "New best value: 101.0" in result
+    assert f"polynomial.coefficients: {serialized_encoding}" in result
+    assert f"'polynomial.coefficients': {best_coefficients}" in result
+    assert f"New best value: {best_value}" in result
+
+
+@pytest.mark.parametrize(
+    "cmd_arg, serialized_encoding, best_coefficients, best_value",
+    [
+        (
+            "polynomial.coefficients=choice({x:-1, y:0, z:1},{x:2, y:3, z:4},{x:5, y:6, z:7}",
+            "choice=['[x:-1,y:0,z:1]', '[x:2,y:3,z:4]', '[x:5,y:6,z:7]']",
+            "'[-1,0,1]'",
+            101.0,
+        ),
+        (
+            "polynomial.coefficients=choice({x:8, y:12, z:11},{x:-1, y:-1, z:1000}, {x:-2, y:4, z:7})",
+            "choice=['[8,12,11]', '[-1,-1,1000]', '[-2,4,7]']",
+            "'[-2,4,7]'",
+            447,
+        ),
+    ],
+)
+def test_jobs_using_choice_between_dicts(
+    tmpdir: Path,
+    cmd_arg: str,
+    serialized_encoding: str,
+    best_coefficients,
+    best_value: float,
+) -> None:
+    cmd = [
+        sys.executable,
+        "tests/apps/polynomial_with_dict_coefficients.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweeper.ax_config.max_trials=3",
+    ] + [cmd_arg]
+    print(" ".join(cmd))
+    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    print(result)
+    assert f"polynomial.coefficients: {serialized_encoding}" in result
+    assert f"'polynomial.coefficients': {best_coefficients}" in result
+    assert f"New best value: {best_value}" in result
 
 
 def test_example_app(tmpdir: Path) -> None:
