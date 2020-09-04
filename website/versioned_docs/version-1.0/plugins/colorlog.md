@@ -15,7 +15,7 @@ Adds <a class="external" href="https://github.com/borntyping/python-colorlog" ta
 
 ### Installation
 ```commandline
-pip install hydra_colorlog
+pip install hydra_colorlog --upgrade
 ```
 
 ### Usage
