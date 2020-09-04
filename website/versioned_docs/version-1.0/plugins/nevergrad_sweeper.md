@@ -16,7 +16,7 @@ sidebar_label: Nevergrad Sweeper plugin
 
 ### Installation
 ```commandline
-pip install hydra-nevergrad-sweeper
+pip install hydra-nevergrad-sweeper --upgrade
 ```
 
 ### Usage
