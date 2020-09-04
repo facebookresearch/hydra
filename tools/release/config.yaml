@@ -1,8 +1,10 @@
 packages:
-  - .  # hydra
-  - plugins/hydra_ax_sweeper
-  - plugins/hydra_colorlog
-  - plugins/hydra_joblib_launcher
-  - plugins/hydra_nevergrad_sweeper
-  - plugins/hydra_rq_launcher
-  - plugins/hydra_submitit_launcher
+  - path: .
+    version_type: file
+    version_file: hydra/__init__.py
+  - path: plugins/hydra_ax_sweeper
+  - path: plugins/hydra_colorlog
+  - path: plugins/hydra_joblib_launcher
+  - path: plugins/hydra_nevergrad_sweeper
+  - path: plugins/hydra_rq_launcher
+  - path: plugins/hydra_submitit_launcher
