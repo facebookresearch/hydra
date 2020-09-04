@@ -35,7 +35,7 @@ Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a de
 
 ### Installation
 ```commandline
-pip install hydra-core
+pip install hydra-core --upgrade
 ```
 
 ### Basic example
