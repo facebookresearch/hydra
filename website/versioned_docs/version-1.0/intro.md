@@ -34,8 +34,9 @@ This guide will show you some of the most important features of Hydra.
 Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
-Install Hydra 1.0 with `pip install hydra-core --pre --upgrade`.  
-This version may contain nuts and bugs and might be incompatible with existing plugins.
+```commandline
+pip install hydra-core --upgrade
+```
 
 ### Basic example
 Config:

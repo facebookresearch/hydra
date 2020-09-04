@@ -14,14 +14,8 @@ Adds <a class="external" href="https://github.com/borntyping/python-colorlog" ta
 
 
 ### Installation
-#### Hydra 0.11 - stable
-```
-pip install hydra-colorlog --upgrade
-```
-
-#### Hydra 1.0 - Release candidate
-```
-pip install hydra_colorlog --upgrade --pre
+```commandline
+pip install hydra_colorlog --upgrade
 ```
 
 ### Usage

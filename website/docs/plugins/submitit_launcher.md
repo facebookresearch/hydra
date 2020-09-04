@@ -14,9 +14,8 @@ The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/docum
 
 
 ### Installation
-This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-pip install hydra-submitit-launcher --pre
+pip install hydra-submitit-launcher --upgrade
 ```
 
 

@@ -13,9 +13,8 @@ sidebar_label: Joblib Launcher plugin
 The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
 ### Installation
-This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-pip install hydra-joblib-launcher --pre
+pip install hydra-joblib-launcher --upgrade
 ```
 
 ### Usage
