@@ -96,4 +96,6 @@ $ python my_app.py --multirun task=1,2,3,4,5
 [HYDRA] Polling job statuses every 1.0 sec
 ```
 
+Note that any dependencies need to be installed in the Python environment used to run the RQ worker. For serialization of jobs [`cloudpickle`](https://github.com/cloudpickle/cloudpickle) is used.
+
 The [RQ documentation](https://python-rq.org/) holds further information on [job monitoring](http://python-rq.org/docs/monitoring/), which can be done via console or [web interfaces](https://github.com/nvie/rq-dashboard), and provides [patterns](https://python-rq.org/patterns/) for worker and exception handling.
