@@ -15,7 +15,7 @@ The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/docum
 
 ### Installation
 ```commandline
-pip install hydra-submitit-launcher
+pip install hydra-submitit-launcher --upgrade
 ```
 
 
