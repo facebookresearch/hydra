@@ -15,9 +15,8 @@ sidebar_label: Nevergrad Sweeper plugin
 [Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
 
 ### Installation
-This plugin requires Hydra 1.0 (Release candidate)
 ```commandline
-pip install hydra-nevergrad-sweeper --pre
+pip install hydra-nevergrad-sweeper --upgrade
 ```
 
 ### Usage

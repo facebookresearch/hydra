@@ -5,7 +5,7 @@ title: Object instantiation changes
 
 
 ## Overview
-Hydra 1.0.0rc3 is deprecating ObjectConf and the corresponding config structure to a simpler one without the params node.
+Hydra 1.0.0 is deprecating ObjectConf and the corresponding config structure to a simpler one without the params node.
 This removes a level of nesting from command line and configs overrides.
 
 <div className="row">
