@@ -17,7 +17,7 @@ RQ launcher allows parallelizing across multiple nodes and scheduling jobs in qu
 
 ### Installation
 ```commandline
-pip install hydra-rq-launcher
+pip install hydra-rq-launcher --upgrade
 ```
 Usage of this plugin requires a [Redis server](https://redis.io/topics/quickstart).
 
