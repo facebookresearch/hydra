@@ -5,7 +5,7 @@ from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
-from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
@@ -146,8 +146,7 @@ class IntervalSweep(Sweep):
 # to support recursive type definitions.
 ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
-ElementTransformerType = Callable[[ParsedElementType], Optional[ElementType]]
-# revisit this variable
+TransformerType = Callable[[ParsedElementType], Any]
 
 
 class OverrideType(Enum):
@@ -195,15 +194,15 @@ class Glob:
 
 class Transformer:
     @staticmethod
-    def identity(x: Any):
+    def identity(x: ParsedElementType) -> ParsedElementType:
         return x
 
     @staticmethod
-    def str(x: Any):
+    def str(x: ParsedElementType) -> str:
         return Override._get_value_element_as_str(x)
 
     @staticmethod
-    def encode(x: Any):
+    def encode(x: ParsedElementType) -> ParsedElementType:
         # use identity transformation for the primitive types
         # and str transformation for others
         if any(isinstance(x, _type) for _type in [str, int, float]):
@@ -277,7 +276,7 @@ class Override:
             return Override._convert_value(self._value)
 
     def sweep_iterator(
-        self, transformer: ElementTransformerType = Transformer.identity
+        self, transformer: TransformerType = Transformer.identity
     ) -> Iterator[ElementType]:
         """
         Converts the sweep_choices from a List[ParsedElements] to a List[Elements] that can be used in the
@@ -328,7 +327,8 @@ class Override:
         Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
         value component of overrides (the part after the =)
         """
-        return self.sweep_iterator(transformer=Transformer.str)
+        iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
+        return iterator
 
     def get_source_item(self) -> str:
         pkg = self.get_source_package()
