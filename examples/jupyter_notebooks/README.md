@@ -1,3 +1,3 @@
 ## Jupyter notebooks
 
-Run via [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/facebookresearch/hydra/master?filepath=examples%2jupyter_notebooks)
+- **compose_configs_in_notebook.ipynb** [![Binder](https://mybinder.org/badge_logo.svg)](https://hub-binder.mybinder.ovh/user/facebookresearch-hydra-yhb32hm0/notebooks/examples/jupyter_notebooks/compose_configs_in_notebook.ipynb)
