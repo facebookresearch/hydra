@@ -1230,3 +1230,57 @@ def test_apply_overrides_to_config(
     else:
         with expected:
             ConfigLoaderImpl._apply_overrides_to_config(overrides=parsed, cfg=cfg)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "config,overrides,expected",
+    [
+        pytest.param(
+            "config",
+            [],
+            {"optimizer": {"type": "nesterov", "lr": 0.001}},
+            id="default_choice",
+        ),
+        pytest.param(
+            "config",
+            ["optimizer=adam"],
+            {"optimizer": {"type": "adam", "lr": 0.1, "beta": 0.01}},
+            id="default_change",
+        ),
+        pytest.param(
+            # need to unset optimizer config group first, otherwise they get merged
+            "config",
+            ["optimizer={type:nesterov2,lr:1}"],
+            {"optimizer": {"type": "nesterov2", "lr": 1}},
+            id="dict_merge",
+        ),
+        pytest.param(
+            # need to unset optimizer config group first, otherwise they get merged
+            "config",
+            ["+optimizer={foo:10}"],
+            {"optimizer": {"type": "nesterov", "lr": 0.001, "foo": 10}},
+            id="dict_merge_append",
+        ),
+        pytest.param(
+            # need to unset optimizer config group first, otherwise they get merged
+            "missing_default",
+            ["~optimizer", "+optimizer={type:super,good:true,fast:true}"],
+            {"optimizer": {"type": "super", "good": True, "fast": True}},
+            id="dict_replace_default",
+        ),
+    ],
+)
+def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> None:
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path(
+            "tests/test_apps/app_with_cfg_groups/conf"
+        ),
+        default_strict=True,  # TODO : default to True
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name=config, overrides=overrides, run_mode=RunMode.RUN
+    )
+    with open_dict(cfg):
+        del cfg["hydra"]
+    assert cfg == expected
