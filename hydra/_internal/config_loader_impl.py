@@ -493,7 +493,9 @@ class ConfigLoaderImpl(ConfigLoader):
                             del node[key[last_dot + 1 :]]
 
                 elif override.is_add():
-                    if OmegaConf.select(cfg, key, throw_on_missing=False) is None:
+                    if OmegaConf.select(
+                        cfg, key, throw_on_missing=False
+                    ) is None or isinstance(value, (dict, list)):
                         with open_dict(cfg):
                             OmegaConf.update(cfg, key, value)
                     else:
@@ -505,7 +507,7 @@ class ConfigLoaderImpl(ConfigLoader):
                         OmegaConf.update(cfg, key, value)
                     except (ConfigAttributeError, ConfigKeyError) as ex:
                         raise ConfigCompositionException(
-                            f"Could not override '{override.key_or_group}'. No match in config."
+                            f"Could not override '{override.key_or_group}'."
                             f"\nTo append to your config use +{override.input_line}"
                         ) from ex
             except OmegaConfBaseException as ex:

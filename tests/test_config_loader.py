@@ -1096,8 +1096,7 @@ def test_delete_by_assigning_null_is_deprecated() -> None:
             pytest.raises(
                 HydraException,
                 match=re.escape(
-                    "Could not override 'x'. No match in config."
-                    "\nTo append to your config use +x=10"
+                    "Could not override 'x'.\nTo append to your config use +x=10"
                 ),
             ),
             id="append:error:no_match",
@@ -1126,6 +1125,20 @@ def test_delete_by_assigning_null_is_deprecated() -> None:
         pytest.param({"x": 20}, ["x=10"], {"x": 10}, id="override"),
         pytest.param({"x": None}, ["x=[1,2,3]"], {"x": [1, 2, 3]}, id="override:list"),
         pytest.param({"x": 20}, ["x=null"], {"x": None}, id="override_with_null"),
+        pytest.param({"x": {"a": 10}}, ["x={a:20}"], {"x": {"a": 20}}, id="merge_dict"),
+        pytest.param(
+            {"x": {"a": 10, "b": None}},
+            ["x={b:20}"],
+            {"x": {"a": 10, "b": 20}},
+            id="merge_dict",
+        ),
+        pytest.param(
+            {"x": {"a": 10}},
+            ["+x={b:20}"],
+            {"x": {"a": 10, "b": 20}},
+            id="merge_dict",
+        ),
+        # TODO
         # delete
         pytest.param({"x": 20}, ["~x"], {}, id="delete"),
         pytest.param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
