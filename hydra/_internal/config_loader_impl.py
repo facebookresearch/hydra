@@ -71,7 +71,7 @@ class ConfigLoaderImpl(ConfigLoader):
     def __init__(
         self,
         config_search_path: ConfigSearchPath,
-        default_strict: Optional[bool] = None,
+        default_strict: Optional[bool] = True,
     ) -> None:
         self.default_strict = default_strict
         self.all_config_checked: List[LoadTrace] = []

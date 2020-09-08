@@ -443,19 +443,16 @@ class TestConfigLoader:
         expected.append(LoadTrace("db/mysql", path, "main", "this_test"))
         assert config_loader.get_load_history() == expected
 
-    def test_assign_null(
-        self, hydra_restore_singletons: Any, path: str, recwarn: Any
-    ) -> None:
+    def test_assign_null(self, hydra_restore_singletons: Any, path: str) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
-            config_name="config.yaml", overrides=["abc=null"], run_mode=RunMode.RUN
+            config_name="config.yaml", overrides=["+abc=null"], run_mode=RunMode.RUN
         )
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {"normal_yaml_config": True, "abc": None}
-        assert len(recwarn) == 0
 
     def test_sweep_config_cache(
         self, hydra_restore_singletons: Any, path: str, monkeypatch: Any
@@ -468,7 +465,7 @@ class TestConfigLoader:
         master_cfg = config_loader.load_configuration(
             config_name="config.yaml",
             strict=False,
-            overrides=["time='${now:%H-%M-%S}'", "home='${env:HOME}'"],
+            overrides=["+time=${now:%H-%M-%S}", "+home=${env:HOME}"],
             run_mode=RunMode.RUN,
         )
 
@@ -482,7 +479,7 @@ class TestConfigLoader:
 
         sweep_cfg = config_loader.load_sweep_config(
             master_config=master_cfg,
-            sweep_overrides=["time='${now:%H-%M-%S}'", "home='${env:HOME}'"],
+            sweep_overrides=["+time=${now:%H-%M-%S}", "+home=${env:HOME}"],
         )
 
         sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)
@@ -1275,7 +1272,6 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
         config_search_path=create_config_search_path(
             "tests/test_apps/app_with_cfg_groups/conf"
         ),
-        default_strict=True,  # TODO : default to True
     )
 
     cfg = config_loader.load_configuration(
