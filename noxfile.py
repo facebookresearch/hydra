@@ -201,7 +201,7 @@ def _isort_cmd():
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
     install_dev_deps(session)
-    install_hydra(session, INSTALL_COMMAND)
+    install_hydra(session, ["pip", "install", "-e"])
 
     apps = _get_standalone_apps_dirs()
     session.log("Installing standalone apps")
@@ -257,7 +257,7 @@ def lint_plugins(session):
 
 def lint_plugins_in_dir(session, directory: str) -> None:
 
-    install_cmd = INSTALL_COMMAND
+    install_cmd = ["pip", "install", "-e"]
     install_hydra(session, install_cmd)
     plugins = select_plugins(session=session, directory=directory)
 
@@ -425,7 +425,7 @@ def coverage(session):
 
     _upgrade_basic(session)
     session.install("coverage", "pytest")
-    install_hydra(session, INSTALL_COMMAND)
+    install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
     for directory in ["plugins", "examples/plugins"]:
