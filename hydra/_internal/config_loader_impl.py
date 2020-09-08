@@ -86,7 +86,9 @@ class ConfigLoaderImpl(ConfigLoader):
         config_group_overrides = []
         config_overrides = []
         for override in overrides:
-            if not self.repository.group_exists(override.key_or_group):
+            is_group = self.repository.group_exists(override.key_or_group)
+            is_dict = isinstance(override.value(), dict)
+            if is_dict or not is_group:
                 config_overrides.append(override)
             else:
                 config_group_overrides.append(override)
