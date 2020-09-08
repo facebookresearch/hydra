@@ -8,6 +8,7 @@ import re
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass
+from textwrap import dedent
 from typing import Any, Dict, List, Optional, Tuple
 
 from omegaconf import Container, DictConfig, ListConfig, OmegaConf, open_dict
@@ -193,10 +194,13 @@ class ConfigLoaderImpl(ConfigLoader):
                         else:
                             example_override = f"key='{vals}'"
 
-                        msg = f"""Ambiguous value for argument '{x.input_line}'
-1. To use it as a list, use key=[value1,value2]
-2. To use it as string, quote the value: {example_override}
-3. To sweep over it, add --multirun to your command line"""
+                        msg = dedent(
+                            f"""\
+                            Ambiguous value for argument '{x.input_line}'
+                            1. To use it as a list, use key=[value1,value2]
+                            2. To use it as string, quote the value: {example_override}
+                            3. To sweep over it, add --multirun to your command line"""
+                        )
                         raise ConfigCompositionException(msg)
                     else:
                         raise ConfigCompositionException(

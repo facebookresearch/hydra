@@ -2,6 +2,8 @@
 from dataclasses import dataclass
 from typing import Any, List, Tuple
 
+from omegaconf import MISSING
+
 from hydra.types import TargetConf
 
 
@@ -102,3 +104,15 @@ class AdamConf(TargetConf):
 class BadAdamConf(TargetConf):
     # Missing str annotation
     _target_ = "tests.Adam"
+
+
+@dataclass
+class User:
+    name: str = MISSING
+    age: int = MISSING
+
+
+@dataclass
+class UserGroup:
+    name: str = MISSING
+    users: List[User] = MISSING

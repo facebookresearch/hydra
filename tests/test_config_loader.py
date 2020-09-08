@@ -13,9 +13,14 @@ from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import env_override, setup_globals
-from hydra.errors import HydraException, MissingConfigException
+from hydra.errors import (
+    ConfigCompositionException,
+    HydraException,
+    MissingConfigException,
+)
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.types import RunMode
+from tests import UserGroup
 
 chdir_hydra_root()
 
@@ -1138,7 +1143,33 @@ def test_delete_by_assigning_null_is_deprecated() -> None:
             {"x": {"a": 10, "b": 20}},
             id="merge_dict",
         ),
-        # TODO
+        pytest.param(
+            UserGroup,
+            ["name=agents", "users=[]"],
+            {"name": "agents", "users": []},
+            id="merge_list",
+        ),
+        pytest.param(
+            UserGroup,
+            ["name=agents", "users=[{}]"],
+            {"name": "agents", "users": [{"name": MISSING, "age": MISSING}]},
+            id="merge_list",
+        ),
+        pytest.param(
+            UserGroup,
+            ["name=agents", "users=[{name:bond,age:7}]"],
+            {"name": "agents", "users": [{"name": "bond", "age": 7}]},
+            id="merge_list",
+        ),
+        pytest.param(
+            UserGroup,
+            ["name=agents", "users=[{name:bond,age:nope}]"],
+            pytest.raises(
+                ConfigCompositionException,
+                match=re.escape("Error merging override users=[{name:bond,age:nope}]"),
+            ),
+            id="merge_list",
+        ),
         # delete
         pytest.param({"x": 20}, ["~x"], {}, id="delete"),
         pytest.param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
