@@ -151,6 +151,20 @@ Note that trailing and leading whitespace are ignored, the above is equivalent t
 $ python my_app.py 'msg=    hello world    '
 ```
 
+### Escaped characters in unquoted values
+If you really intend to have trailing or leading whitespaces in unquoted values, it is still possible by escaping them.
+For instance in the following example `msg` will be set to the string `" test "`:
+
+```shell
+$ python my_app.py 'msg=\ test\ '
+```
+
+Here is the full list of characters that may be escaped in unquoted values:
+* Space (`\ `) (for trailing / leading whitespaces as in the example above)
+* Tab (`\\t`) (for trailing / leading tabs, though note that passing tabs through your shell can be [tricky](https://stackoverflow.com/questions/6392249/how-to-enter-a-tab-char-on-command-line))
+* Comma (`\,`) (to avoid confusion with the sweeps described below)
+* Backslash (`\\`) (to allow for an actual backslash preceding any of the above characters, e.g. a sweep value ending with a backslash)
+
 ### Primitives
 - `id` : oompa10, loompa_12
 - `null`: null
