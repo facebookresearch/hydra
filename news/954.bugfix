@@ -1,0 +1,1 @@
+Fix for integer parsing: previously all underscore patterns were allowed, now only valid ones are recognized as integers (ex: `1___0` is not recognized as an integer anymore)
