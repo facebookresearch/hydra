@@ -93,15 +93,19 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             last_idx = last_idx - 1
         num = last_idx - first_idx
         if num > 1:
-            # Concatenate, but un-escaping as needed.
-            tokens = [
-                n.symbol.text[1::2]
-                if n.symbol.type == OverrideLexer.ESC
-                else n.symbol.text
-                for i, n in enumerate(ctx.getChildren())
-                # Skip leading / trailing whitespaces.
-                if n.symbol.type != OverrideLexer.WS or first_idx <= i < last_idx
-            ]
+            # Concatenate, while un-escaping as needed.
+            tokens = []
+            for i, n in enumerate(ctx.getChildren()):
+                if n.symbol.type == OverrideLexer.WS and (
+                    i < first_idx or i >= last_idx
+                ):
+                    # Skip leading / trailing whitespaces.
+                    continue
+                tokens.append(
+                    n.symbol.text[1::2]  # un-escape by skipping every other char
+                    if n.symbol.type == OverrideLexer.ESC
+                    else n.symbol.text
+                )
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
