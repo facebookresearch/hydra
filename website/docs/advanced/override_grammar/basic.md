@@ -29,7 +29,7 @@ Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_langua
 Below are the parser rules from grammar.
 You can see the full grammar on GitHub
 ([lexer](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideLexer.g4) and
-[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4))
+[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4)).
 
 ```antlr4 title="OverrideParser.g4"
 override: (
@@ -153,21 +153,54 @@ $ python my_app.py 'msg=    hello world    '
 
 Constants (null, true, false, inf, nan) are case insensitive.
 
-**IMPORTANT** Always single-quote interpolations in the shell.
+:::important
+Always single-quote interpolations in the shell.
+:::
+
+## Dictionaries and Lists
 
 ### Lists
 ```python
 foo=[1,2,3]
 nested=[a,[b,[c]]]
 ```
-**IMPORTANT** Always single-quote overrides that contains lists in the shell.
 
 ### Dictionaries
 ```python
 foo={a:10,b:20}
 nested={a:10,b:{c:30,d:40}}
 ```
-**IMPORTANT** Always single-quote overrides that contains dicts in the shell.
+
+Dictionaries are merged, not assigned. The following example illustrates the point:
+<div className="row">
+<div className="col col--6">
+
+```yaml title="Input config"
+db:
+  driver: mysql
+  user: ???
+  pass: ???
+```
+
+</div>
+
+<div className="col  col--6">
+
+
+```yaml title="db={user:root,pass:1234}"
+db:
+  driver: mysql
+  user: root
+  pass: 1234
+```
+
+</div>
+</div>
+
+
+:::important
+Always single-quote overrides that contains dicts and lists in the shell.
+:::
 
 ### Sweeper syntax
 A choice sweep is comma separated list with two or more elements:
@@ -179,7 +212,10 @@ key={a:10, b:20},{c:30,d:40}  # And dictionaries: ChoiceSweep({a:10, b:20}, {c:3
 ```
 More sweeping options are described in the [Extended Grammar page](extended).
 
-**IMPORTANT** You may need to quote your choice sweep in the shell
+:::important
+You may need to quote your choice sweep in the shell.
+:::
+
 
 ### Functions
 Hydra supports several functions in the command line.
