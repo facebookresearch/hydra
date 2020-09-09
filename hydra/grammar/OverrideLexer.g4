@@ -56,7 +56,7 @@ BOOL:
 
 NULL: [Nn][Uu][Ll][Ll];
 
-UNQUOTED_CHAR: [/\-\\+.$*];  // other characters allowed in unquoted strings
+UNQUOTED_CHAR: [/\-\\+.$%*];  // other characters allowed in unquoted strings
 VALUE_ID: ID -> type(ID);
 ESC: ('\\\\' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;
