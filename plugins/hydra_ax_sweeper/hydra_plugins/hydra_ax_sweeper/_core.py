@@ -7,7 +7,7 @@ from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import Transformer
+from hydra.core.override_parser.types import IntervalSweep, Override, Transformer
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -242,7 +242,7 @@ class CoreAxSweeper(Sweeper):
         """Method to parse the command line arguments and convert them into Ax parameters"""
         parser = OverridesParser.create()
         parsed = parser.parse_overrides(arguments)
-        parameters = []
+        parameters: List[Dict[str, Any]] = []
         for override in parsed:
             if override.is_sweep_override():
                 if override.is_choice_sweep():
@@ -284,9 +284,10 @@ def normalize_key(key: str, str_to_replace: str, str_to_replace_with: str) -> st
     return new_key
 
 
-def create_range_param_using_interval_override(override):
+def create_range_param_using_interval_override(override: Override) -> Dict[str, Any]:
     key = override.get_key_element()
     value = override.value()
+    assert isinstance(value, IntervalSweep)
     param = {
         "name": key,
         "type": "range",
@@ -295,7 +296,7 @@ def create_range_param_using_interval_override(override):
     return param
 
 
-def create_choice_param_from_choice_override(override):
+def create_choice_param_from_choice_override(override: Override) -> Dict[str, Any]:
     key = override.get_key_element()
     param = {
         "name": key,
@@ -305,7 +306,7 @@ def create_choice_param_from_choice_override(override):
     return param
 
 
-def create_choice_param_from_range_override(override):
+def create_choice_param_from_range_override(override: Override) -> Dict[str, Any]:
     key = override.get_key_element()
     param = {
         "name": key,
@@ -316,7 +317,7 @@ def create_choice_param_from_range_override(override):
     return param
 
 
-def create_fixed_param_from_element_override(override):
+def create_fixed_param_from_element_override(override: Override) -> Dict[str, Any]:
     key = override.get_key_element()
     param = {
         "name": key,

@@ -264,6 +264,7 @@ def test_jobs_using_choice_between_lists(
     assert f"New best value: {best_value}" in result
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
