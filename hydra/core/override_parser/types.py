@@ -324,8 +324,7 @@ class Override:
 
     def sweep_string_iterator(self) -> Iterator[str]:
         """
-        Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
-        value component of overrides (the part after the =)
+        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP to a List of strings that can be used in the value component of overrides (the part after the =)
         """
         iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
         return iterator
