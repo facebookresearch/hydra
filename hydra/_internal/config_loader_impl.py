@@ -503,14 +503,14 @@ class ConfigLoaderImpl(ConfigLoader):
                         cfg, key, throw_on_missing=False
                     ) is None or isinstance(value, (dict, list)):
                         with open_dict(cfg):
-                            OmegaConf.update(cfg, key, value)
+                            OmegaConf.update(cfg, key, value, merge=True)
                     else:
                         raise ConfigCompositionException(
                             f"Could not append to config. An item is already at '{override.key_or_group}'."
                         )
                 else:
                     try:
-                        OmegaConf.update(cfg, key, value)
+                        OmegaConf.update(cfg, key, value, merge=True)
                     except (ConfigAttributeError, ConfigKeyError) as ex:
                         raise ConfigCompositionException(
                             f"Could not override '{override.key_or_group}'."
