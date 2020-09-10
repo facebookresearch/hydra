@@ -279,9 +279,10 @@ class Override:
         self, transformer: TransformerType = Transformer.identity
     ) -> Iterator[ElementType]:
         """
-        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP to a List[Elements].
-        The returned sweep.
-        A transformer may be provided for converting each element to support the needs of different sweepers
+        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and
+        RANGE_SWEEP to a List[Elements] that can be used in the value component
+        of overrides (the part after the =). A transformer may be provided for
+        converting each element to support the needs of different sweepers
         """
         if self.value_type not in (
             ValueType.CHOICE_SWEEP,
@@ -324,7 +325,9 @@ class Override:
 
     def sweep_string_iterator(self) -> Iterator[str]:
         """
-        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP to a List of strings that can be used in the value component of overrides (the part after the =)
+        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP
+        to a List of strings that can be used in the value component of overrides (the
+        part after the =)
         """
         iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
         return iterator
