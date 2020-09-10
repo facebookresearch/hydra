@@ -164,12 +164,12 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     ) -> Dict[str, ParsedElementType]:
         assert self.is_matching_terminal(ctx.getChild(0), OverrideLexer.BRACE_OPEN)
         return dict(
-            self.visitKeyValuePair(ctx.getChild(i))
+            self.visitDictKeyValuePair(ctx.getChild(i))
             for i in range(1, ctx.getChildCount() - 1, 2)
         )
 
-    def visitKeyValuePair(
-        self, ctx: OverrideParser.KeyValuePairContext
+    def visitDictKeyValuePair(
+        self, ctx: OverrideParser.DictKeyValuePairContext
     ) -> Tuple[str, ParsedElementType]:
         children = ctx.getChildren()
         item = next(children)

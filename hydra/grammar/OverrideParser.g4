@@ -51,8 +51,8 @@ listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
     (element(COMMA element)*)?
 BRACKET_CLOSE; 
 
-dictValue: BRACE_OPEN (keyValuePair (COMMA keyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
-keyValuePair: ID COLON element;
+dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
+dictKeyValuePair: ID COLON element;
 
 // Primitive types.
 
