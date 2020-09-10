@@ -206,7 +206,7 @@ class Transformer:
         # use identity transformation for the primitive types
         # and str transformation for others
         if isinstance(x, (str, int, float, bool)):
-            return Transformer.identity(x)
+            return x
         return Transformer.str(x)
 
 
