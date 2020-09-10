@@ -213,7 +213,7 @@ $ set +o braceexpand -o noglob +o histexpand
 $ echo key1={a:10,b:20} key2=${HOME} key=[b]*
 key1={a:10,b:20} key2=/home/omry key=[b]*
 # does not help with () though:
-$  echo key=choice(a,b,c)
+$ echo key=choice(a,b,c)
 bash: syntax error near unexpected token '('
 $ echo 'key=choice(a,b,c)'
 key=choice(a,b,c)
