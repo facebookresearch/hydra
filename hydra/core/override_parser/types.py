@@ -205,7 +205,7 @@ class Transformer:
     def encode(x: ParsedElementType) -> ParsedElementType:
         # use identity transformation for the primitive types
         # and str transformation for others
-        if any(isinstance(x, _type) for _type in [str, int, float]):
+        if isinstance(x, (str, int, float, bool)):
             return Transformer.identity(x)
         return Transformer.str(x)
 
