@@ -54,10 +54,16 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param(" abc-123 ", "abc-123", id="value:str-ws-out"),
         pytest.param("123abc", "123abc", id="value:str-int-id"),
         pytest.param(r"a\,b", "a,b", id="value:str-esc-comma"),
+        pytest.param(r"a\:b", "a:b", id="value:str-esc-colon"),
+        pytest.param(r"a\=b", "a=b", id="value:str-esc-equal"),
         pytest.param(r"\ ab", " ab", id="value:str-esc-space"),
         pytest.param("ab\\\t", "ab\t", id="value:str-esc-tab"),
         pytest.param("ab\\\\", "ab\\", id="value:str-esc-backslash"),
         pytest.param(r"\,", ",", id="value:str-esc-comma-alone"),
+        pytest.param(r"f\(a\, b\)", "f(a, b)", id="value:str-esc-parentheses"),
+        pytest.param(r"\[a\, b\]", "[a, b]", id="value:str-esc-brackets"),
+        pytest.param(r"\{a\: b\}", "{a: b}", id="value:str-esc-braces"),
+        pytest.param(r"$\{foo.bar\}", "${foo.bar}", id="value:str-esc-braces"),
         pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
         pytest.param(
             "${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"

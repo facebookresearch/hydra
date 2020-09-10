@@ -61,7 +61,8 @@ NULL: [Nn][Uu][Ll][Ll];
 
 UNQUOTED_CHAR: [/\-\\+.$%*];  // other characters allowed in unquoted strings
 ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
-ESC: (ESC_BACKSLASH | '\\,' | '\\ ' | '\\\t')+;
+ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |
+      '\\:' | '\\=' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;
 
 QUOTED_VALUE:

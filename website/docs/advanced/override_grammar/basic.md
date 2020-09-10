@@ -142,6 +142,16 @@ Note that trailing and leading whitespace are ignored, the above is equivalent t
 $ python my_app.py 'msg=    hello world    '
 ```
 
+### Escaped characters in unquoted values
+Some otherwise special characters may be included in unquoted values by escaping them with a `\`.
+These characters are: `\()[]{}:=, \t` (the last two ones being the whitespace and tab characters).
+
+As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
+
+```shell
+$ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
+```
+
 ### Primitives
 - `id` : oompa10, loompa_12
 - `null`: null
