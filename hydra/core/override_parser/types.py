@@ -5,7 +5,7 @@ from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
-from typing import Any, Dict, Iterator, List, Optional, Set, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
@@ -146,6 +146,7 @@ class IntervalSweep(Sweep):
 # to support recursive type definitions.
 ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
+TransformerType = Callable[[ParsedElementType], Any]
 
 
 class OverrideType(Enum):
@@ -189,6 +190,24 @@ class Glob:
                 res.append(name)
 
         return res
+
+
+class Transformer:
+    @staticmethod
+    def identity(x: ParsedElementType) -> ParsedElementType:
+        return x
+
+    @staticmethod
+    def str(x: ParsedElementType) -> str:
+        return Override._get_value_element_as_str(x)
+
+    @staticmethod
+    def encode(x: ParsedElementType) -> ParsedElementType:
+        # use identity transformation for the primitive types
+        # and str transformation for others
+        if isinstance(x, (str, int, float, bool)):
+            return x
+        return Transformer.str(x)
 
 
 @dataclass
@@ -256,10 +275,14 @@ class Override:
         else:
             return Override._convert_value(self._value)
 
-    def sweep_string_iterator(self) -> Iterator[str]:
+    def sweep_iterator(
+        self, transformer: TransformerType = Transformer.identity
+    ) -> Iterator[ElementType]:
         """
-        Converts the sweep_choices from a List[ParsedElements] to a List[str] that can be used in the
-        value component of overrides (the part after the =)
+        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and
+        RANGE_SWEEP to a List[Elements] that can be used in the value component
+        of overrides (the part after the =). A transformer may be provided for
+        converting each element to support the needs of different sweepers
         """
         if self.value_type not in (
             ValueType.CHOICE_SWEEP,
@@ -298,7 +321,16 @@ class Override:
         else:
             assert False
 
-        return map(Override._get_value_element_as_str, lst)
+        return map(transformer, lst)
+
+    def sweep_string_iterator(self) -> Iterator[str]:
+        """
+        Converts CHOICE_SWEEP, SIMPLE_CHOICE_SWEEP, GLOB_CHOICE_SWEEP and RANGE_SWEEP
+        to a List of strings that can be used in the value component of overrides (the
+        part after the =)
+        """
+        iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
+        return iterator
 
     def get_source_item(self) -> str:
         pkg = self.get_source_package()

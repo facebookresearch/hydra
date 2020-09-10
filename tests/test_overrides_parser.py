@@ -25,6 +25,7 @@ from hydra.core.override_parser.types import (
     QuotedString,
     RangeSweep,
     Sweep,
+    Transformer,
     ValueType,
 )
 from hydra.errors import HydraException
@@ -1896,3 +1897,45 @@ def test_whitespaces(
         value_type=expected_value_type,
     )
     assert ret == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value, expected_sweep_string_list, expected_sweep_encoded_list",
+    [
+        ("x=choice(1,2,3)", ["1", "2", "3"], [1, 2, 3]),
+        ("x=choice('1', '2', '3')", ["1", "2", "3"], ["1", "2", "3"]),
+        ("x=choice('a', 'b')", ["a", "b"], ["a", "b"]),
+        (
+            "x=choice(True, 'True', False, 'False', 'a', 1, 1.1, 2.0, 3, '1.5', '4')",
+            ["True", "True", "False", "False", "a", "1", "1.1", "2.0", "3", "1.5", "4"],
+            [True, "True", False, "False", "a", 1, 1.1, 2.0, 3, "1.5", "4"],
+        ),
+        (
+            "x=range(1, 10)",
+            ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        ),
+        (
+            "x=choice([1,2,3], ['a', 'b'])",
+            ["[1,2,3]", "['a','b']"],
+            ["[1,2,3]", "['a','b']"],
+        ),
+        (
+            "x=choice([1, 1.1, '2', 'a'], [True, False])",
+            ["[1,1.1,'2','a']", "[True,False]"],
+            ["[1,1.1,'2','a']", "[True,False]"],
+        ),
+    ],
+)
+def test_sweep_iterators(
+    value: str,
+    expected_sweep_string_list: List[str],
+    expected_sweep_encoded_list: List[Any],
+) -> None:
+    ret = parser.parse_override(value)
+    actual_sweep_string_list = [x for x in ret.sweep_string_iterator()]
+    actual_sweep_encoded_list = [
+        x for x in ret.sweep_iterator(transformer=Transformer.encode)
+    ]
+    assert actual_sweep_string_list == expected_sweep_string_list
+    assert actual_sweep_encoded_list == expected_sweep_encoded_list
