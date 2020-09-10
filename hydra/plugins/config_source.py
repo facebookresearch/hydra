@@ -198,7 +198,7 @@ class ConfigSource(Plugin):
 
         if package is not None and package != "":
             cfg = OmegaConf.create()
-            OmegaConf.update(cfg, package, node)
+            OmegaConf.update(cfg, package, node, merge=False)
         else:
             cfg = OmegaConf.structured(node)
         return cfg
