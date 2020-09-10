@@ -17,7 +17,7 @@ import hydra
 
 @hydra.main()
 def my_app(cfg: DictConfig) -> None:
-        print(OmegaConf.to_yaml(cfg))
+    print(OmegaConf.to_yaml(cfg))
 
 if __name__ == "__main__":
     my_app()
@@ -34,5 +34,5 @@ db:
   password: secret
 ```
 
-See [Hydra's command line flags](advanced/hydra-command-line-flags.md) and 
+See [Hydra's command line flags](advanced/hydra-command-line-flags.md) and
 [Basic Override Syntax](advanced/override_grammar/basic.md) for more information about the command line.
