@@ -49,7 +49,7 @@ function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
 
 listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
     (element(COMMA element)*)?
-BRACKET_CLOSE; 
+BRACKET_CLOSE;
 
 dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
 dictKeyValuePair: ID COLON element;
@@ -66,6 +66,6 @@ primitive:
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
         | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *
         | COLON                                  // :
-        | ESC                                    // \\, \ , \\t, \,
+        | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
     )+;
