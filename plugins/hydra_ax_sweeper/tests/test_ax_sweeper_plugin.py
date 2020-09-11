@@ -194,7 +194,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic_y" in best_parameters
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "cmd_arg, expected_str",
     [
         ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
@@ -227,7 +227,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     assert "polynomial.z: fixed=10" in result
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
@@ -248,7 +248,7 @@ def test_jobs_using_choice_between_lists(
     tmpdir: Path,
     cmd_arg: str,
     serialized_encoding: str,
-    best_coefficients,
+    best_coefficients: str,
     best_value: float,
 ) -> None:
     cmd = [
@@ -264,8 +264,8 @@ def test_jobs_using_choice_between_lists(
     assert f"New best value: {best_value}" in result
 
 
-@pytest.mark.xfail
-@pytest.mark.parametrize(
+@pytest.mark.xfail  # type: ignore
+@pytest.mark.parametrize(  # type: ignore
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
@@ -286,7 +286,7 @@ def test_jobs_using_choice_between_dicts(
     tmpdir: Path,
     cmd_arg: str,
     serialized_encoding: str,
-    best_coefficients,
+    best_coefficients: str,
     best_value: float,
 ) -> None:
     cmd = [
@@ -319,11 +319,13 @@ def test_example_app(tmpdir: Path) -> None:
     assert "banana.y: range=[-5.0, 10.1]" in result
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore
     "overrides",
     [[], ["quadratic.x_arg=int(interval(-1, 1))"]],
 )
-def test_jobs_configured_via_nested_config(hydra_sweep_runner, overrides: list) -> None:
+def test_jobs_configured_via_nested_config(
+    hydra_sweep_runner: TSweepRunner, overrides: List[str]
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
