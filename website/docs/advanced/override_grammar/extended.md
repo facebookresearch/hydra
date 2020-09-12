@@ -197,7 +197,7 @@ str([1,2,3])               # ['1','2','3']
 str({a:10})                # {a:'10'}
 ```
 
-Below are psuedo code snippets that illustrates the differences between Python's casting and Hydra's casting.
+Below are pseudo code snippets that illustrates the differences between Python's casting and Hydra's casting.
 
 #### Casting string to bool
 
