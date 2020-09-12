@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from antlr4 import TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -93,7 +93,20 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             last_idx = last_idx - 1
         num = last_idx - first_idx
         if num > 1:
-            ret = ctx.getText().strip()
+            # Concatenate, while un-escaping as needed.
+            tokens = []
+            for i, n in enumerate(ctx.getChildren()):
+                if n.symbol.type == OverrideLexer.WS and (
+                    i < first_idx or i >= last_idx
+                ):
+                    # Skip leading / trailing whitespaces.
+                    continue
+                tokens.append(
+                    n.symbol.text[1::2]  # un-escape by skipping every other char
+                    if n.symbol.type == OverrideLexer.ESC
+                    else n.symbol.text
+                )
+            ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
             if node.symbol.type == OverrideLexer.QUOTED_VALUE:
@@ -125,6 +138,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                     ret = False
                 else:
                     assert False
+            elif node.symbol.type == OverrideLexer.ESC:
+                ret = node.symbol.text[1::2]
             else:
                 return node.getText()  # type: ignore
         return ret
@@ -147,29 +162,23 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitDictValue(
         self, ctx: OverrideParser.DictValueContext
     ) -> Dict[str, ParsedElementType]:
-        ret = {}
+        assert self.is_matching_terminal(ctx.getChild(0), OverrideLexer.BRACE_OPEN)
+        return dict(
+            self.visitDictKeyValuePair(ctx.getChild(i))
+            for i in range(1, ctx.getChildCount() - 1, 2)
+        )
+
+    def visitDictKeyValuePair(
+        self, ctx: OverrideParser.DictKeyValuePairContext
+    ) -> Tuple[str, ParsedElementType]:
         children = ctx.getChildren()
-        assert self.is_matching_terminal(next(children), OverrideLexer.BRACE_OPEN)
-        first = True
-        while True:
-            item = next(children)
-            if self.is_matching_terminal(item, OverrideLexer.BRACE_CLOSE):
-                break
-            if not first and self.is_matching_terminal(item, OverrideLexer.COMMA):
-                continue
-
-            pkey = item.getText()
-
-            assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
-
-            value = next(children)
-            if isinstance(value, OverrideParser.ElementContext):
-                ret[pkey] = self.visitElement(value)
-            else:
-                assert False
-            first = False
-
-        return ret
+        item = next(children)
+        assert self.is_matching_terminal(item, OverrideLexer.ID)
+        pkey = item.getText()
+        assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
+        value = next(children)
+        assert isinstance(value, OverrideParser.ElementContext)
+        return pkey, self.visitElement(value)
 
     def visitElement(self, ctx: OverrideParser.ElementContext) -> ParsedElementType:
         assert isinstance(ctx, OverrideParser.ElementContext)

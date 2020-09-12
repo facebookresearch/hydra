@@ -6,11 +6,15 @@
 parser grammar OverrideParser;
 options {tokenVocab = OverrideLexer;}
 
+// High-level command-line override.
+
 override: (
       key EQUAL value?                           // key=value, key= (for empty value)
     | TILDE key (EQUAL value?)?                  // ~key | ~key=value
     | PLUS key EQUAL value?                      // +key= | +key=value
 ) EOF;
+
+// Keys.
 
 key :
     packageOrGroup                               // key
@@ -21,6 +25,8 @@ key :
 packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
 package: (ID | DOT_PATH);                        // db, hydra.launcher
 
+// Elements (that may be swept over).
+
 value: element | simpleChoiceSweep;
 
 element:
@@ -30,12 +36,25 @@ element:
     | function
 ;
 
-argName: ID EQUAL;
-function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
-
 simpleChoiceSweep:
       element (COMMA element)+                   // value1,value2,value3
 ;
+
+// Functions.
+
+argName: ID EQUAL;
+function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
+
+// Data structures.
+
+listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
+    (element(COMMA element)*)?
+BRACKET_CLOSE;
+
+dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
+dictKeyValuePair: ID COLON element;
+
+// Primitive types.
 
 primitive:
       QUOTED_VALUE                               // 'hello world', "hello world"
@@ -44,17 +63,9 @@ primitive:
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
-        | DOT_PATH                               // foo.bar
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
-        | UNQUOTED_CHAR                          // /, -, \, +, ., $, *
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *
         | COLON                                  // :
+        | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
     )+;
-
-listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
-    (element(COMMA element)*)?
-BRACKET_CLOSE; 
-
-dictValue: BRACE_OPEN
-    (ID COLON element (COMMA ID COLON element)*)?  // {}, {a:10,b:20}
-BRACE_CLOSE;

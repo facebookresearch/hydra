@@ -53,6 +53,17 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param("a b c\t-\t1 2 3", "a b c\t-\t1 2 3", id="value:str-ws-in"),
         pytest.param(" abc-123 ", "abc-123", id="value:str-ws-out"),
         pytest.param("123abc", "123abc", id="value:str-int-id"),
+        pytest.param(r"a\,b", "a,b", id="value:str-esc-comma"),
+        pytest.param(r"a\:b", "a:b", id="value:str-esc-colon"),
+        pytest.param(r"a\=b", "a=b", id="value:str-esc-equal"),
+        pytest.param(r"\ ab", " ab", id="value:str-esc-space"),
+        pytest.param("ab\\\t", "ab\t", id="value:str-esc-tab"),
+        pytest.param("ab\\\\", "ab\\", id="value:str-esc-backslash"),
+        pytest.param(r"\,", ",", id="value:str-esc-comma-alone"),
+        pytest.param(r"f\(a\, b\)", "f(a, b)", id="value:str-esc-parentheses"),
+        pytest.param(r"\[a\, b\]", "[a, b]", id="value:str-esc-brackets"),
+        pytest.param(r"\{a\: b\}", "{a: b}", id="value:str-esc-braces"),
+        pytest.param(r"$\{foo.bar\}", "${foo.bar}", id="value:str-esc-braces"),
         pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
         pytest.param(
             "${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"
@@ -62,9 +73,12 @@ def eq(item1: Any, item2: Any) -> bool:
         pytest.param("null", None, id="value:null"),
         # int
         pytest.param("1", 1, id="value:int:pos"),
+        pytest.param("+1", 1, id="value:int:explicit_pos"),
+        pytest.param("1___0___", "1___0___", id="value:int:not_an_int"),
         # float
         pytest.param("0.51", 0.51, id="value:float:positive"),
         pytest.param("10e0", 10.0, id="value:float:exp"),
+        pytest.param("+inf", math.inf, id="value:float:plus_inf"),
         # bool
         pytest.param("true", True, id="value:bool"),
         pytest.param(".", ".", id="value:dot"),
@@ -260,9 +274,9 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         pytest.param("{a:10}", {"a": 10}, id="dict"),
         pytest.param("{a:[a,10]}", {"a": ["a", 10]}, id="dict"),
         pytest.param("{a:[true,10]}", {"a": [True, 10]}, id="dict"),
-        pytest.param("{a:10,b:20}}", {"a": 10, "b": 20}, id="dict"),
-        pytest.param("{a:10,b:{}}}", {"a": 10, "b": {}}, id="dict"),
-        pytest.param("{a:10,b:{c:[1,2]}}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
+        pytest.param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
+        pytest.param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
+        pytest.param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
     ],
 )
 def test_dict_value(value: str, expected: Any) -> None:
@@ -409,7 +423,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key",
             "foo@",
             pytest.raises(
-                HydraException, match=re.escape("missing {ID, DOT_PATH} at '<EOF>'")
+                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
             ),
             id="error:left_overs",
         ),
@@ -417,7 +431,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key",
             "foo@abc:",
             pytest.raises(
-                HydraException, match=re.escape("missing {ID, DOT_PATH} at '<EOF>'")
+                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
             ),
             id="error:left_overs",
         ),
