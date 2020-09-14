@@ -64,7 +64,7 @@ python example/dummy_training.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=log:0.001:1 dropout=0:1
+python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=tag(log, interval(0.001, 1)) dropout=interval(0,1)
 ```
 
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
@@ -112,23 +112,19 @@ name: nevergrad
 
 ## Defining the parameters
 
-The plugin can use 2 types of parameters:
+The plugin supports 2 types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
 
-### Choices
+### Defining through config file
+#### Choices
+Choices are defined with with a list in a config file.
 
-Choices are defined with **comma-separated values** in the command-line (`db=mnist,cifar` or `batch_size=4,8,12,16`) or with a list in a config file.
-By default, values are processed as floats if all can be converted to it, but you can modify this behavior by adding colon-separated specifications `int` or `str` before the the list. (eg.: `batch_size=int:4,8,12,16`)
-
-**Note:** sequences of increasing scalars are treated as a special case, easier to solve. Make sure to specify it this way when possible.
-
-### Scalars
-Scalars can be defined:
-
-- through a commandline override with **`:`-separated values** defining a range (eg: `dropout=0:1`).
-You can add specifications for log distributed values (eg.: `lr=log:0.001:1`) or integer values (eg.: `batch_size=int:4:8`)
-or a combination of both (eg.: `batch_size=log:int:4:1024`)
-
-- through a config files, with fields:
+```yaml
+db:
+  - mnist
+  - cifar
+```
+#### Scalars
+Scalars can be defined in a config files, with fields:
   - `init`: optional initial value
   - `lower` : optional lower bound
   - `upper`: optional upper bound
@@ -137,7 +133,29 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
     is multiplicative. 
   - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
-  Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
-
+Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
 
+### Defining through commandline override
+Hydra 1.0 provides a override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
+
+#### Choices
+To override a field with choices:
+```commandline
+my_param=1,5
+my_param=shuffle(range(1, 8)) # we treat shuffled ranges as choices, note Hydra's range does not exclude the end of range, so 8 will not in in the choices
+my_param=range(1,5) # we use choice if the (upper bound - lower bound <= 6)
+```
+
+You can tag an override with ```ordered``` to indicate it's a [```TransitionChoice```](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.TransitionChoice)
+```commandline
+my_param=tag(ordered, choice(1,2,3))
+```
+
+#### Scalar
+```commandline
+my_param=range(1,8) # we will cast the Scalar bounds to be integer
+my_param=float(range(1,8))  # we will cast the Scalar bounds to be float
+my_param=interval(1,12)
+key=tag(log, interval(1,12)) # We will call ng.p.Log if the override is tagged with log 
+```

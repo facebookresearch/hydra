@@ -27,52 +27,73 @@ def test_discovery() -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "params,param_cls,value_cls",
+    "params,param_cls, param_val",
     [
-        ([1, 2, 3], ng.p.Choice, int),
-        (["1", "2", "3"], ng.p.Choice, str),
-        ({"lower": 1, "upper": 2, "log": True}, ng.p.Log, float),
-        ({"lower": 1, "upper": 2}, ng.p.Scalar, float),
-        ({"lower": 1, "upper": 12, "integer": True}, ng.p.Scalar, int),
-        ({"lower": 1, "upper": 12, "log": True, "integer": True}, ng.p.Log, int),
+        ([1, 2, 3], ng.p.Choice, {1, 2, 3}),
+        (["1", "2", "3"], ng.p.Choice, {"1", "2", "3"}),
+        ({"lower": 1, "upper": 12, "log": True}, ng.p.Log, ([1.0], [12.0])),
+        ({"lower": 1, "upper": 12}, ng.p.Scalar, ([1.0], [12.0])),
+        ({"lower": 1, "upper": 12, "integer": True}, ng.p.Scalar, ([1], [12])),
+        (
+            {"lower": 1, "upper": 12, "log": True, "integer": True},
+            ng.p.Log,
+            ([1], [12]),
+        ),
     ],
 )
 def test_get_nevergrad_parameter_from_config(
-    params: str, param_cls: Any, value_cls: Any
+    params: str, param_cls: Any, param_val: Any
 ) -> None:
     param = core.get_nevergrad_parameter(params)
-    assert isinstance(param, param_cls)
-    if param_cls is not str:
-        assert isinstance(param.value, value_cls)
+    verify_param(param, param_cls, param_val)
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "override,param_cls,value_cls",
+    "override,param_cls, param_val",
     [
-        ("key=choice(1,2)", ng.p.Choice, int),
-        ("key=choice('hello','world')", ng.p.Choice, str),
-        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice, int),
+        ("key=choice(1,2)", ng.p.Choice, {1, 2}),
+        ("key=choice('hello','world')", ng.p.Choice, {"hello", "world"}),
+        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice, {1, 2, 3}),
         (
             "key=tag(ordered, choice('hello','world', 'nevergrad'))",
             ng.p.TransitionChoice,
-            str,
+            {"hello", "world", "nevergrad"},
         ),
-        ("key=range(1,12)", ng.p.Scalar, int),
-        ("key=interval(1,12)", ng.p.Scalar, float),
-        ("key=int(interval(1,12))", ng.p.Scalar, int),
-        ("key=tag(log, interval(1,12))", ng.p.Log, float),
-        ("key=tag(log, int(interval(1,12)))", ng.p.Log, int),
+        ("key=range(1,3)", ng.p.Choice, {1, 2}),
+        ("key=shuffle(range(1,3))", ng.p.Choice, {1, 2}),
+        ("key=range(1,8)", ng.p.Scalar, ([1], [8])),
+        ("key=float(range(1,8))", ng.p.Scalar, ([1.0], [8.0])),
+        ("key=interval(1,12)", ng.p.Scalar, ([1.0], [12.0])),
+        ("key=int(interval(1,12))", ng.p.Scalar, ([1], [12])),
+        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.0], [12.0])),
+        ("key=tag(log, int(interval(1,12)))", ng.p.Log, ([1], [12])),
     ],
 )
 def test_get_nevergrad_parameter_from_override(
-    override: str, param_cls: Any, value_cls: Any
+    override: str, param_cls: Any, param_val: Any
 ) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([override])[0]
     param = core.get_nevergrad_parameter(parsed)
-    assert isinstance(param, param_cls)
-    if param_cls is not str:
-        assert isinstance(param.value, value_cls)
+    verify_param(param, param_cls, param_val)
+
+
+def verify_param(output_param: Any, expected_param_cls: Any, param_val: Any) -> None:
+    assert isinstance(output_param, expected_param_cls)
+    if isinstance(output_param, ng.p.Choice):
+        assert set(output_param.choices.value) == param_val
+    elif isinstance(output_param, ng.p.Scalar):
+        if output_param.integer:
+            actual = (
+                list(map(int, output_param.bounds[0])),
+                list(map(int, output_param.bounds[1])),
+            )
+        else:
+            actual = (
+                list(map(float, output_param.bounds[0])),
+                list(map(float, output_param.bounds[1])),
+            )
+        assert actual == param_val and isinstance(actual[0][0], type(param_val[0][0]))
 
 
 def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
@@ -110,8 +131,8 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     ]
     if with_commandline:
         cmd += [
-            "db=choice(mnist,cifar)",
-            "batch_size=choice(4,8,12,16)",
+            "db=mnist,cifar",
+            "batch_size=4,8,12,16",
             "lr=tag(log, interval(0.001, 1.0))",
             "dropout=interval(0,1)",
         ]

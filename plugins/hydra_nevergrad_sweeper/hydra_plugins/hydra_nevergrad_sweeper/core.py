@@ -1,11 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import Override
+from hydra.core.override_parser.types import (
+    ChoiceSweep,
+    Override,
+    Transformer,
+    RangeSweep,
+    IntervalSweep,
+)
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -19,42 +25,39 @@ log = logging.getLogger(__name__)
 
 
 def get_nevergrad_parameter(description: Any) -> Any:
-    """
-    Maps Hydra override to nevergrad params
-    # regardless of the choice values, choice is always unordered p.Choice:
-    choice(a,b,c)  =>  ng.p.Choice(["a", "b", "c"])
-
-    # We can support forcing a choice to be ordered by tagging it:
-    # (I prefer order over transition(al). at least to me it's clearer.
-    tag(ordered, choice(a,b,c)) ==> ng.p.TransitionChoice(["a","b","c"])
-
-    # ranges are always ordered:
-    range(1,12)  =>  ng.p.Scalar(lower=1, upper=12, step=1)
-
-    # intervals are scalars:
-    # Note: by intervals are always interpreted as floats (even for int start and end values).
-    interval(0,1)     -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
-    interval(0.0,1.0) -> RangeSweep(start=0.0, end=1.0) -> ng.p.Scalar(lower=0.0, upper=1.0)
-
-    # a user can cast the interval to int to override that:
-    int(interval(0,1) -> RangeSweep(start=0, end=1) -> ng.p.Scalar(lower=0.0, upper=1.0).set_integer_casting()
-    """
     scalar = None
     if isinstance(description, Override):
         override = description
         val = override.value()
         if override.is_sweep_override():
             if override.is_choice_sweep():
+                val = cast(ChoiceSweep, val)
+                vals = [
+                    x for x in override.sweep_iterator(transformer=Transformer.encode)
+                ]
                 if "ordered" in val.tags:
-                    return ng.p.TransitionChoice(val.list)
+                    return ng.p.TransitionChoice(vals)
                 else:
-                    return ng.p.Choice(val.list)
+                    return ng.p.Choice(vals)
             elif override.is_range_sweep():
+                # if shuffled or integer range and <=6, use Choice
+                val = cast(RangeSweep, val)
+                if val.shuffle or (
+                    val.stop is not None
+                    and val.start is not None
+                    and val.stop - val.start <= 6
+                ):
+                    vals = [
+                        x
+                        for x in override.sweep_iterator(transformer=Transformer.encode)
+                    ]
+                    return ng.p.Choice(vals)
                 params = {"lower": val.start, "upper": val.stop}
-                scalar = ng.p.Scalar(**params)
-                scalar.set_mutation(sigma=val.step)
-                scalar.integer = isinstance(val.start, int)
-            elif override.is_interval_sweep():  # continuous variable
+                scalar = ng.p.Scalar(**params)  # type: ignore
+                if isinstance(val.start, int):
+                    scalar.set_integer_casting()
+            elif override.is_interval_sweep():
+                val = cast(IntervalSweep, val)
                 if "log" in val.tags:
                     scalar = ng.p.Log(lower=val.start, upper=val.end)
                 else:
@@ -93,16 +96,6 @@ def get_nevergrad_parameter(description: Any) -> Any:
 
 
 class CoreNevergradSweeper(Sweeper):
-    """Returns a Nevergrad parameter from a definition string.
-
-    Parameters
-    ----------
-    config: DictConfig
-      the optimization process configuration
-    version: int
-      version of the API
-    """
-
     def __init__(
         self, optim: OptimConf, version: int, parametrization: Optional[DictConfig]
     ):
