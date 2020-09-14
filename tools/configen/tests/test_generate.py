@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from textwrap import dedent
+
 import subprocess
 import sys
 from difflib import unified_diff
@@ -8,8 +10,8 @@ from typing import Any
 import pytest
 from omegaconf import OmegaConf
 
-from configen.config import ConfigenConf
-from configen.configen import generate
+from configen.config import ConfigenConf, ModuleConf
+from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
 
 chdir_hydra_root(subdir="tools/configen")
@@ -57,7 +59,13 @@ def test_generated_code(module_name: str, class_name: str) -> None:
     )
     expected = expected_file.read_text()
 
-    generated = generate(cfg=conf, module_name=module_name, class_name=class_name)
+    generated = generate_module(
+        cfg=conf,
+        module=ModuleConf(
+            name=module_name,
+            classes=[class_name],
+        ),
+    )
 
     lines = [
         line
@@ -83,4 +91,8 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         "user.name=Batman",
     ]
     result, _err = get_run_output(cmd)
-    assert result == "User: name=Batman, age=7"
+    assert result == dedent(
+        """\
+    User: name=Batman, age=7
+    Admin: name=Lex Luthor, age=10, private_key=deadbeef"""
+    )

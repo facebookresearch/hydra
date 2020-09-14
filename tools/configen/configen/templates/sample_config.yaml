@@ -9,8 +9,7 @@ configen:
     # isort:skip_file
     # flake8: noqa
 
-  # The directory of each module under output_dir
-  module_dir: '{{ "{{module_path}}/conf" }}'
+  module_path_pattern: 'config/{{module_path}}.py'
 
   # list of modules to generate configs for
   modules:
@@ -18,3 +17,4 @@ configen:
       # for each module, a list of classes
       classes:
         - User
+        - Admin

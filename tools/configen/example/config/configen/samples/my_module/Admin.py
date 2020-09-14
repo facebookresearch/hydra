@@ -11,7 +11,8 @@ from omegaconf import MISSING
 
 
 @dataclass
-class UserConf:
-    _target_: str = "configen.samples.user.User"
+class AdminConf:
+    _target_: str = "configen.samples.my_module.Admin"
+    private_key: str = MISSING
     age: int = MISSING
     name: str = MISSING

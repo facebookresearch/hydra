@@ -387,11 +387,12 @@ def get_run_output(
             stderr=subprocess.PIPE,
         )
         stdout, stderr = process.communicate()
+        stdout = normalize_newlines(stdout.decode().rstrip())
+        stderr = normalize_newlines(stderr.decode().rstrip())
         if process.returncode != 0:
+            log.error(f"Subprocess error:\n{stderr}")
             raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
-        return normalize_newlines(stdout.decode().rstrip()), normalize_newlines(
-            stderr.decode().rstrip()
-        )
+        return stdout, stderr
     except Exception as e:
         cmd = " ".join(cmd)
         print(f"==Error executing==\n{cmd}\n===================")

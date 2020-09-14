@@ -19,8 +19,7 @@ class ConfigenConf:
     # output dir
     output_dir: str = MISSING
 
-    # The directory of each module under output_dir
-    module_dir: str = MISSING
+    module_path_pattern: str = MISSING
 
     modules: List[ModuleConf] = MISSING
 
