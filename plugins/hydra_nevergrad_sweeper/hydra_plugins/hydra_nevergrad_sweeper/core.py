@@ -7,10 +7,10 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
     ChoiceSweep,
-    Override,
-    Transformer,
-    RangeSweep,
     IntervalSweep,
+    Override,
+    RangeSweep,
+    Transformer,
 )
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher

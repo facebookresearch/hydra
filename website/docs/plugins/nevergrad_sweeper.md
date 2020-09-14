@@ -64,7 +64,9 @@ python example/dummy_training.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=tag(log, interval(0.001, 1)) dropout=interval(0,1)
+python example/dummy_training.py -m \
+db=mnist,cifar batch_size=4,8,16 \
+lr='tag(log, interval(0.001, 1))' dropout='interval(0,1)'
 ```
 
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
@@ -142,20 +144,20 @@ Hydra 1.0 provides a override parser that support rich syntax. More documentatio
 #### Choices
 To override a field with choices:
 ```commandline
-my_param=1,5
-my_param=shuffle(range(1, 8)) # we treat shuffled ranges as choices, note Hydra's range does not exclude the end of range, so 8 will not in in the choices
-my_param=range(1,5) # we use choice if the (upper bound - lower bound <= 6)
+key=1,5
+key=shuffle(range(1, 8)) # shuffled range treated as Choice
+key=range(1,5) # Cho (upper bound - lower bound <= 6)
 ```
 
 You can tag an override with ```ordered``` to indicate it's a [```TransitionChoice```](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.TransitionChoice)
 ```commandline
-my_param=tag(ordered, choice(1,2,3))
+key=tag(ordered, choice(1,2,3))
 ```
 
 #### Scalar
 ```commandline
-my_param=range(1,8) # we will cast the Scalar bounds to be integer
-my_param=float(range(1,8))  # we will cast the Scalar bounds to be float
-my_param=interval(1,12)
-key=tag(log, interval(1,12)) # We will call ng.p.Log if the override is tagged with log 
+key=range(1,8) # Scalar bounds cast to be integer
+key=float(range(1,8))  # Scalar bounds to be float
+key=interval(1,12)
+key=tag(log, interval(1,12)) # call ng.p.Log if tagged with log 
 ```

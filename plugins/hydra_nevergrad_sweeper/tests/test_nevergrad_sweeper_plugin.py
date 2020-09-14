@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
-import pytest  # type: ignore
+import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -14,7 +14,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import core
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import (
-    NevergradSweeper,  # type: ignore
+    NevergradSweeper,
 )
 
 chdir_plugin_root()
@@ -85,13 +85,13 @@ def verify_param(output_param: Any, expected_param_cls: Any, param_val: Any) -> 
     elif isinstance(output_param, ng.p.Scalar):
         if output_param.integer:
             actual = (
-                list(map(int, output_param.bounds[0])),
-                list(map(int, output_param.bounds[1])),
+                list(map(int, output_param.bounds[0])),  # type: ignore
+                list(map(int, output_param.bounds[1])),  # type: ignore
             )
         else:
             actual = (
-                list(map(float, output_param.bounds[0])),
-                list(map(float, output_param.bounds[1])),
+                list(map(lambda x: float(x), output_param.bounds[0])),  # type: ignore
+                list(map(lambda x: float(x), output_param.bounds[1])),  # type: ignore
             )
         assert actual == param_val and isinstance(actual[0][0], type(param_val[0][0]))
 
