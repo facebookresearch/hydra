@@ -386,9 +386,9 @@ def get_run_output(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        stdout, stderr = process.communicate()
-        stdout = normalize_newlines(stdout.decode().rstrip())
-        stderr = normalize_newlines(stderr.decode().rstrip())
+        bstdout, bstderr = process.communicate()
+        stdout = normalize_newlines(bstdout.decode().rstrip())
+        stderr = normalize_newlines(bstderr.decode().rstrip())
         if process.returncode != 0:
             log.error(f"Subprocess error:\n{stderr}")
             raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
