@@ -50,6 +50,7 @@ conf: ConfigenConf = OmegaConf.structured(
             "IncompatibleDataclassArg",
             id="IncompatibleDataclassArg",
         ),
+        pytest.param("tests.test_modules", "WithStringDefault", id="WithStringDefault"),
     ],
 )
 def test_generated_code(module_name: str, class_name: str) -> None:

@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 
 class LibraryClass:
@@ -45,4 +45,14 @@ class Incompatible:
 
 class IncompatibleDataclassArg:
     def __init__(self, num: int, incompat: Incompatible):
+        ...
+
+
+class WithStringDefault:
+    def __init__(
+        self,
+        no_default: str,
+        default_str: str = "Bond, James Bond",
+        none_str: Optional[str] = None,
+    ):
         ...

@@ -9,7 +9,12 @@ from typing import Any, Dict, List, Optional, Type
 
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
-from omegaconf._utils import _is_union, is_structured_config, type_str
+from omegaconf._utils import (
+    _is_union,
+    _resolve_optional,
+    is_structured_config,
+    type_str,
+)
 
 import hydra
 from configen.config import Config, ConfigenConf, ModuleConf
@@ -66,6 +71,7 @@ class ClassInfo:
 
 
 def _is_passthrough(type_: Type[Any]) -> bool:
+    type_ = _resolve_optional(type_)[1]
     if type_ is Any or issubclass(type_, (int, float, str, bool, Enum)):
         return False
     if is_structured_config(type_):
@@ -89,13 +95,18 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         params: List[Parameter] = []
         for name, p in sig.parameters.items():
             type_ = p.annotation
-            if type_ == sig.empty or _is_union(type_):
+            default_ = p.default
+            if type_ == str and default_ is not inspect._empty:
+                default_ = f'"{default_}"'
+
+            optional = _resolve_optional(type_)[0]
+            if type_ == sig.empty or (not optional and _is_union(type_)):
                 type_ = Any
             params.append(
                 Parameter(
                     name=name,
                     type_str=type_str(type_),
-                    default=p.default,
+                    default=default_,
                     passthrough=_is_passthrough(type_),
                 )
             )
