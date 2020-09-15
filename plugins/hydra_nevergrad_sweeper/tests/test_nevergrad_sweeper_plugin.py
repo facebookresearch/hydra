@@ -13,9 +13,7 @@ from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import core
-from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import (
-    NevergradSweeper,
-)
+from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
 
 chdir_plugin_root()
 

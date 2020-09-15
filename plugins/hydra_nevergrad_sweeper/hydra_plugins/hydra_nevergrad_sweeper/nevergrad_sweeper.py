@@ -6,7 +6,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.sweeper import Sweeper
 from omegaconf import DictConfig
 
-from hydra_plugins.hydra_nevergrad_sweeper.config import OptimConf
+from hydra_plugins.hydra_nevergrad_sweeper.config import OptimConf # type: ignore
 
 
 class NevergradSweeper(Sweeper):

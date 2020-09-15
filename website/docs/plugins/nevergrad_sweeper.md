@@ -66,7 +66,7 @@ You can also override the search space parametrization:
 ```bash
 python example/dummy_training.py -m \
 db=mnist,cifar batch_size=4,8,16 \
-lr='tag(log, interval(0.001, 1))' dropout='interval(0,1)'
+'lr=tag(log, interval(0.001, 1))' 'dropout=interval(0,1)'
 ```
 
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
