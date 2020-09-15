@@ -29,8 +29,6 @@ from hydra.types import TaskFunction
 
 os.environ["USER"] = "test_user"
 
-log = logging.getLogger(__name__)
-
 
 @contextmanager
 def does_not_raise(enter_result: Any = None) -> Iterator[Any]:
@@ -390,7 +388,7 @@ def get_run_output(
         stdout = normalize_newlines(bstdout.decode().rstrip())
         stderr = normalize_newlines(bstderr.decode().rstrip())
         if process.returncode != 0:
-            log.error(f"Subprocess error:\n{stderr}")
+            sys.stderr.write(f"Subprocess error:\n{stderr}\n")
             raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
         return stdout, stderr
     except Exception as e:
