@@ -5,14 +5,14 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
 from omegaconf._utils import _is_union, is_structured_config, type_str
 
 import hydra
-from configen.config import Config, ConfigenConf
+from configen.config import Config, ConfigenConf, ModuleConf
 
 log = logging.getLogger(__name__)
 
@@ -37,16 +37,16 @@ def init_config(conf_dir: str) -> None:
     file.write_text(sample_config)
 
 
-def save(cfg: ConfigenConf, module: str, classname: str, code: str) -> None:
+def save(cfg: ConfigenConf, module: str, code: str) -> None:
     module_path = module.replace(".", "/")
 
-    module_dir = Template(cfg.module_dir).render(module_path=module_path)
-    path = Path(cfg.output_dir) / module_dir
-    path.mkdir(parents=True, exist_ok=True)
-    file = path / (classname + ".py")
-    file.unlink(missing_ok=True)
-    file.write_text(code)
-    log.info(f"{module}.{classname} -> {file}")
+    module_path_pattern = Template(cfg.module_path_pattern).render(
+        module_path=module_path
+    )
+    path = Path(cfg.output_dir) / module_path_pattern
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(code)
+    log.info(f"{module}.{module} -> {path}")
 
 
 @dataclass
@@ -55,6 +55,14 @@ class Parameter:
     type_str: str
     default: Optional[str]
     passthrough: bool
+
+
+@dataclass
+class ClassInfo:
+    module: str
+    name: str
+    parameters: List[Parameter]
+    target: str
 
 
 def _is_passthrough(type_: Type[Any]) -> bool:
@@ -72,26 +80,37 @@ def _is_passthrough(type_: Type[Any]) -> bool:
     return True
 
 
-def generate(cfg: ConfigenConf, module_name: str, class_name: str) -> str:
-    full_name = f"{module_name}.{class_name}"
-    cls = hydra.utils.get_class(full_name)
-    sig = inspect.signature(cls)
-    template = jinja_env.get_template("dataclass.j2")
-    params: List[Parameter] = []
-    for name, p in sig.parameters.items():
-        type_ = p.annotation
-        if type_ == sig.empty or _is_union(type_):
-            type_ = Any
-        params.append(
-            Parameter(
-                name=name,
-                type_str=type_str(type_),
-                default=p.default,
-                passthrough=_is_passthrough(type_),
+def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
+    classes_map: Dict[str, ClassInfo] = {}
+    for class_name in module.classes:
+        full_name = f"{module.name}.{class_name}"
+        cls = hydra.utils.get_class(full_name)
+        sig = inspect.signature(cls)
+        params: List[Parameter] = []
+        for name, p in sig.parameters.items():
+            type_ = p.annotation
+            if type_ == sig.empty or _is_union(type_):
+                type_ = Any
+            params.append(
+                Parameter(
+                    name=name,
+                    type_str=type_str(type_),
+                    default=p.default,
+                    passthrough=_is_passthrough(type_),
+                )
             )
+        classes_map[class_name] = ClassInfo(
+            target=full_name,
+            module=module.name,
+            name=class_name,
+            parameters=params,
         )
+
+    template = jinja_env.get_template("module.j2")
     return template.render(
-        target=f'"{full_name}"', class_name=class_name, params=params, header=cfg.header
+        classes=module.classes,
+        classes_map=classes_map,
+        header=cfg.header,
     )
 
 
@@ -110,11 +129,8 @@ def main(cfg: Config):
         sys.exit(1)
 
     for module in cfg.configen.modules:
-        for class_name in module.classes:
-            code = generate(
-                cfg=cfg.configen, module_name=module.name, class_name=class_name
-            )
-            save(cfg=cfg.configen, module=module.name, classname=class_name, code=code)
+        code = generate_module(cfg=cfg.configen, module=module)
+        save(cfg=cfg.configen, module=module.name, code=code)
 
 
 if __name__ == "__main__":

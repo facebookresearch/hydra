@@ -5,13 +5,13 @@ from pathlib import Path
 from typing import Any, List
 
 import pytest
+from _pytest.python_api import RaisesContext
 from omegaconf import DictConfig, OmegaConf
 
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
-    does_not_raise,
     get_run_output,
     verify_dir_outputs,
 )
@@ -98,10 +98,8 @@ def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -
     [
         (
             [],
-            does_not_raise(
-                OmegaConf.create(
-                    {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}
-                )
+            OmegaConf.create(
+                {"db": {"driver": "mysql", "user": "omry", "password": "secret"}}
             ),
         ),
         (["dataset.path=abc"], pytest.raises(subprocess.CalledProcessError)),
@@ -111,13 +109,18 @@ def test_tutorial_config_file_bad_key(
     tmpdir: Path, args: List[str], expected: Any
 ) -> None:
     """ Similar to the previous test, but also tests exception values"""
-    with expected:
-        cmd = [
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "hydra.run.dir=" + str(tmpdir),
-        ]
-        cmd.extend(args)
-        get_run_output(cmd)
+
+    cmd = [
+        "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    cmd.extend(args)
+    if isinstance(expected, RaisesContext):
+        with expected:
+            get_run_output(cmd)
+    else:
+        stdout, _stderr = get_run_output(cmd)
+        assert OmegaConf.create(stdout) == expected
 
 
 @pytest.mark.parametrize(  # type: ignore

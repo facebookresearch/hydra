@@ -6,12 +6,19 @@
 
 from dataclasses import dataclass
 from typing import *
-
 from omegaconf import MISSING
 
 
 @dataclass
 class UserConf:
-    _target_: str = "configen.samples.user.User"
+    _target_: str = "configen.samples.my_module.User"
+    age: int = MISSING
+    name: str = MISSING
+
+
+@dataclass
+class AdminConf:
+    _target_: str = "configen.samples.my_module.Admin"
+    private_key: str = MISSING
     age: int = MISSING
     name: str = MISSING
