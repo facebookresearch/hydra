@@ -1,3 +1,21 @@
+1.0.1 (2020-09-15)
+==================
+
+### Features
+
+- Add ability to escape special characters in unquoted values ([#954](https://github.com/facebookresearch/hydra/issues/954))
+
+### Bug Fixes
+
+- Add support for merging dicts and lists specified in the commend line ([#939](https://github.com/facebookresearch/hydra/issues/939))
+- Fix appending dict values with new fields to config with + ([#946](https://github.com/facebookresearch/hydra/issues/946))
+- Fix for Override Grammar integer parsing: Integers are now compatible with Python integers ('+' prefix, correct handling of '_') ([#954](https://github.com/facebookresearch/hydra/issues/954))
+
+### Maintenance Changes
+
+- Upgrade to OmegaConf 2.0.2 ([#755](https://github.com/facebookresearch/hydra/issues/755))
+
+
 1.0.0 (2020-09-03)
 ==================
 Hydra 1.0 is out!
