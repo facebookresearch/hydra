@@ -18,6 +18,7 @@ commands:
           name: "Preparing environment"
           command: |
             brew update
+            brew upgrade git
             brew install fish
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
