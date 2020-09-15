@@ -1,11 +1,12 @@
 {{ header }}
-from dataclasses import dataclass
-from typing import *
-
+from dataclasses import dataclass, field
 from omegaconf import MISSING
+{% for imp in imports %}
+{{ imp }}
+{% endfor %}
+
+
 {% for class_name in classes %}
-
-
 @dataclass
 class {{class_name}}Conf:
     _target_: str = "{{ classes_map[class_name].target }}"
