@@ -5,9 +5,7 @@
 # isort:skip_file
 # flake8: noqa
 
-from dataclasses import dataclass
-from typing import *
-
+from dataclasses import dataclass, field
 from omegaconf import MISSING
 
 

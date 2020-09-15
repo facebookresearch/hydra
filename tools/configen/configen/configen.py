@@ -5,11 +5,21 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Set, Type
 
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
-from omegaconf._utils import _is_union, is_structured_config, type_str
+from omegaconf._utils import (
+    _is_union,
+    _resolve_optional,
+    get_dict_key_value_types,
+    get_list_element_type,
+    is_dict_annotation,
+    is_list_annotation,
+    is_primitive_type,
+    is_structured_config,
+    type_str,
+)
 
 import hydra
 from configen.config import Config, ConfigenConf, ModuleConf
@@ -66,6 +76,19 @@ class ClassInfo:
 
 
 def _is_passthrough(type_: Type[Any]) -> bool:
+    type_ = _resolve_optional(type_)[1]
+    try:
+        if is_list_annotation(type_):
+            lt = get_list_element_type(type_)
+            return _is_passthrough(lt)
+        if is_dict_annotation(type_):
+            kvt = get_dict_key_value_types(type_)
+            if not issubclass(kvt[0], (str, Enum)):
+                return True
+            return _is_passthrough(kvt[1])
+    except ValidationError:
+        return True
+
     if type_ is Any or issubclass(type_, (int, float, str, bool, Enum)):
         return False
     if is_structured_config(type_):
@@ -80,8 +103,48 @@ def _is_passthrough(type_: Type[Any]) -> bool:
     return True
 
 
+def collect_imports(imports: Set[Type], type_: Type) -> None:
+    if is_list_annotation(type_):
+        collect_imports(imports, get_list_element_type(type_))
+        type_ = List
+    elif is_dict_annotation(type_):
+        kvt = get_dict_key_value_types(type_)
+        collect_imports(imports, kvt[0])
+        collect_imports(imports, kvt[1])
+        type_ = Dict
+    else:
+        is_optional = _resolve_optional(type_)[0]
+        if is_optional and type_ is not Any:
+            type_ = Optional
+    imports.add(type_)
+
+
+def convert_imports(imports: Set[Type]) -> List[str]:
+    res = []
+    for t in imports:
+        s = None
+        if t is Any:
+            classname = "Any"
+        elif t is Optional:
+            classname = "Optional"
+        elif t is List:
+            classname = "List"
+        elif t is Dict:
+            classname = "Dict"
+        else:
+            classname = t.__name__
+
+        if not is_primitive_type(t) or issubclass(t, Enum):
+            s = f"from {t.__module__} import {classname}"
+
+        if s is not None:
+            res.append(s)
+    return sorted(res)
+
+
 def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
+    imports = set()
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
@@ -89,14 +152,38 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         params: List[Parameter] = []
         for name, p in sig.parameters.items():
             type_ = p.annotation
-            if type_ == sig.empty or _is_union(type_):
+            default_ = p.default
+
+            is_optional = False
+            if type_ == sig.empty:
                 type_ = Any
+            else:
+                resolved_optional = _resolve_optional(type_)
+                is_optional = resolved_optional[0]
+
+            # Unions are not supported (Except Optional)
+            if not is_optional and _is_union(type_):
+                type_ = Any
+
+            if default_ != sig.empty:
+                if type_ == str:
+                    default_ = f'"{default_}"'
+                elif is_list_annotation(type_):
+                    default_ = f"field(default_factory={p.default})"
+                elif is_dict_annotation(type_):
+                    default_ = f"field(default_factory={p.default})"
+
+            passthrough = _is_passthrough(type_)
+
+            if not passthrough:
+                collect_imports(imports, type_)
+
             params.append(
                 Parameter(
                     name=name,
                     type_str=type_str(type_),
-                    default=p.default,
-                    passthrough=_is_passthrough(type_),
+                    default=default_,
+                    passthrough=passthrough,
                 )
             )
         classes_map[class_name] = ClassInfo(
@@ -108,6 +195,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
 
     template = jinja_env.get_template("module.j2")
     return template.render(
+        imports=convert_imports(imports),
         classes=module.classes,
         classes_map=classes_map,
         header=cfg.header,

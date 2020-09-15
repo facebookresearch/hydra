@@ -7,9 +7,12 @@
 
 from dataclasses import dataclass, field
 from omegaconf import MISSING
+from typing import Optional
 
 
 @dataclass
-class IntArgConf:
-    _target_: str = "tests.test_modules.IntArg"
-    param: int = MISSING
+class WithStringDefaultConf:
+    _target_: str = "tests.test_modules.WithStringDefault"
+    no_default: str = MISSING
+    default_str: str = "Bond, James Bond"
+    none_str: Optional[str] = None
