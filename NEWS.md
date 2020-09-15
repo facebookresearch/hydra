@@ -3,7 +3,7 @@
 
 ### Features
 
-- Add ability to escape special characters in unquoted values ([#954](https://github.com/facebookresearch/hydra/issues/954))
+- Add ability to escape special characters in unquoted command line values ([#954](https://github.com/facebookresearch/hydra/issues/954))
 
 ### Bug Fixes
 
