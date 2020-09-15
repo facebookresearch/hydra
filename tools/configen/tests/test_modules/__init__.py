@@ -95,3 +95,16 @@ class DictValues:
         def_value: Dict[str, str] = {},
     ):
         ...
+
+
+class PeskySentinel(object):
+    def __repr__(self):
+        return "<I am a pesky sentinel>"
+
+
+pesky = PeskySentinel()
+
+
+class PeskySentinelUsage:
+    def __init__(self, foo=pesky):
+        ...
