@@ -47,6 +47,7 @@ conf: ConfigenConf = OmegaConf.structured(
         "WithStringDefault",
         "ListValues",
         "DictValues",
+        "PeskySentinelUsage",
     ],
 )
 def test_generated_code(class_name: str) -> None:

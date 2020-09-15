@@ -77,6 +77,8 @@ class ClassInfo:
 
 def _is_passthrough(type_: Type[Any]) -> bool:
     type_ = _resolve_optional(type_)[1]
+    if type_ is type(None):  # noqa
+        return False
     try:
         if is_list_annotation(type_):
             lt = get_list_element_type(type_)
@@ -165,6 +167,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
             if not is_optional and _is_union(type_):
                 type_ = Any
 
+            passthrough_value = False
             if default_ != sig.empty:
                 if type_ == str:
                     default_ = f'"{default_}"'
@@ -173,7 +176,10 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 elif is_dict_annotation(type_):
                     default_ = f"field(default_factory={p.default})"
 
-            passthrough = _is_passthrough(type_)
+                passthrough_value = _is_passthrough(type(default_))
+
+            # fields that are incompatible with the config are flagged as passthrough and are added as a comment
+            passthrough = _is_passthrough(type_) or passthrough_value
 
             if not passthrough:
                 collect_imports(imports, type_)
