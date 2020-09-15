@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="hydra-configen",
-    version="0.9-dev1",
+    version="0.9.0-dev3",
     packages=find_packages(include=["configen"]),
     entry_points={"console_scripts": ["configen = configen.configen:main"]},
     author="Omry Yadan",
