@@ -36,25 +36,21 @@ conf: ConfigenConf = OmegaConf.structured(
 
 
 @pytest.mark.parametrize(
-    "module_name,class_name",
+    "class_name",
     [
-        pytest.param("tests.test_modules", "Empty", id="Empty"),
-        pytest.param("tests.test_modules", "UntypedArg", id="UntypedArg"),
-        pytest.param("tests.test_modules", "IntArg", id="IntArg"),
-        pytest.param("tests.test_modules", "UnionArg", id="UnionArg"),
-        pytest.param(
-            "tests.test_modules", "WithLibraryClassArg", id="WithLibraryClassArg"
-        ),
-        pytest.param(
-            "tests.test_modules",
-            "IncompatibleDataclassArg",
-            id="IncompatibleDataclassArg",
-        ),
-        pytest.param("tests.test_modules", "WithStringDefault", id="WithStringDefault"),
+        "Empty",
+        "UntypedArg",
+        "IntArg",
+        "UnionArg",
+        "WithLibraryClassArg",
+        "IncompatibleDataclassArg",
+        "WithStringDefault",
+        "ListValues",
+        "DictValues",
     ],
 )
-def test_generated_code(module_name: str, class_name: str) -> None:
-
+def test_generated_code(class_name: str) -> None:
+    module_name = "tests.test_modules"
     expected_file = (
         Path(module_name.replace(".", "/")) / "expected" / f"{class_name}.py"
     )
