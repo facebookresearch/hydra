@@ -212,6 +212,7 @@ def lint(session):
         ".git",
         "website",
         "plugins",
+        "__init__.py",
         ".nox",
         "hydra/grammar/gen",
         "tools/configen/example/gen",
