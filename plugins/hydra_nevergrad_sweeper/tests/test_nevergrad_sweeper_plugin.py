@@ -12,7 +12,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
-from hydra_plugins.hydra_nevergrad_sweeper import core
+from hydra_plugins.hydra_nevergrad_sweeper import _core
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
 
 chdir_plugin_root()
@@ -42,7 +42,7 @@ def test_discovery() -> None:
 def test_create_nevergrad_parameter_from_config(
     params: str, param_cls: Any, param_val: Any
 ) -> None:
-    param = core.create_nevergrad_parameter(params)
+    param = _core.create_nevergrad_parameter(params)
     verify_param(param, param_cls, param_val)
 
 
@@ -72,7 +72,7 @@ def test_create_nevergrad_parameter_from_override(
 ) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([override])[0]
-    param = core.create_nevergrad_parameter(parsed)
+    param = _core.create_nevergrad_parameter(parsed)
     verify_param(param, param_cls, param_val)
 
 
