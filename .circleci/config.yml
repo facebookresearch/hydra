@@ -134,33 +134,6 @@ jobs:
       - run: sudo pip install nox
       - run: nox -s coverage
 
-  deploy-website:
-    docker:
-      - image: circleci/node:12
-    steps:
-      - checkout
-      - deploy:
-          name: Deploying to GitHub Pages
-          command: |
-            SUBDIR=website
-            REV=$(git log -5 --pretty=oneline origin/gh-pages | grep "Deploy website" |  awk 'NF>1{print $NF}'  | head -1)
-            # This condition passes in 2 conditions:
-            # 1. The revision does not exist (squash/force push happened)
-            # 2. There are changes between last deployed revision and HEAD
-            if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
-              echo "Changes detected in directory $SUBDIR between origin/master and this diff"
-
-              cd $SUBDIR
-              yarn --no-progress
-
-              git config --global user.email omry@users.noreply.github.com
-              git config --global user.name omry
-              echo "machine github.com login docusaurus-bot password $GITHUB_TOKEN" > ~/.netrc
-              yarn install && GIT_USER=docusaurus-bot yarn deploy
-            else
-              echo "No changes detected in directory $SUBDIR between origin/master and this diff"
-            fi
-
 workflows:
   version: 2
   build:
@@ -177,10 +150,6 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-      - deploy-website:
-          filters:
-            branches:
-              only: master
 
 orbs:
   win: circleci/windows@1.0.0
