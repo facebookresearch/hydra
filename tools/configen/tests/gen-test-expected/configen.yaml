@@ -1,6 +1,6 @@
 configen:
   # output directory
-  output_dir: ${hydra:runtime.cwd}/tests/test_modules/expected
+  output_dir: ${hydra:runtime.cwd}/
 
   header: |
     # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
@@ -11,7 +11,7 @@ configen:
     # flake8: noqa
 
   # The directory of each module under output_dir
-  module_dir: ''
+  module_path_pattern: '{{module_path}}/generated.py'
 
   # list of modules to generate configs for
   modules:
@@ -23,3 +23,8 @@ configen:
         - UnionArg
         - WithLibraryClassArg
         - IncompatibleDataclassArg
+        - WithStringDefault
+        - ListValues
+        - DictValues
+        - PeskySentinelUsage
+        - Tuples
