@@ -1,18 +1,37 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from textwrap import dedent
 
-import subprocess
-import sys
 from difflib import unified_diff
 from pathlib import Path
 from typing import Any
 
 import pytest
+
+from hydra.utils import get_class, instantiate
 from omegaconf import OmegaConf
 
 from configen.config import ConfigenConf, ModuleConf
 from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
+from tests.test_modules import (
+    User,
+    Color,
+    Empty,
+    UntypedArg,
+    IntArg,
+    UnionArg,
+    WithLibraryClassArg,
+    LibraryClass,
+    IncompatibleDataclassArg,
+    IncompatibleDataclass,
+    WithStringDefault,
+    ListValues,
+    DictValues,
+    PeskySentinelUsage,
+    Tuples,
+)
+
+from tests.test_modules.generated import PeskySentinelUsageConf
 
 chdir_hydra_root(subdir="tools/configen")
 
@@ -35,9 +54,11 @@ conf: ConfigenConf = OmegaConf.structured(
 )
 
 
-@pytest.mark.parametrize(
-    "class_name",
-    [
+MODULE_NAME = "tests.test_modules"
+
+
+def test_generated_code() -> None:
+    classes = [
         "Empty",
         "UntypedArg",
         "IntArg",
@@ -49,20 +70,15 @@ conf: ConfigenConf = OmegaConf.structured(
         "DictValues",
         "PeskySentinelUsage",
         "Tuples",
-    ],
-)
-def test_generated_code(class_name: str) -> None:
-    module_name = "tests.test_modules"
-    expected_file = (
-        Path(module_name.replace(".", "/")) / "expected" / f"{class_name}.py"
-    )
+    ]
+    expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated.py"
     expected = expected_file.read_text()
 
     generated = generate_module(
         cfg=conf,
         module=ModuleConf(
-            name=module_name,
-            classes=[class_name],
+            name=MODULE_NAME,
+            classes=classes,
         ),
     )
 
@@ -80,6 +96,119 @@ def test_generated_code(class_name: str) -> None:
     if generated != expected:
         print(diff)
         assert False, f"Mismatch between {expected_file} and generated code"
+
+
+@pytest.mark.parametrize(
+    "classname, params, args, kwargs, expected",
+    [
+        pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
+        pytest.param(
+            "UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"
+        ),
+        pytest.param(
+            "UntypedArg",
+            {},
+            [],
+            {"param": LibraryClass()},
+            UntypedArg(param=LibraryClass()),
+            id="UntypedArg_passthrough_lib_class",
+        ),
+        pytest.param("IntArg", {"param": 1}, [], {}, IntArg(param=1), id="IntArg"),
+        pytest.param(
+            "UnionArg", {"param": 1}, [], {}, UnionArg(param=1), id="UnionArg"
+        ),
+        pytest.param(
+            "UnionArg", {"param": 3.14}, [], {}, UnionArg(param=3.14), id="UnionArg"
+        ),
+        # This is okay because Union is not supported and is treated as Any
+        pytest.param(
+            "UnionArg",
+            {"param": "str"},
+            [],
+            {},
+            UnionArg(param="str"),
+            id="UnionArg:illegal_but_ok_arg",
+        ),
+        pytest.param(
+            "WithLibraryClassArg",
+            {"num": 10},
+            [],
+            {"param": LibraryClass()},
+            WithLibraryClassArg(num=10, param=LibraryClass()),
+            id="WithLibraryClassArg",
+        ),
+        pytest.param(
+            "IncompatibleDataclassArg",
+            {"num": 10},
+            [],
+            {"incompat": IncompatibleDataclass()},
+            IncompatibleDataclassArg(num=10, incompat=IncompatibleDataclass()),
+            id="IncompatibleDataclassArg",
+        ),
+        pytest.param(
+            "WithStringDefault",
+            {"no_default": "foo"},
+            [],
+            {},
+            WithStringDefault(no_default="foo"),
+            id="WithStringDefault",
+        ),
+        pytest.param(
+            "ListValues",
+            {
+                "lst": ["1"],
+                "enum_lst": ["RED"],
+                "dataclass_val": [{"name": "Bond", "age": 7}],
+            },
+            [],
+            {"passthrough_list": [LibraryClass()]},
+            ListValues(
+                lst=["1"],
+                enum_lst=[Color.RED],
+                passthrough_list=[LibraryClass()],
+                dataclass_val=[User(name="Bond", age=7)],
+            ),
+            id="ListValues",
+        ),
+        pytest.param(
+            "DictValues",
+            {
+                "dct": {"foo": "bar"},
+                "enum_key": {"RED": "red"},
+                "dataclass_val": {"007": {"name": "Bond", "age": 7}},
+            },
+            [],
+            {"passthrough_dict": {"lib": LibraryClass()}},
+            DictValues(
+                dct={"foo": "bar"},
+                enum_key={Color.RED: "red"},
+                dataclass_val={"007": User(name="Bond", age=7)},
+                passthrough_dict={"lib": LibraryClass()},
+            ),
+            id="DictValues",
+        ),
+        pytest.param(
+            "Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"
+        ),
+    ],
+)
+def test_instantiate_classes(
+    classname: str, params: Any, args: Any, kwargs: Any, expected: Any
+) -> None:
+    full_class = f"{MODULE_NAME}.generated.{classname}Conf"
+    schema = OmegaConf.structured(get_class(full_class))
+    cfg = OmegaConf.merge(schema, params)
+    obj = instantiate(config=cfg, *args, **kwargs)
+    assert obj == expected
+
+
+def test_pesky_sentinel() -> None:
+    # Tests that pesky sentinels are not actually working when going through config objects
+    full_class = f"{MODULE_NAME}.generated.PeskySentinelUsageConf"
+    schema = OmegaConf.structured(get_class(full_class))
+    cfg = OmegaConf.merge(schema, {})
+    obj = instantiate(config=cfg)
+    assert obj != PeskySentinelUsageConf()
 
 
 def test_example_application(monkeypatch: Any, tmpdir: Path):
