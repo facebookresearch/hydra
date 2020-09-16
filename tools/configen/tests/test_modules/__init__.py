@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from omegaconf import MISSING
 
@@ -107,4 +107,14 @@ pesky = PeskySentinel()
 
 class PeskySentinelUsage:
     def __init__(self, foo=pesky):
+        ...
+
+
+class Tuples:
+    def __init__(
+        self,
+        t1: Tuple[float, float],
+        t2=(1, 2, 3),
+        t3: Tuple[float, ...] = (0.1, 0.2, 0.3),
+    ):
         ...
