@@ -5,7 +5,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Type
+from typing import Any, Dict, List, Optional, Type
 
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
@@ -16,13 +16,17 @@ from omegaconf._utils import (
     get_list_element_type,
     is_dict_annotation,
     is_list_annotation,
-    is_primitive_type,
     is_structured_config,
-    type_str,
 )
 
 import hydra
 from configen.config import Config, ConfigenConf, ModuleConf
+from configen.utils import (
+    collect_imports,
+    convert_imports,
+    is_tuple_annotation,
+    type_str,
+)
 
 log = logging.getLogger(__name__)
 
@@ -77,8 +81,9 @@ class ClassInfo:
 
 def _is_passthrough(type_: Type[Any]) -> bool:
     type_ = _resolve_optional(type_)[1]
-    if type_ is type(None):  # noqa
+    if type_ in (type(None), tuple, list, dict):
         return False
+
     try:
         if is_list_annotation(type_):
             lt = get_list_element_type(type_)
@@ -88,6 +93,11 @@ def _is_passthrough(type_: Type[Any]) -> bool:
             if not issubclass(kvt[0], (str, Enum)):
                 return True
             return _is_passthrough(kvt[1])
+        if is_tuple_annotation(type_):
+            for arg in type_.__args__:
+                if arg is not ... and _is_passthrough(arg):
+                    return True
+            return False
     except ValidationError:
         return True
 
@@ -103,45 +113,6 @@ def _is_passthrough(type_: Type[Any]) -> bool:
             return True
         return False
     return True
-
-
-def collect_imports(imports: Set[Type], type_: Type) -> None:
-    if is_list_annotation(type_):
-        collect_imports(imports, get_list_element_type(type_))
-        type_ = List
-    elif is_dict_annotation(type_):
-        kvt = get_dict_key_value_types(type_)
-        collect_imports(imports, kvt[0])
-        collect_imports(imports, kvt[1])
-        type_ = Dict
-    else:
-        is_optional = _resolve_optional(type_)[0]
-        if is_optional and type_ is not Any:
-            type_ = Optional
-    imports.add(type_)
-
-
-def convert_imports(imports: Set[Type]) -> List[str]:
-    res = []
-    for t in imports:
-        s = None
-        if t is Any:
-            classname = "Any"
-        elif t is Optional:
-            classname = "Optional"
-        elif t is List:
-            classname = "List"
-        elif t is Dict:
-            classname = "Dict"
-        else:
-            classname = t.__name__
-
-        if not is_primitive_type(t) or issubclass(t, Enum):
-            s = f"from {t.__module__} import {classname}"
-
-        if s is not None:
-            res.append(s)
-    return sorted(res)
 
 
 def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
@@ -169,14 +140,14 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
 
             passthrough_value = False
             if default_ != sig.empty:
+                passthrough_value = _is_passthrough(type(default_))
+
                 if type_ == str:
                     default_ = f'"{default_}"'
-                elif is_list_annotation(type_):
-                    default_ = f"field(default_factory={p.default})"
-                elif is_dict_annotation(type_):
-                    default_ = f"field(default_factory={p.default})"
-
-                passthrough_value = _is_passthrough(type(default_))
+                elif isinstance(default_, list):
+                    default_ = f"field(default_factory={default_})"
+                elif isinstance(default_, dict):
+                    default_ = f"field(default_factory={default_})"
 
             # fields that are incompatible with the config are flagged as passthrough and are added as a comment
             passthrough = _is_passthrough(type_) or passthrough_value
