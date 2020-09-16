@@ -144,20 +144,20 @@ Hydra 1.0 provides a override parser that support rich syntax. More documentatio
 #### Choices
 To override a field with choices:
 ```commandline
-key=1,5
-key=shuffle(range(1, 8)) # shuffled range treated as Choice
-key=range(1,5) # Cho (upper bound - lower bound <= 6)
+'key=1,5'
+'key=shuffle(range(1, 8))'      # shuffled range treated as Choice
+'key=range(1,5)'                # Choice when (upper bound - lower bound <= 6)
 ```
 
 You can tag an override with ```ordered``` to indicate it's a [```TransitionChoice```](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.TransitionChoice)
 ```commandline
-key=tag(ordered, choice(1,2,3))
+`key=tag(ordered, choice(1,2,3))`
 ```
 
 #### Scalar
 ```commandline
-key=range(1,8) # Scalar bounds cast to be integer
-key=float(range(1,8))  # Scalar bounds to be float
-key=interval(1,12)
-key=tag(log, interval(1,12)) # call ng.p.Log if tagged with log 
+`key=range(1,8)`                # Scalar bounds will bet set to integer
+`key=float(range(1,8))`         # Scalar bounds cast to a float
+`key=interval(1,12)`            # Interval are float by default
+`key=tag(log, interval(1,12))`  # call ng.p.Log if tagged with log 
 ```

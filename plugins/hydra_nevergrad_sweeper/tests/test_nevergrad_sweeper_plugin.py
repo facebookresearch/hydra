@@ -39,10 +39,10 @@ def test_discovery() -> None:
         ),
     ],
 )
-def test_get_nevergrad_parameter_from_config(
+def test_create_nevergrad_parameter_from_config(
     params: str, param_cls: Any, param_val: Any
 ) -> None:
-    param = core.get_nevergrad_parameter(params)
+    param = core.create_nevergrad_parameter(params)
     verify_param(param, param_cls, param_val)
 
 
@@ -67,12 +67,12 @@ def test_get_nevergrad_parameter_from_config(
         ("key=tag(log, int(interval(1,12)))", ng.p.Log, ([1], [12])),
     ],
 )
-def test_get_nevergrad_parameter_from_override(
+def test_create_nevergrad_parameter_from_override(
     override: str, param_cls: Any, param_val: Any
 ) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([override])[0]
-    param = core.get_nevergrad_parameter(parsed)
+    param = core.create_nevergrad_parameter(parsed)
     verify_param(param, param_cls, param_val)
 
 

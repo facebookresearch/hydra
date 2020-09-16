@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# TODO rename this to _core.py before landing.
 import logging
 from typing import Any, Dict, List, Optional, Tuple, cast
 
@@ -24,7 +25,7 @@ from .config import OptimConf, ScalarConfigSpec
 log = logging.getLogger(__name__)
 
 
-def get_nevergrad_parameter(description: Any) -> Any:
+def create_nevergrad_parameter(description: Any) -> Any:
     scalar = None
     if isinstance(description, Override):
         override = description
@@ -110,7 +111,7 @@ class CoreNevergradSweeper(Sweeper):
         if parametrization is not None:
             assert isinstance(parametrization, DictConfig)
             self.parametrization = {
-                x: get_nevergrad_parameter(y) for x, y in parametrization.items()
+                x: create_nevergrad_parameter(y) for x, y in parametrization.items()
             }
         self.job_idx: Optional[int] = None
 
@@ -141,7 +142,7 @@ class CoreNevergradSweeper(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[override.get_key_element()] = get_nevergrad_parameter(override)
+            params[override.get_key_element()] = create_nevergrad_parameter(override)
 
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
