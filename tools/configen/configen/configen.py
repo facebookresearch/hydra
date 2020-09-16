@@ -145,9 +145,9 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 if type_ == str:
                     default_ = f'"{default_}"'
                 elif isinstance(default_, list):
-                    default_ = f"field(default_factory={default_})"
+                    default_ = f"field(default_factory=lambda: {default_})"
                 elif isinstance(default_, dict):
-                    default_ = f"field(default_factory={default_})"
+                    default_ = f"field(default_factory=lambda: {default_})"
 
             # fields that are incompatible with the config are flagged as passthrough and are added as a comment
             passthrough = _is_passthrough(type_) or passthrough_value
