@@ -12,9 +12,9 @@ fragment DIGIT: [0-9];
 fragment INT_UNSIGNED: '0' | [1-9] (('_')? DIGIT)*;
 fragment ESC_BACKSLASH: '\\\\';  // escaped backslash
 
-/////////
-// KEY //
-/////////
+////////////////////////
+// DEFAULT_MODE (KEY) //
+////////////////////////
 
 EQUAL: '=' WS? -> mode(VALUE_MODE);
 
@@ -28,9 +28,9 @@ SLASH: '/';
 KEY_ID: ID -> type(ID);
 DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
 
-///////////
-// VALUE //
-///////////
+////////////////
+// VALUE_MODE //
+////////////////
 
 mode VALUE_MODE;
 
