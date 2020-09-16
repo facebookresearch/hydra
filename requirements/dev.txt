@@ -4,7 +4,7 @@ black==20.8b1
 coverage
 flake8
 flake8-copyright
-isort@git+git://github.com/timothycrosley/isort.git@c54b3dd#egg=isort
+isort==5.5.2
 mypy
 nox
 packaging
