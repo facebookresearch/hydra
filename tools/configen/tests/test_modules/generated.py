@@ -36,21 +36,21 @@ class IntArgConf:
 @dataclass
 class UnionArgConf:
     _target_: str = "tests.test_modules.UnionArg"
-    param: Any = MISSING
+    param: Any = MISSING  # Union[int, float]
 
 
 @dataclass
 class WithLibraryClassArgConf:
     _target_: str = "tests.test_modules.WithLibraryClassArg"
     num: int = MISSING
-    # [passthrough] param: LibraryClass
+    param: Any = MISSING  # LibraryClass
 
 
 @dataclass
 class IncompatibleDataclassArgConf:
     _target_: str = "tests.test_modules.IncompatibleDataclassArg"
     num: int = MISSING
-    # [passthrough] incompat: IncompatibleDataclass
+    incompat: Any = MISSING  # IncompatibleDataclass
 
 
 @dataclass
@@ -66,7 +66,7 @@ class ListValuesConf:
     _target_: str = "tests.test_modules.ListValues"
     lst: List[str] = MISSING
     enum_lst: List[Color] = MISSING
-    # [passthrough] passthrough_list: List[LibraryClass]
+    passthrough_list: Any = MISSING  # List[LibraryClass]
     dataclass_val: List[User] = MISSING
     def_value: List[str] = field(default_factory=lambda: [])
 
@@ -77,14 +77,8 @@ class DictValuesConf:
     dct: Dict[str, str] = MISSING
     enum_key: Dict[Color, str] = MISSING
     dataclass_val: Dict[str, User] = MISSING
-    # [passthrough] passthrough_dict: Dict[str, LibraryClass]
+    passthrough_dict: Any = MISSING  # Dict[str, LibraryClass]
     def_value: Dict[str, str] = field(default_factory=lambda: {})
-
-
-@dataclass
-class PeskySentinelUsageConf:
-    _target_: str = "tests.test_modules.PeskySentinelUsage"
-    # [passthrough] foo: Any = <I am a pesky sentinel>
 
 
 @dataclass
@@ -93,3 +87,9 @@ class TuplesConf:
     t1: Tuple[float, float] = MISSING
     t2: Any = (1, 2, 3)
     t3: Tuple[float, ...] = (0.1, 0.2, 0.3)
+
+
+@dataclass
+class PeskySentinelUsageConf:
+    _target_: str = "tests.test_modules.PeskySentinelUsage"
+    foo: Any = MISSING  # PeskySentinel
