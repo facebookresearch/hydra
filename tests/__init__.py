@@ -39,10 +39,24 @@ class AClass:
         return z
 
 
+@dataclass
+class UntypedPassthroughConf:
+    _target_: str = "tests.UntypedPassthroughClass"
+    a: Any = MISSING
+
+
+class UntypedPassthroughClass:
+    def __init__(self, a: Any) -> None:
+        self.a = a
+
+    def __eq__(self, other: Any) -> Any:
+        return self.a == other.a
+
+
 # Type not legal in a config
 class IllegalType:
     def __eq__(self, other: Any) -> Any:
-        return isinstance(other, AnotherClass)
+        return isinstance(other, IllegalType)
 
 
 @dataclass

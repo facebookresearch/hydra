@@ -1,0 +1,1 @@
+Support annotation of passthrough values in hydra.utils.instantiate()
