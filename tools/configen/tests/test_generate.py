@@ -68,8 +68,8 @@ def test_generated_code() -> None:
         "WithStringDefault",
         "ListValues",
         "DictValues",
-        "PeskySentinelUsage",
         "Tuples",
+        "PeskySentinelUsage",
     ]
     expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated.py"
     expected = expected_file.read_text()
@@ -190,6 +190,14 @@ def test_generated_code() -> None:
         pytest.param(
             "Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"
         ),
+        pytest.param(
+            "PeskySentinelUsage",
+            {},
+            [],
+            {"foo": 10.11},
+            PeskySentinelUsage(foo=10.11),
+            id="PeskySentinelUsage",
+        ),
     ],
 )
 def test_instantiate_classes(
@@ -200,15 +208,6 @@ def test_instantiate_classes(
     cfg = OmegaConf.merge(schema, params)
     obj = instantiate(config=cfg, *args, **kwargs)
     assert obj == expected
-
-
-def test_pesky_sentinel() -> None:
-    # Tests that pesky sentinels are not actually working when going through config objects
-    full_class = f"{MODULE_NAME}.generated.PeskySentinelUsageConf"
-    schema = OmegaConf.structured(get_class(full_class))
-    cfg = OmegaConf.merge(schema, {})
-    obj = instantiate(config=cfg)
-    assert obj != PeskySentinelUsageConf()
 
 
 def test_example_application(monkeypatch: Any, tmpdir: Path):

@@ -5,7 +5,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Set, Type
 
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
@@ -68,7 +68,6 @@ class Parameter:
     name: str
     type_str: str
     default: Optional[str]
-    passthrough: bool
 
 
 @dataclass
@@ -79,23 +78,29 @@ class ClassInfo:
     target: str
 
 
-def _is_passthrough(type_: Type[Any]) -> bool:
-    type_ = _resolve_optional(type_)[1]
+def is_incompatible(type_: Type[Any]) -> bool:
+
+    opt = _resolve_optional(type_)
+    # Unions are not supported (Except Optional)
+    if not opt[0] and _is_union(type_):
+        return True
+
+    type_ = opt[1]
     if type_ in (type(None), tuple, list, dict):
         return False
 
     try:
         if is_list_annotation(type_):
             lt = get_list_element_type(type_)
-            return _is_passthrough(lt)
+            return is_incompatible(lt)
         if is_dict_annotation(type_):
             kvt = get_dict_key_value_types(type_)
             if not issubclass(kvt[0], (str, Enum)):
                 return True
-            return _is_passthrough(kvt[1])
+            return is_incompatible(kvt[1])
         if is_tuple_annotation(type_):
             for arg in type_.__args__:
-                if arg is not ... and _is_passthrough(arg):
+                if arg is not ... and is_incompatible(arg):
                     return True
             return False
     except ValidationError:
@@ -108,7 +113,7 @@ def _is_passthrough(type_: Type[Any]) -> bool:
             OmegaConf.structured(type_)  # verify it's actually legal
         except ValidationError as e:
             log.debug(
-                f"Failed to create DictConfig from ({type_.__name__}) : {e}, flagging as passthrough"
+                f"Failed to create DictConfig from ({type_.__name__}) : {e}, flagging as incompatible"
             )
             return True
         return False
@@ -118,30 +123,32 @@ def _is_passthrough(type_: Type[Any]) -> bool:
 def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
     imports = set()
+    string_imports: Set[str] = set()
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
         params: List[Parameter] = []
+
         for name, p in sig.parameters.items():
             type_ = p.annotation
             default_ = p.default
 
-            is_optional = False
-            if type_ == sig.empty:
+            missing_value = default_ == sig.empty
+            incompatible_value_type = not missing_value and is_incompatible(
+                type(default_)
+            )
+
+            missing_annotation_type = type_ == sig.empty
+            incompatible_annotation_type = (
+                not missing_annotation_type and is_incompatible(type_)
+            )
+
+            if missing_annotation_type or incompatible_annotation_type:
                 type_ = Any
-            else:
-                resolved_optional = _resolve_optional(type_)
-                is_optional = resolved_optional[0]
+                collect_imports(imports, Any)
 
-            # Unions are not supported (Except Optional)
-            if not is_optional and _is_union(type_):
-                type_ = Any
-
-            passthrough_value = False
-            if default_ != sig.empty:
-                passthrough_value = _is_passthrough(type(default_))
-
+            if not missing_value:
                 if type_ == str:
                     default_ = f'"{default_}"'
                 elif isinstance(default_, list):
@@ -149,18 +156,30 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 elif isinstance(default_, dict):
                     default_ = f"field(default_factory=lambda: {default_})"
 
-            # fields that are incompatible with the config are flagged as passthrough and are added as a comment
-            passthrough = _is_passthrough(type_) or passthrough_value
+            missing_default = missing_value
+            if (
+                incompatible_annotation_type
+                or incompatible_value_type
+                or missing_default
+            ):
+                missing_default = True
 
-            if not passthrough:
-                collect_imports(imports, type_)
+            collect_imports(imports, type_)
+
+            if missing_default:
+                if incompatible_annotation_type:
+                    default_ = f"MISSING  # {type_str(p.annotation)}"
+                elif incompatible_value_type:
+                    default_ = f"MISSING  # {type_str(type(p.default))}"
+                else:
+                    default_ = "MISSING"
+                string_imports.add("from omegaconf import MISSING")
 
             params.append(
                 Parameter(
                     name=name,
                     type_str=type_str(type_),
                     default=default_,
-                    passthrough=passthrough,
                 )
             )
         classes_map[class_name] = ClassInfo(
@@ -172,7 +191,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
 
     template = jinja_env.get_template("module.j2")
     return template.render(
-        imports=convert_imports(imports),
+        imports=convert_imports(imports, string_imports),
         classes=module.classes,
         classes_map=classes_map,
         header=cfg.header,
