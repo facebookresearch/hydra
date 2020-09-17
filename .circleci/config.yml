@@ -103,12 +103,14 @@ jobs:
     parameters:
       py_version:
         type: string
+      cache_key_version:
+        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
-          cache_key_version: << pipeline.parameters.cache_key_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           no_output_timeout: 10m
@@ -124,12 +126,14 @@ jobs:
     parameters:
       py_version:
         type: string
+      cache_key_version:
+        type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
-          cache_key_version: << pipeline.parameters.cache_key_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           command: |
@@ -143,11 +147,13 @@ jobs:
     parameters:
       py_version:
         type: string
+      cache_key_version:
+        type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
-          cache_key_version: << pipeline.parameters.cache_key_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: Testing Hydra
           no_output_timeout: 20m
@@ -176,11 +182,14 @@ jobs:
         type: string
       test_plugin:
         type: string
+      cache_key_version:
+        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
@@ -199,11 +208,14 @@ jobs:
         type: string
       test_plugin:
         type: string
+      cache_key_version:
+        type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           command: |
@@ -220,10 +232,13 @@ jobs:
         type: string
       test_plugin:
         type: string
+      cache_key_version:
+        type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
+          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           no_output_timeout: 20m
@@ -255,14 +270,18 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
+
 
   plugin_tests:
     when: << pipeline.parameters.plugin_test >>
@@ -272,16 +291,19 @@ workflows:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_plugin_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
+              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
 
 
 orbs:
