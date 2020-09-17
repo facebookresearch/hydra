@@ -62,5 +62,6 @@ def run(branch: str, git_repo: str) -> None:
 
 if __name__ == "__main__":
     print(sys.argv)
-    print(len(sys.argv))
+    if len(sys.argv) >=4:
+        print("THERE IS PR NUMBER")
     # run(sys.argv[1], sys.argv[2])
