@@ -11,13 +11,12 @@ from typing import List
 
 import requests
 
-auth = os.environ.get("CIRCLECI_TOKEN", "0")
 
 git_repo_pattern = (
     r"((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?"
 )
 
-BASE = dirname(os.path.abspath(os.path.dirname(__file__)))
+BASE = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
 def chunk(it, size):
@@ -37,14 +36,23 @@ def get_available_plugin() -> List[str]:
     return [",".join(w) for w in list(chunk(plugins, 4))]
 
 
-def run(branch: str, git_repo: str) -> None:
+def run() -> None:
+    auth = os.environ.get( "CIRCLECI_TOKEN", "0" )
+    branch = os.environ.get( "CIRCLE_BRANCH", "" )
+    repo_url = os.environ.get( "CIRCLE_REPOSITORY_URL", "" )
+    # this env variable only exists on a forked PR
+    # https://support.circleci.com/hc/en-us/articles/360047521451-Why-is-CIRCLE-PR-NUMBER-empty-/
+    pr_number = os.environ.get( "CIRCLE_PR_NUMBER", "" )
+
     assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
     p = re.compile(git_repo_pattern)
-    m = re.search(p, git_repo)
+    m = re.search(p, repo_url)
     repo_name = m.group(m.groups().index(".git"))
     headers = {"Circle-Token": auth, "Content-type": "application/json"}
 
-    for p in get_available_plugin():
+    plugins = ["ALL"] if pr_number else get_available_plugin()
+
+    for p in plugins:
         data = {"branch": branch, "parameters": {"plugin": p, "plugin_test": True}}
         post_url = f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline"
         print(f"Data: {data}")
@@ -61,6 +69,4 @@ def run(branch: str, git_repo: str) -> None:
 
 
 if __name__ == "__main__":
-    print(sys.argv)
-    print(f"BRANCH {os.environ.get( 'CIRCLE_BRANCH', '0' )}")
-    run(sys.argv[1], sys.argv[2])
+    run()

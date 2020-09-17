@@ -157,7 +157,7 @@ jobs:
       - run:
           name: "Kick off Plugin tests."
           command: |
-            python tools/ci/circleci_pipeline.py $CIRCLE_BRANCH $CIRCLE_REPOSITORY_URL $CIRCLE_PR_NUMBER
+            python tools/ci/circleci_pipeline.py
             echo "Done kicking off plugin tests."
 
 
