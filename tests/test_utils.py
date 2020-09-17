@@ -23,6 +23,8 @@ from tests import (
     IllegalType,
     NestingClass,
     Parameters,
+    UntypedPassthroughClass,
+    UntypedPassthroughConf,
 )
 
 objectconf_depreacted = (
@@ -138,6 +140,12 @@ def test_get_class(path: str, expected_type: type) -> None:
             {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
             AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
             id="passthrough",
+        ),
+        pytest.param(
+            UntypedPassthroughConf,
+            {"a": IllegalType()},
+            UntypedPassthroughClass(a=IllegalType()),
+            id="missing_passthrough",
         ),
     ],
 )
