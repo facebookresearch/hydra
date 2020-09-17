@@ -4,7 +4,7 @@ parameters:
   plugin_test:
     type: boolean
     default: False
-  plugin:
+  test_plugins:
     type: string
     default: ""
   cache_key_version:
@@ -263,17 +263,17 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              test_plugin: [<< pipeline.parameters.plugin >>]
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              test_plugin: [<< pipeline.parameters.plugin >>]
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              test_plugin: [<< pipeline.parameters.plugin >>]
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
 orbs:
