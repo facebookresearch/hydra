@@ -36,9 +36,15 @@ def get_available_plugin() -> List[str]:
 
 def run() -> None:
     auth = os.environ.get("CIRCLECI_TOKEN", "0")
+    assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
+
     branch = os.environ.get("CIRCLE_BRANCH", "")
     repo_url = os.environ.get("CIRCLE_REPOSITORY_URL", "")
-    assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
+    pr_number = os.environ.get("CIRCLE_PR_NUMBER", "")
+
+    # https://support.circleci.com/hc/en-us/articles/360049841151
+    if pr_number:
+        branch += "/head"
     p = re.compile(git_repo_pattern)
     m = re.search(p, repo_url)
     repo_name = m.group(m.groups().index(".git"))
