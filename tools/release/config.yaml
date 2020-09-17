@@ -8,3 +8,4 @@ packages:
   - path: plugins/hydra_nevergrad_sweeper
   - path: plugins/hydra_rq_launcher
   - path: plugins/hydra_submitit_launcher
+  - path: tools/configen

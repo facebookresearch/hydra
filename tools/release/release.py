@@ -88,9 +88,13 @@ def get_package_info(path: str) -> Package:
     try:
         prev = os.getcwd()
         os.chdir(path)
-        out, _err = get_run_output(cmd=[f"{path}/setup.py", "--version"])
+        out, _err = get_run_output(
+            cmd=[f"{path}/setup.py", "--version"], allow_warnings=True
+        )
         local_version: Version = parse_version(out)
-        package_name, _err = get_run_output(cmd=[f"{path}/setup.py", "--name"])
+        package_name, _err = get_run_output(
+            cmd=[f"{path}/setup.py", "--name"], allow_warnings=True
+        )
     finally:
         os.chdir(prev)
 
@@ -120,13 +124,13 @@ def build_package(cfg: Config, pkg_path: str) -> None:
 
 def _next_version(version: str) -> str:
     cur = parse(version)
-    if cur.is_prerelease:
+    if cur.is_devrelease:
+        prefix = "dev"
+        num = cur.dev + 1
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
+    elif cur.is_prerelease:
         prefix = cur.pre[0]
         num = cur.pre[1] + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
-    elif cur.is_devrelease:
-        prefix = cur.dev[0]
-        num = cur.dev[1] + 1
         new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
     elif cur.is_postrelease:
         prefix = cur.post[0]
