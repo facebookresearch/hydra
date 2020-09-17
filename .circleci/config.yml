@@ -158,7 +158,7 @@ jobs:
           name: "Kick off Plugin tests."
           command: |
             if [[ $CIRCLE_PR_NUMBER ]] ; then
-              echo "Skip plugin pipelines on forked PR."
+              echo "Skip separate plugin pipelines on forked PR."
             else
               python tools/ci/circleci_pipeline.py
               echo "Done kicking off plugin tests."
@@ -180,7 +180,7 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-            if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+            if [[ -z $CIRCLE_PR_NUMBER ]] && [ "<< parameters.test_plugin >>" == "ALL" ] ; then
               echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
             else
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
@@ -207,7 +207,7 @@ jobs:
       - run:
           name: << parameters.test_plugin >>
           command: |
-              if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+              if [[ -z $CIRCLE_PR_NUMBER ]] && [ "<< parameters.test_plugin >>" == "ALL" ] ; then
                 echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
               else
                 export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
@@ -233,7 +233,7 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 20m
           command: |
-            if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+            if [[ -z $CIRCLE_PR_NUMBER ]] && [ "<< parameters.test_plugin >>" == "ALL" ] ; then
               echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
             else
               $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
@@ -276,14 +276,17 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: ["ALL"]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: ["ALL"]
       - test_plugin_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: ["ALL"]
 
   plugin_tests:
     when: << pipeline.parameters.plugin_test >>
