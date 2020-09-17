@@ -87,4 +87,4 @@ The [Config Search Path](advanced/search_path.md) is a list of paths that are se
 the Python [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH).
 
 ### Plugins
-[Plugins](advanced/plugins.md) extend Hydra's capabilities. Some examples are Launcher, Sweeper and ConfigSource plugin.
+[Plugins](advanced/plugins.md) extend Hydra's capabilities. Some examples are Launcher and Sweeper.
