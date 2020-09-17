@@ -181,6 +181,9 @@ class PeskySentinelUsage:
     def __init__(self, foo=pesky):
         self.foo = foo
 
+    def __eq__(self, other):
+        return isinstance(other, type(self)) and self.foo == other.foo
+
 
 class Tuples:
     def __init__(

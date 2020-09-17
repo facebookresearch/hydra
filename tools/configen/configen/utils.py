@@ -65,8 +65,10 @@ def is_tuple_annotation(type_: Any) -> bool:
         return origin is tuple  # pragma: no cover
 
 
-def convert_imports(imports: Set[Type]) -> List[str]:
+def convert_imports(imports: Set[Type], string_imports: List[str]) -> List[str]:
     tmp = set()
+    for imp in string_imports:
+        tmp.add(imp)
     for t in imports:
         s = None
         origin = getattr(t, "__origin__", None)

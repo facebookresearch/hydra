@@ -1,6 +1,5 @@
 {{ header }}
 from dataclasses import dataclass, field
-from omegaconf import MISSING
 {% for imp in imports %}
 {{ imp }}
 {% endfor %}
@@ -11,18 +10,6 @@ from omegaconf import MISSING
 class {{class_name}}Conf:
     _target_: str = "{{ classes_map[class_name].target }}"
 {% for param in classes_map[class_name].parameters %}
-{% if param.default is not empty %}
-{% if param.passthrough %}
-    # [passthrough] {{ param.name }}: {{ param.type_str }} = {{ param.default }}
-{% else %}
     {{ param.name }}: {{ param.type_str }} = {{ param.default }}
-{% endif %}
-{% else %}
-{% if param.passthrough %}
-    # [passthrough] {{ param.name }}: {{ param.type_str }}
-{% else %}
-    {{ param.name }}: {{ param.type_str }} = MISSING
-{% endif %}
-{% endif %}
 {% endfor %}
 {% endfor %}
