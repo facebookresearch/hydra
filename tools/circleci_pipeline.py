@@ -46,8 +46,11 @@ def run(branch: str, git_repo: str) -> None:
 
     for p in get_available_plugin():
         data = {"branch": branch, "parameters": {"plugin": p, "plugin_test": True}}
+        post_url = f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline"
+        print(f"Data: {data}")
+        print(f"URL: {post_url}")
         r = requests.post(
-            f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline",
+            post_url,
             headers=headers,
             data=json.dumps(data),
         )
