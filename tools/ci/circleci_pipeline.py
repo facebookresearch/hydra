@@ -62,4 +62,5 @@ def run(branch: str, git_repo: str) -> None:
 
 if __name__ == "__main__":
     print(sys.argv)
-    run(sys.argv[1], sys.argv[2])
+    print(len(sys.argv))
+    # run(sys.argv[1], sys.argv[2])
