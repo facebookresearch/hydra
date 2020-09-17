@@ -53,14 +53,12 @@ def run() -> None:
     for p in get_available_plugin():
         data = {"branch": branch, "parameters": {"plugin": p, "plugin_test": True}}
         post_url = f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline"
-        print(f"Data: {data}")
-        print(f"URL: {post_url}")
+        print(f"Data: {data}, URL: {post_url}")
         r = requests.post(
             post_url,
             headers=headers,
             data=json.dumps(data),
         )
-        print(f"RESPONSE {r.json()}")
         assert (
             r.status_code == 201
         ), f"Unexpected response while submitting CIRCLECI job for plugins. Response: {r.json()}"
