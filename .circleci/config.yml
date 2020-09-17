@@ -253,43 +253,10 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
-=======
-              nox_session: ["lint test_core", "lint_plugins test_plugins", "test_jupyter_notebooks"]
->>>>>>> combine some jobs
-=======
-              nox_session: ["lint", "lint_plugins", "test_core", "test_plugins", "test_jupyter_notebooks"]
->>>>>>> Revert "combine some jobs"
-=======
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
->>>>>>> Address comments
-=======
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_example_plugins", "test_hydra_ax_sweeper", "test_hydra_colorlog", "test_hydra_joblib_launcher", "test_hydra_nevergrad_sweeper", "test_hydra_rq_launcher","test_hydra_submitit_launcher" ]
->>>>>>> separate all plugins
-=======
-              nox_session: ["lint lint_plugins test_core test_jupyter_notebooks", "test_plugins"]
->>>>>>> Revert "separate all plugins"
-=======
-      - test_plugin_macos:
-=======
-      - deploy-website:
-          filters:
-            branches:
-              only: master
   plugin_tests:
     when: << pipeline.parameters.plugin_test >>
     jobs:
       - test_plugin_linux:
->>>>>>> test out the script
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
@@ -303,22 +270,8 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-<<<<<<< HEAD
-<<<<<<< HEAD
-              plugins: ["examples", "hydra_ax_sweeper", "hydra_colorlog", "hydra_joblib_launcher", "hydra_nevergrad_sweeper", "hydra_rq_launcher", "hydra_submitit_launcher"]
->>>>>>> re-org circleCI file
-      - deploy-website:
-          filters:
-            branches:
-              only: master
->>>>>>> Parameterize nox session
-=======
-              plugin: << pipeline.parameters.plugin >>
-=======
               test_plugin: [<< pipeline.parameters.plugin >>]
->>>>>>> fix testplugin
 
->>>>>>> test out the script
 
 orbs:
   win: circleci/windows@1.0.0
