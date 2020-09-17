@@ -17,6 +17,8 @@ commands:
     parameters:
       py_version:
         type: string
+      cache_key_version:
+        type: string
     steps:
       - checkout
       - restore_cache:
@@ -54,6 +56,8 @@ commands:
     parameters:
       py_version:
         type: string
+      cache_key_version:
+        type: string
     steps:
       - checkout
       - run:
@@ -68,6 +72,8 @@ commands:
     description: "Commands run on Windows"
     parameters:
       py_version:
+        type: string
+      cache_key_version:
         type: string
     steps:
       - checkout
@@ -102,6 +108,7 @@ jobs:
     steps:
       - macos:
           py_version: << parameters.py_version >>
+          cache_key_version: << pipeline.parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           no_output_timeout: 10m
@@ -122,6 +129,7 @@ jobs:
     steps:
       - linux:
           py_version: << parameters.py_version >>
+          cache_key_version: << pipeline.parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           command: |
@@ -139,6 +147,7 @@ jobs:
     steps:
       - win:
           py_version: << parameters.py_version >>
+          cache_key_version: << pipeline.parameters.cache_key_version >>
       - run:
           name: Testing Hydra
           no_output_timeout: 20m
