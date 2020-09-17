@@ -1,5 +1,16 @@
 version: 2.1
 
+parameters:
+  plugin_test:
+    type: boolean
+    default: False
+  plugin:
+    type: string
+    default: ""
+  cache_key_version:
+    type: string
+    default: "v0"
+
 commands:
   macos:
     description: "Commands run on MacOS"
@@ -8,28 +19,35 @@ commands:
         type: string
     steps:
       - checkout
+      - restore_cache:
+          key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Installing Conda"
+          name: "Preparing environment - Conda"
           command: |
-            curl -o Miniconda3-latest-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-            bash ./Miniconda3-latest-MacOSX-x86_64.sh -b
+            if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
+              echo "miniconda installed already."
+            else
+              curl -o Miniconda3-py38_4.8.3-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-MacOSX-x86_64.sh
+              bash ./Miniconda3-py38_4.8.3-MacOSX-x86_64.sh -b
+            fi
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing environment"
+          name: "Preparing environment - Brew"
           command: |
             brew update
             brew upgrade git
             brew install fish
-            conda create -n hydra python=<< parameters.py_version >> -yq
-            conda run -n hydra pip install nox
       - run:
-          name: "Testing Hydra"
-          no_output_timeout: 10m
+          name: "Preparing environment - Hydra"
           command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            conda activate hydra
-            pip install nox dataclasses
-            nox
+            conda create -n hydra python=<< parameters.py_version >> -yq
+            conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+      - save_cache:
+          key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          paths:
+            - ~/miniconda3
+            - /usr/local/Homebrew
+
 
   linux:
     description: "Commands run on Linux"
@@ -43,13 +61,7 @@ commands:
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox
-      - run:
-          name: "Testing Hydra"
-          command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            pip install nox dataclasses
-            nox
+            sudo pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
 
 
   win:
@@ -59,40 +71,25 @@ commands:
         type: string
     steps:
       - checkout
+      - restore_cache:
+          key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: Preparing system
+          name: "Preparing environment - system"
           command: |
             choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
-          name: Preparing conda environment
+          name: "Preparing environment - Hydra"
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
-            pip install nox dataclasses
-      - run:
-          name: Testing Hydra
-          no_output_timeout: 20m
-          command: |
-            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            $env:PYTHONIOENCODING="utf_8"
-            conda activate hydra
-            nox
-            exit $LASTEXITCODE
-
-
-executors:
-  macos:
-    macos:
-      xcode: "10.0.0"
-  linux:
-    parameters:
-      py_version:
-        type: string
-    docker:
-      - image: circleci/python:<< parameters.py_version >>
-  win: win/default
+            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install dataclasses
+      - save_cache:
+          key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          paths:
+            - C:\tools\miniconda3
 
 
 jobs:
@@ -105,6 +102,16 @@ jobs:
     steps:
       - macos:
           py_version: << parameters.py_version >>
+      - run:
+          name: "Testing Hydra"
+          no_output_timeout: 10m
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            conda activate hydra
+            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install dataclasses
+            nox -s lint test_core test_jupyter_notebooks -ts
+
 
   test_linux:
     parameters:
@@ -115,6 +122,14 @@ jobs:
     steps:
       - linux:
           py_version: << parameters.py_version >>
+      - run:
+          name: "Testing Hydra"
+          command: |
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install dataclasses
+            nox -s lint test_core test_jupyter_notebooks -ts
+
 
   test_win:
     parameters:
@@ -124,6 +139,93 @@ jobs:
     steps:
       - win:
           py_version: << parameters.py_version >>
+      - run:
+          name: Testing Hydra
+          no_output_timeout: 20m
+          command: |
+            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:PYTHONIOENCODING="utf_8"
+            conda activate hydra
+            nox -s lint test_core test_jupyter_notebooks -ts
+            exit $LASTEXITCODE
+
+  trigger_plugin_piplines:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: "Kick off Plugin tests."
+          command: |
+              python tools/ci/circleci_pipeline.py
+              echo "Done kicking off plugin tests."
+
+
+  test_plugin_macos:
+    parameters:
+      py_version:
+        type: string
+      test_plugin:
+        type: string
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - macos:
+          py_version: << parameters.py_version >>
+      - run:
+          name: << parameters.test_plugin >>
+          no_output_timeout: 10m
+          command: |
+              export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              export PLUGINS=<< parameters.test_plugin >>
+              conda activate hydra
+              pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+              pip install dataclasses
+              nox -s lint_plugins test_plugins -ts
+
+
+  test_plugin_linux:
+    parameters:
+      py_version:
+        type: string
+      test_plugin:
+        type: string
+    docker:
+      - image: circleci/python:<< parameters.py_version >>
+    steps:
+      - linux:
+          py_version: << parameters.py_version >>
+      - run:
+          name: << parameters.test_plugin >>
+          command: |
+                export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+                export PLUGINS=<< parameters.test_plugin >>
+                pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+                pip install dataclasses
+                nox -s lint_plugins test_plugins -ts
+
+
+  test_plugin_win:
+    parameters:
+      py_version:
+        type: string
+      test_plugin:
+        type: string
+    executor: win/default
+    steps:
+      - win:
+          py_version: << parameters.py_version >>
+      - run:
+          name: << parameters.test_plugin >>
+          no_output_timeout: 20m
+          command: |
+              $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              $env:PYTHONIOENCODING="utf_8"
+              $env:PLUGINS="<< parameters.test_plugin >>"
+              conda activate hydra
+              nox -s lint_plugins test_plugins -ts
+              exit $LASTEXITCODE
+
 
   # Misc
   coverage:
@@ -137,7 +239,9 @@ jobs:
 workflows:
   version: 2
   build:
+    unless: << pipeline.parameters.plugin_test >>
     jobs:
+      - trigger_plugin_piplines
       - test_macos:
           matrix:
             parameters:
@@ -150,6 +254,27 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+
+
+  plugin_tests:
+    when: << pipeline.parameters.plugin_test >>
+    jobs:
+      - test_plugin_linux:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: [<< pipeline.parameters.plugin >>]
+      - test_plugin_macos:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: [<< pipeline.parameters.plugin >>]
+      - test_plugin_win:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+              test_plugin: [<< pipeline.parameters.plugin >>]
+
 
 orbs:
   win: circleci/windows@1.0.0
