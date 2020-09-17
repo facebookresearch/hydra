@@ -334,14 +334,9 @@ def _get_standalone_apps_dirs():
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize(
-    "install_cmd",
-    (INSTALL_COMMAND,),
-    ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
-)
-def test_core(session, install_cmd):
+def test_core(session):
     _upgrade_basic(session)
-    install_hydra(session, install_cmd)
+    install_hydra(session, INSTALL_COMMAND)
     session.install("pytest")
 
     if not SKIP_CORE_TESTS:
@@ -353,29 +348,24 @@ def test_core(session, install_cmd):
     session.log("Testing standalone apps")
     for subdir in apps:
         session.chdir(subdir)
-        session.run(*install_cmd, ".", silent=SILENT)
+        session.run(*INSTALL_COMMAND, ".", silent=SILENT)
         run_pytest(session, ".")
 
     session.chdir(BASE)
 
     test_plugins_in_directory(
         session,
-        install_cmd=install_cmd,
+        install_cmd=INSTALL_COMMAND,
         directory="examples/plugins",
         test_hydra_core=False,
     )
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize(
-    "install_cmd",
-    (INSTALL_COMMAND,),
-    ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
-)
-def test_plugins(session, install_cmd):
+def test_plugins(session):
     test_plugins_in_directory(
         session=session,
-        install_cmd=install_cmd,
+        install_cmd=INSTALL_COMMAND,
         directory="plugins",
         test_hydra_core=True,
     )
