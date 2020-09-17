@@ -13,7 +13,7 @@ parameters:
 
 commands:
   macos:
-    description: "Commands run on MacOS"
+    description: Commands run on MacOS
     parameters:
       py_version:
         type: string
@@ -22,7 +22,7 @@ commands:
       - restore_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Preparing environment - Conda"
+          name: Preparing environment - Conda
           command: |
             if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
               echo "miniconda installed already."
@@ -32,13 +32,13 @@ commands:
             fi
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing environment - Brew"
+          name: Preparing environment - Brew
           command: |
             brew update
             brew upgrade git
             brew install fish
       - run:
-          name: "Preparing environment - Hydra"
+          name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
@@ -50,14 +50,14 @@ commands:
 
 
   linux:
-    description: "Commands run on Linux"
+    description: Commands run on Linux
     parameters:
       py_version:
         type: string
     steps:
       - checkout
       - run:
-          name: "Preparing environment"
+          name: Preparing environment
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre
@@ -65,7 +65,7 @@ commands:
 
 
   win:
-    description: "Commands run on Windows"
+    description: Commands run on Windows
     parameters:
       py_version:
         type: string
@@ -74,13 +74,13 @@ commands:
       - restore_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Preparing environment - system"
+          name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
-          name: "Preparing environment - Hydra"
+          name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
@@ -103,7 +103,7 @@ jobs:
       - macos:
           py_version: << parameters.py_version >>
       - run:
-          name: "Testing Hydra"
+          name: Testing Hydra
           no_output_timeout: 10m
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
@@ -123,7 +123,7 @@ jobs:
       - linux:
           py_version: << parameters.py_version >>
       - run:
-          name: "Testing Hydra"
+          name: Testing Hydra
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
@@ -155,7 +155,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Kick off Plugin tests."
+          name: Kick off Plugin tests
           command: |
               python tools/ci/circleci_pipeline.py
               echo "Done kicking off plugin tests."
