@@ -51,7 +51,10 @@ def run() -> None:
     headers = {"Circle-Token": auth, "Content-type": "application/json"}
 
     for p in get_available_plugin():
-        data = {"branch": branch, "parameters": {"test_plugins": p, "plugin_test": True}}
+        data = {
+            "branch": branch,
+            "parameters": {"test_plugins": p, "plugin_test": True},
+        }
         post_url = f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline"
         print(f"Data: {data}, URL: {post_url}")
         r = requests.post(
