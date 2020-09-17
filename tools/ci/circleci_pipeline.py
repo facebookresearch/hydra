@@ -62,6 +62,5 @@ def run(branch: str, git_repo: str) -> None:
 
 if __name__ == "__main__":
     print(sys.argv)
-    if len(sys.argv) >=4:
-        print("THERE IS PR NUMBER")
-    # run(sys.argv[1], sys.argv[2])
+    print(f"BRANCH {os.environ.get( 'CIRCLE_BRANCH', '0' )}")
+    run(sys.argv[1], sys.argv[2])
