@@ -4,13 +4,11 @@ import json
 import os
 import random
 import re
-import sys
 from itertools import islice
 from os.path import dirname
 from typing import List
 
 import requests
-
 
 git_repo_pattern = (
     r"((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?"
@@ -37,15 +35,14 @@ def get_available_plugin() -> List[str]:
 
 
 def run() -> None:
-    auth = os.environ.get( "CIRCLECI_TOKEN", "0" )
-    branch = os.environ.get( "CIRCLE_BRANCH", "" )
-    repo_url = os.environ.get( "CIRCLE_REPOSITORY_URL", "" )
+    auth = os.environ.get("CIRCLECI_TOKEN", "0")
+    branch = os.environ.get("CIRCLE_BRANCH", "")
+    repo_url = os.environ.get("CIRCLE_REPOSITORY_URL", "")
     assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
     p = re.compile(git_repo_pattern)
     m = re.search(p, repo_url)
     repo_name = m.group(m.groups().index(".git"))
     headers = {"Circle-Token": auth, "Content-type": "application/json"}
-
 
     for p in get_available_plugin():
         data = {"branch": branch, "parameters": {"plugin": p, "plugin_test": True}}
