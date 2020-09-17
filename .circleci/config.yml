@@ -17,12 +17,10 @@ commands:
     parameters:
       py_version:
         type: string
-      cache_key_version:
-        type: string
     steps:
       - checkout
       - restore_cache:
-          key: -{{ parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: "Preparing environment - Conda"
           command: |
@@ -45,7 +43,7 @@ commands:
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
       - save_cache:
-          key: -{{ parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
             - ~/miniconda3
             - /usr/local/Homebrew
@@ -55,8 +53,6 @@ commands:
     description: "Commands run on Linux"
     parameters:
       py_version:
-        type: string
-      cache_key_version:
         type: string
     steps:
       - checkout
@@ -73,12 +69,10 @@ commands:
     parameters:
       py_version:
         type: string
-      cache_key_version:
-        type: string
     steps:
       - checkout
       - restore_cache:
-          key: -{{ parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: "Preparing environment - system"
           command: |
@@ -93,7 +87,7 @@ commands:
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
             pip install dataclasses
       - save_cache:
-          key: -{{ parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
             - C:\tools\miniconda3
 
@@ -103,14 +97,11 @@ jobs:
     parameters:
       py_version:
         type: string
-      cache_key_version:
-        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           no_output_timeout: 10m
@@ -126,14 +117,11 @@ jobs:
     parameters:
       py_version:
         type: string
-      cache_key_version:
-        type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: "Testing Hydra"
           command: |
@@ -147,13 +135,10 @@ jobs:
     parameters:
       py_version:
         type: string
-      cache_key_version:
-        type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: Testing Hydra
           no_output_timeout: 20m
@@ -182,14 +167,11 @@ jobs:
         type: string
       test_plugin:
         type: string
-      cache_key_version:
-        type: string
     macos:
       xcode: "10.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
@@ -208,14 +190,11 @@ jobs:
         type: string
       test_plugin:
         type: string
-      cache_key_version:
-        type: string
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
       - linux:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           command: |
@@ -232,13 +211,10 @@ jobs:
         type: string
       test_plugin:
         type: string
-      cache_key_version:
-        type: string
     executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
-          cache_key_version: << parameters.cache_key_version >>
       - run:
           name: << parameters.test_plugin >>
           no_output_timeout: 20m
@@ -270,17 +246,14 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_linux:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
 
 
   plugin_tests:
@@ -291,19 +264,16 @@ workflows:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
       - test_plugin_win:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
               test_plugin: [<< pipeline.parameters.plugin >>]
-              cache_key_version: [<< pipeline.parameters.cache_key_version >>]
 
 
 orbs:
