@@ -20,7 +20,7 @@ commands:
     steps:
       - checkout
       - restore_cache:
-          key: -{{ pipeline.parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -{{ parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: "Preparing environment - Conda"
           command: |
@@ -43,7 +43,7 @@ commands:
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
       - save_cache:
-          key: -{{ pipeline.parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -{{ parameters.cache_key_version }}-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
             - ~/miniconda3
             - /usr/local/Homebrew
@@ -72,7 +72,7 @@ commands:
     steps:
       - checkout
       - restore_cache:
-          key: -{{ pipeline.parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -{{ parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: "Preparing environment - system"
           command: |
@@ -87,7 +87,7 @@ commands:
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
             pip install dataclasses
       - save_cache:
-          key: -{{ pipeline.parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
+          key: -{{ parameters.cache_key_version }}-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
             - C:\tools\miniconda3
 
