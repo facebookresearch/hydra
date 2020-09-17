@@ -60,6 +60,7 @@ def run() -> None:
             headers=headers,
             data=json.dumps(data),
         )
+        print(f"RESPONSE {r.json()}")
         assert (
             r.status_code == 201
         ), f"Unexpected response while submitting CIRCLECI job for plugins. Response: {r.json()}"
