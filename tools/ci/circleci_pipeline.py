@@ -40,19 +40,14 @@ def run() -> None:
     auth = os.environ.get( "CIRCLECI_TOKEN", "0" )
     branch = os.environ.get( "CIRCLE_BRANCH", "" )
     repo_url = os.environ.get( "CIRCLE_REPOSITORY_URL", "" )
-    # this env variable only exists on a forked PR
-    # https://support.circleci.com/hc/en-us/articles/360047521451-Why-is-CIRCLE-PR-NUMBER-empty-/
-    pr_number = os.environ.get( "CIRCLE_PR_NUMBER", "" )
-
     assert auth != "0", "Please set CIRCLECI_TOKEN for your project."
     p = re.compile(git_repo_pattern)
     m = re.search(p, repo_url)
     repo_name = m.group(m.groups().index(".git"))
     headers = {"Circle-Token": auth, "Content-type": "application/json"}
 
-    plugins = ["ALL"] if pr_number else get_available_plugin()
 
-    for p in plugins:
+    for p in get_available_plugin():
         data = {"branch": branch, "parameters": {"plugin": p, "plugin_test": True}}
         post_url = f"https://circleci.com/api/v2/project/gh/{repo_name}/pipeline"
         print(f"Data: {data}")

@@ -157,8 +157,12 @@ jobs:
       - run:
           name: "Kick off Plugin tests."
           command: |
-            python tools/ci/circleci_pipeline.py
-            echo "Done kicking off plugin tests."
+            if [[ $CIRCLE_PR_NUMBER ]] ; then
+              echo "Skip plugin pipelines on forked PR."
+            else
+              python tools/ci/circleci_pipeline.py
+              echo "Done kicking off plugin tests."
+            fi
 
 
   test_plugin_macos:
@@ -176,12 +180,16 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            export PLUGINS=<< parameters.test_plugin >>
-            conda activate hydra
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
-            pip install dataclasses
-            nox -s lint_plugins test_plugins -ts
+            if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+              echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
+            else
+              export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              export PLUGINS=<< parameters.test_plugin >>
+              conda activate hydra
+              pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+              pip install dataclasses
+              nox -s lint_plugins test_plugins -ts
+            fi
 
 
   test_plugin_linux:
@@ -190,6 +198,7 @@ jobs:
         type: string
       test_plugin:
         type: string
+        default: "ALL"
     docker:
       - image: circleci/python:<< parameters.py_version >>
     steps:
@@ -198,11 +207,16 @@ jobs:
       - run:
           name: << parameters.test_plugin >>
           command: |
-              export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-              export PLUGINS=<< parameters.test_plugin >>
-              pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
-              pip install dataclasses
-              nox -s lint_plugins test_plugins -ts
+              if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+                echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
+              else
+                export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+                export PLUGINS=<< parameters.test_plugin >>
+                pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+                pip install dataclasses
+                nox -s lint_plugins test_plugins -ts
+              fi
+
 
 
   test_plugin_win:
@@ -219,12 +233,17 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 20m
           command: |
-            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            $env:PYTHONIOENCODING="utf_8"
-            $env:PLUGINS="<< parameters.test_plugin >>"
-            conda activate hydra
-            nox -s lint_plugins test_plugins -ts
-            exit $LASTEXITCODE
+            if [[ -z $CIRCLE_PR_NUMBER ] && [<< parameters.test_plugin >> = "ALL"]] ; then
+              echo "Skip tests run on a not forked PR. Multiple plugins test pipelines kicked off separately."
+            else
+              $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              $env:PYTHONIOENCODING="utf_8"
+              $env:PLUGINS="<< parameters.test_plugin >>"
+              conda activate hydra
+              nox -s lint_plugins test_plugins -ts
+              exit $LASTEXITCODE
+            fi
+
 
   # Misc
   coverage:
@@ -253,6 +272,19 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
+      - test_plugin_linux:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+      - test_plugin_macos:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+      - test_plugin_win:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8"]
+
   plugin_tests:
     when: << pipeline.parameters.plugin_test >>
     jobs:
