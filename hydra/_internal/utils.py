@@ -10,17 +10,7 @@ from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
-from typing import (
-    Any,
-    Callable,
-    List,
-    MutableMapping,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
 
 from omegaconf import DictConfig, OmegaConf, read_write
 from omegaconf.errors import OmegaConfBaseException
@@ -586,18 +576,11 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
             warnings.warn(category=UserWarning, message=msg)
             params = config.params
         else:
-            params = OmegaConf.create()
-            for k, v in config.items():
-                if k != "_target_":
-                    params[k] = v
+            params = config
 
     assert isinstance(
-        params, MutableMapping
+        params, DictConfig
     ), f"Input config params are expected to be a mapping, found {type(config.params).__name__}"
-
-    if isinstance(config, DictConfig):
-        assert isinstance(params, DictConfig)
-        params._set_parent(config)
 
     config_overrides = {}
     passthrough = {}
@@ -611,8 +594,12 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     with read_write(params):
         params.merge_with(config_overrides)
 
-    for k, v in params.items():
-        final_kwargs[k] = v
+    for k in params.keys():
+        if k == "_target_":
+            continue
+        if OmegaConf.is_missing(params, k) and k in passthrough:
+            continue
+        final_kwargs[k] = params[k]
 
     for k, v in passthrough.items():
         final_kwargs[k] = v
