@@ -41,7 +41,7 @@ commands:
           name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
-            conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            conda run -n hydra pip install nox
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -61,7 +61,7 @@ commands:
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            sudo pip install nox
 
 
   win:
@@ -84,7 +84,7 @@ commands:
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install nox
             pip install dataclasses
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
@@ -108,7 +108,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install nox
             pip install dataclasses
             nox -s lint test_core test_jupyter_notebooks -ts
 
@@ -126,7 +126,7 @@ jobs:
           name: Testing Hydra
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+            pip install nox
             pip install dataclasses
             nox -s lint test_core test_jupyter_notebooks -ts
 
@@ -141,7 +141,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
-          no_output_timeout: 20m
+          no_output_timeout: 10m
           command: |
             $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             $env:PYTHONIOENCODING="utf_8"
@@ -179,7 +179,7 @@ jobs:
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
-              pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+              pip install nox
               pip install dataclasses
               nox -s lint_plugins test_plugins -ts
 
@@ -200,7 +200,7 @@ jobs:
           command: |
                 export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
                 export PLUGINS=<< parameters.test_plugin >>
-                pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+                pip install nox
                 pip install dataclasses
                 nox -s lint_plugins test_plugins -ts
 
@@ -217,7 +217,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: << parameters.test_plugin >>
-          no_output_timeout: 20m
+          no_output_timeout: 10m
           command: |
               $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               $env:PYTHONIOENCODING="utf_8"
