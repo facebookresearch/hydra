@@ -9,7 +9,7 @@ parameters:
     default: ""
   cache_key_version:
     type: string
-    default: "v0"
+    default: v0
 
 commands:
   macos:
