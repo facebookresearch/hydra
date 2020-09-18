@@ -19,7 +19,11 @@ PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
 ).split(",")
 
-PLUGINS_INSTALL_COMMANDS = (["pip", "install"], ["pip", "install", "-e"])
+INSTALL_EDITABLE_MODE = os.environ.get("INSTALL_EDITABLE_MODE", 0)
+
+INSTALL_COMMAND = (
+    ["pip", "install", "-e"] if INSTALL_EDITABLE_MODE else ["pip", "install"]
+)
 
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
@@ -52,6 +56,7 @@ print(f"PLUGINS\t\t\t:\t{PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
+print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
 
 
 def _upgrade_basic(session):
@@ -329,14 +334,9 @@ def _get_standalone_apps_dirs():
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
-)
-def test_core(session, install_cmd):
+def test_core(session):
     _upgrade_basic(session)
-    install_hydra(session, install_cmd)
+    install_hydra(session, INSTALL_COMMAND)
     session.install("pytest")
 
     if not SKIP_CORE_TESTS:
@@ -348,29 +348,24 @@ def test_core(session, install_cmd):
     session.log("Testing standalone apps")
     for subdir in apps:
         session.chdir(subdir)
-        session.run(*install_cmd, ".", silent=SILENT)
+        session.run(*INSTALL_COMMAND, ".", silent=SILENT)
         run_pytest(session, ".")
 
     session.chdir(BASE)
 
     test_plugins_in_directory(
         session,
-        install_cmd=install_cmd,
+        install_cmd=INSTALL_COMMAND,
         directory="examples/plugins",
         test_hydra_core=False,
     )
 
 
 @nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
-)
-def test_plugins(session, install_cmd):
+def test_plugins(session):
     test_plugins_in_directory(
         session=session,
-        install_cmd=install_cmd,
+        install_cmd=INSTALL_COMMAND,
         directory="plugins",
         test_hydra_core=True,
     )
