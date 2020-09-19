@@ -43,14 +43,16 @@ class AClass:
 class UntypedPassthroughConf:
     _target_: str = "tests.UntypedPassthroughClass"
     a: Any = MISSING
+    b: Any = 10
 
 
 class UntypedPassthroughClass:
-    def __init__(self, a: Any) -> None:
+    def __init__(self, a: Any, b: Any) -> None:
         self.a = a
+        self.b = b
 
     def __eq__(self, other: Any) -> Any:
-        return self.a == other.a
+        return self.a == other.a and self.b == other.b
 
 
 # Type not legal in a config

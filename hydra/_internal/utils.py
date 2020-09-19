@@ -13,6 +13,7 @@ from types import FrameType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
 
 from omegaconf import DictConfig, OmegaConf, read_write
+from omegaconf._utils import get_ref_type
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -585,7 +586,7 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     config_overrides = {}
     passthrough = {}
     for k, v in kwargs.items():
-        if k in params:
+        if k in params and get_ref_type(params, k) is not Any:
             config_overrides[k] = v
         else:
             passthrough[k] = v
@@ -594,12 +595,13 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     with read_write(params):
         params.merge_with(config_overrides)
 
-    for k in params.keys():
+    for k, v in params.items_ex(resolve=False):
         if k == "_target_":
             continue
-        if OmegaConf.is_missing(params, k) and k in passthrough:
-            continue
-        final_kwargs[k] = params[k]
+        final_kwargs[k] = v
+
+    for k, v in passthrough.items():
+        final_kwargs[k] = v
 
     for k, v in passthrough.items():
         final_kwargs[k] = v

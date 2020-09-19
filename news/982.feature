@@ -1,1 +1,1 @@
-Support annotation of passthrough values in hydra.utils.instantiate()
+Parameters annotated as Any in the config are not type checked by instantiate()
