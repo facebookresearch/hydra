@@ -235,6 +235,7 @@ def lint(session):
         "examples/advanced/",
         "examples/configure_hydra",
         "examples/patterns",
+        "examples/instantiate",
         "examples/tutorials/basic/your_first_hydra_app",
         "examples/tutorials/basic/running_your_hydra_app",
         "examples/tutorials/structured_configs/",

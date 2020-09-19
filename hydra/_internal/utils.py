@@ -1,19 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import argparse
-import copy
 import inspect
 import logging.config
 import os
 import sys
-import warnings
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Type, Union
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
-from omegaconf import DictConfig, OmegaConf, read_write
-from omegaconf._utils import get_ref_type
+from omegaconf import DictConfig, ListConfig, OmegaConf
+from omegaconf._utils import type_str
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -24,7 +22,7 @@ from hydra.errors import (
     InstantiationException,
     SearchPathException,
 )
-from hydra.types import ObjectConf, TaskFunction
+from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -492,22 +490,14 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
     return widths
 
 
-def _instantiate_class(
-    clazz: Type[Any], config: Union[ObjectConf, DictConfig], *args: Any, **kwargs: Any
-) -> Any:
-    # TODO: pull out to caller?
-    final_kwargs = _get_kwargs(config, **kwargs)
-    return clazz(*args, **final_kwargs)
-
-
-def _call_callable(
-    fn: Callable[..., Any],
-    config: Union[ObjectConf, DictConfig],
+def _instantiate_or_call(
+    clazz: Any,
+    config: DictConfig,
     *args: Any,
     **kwargs: Any,
 ) -> Any:
     final_kwargs = _get_kwargs(config, **kwargs)
-    return fn(*args, **final_kwargs)
+    return clazz(*args, **final_kwargs)
 
 
 def _locate(path: str) -> Union[type, Callable[..., Any]]:
@@ -558,84 +548,97 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
 
 
-def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
+def _is_target(x: Any) -> bool:
+    if OmegaConf.is_dict(x) and not OmegaConf.is_none(x):
+        return "_target_" in x
+    return False
 
-    if isinstance(config, ObjectConf):
-        config = OmegaConf.structured(config)
-        if config.params is not None:
-            params = config.params
-        else:
-            params = OmegaConf.create()
-    else:
-        config = copy.deepcopy(config)
-        if "params" in config:
-            msg = (
-                "\nField 'params' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1."
-                "\nInline the content of params directly at the containing node."
-                "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
-            )
-            warnings.warn(category=UserWarning, message=msg)
-            params = config.params
-        else:
-            params = config
 
-    assert isinstance(
-        params, DictConfig
-    ), f"Input config params are expected to be a mapping, found {type(config.params).__name__}"
+def _is_recursive(config: Any, kwargs: Any) -> bool:
+    def _is_rec(d: Any) -> Optional[bool]:
+        if "_recursive_" in d:
+            rec = d.pop("_recursive_")
+            if not isinstance(rec, bool):
+                raise ValueError(
+                    f"_recursive_ flag must be a bool, got {type_str(rec)}"
+                )
+            return rec
+        return None
 
-    config_overrides = {}
-    passthrough = {}
-    for k, v in kwargs.items():
-        if k in params and not (
-            get_ref_type(params, k) is Any and OmegaConf.is_missing(params, k)
-        ):
-            config_overrides[k] = v
-        else:
-            passthrough[k] = v
+    # pop both in any case
+    kwrec = _is_rec(kwargs)
+    configrec = _is_rec(config)
+    if kwrec is not None:
+        return kwrec
+    elif configrec is not None:
+        return configrec
+    return True
+
+
+def _get_kwargs(
+    config: Union[DictConfig, ListConfig],
+    **kwargs: Any,
+) -> Any:
+    from hydra.utils import instantiate
+
+    assert OmegaConf.is_config(config)
+
+    if OmegaConf.is_list(config):
+        assert isinstance(config, ListConfig)
+        return [_get_kwargs(x) if OmegaConf.is_config(x) else x for x in config]
+
+    assert OmegaConf.is_dict(config), "Input config is not an OmegaConf DictConfig"
+
     final_kwargs = {}
 
-    with read_write(params):
-        params.merge_with(config_overrides)
+    recursive = _is_recursive(config, kwargs)
+    overrides = OmegaConf.create(kwargs, flags={"allow_objects": True})
+    config.merge_with(overrides)
 
-    for k in params.keys():
-        if k == "_target_":
-            continue
-        if k not in passthrough:
-            final_kwargs[k] = params[k]
+    for k, v in config.items():
+        if k not in ("_target_", "_recursive_"):
+            final_kwargs[k] = v
 
-    for k, v in passthrough.items():
-        final_kwargs[k] = v
+    if recursive:
+        for k, v in final_kwargs.items():
+            if _is_target(v):
+                final_kwargs[k] = instantiate(v)
+            elif OmegaConf.is_dict(v) and not OmegaConf.is_none(v):
+                d = OmegaConf.create({}, flags={"allow_objects": True})
+                for key, value in v.items():
+                    if _is_target(value):
+                        d[key] = instantiate(value)
+                    elif OmegaConf.is_config(value):
+                        d[key] = _get_kwargs(value)
+                    else:
+                        d[key] = value
+                final_kwargs[k] = d
+            elif OmegaConf.is_list(v):
+                lst = OmegaConf.create([], flags={"allow_objects": True})
+                for x in v:
+                    if _is_target(x):
+                        lst.append(instantiate(x))
+                    elif OmegaConf.is_config(x):
+                        lst.append(_get_kwargs(x))
+                    else:
+                        lst.append(x)
+                final_kwargs[k] = lst
+            else:
+                if OmegaConf.is_none(v):
+                    v = None
+                final_kwargs[k] = v
 
-    for k, v in passthrough.items():
-        final_kwargs[k] = v
     return final_kwargs
 
 
 def _get_cls_name(config: DictConfig, pop: bool = True) -> str:
-    def _getcls(field: str) -> str:
-        if pop:
-            classname = config.pop(field)
-        else:
-            classname = config[field]
-        if not isinstance(classname, str):
-            raise InstantiationException(f"_target_ field '{field}' must be a string")
-        return classname
+    if "_target_" not in config:
+        raise InstantiationException("Input config does not have a `_target_` field")
 
-    for field in ["target", "cls", "class"]:
-        if field in config:
-            key = config._get_full_key(field)
-            msg = (
-                f"\nConfig key '{key}' is deprecated since Hydra 1.0 and will be removed in Hydra 1.1."
-                f"\nUse '_target_' instead of '{field}'."
-                f"\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes"
-            )
-            warnings.warn(message=msg, category=UserWarning)
-
-    if "_target_" in config:
-        return _getcls("_target_")
-
-    for field in ["target", "cls", "class"]:
-        if field in config:
-            return _getcls(field)
-
-    raise InstantiationException("Input config does not have a `_target_` field")
+    if pop:
+        classname = config.pop("_target_")
+    else:
+        classname = config["_target_"]
+    if not isinstance(classname, str):
+        raise InstantiationException("_target_ field type must be a string")
+    return classname

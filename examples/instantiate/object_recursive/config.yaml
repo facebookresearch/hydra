@@ -1,0 +1,19 @@
+car:
+  _target_: my_app.Car
+  driver:
+    _target_: my_app.Driver
+    name: James Bond
+    age: 7
+  wheels:
+    - _target_: my_app.Wheel
+      radius: 20
+      width: 1
+    - _target_: my_app.Wheel
+      radius: 20
+      width: 1
+    - _target_: my_app.Wheel
+      radius: 20
+      width: 1
+    - _target_: my_app.Wheel
+      radius: 20
+      width: 1
