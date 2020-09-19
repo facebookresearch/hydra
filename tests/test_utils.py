@@ -143,9 +143,9 @@ def test_get_class(path: str, expected_type: type) -> None:
         ),
         pytest.param(
             UntypedPassthroughConf,
-            {"a": IllegalType()},
-            UntypedPassthroughClass(a=IllegalType()),
-            id="missing_passthrough",
+            {"a": IllegalType(), "b": IllegalType()},
+            UntypedPassthroughClass(a=IllegalType(), b=IllegalType()),
+            id="untyped_passthrough",
         ),
     ],
 )
