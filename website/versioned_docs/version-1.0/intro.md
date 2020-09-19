@@ -49,7 +49,7 @@ db:
 Application:
 ```python {4-6} title="my_app.py"
 import hydra
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 @hydra.main(config_name="config")
 def my_app(cfg : DictConfig) -> None:
