@@ -3,7 +3,7 @@ id: config_files
 title: Config files example
 sidebar_label: Config files example
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate_objects)
+[![Example applications](https://img.shields.io/badge/-Example%20applications-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/instantiate)
 
 This example demonstrates the use of config files to instantiated objects.
 

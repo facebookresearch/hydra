@@ -1,0 +1,10 @@
+tree:
+  value: 1
+  left:
+    value: 20
+    right:
+      value: 30
+      right:
+        value: 300
+      left:
+        value: 400

@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from omegaconf import MISSING
 
@@ -74,6 +74,11 @@ class Parameters:
     def __init__(self, params: List[float]):
         self.params = params
 
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, Parameters):
+            return self.params == other.params
+        return False
+
 
 @dataclass
 class Adam:
@@ -101,7 +106,7 @@ class ClassWithMissingModule:
 
 
 @dataclass
-class AdamConf(TargetConf):
+class AdamConf:
     _target_: str = "tests.Adam"
     lr: float = 0.001
     betas: Tuple[float, ...] = (0.9, 0.999)
@@ -126,3 +131,131 @@ class User:
 class UserGroup:
     name: str = MISSING
     users: List[User] = MISSING
+
+
+# RECURSIVE
+# Classes
+class Transform:
+    ...
+
+
+class CenterCrop(Transform):
+    def __init__(self, size: int):
+        self.size = size
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, type(self)):
+            return self.size == other.size
+        else:
+            return False
+
+
+class Rotation(Transform):
+    def __init__(self, degrees: int):
+        self.degrees = degrees
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, type(self)):
+            return self.degrees == other.degrees
+        else:
+            return False
+
+
+class Compose:
+    transforms: List[Transform]
+
+    def __init__(self, transforms: List[Transform]):
+        self.transforms = transforms
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, type(self)):
+            return self.transforms == other.transforms
+        else:
+            return False
+
+
+class Tree:
+    value: Any
+    # annotated any because of non recursive instantiation tests
+    left: Any = None
+    right: Any = None
+
+    def __init__(self, value: Any, left: Any = None, right: Any = None) -> None:
+        self.value = value
+        self.left = left
+        self.right = right
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, type(self)):
+            return (
+                self.value == other.value
+                and self.left == other.left
+                and self.right == other.right
+            )
+
+        else:
+            return False
+
+    def __repr__(self) -> str:
+        return f"value={self.value}, left={self.left}, right={self.right}"
+
+
+class Mapping:
+    dict: Optional[Dict[str, "Mapping"]] = None
+    value: Any = None
+
+    def __init__(
+        self, value: Any = None, dictionary: Optional[Dict[str, "Mapping"]] = None
+    ) -> None:
+        self.dictionary = dictionary
+        self.value = value
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, type(self)):
+            return self.dictionary == other.dictionary and self.value == other.value
+        else:
+            return False
+
+    def __repr__(self) -> str:
+        return f"dict={self.dict}"
+
+
+# Configs
+@dataclass
+class TransformConf:
+    ...
+
+
+@dataclass
+class CenterCropConf(TransformConf):
+    _target_: str = "tests.CenterCrop"
+    size: int = MISSING
+
+
+@dataclass
+class RotationConf(TransformConf):
+    _target_: str = "tests.Rotation"
+    degrees: int = MISSING
+
+
+@dataclass
+class ComposeConf:
+    _target_: str = "tests.Compose"
+    transforms: List[TransformConf] = MISSING
+
+
+@dataclass
+class TreeConf:
+    _target_: str = "tests.Tree"
+    left: Optional["TreeConf"] = None
+    right: Optional["TreeConf"] = None
+    value: Any = MISSING
+
+
+@dataclass
+class MappingConf:
+    _target_: str = "tests.Mapping"
+    dictionary: Optional[Dict[str, "MappingConf"]] = None
+
+    def __init__(self, dictionary: Optional[Dict[str, "MappingConf"]] = None):
+        self.dictionary = dictionary

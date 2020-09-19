@@ -4,15 +4,10 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
-from hydra._internal.utils import (
-    _call_callable,
-    _get_cls_name,
-    _instantiate_class,
-    _locate,
-)
+from hydra._internal.utils import _get_cls_name, _instantiate_or_call, _locate
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
 from hydra.types import TargetConf
@@ -20,13 +15,21 @@ from hydra.types import TargetConf
 log = logging.getLogger(__name__)
 
 
-def call(config: Any, *args: Any, **kwargs: Any) -> Any:
+def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
-    :param config: An object describing what to call and what params to use.
-                   Must have a _target_ field.
-    :param args: optional positional parameters pass-through
-    :param kwargs: optional named parameters pass-through
-    :return: the return value from the specified class or method
+    :param config: An config object describing what to call and what params to use.
+                   In addition to the parameters, the config must contain:
+                   _target_ : target class or callable name (str)
+                   _recursive_: Construct nested objects as well (bool).
+                                True by default.
+                                may be overridden via a _recursive_ key in
+                                the kwargs
+    :param args: Optional positional parameters pass-through
+    :param kwargs: Optional named parameters to override
+                   parameters in the config object. Parameters not present
+                   in the config objects are being passed as is to the target.
+    :return: if _target_ is a class name: the instantiated object
+             if _target_ is a callable: the return value of the call
     """
 
     if OmegaConf.is_none(config):
@@ -47,31 +50,31 @@ def call(config: Any, *args: Any, **kwargs: Any) -> Any:
         raise HydraException(f"Unsupported config type : {type(config).__name__}")
 
     # make a copy to ensure we do not change the provided object
-    config_copy = OmegaConf.structured(config)
+    config_copy = OmegaConf.structured(config, flags={"allow_objects": True})
     if OmegaConf.is_config(config):
         config_copy._set_parent(config._get_parent())
     config = config_copy
 
     cls = "<unknown>"
     try:
-        assert isinstance(config, DictConfig)
+        assert OmegaConf.is_config(config)
         OmegaConf.set_readonly(config, False)
         OmegaConf.set_struct(config, False)
+        config._set_flag("allow_objects", True)
         cls = _get_cls_name(config)
         type_or_callable = _locate(cls)
-        if isinstance(type_or_callable, type):
-            return _instantiate_class(type_or_callable, config, *args, **kwargs)
-        else:
-            assert callable(type_or_callable)
-            return _call_callable(type_or_callable, config, *args, **kwargs)
-    except InstantiationException as e:
-        raise e
+        return _instantiate_or_call(
+            type_or_callable,
+            config,
+            *args,
+            **kwargs,
+        )
     except Exception as e:
-        raise HydraException(f"Error calling '{cls}' : {e}") from e
+        raise type(e)(f"Error instantiating/calling '{cls}' : {e}")
 
 
-# Alias for call
-instantiate = call
+# Alias for instantiate
+call = instantiate
 
 
 def get_class(path: str) -> type:

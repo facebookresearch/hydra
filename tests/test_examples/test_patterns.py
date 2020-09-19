@@ -1,14 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-from pathlib import Path
-from typing import Any, List
-
-import pytest
+from typing import Any
 
 from hydra.test_utils.test_utils import (
     TTaskRunner,
     chdir_hydra_root,
-    get_run_output,
     run_with_error,
     verify_dir_outputs,
 )
@@ -32,38 +28,6 @@ def test_specializing_config_example(
             model=dict(num_layers=5, type="alexnet"),
         )
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "overrides,output",
-    [
-        ([], "MySQL connecting to localhost"),
-        (["db=postgresql"], "PostgreSQL connecting to localhost"),
-    ],
-)
-def test_instantiate_objects_example(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
-) -> None:
-    monkeypatch.chdir("examples/patterns/instantiate_objects/")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
-    assert result == output
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "overrides,output",
-    [
-        ([], "MySQL connecting to localhost"),
-        (["db=postgresql"], "PostgreSQL connecting to localhost"),
-    ],
-)
-def test_instantiate_structured_config_example(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
-) -> None:
-    monkeypatch.chdir("examples/patterns/instantiate_structured_config/")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
-    assert result == output
 
 
 def test_write_protect_config_node(tmpdir: Any) -> None:

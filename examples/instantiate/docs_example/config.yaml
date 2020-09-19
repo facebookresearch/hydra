@@ -1,0 +1,10 @@
+trainer:
+  _target_: my_app.Trainer
+  optimizer:
+    _target_: my_app.Optimizer
+    algo: SGD
+    lr: 0.01
+  dataset:
+    _target_: my_app.Dataset
+    name: Imagenet
+    path: /datasets/imagenet
