@@ -10,6 +10,8 @@ from typing import List
 import nox
 from nox.logger import logger
 
+from tools.plugin_tests.utils import list_plugins_in_dir
+
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
@@ -123,13 +125,8 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     as well as the user plugins selection (via the PLUGINS environment variable).
     """
     assert session.python is not None, "Session python version is not specified"
-    blacklist = [".isort.cfg", "examples"]
-    plugins = [
-        {"dir_name": x, "path": x}
-        for x in sorted(os.listdir(os.path.join(BASE, directory)))
-        if x not in blacklist
-    ]
 
+    plugins = list_plugins_in_dir(directory)
     ret = []
     skipped = []
     for plugin in plugins:

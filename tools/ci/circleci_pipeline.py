@@ -10,6 +10,8 @@ from typing import List
 
 import requests
 
+from tools.plugin_tests.utils import list_plugins_in_dir
+
 git_repo_pattern = (
     r"((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?"
 )
@@ -23,13 +25,7 @@ def chunk(it, size):
 
 
 def get_available_plugin() -> List[str]:
-    blacklist = [".isort.cfg"]
-    ps = [
-        {"dir_name": x, "path": x}
-        for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
-        if x not in blacklist
-    ]
-    plugins = [p["path"] for p in ps]
+    plugins = [p["path"] for p in list_plugins_in_dir("plugins")]
     random.shuffle(plugins)
     return [",".join(w) for w in list(chunk(plugins, 4))]
 
