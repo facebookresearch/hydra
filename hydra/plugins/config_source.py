@@ -1,17 +1,15 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import warnings
-
 import re
 
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import warnings
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict
-
-from hydra.errors import HydraException
-from omegaconf import Container, OmegaConf
+from typing import Dict, List, Optional
 
 from hydra.core.object_type import ObjectType
+from hydra.errors import HydraException
 from hydra.plugins.plugin import Plugin
+from omegaconf import Container, OmegaConf
 
 
 @dataclass

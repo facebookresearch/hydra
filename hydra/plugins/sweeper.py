@@ -3,13 +3,13 @@
 Sweeper plugin interface
 """
 from abc import abstractmethod
-from typing import Any, List, Sequence, Optional
+from typing import Any, List, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
-from .launcher import Launcher
 
+from .launcher import Launcher
 from .plugin import Plugin
 
 

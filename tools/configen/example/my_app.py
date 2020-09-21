@@ -1,14 +1,14 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from omegaconf import DictConfig
-
 import hydra
-
-# Underlying objects
-from configen.samples.my_module import Admin, User
 
 # Generated config dataclasses
 from example.config.configen.samples.my_module import AdminConf, UserConf
 from hydra.core.config_store import ConfigStore
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from omegaconf import DictConfig
+
+# Underlying objects
+from configen.samples.my_module import Admin, User
 
 ConfigStore.instance().store(
     name="config",

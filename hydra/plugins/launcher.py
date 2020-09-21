@@ -5,11 +5,10 @@ Launcher plugin interface
 from abc import abstractmethod
 from typing import Sequence
 
-from omegaconf import DictConfig
-
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.utils import JobReturn
 from hydra.types import TaskFunction
+from omegaconf import DictConfig
 
 from .plugin import Plugin
 

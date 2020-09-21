@@ -1,8 +1,8 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-
 import itertools
 import logging
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 

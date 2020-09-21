@@ -3,25 +3,23 @@
 # TODO: Test with /miniconda3/envs/hydra36/bin/python , seems to be running python for some reason.
 # TODO: Add tests for completion with +prefix (should suggest config groups that are not listed)
 # TODO: Test completion when defaults has a missing mandatory item
-
-
 import os
 import re
 import sys
 from abc import abstractmethod
-from omegaconf import (
-    Container,
-    DictConfig,
-    MissingMandatoryValue,
-    OmegaConf,
-    ListConfig,
-)
 from typing import Any, List, Optional, Tuple, Union
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
 from hydra.types import RunMode
+from omegaconf import (
+    Container,
+    DictConfig,
+    ListConfig,
+    MissingMandatoryValue,
+    OmegaConf,
+)
 
 
 class CompletionPlugin(Plugin):

@@ -1,7 +1,7 @@
+import logging
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass
-
-import logging
 from pathlib import Path
 from typing import Optional, Sequence
 
