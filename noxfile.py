@@ -217,6 +217,7 @@ def lint(session):
         ".git",
         "website",
         "plugins",
+        "tools",
         ".nox",
         "hydra/grammar/gen",
         "tools/configen/example/gen",
