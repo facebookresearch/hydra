@@ -5,15 +5,7 @@ import os
 import platform
 from dataclasses import dataclass
 from pathlib import Path
-<<<<<<< HEAD
-<<<<<<< HEAD
 from typing import List
-=======
-from typing import List, Union, Optional
->>>>>>> separate ray launcher into its own session
-=======
-from typing import List, Union
->>>>>>> commit
 
 import nox
 from nox.logger import logger
@@ -126,62 +118,19 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 def select_plugins(session, directory: str) -> List[Plugin]:
-=======
-def select_plugins(session, exclude: List[str] = [], plugin_filter: List[str] = []) -> List[Plugin]:
->>>>>>> separate ray launcher into its own session
-=======
-def select_plugins(session, exclude=None, plugin_filter=None) -> List[Plugin]:
->>>>>>> commit
     """
     Select all plugins that should be tested in this session.
     Considers the current Python version and operating systems against the supported ones,
     as well as the user plugins selection (via the PLUGINS environment variable).
-
     """
-<<<<<<< HEAD
-=======
-
-    if plugin_filter is None:
-        plugin_filter = []
-    if exclude is None:
-        exclude = []
-
->>>>>>> commit
     assert session.python is not None, "Session python version is not specified"
     blacklist = [".isort.cfg", "examples"]
     plugins = [
         {"dir_name": x, "path": x}
-<<<<<<< HEAD
-<<<<<<< HEAD
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
-=======
-        # run hydra_ray_launcher first
-        # ray launcher tests involves pickle locally and unpickle on remote servers
-        # run ray launcher first so we test with a clean local env with no other plugins installed
-        for x in sorted(
-            os.listdir(os.path.join(BASE, "plugins")),
-            key=lambda x: 0 if x == "hydra_ray_launcher" else 1,
-        )
-=======
-        for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
->>>>>>> separate ray launcher into its own session
-        if x != "examples"
-        if x not in blacklist
-        if x not in exclude
-    ]
-
-    available_plugins = plugins + example_plugins
->>>>>>> hydra ray launcher
-
-    if plugin_filter:
-        available_plugins = filter(
-            lambda p: p["dir_name"] in plugin_filter, available_plugins
-        )
 
     ret = []
     skipped = []
@@ -389,9 +338,14 @@ def _get_standalone_apps_dirs():
 
 
 @nox.session(python=PYTHON_VERSIONS)
-def test_core(session):
+@nox.parametrize(
+    "install_cmd",
+    (INSTALL_COMMAND,),
+    ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
+)
+def test_core(session, install_cmd):
     _upgrade_basic(session)
-    install_hydra(session, INSTALL_COMMAND)
+    install_hydra(session, install_cmd)
     session.install("pytest")
 
     if not SKIP_CORE_TESTS:
@@ -403,25 +357,29 @@ def test_core(session):
     session.log("Testing standalone apps")
     for subdir in apps:
         session.chdir(subdir)
-        session.run(*INSTALL_COMMAND, ".", silent=SILENT)
+        session.run(*install_cmd, ".", silent=SILENT)
         run_pytest(session, ".")
 
     session.chdir(BASE)
 
     test_plugins_in_directory(
         session,
-        install_cmd=INSTALL_COMMAND,
+        install_cmd=install_cmd,
         directory="examples/plugins",
         test_hydra_core=False,
     )
 
 
 @nox.session(python=PYTHON_VERSIONS)
-<<<<<<< HEAD
-def test_plugins(session):
+@nox.parametrize(
+    "install_cmd",
+    (INSTALL_COMMAND,),
+    ids=[" ".join(x) for x in (INSTALL_COMMAND,)],
+)
+def test_plugins(session, install_cmd):
     test_plugins_in_directory(
         session=session,
-        install_cmd=INSTALL_COMMAND,
+        install_cmd=install_cmd,
         directory="plugins",
         test_hydra_core=True,
     )
@@ -433,75 +391,19 @@ def test_plugins_in_directory(
     _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
-<<<<<<< HEAD
     selected_plugin = select_plugins(session=session, directory=directory)
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
-=======
-    selected_plugin = select_plugins(session)
-=======
-@nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
-)
-@nox.parametrize("exclude", [["hydra_ray_launcher"]])
-def test_plugins(session, install_cmd, exclude):
-    run_plugin_tests(session, install_cmd, exclude=exclude)
-
-
-@nox.session(python=PYTHON_VERSIONS)
-@nox.parametrize(
-    "install_cmd",
-    PLUGINS_INSTALL_COMMANDS,
-    ids=[" ".join(x) for x in PLUGINS_INSTALL_COMMANDS],
-)
-def test_ray_plugin(session, install_cmd):
-    run_plugin_tests(
-        session=session,
-        install_cmd=install_cmd,
-        plugin_filter=["hydra_ray_launcher"],
-        pytest_cmd=["pytest", "-s", "."],
-    )
-
-
-def run_plugin_tests(
-    session, install_cmd, exclude=[], plugin_filter=[], pytest_cmd=None
-):
-    _upgrade_basic(session)
-    session.install("pytest")
-    install_hydra(session, install_cmd)
-<<<<<<< HEAD
-    selected_plugin = select_plugins(session, exclude=exclude, plugin_filter=plugin_filter)
->>>>>>> separate ray launcher into its own session
-=======
-    selected_plugin = select_plugins(
-        session, exclude=exclude, plugin_filter=plugin_filter
-    )
->>>>>>> commit
-
-    for plugin in selected_plugin:
-        # install plugin
-        cmd = list(install_cmd) + [os.path.join("plugins", plugin.path)]
->>>>>>> hydra ray launcher
         session.run(*cmd, silent=SILENT)
         if not SILENT:
             session.run("pipdeptree", "-p", plugin.name)
 
-        # test can import plugins
-        session.run("python", "-c", f"import {plugin.module}")
-
-        # test plugin
-        session.chdir(os.path.join(BASE, "plugins", plugin.path))
-        if pytest_cmd:
-
-            session.run(*pytest_cmd, silent=SILENT)
-        else:
-            run_pytest(session)
-        session.chdir(BASE)
-
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)
+
+    # Test that we can import all installed plugins
+    for plugin in selected_plugin:
+        session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
     if test_hydra_core:
@@ -510,15 +412,12 @@ def run_plugin_tests(
         else:
             session.log("Skipping Hydra core tests")
 
-<<<<<<< HEAD
     # Run tests for all installed plugins
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
         session.chdir(os.path.join(BASE, directory, plugin.path))
         run_pytest(session)
 
-=======
->>>>>>> hydra ray launcher
 
 @nox.session(python="3.8")
 def coverage(session):
@@ -533,7 +432,6 @@ def coverage(session):
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
-<<<<<<< HEAD
     for directory in ["plugins", "examples/plugins"]:
         selected_plugins = select_plugins(session=session, directory=directory)
         for plugin in selected_plugins:
@@ -552,22 +450,6 @@ def coverage(session):
             cov_args.extend(pytest_args())
             session.run(*cov_args, silent=SILENT, env=coverage_env)
             session.chdir(BASE)
-=======
-    selected_plugins = select_plugins(session)
-    for plugin in selected_plugins:
-        session.run(
-            "pip", "install", "-e", os.path.join("plugins", plugin.path), silent=SILENT,
-        )
-
-    session.run("coverage", "erase", env=coverage_env)
-    # run plugin coverage
-    for plugin in selected_plugins:
-        session.chdir(os.path.join("plugins", plugin.path))
-        cov_args = ["coverage", "run", "--append", "-m"]
-        cov_args.extend(pytest_args())
-        session.run(*cov_args, silent=SILENT, env=coverage_env)
-        session.chdir(BASE)
->>>>>>> hydra ray launcher
 
     # run hydra-core coverage
     session.run(

@@ -1,4 +1,5 @@
 # # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import random
 import string
 import sys
@@ -31,6 +32,8 @@ cluster_name = "IntegrationTest-" + "".join(
 )
 sweep_dir = "tmp_pytest_dir"
 win_msg = "Ray doesn't support Windows."
+instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
+plugins = os.environ.get("PLUGINS", "ALL").split(",")
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
@@ -43,6 +46,7 @@ def test_discovery() -> None:
 
 @pytest.fixture(scope="module")
 def manage_cluster() -> str:
+    assert instance_role != "", "Please set INSTANCE_ROLE for the test."
     # test only need cluster name and provider info for connection.
     connect_yaml = f"""
 cluster_name: {cluster_name}
@@ -58,6 +62,8 @@ auth:
 head_node:
   InstanceType: m5.large
   ImageId: ami-008d8ed4bd7dc2485
+  IamInstanceProfile: 
+      Arn: {instance_role}
     """
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
         with open(f.name, "w") as file:

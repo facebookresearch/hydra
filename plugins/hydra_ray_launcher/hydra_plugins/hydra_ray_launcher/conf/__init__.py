@@ -131,10 +131,6 @@ class RayClusterConf:
         default_factory=lambda: {
             "InstanceType": "m5.large",
             "ImageId": "ami-008d8ed4bd7dc2485",
-            "IamInstanceProfile":
-                {
-                    "Arn": "arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1"
-                }
         }
     )
 
