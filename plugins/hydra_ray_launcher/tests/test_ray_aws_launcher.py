@@ -1,11 +1,11 @@
-# # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import random
 import string
 import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import pytest
 from hydra.core.plugins import Plugins
@@ -33,7 +33,19 @@ cluster_name = "IntegrationTest-" + "".join(
 sweep_dir = "tmp_pytest_dir"
 win_msg = "Ray doesn't support Windows."
 instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
-plugins = os.environ.get("PLUGINS", "ALL").split(",")
+
+temp_local_wheels_dir = ""
+
+def get_all_plugins() -> List[str]:
+    plugins = os.environ.get( "PLUGINS", "ALL" ).split( "," )
+    if "ALL" in plugins:
+
+
+def build_wheel(plugin: str) -> str:
+
+
+def upload_wheel() -> str:
+
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
