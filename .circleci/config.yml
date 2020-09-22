@@ -110,7 +110,7 @@ jobs:
             conda activate hydra
             pip install nox
             pip install dataclasses
-            nox -s lint test_tools test_core test_jupyter_notebooks coverage -ts
+            nox -s lint test_tools test_core test_jupyter_notebooks -ts
 
 
   test_linux:
@@ -128,7 +128,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox
             pip install dataclasses
-            nox -s lint test_tools test_core test_jupyter_notebooks coverage -ts
+            nox -s lint test_tools test_core test_jupyter_notebooks -ts
 
 
   test_win:
@@ -146,7 +146,7 @@ jobs:
             $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
-            nox -s lint test_tools test_core test_jupyter_notebooks coverage -ts
+            nox -s lint test_tools test_core test_jupyter_notebooks -ts
             exit $LASTEXITCODE
 
   trigger_plugin_piplines:
