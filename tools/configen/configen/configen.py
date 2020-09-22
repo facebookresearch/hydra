@@ -7,6 +7,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Type
 
+import hydra
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
 from omegaconf._utils import (
@@ -19,7 +20,6 @@ from omegaconf._utils import (
     is_structured_config,
 )
 
-import hydra
 from configen.config import Config, ConfigenConf, ModuleConf
 from configen.utils import (
     collect_imports,

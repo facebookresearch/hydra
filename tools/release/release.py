@@ -9,13 +9,12 @@ from functools import lru_cache
 from pathlib import Path
 from typing import List, Tuple
 
-import requests
-from omegaconf import MISSING, DictConfig, OmegaConf
-from packaging.version import Version, parse
-
 import hydra
+import requests
 from hydra.core.config_store import ConfigStore
 from hydra.test_utils.test_utils import find_parent_dir_containing, get_run_output
+from omegaconf import MISSING, DictConfig, OmegaConf
+from packaging.version import Version, parse
 
 log = logging.getLogger(__name__)
 HYDRA_ROOT = find_parent_dir_containing(target="ATTRIBUTION")
