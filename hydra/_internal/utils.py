@@ -595,7 +595,7 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
     with read_write(params):
         params.merge_with(config_overrides)
 
-    for k, v in params.items_ex(resolve=False):
+    for k, v in params.items_ex(resolve=True):
         if k == "_target_":
             continue
         final_kwargs[k] = v
