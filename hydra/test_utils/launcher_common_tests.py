@@ -244,33 +244,6 @@ class LauncherTestSuite:
 
 @pytest.mark.usefixtures("hydra_restore_singletons")
 class BatchedSweeperTestSuite:
-    def test_multirun_float_parsing(
-        self,
-        hydra_sweep_runner: TSweepRunner,
-        launcher_name: str,
-        overrides: List[str],
-        tmpdir: Path,
-    ) -> None:
-        job_overrides = ["+x=1.0e-5"]
-        hydra_overrides = ["hydra/launcher=" + launcher_name]
-
-        def task_func(cfg: DictConfig) -> Any:
-            assert type(cfg.x) == float
-
-        overrides = overrides + job_overrides
-        overrides.extend(hydra_overrides)
-        sweep = hydra_sweep_runner(
-            calling_file=None,
-            calling_module="hydra.test_utils.a_module",
-            task_function=task_func,
-            config_path="configs",
-            config_name="compose.yaml",
-            overrides=overrides,
-            temp_dir=tmpdir,
-        )
-        with sweep:
-            pass
-
     def test_sweep_2_jobs_2_batches(
         self,
         hydra_sweep_runner: TSweepRunner,
