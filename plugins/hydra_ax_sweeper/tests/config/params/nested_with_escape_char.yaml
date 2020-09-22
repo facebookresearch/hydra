@@ -1,8 +1,8 @@
 # @package hydra.sweeper.ax_config.params
-quadratic_x\_arg:
+quadratic.x_arg:
   type: range
   bounds: [-1, 1]
 
-quadratic_y\_arg:
+quadratic.y_arg:
   type: range
   bounds: [-1, 1]
