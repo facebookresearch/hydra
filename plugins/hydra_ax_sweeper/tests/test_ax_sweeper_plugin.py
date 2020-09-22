@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import math
 import os
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any, List
 
@@ -10,7 +8,7 @@ import pytest
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
@@ -212,7 +210,6 @@ def test_configuration_set_via_cmd_and_default_config(
 )
 def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     cmd = [
-        sys.executable,
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
@@ -220,8 +217,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    print(" ".join(cmd))
-    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    result, _ = get_run_output(cmd)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
@@ -252,13 +248,12 @@ def test_jobs_using_choice_between_lists(
     best_value: float,
 ) -> None:
     cmd = [
-        sys.executable,
         "tests/apps/polynomial_with_list_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    result, _ = get_run_output(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -290,15 +285,12 @@ def test_jobs_using_choice_between_dicts(
     best_value: float,
 ) -> None:
     cmd = [
-        sys.executable,
         "tests/apps/polynomial_with_dict_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    print(" ".join(cmd))
-    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
-    print(result)
+    result, _ = get_run_output(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -306,7 +298,6 @@ def test_jobs_using_choice_between_dicts(
 
 def test_example_app(tmpdir: Path) -> None:
     cmd = [
-        sys.executable,
         "example/banana.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
@@ -314,7 +305,7 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result = subprocess.check_output(cmd).decode("utf-8").rstrip()
+    result, _ = get_run_output(cmd)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result
 
