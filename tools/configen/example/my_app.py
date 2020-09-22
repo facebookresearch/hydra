@@ -1,10 +1,9 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
 
 # Generated config dataclasses
 from example.config.configen.samples.my_module import AdminConf, UserConf
 from hydra.core.config_store import ConfigStore
-
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from omegaconf import DictConfig
 
 # Underlying objects
