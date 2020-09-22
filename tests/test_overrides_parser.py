@@ -536,6 +536,7 @@ def test_key(value: str, expected: Any) -> None:
         # float
         pytest.param("0.0", 0.0, id="primitive:float:zero"),
         pytest.param("0.51", 0.51, id="primitive:float:positive"),
+        pytest.param("1e-05", 1e-05, id="primitive:float:small"),
         pytest.param("-3.14", -3.14, id="primitive:float:negative"),
         pytest.param("3.1_4", 3.14, id="primitive:float:underscore"),
         pytest.param("10e0", 10.0, id="primitive:float:exp"),
