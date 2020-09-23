@@ -9,7 +9,7 @@ To complete paths, start them with `/` or `./`.
 
 See this short video demonstration of tab completion:
 
-import Script from '../../../../../src/components/Script.jsx';
+import Script from '@site/src/components/Script.jsx';
 
 <Script id="asciicast-272604" src="https://asciinema.org/a/272604.js" async></Script>
 
