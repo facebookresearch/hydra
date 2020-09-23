@@ -22,7 +22,7 @@ def my_app(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     my_app()
 ```
-In this example, Hydra creates an empty `cfg` object and passes it to the function annotated with `@hydra.main`.
+In this example, Hydra creates an empty `cfg` object and pass it to the function annotated with `@hydra.main`.
 
 You can add config values via the command line. The `+` indicates that the field is new.
 

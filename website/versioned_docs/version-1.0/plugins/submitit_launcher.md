@@ -104,3 +104,4 @@ $ cat 0/my_app.log
 [2020-05-28 15:05:23,511][__main__][INFO] - Process ID 15887 executing task 1 ...
 [2020-05-28 15:05:24,514][submitit][INFO] - Job completed successfully
 ```
+

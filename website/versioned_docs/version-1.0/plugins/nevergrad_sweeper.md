@@ -140,3 +140,4 @@ or a combination of both (eg.: `batch_size=log:int:4:1024`)
   Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
+

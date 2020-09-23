@@ -29,14 +29,18 @@ Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_langua
 Below are the parser rules from grammar.
 You can see the full grammar on GitHub
 ([lexer](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideLexer.g4) and
-[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4))
+[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4)).
 
 ```antlr4 title="OverrideParser.g4"
+// High-level command-line override.
+
 override: (
       key EQUAL value?                           // key=value, key= (for empty value)
     | TILDE key (EQUAL value?)?                  // ~key | ~key=value
     | PLUS key EQUAL value?                      // +key= | +key=value
 ) EOF;
+
+// Keys.
 
 key :
     packageOrGroup                               // key
@@ -47,6 +51,8 @@ key :
 packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
 package: (ID | DOT_PATH);                        // db, hydra.launcher
 
+// Elements (that may be swept over).
+
 value: element | simpleChoiceSweep;
 
 element:
@@ -56,12 +62,25 @@ element:
     | function
 ;
 
-argName: ID EQUAL;
-function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
-
 simpleChoiceSweep:
       element (COMMA element)+                   // value1,value2,value3
 ;
+
+// Functions.
+
+argName: ID EQUAL;
+function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
+
+// Data structures.
+
+listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
+    (element(COMMA element)*)?
+BRACKET_CLOSE;
+
+dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
+dictKeyValuePair: ID COLON element;
+
+// Primitive types.
 
 primitive:
       QUOTED_VALUE                               // 'hello world', "hello world"
@@ -70,20 +89,12 @@ primitive:
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
-        | DOT_PATH                               // foo.bar
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
-        | UNQUOTED_CHAR                          // /, -, \, +, ., $, *
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *
         | COLON                                  // :
+        | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
     )+;
-
-listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
-    (element(COMMA element)*)?
-BRACKET_CLOSE;
-
-dictValue: BRACE_OPEN
-    (ID COLON element (COMMA ID COLON element)*)?  // {}, {a:10,b:20}
-BRACE_CLOSE;
 ```
 
 ## Elements
@@ -142,6 +153,16 @@ Note that trailing and leading whitespace are ignored, the above is equivalent t
 $ python my_app.py 'msg=    hello world    '
 ```
 
+### Escaped characters in unquoted values
+Some otherwise special characters may be included in unquoted values by escaping them with a `\`.
+These characters are: `\()[]{}:=, \t` (the last two ones being the whitespace and tab characters).
+
+As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
+
+```shell
+$ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
+```
+
 ### Primitives
 - `id` : oompa10, loompa_12
 - `null`: null
@@ -153,21 +174,54 @@ $ python my_app.py 'msg=    hello world    '
 
 Constants (null, true, false, inf, nan) are case insensitive.
 
-**IMPORTANT** Always single-quote interpolations in the shell.
+:::important
+Always single-quote interpolations in the shell.
+:::
+
+## Dictionaries and Lists
 
 ### Lists
 ```python
 foo=[1,2,3]
 nested=[a,[b,[c]]]
 ```
-**IMPORTANT** Always single-quote overrides that contains lists in the shell.
 
 ### Dictionaries
 ```python
 foo={a:10,b:20}
 nested={a:10,b:{c:30,d:40}}
 ```
-**IMPORTANT** Always single-quote overrides that contains dicts in the shell.
+
+Dictionaries are merged, not assigned. The following example illustrates the point:
+<div className="row">
+<div className="col col--6">
+
+```yaml title="Input config"
+db:
+  driver: mysql
+  user: ???
+  pass: ???
+```
+
+</div>
+
+<div className="col  col--6">
+
+
+```yaml title="db={user:root,pass:1234}"
+db:
+  driver: mysql
+  user: root
+  pass: 1234
+```
+
+</div>
+</div>
+
+
+:::important
+Always single-quote overrides that contains dicts and lists in the shell.
+:::
 
 ### Sweeper syntax
 A choice sweep is comma separated list with two or more elements:
@@ -179,7 +233,10 @@ key={a:10, b:20},{c:30,d:40}  # And dictionaries: ChoiceSweep({a:10, b:20}, {c:3
 ```
 More sweeping options are described in the [Extended Grammar page](extended).
 
-**IMPORTANT** You may need to quote your choice sweep in the shell
+:::important
+You may need to quote your choice sweep in the shell.
+:::
+
 
 ### Functions
 Hydra supports several functions in the command line.
