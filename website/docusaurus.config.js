@@ -23,6 +23,11 @@ module.exports = {
             indexName: 'hydra',
             algoliaOptions: {},
         },
+        announcementBar: {
+          id: 'supportus',
+          content:
+            '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
+        },        
 		prism: {
 		  additionalLanguages: ['antlr4'],
 		},
