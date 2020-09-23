@@ -1,1 +1,0 @@
-Fix float parsing for values where the exponent starts with 0 (e.g 1e-05)
