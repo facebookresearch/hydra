@@ -58,7 +58,7 @@ AxSweeper is launching 5 jobs
 In this example, we set the range of `x` parameter as an integer in the interval `[-5, 5]` and the range of `y` parameter as a float in the interval `[-5, 10.1]`. Note that in the case of `x`, we used `int(interval(...))` and hence only integers are sampled. In the case of `y`, we used `interval(...)` which refers to a floating-point interval. Other supported formats are fixed parameters (e.g.` banana.x=5.0`), choice parameters (eg `banana.x=choice(1,2,3)`) and range (eg `banana.x=range(1, 10)`). Note that `interval`, `choice` etc. are functions provided by Hydra, and you can read more about them [here](https://hydra.cc/docs/next/advanced/override_grammar/extended/). An important thing to remember is, use [`interval`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#interval-sweep) when we want Ax to sample values from an interval. [`RangeParameter`(https://ax.dev/api/ax.html#ax.RangeParameter) in Ax is equivalent to `interval` in Hydra. Remember to use `int(interval(...))` if you want to sample only integer points from the interval. [`range`](https://hydra.cc/docs/next/advanced/override_grammar/extended/#range-sweep) can be used as an alternate way of specifying choice parameters. For example `python example/banana.py -m banana.x=choice(1, 2, 3, 4)` is equivalent to `python example/banana.py -m banana.x=range(1, 5)`.
 
 
-The values of the `x` and `y` parameters can also be set using the config file `plugins/hydra_ax_sweeper/example/conf/config.yaml`. For instance, the configuration corresponding to the parameter `x` is as follows:
+The values of the `x` and `y` parameters can also be set using the config file `plugins/hydra_ax_sweeper/example/conf/config.yaml`. For instance, the configuration corresponding to the commandline arguments is as follows:
 
 ```
 banana_x:
@@ -70,7 +70,7 @@ banana_y:
  bounds: [-5, 10.1]
 ```
 
-The `x` parameter takes on a range of integer values, between `-5` to `5`. The `y` parameter takes on a range of floating-point values between `-5` to `10.1`. In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
+In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
 
 * `name` - Name of the parameter. It is of type string.
 * `type` - Type of the parameter. It can take the following values: `range`, `fixed`, or `choice`.
@@ -80,9 +80,8 @@ The `x` parameter takes on a range of integer values, between `-5` to `5`. The `
 
 Note that if you want to sample integers in the range `-5` to `5`, you need to specify the range as `int(interval(-5, 5))` (in the command line) or `[-5, 5]` (in config). If you want to sample floats in range `-5` to `5`, you need to specify the range as `interval(-5, 5)` (in the command line) or `[-5.0, 5.0]` (in config).
 
-The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. The most important parameters are listed below:
+The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. You can discover the Ax Sweeper parameters with:
 
-You can discover the Ax Sweeper parameters with:
 ```yaml title="$ python your_app.py hydra/sweeper=ax --cfg hydra -p hydra.sweeper"
 # @package hydra.sweeper
 _target_: hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper

@@ -103,9 +103,9 @@ def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x"], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], -1.0, abs_tol=1e-4)
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters.quadratic_x, 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters.quadratic_y, -1.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
@@ -128,9 +128,9 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], 2.0, abs_tol=1e-4)
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters.quadratic_x, -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters.quadratic_y, 2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -153,12 +153,9 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         assert isinstance(returns, DictConfig)
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
-        best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], 1.0, abs_tol=1e-4)
-
-        assert math.isclose(best_parameters["quadratic_x"], -2, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y"], 1, abs_tol=1e-4)
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters.quadratic_x, -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters.quadratic_y, 1.0, abs_tol=1e-4)
 
 
 def test_configuration_set_via_cmd_and_default_config(
@@ -187,7 +184,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert sweep.returns is None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
-        best_parameters = returns["ax"]
+        best_parameters = returns.ax
         assert "quadratic_x" in best_parameters
         assert "quadratic_y" in best_parameters
 
@@ -259,20 +256,19 @@ def test_jobs_using_choice_between_lists(
     assert f"New best value: {best_value}" in result
 
 
-@pytest.mark.xfail  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
-            "polynomial.coefficients=choice({x:-1, y:0, z:1},{x:2, y:3, z:4},{x:5, y:6, z:7}",
-            "choice=['[x:-1,y:0,z:1]', '[x:2,y:3,z:4]', '[x:5,y:6,z:7]']",
-            "'[-1,0,1]'",
+            "+polynomial.coefficients=choice({x:-1, y:0, z:1},{x:2, y:3, z:4},{x:5, y:6, z:7})",
+            "choice=['{x:-1,y:0,z:1}', '{x:2,y:3,z:4}', '{x:5,y:6,z:7}']",
+            "'{x:-1,y:0,z:1}'",
             101.0,
         ),
         (
-            "polynomial.coefficients=choice({x:8, y:12, z:11},{x:-1, y:-1, z:1000}, {x:-2, y:4, z:7})",
-            "choice=['[8,12,11]', '[-1,-1,1000]', '[-2,4,7]']",
-            "'[-2,4,7]'",
+            "+polynomial.coefficients=choice({x:8, y:12, z:11},{x:-1, y:-1, z:1000}, {x:-2, y:4, z:7})",
+            "choice=['{x:8,y:12,z:11}', '{x:-1,y:-1,z:1000}', '{x:-2,y:4,z:7}']",
+            "'{x:-2,y:4,z:7}'}",
             447,
         ),
     ],
@@ -292,7 +288,7 @@ def test_jobs_using_choice_between_dicts(
     ] + [cmd_arg]
     result, _ = get_run_output(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
-    assert f"'polynomial.coefficients': {best_coefficients}" in result
+    assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
 
 
@@ -334,11 +330,11 @@ def test_jobs_configured_via_nested_config(
         assert sweep.returns is None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
-        assert returns["optimizer"] == "ax"
+        assert returns.optimizer == "ax"
         assert len(returns) == 2
-        best_parameters = returns["ax"]
-        assert math.isclose(best_parameters["quadratic_x_arg"], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic_y_arg"], -1.0, abs_tol=1e-4)
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters.quadratic_x_arg, 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters.quadratic_y_arg, -1.0, abs_tol=1e-4)
 
 
 @pytest.mark.parametrize(  # type: ignore
