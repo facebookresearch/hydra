@@ -70,7 +70,7 @@ banana_y:
  bounds: [-5, 10.1]
 ```
 
-In general, the plugin supports all the [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) that Ax supports. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
+In general, the plugin supports setting all the Ax supported [Parameters](https://ax.dev/api/core.html?highlight=range#module-ax.core.parameter) in the config. According to the [Ax documentation](https://ax.dev/api/service.html#ax.service.ax_client.AxClient.create_experiment), the required elements in the config are:
 
 * `name` - Name of the parameter. It is of type string.
 * `type` - Type of the parameter. It can take the following values: `range`, `fixed`, or `choice`.

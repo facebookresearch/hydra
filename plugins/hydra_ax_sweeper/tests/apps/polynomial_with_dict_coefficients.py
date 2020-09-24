@@ -7,12 +7,11 @@ from omegaconf import DictConfig
 
 @hydra.main(config_name="polynomial_with_dict_coefficients")
 def polynomial_with_dict_coefficients(cfg: DictConfig) -> Any:
-    c = cfg.polynomial.coefficients
-    x, y, z = c["x"], c["y"], c["z"]
+    coeff = cfg.polynomial.coefficients
     a = 100
     b = 10
     c = 1
-    return a * (x ** 2) + b * y + c * z
+    return a * (coeff.x ** 2) + b * coeff.y + c * coeff.z
 
 
 if __name__ == "__main__":
