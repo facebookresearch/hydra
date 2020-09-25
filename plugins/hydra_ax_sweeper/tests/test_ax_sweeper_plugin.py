@@ -30,10 +30,6 @@ def quadratic(cfg: DictConfig) -> Any:
     return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
 
-def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
-    return 100 * (cfg.quadratic.x_arg ** 2) + 1 * cfg.quadratic.y_arg
-
-
 @pytest.mark.parametrize(  # type: ignore
     "n,expected",
     [
@@ -304,34 +300,3 @@ def test_example_app(tmpdir: Path) -> None:
     result, _ = get_run_output(cmd)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "overrides",
-    [[], ["quadratic.x_arg=int(interval(-1, 1))"]],
-)
-def test_jobs_configured_via_nested_config(
-    hydra_sweep_runner: TSweepRunner, overrides: List[str]
-) -> None:
-    sweep = hydra_sweep_runner(
-        calling_file="tests/test_ax_sweeper_plugin.py",
-        calling_module=None,
-        task_function=nested_quadratic_with_escape_char,
-        config_path="config",
-        config_name="config.yaml",
-        overrides=[
-            "hydra/launcher=basic",
-            "quadratic=nested_with_escape_char",
-            "params=nested_with_escape_char",
-        ]
-        + overrides,
-    )
-    with sweep:
-        assert sweep.returns is None
-        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
-        assert isinstance(returns, DictConfig)
-        assert returns.optimizer == "ax"
-        assert len(returns) == 2
-        best_parameters = returns.ax
-        assert math.isclose(best_parameters["quadratic.x_arg"], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y_arg"], -1.0, abs_tol=1e-4)
