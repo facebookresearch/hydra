@@ -30,10 +30,6 @@ def quadratic(cfg: DictConfig) -> Any:
     return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
 
-def nested_quadratic_with_escape_char(cfg: DictConfig) -> Any:
-    return 100 * (cfg.quadratic.x_arg ** 2) + 1 * cfg.quadratic.y_arg
-
-
 @pytest.mark.parametrize(  # type: ignore
     "n,expected",
     [
@@ -104,8 +100,8 @@ def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns.ax
-        assert math.isclose(best_parameters.quadratic_x, 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters.quadratic_y, -1.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
@@ -129,8 +125,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns.ax
-        assert math.isclose(best_parameters.quadratic_x, -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters.quadratic_y, 2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -154,8 +150,8 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns.ax
-        assert math.isclose(best_parameters.quadratic_x, -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters.quadratic_y, 1.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
 
 
 def test_configuration_set_via_cmd_and_default_config(
@@ -185,8 +181,8 @@ def test_configuration_set_via_cmd_and_default_config(
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
         best_parameters = returns.ax
-        assert "quadratic_x" in best_parameters
-        assert "quadratic_y" in best_parameters
+        assert "quadratic.x" in best_parameters
+        assert "quadratic.y" in best_parameters
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -304,52 +300,3 @@ def test_example_app(tmpdir: Path) -> None:
     result, _ = get_run_output(cmd)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "overrides",
-    [[], ["quadratic.x_arg=int(interval(-1, 1))"]],
-)
-def test_jobs_configured_via_nested_config(
-    hydra_sweep_runner: TSweepRunner, overrides: List[str]
-) -> None:
-    sweep = hydra_sweep_runner(
-        calling_file="tests/test_ax_sweeper_plugin.py",
-        calling_module=None,
-        task_function=nested_quadratic_with_escape_char,
-        config_path="config",
-        config_name="config.yaml",
-        overrides=[
-            "hydra/launcher=basic",
-            "quadratic=nested_with_escape_char",
-            "params=nested_with_escape_char",
-        ]
-        + overrides,
-    )
-    with sweep:
-        assert sweep.returns is None
-        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
-        assert isinstance(returns, DictConfig)
-        assert returns.optimizer == "ax"
-        assert len(returns) == 2
-        best_parameters = returns.ax
-        assert math.isclose(best_parameters.quadratic_x_arg, 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters.quadratic_y_arg, -1.0, abs_tol=1e-4)
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "inp, str_to_replace, str_to_replace_with, expected",
-    [
-        ("apple", ".", "_", "apple"),
-        ("a.pple", ".", "_", "a_pple"),
-        ("a.p.ple", ".", "_", "a_p_ple"),
-        (r"a\.pple", ".", "_", "a.pple"),
-        (r"a.p\.pl.e", ".", "_", "a_p.pl_e"),
-    ],
-)
-def test_process_key_method(
-    inp: str, str_to_replace: str, str_to_replace_with: str, expected: str
-) -> None:
-    from hydra_plugins.hydra_ax_sweeper._core import normalize_key
-
-    assert normalize_key(inp, str_to_replace, str_to_replace_with) == expected
