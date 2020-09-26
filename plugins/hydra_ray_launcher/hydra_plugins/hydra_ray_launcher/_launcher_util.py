@@ -66,6 +66,7 @@ def launch_job_on_ray(
 
 
 def _run_command(args: Any) -> Tuple[str, str]:
+    log.debug(f"Running commands: {args}")
     with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
         log.info(f"Running command: {args}")
         out, err = proc.communicate()
@@ -117,7 +118,12 @@ def ray_down(yaml_path: str) -> None:
 
 
 def ray_up(yaml_path: str) -> None:
-    _run_command(["ray", "up", "-y", yaml_path])
+    print(f"RAY UP : {yaml_path}")
+    out, err = _run_command(["ray", "up", "-y", yaml_path])
+    print("OUT")
+    print(out)
+    print("ERR")
+    print(err)
 
 
 def ray_exec(yaml_path: str, docker: bool, file_path: str, pickle_path: str) -> None:
@@ -158,7 +164,7 @@ def rsync(
     keypair = _get_pem(ray_cluster_cfg)
     remote_ip = _ray_get_head_ip(yaml_path)
     user = ray_cluster_cfg.auth.ssh_user
-    args = ["rsync", "--rsh", f"ssh -i {keypair}", "-avz"]
+    args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
 
     for i in include:
         args += [f"--include={i}"]

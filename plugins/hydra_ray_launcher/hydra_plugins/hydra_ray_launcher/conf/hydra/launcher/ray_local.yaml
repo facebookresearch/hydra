@@ -1,8 +1,6 @@
 # @package _group_
 
 # This yaml will be validated against RayLocalLauncherConf
-_target_: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
-params:
-  ray_init_cfg:
-    num_cpus: 1
-    num_gpus: 0
+ray_init_cfg:
+  num_cpus: 1
+  num_gpus: 0

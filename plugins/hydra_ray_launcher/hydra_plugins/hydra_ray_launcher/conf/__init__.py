@@ -4,21 +4,26 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
-from hydra.types import ObjectConf
+from hydra.types import ObjectConf, TargetConf
 from omegaconf import MISSING
 
 
+# @dataclass
+# class RayConf:
+#     ray_init_cfg: Dict[str, str] = field(default_factory=dict)
+#     ray_remote_cfg: Dict[str, Any] = field(
+#         default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
+#     )
+
+
 @dataclass
-class RayConf:
+class RayLocalLauncherConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher"
     ray_init_cfg: Dict[str, str] = field(default_factory=dict)
     ray_remote_cfg: Dict[str, Any] = field(
         default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
     )
 
-
-@dataclass
-class RayLocalLauncherConf(ObjectConf):
-    params: RayConf = RayConf()
 
 
 # Ray AWS config
@@ -55,7 +60,7 @@ class RayProviderConf:
     region: str = "us-west-2"
     availability_zone: str = "us-west-2a,us-west-2b"
     cache_stopped_nodes: bool = False
-    key_pair: str = "hydra_ray_aws"
+    key_pair: Dict[str, str] = field(default_factory=lambda: {"key_name": "hydra"})
 
 
 @dataclass
@@ -129,15 +134,21 @@ class RayClusterConf:
     """
     head_node: Dict[str, Any] = field(
         default_factory=lambda: {
-            "InstanceType": "m5.large",
+            # "InstanceType": "m5.large",
             "ImageId": "ami-008d8ed4bd7dc2485",
+            "SubnetId": "subnet-acd2cfe7",
+            # "SecurityGroupIds": ["sg-06a39fb434733da79"],
+            # "IamInstanceProfile": {"Arn": "arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1"},
         }
     )
 
-    worker_nodes: Dict[str, str] = field(
+    worker_nodes: Dict[str, Any] = field(
         default_factory=lambda: {
-            "InstanceType": "m5.large",
+            # "InstanceType": "m5.large",
             "ImageId": "ami-008d8ed4bd7dc2485",
+            "SubnetId": "subnet-acd2cfe7",
+            # "SecurityGroupIds": ["sg-06a39fb434733da79"],
+            # "IamInstanceProfile": {"Arn": "arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1"},
         }
     )
 
@@ -159,9 +170,34 @@ class RayClusterConf:
     worker_start_ray_commands: List[str] = field(default_factory=list)
 
 
+# @dataclass
+# class RayAWSConf(RayConf):
+#     ray_init_cfg: Dict[str, Any] = field(default_factory=lambda: {"address": "local"})
+#     ray_cluster_cfg: RayClusterConf = RayClusterConf()
+#
+#     # Stop Ray AWS cluster after jobs are finished.
+#     # (Cluster will remain provisioned and can be started with "ray up cluster.yaml").
+#     stop_cluster: bool = False
+#
+#     # sync_up is executed before launching jobs on the cluster.
+#     # This can be used for syncing up source code to remote cluster for execution.
+#     # You need to sync up if your code contains multiple modules.
+#     # source is local dir, target is remote dir
+#     sync_up: RsyncConf = RsyncConf()
+#
+#     # sync_down is executed after jobs finishes on the cluster.
+#     # This can be used to download jobs output to local machine avoid the hassle to log on remote machine.
+#     # source is remote dir, target is local dir
+#     sync_down: RsyncConf = RsyncConf()
+
+
 @dataclass
-class RayAWSConf(RayConf):
-    ray_init_cfg: Dict[str, Any] = field(default_factory=lambda: {"address": "local"})
+class RayAWSLauncherConf(TargetConf):
+    _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
+    ray_init_cfg: Dict[str, Any] = field( default_factory=lambda: {"address": "local"} )
+    ray_remote_cfg: Dict[str, Any] = field(
+        default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
+    )
     ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.
@@ -178,11 +214,6 @@ class RayAWSConf(RayConf):
     # This can be used to download jobs output to local machine avoid the hassle to log on remote machine.
     # source is remote dir, target is local dir
     sync_down: RsyncConf = RsyncConf()
-
-
-@dataclass
-class RayAWSLauncherConf(ObjectConf):
-    params: RayAWSConf = RayAWSConf()
 
 
 config_store = ConfigStore.instance()

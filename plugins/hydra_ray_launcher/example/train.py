@@ -4,9 +4,8 @@ import os
 from pathlib import Path
 
 import hydra
-from omegaconf import DictConfig
-
 from model.my_model import MyModel
+from omegaconf import DictConfig
 
 log = logging.getLogger(__name__)
 

@@ -21,6 +21,10 @@ with open("README.md", "r") as fh:
             "Operating System :: MacOS",
             "Operating System :: POSIX :: Linux",
         ],
-        install_requires=["boto3>=1.12.34", "hydra-core>=1.0.0", "ray>=0.8.6", "distro"],
+        install_requires=[
+            "boto3==1.15.6",
+            "hydra-core>=1.0.0",
+            "ray==0.8.7",
+        ],
         include_package_data=True,
     )

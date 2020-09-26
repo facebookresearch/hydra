@@ -2,25 +2,24 @@
 
 hydra:
   launcher:
-    params:
-      sync_up:
-        # source dir is relative in this case, assuming you are running from
-        # <project_root>/hydra/plugins/hydra_ray_launcher/example
-        # absolute path is also supported.
-        source_dir: "."
-        # we leave target_dir to be null
-        # as a result the files will be synced to a temp dir on remote cluster.
-        # the temp dir will be cleaned up after the jobs are done.
-        # recommend to leave target_dir to be null if you are syncing code/artifacts to remote cluster so you don't need
-        # configure $PYTHONPATH on remote cluster
-        include: ["model", "*.py"]
-        # No need to sync up config files.
-        exclude: ["*"]
-      sync_down:
-        include: ["*.pt", "*/"]
-        # No need to sync down config files.
-        exclude: ["*", "*/"]
-      stop_cluster: true
-      ray_cluster_cfg:
-        provider:
-          cache_stopped_nodes: true
+    sync_up:
+      # source dir is relative in this case, assuming you are running from
+      # <project_root>/hydra/plugins/hydra_ray_launcher/example
+      # absolute path is also supported.
+      source_dir: "."
+      # we leave target_dir to be null
+      # as a result the files will be synced to a temp dir on remote cluster.
+      # the temp dir will be cleaned up after the jobs are done.
+      # recommend to leave target_dir to be null if you are syncing code/artifacts to remote cluster so you don't need
+      # configure $PYTHONPATH on remote cluster
+      include: ["model", "*.py"]
+      # No need to sync up config files.
+      exclude: ["*"]
+    sync_down:
+      include: ["*.pt", "*/"]
+      # No need to sync down config files.
+      exclude: ["*", "*/"]
+    stop_cluster: true
+    ray_cluster_cfg:
+      provider:
+        cache_stopped_nodes: true

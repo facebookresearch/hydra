@@ -9,7 +9,7 @@ import ray.cloudpickle as cloudpickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
-from omegaconf import open_dict
+from omegaconf import open_dict, OmegaConf
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (
     JOB_RETURN_PICKLE,
@@ -83,7 +83,7 @@ def launch(
 
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
             with open(f.name, "w") as file:
-                print(launcher.ray_cluster_cfg.pretty(), file=file)
+                print(OmegaConf.to_yaml(launcher.ray_cluster_cfg), file=file)
             launcher.ray_yaml_path = f.name
             log.info(
                 f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."

@@ -40,8 +40,12 @@ commands:
           command: |
             brew update
             brew upgrade git
+<<<<<<< HEAD
             brew install fish
             brew cleanup
+=======
+            brew install fish wget
+>>>>>>> Add ray AMI for integration tests
       - run:
           name: "Preparing environment - Hydra"
           command: |
@@ -111,7 +115,7 @@ commands:
           name: "Preparing environment"
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre
+            sudo apt-get install -y expect fish openjdk-11-jre rsync
             sudo pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
 >>>>>>> commit
 
