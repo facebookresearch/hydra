@@ -4,20 +4,24 @@ parameters:
   plugin_test:
     type: boolean
     default: False
-  plugin:
+  test_plugins:
     type: string
     default: ""
   cache_key_version:
     type: string
 <<<<<<< HEAD
+<<<<<<< HEAD
     default: v1
 =======
     default: "v0"
 >>>>>>> commit
+=======
+    default: v0
+>>>>>>> fix merge conflicts
 
 commands:
   macos:
-    description: "Commands run on MacOS"
+    description: Commands run on MacOS
     parameters:
       py_version:
         type: string
@@ -26,7 +30,7 @@ commands:
       - restore_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Preparing environment - Conda"
+          name: Preparing environment - Conda
           command: |
             if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
               echo "miniconda installed already."
@@ -36,25 +40,33 @@ commands:
             fi
             ~/miniconda3/bin/conda init bash
       - run:
-          name: "Preparing environment - Brew"
+          name: Preparing environment - Brew
           command: |
             brew update
             brew upgrade git
+<<<<<<< HEAD
 <<<<<<< HEAD
             brew install fish
             brew cleanup
 =======
             brew install fish wget
 >>>>>>> Add ray AMI for integration tests
+=======
+            brew install fish
+>>>>>>> fix merge conflicts
       - run:
-          name: "Preparing environment - Hydra"
+          name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
+<<<<<<< HEAD
 <<<<<<< HEAD
             conda run -n hydra pip install nox --progress-bar off
 =======
             conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
 >>>>>>> commit
+=======
+            conda run -n hydra pip install nox
+>>>>>>> fix merge conflicts
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -63,13 +75,14 @@ commands:
 
 
   linux:
-    description: "Commands run on Linux"
+    description: Commands run on Linux
     parameters:
       py_version:
         type: string
     steps:
       - checkout
       - run:
+<<<<<<< HEAD
 <<<<<<< HEAD
           name: Preparing environment - Conda
           command: |
@@ -120,8 +133,15 @@ commands:
 >>>>>>> commit
 
 
+=======
+          name: Preparing environment
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y expect fish openjdk-11-jre rsync
+            sudo pip install nox
+>>>>>>> fix merge conflicts
   win:
-    description: "Commands run on Windows"
+    description: Commands run on Windows
     parameters:
       py_version:
         type: string
@@ -130,20 +150,24 @@ commands:
       - restore_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
-          name: "Preparing environment - system"
+          name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
-          name: "Preparing environment - Hydra"
+          name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
 <<<<<<< HEAD
+<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
 =======
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+=======
+            pip install nox
+>>>>>>> fix merge conflicts
             pip install dataclasses
 >>>>>>> commit
       - save_cache:
@@ -163,11 +187,12 @@ jobs:
       - macos:
           py_version: << parameters.py_version >>
       - run:
-          name: "Testing Hydra"
+          name: Testing Hydra
           no_output_timeout: 10m
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
@@ -180,7 +205,12 @@ jobs:
             pip install dataclasses
 <<<<<<< HEAD
 >>>>>>> separate ray launcher into its own session
+=======
+            pip install nox
+            pip install dataclasses
+>>>>>>> fix merge conflicts
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -196,6 +226,8 @@ jobs:
 
 
 >>>>>>> separate ray launcher into its own session
+=======
+>>>>>>> fix merge conflicts
   test_linux:
     parameters:
       py_version:
@@ -206,14 +238,18 @@ jobs:
       - linux:
           py_version: << parameters.py_version >>
       - run:
-          name: "Testing Hydra"
+          name: Testing Hydra
           command: |
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
+<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
 =======
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+=======
+            pip install nox
+>>>>>>> fix merge conflicts
             pip install dataclasses
 >>>>>>> commit
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -227,7 +263,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
-          no_output_timeout: 20m
+          no_output_timeout: 10m
           command: |
             $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             $env:PYTHONIOENCODING="utf_8"
@@ -240,7 +276,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Kick off Plugin tests."
+          name: Kick off Plugin tests
           command: |
               python tools/ci/circleci_pipeline.py
               echo "Done kicking off plugin tests."
@@ -263,12 +299,17 @@ jobs:
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
 <<<<<<< HEAD
+<<<<<<< HEAD
               pip install nox dataclasses --progress-bar off
 =======
               pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+=======
+              pip install nox
+>>>>>>> fix merge conflicts
               pip install dataclasses
 >>>>>>> commit
               nox -s lint_plugins test_plugins -ts
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -280,6 +321,8 @@ jobs:
 
 
 >>>>>>> separate ray launcher into its own session
+=======
+>>>>>>> fix merge conflicts
   test_plugin_linux:
     parameters:
       py_version:
@@ -303,12 +346,15 @@ jobs:
 =======
                 export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
                 export PLUGINS=<< parameters.test_plugin >>
-                pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
+                pip install nox
                 pip install dataclasses
                 nox -s lint_plugins test_plugins -ts
+<<<<<<< HEAD
 
 
 >>>>>>> separate ray launcher into its own session
+=======
+>>>>>>> fix merge conflicts
   test_plugin_win:
     parameters:
       py_version:
@@ -321,7 +367,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: << parameters.test_plugin >>
-          no_output_timeout: 20m
+          no_output_timeout: 10m
           command: |
               $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               $env:PYTHONIOENCODING="utf_8"
@@ -330,10 +376,13 @@ jobs:
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> separate ray launcher into its own session
+=======
+>>>>>>> fix merge conflicts
   # Misc
   coverage:
     docker:
@@ -383,12 +432,12 @@ workflows:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              test_plugin: [<< pipeline.parameters.plugin >>]
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_macos:
           matrix:
             parameters:
               py_version: ["3.6", "3.7", "3.8"]
-              test_plugin: [<< pipeline.parameters.plugin >>]
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_win:
           matrix:
             parameters:
@@ -398,8 +447,12 @@ workflows:
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 =======
               py_version: ["3.6", "3.7", "3.8"]
+<<<<<<< HEAD
               test_plugin: [<< pipeline.parameters.plugin >>]
 >>>>>>> commit
+=======
+              test_plugin: [<< pipeline.parameters.test_plugins >>]
+>>>>>>> fix merge conflicts
 
 
 orbs:
