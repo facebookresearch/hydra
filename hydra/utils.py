@@ -7,7 +7,7 @@ from typing import Any, Callable
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
-from hydra._internal.utils import _get_cls_name, _instantiate_or_call, _locate
+from hydra._internal.utils import _get_cls_name, _get_kwargs, _locate
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
 from hydra.types import TargetConf
@@ -55,20 +55,16 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         config_copy._set_parent(config._get_parent())
     config = config_copy
 
-    cls = "<unknown>"
+    cls = _get_cls_name(config, pop=False)
     try:
         assert OmegaConf.is_config(config)
         OmegaConf.set_readonly(config, False)
         OmegaConf.set_struct(config, False)
         config._set_flag("allow_objects", True)
-        cls = _get_cls_name(config)
+        final_kwargs = _get_kwargs(config, **kwargs)
+        cls = _get_cls_name(final_kwargs)
         type_or_callable = _locate(cls)
-        return _instantiate_or_call(
-            type_or_callable,
-            config,
-            *args,
-            **kwargs,
-        )
+        return type_or_callable(*args, **final_kwargs)
     except Exception as e:
         raise type(e)(f"Error instantiating/calling '{cls}' : {e}")
 

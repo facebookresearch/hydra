@@ -39,6 +39,14 @@ class AClass:
 
 
 @dataclass
+class BClass:
+    a: Any
+    b: Any
+    c: Any = "c"
+    d: Any = "d"
+
+
+@dataclass
 class UntypedPassthroughConf:
     _target_: str = "tests.UntypedPassthroughClass"
     a: Any = MISSING
