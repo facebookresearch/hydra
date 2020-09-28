@@ -3,7 +3,7 @@
 """
 Run this script with AWS admin creds to create new Ray AMIs if any hydra-core & hydra-ray-launcher
 dependencies changes.
-Then update env variable with the AMI produced.
+Then update env variable with the new AMI.
 """
 import os
 import subprocess
