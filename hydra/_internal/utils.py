@@ -596,8 +596,7 @@ def _get_kwargs(
     config.merge_with(overrides)
 
     for k, v in config.items():
-        if k not in ("_target_", "_recursive_"):
-            final_kwargs[k] = v
+        final_kwargs[k] = v
 
     if recursive:
         for k, v in final_kwargs.items():

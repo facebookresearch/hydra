@@ -35,6 +35,7 @@ from tests import (
     TreeConf,
     UntypedPassthroughClass,
     UntypedPassthroughConf,
+    BClass,
 )
 
 
@@ -665,3 +666,50 @@ def test_recursive_override(
 ) -> None:
     obj = utils.instantiate(cfg, **passthrough)
     assert obj == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, passthrough, expected",
+    [
+        pytest.param(
+            {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
+            {"_target_": "tests.BClass"},
+            BClass(10, 20, 30, 40),
+            id="override_same_args",
+        ),
+        pytest.param(
+            {"_target_": "tests.AClass", "a": 10, "b": 20},
+            {"_target_": "tests.BClass"},
+            BClass(10, 20, "c", "d"),
+            id="override_other_args",
+        ),
+        pytest.param(
+            {
+                "_target_": "tests.AClass",
+                "a": 10,
+                "b": 20,
+                "c": {"_target_": "tests.AClass", "a": "aa", "b": "bb", "c": "cc"},
+            },
+            {"_target_": "tests.BClass"},
+            BClass(10, 20, AClass(a="aa", b="bb", c="cc"), "d"),
+            id="recursive_no_override",
+        ),
+        pytest.param(
+            {
+                "_target_": "tests.AClass",
+                "a": 10,
+                "b": 20,
+                "c": {"_target_": "tests.AClass", "a": "aa", "b": "bb", "c": "cc"},
+            },
+            {"_target_": "tests.BClass", "c": {"_target_": "tests.BClass"}},
+            BClass(10, 20, BClass(a="aa", b="bb", c="cc"), "d"),
+            id="recursive_override",
+        ),
+    ],
+)
+def test_override_target(input_conf, passthrough, expected):
+    conf_copy = copy.deepcopy(input_conf)
+    obj = utils.instantiate(input_conf, **passthrough)
+    assert obj == expected
+    # make sure config is not modified by instantiate
+    assert input_conf == conf_copy
