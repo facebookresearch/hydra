@@ -490,16 +490,6 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
     return widths
 
 
-def _instantiate_or_call(
-    clazz: Any,
-    config: DictConfig,
-    *args: Any,
-    **kwargs: Any,
-) -> Any:
-    final_kwargs = _get_kwargs(config, **kwargs)
-    return clazz(*args, **final_kwargs)
-
-
 def _locate(path: str) -> Union[type, Callable[..., Any]]:
     """
     Locate an object by name or dotted path, importing as necessary.
@@ -575,6 +565,55 @@ def _is_recursive(config: Any, kwargs: Any) -> bool:
     return True
 
 
+def _convert_target_to_string(t: Any) -> Any:
+    if isinstance(t, type):
+        return f"{t.__module__}.{t.__name__}"
+    elif callable(t):
+        return f"{t.__module__}.{t.__qualname__}"
+    else:
+        return t
+
+
+def _convert_container_targets_to_strings(d: Any) -> None:
+    if isinstance(d, dict):
+        if "_target_" in d:
+            d["_target_"] = _convert_target_to_string(d["_target_"])
+        for k, v in d.items():
+            _convert_container_targets_to_strings(v)
+    elif isinstance(d, list):
+        for e in d:
+            if isinstance(e, (list, dict)):
+                _convert_container_targets_to_strings(e)
+
+
+def _get_target_type(config: Any, kwargs: Any) -> Union[type, Callable[..., Any]]:
+    kwargs_target = None
+    config_target = None
+    if "_target_" in kwargs:
+        kwargs_target = kwargs.pop("_target_")
+
+    if "_target_" in config:
+        config_target = config.pop("_target_")
+
+    target = None
+    if kwargs_target is not None:
+        target = kwargs_target
+    elif config_target is not None:
+        target = config_target
+
+    if target is None:
+        raise InstantiationException("Unable to determine target")
+
+    if isinstance(target, str):
+        return _locate(target)
+    elif isinstance(target, type):
+        return target
+    elif callable(target):
+        return target  # type: ignore
+    else:
+        raise InstantiationException(f"Unsupported target type : {type(target)}")
+
+
 def _get_kwargs(
     config: Union[DictConfig, ListConfig],
     **kwargs: Any,
@@ -630,7 +669,7 @@ def _get_kwargs(
     return final_kwargs
 
 
-def _get_cls_name(config: DictConfig, pop: bool = True) -> str:
+def _get_cls_name(config: Any, pop: bool = True) -> str:
     if "_target_" not in config:
         raise InstantiationException("Input config does not have a `_target_` field")
 
