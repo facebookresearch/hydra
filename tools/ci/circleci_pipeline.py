@@ -20,26 +20,26 @@ BASE = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
 # could be due to dependency or time to run the test
 test_alone_plugins = ["hydra_ray_launcher"]
 
+
 def chunk(it, size):
     it = iter(it)
     return iter(lambda: tuple(islice(it, size)), ())
 
 
 def get_available_plugin() -> List[str]:
-    blocklist = [x for x in test_alone_plugins]
-    blocklist.append(".isort.cfg")
+    skip = [x for x in test_alone_plugins]
+    skip.append(".isort.cfg")
 
     ps = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, "plugins")))
-        if x not in blocklist
+        if x not in skip
     ]
     plugins = [p["path"] for p in ps]
     random.shuffle(plugins)
     groups_of_plugins = [",".join(w) for w in list(chunk(plugins, 4))]
     groups_of_plugins.extend(test_alone_plugins)
     return groups_of_plugins
-
 
 
 def run() -> None:

@@ -125,11 +125,11 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     as well as the user plugins selection (via the PLUGINS environment variable).
     """
     assert session.python is not None, "Session python version is not specified"
-    blocklist = [".isort.cfg", "examples"]
+    blacklist = [".isort.cfg", "examples"]
     plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
-        if x not in blocklist
+        if x not in blacklist
     ]
 
     ret = []

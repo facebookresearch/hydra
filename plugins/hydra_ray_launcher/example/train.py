@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import os
-from pathlib import Path
 
 import hydra
 from model.my_model import MyModel
@@ -15,7 +13,7 @@ def main(cfg: DictConfig) -> None:
     log.info("Start training...")
     model = MyModel(cfg.random_seed)
     # save checkpoint to current working dir.
-    model.save(model.save(cfg.checkpoint_path))
+    model.save(cfg.checkpoint_path)
 
 
 if __name__ == "__main__":

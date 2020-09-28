@@ -11,7 +11,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
-from ray._raylet import ObjectID
+
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def launch_job_on_ray(
     sweep_config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Dict[type, "Singleton"],
-) -> ObjectID:
+) -> Any:
     if ray_remote_cfg:
         run_job_ray = ray.remote(**ray_remote_cfg)(_run_job)
     else:
@@ -66,7 +66,6 @@ def launch_job_on_ray(
 
 
 def _run_command(args: Any) -> Tuple[str, str]:
-    log.debug(f"Running commands: {args}")
     with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
         log.info(f"Running command: {args}")
         out, err = proc.communicate()
@@ -118,12 +117,7 @@ def ray_down(yaml_path: str) -> None:
 
 
 def ray_up(yaml_path: str) -> None:
-    print(f"RAY UP : {yaml_path}")
-    out, err = _run_command(["ray", "up", "-y", yaml_path])
-    print("OUT")
-    print(out)
-    print("ERR")
-    print(err)
+    _run_command(["ray", "up", "-y", yaml_path])
 
 
 def ray_exec(yaml_path: str, docker: bool, file_path: str, pickle_path: str) -> None:

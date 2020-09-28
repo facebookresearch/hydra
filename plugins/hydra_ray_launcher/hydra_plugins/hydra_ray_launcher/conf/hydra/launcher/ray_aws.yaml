@@ -10,22 +10,16 @@ ray_cluster_cfg:
     key_pair:
       key_name: "hydra"
 
-  # worker_nodes: []
-    # Run workers on spot by default. Comment this out to use on-demand.
-    #InstanceMarketOptions:
-      #MarketType: spot
-
   # List of shell commands to run when calling ray up.
   setup_commands:
-    - echo "hello world"
     # Please make sure the cluster python version matches your local machine version
-    # - conda create -n hydra_${python_version:} python=${python_version:} -y
-    # - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"' >> ~/.bashrc
+    - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
+    - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"' >> ~/.bashrc
     # install needed dependency for launcher.
-    # - python3 -m pip install --ignore-installed PyYAML
-    # - python3 -m pip install ray>=0.8.6
-    # - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.0rc4-py3-none-any.whl
-    # - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
+    - python3 -m pip install --ignore-installed PyYAML
+    - python3 -m pip install ray==0.8.7
+    - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.4-py3-none-any.whl
+    - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
 
   # Command to start ray on the head node. You don't need to change this.
   head_start_ray_commands:

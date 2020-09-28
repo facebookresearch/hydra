@@ -23,19 +23,19 @@ auth:
 head_node:
   InstanceType: m5.large
   ImageId: ami-008d8ed4bd7dc2485
-  SubnetId: subnet-acd2cfe7
+  SubnetId: ${env:AWS_RAY_SUBNET}
   SecurityGroupIds:
-    - sg-06a39fb434733da79
+    - ${env:AWS_RAY_SECURITY_GROUP}
   IamInstanceProfile:
-    Arn: arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1
+    Arn: ${env:INSTANCE_ROLE_ARN}
 worker_nodes:
   InstanceType: m5.large
   ImageId: ami-008d8ed4bd7dc2485
-  SubnetId: subnet-acd2cfe7
+  SubnetId: ${env:AWS_RAY_SUBNET}
   SecurityGroupIds:
-    - sg-06a39fb434733da79
+    - ${env:AWS_RAY_SECURITY_GROUP}
   IamInstanceProfile:
-    Arn: arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1
+    Arn: ${env:INSTANCE_ROLE_ARN}
   InstanceMarketOptions:
     MarketType: spot
 file_mounts: {}
@@ -44,8 +44,7 @@ setup_commands:
   - pip install boto3
   - pip install ray
   - pip install --ignore-installed PyYAML
-  - pip install importlib-resources
-  - pip install antlr4-python3-runtime==4.8
+  - pip install hydra-core
 head_setup_commands: []
 worker_setup_commands: []
 head_start_ray_commands: []
