@@ -22,7 +22,9 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     ray_up,
     rsync,
 )
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
+from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
+    RayAWSLauncher,
+)
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +43,7 @@ def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(jobspec, f)
+        cloudpickle.dump(jobspec, f)  # type: ignore
     log.info(f"Pickle for jobs: {f.name}")
 
 
@@ -76,7 +78,7 @@ def launch(
 
         _pickle_jobs(
             tmp_dir=local_tmp_dir,
-            sweep_configs=sweep_configs,
+            sweep_configs=sweep_configs,  # type: ignore
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
         )
@@ -177,7 +179,7 @@ def launch_jobs(
             ray_down(launcher.ray_yaml_path)
 
         with open(os.path.join(local_tmp_download_dir, JOB_RETURN_PICKLE), "rb") as f:
-            job_returns = cloudpickle.load(f)
+            job_returns = cloudpickle.load(f)  # type: ignore
             assert isinstance(job_returns, List)
             for run in job_returns:
                 assert isinstance(run, JobReturn)

@@ -10,8 +10,8 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
 
-from hydra_plugins.hydra_ray_launcher.ray_local_launcher import (
-    RayLocalLauncher,  # type: ignore
+from hydra_plugins.hydra_ray_launcher.ray_local_launcher import (  # type: ignore
+    RayLocalLauncher,
 )
 
 chdir_plugin_root()

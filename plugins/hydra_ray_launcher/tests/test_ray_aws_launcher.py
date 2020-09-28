@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 import pytest
 from hydra.core.plugins import Plugins
@@ -19,15 +19,15 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (
+from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
+    _run_command,
     ray_down,
     ray_new_dir,
     ray_rsync_up,
     ray_up,
 )
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
-from plugins.hydra_ray_launcher.hydra_plugins.hydra_ray_launcher._launcher_util import (
-    _run_command,
+from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
+    RayAWSLauncher,
 )
 
 temp_remote_dir = "/tmp/hydra_test/"  # nosec
@@ -81,7 +81,7 @@ def build_installed_plugin_wheels(tmpdir: str) -> List[str]:
     plugins_path = [x.split()[0].replace("-", "_") for x in output]
     wheels = []
     for p in plugins_path:
-        wheel = build_plugin_wheel(p, Path(tmpdir))
+        wheel = build_plugin_wheel(p, tmpdir)
         wheels.append(wheel)
     assert (
         len(wheels) == 1 and "hydra_ray_launcher" in wheels[0]
@@ -203,8 +203,8 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.fixture(scope="module")
-def manage_cluster() -> str:
+@pytest.fixture(scope="module")  # type: ignore
+def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
     assert (

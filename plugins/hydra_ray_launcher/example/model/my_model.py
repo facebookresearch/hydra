@@ -11,7 +11,7 @@ class MyModel:
         self.random_seed = random_seed
         log.info("Init my model")
 
-    def save(self, checkpoint_path: str):
+    def save(self, checkpoint_path: str) -> None:
         checkpoint_dir = Path(checkpoint_path)
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
         log.info(f"Created dir for checkpoints. dir={checkpoint_dir}")

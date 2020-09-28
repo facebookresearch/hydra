@@ -3,15 +3,14 @@ import logging
 import os
 from contextlib import contextmanager
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Generator, List, Tuple
+from typing import Any, Dict, Generator, List, Tuple, Union
 
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, OmegaConf
-
+from omegaconf import DictConfig, ListConfig, OmegaConf
 
 log = logging.getLogger(__name__)
 
@@ -82,7 +81,7 @@ def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
 
 
 @contextmanager
-def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator:
+def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
     args = ["ray", "exec"]
     if docker:
         args += "--docker"
@@ -134,7 +133,7 @@ def _ray_get_head_ip(yaml_path: str) -> str:
     return out.strip()
 
 
-def _get_pem(ray_cluster_cfg: DictConfig) -> str:
+def _get_pem(ray_cluster_cfg: Union[DictConfig, ListConfig]) -> Any:
     key_name = ray_cluster_cfg.auth.get("ssh_private_key")
     if key_name is not None:
         return key_name
@@ -153,7 +152,7 @@ def rsync(
     source: str,
     target: str,
     up: bool = True,
-):
+) -> None:
     ray_cluster_cfg = OmegaConf.load(yaml_path)
     keypair = _get_pem(ray_cluster_cfg)
     remote_ip = _ray_get_head_ip(yaml_path)
