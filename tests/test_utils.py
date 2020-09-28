@@ -9,6 +9,7 @@ import pytest
 from omegaconf import DictConfig, OmegaConf
 
 from hydra import utils
+from hydra._internal.utils import _convert_container_targets_to_strings
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException
@@ -20,6 +21,7 @@ from tests import (
     AnotherClass,
     ASubclass,
     BadAdamConf,
+    BClass,
     CenterCrop,
     CenterCropConf,
     Compose,
@@ -35,7 +37,7 @@ from tests import (
     TreeConf,
     UntypedPassthroughClass,
     UntypedPassthroughConf,
-    BClass,
+    module_function,
 )
 
 
@@ -675,41 +677,110 @@ def test_recursive_override(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
             {"_target_": "tests.BClass"},
             BClass(10, 20, 30, 40),
-            id="override_same_args",
+            id="str:override_same_args",
+        ),
+        pytest.param(
+            {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
+            {"_target_": BClass},
+            BClass(10, 20, 30, 40),
+            id="type:override_same_args",
         ),
         pytest.param(
             {"_target_": "tests.AClass", "a": 10, "b": 20},
             {"_target_": "tests.BClass"},
             BClass(10, 20, "c", "d"),
-            id="override_other_args",
+            id="str:override_other_args",
+        ),
+        pytest.param(
+            {"_target_": "tests.AClass", "a": 10, "b": 20},
+            {"_target_": BClass},
+            BClass(10, 20, "c", "d"),
+            id="type:override_other_args",
         ),
         pytest.param(
             {
                 "_target_": "tests.AClass",
                 "a": 10,
                 "b": 20,
-                "c": {"_target_": "tests.AClass", "a": "aa", "b": "bb", "c": "cc"},
+                "c": {
+                    "_target_": "tests.AClass",
+                    "a": "aa",
+                    "b": "bb",
+                    "c": "cc",
+                },
             },
-            {"_target_": "tests.BClass"},
-            BClass(10, 20, AClass(a="aa", b="bb", c="cc"), "d"),
-            id="recursive_no_override",
-        ),
-        pytest.param(
             {
-                "_target_": "tests.AClass",
-                "a": 10,
-                "b": 20,
-                "c": {"_target_": "tests.AClass", "a": "aa", "b": "bb", "c": "cc"},
+                "_target_": "tests.BClass",
+                "c": {
+                    "_target_": "tests.BClass",
+                },
             },
-            {"_target_": "tests.BClass", "c": {"_target_": "tests.BClass"}},
             BClass(10, 20, BClass(a="aa", b="bb", c="cc"), "d"),
-            id="recursive_override",
+            id="str:recursive_override",
+        ),
+        pytest.param(
+            {
+                "_target_": "tests.AClass",
+                "a": 10,
+                "b": 20,
+                "c": {
+                    "_target_": "tests.AClass",
+                    "a": "aa",
+                    "b": "bb",
+                    "c": "cc",
+                },
+            },
+            {"_target_": BClass, "c": {"_target_": BClass}},
+            BClass(10, 20, BClass(a="aa", b="bb", c="cc"), "d"),
+            id="type:recursive_override",
         ),
     ],
 )
-def test_override_target(input_conf, passthrough, expected):
+def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> None:
     conf_copy = copy.deepcopy(input_conf)
     obj = utils.instantiate(input_conf, **passthrough)
     assert obj == expected
     # make sure config is not modified by instantiate
     assert input_conf == conf_copy
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_, expected",
+    [
+        pytest.param({"a": 10}, {"a": 10}),
+        pytest.param([1, 2, 3], [1, 2, 3]),
+        pytest.param({"_target_": "abc", "a": 10}, {"_target_": "abc", "a": 10}),
+        pytest.param(
+            {"_target_": AClass, "a": 10}, {"_target_": "tests.AClass", "a": 10}
+        ),
+        pytest.param(
+            {"_target_": AClass.static_method, "a": 10},
+            {"_target_": "tests.AClass.static_method", "a": 10},
+        ),
+        pytest.param(
+            {"_target_": ASubclass.class_method, "a": 10},
+            {"_target_": "tests.ASubclass.class_method", "a": 10},
+        ),
+        pytest.param(
+            {"_target_": module_function, "a": 10},
+            {"_target_": "tests.module_function", "a": 10},
+        ),
+        pytest.param(
+            {
+                "_target_": AClass,
+                "a": {"_target_": AClass, "b": 10},
+            },
+            {
+                "_target_": "tests.AClass",
+                "a": {"_target_": "tests.AClass", "b": 10},
+            },
+        ),
+        pytest.param(
+            [1, {"_target_": AClass, "a": 10}],
+            [1, {"_target_": "tests.AClass", "a": 10}],
+        ),
+    ],
+)
+def test_convert_target_to_string(input_: Any, expected: Any) -> None:
+    _convert_container_targets_to_strings(input_)
+    assert input_ == expected
