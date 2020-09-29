@@ -168,8 +168,6 @@ commands:
             ~/miniconda3/bin/conda init bash
             ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
             ~/miniconda3/bin/conda run -n hydra pip install nox
-            echo 'export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"' >> ~/.bashrc
-
 
 
 >>>>>>> fix mypy and linux conda
@@ -276,6 +274,7 @@ jobs:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
@@ -312,6 +311,10 @@ jobs:
 >>>>>>> fix path
 =======
 =======
+=======
+            ls /home/circleci/miniconda3/envs/
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+>>>>>>> fix python PATH
             which python
             python --version
 >>>>>>> print python version
