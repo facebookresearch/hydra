@@ -92,9 +92,8 @@ def build_installed_plugin_wheels(tmpdir: str) -> List[str]:
 def build_plugin_wheel(plugin: str, tmp_wheel_dir: str) -> str:
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    subprocess.check_output(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}",
-        shell=True,  # nosec
+    subprocess.getoutput(
+        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
     )
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
@@ -103,9 +102,8 @@ def build_plugin_wheel(plugin: str, tmp_wheel_dir: str) -> str:
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    subprocess.check_output(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}",
-        shell=True,  # nosec
+    subprocess.getoutput(
+        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
     )
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     return wheel
