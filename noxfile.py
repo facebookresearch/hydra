@@ -28,6 +28,7 @@ INSTALL_COMMAND = (
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
+SKIP_WARNING_PLUGIN = ['hydra_ray_launcher']
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
@@ -94,11 +95,17 @@ def pytest_args(*args):
     return ret
 
 
-def run_pytest(session, directory=".", *args):
+def run_pytest(session, directory=".", skip_warning=False, *args):
     pytest_cmd = pytest_args(directory, *args)
+<<<<<<< HEAD
     # silent=False to enable some output on CI
     # (otherwise we risk no-output timeout)
     session.run(*pytest_cmd, silent=False)
+=======
+    if skip_warning:
+        pytest_cmd = [x for x in pytest_cmd if x != "-Werror"]
+    session.run(*pytest_cmd, silent=SILENT)
+>>>>>>> skip warning for ray-launcher
 
 
 def get_setup_python_versions(classifiers):
@@ -406,7 +413,10 @@ def test_plugins_in_directory(
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
         session.chdir(os.path.join(BASE, directory, plugin.path))
-        run_pytest(session)
+        if plugin.path in SKIP_WARNING_PLUGIN:
+            run_pytest(session, skip_warning=True)
+        else:
+            run_pytest(session)
 
 
 @nox.session(python="3.8")
