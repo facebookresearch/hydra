@@ -162,6 +162,7 @@ commands:
       - run:
           name: Preparing environment - Hydra
           command: |
+            source ~/.bashrc
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
 
