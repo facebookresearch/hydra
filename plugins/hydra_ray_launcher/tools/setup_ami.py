@@ -11,6 +11,7 @@ def _run_command(command: str) -> str:
 
 
 def run():
+    _run_command("conda update --all")
     output = _run_command("conda search python").split("\n")
 
     # gather all the python versions and install conda envs

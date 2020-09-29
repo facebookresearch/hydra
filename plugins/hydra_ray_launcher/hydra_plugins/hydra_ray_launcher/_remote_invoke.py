@@ -67,7 +67,7 @@ def _dump_job_return(result: List[JobReturn], tmp_dir: str) -> None:
     path = os.path.join(tmp_dir, JOB_RETURN_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(result, f)  # type: ignore
+        cloudpickle.dumps(result, f)  # type: ignore
     log.info(f"Pickle for job returns: {f.name}")
 
 

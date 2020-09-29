@@ -84,10 +84,14 @@ commands:
       - run:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> fix mypy and linux conda
           name: Preparing environment - Conda
           command: |
             curl -o Miniconda3-py38_4.8.3-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh
             bash ./Miniconda3-py38_4.8.3-Linux-x86_64.sh -b
+<<<<<<< HEAD
       - run:
           name: Preparing environment - Other dependency
           command: |
@@ -134,12 +138,22 @@ commands:
 
 
 =======
+=======
+            ~/miniconda3/bin/conda init bash
+      - run:
+>>>>>>> fix mypy and linux conda
           name: Preparing environment
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre rsync
+<<<<<<< HEAD
             sudo pip install nox
 >>>>>>> fix merge conflicts
+=======
+            conda create -n hydra python=<< parameters.py_version >> -yq
+            conda run -n hydra pip install nox
+
+>>>>>>> fix mypy and linux conda
   win:
     description: Commands run on Windows
     parameters:
@@ -244,10 +258,14 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
 =======
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
 =======
+=======
+            conda activate hydra
+>>>>>>> fix mypy and linux conda
             pip install nox
 >>>>>>> fix merge conflicts
             pip install dataclasses

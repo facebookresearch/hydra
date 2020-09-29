@@ -403,11 +403,11 @@ def test_plugins_in_directory(
         session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
-    # if test_hydra_core:
-    #     if not SKIP_CORE_TESTS:
-    #         run_pytest(session, "tests")
-    #     else:
-    #         session.log("Skipping Hydra core tests")
+    if test_hydra_core:
+        if not SKIP_CORE_TESTS:
+            run_pytest(session, "tests")
+        else:
+            session.log("Skipping Hydra core tests")
 
     # Run tests for all installed plugins
     for plugin in selected_plugin:
