@@ -267,3 +267,53 @@ class MappingConf:
 
     def __init__(self, dictionary: Optional[Dict[str, "MappingConf"]] = None):
         self.dictionary = dictionary
+
+
+@dataclass
+class SimpleDataClass:
+    a: Any = None
+    b: Any = None
+
+
+class SimpleClass:
+    a: Any = None
+    b: Any = None
+
+    def __init__(self, a: Any, b: Any) -> None:
+        self.a = a
+        self.b = b
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, SimpleClass):
+            return self.a == other.a and self.b == other.b
+        return False
+
+
+@dataclass
+class SimpleClassPrimitiveConf:
+    _target_: str = "tests.SimpleClass"
+    _convert_: str = "partial"
+    a: Any = None
+    b: Any = None
+
+
+@dataclass
+class SimpleClassNonPrimitiveConf:
+    _target_: str = "tests.SimpleClass"
+    _convert_: str = "none"
+    a: Any = None
+    b: Any = None
+
+
+@dataclass
+class SimpleClassDefaultPrimitiveConf:
+    _target_: str = "tests.SimpleClass"
+    a: Any = None
+    b: Any = None
+
+
+@dataclass
+class NestedConf:
+    _target_: str = "tests.SimpleClass"
+    a: Any = User(name="a", age=1)
+    b: Any = User(name="b", age=2)

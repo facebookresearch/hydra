@@ -1,6 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging.config
 import os
+import sys
+from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
 
@@ -13,6 +15,7 @@ from hydra._internal.utils import (
     _get_kwargs,
     _get_target_type,
     _locate,
+    _pop_convert_mode,
 )
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
@@ -21,15 +24,31 @@ from hydra.types import TargetConf
 log = logging.getLogger(__name__)
 
 
+class ConvertMode(Enum):
+    # Use DictConfig/ListConfig
+    NONE = 0
+    # Convert the OmegaConf config to primitive container, Structured Configs are preserved
+    PARTIAL = 1
+    # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
+    ALL = 2
+
+
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
     :param config: An config object describing what to call and what params to use.
                    In addition to the parameters, the config must contain:
                    _target_ : target class or callable name (str)
+                   And may contain:
                    _recursive_: Construct nested objects as well (bool).
                                 True by default.
                                 may be overridden via a _recursive_ key in
                                 the kwargs
+                   _convert_: Conversion strategy
+                        none    : Passed objects are DictConfig and ListConfig, default
+                        partial : Passed objects are converted to dict and list, with
+                                  the exception of Structured Configs (and their fields).
+                        all     : Passed objects are dicts, lists and primitives without
+                                  a trace of OmegaConf containers
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -77,11 +96,24 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     try:
         config._set_flag("allow_objects", True)
         final_kwargs = _get_kwargs(config, **kwargs)
-        return target(*args, **final_kwargs)
+        convert = _pop_convert_mode(final_kwargs)
+        if convert == ConvertMode.PARTIAL:
+            final_kwargs = OmegaConf.to_container(
+                final_kwargs, resolve=True, exclude_structured_configs=True
+            )
+            return target(*args, **final_kwargs)
+        elif convert == ConvertMode.ALL:
+            final_kwargs = OmegaConf.to_container(final_kwargs, resolve=True)
+            return target(*args, **final_kwargs)
+        elif convert == ConvertMode.NONE:
+            return target(*args, **final_kwargs)
+        else:
+            assert False
     except Exception as e:
+        # preserve the original exception backtrace
         raise type(e)(
             f"Error instantiating/calling '{_convert_target_to_string(target)}' : {e}"
-        )
+        ).with_traceback(sys.exc_info()[2])
 
 
 # Alias for instantiate

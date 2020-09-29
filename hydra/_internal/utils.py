@@ -10,7 +10,7 @@ from traceback import print_exc, print_exception
 from types import FrameType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
-from omegaconf import DictConfig, ListConfig, OmegaConf
+from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 from omegaconf._utils import type_str
 from omegaconf.errors import OmegaConfBaseException
 
@@ -614,8 +614,39 @@ def _get_target_type(config: Any, kwargs: Any) -> Union[type, Callable[..., Any]
         raise InstantiationException(f"Unsupported target type : {type(target)}")
 
 
+def _pop_convert_mode(d: Any) -> Any:
+    from hydra.utils import ConvertMode
+
+    # default value is to not convert OmegaConf containers
+    ret = ConvertMode.NONE
+
+    if "_convert_" in d:
+        with open_dict(d):
+            convert = d.pop("_convert_")
+            if convert is not None:
+                if isinstance(convert, str):
+                    if convert == "none":
+                        ret = ConvertMode.NONE
+                    elif convert == "partial":
+                        ret = ConvertMode.PARTIAL
+                    elif convert == "all":
+                        ret = ConvertMode.ALL
+                    else:
+                        raise InstantiationException(
+                            f"Unsupported _convert_ value: {convert}"
+                        )
+                elif isinstance(convert, ConvertMode):
+                    ret = convert
+                else:
+                    raise InstantiationException(
+                        f"_convert_ must be a string or ConvertMode enum (got `{type(convert).__name__}`)"
+                    )
+    return ret
+
+
 def _get_kwargs(
     config: Union[DictConfig, ListConfig],
+    root: bool = True,
     **kwargs: Any,
 ) -> Any:
     from hydra.utils import instantiate
@@ -624,32 +655,36 @@ def _get_kwargs(
 
     if OmegaConf.is_list(config):
         assert isinstance(config, ListConfig)
-        return [_get_kwargs(x) if OmegaConf.is_config(x) else x for x in config]
+        return [
+            _get_kwargs(x, root=False) if OmegaConf.is_config(x) else x for x in config
+        ]
 
     assert OmegaConf.is_dict(config), "Input config is not an OmegaConf DictConfig"
-
-    final_kwargs = {}
 
     recursive = _is_recursive(config, kwargs)
     overrides = OmegaConf.create(kwargs, flags={"allow_objects": True})
     config.merge_with(overrides)
 
-    for k, v in config.items():
-        final_kwargs[k] = v
-
+    final_kwargs = OmegaConf.create(flags={"allow_objects": True})
+    final_kwargs._set_parent(config._get_parent())
+    final_kwargs._set_flag("readonly", False)
+    final_kwargs._set_flag("struct", False)
     if recursive:
-        for k, v in final_kwargs.items():
-            if _is_target(v):
+        for k, v in config.items_ex(resolve=False):
+            if OmegaConf.is_none(v):
+                final_kwargs[k] = v
+            elif _is_target(v):
                 final_kwargs[k] = instantiate(v)
-            elif OmegaConf.is_dict(v) and not OmegaConf.is_none(v):
+            elif OmegaConf.is_dict(v):
                 d = OmegaConf.create({}, flags={"allow_objects": True})
-                for key, value in v.items():
+                for key, value in v.items_ex(resolve=False):
                     if _is_target(value):
                         d[key] = instantiate(value)
                     elif OmegaConf.is_config(value):
-                        d[key] = _get_kwargs(value)
+                        d[key] = _get_kwargs(value, root=False)
                     else:
                         d[key] = value
+                d._metadata.object_type = v._metadata.object_type
                 final_kwargs[k] = d
             elif OmegaConf.is_list(v):
                 lst = OmegaConf.create([], flags={"allow_objects": True})
@@ -657,15 +692,25 @@ def _get_kwargs(
                     if _is_target(x):
                         lst.append(instantiate(x))
                     elif OmegaConf.is_config(x):
-                        lst.append(_get_kwargs(x))
+                        lst.append(_get_kwargs(x, root=False))
+                        lst[-1]._metadata.object_type = x._metadata.object_type
                     else:
                         lst.append(x)
                 final_kwargs[k] = lst
             else:
-                if OmegaConf.is_none(v):
-                    v = None
                 final_kwargs[k] = v
+    else:
+        for k, v in config.items_ex(resolve=False):
+            final_kwargs[k] = v
 
+    final_kwargs._set_flag("readonly", None)
+    final_kwargs._set_flag("struct", None)
+    final_kwargs._set_flag("allow_objects", None)
+    if not root:
+        # This is tricky, since the root kwargs is exploded anyway we can treat is as an untyped dict
+        # the motivation is that the object type is used as an indicator to treat the object differently during
+        # conversion to a primitive container in some cases
+        final_kwargs._metadata.object_type = config._metadata.object_type
     return final_kwargs
 
 
