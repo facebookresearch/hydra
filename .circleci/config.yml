@@ -98,7 +98,7 @@ jobs:
       py_version:
         type: string
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
@@ -168,7 +168,7 @@ jobs:
       test_plugin:
         type: string
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
