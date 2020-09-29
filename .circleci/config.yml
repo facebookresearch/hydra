@@ -275,6 +275,7 @@ jobs:
           command: |
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
@@ -307,7 +308,14 @@ jobs:
 =======
 =======
 >>>>>>> fix path
+<<<<<<< HEAD
 >>>>>>> fix path
+=======
+=======
+            which python
+            python --version
+>>>>>>> print python version
+>>>>>>> print python version
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 >>>>>>> commit
             pip install nox
@@ -400,12 +408,17 @@ jobs:
           name: << parameters.test_plugin >>
           command: |
 <<<<<<< HEAD
+<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
 =======
+=======
+                which python
+                python --version
+>>>>>>> print python version
                 export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
                 export PLUGINS=<< parameters.test_plugin >>
                 pip install nox
