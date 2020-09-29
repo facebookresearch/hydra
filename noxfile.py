@@ -28,7 +28,7 @@ INSTALL_COMMAND = (
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
-SKIP_WARNING_PLUGIN = ['hydra_ray_launcher']
+SKIP_WARNING_PLUGIN = ["hydra_ray_launcher"]
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
