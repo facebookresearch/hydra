@@ -271,8 +271,10 @@ jobs:
       - run:
           name: Testing Hydra
           command: |
+<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -289,10 +291,17 @@ jobs:
             /home/circleci/miniconda3/bin/conda activate hydra
 >>>>>>> replace conda with /home/circleci/miniconda3/bin/conda
 =======
+=======
+=======
+>>>>>>> commit
+>>>>>>> commit
             ~/miniconda3/bin/conda init bash
-            source ~/.bashrc
             ~/miniconda3/bin/conda activate hydra
+<<<<<<< HEAD
 >>>>>>> fix conda commands
+=======
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+>>>>>>> commit
             pip install nox
 >>>>>>> fix merge conflicts
             pip install dataclasses
