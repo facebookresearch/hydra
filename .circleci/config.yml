@@ -113,6 +113,7 @@ commands:
 <<<<<<< HEAD
 =======
       - run:
+<<<<<<< HEAD
           name: "Testing Hydra"
           no_output_timeout: 20m
           command: |
@@ -143,6 +144,9 @@ commands:
       - run:
 >>>>>>> fix mypy and linux conda
           name: Preparing environment
+=======
+          name: Preparing environment - Other dependency
+>>>>>>> fix linux setup
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre rsync
@@ -152,6 +156,12 @@ commands:
 =======
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
+      - run:
+          name: Preparing environment - Hydra
+          command: |
+            conda create -n hydra python=<< parameters.py_version >> -yq
+            conda run -n hydra pip install nox
+
 
 >>>>>>> fix mypy and linux conda
   win:
