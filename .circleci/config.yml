@@ -290,6 +290,7 @@ jobs:
 >>>>>>> replace conda with /home/circleci/miniconda3/bin/conda
 =======
             ~/miniconda3/bin/conda init bash
+            source ~/.bashrc
             ~/miniconda3/bin/conda activate hydra
 >>>>>>> fix conda commands
             pip install nox
