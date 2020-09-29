@@ -111,49 +111,12 @@ def build_core_wheel(tmp_wheel_dir: str) -> str:
     return wheel
 
 
-def download_ray_wheel(tmp_wheel_dir: str) -> str:
-    # release sha picked from the top commit from ray release branch
-    # hardcode for now, it'd be great to automate this.
-    release_sha = {"0.8.7": "89fd21ff610f237691908997d12fa9ee465e68d4"}
-    # first grep local ray version
-    ray_version = subprocess.getoutput("pip freeze | grep ray==").split("==")[1]
-    if ray_version not in release_sha.keys():
-        raise ValueError(f"Do not have commit sha for ray {ray_version}")
-    current_os = "linux"
-    bucket_path = (
-        f"s3://ray-wheels/releases/{ray_version}/{release_sha.get(ray_version)}/"
-    )
-    pyversion = str(sys.version_info.major) + str(sys.version_info.minor)
-    output = subprocess.getoutput(
-        f"aws s3 ls {bucket_path} | grep cp{pyversion} | grep {current_os}"
-    )
-    wheels = output.split("\n")
-    assert (
-        len(wheels) == 1
-    ), f"Found {len(wheels)} number of wheels instead of exactly 1"
-    wheel = wheels[0].split()[-1]
-
-    # download the wheels
-    os.chdir(str(tmp_wheel_dir))
-    object_url = (
-        f"https://ray-wheels.s3-us-west-2.amazonaws.com/releases/{ray_version}/"
-        f"{release_sha.get(ray_version)}/{wheel}"
-    )
-    command = f"wget {object_url}"
-    log.info(f"Saving ray wheel in {tmp_wheel_dir}, Command: {command}")
-    subprocess.check_output(command, shell=True)  # nosec
-    chdir_hydra_root()
-    return wheel
-
-
 def upload_and_install_wheels(
     tmp_wheel_dir: str,
     yaml: str,
     core_wheel: str,
-    ray_wheel: str,
     plugin_wheels: List[str],
 ) -> None:
-
     ray_rsync_up(yaml, tmp_wheel_dir + "/", temp_remote_wheel_dir)
     log.info(f"Install hydra-core wheel {core_wheel}")
     _run_command(
@@ -162,16 +125,6 @@ def upload_and_install_wheels(
             "exec",
             yaml,
             f"pip install {temp_remote_wheel_dir}{core_wheel}",
-        ]
-    )
-
-    log.info(f"Install ray wheel {ray_wheel}")
-    _run_command(
-        [
-            "ray",
-            "exec",
-            yaml,
-            f"pip install {temp_remote_wheel_dir}{ray_wheel}",
         ]
     )
 
@@ -256,9 +209,8 @@ worker_nodes:
         tmpdir = tempfile.mkdtemp()
         plugin_wheels = build_installed_plugin_wheels(tmpdir)
         core_wheel = build_core_wheel(tmpdir)
-        ray_wheel = download_ray_wheel(tmpdir)
         upload_and_install_wheels(
-            tmpdir, temp_yaml, core_wheel, ray_wheel, plugin_wheels
+            tmpdir, temp_yaml, core_wheel, plugin_wheels
         )
         yield
         ray_down(f.name)
