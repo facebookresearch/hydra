@@ -78,7 +78,10 @@ def set_up_machine() -> None:
             time.sleep(30)
             image = ec2_resource.Image(image_id)
             if image.state == "available":
-                print(f"{image} ready for use now.")
+                print(
+                    f"{image} ready for use now, pls update your env variable: AWS_RAY_AMI={image}. "
+                    f"Please also update the test user's IAM policy to allow access to the new AMI."
+                )
                 break
             else:
                 print(f"{image} current state {image.state}")

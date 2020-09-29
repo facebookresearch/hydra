@@ -44,7 +44,7 @@ setup_commands:
   - pip install boto3
   - pip install ray
   - pip install --ignore-installed PyYAML
-  - pip install hydra-core
+  - pip install git+https://github.com/facebookresearch/hydra.git@master
 head_setup_commands: []
 worker_setup_commands: []
 head_start_ray_commands: []

@@ -30,10 +30,10 @@ def run():
         pip_path = f"/home/ubuntu/anaconda3/envs/hydra_{v}/bin/pip"
         _run_command(f"{pip_path} install ray")
         _run_command(f"{pip_path} install boto3==1.15.6")
-        _run_command(f"{pip_path} install importlib-resources")
-        _run_command(f"{pip_path} install omegaconf==2.0.2")
-        _run_command(f"{pip_path} install antlr4-python3-runtime==4.8")
         _run_command(f"{pip_path} install --ignore-installed PyYAML")
+        _run_command(
+            f"{pip_path} install git+https://github.com/facebookresearch/hydra.git@master"
+        )
 
 
 if __name__ == "__main__":

@@ -94,7 +94,7 @@ def build_plugin_wheel(plugin: str, tmp_wheel_dir: str) -> str:
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
     subprocess.check_output(
         f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}",
-        # shell=True,
+        shell=True,  # nosec
     )
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
@@ -105,7 +105,7 @@ def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
     subprocess.check_output(
         f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}",
-        # shell=True,
+        shell=True,  # nosec
     )
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     return wheel
@@ -141,7 +141,7 @@ def download_ray_wheel(tmp_wheel_dir: str) -> str:
     )
     command = f"wget {object_url}"
     log.info(f"Saving ray wheel in {tmp_wheel_dir}, Command: {command}")
-    subprocess.check_output(command)
+    subprocess.check_output(command, shell=True)  # nosec
     chdir_hydra_root()
     return wheel
 
@@ -207,8 +207,9 @@ def test_discovery() -> None:
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
+
     assert (
-        get_requirements_sha() == "9975198e6a955d91d823b226d88ccd48"
+        get_requirements_sha() == "06e92acfb5918e890c042377457cdaae"
     ), "hydra-core requirements changed, new AMI needed."
 
     # test only need cluster name and provider info for connection.
