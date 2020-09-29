@@ -162,9 +162,8 @@ commands:
       - run:
           name: Preparing environment - Hydra
           command: |
-            source ~/.bashrc
-            conda create -n hydra python=<< parameters.py_version >> -yq
-            conda run -n hydra pip install nox
+            /home/circleci/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
+            /home/circleci/miniconda3/bin/conda run -n hydra pip install nox
 
 
 >>>>>>> fix mypy and linux conda
@@ -273,6 +272,7 @@ jobs:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
 =======
             pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
@@ -280,6 +280,9 @@ jobs:
 =======
             conda activate hydra
 >>>>>>> fix mypy and linux conda
+=======
+            /home/circleci/miniconda3/bin/conda activate hydra
+>>>>>>> replace conda with /home/circleci/miniconda3/bin/conda
             pip install nox
 >>>>>>> fix merge conflicts
             pip install dataclasses
