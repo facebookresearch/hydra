@@ -151,11 +151,14 @@ commands:
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre rsync
 <<<<<<< HEAD
+<<<<<<< HEAD
             sudo pip install nox
 >>>>>>> fix merge conflicts
 =======
             conda create -n hydra python=<< parameters.py_version >> -yq
             conda run -n hydra pip install nox
+=======
+>>>>>>> remove conda install
       - run:
           name: Preparing environment - Hydra
           command: |
