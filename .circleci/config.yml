@@ -166,8 +166,8 @@ commands:
           name: Preparing environment - Hydra
           command: |
             ~/miniconda3/bin/conda init bash
-            ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
-            ~/miniconda3/bin/conda run -n hydra pip install nox
+            conda create -n hydra python=<< parameters.py_version >> -yq
+            conda run -n hydra pip install nox
 
 
 >>>>>>> fix mypy and linux conda
