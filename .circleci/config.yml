@@ -276,6 +276,7 @@ jobs:
 <<<<<<< HEAD
 <<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -419,11 +420,17 @@ jobs:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+=======
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+            python -c 'import sys; print(sys.version_info[:])'
+>>>>>>> print python version
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
+<<<<<<< HEAD
 =======
 =======
                 which python
@@ -443,6 +450,8 @@ jobs:
 >>>>>>> separate ray launcher into its own session
 =======
 >>>>>>> fix merge conflicts
+=======
+>>>>>>> print python version
   test_plugin_win:
     parameters:
       py_version:
