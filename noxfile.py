@@ -403,18 +403,20 @@ def test_plugins_in_directory(
         session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
-    if test_hydra_core:
-        if not SKIP_CORE_TESTS:
-            run_pytest(session, "tests")
-        else:
-            session.log("Skipping Hydra core tests")
+    # if test_hydra_core:
+    #     if not SKIP_CORE_TESTS:
+    #         run_pytest(session, "tests")
+    #     else:
+    #         session.log("Skipping Hydra core tests")
 
     # Run tests for all installed plugins
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
         session.chdir(os.path.join(BASE, directory, plugin.path))
         if plugin.path in SKIP_WARNING_PLUGIN:
-            run_pytest(session, skip_warning=True)
+            pytest_cmd = ["pytest", "-s", "."]
+            session.run(*pytest_cmd, silent=0)
+            # run_pytest(session, skip_warning=True)
         else:
             run_pytest(session)
 
