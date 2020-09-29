@@ -209,9 +209,7 @@ worker_nodes:
         tmpdir = tempfile.mkdtemp()
         plugin_wheels = build_installed_plugin_wheels(tmpdir)
         core_wheel = build_core_wheel(tmpdir)
-        upload_and_install_wheels(
-            tmpdir, temp_yaml, core_wheel, plugin_wheels
-        )
+        upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheels)
         yield
         ray_down(f.name)
 
