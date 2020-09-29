@@ -2,6 +2,7 @@
 from omegaconf import DictConfig
 
 import hydra
+from hydra.utils import instantiate
 
 
 class DBConnection:
@@ -32,7 +33,7 @@ class PostgreSQLConnection(DBConnection):
 
 @hydra.main(config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    connection = hydra.utils.instantiate(cfg.db)
+    connection = instantiate(cfg.db)
     connection.connect()
 
 

@@ -2,11 +2,12 @@
 import copy
 import os
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 import pytest
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 
 from hydra import utils
 from hydra._internal.utils import _convert_container_targets_to_strings
@@ -14,6 +15,7 @@ from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException
 from hydra.types import TargetConf
+from hydra.utils import ConvertMode
 from tests import (
     AClass,
     Adam,
@@ -29,14 +31,21 @@ from tests import (
     IllegalType,
     Mapping,
     MappingConf,
+    NestedConf,
     NestingClass,
     Parameters,
     Rotation,
     RotationConf,
+    SimpleClass,
+    SimpleClassDefaultPrimitiveConf,
+    SimpleClassNonPrimitiveConf,
+    SimpleClassPrimitiveConf,
+    SimpleDataClass,
     Tree,
     TreeConf,
     UntypedPassthroughClass,
     UntypedPassthroughConf,
+    User,
     module_function,
 )
 
@@ -211,6 +220,34 @@ def test_interpolation_accessing_parent(
     assert obj == expected
 
 
+def test_interpolation_is_live_in_instantiated_object() -> None:
+    """
+    Interpolations in instantiated objects are live config objects but not for primitive objects.
+    """
+    cfg = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.AClass",
+                "a": "${value}",
+                "b": {"x": "${value}"},
+                "c": 30,
+                "d": 40,
+            },
+            "value": 99,
+        }
+    )
+    obj = utils.instantiate(cfg.node)
+    assert obj.a == 99
+    assert obj.b.x == 99
+
+    cfg.value = 3.14
+
+    # interpolation is not live for primitive objects
+    assert obj.a == 99  # unchanged
+    # but is live for config objects
+    assert obj.b.x == 3.14
+
+
 def test_class_instantiate_omegaconf_node() -> Any:
     conf = OmegaConf.structured(
         {
@@ -292,7 +329,13 @@ def test_instantiate_adam_conf() -> None:
 
     adam_params = Parameters([1, 2, 3])
     res = utils.instantiate(AdamConf(lr=0.123), params=adam_params)
-    assert res == Adam(lr=0.123, params=adam_params)
+    expected = Adam(lr=0.123, params=adam_params)
+    assert res.params == expected.params
+    assert res.lr == expected.lr
+    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert res.eps == expected.eps
+    assert res.weight_decay == expected.weight_decay
+    assert res.amsgrad == expected.amsgrad
 
 
 def test_targetconf_deprecated() -> None:
@@ -784,3 +827,316 @@ def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> No
 def test_convert_target_to_string(input_: Any, expected: Any) -> None:
     _convert_container_targets_to_strings(input_)
     assert input_ == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "primitive,expected_primitive",
+    [
+        pytest.param(None, False, id="unspecified"),
+        pytest.param(ConvertMode.NONE, False, id="none"),
+        pytest.param(ConvertMode.PARTIAL, True, id="partial"),
+        pytest.param(ConvertMode.ALL, True, id="all"),
+    ],
+)
+@pytest.mark.parametrize(  # type: ignore
+    "input_,expected",
+    [
+        pytest.param(
+            {
+                "obj": {
+                    "_target_": "tests.AClass",
+                    "a": {"foo": "bar"},
+                    "b": OmegaConf.create({"foo": "bar"}),
+                    "c": [1, 2, 3],
+                    "d": OmegaConf.create([1, 2, 3]),
+                },
+            },
+            AClass(
+                a={"foo": "bar"},
+                b={"foo": "bar"},
+                c=[1, 2, 3],
+                d=[1, 2, 3],
+            ),
+            id="simple",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": {
+                    "_target_": "tests.AClass",
+                    "a": {"foo": "${value}"},
+                    "b": OmegaConf.create({"foo": "${value}"}),
+                    "c": [1, "${value}"],
+                    "d": OmegaConf.create([1, "${value}"]),
+                },
+            },
+            AClass(
+                a={"foo": 99},
+                b={"foo": 99},
+                c=[1, 99],
+                d=[1, 99],
+            ),
+            id="interpolation",
+        ),
+    ],
+)
+def test_convert_params_override(
+    primitive: Optional[bool], expected_primitive: bool, input_: Any, expected: Any
+) -> None:
+    input_cfg = OmegaConf.create(input_)
+    if primitive is not None:
+        ret = utils.instantiate(input_cfg.obj, _convert_=primitive)
+    else:
+        ret = utils.instantiate(input_cfg.obj)
+
+    expected_list: Any
+    expected_dict: Any
+    if expected_primitive is True:
+        expected_list = list
+        expected_dict = dict
+    else:
+        expected_list = ListConfig
+        expected_dict = DictConfig
+
+    assert ret == expected
+    assert isinstance(ret.a, expected_dict)
+    assert isinstance(ret.b, expected_dict)
+    assert isinstance(ret.c, expected_list)
+    assert isinstance(ret.d, expected_list)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "convert_mode",
+    [  # type: ignore
+        pytest.param(None, id="none"),
+        pytest.param(ConvertMode.NONE, id="none"),
+        pytest.param(ConvertMode.PARTIAL, id="partial"),
+        pytest.param(ConvertMode.ALL, id="all"),
+    ],
+)
+@pytest.mark.parametrize(  # type: ignore
+    "input_,expected",
+    [
+        pytest.param(
+            {
+                "value": 99,
+                "obj": {
+                    "_target_": "tests.SimpleClass",
+                    "a": {
+                        "_target_": "tests.SimpleClass",
+                        "a": {"foo": "${value}"},
+                        "b": [1, "${value}"],
+                    },
+                    "b": None,
+                },
+            },
+            SimpleClass(a={"foo": 99}, b=[1, 99]),
+            id="simple",
+        ),
+    ],
+)
+def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
+    cfg = OmegaConf.create(input_)
+    ret = utils.instantiate(
+        cfg.obj,
+        **{
+            "a": {"_convert_": convert_mode},
+        },
+    )
+
+    if convert_mode in (ConvertMode.PARTIAL, ConvertMode.ALL):
+        assert isinstance(ret.a.a, dict)
+        assert isinstance(ret.a.b, list)
+    elif convert_mode in (None, ConvertMode.NONE):
+        assert isinstance(ret.a.a, DictConfig)
+        assert isinstance(ret.a.b, ListConfig)
+    else:
+        assert False
+
+    assert ret.a == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "convert",
+    [  # type: ignore
+        pytest.param(None, id="p=unspecified"),
+        pytest.param(ConvertMode.NONE, id="none"),
+        pytest.param(ConvertMode.PARTIAL, id="partial"),
+        pytest.param(ConvertMode.ALL, id="all"),
+    ],
+)
+@pytest.mark.parametrize(  # type: ignore
+    "input_,expected",
+    [
+        pytest.param(
+            {
+                "value": 99,
+                "obj": {
+                    "_target_": "tests.SimpleDataClass",
+                    "a": {
+                        "_target_": "tests.SimpleDataClass",
+                        "a": {"foo": "${value}"},
+                        "b": [1, "${value}"],
+                    },
+                    "b": None,
+                },
+            },
+            SimpleDataClass(a={"foo": 99}, b=[1, 99]),
+            id="simple",
+        ),
+    ],
+)
+def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: Any):
+    # Instantiated dataclasses are never converted to primitives.
+    # This is due to the ambiguity between dataclass as an object and as
+    # an input for creating a config object (Structured Configs)
+    # Even in ConvertMode.ALL - the underlying dict and list are converted to DictConfig and ListConfig
+    # because the parent DictConfig cannot hold unwrapped list and dict.
+    # This behavior is unique to instantiated objects that are dataclasses.
+
+    cfg = OmegaConf.create(input_)
+    kwargs = {"a": {"_convert_": convert}}
+    ret = utils.instantiate(cfg.obj, **kwargs)
+
+    assert ret.a == expected
+    # as close as it gets for dataclasses:
+    # Object is a DictConfig and the underlying type is the expected type.
+    assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
+    # Since these are nested in , they are not getting converted. not the greatest behavior.
+    # Can potentially be solved if this is causing issues.
+    assert isinstance(ret.a.a, DictConfig)
+    assert isinstance(ret.a.b, ListConfig)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_,is_primitive,expected",
+    [
+        pytest.param(
+            {
+                "value": 99,
+                "obj": SimpleClassPrimitiveConf(
+                    a={"foo": "${value}"}, b=[1, "${value}"]
+                ),
+            },
+            True,
+            SimpleClass(a={"foo": 99}, b=[1, 99]),
+            id="primitive_specified_true",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": SimpleClassNonPrimitiveConf(
+                    a={"foo": "${value}"}, b=[1, "${value}"]
+                ),
+            },
+            False,
+            SimpleClass(a={"foo": 99}, b=[1, 99]),
+            id="primitive_specified_false",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": SimpleClassDefaultPrimitiveConf(
+                    a={"foo": "${value}"}, b=[1, "${value}"]
+                ),
+            },
+            False,
+            SimpleClass(a={"foo": 99}, b=[1, 99]),
+            id="default_behavior",
+        ),
+    ],
+)
+def test_convert_in_config(input_: Any, is_primitive: bool, expected: Any) -> None:
+    cfg = OmegaConf.create(input_)
+    ret = utils.instantiate(cfg.obj)
+    assert ret == expected
+
+    if is_primitive:
+        assert isinstance(ret.a, dict)
+        assert isinstance(ret.b, list)
+    else:
+        assert isinstance(ret.a, DictConfig)
+        assert isinstance(ret.b, ListConfig)
+
+
+def test_nested_dataclass_with_partial_convert() -> None:
+    # dict
+    cfg = OmegaConf.structured(NestedConf)
+    ret = utils.instantiate(cfg, _convert_="partial")
+    assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == User
+    assert isinstance(ret.b, DictConfig) and OmegaConf.get_type(ret.b) == User
+    expected = SimpleClass(a=User(name="a", age=1), b=User(name="b", age=2))
+    assert ret == expected
+
+    # list
+    lst = [User(name="a", age=1)]
+    cfg = OmegaConf.structured(NestedConf(a=lst))
+    ret = utils.instantiate(cfg, _convert_="partial")
+    assert isinstance(ret.a, list) and OmegaConf.get_type(ret.a[0]) == User
+    assert isinstance(ret.b, DictConfig) and OmegaConf.get_type(ret.b) == User
+    expected = SimpleClass(a=lst, b=User(name="b", age=2))
+    assert ret == expected
+
+
+class DictValues:
+    def __init__(self, d: Dict[str, User]):
+        self.d = d
+
+
+class ListValues:
+    def __init__(self, d: List[User]):
+        self.d = d
+
+
+def test_dict_with_structured_config() -> None:
+    @dataclass
+    class DictValuesConf:
+        _target_: str = "tests.test_utils.DictValues"
+        d: Dict[str, User] = MISSING
+
+    schema = OmegaConf.structured(DictValuesConf)
+    cfg = OmegaConf.merge(schema, {"d": {"007": {"name": "Bond", "age": 7}}})
+    obj = utils.instantiate(config=cfg, _convert_="none")
+    assert OmegaConf.is_dict(obj.d)
+    assert OmegaConf.get_type(obj.d["007"]) == User
+
+    obj = utils.instantiate(config=cfg, _convert_="partial")
+    assert isinstance(obj.d, dict)
+    assert OmegaConf.get_type(obj.d["007"]) == User
+
+    obj = utils.instantiate(config=cfg, _convert_="all")
+    assert isinstance(obj.d, dict)
+    assert isinstance(obj.d["007"], dict)
+
+
+def test_list_with_structured_config() -> None:
+    @dataclass
+    class ListValuesConf:
+        _target_: str = "tests.test_utils.ListValues"
+        d: List[User] = MISSING
+
+    schema = OmegaConf.structured(ListValuesConf)
+    cfg = OmegaConf.merge(schema, {"d": [{"name": "Bond", "age": 7}]})
+
+    obj = utils.instantiate(config=cfg, _convert_="none")
+    assert isinstance(obj.d, ListConfig)
+    assert OmegaConf.get_type(obj.d[0]) == User
+
+    obj = utils.instantiate(config=cfg, _convert_="partial")
+    assert isinstance(obj.d, list)
+    assert OmegaConf.get_type(obj.d[0]) == User
+
+    obj = utils.instantiate(config=cfg, _convert_="all")
+    assert isinstance(obj.d, list)
+    assert isinstance(obj.d[0], dict)
+
+
+def test_list_as_none() -> None:
+    @dataclass
+    class ListValuesConf:
+        _target_: str = "tests.test_utils.ListValues"
+        d: Optional[List[User]] = None
+
+    cfg = OmegaConf.structured(ListValuesConf)
+    obj = utils.instantiate(config=cfg)
+    assert obj.d is None
