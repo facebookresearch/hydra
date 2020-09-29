@@ -220,6 +220,7 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
+            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
 <<<<<<< HEAD
@@ -263,7 +264,11 @@ jobs:
       py_version:
         type: string
     docker:
+<<<<<<< HEAD
       - image: cimg/base:stable-18.04
+=======
+      - image: circleci/python:3.8
+>>>>>>> pin circleci docker image & fix create ami script
     steps:
       - linux:
           py_version: << parameters.py_version >>
@@ -375,6 +380,7 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
+              python -c 'import sys; print(sys.version_info[:])'
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
@@ -410,7 +416,11 @@ jobs:
       test_plugin:
         type: string
     docker:
+<<<<<<< HEAD
       - image: cimg/base:stable-18.04
+=======
+      - image: circleci/python:3.8
+>>>>>>> pin circleci docker image & fix create ami script
     steps:
       - linux:
           py_version: << parameters.py_version >>
