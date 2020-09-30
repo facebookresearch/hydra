@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
-import ray.cloudpickle as cloudpickle
+import cloudpickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
@@ -43,7 +43,7 @@ def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(jobspec, f)  # type: ignore
+        cloudpickle.dump(jobspec, f)
     log.info(f"Pickle for jobs: {f.name}")
 
 
@@ -179,7 +179,7 @@ def launch_jobs(
             ray_down(launcher.ray_yaml_path)
 
         with open(os.path.join(local_tmp_download_dir, JOB_RETURN_PICKLE), "rb") as f:
-            job_returns = cloudpickle.load(f)  # type: ignore
+            job_returns = cloudpickle.load(f)
             assert isinstance(job_returns, List)
             for run in job_returns:
                 assert isinstance(run, JobReturn)
