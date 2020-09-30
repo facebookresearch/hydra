@@ -115,7 +115,6 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox
@@ -134,7 +133,6 @@ jobs:
           name: Testing Hydra
           command: |
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox
             pip install dataclasses
@@ -181,7 +179,6 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              python -c 'import sys; print(sys.version_info[:])'
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
@@ -203,7 +200,6 @@ jobs:
           name: << parameters.test_plugin >>
           command: |
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox
