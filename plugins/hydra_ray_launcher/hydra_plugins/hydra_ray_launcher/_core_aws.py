@@ -43,7 +43,7 @@ def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dumps(jobspec, f)  # type: ignore
+        cloudpickle.dump(jobspec, f)  # type: ignore
     log.info(f"Pickle for jobs: {f.name}")
 
 
