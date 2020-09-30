@@ -57,11 +57,20 @@ commands:
     steps:
       - checkout
       - run:
-          name: Preparing environment
+          name: Preparing environment - Conda
+          command: |
+            curl -o Miniconda3-py38_4.8.3-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh
+            bash ./Miniconda3-py38_4.8.3-Linux-x86_64.sh -b
+      - run:
+          name: Preparing environment - Other dependency
           command: |
             sudo apt-get update
             sudo apt-get install -y expect fish openjdk-11-jre
-            sudo pip install nox
+      - run:
+          name: Preparing environment - Hydra
+          command: |
+            ~/miniconda3/bin/conda init bash
+            ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
 
 
   win:
@@ -106,31 +115,30 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
+            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox
             pip install dataclasses
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-
-
   test_linux:
     parameters:
       py_version:
         type: string
     docker:
-      - image: circleci/python:<< parameters.py_version >>
+      - image: circleci/python:3.8
     steps:
       - linux:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
           command: |
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox
             pip install dataclasses
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-
-
   test_win:
     parameters:
       py_version:
@@ -148,7 +156,6 @@ jobs:
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             exit $LASTEXITCODE
-
   trigger_plugin_piplines:
     docker:
       - image: circleci/python:3.8
@@ -159,8 +166,6 @@ jobs:
           command: |
               python tools/ci/circleci_pipeline.py
               echo "Done kicking off plugin tests."
-
-
   test_plugin_macos:
     parameters:
       py_version:
@@ -176,14 +181,13 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
+              python -c 'import sys; print(sys.version_info[:])'
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
               pip install nox
               pip install dataclasses
               nox -s lint_plugins test_plugins -ts
-
-
   test_plugin_linux:
     parameters:
       py_version:
@@ -191,20 +195,20 @@ jobs:
       test_plugin:
         type: string
     docker:
-      - image: circleci/python:<< parameters.py_version >>
+      - image: circleci/python:3.8
     steps:
       - linux:
           py_version: << parameters.py_version >>
       - run:
           name: << parameters.test_plugin >>
           command: |
-                export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-                export PLUGINS=<< parameters.test_plugin >>
-                pip install nox
-                pip install dataclasses
-                nox -s lint_plugins test_plugins -ts
-
-
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+            python -c 'import sys; print(sys.version_info[:])'
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            export PLUGINS=<< parameters.test_plugin >>
+            pip install nox
+            pip install dataclasses
+            nox -s lint_plugins test_plugins -ts
   test_plugin_win:
     parameters:
       py_version:
@@ -225,8 +229,6 @@ jobs:
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
-
-
   # Misc
   coverage:
     docker:
