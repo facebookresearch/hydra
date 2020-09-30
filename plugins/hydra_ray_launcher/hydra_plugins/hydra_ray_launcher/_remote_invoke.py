@@ -9,6 +9,8 @@ from typing import List
 from urllib.request import urlopen
 
 import cloudpickle  # type: ignore
+import pickle
+# from ray.cloudpickle import cloudpickle
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -28,7 +30,7 @@ log = logging.getLogger(__name__)
 def launch_jobs(temp_dir: str) -> None:
     runs = []
     with open(os.path.join(temp_dir, JOB_SPEC_PICKLE), "rb") as f:
-        job_spec = cloudpickle.load(f)
+        job_spec = pickle.load(f)
         singleton_state = job_spec["singleton_state"]
         sweep_configs = job_spec["sweep_configs"]
         task_function = job_spec["task_function"]

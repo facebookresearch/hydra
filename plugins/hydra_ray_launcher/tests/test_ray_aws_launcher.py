@@ -163,6 +163,11 @@ def manage_cluster() -> Generator[None, None, None]:
         get_requirements_sha() == "06e92acfb5918e890c042377457cdaae"
     ), "hydra-core requirements changed, new AMI needed."
 
+    # build all the wheels
+    tmpdir = tempfile.mkdtemp()
+    plugin_wheels = build_installed_plugin_wheels( tmpdir )
+    core_wheel = build_core_wheel( tmpdir )
+
     # test only need cluster name and provider info for connection.
     connect_yaml = f"""
 cluster_name: {cluster_name}
@@ -202,11 +207,6 @@ worker_nodes:
         ray_up(temp_yaml)
         ray_new_dir(temp_yaml, temp_remote_dir, False)
         ray_new_dir(temp_yaml, temp_remote_wheel_dir, False)
-
-        # build all the wheels
-        tmpdir = tempfile.mkdtemp()
-        plugin_wheels = build_installed_plugin_wheels(tmpdir)
-        core_wheel = build_core_wheel(tmpdir)
         upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheels)
         yield
         ray_down(f.name)

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
+import pickle
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
@@ -179,7 +180,7 @@ def launch_jobs(
             ray_down(launcher.ray_yaml_path)
 
         with open(os.path.join(local_tmp_download_dir, JOB_RETURN_PICKLE), "rb") as f:
-            job_returns = cloudpickle.load(f)
+            job_returns = pickle.load(f)
             assert isinstance(job_returns, List)
             for run in job_returns:
                 assert isinstance(run, JobReturn)

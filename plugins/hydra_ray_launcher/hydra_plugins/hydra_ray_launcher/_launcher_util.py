@@ -3,14 +3,14 @@ import logging
 import os
 from contextlib import contextmanager
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Generator, List, Tuple, Union
+from typing import Any, Dict, Generator, List, Tuple
 
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, ListConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 log = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ def launch_job_on_ray(
     ray_remote_cfg: DictConfig,
     sweep_config: DictConfig,
     task_function: TaskFunction,
-    singleton_state: Dict[type, "Singleton"],
+    singleton_state: Any,
 ) -> Any:
     if ray_remote_cfg:
         run_job_ray = ray.remote(**ray_remote_cfg)(_run_job)
@@ -133,7 +133,7 @@ def _ray_get_head_ip(yaml_path: str) -> str:
     return out.strip()
 
 
-def _get_pem(ray_cluster_cfg: Union[DictConfig, ListConfig]) -> Any:
+def _get_pem(ray_cluster_cfg: Any) -> Any:
     key_name = ray_cluster_cfg.auth.get("ssh_private_key")
     if key_name is not None:
         return key_name
