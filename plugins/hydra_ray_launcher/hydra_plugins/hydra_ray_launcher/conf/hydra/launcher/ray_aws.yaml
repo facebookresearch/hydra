@@ -18,7 +18,7 @@ ray_cluster_cfg:
     # install needed dependency for launcher.
     - python3 -m pip install --ignore-installed PyYAML
     - python3 -m pip install ray==0.8.7
-    - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_core-1.0.4-py3-none-any.whl
+    - python3 -m pip install git+https://github.com/facebookresearch/hydra.git@master
     - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
 
   # Command to start ray on the head node. You don't need to change this.
