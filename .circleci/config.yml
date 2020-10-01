@@ -125,7 +125,7 @@ jobs:
       py_version:
         type: string
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/base:stable-18.04
     steps:
       - linux:
           py_version: << parameters.py_version >>
@@ -192,7 +192,7 @@ jobs:
       test_plugin:
         type: string
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/base:stable-18.04
     steps:
       - linux:
           py_version: << parameters.py_version >>
