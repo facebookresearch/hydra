@@ -29,7 +29,7 @@ log = logging.getLogger(__name__)
 def launch_jobs(temp_dir: str) -> None:
     runs = []
     with open(os.path.join(temp_dir, JOB_SPEC_PICKLE), "rb") as f:
-        job_spec = pickle.load(f)
+        job_spec = pickle.load(f)  # nosec
         singleton_state = job_spec["singleton_state"]
         sweep_configs = job_spec["sweep_configs"]
         task_function = job_spec["task_function"]

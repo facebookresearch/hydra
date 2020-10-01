@@ -88,7 +88,7 @@ def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
 
     mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
     out, _ = _run_command(mktemp_args)
-    tmppath = [x for x in out.strip().split() if x.startswith("/tmp/")]
+    tmppath = [x for x in out.strip().split() if x.startswith("/tmp/")]  # nosec
     assert len(tmppath) == 1
     tmp_path = tmppath[0]
     yield tmp_path
