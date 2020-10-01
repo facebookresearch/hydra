@@ -29,6 +29,9 @@ INSTALL_COMMAND = (
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
+# Allow skip checking for warnings for specific plugins
+PLUGINS_WITH_WARNINGS = os.environ.get("PLUGINS_WITH_WARNINGS", "").split(",")
+
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 FIX = os.environ.get("FIX", "0") == "1"
@@ -53,6 +56,7 @@ def get_current_os() -> str:
 print(f"Operating system\t:\t{get_current_os()}")
 print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
 print(f"PLUGINS\t\t\t:\t{PLUGINS}")
+print(f"PLUGINS_WITH_WARNINGS\t:\t{PLUGINS_WITH_WARNINGS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
@@ -404,7 +408,12 @@ def test_plugins_in_directory(
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
         session.chdir(os.path.join(BASE, directory, plugin.path))
-        run_pytest(session)
+        if plugin.path in PLUGINS_WITH_WARNINGS:
+            args = pytest_args(".")
+            args = [x for x in args if x != "-Werror"]
+            session.run(*args, silent=SILENT)
+        else:
+            run_pytest(session)
 
 
 @nox.session(python="3.8")
