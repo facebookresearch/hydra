@@ -30,7 +30,7 @@ instantiate = call
 ```
 
 The config passed to these functions must have a key called `_target_`, with the value of a fully qualified class name, class method, static method or callable.   
-Any additional parameters are passed as keyword arguments to tha target.
+Any additional parameters are passed as keyword arguments to the target.
 
 For example, your application may have a User class that looks like this:
 ```python title="user.py"
