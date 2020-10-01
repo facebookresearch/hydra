@@ -179,7 +179,6 @@ def manage_cluster() -> Generator[None, None, None]:
     tmpdir = tempfile.mkdtemp()
     plugin_wheels = build_ray_launcher_wheel(tmpdir)
     core_wheel = build_core_wheel(tmpdir)
-    # test only need cluster name and provider info for connection.
     connect_yaml = f"""
 cluster_name: {cluster_name}
 provider:

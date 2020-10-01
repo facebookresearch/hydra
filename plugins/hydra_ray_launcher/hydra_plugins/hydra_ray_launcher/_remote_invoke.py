@@ -52,11 +52,8 @@ def launch_jobs(temp_dir: str) -> None:
             if not sweep_dir:
                 sweep_dir = Path(str(HydraConfig.get().sweep.dir))
                 sweep_dir.mkdir(parents=True, exist_ok=True)
-                os.chdir(sweep_dir)
 
-            print(f"ray init config {ray_init_cfg}")
             start_ray(ray_init_cfg)
-            # ray.init()
             ray_obj = launch_job_on_ray(
                 ray_remote_cfg, sweep_config, task_function, singleton_state
             )

@@ -92,8 +92,8 @@ def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
     assert len(tmppath) == 1
     tmp_path = tmppath[0]
     yield tmp_path
-    rmtemp_args = args + [yaml_path, f"rm -rf {tmp_path}"]
-    _run_command(rmtemp_args)
+    # rmtemp_args = args + [yaml_path, f"rm -rf {tmp_path}"]
+    # _run_command(rmtemp_args)
 
 
 def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> None:
