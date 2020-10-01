@@ -23,7 +23,7 @@ def _run_command(command: str) -> str:
 
 
 def set_up_machine() -> None:
-    security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
+    security_group_id = os.environ.get("RAY_BUILD_AMI_SEC_GROUP", "")
     assert security_group_id != "", "Security group cannot be empty!"
 
     # set up security group rules to allow pip install
@@ -40,8 +40,11 @@ def set_up_machine() -> None:
         yaml = f.name
         _run_command(f"ray up {yaml} -y")
         _run_command(f"ray rsync_up {yaml} './setup_ami.py' '/home/ubuntu/' ")
+        _run_command(f"ray rsync_up {yaml} '../requirements.txt' '/home/ubuntu/' ")
 
-        print("Installing dependencies now, this may take a while...")
+        print(
+            "Installing dependencies now, this may take a while (very likely more than 20 mins) ..."
+        )
         _run_command(f"ray exec {yaml} 'python ./setup_ami.py' ")
 
         # remove security group egress rules

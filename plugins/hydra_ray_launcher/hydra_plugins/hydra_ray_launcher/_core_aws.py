@@ -1,16 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
+import pickle
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
-import cloudpickle  # type: ignore
-import pickle
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict
+from ray.cloudpickle import cloudpickle
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -44,7 +44,7 @@ def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(jobspec, f)
+        cloudpickle.dump(jobspec, f)  # type: ignore
     log.info(f"Pickle for jobs: {f.name}")
 
 

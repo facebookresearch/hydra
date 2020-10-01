@@ -47,6 +47,9 @@ security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
 instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
 
+# temporary solution. we will build customized AMI everytime the requirments changes.
+ray_requirements_sha = "4b9584817efbb9f7a359f67514bd5b01"
+hydra_core_requirements_sha = "06e92acfb5918e890c042377457cdaae"
 
 assert (
     ami != "" and security_group_id != "" and subnet_id != "" and instance_role != ""
@@ -71,7 +74,7 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
-def build_installed_plugin_wheels(tmpdir: str) -> List[str]:
+def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
     """
     This  only works on ray launcher plugin wheels for now, reasons being in our base AMI
     we do not necessarily have the dependency for other plugins.
@@ -79,13 +82,18 @@ def build_installed_plugin_wheels(tmpdir: str) -> List[str]:
     command = "python -m pip --disable-pip-version-check list | grep hydra | grep -v hydra-core "
     output = subprocess.getoutput(command).split("\n")
     plugins_path = [x.split()[0].replace("-", "_") for x in output]
+    assert (
+        len(plugins_path) == 1 and "hydra_ray_launcher" == plugins_path[0]
+    ), "Ray test AMI doesn't have dependency installed for other plugins."
+
+    sha = get_requirements_sha("plugins/hydra_ray_launcher/setup.py")
+
+    if sha != ray_requirements_sha:
+        log.warning("Ray setup.py changed, we may need new launcher test AMI!")
     wheels = []
     for p in plugins_path:
         wheel = build_plugin_wheel(p, tmpdir)
         wheels.append(wheel)
-    assert (
-        len(wheels) == 1 and "hydra_ray_launcher" in wheels[0]
-    ), "Other plugins installed may cause tests failure."
     return wheels
 
 
@@ -138,9 +146,12 @@ def upload_and_install_wheels(
         )
 
 
-def get_requirements_sha() -> str:
+def get_requirements_sha(path_to_hydra_root: Optional[str] = None) -> str:
     chdir_hydra_root()
-    requirements_path = Path("requirements/requirements.txt")
+    if path_to_hydra_root:
+        requirements_path = Path(path_to_hydra_root)
+    else:
+        requirements_path = Path("requirements/requirements.txt")
     with open(requirements_path, "rb") as f:
         data = f.read()
         return hashlib.md5(data).hexdigest()  # nosec
@@ -159,15 +170,15 @@ def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
 
-    assert (
-        get_requirements_sha() == "06e92acfb5918e890c042377457cdaae"
-    ), "hydra-core requirements changed, new AMI needed."
+    if get_requirements_sha() != hydra_core_requirements_sha:
+        log.warning(
+            "Hydra core requirements changes. This may mean we need to update RAY test AMI."
+        )
 
     # build all the wheels
     tmpdir = tempfile.mkdtemp()
-    plugin_wheels = build_installed_plugin_wheels( tmpdir )
-    core_wheel = build_core_wheel( tmpdir )
-
+    plugin_wheels = build_ray_launcher_wheel(tmpdir)
+    core_wheel = build_core_wheel(tmpdir)
     # test only need cluster name and provider info for connection.
     connect_yaml = f"""
 cluster_name: {cluster_name}

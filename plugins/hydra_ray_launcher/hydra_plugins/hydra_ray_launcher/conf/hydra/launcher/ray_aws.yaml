@@ -2,9 +2,6 @@
 
 # This yaml will be validated against RayAWSLauncherConf
 
-ray_init_cfg:
-  address: auto
-
 ray_cluster_cfg:
   provider:
     key_pair:
@@ -17,8 +14,7 @@ ray_cluster_cfg:
     - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"' >> ~/.bashrc
     # install needed dependency for launcher.
     - python3 -m pip install --ignore-installed PyYAML
-    - python3 -m pip install ray==0.8.7
-    - python3 -m pip install cloudpickle==1.4.1
+    - python3 -m pip install ray==1.0.0
     - python3 -m pip install git+https://github.com/facebookresearch/hydra.git@master
     - python3 -m pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
 

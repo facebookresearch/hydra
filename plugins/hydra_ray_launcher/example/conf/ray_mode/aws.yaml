@@ -19,7 +19,7 @@ hydra:
       include: ["*.pt", "*/"]
       # No need to sync down config files.
       exclude: ["*", "*/"]
-    stop_cluster: true
+    stop_cluster: false
     ray_cluster_cfg:
       provider:
         cache_stopped_nodes: true

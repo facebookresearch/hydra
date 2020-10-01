@@ -160,7 +160,9 @@ class RayClusterConf:
 @dataclass
 class RayAWSLauncherConf(TargetConf):
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
-    ray_init_cfg: Dict[str, Any] = field(default_factory=lambda: {"address": "local"})
+    ray_init_cfg: Dict[str, Any] = field(
+        default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
+    )
     ray_remote_cfg: Dict[str, Any] = field(
         default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
     )

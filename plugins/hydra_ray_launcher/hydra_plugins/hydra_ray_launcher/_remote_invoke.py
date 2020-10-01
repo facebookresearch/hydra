@@ -3,19 +3,18 @@
 # This file is to be rsynced to ray cluster and invoke on the cluster.
 import logging
 import os
+import pickle
 import sys
 from pathlib import Path
 from typing import List
 from urllib.request import urlopen
 
-import cloudpickle  # type: ignore
-import pickle
-# from ray.cloudpickle import cloudpickle
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, setup_globals
 from omegaconf import open_dict
+from ray.cloudpickle import cloudpickle
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -55,7 +54,9 @@ def launch_jobs(temp_dir: str) -> None:
                 sweep_dir.mkdir(parents=True, exist_ok=True)
                 os.chdir(sweep_dir)
 
+            print(f"ray init config {ray_init_cfg}")
             start_ray(ray_init_cfg)
+            # ray.init()
             ray_obj = launch_job_on_ray(
                 ray_remote_cfg, sweep_config, task_function, singleton_state
             )
@@ -69,7 +70,7 @@ def _dump_job_return(result: List[JobReturn], tmp_dir: str) -> None:
     path = os.path.join(tmp_dir, JOB_RETURN_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(result, f)
+        cloudpickle.dump(result, f)  # type: ignore
     log.info(f"Pickle for job returns: {f.name}")
 
 

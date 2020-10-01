@@ -88,13 +88,15 @@ def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
 
     mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
     out, _ = _run_command(mktemp_args)
-    tmp_path = out.strip()
+    tmppath = [x for x in out.strip().split() if x.startswith("/tmp/")]
+    assert len(tmppath) == 1
+    tmp_path = tmppath[0]
     yield tmp_path
     rmtemp_args = args + [yaml_path, f"rm -rf {tmp_path}"]
     _run_command(rmtemp_args)
 
 
-def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> str:
+def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> None:
     """
     The output of exec os.getcwd() via ray on remote cluster.
     """
@@ -103,8 +105,7 @@ def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> str:
         args += "--docker"
 
     mktemp_args = args + [yaml_path, f"mkdir -p {new_dir}"]
-    out, _ = _run_command(mktemp_args)
-    return out.strip()
+    _run_command(mktemp_args)
 
 
 def ray_rsync_up(yaml_path: str, local_dir: str, remote_dir: str) -> None:
