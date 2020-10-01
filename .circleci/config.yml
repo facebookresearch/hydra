@@ -9,15 +9,7 @@ parameters:
     default: ""
   cache_key_version:
     type: string
-<<<<<<< HEAD
-<<<<<<< HEAD
     default: v1
-=======
-    default: "v0"
->>>>>>> commit
-=======
-    default: v0
->>>>>>> fix merge conflicts
 
 commands:
   macos:
@@ -44,16 +36,8 @@ commands:
           command: |
             brew update
             brew upgrade git
-<<<<<<< HEAD
-<<<<<<< HEAD
             brew install fish
             brew cleanup
-=======
-            brew install fish wget
->>>>>>> Add ray AMI for integration tests
-=======
-            brew install fish
->>>>>>> fix merge conflicts
       - run:
           name: Preparing environment - Hydra
           command: |
@@ -82,86 +66,15 @@ commands:
     steps:
       - checkout
       - run:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fix mypy and linux conda
           name: Preparing environment - Conda
           command: |
             curl -o Miniconda3-py38_4.8.3-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh
             bash ./Miniconda3-py38_4.8.3-Linux-x86_64.sh -b
-<<<<<<< HEAD
-<<<<<<< HEAD
       - run:
           name: Preparing environment - Other dependency
           command: |
             sudo apt-get update
-<<<<<<< HEAD
-<<<<<<< HEAD
-            sudo apt-get install -y expect fish openjdk-11-jre
-      - run:
-          name: Preparing environment - Hydra
-          command: |
-            ~/miniconda3/bin/conda init bash
-            ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
-=======
-            sudo apt-get install -y expect fish openjdk-11-jre rsyn
-=======
             sudo apt-get install -y expect fish openjdk-11-jre rsync
->>>>>>> fix circleCI file
-            sudo pip install nox
-<<<<<<< HEAD
-=======
-      - run:
-<<<<<<< HEAD
-          name: "Testing Hydra"
-          no_output_timeout: 20m
-          command: |
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            pip install nox dataclasses
-<<<<<<< HEAD
-            nox
->>>>>>> hydra ray launcher
-<<<<<<< HEAD
->>>>>>> hydra ray launcher
-=======
-=======
-            nox -s << parameters.nox_session >>
->>>>>>> separate ray launcher into its own session
->>>>>>> separate ray launcher into its own session
-=======
-          name: "Preparing environment"
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre rsync
-            sudo pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
->>>>>>> commit
-
-
-=======
-=======
-            ~/miniconda3/bin/conda init bash
-=======
->>>>>>> commit
-      - run:
->>>>>>> fix mypy and linux conda
-          name: Preparing environment
-=======
-          name: Preparing environment - Other dependency
->>>>>>> fix linux setup
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre rsync
-<<<<<<< HEAD
-<<<<<<< HEAD
-            sudo pip install nox
->>>>>>> fix merge conflicts
-=======
-            conda create -n hydra python=<< parameters.py_version >> -yq
-            conda run -n hydra pip install nox
-=======
->>>>>>> remove conda install
       - run:
           name: Preparing environment - Hydra
           command: |
@@ -169,7 +82,6 @@ commands:
             ~/miniconda3/bin/conda create -n hydra python=<< parameters.py_version >> -yq
 
 
->>>>>>> fix mypy and linux conda
   win:
     description: Commands run on Windows
     parameters:
@@ -220,7 +132,6 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
 <<<<<<< HEAD
@@ -241,46 +152,20 @@ jobs:
             pip install dataclasses
 >>>>>>> fix merge conflicts
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-            nox -s lint test_core test_jupyter_notebooks -ts
-<<<<<<< HEAD
-=======
-            nox -s << parameters.nox_session >>
-            exit $LASTEXITCODE
->>>>>>> separate ray launcher into its own session
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> commit
-
-
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> fix merge conflicts
   test_linux:
     parameters:
       py_version:
         type: string
     docker:
-<<<<<<< HEAD
       - image: cimg/base:stable-18.04
-=======
-      - image: circleci/python:3.8
->>>>>>> pin circleci docker image & fix create ami script
     steps:
       - linux:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
           command: |
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+<<<<<<< HEAD
             python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 <<<<<<< HEAD
@@ -331,6 +216,8 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
 >>>>>>> clean up circleci yaml
 >>>>>>> clean up circleci yaml
+=======
+>>>>>>> rebase and add install rsync
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
 >>>>>>> commit
             pip install nox
@@ -380,7 +267,6 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              python -c 'import sys; print(sys.version_info[:])'
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
@@ -395,20 +281,6 @@ jobs:
               pip install dataclasses
 >>>>>>> commit
               nox -s lint_plugins test_plugins -ts
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-          nox_session: << parameters.nox_session >>
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> commit
-
-
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> fix merge conflicts
   test_plugin_linux:
     parameters:
       py_version:
@@ -416,52 +288,18 @@ jobs:
       test_plugin:
         type: string
     docker:
-<<<<<<< HEAD
       - image: cimg/base:stable-18.04
-=======
-      - image: circleci/python:3.8
->>>>>>> pin circleci docker image & fix create ami script
     steps:
       - linux:
           py_version: << parameters.py_version >>
       - run:
           name: << parameters.test_plugin >>
           command: |
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-=======
-            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-            python -c 'import sys; print(sys.version_info[:])'
->>>>>>> print python version
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
-<<<<<<< HEAD
-=======
-=======
-                which python
-                python --version
->>>>>>> print python version
-=======
-                export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
->>>>>>> clean up circleci yaml
-                export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-                export PLUGINS=<< parameters.test_plugin >>
-                pip install nox
-                pip install dataclasses
-                nox -s lint_plugins test_plugins -ts
-<<<<<<< HEAD
-
-
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> fix merge conflicts
-=======
->>>>>>> print python version
   test_plugin_win:
     parameters:
       py_version:
@@ -482,14 +320,6 @@ jobs:
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-
->>>>>>> separate ray launcher into its own session
-=======
->>>>>>> fix merge conflicts
   # Misc
   coverage:
     docker:
