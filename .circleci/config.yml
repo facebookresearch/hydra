@@ -9,7 +9,7 @@ parameters:
     default: ""
   cache_key_version:
     type: string
-    default: v0
+    default: v1
 
 commands:
   macos:
@@ -37,6 +37,7 @@ commands:
             brew update
             brew upgrade git
             brew install fish
+            brew cleanup
       - run:
           name: Preparing environment - Hydra
           command: |
@@ -46,7 +47,7 @@ commands:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
             - ~/miniconda3
-            - /usr/local/Homebrew
+            - ~/Library/Caches/Homebrew
 
 
   linux:
