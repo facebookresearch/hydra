@@ -9,12 +9,12 @@ from pathlib import Path
 from typing import List
 from urllib.request import urlopen
 
+import cloudpickle  # type: ignore
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, setup_globals
 from omegaconf import open_dict
-from ray.cloudpickle import cloudpickle
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -67,7 +67,7 @@ def _dump_job_return(result: List[JobReturn], tmp_dir: str) -> None:
     path = os.path.join(tmp_dir, JOB_RETURN_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        cloudpickle.dump(result, f)  # type: ignore
+        cloudpickle.dump(result, f)
     log.info(f"Pickle for job returns: {f.name}")
 
 
