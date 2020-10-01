@@ -39,7 +39,7 @@ call = instantiate
 ```
 
 The config passed to these functions must have a key called `_target_`, with the value of a fully qualified class name, class method, static method or callable.   
-Any additional parameters are passed as keyword arguments to tha target.
+Any additional parameters are passed as keyword arguments to the target.
 For convenience, `None` config results in a `None` object.
 
 ### Simple usage
