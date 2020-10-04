@@ -75,3 +75,32 @@ s.store(name="primary_config", node={"primary": True}, package=None)
 s.store(
     name="primary_config_with_non_global_package", node={"primary": True}, package="foo"
 )
+
+s.store(
+    name="config_with_defaults_list",
+    node={
+        "defaults": [{"dataset": "imagenet"}],
+        "key": "value",
+    },
+    package="_global_",
+)
+
+s.store(
+    group="configs_with_defaults_list",
+    name="global_package",
+    node={
+        "defaults": [{"foo": "bar"}],
+        "configs_with_defaults_list": {"x": 10},
+    },
+    package="_global_",
+)
+
+s.store(
+    group="configs_with_defaults_list",
+    name="group_package",
+    node={
+        "defaults": [{"foo": "bar"}],
+        "x": 10,
+    },
+    package="_group_",
+)

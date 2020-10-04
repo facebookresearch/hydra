@@ -1,13 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import re
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
 import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 
-from hydra._internal.config_loader_impl import ConfigLoaderImpl, DefaultElement
+from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import LoadTrace
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -41,15 +42,67 @@ class TopLevelConfig:
 
 
 hydra_load_list: List[LoadTrace] = [
-    LoadTrace("hydra_config", "structured://", "hydra", None),
-    LoadTrace("hydra/hydra_logging/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/job_logging/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/launcher/basic", "structured://", "hydra", None),
-    LoadTrace("hydra/sweeper/basic", "structured://", "hydra", None),
-    LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
-    LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+    LoadTrace(
+        config_group=None,
+        config_name="hydra_config",
+        search_path="structured://",
+        provider="hydra",
+    ),
+    LoadTrace(
+        config_group="hydra/hydra_logging",
+        config_name="default",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/job_logging",
+        config_name="default",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/launcher",
+        config_name="basic",
+        search_path="structured://",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/sweeper",
+        config_name="basic",
+        search_path="structured://",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/output",
+        config_name="default",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/help",
+        config_name="default",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+        parent="hydra_config",
+    ),
+    LoadTrace(
+        config_group="hydra/hydra_help",
+        config_name="default",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+        parent="hydra_config",
+    ),
 ]
+
+
+def assert_same_composition_trace(composition_trace: Any, expected: Any) -> None:
+    actual = [LoadTrace(**x) for x in composition_trace]
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -294,32 +347,51 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        config_loader.load_configuration(
+        cfg = config_loader.load_configuration(
             config_name="missing-optional-default.yaml",
             overrides=[],
-            strict=False,
             run_mode=RunMode.RUN,
         )
-        expected = hydra_load_list.copy()
-        expected.append(LoadTrace("missing-optional-default.yaml", path, "main", None))
-        expected.append(LoadTrace("foo/missing", None, None, None))
+        expected = deepcopy(hydra_load_list)
+        expected.append(
+            LoadTrace(
+                config_group=None,
+                config_name="missing-optional-default.yaml",
+                provider="main",
+                search_path=path,
+            )
+        )
+        expected.append(
+            LoadTrace(
+                config_group="foo",
+                config_name="missing",
+                skip_reason="missing_optional_config",
+                parent="missing-optional-default.yaml",
+            )
+        )
 
-        assert config_loader.get_load_history() == expected
+        assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
     def test_load_history_with_basic_launcher(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        config_loader.load_configuration(
+        cfg = config_loader.load_configuration(
             config_name="custom_default_launcher.yaml",
             overrides=["hydra/launcher=basic"],
             strict=False,
             run_mode=RunMode.RUN,
         )
 
-        expected = hydra_load_list.copy()
-        expected.append(LoadTrace("custom_default_launcher.yaml", path, "main", None))
-        assert config_loader.get_load_history() == expected
+        expected = deepcopy(hydra_load_list)
+        expected.append(
+            LoadTrace(
+                config_name="custom_default_launcher.yaml",
+                search_path=path,
+                provider="main",
+            )
+        )
+        assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
     def test_load_yml_file(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -379,6 +451,28 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="config", overrides=["+db=mysql"], run_mode=RunMode.RUN
         )
+
+        expected = deepcopy(hydra_load_list)
+        expected.append(
+            LoadTrace(
+                config_name="config",
+                search_path=path,
+                provider="main",
+                schema_provider="this_test",
+            )
+        )
+        expected.append(
+            LoadTrace(
+                config_group="db",
+                config_name="mysql",
+                search_path=path,
+                provider="main",
+                schema_provider="this_test",
+                parent="overrides",
+            )
+        )
+        assert_same_composition_trace(cfg.hydra.composition_trace, expected)
+
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {
@@ -391,11 +485,6 @@ class TestConfigLoader:
                 "password": "secret",
             },
         }
-
-        expected = hydra_load_list.copy()
-        expected.append(LoadTrace("config", path, "main", "this_test"))
-        expected.append(LoadTrace("db/mysql", path, "main", "this_test"))
-        assert config_loader.get_load_history() == expected
 
         # verify illegal modification is rejected at runtime
         with pytest.raises(ValidationError):
@@ -425,6 +514,27 @@ class TestConfigLoader:
             run_mode=RunMode.RUN,
         )
 
+        expected = deepcopy(hydra_load_list)
+        expected.append(
+            LoadTrace(
+                config_name="config",
+                search_path=path,
+                provider="main",
+                schema_provider="this_test",
+            )
+        )
+        expected.append(
+            LoadTrace(
+                config_group="db",
+                config_name="mysql",
+                search_path=path,
+                provider="main",
+                schema_provider="this_test",
+                parent="overrides",
+            )
+        )
+        assert_same_composition_trace(cfg.hydra.composition_trace, expected)
+
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == {
@@ -437,11 +547,6 @@ class TestConfigLoader:
                 "password": "secret",
             },
         }
-
-        expected = hydra_load_list.copy()
-        expected.append(LoadTrace("config", path, "main", "this_test"))
-        expected.append(LoadTrace("db/mysql", path, "main", "this_test"))
-        assert config_loader.get_load_history() == expected
 
     def test_assign_null(self, hydra_restore_singletons: Any, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -490,53 +595,6 @@ class TestConfigLoader:
 
 
 @pytest.mark.parametrize(  # type:ignore
-    "in_primary,in_merged,expected",
-    [
-        ([], [], []),
-        (
-            [DefaultElement(config_group="a", config_name="aa")],
-            [],
-            [DefaultElement(config_group="a", config_name="aa")],
-        ),
-        (
-            [DefaultElement(config_group="a", config_name="aa")],
-            [DefaultElement(config_group="b", config_name="bb")],
-            [
-                DefaultElement(config_group="a", config_name="aa"),
-                DefaultElement(config_group="b", config_name="bb"),
-            ],
-        ),
-        (
-            [
-                DefaultElement(config_group="hydra_logging", config_name="default"),
-                DefaultElement(config_group="job_logging", config_name="default"),
-                DefaultElement(config_group="launcher", config_name="basic"),
-                DefaultElement(config_group="sweeper", config_name="basic"),
-            ],
-            [
-                DefaultElement(config_group="optimizer", config_name="nesterov"),
-                DefaultElement(config_group="launcher", config_name="basic"),
-            ],
-            [
-                DefaultElement(config_group="hydra_logging", config_name="default"),
-                DefaultElement(config_group="job_logging", config_name="default"),
-                DefaultElement(config_group="launcher", config_name="basic"),
-                DefaultElement(config_group="sweeper", config_name="basic"),
-                DefaultElement(config_group="optimizer", config_name="nesterov"),
-            ],
-        ),
-    ],
-)
-def test_merge_default_lists(
-    in_primary: List[DefaultElement],
-    in_merged: List[DefaultElement],
-    expected: List[DefaultElement],
-) -> None:
-    ConfigLoaderImpl._combine_default_lists(in_primary, in_merged)
-    assert in_primary == expected
-
-
-@pytest.mark.parametrize(  # type:ignore
     "config_file, overrides",
     [
         # remove from config
@@ -553,17 +611,24 @@ def test_default_removal(config_file: str, overrides: List[str]) -> None:
     config_loader = ConfigLoaderImpl(
         config_search_path=create_config_search_path("hydra/test_utils/configs")
     )
-    config_loader.load_configuration(
+    cfg = config_loader.load_configuration(
         config_name=config_file, overrides=overrides, strict=False, run_mode=RunMode.RUN
     )
 
-    expected = list(
-        filter(lambda x: x.filename != "hydra/launcher/basic", hydra_load_list.copy())
-    )
+    expected = deepcopy(hydra_load_list)
+    for x in expected:
+        if x.config_group == "hydra/launcher":
+            x.skip_reason = "deleted_from_list"
+            x.search_path = None
+            x.provider = None
     expected.append(
-        LoadTrace(config_file, "file://hydra/test_utils/configs", "main", None)
+        LoadTrace(
+            config_name=config_file,
+            search_path="file://hydra/test_utils/configs",
+            provider="main",
+        )
     )
-    assert config_loader.get_load_history() == expected
+    assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
 
 def test_defaults_not_list_exception() -> None:
@@ -598,29 +663,74 @@ def test_override_hydra_config_group_from_config_file() -> None:
         config_search_path=create_config_search_path("hydra/test_utils/configs")
     )
 
-    config_loader.load_configuration(
+    cfg = config_loader.load_configuration(
         config_name="overriding_logging_default.yaml",
         overrides=[],
         strict=False,
         run_mode=RunMode.RUN,
     )
-
-    # This load history is too different to easily reuse the standard hydra_load_list
-    assert config_loader.get_load_history() == [
-        LoadTrace("hydra_config", "structured://", "hydra", None),
-        LoadTrace("hydra/hydra_logging/hydra_debug", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/job_logging/disabled", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/sweeper/basic", "structured://", "hydra", None),
-        LoadTrace("hydra/output/default", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/help/default", "pkg://hydra.conf", "hydra", None),
-        LoadTrace("hydra/hydra_help/default", "pkg://hydra.conf", "hydra", None),
+    expected = [
         LoadTrace(
-            "overriding_logging_default.yaml",
-            "file://hydra/test_utils/configs",
-            "main",
-            None,
+            config_name="hydra_config", search_path="structured://", provider="hydra"
+        ),
+        LoadTrace(
+            config_group="hydra/hydra_logging",
+            config_name="hydra_debug",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_group="hydra/job_logging",
+            config_name="disabled",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_group="hydra/launcher",
+            config_name="basic",
+            search_path=None,
+            provider=None,
+            parent="hydra_config",
+            skip_reason="deleted_from_list",
+        ),
+        LoadTrace(
+            config_group="hydra/sweeper",
+            config_name="basic",
+            search_path="structured://",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_group="hydra/output",
+            config_name="default",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_group="hydra/help",
+            config_name="default",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_group="hydra/hydra_help",
+            config_name="default",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+            parent="hydra_config",
+        ),
+        LoadTrace(
+            config_name="overriding_logging_default.yaml",
+            search_path="file://hydra/test_utils/configs",
+            provider="main",
         ),
     ]
+
+    assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
 
 def test_list_groups() -> None:
@@ -653,26 +763,31 @@ def test_non_config_group_default() -> None:
     config_loader = ConfigLoaderImpl(
         config_search_path=create_config_search_path("hydra/test_utils/configs")
     )
-    config_loader.load_configuration(
+    cfg = config_loader.load_configuration(
         config_name="non_config_group_default.yaml",
         overrides=[],
         strict=False,
         run_mode=RunMode.RUN,
     )
 
-    expected = hydra_load_list.copy()
+    expected = deepcopy(hydra_load_list)
     expected.extend(
         [
             LoadTrace(
-                "non_config_group_default.yaml",
-                "file://hydra/test_utils/configs",
-                "main",
-                None,
+                config_name="non_config_group_default.yaml",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
             ),
-            LoadTrace("some_config", "file://hydra/test_utils/configs", "main", None),
+            LoadTrace(
+                config_name="some_config",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
+                parent="non_config_group_default.yaml",
+            ),
         ]
     )
-    assert config_loader.get_load_history() == expected
+
+    assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
 
 def test_mixed_composition_order() -> None:
@@ -683,26 +798,44 @@ def test_mixed_composition_order() -> None:
     config_loader = ConfigLoaderImpl(
         config_search_path=create_config_search_path("hydra/test_utils/configs")
     )
-    config_loader.load_configuration(
+    cfg = config_loader.load_configuration(
         config_name="mixed_compose.yaml",
         overrides=[],
         strict=False,
         run_mode=RunMode.RUN,
     )
 
-    expected = hydra_load_list.copy()
+    expected = deepcopy(hydra_load_list)
     expected.extend(
         [
             LoadTrace(
-                "mixed_compose.yaml", "file://hydra/test_utils/configs", "main", None
+                config_name="mixed_compose.yaml",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
             ),
-            LoadTrace("some_config", "file://hydra/test_utils/configs", "main", None),
-            LoadTrace("group1/file1", "file://hydra/test_utils/configs", "main", None),
-            LoadTrace("config", "file://hydra/test_utils/configs", "main", None),
+            LoadTrace(
+                config_name="some_config",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
+                parent="mixed_compose.yaml",
+            ),
+            LoadTrace(
+                config_group="group1",
+                config_name="file1",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
+                parent="mixed_compose.yaml",
+            ),
+            LoadTrace(
+                config_name="config",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
+                parent="mixed_compose.yaml",
+            ),
         ]
     )
 
-    assert config_loader.get_load_history() == expected
+    assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
 
 def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
@@ -721,6 +854,17 @@ def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
     cfg = config_loader.load_configuration(
         config_name="config", overrides=[], run_mode=RunMode.RUN
     )
+
+    expected = deepcopy(hydra_load_list)
+    expected.extend(
+        [
+            LoadTrace(
+                config_name="config", search_path="structured://", provider="this_test"
+            )
+        ]
+    )
+    assert_same_composition_trace(cfg.hydra.composition_trace, expected)
+
     with open_dict(cfg):
         del cfg["hydra"]
     assert cfg == {
@@ -733,10 +877,6 @@ def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
             "password": MISSING,
         },
     }
-
-    expected = hydra_load_list.copy()
-    expected.extend([LoadTrace("config", "structured://", "this_test", None)])
-    assert config_loader.get_load_history() == expected
 
 
 @dataclass
@@ -853,239 +993,6 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
     with open_dict(cfg):
         del cfg["hydra"]
     assert cfg == expected
-
-
-config_parse_error_msg = (
-    "Error parsing config override : '{override}'"
-    "\nAccepted forms:"
-    "\n\tOverride:  key=value"
-    "\n\tAppend:   +key=value"
-    "\n\tDelete:   ~key=value, ~key"
-)
-
-
-defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}]
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "input_defaults,overrides,expected",
-    [
-        # change item
-        pytest.param(
-            defaults_list,
-            ["db=postgresql"],
-            [{"db": "postgresql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic"}],
-            id="change_option",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@src=postgresql"],
-            [{"db": "mysql"}, {"db@src": "postgresql"}, {"hydra/launcher": "basic"}],
-            id="change_option",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@:dest=postgresql"],
-            [
-                {"db@dest": "postgresql"},
-                {"db@src": "mysql"},
-                {"hydra/launcher": "basic"},
-            ],
-            id="change_both",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@src:dest=postgresql"],
-            [{"db": "mysql"}, {"db@dest": "postgresql"}, {"hydra/launcher": "basic"}],
-            id="change_both",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@XXX:dest=postgresql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not rename package. No match for 'db@XXX' in the defaults list."
-                ),
-            ),
-            id="change_both_invalid_package",
-        ),
-        # adding item
-        pytest.param([], ["+db=mysql"], [{"db": "mysql"}], id="adding_item"),
-        pytest.param(
-            defaults_list,
-            ["+db@backup=mysql"],
-            [
-                {"db": "mysql"},
-                {"db@src": "mysql"},
-                {"hydra/launcher": "basic"},
-                {"db@backup": "mysql"},
-            ],
-            id="adding_item_at_package",
-        ),
-        pytest.param(
-            defaults_list,
-            ["+db=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not add 'db=mysql'. 'db' is already in the defaults list."
-                ),
-            ),
-            id="adding_duplicate_item",
-        ),
-        pytest.param(
-            defaults_list,
-            ["+db@src:foo=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Add syntax does not support package rename, remove + prefix"
-                ),
-            ),
-            id="add_rename_error",
-        ),
-        pytest.param(
-            defaults_list,
-            ["+db@src=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not add 'db@src=mysql'. 'db@src' is already in the defaults list."
-                ),
-            ),
-            id="adding_duplicate_item",
-        ),
-        pytest.param(
-            [],
-            ["db=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not override 'db'. No match in the defaults list."
-                    "\nTo append to your default list use +db=mysql"
-                ),
-            ),
-            id="adding_without_plus",
-        ),
-        # deleting item
-        pytest.param(
-            [],
-            ["~db=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not delete. No match for 'db' in the defaults list."
-                ),
-            ),
-            id="delete_no_match",
-        ),
-        pytest.param(
-            defaults_list,
-            ["~db"],
-            [{"db@src": "mysql"}, {"hydra/launcher": "basic"}],
-            id="delete",
-        ),
-        pytest.param(
-            defaults_list,
-            ["~db=mysql"],
-            [{"db@src": "mysql"}, {"hydra/launcher": "basic"}],
-            id="delete",
-        ),
-        pytest.param(
-            defaults_list,
-            ["~db=postgresql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not delete. No match for 'db=postgresql' in the defaults list."
-                ),
-            ),
-            id="delete_mismatch_value",
-        ),
-        pytest.param(
-            defaults_list,
-            ["~db@src"],
-            [{"db": "mysql"}, {"hydra/launcher": "basic"}],
-            id="delete",
-        ),
-        # syntax error
-        pytest.param(
-            defaults_list,
-            ["db"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Error parsing override 'db'\nmissing EQUAL at '<EOF>'"
-                ),
-            ),
-            id="syntax_error",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db=[a,b,c]"],
-            pytest.raises(
-                HydraException,
-                match=re.escape("Config group override value type cannot be a list"),
-            ),
-            id="syntax_error",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db={a:1,b:2}"],
-            pytest.raises(
-                HydraException,
-                match=re.escape("Config group override value type cannot be a dict"),
-            ),
-            id="syntax_error",
-        ),
-    ],
-)
-def test_apply_overrides_to_defaults(
-    input_defaults: List[str], overrides: List[str], expected: Any
-) -> None:
-    defaults = ConfigLoaderImpl._parse_defaults(
-        OmegaConf.create({"defaults": input_defaults})
-    )
-
-    parser = OverridesParser.create()
-    if isinstance(expected, list):
-        parsed_overrides = parser.parse_overrides(overrides=overrides)
-        expected_defaults = ConfigLoaderImpl._parse_defaults(
-            OmegaConf.create({"defaults": expected})
-        )
-        ConfigLoaderImpl._apply_overrides_to_defaults(
-            overrides=parsed_overrides, defaults=defaults
-        )
-        assert defaults == expected_defaults
-    else:
-        with expected:
-            parsed_overrides = parser.parse_overrides(overrides=overrides)
-            ConfigLoaderImpl._apply_overrides_to_defaults(
-                overrides=parsed_overrides, defaults=defaults
-            )
-
-
-def test_delete_by_assigning_null_is_deprecated() -> None:
-    msg = (
-        "\nRemoving from the defaults list by assigning 'null' "
-        "is deprecated and will be removed in Hydra 1.1."
-        "\nUse ~db"
-    )
-
-    defaults = ConfigLoaderImpl._parse_defaults(
-        OmegaConf.create({"defaults": [{"db": "mysql"}]})
-    )
-
-    parser = OverridesParser.create()
-
-    override = parser.parse_override("db=null")
-
-    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
-        ConfigLoaderImpl._apply_overrides_to_defaults(
-            overrides=[override], defaults=defaults
-        )
-        assert defaults == []
 
 
 @pytest.mark.parametrize(  # type: ignore

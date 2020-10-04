@@ -106,6 +106,9 @@ class RuntimeConf:
 
 @dataclass
 class HydraConf:
+
+    defaults: List[Any] = field(default_factory=lambda: hydra_defaults.copy())
+
     # Normal run output configuration
     run: RunDir = RunDir()
     # Multi-run output configuration
@@ -134,6 +137,9 @@ class HydraConf:
     # Those lists will contain runtime overrides
     overrides: OverridesConf = OverridesConf()
 
+    # the resulting defaults list
+    composition_trace: List[Any] = MISSING
+
     job: JobConf = JobConf()
 
     # populated at runtime
@@ -150,13 +156,11 @@ class HydraConf:
     verbose: Any = False
 
 
-ConfigStore.instance().store(
+cstore = ConfigStore.instance()
+
+cstore.store(
     name="hydra_config",
-    node={
-        # Hydra composition defaults
-        "defaults": hydra_defaults,
-        # Hydra config
-        "hydra": HydraConf,
-    },
+    node=HydraConf,
+    package="hydra",
     provider="hydra",
 )

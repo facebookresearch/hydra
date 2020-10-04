@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional
 
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
@@ -8,7 +9,40 @@ from hydra.plugins.config_source import ConfigResult, ConfigSource
 from .sources_registry import SourcesRegistry
 
 
-class ConfigRepository:
+class IConfigRepository(ABC):
+    @abstractmethod
+    def get_schema_source(self) -> ConfigSource:
+        ...
+
+    @abstractmethod
+    def load_config(
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
+    ) -> Optional[ConfigResult]:
+        ...
+
+    @abstractmethod
+    def group_exists(self, config_path: str) -> bool:
+        ...
+
+    @abstractmethod
+    def config_exists(self, config_path: str) -> bool:
+        ...
+
+    @abstractmethod
+    def get_group_options(
+        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+    ) -> List[str]:
+        ...
+
+    @abstractmethod
+    def get_sources(self) -> List[ConfigSource]:
+        ...
+
+
+class ConfigRepository(IConfigRepository):
 
     config_search_path: ConfigSearchPath
     sources: List[ConfigSource]
@@ -31,6 +65,7 @@ class ConfigRepository:
         )
         return source
 
+    # TODO: Consider cleaning is_primary_config after behavior of @package normalizes
     def load_config(
         self,
         config_path: str,
@@ -98,3 +133,46 @@ class ConfigRepository:
             return "file"
         else:
             return path[0:idx]
+
+
+class CachingConfigRepository(IConfigRepository):
+    def __init__(self, delegeate: IConfigRepository):
+        self.delegate = delegeate
+        self.cache: Dict[str, Optional[ConfigResult]] = {}
+
+    def get_schema_source(self) -> ConfigSource:
+        return self.delegate.get_schema_source()
+
+    def load_config(
+        self,
+        config_path: str,
+        is_primary_config: bool,
+        package_override: Optional[str] = None,
+    ) -> Optional[ConfigResult]:
+        cache_key = f"config_path={config_path},primary={is_primary_config},package_override={package_override}"
+        if cache_key in self.cache:
+            return self.cache[cache_key]
+        else:
+            ret = self.delegate.load_config(
+                config_path=config_path,
+                is_primary_config=is_primary_config,
+                package_override=package_override,
+            )
+            self.cache[cache_key] = ret
+            return ret
+
+    def group_exists(self, config_path: str) -> bool:
+        return self.delegate.group_exists(config_path=config_path)
+
+    def config_exists(self, config_path: str) -> bool:
+        return self.delegate.config_exists(config_path=config_path)
+
+    def get_group_options(
+        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+    ) -> List[str]:
+        return self.delegate.get_group_options(
+            group_name=group_name, results_filter=results_filter
+        )
+
+    def get_sources(self) -> List[ConfigSource]:
+        return self.delegate.get_sources()

@@ -1,0 +1,5 @@
+# @package _group_
+defaults:
+  - _self_
+  - b: b1
+  - 'b@:pkg': b4  # no package -> pkg, option change

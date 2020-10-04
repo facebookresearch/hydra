@@ -25,7 +25,7 @@ The idea is that we can add another element to the defaults list that would load
 defaults:
   - dataset: imagenet
   - model: alexnet
-  - dataset_model: ${defaults.0.dataset}_${defaults.1.model}
+  - dataset_model: ${dataset}_${model}
     optional: true
 ```
 
@@ -33,10 +33,14 @@ Let's break this down:
 #### dataset_model
 The key `dataset_model` is an arbitrary directory, it can be anything unique that makes sense, including nested directory like `dataset/model`.
 
-#### ${defaults.0.dataset}_${defaults.1.model}
-the value `${defaults.0.dataset}_${defaults.1.model}` is using OmegaConf's [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation).
+#### ${dataset}_${model}
+the value `${dataset}_${model}` is using OmegaConf's [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation) syntax.
 At runtime, that value would resolve to *imagenet_alexnet*, or *cifar_resnet* - depending on the values of defaults.dataset and defaults.model.
-This a bit clunky because defaults contains a list (I hope to improve this in the future)
+
+:::info
+This is not standard interpolations and there are some subtle differences and limitations.
+:::
+
 
 #### optional: true
 By default, Hydra would fail with an error if a config specified in the defaults does not exist.

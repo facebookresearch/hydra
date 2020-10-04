@@ -1,14 +1,24 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from textwrap import dedent
+
 import warnings
 
 import re
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple, MutableSequence
 
+from hydra.core import DefaultElement
 from hydra.errors import HydraException
-from omegaconf import Container, OmegaConf
+from omegaconf import (
+    Container,
+    OmegaConf,
+    ListConfig,
+    DictConfig,
+    open_dict,
+    read_write,
+)
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
@@ -20,6 +30,7 @@ class ConfigResult:
     path: str
     config: Container
     header: Dict[str, str]
+    defaults_list: List[DefaultElement]
     is_schema_source: bool = False
 
 
@@ -229,3 +240,137 @@ class ConfigSource(Plugin):
                 break
 
         return res
+
+    @staticmethod
+    def _create_defaults_list(
+        config_path: Optional[str],
+        defaults: ListConfig,
+    ) -> List[DefaultElement]:
+        def _split_group(
+            group_with_package: str,
+        ) -> Tuple[str, Optional[str], Optional[str]]:
+            idx = group_with_package.find("@")
+            if idx == -1:
+                # group
+                group = group_with_package
+                package = None
+            else:
+                # group@package
+                group = group_with_package[0:idx]
+                package = group_with_package[idx + 1 :]
+
+            package2 = None
+            if package is not None:
+                # if we have a package, break it down if it's a rename
+                idx = package.find(":")
+                if idx != -1:
+                    package2 = package[idx + 1 :]
+                    package = package[0:idx]
+
+            if package == "":
+                package = None
+
+            if package2 == "":
+                package2 = None
+
+            return group, package, package2
+
+        if not isinstance(defaults, MutableSequence):
+            raise ValueError(
+                dedent(
+                    f"""\
+                    Invalid defaults list in '{config_path}', defaults must be a list.
+                    Example of a valid defaults:
+                    defaults:
+                      - dataset: imagenet
+                      - model: alexnet
+                        optional: true
+                      - optimizer: nesterov
+                    """
+                )
+            )
+
+        res: List[DefaultElement] = []
+        for item in defaults:
+            if isinstance(item, DictConfig):
+                optional = False
+                if "optional" in item:
+                    optional = item.pop("optional")
+                keys = list(item.keys())
+                if len(keys) > 1:
+                    raise ValueError(f"Too many keys in default item {item}")
+                if len(keys) == 0:
+                    raise ValueError(f"Missing group name in {item}")
+                key = keys[0]
+                config_group, package, package2 = _split_group(key)
+                node = item._get_node(key)
+                assert node is not None
+                config_name = node._value()
+
+                is_delete = False
+                if config_name is None:
+                    warnings.warn(
+                        category=UserWarning,
+                        message=dedent(
+                            f"""
+                    Deprecated form of deletion used in the defaults list of '{config_path}'.
+                    'group: null' is deprecated, use '~group' instead.
+                    You can also delete group with a specific value with '~group: value'.
+                    Support for the 'group: null' form will be removed in Hydra 1.2.
+                    """
+                        ),
+                    )
+                    is_delete = True
+                elif config_group.startswith("~"):
+                    is_delete = True
+                    config_group = config_group[1:]
+
+                default = DefaultElement(
+                    config_group=config_group,
+                    config_name=config_name,
+                    package=package,
+                    rename_package_to=package2,
+                    optional=optional,
+                    is_delete=is_delete,
+                    parent=config_path,
+                )
+            elif isinstance(item, str):
+                if item.startswith("~"):
+                    item = item[1:]
+                    default = DefaultElement(
+                        config_group=item,
+                        config_name="_delete_",
+                        is_delete=True,
+                        parent=config_path,
+                    )
+                else:
+                    default = DefaultElement(
+                        config_group=None,
+                        config_name=item,
+                        parent=config_path,
+                    )
+            else:
+                raise ValueError(
+                    f"Unsupported type in defaults : {type(item).__name__}"
+                )
+            res.append(default)
+        return res
+
+    @staticmethod
+    def _extract_defaults_list(
+        config_path: Optional[str], cfg: Container
+    ) -> List[DefaultElement]:
+        if not OmegaConf.is_dict(cfg):
+            return []
+
+        assert isinstance(cfg, DictConfig)
+        with read_write(cfg):
+            with open_dict(cfg):
+                defaults = cfg.pop("defaults", OmegaConf.create([]))
+
+        if len(defaults) > 0:
+            return ConfigSource._create_defaults_list(
+                config_path=config_path, defaults=defaults
+            )
+        else:
+            return []

@@ -10,6 +10,9 @@ You no longer want to type `+db=mysql` every time you run your application.
 
 You can add a `defaults` list into your config file.
 
+This tutorial page briefly describes the Defaults List.  
+Refer to [The Defaults List page](../../../advanced/defaults_list) for more information.
+
 ## Config group defaults
 
 ```yaml title="config.yaml"

@@ -50,12 +50,17 @@ class StructuredConfigSource(ConfigSource):
             is_primary_config=is_primary_config,
             package_override=package_override,
         )
+        defaults_list = self._extract_defaults_list(
+            config_path=config_path, cfg=ret.node
+        )
         cfg = self._embed_config(ret.node, header["package"])
+
         return ConfigResult(
             config=cfg,
             path=f"{self.scheme()}://{self.path}",
             provider=provider,
             header=header,
+            defaults_list=defaults_list,
         )
 
     def available(self) -> bool:

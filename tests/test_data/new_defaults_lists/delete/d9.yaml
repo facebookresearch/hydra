@@ -1,0 +1,5 @@
+# @package _group_
+defaults:
+  - _self_
+  - ~foo
+  - bar: null

@@ -1,0 +1,5 @@
+# @package _group_
+defaults:
+  - foo: bar
+
+x: 10

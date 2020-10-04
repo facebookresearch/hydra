@@ -442,11 +442,16 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Run multiple jobs with the configured launcher and sweeper",
     )
 
+    # defer building the completion help string until we actually need to render it
+    class LazyCompletionHelp:
+        def __repr__(self) -> str:
+            return f"Install or Uninstall shell completion:\n{_get_completion_help()}"
+
     parser.add_argument(
         "--shell-completion",
         "-sc",
         action="store_true",
-        help=f"Install or Uninstall shell completion:\n{_get_completion_help()}",
+        help=LazyCompletionHelp(),  # type: ignore
     )
 
     parser.add_argument(
