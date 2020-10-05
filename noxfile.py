@@ -96,18 +96,9 @@ def pytest_args(*args):
 
 def run_pytest(session, directory=".", *args):
     pytest_cmd = pytest_args(directory, *args)
-<<<<<<< HEAD
-<<<<<<< HEAD
     # silent=False to enable some output on CI
     # (otherwise we risk no-output timeout)
     session.run(*pytest_cmd, silent=False)
-=======
-    if skip_warning:
-        pytest_cmd = [x for x in pytest_cmd if x != "-Werror"]
-=======
->>>>>>> remove noxfile change, add pytest.ini for ray plugin
-    session.run(*pytest_cmd, silent=SILENT)
->>>>>>> skip warning for ray-launcher
 
 
 def get_setup_python_versions(classifiers):
