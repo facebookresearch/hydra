@@ -48,8 +48,8 @@ subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
 instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
 
 # temporary solution. we will build customized AMI everytime the requirments changes.
-ray_requirements_sha = "4b9584817efbb9f7a359f67514bd5b01"
-hydra_core_requirements_sha = "06e92acfb5918e890c042377457cdaae"
+ray_requirements_sha = "bdefc02ff3b9f667f37ecce9f2fc5ac6"
+hydra_core_requirements_sha = "394984911320e5884cb055a5d13d7545"
 
 assert (
     ami != "" and security_group_id != "" and subnet_id != "" and instance_role != ""
