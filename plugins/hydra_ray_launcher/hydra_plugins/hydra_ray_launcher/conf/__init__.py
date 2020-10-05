@@ -13,7 +13,7 @@ class RayLocalLauncherConf(TargetConf):
     _target_: str = (
         "hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher"
     )
-    ray_init_cfg: Dict[str, str] = field(default_factory=dict)
+    ray_init_cfg: Dict[str, Any] = field(default_factory=dict)
     ray_remote_cfg: Dict[str, Any] = field(
         default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
     )
