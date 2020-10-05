@@ -91,8 +91,8 @@ def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
     tmppath = [
         x
         for x in out.strip().split()
-        if x.startswith("/tmp/") and "ray-config" not in x
-    ]  # nosec
+        if x.startswith("/tmp/") and "ray-config" not in x  # nosec
+    ]
     assert len(tmppath) == 1, f"tmppath is : {tmppath}"
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
