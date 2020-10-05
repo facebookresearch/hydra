@@ -96,7 +96,9 @@ def pytest_args(*args):
 
 def run_pytest(session, directory=".", *args):
     pytest_cmd = pytest_args(directory, *args)
-    session.run(*pytest_cmd, silent=SILENT)
+    # silent=False to enable some output on CI
+    # (otherwise we risk no-output timeout)
+    session.run(*pytest_cmd, silent=False)
 
 
 def get_setup_python_versions(classifiers):
