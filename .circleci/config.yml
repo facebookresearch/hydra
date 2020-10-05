@@ -182,6 +182,7 @@ jobs:
           command: |
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
+              export PYTEST_VERBOSE=1
               conda activate hydra
               pip install nox
               pip install dataclasses
@@ -203,6 +204,7 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
+            export PYTEST_VERBOSE=1
             pip install nox
             pip install dataclasses
             nox -s lint_plugins test_plugins -ts
@@ -223,6 +225,7 @@ jobs:
               $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               $env:PYTHONIOENCODING="utf_8"
               $env:PLUGINS="<< parameters.test_plugin >>"
+              $env:PYTEST_VERBOSE=1
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
