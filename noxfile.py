@@ -34,8 +34,6 @@ SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
-PYTEST_VERBOSE = os.environ.get("PYTEST_VERBOSE", "0")
-PYTEST_SILENT = PYTEST_VERBOSE == "0"
 
 
 @dataclass
@@ -58,7 +56,6 @@ print(f"PLUGINS\t\t\t:\t{PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
-print(f"PYTEST_VERBOSE\t\t:\t{PYTEST_VERBOSE}")
 print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
 
 
@@ -99,7 +96,7 @@ def pytest_args(*args):
 
 def run_pytest(session, directory=".", *args):
     pytest_cmd = pytest_args(directory, *args)
-    session.run(*pytest_cmd, silent=PYTEST_SILENT)
+    session.run(*pytest_cmd, silent=False)  # verbose to show test progress
 
 
 def get_setup_python_versions(classifiers):
