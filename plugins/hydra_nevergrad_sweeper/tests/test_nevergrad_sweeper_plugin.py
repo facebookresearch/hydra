@@ -12,7 +12,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from omegaconf import DictConfig, OmegaConf
 
-from hydra_plugins.hydra_nevergrad_sweeper import _core
+from hydra_plugins.hydra_nevergrad_sweeper import _impl
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
 
 chdir_plugin_root()
@@ -42,7 +42,7 @@ def test_discovery() -> None:
 def test_create_nevergrad_parameter_from_config(
     params: str, param_cls: Any, param_val: Any
 ) -> None:
-    param = _core.create_nevergrad_parameter(params)
+    param =_impl.create_nevergrad_param_from_config(params)
     verify_param(param, param_cls, param_val)
 
 
@@ -59,11 +59,11 @@ def test_create_nevergrad_parameter_from_config(
         ),
         ("key=range(1,3)", ng.p.Choice, {1, 2}),
         ("key=shuffle(range(1,3))", ng.p.Choice, {1, 2}),
-        ("key=range(1,8)", ng.p.Scalar, ([1], [8])),
-        ("key=float(range(1,8))", ng.p.Scalar, ([1.0], [8.0])),
-        ("key=interval(1,12)", ng.p.Scalar, ([1.0], [12.0])),
+        ("key=range(1,5)", ng.p.Choice, {1, 2, 3, 4}),
+        ("key=float(range(1,5))", ng.p.Choice, {1., 2., 3., 4.,}),
+        ("key=interval(1,12)", ng.p.Scalar, ([1.], [12.])),
         ("key=int(interval(1,12))", ng.p.Scalar, ([1], [12])),
-        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.0], [12.0])),
+        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.], [12.])),
         ("key=tag(log, int(interval(1,12)))", ng.p.Log, ([1], [12])),
     ],
 )
@@ -72,7 +72,7 @@ def test_create_nevergrad_parameter_from_override(
 ) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([override])[0]
-    param = _core.create_nevergrad_parameter(parsed)
+    param =_impl.create_nevergrad_parameter_from_override(parsed)
     verify_param(param, param_cls, param_val)
 
 
@@ -120,7 +120,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
         sys.executable,
-        "example/dummy_training.py",
+        "example/my_app.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
         f"hydra.sweeper.optim.budget={budget}",  # small budget to test fast

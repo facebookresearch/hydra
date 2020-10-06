@@ -15,9 +15,9 @@ class NevergradSweeper(Sweeper):
     def __init__(
         self, optim: OptimConf, version: int, parametrization: Optional[DictConfig]
     ):
-        from ._core import CoreNevergradSweeper
+        from ._impl import NevergradSweeperImpl
 
-        self.sweeper = CoreNevergradSweeper(optim, version, parametrization)
+        self.sweeper = NevergradSweeperImpl(optim, version, parametrization)
 
     def setup(
         self,

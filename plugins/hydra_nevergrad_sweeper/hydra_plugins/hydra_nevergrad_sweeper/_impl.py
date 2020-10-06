@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, Optional, Tuple, cast
+from typing import Any, Dict, List, Optional, Tuple, cast, Union
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
@@ -24,78 +24,71 @@ from .config import OptimConf, ScalarConfigSpec
 log = logging.getLogger(__name__)
 
 
-def create_nevergrad_parameter(description: Any) -> Any:
-    scalar = None
-    if isinstance(description, Override):
-        override = description
-        val = override.value()
-        if override.is_sweep_override():
-            if override.is_choice_sweep():
-                val = cast(ChoiceSweep, val)
-                vals = [
-                    x for x in override.sweep_iterator(transformer=Transformer.encode)
-                ]
-                if "ordered" in val.tags:
-                    return ng.p.TransitionChoice(vals)
-                else:
-                    return ng.p.Choice(vals)
-            elif override.is_range_sweep():
-                # if shuffled or integer range and <=6, use Choice
-                val = cast(RangeSweep, val)
-                if val.shuffle or (
-                    val.stop is not None
-                    and val.start is not None
-                    and val.stop - val.start <= 6
-                ):
-                    vals = [
-                        x
-                        for x in override.sweep_iterator(transformer=Transformer.encode)
-                    ]
-                    return ng.p.Choice(vals)
-                params = {"lower": val.start, "upper": val.stop}
-                scalar = ng.p.Scalar(**params)  # type: ignore
-                if isinstance(val.start, int):
-                    scalar.set_integer_casting()
-            elif override.is_interval_sweep():
-                val = cast(IntervalSweep, val)
-                if "log" in val.tags:
-                    scalar = ng.p.Log(lower=val.start, upper=val.end)
-                else:
-                    scalar = ng.p.Scalar(lower=val.start, upper=val.end)
-                if isinstance(val.start, int):
-                    scalar.set_integer_casting()
-        else:
-            return val
-    if isinstance(description, (list, ListConfig)):
-        return ng.p.Choice(list(description))
-    if isinstance(description, (dict, DictConfig)):
-        description = ScalarConfigSpec(**description)
-        init = ["init", "lower", "upper"]
-        init_params = {x: getattr(description, x) for x in init}
-        if not description.log:
-            scalar = ng.p.Scalar(**init_params)
-            if description.step is not None:
-                scalar.set_mutation(sigma=description.step)
-        else:
-            if description.step is not None:
-                init_params["exponent"] = description.step
-            scalar = ng.p.Log(**init_params)
-        if description.integer:
-            scalar.set_integer_casting()
+def verify_scalar_bounds(scalar: ng.p.Scalar) -> None:
+    if scalar.integer:
+        a, b = scalar.bounds
+        if a is not None and b is not None and b - a <= 6:
+            raise ValueError(
+                "For integers with 6 or fewer values, use a choice instead"
+            )
 
-    if scalar:
-        if scalar.integer:
-            a, b = scalar.bounds
-            if a is not None and b is not None and b - a <= 6:
-                raise ValueError(
-                    "For integers with 6 or fewer values, use a choice instead"
-                )
+
+def create_nevergrad_param_from_config(config: Union[ListConfig, DictConfig, list, dict]) -> Any:
+    if isinstance(config, (list, ListConfig)):
+        if isinstance(config, ListConfig):
+            config = OmegaConf.to_container(config, resolve=True)
+        return ng.p.Choice(config)
+    if isinstance(config, (dict, DictConfig)):
+        config = ScalarConfigSpec(**config)
+        init = ["init", "lower", "upper"]
+        init_params = {x: getattr(config, x) for x in init}
+        if not config.log:
+            scalar = ng.p.Scalar(**init_params)
+            if config.step is not None:
+                scalar.set_mutation(sigma=config.step)
+        else:
+            if config.step is not None:
+                init_params["exponent"] = config.step
+            scalar = ng.p.Log(**init_params)
+        if config.integer:
+            scalar.set_integer_casting()
+        verify_scalar_bounds(scalar)
         return scalar
 
-    raise ValueError(f"Cannot parse description: {description}.")
+
+def create_nevergrad_parameter_from_override(override: Override) -> Any:
+    val = override.value()
+    if not override.is_sweep_override():
+        return val
+    if override.is_choice_sweep():
+        val = cast(ChoiceSweep, val)
+        vals = [
+            x for x in override.sweep_iterator(transformer=Transformer.encode)
+        ]
+        if "ordered" in val.tags:
+            return ng.p.TransitionChoice(vals)
+        else:
+            return ng.p.Choice(vals)
+    elif override.is_range_sweep():
+        # if shuffled or integer range and <=6, use Choice
+        vals = [
+            x
+            for x in override.sweep_iterator(transformer=Transformer.encode)
+        ]
+        return ng.p.Choice(vals)
+    elif override.is_interval_sweep():
+        val = cast(IntervalSweep, val)
+        if "log" in val.tags:
+            scalar = ng.p.Log(lower=val.start, upper=val.end)
+        else:
+            scalar = ng.p.Scalar(lower=val.start, upper=val.end)
+        if isinstance(val.start, int):
+            scalar.set_integer_casting()
+        verify_scalar_bounds(scalar)
+        return scalar
 
 
-class CoreNevergradSweeper(Sweeper):
+class NevergradSweeperImpl(Sweeper):
     def __init__(
         self, optim: OptimConf, version: int, parametrization: Optional[DictConfig]
     ):
@@ -110,7 +103,7 @@ class CoreNevergradSweeper(Sweeper):
         if parametrization is not None:
             assert isinstance(parametrization, DictConfig)
             self.parametrization = {
-                x: create_nevergrad_parameter(y) for x, y in parametrization.items()
+                x: create_nevergrad_param_from_config(y) for x, y in parametrization.items()
             }
         self.job_idx: Optional[int] = None
 
@@ -141,7 +134,7 @@ class CoreNevergradSweeper(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[override.get_key_element()] = create_nevergrad_parameter(override)
+            params[override.get_key_element()] = create_nevergrad_parameter_from_override(override)
 
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
