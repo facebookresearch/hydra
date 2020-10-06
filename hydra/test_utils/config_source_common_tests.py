@@ -82,7 +82,6 @@ class ConfigSourceTestSuite:
             ("level1", None, ["level2"]),
             ("level1/level2", None, ["nested1", "nested2"]),
             ("", None, ["config_without_group", "dataset", "level1", "optimizer"]),
-            ("dataset", None, ["cifar10", "imagenet"]),
         ],
     )
     def test_list(
