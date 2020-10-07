@@ -64,8 +64,7 @@ python example/my_app.py.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/my_app.py.py -m \
-db=mnist,cifar batch_size=4,8,16 \
+python example/my_app.py.py --multirun db=mnist,cifar batch_size=4,8,16 \
 'lr=tag(log, interval(0.001, 1))' 'dropout=interval(0,1)'
 ```
 
@@ -160,4 +159,3 @@ Scalars can be defined in a config files, with fields:
 
 Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
-
