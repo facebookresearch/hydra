@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
@@ -19,17 +19,7 @@ from omegaconf import DictConfig, ListConfig, OmegaConf
 
 from .config import OptimConf, ScalarConfigSpec
 
-# pylint: disable=logging-fstring-interpolation,no-self-used
 log = logging.getLogger(__name__)
-
-
-def verify_scalar_bounds(scalar: ng.p.Scalar) -> None:
-    if scalar.integer:
-        a, b = scalar.bounds
-        if a is not None and b is not None and b - a <= 6:
-            raise ValueError(
-                "For integers with 6 or fewer values, use a choice instead"
-            )
 
 
 def create_nevergrad_param_from_config(
@@ -53,7 +43,6 @@ def create_nevergrad_param_from_config(
             scalar = ng.p.Log(**init_params)
         if specs.integer:
             scalar.set_integer_casting()
-        verify_scalar_bounds(scalar)
         return scalar
     return config
 
@@ -63,35 +52,34 @@ def create_nevergrad_parameter_from_override(override: Override) -> Any:
     if not override.is_sweep_override():
         return val
     if override.is_choice_sweep():
-        val = cast(ChoiceSweep, val)
+        # val = cast(ChoiceSweep, val)
+        assert isinstance(val, ChoiceSweep)
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         if "ordered" in val.tags:
             return ng.p.TransitionChoice(vals)
         else:
             return ng.p.Choice(vals)
     elif override.is_range_sweep():
-        # if shuffled or integer range and <=6, use Choice
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         return ng.p.Choice(vals)
     elif override.is_interval_sweep():
-        val = cast(IntervalSweep, val)
+        # val = cast(IntervalSweep, val)
+        assert isinstance(val, IntervalSweep)
         if "log" in val.tags:
             scalar = ng.p.Log(lower=val.start, upper=val.end)
         else:
             scalar = ng.p.Scalar(lower=val.start, upper=val.end)  # type: ignore
         if isinstance(val.start, int):
             scalar.set_integer_casting()
-        verify_scalar_bounds(scalar)
         return scalar
 
 
 class NevergradSweeperImpl(Sweeper):
     def __init__(
-        self, optim: OptimConf, version: int, parametrization: Optional[DictConfig]
+        self,
+        optim: OptimConf,
+        parametrization: Optional[DictConfig],
     ):
-        assert (
-            version == 1
-        ), f"Only version 1 of API is currently available (got {version})"
         self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None

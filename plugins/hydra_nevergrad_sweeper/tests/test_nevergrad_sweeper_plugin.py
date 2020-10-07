@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +7,7 @@ import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
@@ -24,83 +22,82 @@ def test_discovery() -> None:
     ]
 
 
+def assert_ng_param_equals(expected: Any, actual: Any) -> None:
+    assert type(expected) == type(actual)
+    if isinstance(actual, ng.p.Choice) or isinstance(actual, ng.p.TransitionChoice):
+        assert sorted(expected.choices.value) == sorted(actual.choices.value)
+    elif isinstance(actual, ng.p.Log) or isinstance(actual, ng.p.Scalar):
+        assert expected.bounds == actual.bounds
+        assert expected.integer == actual.integer
+    else:
+        assert False, f"Unexpected type: {type(actual)}"
+
+
+def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Scalar:
+    scalar = type(lower=lower, upper=upper)
+    scalar.set_integer_casting()
+    assert isinstance(scalar, ng.p.Scalar)
+    return scalar
+
+
 @pytest.mark.parametrize(  # type: ignore
-    "params,param_cls, param_val",
+    "input, expected",
     [
-        ([1, 2, 3], ng.p.Choice, {1, 2, 3}),
-        (["1", "2", "3"], ng.p.Choice, {"1", "2", "3"}),
-        ({"lower": 1, "upper": 12, "log": True}, ng.p.Log, ([1.0], [12.0])),
-        ({"lower": 1, "upper": 12}, ng.p.Scalar, ([1.0], [12.0])),
-        ({"lower": 1, "upper": 12, "integer": True}, ng.p.Scalar, ([1], [12])),
+        ([1, 2, 3], ng.p.Choice([1, 2, 3])),
+        (["1", "2", "3"], ng.p.Choice(["1", "2", "3"])),
+        ({"lower": 1, "upper": 12, "log": True}, ng.p.Log(lower=1, upper=12)),
+        ({"lower": 1, "upper": 12}, ng.p.Scalar(lower=1, upper=12)),
+        (
+            {"lower": 1, "upper": 12, "integer": True},
+            get_scalar_with_integer_bounds(1, 12, ng.p.Scalar),
+        ),
         (
             {"lower": 1, "upper": 12, "log": True, "integer": True},
-            ng.p.Log,
-            ([1], [12]),
+            get_scalar_with_integer_bounds(1, 12, ng.p.Log),
         ),
     ],
 )
 def test_create_nevergrad_parameter_from_config(
-    params: str, param_cls: Any, param_val: Any
+    input: Any,
+    expected: Any,
 ) -> None:
-    param = _impl.create_nevergrad_param_from_config(params)
-    verify_param(param, param_cls, param_val)
+    actual = _impl.create_nevergrad_param_from_config(input)
+    assert_ng_param_equals(expected, actual)
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "override,param_cls, param_val",
+    "input, expected",
     [
-        ("key=choice(1,2)", ng.p.Choice, {1, 2}),
-        ("key=choice('hello','world')", ng.p.Choice, {"hello", "world"}),
-        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice, {1, 2, 3}),
+        ("key=choice(1,2)", ng.p.Choice([1, 2])),
+        ("key=choice('hello','world')", ng.p.Choice(["hello", "world"])),
+        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice([1, 2, 3])),
         (
             "key=tag(ordered, choice('hello','world', 'nevergrad'))",
-            ng.p.TransitionChoice,
-            {"hello", "world", "nevergrad"},
+            ng.p.TransitionChoice(["hello", "world", "nevergrad"]),
         ),
-        ("key=range(1,3)", ng.p.Choice, {1, 2}),
-        ("key=shuffle(range(1,3))", ng.p.Choice, {1, 2}),
-        ("key=range(1,5)", ng.p.Choice, {1, 2, 3, 4}),
+        ("key=range(1,3)", ng.p.Choice([1, 2])),
+        ("key=shuffle(range(1,3))", ng.p.Choice([1, 2])),
+        ("key=range(1,5)", ng.p.Choice([1, 2, 3, 4])),
+        ("key=float(range(1,5))", ng.p.Choice([1.0, 2.0, 3.0, 4.0])),
         (
-            "key=float(range(1,5))",
-            ng.p.Choice,
-            {
-                1.0,
-                2.0,
-                3.0,
-                4.0,
-            },
+            "key=int(interval(1,12))",
+            get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Scalar),
         ),
-        ("key=interval(1,12)", ng.p.Scalar, ([1.0], [12.0])),
-        ("key=int(interval(1,12))", ng.p.Scalar, ([1], [12])),
-        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.0], [12.0])),
-        ("key=tag(log, int(interval(1,12)))", ng.p.Log, ([1], [12])),
+        ("key=tag(log, interval(1,12))", ng.p.Log(lower=1, upper=12)),
+        (
+            "key=tag(log, int(interval(1,12)))",
+            get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Log),
+        ),
     ],
 )
 def test_create_nevergrad_parameter_from_override(
-    override: str, param_cls: Any, param_val: Any
+    input: Any,
+    expected: Any,
 ) -> None:
     parser = OverridesParser.create()
-    parsed = parser.parse_overrides([override])[0]
+    parsed = parser.parse_overrides([input])[0]
     param = _impl.create_nevergrad_parameter_from_override(parsed)
-    verify_param(param, param_cls, param_val)
-
-
-def verify_param(output_param: Any, expected_param_cls: Any, param_val: Any) -> None:
-    assert isinstance(output_param, expected_param_cls)
-    if isinstance(output_param, ng.p.Choice):
-        assert set(output_param.choices.value) == param_val
-    elif isinstance(output_param, ng.p.Scalar):
-        if output_param.integer:
-            actual = (
-                list(map(int, output_param.bounds[0])),  # type: ignore
-                list(map(int, output_param.bounds[1])),  # type: ignore
-            )
-        else:
-            actual = (
-                list(map(lambda x: float(x), output_param.bounds[0])),  # type: ignore
-                list(map(lambda x: float(x), output_param.bounds[1])),  # type: ignore
-            )
-        assert actual == param_val and isinstance(actual[0][0], type(param_val[0][0]))
+    assert_ng_param_equals(param, expected)
 
 
 def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
@@ -128,7 +125,6 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
-        sys.executable,
         "example/my_app.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
@@ -143,7 +139,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
             "lr=tag(log, interval(0.001, 1.0))",
             "dropout=interval(0,1)",
         ]
-    subprocess.check_call(cmd)
+    get_run_output(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"

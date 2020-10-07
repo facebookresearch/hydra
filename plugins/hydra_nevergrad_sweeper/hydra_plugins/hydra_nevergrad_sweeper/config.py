@@ -80,9 +80,6 @@ class NevergradSweeperConf:
     # - as a full scalar specification
     parametrization: Dict[str, Any] = field(default_factory=dict)
 
-    # version of the commandline API
-    version: int = 1
-
 
 ConfigStore.instance().store(
     group="hydra/sweeper",
