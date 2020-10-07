@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, Optional, Tuple, cast, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
@@ -9,7 +9,6 @@ from hydra.core.override_parser.types import (
     ChoiceSweep,
     IntervalSweep,
     Override,
-    RangeSweep,
     Transformer,
 )
 from hydra.core.plugins import Plugins
@@ -33,27 +32,30 @@ def verify_scalar_bounds(scalar: ng.p.Scalar) -> None:
             )
 
 
-def create_nevergrad_param_from_config(config: Union[ListConfig, DictConfig, list, dict]) -> Any:
+def create_nevergrad_param_from_config(
+    config: Union[ListConfig, DictConfig, List[Any], Dict[str, Any], str]
+) -> Any:
     if isinstance(config, (list, ListConfig)):
         if isinstance(config, ListConfig):
-            config = OmegaConf.to_container(config, resolve=True)
+            config = OmegaConf.to_container(config, resolve=True)  # type: ignore
         return ng.p.Choice(config)
     if isinstance(config, (dict, DictConfig)):
-        config = ScalarConfigSpec(**config)
+        specs = ScalarConfigSpec(**config)
         init = ["init", "lower", "upper"]
-        init_params = {x: getattr(config, x) for x in init}
-        if not config.log:
+        init_params = {x: getattr(specs, x) for x in init}
+        if not specs.log:
             scalar = ng.p.Scalar(**init_params)
-            if config.step is not None:
-                scalar.set_mutation(sigma=config.step)
+            if specs.step is not None:
+                scalar.set_mutation(sigma=specs.step)
         else:
-            if config.step is not None:
-                init_params["exponent"] = config.step
+            if specs.step is not None:
+                init_params["exponent"] = specs.step
             scalar = ng.p.Log(**init_params)
-        if config.integer:
+        if specs.integer:
             scalar.set_integer_casting()
         verify_scalar_bounds(scalar)
         return scalar
+    return config
 
 
 def create_nevergrad_parameter_from_override(override: Override) -> Any:
@@ -62,26 +64,21 @@ def create_nevergrad_parameter_from_override(override: Override) -> Any:
         return val
     if override.is_choice_sweep():
         val = cast(ChoiceSweep, val)
-        vals = [
-            x for x in override.sweep_iterator(transformer=Transformer.encode)
-        ]
+        vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         if "ordered" in val.tags:
             return ng.p.TransitionChoice(vals)
         else:
             return ng.p.Choice(vals)
     elif override.is_range_sweep():
         # if shuffled or integer range and <=6, use Choice
-        vals = [
-            x
-            for x in override.sweep_iterator(transformer=Transformer.encode)
-        ]
+        vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         return ng.p.Choice(vals)
     elif override.is_interval_sweep():
         val = cast(IntervalSweep, val)
         if "log" in val.tags:
             scalar = ng.p.Log(lower=val.start, upper=val.end)
         else:
-            scalar = ng.p.Scalar(lower=val.start, upper=val.end)
+            scalar = ng.p.Scalar(lower=val.start, upper=val.end)  # type: ignore
         if isinstance(val.start, int):
             scalar.set_integer_casting()
         verify_scalar_bounds(scalar)
@@ -103,7 +100,8 @@ class NevergradSweeperImpl(Sweeper):
         if parametrization is not None:
             assert isinstance(parametrization, DictConfig)
             self.parametrization = {
-                x: create_nevergrad_param_from_config(y) for x, y in parametrization.items()
+                x: create_nevergrad_param_from_config(y)
+                for x, y in parametrization.items()
             }
         self.job_idx: Optional[int] = None
 
@@ -134,7 +132,9 @@ class NevergradSweeperImpl(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[override.get_key_element()] = create_nevergrad_parameter_from_override(override)
+            params[
+                override.get_key_element()
+            ] = create_nevergrad_parameter_from_override(override)
 
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy

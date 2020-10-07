@@ -42,7 +42,7 @@ def test_discovery() -> None:
 def test_create_nevergrad_parameter_from_config(
     params: str, param_cls: Any, param_val: Any
 ) -> None:
-    param =_impl.create_nevergrad_param_from_config(params)
+    param = _impl.create_nevergrad_param_from_config(params)
     verify_param(param, param_cls, param_val)
 
 
@@ -60,10 +60,19 @@ def test_create_nevergrad_parameter_from_config(
         ("key=range(1,3)", ng.p.Choice, {1, 2}),
         ("key=shuffle(range(1,3))", ng.p.Choice, {1, 2}),
         ("key=range(1,5)", ng.p.Choice, {1, 2, 3, 4}),
-        ("key=float(range(1,5))", ng.p.Choice, {1., 2., 3., 4.,}),
-        ("key=interval(1,12)", ng.p.Scalar, ([1.], [12.])),
+        (
+            "key=float(range(1,5))",
+            ng.p.Choice,
+            {
+                1.0,
+                2.0,
+                3.0,
+                4.0,
+            },
+        ),
+        ("key=interval(1,12)", ng.p.Scalar, ([1.0], [12.0])),
         ("key=int(interval(1,12))", ng.p.Scalar, ([1], [12])),
-        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.], [12.])),
+        ("key=tag(log, interval(1,12))", ng.p.Log, ([1.0], [12.0])),
         ("key=tag(log, int(interval(1,12)))", ng.p.Log, ([1], [12])),
     ],
 )
@@ -72,7 +81,7 @@ def test_create_nevergrad_parameter_from_override(
 ) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([override])[0]
-    param =_impl.create_nevergrad_parameter_from_override(parsed)
+    param = _impl.create_nevergrad_parameter_from_override(parsed)
     verify_param(param, param_cls, param_val)
 
 
