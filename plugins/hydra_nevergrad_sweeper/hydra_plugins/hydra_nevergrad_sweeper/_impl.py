@@ -1,6 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import (
+    Any,
+    Dict,
+    List,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Tuple,
+    Union,
+)
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
@@ -23,7 +32,7 @@ log = logging.getLogger(__name__)
 
 
 def create_nevergrad_param_from_config(
-    config: Union[ListConfig, DictConfig, List[Any], Dict[str, Any], str]
+    config: Union[MutableSequence[Any], MutableMapping[str, Any]]
 ) -> Any:
     if isinstance(config, (list, ListConfig)):
         if isinstance(config, ListConfig):
