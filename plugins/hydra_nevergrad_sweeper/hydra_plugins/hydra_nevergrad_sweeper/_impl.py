@@ -34,11 +34,11 @@ log = logging.getLogger(__name__)
 def create_nevergrad_param_from_config(
     config: Union[MutableSequence[Any], MutableMapping[str, Any]]
 ) -> Any:
-    if isinstance(config, (list, ListConfig)):
+    if isinstance(config, MutableSequence):
         if isinstance(config, ListConfig):
             config = OmegaConf.to_container(config, resolve=True)  # type: ignore
         return ng.p.Choice(config)
-    if isinstance(config, (dict, DictConfig)):
+    if isinstance(config, MutableMapping):
         specs = ScalarConfigSpec(**config)
         init = ["init", "lower", "upper"]
         init_params = {x: getattr(specs, x) for x in init}
