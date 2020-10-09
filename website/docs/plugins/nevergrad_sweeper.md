@@ -64,27 +64,28 @@ python example/my_app.py.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/my_app.py.py --multirun db=mnist,cifar batch_size=4,8,16 \
+python example/my_app.py --multirun db=mnist,cifar batch_size=4,8,16 \
 'lr=tag(log, interval(0.001, 1))' 'dropout=interval(0,1)'
 ```
 
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
 
 ```text
-[HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
-[HYDRA] with parametrization Dict(batch_size=TransitionChoice(choices=Tuple(4,8,16),position=Scalar[sigma=Log{exp=1.2}],transitions=[1. 1.]),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(2,)}),dropout=Scalar{Cl(0,1)}[sigma=Log{exp=1.2}],lr=Log{exp=3.162277660168379,Cl(0.001,1)}):{'db': 'cifar', 'batch_size': 8, 'lr': 0.03162277660168379, 'dropout': 0.5}
-[HYDRA] Sweep output dir: multirun/2020-03-04/17-53-29
-[HYDRA] Launching 10 jobs locally
-[HYDRA] 	#0 : db=mnist batch_size=8 lr=0.032 dropout=0.5
-[__main__][INFO] - my_app.py(dropout=0.500, lr=0.032, db=mnist, batch_size=8) = 5.258
-[HYDRA] 	#1 : db=mnist batch_size=16 lr=0.035 dropout=0.714
-[__main__][INFO] - my_app.py(dropout=0.714, lr=0.035, db=mnist, batch_size=16) = 13.469
-[HYDRA] 	#2 : db=cifar batch_size=8 lr=0.053 dropout=0.408
-[__main__][INFO] - my_app.py(dropout=0.408, lr=0.053, db=cifar, batch_size=8) = 4.145
-[HYDRA] 	#3 : db=cifar batch_size=8 lr=0.012 dropout=0.305
-[__main__][INFO] - my_app.py(dropout=0.305, lr=0.012, db=cifar, batch_size=8) = 4.133
-[HYDRA] 	#4 : db=mnist batch_size=4 lr=0.030 dropout=0.204
-[__main__][INFO] - my_app.py(dropout=0.204, lr=0.030, db=mnist, batch_size=4) = 1.216
+[2020-10-08 20:13:53,592][HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
+[2020-10-08 20:13:53,593][HYDRA] with parametrization Dict(batch_size=Choice(choices=Tuple(4,8,16),weights=Array{(1,3)}),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(1,2)}),dropout=Scalar{Cl(0,1,b)}[sigma=Log{exp=2.0}],lr=Log{exp=3.162277660168379,Cl(0.001,1,b)}):{'db': 'mnist', 'lr': 0.03162277660168379, 'dropout': 0.5, 'batch_size': 8}
+[2020-10-08 20:13:53,593][HYDRA] Sweep output dir: multirun/2020-10-08/20-13-53
+[2020-10-08 20:13:55,023][HYDRA] Launching 10 jobs locally
+[2020-10-08 20:13:55,023][HYDRA]        #0 : db=mnist lr=0.03162277660168379 dropout=0.5 batch_size=16
+[2020-10-08 20:13:55,217][__main__][INFO] - dummy_training(dropout=0.500, lr=0.032, db=mnist, batch_size=16) = 13.258
+[2020-10-08 20:13:55,218][HYDRA]        #1 : db=cifar lr=0.018178519762066934 dropout=0.5061074452336254 batch_size=4
+[2020-10-08 20:13:55,408][__main__][INFO] - dummy_training(dropout=0.506, lr=0.018, db=cifar, batch_size=4) = 0.278
+[2020-10-08 20:13:55,409][HYDRA]        #2 : db=cifar lr=0.10056825918734161 dropout=0.6399687427725211 batch_size=4
+[2020-10-08 20:13:55,595][__main__][INFO] - dummy_training(dropout=0.640, lr=0.101, db=cifar, batch_size=4) = 0.329
+[2020-10-08 20:13:55,596][HYDRA]        #3 : db=mnist lr=0.06617542958182834 dropout=0.5059497416026679 batch_size=8
+[2020-10-08 20:13:55,812][__main__][INFO] - dummy_training(dropout=0.506, lr=0.066, db=mnist, batch_size=8) = 5.230
+[2020-10-08 20:13:55,813][HYDRA]        #4 : db=mnist lr=0.16717013388679514 dropout=0.6519070394318255 batch_size=4
+...
+[2020-10-08 20:14:27,988][HYDRA] Best parameters: db=cifar lr=0.11961221693764439 dropout=0.37285878409770895 batch_size=4 
 ```
 
 

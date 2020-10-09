@@ -61,7 +61,6 @@ def create_nevergrad_parameter_from_override(override: Override) -> Any:
     if not override.is_sweep_override():
         return val
     if override.is_choice_sweep():
-        # val = cast(ChoiceSweep, val)
         assert isinstance(val, ChoiceSweep)
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         if "ordered" in val.tags:
@@ -72,7 +71,6 @@ def create_nevergrad_parameter_from_override(override: Override) -> Any:
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
         return ng.p.Choice(vals)
     elif override.is_interval_sweep():
-        # val = cast(IntervalSweep, val)
         assert isinstance(val, IntervalSweep)
         if "log" in val.tags:
             scalar = ng.p.Log(lower=val.start, upper=val.end)
