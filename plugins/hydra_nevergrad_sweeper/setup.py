@@ -6,9 +6,9 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-nevergrad-sweeper",
-        version="1.0.0rc6",
-        author="Jeremy Rapin, Omry Yadan",
-        author_email="jrapin@fb.com, omry@fb.com",
+        version="1.1.0rc1",
+        author="Jeremy Rapin, Omry Yadan, Jieru Hu",
+        author_email="jrapin@fb.com, omry@fb.com, jieru@fb.com",
         description="Hydra Nevergrad Sweeper plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
