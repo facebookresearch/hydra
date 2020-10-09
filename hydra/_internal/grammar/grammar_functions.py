@@ -309,7 +309,7 @@ def _sort_sweep(
     sweep = copy(sweep)
 
     if isinstance(sweep, ChoiceSweep):
-        sweep.list = sorted(sweep.list, reverse=reverse)
+        sweep.list = sorted(sweep.list, reverse=reverse)  # type: ignore
         return sweep
     elif isinstance(sweep, RangeSweep):
         assert sweep.start is not None
