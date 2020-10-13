@@ -66,7 +66,9 @@ class OptimConf:
 
 @dataclass
 class NevergradSweeperConf:
-    _target_: str = "hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper"
+    _target_: str = (
+        "hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper.NevergradSweeper"
+    )
 
     # configuration of the optimizer
     optim: OptimConf = OptimConf()
@@ -77,9 +79,6 @@ class NevergradSweeperConf:
     # - as a list, for categorical variables
     # - as a full scalar specification
     parametrization: Dict[str, Any] = field(default_factory=dict)
-
-    # version of the commandline API
-    version: int = 1
 
 
 ConfigStore.instance().store(

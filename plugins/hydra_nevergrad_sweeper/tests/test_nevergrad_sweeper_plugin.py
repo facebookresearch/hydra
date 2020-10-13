@@ -1,50 +1,103 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
 import pytest
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
 from omegaconf import DictConfig, OmegaConf
 
-from hydra_plugins.hydra_nevergrad_sweeper import core
+from hydra_plugins.hydra_nevergrad_sweeper import _impl
+from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
 
 chdir_plugin_root()
 
 
 def test_discovery() -> None:
-    assert core.NevergradSweeper.__name__ in [
+    assert NevergradSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
 
 
+def assert_ng_param_equals(expected: Any, actual: Any) -> None:
+    assert type(expected) == type(actual)
+    if isinstance(actual, ng.p.Choice) or isinstance(actual, ng.p.TransitionChoice):
+        assert sorted(expected.choices.value) == sorted(actual.choices.value)
+    elif isinstance(actual, ng.p.Log) or isinstance(actual, ng.p.Scalar):
+        assert expected.bounds == actual.bounds
+        assert expected.integer == actual.integer
+    else:
+        assert False, f"Unexpected type: {type(actual)}"
+
+
+def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Scalar:
+    scalar = type(lower=lower, upper=upper)
+    scalar.set_integer_casting()
+    assert isinstance(scalar, ng.p.Scalar)
+    return scalar
+
+
 @pytest.mark.parametrize(  # type: ignore
-    "description,param_cls,value_cls",
+    "input, expected",
     [
-        ("blu,blublu", ng.p.Choice, str),
-        (["blu", "blublu"], ng.p.Choice, str),
-        ("0,1,2", ng.p.TransitionChoice, float),
-        ([0, 1, 2], ng.p.TransitionChoice, float),
-        ("int:0,1,2", ng.p.TransitionChoice, int),
-        ("str:0,1,2", ng.p.Choice, str),
-        ("0.0,12.0,2.0", ng.p.Choice, float),
-        ("int:1:12", ng.p.Scalar, int),
-        ("1:12", ng.p.Scalar, float),
-        ("log:0.01:1.0", ng.p.Log, float),
-        ("blublu", str, str),
+        ([1, 2, 3], ng.p.Choice([1, 2, 3])),
+        (["1", "2", "3"], ng.p.Choice(["1", "2", "3"])),
+        ({"lower": 1, "upper": 12, "log": True}, ng.p.Log(lower=1, upper=12)),
+        ({"lower": 1, "upper": 12}, ng.p.Scalar(lower=1, upper=12)),
+        (
+            {"lower": 1, "upper": 12, "integer": True},
+            get_scalar_with_integer_bounds(1, 12, ng.p.Scalar),
+        ),
+        (
+            {"lower": 1, "upper": 12, "log": True, "integer": True},
+            get_scalar_with_integer_bounds(1, 12, ng.p.Log),
+        ),
     ],
 )
-def test_make_nevergrad_parameter(
-    description: Any, param_cls: Any, value_cls: Any
+def test_create_nevergrad_parameter_from_config(
+    input: Any,
+    expected: Any,
 ) -> None:
-    param = core.make_nevergrad_parameter(description)
-    assert isinstance(param, param_cls)
-    if param_cls is not str:
-        assert isinstance(param.value, value_cls)
+    actual = _impl.create_nevergrad_param_from_config(input)
+    assert_ng_param_equals(expected, actual)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input, expected",
+    [
+        ("key=choice(1,2)", ng.p.Choice([1, 2])),
+        ("key=choice('hello','world')", ng.p.Choice(["hello", "world"])),
+        ("key=tag(ordered, choice(1,2,3))", ng.p.TransitionChoice([1, 2, 3])),
+        (
+            "key=tag(ordered, choice('hello','world', 'nevergrad'))",
+            ng.p.TransitionChoice(["hello", "world", "nevergrad"]),
+        ),
+        ("key=range(1,3)", ng.p.Choice([1, 2])),
+        ("key=shuffle(range(1,3))", ng.p.Choice([1, 2])),
+        ("key=range(1,5)", ng.p.Choice([1, 2, 3, 4])),
+        ("key=float(range(1,5))", ng.p.Choice([1.0, 2.0, 3.0, 4.0])),
+        (
+            "key=int(interval(1,12))",
+            get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Scalar),
+        ),
+        ("key=tag(log, interval(1,12))", ng.p.Log(lower=1, upper=12)),
+        (
+            "key=tag(log, int(interval(1,12)))",
+            get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Log),
+        ),
+    ],
+)
+def test_create_nevergrad_parameter_from_override(
+    input: Any,
+    expected: Any,
+) -> None:
+    parser = OverridesParser.create()
+    parsed = parser.parse_overrides([input])[0]
+    param = _impl.create_nevergrad_parameter_from_override(parsed)
+    assert_ng_param_equals(param, expected)
 
 
 def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
@@ -72,8 +125,7 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
-        sys.executable,
-        "example/dummy_training.py",
+        "example/my_app.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
         f"hydra.sweeper.optim.budget={budget}",  # small budget to test fast
@@ -84,10 +136,10 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         cmd += [
             "db=mnist,cifar",
             "batch_size=4,8,12,16",
-            "lr=log:0.001:1.0",
-            "dropout=0:1",
+            "lr=tag(log, interval(0.001, 1.0))",
+            "dropout=interval(0,1)",
         ]
-    subprocess.check_call(cmd)
+    get_run_output(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"
