@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Any, Dict, Optional
 
 from hydra.core.config_store import ConfigStore
 
@@ -57,6 +57,9 @@ class SlurmQueueConf(BaseQueueConf):
     # check the following for more info on slurm_max_num_timeout
     # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
     max_num_timeout: int = 0
+    # Useful to add parameters which are not currently available in the plugin.
+    # Eg: {"mail-user": "blublu@fb.com", "mail-type": "BEGIN"}
+    additional_parameters: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
