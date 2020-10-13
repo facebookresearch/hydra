@@ -176,7 +176,7 @@ class Plugins(metaclass=Singleton):
                         )
                         for w in recorded_warnings:
                             warnings.showwarning(
-                                message=w.message,  # type: ignore
+                                message=w.message,
                                 category=w.category,
                                 filename=w.filename,
                                 lineno=w.lineno,
