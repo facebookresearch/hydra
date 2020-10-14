@@ -22,8 +22,8 @@ Hydra includes buck TARGETS you can use in fbcode. In general, if there is TARGE
 1. You can depend on the TARGETS to use Hydra or a plugin.
 2. The TARGETS contains a runnable example.
 
-targets are under `github/facebookresearch/hydra_1.0`:
+targets are under `github/facebookresearch/hydra`:
 - `:hydra` : Primary target to use in most cases. Includes `hydra_oss` and the `fbcode_defaults`.
 - `:hydra_oss` : Vanilla Hydra without any Facebook specific targets.
-- `plugins/...`: Plugins that has TARGETS file are runnable in fbcode.
-- `examples/...`: Examples that has a TARGETS file are runnable in `fbcode`.
+- `plugins/...`: Plugins that have TARGETS file are runnable in fbcode.
+- `examples/...`: Examples that have a TARGETS file are runnable in `fbcode`. All tutorials (in `examples/tutorials`) are supported.
