@@ -295,9 +295,9 @@ def test_advanced_ad_hoc_composition(
         "hydra.run.dir=" + str(tmpdir),
     ]
     result, _err = get_run_output(cmd)
+    assert OmegaConf.create(result) == OmegaConf.create(expected)
     if should_remove_variable:
         del os.environ["USER"]
-    assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
 def test_examples_using_the_config_object(tmpdir: Path) -> None:
