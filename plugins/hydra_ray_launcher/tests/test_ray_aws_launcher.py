@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 from typing import Generator, List, Optional
 
+from omegaconf import OmegaConf
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -179,40 +180,27 @@ def manage_cluster() -> Generator[None, None, None]:
     tmpdir = tempfile.mkdtemp()
     plugin_wheels = build_ray_launcher_wheel(tmpdir)
     core_wheel = build_core_wheel(tmpdir)
-    connect_yaml = f"""
-cluster_name: {cluster_name}
-provider:
-  type: aws
-  region: us-west-2
-  availability_zone: us-west-2a,us-west-2b
-  cache_stopped_nodes: False
-  key_pair:
-     key_name: hydra_test_{cluster_name}
-auth:
-  ssh_user: ubuntu
-setup_commands:
-  - echo 'export PATH="$HOME/anaconda3/envs/hydra_{cur_py_version}/bin:$PATH"' >> ~/.bashrc
-head_setup_commands: []
-head_node:
-  ImageId: {ami}
-  SubnetId: {subnet_id}
-  InstanceType: m5.large
-  SecurityGroupIds:
-  - {security_group_id}
-  IamInstanceProfile:
-    Arn: {instance_role}
-worker_nodes:
-  ImageId: {ami}
-  SubnetId: {subnet_id}
-  InstanceType: m5.large
-  SecurityGroupIds:
-  - {security_group_id}
-  IamInstanceProfile:
-    Arn: {instance_role}
-    """
+    connect_config = {
+        "cluster_name": cluster_name,
+        "provider": {
+            "type": "aws",
+            "region": "us-west-2",
+            "availability_zone": "us-west-2a,us-west-2b",
+            "cache_stopped_nodes": False,
+            "key_pair": {"key_name": f"hydra_test_{cluster_name}"},
+        },
+        "auth": {"ssh_user": "ubuntu"},
+        "setup_commands": [
+            f"echo 'export PATH=\"$HOME/anaconda3/envs/hydra_{cur_py_version}/bin:$PATH\"' >> ~/.bashrc"
+        ],
+        "head_setup_commands": [],
+        "head_node": ray_nodes_conf,
+        "worker_nodes": ray_nodes_conf,
+    }
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
         with open(f.name, "w") as file:
-            print(connect_yaml, file=file)
+            OmegaConf.save(config=connect_config, f=file.name, resolve=True)
+            # print(connect_yaml, file=file)
         temp_yaml = f.name
         ray_up(temp_yaml)
         ray_new_dir(temp_yaml, temp_remote_dir, False)
