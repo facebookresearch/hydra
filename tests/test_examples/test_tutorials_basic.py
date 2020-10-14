@@ -286,13 +286,17 @@ def test_advanced_ad_hoc_composition(
 ) -> None:
 
     # CircleCI does not have the environment variable USER.
+    should_remove_variable = False
     if "USER" not in os.environ:
         os.environ["USER"] = "test_user"
+        should_remove_variable = True
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result, _err = get_run_output(cmd)
+    if should_remove_variable:
+        del os.environ["USER"]
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
