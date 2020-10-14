@@ -13,7 +13,6 @@ ray_cluster_cfg:
     - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
     - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"' >> ~/.bashrc
     # install needed dependency for launcher.
-    - python3 -m pip install --ignore-installed PyYAML
     - python3 -m pip install ray==1.0.0
     - python3 -m pip install cloudpickle==1.4.1
     - python3 -m pip install git+https://github.com/facebookresearch/hydra.git@master

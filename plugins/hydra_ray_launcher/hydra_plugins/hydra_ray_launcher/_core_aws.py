@@ -174,10 +174,16 @@ def launch_jobs(
                 )
 
         if launcher.stop_cluster:
-            log.info(
-                "You've set RayAWSConf.stop_cluster to be True, stopping cluster now."
-            )
+            log.info("Stopping cluster now. (stop_cluster=true)")
+            if launcher.ray_cluster_cfg.provider.cache_stopped_nodes:
+                log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
+            else:
+                log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
             ray_down(launcher.ray_yaml_path)
+        else:
+            log.warning(
+                "NOT stopping cluster, this may incur extra cost for you. (stop_cluster=false)"
+            )
 
         with open(os.path.join(local_tmp_download_dir, JOB_RETURN_PICKLE), "rb") as f:
             job_returns = pickle.load(f)  # nosec

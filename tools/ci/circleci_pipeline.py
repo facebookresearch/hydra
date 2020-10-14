@@ -27,8 +27,8 @@ def chunk(it, size):
 
 
 def get_available_plugin() -> List[str]:
-    skip = [x for x in test_alone_plugins]
-    skip.append(".isort.cfg")
+    skip = [".isort.cfg"]
+    skip.extend(test_alone_plugins)
 
     ps = [
         {"dir_name": x, "path": x}

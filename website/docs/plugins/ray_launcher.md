@@ -40,8 +40,7 @@ You can run an initial check on credential configuration running the following c
 The plugin defaults are in `conf/hydra/launcher/ray_aws.yaml`. You can override the default values in your app config or from command line.
 
 :::caution
-This plugins depends on `cloudpickle`, as a result please make sure your local machine and the AWS cluster runs the same version of: `ray`, `hydra-core` and `python`. You can 
-easily install the desired software version by overriding `RayClusterConf.setup_commands`.
+This plugins depends on `cloudpickle`, as a result please make sure your local machine and the AWS cluster runs the same version of: `ray`, `hydra-core` and `python`. You can install the desired software version by overriding `RayClusterConf.setup_commands`.
 :::
 
 Now we can go ahead and run `train.py` using `ray_aws` launcher
@@ -69,7 +68,8 @@ $ python train.py --multirun hydra/launcher=ray_aws +ray_mode=aws random_seed=1,
 .....
 [HYDRA] Syncing outputs from remote dir: multirun/2020-08-05/11-41-04 to local dir: multirun/2020-08-05/11-41-04
 ...
-[HYDRA] Stopped AWS cluster. since you've set your provider.cache_stopped_nodes to be true, we are not deleting the cluster.
+[2020-10-14 15:18:20,888][HYDRA] Stopping cluster now. (stop_cluster=true)
+[2020-10-14 15:18:20,889][HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
 ```
 
 In the example app config, we've configured the launcher to download ``*.pt`` files created by the app to local ``download`` dir. You should be able to see a ``download`` dir created in your current working dir.

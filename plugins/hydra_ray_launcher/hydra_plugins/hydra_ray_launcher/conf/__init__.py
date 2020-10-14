@@ -19,7 +19,8 @@ class RayLocalLauncherConf(TargetConf):
     )
 
 
-# Ray AWS config
+# Ray AWS config, more info on ray's schema here:
+# https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/ray-schema.json
 
 
 class RayAutoScalingMode(Enum):
@@ -169,8 +170,8 @@ class RayAWSLauncherConf(TargetConf):
     ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.
-    # (Cluster will remain provisioned and can be started with "ray up cluster.yaml").
-    stop_cluster: bool = False
+    # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").
+    stop_cluster: bool = True
 
     # sync_up is executed before launching jobs on the cluster.
     # This can be used for syncing up source code to remote cluster for execution.
