@@ -26,8 +26,8 @@ from hydra.core.utils import JobReturn, split_config_path
 from hydra.types import TaskFunction
 
 # CircleCI does not have the environment variable USER, breaking the tests.
-if "USER" not in os.environ:
-    os.environ["USER"] = "test_user"
+# if "USER" not in os.environ:
+#     os.environ["USER"] = "test_user"
 
 
 @contextmanager
