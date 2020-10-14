@@ -23,8 +23,8 @@ with open("README.md", "r") as fh:
         install_requires=[
             "boto3==1.15.6",
             "hydra-core>=1.0.0",
-            "ray==1.0.0",
-            "cloudpickle==1.4.1",
+            "ray>=1.0.0",
+            "cloudpickle>=1.4.1",
         ],
         include_package_data=True,
     )
