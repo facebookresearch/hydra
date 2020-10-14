@@ -10,7 +10,6 @@ import tempfile
 from pathlib import Path
 from typing import Generator, List, Optional
 
-from omegaconf import OmegaConf
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -19,6 +18,7 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
+from omegaconf import OmegaConf
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     _run_command,
