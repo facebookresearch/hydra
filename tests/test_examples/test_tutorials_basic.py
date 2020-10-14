@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -283,6 +284,10 @@ def test_sweeping_example(
 def test_advanced_ad_hoc_composition(
     tmpdir: Path, args: List[str], expected: Any
 ) -> None:
+
+    # CircleCI does not have the environment variable USER.
+    if "USER" not in os.environ:
+        os.environ["USER"] = "test_user"
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
