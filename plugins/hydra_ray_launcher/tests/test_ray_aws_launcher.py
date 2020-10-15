@@ -165,6 +165,32 @@ def log_library_version(libs: List[str]) -> None:
         log.warning(f"Currently running {lib}=={version}.")
 
 
+def validate_lib_version(yaml: str) -> None:
+    # a few lib versions that we care about
+    libs = ["ray", "cloudpickle", "pickle5"]
+    local_versions = set()
+    for lib in libs:
+        v = pkg_resources.get_distribution(lib).version
+        local_versions.add(f"{lib}=={v}")
+
+    log.info(f"Locally running {local_versions}")
+    out, _ = _run_command(
+        [
+            "ray",
+            "exec",
+            yaml,
+            "pip freeze",
+        ]
+    )
+    remote_versions = out.split()
+    log.info(f"Remotely running {remote_versions}")
+    for local in local_versions:
+        if local not in remote_versions:
+            raise ValueError(
+                f"lib version not matching, local_versions: {local_versions} \nremote_versions: {remote_versions}"
+            )
+
+
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
@@ -177,8 +203,6 @@ def test_discovery() -> None:
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
-
-    log_library_version(["ray", "cloudpickle"])
 
     if get_requirements_sha() != hydra_core_requirements_sha:
         log.warning(
@@ -215,6 +239,7 @@ def manage_cluster() -> Generator[None, None, None]:
         ray_new_dir(temp_yaml, temp_remote_dir, False)
         ray_new_dir(temp_yaml, temp_remote_wheel_dir, False)
         upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheels)
+        validate_lib_version(temp_yaml)
         yield
         ray_down(f.name)
 

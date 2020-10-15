@@ -3,13 +3,13 @@
 # This file is to be rsynced to ray cluster and invoke on the cluster.
 import logging
 import os
-import pickle
 import sys
 from pathlib import Path
 from typing import List
 from urllib.request import urlopen
 
 import cloudpickle  # type: ignore
+import pickle5 as pickle  # type: ignore
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton

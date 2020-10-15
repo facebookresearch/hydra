@@ -1,12 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
-import pickle
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
+import pickle5 as pickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals

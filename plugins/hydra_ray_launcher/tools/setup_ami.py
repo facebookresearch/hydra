@@ -6,7 +6,8 @@ dependencies = [
     "boto3==1.15.6",
     "hydra-core>=1.0.0",
     "ray>=1.0.0",
-    "cloudpickle>=1.4.1",
+    "cloudpickle>=1.6.0",
+    "pickle5",
 ]
 
 
