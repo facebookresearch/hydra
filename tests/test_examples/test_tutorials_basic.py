@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
 import re
 import subprocess
 from pathlib import Path
@@ -282,22 +281,16 @@ def test_sweeping_example(
     ],
 )
 def test_advanced_ad_hoc_composition(
-    tmpdir: Path, args: List[str], expected: Any
+    monkeypatch: Any, tmpdir: Path, args: List[str], expected: Any
 ) -> None:
 
-    # CircleCI does not have the environment variable USER.
-    should_remove_variable = False
-    if "USER" not in os.environ:
-        os.environ["USER"] = "test_user"
-        should_remove_variable = True
+    monkeypatch.setenv("USER", "test_user")
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
     result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
-    if should_remove_variable:
-        del os.environ["USER"]
 
 
 def test_examples_using_the_config_object(tmpdir: Path) -> None:
