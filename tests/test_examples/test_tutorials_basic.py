@@ -281,8 +281,10 @@ def test_sweeping_example(
     ],
 )
 def test_advanced_ad_hoc_composition(
-    tmpdir: Path, args: List[str], expected: Any
+    monkeypatch: Any, tmpdir: Path, args: List[str], expected: Any
 ) -> None:
+
+    monkeypatch.setenv("USER", "test_user")
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),

@@ -1,0 +1,1 @@
+Hydra no longer errorenously changes the USER environment variable in pytest unit tests once installed
