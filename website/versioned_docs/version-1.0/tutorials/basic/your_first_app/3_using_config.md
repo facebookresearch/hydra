@@ -16,7 +16,7 @@ node:                         # Config is hierarchical
   waldo: ???                  # Missing value, must be populated prior to access
 ```
 
-```python title="main.py"
+```python title="my_app.py"
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig):
     assert cfg.node.loompa == 10          # attribute style access
