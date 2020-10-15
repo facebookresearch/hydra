@@ -1,0 +1,1 @@
+Installing Hydra was setting `USER` env variable in pytest tests via a pytest plugin.
