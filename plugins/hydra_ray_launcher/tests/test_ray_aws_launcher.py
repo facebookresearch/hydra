@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 from typing import Generator, List, Optional
 
+import pkg_resources
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -158,6 +159,12 @@ def get_requirements_sha(path_to_hydra_root: Optional[str] = None) -> str:
         return hashlib.md5(data).hexdigest()  # nosec
 
 
+def log_library_version(libs: List[str]) -> None:
+    for lib in libs:
+        version = pkg_resources.get_distribution(lib).version
+        log.warning(f"Currently running {lib}=={version}.")
+
+
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
@@ -170,6 +177,8 @@ def test_discovery() -> None:
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
+
+    log_library_version(["ray", "cloudpickle"])
 
     if get_requirements_sha() != hydra_core_requirements_sha:
         log.warning(

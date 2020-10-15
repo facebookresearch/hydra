@@ -5,6 +5,7 @@ Run this script with AWS admin creds to create new Ray AMIs if any hydra-core & 
 dependencies changes.
 Then update env variable with the new AMI.
 """
+import os
 import subprocess
 import tempfile
 import time
@@ -12,6 +13,7 @@ from datetime import datetime
 
 import boto3
 import hydra
+from hydra import utils
 from omegaconf import DictConfig, OmegaConf
 
 
@@ -38,6 +40,7 @@ def set_up_machine(cfg: DictConfig) -> None:
             OmegaConf.save(config=cfg.ray_yaml, f=file.name, resolve=True)
         yaml = f.name
         _run_command(f"ray up {yaml} -y")
+        os.chdir(utils.get_original_cwd())
         _run_command(f"ray rsync_up {yaml} './setup_ami.py' '/home/ubuntu/' ")
         _run_command(f"ray rsync_up {yaml} '../requirements.txt' '/home/ubuntu/' ")
 
