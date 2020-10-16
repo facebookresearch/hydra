@@ -27,5 +27,5 @@ An example TARGET file can be accessed [here](https://www.internalfb.com/intern/
 targets are under `github/facebookresearch/hydra`:
 - [:`hydra`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra) : Primary target to use in most cases. Includes `hydra_oss` and the `fbcode_defaults`.
 - `:hydra_oss` : Vanilla Hydra without any Facebook specific targets.
-- [`plugins`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/plugins): Plugins that have TARGETS file are runnable in fbcode.
+- [`plugins`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/plugins): Plugins that have a TARGETS file are runnable in fbcode.
 - [`examples`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/examples): Examples that have a TARGETS file are runnable in `fbcode`.
