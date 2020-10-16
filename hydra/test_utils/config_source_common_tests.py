@@ -18,7 +18,7 @@ class ConfigSourceTestSuite:
         (dataset exists both as a config object and a config group)
         /dateset.yaml
         /dataset/cifar.yaml
-        
+
         Overriding and returning True here will disable testing of this scenario
         by assuming the dataset config (dataset.yaml) is not present.
         """
