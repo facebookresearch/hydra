@@ -13,10 +13,14 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 class ConfigSourceTestSuite:
     def skip_overlap_config_path_name(self) -> bool:
         """
-        Some config source plugins do not support config name and path overlap, for example:
+        Some config source plugins do not support config name and path overlap.
+        For example the following may not be allowed:
+        (dataset exists both as a config object and a config group)
         /dateset.yaml
         /dataset/cifar.yaml
-        may not be allowed.
+
+        Override this function to return True so the test assumes /dataset/cifar.yaml
+        exists instead of /dataset.yaml
         """
         return False
 
@@ -79,7 +83,10 @@ class ConfigSourceTestSuite:
         self, type_: Type[ConfigSource], path: str, config_path: str, expected: bool
     ) -> None:
         if self.skip_overlap_config_path_name():
-            pytest.skip("Plugin does not support overlap config name with config path.")
+            pytest.skip(
+                f"ConfigSourcePlugin {type_.__name__} does not support config objects and config groups "
+                f"with overlapping names."
+            )
         src = type_(provider="foo", path=path)
         ret = src.is_config(config_path=config_path)
         assert ret == expected
@@ -94,6 +101,7 @@ class ConfigSourceTestSuite:
             ("level1", ObjectType.GROUP, ["level2"]),
             ("level1/level2", ObjectType.GROUP, []),
             # Configs
+            ("", ObjectType.CONFIG, ["config_without_group"]),
             ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
             ("optimizer", ObjectType.CONFIG, ["adam", "nesterov"]),
             ("level1", ObjectType.CONFIG, []),
@@ -125,7 +133,7 @@ class ConfigSourceTestSuite:
         "config_path,results_filter,expected",
         [
             # Configs
-            ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
+            ("", ObjectType.CONFIG, ["dataset"]),
         ],
     )
     def test_list_with_overlap_name(
@@ -137,7 +145,10 @@ class ConfigSourceTestSuite:
         expected: List[str],
     ) -> None:
         if self.skip_overlap_config_path_name():
-            pytest.skip("Plugin does not support overlap config name with config path.")
+            pytest.skip(
+                f"ConfigSourcePlugin {type_.__name__} does not support config objects and config groups "
+                f"with overlapping names."
+            )
         src = type_(provider="foo", path=path)
         ret = src.list(config_path=config_path, results_filter=results_filter)
         for x in expected:
