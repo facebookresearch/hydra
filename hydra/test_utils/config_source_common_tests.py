@@ -52,7 +52,6 @@ class ConfigSourceTestSuite:
         "config_path, expected",
         [
             ("", False),
-            ("dataset", True),
             ("optimizer", False),
             ("dataset/imagenet", True),
             ("dataset/imagenet.yaml", True),
@@ -95,7 +94,6 @@ class ConfigSourceTestSuite:
             ("level1", ObjectType.GROUP, ["level2"]),
             ("level1/level2", ObjectType.GROUP, []),
             # Configs
-            ("", ObjectType.CONFIG, ["config_without_group", "dataset"]),
             ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
             ("optimizer", ObjectType.CONFIG, ["adam", "nesterov"]),
             ("level1", ObjectType.CONFIG, []),
