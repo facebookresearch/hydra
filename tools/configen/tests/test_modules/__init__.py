@@ -116,6 +116,19 @@ class WithStringDefault:
             and self.none_str == other.none_str
         )
 
+class WithUntypedStringDefault:
+    def __init__(
+        self,
+        default_str = "Bond, James Bond",
+    ):
+        self.default_str = default_str
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, type(self))
+            and self.default_str == other.default_str
+        )
+
 
 class ListValues:
     def __init__(
