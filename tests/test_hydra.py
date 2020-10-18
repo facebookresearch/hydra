@@ -593,6 +593,14 @@ def test_sweep_complex_defaults(
     Fish - Uninstall:
     python {script} -sc uninstall=fish | source
 
+    Zsh - Install:
+    Zsh is compatible with the Bash shell completion, see the [documentation]\
+(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+for details.
+    eval "$(python {script} -sc install=bash)"
+    Zsh - Uninstall:
+    eval "$(python {script} -sc uninstall=bash)"
+
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
 --config-name,-cn : Overrides the config_name specified in hydra.main()
@@ -639,6 +647,14 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
     python {script} -sc install=fish | source
     Fish - Uninstall:
     python {script} -sc uninstall=fish | source
+
+    Zsh - Install:
+    Zsh is compatible with the Bash shell completion, see the [documentation]\
+(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+for details.
+    eval "$(python {script} -sc install=bash)"
+    Zsh - Uninstall:
+    eval "$(python {script} -sc uninstall=bash)"
 
 --config-path,-cp : Overrides the config_path specified in hydra.main().
                     The config_path is relative to the Python file declaring @hydra.main()
