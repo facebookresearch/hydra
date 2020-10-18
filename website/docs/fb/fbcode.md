@@ -22,8 +22,8 @@ Hydra includes buck TARGETS you can use in fbcode. In general, if there is TARGE
 1. You can depend on the TARGETS to use Hydra or a plugin.
 2. The TARGETS contains a runnable example.
 
-targets are under `github/facebookresearch/hydra_1.0`:
-- `:hydra` : Primary target to use in most cases. Includes `hydra_oss` and the `fbcode_defaults`.
+targets are under `github/facebookresearch/hydra`:
+- [:`hydra`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra) : Primary target to use in most cases. Includes `hydra_oss` and the `fbcode_defaults`.
 - `:hydra_oss` : Vanilla Hydra without any Facebook specific targets.
-- `plugins/...`: Plugins that has TARGETS file are runnable in fbcode.
-- `examples/...`: Examples that has a TARGETS file are runnable in `fbcode`.
+- [`plugins`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/plugins): Plugins that have a TARGETS file are runnable in fbcode.
+- [`examples`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/examples): Examples that have a TARGETS file are runnable in `fbcode`. All tutorials (in [`examples/tutorials`](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/examples)) are supported. An example TARGET file can be found [here](https://www.internalfb.com/intern/diffusion/FBS/browsedir/master/fbcode/github/facebookresearch/hydra/examples/tutorials/basic/your_first_hydra_app/5_composition).
