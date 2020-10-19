@@ -201,7 +201,7 @@ class RayAWSLauncherConf(TargetConf):
 
     # Stop Ray AWS cluster after jobs are finished.
     # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").
-    stop_cluster: bool = False
+    stop_cluster: bool = True
 
     # sync_up is executed before launching jobs on the cluster.
     # This can be used for syncing up source code to remote cluster for execution.
