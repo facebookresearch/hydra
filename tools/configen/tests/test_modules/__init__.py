@@ -116,6 +116,7 @@ class WithStringDefault:
             and self.none_str == other.none_str
         )
 
+
 class WithUntypedStringDefault:
     def __init__(
         self,

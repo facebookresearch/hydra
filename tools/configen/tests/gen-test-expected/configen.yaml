@@ -24,7 +24,8 @@ configen:
         - WithLibraryClassArg
         - IncompatibleDataclassArg
         - WithStringDefault
+        - WithUntypedStringDefault
         - ListValues
         - DictValues
-        - PeskySentinelUsage
         - Tuples
+        - PeskySentinelUsage
