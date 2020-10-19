@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 class RayAWSLauncher(Launcher):
     def __init__(
         self,
+        mandatory_install: DictConfig,
         ray_init_cfg: DictConfig,
         ray_remote_cfg: DictConfig,
         ray_cluster_cfg: RayClusterConf,
@@ -37,6 +38,7 @@ class RayAWSLauncher(Launcher):
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
         self.ray_yaml_path: Optional[str] = None
+        self.mandatory_install = mandatory_install
 
     def setup(
         self,

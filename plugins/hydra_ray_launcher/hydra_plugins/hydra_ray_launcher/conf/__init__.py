@@ -3,6 +3,11 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+import cloudpickle  # type: ignore
+import hydra
+import omegaconf
+import pkg_resources
+import ray
 from hydra.core.config_store import ConfigStore
 from hydra.types import TargetConf
 from omegaconf import MISSING
@@ -76,6 +81,29 @@ class RsyncConf:
     target_dir: Optional[str] = None
     include: List[str] = field(default_factory=list)
     exclude: List[str] = field(default_factory=list)
+
+
+@dataclass
+class PluginMandatoryInstallConf:
+    hydra_version: str = hydra.__version__
+    ray_version: str = ray.__version__
+    cloudpickle_version: str = cloudpickle.__version__
+    omegaconf_version: str = omegaconf.__version__
+    pickle5_version: str = pkg_resources.get_distribution("pickle5").version
+
+    install_commands: List[str] = field(
+        default_factory=lambda: [
+            "conda create -n hydra_${python_version:micro} python=${python_version:micro} -y",
+            "echo 'export PATH=\"$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH\"' >> ~/.bashrc",
+            "pip install omegaconf==${hydra.launcher.mandatory_install.omegaconf_version}",
+            "pip install hydra-core==${hydra.launcher.mandatory_install.hydra_version}",
+            "pip install ray==${hydra.launcher.mandatory_install.ray_version}",
+            "pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}",
+            "pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}",
+            "pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/"
+            "hydra_ray_launcher-0.1.0-py3-none-any.whl",
+        ]
+    )
 
 
 @dataclass
@@ -161,6 +189,8 @@ class RayClusterConf:
 @dataclass
 class RayAWSLauncherConf(TargetConf):
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
+
+    mandatory_install: PluginMandatoryInstallConf = PluginMandatoryInstallConf()
     ray_init_cfg: Dict[str, Any] = field(
         default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
     )
@@ -171,7 +201,7 @@ class RayAWSLauncherConf(TargetConf):
 
     # Stop Ray AWS cluster after jobs are finished.
     # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").
-    stop_cluster: bool = True
+    stop_cluster: bool = False
 
     # sync_up is executed before launching jobs on the cluster.
     # This can be used for syncing up source code to remote cluster for execution.

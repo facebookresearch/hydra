@@ -10,7 +10,7 @@ import pickle5 as pickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
-from omegaconf import OmegaConf, open_dict
+from omegaconf import OmegaConf, open_dict, read_write
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -57,6 +57,12 @@ def launch(
     assert launcher.config is not None
     assert launcher.config_loader is not None
     assert launcher.task_function is not None
+
+    setup_commands = launcher.mandatory_install.install_commands
+    setup_commands.extend(launcher.ray_cluster_cfg.setup_commands)
+
+    with read_write(launcher.ray_cluster_cfg):
+        launcher.ray_cluster_cfg.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
 
