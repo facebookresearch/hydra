@@ -90,7 +90,7 @@ primitive:
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
-        | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @
         | COLON                                  // :
         | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
