@@ -120,15 +120,12 @@ class WithStringDefault:
 class WithUntypedStringDefault:
     def __init__(
         self,
-        default_str = "Bond, James Bond",
+        default_str="Bond, James Bond",
     ):
         self.default_str = default_str
 
     def __eq__(self, other):
-        return (
-            isinstance(other, type(self))
-            and self.default_str == other.default_str
-        )
+        return isinstance(other, type(self)) and self.default_str == other.default_str
 
 
 class ListValues:
