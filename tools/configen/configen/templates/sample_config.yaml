@@ -14,6 +14,7 @@ configen:
   # list of modules to generate configs for
   modules:
     - name: configen.samples.user
+      url: https://github.com/facebookresearch/hydra/blob/master/tools/configen/example/my_app.py
       # for each module, a list of classes
       classes:
         - User
