@@ -1,4 +1,6 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# Copyright (c) 2020 Facebook, Inc. and its affiliates. All Rights Reserved
+# SPDX-License-Identifier: MIT
+
 from dataclasses import dataclass
 from typing import List, Optional
 
