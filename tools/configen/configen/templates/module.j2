@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class {{class_name}}Conf:
+    {{classes_map[class_name].url}}
     _target_: str = "{{ classes_map[class_name].target }}"
 {% for param in classes_map[class_name].parameters %}
     {{ param.name }}: {{ param.type_str }} = {{ param.default }}

@@ -54,9 +54,7 @@ def init_config(conf_dir: str) -> None:
 def save(cfg: ConfigenConf, module: str, code: str) -> None:
     module_path = module.replace(".", "/")
 
-    module_path_pattern = Template(cfg.module_path_pattern).render(
-        module_path=module_path
-    )
+    module_path_pattern = Template(cfg.module_path_pattern).render(module_path=module_path)
     path = Path(cfg.output_dir) / module_path_pattern
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(code)
@@ -72,6 +70,8 @@ class Parameter:
 
 @dataclass
 class ClassInfo:
+    # URL - link to the original module/class documentation.
+    url: str
     module: str
     name: str
     parameters: List[Parameter]
@@ -112,9 +112,7 @@ def is_incompatible(type_: Type[Any]) -> bool:
         try:
             OmegaConf.structured(type_)  # verify it's actually legal
         except ValidationError as e:
-            log.debug(
-                f"Failed to create DictConfig from ({type_.__name__}) : {e}, flagging as incompatible"
-            )
+            log.debug(f"Failed to create DictConfig from ({type_.__name__}) : {e}, flagging as incompatible")
             return True
         return False
     return True
@@ -124,25 +122,24 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
     imports = set()
     string_imports: Set[str] = set()
+    # Iterate through the classes in a given module.
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
+        # Get class and init method sygnature.
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
-        params: List[Parameter] = []
 
+        # Iterate throught init arguments.
+        params: List[Parameter] = []
         for name, p in sig.parameters.items():
             type_ = p.annotation
             default_ = p.default
 
             missing_value = default_ == sig.empty
-            incompatible_value_type = not missing_value and is_incompatible(
-                type(default_)
-            )
+            incompatible_value_type = not missing_value and is_incompatible(type(default_))
 
             missing_annotation_type = type_ == sig.empty
-            incompatible_annotation_type = (
-                not missing_annotation_type and is_incompatible(type_)
-            )
+            incompatible_annotation_type = not missing_annotation_type and is_incompatible(type_)
 
             if missing_annotation_type or incompatible_annotation_type:
                 type_ = Any
@@ -157,11 +154,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                     default_ = f"field(default_factory=lambda: {default_})"
 
             missing_default = missing_value
-            if (
-                incompatible_annotation_type
-                or incompatible_value_type
-                or missing_default
-            ):
+            if incompatible_annotation_type or incompatible_value_type or missing_default:
                 missing_default = True
 
             collect_imports(imports, type_)
@@ -182,7 +175,16 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                     default=default_,
                 )
             )
+        # Process module URL.
+        if module.url is not None:
+            url = (
+                "\"\"\"For more details on parameteres please refer to the original documentation:\n"
+                "    {}\n    \"\"\"".format(module.url)
+            )
+        else:
+            url = ""
         classes_map[class_name] = ClassInfo(
+            url=url,
             target=full_name,
             module=module.name,
             name=class_name,

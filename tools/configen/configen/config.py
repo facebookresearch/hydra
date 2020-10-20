@@ -8,7 +8,11 @@ from omegaconf import MISSING
 
 @dataclass
 class ModuleConf:
+    # Optional: URL - link to the documentation of a given module.
+    url: Optional[str] = None
+    # Name of the module.
     name: str = MISSING
+    # List of classes of a given module.
     classes: List[str] = MISSING
 
 
@@ -22,7 +26,7 @@ class ConfigenConf:
 
     modules: List[ModuleConf] = MISSING
 
-    # Generated file header
+    # Generated file header.
     header: str = MISSING
 
 
