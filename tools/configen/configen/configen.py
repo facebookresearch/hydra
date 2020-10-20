@@ -182,7 +182,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 "    {}\n    \"\"\"".format(module.url)
             )
         else:
-            url = ""
+            url = "None"
         classes_map[class_name] = ClassInfo(
             url=url,
             target=full_name,
