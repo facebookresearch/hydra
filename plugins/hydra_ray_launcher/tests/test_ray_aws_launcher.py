@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import hashlib
 import logging
 import os
 import random
@@ -49,10 +48,6 @@ security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
 instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
 
-# temporary solution. we will build customized AMI everytime the requirments changes.
-ray_requirements_sha = "bdefc02ff3b9f667f37ecce9f2fc5ac6"
-hydra_core_requirements_sha = "394984911320e5884cb055a5d13d7545"
-
 assert (
     ami != "" and security_group_id != "" and subnet_id != "" and instance_role != ""
 ), (
@@ -88,10 +83,6 @@ def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
         len(plugins_path) == 1 and "hydra_ray_launcher" == plugins_path[0]
     ), "Ray test AMI doesn't have dependency installed for other plugins."
 
-    sha = get_requirements_sha("plugins/hydra_ray_launcher/setup.py")
-
-    if sha != ray_requirements_sha:
-        log.warning("Ray setup.py changed, we may need new launcher test AMI!")
     wheels = []
     for p in plugins_path:
         wheel = build_plugin_wheel(p, tmpdir)
@@ -100,11 +91,14 @@ def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
 
 
 def build_plugin_wheel(plugin: str, tmp_wheel_dir: str) -> str:
+    chdir_hydra_root()
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
     subprocess.getoutput(
         f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
     )
+    log.info("Download all plugin dependency wheels.")
+    subprocess.getoutput(f"pip download . -d {tmp_wheel_dir}")
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
     return wheel
@@ -114,6 +108,11 @@ def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
     subprocess.getoutput(
         f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
+    )
+
+    # download dependency wheel for hydra-core
+    subprocess.getoutput(
+        f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}"
     )
     wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     return wheel
@@ -132,7 +131,7 @@ def upload_and_install_wheels(
             "ray",
             "exec",
             yaml,
-            f"pip install {temp_remote_wheel_dir}{core_wheel}",
+            f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
         ]
     )
 
@@ -143,26 +142,9 @@ def upload_and_install_wheels(
                 "ray",
                 "exec",
                 yaml,
-                f"pip install {temp_remote_wheel_dir}{p}",
+                f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{p}",
             ]
         )
-
-
-def get_requirements_sha(path_to_hydra_root: Optional[str] = None) -> str:
-    chdir_hydra_root()
-    if path_to_hydra_root:
-        requirements_path = Path(path_to_hydra_root)
-    else:
-        requirements_path = Path("requirements/requirements.txt")
-    with open(requirements_path, "rb") as f:
-        data = f.read()
-        return hashlib.md5(data).hexdigest()  # nosec
-
-
-def log_library_version(libs: List[str]) -> None:
-    for lib in libs:
-        version = pkg_resources.get_distribution(lib).version
-        log.warning(f"Currently running {lib}=={version}.")
 
 
 def validate_lib_version(yaml: str) -> None:
@@ -187,8 +169,24 @@ def validate_lib_version(yaml: str) -> None:
     for local in local_versions:
         if local not in remote_versions:
             raise ValueError(
-                f"lib version not matching, local_versions: {local_versions} \nremote_versions: {remote_versions}"
+                f"lib version not matching, local_version: {local} \nremote_versions: {remote_versions}"
             )
+
+    # validate python version
+    info = sys.version_info
+    local_python = f"{info.major}.{info.minor}.{info.micro}"
+    out, _ = _run_command(
+        [
+            "ray",
+            "exec",
+            yaml,
+            "python --version",
+        ]
+    )
+    remove_python = out.split()[1]
+    assert (
+        local_python == remove_python
+    ), f"Python version mismatch, local={local_python}, remote={remove_python}"
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
@@ -203,11 +201,6 @@ def test_discovery() -> None:
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
-
-    if get_requirements_sha() != hydra_core_requirements_sha:
-        log.warning(
-            "Hydra core requirements changes. This may mean we need to update RAY test AMI."
-        )
 
     # build all the wheels
     tmpdir = tempfile.mkdtemp()
@@ -233,7 +226,6 @@ def manage_cluster() -> Generator[None, None, None]:
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
         with open(f.name, "w") as file:
             OmegaConf.save(config=connect_config, f=file.name, resolve=True)
-            # print(connect_yaml, file=file)
         temp_yaml = f.name
         ray_up(temp_yaml)
         ray_new_dir(temp_yaml, temp_remote_dir, False)

@@ -3,11 +3,7 @@ import subprocess
 from datetime import datetime
 
 dependencies = [
-    "boto3==1.15.6",
-    "hydra-core>=1.0.0",
     "ray>=1.0.0",
-    "cloudpickle>=1.6.0",
-    "pickle5",
 ]
 
 
@@ -37,9 +33,6 @@ def run():
     for v in sorted(versions):
         _run_command(f"conda create -n hydra_{v} python={v} -y")
         pip_path = f"/home/ubuntu/anaconda3/envs/hydra_{v}/bin/pip"
-        _run_command(
-            f"{pip_path} install git+https://github.com/facebookresearch/hydra.git@master"
-        )
         for d in dependencies:
             _run_command(f"{pip_path} install {d}")
 

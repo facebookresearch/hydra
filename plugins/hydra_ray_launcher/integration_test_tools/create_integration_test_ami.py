@@ -1,8 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 """
-Run this script with AWS admin creds to create new Ray AMIs if any hydra-core & hydra-ray-launcher
-dependencies changes.
+This script is meant to be used for ray launcher integration tests only!
+
+Run this script with AWS admin creds to create new integration test AMIs if any hydra-core & hydra-ray-launcher
+dependencies changes or there's a newer version of python available for testing.
+
+This is needed because our testing EC2 instance doesn't not have outbound internet access and as a result cannot create
+conda env on demand.
+
 Then update env variable with the new AMI.
 """
 import os
@@ -23,7 +29,7 @@ def _run_command(command: str) -> str:
     return output
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_name="create_integration_test_ami_config")
 def set_up_machine(cfg: DictConfig) -> None:
     security_group_id = cfg.security_group_id
     assert security_group_id != "", "Security group cannot be empty!"
@@ -40,13 +46,14 @@ def set_up_machine(cfg: DictConfig) -> None:
         yaml = f.name
         _run_command(f"ray up {yaml} -y")
         os.chdir(hydra.utils.get_original_cwd())
-        _run_command(f"ray rsync_up {yaml} './setup_ami.py' '/home/ubuntu/' ")
-        _run_command(f"ray rsync_up {yaml} '../requirements.txt' '/home/ubuntu/' ")
+        _run_command(
+            f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "
+        )
 
         print(
             "Installing dependencies now, this may take a while (very likely more than 20 mins) ..."
         )
-        _run_command(f"ray exec {yaml} 'python ./setup_ami.py' ")
+        _run_command(f"ray exec {yaml} 'python ./setup_integration_test_ami.py' ")
 
         # remove security group egress rules
         _run_command(

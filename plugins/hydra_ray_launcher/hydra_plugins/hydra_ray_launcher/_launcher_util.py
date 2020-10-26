@@ -84,7 +84,7 @@ def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
 def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
     args = ["ray", "exec"]
     if docker:
-        args += "--docker"
+        args.append("--docker")
 
     mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
     out, _ = _run_command(mktemp_args)
@@ -129,7 +129,7 @@ def ray_exec(yaml_path: str, docker: bool, file_path: str, pickle_path: str) -> 
     command = f"python {file_path} {pickle_path}"
     args = ["ray", "exec"]
     if docker:
-        args += "--docker"
+        args.append("--docker")
     args += [yaml_path, command]
     _run_command(args)
 

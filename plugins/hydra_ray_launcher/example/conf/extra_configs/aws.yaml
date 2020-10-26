@@ -18,7 +18,7 @@ hydra:
     sync_down:
       include: ["*.pt", "*/"]
       # No need to sync down config files.
-      exclude: ["*", "*/"]
+      exclude: ["*"]
     ray_cluster_cfg:
       provider:
         cache_stopped_nodes: true
