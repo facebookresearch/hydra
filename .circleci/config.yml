@@ -95,7 +95,6 @@ commands:
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
             pip install nox --progress-bar off
-            pip install dataclasses --progress-bar off
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -119,7 +118,6 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox --progress-bar off
-            pip install dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_linux:
     parameters:
@@ -136,7 +134,6 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox --progress-bar off
-            pip install dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_win:
     parameters:
@@ -184,7 +181,6 @@ jobs:
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
               pip install nox --progress-bar off
-              pip install dataclasses --progress-bar off
               nox -s lint_plugins test_plugins -ts
   test_plugin_linux:
     parameters:
@@ -204,7 +200,6 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox --progress-bar off
-            pip install dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
   test_plugin_win:
     parameters:
