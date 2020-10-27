@@ -100,8 +100,10 @@ class PluginMandatoryInstallConf:
             "pip install ray==${hydra.launcher.mandatory_install.ray_version}",
             "pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}",
             "pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}",
-            "pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/"
-            "hydra_ray_launcher-0.1.0-py3-none-any.whl",
+            (
+                "pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/"
+                "hydra_ray_launcher-0.1.0-py3-none-any.whl"
+            ),
         ]
     )
 
