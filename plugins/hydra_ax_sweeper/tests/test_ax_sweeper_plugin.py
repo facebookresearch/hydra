@@ -40,7 +40,7 @@ def quadratic(cfg: DictConfig) -> Any:
         (6, [[1, 2, 3, 4, 5]]),
     ],
 )
-@pytest.mark.filterwarnings("ignore::UserWarning")
+@pytest.mark.filterwarnings("ignore::UserWarning")  # type: ignore
 def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper  # type: ignore
 
