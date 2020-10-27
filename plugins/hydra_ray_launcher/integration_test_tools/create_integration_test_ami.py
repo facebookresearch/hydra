@@ -9,7 +9,7 @@ dependencies changes or there's a newer version of python available for testing.
 This is needed because our testing EC2 instance doesn't not have outbound internet access and as a result cannot create
 conda env on demand.
 
-After the script, please update env variable AWS_RAY_AMI with the new AMI id.
+Please update env variable AWS_RAY_AMI locally and on circleCI with the new AMI id when the new AMI is available.
 """
 import os
 import subprocess
