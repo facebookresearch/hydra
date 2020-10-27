@@ -3,13 +3,13 @@
 """
 This script is meant to be used for ray launcher integration tests only!
 
-Run this script with AWS admin creds to create new integration test AMIs if any hydra-core & hydra-ray-launcher
+Run this script with AWS admin credentials to create new integration test AMIs if any hydra-core & hydra-ray-launcher
 dependencies changes or there's a newer version of python available for testing.
 
 This is needed because our testing EC2 instance doesn't not have outbound internet access and as a result cannot create
 conda env on demand.
 
-Then update env variable with the new AMI.
+After the script, please update env variable AWS_RAY_AMI with the new AMI id.
 """
 import os
 import subprocess
