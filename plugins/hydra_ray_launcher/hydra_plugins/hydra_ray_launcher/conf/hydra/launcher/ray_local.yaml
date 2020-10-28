@@ -1,0 +1,6 @@
+# @package _group_
+
+# This yaml will be validated against RayLocalLauncherConf
+ray_init_cfg:
+  num_cpus: 1
+  num_gpus: 0
