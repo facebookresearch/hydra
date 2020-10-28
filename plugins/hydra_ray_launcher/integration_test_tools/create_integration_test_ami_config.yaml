@@ -1,0 +1,53 @@
+security_group_id: ${env:RAY_BUILD_AMI_SEC_GROUP}
+ray_yaml:
+  cluster_name: ray_test_base_AMI
+  min_workers: 0
+  max_workers: 1
+  initial_workers: 0
+  autoscaling_mode: default
+  target_utilization_fraction: 0.8
+  idle_timeout_minutes: 5
+  docker:
+    image: ''
+    container_name: ''
+    pull_before_run: true
+    run_options: []
+  provider:
+    type: aws
+    region: us-west-2
+    availability_zone: us-west-2a,us-west-2b
+    cache_stopped_nodes: true
+    key_pair:
+      key_name: hydra
+  auth:
+    ssh_user: ubuntu
+
+  head_node:
+    InstanceType: m5.large
+    ImageId: ami-008d8ed4bd7dc2485
+    SubnetId: ${env:AWS_RAY_SUBNET}
+    SecurityGroupIds:
+      - ${env:AWS_RAY_SECURITY_GROUP}
+    IamInstanceProfile:
+      Arn: ${env:INSTANCE_ROLE_ARN}
+  worker_nodes:
+    InstanceType: m5.large
+    ImageId: ami-008d8ed4bd7dc2485
+    SubnetId: ${env:AWS_RAY_SUBNET}
+    SecurityGroupIds:
+      - ${env:AWS_RAY_SECURITY_GROUP}
+    IamInstanceProfile:
+      Arn: ${env:INSTANCE_ROLE_ARN}
+    InstanceMarketOptions:
+      MarketType: spot
+  file_mounts: {}
+  initialization_commands: []
+  setup_commands:
+    - pip install boto3
+    - pip install ray
+    - pip install --ignore-installed PyYAML
+    - pip install git+https://github.com/facebookresearch/hydra.git@master
+  head_setup_commands: []
+  worker_setup_commands: []
+  head_start_ray_commands: []
+  worker_start_ray_commands: []
