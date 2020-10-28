@@ -1,5 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+<<<<<<< HEAD
 from typing import Any
+=======
+from typing import Tuple
+>>>>>>> Cast params to int when applicable
 
 import pytest
 from hydra.core.plugins import Plugins
@@ -9,6 +13,7 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from omegaconf import OmegaConf
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
@@ -69,3 +74,34 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides, expected",
+    [
+        ("hydra.launcher.batch_size=1", ("hydra.launcher.batch_size", "1")),
+        ("hydra.launcher.max_nbytes=10000", ("hydra.launcher.max_nbytes", "10000")),
+        ("hydra.launcher.max_nbytes=1M", ("hydra.launcher.max_nbytes", "1M")),
+        ("hydra.launcher.pre_dispatch=all", ("hydra.launcher.pre_dispatch", "all")),
+        ("hydra.launcher.pre_dispatch=10", ("hydra.launcher.pre_dispatch", "10")),
+        (
+            "hydra.launcher.pre_dispatch=3*n_jobs",
+            ("hydra.launcher.pre_dispatch", "3*n_jobs"),
+        ),
+    ],
+)
+def test_example_app_launcher_overrides(
+    hydra_sweep_runner: TSweepRunner, overrides: str, expected: Tuple[str]
+) -> None:
+    with hydra_sweep_runner(
+        calling_file="example/my_app.py",
+        calling_module=None,
+        task_function=None,
+        config_path=None,
+        config_name="config",
+        overrides=[overrides],
+    ) as sweep:
+        assert sweep.returns is not None
+        for ret in sweep.returns[0]:
+            cfg = ret.hydra_cfg
+            assert OmegaConf.select(cfg, expected[0]) == expected[1]

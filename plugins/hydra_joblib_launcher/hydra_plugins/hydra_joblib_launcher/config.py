@@ -25,7 +25,7 @@ class JobLibLauncherConf:
     verbose: int = 0
 
     # timeout limit for each task
-    timeout: Optional[int] = None
+    timeout: Optional[float] = None
 
     # number of batches to be pre-dispatched
     pre_dispatch: str = "2*n_jobs"
