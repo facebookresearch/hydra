@@ -42,15 +42,7 @@ commands:
           name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
-<<<<<<< HEAD
-<<<<<<< HEAD
             conda run -n hydra pip install nox --progress-bar off
-=======
-            conda run -n hydra pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
->>>>>>> commit
-=======
-            conda run -n hydra pip install nox
->>>>>>> fix merge conflicts
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -102,16 +94,7 @@ commands:
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
-<<<<<<< HEAD
-<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
-=======
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
-=======
-            pip install nox
->>>>>>> fix merge conflicts
-            pip install dataclasses
->>>>>>> commit
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -134,23 +117,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
-=======
-<<<<<<< HEAD
-            pip install nox
-=======
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
->>>>>>> commit
-            pip install dataclasses
-<<<<<<< HEAD
->>>>>>> separate ray launcher into its own session
-=======
-            pip install nox
-            pip install dataclasses
->>>>>>> fix merge conflicts
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_linux:
     parameters:
@@ -165,65 +132,8 @@ jobs:
           name: Testing Hydra
           command: |
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-<<<<<<< HEAD
-            python -c 'import sys; print(sys.version_info[:])'
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             pip install nox dataclasses --progress-bar off
-=======
-            pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
-=======
-=======
-            conda activate hydra
->>>>>>> fix mypy and linux conda
-=======
-            /home/circleci/miniconda3/bin/conda activate hydra
->>>>>>> replace conda with /home/circleci/miniconda3/bin/conda
-=======
-=======
-=======
->>>>>>> commit
->>>>>>> commit
-            ~/miniconda3/bin/conda init bash
-            ~/miniconda3/bin/conda activate hydra
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> fix conda commands
-=======
-=======
-=======
->>>>>>> fix path
-<<<<<<< HEAD
->>>>>>> fix path
-=======
-=======
-=======
-            ls /home/circleci/miniconda3/envs/
-            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
->>>>>>> fix python PATH
-            which python
-            python --version
->>>>>>> print python version
-<<<<<<< HEAD
->>>>>>> print python version
-=======
-=======
-            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
->>>>>>> clean up circleci yaml
->>>>>>> clean up circleci yaml
-=======
->>>>>>> rebase and add install rsync
-            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
->>>>>>> commit
-            pip install nox
->>>>>>> fix merge conflicts
-            pip install dataclasses
->>>>>>> commit
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_win:
     parameters:
@@ -270,16 +180,7 @@ jobs:
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
-<<<<<<< HEAD
-<<<<<<< HEAD
               pip install nox dataclasses --progress-bar off
-=======
-              pip install nox@git+git://github.com/theacodes/nox.git@8dcefbf8f59293bc1925dd13376dd6d3aa66e53a
-=======
-              pip install nox
->>>>>>> fix merge conflicts
-              pip install dataclasses
->>>>>>> commit
               nox -s lint_plugins test_plugins -ts
   test_plugin_linux:
     parameters:
