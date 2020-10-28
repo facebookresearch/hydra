@@ -1,0 +1,5 @@
+aws_config_profile: "default"
+bucket_name: "hydra-test-us-west-2"
+local_file_path: ""
+# The name in S3, leave blank to not rename the file.
+s3_file_name: ""
