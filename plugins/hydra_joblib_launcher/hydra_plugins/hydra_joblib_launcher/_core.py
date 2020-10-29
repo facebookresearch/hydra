@@ -52,9 +52,11 @@ def execute_job(
 
 def process_joblib_cfg(joblib_cfg: Dict[str, Any]) -> None:
     for k in ["pre_dispatch", "batch_size", "max_nbytes"]:
-        if k in joblib_cfg.keys() and joblib_cfg.get(k):
+        if k in joblib_cfg.keys():
             try:
-                joblib_cfg[k] = int(joblib_cfg.get(k))
+                val = joblib_cfg.get(k)
+                if val:
+                    joblib_cfg[k] = int(val)
             except ValueError:
                 pass
 
