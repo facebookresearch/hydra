@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 <<<<<<< HEAD
+<<<<<<< HEAD
 from typing import Any
 =======
 from typing import Tuple
 >>>>>>> Cast params to int when applicable
 
+=======
+>>>>>>> lint
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -13,7 +16,6 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-from omegaconf import OmegaConf
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
