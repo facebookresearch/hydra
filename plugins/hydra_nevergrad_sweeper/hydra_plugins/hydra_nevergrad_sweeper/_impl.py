@@ -13,13 +13,12 @@ from typing import (
 
 import nevergrad as ng
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import (
-    ChoiceSweep,
-    IntervalSweep,
-    Override,
-    Transformer,
+from hydra.core.override_parser.hpo import (
+    HPOParameter,
+    create_hpo_parameter_from_override,
 )
+from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.core.override_parser.types import Override
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -56,29 +55,31 @@ def create_nevergrad_param_from_config(
     return config
 
 
-def create_nevergrad_parameter_from_override(override: Override) -> Any:
-    val = override.value()
-    if not override.is_sweep_override():
-        return val
-    if override.is_choice_sweep():
-        assert isinstance(val, ChoiceSweep)
-        vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
-        if "ordered" in val.tags:
-            return ng.p.TransitionChoice(vals)
+def create_nevergrad_parameter_from_hpo_parameter(hpo_parameter: HPOParameter) -> Any:
+    if hpo_parameter.type == "fixed":
+        return hpo_parameter.values[0]
+    elif hpo_parameter.type == "choice":
+        if "ordered" in hpo_parameter.tags:
+            return ng.p.TransitionChoice(hpo_parameter.values)
         else:
-            return ng.p.Choice(vals)
-    elif override.is_range_sweep():
-        vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
-        return ng.p.Choice(vals)
-    elif override.is_interval_sweep():
-        assert isinstance(val, IntervalSweep)
-        if "log" in val.tags:
-            scalar = ng.p.Log(lower=val.start, upper=val.end)
+            return ng.p.Choice(hpo_parameter.values)
+    elif hpo_parameter.type == "range":
+        return ng.p.Choice(hpo_parameter.values)
+    elif hpo_parameter.type == "interval":
+        lower = hpo_parameter.values[0]
+        upper = hpo_parameter.values[1]
+        if hpo_parameter.log:
+            scalar = ng.p.Log(lower=lower, upper=upper)
         else:
-            scalar = ng.p.Scalar(lower=val.start, upper=val.end)  # type: ignore
-        if isinstance(val.start, int):
+            scalar = ng.p.Scalar(lower=lower, upper=upper)  # type: ignore
+        if isinstance(lower, int):
             scalar.set_integer_casting()
         return scalar
+
+
+def create_nevergrad_parameter_from_override(override: Override) -> Any:
+    hpo_param = create_hpo_parameter_from_override(override=override)
+    return hpo_param.name, create_nevergrad_parameter_from_hpo_parameter(hpo_param)
 
 
 class NevergradSweeperImpl(Sweeper):
@@ -127,10 +128,8 @@ class NevergradSweeperImpl(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[
-                override.get_key_element()
-            ] = create_nevergrad_parameter_from_override(override)
-
+            name, nevergrad_param = create_nevergrad_parameter_from_override(override)
+            params[name] = nevergrad_param
         parametrization = ng.p.Dict(**params)
         parametrization.descriptors.deterministic_function = not self.opt_config.noisy
         parametrization.random_state.seed(self.opt_config.seed)
