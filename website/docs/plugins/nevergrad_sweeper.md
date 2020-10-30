@@ -12,7 +12,7 @@ sidebar_label: Nevergrad Sweeper plugin
 [![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
 
 
-[Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
+[Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform providing a library of state-of-the-art algorithms for hyperparameter search. This plugin provides Hydra applications a mechanism to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms to optimize experiment/application parameters.
 
 ### Installation
 ```commandline
@@ -20,7 +20,7 @@ pip install hydra-nevergrad-sweeper --upgrade
 ```
 
 ### Usage
-Once installed, add `hydra/sweeper=nevergrad` to your command command. Alternatively, override `hydra/sweeper` in your config:
+Once installed, add `hydra/sweeper=nevergrad` to your command. Alternatively, override `hydra/sweeper` in your config:
 
 ```yaml
 defaults:
@@ -32,7 +32,7 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 
 ## Example of training using Nevergrad hyperparameter search
 
-We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
+We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.
 
 You can discover the Nevergrad sweeper parameters with:
 ```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"
@@ -114,7 +114,7 @@ name: nevergrad
 
 ## Defining the parameters
 
-The plugin supports 2 types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
+The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
 
 ### Defining through commandline override
 Hydra provides a override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
@@ -141,7 +141,7 @@ You can tag an override with ```ordered``` to indicate it's a [```TransitionChoi
 
 ### Defining through config file
 #### Choices
-Choices are defined with with a list in a config file.
+Choices are defined with a list in a config file.
 
 ```yaml
 db:
@@ -149,14 +149,13 @@ db:
   - cifar
 ```
 #### Scalars
-Scalars can be defined in a config files, with fields:
+Scalars can be defined in config files, with fields:
   - `init`: optional initial value
   - `lower` : optional lower bound
   - `upper`: optional upper bound
-  - `log`: set to `true` for log distributed values
-  - `step`: optional step size for looking for better parameters. In linear mode this is an additive step, in logarithmic mode it
-    is multiplicative. 
-  - `integer`: set to `true` for integers (favor floats over integers whenever possible)
+  - `log`: set to `true` for log distributed values
+  - `step`: optional step size for looking for better parameters. In linear mode, this is an additive step; in logarithmic mode it is multiplicative.
+  - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
-Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
+Providing only `lower` and `upper` bound will set the initial value to the middle of the range and the step to a sixth of the range.
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
