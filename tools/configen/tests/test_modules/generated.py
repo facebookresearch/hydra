@@ -62,6 +62,12 @@ class WithStringDefaultConf:
 
 
 @dataclass
+class WithUntypedStringDefaultConf:
+    _target_: str = "tests.test_modules.WithUntypedStringDefault"
+    default_str: Any = "Bond, James Bond"
+
+
+@dataclass
 class ListValuesConf:
     _target_: str = "tests.test_modules.ListValues"
     lst: List[str] = MISSING

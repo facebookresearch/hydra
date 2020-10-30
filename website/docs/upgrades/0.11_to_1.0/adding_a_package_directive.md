@@ -1,7 +1,9 @@
 ---
 id: adding_a_package_directive
 title: Adding an @package directive
+hide_title: true
 ---
+## Adding an @package directive
 Hydra 1.0 introduces the concept of a config `package`. A `package` is the common parent 
 path of all nodes in the config file.
 

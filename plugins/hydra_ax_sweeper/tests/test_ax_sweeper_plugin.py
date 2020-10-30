@@ -40,6 +40,7 @@ def quadratic(cfg: DictConfig) -> Any:
         (6, [[1, 2, 3, 4, 5]]),
     ],
 )
+@pytest.mark.filterwarnings("ignore::UserWarning")  # type: ignore
 def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper  # type: ignore
 
@@ -210,7 +211,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = get_run_output(cmd=cmd, allow_warnings=True)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
@@ -246,7 +247,7 @@ def test_jobs_using_choice_between_lists(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = get_run_output(cmd=cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -282,7 +283,7 @@ def test_jobs_using_choice_between_dicts(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = get_run_output(cmd=cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -297,6 +298,6 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result, _ = get_run_output(cmd)
+    result, _ = get_run_output(cmd=cmd, allow_warnings=True)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result

@@ -1,0 +1,11 @@
+# @package _group_
+defaults:
+  - schema/db/postgresql
+  - _self_
+
+host: localhost
+port: 5432
+driver: postgresql
+user: postgre_user
+password: secret
+timeout: 10

@@ -1,0 +1,5 @@
+# @package _group_
+defaults:
+  - _self_
+  - b@pkg: b1
+  - 'b@pkg:pkg2': _keep_  # pkg -> pkg2

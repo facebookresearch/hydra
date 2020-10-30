@@ -42,7 +42,7 @@ commands:
           name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> -yq
-            conda run -n hydra pip install nox
+            conda run -n hydra pip install nox --progress-bar off
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-macos-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -66,7 +66,7 @@ commands:
           name: Preparing environment - Other dependency
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre
+            sudo apt-get install -y expect fish openjdk-11-jre rsync
       - run:
           name: Preparing environment - Hydra
           command: |
@@ -94,8 +94,7 @@ commands:
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
             conda activate hydra
-            pip install nox
-            pip install dataclasses
+            pip install nox dataclasses --progress-bar off
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -118,8 +117,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
-            pip install nox
-            pip install dataclasses
+            pip install nox dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_linux:
     parameters:
@@ -135,8 +133,7 @@ jobs:
           command: |
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            pip install nox
-            pip install dataclasses
+            pip install nox dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
   test_win:
     parameters:
@@ -183,8 +180,7 @@ jobs:
               export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
-              pip install nox
-              pip install dataclasses
+              pip install nox dataclasses --progress-bar off
               nox -s lint_plugins test_plugins -ts
   test_plugin_linux:
     parameters:
@@ -203,8 +199,7 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
-            pip install nox
-            pip install dataclasses
+            pip install nox dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
   test_plugin_win:
     parameters:
@@ -232,7 +227,7 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - run: sudo pip install nox
+      - run: sudo pip install nox --progress-bar off
       - run: nox -s coverage
 
 workflows:

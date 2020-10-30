@@ -16,7 +16,7 @@ from hydra.experimental import compose, initialize
 
 if __name__ == "__main__":
     initialize(
-        config_path="conf", strict=True,
+        config_dir="conf", strict=True,
     )
 
     cfg = compose("config.yaml", overrides=["db=mysql", "db.user=me"])

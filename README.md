@@ -13,7 +13,7 @@
   <a href="#">
     <img src="https://img.shields.io/pypi/pyversions/hydra-core" alt="PyPI - Python Version" />
   </a>
-  <a href="https://pepy.tech/project/hydra-core/month?versions=0.11.*&versions=1.0.*">
+  <a href="https://pepy.tech/project/hydra-core?versions=0.11.*&versions=1.0.*">
     <img src="https://pepy.tech/badge/hydra-core/month" alt="Downloads" />
   </a>
   <a href="https://github.com/psf/black">

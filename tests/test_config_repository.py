@@ -88,11 +88,13 @@ class TestConfigRepository:
     @pytest.mark.parametrize(  # type: ignore
         "config_path,results_filter,expected",
         [
-            (
+            pytest.param(
                 "",
                 None,
                 [
+                    "config_with_defaults_list",
                     "config_without_group",
+                    "configs_with_defaults_list",
                     "dataset",
                     "level1",
                     "optimizer",
@@ -100,24 +102,53 @@ class TestConfigRepository:
                     "primary_config",
                     "primary_config_with_non_global_package",
                 ],
+                id="root:no_filter",
             ),
-            ("", ObjectType.GROUP, ["dataset", "level1", "optimizer", "package_test"]),
-            (
+            pytest.param(
+                "",
+                ObjectType.GROUP,
+                [
+                    "configs_with_defaults_list",
+                    "dataset",
+                    "level1",
+                    "optimizer",
+                    "package_test",
+                ],
+                id="root:group",
+            ),
+            pytest.param(
                 "",
                 ObjectType.CONFIG,
                 [
+                    "config_with_defaults_list",
                     "config_without_group",
                     "dataset",
                     "primary_config",
                     "primary_config_with_non_global_package",
                 ],
+                id="root:config",
             ),
-            ("dataset", None, ["cifar10", "imagenet"]),
-            ("dataset", ObjectType.GROUP, []),
-            ("dataset", ObjectType.CONFIG, ["cifar10", "imagenet"]),
-            ("level1", ObjectType.GROUP, ["level2"]),
-            ("level1", ObjectType.CONFIG, []),
-            ("level1/level2", ObjectType.CONFIG, ["nested1", "nested2"]),
+            pytest.param(
+                "dataset",
+                None,
+                ["cifar10", "imagenet"],
+                id="dataset:no_filter",
+            ),
+            pytest.param("dataset", ObjectType.GROUP, [], id="dataset:group"),
+            pytest.param(
+                "dataset",
+                ObjectType.CONFIG,
+                ["cifar10", "imagenet"],
+                id="dataset:config",
+            ),
+            pytest.param("level1", ObjectType.GROUP, ["level2"], id="level1:group"),
+            pytest.param("level1", ObjectType.CONFIG, [], id="level1:config"),
+            pytest.param(
+                "level1/level2",
+                ObjectType.CONFIG,
+                ["nested1", "nested2"],
+                id="level1/level2:config",
+            ),
         ],
     )
     def test_config_repository_list(

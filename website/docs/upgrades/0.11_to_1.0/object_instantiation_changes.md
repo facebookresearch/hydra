@@ -1,10 +1,11 @@
 ---
 id: object_instantiation_changes
 title: Object instantiation changes
+hide_title: true
 ---
 
 
-## Overview
+## Object instantiation changes
 Hydra 1.0.0 is deprecating ObjectConf and the corresponding config structure to a simpler one without the params node.
 This removes a level of nesting from command line and configs overrides.
 

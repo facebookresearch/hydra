@@ -87,11 +87,12 @@ module.exports = {
             'plugins/colorlog',
             'plugins/joblib_launcher',
             'plugins/nevergrad_sweeper',
+            'plugins/ray_launcher',
             'plugins/rq_launcher',
             'plugins/submitit_launcher',
         ],
 
-        'Advanced': [
+        'Reference manual': [
             'advanced/hydra-command-line-flags',
             {
                 type: 'category',
@@ -101,6 +102,7 @@ module.exports = {
                     'advanced/override_grammar/extended',
                 ]
             },
+            'advanced/defaults_list',
             'advanced/overriding_packages',
             'advanced/search_path',
             'advanced/plugins',
@@ -123,6 +125,13 @@ module.exports = {
         ],
 
         Upgrades: [
+          {
+            type: 'category',
+            label: '1.0 to 1.1',
+            items: [
+                'upgrades/1.0_to_1.1/defaults_list_interpolation',
+            ],
+          },
           {
             type: 'category',
             label: '0.11 to 1.0',

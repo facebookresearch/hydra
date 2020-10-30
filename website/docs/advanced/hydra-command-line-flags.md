@@ -6,10 +6,10 @@ title: Hydra's command line flags
 Hydra is using the command line for two things:
 
 - Configuring your application (See [Override Grammar](override_grammar/basic.md))
-- Telling Hydra what to do.
+- Controlling Hydra
 
-Any argparse argument that is prefixed by `--`  or `'-` is telling Hydra what to do.
-The rest of the parameters are used to configure your application.
+Any argparse argument that is prefixed by `--`  or `'-` is controlling Hydra.
+The rest of the arguments are used to configure your application.
 
 
 You can view the Hydra specific flags via `--hydra-help`.

@@ -1,0 +1,6 @@
+# @package _global_
+defaults:
+  - foo: bar
+
+configs_with_defaults_list:
+  x: 10

@@ -32,7 +32,7 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 
 ## Example of training using Nevergrad hyperparameter search
 
-We include an example of how to use this plugin. The file [`example/my_app.py.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
+We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
 
 You can discover the Nevergrad sweeper parameters with:
 ```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"
@@ -59,7 +59,7 @@ batch_size=4
 
 To run hyperparameter search and look for the best parameters for this function, clone the code and run the following command in the `plugins/hydra_nevergrad_sweeper` directory:
 ```bash
-python example/my_app.py.py -m
+python example/my_app.py -m
 ```
 
 You can also override the search space parametrization:

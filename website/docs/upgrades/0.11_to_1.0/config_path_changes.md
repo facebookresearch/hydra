@@ -1,9 +1,10 @@
 ---
 id: config_path_changes
 title: Config path changes
+hide_title: true
 ---
 
-## Overview
+## Config path changes
 Hydra 1.0 adds a new `config_name` parameter to `@hydra.main()` and changes the meaning of the `config_path`.
 Previously, `config_path` encapsulated two things:
 - Search path relative to the declaring python file.
