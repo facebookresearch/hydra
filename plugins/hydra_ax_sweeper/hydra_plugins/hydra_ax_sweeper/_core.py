@@ -6,8 +6,11 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 from ax.core import types as ax_types  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
+from hydra.core.override_parser.hpo import (
+    HPOParameter,
+    create_hpo_parameter_from_override,
+)
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import IntervalSweep, Override, Transformer
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -27,6 +30,17 @@ class Trial:
 
 
 BatchOfTrialType = List[Trial]
+
+ValueType = Union[str, int, float]
+
+
+def create_ax_parameter_from_hpo_parameter(hpo_parameter: HPOParameter) -> Any:
+    if hpo_parameter.type == "interval":
+        return create_range_param(hpo_parameter)
+    elif hpo_parameter.type == "choice" or hpo_parameter.type == "range":
+        return create_choice_param(hpo_parameter)
+    elif hpo_parameter.type == "fixed":
+        return create_fixed_param(hpo_parameter)
 
 
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
@@ -239,17 +253,9 @@ class CoreAxSweeper(Sweeper):
         parsed = parser.parse_overrides(arguments)
         parameters: List[Dict[str, Any]] = []
         for override in parsed:
-            if override.is_sweep_override():
-                if override.is_choice_sweep():
-                    param = create_choice_param_from_choice_override(override)
-                elif override.is_range_sweep():
-                    param = create_choice_param_from_range_override(override)
-                elif override.is_interval_sweep():
-                    param = create_range_param_using_interval_override(override)
-            elif not override.is_hydra_override():
-                param = create_fixed_param_from_element_override(override)
-            parameters.append(param)
-
+            param = create_hpo_parameter_from_override(override)
+            if param:
+                parameters.append(create_ax_parameter_from_hpo_parameter(param))
         return parameters
 
     @staticmethod
@@ -265,45 +271,30 @@ class CoreAxSweeper(Sweeper):
             yield batch[i : i + n]
 
 
-def create_range_param_using_interval_override(override: Override) -> Dict[str, Any]:
-    key = override.get_key_element()
-    value = override.value()
-    assert isinstance(value, IntervalSweep)
+def create_range_param(hpo_parameter: HPOParameter) -> Dict[str, Any]:
     param = {
-        "name": key,
+        "name": hpo_parameter.name,
         "type": "range",
-        "bounds": [value.start, value.end],
+        "bounds": hpo_parameter.values,
     }
     return param
 
 
-def create_choice_param_from_choice_override(override: Override) -> Dict[str, Any]:
-    key = override.get_key_element()
+def create_choice_param(hpo_parameter: HPOParameter) -> Dict[str, Any]:
     param = {
-        "name": key,
+        "name": hpo_parameter.name,
         "type": "choice",
-        "values": list(override.sweep_iterator(transformer=Transformer.encode)),
-    }
-    return param
-
-
-def create_choice_param_from_range_override(override: Override) -> Dict[str, Any]:
-    key = override.get_key_element()
-    param = {
-        "name": key,
-        "type": "choice",
-        "values": [val for val in override.sweep_iterator()],
+        "values": hpo_parameter.values,
     }
 
     return param
 
 
-def create_fixed_param_from_element_override(override: Override) -> Dict[str, Any]:
-    key = override.get_key_element()
+def create_fixed_param(hpo_parameter: HPOParameter) -> Dict[str, Any]:
     param = {
-        "name": key,
+        "name": hpo_parameter.name,
         "type": "fixed",
-        "value": override.value(),
+        "value": hpo_parameter.values[0],
     }
 
     return param
