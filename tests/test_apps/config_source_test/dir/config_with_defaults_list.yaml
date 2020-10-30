@@ -1,0 +1,5 @@
+# @package _global_
+defaults:
+  - dataset: imagenet
+
+key: value

@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import re
+from textwrap import dedent
 from typing import Any
 
 from hydra.test_utils.test_utils import (
     TTaskRunner,
+    assert_text_same,
     chdir_hydra_root,
     run_with_error,
     verify_dir_outputs,
@@ -37,5 +38,16 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
         "data_bits=10",
     ]
 
+    expected = dedent(
+        """\
+        Error merging override data_bits=10
+        Cannot change read-only config container
+        \tfull_key: data_bits
+        \treference_type=Optional[SerialPort]
+        \tobject_type=SerialPort
+
+        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+        """
+    )
     err = run_with_error(cmd)
-    assert re.search(re.escape("Error merging override data_bits=10"), err) is not None
+    assert_text_same(from_line=expected, to_line=err)

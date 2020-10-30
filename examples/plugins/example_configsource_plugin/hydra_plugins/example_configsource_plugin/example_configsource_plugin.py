@@ -18,6 +18,9 @@ class ConfigSourceExample(ConfigSource):
             "package_test/name.yaml": {"package": "_name_"},
             "package_test/none.yaml": {},
             "primary_config_with_non_global_package.yaml": {"package": "foo"},
+            "configs_with_defaults_list.yaml": {"package": "_global_"},
+            "configs_with_defaults_list/global_package.yaml": {"package": "_global_"},
+            "configs_with_defaults_list/group_package.yaml": {"package": "_group_"},
         }
         self.configs: Dict[str, Dict[str, Any]] = {
             "primary_config.yaml": {"primary": True},
@@ -37,6 +40,18 @@ class ConfigSourceExample(ConfigSource):
             "package_test/group_name.yaml": {"foo": "bar"},
             "package_test/name.yaml": {"foo": "bar"},
             "package_test/none.yaml": {"foo": "bar"},
+            "config_with_defaults_list.yaml": {
+                "defaults": [{"dataset": "imagenet"}],
+                "key": "value",
+            },
+            "configs_with_defaults_list/global_package.yaml": {
+                "defaults": [{"foo": "bar"}],
+                "configs_with_defaults_list": {"x": 10},
+            },
+            "configs_with_defaults_list/group_package.yaml": {
+                "defaults": [{"foo": "bar"}],
+                "x": 10,
+            },
         }
 
     @staticmethod
@@ -49,25 +64,32 @@ class ConfigSourceExample(ConfigSource):
         is_primary_config: bool,
         package_override: Optional[str] = None,
     ) -> ConfigResult:
-        config_path = self._normalize_file_name(config_path)
-        if config_path not in self.configs:
+        normalized_config_path = self._normalize_file_name(config_path)
+
+        if normalized_config_path not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
-        header = copy(self.headers[config_path]) if config_path in self.headers else {}
+        header = (
+            copy(self.headers[normalized_config_path])
+            if normalized_config_path in self.headers
+            else {}
+        )
         if "package" not in header:
             header["package"] = ""
 
         self._update_package_in_header(
-            header,
-            config_path,
+            header=header,
+            normalized_config_path=normalized_config_path,
             is_primary_config=is_primary_config,
             package_override=package_override,
         )
-        cfg = OmegaConf.create(self.configs[config_path])
+        cfg = OmegaConf.create(self.configs[normalized_config_path])
+        defaults_list = self._extract_defaults_list(config_path=config_path, cfg=cfg)
         return ConfigResult(
             config=self._embed_config(cfg, header["package"]),
             path=f"{self.scheme()}://{self.path}",
             provider=self.provider,
             header=header,
+            defaults_list=defaults_list,
         )
 
     def available(self) -> bool:
@@ -77,7 +99,14 @@ class ConfigSourceExample(ConfigSource):
         return self.path == "valid_path"
 
     def is_group(self, config_path: str) -> bool:
-        groups = {"", "dataset", "optimizer", "level1", "level1/level2"}
+        groups = {
+            "",
+            "dataset",
+            "optimizer",
+            "level1",
+            "level1/level2",
+            "configs_with_defaults_list",
+        }
         return config_path in groups
 
     def is_config(self, config_path: str) -> bool:
@@ -86,6 +115,8 @@ class ConfigSourceExample(ConfigSource):
             "dataset/imagenet",
             "level1/level2/nested1",
             "level1/level2/nested2",
+            "configs_with_defaults_list/global_package",
+            "configs_with_defaults_list/group_package",
         }
         configs = set([x for x in base] + [f"{x}.yaml" for x in base])
         return config_path in configs
@@ -105,6 +136,7 @@ class ConfigSourceExample(ConfigSource):
             "optimizer": ["adam", "nesterov"],
             "level1": [],
             "level1/level2": ["nested1", "nested2"],
+            "configs_with_defaults_list": ["global_package", "group_package"],
         }
         if results_filter is None:
             return sorted(set(groups[config_path] + configs[config_path]))

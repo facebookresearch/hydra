@@ -1,0 +1,5 @@
+# @package _group_
+defaults:
+  - _self_
+  - b: b1
+  - b: null

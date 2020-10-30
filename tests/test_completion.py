@@ -80,7 +80,10 @@ base_completion_list: List[str] = [
 ]
 
 
-@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
+@pytest.mark.parametrize(
+    "line_prefix",
+    [pytest.param("", id="no_prefix"), pytest.param("dict.key1=val1 ", id="prefix")],
+)
 @pytest.mark.parametrize(
     "line,num_tabs,expected",
     [
@@ -110,9 +113,9 @@ base_completion_list: List[str] = [
         ("test_hydra/launcher=", 2, ["test_hydra/launcher=fairtask"]),
         ("test_hydra/launcher=fa", 2, ["test_hydra/launcher=fairtask"]),
         # loading groups
-        ("gro", 2, ["group="]),
-        ("group=di", 2, ["group=dict"]),
-        (
+        pytest.param("gro", 2, ["group="], id="group"),
+        pytest.param("group=di", 2, ["group=dict"], id="group"),
+        pytest.param(
             "group=dict ",
             3,
             [
@@ -127,11 +130,12 @@ base_completion_list: List[str] = [
                 "test_hydra/",
                 "toys.",
             ],
+            id="group",
         ),
-        ("group=", 2, ["group=dict", "group=list"]),
-        ("group=dict group.dict=", 2, ["group.dict=true"]),
-        ("group=dict group=", 2, ["group=dict", "group=list"]),
-        ("group=dict group=", 2, ["group=dict", "group=list"]),
+        pytest.param("group=", 2, ["group=dict", "group=list"], id="group"),
+        pytest.param("group=dict group.dict=", 2, ["group.dict=true"], id="group"),
+        pytest.param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
+        pytest.param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
     ],
 )
 class TestRunCompletion:

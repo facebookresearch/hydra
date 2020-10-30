@@ -1,0 +1,4 @@
+# @package _global_
+defaults:
+  # implicit _self_
+  - no_defaults

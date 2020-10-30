@@ -1,8 +1,9 @@
 ---
 id: strict_mode_flag_deprecated
 title: strict flag mode deprecation
+hide_title: true
 ---
-## Overview
+## strict flag mode deprecation
 The strict mode is a flag added to `@hydra.main()` to enable two features:
 - Command line error detection (overriding a field not in the config)
 - Runtime config access error detection (accessing/setting a field not in the config)

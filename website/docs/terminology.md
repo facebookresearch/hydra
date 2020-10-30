@@ -16,7 +16,6 @@ Supported input configs are:
 ### Primary Config
 The input config named in [`@hydra.main()`](tutorials/basic/your_first_app/1_simple_cli.md) or in 
 the [`Compose API`](experimental/hydra_compose.md).  
-The Primary Config is the only config that is allowed to have a [Defaults List](#defaults-list)
 
 
 ### Structured Config
@@ -35,8 +34,8 @@ class User:
 
 
 ### Defaults List
-A list in the [Primary Config](#primary-config) that determines how to build the final [Config Object](#output-config-object). 
-The list is typically composed of [Config Group Options](#config-group-option). 
+A list in [input Config](#input-configs) that instructs Hydra how to build the config. 
+The list is typically composed of [Config Group Options](#config-group-option).
 ```yaml title="Example: config.yaml"
 defaults:
   - db: mysql

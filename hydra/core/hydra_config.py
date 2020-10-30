@@ -14,7 +14,8 @@ class HydraConfig(metaclass=Singleton):
     def set_config(self, cfg: DictConfig) -> None:
         assert cfg is not None
         OmegaConf.set_readonly(cfg.hydra, True)
-        assert OmegaConf.get_type(cfg, "hydra") == HydraConf
+        hydra_node_type = OmegaConf.get_type(cfg, "hydra")
+        assert hydra_node_type is not None and issubclass(hydra_node_type, HydraConf)
         # THis is emulating a node that is hidden.
         # It's quiet a hack but it will be much better once
         # https://github.com/omry/omegaconf/issues/280 is done

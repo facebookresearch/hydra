@@ -759,7 +759,11 @@ def test_hydra_env_set_with_override(tmpdir: Path) -> None:
 
 
 @pytest.mark.parametrize(  # type: ignore
-    "override", [pytest.param("xyz", id="db=xyz"), pytest.param("", id="db=")]
+    "override",
+    [
+        pytest.param("xyz", id="db=xyz"),
+        pytest.param("", id="db="),
+    ],
 )
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
@@ -771,18 +775,20 @@ def test_hydra_env_set_with_override(tmpdir: Path) -> None:
 def test_override_with_invalid_group_choice(
     hydra_restore_singletons: Any,
     hydra_task_runner: TTaskRunner,
-    calling_file: str,
-    calling_module: str,
+    calling_file: Optional[str],
+    calling_module: Optional[str],
     override: str,
 ) -> None:
-    msg = (
-        f"Could not load db/{override}."
-        f"\nAvailable options:"
-        f"\n\tmysql"
-        f"\n\tpostgresql"
+    msg = dedent(
+        f"""\
+    Could not find '{override}' in the config group 'db'
+    Available options:
+    \tmysql
+    \tpostgresql
+    """
     )
 
-    with pytest.raises(MissingConfigException, match=re.escape(msg)):
+    with pytest.raises(MissingConfigException) as e:
         with hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -790,7 +796,8 @@ def test_override_with_invalid_group_choice(
             config_name="db_conf",
             overrides=[f"db={override}"],
         ):
-            ...
+            pass
+    assert re.search(re.escape(msg), str(e.value)) is not None
 
 
 @pytest.mark.parametrize("config_path", ["dir1", "dir2"])  # type: ignore
@@ -941,7 +948,11 @@ def test_multirun_structured_conflict(
 )
 class TestVariousRuns:
     @pytest.mark.parametrize(  # type: ignore
-        "sweep", [pytest.param(False, id="run"), pytest.param(True, id="sweep")]
+        "sweep",
+        [
+            pytest.param(False, id="run"),
+            pytest.param(True, id="sweep"),
+        ],
     )
     def test_run_with_missing_default(
         self, cmd_base: List[str], tmpdir: Any, sweep: bool

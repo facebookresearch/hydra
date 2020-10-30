@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from typing import Any
+
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -53,14 +55,14 @@ class TestJoblibLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
+def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
     with hydra_sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
         config_path=None,
         config_name="config",
-        overrides=["task=1,2,3,4"],
+        overrides=["task=1,2,3,4", f"hydra.sweep.dir={tmpdir}"],
     ) as sweep:
         overrides = {("task=1",), ("task=2",), ("task=3",), ("task=4",)}
 

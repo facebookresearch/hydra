@@ -163,11 +163,11 @@ def test_prepend(
         (None, "package.module", "conf", "pkg://package/conf"),
         # This is an unusual one. this behavior is intentional.
         (None, "package.module", "../conf", "pkg://conf"),
-        (None, "package1.package2.module", "../conf", "pkg://package1/conf"),
+        (None, "package1.rename_package_to.module", "../conf", "pkg://package1/conf"),
         # prefer directory
         (
             "foo",
-            "package1.package2.module",
+            "package1.rename_package_to.module",
             "../conf",
             os.path.realpath(os.path.join(os.getcwd(), "../conf")),
         ),
