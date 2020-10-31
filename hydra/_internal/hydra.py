@@ -31,6 +31,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import RunMode, TaskFunction
 
 from .config_loader_impl import ConfigLoaderImpl
+from .defaults_list import expand_defaults_list
 from .utils import create_automatic_config_search_path
 
 log: Optional[logging.Logger] = None
@@ -486,6 +487,67 @@ class Hydra:
 
         self._log_footer(header=header, filler="-")
 
+    def _print_defaults_list(self, config_name: Optional[str], overrides: List[str]):
+        run_mode = RunMode.RUN
+        ret = self.config_loader.compute_input_defaults_list(
+            config_name=config_name,
+            overrides=overrides,
+            run_mode=RunMode.RUN,
+            from_shell=True,
+        )
+
+        defaults = expand_defaults_list(
+            defaults=ret.input_defaults,
+            skip_missing=run_mode == RunMode.RUN,
+            ignore_config_load_failures=True,
+            repo=self.config_loader.repository,  # type: ignore
+        )
+
+        box: List[List[str]] = [
+            [
+                "Config group",
+                "Config name",
+                "Package",
+                "Parent",
+                "Skip reason",
+            ]
+        ]
+        for d in defaults:
+            row = [
+                d.config_group,
+                d.config_name,
+                d.package,
+                d.parent,
+                d.skip_load_reason if d.skip_load else "",
+            ]
+            row = [x if x is not None else "" for x in row]
+            box.append(row)
+        padding = get_column_widths(box)
+        del box[0]
+        log.debug("")
+        self._log_header("Defaults List", filler="*")
+        header = "| {} | {} | {} | {} | {} | ".format(
+            "Config group".ljust(padding[0]),
+            "Config name".ljust(padding[1]),
+            "Package".ljust(padding[2]),
+            "Parent".ljust(padding[3]),
+            "Skip reason".ljust(padding[4]),
+        )
+        self._log_header(header=header, filler="-")
+
+        for row in box:
+            log.debug(
+                "| {} | {} | {} | {} | {} |".format(
+                    row[0].ljust(padding[0]),
+                    row[1].ljust(padding[1]),
+                    row[2].ljust(padding[2]),
+                    row[3].ljust(padding[3]),
+                    row[4].ljust(padding[4]),
+                )
+            )
+
+        self._log_footer(header=header, filler="-")
+
     def _print_debug_info(self, cfg: DictConfig) -> None:
         assert log is not None
         if log.isEnabledFor(logging.DEBUG):
@@ -528,29 +590,36 @@ class Hydra:
             self._print_debug_info(cfg)
         return cfg
 
-    def show_info(self, config_name: Optional[str], overrides: List[str]) -> None:
+    def show_info(
+        self, info: str, config_name: Optional[str], overrides: List[str]
+    ) -> None:
         from .. import __version__
 
         simple_stdout_log_config(level=logging.DEBUG)
         global log
         log = logging.getLogger(__name__)
         self._log_header(f"Hydra {__version__}", filler="=")
-        self._print_plugins()
-        self._print_search_path()
-        self._print_plugins_profiling_info(top_n=10)
 
-        cfg = run_and_report(
-            lambda: self._get_cfg(
-                config_name=config_name,
-                overrides=overrides,
-                cfg_type="all",
-                with_log_configuration=False,
+        if info == "all":
+            self._print_plugins()
+            self._print_search_path()
+            self._print_plugins_profiling_info(top_n=10)
+            self._print_defaults_list(config_name, overrides)
+
+            cfg = run_and_report(
+                lambda: self._get_cfg(
+                    config_name=config_name,
+                    overrides=overrides,
+                    cfg_type="all",
+                    with_log_configuration=False,
+                )
             )
-        )
-        self._print_composition_trace(cfg)
+            self._print_composition_trace(cfg)
+            log.debug("\n")
+            self._log_header(header="Config", filler="*")
+            with open_dict(cfg):
+                del cfg["hydra"]
+            print(OmegaConf.to_yaml(cfg))
 
-        log.debug("\n")
-        self._log_header(header="Config", filler="*")
-        with open_dict(cfg):
-            del cfg["hydra"]
-        print(OmegaConf.to_yaml(cfg))
+        elif info == "defaults":
+            self._print_defaults_list(config_name, overrides)

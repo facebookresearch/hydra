@@ -348,7 +348,11 @@ def _run_hydra(
 
         has_show_cfg = args.cfg is not None
         num_commands = (
-            args.run + has_show_cfg + args.multirun + args.shell_completion + args.info
+            args.run
+            + has_show_cfg
+            + args.multirun
+            + args.shell_completion
+            + (args.info is not None)
         )
         if num_commands > 1:
             raise ValueError(
@@ -388,7 +392,9 @@ def _run_hydra(
                 )
             )
         elif args.info:
-            hydra.show_info(config_name=config_name, overrides=args.overrides)
+            hydra.show_info(
+                args.info, config_name=config_name, overrides=args.overrides
+            )
         else:
             sys.stderr.write("Command not specified\n")
             sys.exit(1)
@@ -491,7 +497,12 @@ def get_args_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--info", "-i", action="store_true", help="Print Hydra information"
+        "--info",
+        "-i",
+        const="all",
+        nargs="?",
+        action="store",
+        help="Print Hydra information [all|defaults]",
     )
     return parser
 
