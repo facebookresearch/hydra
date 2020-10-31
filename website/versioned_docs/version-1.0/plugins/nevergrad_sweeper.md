@@ -12,7 +12,7 @@ sidebar_label: Nevergrad Sweeper plugin
 [![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
 
 
-[Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform proposing a library of state-of-the art algorithms for hyperparameter search. This plugin provides a mechanism for Hydra applications to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms for the optimization of experiments/applications parameters.
+[Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform providing a library of state-of-the-art algorithms for hyperparameter search. This plugin provides Hydra applications a mechanism to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms to optimize experiment/application parameters.
 
 ### Installation
 ```commandline
@@ -20,7 +20,7 @@ pip install hydra-nevergrad-sweeper --upgrade
 ```
 
 ### Usage
-Once installed, add `hydra/sweeper=nevergrad` to your command command. Alternatively, override `hydra/sweeper` in your config:
+Once installed, add `hydra/sweeper=nevergrad` to your command. Alternatively, override `hydra/sweeper` in your config:
 
 ```yaml
 defaults:
@@ -32,7 +32,7 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 
 ## Example of training using Nevergrad hyperparameter search
 
-We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of how to perform minimization of a (dummy) function including a mixture of continuous and discrete parameters. 
+We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.
 
 You can discover the Nevergrad sweeper parameters with:
 ```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"
@@ -64,35 +64,37 @@ python example/my_app.py -m
 
 You can also override the search space parametrization:
 ```bash
-python example/dummy_training.py -m db=mnist,cifar batch_size=4,8,16 lr=log:0.001:1 dropout=0:1
+python example/my_app.py --multirun db=mnist,cifar batch_size=4,8,16 \
+'lr=tag(log, interval(0.001, 1))' 'dropout=interval(0,1)'
 ```
 
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
 
 ```text
-[HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
-[HYDRA] with parametrization Dict(batch_size=TransitionChoice(choices=Tuple(4,8,16),position=Scalar[sigma=Log{exp=1.2}],transitions=[1. 1.]),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(2,)}),dropout=Scalar{Cl(0,1)}[sigma=Log{exp=1.2}],lr=Log{exp=3.162277660168379,Cl(0.001,1)}):{'db': 'cifar', 'batch_size': 8, 'lr': 0.03162277660168379, 'dropout': 0.5}
-[HYDRA] Sweep output dir: multirun/2020-03-04/17-53-29
-[HYDRA] Launching 10 jobs locally
-[HYDRA] 	#0 : db=mnist batch_size=8 lr=0.032 dropout=0.5
-[__main__][INFO] - dummy_training(dropout=0.500, lr=0.032, db=mnist, batch_size=8) = 5.258
-[HYDRA] 	#1 : db=mnist batch_size=16 lr=0.035 dropout=0.714
-[__main__][INFO] - dummy_training(dropout=0.714, lr=0.035, db=mnist, batch_size=16) = 13.469
-[HYDRA] 	#2 : db=cifar batch_size=8 lr=0.053 dropout=0.408
-[__main__][INFO] - dummy_training(dropout=0.408, lr=0.053, db=cifar, batch_size=8) = 4.145
-[HYDRA] 	#3 : db=cifar batch_size=8 lr=0.012 dropout=0.305
-[__main__][INFO] - dummy_training(dropout=0.305, lr=0.012, db=cifar, batch_size=8) = 4.133
-[HYDRA] 	#4 : db=mnist batch_size=4 lr=0.030 dropout=0.204
-[__main__][INFO] - dummy_training(dropout=0.204, lr=0.030, db=mnist, batch_size=4) = 1.216
+[2020-10-08 20:13:53,592][HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
+[2020-10-08 20:13:53,593][HYDRA] with parametrization Dict(batch_size=Choice(choices=Tuple(4,8,16),weights=Array{(1,3)}),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(1,2)}),dropout=Scalar{Cl(0,1,b)}[sigma=Log{exp=2.0}],lr=Log{exp=3.162277660168379,Cl(0.001,1,b)}):{'db': 'mnist', 'lr': 0.03162277660168379, 'dropout': 0.5, 'batch_size': 8}
+[2020-10-08 20:13:53,593][HYDRA] Sweep output dir: multirun/2020-10-08/20-13-53
+[2020-10-08 20:13:55,023][HYDRA] Launching 10 jobs locally
+[2020-10-08 20:13:55,023][HYDRA]        #0 : db=mnist lr=0.03162277660168379 dropout=0.5 batch_size=16
+[2020-10-08 20:13:55,217][__main__][INFO] - dummy_training(dropout=0.500, lr=0.032, db=mnist, batch_size=16) = 13.258
+[2020-10-08 20:13:55,218][HYDRA]        #1 : db=cifar lr=0.018178519762066934 dropout=0.5061074452336254 batch_size=4
+[2020-10-08 20:13:55,408][__main__][INFO] - dummy_training(dropout=0.506, lr=0.018, db=cifar, batch_size=4) = 0.278
+[2020-10-08 20:13:55,409][HYDRA]        #2 : db=cifar lr=0.10056825918734161 dropout=0.6399687427725211 batch_size=4
+[2020-10-08 20:13:55,595][__main__][INFO] - dummy_training(dropout=0.640, lr=0.101, db=cifar, batch_size=4) = 0.329
+[2020-10-08 20:13:55,596][HYDRA]        #3 : db=mnist lr=0.06617542958182834 dropout=0.5059497416026679 batch_size=8
+[2020-10-08 20:13:55,812][__main__][INFO] - dummy_training(dropout=0.506, lr=0.066, db=mnist, batch_size=8) = 5.230
+[2020-10-08 20:13:55,813][HYDRA]        #4 : db=mnist lr=0.16717013388679514 dropout=0.6519070394318255 batch_size=4
+...
+[2020-10-08 20:14:27,988][HYDRA] Best parameters: db=cifar lr=0.11961221693764439 dropout=0.37285878409770895 batch_size=4 
 ```
 
 
 and the final 2 evaluations look like this:
 ```text
 [HYDRA] 	#8 : db=mnist batch_size=4 lr=0.094 dropout=0.381
-[__main__][INFO] - dummy_training(dropout=0.381, lr=0.094, db=mnist, batch_size=4) = 1.077
+[__main__][INFO] - my_app.py(dropout=0.381, lr=0.094, db=mnist, batch_size=4) = 1.077
 [HYDRA] 	#9 : db=mnist batch_size=4 lr=0.094 dropout=0.381
-[__main__][INFO] - dummy_training(dropout=0.381, lr=0.094, db=mnist, batch_size=4) = 1.077
+[__main__][INFO] - my_app.py(dropout=0.381, lr=0.094, db=mnist, batch_size=4) = 1.077
 [HYDRA] Best parameters: db=mnist batch_size=4 lr=0.094 dropout=0.381
 ```
 
@@ -112,32 +114,48 @@ name: nevergrad
 
 ## Defining the parameters
 
-The plugin can use 2 types of parameters:
+The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
 
-### Choices
+### Defining through commandline override
+Hydra provides a override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
 
-Choices are defined with **comma-separated values** in the command-line (`db=mnist,cifar` or `batch_size=4,8,12,16`) or with a list in a config file.
-By default, values are processed as floats if all can be converted to it, but you can modify this behavior by adding colon-separated specifications `int` or `str` before the the list. (eg.: `batch_size=int:4,8,12,16`)
+#### Choices
+To override a field with choices:
+```commandline
+'key=1,5'
+'key=shuffle(range(1, 8))'      
+'key=range(1,5)'
+```
 
-**Note:** sequences of increasing scalars are treated as a special case, easier to solve. Make sure to specify it this way when possible.
+You can tag an override with ```ordered``` to indicate it's a [```TransitionChoice```](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.TransitionChoice)
+```commandline
+`key=tag(ordered, choice(1,2,3))`
+```
 
-### Scalars
-Scalars can be defined:
+#### Scalar
+```commandline
+`key=interval(1,12)`             # Interval are float by default
+`key=int(interval(1,8))`         # Scalar bounds cast to a int
+`key=tag(log, interval(1,12))`   # call ng.p.Log if tagged with log 
+```
 
-- through a commandline override with **`:`-separated values** defining a range (eg: `dropout=0:1`).
-You can add specifications for log distributed values (eg.: `lr=log:0.001:1`) or integer values (eg.: `batch_size=int:4:8`)
-or a combination of both (eg.: `batch_size=log:int:4:1024`)
+### Defining through config file
+#### Choices
+Choices are defined with a list in a config file.
 
-- through a config files, with fields:
+```yaml
+db:
+  - mnist
+  - cifar
+```
+#### Scalars
+Scalars can be defined in config files, with fields:
   - `init`: optional initial value
   - `lower` : optional lower bound
   - `upper`: optional upper bound
-  - `log`: set to `true` for log distributed values
-  - `step`: optional step size for looking for better parameters. In linear mode this is an additive step, in logarithmic mode it
-    is multiplicative. 
-  - `integer`: set to `true` for integers (favor floats over integers whenever possible)
+  - `log`: set to `true` for log distributed values
+  - `step`: optional step size for looking for better parameters. In linear mode, this is an additive step; in logarithmic mode it is multiplicative.
+  - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
-  Providing only `lower` and `upper` bound will set the initial value to the middle of the range, and the step to a sixth of the range.
-
+Providing only `lower` and `upper` bound will set the initial value to the middle of the range and the step to a sixth of the range.
 **Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.
-
