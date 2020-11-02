@@ -16,6 +16,7 @@ import subprocess
 import tempfile
 import time
 from datetime import datetime
+from pathlib import Path
 
 import boto3
 import hydra
@@ -82,21 +83,36 @@ def set_up_machine(cfg: DictConfig) -> None:
             ret = ec2_client.create_image(InstanceId=instance_id, Name=ami_name)
             image_id = ret.get("ImageId")
 
-            # wait till image is ready, 30 mins for now, this could take a while
+            # wait till image is ready, this could take a while, 60 mins for now.
             for i in range(60):
-                time.sleep(30)
+                time.sleep(60)
                 image = ec2_resource.Image(image_id)
                 if image.state == "available":
-                    print(
-                        f"{image} ready for use now. Please update your env variable: AWS_RAY_AMI={image}. "
-                        f"Please also update the test user's IAM policy to allow access to the new AMI."
-                    )
+                    print(f"{image} ready for use now.")
                     break
                 else:
                     print(f"{image} current state {image.state}")
         finally:
             # Terminate instance now we have the AMI.
             ec2_resource.instances.filter(InstanceIds=[instance_id]).terminate()
+
+        # now we update test config in s3 for integration test to consume.
+        test_config_path = str(Path(tempfile.mkdtemp()) / "config.yaml")
+        s3 = boto3.client("s3")
+        s3.download_file(
+            "hydra-integration-test-us-west-2",
+            "hydra_ray_launcher_test_config.yaml",
+            test_config_path,
+        )
+        test_config = OmegaConf.load(test_config_path)
+        test_config.ami = image_id
+        with tempfile.NamedTemporaryFile(suffix=".yaml") as f:
+            OmegaConf.save(config=test_config, f=f.name)
+            s3.upload_file(
+                f.name,
+                "hydra-integration-test-us-west-2",
+                "hydra_ray_launcher_test_config.yaml",
+            )
 
 
 if __name__ == "__main__":
