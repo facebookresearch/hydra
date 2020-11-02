@@ -1,13 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-<<<<<<< HEAD
-<<<<<<< HEAD
 from typing import Any
-=======
-from typing import Tuple
->>>>>>> Cast params to int when applicable
 
-=======
->>>>>>> lint
 import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher

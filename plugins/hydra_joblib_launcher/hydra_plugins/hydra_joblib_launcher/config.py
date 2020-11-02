@@ -24,7 +24,7 @@ class JobLibLauncherConf:
     # if greater than zero, prints progress messages
     verbose: int = 0
 
-    # timeout limit for each task
+    # timeout limit for each task. Unit dependent on backend implementation; miliseconds for loky.
     timeout: Optional[float] = None
 
     # number of batches to be pre-dispatched
