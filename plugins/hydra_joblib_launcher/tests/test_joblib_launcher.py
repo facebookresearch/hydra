@@ -67,3 +67,28 @@ def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "overrides",
+    [
+        "hydra.launcher.batch_size=1",
+        "hydra.launcher.max_nbytes=10000",
+        "hydra.launcher.max_nbytes=1M",
+        "hydra.launcher.pre_dispatch=all",
+        "hydra.launcher.pre_dispatch=10",
+        "hydra.launcher.pre_dispatch=3*n_jobs",
+    ],
+)
+def test_example_app_launcher_overrides(
+    hydra_sweep_runner: TSweepRunner, overrides: str
+) -> None:
+    with hydra_sweep_runner(
+        calling_file="example/my_app.py",
+        calling_module=None,
+        task_function=None,
+        config_path=None,
+        config_name="config",
+        overrides=[overrides],
+    ) as sweep:
+        assert sweep.returns is not None and len(sweep.returns[0]) == 1

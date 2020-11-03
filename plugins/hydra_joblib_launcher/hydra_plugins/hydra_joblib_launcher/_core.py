@@ -50,6 +50,17 @@ def execute_job(
     return ret
 
 
+def process_joblib_cfg(joblib_cfg: Dict[str, Any]) -> None:
+    for k in ["pre_dispatch", "batch_size", "max_nbytes"]:
+        if k in joblib_cfg.keys():
+            try:
+                val = joblib_cfg.get(k)
+                if val:
+                    joblib_cfg[k] = int(val)
+            except ValueError:
+                pass
+
+
 def launch(
     launcher: JoblibLauncher,
     job_overrides: Sequence[Sequence[str]],
@@ -73,6 +84,7 @@ def launch(
     # backend is incompatible with Hydra
     joblib_cfg = launcher.joblib
     joblib_cfg["backend"] = "loky"
+    process_joblib_cfg(joblib_cfg)
 
     log.info(
         "Joblib.Parallel({}) is launching {} jobs".format(
