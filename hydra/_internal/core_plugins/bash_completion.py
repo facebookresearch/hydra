@@ -42,7 +42,7 @@ class BashCompletion(CompletionPlugin):
     fi
 
     if [ $? == 0 ]; then
-        options=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query=bash)
+        choices=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query=bash)
         word=${words[$COMP_CWORD]}
 
         if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
@@ -51,9 +51,9 @@ class BashCompletion(CompletionPlugin):
             printf "COMP_POINT='$COMP_POINT'\\n"
             printf "Word='$word'\\n"
             printf "Output suggestions:\\n"
-            printf "\\t%s\\n" ${options[@]}
+            printf "\\t%s\\n" ${choices[@]}
         fi
-        COMPREPLY=($( compgen -o nospace -o default -W '$options' -- "$word" ));
+        COMPREPLY=($( compgen -o nospace -o default -W "$choices" -- "$word" ));
     fi
 }
 

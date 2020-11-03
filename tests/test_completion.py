@@ -45,6 +45,26 @@ def is_fish_supported() -> bool:
         return False
 
 
+def is_zsh_supported() -> bool:
+    if distutils.spawn.find_executable("zsh") is None:
+        return False
+
+    proc = subprocess.run(
+        ["zsh", "--version"], stdout=subprocess.PIPE, encoding="utf-8"
+    )
+    matches = re.match(r"zsh\s+(\d\.\d(\.\d)?)", proc.stdout)
+    if not matches:
+        return False
+
+    zsh_version = matches.groups()[0]
+
+    # Support for Bash completion functions introduced in Zsh 4.2
+    if version.parse(zsh_version) > version.parse("4.2"):
+        return True
+    else:
+        return False
+
+
 def create_config_loader() -> ConfigLoaderImpl:
     return ConfigLoaderImpl(
         config_search_path=create_config_search_path(
@@ -159,7 +179,7 @@ class TestRunCompletion:
     @pytest.mark.parametrize(  # type: ignore
         "prog", [["python", "hydra/test_utils/completion.py"]]
     )
-    @pytest.mark.parametrize("shell", ["bash", "fish"])  # type: ignore
+    @pytest.mark.parametrize("shell", ["bash", "fish", "zsh"])  # type: ignore
     def test_shell_integration(
         self,
         shell: str,
@@ -171,6 +191,8 @@ class TestRunCompletion:
     ) -> None:
         if shell == "fish" and not is_fish_supported():
             pytest.skip("fish is not installed or the version is too old")
+        if shell == "zsh" and not is_zsh_supported():
+            pytest.skip("zsh is not installed or the version is too old")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.

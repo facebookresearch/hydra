@@ -37,6 +37,7 @@ commands:
             brew update
             brew upgrade git
             brew install fish
+            brew install zsh
             brew cleanup
       - run:
           name: Preparing environment - Hydra
@@ -66,7 +67,7 @@ commands:
           name: Preparing environment - Other dependency
           command: |
             sudo apt-get update
-            sudo apt-get install -y expect fish openjdk-11-jre rsync
+            sudo apt-get install -y expect fish zsh openjdk-11-jre rsync
       - run:
           name: Preparing environment - Hydra
           command: |

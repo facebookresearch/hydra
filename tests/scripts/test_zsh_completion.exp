@@ -1,0 +1,43 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+log_user 0
+set timeout 4
+set env(PS1) >>
+
+# parray env
+
+spawn zsh --no-globalrcs --no-rcs
+# For MacOS `compinit -u` is required to prevent warning from appearing
+# https://stackoverflow.com/questions/13762280/zsh-compinit-insecure-directories
+send "autoload -Uz compinit && compinit -u\r"
+# Enable usage of bash completions in Zsh
+send "autoload -Uz bashcompinit && bashcompinit\r"
+
+expect >>
+
+set in_line [lindex $argv 1]
+set len [expr [string length $in_line] - 1]
+set line [string range $in_line 5 $len]
+set num_tabs [lindex $argv 2]
+puts "input line: '$line'"
+puts "num_tabs: $num_tabs"
+
+send "eval \"\$([lindex $argv 0] -sc install=bash)\"\r"
+expect >>
+
+set command "[lindex $argv 0] $line"
+while {$num_tabs > 0} {
+    incr num_tabs -1
+    append command "\t"
+}
+
+puts "command: '$command'"
+
+send $command
+
+puts "\nMatching:\n"
+foreach arg [lrange $argv 3 end] {
+    expect {
+        -notransfer "$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
+        timeout {puts "Error matching $arg"; exit 1}
+    }
+}

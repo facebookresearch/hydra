@@ -20,3 +20,10 @@ Currently, Bash and Fish are supported. We are relying on the community to imple
 
 Fish support requires version >= 3.1.2.
 Previous versions will work but add an extra space after `.`.
+
+#### Zsh instructions
+Zsh is compatible with the existing Bash shell completion by appending
+```
+autoload -Uz bashcompinit && bashcompinit
+```
+to the `.zshrc` file after `compinit`, restarting the shell and then using the commands provided for Bash.
