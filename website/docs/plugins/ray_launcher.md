@@ -35,14 +35,13 @@ defaults:
 
 ### `ray_aws` launcher
 
+:::important
 `ray_aws` launcher is built on top of ray's [autoscaler cli](https://docs.ray.io/en/latest/autoscaling.html). To get started, you need to 
 [config your AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-
-:::caution
-`ray autoscaler` expects your AWS credentials has certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). This [ray issue](https://github.com/ray-project/ray/issues/9327) provides some contexts.
+`ray autoscaler` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
 :::
 
-`ray autoscaler` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`hydra_ray_launcher.hydra_plugins.hydra_ray_launcher.conf.__init__.RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
+`ray autoscaler` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
 
 <details><summary>Discover ray_aws launcher's config</summary>
 
