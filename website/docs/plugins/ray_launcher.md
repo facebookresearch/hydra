@@ -3,108 +3,51 @@ id: ray_launcher
 title: Ray Launcher plugin
 sidebar_label: Ray Launcher plugin
 ---
-<!-- Add PyPI links etc -->
+<!---
+TODO enable once plugin is released
+[![PyPI](https://img.shields.io/pypi/v/hydra-ray-launcher)](https://pypi.org/project/hydra-ray-launcher/)
+![PyPI - License](https://img.shields.io/pypi/l/hydra-ray-launcher)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ray-launcher)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)
+-->
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher)
 
-The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray_local`. `ray_aws` launches jobs remotely on AWS and is built on top of [Ray Autoscaler](https://docs.ray.io/en/latest/autoscaling.html). `ray_local` will launch jobs on your local machine. 
+
+The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray_local`. 
+ `ray_aws` launches jobs remotely on AWS and is built on top of [Ray Autoscaler](https://docs.ray.io/en/latest/autoscaling.html). `ray_local` launches jobs on your local machine. 
 
 
-This plugin requires Hydra 1.0 to install:
+### Installation
+
 ```commandline
 $ pip install hydra-ray-launcher --pre
 ```
 
-After installation, override the Hydra launcher via your command line to activate one of the launchers:
+### Usage
+Once installed, add `hydra/launcher=ray_aws` or `hydra/launcher=ray_local` to your command line. Alternatively, override `hydra/launcher` in your config:
 
-```commandline
-# AWS Ray Launcher
-$ python my_app.py hydra/launcher=ray_aws
-
-# Local Ray Launcher
-$ python my_app.py hydra/launcher=ray_local
+```yaml
+defaults:
+  - hydra/launcher: ray_aws
 ```
 
-#### ray_aws launcher
+
+### `ray_aws` launcher
 
 `ray_aws` launcher is built on top of ray's [autoscaler cli](https://docs.ray.io/en/latest/autoscaling.html). To get started, you need to 
-config your AWS credentials first, tutorials can be found [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-You can run an initial check on credential configuration running the following command.
-```commandline
- python -c 'import boto3;boto3.client("ec2")'
-```
-:::caution
-`ray autoscaler` expects your AWS user has certain permissions for `EC2` and `IAM`. This [issue](https://github.com/ray-project/ray/issues/9327) provides some contexts.
-:::
-
-
-`ray autoscaler` expects a yaml file to provide specs for the new cluster, which we've schematized in `hydra_ray_launcher.hydra_plugins.hydra_ray_launcher.conf.__init__.RayClusterConf`, 
-The plugin defaults are in `conf/hydra/launcher/ray_aws.yaml`. You can override the default values in your app config or from command line.
+[config your AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
 
 :::caution
-This plugins depends on `cloudpickle`, as a result please make sure your local machine and the AWS cluster runs the same version of: `ray`, `hydra-core` and `python`. You can install the desired software version by overriding `RayClusterConf.setup_commands`.
+`ray autoscaler` expects your AWS credentials has certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). This [ray issue](https://github.com/ray-project/ray/issues/9327) provides some contexts.
 :::
 
-Now we can go ahead and run `train.py` using `ray_aws` launcher
+`ray autoscaler` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`hydra_ray_launcher.hydra_plugins.hydra_ray_launcher.conf.__init__.RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
+
+<details><summary>Discover ray_aws launcher's config</summary>
 
 ```commandline
-$ tree -L 1
-.
-├── conf
-├── model
-└── train.py
-
-$ python train.py --multirun hydra/launcher=ray_aws +extra_configs=aws random_seed=1,2,3 
-...
-[HYDRA] Ray Launcher is launching 3 jobs, 
-[HYDRA]        #0 : +extra_configs=aws random_seed=1
-[HYDRA]        #1 : +extra_configs=awsrandom_seed=2
-[HYDRA]        #2 : +extra_configs=awsrandom_seed=3
-...
-(pid=17975) [__main__][INFO] - Start training...
-(pid=17975) [model.my_model][INFO] - Init my model.
-(pid=17976) [__main__][INFO] - Start training...
-(pid=17976) [model.my_model][INFO] - Init my model.
-(pid=17976) [__main__][INFO] - Start training...
-(pid=17976) [model.my_model][INFO] - Init my model. 
-.....
-[HYDRA] Syncing outputs from remote dir: multirun/2020-08-05/11-41-04 to local dir: multirun/2020-08-05/11-41-04
-...
-[2020-10-14 15:18:20,888][HYDRA] Stopping cluster now. (stop_cluster=true)
-[2020-10-14 15:18:20,889][HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
-```
-
-In the example app config, we've configured the launcher to download ``*.pt`` files created by the app to local ``download`` dir. You should be able to see a ``download`` dir created in your current working dir.
-
-<details><summary>Example app downloaded file</summary>
-```commandline
-$ tree -L 1
-.
-├── conf
-├── multirun # Created by example app train.py
-├── model
-└── train.py
-
-$ tree multirun/
-multirun
-    └── 2020-05-18
-        └── 15-17-08
-            ├── 0
-            │   └── checkpoint
-            │       └── checkpoint_1.pt
-            ├── 1
-            │   └── checkpoint
-            │       └── checkpoint_2.pt
-            └── 2
-                └── checkpoint
-                    └── checkpoint_3.pt
-```
-</details>
-
-
-<details><summary>Ray AWS Launcher config</summary>
-You can discover the `ray_aws` launcher's config as follows:
-
-```commandline
-$ python train.py  hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
+$ python your_app.py hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
 mandatory_install:
@@ -181,9 +124,80 @@ sync_down:
   include: []
   exclude: []
 ```
-
 </details>
 
+
+#### Examples
+
+<details><summary>Simple app</summary>
+
+```commandline
+$ python example/simple/my_app.py --multirun task=1,2,3
+[2020-11-02 15:57:01,573][HYDRA] Ray Launcher is launching 3 jobs, 
+[2020-11-02 15:57:01,574][HYDRA]        #0 : task=1
+[2020-11-02 15:57:01,703][HYDRA]        #1 : task=2
+[2020-11-02 15:57:01,836][HYDRA]        #2 : task=3
+[2020-11-02 15:57:01,974][HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpqqg4v4i7/job_spec.pkl
+[2020-11-02 15:57:01,980][HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml.
+...
+[2020-11-02 16:00:42,336][HYDRA] Output: 2020-11-03 00:00:33,202        INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+(pid=3374) [2020-11-03 00:00:35,634][__main__][INFO] - Executing task 1
+(pid=3374) [2020-11-03 00:00:36,722][__main__][INFO] - Executing task 2
+(pid=3374) [2020-11-03 00:00:37,808][__main__][INFO] - Executing task 3
+...
+[2020-11-02 16:00:44,990][HYDRA] Stopping cluster now. (stop_cluster=true)
+[2020-11-02 16:00:44,990][HYDRA] Deleted the cluster (provider.cache_stopped_nodes=false)
+[2020-11-02 16:00:44,994][HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml']
+
+```
+</details>
+
+
+<details><summary>Upload & Download from remote cluster</summary>
+
+If your application is dependent on multiple modules, you can configure `hydra.launcher.sync_up` to upload dependency modules to the remote cluster.
+You can also configure `hydra.launcher.sync_down` to download output from remote cluster if needed. This functionality is built on top of `rsync`, `include` and `exclude` is consistent with how it works in `rsync`.
+
+```commandline
+
+$  python train.py --multirun random_seed=1,2,3
+[2020-11-02 16:25:41,065][HYDRA] Ray Launcher is launching 3 jobs, 
+[2020-11-02 16:25:41,066][HYDRA]        #0 : random_seed=1
+[2020-11-02 16:25:41,216][HYDRA]        #1 : random_seed=2
+[2020-11-02 16:25:41,367][HYDRA]        #2 : random_seed=3
+[2020-11-02 16:25:41,513][HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmptdkye9of/job_spec.pkl
+[2020-11-02 16:25:41,518][HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml.
+[2020-11-02 16:25:41,524][HYDRA] Running command: ['ray', 'up', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml']
+...
+[2020-11-02 16:33:40,835][HYDRA] Output: 2020-11-03 00:33:35,301        INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+(pid=1772) [2020-11-03 00:33:37,681][__main__][INFO] - Start training...
+(pid=1772) [2020-11-03 00:33:37,681][model.my_model][INFO] - Init my model
+(pid=1772) [2020-11-03 00:33:37,681][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
+(pid=1772) [2020-11-03 00:33:37,768][__main__][INFO] - Start training...
+(pid=1772) [2020-11-03 00:33:37,768][model.my_model][INFO] - Init my model
+(pid=1772) [2020-11-03 00:33:37,769][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
+(pid=1772) [2020-11-03 00:33:37,853][__main__][INFO] - Start training...
+(pid=1772) [2020-11-03 00:33:37,853][model.my_model][INFO] - Init my model
+(pid=1772) [2020-11-03 00:33:37,854][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
+Loaded cached provider configuration
+...
+[2020-11-02 16:33:44,469][HYDRA] Output: receiving file list ... done
+16-32-25/
+16-32-25/0/
+16-32-25/0/checkpoint/
+16-32-25/0/checkpoint/checkpoint_1.pt
+16-32-25/1/
+16-32-25/1/checkpoint/
+16-32-25/1/checkpoint/checkpoint_2.pt
+16-32-25/2/
+16-32-25/2/checkpoint/
+16-32-25/2/checkpoint/checkpoint_3.pt
+...
+[2020-11-02 16:33:45,784][HYDRA] Stopping cluster now. (stop_cluster=true)
+[2020-11-02 16:33:45,785][HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
+[2020-11-02 16:33:45,789][HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpy430k4xr.yaml']
+```
+</details>
 
 ##### Manage Cluster LifeCycle
 You can manage the Ray EC2 cluster lifecycle by configuring the two flags provided by the plugin:
@@ -205,36 +219,31 @@ hydra.launcher.ray_cluster_cfg.provider.cache_stopped_nodes=true
 ```
 
 
-#### ray_local launcher
+### `ray_local` launcher
 
 `ray_local` launcher lets you run `ray` on your local machine. You can easily config how your jobs are executed by changing `ray_local` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray_local.yaml`
  
-TODO Add example link once it is available on hydra master 
-An example using the ray local launcher by default is provided in the plugin repository.
-
 ```commandline
-$ python example/train.py --multirun
-[2020-07-31 16:50:03,360][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-07-31/16-50-02
-[2020-07-31 16:50:03,360][HYDRA] Initializing ray with config: {'num_cpus': 2, 'num_gpus': 0}
-2020-07-31 16:50:03,371 INFO resource_spec.py:204 -- Starting Ray with 8.64 GiB memory available for workers and up to 4.34 GiB for objects. You can adjust these settings with ray.init(memory=<bytes>, object_store_memory=<bytes>).
-2020-07-31 16:50:03,749 INFO services.py:1168 -- View the Ray dashboard at localhost:8265
-[2020-07-31 16:50:04,302][HYDRA]        #0 : random_seed=1
-(pid=45515) [2020-07-31 16:50:04,614][__main__][INFO] - Start training...
-(pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Init my model
-(pid=45515) [2020-07-31 16:50:04,615][model.my_model][INFO] - Created dir for checkpoints. dir=/Users/jieru/workspace/hydra-fork/hydra/plugins/hydra_ray_launcher/example/multirun/2020-07-31/16-50-02/0/checkpoint
+$ python my_app.py --multirun hydra/launcher=ray_local
+[2020-11-02 16:46:58,267][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-02/16-46-58
+[2020-11-02 16:46:58,267][HYDRA] Initializing ray with config: {'num_cpus': 1, 'num_gpus': 0}
+2020-11-02 16:46:58,827 INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+[2020-11-02 16:46:59,888][HYDRA]        #0 : 
+(pid=85035) [2020-11-02 16:47:00,306][__main__][INFO] - Executing task 1
 ```
+
 You can discover the ray local launcher parameters with:
 
 ```yaml
-$ python train.py --cfg hydra -p hydra.launcher
+$ python my_app.py hydra/launcher=ray_local --cfg hydra -p hydra.launcher
 # @package hydra.launcher
-target: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
-params:
-  ray_init_cfg:
-    num_cpus: 1
-    num_gpus: 0
-  ray_remote_cfg:
-    num_cpus: 1
-    num_gpus: 0
+_target_: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
+ray_init_cfg:
+  num_cpus: 1
+  num_gpus: 0
+ray_remote_cfg:
+  num_cpus: 1
+  num_gpus: 0
+
 ```

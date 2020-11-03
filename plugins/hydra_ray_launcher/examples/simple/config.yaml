@@ -1,0 +1,4 @@
+defaults:
+  - hydra/launcher: ray_aws
+
+task: 1

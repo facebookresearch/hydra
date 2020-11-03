@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(config_name="config")
 def main(cfg: DictConfig) -> None:
     log.info("Start training...")
     model = MyModel(cfg.random_seed)

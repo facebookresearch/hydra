@@ -1,4 +1,9 @@
-# @package _global_
+defaults:
+  - hydra/launcher: ray_aws
+
+
+random_seed: 0
+checkpoint_path: checkpoint
 
 hydra:
   launcher:
