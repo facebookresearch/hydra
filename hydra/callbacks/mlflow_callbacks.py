@@ -10,5 +10,6 @@ log = logging.getLogger(__name__)
 
 
 class MLflow(Callbacks):
-    def pre_run(self, cfg: DictConfig) -> None:
+    def pre_sweep(self, cfg: DictConfig) -> None:
+        log.info(f"mlflow callbacks pre-sweep, setting tracking url")
         mlflow.set_tracking_uri(f"file:///{os.getcwd()}/.mlflow")
