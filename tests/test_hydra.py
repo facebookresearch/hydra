@@ -1175,3 +1175,13 @@ def test_hydra_exception(monkeypatch: Any, tmpdir: Any, expected: str) -> None:
         from_name="Expected output",
         to_name="Actual output",
     )
+
+
+def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
+    monkeypatch.chdir("tests/test_apps/structured_with_none_list")
+    cmd = [
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    result, _err = get_run_output(cmd)
+    assert result == "{'list': None}"

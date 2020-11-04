@@ -1,0 +1,1 @@
+Fix a bug where Structured Config has a field like 'list : Optional[List[int]] = None`
