@@ -21,7 +21,8 @@ from hydra.core.utils import (
     configure_log,
     run_job,
     setup_globals,
-    simple_stdout_log_config, get_callbacks,
+    simple_stdout_log_config,
+    get_callbacks,
 )
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
@@ -154,9 +155,6 @@ class Hydra:
             c.post_sweep(cfg)
 
         return ret
-
-
-
 
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:

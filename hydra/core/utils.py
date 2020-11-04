@@ -82,15 +82,15 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
 
 def get_callbacks(cfg: DictConfig) -> List[Callbacks]:
     from hydra.utils import instantiate
+
     callbacks = []
-    if OmegaConf.select( cfg, "hydra.callbacks" ):
+    if OmegaConf.select(cfg, "hydra.callbacks"):
         cfg = cfg.hydra.callbacks
         callbacks = []
         for c in cfg.keys():
-            callbacks.append( instantiate( OmegaConf.select( cfg, c ) ) )
+            callbacks.append(instantiate(OmegaConf.select(cfg, c)))
 
     return callbacks
-
 
 
 def run_job(

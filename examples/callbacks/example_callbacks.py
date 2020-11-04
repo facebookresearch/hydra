@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 
 
 class ExampleCallbacks(Callbacks):
-
     def pre_run(self, cfg: DictConfig) -> None:
         log.info("ExampleCallbacks pre_run called")
 
