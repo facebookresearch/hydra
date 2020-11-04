@@ -29,6 +29,7 @@ class FileConfigSource(ConfigSource):
         if not os.path.exists(full_path):
             raise ConfigLoadError(f"Config not found : {full_path}")
 
+        # with open(full_path, encoding="utf-8") as f:
         with open(full_path) as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)

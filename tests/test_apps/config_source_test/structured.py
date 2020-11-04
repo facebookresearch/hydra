@@ -13,6 +13,11 @@ class ConfigWithoutGroup:
 
 
 @dataclass
+class ConfigWithUnicode:
+    数据库: str = "mysql"
+
+
+@dataclass
 class Cifar10:
     name: str = "cifar10"
     path: str = "/datasets/cifar10"
@@ -49,6 +54,7 @@ class Optimizer:
 
 s = ConfigStore.instance()
 s.store(name="config_without_group", node=ConfigWithoutGroup)
+s.store(name="config_with_unicode", node=ConfigWithUnicode)
 s.store(name="dataset", node={"dataset_yaml": True})
 s.store(group="dataset", name="cifar10", node=Cifar10)
 s.store(group="dataset", name="imagenet.yaml", node=ImageNet)
