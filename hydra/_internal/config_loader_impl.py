@@ -906,11 +906,11 @@ def get_overrides_dirname(
 def _recursive_unset_readonly(cfg: Container) -> None:
     if isinstance(cfg, DictConfig):
         OmegaConf.set_readonly(cfg, None)
-        if not cfg._is_missing():
+        if not (cfg._is_missing() or OmegaConf.is_none(cfg)):
             for k, v in cfg.items_ex(resolve=False):
                 _recursive_unset_readonly(v)
     elif isinstance(cfg, ListConfig):
         OmegaConf.set_readonly(cfg, None)
-        if not cfg._is_missing():
+        if not (cfg._is_missing() or OmegaConf.is_none(cfg)):
             for item in cfg:
                 _recursive_unset_readonly(item)
