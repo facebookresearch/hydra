@@ -10,10 +10,11 @@ from dataclasses import dataclass
 from os.path import basename, dirname, splitext
 from pathlib import Path
 from time import localtime, strftime
-from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
+from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast, List
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
+from hydra.callbacks import Callbacks
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import TaskFunction
@@ -79,6 +80,19 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
+def get_callbacks(cfg: DictConfig) -> List[Callbacks]:
+    from hydra.utils import instantiate
+    callbacks = []
+    if OmegaConf.select( cfg, "hydra.callbacks" ):
+        cfg = cfg.hydra.callbacks
+        callbacks = []
+        for c in cfg.keys():
+            callbacks.append( instantiate( OmegaConf.select( cfg, c ) ) )
+
+    return callbacks
+
+
+
 def run_job(
     config: DictConfig,
     task_function: TaskFunction,
@@ -86,6 +100,9 @@ def run_job(
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
+    callbacks = get_callbacks(config)
+    for c in callbacks:
+        c.pre_job(config)
     old_cwd = os.getcwd()
     working_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
@@ -130,6 +147,8 @@ def run_job(
 
         return ret
     finally:
+        for c in reversed(callbacks):
+            c.post_job(config)
         os.chdir(old_cwd)
 
 

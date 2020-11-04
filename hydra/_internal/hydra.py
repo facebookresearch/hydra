@@ -21,7 +21,7 @@ from hydra.core.utils import (
     configure_log,
     run_job,
     setup_globals,
-    simple_stdout_log_config,
+    simple_stdout_log_config, get_callbacks,
 )
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
@@ -103,14 +103,22 @@ class Hydra:
             run_mode=RunMode.RUN,
         )
         HydraConfig.instance().set_config(cfg)
+        callbacks = get_callbacks(cfg)
 
-        return run_job(
+        for c in callbacks:
+            c.pre_run(cfg)
+        ret = run_job(
             config=cfg,
             task_function=task_function,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
             configure_logging=with_log_configuration,
         )
+
+        for c in reversed(callbacks):
+            c.post_run(cfg)
+
+        return ret
 
     def multirun(
         self,
@@ -128,13 +136,27 @@ class Hydra:
             run_mode=RunMode.MULTIRUN,
         )
         HydraConfig.instance().set_config(cfg)
+        callbacks = get_callbacks(cfg)
+
+        for c in callbacks:
+            c.pre_sweep(cfg)
 
         sweeper = Plugins.instance().instantiate_sweeper(
-            config=cfg, config_loader=self.config_loader, task_function=task_function
+            config=cfg,
+            config_loader=self.config_loader,
+            task_function=task_function,
         )
         task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
         assert isinstance(task_overrides, list)
-        return sweeper.sweep(arguments=task_overrides)
+        ret = sweeper.sweep(arguments=task_overrides)
+
+        for c in callbacks:
+            c.post_sweep(cfg)
+
+        return ret
+
+
+
 
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:

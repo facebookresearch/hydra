@@ -1,0 +1,6 @@
+hydra:
+  callbacks:
+    example:
+      _target_: "example_callbacks.ExampleCallbacks"
+
+foo: bar

@@ -122,6 +122,8 @@ class HydraConf:
     sweeper: Any = MISSING
     # Launcher configuration
     launcher: Any = MISSING
+    # Callbacks configuration
+    callbacks: Any = MISSING
 
     # Program Help template
     help: HelpConf = HelpConf()
