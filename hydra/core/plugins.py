@@ -14,7 +14,6 @@ from omegaconf import DictConfig
 from hydra._internal.sources_registry import SourcesRegistry
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
-from hydra.callbacks import Callbacks
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher

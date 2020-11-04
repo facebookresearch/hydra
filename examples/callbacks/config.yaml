@@ -2,5 +2,7 @@ hydra:
   callbacks:
     example:
       _target_: "example_callbacks.ExampleCallbacks"
+    mlflow:
+      _target_: "hydra.callbacks.mlflow_callbacks.MLflow"
 
 foo: bar

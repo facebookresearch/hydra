@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast, List
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra.callbacks import Callbacks
+from hydra.callbacks.callbacks import Callbacks
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import TaskFunction

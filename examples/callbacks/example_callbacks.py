@@ -2,7 +2,7 @@ import logging
 
 from omegaconf import DictConfig
 
-from hydra.callbacks import Callbacks
+from hydra.callbacks.callbacks import Callbacks
 
 log = logging.getLogger(__name__)
 
