@@ -93,6 +93,7 @@ class TestConfigRepository:
                 None,
                 [
                     "config_with_defaults_list",
+                    "config_with_unicode",
                     "config_without_group",
                     "configs_with_defaults_list",
                     "dataset",
@@ -121,6 +122,7 @@ class TestConfigRepository:
                 ObjectType.CONFIG,
                 [
                     "config_with_defaults_list",
+                    "config_with_unicode",
                     "config_without_group",
                     "dataset",
                     "primary_config",
@@ -165,6 +167,7 @@ class TestConfigRepository:
         ret = repo.get_group_options(
             group_name=config_path, results_filter=results_filter
         )
+
         assert ret == expected
 
 

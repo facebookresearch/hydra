@@ -173,6 +173,12 @@ class ConfigSourceTestSuite:
                 id="config_without_group",
             ),
             param(
+                "config_with_unicode",
+                {"group": "数据库"},
+                [],
+                id="config_with_unicode",
+            ),
+            param(
                 "dataset/imagenet",
                 {"dataset": {"name": "imagenet", "path": "/datasets/imagenet"}},
                 [],
