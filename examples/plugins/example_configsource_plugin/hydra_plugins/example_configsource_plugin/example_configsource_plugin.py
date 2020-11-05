@@ -23,6 +23,7 @@ class ConfigSourceExample(ConfigSource):
             "primary_config.yaml": {"primary": True},
             "primary_config_with_non_global_package.yaml": {"primary": True},
             "config_without_group.yaml": {"group": False},
+            "config_with_unicode.yaml": {"group": "数据库"},
             "dataset/imagenet.yaml": {
                 "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
             },
