@@ -168,7 +168,7 @@ class ConfigSourceTestSuite:
             param(
                 "config_with_unicode",
                 {"group": "数据库"},
-                [],
+                None,
                 id="config_with_unicode",
             ),
             param(

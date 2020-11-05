@@ -92,7 +92,6 @@ class TestConfigRepository:
                 "",
                 None,
                 [
-                    "config_with_defaults_list",
                     "config_with_unicode",
                     "config_without_group",
                     "dataset",
@@ -108,7 +107,6 @@ class TestConfigRepository:
                 "",
                 ObjectType.CONFIG,
                 [
-                    "config_with_defaults_list",
                     "config_with_unicode",
                     "config_without_group",
                     "dataset",
