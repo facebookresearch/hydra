@@ -30,7 +30,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
-        with res.open() as f:
+        with open(res, encoding="utf-8") as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
             self._update_package_in_header(

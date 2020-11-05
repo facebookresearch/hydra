@@ -14,7 +14,7 @@ class ConfigWithoutGroup:
 
 @dataclass
 class ConfigWithUnicode:
-    数据库: str = "mysql"
+    group: str = "数据库"
 
 
 @dataclass

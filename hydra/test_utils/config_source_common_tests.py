@@ -174,7 +174,7 @@ class ConfigSourceTestSuite:
             ),
             param(
                 "config_with_unicode",
-                {"数据库": "mysql"},
+                {"group": "数据库"},
                 [],
                 id="config_with_unicode",
             ),
