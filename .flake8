@@ -6,6 +6,12 @@ exclude =
     ,dist
     ,tools/configen/example/gen
     ,tools/configen/tests/test_modules/expected
+
+    # flake8-copyright does not support unicode, savoirfairelinux/flake8-copyright#15
+    ,examples/plugins/example_configsource_plugin/hydra_plugins/example_configsource_plugin/example_configsource_plugin.py
+    ,hydra/test_utils/config_source_common_tests.py
+    ,tests/test_apps/config_source_test/structured.py
+
 max-line-length = 119
 copyright-check = True
 select = E,F,W,C
