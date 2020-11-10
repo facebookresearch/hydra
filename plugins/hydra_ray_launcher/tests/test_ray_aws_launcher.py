@@ -9,7 +9,6 @@ import tempfile
 from pathlib import Path
 from typing import Generator, List, Optional
 
-import boto3  # type: ignore
 import pkg_resources
 import pytest
 from hydra.core.plugins import Plugins
@@ -44,28 +43,10 @@ win_msg = "Ray doesn't support Windows."
 cur_py_version = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
-
-try:
-    test_config_path = str(Path(tempfile.mkdtemp()) / "config.yaml")
-    s3 = boto3.client("s3")
-    s3.download_file(
-        "hydra-integration-test-us-west-2",
-        "hydra_ray_launcher_test_config.yaml",
-        test_config_path,
-    )
-    test_config = OmegaConf.load(test_config_path)
-    ami = test_config.ami
-    security_group_id = test_config.security_group_id
-    subnet_id = test_config.subnet_id
-    instance_role = test_config.instance_role
-except Exception as e:
-    logging.warning(
-        f"Error reading test config from S3, {e}. Try env variable instead."
-    )
-    ami = os.environ.get("AWS_RAY_AMI", "")
-    security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
-    subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
-    instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
+ami = os.environ.get("AWS_RAY_AMI", "")
+security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
+subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
+instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
 
 assert (
     ami != "" and security_group_id != "" and subnet_id != "" and instance_role != ""
@@ -73,6 +54,7 @@ assert (
     f"Missing variable for test, ami={ami}, security_group_id={security_group_id}, subnet_id={subnet_id}, "
     f"instance_role={instance_role}"
 )
+
 
 ray_nodes_conf = {
     "InstanceType": "m5.large",
