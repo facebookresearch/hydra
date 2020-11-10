@@ -38,7 +38,8 @@ def configure_log(
         conf: Dict[str, Any] = OmegaConf.to_container(  # type: ignore
             log_config, resolve=True
         )
-        logging.config.dictConfig(conf)
+        if conf["root"] is not None:
+            logging.config.dictConfig(conf)
     else:
         # default logging to stdout
         root = logging.getLogger()
