@@ -1,5 +1,5 @@
 # @package _group_
 
 version: 1
-root: ~
+root: null
 disable_existing_loggers: false
