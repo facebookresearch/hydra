@@ -223,26 +223,25 @@ hydra.launcher.ray_cluster_cfg.provider.cache_stopped_nodes=true
 `ray_local` launcher lets you run `ray` on your local machine. You can easily config how your jobs are executed by changing `ray_local` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray_local.yaml`
  
+ The [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples/simple) starts a new ray cluster. 
 ```commandline
-$ python my_app.py --multirun hydra/launcher=ray_local
-[2020-11-02 16:46:58,267][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-02/16-46-58
-[2020-11-02 16:46:58,267][HYDRA] Initializing ray with config: {'num_cpus': 1, 'num_gpus': 0}
-2020-11-02 16:46:58,827 INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
-[2020-11-02 16:46:59,888][HYDRA]        #0 : 
-(pid=85035) [2020-11-02 16:47:00,306][__main__][INFO] - Executing task 1
+$ python my_app.py  --multirun hydra/launcher=ray_local
+[2020-11-10 15:16:28,215][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-16-28
+[2020-11-10 15:16:28,215][HYDRA] Initializing ray with config: {}
+2020-11-10 15:16:28,863 INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8266
+[2020-11-10 15:16:29,934][HYDRA]        #0 : 
+(pid=97801) [2020-11-10 15:16:30,453][__main__][INFO] - Executing task 1
 ```
 
-You can discover the ray local launcher parameters with:
-
-```yaml
-$ python my_app.py hydra/launcher=ray_local --cfg hydra -p hydra.launcher
-# @package hydra.launcher
-_target_: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
-ray_init_cfg:
-  num_cpus: 1
-  num_gpus: 0
-ray_remote_cfg:
-  num_cpus: 1
-  num_gpus: 0
-
+You can run the example application on your existing local ray cluster as well by overriding `hydra.launcher.ray_init_cfg.address`:
+```commandline
+$ python my_app.py  --multirun hydra/launcher=ray_local +hydra.launcher.ray_init_cfg='{address: localhost:6379}'
+[2020-11-10 15:13:32,245][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
+[2020-11-10 15:13:32,245][HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
+2020-11-10 15:13:32,249 INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
+[2020-11-10 15:13:32,274][HYDRA]        #0 : 
+(pid=93358) [2020-11-10 15:13:32,460][__main__][INFO] - Executing task 1
 ```
+
+### Configure `ray.init()` and `ray.remote()`
+Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init_cfg` and `hydra.launcher.ray_remote_cfg`. Check out [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml) for an example.
