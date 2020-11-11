@@ -244,4 +244,4 @@ $ python my_app.py  --multirun hydra/launcher=ray_local +hydra.launcher.ray_init
 ```
 
 ### Configure `ray.init()` and `ray.remote()`
-Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init_cfg` and `hydra.launcher.ray_remote_cfg`. Check out [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml) for an example.
+Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init_cfg` and `hydra.launcher.ray_remote_cfg`. Check out an [example config](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml).
