@@ -14,8 +14,8 @@ def get_long_description() -> str:
 setup(
     name="hydra-optuna-sweeper",
     version="0.0.1",
-    author="Toshihiko Yanae",
-    author_email="toshihiko.yanase@gmail.com",
+    author="Toshihiko Yanase, Hiroyuki Vincent Yamazaki",
+    author_email="toshihiko.yanase@gmail.com, hiroyuki.vincent.yamazaki@gmail.com",
     description="Hydra Optuna Sweeper plugin",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
