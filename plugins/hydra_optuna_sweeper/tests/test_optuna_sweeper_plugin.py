@@ -32,7 +32,13 @@ def test_discovery() -> None:
 def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
     assert type(expected) == type(actual)
     if isinstance(actual, CategoricalDistribution):
-        assert sorted(expected.choices) == sorted(actual.choices)
+        assert all(isinstance(x, float) for x in actual.choices) or all(
+            isinstance(x, str) for x in actual.choices
+        )
+        assert all(isinstance(x, float) for x in expected.choices) or all(
+            isinstance(x, str) for x in expected.choices
+        )
+        assert expected.choices == actual.choices
     elif isinstance(actual, (IntLogUniformDistribution, LogUniformDistribution)):
         assert expected.low == actual.low
         assert expected.high == actual.high
@@ -119,7 +125,7 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-def test_optuna_example(tmpdir: Path):
+def test_optuna_example(tmpdir: Path) -> None:
     cmd = [
         "example/sphere.py",
         "-m",
