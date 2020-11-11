@@ -9,12 +9,11 @@ import omegaconf
 import pkg_resources
 import ray
 from hydra.core.config_store import ConfigStore
-from hydra.types import TargetConf
 from omegaconf import MISSING
 
 
 @dataclass
-class RayLocalLauncherConf(TargetConf):
+class RayLocalLauncherConf:
     _target_: str = (
         "hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher"
     )
@@ -187,16 +186,12 @@ class RayClusterConf:
 
 
 @dataclass
-class RayAWSLauncherConf(TargetConf):
+class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
     mandatory_install: PluginMandatoryInstallConf = PluginMandatoryInstallConf()
-    ray_init_cfg: Dict[str, Any] = field(
-        default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
-    )
-    ray_remote_cfg: Dict[str, Any] = field(
-        default_factory=lambda: {"num_cpus": 1, "num_gpus": 0}
-    )
+    ray_init_cfg: Dict[str, Any] = field(default_factory=dict)
+    ray_remote_cfg: Dict[str, Any] = field(default_factory=dict)
     ray_cluster_cfg: RayClusterConf = RayClusterConf()
 
     # Stop Ray AWS cluster after jobs are finished.
