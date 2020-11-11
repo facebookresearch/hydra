@@ -78,12 +78,12 @@ def test_logging(tmpdir: Path) -> None:
     assert result == "[INFO] - Info level message"
 
 
-def test_logging_disabling(tmpdir: Path) -> None:
+def test_disabling_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         "hydra/job_logging=notset",
-        "hydra/hydra_logging=notset"
+        "hydra/hydra_logging=notset",
     ]
     result, _err = get_run_output(cmd)
     assert result == ""
