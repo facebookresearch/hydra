@@ -18,6 +18,7 @@ from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     CategoricalDistribution,
+    DiscreteUniformDistribution,
     IntLogUniformDistribution,
     IntUniformDistribution,
     LogUniformDistribution,
@@ -25,29 +26,32 @@ from optuna.distributions import (
 )
 from optuna.samplers import CmaEsSampler, RandomSampler, TPESampler
 
-from .config import OptunaConfig, ParamConfig
+from .config import DistributionConfig, OptunaConfig
 
 log = logging.getLogger(__name__)
 
 
 def create_optuna_distribution_from_config(config: MutableMapping[str, Any]) -> Any:
-    param = ParamConfig(**config)
-    if param.type == "choice":
-        return CategoricalDistribution(param.values)
-    if param.type == "range":
-        return IntUniformDistribution(
-            int(param.values[0]), int(param.values[1]), step=int(param.step)
-        )
-    if param.type == "interval":
+    param = DistributionConfig(**config)
+    if param.type == "categorical":
+        assert param.choices is not None
+        return CategoricalDistribution(param.choices)
+    if param.type == "int":
+        assert param.low is not None
+        assert param.high is not None
         if param.log:
-            if param.tags is not None and "int" in param.tags:
-                return IntLogUniformDistribution(
-                    int(param.values[0]), int(param.values[1])
-                )
-            return LogUniformDistribution(param.values[0], param.values[1])
-        if param.tags is not None and "int" in param.tags:
-            return IntUniformDistribution(int(param.values[0]), int(param.values[1]))
-        return UniformDistribution(param.values[0], param.values[1])
+            return IntLogUniformDistribution(int(param.low), int(param.high))
+        return IntUniformDistribution(
+            int(param.low), int(param.high), step=int(param.step)
+        )
+    if param.type == "float":
+        assert param.low is not None
+        assert param.high is not None
+        if param.log:
+            return LogUniformDistribution(param.low, param.high)
+        if param.step != 1:
+            return DiscreteUniformDistribution(param.low, param.high, param.step)
+        return UniformDistribution(param.low, param.high)
     return config
 
 
@@ -60,26 +64,36 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
         choices = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
-        return CategoricalDistribution(choices)
+        _choices = [x for x in choices if isinstance(x, (str, float))]
+        assert choices == _choices
+        return CategoricalDistribution(_choices)
 
     if override.is_range_sweep():
         assert isinstance(value, RangeSweep)
+        assert value.start is not None
+        assert value.stop is not None
         if value.shuffle:
             choices = [
                 x for x in override.sweep_iterator(transformer=Transformer.encode)
             ]
-            return CategoricalDistribution(choices)
-        return IntUniformDistribution(value.start, value.stop, step=value.step)
+            _choices = [x for x in choices if isinstance(x, (str, float))]
+            assert choices == _choices
+            return CategoricalDistribution(_choices)
+        return IntUniformDistribution(
+            int(value.start), int(value.stop), step=int(value.step)
+        )
 
     if override.is_interval_sweep():
         assert isinstance(value, IntervalSweep)
+        assert value.start is not None
+        assert value.end is not None
         if "log" in value.tags:
             if "int" in value.tags:
-                return IntLogUniformDistribution(value.start, value.end)
+                return IntLogUniformDistribution(int(value.start), int(value.end))
             return LogUniformDistribution(value.start, value.end)
         else:
             if "int" in value.tags:
-                return IntUniformDistribution(value.start, value.end)
+                return IntUniformDistribution(int(value.start), int(value.end))
             return UniformDistribution(value.start, value.end)
 
     raise NotImplementedError("{} is not supported by Optuna sweeper.".format(override))
@@ -161,7 +175,7 @@ class OptunaSweeperImpl(Sweeper):
 
             returns = self.launcher.launch(overrides, initial_job_idx=trials[0].number)
             for trial, ret in zip(trials, returns):
-                study._tell(trial, optuna.trial.TrialState.COMPLETE, ret.return_value)
+                study._tell(trial, TrialState.COMPLETE, ret.return_value)
             n_trials_to_go -= batch_size
 
         best_trial = study.best_trial

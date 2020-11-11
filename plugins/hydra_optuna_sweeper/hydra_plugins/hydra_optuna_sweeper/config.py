@@ -6,12 +6,13 @@ from hydra.core.config_store import ConfigStore
 
 
 @dataclass
-class ParamConfig:
+class DistributionConfig:
     type: str
-    values: List[Union[str, int, float]]
+    choices: Optional[List[Union[str, int, float]]] = None
+    low: Optional[float] = None
+    high: Optional[float] = None
     log: bool = False
     step: float = 1
-    tags: Optional[List[str]] = None
 
 
 @dataclass

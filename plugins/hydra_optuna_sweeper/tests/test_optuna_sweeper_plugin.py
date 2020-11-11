@@ -2,20 +2,20 @@
 from pathlib import Path
 from typing import Any
 
+import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
-import pytest
+from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     CategoricalDistribution,
+    DiscreteUniformDistribution,
     IntLogUniformDistribution,
     IntUniformDistribution,
     LogUniformDistribution,
-    UniformDistribution
+    UniformDistribution,
 )
-from omegaconf import DictConfig, OmegaConf
-
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
@@ -41,6 +41,10 @@ def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
         assert expected.high == actual.high
         if isinstance(actual, IntUniformDistribution):
             assert expected.step == actual.step
+    elif isinstance(actual, DiscreteUniformDistribution):
+        assert expected.low == actual.low
+        assert expected.high == actual.high
+        assert expected.q == actual.q
     else:
         assert False, f"Unexpected type: {type(actual)}"
 
@@ -48,14 +52,30 @@ def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
-        ({"type": "choice", "values": [1, 2, 3]}, CategoricalDistribution([1, 2, 3])),
-        ({"type": "range", "values": [0, 10]}, IntUniformDistribution(0, 10)),
-        ({"type": "range", "values": [0, 10], "step": 2}, IntUniformDistribution(0, 10, step=2)),
-        ({"type": "interval", "values": [0, 1]}, UniformDistribution(0, 1)),
-        ({"type": "interval", "values": [0, 5], "tags": ["int"]}, IntUniformDistribution(0, 5)),
-        ({"type": "interval", "values": [1, 100], "log": True}, LogUniformDistribution(1, 100)),
-        ({"type": "interval", "values": [1, 100], "tags": ["int"], "log": True}, IntLogUniformDistribution(1, 100)),
-    ]
+        (
+            {"type": "categorical", "choices": [1, 2, 3]},
+            CategoricalDistribution([1, 2, 3]),
+        ),
+        ({"type": "int", "low": 0, "high": 10}, IntUniformDistribution(0, 10)),
+        (
+            {"type": "int", "low": 0, "high": 10, "step": 2},
+            IntUniformDistribution(0, 10, step=2),
+        ),
+        ({"type": "int", "low": 0, "high": 5}, IntUniformDistribution(0, 5)),
+        (
+            {"type": "int", "low": 1, "high": 100, "log": True},
+            IntLogUniformDistribution(1, 100),
+        ),
+        ({"type": "float", "low": 0, "high": 1}, UniformDistribution(0, 1)),
+        (
+            {"type": "float", "low": 0, "high": 10, "step": 2},
+            DiscreteUniformDistribution(0, 10, 2),
+        ),
+        (
+            {"type": "float", "low": 1, "high": 100, "log": True},
+            LogUniformDistribution(1, 100),
+        ),
+    ],
 )
 def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> None:
     actual = _impl.create_optuna_distribution_from_config(input)
@@ -72,7 +92,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=interval(1, 5)", UniformDistribution(1, 5)),
         ("key=tag(int, interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
-    ]
+    ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
     parser = OverridesParser.create()
@@ -93,7 +113,7 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
             "hydra/launcher=basic",
             "hydra.sweeper.optuna_config.n_trials=8",
             "hydra.sweeper.optuna_config.n_jobs=3",
-        ]
+        ],
     )
     with sweep:
         assert sweep.returns is None
@@ -113,4 +133,3 @@ def test_optuna_example(tmpdir: Path):
     assert returns.name == "optuna"
     assert "best_params" in returns
     assert "best_value" in returns
-
