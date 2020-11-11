@@ -279,6 +279,8 @@ def integration_test(
     clean_environment: bool = False,
 ) -> str:
     Path(tmpdir).mkdir(parents=True, exist_ok=True)
+    conf_dir = tmpdir / "conf"
+
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
     if not isinstance(task_config, Container):
@@ -309,12 +311,13 @@ if __name__ == "__main__":
 
     config_name = ""
     if task_config is not None:
-        cfg_file = tmpdir / "config.yaml"
+        cfg_file = conf_dir / "config.yaml"
         with open(str(cfg_file), "w") as f:
-            f.write("# @package _global_\n")
             OmegaConf.save(task_config, f)
-        config_name = "config_name='config'"
-    output_file = str(tmpdir / "output.txt")
+        config_name = "config_path='conf',config_name='config'"
+        init_file = conf_dir / "__init__.py"
+        init_file.write_text("", encoding="utf-8")
+    output_file = str(modified_tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
