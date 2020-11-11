@@ -82,8 +82,8 @@ def test_disabling_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        "hydra/job_logging=notset",
-        "hydra/hydra_logging=notset",
+        "hydra/job_logging=none",
+        "hydra/hydra_logging=none",
     ]
     result, _err = get_run_output(cmd)
     assert result == ""
