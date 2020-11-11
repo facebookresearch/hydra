@@ -29,6 +29,11 @@ setup(
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
-    install_requires=["hydra-core", "optuna"],
+    install_requires=[
+        "hydra-core",
+        # TODO(toshihikoyanse): Use the release version after merging the following PR.
+        # https://github.com/optuna/optuna/pull/2013
+        "optuna @ git+https://github.com/toshihikoyanase/optuna.git@explicit-reexport",
+    ],
     include_package_data=True,
 )
