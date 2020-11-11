@@ -1,0 +1,25 @@
+defaults:
+  - hydra/sweeper: optuna
+
+hydra:
+  sweeper:
+    optuna_config:
+      direction: "minimize"
+      study_name: null
+      storage: "sqlite:///tmp.db"
+      n_trials: 20
+      n_jobs: 1
+      sampler: "CmaEsSampler"
+      seed: 123
+
+    search_space:
+      x:
+        type: range
+        values: [-5, 5]
+        step: 2
+      y:
+        type: choice
+        values: [0, 1, 2]
+
+x: 1
+y: 1
