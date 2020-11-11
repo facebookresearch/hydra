@@ -64,7 +64,7 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
         choices = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
-        _choices = [x for x in choices if isinstance(x, (str, float))]
+        _choices = [x for x in choices if isinstance(x, (str, int, float))]
         assert choices == _choices
         return CategoricalDistribution(_choices)
 
@@ -76,7 +76,7 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             choices = [
                 x for x in override.sweep_iterator(transformer=Transformer.encode)
             ]
-            _choices = [x for x in choices if isinstance(x, (str, float))]
+            _choices = [x for x in choices if isinstance(x, (str, int, float))]
             assert choices == _choices
             return CategoricalDistribution(_choices)
         return IntUniformDistribution(
