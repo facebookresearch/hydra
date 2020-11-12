@@ -32,7 +32,7 @@ class DistributionConfig:
 
     # Discritization step
     # Valid for int or float distribution
-    step: float = 1
+    step: Optional[float] = None
 
 
 @dataclass

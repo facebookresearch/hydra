@@ -41,15 +41,14 @@ def create_optuna_distribution_from_config(config: MutableMapping[str, Any]) -> 
         assert param.high is not None
         if param.log:
             return IntLogUniformDistribution(int(param.low), int(param.high))
-        return IntUniformDistribution(
-            int(param.low), int(param.high), step=int(param.step)
-        )
+        step = int(param.step) if param.step is not None else 1
+        return IntUniformDistribution(int(param.low), int(param.high), step=step)
     if param.type == "float":
         assert param.low is not None
         assert param.high is not None
         if param.log:
             return LogUniformDistribution(param.low, param.high)
-        if param.step != 1:
+        if param.step is not None:
             return DiscreteUniformDistribution(param.low, param.high, param.step)
         return UniformDistribution(param.low, param.high)
     return config
