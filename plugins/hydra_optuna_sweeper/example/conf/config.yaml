@@ -5,7 +5,7 @@ hydra:
   sweeper:
     optuna_config:
       direction: "minimize"
-      study_name: null
+      study_name: sphere
       storage: null
       n_trials: 20
       n_jobs: 1
