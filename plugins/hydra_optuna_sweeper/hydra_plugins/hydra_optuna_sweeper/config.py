@@ -13,11 +13,23 @@ class Direction(Enum):
 
 @dataclass
 class DistributionConfig:
+
+    # Type of distribution. "int", "float" or "categorical"
     type: str
+
+    # Choices of categorical distribution
     choices: Optional[List[Union[str, int, float]]] = None
+
+    # Lower bound of int or float distribution
     low: Optional[float] = None
+
+    # Upper bound of int or float distribution
     high: Optional[float] = None
+
+    # If True, space is converted to the log domain
     log: bool = False
+
+    # Discritization step
     step: float = 1
 
 
