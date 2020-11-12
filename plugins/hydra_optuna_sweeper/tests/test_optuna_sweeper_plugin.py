@@ -85,7 +85,7 @@ def test_create_optuna_distribution_from_override_with_shuffle() -> None:
     parsed = parser.parse_overrides(["key=shuffle(range(1,3))"])[0]
     actual = _impl.create_optuna_distribution_from_override(parsed)
     assert isinstance(actual, CategoricalDistribution)
-    assert list(sorted(actual.choices)) == [1, 2]
+    assert actual.choices == (1, 2) or actual.choices == (2, 1)
 
 
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
