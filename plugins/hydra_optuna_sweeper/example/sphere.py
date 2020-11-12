@@ -5,8 +5,8 @@ from omegaconf import DictConfig
 
 @hydra.main(config_path="conf", config_name="config")
 def sphere(cfg: DictConfig) -> float:
-    x:float = cfg.x
-    y:float = cfg.y
+    x: float = cfg.x
+    y: float = cfg.y
     return x ** 2 + y ** 2
 
 
