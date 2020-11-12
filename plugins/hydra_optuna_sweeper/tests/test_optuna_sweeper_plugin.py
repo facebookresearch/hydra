@@ -29,41 +29,6 @@ def test_discovery() -> None:
     ]
 
 
-def check_categorical_distribution_choices_type(
-    distribution: CategoricalDistribution,
-) -> bool:
-    choices = distribution.choices
-    if all(isinstance(x, float) for x in choices):
-        return True
-    if all(isinstance(x, int) for x in choices):
-        return True
-    if all(isinstance(x, str) for x in choices):
-        return True
-    return False
-
-
-def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
-    assert type(expected) == type(actual)
-    if isinstance(actual, CategoricalDistribution):
-        assert check_categorical_distribution_choices_type(expected)
-        assert check_categorical_distribution_choices_type(actual)
-        assert expected.choices == actual.choices
-    elif isinstance(actual, (IntLogUniformDistribution, LogUniformDistribution)):
-        assert expected.low == actual.low
-        assert expected.high == actual.high
-    elif isinstance(actual, (IntUniformDistribution, UniformDistribution)):
-        assert expected.low == actual.low
-        assert expected.high == actual.high
-        if isinstance(actual, IntUniformDistribution):
-            assert expected.step == actual.step
-    elif isinstance(actual, DiscreteUniformDistribution):
-        assert expected.low == actual.low
-        assert expected.high == actual.high
-        assert expected.q == actual.q
-    else:
-        assert False, f"Unexpected type: {type(actual)}"
-
-
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
@@ -94,7 +59,7 @@ def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
 )
 def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> None:
     actual = _impl.create_optuna_distribution_from_config(input)
-    assert_optuna_distribution_equals(expected, actual)
+    assert expected == actual
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -103,7 +68,6 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=choice(1,2)", CategoricalDistribution([1, 2])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
         ("key=range(1,3)", IntUniformDistribution(1, 3)),
-        ("key=shuffle(range(1,3))", CategoricalDistribution([1, 2])),
         ("key=interval(1, 5)", UniformDistribution(1, 5)),
         ("key=tag(int, interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
@@ -112,8 +76,16 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([input])[0]
-    dist = _impl.create_optuna_distribution_from_override(parsed)
-    assert_optuna_distribution_equals(expected, dist)
+    actual = _impl.create_optuna_distribution_from_override(parsed)
+    assert expected == actual
+
+
+def test_create_optuna_distribution_from_override_with_shuffle() -> None:
+    parser = OverridesParser.create()
+    parsed = parser.parse_overrides(["key=shuffle(range(1,3))"])[0]
+    actual = _impl.create_optuna_distribution_from_override(parsed)
+    assert isinstance(actual, CategoricalDistribution)
+    assert list(sorted(actual.choices)) == [1, 2]
 
 
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
