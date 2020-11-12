@@ -78,6 +78,17 @@ def test_logging(tmpdir: Path) -> None:
     assert result == "[INFO] - Info level message"
 
 
+def test_disabling_logging(tmpdir: Path) -> None:
+    cmd = [
+        "examples/configure_hydra/logging/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra/job_logging=none",
+        "hydra/hydra_logging=none",
+    ]
+    result, _err = get_run_output(cmd)
+    assert result == ""
+
+
 def test_workdir_config(monkeypatch: Any, tmpdir: Path) -> None:
     script = str(Path("examples/configure_hydra/workdir/my_app.py").absolute())
     monkeypatch.chdir(tmpdir)

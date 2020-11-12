@@ -53,11 +53,12 @@ $ python my_app.py hydra.verbose=[__main__,hydra]
 [2019-09-29 13:06:00,896][__main__][DEBUG] - Debug level message
 ```
 
-You can disable the logging output using by setting `hydra/job_logging` to `disabled'   
+You can disable the logging output by setting `hydra/job_logging` to `disabled`   
 ```commandline
 $ python my_app.py hydra/job_logging=disabled
 <NO OUTPUT>
 ```
 
-Logging can be [customized](/configure_hydra/logging.md).
+You can also set `hydra/job_logging=none` and `hydra/hydra_logging=none` if you do not want Hydra to configure the logging.
 
+Logging can be [customized](/configure_hydra/logging.md).
