@@ -36,11 +36,11 @@ The default configuration is [here](https://github.com/facebookresearch/hydra/bl
 You can see an example in this directory. `example/sphere.py` implements a simple benchmark function to be minimized.
 
 ```console
-python example/sphere.py -m 'x=interval(-5.0, 5.0)' 'y=interval(1, 10)'
+python example/sphere.py --multirun 'x=interval(-5.0, 5.0)' 'y=interval(1, 10)'
 ```
 
 By default, interval is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html) or [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) by specifying the tags:
 
 ```console
-python example/sphere.py -m 'x=tag(int, interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
+python example/sphere.py --multirun 'x=tag(int, interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
 ```
