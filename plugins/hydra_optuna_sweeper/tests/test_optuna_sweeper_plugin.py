@@ -29,15 +29,24 @@ def test_discovery() -> None:
     ]
 
 
+def check_categorical_distribution_choices_type(
+    distribution: CategoricalDistribution,
+) -> bool:
+    choices = distribution.choices
+    if all(isinstance(x, float) for x in choices):
+        return True
+    if all(isinstance(x, int) for x in choices):
+        return True
+    if all(isinstance(x, str) for x in choices):
+        return True
+    return False
+
+
 def assert_optuna_distribution_equals(expected: Any, actual: Any) -> None:
     assert type(expected) == type(actual)
     if isinstance(actual, CategoricalDistribution):
-        assert all(isinstance(x, float) for x in actual.choices) or all(
-            isinstance(x, str) for x in actual.choices
-        )
-        assert all(isinstance(x, float) for x in expected.choices) or all(
-            isinstance(x, str) for x in expected.choices
-        )
+        assert check_categorical_distribution_choices_type(expected)
+        assert check_categorical_distribution_choices_type(actual)
         assert expected.choices == actual.choices
     elif isinstance(actual, (IntLogUniformDistribution, LogUniformDistribution)):
         assert expected.low == actual.low
