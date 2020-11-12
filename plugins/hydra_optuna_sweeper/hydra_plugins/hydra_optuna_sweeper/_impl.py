@@ -170,7 +170,7 @@ class OptunaSweeperImpl(Sweeper):
             for trial in trials:
                 for param_name, distribution in search_space.items():
                     trial._suggest(param_name, distribution)
-                
+
                 overrides.append(
                     tuple(f"{name}={val}" for name, val in trial.params.items())
                 )
