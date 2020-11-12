@@ -60,6 +60,5 @@ $ python my_app.py hydra/job_logging=disabled
 ```
 
 You can also set `hydra/job_logging=none` and `hydra/hydra_logging=none` if you do not want Hydra to configure the logging.
-and `hydra/hydra_logging` to `none`
 
 Logging can be [customized](/configure_hydra/logging.md).
