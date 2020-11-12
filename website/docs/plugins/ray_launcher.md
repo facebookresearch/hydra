@@ -132,21 +132,21 @@ sync_down:
 
 ```commandline
 $ python example/simple/my_app.py --multirun task=1,2,3
-[2020-11-02 15:57:01,573][HYDRA] Ray Launcher is launching 3 jobs, 
-[2020-11-02 15:57:01,574][HYDRA]        #0 : task=1
-[2020-11-02 15:57:01,703][HYDRA]        #1 : task=2
-[2020-11-02 15:57:01,836][HYDRA]        #2 : task=3
-[2020-11-02 15:57:01,974][HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpqqg4v4i7/job_spec.pkl
-[2020-11-02 15:57:01,980][HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml.
+[HYDRA] Ray Launcher is launching 3 jobs, 
+[HYDRA]        #0 : task=1
+[HYDRA]        #1 : task=2
+[HYDRA]        #2 : task=3
+[HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpqqg4v4i7/job_spec.pkl
+[HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml.
 ...
-[2020-11-02 16:00:42,336][HYDRA] Output: 2020-11-03 00:00:33,202        INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
-(pid=3374) [2020-11-03 00:00:35,634][__main__][INFO] - Executing task 1
-(pid=3374) [2020-11-03 00:00:36,722][__main__][INFO] - Executing task 2
-(pid=3374) [2020-11-03 00:00:37,808][__main__][INFO] - Executing task 3
+[HYDRA] Output: INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+(pid=3374) [__main__][INFO] - Executing task 1
+(pid=3374) [__main__][INFO] - Executing task 2
+(pid=3374) [__main__][INFO] - Executing task 3
 ...
-[2020-11-02 16:00:44,990][HYDRA] Stopping cluster now. (stop_cluster=true)
-[2020-11-02 16:00:44,990][HYDRA] Deleted the cluster (provider.cache_stopped_nodes=false)
-[2020-11-02 16:00:44,994][HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml']
+[HYDRA] Stopping cluster now. (stop_cluster=true)
+[HYDRA] Deleted the cluster (provider.cache_stopped_nodes=false)
+[HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml']
 
 ```
 </details>
@@ -160,27 +160,27 @@ You can also configure `hydra.launcher.sync_down` to download output from remote
 ```commandline
 
 $  python train.py --multirun random_seed=1,2,3
-[2020-11-02 16:25:41,065][HYDRA] Ray Launcher is launching 3 jobs, 
-[2020-11-02 16:25:41,066][HYDRA]        #0 : random_seed=1
-[2020-11-02 16:25:41,216][HYDRA]        #1 : random_seed=2
-[2020-11-02 16:25:41,367][HYDRA]        #2 : random_seed=3
-[2020-11-02 16:25:41,513][HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmptdkye9of/job_spec.pkl
-[2020-11-02 16:25:41,518][HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml.
-[2020-11-02 16:25:41,524][HYDRA] Running command: ['ray', 'up', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml']
+[HYDRA] Ray Launcher is launching 3 jobs, 
+[HYDRA]        #0 : random_seed=1
+[HYDRA]        #1 : random_seed=2
+[HYDRA]        #2 : random_seed=3
+[HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmptdkye9of/job_spec.pkl
+[HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml.
+[HYDRA] Running command: ['ray', 'up', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml']
 ...
-[2020-11-02 16:33:40,835][HYDRA] Output: 2020-11-03 00:33:35,301        INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
-(pid=1772) [2020-11-03 00:33:37,681][__main__][INFO] - Start training...
-(pid=1772) [2020-11-03 00:33:37,681][model.my_model][INFO] - Init my model
-(pid=1772) [2020-11-03 00:33:37,681][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
-(pid=1772) [2020-11-03 00:33:37,768][__main__][INFO] - Start training...
-(pid=1772) [2020-11-03 00:33:37,768][model.my_model][INFO] - Init my model
-(pid=1772) [2020-11-03 00:33:37,769][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
-(pid=1772) [2020-11-03 00:33:37,853][__main__][INFO] - Start training...
-(pid=1772) [2020-11-03 00:33:37,853][model.my_model][INFO] - Init my model
-(pid=1772) [2020-11-03 00:33:37,854][model.my_model][INFO] - Created dir for checkpoints. dir=checkpoint
+[HYDRA] Output: INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+(pid=1772) [__main__][INFO] - Start training...
+(pid=1772) [INFO] - Init my model
+(pid=1772) [INFO] - Created dir for checkpoints. dir=checkpoint
+(pid=1772) [__main__][INFO] - Start training...
+(pid=1772) [INFO] - Init my model
+(pid=1772) [INFO] - Created dir for checkpoints. dir=checkpoint
+(pid=1772) [__main__][INFO] - Start training...
+(pid=1772) [INFO] - Init my model
+(pid=1772) [INFO] - Created dir for checkpoints. dir=checkpoint
 Loaded cached provider configuration
 ...
-[2020-11-02 16:33:44,469][HYDRA] Output: receiving file list ... done
+[HYDRA] Output: receiving file list ... done
 16-32-25/
 16-32-25/0/
 16-32-25/0/checkpoint/
@@ -192,9 +192,9 @@ Loaded cached provider configuration
 16-32-25/2/checkpoint/
 16-32-25/2/checkpoint/checkpoint_3.pt
 ...
-[2020-11-02 16:33:45,784][HYDRA] Stopping cluster now. (stop_cluster=true)
-[2020-11-02 16:33:45,785][HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
-[2020-11-02 16:33:45,789][HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpy430k4xr.yaml']
+[HYDRA] Stopping cluster now. (stop_cluster=true)
+[HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
+[HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpy430k4xr.yaml']
 ```
 </details>
 
@@ -223,26 +223,25 @@ hydra.launcher.ray_cluster_cfg.provider.cache_stopped_nodes=true
 `ray_local` launcher lets you run `ray` on your local machine. You can easily config how your jobs are executed by changing `ray_local` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray_local.yaml`
  
+ The [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples/simple) starts a new ray cluster. 
 ```commandline
-$ python my_app.py --multirun hydra/launcher=ray_local
-[2020-11-02 16:46:58,267][HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-02/16-46-58
-[2020-11-02 16:46:58,267][HYDRA] Initializing ray with config: {'num_cpus': 1, 'num_gpus': 0}
-2020-11-02 16:46:58,827 INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
-[2020-11-02 16:46:59,888][HYDRA]        #0 : 
-(pid=85035) [2020-11-02 16:47:00,306][__main__][INFO] - Executing task 1
+$ python my_app.py  --multirun hydra/launcher=ray_local
+[HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-16-28
+[HYDRA] Initializing ray with config: {}
+INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8266
+[HYDRA]        #0 : 
+(pid=97801) [__main__][INFO] - Executing task 1
 ```
 
-You can discover the ray local launcher parameters with:
-
-```yaml
-$ python my_app.py hydra/launcher=ray_local --cfg hydra -p hydra.launcher
-# @package hydra.launcher
-_target_: hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher
-ray_init_cfg:
-  num_cpus: 1
-  num_gpus: 0
-ray_remote_cfg:
-  num_cpus: 1
-  num_gpus: 0
-
+You can run the example application on your existing local ray cluster as well by overriding `hydra.launcher.ray_init_cfg.address`:
+```commandline
+$ python my_app.py  --multirun hydra/launcher=ray_local +hydra.launcher.ray_init_cfg='{address: localhost:6379}'
+[HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
+[HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
+INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
+[HYDRA]        #0 : 
+(pid=93358) [__main__][INFO] - Executing task 1
 ```
+
+### Configure `ray.init()` and `ray.remote()`
+Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init_cfg` and `hydra.launcher.ray_remote_cfg`. Check out an [example config](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml).
