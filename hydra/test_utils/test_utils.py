@@ -14,7 +14,7 @@ from contextlib import contextmanager
 from difflib import unified_diff
 from pathlib import Path
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
 
 from omegaconf import Container, DictConfig, OmegaConf
 from typing_extensions import Protocol
@@ -277,10 +277,11 @@ def integration_test(
     filename: str = "task.py",
     env_override: Dict[str, str] = {},
     clean_environment: bool = False,
+    generate_custom_cmd: Callable[..., List[str]] = lambda *args, **kwargs: [],
 ) -> str:
     Path(tmpdir).mkdir(parents=True, exist_ok=True)
     conf_dir = tmpdir / "conf"
-
+    Path(conf_dir).mkdir(parents=True, exist_ok=True)
     if isinstance(expected_outputs, str):
         expected_outputs = [expected_outputs]
     if not isinstance(task_config, Container):
@@ -317,7 +318,7 @@ if __name__ == "__main__":
         config_name = "config_path='conf',config_name='config'"
         init_file = conf_dir / "__init__.py"
         init_file.write_text("", encoding="utf-8")
-    output_file = str(modified_tmpdir / "output.txt")
+    output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
@@ -328,8 +329,14 @@ if __name__ == "__main__":
     )
     task_file = tmpdir / filename
     task_file.write_text(str(code), encoding="utf-8")
+
     cmd = [sys.executable, str(task_file)]
+    new_cmd = generate_custom_cmd(cmd, tmpdir, filename)
+    if new_cmd:
+        cmd = new_cmd
+
     cmd.extend(overrides)
+
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
