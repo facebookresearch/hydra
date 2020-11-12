@@ -57,7 +57,6 @@ def create_optuna_distribution_from_config(config: MutableMapping[str, Any]) -> 
 
 def create_optuna_distribution_from_override(override: Override) -> Any:
     value = override.value()
-    print(value)
     if not override.is_sweep_override():
         return value
 
@@ -153,8 +152,12 @@ class OptunaSweeperImpl(Sweeper):
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
             sampler=sampler,
-            direction=self.optuna_config.direction,
+            direction=self.optuna_config.direction.name,
         )
+        log.info(f"Study name: {self.optuna_config.study_name}")
+        log.info(f"Storage: {self.optuna_config.storage}")
+        log.info(f"Sampler: {self.optuna_config.sampler}")
+        log.info(f"Direction: {self.optuna_config.direction}")
 
         batch_size = self.optuna_config.n_jobs
         n_trials_to_go = self.optuna_config.n_trials
@@ -189,5 +192,3 @@ class OptunaSweeperImpl(Sweeper):
         )
         log.info(f"Best parameters: {best_trial.params}")
         log.info(f"Best value: {best_trial.value}")
-        log.info(f"Storage: {self.optuna_config.storage}")
-        log.info(f"Study name: {study.study_name}")

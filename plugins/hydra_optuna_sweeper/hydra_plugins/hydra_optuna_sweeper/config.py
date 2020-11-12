@@ -1,8 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
 from hydra.core.config_store import ConfigStore
+
+
+class Direction(Enum):
+    minimize = 1
+    maximize = 2
 
 
 @dataclass
@@ -19,8 +25,7 @@ class DistributionConfig:
 class OptunaConfig:
 
     # Direction of optimization
-    # "minimize" or "maximize"
-    direction: str = "minimize"
+    direction: Direction = Direction.minimize
 
     # Storage URL to persist optimization results
     storage: Optional[str] = None
@@ -35,6 +40,8 @@ class OptunaConfig:
     n_jobs: int = 2
 
     # Sampling algorithm such as RandomSampler, TPESampler and CmaEsSampler
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
     sampler: Optional[str] = None
 
     # Random seed of sampler

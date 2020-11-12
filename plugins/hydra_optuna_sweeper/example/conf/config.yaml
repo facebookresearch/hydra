@@ -4,7 +4,7 @@ defaults:
 hydra:
   sweeper:
     optuna_config:
-      direction: "minimize"
+      direction: "maximize"
       study_name: null
       storage: null
       n_trials: 20
