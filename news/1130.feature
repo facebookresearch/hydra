@@ -1,1 +1,1 @@
-This change will allow disabling the configuration of Python's logging subsystem.
+It is now possible to disable Hydra's logging configuration
