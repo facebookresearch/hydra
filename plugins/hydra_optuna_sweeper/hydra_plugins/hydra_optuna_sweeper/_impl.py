@@ -110,6 +110,7 @@ class OptunaSweeperImpl(Sweeper):
                 x: create_optuna_distribution_from_config(y)
                 for x, y in search_space.items()
             }
+        self.job_idx: int = 0
 
     def setup(
         self,
@@ -117,7 +118,7 @@ class OptunaSweeperImpl(Sweeper):
         config_loader: ConfigLoader,
         task_function: TaskFunction,
     ) -> None:
-
+        self.job_idx = 0
         self.config = config
         self.config_loader = config_loader
         self.launcher = Plugins.instance().instantiate_launcher(
@@ -175,7 +176,8 @@ class OptunaSweeperImpl(Sweeper):
                     tuple(f"{name}={val}" for name, val in trial.params.items())
                 )
 
-            returns = self.launcher.launch(overrides, initial_job_idx=trials[0].number)
+            returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
+            self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
                 study._tell(trial, optuna.trial.TrialState.COMPLETE, ret.return_value)
             n_trials_to_go -= batch_size
