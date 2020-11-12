@@ -155,10 +155,10 @@ class OptunaSweeperImpl(Sweeper):
             sampler=sampler,
             direction=self.optuna_config.direction.name,
         )
-        log.info(f"Study name: {self.optuna_config.study_name}")
+        log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
         log.info(f"Sampler: {self.optuna_config.sampler}")
-        log.info(f"Direction: {self.optuna_config.direction}")
+        log.info(f"Direction: {self.optuna_config.direction.name}")
 
         batch_size = self.optuna_config.n_jobs
         n_trials_to_go = self.optuna_config.n_trials
