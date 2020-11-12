@@ -61,7 +61,7 @@ The output is as follows:
 [HYDRA] Best value: 1.1944707871885822
 ```
 
-`range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`]((https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html)) is used instead.
+`range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
 
 ```commandline
 python example/sphere.py --multirun 'x=range(-5.0, 5.0)' 'y=shuffle(range(-5, 5))'
@@ -83,7 +83,7 @@ The output is as follows:
 [HYDRA] Best value: 1
 ```
 
-`choice` is converted to [`CategoricalDistribution`]((https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html)).
+`choice` is converted to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
 
 ```commandline
 python example/sphere.py --multirun 'x=choice(-5.0, 0.0, 5.0)' 'y=choice(0, 1, 2, 3, 4, 5)'
