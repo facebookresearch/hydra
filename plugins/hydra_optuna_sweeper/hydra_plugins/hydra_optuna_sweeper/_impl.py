@@ -17,6 +17,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
+    BaseDistribution,
     CategoricalDistribution,
     DiscreteUniformDistribution,
     IntLogUniformDistribution,
@@ -31,7 +32,9 @@ from .config import DistributionConfig, OptunaConfig
 log = logging.getLogger(__name__)
 
 
-def create_optuna_distribution_from_config(config: MutableMapping[str, Any]) -> Any:
+def create_optuna_distribution_from_config(
+    config: MutableMapping[str, Any]
+) -> BaseDistribution:
     param = DistributionConfig(**config)
     if param.type == "categorical":
         assert param.choices is not None
@@ -51,7 +54,9 @@ def create_optuna_distribution_from_config(config: MutableMapping[str, Any]) -> 
         if param.step is not None:
             return DiscreteUniformDistribution(param.low, param.high, param.step)
         return UniformDistribution(param.low, param.high)
-    return config
+    raise NotImplementedError(
+        "{} is not supported by Optuna sweeper.".format(param.type)
+    )
 
 
 def create_optuna_distribution_from_override(override: Override) -> Any:
