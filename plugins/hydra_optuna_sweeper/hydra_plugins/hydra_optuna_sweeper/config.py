@@ -27,9 +27,11 @@ class DistributionConfig:
     high: Optional[float] = None
 
     # If True, space is converted to the log domain
+    # Valid for int or float distribution
     log: bool = False
 
     # Discritization step
+    # Valid for int or float distribution
     step: float = 1
 
 
