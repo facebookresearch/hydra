@@ -31,7 +31,9 @@ class BaseQueueConf:
 class SlurmQueueConf(BaseQueueConf):
     """Slurm configuration overrides and specific parameters"""
 
-    _target_: str = ("hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher")
+    _target_: str = (
+        "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
+    )
 
     # Params are used to configure sbatch, for more info check:
     # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
@@ -64,15 +66,23 @@ class SlurmQueueConf(BaseQueueConf):
 
 @dataclass
 class LocalQueueConf(BaseQueueConf):
-    _target_: str = ("hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher")
+    _target_: str = (
+        "hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher"
+    )
 
 
 # finally, register two different choices:
 ConfigStore.instance().store(
-    group="hydra/launcher", name="submitit_local", node=LocalQueueConf(), provider="submitit_launcher",
+    group="hydra/launcher",
+    name="submitit_local",
+    node=LocalQueueConf(),
+    provider="submitit_launcher",
 )
 
 
 ConfigStore.instance().store(
-    group="hydra/launcher", name="submitit_slurm", node=SlurmQueueConf(), provider="submitit_launcher",
+    group="hydra/launcher",
+    name="submitit_slurm",
+    node=SlurmQueueConf(),
+    provider="submitit_launcher",
 )
