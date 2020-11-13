@@ -136,6 +136,7 @@ class OptunaSweeperImpl(Sweeper):
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
+        assert self.job_idx is not None
 
         parser = OverridesParser.create()
         parsed = parser.parse_overrides(arguments)
