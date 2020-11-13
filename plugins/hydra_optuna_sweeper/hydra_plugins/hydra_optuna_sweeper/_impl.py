@@ -27,7 +27,7 @@ from optuna.distributions import (
 )
 from optuna.samplers import CmaEsSampler, RandomSampler, TPESampler
 
-from .config import DistributionConfig, OptunaConfig
+from .config import DistributionConfig, DistributionType, OptunaConfig
 
 log = logging.getLogger(__name__)
 
@@ -35,18 +35,21 @@ log = logging.getLogger(__name__)
 def create_optuna_distribution_from_config(
     config: MutableMapping[str, Any]
 ) -> BaseDistribution:
-    param = DistributionConfig(**config)
-    if param.type == "categorical":
+    kwargs = dict(config)
+    if isinstance(config["type"], str):
+        kwargs["type"] = DistributionType[config["type"]]
+    param = DistributionConfig(**kwargs)
+    if param.type == DistributionType.categorical:
         assert param.choices is not None
         return CategoricalDistribution(param.choices)
-    if param.type == "int":
+    if param.type == DistributionType.int:
         assert param.low is not None
         assert param.high is not None
         if param.log:
             return IntLogUniformDistribution(int(param.low), int(param.high))
         step = int(param.step) if param.step is not None else 1
         return IntUniformDistribution(int(param.low), int(param.high), step=step)
-    if param.type == "float":
+    if param.type == DistributionType.float:
         assert param.low is not None
         assert param.high is not None
         if param.log:
@@ -143,10 +146,7 @@ class OptunaSweeperImpl(Sweeper):
                 override.get_key_element()
             ] = create_optuna_distribution_from_override(override)
 
-        if self.optuna_config.sampler:
-            sampler_class = getattr(optuna.samplers, self.optuna_config.sampler)
-        else:
-            sampler_class = TPESampler
+        sampler_class = getattr(optuna.samplers, self.optuna_config.sampler)
 
         if sampler_class in {CmaEsSampler, RandomSampler, TPESampler}:
             sampler = sampler_class(seed=self.optuna_config.seed)

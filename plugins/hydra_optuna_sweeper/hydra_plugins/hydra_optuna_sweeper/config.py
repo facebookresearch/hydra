@@ -6,6 +6,12 @@ from typing import Any, Dict, List, Optional, Union
 from hydra.core.config_store import ConfigStore
 
 
+class DistributionType(Enum):
+    int = 1
+    float = 2
+    categorical = 3
+
+
 class Direction(Enum):
     minimize = 1
     maximize = 2
@@ -15,7 +21,7 @@ class Direction(Enum):
 class DistributionConfig:
 
     # Type of distribution. "int", "float" or "categorical"
-    type: str
+    type: DistributionType
 
     # Choices of categorical distribution
     choices: Optional[List[Union[str, int, float]]] = None
@@ -59,7 +65,7 @@ class OptunaConfig:
     # Sampling algorithm such as RandomSampler, TPESampler and CmaEsSampler
     # Please refer to the reference for further details
     # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: Optional[str] = None
+    sampler: str = "TPESampler"
 
     # Random seed of sampler
     seed: Optional[int] = None
