@@ -608,9 +608,9 @@ class IntegrationTestSuite:
         assert isinstance(cfg, DictConfig)
         test_app_dir = self.get_test_app_working_dir()
         expected_outputs = (
-            str(test_app_dir / expected_dir)
+            str(self.get_test_scratch_dir(test_app_dir) / expected_dir)
             if test_app_dir
-            else str(tmpdir / expected_dir)
+            else str(self.get_test_scratch_dir(tmpdir) / expected_dir)
         )
 
         integration_test(
@@ -636,7 +636,7 @@ class IntegrationTestSuite:
             task_config=cfg,
             overrides=overrides,
             prints="hydra.utils.get_original_cwd()",
-            expected_outputs=os.path.realpath(str(tmpdir)),
+            expected_outputs=os.path.realpath(str(self.get_test_scratch_dir(tmpdir))),
             generate_custom_cmd=self.generate_custom_cmd(),
         )
 
@@ -665,8 +665,8 @@ class IntegrationTestSuite:
         working_dir = test_app_dir if test_app_dir else tmpdir
 
         outputs = [
-            os.path.realpath(str(tmpdir / "foo/bar")),
-            str(working_dir / expected_dir),
+            os.path.realpath(str(self.get_test_scratch_dir(tmpdir) / "foo/bar")),
+            str(self.get_test_scratch_dir(working_dir) / expected_dir),
         ]
         integration_test(
             tmpdir=self.get_test_scratch_dir(tmpdir),

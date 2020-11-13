@@ -277,7 +277,7 @@ def integration_test(
     filename: str = "task.py",
     env_override: Dict[str, str] = {},
     clean_environment: bool = False,
-    generate_custom_cmd: Callable[..., List[str]] = lambda *args, **kwargs: [],
+    generate_custom_cmd: Callable[..., List[str]] = lambda cmd, *args, **kwargs: cmd,
 ) -> str:
     conf_dir = tmpdir / "conf"
     Path(conf_dir).mkdir(parents=True, exist_ok=True)
@@ -309,7 +309,6 @@ if __name__ == "__main__":
     print_code = _get_statements(indent="        ", statements=prints)
     prolog_code = _get_statements(indent="", statements=prolog)
 
-    config_name = ""
     if task_config is not None:
         cfg_file = conf_dir / "config.yaml"
         with open(str(cfg_file), "w") as f:
@@ -329,10 +328,7 @@ if __name__ == "__main__":
     task_file.write_text(str(code), encoding="utf-8")
 
     cmd = [sys.executable, str(task_file)]
-    new_cmd = generate_custom_cmd(cmd, tmpdir, filename)
-    if new_cmd:
-        cmd = new_cmd
-
+    cmd = generate_custom_cmd(cmd, tmpdir, filename)
     cmd.extend(overrides)
     orig_dir = os.getcwd()
     try:
