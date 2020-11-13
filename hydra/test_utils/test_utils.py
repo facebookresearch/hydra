@@ -279,7 +279,6 @@ def integration_test(
     clean_environment: bool = False,
     generate_custom_cmd: Callable[..., List[str]] = lambda *args, **kwargs: [],
 ) -> str:
-    Path(tmpdir).mkdir(parents=True, exist_ok=True)
     conf_dir = tmpdir / "conf"
     Path(conf_dir).mkdir(parents=True, exist_ok=True)
     if isinstance(expected_outputs, str):
@@ -297,7 +296,7 @@ from hydra.core.hydra_config import HydraConfig
 
 $PROLOG
 
-@hydra.main($CONFIG_NAME)
+@hydra.main(config_path='conf',config_name='config')
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
 $PRINTS
@@ -314,8 +313,8 @@ if __name__ == "__main__":
     if task_config is not None:
         cfg_file = conf_dir / "config.yaml"
         with open(str(cfg_file), "w") as f:
+            f.write("# @package _global_\n")
             OmegaConf.save(task_config, f)
-        config_name = "config_path='conf',config_name='config'"
         init_file = conf_dir / "__init__.py"
         init_file.write_text("", encoding="utf-8")
     output_file = str(tmpdir / "output.txt")
@@ -323,7 +322,6 @@ if __name__ == "__main__":
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
         PRINTS=print_code,
-        CONFIG_NAME=config_name,
         OUTPUT_FILE=output_file,
         PROLOG=prolog_code,
     )
@@ -336,7 +334,6 @@ if __name__ == "__main__":
         cmd = new_cmd
 
     cmd.extend(overrides)
-
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
