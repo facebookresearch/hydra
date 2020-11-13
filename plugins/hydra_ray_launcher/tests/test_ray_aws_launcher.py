@@ -9,8 +9,10 @@ import tempfile
 from pathlib import Path
 from typing import Generator, List, Optional
 
+import boto3  # type: ignore
 import pkg_resources
 import pytest
+from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -43,10 +45,22 @@ win_msg = "Ray doesn't support Windows."
 cur_py_version = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
-ami = os.environ.get("AWS_RAY_AMI", "")
-security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "")
-subnet_id = os.environ.get("AWS_RAY_SUBNET", "")
-instance_role = os.environ.get("INSTANCE_ROLE_ARN", "")
+
+aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
+try:
+    ec2 = boto3.client("ec2")
+    ec2.describe_regions()
+    aws_not_configured = False
+except (NoCredentialsError, NoRegionError):
+    aws_not_configured = True
+
+
+ami = os.environ.get("AWS_RAY_AMI", "ami-0bb5a2431d0b0dcea")
+security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
+subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
+instance_role = os.environ.get(
+    "INSTANCE_ROLE_ARN", "arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1"
+)
 
 assert (
     ami != "" and security_group_id != "" and subnet_id != "" and instance_role != ""
@@ -237,6 +251,7 @@ def manage_cluster() -> Generator[None, None, None]:
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
+@pytest.mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
 @pytest.mark.usefixtures("manage_cluster")
 @pytest.mark.parametrize(
     "launcher_name, overrides, tmpdir",
@@ -263,6 +278,7 @@ class TestRayAWSLauncher(LauncherTestSuite):
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
+@pytest.mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
 @pytest.mark.usefixtures("manage_cluster")
 @pytest.mark.parametrize(
     "tmpdir,  task_launcher_cfg, extra_flags",
