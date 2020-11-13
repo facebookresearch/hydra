@@ -46,14 +46,13 @@ cur_py_version = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
 
-aws_not_configured = True
-aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
 try:
     ec2 = boto3.client("ec2")
     ec2.describe_regions()
     aws_not_configured = False
 except (NoCredentialsError, NoRegionError):
-    pass
+    aws_not_configured = True
+    aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
 
 
 ami = os.environ.get("AWS_RAY_AMI", "ami-0bb5a2431d0b0dcea")
