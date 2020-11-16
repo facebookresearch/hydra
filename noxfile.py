@@ -239,7 +239,6 @@ def lint(session):
         "examples/patterns",
         "examples/tutorials/basic/your_first_hydra_app",
         "examples/tutorials/basic/running_your_hydra_app",
-        "examples/tutorials/structured_configs/",
     ]
     for edir in example_dirs:
         dirs = find_dirs(path=edir)
