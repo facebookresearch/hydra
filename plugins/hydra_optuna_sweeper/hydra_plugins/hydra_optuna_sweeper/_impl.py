@@ -18,6 +18,7 @@ from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
+    CategoricalChoiceType,
     CategoricalDistribution,
     DiscreteUniformDistribution,
     IntLogUniformDistribution,
@@ -67,24 +68,24 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if not override.is_sweep_override():
         return value
 
+    choices: List[CategoricalChoiceType] = []
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
-        choices = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
-        _choices = [x for x in choices if isinstance(x, (str, int, float))]
-        assert choices == _choices
-        return CategoricalDistribution(_choices)
+        for x in override.sweep_iterator(transformer=Transformer.encode):
+            # `x` can be Union[str, float, List[Any], Dict[str, Any]]
+            assert isinstance(x, (str, int, float))
+            choices.append(x)
+        return CategoricalDistribution(choices)
 
     if override.is_range_sweep():
         assert isinstance(value, RangeSweep)
         assert value.start is not None
         assert value.stop is not None
         if value.shuffle:
-            choices = [
-                x for x in override.sweep_iterator(transformer=Transformer.encode)
-            ]
-            _choices = [x for x in choices if isinstance(x, (str, int, float))]
-            assert choices == _choices
-            return CategoricalDistribution(_choices)
+            for x in override.sweep_iterator(transformer=Transformer.encode):
+                assert isinstance(x, (str, int, float))
+                choices.append(x)
+            return CategoricalDistribution(choices)
         return IntUniformDistribution(
             int(value.start), int(value.stop), step=int(value.step)
         )
