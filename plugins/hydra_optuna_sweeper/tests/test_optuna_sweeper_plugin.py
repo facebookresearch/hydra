@@ -37,9 +37,7 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
 
     assert isinstance(actual, CategoricalDistribution)
     # shuffle() will randomize the order of items in choices.
-    assert list(sorted(actual.choices, key=lambda t: str(t))) == list(
-        sorted(actual.choices, key=lambda t: str(t))
-    )
+    assert set(expected.choices) == set(actual.choices)
 
 
 @pytest.mark.parametrize(  # type: ignore
