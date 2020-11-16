@@ -247,5 +247,6 @@ def _flush_loggers() -> None:
     for h_weak_ref in logging._handlerList:  # type: ignore
         try:
             h_weak_ref().flush()
-        except ValueError:
+        except Exception:
+            # ignore exceptions thrown during flushing
             pass
