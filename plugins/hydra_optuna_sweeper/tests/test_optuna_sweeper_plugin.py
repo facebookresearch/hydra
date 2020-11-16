@@ -114,7 +114,7 @@ def test_optuna_example(tmpdir: Path) -> None:
         "hydra.sweeper.optuna_config.n_trials=20",
         "hydra.sweeper.optuna_config.n_jobs=8",
         "hydra.sweeper.optuna_config.sampler=RandomSampler",
-        "hydra.sweeper.optuna_config.seed=1",
+        "hydra.sweeper.optuna_config.seed=123",
     ]
     get_run_output(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
@@ -122,4 +122,4 @@ def test_optuna_example(tmpdir: Path) -> None:
     assert returns.name == "optuna"
     assert returns["best_params"]["x"] == 0
     assert returns["best_params"]["y"] == 0
-    assert returns["best_value"] == 123
+    assert returns["best_value"] == 0
