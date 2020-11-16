@@ -1,0 +1,8 @@
+master_addr: "localhost"
+master_port: "12345"
+backend: "gloo"
+rank: 0
+world_size: 4
+
+defaults:
+    - hydra/launcher: joblib
