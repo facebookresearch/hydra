@@ -2,12 +2,12 @@ import logging
 
 from omegaconf import DictConfig
 
-from hydra.callbacks.callbacks import Callbacks
+from hydra.callback.callback import Callback
 
 log = logging.getLogger(__name__)
 
 
-class ExampleCallbacks(Callbacks):
+class ExampleCallback(Callback):
     def pre_run(self, cfg: DictConfig) -> None:
         log.info("ExampleCallbacks pre_run called")
 

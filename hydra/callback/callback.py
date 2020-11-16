@@ -4,18 +4,12 @@ from typing import Optional
 from omegaconf import DictConfig
 
 
-class Callbacks:
+class Callback:
     """
     Provides callbacks through different life cycle events of an Hydra application.
     """
 
     config: Optional[DictConfig]
-
-    def setup(
-        self,
-        config: DictConfig,
-    ) -> None:
-        self.config = config
 
     def pre_run(self, cfg: DictConfig) -> None:
         ...

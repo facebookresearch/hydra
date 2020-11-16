@@ -1,0 +1,9 @@
+hydra:
+  callbacks:
+    example:
+      _target_: example_callback.ExampleCallback
+    mlflow:
+      _target_: hydra.callback.mlflow.MLflow
+      tracking_uri: file://${hydra:runtime.cwd}/.mlflow
+
+foo: bar

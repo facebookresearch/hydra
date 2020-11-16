@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast, List
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra.callbacks.callbacks import Callbacks
+from hydra.callback.callback import Callback
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import TaskFunction
@@ -80,7 +80,7 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
-def get_callbacks(cfg: DictConfig) -> List[Callbacks]:
+def get_callbacks(cfg: DictConfig) -> List[Callback]:
     from hydra.utils import instantiate
 
     callbacks = []
