@@ -45,7 +45,9 @@
 
 **Hydra 1.0** is the stable version of Hydra.
 - [Documentation](https://hydra.cc/docs/intro)
-- Installation : `pip install hydra-core --upgrade`
+- Installation pip: `pip install hydra-core --upgrade`
+- Installation conda: `conda install -c conda-forge hydra-core`
+
 
 ### License
 Hydra is licensed under [MIT License](LICENSE).
