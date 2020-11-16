@@ -9,6 +9,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
+    BaseDistribution,
     CategoricalDistribution,
     DiscreteUniformDistribution,
     IntLogUniformDistribution,
@@ -27,6 +28,18 @@ def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
+
+
+def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> None:
+    if not isinstance(expected, CategoricalDistribution):
+        assert expected == actual
+        return
+
+    assert isinstance(actual, CategoricalDistribution)
+    # shuffle() will randomize the order of items in choices.
+    assert list(sorted(actual.choices, key=lambda t: str(t))) == list(
+        sorted(actual.choices, key=lambda t: str(t))
+    )
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -59,7 +72,7 @@ def test_discovery() -> None:
 )
 def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> None:
     actual = _impl.create_optuna_distribution_from_config(input)
-    assert expected == actual
+    check_distribution(expected, actual)
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -67,6 +80,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
     [
         ("key=choice(1,2)", CategoricalDistribution([1, 2])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
+        ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
         ("key=range(1,3)", IntUniformDistribution(1, 3)),
         ("key=interval(1, 5)", UniformDistribution(1, 5)),
         ("key=tag(int, interval(1, 5))", IntUniformDistribution(1, 5)),
@@ -77,15 +91,7 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     parser = OverridesParser.create()
     parsed = parser.parse_overrides([input])[0]
     actual = _impl.create_optuna_distribution_from_override(parsed)
-    assert expected == actual
-
-
-def test_create_optuna_distribution_from_override_with_shuffle() -> None:
-    parser = OverridesParser.create()
-    parsed = parser.parse_overrides(["key=shuffle(range(1,3))"])[0]
-    actual = _impl.create_optuna_distribution_from_override(parsed)
-    assert isinstance(actual, CategoricalDistribution)
-    assert actual.choices == (1, 2) or actual.choices == (2, 1)
+    check_distribution(expected, actual)
 
 
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
