@@ -1,14 +1,12 @@
-import multiprocessing as mp
 import os
-import time
 
 import hydra
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 import torch
 import torch.distributed as dist
 
 
-def setup(master_addr, master_port, rank, world_size, backend):
+def setup(master_addr: str, master_port: str, rank: int, world_size: int, backend: str):
     """Initializes distributed process group.
 
     Arguments:
@@ -22,6 +20,7 @@ def setup(master_addr, master_port, rank, world_size, backend):
 
 
 def cleanup():
+    """Cleans up distributed backend resources."""
     dist.destroy_process_group()
 
 
