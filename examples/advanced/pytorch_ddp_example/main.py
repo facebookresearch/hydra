@@ -1,9 +1,10 @@
 import os
 
-import hydra
-from omegaconf import DictConfig
 import torch
 import torch.distributed as dist
+from omegaconf import DictConfig
+
+import hydra
 
 
 def setup(master_addr: str, master_port: str, rank: int, world_size: int, backend: str):
