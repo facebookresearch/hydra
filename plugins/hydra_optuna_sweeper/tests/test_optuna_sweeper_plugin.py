@@ -109,14 +109,17 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 def test_optuna_example(tmpdir: Path) -> None:
     cmd = [
         "example/sphere.py",
-        "-m",
+        "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.sweeper.optuna_config.n_trials=20",
         "hydra.sweeper.optuna_config.n_jobs=8",
+        "hydra.sweeper.optuna_config.sampler=RandomSampler",
+        "hydra.sweeper.optuna_config.seed=1",
     ]
     get_run_output(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
-    assert "best_params" in returns
-    assert "best_value" in returns
+    assert returns["best_params"]["x"] == 0
+    assert returns["best_params"]["y"] == 0
+    assert returns["best_value"] == 123
