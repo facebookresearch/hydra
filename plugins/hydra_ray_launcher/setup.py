@@ -19,6 +19,7 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: MacOS",
             "Operating System :: POSIX :: Linux",
+            "Development Status :: 4 - Beta",
         ],
         install_requires=[
             "boto3==1.15.6",
