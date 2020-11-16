@@ -72,8 +72,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
         for x in override.sweep_iterator(transformer=Transformer.encode):
-            # x can be Union[str, float, List[Any], Dict[str, Any]]
-            assert isinstance(x, (str, int, float))
+            assert isinstance(
+                x, (str, int, float)
+            ), f"A choice sweep expects str, int, or float type. Got {type(x)}."
             choices.append(x)
         return CategoricalDistribution(choices)
 
@@ -83,7 +84,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.stop is not None
         if value.shuffle:
             for x in override.sweep_iterator(transformer=Transformer.encode):
-                assert isinstance(x, (str, int, float))
+                assert isinstance(
+                    x, (str, int, float)
+                ), f"A choice sweep expects str, int, or float type. Got {type(x)}."
                 choices.append(x)
             return CategoricalDistribution(choices)
         return IntUniformDistribution(
