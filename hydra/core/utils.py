@@ -245,4 +245,8 @@ def _flush_loggers() -> None:
     # Python logging does not have an official API to flush all loggers.
     # This will have to do.
     for h_weak_ref in logging._handlerList:  # type: ignore
-        h_weak_ref().flush()
+        try:
+            h_weak_ref().flush()
+        except Exception:
+            # ignore exceptions thrown during flushing
+            pass
