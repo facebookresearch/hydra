@@ -60,6 +60,8 @@ class SlurmQueueConf(BaseQueueConf):
     # Useful to add parameters which are not currently available in the plugin.
     # Eg: {"mail-user": "blublu@fb.com", "mail-type": "BEGIN"}
     additional_parameters: Dict[str, Any] = field(default_factory=dict)
+    # Maximum number of jobs running in parallel
+    array_parallelism: int = 256
 
 
 @dataclass
