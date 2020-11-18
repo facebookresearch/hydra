@@ -325,11 +325,11 @@ if __name__ == "__main__":
     task_file.write_text(str(code), encoding="utf-8")
 
     cmd = [sys.executable, str(task_file)]
-    cmd = generate_custom_cmd(cmd, tmpdir, filename)
-    cmd.extend(overrides)
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
+        cmd = generate_custom_cmd(cmd, filename)
+        cmd.extend(overrides)
         if clean_environment:
             modified_env = {}
         else:

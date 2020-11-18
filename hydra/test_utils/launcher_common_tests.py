@@ -444,10 +444,9 @@ class IntegrationTestSuite:
         Useful if the tests are not kicked off by python
         """
 
-        def fun(cmd: List[str], tmpdir: Path, filename: str) -> List[str]:
+        def fun(cmd: List[str], filename: str) -> List[str]:
             """
             param cmd: old python commands in list of strings
-            param tmpdir: temporary working dir
             param filename: file name to be executed as main hydra module
             return: new commands to be executed in list of strings
             """
