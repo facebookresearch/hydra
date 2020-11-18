@@ -14,7 +14,7 @@ from contextlib import contextmanager
 from difflib import unified_diff
 from pathlib import Path
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
 
 from omegaconf import Container, DictConfig, OmegaConf
 from typing_extensions import Protocol
@@ -277,6 +277,7 @@ def integration_test(
     filename: str = "task.py",
     env_override: Dict[str, str] = {},
     clean_environment: bool = False,
+    generate_custom_cmd: Callable[..., List[str]] = lambda cmd, *args, **kwargs: cmd,
 ) -> str:
     Path(tmpdir).mkdir(parents=True, exist_ok=True)
     if isinstance(expected_outputs, str):
@@ -294,7 +295,7 @@ from hydra.core.hydra_config import HydraConfig
 
 $PROLOG
 
-@hydra.main($CONFIG_NAME)
+@hydra.main(config_name='config')
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
 $PRINTS
@@ -307,29 +308,28 @@ if __name__ == "__main__":
     print_code = _get_statements(indent="        ", statements=prints)
     prolog_code = _get_statements(indent="", statements=prolog)
 
-    config_name = ""
     if task_config is not None:
         cfg_file = tmpdir / "config.yaml"
         with open(str(cfg_file), "w") as f:
             f.write("# @package _global_\n")
             OmegaConf.save(task_config, f)
-        config_name = "config_name='config'"
     output_file = str(tmpdir / "output.txt")
     # replace Windows path separator \ with an escaped version \\
     output_file = output_file.replace("\\", "\\\\")
     code = s.substitute(
         PRINTS=print_code,
-        CONFIG_NAME=config_name,
         OUTPUT_FILE=output_file,
         PROLOG=prolog_code,
     )
     task_file = tmpdir / filename
     task_file.write_text(str(code), encoding="utf-8")
+
     cmd = [sys.executable, str(task_file)]
-    cmd.extend(overrides)
     orig_dir = os.getcwd()
     try:
         os.chdir(str(tmpdir))
+        cmd = generate_custom_cmd(cmd, filename)
+        cmd.extend(overrides)
         if clean_environment:
             modified_env = {}
         else:
