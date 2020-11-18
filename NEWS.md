@@ -1,3 +1,17 @@
+1.0.4 (2020-11-17)
+==================
+
+### Bug Fixes
+
+- Hydra no longer errorenously changes the USER environment variable in pytest unit tests once installed ([#1059](https://github.com/facebookresearch/hydra/issues/1059))
+- Allow @ symbol in unquoted values in overrides ([#1074](https://github.com/facebookresearch/hydra/issues/1074))
+- Fix a bug where Structured Config has a field like 'list : Optional[List[int]] = None` ([#1117](https://github.com/facebookresearch/hydra/issues/1117))
+### Plugins
+- Switch Ax Sweeper plugin to use new Hydra command line syntax
+- Switch Nevergrad Sweeper plugin to use new Hydra command line syntax
+- Revert the use of "_" to separate the path element in keys for the Ax sweeper plugin.
+
+
 1.0.3 (2020-09-22)
 ==================
 
