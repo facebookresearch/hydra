@@ -13,6 +13,13 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra import TaskFunction
 from hydra.errors import HydraException
+
+# needed until fbcode supports pytest plugins.
+from hydra.extra.pytest_plugin import (  # type: ignore  # noqa: F401
+    hydra_restore_singletons,
+    hydra_sweep_runner,
+    hydra_task_runner,
+)
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     integration_test,
@@ -30,7 +37,7 @@ class LauncherTestSuite:
 
     def test_sweep_1_job(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -44,7 +51,7 @@ class LauncherTestSuite:
 
     def test_sweep_2_jobs(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -58,7 +65,7 @@ class LauncherTestSuite:
 
     def test_not_sweeping_hydra_overrides(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -87,7 +94,7 @@ class LauncherTestSuite:
 
     def test_sweep_1_job_strict(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -101,7 +108,7 @@ class LauncherTestSuite:
 
     def test_sweep_1_job_strict_and_bad_key(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -118,7 +125,7 @@ class LauncherTestSuite:
 
     def test_sweep_2_optimizers(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -132,7 +139,7 @@ class LauncherTestSuite:
 
     def test_sweep_over_unspecified_mandatory_default(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -160,7 +167,7 @@ class LauncherTestSuite:
 
     def test_sweep_and_override(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -210,7 +217,7 @@ class LauncherTestSuite:
 
     def test_sweep_with_custom_resolver(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -246,7 +253,7 @@ class LauncherTestSuite:
 class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
         self,
-        hydra_sweep_runner: TSweepRunner,
+        hydra_sweep_runner: TSweepRunner,  # noqa: F811
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
@@ -308,7 +315,7 @@ class BatchedSweeperTestSuite:
 
 
 def sweep_1_job(
-    hydra_sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,  # noqa: F811
     overrides: List[str],
     task_function: Optional[TaskFunction],
     temp_dir: Path,
@@ -339,7 +346,7 @@ def sweep_1_job(
 
 
 def sweep_2_jobs(
-    hydra_sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,  # noqa: F811
     overrides: List[str],
     task_function: Optional[TaskFunction],
     temp_dir: Path,
@@ -388,7 +395,7 @@ def sweep_2_jobs(
 
 
 def sweep_two_config_groups(
-    hydra_sweep_runner: TSweepRunner,
+    hydra_sweep_runner: TSweepRunner,  # noqa: F811
     overrides: List[str],
     task_function: Optional[TaskFunction],
     temp_dir: Path,
