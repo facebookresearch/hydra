@@ -431,6 +431,29 @@ class IntegrationTestSuite:
         """
         return None
 
+    def get_test_scratch_dir(self, tmpdir: Path) -> Path:
+        """
+        By default test applications will use tmpdir provided by the pytest.
+        This can be customized by applications.
+        """
+        return tmpdir
+
+    def generate_custom_cmd(self) -> Callable[..., List[str]]:
+        """
+        By default this does nothing, but it allows custom execution commands.
+        Useful if the tests are not kicked off by python
+        """
+
+        def fun(cmd: List[str], filename: str) -> List[str]:
+            """
+            param cmd: old python commands in list of strings
+            param filename: file name to be executed as main hydra module
+            return: new commands to be executed in list of strings
+            """
+            return cmd
+
+        return fun
+
     @pytest.mark.parametrize(  # type: ignore
         "task_config, overrides, filename, expected_name",
         [
@@ -475,12 +498,13 @@ class IntegrationTestSuite:
         assert isinstance(cfg, DictConfig)
 
         integration_test(
-            tmpdir=tmpdir,
+            tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
             overrides=overrides,
             prints="HydraConfig.get().job.name",
             expected_outputs=expected_name,
             filename=filename,
+            generate_custom_cmd=self.generate_custom_cmd(),
         )
 
     @pytest.mark.parametrize(  # type: ignore
@@ -583,16 +607,18 @@ class IntegrationTestSuite:
         assert isinstance(cfg, DictConfig)
         test_app_dir = self.get_test_app_working_dir()
         expected_outputs = (
-            str(test_app_dir / expected_dir)
+            str(self.get_test_scratch_dir(test_app_dir) / expected_dir)
             if test_app_dir
-            else str(tmpdir / expected_dir)
+            else str(self.get_test_scratch_dir(tmpdir) / expected_dir)
         )
+
         integration_test(
-            tmpdir=tmpdir,
+            tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
             overrides=overrides,
             prints="os.getcwd()",
             expected_outputs=expected_outputs,
+            generate_custom_cmd=self.generate_custom_cmd(),
         )
 
     def test_get_orig_dir_multirun(
@@ -603,12 +629,14 @@ class IntegrationTestSuite:
         task_config = OmegaConf.create()
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
+
         integration_test(
-            tmpdir=tmpdir,
+            tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
             overrides=overrides,
             prints="hydra.utils.get_original_cwd()",
-            expected_outputs=os.path.realpath(str(tmpdir)),
+            expected_outputs=os.path.realpath(str(self.get_test_scratch_dir(tmpdir))),
+            generate_custom_cmd=self.generate_custom_cmd(),
         )
 
     def test_to_absolute_path_multirun(
@@ -625,23 +653,25 @@ class IntegrationTestSuite:
         assert isinstance(cfg, DictConfig)
         path = str(Path("/foo/bar").absolute())
         integration_test(
-            tmpdir=tmpdir,
+            tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
             overrides=overrides,
             prints="hydra.utils.to_absolute_path('/foo/bar')",
             expected_outputs=path,
+            generate_custom_cmd=self.generate_custom_cmd(),
         )
         test_app_dir = self.get_test_app_working_dir()
         working_dir = test_app_dir if test_app_dir else tmpdir
 
         outputs = [
-            os.path.realpath(str(tmpdir / "foo/bar")),
-            str(working_dir / expected_dir),
+            os.path.realpath(str(self.get_test_scratch_dir(tmpdir) / "foo/bar")),
+            str(self.get_test_scratch_dir(working_dir) / expected_dir),
         ]
         integration_test(
-            tmpdir=tmpdir,
+            tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
             overrides=overrides,
             prints=["hydra.utils.to_absolute_path('foo/bar')", "os.getcwd()"],
             expected_outputs=outputs,
+            generate_custom_cmd=self.generate_custom_cmd(),
         )
