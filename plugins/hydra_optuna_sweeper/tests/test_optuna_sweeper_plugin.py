@@ -84,6 +84,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=interval(1, 5)", UniformDistribution(1, 5)),
         ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
+        ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
