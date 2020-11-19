@@ -254,8 +254,7 @@ workflows:
       - test_win:
           matrix:
             parameters:
-#              py_version: ["3.6", "3.7", "3.8"]
-              py_version: ["3.6"]
+              py_version: ["3.6", "3.7", "3.8"]
 
 
   plugin_tests:
