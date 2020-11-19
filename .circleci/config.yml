@@ -154,6 +154,7 @@ jobs:
             set PYTHONIOENCODING="utf-8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
+            exit
   trigger_plugin_piplines:
     docker:
       - image: circleci/python:3.8
@@ -224,6 +225,7 @@ jobs:
               set PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
+              exit
   # Misc
   coverage:
     docker:
