@@ -88,6 +88,7 @@ commands:
           name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
+            conda init bash
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
