@@ -96,6 +96,9 @@ commands:
             eval "$(conda shell.bash hook)"
             conda activate hydra
             pip install nox dataclasses --progress-bar off
+      - store_artifacts:
+          path: C:\ProgramData\chocolatey\logs
+          destination: chocolatey_logs
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
