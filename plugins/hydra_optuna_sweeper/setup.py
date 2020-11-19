@@ -31,9 +31,8 @@ setup(
     ],
     install_requires=[
         "hydra-core",
-        # TODO(toshihikoyanse): Use the release version after merging the following PR.
-        # https://github.com/optuna/optuna/pull/2013
-        "optuna @ git+https://github.com/toshihikoyanase/optuna.git@explicit-reexport",
+        # TODO(toshihikoyanse): Use the release version after releasing optuna==v2.4.0.
+        "optuna @ git+https://github.com/optuna/optuna.git",
     ],
     include_package_data=True,
 )
