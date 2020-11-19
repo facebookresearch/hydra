@@ -24,7 +24,8 @@ class DistributionConfig:
     type: DistributionType
 
     # Choices of categorical distribution
-    choices: Optional[List[Union[str, int, float]]] = None
+    # List element type should be Union[str, int, float, bool]
+    choices: Optional[List[Any]] = None
 
     # Lower bound of int or float distribution
     low: Optional[float] = None
