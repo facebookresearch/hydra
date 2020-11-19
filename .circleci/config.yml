@@ -140,8 +140,9 @@ jobs:
     parameters:
       py_version:
         type: string
-    executor: win/default
-    shell: cmd.exe
+    executor:
+      name: win/default
+      shell: cmd.exe
     steps:
       - win:
           py_version: << parameters.py_version >>
@@ -209,8 +210,9 @@ jobs:
         type: string
       test_plugin:
         type: string
-    executor: win/default
-    shell: cmd.exe
+    executor:
+      name: win/default
+      shell: cmd.exe
     steps:
       - win:
           py_version: << parameters.py_version >>
