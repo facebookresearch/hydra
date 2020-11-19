@@ -58,9 +58,7 @@ def create_optuna_distribution_from_config(
         if param.step is not None:
             return DiscreteUniformDistribution(param.low, param.high, param.step)
         return UniformDistribution(param.low, param.high)
-    raise NotImplementedError(
-        "{} is not supported by Optuna sweeper.".format(param.type)
-    )
+    raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
 def create_optuna_distribution_from_override(override: Override) -> Any:
@@ -106,7 +104,7 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
                 return IntUniformDistribution(value.start, value.end)
             return UniformDistribution(value.start, value.end)
 
-    raise NotImplementedError("{} is not supported by Optuna sweeper.".format(override))
+    raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
 
 class OptunaSweeperImpl(Sweeper):
