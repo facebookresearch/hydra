@@ -150,11 +150,10 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-            $env:PYTHONIOENCODING="utf_8"
+            set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
+            set PYTHONIOENCODING="utf-8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            exit $LASTEXITCODE
   trigger_plugin_piplines:
     docker:
       - image: circleci/python:3.8
@@ -220,12 +219,11 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
-              $env:PYTHONIOENCODING="utf_8"
-              $env:PLUGINS="<< parameters.test_plugin >>"
+              set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
+              set PYTHONIOENCODING="utf-8"
+              set PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
-              exit $LASTEXITCODE
   # Misc
   coverage:
     docker:
