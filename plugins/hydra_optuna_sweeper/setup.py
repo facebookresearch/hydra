@@ -29,10 +29,6 @@ setup(
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
-    install_requires=[
-        "hydra-core",
-        # TODO(toshihikoyanse): Use the release version after releasing optuna==v2.4.0.
-        "optuna @ git+https://github.com/optuna/optuna.git",
-    ],
+    install_requires=["hydra-core", "optuna"],
     include_package_data=True,
 )
