@@ -151,8 +151,8 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
-            set PYTHONIOENCODING="utf-8"
+            export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
+            export PYTHONIOENCODING="utf-8"
             eval "$(conda shell.bash hook)"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -222,9 +222,9 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
-              set PYTHONIOENCODING="utf-8"
-              set PLUGINS="<< parameters.test_plugin >>"
+              export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
+              export PYTHONIOENCODING="utf-8"
+              export PLUGINS="<< parameters.test_plugin >>"
               eval "$(conda shell.bash hook)"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
