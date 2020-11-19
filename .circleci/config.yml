@@ -142,7 +142,7 @@ jobs:
         type: string
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
     steps:
       - win:
           py_version: << parameters.py_version >>
@@ -212,7 +212,7 @@ jobs:
         type: string
     executor:
       name: win/default
-      shell: cmd.exe
+      shell: bash.exe
     steps:
       - win:
           py_version: << parameters.py_version >>
