@@ -88,17 +88,15 @@ commands:
           name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
+            $progressPreference = 'silentlyContinue'
             choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
-            eval "$(conda shell.bash hook)"
             conda activate hydra
             pip install nox dataclasses --progress-bar off
-      - store_artifacts:
-          path: C:\ProgramData\chocolatey\logs
-          destination: chocolatey_logs
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
@@ -143,9 +141,7 @@ jobs:
     parameters:
       py_version:
         type: string
-    executor:
-      name: win/default
-      shell: bash.exe
+    executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
@@ -153,9 +149,8 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
-            export PYTHONIOENCODING="utf-8"
-            eval "$(conda shell.bash hook)"
+            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             exit $LASTEXITCODE
@@ -214,9 +209,7 @@ jobs:
         type: string
       test_plugin:
         type: string
-    executor:
-      name: win/default
-      shell: bash.exe
+    executor: win/default
     steps:
       - win:
           py_version: << parameters.py_version >>
@@ -224,10 +217,9 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
-              export PYTHONIOENCODING="utf-8"
-              export PLUGINS="<< parameters.test_plugin >>"
-              eval "$(conda shell.bash hook)"
+              $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              $env:PYTHONIOENCODING="utf_8"
+              $env:PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
@@ -258,7 +250,7 @@ workflows:
           matrix:
             parameters:
 #              py_version: ["3.6", "3.7", "3.8"]
-              py_version: ["3.6", "3.7"]
+              py_version: ["3.6"]
 
 
   plugin_tests:
@@ -278,7 +270,7 @@ workflows:
           matrix:
             parameters:
 #              py_version: ["3.6", "3.7", "3.8"]
-              py_version: ["3.6", "3.7"]
+              py_version: ["3.6"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
