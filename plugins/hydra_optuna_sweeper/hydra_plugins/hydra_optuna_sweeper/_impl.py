@@ -98,12 +98,12 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.start is not None
         assert value.end is not None
         if "log" in value.tags:
-            if "int" in value.tags:
+            if isinstance(value.start, int) and isinstance(value.end, int):
                 return IntLogUniformDistribution(int(value.start), int(value.end))
             return LogUniformDistribution(value.start, value.end)
         else:
-            if "int" in value.tags:
-                return IntUniformDistribution(int(value.start), int(value.end))
+            if isinstance(value.start, int) and isinstance(value.end, int):
+                return IntUniformDistribution(value.start, value.end)
             return UniformDistribution(value.start, value.end)
 
     raise NotImplementedError("{} is not supported by Optuna sweeper.".format(override))

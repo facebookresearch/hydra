@@ -82,7 +82,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
         ("key=range(1,3)", IntUniformDistribution(1, 3)),
         ("key=interval(1, 5)", UniformDistribution(1, 5)),
-        ("key=tag(int, interval(1, 5))", IntUniformDistribution(1, 5)),
+        ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
     ],
 )
