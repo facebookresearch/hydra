@@ -17,6 +17,12 @@ class Direction(Enum):
     maximize = 2
 
 
+class Sampler(Enum):
+    TPESampler = 1
+    RandomSampler = 2
+    CmaEsSampler = 3
+
+
 @dataclass
 class DistributionConfig:
 
@@ -63,10 +69,10 @@ class OptunaConfig:
     # Number of parallel workers
     n_jobs: int = 2
 
-    # Sampling algorithm such as RandomSampler, TPESampler and CmaEsSampler
+    # Sampling algorithm
     # Please refer to the reference for further details
     # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: str = "TPESampler"
+    sampler: Sampler = Sampler.TPESampler
 
     # Random seed of sampler
     seed: Optional[int] = None

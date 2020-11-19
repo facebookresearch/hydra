@@ -149,12 +149,8 @@ class OptunaSweeperImpl(Sweeper):
                 override.get_key_element()
             ] = create_optuna_distribution_from_override(override)
 
-        sampler_class = getattr(optuna.samplers, self.optuna_config.sampler)
-
-        if sampler_class in {CmaEsSampler, RandomSampler, TPESampler}:
-            sampler = sampler_class(seed=self.optuna_config.seed)
-        else:
-            sampler = sampler_class()
+        sampler_class = getattr(optuna.samplers, self.optuna_config.sampler.name)
+        sampler = sampler_class(seed=self.optuna_config.seed)
 
         study = optuna.create_study(
             study_name=self.optuna_config.study_name,
@@ -164,7 +160,7 @@ class OptunaSweeperImpl(Sweeper):
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
-        log.info(f"Sampler: {self.optuna_config.sampler}")
+        log.info(f"Sampler: {self.optuna_config.sampler.name}")
         log.info(f"Direction: {self.optuna_config.direction.name}")
 
         batch_size = self.optuna_config.n_jobs
