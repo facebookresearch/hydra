@@ -88,13 +88,13 @@ commands:
           name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
-            conda init bash
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
           command: |
             conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
+            eval "$(conda shell.bash hook)"
             conda activate hydra
             pip install nox dataclasses --progress-bar off
       - save_cache:
@@ -153,9 +153,10 @@ jobs:
           command: |
             set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
             set PYTHONIOENCODING="utf-8"
+            eval "$(conda shell.bash hook)"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            exit
+            exit $LASTEXITCODE
   trigger_plugin_piplines:
     docker:
       - image: circleci/python:3.8
@@ -224,9 +225,10 @@ jobs:
               set NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
               set PYTHONIOENCODING="utf-8"
               set PLUGINS="<< parameters.test_plugin >>"
+              eval "$(conda shell.bash hook)"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
-              exit
+              exit $LASTEXITCODE
   # Misc
   coverage:
     docker:
