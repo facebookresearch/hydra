@@ -77,6 +77,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
     "input, expected",
     [
         ("key=choice(1,2)", CategoricalDistribution([1, 2])),
+        ("key=choice(true, false)", CategoricalDistribution([True, False])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
         ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
         ("key=range(1,3)", IntUniformDistribution(1, 3)),
