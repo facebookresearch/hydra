@@ -143,10 +143,17 @@ class OptunaSweeperImpl(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         search_space = dict(self.search_space)
+        fixed_params = dict()
         for override in parsed:
-            search_space[
-                override.get_key_element()
-            ] = create_optuna_distribution_from_override(override)
+            value = create_optuna_distribution_from_override(override)
+            if isinstance(value, BaseDistribution):
+                search_space[override.get_key_element()] = value
+            else:
+                fixed_params[override.get_key_element()] = value
+        # Remove fixed parameters from Optuna search space.
+        for param_name in fixed_params:
+            if param_name in search_space:
+                del search_space[param_name]
 
         sampler_class = getattr(optuna.samplers, self.optuna_config.sampler.name)
         sampler = sampler_class(seed=self.optuna_config.seed)
@@ -175,9 +182,9 @@ class OptunaSweeperImpl(Sweeper):
                 for param_name, distribution in search_space.items():
                     trial._suggest(param_name, distribution)
 
-                overrides.append(
-                    tuple(f"{name}={val}" for name, val in trial.params.items())
-                )
+                params = dict(trial.params)
+                params.update(fixed_params)
+                overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)

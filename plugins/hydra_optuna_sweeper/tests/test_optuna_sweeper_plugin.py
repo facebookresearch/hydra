@@ -112,7 +112,8 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-def test_optuna_example(tmpdir: Path) -> None:
+@pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
+def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
         "example/sphere.py",
         "--multirun",
@@ -122,10 +123,18 @@ def test_optuna_example(tmpdir: Path) -> None:
         "hydra.sweeper.optuna_config.sampler=RandomSampler",
         "hydra.sweeper.optuna_config.seed=123",
     ]
+    if with_commandline:
+        cmd += [
+            "x=choice(0, 1, 2)",
+            "y=0",  # Fixed parameter
+        ]
     get_run_output(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
     assert returns["best_params"]["x"] == 0
-    assert returns["best_params"]["y"] == 0
+    if with_commandline:
+        assert "y" not in returns["best_params"]
+    else:
+        assert returns["best_params"]["y"] == 0
     assert returns["best_value"] == 0
