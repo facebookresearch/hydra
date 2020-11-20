@@ -55,7 +55,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0bb5a2431d0b0dcea")
+ami = os.environ.get("AWS_RAY_AMI", "ami-099b85625184ce698")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
