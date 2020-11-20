@@ -93,6 +93,7 @@ commands:
           name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
+            conda init bash
             choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
