@@ -87,10 +87,9 @@ commands:
       - run:
           name: Preparing environment - system
           command: |
+            choco install -y --no-progress openssl javaruntime
             choco install -y --no-progress miniconda3
             C:\tools\miniconda3\Scripts\conda.exe init powershell
-            $progressPreference = 'silentlyContinue'
-            choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
           command: |
