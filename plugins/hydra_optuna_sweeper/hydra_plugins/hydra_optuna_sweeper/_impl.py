@@ -164,6 +164,7 @@ class OptunaSweeperImpl(Sweeper):
             storage=self.optuna_config.storage,
             sampler=sampler,
             direction=self.optuna_config.direction.name,
+            load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
