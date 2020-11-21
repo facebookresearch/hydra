@@ -120,7 +120,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.sweeper.optuna_config.n_trials=20",
         "hydra.sweeper.optuna_config.n_jobs=8",
-        "hydra.sweeper.optuna_config.sampler=RandomSampler",
+        "hydra.sweeper.optuna_config.sampler=random",
         "hydra.sweeper.optuna_config.seed=123",
     ]
     if with_commandline:

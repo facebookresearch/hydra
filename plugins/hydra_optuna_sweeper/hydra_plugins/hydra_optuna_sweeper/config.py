@@ -72,7 +72,7 @@ class OptunaConfig:
     # Sampling algorithm
     # Please refer to the reference for further details
     # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: Sampler = Sampler.TPESampler
+    sampler: Sampler = Sampler.tpe
 
     # Random seed of sampler
     seed: Optional[int] = None

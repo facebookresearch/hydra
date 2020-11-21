@@ -27,7 +27,15 @@ from optuna.distributions import (
     UniformDistribution,
 )
 
-from .config import DistributionConfig, DistributionType, OptunaConfig
+# TODO (toshihikoyanase): Remove type-ignore when optuna==2.4.0 is released.
+from optuna.samplers import (  # type: ignore
+    BaseSampler,
+    CmaEsSampler,
+    RandomSampler,
+    TPESampler,
+)
+
+from .config import DistributionConfig, DistributionType, OptunaConfig, Sampler
 
 log = logging.getLogger(__name__)
 
@@ -155,8 +163,7 @@ class OptunaSweeperImpl(Sweeper):
             if param_name in search_space:
                 del search_space[param_name]
 
-        sampler_class = getattr(optuna.samplers, self.optuna_config.sampler.name)
-        sampler = sampler_class(seed=self.optuna_config.seed)
+        sampler = self.get_sampler()
 
         # TODO (toshihikoyanase): Remove type-ignore when optuna==2.4.0 is released.
         study = optuna.create_study(  # type: ignore
@@ -206,3 +213,13 @@ class OptunaSweeperImpl(Sweeper):
         )
         log.info(f"Best parameters: {best_trial.params}")
         log.info(f"Best value: {best_trial.value}")
+
+    def get_sampler(self) -> BaseSampler:
+        if self.optuna_config.sampler == Sampler.tpe:
+            return TPESampler(seed=self.optuna_config.seed)
+        if self.optuna_config.sampler == Sampler.random:
+            return RandomSampler(seed=self.optuna_config.seed)
+        if self.optuna_config.sampler == Sampler.cmaes:
+            return CmaEsSampler(seed=self.optuna_config.seed)
+
+        raise NotImplementedError(f"{self.optuna_config.sampler} is not supported.")
