@@ -93,7 +93,6 @@ commands:
           name: Preparing environment - system
           command: |
             choco install -y --no-progress miniconda3
-            conda init bash
             choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
@@ -158,6 +157,7 @@ jobs:
           command: |
             export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
             export PYTHONIOENCODING="utf-8"
+            eval "$(conda shell.bash hook)"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             exit $LASTEXITCODE
@@ -229,6 +229,7 @@ jobs:
               export NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
               export PYTHONIOENCODING="utf-8"
               export PLUGINS="<< parameters.test_plugin >>"
+              eval "$(conda shell.bash hook)"
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
