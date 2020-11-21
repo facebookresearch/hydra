@@ -18,9 +18,9 @@ class Direction(Enum):
 
 
 class Sampler(Enum):
-    TPESampler = 1
-    RandomSampler = 2
-    CmaEsSampler = 3
+    tpe = 1
+    random = 2
+    cmaes = 3
 
 
 @dataclass
