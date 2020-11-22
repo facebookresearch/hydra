@@ -15,6 +15,7 @@ from hydra.core.override_parser.types import (
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
+from hydra.utils import get_class
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -156,18 +157,16 @@ class OptunaSweeperImpl(Sweeper):
                 del search_space[param_name]
 
         samplers = {
-            "tpe": "TPESampler",
-            "random": "RandomSampler",
-            "cmaes": "CmaEsSampler",
+            "tpe": "optuna.samplers.TPESampler",
+            "random": "optuna.samplers.RandomSampler",
+            "cmaes": "optuna.samplers.CmaEsSampler",
         }
         if self.optuna_config.sampler.name not in samplers:
             raise NotImplementedError(
                 f"{self.optuna_config.sampler} is not supported by Optuna sweeper."
             )
 
-        sampler_class = getattr(
-            optuna.samplers, samplers[self.optuna_config.sampler.name]
-        )
+        sampler_class = get_class(samplers[self.optuna_config.sampler.name])
         sampler = sampler_class(seed=self.optuna_config.seed)
 
         # TODO (toshihikoyanase): Remove type-ignore when optuna==2.4.0 is released.
