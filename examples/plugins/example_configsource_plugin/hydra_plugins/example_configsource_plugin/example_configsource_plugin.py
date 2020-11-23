@@ -74,9 +74,6 @@ class ConfigSourceExample(ConfigSource):
             if normalized_config_path in self.headers
             else {}
         )
-        if "package" not in header:
-            header["package"] = ""
-
         self._update_package_in_header(
             header=header,
             normalized_config_path=normalized_config_path,
