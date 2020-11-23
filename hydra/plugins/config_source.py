@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple, MutableSequence
 
 from hydra.core import DefaultElement
-from hydra.core.NewDefaultElement import InputDefaultElement
+from hydra.core.NewDefaultElement import InputDefault
 from hydra.errors import HydraException
 from omegaconf import (
     Container,
@@ -34,7 +34,7 @@ class ConfigResult:
     config: Container
     header: Dict[str, str]
     defaults_list: List[DefaultElement]
-    new_defaults_list: List[InputDefaultElement]
+    new_defaults_list: List[InputDefault]
     is_schema_source: bool = False
 
 
@@ -177,32 +177,38 @@ class ConfigSource(Plugin):
     ) -> None:
         config_without_ext = normalized_config_path[0 : -len(".yaml")]
 
+        if "package" in header:
+            # keep a backup of the original package header
+            # TODO: clean up manipulation of pacakge header in config sources
+            header["orig_package"] = header["package"]
+
         package = ConfigSource._resolve_package(
             config_without_ext=config_without_ext,
             header=header,
             package_override=package_override,
         )
 
-        if is_primary_config:
-            if "package" not in header:
-                header["package"] = "_global_"
-            else:
-                if package != "":
-                    raise HydraException(
-                        f"Primary config '{config_without_ext}' must be "
-                        f"in the _global_ package; effective package : '{package}'"
-                    )
-        else:
-            if "package" not in header:
-                # Loading a config group option.
-                # Hydra 1.0: default to _global_ and warn.
-                # Hydra 1.1: default will change to _package_ and the warning will be removed.
-                header["package"] = "_global_"
-                msg = (
-                    f"\nMissing @package directive {normalized_config_path} in {self.full_path()}.\n"
-                    f"See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/adding_a_package_directive"
-                )
-                warnings.warn(message=msg, category=UserWarning)
+        # TODO: cleanup
+        # if is_primary_config:
+        #     if "package" not in header:
+        #         header["package"] = "_global_"
+        #     else:
+        #         if package != "":
+        #             raise HydraException(
+        #                 f"Primary config '{config_without_ext}' must be "
+        #                 f"in the _global_ package; effective package : '{package}'"
+        #             )
+        # else:
+        #     if "package" not in header:
+        #         # Loading a config group option.
+        #         # Hydra 1.0: default to _global_ and warn.
+        #         # Hydra 1.1: default will change to _package_ and the warning will be removed.
+        #         header["package"] = "_global_"
+        #         msg = (
+        #             f"\nMissing @package directive {normalized_config_path} in {self.full_path()}.\n"
+        #             f"See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/adding_a_package_directive"
+        #         )
+        #         warnings.warn(message=msg, category=UserWarning)
 
         header["package"] = package
 
@@ -383,7 +389,7 @@ class ConfigSource(Plugin):
     @staticmethod
     def _create_new_defaults_list(
         defaults: ListConfig,
-    ) -> List[InputDefaultElement]:
+    ) -> List[InputDefault]:
         res: List[DefaultElement] = []
         for item in defaults:
             if isinstance(item, DictConfig):
@@ -401,7 +407,7 @@ class ConfigSource(Plugin):
                 assert node is not None
                 config_name = node._value()
 
-                default = InputDefaultElement(
+                default = InputDefault(
                     group=config_group,
                     name=config_name,
                     package=package,
@@ -409,7 +415,7 @@ class ConfigSource(Plugin):
                 )
             elif isinstance(item, str):
                 path, package, _package2 = ConfigSource._split_group(item)
-                default = InputDefaultElement(name=path, package=package)
+                default = InputDefault(name=path, package=package)
             else:
                 raise ValueError(
                     f"Unsupported type in defaults : {type(item).__name__}"
@@ -418,7 +424,7 @@ class ConfigSource(Plugin):
         return res
 
     @staticmethod
-    def _extract_raw_defaults_list(cfg: Container) -> List[InputDefaultElement]:
+    def _extract_raw_defaults_list(cfg: Container) -> List[InputDefault]:
         if not OmegaConf.is_dict(cfg):
             return []
 

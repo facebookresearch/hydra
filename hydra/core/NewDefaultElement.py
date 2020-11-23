@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class InputDefaultElement:
+class InputDefault:
     # config group name if present
     group: Optional[str] = None
     # config file name
@@ -11,10 +11,5 @@ class InputDefaultElement:
     optional: bool = False
     package: Optional[str] = None
 
-
-@dataclass
-class ProcessedDefaultElement(InputDefaultElement):
-    parent: Optional[str] = None
-
-    addressing_key: Optional[str] = None
-    result_package: Optional[str] = None
+    def is_self(self) -> bool:
+        return self.name == "_self_"
