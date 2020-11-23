@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
+
 from textwrap import dedent
 
 import warnings
@@ -10,6 +12,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple, MutableSequence
 
 from hydra.core import DefaultElement
+from hydra.core.NewDefaultElement import InputDefaultElement
 from hydra.errors import HydraException
 from omegaconf import (
     Container,
@@ -31,6 +34,7 @@ class ConfigResult:
     config: Container
     header: Dict[str, str]
     defaults_list: List[DefaultElement]
+    new_defaults_list: List[InputDefaultElement]
     is_schema_source: bool = False
 
 
@@ -242,39 +246,40 @@ class ConfigSource(Plugin):
         return res
 
     @staticmethod
+    def _split_group(
+        group_with_package: str,
+    ) -> Tuple[str, Optional[str], Optional[str]]:
+        idx = group_with_package.find("@")
+        if idx == -1:
+            # group
+            group = group_with_package
+            package = None
+        else:
+            # group@package
+            group = group_with_package[0:idx]
+            package = group_with_package[idx + 1 :]
+
+        package2 = None
+        if package is not None:
+            # if we have a package, break it down if it's a rename
+            idx = package.find(":")
+            if idx != -1:
+                package2 = package[idx + 1 :]
+                package = package[0:idx]
+
+        if package == "":
+            package = None
+
+        if package2 == "":
+            package2 = None
+
+        return group, package, package2
+
+    @staticmethod
     def _create_defaults_list(
         config_path: Optional[str],
         defaults: ListConfig,
     ) -> List[DefaultElement]:
-        def _split_group(
-            group_with_package: str,
-        ) -> Tuple[str, Optional[str], Optional[str]]:
-            idx = group_with_package.find("@")
-            if idx == -1:
-                # group
-                group = group_with_package
-                package = None
-            else:
-                # group@package
-                group = group_with_package[0:idx]
-                package = group_with_package[idx + 1 :]
-
-            package2 = None
-            if package is not None:
-                # if we have a package, break it down if it's a rename
-                idx = package.find(":")
-                if idx != -1:
-                    package2 = package[idx + 1 :]
-                    package = package[0:idx]
-
-            if package == "":
-                package = None
-
-            if package2 == "":
-                package2 = None
-
-            return group, package, package2
-
         if not isinstance(defaults, MutableSequence):
             raise ValueError(
                 dedent(
@@ -289,7 +294,7 @@ class ConfigSource(Plugin):
                     """
                 )
             )
-
+        defaults = copy.deepcopy(defaults)
         res: List[DefaultElement] = []
         for item in defaults:
             if isinstance(item, DictConfig):
@@ -302,7 +307,7 @@ class ConfigSource(Plugin):
                 if len(keys) == 0:
                     raise ValueError(f"Missing group name in {item}")
                 key = keys[0]
-                config_group, package, package2 = _split_group(key)
+                config_group, package, package2 = ConfigSource._split_group(key)
                 node = item._get_node(key)
                 assert node is not None
                 config_name = node._value()
@@ -374,3 +379,51 @@ class ConfigSource(Plugin):
             )
         else:
             return []
+
+    @staticmethod
+    def _create_new_defaults_list(
+        defaults: ListConfig,
+    ) -> List[InputDefaultElement]:
+        res: List[DefaultElement] = []
+        for item in defaults:
+            if isinstance(item, DictConfig):
+                optional = False
+                if "optional" in item:
+                    optional = item.pop("optional")
+                keys = list(item.keys())
+                if len(keys) > 1:
+                    raise ValueError(f"Too many keys in default item {item}")
+                if len(keys) == 0:
+                    raise ValueError(f"Missing group name in {item}")
+                key = keys[0]
+                config_group, package, _package2 = ConfigSource._split_group(key)
+                node = item._get_node(key)
+                assert node is not None
+                config_name = node._value()
+
+                default = InputDefaultElement(
+                    group=config_group,
+                    name=config_name,
+                    package=package,
+                    optional=optional,
+                )
+            elif isinstance(item, str):
+                path, package, _package2 = ConfigSource._split_group(item)
+                default = InputDefaultElement(name=path, package=package)
+            else:
+                raise ValueError(
+                    f"Unsupported type in defaults : {type(item).__name__}"
+                )
+            res.append(default)
+        return res
+
+    @staticmethod
+    def _extract_raw_defaults_list(cfg: Container) -> List[InputDefaultElement]:
+        if not OmegaConf.is_dict(cfg):
+            return []
+
+        with read_write(cfg):
+            with open_dict(cfg):
+                defaults = cfg.pop("defaults", [])
+
+        return defaults
