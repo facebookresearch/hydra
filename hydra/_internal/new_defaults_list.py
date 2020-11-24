@@ -1,6 +1,7 @@
+import copy
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
@@ -25,21 +26,45 @@ class ResultDefault:
 
 
 @dataclass
-class GroupOverrides:
-    map: Dict[str, str]
+class Overrides:
+    override_choices: Dict[str, str]
+    append_group_defaults: List[GroupDefault]
+    config_overrides: List[Override]
+
+    def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
+        self.override_choices = {}
+        self.append_group_defaults = []
+        self.config_overrides = []
+
+        for override in overrides_list:
+            is_group = repo.group_exists(override.key_or_group)
+            value = override.value()
+            if not is_group:
+                self.config_overrides.append(override)
+            else:
+                if not isinstance(value, str):
+                    raise ValueError(
+                        f"Config group override must be a string : {override}"
+                    )
+                if override.is_add():
+                    self.append_group_defaults.append(
+                        GroupDefault(group=override.key_or_group, name=value)
+                    )
+                else:
+                    self.override_choices[override.key_or_group] = value
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
             key = default.group  # TODO: use package if present
-            return key in self.map
+            return key in self.override_choices
 
         return False
 
     def get_choice_for(self, default: InputDefault) -> str:
         if isinstance(default, GroupDefault):
             key = default.group  # TODO: use package if present
-            if key in self.map:
-                return self.map[key]
+            if key in self.override_choices:
+                return self.override_choices[key]
             else:
                 return default.name
         else:
@@ -53,24 +78,6 @@ class DefaultsList:
     config_overrides: List[Override]
 
 
-def _split_overrides(
-    repo: IConfigRepository,
-    overrides: List[Override],
-) -> Tuple[List[Override], List[Override]]:
-    # TODO
-    return overrides, []
-
-
-def _create_group_overrides(default_overrides: List[Override]) -> GroupOverrides:
-    group_overrides = GroupOverrides(map={})
-    for override in default_overrides:
-        value = override.value()
-        assert isinstance(value, str)
-        group_overrides.map[override.key_or_group] = value
-
-    return group_overrides
-
-
 def load_config_defaults_list(
     default: InputDefault, group_overrides: Dict[str, str]
 ) -> List[InputDefault]:
@@ -81,14 +88,17 @@ def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
     is_primary_config: bool,
-    group_overrides: GroupOverrides,
+    overrides: Overrides,
 ) -> DefaultsTreeNode:
     assert root.children is None
 
+    if is_primary_config:
+        root.parent.parent_base_dir = ""
+
     parent = root.parent
     if isinstance(parent, GroupDefault):
-        if group_overrides.is_overridden(parent):
-            override_name = group_overrides.get_choice_for(parent)
+        if overrides.is_overridden(parent):
+            override_name = overrides.get_choice_for(parent)
             parent.name = override_name
             parent.config_name_overridden = True
         path = parent.get_config_path()
@@ -96,16 +106,19 @@ def _create_defaults_tree(
         assert isinstance(parent, ConfigDefault)
         path = parent.path
 
-    if is_primary_config:
-        root.parent.parent_base_dir = ""
-
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
     if loaded is None:
         missing_config_error(repo, root.parent)
     else:
+
+        defaults_list = copy.deepcopy(loaded.new_defaults_list)
+        if is_primary_config:
+            for d in overrides.append_group_defaults:
+                defaults_list.append(d)
+
         children = []
-        for d in loaded.new_defaults_list:
+        for d in defaults_list:
             if d.is_self():
                 d.parent_base_dir = root.parent.parent_base_dir
                 children.append(d)
@@ -117,7 +130,7 @@ def _create_defaults_tree(
                     repo=repo,
                     root=new_root,
                     is_primary_config=False,
-                    group_overrides=group_overrides,
+                    overrides=overrides,
                 )
                 if subtree.children is None:
                     children.append(d)
@@ -132,15 +145,14 @@ def _create_defaults_tree(
 def _create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
-    default_overrides: List[Override],
+    overrides: Overrides,
 ) -> List[ResultDefault]:
-    group_overrides = _create_group_overrides(default_overrides)
     primary = ConfigDefault(path=config_name)
     root = DefaultsTreeNode(parent=primary)
     defaults_tree = _create_defaults_tree(
         repo=repo,
         root=root,
-        group_overrides=group_overrides,
+        overrides=overrides,
         is_primary_config=True,
     )
     # TODO: convert tree to list with DFS
@@ -151,11 +163,11 @@ def _create_defaults_list(
 def create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
-    overrides: List[Override],
+    overrides_list: List[Override],
 ) -> DefaultsList:
-    default_overrides, config_overrides = _split_overrides(repo, overrides)
-    defaults = _create_defaults_list(repo, config_name, default_overrides)
-    ret = DefaultsList(defaults=defaults, config_overrides=config_overrides)
+    overrides = Overrides(repo=repo, overrides_list=overrides_list)
+    defaults = _create_defaults_list(repo, config_name, overrides)
+    ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
     return ret
 
 
