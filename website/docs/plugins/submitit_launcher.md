@@ -51,6 +51,7 @@ exclude: null
 signal_delay_s: 120
 max_num_timeout: 0
 additional_parameters: {}
+array_parallelism: 256
 
 ```
 
