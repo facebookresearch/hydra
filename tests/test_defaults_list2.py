@@ -229,4 +229,37 @@ def test_simple_defaults_tree_cases(
     )
 
 
-# TODO: test config_path()
+@mark.parametrize(
+    "default,expected_group_path,expected_config_path",
+    [
+        param(
+            ConfigDefault(path="bar", parent_base_dir=""),
+            "",
+            "bar",
+            id="config_default:empty_basedir",
+        ),
+        param(
+            ConfigDefault(path="bar", parent_base_dir="foo"),
+            "foo",
+            "foo/bar",
+            id="config_default:with_parent_basedir",
+        ),
+        param(
+            GroupDefault(group="foo", name="bar", parent_base_dir=""),
+            "foo",
+            "foo/bar",
+            id="group_default:empty_basedir",
+        ),
+        param(
+            GroupDefault(group="foo", name="bar", parent_base_dir="zoo"),
+            "zoo/foo",
+            "zoo/foo/bar",
+            id="group_default:with_parent_basedir",
+        ),
+    ],
+)
+def test_get_paths(
+    default: InputDefault, expected_group_path, expected_config_path
+) -> None:
+    assert default.get_group_path() == expected_group_path
+    assert default.get_config_path() == expected_config_path
