@@ -20,16 +20,15 @@ def create_repo() -> IConfigRepository:
 
 def _test_defaults_tree_impl(
     config_name: str,
-    overrides_list: List[str],
+    input_overrides: List[str],
     expected: DefaultsTreeNode,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
     parent = ConfigDefault(path=config_name)
-    root = DefaultsTreeNode(parent=parent)
-    overrides = Overrides(
-        repo=repo, overrides_list=parser.parse_overrides(overrides=overrides_list)
-    )
+    root = DefaultsTreeNode(node=parent)
+    overrides_list = parser.parse_overrides(overrides=input_overrides)
+    overrides = Overrides(repo=repo, overrides_list=overrides_list)
     result = _create_defaults_tree(
         repo=repo,
         root=root,

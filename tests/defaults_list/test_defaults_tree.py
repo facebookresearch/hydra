@@ -22,14 +22,14 @@ Plugins.instance()
         param(
             "empty",
             [],
-            DefaultsTreeNode(parent=ConfigDefault(path="empty")),
+            DefaultsTreeNode(node=ConfigDefault(path="empty")),
             id="empty",
         ),
         param(
             "config_default",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="config_default"),
+                node=ConfigDefault(path="config_default"),
                 children=[ConfigDefault(path="empty")],
             ),
             id="config_default",
@@ -38,7 +38,7 @@ Plugins.instance()
             "group_default",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="group_default"),
+                node=ConfigDefault(path="group_default"),
                 children=[GroupDefault(group="group1", name="file1")],
             ),
             id="group_default",
@@ -47,7 +47,7 @@ Plugins.instance()
             "optional",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="optional"),
+                node=ConfigDefault(path="optional"),
                 children=[
                     GroupDefault(group="group1", name="file1", optional=True),
                 ],
@@ -58,7 +58,7 @@ Plugins.instance()
             "self_leading",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="self_leading"),
+                node=ConfigDefault(path="self_leading"),
                 children=[
                     ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
@@ -70,7 +70,7 @@ Plugins.instance()
             "self_trailing",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="self_trailing"),
+                node=ConfigDefault(path="self_trailing"),
                 children=[
                     GroupDefault(group="group1", name="file1"),
                     ConfigDefault(path="_self_"),
@@ -82,10 +82,10 @@ Plugins.instance()
             "include_nested_group",
             [],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="include_nested_group"),
+                node=ConfigDefault(path="include_nested_group"),
                 children=[
                     DefaultsTreeNode(
-                        parent=GroupDefault(group="group1", name="group_item"),
+                        node=GroupDefault(group="group1", name="group_item1"),
                         children=[GroupDefault(group="group2", name="file1")],
                     )
                 ],
@@ -100,7 +100,7 @@ def test_simple_defaults_tree_cases(
     expected: DefaultsTreeNode,
 ) -> None:
     _test_defaults_tree_impl(
-        config_name=config_name, overrides_list=overrides, expected=expected
+        config_name=config_name, input_overrides=overrides, expected=expected
     )
 
 
@@ -111,7 +111,7 @@ def test_simple_defaults_tree_cases(
             "empty",
             ["+group1=file1"],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="empty"),
+                node=ConfigDefault(path="empty"),
                 children=[GroupDefault(group="group1", name="file1")],
             ),
             id="empty:append",
@@ -120,7 +120,7 @@ def test_simple_defaults_tree_cases(
             "config_default",
             ["+group1=file1"],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="config_default"),
+                node=ConfigDefault(path="config_default"),
                 children=[
                     ConfigDefault(path="empty"),
                     GroupDefault(group="group1", name="file1"),
@@ -132,7 +132,7 @@ def test_simple_defaults_tree_cases(
             "group_default",
             ["+group1=file1"],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="group_default"),
+                node=ConfigDefault(path="group_default"),
                 children=[
                     # config tree allow for duplicate items
                     GroupDefault(group="group1", name="file1"),
@@ -145,7 +145,7 @@ def test_simple_defaults_tree_cases(
             "self_trailing",
             ["+group1=file1"],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="self_trailing"),
+                node=ConfigDefault(path="self_trailing"),
                 children=[
                     GroupDefault(group="group1", name="file1"),
                     ConfigDefault(path="_self_"),
@@ -158,10 +158,10 @@ def test_simple_defaults_tree_cases(
             "include_nested_group",
             ["+group1=file1"],
             DefaultsTreeNode(
-                parent=ConfigDefault(path="include_nested_group"),
+                node=ConfigDefault(path="include_nested_group"),
                 children=[
                     DefaultsTreeNode(
-                        parent=GroupDefault(group="group1", name="group_item"),
+                        node=GroupDefault(group="group1", name="group_item1"),
                         children=[GroupDefault(group="group2", name="file1")],
                     ),
                     GroupDefault(group="group1", name="file1"),
@@ -177,5 +177,68 @@ def test_tree_with_append_override(
     expected: DefaultsTreeNode,
 ) -> None:
     _test_defaults_tree_impl(
-        config_name=config_name, overrides_list=overrides, expected=expected
+        config_name=config_name, input_overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "group_default",
+            ["group1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[GroupDefault(group="group1", name="file2")],
+            ),
+            id="group_default:override",
+        ),
+        param(
+            "optional",
+            ["group1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="optional"),
+                children=[
+                    GroupDefault(group="group1", name="file2", optional=True),
+                ],
+            ),
+            id="optional:override",
+        ),
+        param(
+            "include_nested_group",
+            ["group1=group_item2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item2"),
+                        children=[GroupDefault(group="group2", name="file2")],
+                    )
+                ],
+            ),
+            id="include_nested_group:override",
+        ),
+        param(
+            "include_nested_group",
+            ["group1/group2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[GroupDefault(group="group2", name="file2")],
+                    )
+                ],
+            ),
+            id="include_nested_group:override_nested",
+        ),
+    ],
+)
+def test_simple_group_override(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name, input_overrides=overrides, expected=expected
     )
