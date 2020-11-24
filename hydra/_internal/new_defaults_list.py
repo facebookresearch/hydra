@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
-from hydra.core.NewDefaultElement import InputDefault
+from hydra.core.NewDefaultElement import ConfigDefault, GroupDefault, InputDefault
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 
@@ -28,15 +28,23 @@ class ResultDefault:
 class GroupOverrides:
     map: Dict[str, str]
 
+    def is_overridden(self, default: InputDefault) -> bool:
+        if isinstance(default, GroupDefault):
+            key = default.group  # TODO: use package if present
+            return key in self.map
+
+        return False
+
     def get_choice_for(self, default: InputDefault) -> str:
-        if default.group is not None:
+        if isinstance(default, GroupDefault):
             key = default.group  # TODO: use package if present
             if key in self.map:
                 return self.map[key]
             else:
                 return default.name
         else:
-            return default.name
+            assert isinstance(default, ConfigDefault)
+            return default.path
 
 
 @dataclass
@@ -77,11 +85,19 @@ def _create_defaults_tree(
 ) -> DefaultsTreeNode:
     assert root.children is None
 
-    choice = group_overrides.get_choice_for(root.parent)
-    if root.parent.group is not None:
-        path = f"{root.parent.group}/{choice}"
+    parent = root.parent
+    if isinstance(parent, GroupDefault):
+        if group_overrides.is_overridden(parent):
+            override_name = group_overrides.get_choice_for(parent)
+            parent.name = override_name
+            parent.config_name_overridden = True
+        path = parent.get_config_path()
     else:
-        path = choice
+        assert isinstance(parent, ConfigDefault)
+        path = parent.path
+
+    if is_primary_config:
+        root.parent.parent_base_dir = ""
 
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
@@ -91,9 +107,12 @@ def _create_defaults_tree(
         children = []
         for d in loaded.new_defaults_list:
             if d.is_self():
+                d.parent_base_dir = root.parent.parent_base_dir
                 children.append(d)
             else:
                 new_root = DefaultsTreeNode(parent=d)
+                d.parent_base_dir = parent.get_group_path()
+                new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
                     repo=repo,
                     root=new_root,
@@ -116,7 +135,7 @@ def _create_defaults_list(
     default_overrides: List[Override],
 ) -> List[ResultDefault]:
     group_overrides = _create_group_overrides(default_overrides)
-    primary = InputDefault(name=config_name)
+    primary = ConfigDefault(path=config_name)
     root = DefaultsTreeNode(parent=primary)
     defaults_tree = _create_defaults_tree(
         repo=repo,
@@ -142,17 +161,17 @@ def create_defaults_list(
 
 def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None:
     options = None
-    if element.name is not None:
+    if isinstance(element, GroupDefault) is not None:
         options = repo.get_group_options(element.group, ObjectType.CONFIG)
         opt_list = "\n".join(["\t" + x for x in options])
         msg = (
-            f"Could not find '{element.name}' in the config group '{element.group}'"
+            f"Could not find '{element.name}' in the config group '{element.get_group_path()}'"
             f"\nAvailable options:\n{opt_list}\n"
         )
     else:
         msg = dedent(
             f"""\
-        Could not load {element.config_path()}.
+        Could not load {element.get_config_path()}.
         """
         )
 
@@ -163,7 +182,7 @@ def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None
     msg += "\nConfig search path:" + f"\n{lines}"
 
     raise MissingConfigException(
-        missing_cfg_file=element.config_path(),
+        missing_cfg_file=element.get_config_path(),
         message=msg,
         options=options,
     )
