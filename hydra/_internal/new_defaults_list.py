@@ -12,7 +12,7 @@ from hydra.core.override_parser.types import Override
 
 @dataclass
 class DefaultsTreeNode:
-    parent: InputDefault
+    node: InputDefault
     children: Optional[List[Union["DefaultsTreeNode", InputDefault]]] = None
 
 
@@ -55,14 +55,14 @@ class Overrides:
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
-            key = default.group  # TODO: use package if present
+            key = default.get_group_path()  # TODO: use package if present
             return key in self.override_choices
 
         return False
 
     def get_choice_for(self, default: InputDefault) -> str:
         if isinstance(default, GroupDefault):
-            key = default.group  # TODO: use package if present
+            key = default.get_group_path()  # TODO: use package if present
             if key in self.override_choices:
                 return self.override_choices[key]
             else:
@@ -78,12 +78,6 @@ class DefaultsList:
     config_overrides: List[Override]
 
 
-def load_config_defaults_list(
-    default: InputDefault, group_overrides: Dict[str, str]
-) -> List[InputDefault]:
-    ...
-
-
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -93,9 +87,9 @@ def _create_defaults_tree(
     assert root.children is None
 
     if is_primary_config:
-        root.parent.parent_base_dir = ""
+        root.node.parent_base_dir = ""
 
-    parent = root.parent
+    parent = root.node
     if isinstance(parent, GroupDefault):
         if overrides.is_overridden(parent):
             override_name = overrides.get_choice_for(parent)
@@ -109,7 +103,7 @@ def _create_defaults_tree(
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
     if loaded is None:
-        missing_config_error(repo, root.parent)
+        missing_config_error(repo, root.node)
     else:
 
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
@@ -120,10 +114,10 @@ def _create_defaults_tree(
         children = []
         for d in defaults_list:
             if d.is_self():
-                d.parent_base_dir = root.parent.parent_base_dir
+                d.parent_base_dir = root.node.parent_base_dir
                 children.append(d)
             else:
-                new_root = DefaultsTreeNode(parent=d)
+                new_root = DefaultsTreeNode(node=d)
                 d.parent_base_dir = parent.get_group_path()
                 new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
@@ -148,7 +142,7 @@ def _create_defaults_list(
     overrides: Overrides,
 ) -> List[ResultDefault]:
     primary = ConfigDefault(path=config_name)
-    root = DefaultsTreeNode(parent=primary)
+    root = DefaultsTreeNode(node=primary)
     defaults_tree = _create_defaults_tree(
         repo=repo,
         root=root,
