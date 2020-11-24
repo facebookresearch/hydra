@@ -11,7 +11,7 @@ from hydra._internal.new_defaults_list import (
     _create_defaults_tree,
     _create_group_overrides,
 )
-from hydra.core.NewDefaultElement import InputDefault
+from hydra.core.NewDefaultElement import InputDefault, GroupDefault, ConfigDefault
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -41,41 +41,41 @@ def create_repo() -> IConfigRepository:
         param("empty", [], id="empty"),
         param(
             "one_item",
-            [InputDefault(group="group1", name="file1")],
+            [GroupDefault(group="group1", name="file1")],
             id="one_item",
         ),
         param(
             "one_item",
-            [InputDefault(group="group1", name="file1")],
+            [GroupDefault(group="group1", name="file1")],
             id="one_item",
         ),
         param(
             "self_leading",
             [
-                InputDefault(name="_self_"),
-                InputDefault(group="group1", name="file1"),
+                ConfigDefault(path="_self_"),
+                GroupDefault(group="group1", name="file1"),
             ],
             id="self_leading",
         ),
         param(
             "self_trailing",
             [
-                InputDefault(group="group1", name="file1"),
-                InputDefault(name="_self_"),
+                GroupDefault(group="group1", name="file1"),
+                ConfigDefault(path="_self_"),
             ],
             id="self_trailing",
         ),
         param(
             "optional",
             [
-                InputDefault(group="group1", name="file1", optional=True),
+                GroupDefault(group="group1", name="file1", optional=True),
             ],
             id="optional",
         ),
         param(
             "non_config_group_default",
             [
-                InputDefault(name="some_config"),
+                ConfigDefault(path="empty"),
             ],
             id="non_config_group_default",
         ),
@@ -126,7 +126,7 @@ def _test_defaults_tree_impl(
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
-    parent = InputDefault(name=config_name)
+    parent = ConfigDefault(path=config_name)
     root = DefaultsTreeNode(parent=parent)
     group_overrides = _create_group_overrides(
         parser.parse_overrides(overrides=overrides)
@@ -147,15 +147,15 @@ def _test_defaults_tree_impl(
         param(
             "empty",
             [],
-            DefaultsTreeNode(parent=InputDefault(name="empty")),
+            DefaultsTreeNode(parent=ConfigDefault(path="empty")),
             id="empty",
         ),
         param(
             "non_config_group_default",
             [],
             DefaultsTreeNode(
-                parent=InputDefault(name="non_config_group_default"),
-                children=[InputDefault(name="empty")],
+                parent=ConfigDefault(path="non_config_group_default"),
+                children=[ConfigDefault(path="empty")],
             ),
             id="non_config_group_default",
         ),
@@ -163,8 +163,8 @@ def _test_defaults_tree_impl(
             "one_item",
             [],
             DefaultsTreeNode(
-                parent=InputDefault(name="one_item"),
-                children=[InputDefault(group="group1", name="file1")],
+                parent=ConfigDefault(path="one_item"),
+                children=[GroupDefault(group="group1", name="file1")],
             ),
             id="one_item",
         ),
@@ -172,9 +172,9 @@ def _test_defaults_tree_impl(
             "optional",
             [],
             DefaultsTreeNode(
-                parent=InputDefault(name="optional"),
+                parent=ConfigDefault(path="optional"),
                 children=[
-                    InputDefault(group="group1", name="file1", optional=True),
+                    GroupDefault(group="group1", name="file1", optional=True),
                 ],
             ),
             id="optional",
@@ -183,10 +183,10 @@ def _test_defaults_tree_impl(
             "self_leading",
             [],
             DefaultsTreeNode(
-                parent=InputDefault(name="self_leading"),
+                parent=ConfigDefault(path="self_leading"),
                 children=[
-                    InputDefault(name="_self_"),
-                    InputDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
                 ],
             ),
             id="self_leading",
@@ -195,13 +195,27 @@ def _test_defaults_tree_impl(
             "self_trailing",
             [],
             DefaultsTreeNode(
-                parent=InputDefault(name="self_trailing"),
+                parent=ConfigDefault(path="self_trailing"),
                 children=[
-                    InputDefault(group="group1", name="file1"),
-                    InputDefault(name="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="self_trailing",
+        ),
+        param(
+            "include_nested_group",
+            [],
+            DefaultsTreeNode(
+                parent=ConfigDefault(path="include_nested_group"),
+                children=[
+                    DefaultsTreeNode(
+                        parent=GroupDefault(group="group1", name="group_item"),
+                        children=[GroupDefault(group="group2", name="file1")],
+                    )
+                ],
+            ),
+            id="include_nested_group",
         ),
     ],
 )
@@ -213,3 +227,6 @@ def test_simple_defaults_tree_cases(
     _test_defaults_tree_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
+
+
+# TODO: test config_path()

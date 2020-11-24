@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple, MutableSequence
 
 from hydra.core import DefaultElement
-from hydra.core.NewDefaultElement import InputDefault
+from hydra.core.NewDefaultElement import InputDefault, GroupDefault, ConfigDefault
 from hydra.errors import HydraException
 from omegaconf import (
     Container,
@@ -407,7 +407,7 @@ class ConfigSource(Plugin):
                 assert node is not None
                 config_name = node._value()
 
-                default = InputDefault(
+                default = GroupDefault(
                     group=config_group,
                     name=config_name,
                     package=package,
@@ -415,7 +415,7 @@ class ConfigSource(Plugin):
                 )
             elif isinstance(item, str):
                 path, package, _package2 = ConfigSource._split_group(item)
-                default = InputDefault(name=path, package=package)
+                default = ConfigDefault(path=path, package=package)
             else:
                 raise ValueError(
                     f"Unsupported type in defaults : {type(item).__name__}"
