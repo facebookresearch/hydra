@@ -18,13 +18,17 @@ chdir_hydra_root()
 Plugins.instance()
 
 
-# TODO:
-#  - (Y) test with simple config group overrides
-#  - test with config group overrides overriding config groups @pkg
-#  - test handling missing configs mentioned in defaults list (with and without optional)
-#  - test overriding configs in absolute location
-#  - test duplicate _self_ error
-#  - test duplicates in result config list
+# TODO: (Y) Test with simple config group overrides
+# TODO: (Y) Test computed package when there are no package overrides in package header
+# TODO: test with config group overrides overriding config groups @pkg
+# TODO: test with config header package override
+# TODO: test with both config header and defaults list pkg override
+# TODO: handle hydra overrides
+# TODO: test handling missing configs mentioned in defaults list (with and without optional)
+# TODO: test overriding configs in absolute location
+# TODO: test duplicate _self_ error
+# TODO: test duplicates in result config list
+# TODO: Interpolation support
 
 
 @mark.parametrize(
@@ -102,15 +106,15 @@ def _test_defaults_list_impl(
         param(
             "empty",
             [],
-            [ResultDefault(config_path="empty")],
+            [ResultDefault(config_path="empty", package="")],
             id="empty",
         ),
         param(
             "config_default",
             [],
             [
-                ResultDefault(config_path="config_default", is_self=True),
-                ResultDefault(config_path="empty", parent="config_default"),
+                ResultDefault(config_path="config_default", package="", is_self=True),
+                ResultDefault(config_path="empty", package="", parent="config_default"),
             ],
             id="config_default",
         ),
@@ -118,8 +122,10 @@ def _test_defaults_list_impl(
             "group_default",
             [],
             [
-                ResultDefault(config_path="group_default", is_self=True),
-                ResultDefault(config_path="group1/file1", parent="group_default"),
+                ResultDefault(config_path="group_default", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="group_default"
+                ),
             ],
             id="group_default",
         ),
@@ -127,8 +133,10 @@ def _test_defaults_list_impl(
             "self_leading",
             [],
             [
-                ResultDefault(config_path="self_leading", is_self=True),
-                ResultDefault(config_path="group1/file1", parent="self_leading"),
+                ResultDefault(config_path="self_leading", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="self_leading"
+                ),
             ],
             id="self_leading",
         ),
@@ -136,8 +144,10 @@ def _test_defaults_list_impl(
             "self_trailing",
             [],
             [
-                ResultDefault(config_path="group1/file1", parent="self_trailing"),
-                ResultDefault(config_path="self_trailing", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="self_trailing"
+                ),
+                ResultDefault(config_path="self_trailing", package="", is_self=True),
             ],
             id="self_trailing",
         ),
@@ -145,14 +155,19 @@ def _test_defaults_list_impl(
             "include_nested_group",
             [],
             [
-                ResultDefault(config_path="include_nested_group", is_self=True),
+                ResultDefault(
+                    config_path="include_nested_group", package="", is_self=True
+                ),
                 ResultDefault(
                     config_path="group1/group_item1",
                     parent="include_nested_group",
+                    package="group1",
                     is_self=True,
                 ),
                 ResultDefault(
-                    config_path="group1/group2/file1", parent="group1/group_item1"
+                    config_path="group1/group2/file1",
+                    package="group1.group2",
+                    parent="group1/group_item1",
                 ),
             ],
             id="include_nested_group",
@@ -203,3 +218,103 @@ def test_get_paths(
 ) -> None:
     assert default.get_group_path() == expected_group_path
     assert default.get_config_path() == expected_config_path
+
+
+@mark.parametrize(
+    "default,expected",
+    [
+        param(
+            ConfigDefault(path="bar", parent_base_dir=""),
+            "",
+            id="config_default",
+        ),
+        param(
+            ConfigDefault(path="foo/bar", parent_base_dir=""),
+            "foo",
+            id="config_default",
+        ),
+        param(
+            ConfigDefault(path="bar", parent_base_dir="foo"),
+            "foo",
+            id="config_default",
+        ),
+        param(
+            ConfigDefault(path="bar", parent_base_dir="a/b"),
+            "a.b",
+            id="config_default",
+        ),
+        param(
+            GroupDefault(group="a", name="a1", parent_base_dir=""),
+            "a",
+            id="group_default",
+        ),
+        param(
+            GroupDefault(group="a/b", name="a1", parent_base_dir=""),
+            "a.b",
+            id="group_default",
+        ),
+        param(
+            GroupDefault(group="a/b", name="a1", parent_base_dir="x"),
+            "x.a.b",
+            id="group_default",
+        ),
+    ],
+)
+def test_get_default_package(default: InputDefault, expected) -> None:
+    assert default.get_default_package() == expected
+
+
+@mark.parametrize(
+    "default,expected",
+    [
+        # empty parent package
+        param(
+            ConfigDefault(path="bar", parent_package=""),
+            "",
+            id="config_default:path=bar,parent_package=,package=",
+        ),
+        param(
+            ConfigDefault(path="group1/bar", parent_package=""),
+            "group1",
+            id="config_default:path=group1/bar,parent_package=, package=",
+        ),
+        param(
+            ConfigDefault(path="bar", parent_package="", package="pkg1"),
+            "pkg1",
+            id="config_default:path=bar,parent_package=, package=pkg1",
+        ),
+        param(
+            ConfigDefault(path="group1/bar", parent_package="", package="pkg1"),
+            "pkg1",
+            id="config_default:path=group1/bar,parent_package=,package=pkg1",
+        ),
+        # non empty parent package
+        param(
+            ConfigDefault(path="bar", parent_package="a", package="pkg1"),
+            "a.pkg1",
+            id="config_default:path=bar,parent_package=a, package=pkg1",
+        ),
+        # global package
+        param(
+            ConfigDefault(path="bar", parent_package="a", package="_global_.pkg1"),
+            "pkg1",
+            id="config_default:parent_package=a, package=_global_.pkg1",
+        ),
+        # global parent package
+        param(
+            ConfigDefault(path="bar", parent_package="_global_.foo", package="pkg1"),
+            "foo.pkg1",
+            id="config_default:parent_package=_global_.foo, package=pkg1",
+        ),
+        # both globals
+        param(
+            ConfigDefault(
+                path="bar", parent_package="_global_.foo", package="_global_.pkg1"
+            ),
+            "pkg1",
+            id="config_default:parent_package=_global_.foo, package=_global_.pkg1",
+        ),
+    ],
+)
+def test_get_final_package(default: InputDefault, expected) -> None:
+    assert default.get_final_package() == expected

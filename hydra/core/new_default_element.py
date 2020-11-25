@@ -7,7 +7,7 @@ class ResultDefault:
     config_path: Optional[str] = None
     parent: Optional[str] = None
     # addressing_key: Optional[str] = None
-    # result_package: Optional[str] = None
+    package: Optional[str] = None
     is_self: bool = False
 
 
@@ -22,12 +22,48 @@ class InputDefault:
     def get_config_path(self) -> str:
         raise NotImplementedError()
 
+    def get_default_package(self) -> str:
+        return self.get_group_path().replace("/", ".")
+
+    # def get_config_package_in_header(self) -> str:
+    #     raise NotImplementedError()
+
+    def get_final_package(self) -> str:
+        raise NotImplementedError()
+
+    def _relative_group_path(self) -> str:
+        raise NotImplementedError()
+
+    def _get_final_package(
+        self,
+        parent_package: Optional[str],
+        package: Optional[str],
+    ) -> str:
+        assert parent_package is not None
+        if package is None:
+            package = self._relative_group_path().replace("/", ".")
+
+        if parent_package == "":
+            ret = package
+        else:
+            if package == "":
+                ret = parent_package
+            else:
+                ret = f"{parent_package}.{package}"
+
+        lgi = ret.rfind("_global_")
+        if lgi == -1:
+            return ret
+        else:
+            return ret[lgi + len("_global_") + 1 :]
+
 
 @dataclass
 class ConfigDefault(InputDefault):
     path: str
     package: Optional[str] = None
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
+    parent_package: Optional[str] = field(default=None, compare=False, repr=False)
 
     def is_self(self) -> bool:
         return self.path == "_self_"
@@ -54,6 +90,16 @@ class ConfigDefault(InputDefault):
             return self.path
         else:
             return f"{self.parent_base_dir}/{self.path}"
+
+    def get_final_package(self) -> str:
+        return self._get_final_package(self.parent_package, self.package)
+
+    def _relative_group_path(self) -> str:
+        idx = self.path.rfind("/")
+        if idx == -1:
+            return ""
+        else:
+            return self.path[0:idx]
 
 
 @dataclass
@@ -87,6 +133,12 @@ class GroupDefault(InputDefault):
         assert group_path != ""
 
         return f"{group_path}/{self.name}"
+
+    def get_final_package(self) -> str:
+        return self._get_final_package(self.parent_package, self.package)
+
+    def _relative_group_path(self) -> str:
+        return self.group
 
 
 @dataclass
