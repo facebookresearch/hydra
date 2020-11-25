@@ -95,6 +95,7 @@ def _create_defaults_tree(
 
     if is_primary_config:
         root.node.parent_base_dir = ""
+        root.node.parent_package = ""
 
     parent = root.node
     if isinstance(parent, GroupDefault):
@@ -122,10 +123,12 @@ def _create_defaults_tree(
         for d in defaults_list:
             if d.is_self():
                 d.parent_base_dir = root.node.parent_base_dir
+                d.parent_package = root.node.parent_package
                 children.append(d)
             else:
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 d.parent_base_dir = parent.get_group_path()
+                d.parent_package = parent.get_final_package()
                 new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
                     repo=repo,
@@ -149,12 +152,17 @@ def _create_result_default(tree: DefaultsTreeNode, node: InputDefault) -> Result
         res.config_path = tree.node.get_config_path()
         res.is_self = True
         pn = tree.parent_node()
-        cp = pn.get_config_path() if pn is not None else None
-        res.parent = cp
+        if pn is not None:
+            cp = pn.get_config_path()
+            res.parent = cp
+        else:
+            res.parent = None
+        res.package = tree.node.get_final_package()
     else:
         res.config_path = node.get_config_path()
         if tree is not None:
             res.parent = tree.node.get_config_path()
+        res.package = node.get_final_package()
     return res
 
 

@@ -112,6 +112,21 @@ def test_simple_defaults_tree_cases(
     )
 
 
+# TODO: Test cases where the default lists has package overrides
+# @mark.parametrize(
+#     "config_name, overrides, expected",
+#     [],
+# )
+# def test_defaults_tree_with_package(
+#     config_name: str,
+#     overrides: List[str],
+#     expected: DefaultsTreeNode,
+# ) -> None:
+#     _test_defaults_tree_impl(
+#         config_name=config_name, input_overrides=overrides, expected=expected
+#     )
+
+
 @mark.parametrize(
     "config_name, overrides, expected",
     [
