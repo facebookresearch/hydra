@@ -1,5 +1,14 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import List, Optional, Union
+
+
+@dataclass
+class ResultDefault:
+    config_path: Optional[str] = None
+    parent: Optional[str] = None
+    # addressing_key: Optional[str] = None
+    # result_package: Optional[str] = None
+    is_self: bool = False
 
 
 @dataclass
@@ -21,7 +30,7 @@ class ConfigDefault(InputDefault):
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
 
     def is_self(self) -> bool:
-        return self.path == "_self_" or self.path.endswith("/_self_")
+        return self.path == "_self_"
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
@@ -78,3 +87,21 @@ class GroupDefault(InputDefault):
         assert group_path != ""
 
         return f"{group_path}/{self.name}"
+
+
+@dataclass
+class DefaultsTreeNode:
+    node: InputDefault
+    children: Optional[List[Union["DefaultsTreeNode", InputDefault]]] = None
+
+    parent: Optional["DefaultsTreeNode"] = field(
+        default=None,
+        repr=False,
+        compare=False,
+    )
+
+    def parent_node(self) -> Optional[InputDefault]:
+        if self.parent is None:
+            return None
+        else:
+            return self.parent.node

@@ -1,28 +1,20 @@
 import copy
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Dict, List, Optional, Union
+from typing import Dict, List
 
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
-from hydra.core.NewDefaultElement import ConfigDefault, GroupDefault, InputDefault
+from hydra.core.new_default_element import (
+    ConfigDefault,
+    DefaultsTreeNode,
+    GroupDefault,
+    InputDefault,
+    ResultDefault,
+)
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
-
-
-@dataclass
-class DefaultsTreeNode:
-    node: InputDefault
-    children: Optional[List[Union["DefaultsTreeNode", InputDefault]]] = None
-
-
-@dataclass
-class ResultDefault:
-    config_path: Optional[str] = None
-    parent: Optional[str] = None
-    addressing_key: Optional[str] = None
-    result_package: Optional[str] = None
-    is_self: bool = False
+from hydra.errors import ConfigCompositionException
 
 
 @dataclass
@@ -78,6 +70,21 @@ class DefaultsList:
     config_overrides: List[Override]
 
 
+def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> None:
+    # check that self is present only once
+    has_self = False
+    for d in defaults:
+        if d.is_self():
+            if has_self:
+                raise ConfigCompositionException(
+                    f"Duplicate _self_ defined in {containing_node.get_config_path()}"
+                )
+            has_self = True
+
+    if not has_self:
+        defaults.insert(0, ConfigDefault(path="_self_"))
+
+
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -95,21 +102,21 @@ def _create_defaults_tree(
             override_name = overrides.get_choice_for(parent)
             parent.name = override_name
             parent.config_name_overridden = True
-        path = parent.get_config_path()
-    else:
-        assert isinstance(parent, ConfigDefault)
-        path = parent.path
+
+    path = parent.get_config_path()
 
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
     if loaded is None:
         missing_config_error(repo, root.node)
     else:
-
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
         if is_primary_config:
             for d in overrides.append_group_defaults:
                 defaults_list.append(d)
+
+        if len(defaults_list) > 0:
+            _validate_self(containing_node=parent, defaults=defaults_list)
 
         children = []
         for d in defaults_list:
@@ -117,7 +124,7 @@ def _create_defaults_tree(
                 d.parent_base_dir = root.node.parent_base_dir
                 children.append(d)
             else:
-                new_root = DefaultsTreeNode(node=d)
+                new_root = DefaultsTreeNode(node=d, parent=root)
                 d.parent_base_dir = parent.get_group_path()
                 new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
@@ -136,6 +143,40 @@ def _create_defaults_tree(
     return root
 
 
+def _create_result_default(tree: DefaultsTreeNode, node: InputDefault) -> ResultDefault:
+    res = ResultDefault()
+    if node.is_self():
+        res.config_path = tree.node.get_config_path()
+        res.is_self = True
+        pn = tree.parent_node()
+        cp = pn.get_config_path() if pn is not None else None
+        res.parent = cp
+    else:
+        res.config_path = node.get_config_path()
+        if tree is not None:
+            res.parent = tree.node.get_config_path()
+    return res
+
+
+def _tree_to_list(
+    tree: DefaultsTreeNode,
+    output: List[ResultDefault],
+):
+    node = tree.node
+
+    if tree.children is None or len(tree.children) == 0:
+        rd = _create_result_default(tree=tree.parent, node=node)
+        output.append(rd)
+    else:
+        for child in tree.children:
+            if isinstance(child, InputDefault):
+                rd = _create_result_default(tree=tree, node=child)
+                output.append(rd)
+            else:
+                assert isinstance(child, DefaultsTreeNode)
+                _tree_to_list(tree=child, output=output)
+
+
 def _create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
@@ -149,9 +190,12 @@ def _create_defaults_list(
         overrides=overrides,
         is_primary_config=True,
     )
+
+    output = []
+    _tree_to_list(tree=defaults_tree, output=output)
     # TODO: convert tree to list with DFS
     # TODO: fail if duplicate items exists
-    return []
+    return output
 
 
 def create_defaults_list(

@@ -6,7 +6,7 @@ from hydra._internal.new_defaults_list import (
     create_defaults_list,
     ResultDefault,
 )
-from hydra.core.NewDefaultElement import InputDefault, GroupDefault, ConfigDefault
+from hydra.core.new_default_element import InputDefault, GroupDefault, ConfigDefault
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -19,10 +19,12 @@ Plugins.instance()
 
 
 # TODO:
-#  - test with simple config group overrides
+#  - (Y) test with simple config group overrides
 #  - test with config group overrides overriding config groups @pkg
 #  - test handling missing configs mentioned in defaults list (with and without optional)
 #  - test overriding configs in absolute location
+#  - test duplicate _self_ error
+#  - test duplicates in result config list
 
 
 @mark.parametrize(
@@ -84,10 +86,11 @@ def _test_defaults_list_impl(
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
+    overrides_list = parser.parse_overrides(overrides=overrides)
     result = create_defaults_list(
         repo=repo,
         config_name=config_name,
-        overrides_list=parser.parse_overrides(overrides=overrides),
+        overrides_list=overrides_list,
     )
 
     assert result.defaults == expected
@@ -96,10 +99,67 @@ def _test_defaults_list_impl(
 @mark.parametrize(
     "config_name, overrides, expected",
     [
-        param("empty", [], [], id="empty"),
+        param(
+            "empty",
+            [],
+            [ResultDefault(config_path="empty")],
+            id="empty",
+        ),
+        param(
+            "config_default",
+            [],
+            [
+                ResultDefault(config_path="config_default", is_self=True),
+                ResultDefault(config_path="empty", parent="config_default"),
+            ],
+            id="config_default",
+        ),
+        param(
+            "group_default",
+            [],
+            [
+                ResultDefault(config_path="group_default", is_self=True),
+                ResultDefault(config_path="group1/file1", parent="group_default"),
+            ],
+            id="group_default",
+        ),
+        param(
+            "self_leading",
+            [],
+            [
+                ResultDefault(config_path="self_leading", is_self=True),
+                ResultDefault(config_path="group1/file1", parent="self_leading"),
+            ],
+            id="self_leading",
+        ),
+        param(
+            "self_trailing",
+            [],
+            [
+                ResultDefault(config_path="group1/file1", parent="self_trailing"),
+                ResultDefault(config_path="self_trailing", is_self=True),
+            ],
+            id="self_trailing",
+        ),
+        param(
+            "include_nested_group",
+            [],
+            [
+                ResultDefault(config_path="include_nested_group", is_self=True),
+                ResultDefault(
+                    config_path="group1/group_item1",
+                    parent="include_nested_group",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1", parent="group1/group_item1"
+                ),
+            ],
+            id="include_nested_group",
+        ),
     ],
 )
-def test_simple_cases(
+def test_simple_defaults_list_cases(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],

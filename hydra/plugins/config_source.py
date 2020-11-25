@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple, MutableSequence
 
 from hydra.core import DefaultElement
-from hydra.core.NewDefaultElement import InputDefault, GroupDefault, ConfigDefault
+from hydra.core.new_default_element import InputDefault, ConfigDefault, GroupDefault
 from hydra.errors import HydraException
 from omegaconf import (
     Container,

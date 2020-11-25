@@ -8,7 +8,7 @@ from hydra._internal.new_defaults_list import (
     _create_defaults_tree,
     Overrides,
 )
-from hydra.core.NewDefaultElement import ConfigDefault
+from hydra.core.new_default_element import ConfigDefault
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
 
