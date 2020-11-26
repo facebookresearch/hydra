@@ -20,11 +20,14 @@ from hydra.errors import ConfigCompositionException
 @dataclass
 class Overrides:
     override_choices: Dict[str, str]
+    override_used: Dict[str, bool]
+
     append_group_defaults: List[GroupDefault]
     config_overrides: List[Override]
 
     def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
         self.override_choices = {}
+        self.override_used = {}
         self.append_group_defaults = []
         self.config_overrides = []
 
@@ -40,28 +43,39 @@ class Overrides:
                     )
                 if override.is_add():
                     self.append_group_defaults.append(
-                        GroupDefault(group=override.key_or_group, name=value)
+                        GroupDefault(
+                            group=override.key_or_group,
+                            package=override.get_subject_package(),
+                            name=value,
+                        )
                     )
                 else:
-                    self.override_choices[override.key_or_group] = value
+                    key = override.get_key_element()
+                    self.override_choices[key] = value
+                    self.override_used[key] = False
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
-            key = default.get_group_path()  # TODO: use package if present
-            return key in self.override_choices
+            return default.get_override_key() in self.override_choices
 
         return False
 
-    def get_choice_for(self, default: InputDefault) -> str:
-        if isinstance(default, GroupDefault):
-            key = default.get_group_path()  # TODO: use package if present
-            if key in self.override_choices:
-                return self.override_choices[key]
-            else:
-                return default.name
-        else:
-            assert isinstance(default, ConfigDefault)
-            return default.path
+    def override_default_option(self, default: GroupDefault) -> None:
+        key = default.get_override_key()
+        if key in self.override_choices:
+            default.name = self.override_choices[key]
+            default.config_name_overridden = True
+            self.override_used[key] = True
+
+    def ensure_overrides_used(self):
+        for key, used in self.override_used.items():
+            if not used:
+                msg = dedent(
+                    f"""\
+                    Could not override '{key}'. No match in the defaults list.
+                    To append to your default list use +{key}={self.override_choices[key]}"""
+                )
+                raise ConfigCompositionException(msg)
 
 
 @dataclass
@@ -100,9 +114,7 @@ def _create_defaults_tree(
     parent = root.node
     if isinstance(parent, GroupDefault):
         if overrides.is_overridden(parent):
-            override_name = overrides.get_choice_for(parent)
-            parent.name = override_name
-            parent.config_name_overridden = True
+            overrides.override_default_option(parent)
 
     path = parent.get_config_path()
 
@@ -201,7 +213,6 @@ def _create_defaults_list(
 
     output = []
     _tree_to_list(tree=defaults_tree, output=output)
-    # TODO: convert tree to list with DFS
     # TODO: fail if duplicate items exists
     return output
 
@@ -213,6 +224,7 @@ def create_defaults_list(
 ) -> DefaultsList:
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
     defaults = _create_defaults_list(repo, config_name, overrides)
+    overrides.ensure_overrides_used()
     ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
     return ret
 

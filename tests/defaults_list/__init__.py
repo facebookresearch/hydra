@@ -37,6 +37,7 @@ def _test_defaults_tree_impl(
             overrides=overrides,
             is_primary_config=True,
         )
+        overrides.ensure_overrides_used()
         assert result == expected
     else:
         with expected:
@@ -46,3 +47,4 @@ def _test_defaults_tree_impl(
                 overrides=overrides,
                 is_primary_config=True,
             )
+            overrides.ensure_overrides_used()

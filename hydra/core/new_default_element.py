@@ -57,6 +57,14 @@ class InputDefault:
         else:
             return ret[lgi + len("_global_") + 1 :]
 
+    def get_override_key(self) -> str:
+        default_pkg = self.get_default_package()
+        final_pkg = self.get_final_package()
+        key = self.get_group_path()
+        if default_pkg != final_pkg:
+            key = f"{key}@{final_pkg}"
+        return key
+
 
 @dataclass
 class ConfigDefault(InputDefault):
