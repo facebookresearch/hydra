@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from textwrap import dedent
+
 import re
 
 from pytest import mark, param, raises
@@ -9,6 +11,7 @@ from hydra._internal.new_defaults_list import (
 )
 from hydra.core.new_default_element import GroupDefault, ConfigDefault
 from hydra.core.plugins import Plugins
+from hydra.errors import ConfigCompositionException
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import _test_defaults_tree_impl
 
@@ -17,7 +20,6 @@ chdir_hydra_root()
 # registers config source plugins
 Plugins.instance()
 
-# TODO: test inclusion of nested config item (not group)
 # TODO: Test cases where the default lists has package overrides
 #   defaults list packages to test : _global_, _global_.foo, _name_
 
@@ -384,6 +386,81 @@ def test_errors(
     ],
 )
 def test_defaults_tree_with_package_overrides(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name, input_overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "group_default_pkg1",
+            ["group1@pkg1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_pkg1"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2", package="pkg1"),
+                ],
+            ),
+            id="option_override:group_default_pkg1",
+        ),
+        param(
+            "group_default_pkg1",
+            ["group1@wrong=file2"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Could not override 'group1@wrong'. No match in the defaults list.
+                        To append to your default list use +group1@wrong=file2"""
+                    )
+                ),
+            ),
+            id="option_override:group_default_pkg1:bad_package_in_override",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            ["group1/group2@group1.pkg2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group_pkg2"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1_pkg2"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file2", package="pkg2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="option_override:include_nested_group_pkg2",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            ["group1/group2=file2"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Could not override 'group1/group2'. No match in the defaults list.
+                        To append to your default list use +group1/group2=file2"""
+                    )
+                ),
+            ),
+            id="option_override:include_nested_group_pkg2:missing_package_in_override",
+        ),
+    ],
+)
+def test_defaults_tree_with_package_overrides__group_override(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,

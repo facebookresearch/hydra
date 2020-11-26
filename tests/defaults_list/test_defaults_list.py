@@ -1,6 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from pytest import mark, param
-from typing import List
+from textwrap import dedent
+
+import re
+
+from pytest import mark, param, raises
+from typing import List, Any
 
 from hydra._internal.new_defaults_list import (
     create_defaults_list,
@@ -9,6 +13,7 @@ from hydra._internal.new_defaults_list import (
 from hydra.core.new_default_element import InputDefault, GroupDefault, ConfigDefault
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
+from hydra.errors import ConfigCompositionException
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import create_repo
 
@@ -20,7 +25,8 @@ Plugins.instance()
 
 # TODO: (Y) Test with simple config group overrides
 # TODO: (Y) Test computed package when there are no package overrides in package header
-# TODO: test with config group overrides overriding config groups @pkg
+# TODO: (Y) test with config group overrides overriding config groups @pkg
+# TODO: (Y) test overriding config group choices with non-default packages
 # TODO: test with config header package override
 # TODO: test with both config header and defaults list pkg override
 # TODO: handle hydra overrides
@@ -86,18 +92,25 @@ def test_loaded_defaults_list(config_path: str, expected_list: List[InputDefault
 def _test_defaults_list_impl(
     config_name: str,
     overrides: List[str],
-    expected: List[ResultDefault],
+    expected: Any,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
     overrides_list = parser.parse_overrides(overrides=overrides)
-    result = create_defaults_list(
-        repo=repo,
-        config_name=config_name,
-        overrides_list=overrides_list,
-    )
-
-    assert result.defaults == expected
+    if isinstance(expected, list):
+        result = create_defaults_list(
+            repo=repo,
+            config_name=config_name,
+            overrides_list=overrides_list,
+        )
+        assert result.defaults == expected
+    else:
+        with expected:
+            create_defaults_list(
+                repo=repo,
+                config_name=config_name,
+                overrides_list=overrides_list,
+            )
 
 
 @mark.parametrize(
@@ -398,6 +411,72 @@ def test_simple_defaults_list_cases(
     ],
 )
 def test_override_package_in_defaults_list(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "group_default_pkg1",
+            ["group1@pkg1=file2"],
+            [
+                ResultDefault(
+                    config_path="group_default_pkg1", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="pkg1",
+                    parent="group_default_pkg1",
+                ),
+            ],
+            id="option_override:group_default_pkg1",
+        ),
+        param(
+            "group_default_pkg1",
+            ["group1@wrong=file2"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Could not override 'group1@wrong'. No match in the defaults list.
+                        To append to your default list use +group1@wrong=file2"""
+                    )
+                ),
+            ),
+            id="option_override:group_default_pkg1:bad_package_in_override",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            ["group1/group2@group1.pkg2=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg2", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg2",
+                    parent="include_nested_group_pkg2",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="group1.pkg2",
+                    parent="group1/group_item1_pkg2",
+                ),
+            ],
+            id="option_override:include_nested_group_pkg2",
+        ),
+    ],
+)
+def test_override_package_in_defaults_list__group_override(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
