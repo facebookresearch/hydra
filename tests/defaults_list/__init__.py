@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List
+from typing import List, Any
 
 from hydra._internal.config_repository import IConfigRepository, ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -21,7 +21,7 @@ def create_repo() -> IConfigRepository:
 def _test_defaults_tree_impl(
     config_name: str,
     input_overrides: List[str],
-    expected: DefaultsTreeNode,
+    expected: Any,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
@@ -29,11 +29,20 @@ def _test_defaults_tree_impl(
     root = DefaultsTreeNode(node=parent)
     overrides_list = parser.parse_overrides(overrides=input_overrides)
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
-    result = _create_defaults_tree(
-        repo=repo,
-        root=root,
-        overrides=overrides,
-        is_primary_config=True,
-    )
 
-    assert result == expected
+    if isinstance(expected, DefaultsTreeNode):
+        result = _create_defaults_tree(
+            repo=repo,
+            root=root,
+            overrides=overrides,
+            is_primary_config=True,
+        )
+        assert result == expected
+    else:
+        with expected:
+            _create_defaults_tree(
+                repo=repo,
+                root=root,
+                overrides=overrides,
+                is_primary_config=True,
+            )

@@ -101,90 +101,6 @@ def _test_defaults_list_impl(
 
 
 @mark.parametrize(
-    "config_name, overrides, expected",
-    [
-        param(
-            "empty",
-            [],
-            [ResultDefault(config_path="empty", package="")],
-            id="empty",
-        ),
-        param(
-            "config_default",
-            [],
-            [
-                ResultDefault(config_path="config_default", package="", is_self=True),
-                ResultDefault(config_path="empty", package="", parent="config_default"),
-            ],
-            id="config_default",
-        ),
-        param(
-            "group_default",
-            [],
-            [
-                ResultDefault(config_path="group_default", package="", is_self=True),
-                ResultDefault(
-                    config_path="group1/file1", package="group1", parent="group_default"
-                ),
-            ],
-            id="group_default",
-        ),
-        param(
-            "self_leading",
-            [],
-            [
-                ResultDefault(config_path="self_leading", package="", is_self=True),
-                ResultDefault(
-                    config_path="group1/file1", package="group1", parent="self_leading"
-                ),
-            ],
-            id="self_leading",
-        ),
-        param(
-            "self_trailing",
-            [],
-            [
-                ResultDefault(
-                    config_path="group1/file1", package="group1", parent="self_trailing"
-                ),
-                ResultDefault(config_path="self_trailing", package="", is_self=True),
-            ],
-            id="self_trailing",
-        ),
-        param(
-            "include_nested_group",
-            [],
-            [
-                ResultDefault(
-                    config_path="include_nested_group", package="", is_self=True
-                ),
-                ResultDefault(
-                    config_path="group1/group_item1",
-                    parent="include_nested_group",
-                    package="group1",
-                    is_self=True,
-                ),
-                ResultDefault(
-                    config_path="group1/group2/file1",
-                    package="group1.group2",
-                    parent="group1/group_item1",
-                ),
-            ],
-            id="include_nested_group",
-        ),
-    ],
-)
-def test_simple_defaults_list_cases(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
-) -> None:
-    _test_defaults_list_impl(
-        config_name=config_name, overrides=overrides, expected=expected
-    )
-
-
-@mark.parametrize(
     "default,expected_group_path,expected_config_path",
     [
         param(
@@ -318,3 +234,174 @@ def test_get_default_package(default: InputDefault, expected) -> None:
 )
 def test_get_final_package(default: InputDefault, expected) -> None:
     assert default.get_final_package() == expected
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "empty",
+            [],
+            [ResultDefault(config_path="empty", package="")],
+            id="empty",
+        ),
+        param(
+            "config_default",
+            [],
+            [
+                ResultDefault(config_path="config_default", package="", is_self=True),
+                ResultDefault(config_path="empty", package="", parent="config_default"),
+            ],
+            id="config_default",
+        ),
+        param(
+            "group_default",
+            [],
+            [
+                ResultDefault(config_path="group_default", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="group_default"
+                ),
+            ],
+            id="group_default",
+        ),
+        param(
+            "self_leading",
+            [],
+            [
+                ResultDefault(config_path="self_leading", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="self_leading"
+                ),
+            ],
+            id="self_leading",
+        ),
+        param(
+            "self_trailing",
+            [],
+            [
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="self_trailing"
+                ),
+                ResultDefault(config_path="self_trailing", package="", is_self=True),
+            ],
+            id="self_trailing",
+        ),
+        param(
+            "include_nested_group",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1",
+                    parent="include_nested_group",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.group2",
+                    parent="group1/group_item1",
+                ),
+            ],
+            id="include_nested_group",
+        ),
+    ],
+)
+def test_simple_defaults_list_cases(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "config_default_pkg1",
+            [],
+            [
+                ResultDefault(
+                    config_path="config_default_pkg1", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="empty", package="pkg1", parent="config_default_pkg1"
+                ),
+            ],
+            id="config_default_pkg1",
+        ),
+        param(
+            "group_default_pkg1",
+            [],
+            [
+                ResultDefault(
+                    config_path="group_default_pkg1", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="pkg1",
+                    parent="group_default_pkg1",
+                ),
+            ],
+            id="group_default_pkg1",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg2", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg2",
+                    parent="include_nested_group_pkg2",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.pkg2",
+                    parent="group1/group_item1_pkg2",
+                ),
+            ],
+            id="include_nested_group_pkg2",
+        ),
+        param(
+            "include_nested_config_item_pkg2",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_config_item_pkg2",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/config_item_pkg2",
+                    parent="include_nested_config_item_pkg2",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.pkg2",
+                    parent="group1/config_item_pkg2",
+                ),
+            ],
+            id="include_nested_config_item_pkg2",
+        ),
+    ],
+)
+def test_override_package_in_defaults_list(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
