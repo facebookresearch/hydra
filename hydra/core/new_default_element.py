@@ -65,6 +65,10 @@ class ConfigDefault(InputDefault):
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     parent_package: Optional[str] = field(default=None, compare=False, repr=False)
 
+    def __post_init__(self):
+        if self.is_self() and self.package is not None:
+            raise ValueError("_self_@PACKAGE is not supported")
+
     def is_self(self) -> bool:
         return self.path == "_self_"
 

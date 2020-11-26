@@ -1,3 +1,2 @@
 defaults:
-  - group1: file1
   - _self_@pkg1
