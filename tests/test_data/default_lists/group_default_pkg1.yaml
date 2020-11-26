@@ -1,0 +1,2 @@
+defaults:
+  - group1@pkg1: file1
