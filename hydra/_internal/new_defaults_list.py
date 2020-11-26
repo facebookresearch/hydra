@@ -217,9 +217,10 @@ def create_defaults_list(
     return ret
 
 
+# TODO: show parent config name in the error (where is my error?)
 def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None:
     options = None
-    if isinstance(element, GroupDefault) is not None:
+    if isinstance(element, GroupDefault):
         options = repo.get_group_options(element.group, ObjectType.CONFIG)
         opt_list = "\n".join(["\t" + x for x in options])
         msg = (
