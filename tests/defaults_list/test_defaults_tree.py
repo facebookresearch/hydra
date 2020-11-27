@@ -20,9 +20,6 @@ chdir_hydra_root()
 # registers config source plugins
 Plugins.instance()
 
-# TODO: Test cases where the default lists has package overrides
-#   defaults list packages to test : _global_, _global_.foo, _name_
-
 
 @mark.parametrize(
     "config_name, overrides, expected",

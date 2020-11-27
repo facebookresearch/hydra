@@ -27,6 +27,10 @@ Plugins.instance()
 # TODO: (Y) Test computed package when there are no package overrides in package header
 # TODO: (Y) test with config group overrides overriding config groups @pkg
 # TODO: (Y) test overriding config group choices with non-default packages
+#   packages to test:
+#    _global_
+#    _global_.foo
+#    _name_
 # TODO: test with config header package override
 # TODO: test with both config header and defaults list pkg override
 # TODO: handle hydra overrides
@@ -520,7 +524,6 @@ def test_override_package_in_defaults_list(
             ],
             id="option_override:include_nested_group_pkg2",
         ),
-        # TODO: Enable support for empty package after @ in cli parser
         param(
             "include_nested_group_global_",
             ["group1/group2@=file2"],
@@ -547,6 +550,67 @@ def test_override_package_in_defaults_list(
     ],
 )
 def test_override_package_in_defaults_list__group_override(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "include_nested_group_global_foo",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_global_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_global_foo",
+                    parent="include_nested_group_global_foo",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="foo",
+                    parent="group1/group_item1_global_foo",
+                ),
+            ],
+            id="include_nested_group_global_foo",
+        ),
+        param(
+            "include_nested_group_global_foo",
+            ["group1/group2@foo=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_global_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_global_foo",
+                    parent="include_nested_group_global_foo",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="foo",
+                    parent="group1/group_item1_global_foo",
+                ),
+            ],
+            id="include_nested_group_global_foo",
+        ),
+    ],
+)
+def test_include_nested_group_global_foo(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
