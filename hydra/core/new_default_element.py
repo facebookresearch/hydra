@@ -34,14 +34,20 @@ class InputDefault:
     def _relative_group_path(self) -> str:
         raise NotImplementedError()
 
+    def get_name(self) -> str:
+        raise NotImplementedError()
+
     def _get_final_package(
         self,
         parent_package: Optional[str],
         package: Optional[str],
+        name: str,
     ) -> str:
         assert parent_package is not None
         if package is None:
             package = self._relative_group_path().replace("/", ".")
+
+        package = package.replace("_name_", name)
 
         if parent_package == "":
             ret = package
@@ -96,6 +102,13 @@ class ConfigDefault(InputDefault):
             else:
                 return f"{self.parent_base_dir}/{group}"
 
+    def get_name(self) -> str:
+        idx = self.path.rfind("/")
+        if idx == -1:
+            return self.path
+        else:
+            return self.path[idx + 1 :]
+
     def get_config_path(self) -> str:
         assert self.parent_base_dir is not None
         if self.parent_base_dir == "":
@@ -104,7 +117,9 @@ class ConfigDefault(InputDefault):
             return f"{self.parent_base_dir}/{self.path}"
 
     def get_final_package(self) -> str:
-        return self._get_final_package(self.parent_package, self.package)
+        return self._get_final_package(
+            self.parent_package, self.package, self.get_name()
+        )
 
     def _relative_group_path(self) -> str:
         idx = self.path.rfind("/")
@@ -146,8 +161,13 @@ class GroupDefault(InputDefault):
 
         return f"{group_path}/{self.name}"
 
+    def get_name(self) -> str:
+        return self.name
+
     def get_final_package(self) -> str:
-        return self._get_final_package(self.parent_package, self.package)
+        return self._get_final_package(
+            self.parent_package, self.package, self.get_name()
+        )
 
     def _relative_group_path(self) -> str:
         return self.group
