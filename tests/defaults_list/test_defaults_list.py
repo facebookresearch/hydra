@@ -28,8 +28,8 @@ Plugins.instance()
 # TODO: (Y) test with config group overrides overriding config groups @pkg
 # TODO: (Y) test overriding config group choices with non-default packages
 #   packages to test:
-#    _global_
-#    _global_.foo
+#    (Y) _global_
+#    (Y) _global_.foo
 #    _name_
 # TODO: test with config header package override
 # TODO: test with both config header and defaults list pkg override
@@ -354,42 +354,6 @@ def test_simple_defaults_list_cases(
             id="config_default_pkg1",
         ),
         param(
-            "group_default_pkg1",
-            [],
-            [
-                ResultDefault(
-                    config_path="group_default_pkg1", package="", is_self=True
-                ),
-                ResultDefault(
-                    config_path="group1/file1",
-                    package="pkg1",
-                    parent="group_default_pkg1",
-                ),
-            ],
-            id="group_default_pkg1",
-        ),
-        param(
-            "include_nested_group_pkg2",
-            [],
-            [
-                ResultDefault(
-                    config_path="include_nested_group_pkg2", package="", is_self=True
-                ),
-                ResultDefault(
-                    config_path="group1/group_item1_pkg2",
-                    parent="include_nested_group_pkg2",
-                    package="group1",
-                    is_self=True,
-                ),
-                ResultDefault(
-                    config_path="group1/group2/file1",
-                    package="group1.pkg2",
-                    parent="group1/group_item1_pkg2",
-                ),
-            ],
-            id="include_nested_group_pkg2",
-        ),
-        param(
             "include_nested_config_item_pkg2",
             [],
             [
@@ -435,29 +399,6 @@ def test_simple_defaults_list_cases(
             ],
             id="include_nested_config_item_global",
         ),
-        param(
-            "include_nested_group_global_",
-            [],
-            [
-                ResultDefault(
-                    config_path="include_nested_group_global_",
-                    package="",
-                    is_self=True,
-                ),
-                ResultDefault(
-                    config_path="group1/group_item1_global_",
-                    parent="include_nested_group_global_",
-                    package="group1",
-                    is_self=True,
-                ),
-                ResultDefault(
-                    config_path="group1/group2/file1",
-                    package="",
-                    parent="group1/group_item1_global_",
-                ),
-            ],
-            id="include_nested_config_item_global",
-        ),
     ],
 )
 def test_override_package_in_defaults_list(
@@ -473,6 +414,78 @@ def test_override_package_in_defaults_list(
 @mark.parametrize(
     "config_name, overrides, expected",
     [
+        param(
+            "include_nested_group_pkg2",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg2", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg2",
+                    parent="include_nested_group_pkg2",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.pkg2",
+                    parent="group1/group_item1_pkg2",
+                ),
+            ],
+            id="include_nested_group_pkg2",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            ["group1/group2@group1.pkg2=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg2", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg2",
+                    parent="include_nested_group_pkg2",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="group1.pkg2",
+                    parent="group1/group_item1_pkg2",
+                ),
+            ],
+            id="option_override:include_nested_group_pkg2",
+        ),
+    ],
+)
+def test_include_nested_group_pkg2(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "group_default_pkg1",
+            [],
+            [
+                ResultDefault(
+                    config_path="group_default_pkg1", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="pkg1",
+                    parent="group_default_pkg1",
+                ),
+            ],
+            id="group_default_pkg1",
+        ),
         param(
             "group_default_pkg1",
             ["group1@pkg1=file2"],
@@ -503,26 +516,43 @@ def test_override_package_in_defaults_list(
             ),
             id="option_override:group_default_pkg1:bad_package_in_override",
         ),
+    ],
+)
+def test_group_default_pkg1(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
         param(
-            "include_nested_group_pkg2",
-            ["group1/group2@group1.pkg2=file2"],
+            "include_nested_group_global_",
+            [],
             [
                 ResultDefault(
-                    config_path="include_nested_group_pkg2", package="", is_self=True
+                    config_path="include_nested_group_global_",
+                    package="",
+                    is_self=True,
                 ),
                 ResultDefault(
-                    config_path="group1/group_item1_pkg2",
-                    parent="include_nested_group_pkg2",
+                    config_path="group1/group_item1_global_",
+                    parent="include_nested_group_global_",
                     package="group1",
                     is_self=True,
                 ),
                 ResultDefault(
-                    config_path="group1/group2/file2",
-                    package="group1.pkg2",
-                    parent="group1/group_item1_pkg2",
+                    config_path="group1/group2/file1",
+                    package="",
+                    parent="group1/group_item1_global_",
                 ),
             ],
-            id="option_override:include_nested_group_pkg2",
+            id="include_nested_config_item_global",
         ),
         param(
             "include_nested_group_global_",
@@ -549,7 +579,7 @@ def test_override_package_in_defaults_list(
         ),
     ],
 )
-def test_override_package_in_defaults_list__group_override(
+def test_include_nested_group_global(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
