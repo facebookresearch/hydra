@@ -408,6 +408,29 @@ def test_simple_defaults_list_cases(
             ],
             id="include_nested_config_item_pkg2",
         ),
+        param(
+            "include_nested_config_item_global",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_config_item_global",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/config_item_global_",
+                    parent="include_nested_config_item_global",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="",
+                    parent="group1/config_item_global_",
+                ),
+            ],
+            id="include_nested_config_item_global",
+        ),
     ],
 )
 def test_override_package_in_defaults_list(
