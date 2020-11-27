@@ -520,6 +520,11 @@ def test_package_or_group(value: str, expected: Any) -> None:
             Key(key_or_group="package_or_group", pkg1=None, pkg2="pkg2"),
             id="package_or_group@:pkg2",
         ),
+        pytest.param(
+            "package_or_group@",
+            Key(key_or_group="package_or_group", pkg1=""),
+            id="package_or_group@",
+        ),
     ],
 )
 def test_key(value: str, expected: Any) -> None:
