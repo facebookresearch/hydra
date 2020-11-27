@@ -431,6 +431,29 @@ def test_simple_defaults_list_cases(
             ],
             id="include_nested_config_item_global",
         ),
+        param(
+            "include_nested_group_global_",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_global_",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_global_",
+                    parent="include_nested_group_global_",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="",
+                    parent="group1/group_item1_global_",
+                ),
+            ],
+            id="include_nested_config_item_global",
+        ),
     ],
 )
 def test_override_package_in_defaults_list(
@@ -496,6 +519,30 @@ def test_override_package_in_defaults_list(
                 ),
             ],
             id="option_override:include_nested_group_pkg2",
+        ),
+        # TODO: Enable support for empty package after @ in cli parser
+        param(
+            "include_nested_group_global_",
+            ["group1/group2@=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_global_",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_global_",
+                    parent="include_nested_group_global_",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="",
+                    parent="group1/group_item1_global_",
+                ),
+            ],
+            id="option_override:include_nested_config_item_global",
         ),
     ],
 )
