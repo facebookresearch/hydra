@@ -807,7 +807,30 @@ def test_primary_cfg_pkg_header_foo(
                     parent="group1/group_item1_pkg_header_foo",
                 ),
             ],
-            id="primary_pkg_header_foo",
+            id="include_nested_group_pkg_header_foo:override_nested",
+        ),
+        param(
+            "include_nested_group_pkg_header_foo",
+            ["group1@foo=group_item2_pkg_header_foo"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item2_pkg_header_foo",
+                    package="foo",
+                    is_self=True,
+                    parent="include_nested_group_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="foo.group2",
+                    parent="group1/group_item2_pkg_header_foo",
+                ),
+            ],
+            id="include_nested_group_pkg_header_foo:override_first_level",
         ),
     ],
 )
