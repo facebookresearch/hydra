@@ -56,6 +56,7 @@ class Overrides:
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
+            # TODO: collect overridable keys for help/useful error purposes
             return default.get_override_key() in self.override_choices
 
         return False
@@ -131,6 +132,12 @@ def _create_defaults_tree(
     if isinstance(parent, GroupDefault):
         if overrides.is_overridden(parent):
             overrides.override_default_option(parent)
+            # clear package header and obtain updated one from overridden config
+            # (for the rare case it has changed)
+            parent.package_header = None
+            update_package_header(
+                repo=repo, node=parent, is_primary_config=is_primary_config
+            )
 
     path = parent.get_config_path()
 

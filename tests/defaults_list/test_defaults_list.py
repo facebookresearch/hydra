@@ -832,6 +832,29 @@ def test_primary_cfg_pkg_header_foo(
             ],
             id="include_nested_group_pkg_header_foo:override_first_level",
         ),
+        param(
+            "include_nested_group_pkg_header_foo",
+            ["group1@foo=group_item2_pkg_header_bar"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item2_pkg_header_bar",
+                    package="bar",
+                    is_self=True,
+                    parent="include_nested_group_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="bar.group2",
+                    parent="group1/group_item2_pkg_header_bar",
+                ),
+            ],
+            id="include_nested_group_pkg_header_foo:override_first_level_with_package_header_change",
+        ),
     ],
 )
 def test_include_nested_group_pkg_header_foo(
@@ -843,5 +866,6 @@ def test_include_nested_group_pkg_header_foo(
 
 
 # TODO: test the following package header cases:
-#  - package header in nested config (package header is absolute)
-#  - overriding config group with a package header, is it even possible given the circular dependency?
+#  - (Y) package header in nested config (package header is absolute)
+#  - (Y) overriding config group with a package header, is it even possible given the circular dependency?
+#  - Confirm package header is absolute (using a package header in a third level config)
