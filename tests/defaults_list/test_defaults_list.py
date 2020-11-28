@@ -334,9 +334,7 @@ def test_get_final_package(default: InputDefault, expected) -> None:
     ],
 )
 def test_simple_defaults_list_cases(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -408,9 +406,7 @@ def test_simple_defaults_list_cases(
     ],
 )
 def test_override_package_in_defaults_list(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -465,9 +461,7 @@ def test_override_package_in_defaults_list(
     ],
 )
 def test_include_nested_group_pkg2(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -525,9 +519,7 @@ def test_include_nested_group_pkg2(
     ],
 )
 def test_group_default_pkg1(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -586,9 +578,7 @@ def test_group_default_pkg1(
     ],
 )
 def test_include_nested_group_global(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -647,9 +637,7 @@ def test_include_nested_group_global(
     ],
 )
 def test_include_nested_group_global_foo(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
@@ -708,10 +696,70 @@ def test_include_nested_group_global_foo(
     ],
 )
 def test_include_nested_group_name_(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "primary_pkg_header_foo",
+            [],
+            [
+                ResultDefault(
+                    config_path="primary_pkg_header_foo",
+                    package="foo",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="foo.group1",
+                    parent="primary_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="foo.pkg",
+                    parent="primary_pkg_header_foo",
+                ),
+            ],
+            id="primary_pkg_header_foo",
+        ),
+        param(
+            "primary_pkg_header_foo",
+            ["group1@foo.group1=file2", "group1@foo.pkg=file3"],
+            [
+                ResultDefault(
+                    config_path="primary_pkg_header_foo",
+                    package="foo",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="foo.group1",
+                    parent="primary_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/file3",
+                    package="foo.pkg",
+                    parent="primary_pkg_header_foo",
+                ),
+            ],
+            id="primary_pkg_header_foo",
+        ),
+    ],
+)
+def test_primary_cfg_pkg_header_foo(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+# TODO: test the following package header cases:
+#  - package header in nested config (package header is absolute)
+#  - overriding config group with a package header, is it even possible given the circular dependency?

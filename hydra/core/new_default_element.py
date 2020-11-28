@@ -6,7 +6,6 @@ from typing import List, Optional, Union
 class ResultDefault:
     config_path: Optional[str] = None
     parent: Optional[str] = None
-    # addressing_key: Optional[str] = None
     package: Optional[str] = None
     is_self: bool = False
 
@@ -25,9 +24,6 @@ class InputDefault:
     def get_default_package(self) -> str:
         return self.get_group_path().replace("/", ".")
 
-    # def get_config_package_in_header(self) -> str:
-    #     raise NotImplementedError()
-
     def get_final_package(self) -> str:
         raise NotImplementedError()
 
@@ -36,6 +32,20 @@ class InputDefault:
 
     def get_name(self) -> str:
         raise NotImplementedError()
+
+    def set_package_header(self, package_header: str) -> None:
+        assert self.__dict__["package_header"] is None
+        # TODO: is package header relative or absolute?
+        self.__dict__["package_header"] = package_header
+
+    def get_package_header(self) -> Optional[str]:
+        return self.__dict__["package_header"]
+
+    def get_package(self) -> str:
+        if self.__dict__["package"] is None:
+            return self.__dict__["package_header"]
+        else:
+            return self.__dict__["package"]
 
     def _get_final_package(
         self,
@@ -76,8 +86,10 @@ class InputDefault:
 class ConfigDefault(InputDefault):
     path: str
     package: Optional[str] = None
+
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     parent_package: Optional[str] = field(default=None, compare=False, repr=False)
+    package_header: Optional[str] = field(default=None, compare=False)
 
     def __post_init__(self):
         if self.is_self() and self.package is not None:
@@ -118,7 +130,7 @@ class ConfigDefault(InputDefault):
 
     def get_final_package(self) -> str:
         return self._get_final_package(
-            self.parent_package, self.package, self.get_name()
+            self.parent_package, self.get_package(), self.get_name()
         )
 
     def _relative_group_path(self) -> str:
@@ -140,6 +152,7 @@ class GroupDefault(InputDefault):
 
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
+    package_header: Optional[str] = field(default=None, compare=False)
 
     def __post_init__(self):
         assert self.group is not None and self.group != ""
