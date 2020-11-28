@@ -99,6 +99,16 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
         defaults.insert(0, ConfigDefault(path="_self_"))
 
 
+def update_package_header(
+    repo: IConfigRepository, node: InputDefault, is_primary_config: bool
+):
+    loaded = repo.load_config(
+        config_path=node.get_config_path(), is_primary_config=is_primary_config
+    )
+    if loaded is not None and "orig_package" in loaded.header:
+        node.set_package_header(loaded.header["orig_package"])
+
+
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -112,6 +122,9 @@ def _create_defaults_tree(
         root.node.parent_package = ""
 
     parent = root.node
+
+    update_package_header(repo=repo, node=parent, is_primary_config=is_primary_config)
+
     if isinstance(parent, GroupDefault):
         if overrides.is_overridden(parent):
             overrides.override_default_option(parent)
