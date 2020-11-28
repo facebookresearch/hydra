@@ -1,0 +1,3 @@
+# @package bar
+defaults:
+  - group2: file2
