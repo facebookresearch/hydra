@@ -32,10 +32,11 @@ Plugins.instance()
 #    (Y) _global_.foo
 #    (Y) _name_
 # TODO: (Y) test with config header package override
-# TODO: test with both config header and defaults list pkg override
+# TODO: (Y) test with both config header and defaults list pkg override
 # TODO: handle hydra overrides
-#  - reconsider support for overriding as before
-#  - implement an explicit overriding method for config groups
+#  - (X) reconsider support for overriding as before
+#  - Support marked overrides in primary config only
+#  - Support marked override in all configs
 # TODO: test handling missing configs mentioned in defaults list (with and without optional)
 # TODO: test overriding configs in absolute location
 # TODO: test duplicate _self_ error
@@ -905,6 +906,94 @@ def test_include_nested_group_pkg_header_foo(
     ],
 )
 def test_nested_package_header_is_absolute(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "include_nested_group_pkg_header_foo_override_pkg_bar",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    parent=None,
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg_header_foo",
+                    parent="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    package="bar",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    parent="group1/group_item1_pkg_header_foo",
+                    package="bar.group2",
+                    is_self=False,
+                ),
+            ],
+            id="include_nested_group_global_foo_override_pkg_bar",
+        ),
+        param(
+            "include_nested_group_pkg_header_foo_override_pkg_bar",
+            ["group1@bar=group_item2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    parent=None,
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item2",
+                    parent="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    package="bar",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    parent="group1/group_item2",
+                    package="bar.group2",
+                    is_self=False,
+                ),
+            ],
+            id="include_nested_group_global_foo_override_pkg_bar:override_group1",
+        ),
+        param(
+            "include_nested_group_pkg_header_foo_override_pkg_bar",
+            ["group1/group2@bar.group2=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    parent=None,
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg_header_foo",
+                    parent="include_nested_group_pkg_header_foo_override_pkg_bar",
+                    package="bar",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    parent="group1/group_item1_pkg_header_foo",
+                    package="bar.group2",
+                    is_self=False,
+                ),
+            ],
+            id="include_nested_group_global_foo_override_pkg_bar:override_group2",
+        ),
+    ],
+)
+def test_overriding_package_header_from_defaults_list(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ):
     _test_defaults_list_impl(
