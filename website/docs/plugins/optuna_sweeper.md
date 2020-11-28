@@ -4,6 +4,10 @@ title: Optuna Sweeper plugin
 sidebar_label: Optuna Sweeper plugin
 ---
 
+[![PyPI](https://img.shields.io/pypi/v/hydra-optuna-sweeper)](https://img.shields.io/pypi/v/hydra-optuna-sweeper)
+![PyPI - License](https://img.shields.io/pypi/l/hydra-optuna-sweeper)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-optuna-sweeper)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-optuna-sweeper.svg)](https://pypistats.org/packages/hydra-optuna-sweeper)
 [![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_optuna_sweeper/example)
 [![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_optuna_sweeper)
 
@@ -13,9 +17,7 @@ This plugin enables Hydra applications to utilize [Optuna](https://optuna.org) f
 ## Installation
 
 ```commandline
-git clone https://github.com/facebookresearch/hydra.git
-cd hydra
-pip install plugins/hydra_optuna_sweeper
+pip install hydra-optuna-sweeper --upgrade
 ```
 
 ## Usage
@@ -90,12 +92,12 @@ Hydra provides a override parser that support rich syntax. Please refer to [Over
 
 #### Interval override
 
-By default, `interval` is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html), [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) or [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html) by specifying the `int` and `log` tags.
+By default, `interval` is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html), [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) or [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html) by applying the `int` function or `log` tags.
 
 <details><summary>Example for interval override</summary>
 
 ```commandline
-python example/sphere.py --multirun 'x=tag(int, interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
+python example/sphere.py --multirun 'x=int(interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
 ```
 
 The output is as follows:
