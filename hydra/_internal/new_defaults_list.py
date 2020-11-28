@@ -102,6 +102,9 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
 def update_package_header(
     repo: IConfigRepository, node: InputDefault, is_primary_config: bool
 ):
+    # This loads the same config loaded in _create_defaults_tree
+    # To avoid loading it twice, the repo implementation is expected to cache
+    # loaded configs
     loaded = repo.load_config(
         config_path=node.get_config_path(), is_primary_config=is_primary_config
     )
@@ -132,6 +135,7 @@ def _create_defaults_tree(
     path = parent.get_config_path()
 
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
+    # TODO: test case where the config option is overridden and the newly loaded config has a different package header.
 
     if loaded is None:
         missing_config_error(repo, root.node)
@@ -148,7 +152,7 @@ def _create_defaults_tree(
         for d in defaults_list:
             if d.is_self():
                 d.parent_base_dir = root.node.parent_base_dir
-                d.parent_package = root.node.parent_package
+                d.parent_package = root.node.get_package()
                 children.append(d)
             else:
                 new_root = DefaultsTreeNode(node=d, parent=root)
