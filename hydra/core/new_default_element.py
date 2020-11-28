@@ -179,7 +179,7 @@ class GroupDefault(InputDefault):
 
     def get_final_package(self) -> str:
         return self._get_final_package(
-            self.parent_package, self.package, self.get_name()
+            self.parent_package, self.get_package(), self.get_name()
         )
 
     def _relative_group_path(self) -> str:

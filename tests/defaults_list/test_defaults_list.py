@@ -760,6 +760,65 @@ def test_primary_cfg_pkg_header_foo(
     )
 
 
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "include_nested_group_pkg_header_foo",
+            [],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg_header_foo",
+                    package="foo",
+                    is_self=True,
+                    parent="include_nested_group_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="foo.group2",
+                    parent="group1/group_item1_pkg_header_foo",
+                ),
+            ],
+            id="include_nested_group_pkg_header_foo",
+        ),
+        param(
+            "include_nested_group_pkg_header_foo",
+            ["group1/group2@foo.group2=file2"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group_pkg_header_foo",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group_item1_pkg_header_foo",
+                    package="foo",
+                    is_self=True,
+                    parent="include_nested_group_pkg_header_foo",
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file2",
+                    package="foo.group2",
+                    parent="group1/group_item1_pkg_header_foo",
+                ),
+            ],
+            id="primary_pkg_header_foo",
+        ),
+    ],
+)
+def test_include_nested_group_pkg_header_foo(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
 # TODO: test the following package header cases:
 #  - package header in nested config (package header is absolute)
 #  - overriding config group with a package header, is it even possible given the circular dependency?
