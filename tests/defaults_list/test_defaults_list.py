@@ -31,7 +31,7 @@ Plugins.instance()
 #    (Y) _global_
 #    (Y) _global_.foo
 #    (Y) _name_
-# TODO: test with config header package override
+# TODO: (Y) test with config header package override
 # TODO: test with both config header and defaults list pkg override
 # TODO: handle hydra overrides
 #  - reconsider support for overriding as before
@@ -44,6 +44,7 @@ Plugins.instance()
 # TODO: package header:
 #  - consider making relative
 #  - consider deprecating completely
+
 # TODO: update documentation
 
 
@@ -865,7 +866,47 @@ def test_include_nested_group_pkg_header_foo(
     )
 
 
-# TODO: test the following package header cases:
-#  - (Y) package header in nested config (package header is absolute)
-#  - (Y) overriding config group with a package header, is it even possible given the circular dependency?
-#  - Confirm package header is absolute (using a package header in a third level config)
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "empty",
+            ["+group1/group2=file1_pkg_header_foo"],
+            [
+                ResultDefault(config_path="empty", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/group2/file1_pkg_header_foo",
+                    parent="empty",
+                    package="foo",
+                ),
+            ],
+            id="included_from_overrides",
+        ),
+        param(
+            "empty",
+            ["+group1=group_item1_with_pkg_header_foo"],
+            [
+                ResultDefault(config_path="empty", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/group_item1_with_pkg_header_foo",
+                    parent="empty",
+                    package="group1",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1_pkg_header_foo",
+                    parent="group1/group_item1_with_pkg_header_foo",
+                    package="foo",
+                    is_self=False,
+                ),
+            ],
+            id="included_from_overrides",
+        ),
+    ],
+)
+def test_nested_package_header_is_absolute(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )

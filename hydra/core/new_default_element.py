@@ -35,7 +35,13 @@ class InputDefault:
 
     def set_package_header(self, package_header: str) -> None:
         assert self.__dict__["package_header"] is None
-        # TODO: is package header relative or absolute?
+        # package header is always interpreted as absolute.
+        # if it does not have a _global_ prefix, add it.
+        if package_header != "_global_" and not package_header.startswith("_global_."):
+            if package_header == "":
+                package_header = "_global_"
+            else:
+                package_header = f"_global_.{package_header}"
         self.__dict__["package_header"] = package_header
 
     def get_package_header(self) -> Optional[str]:
