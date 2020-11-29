@@ -304,9 +304,8 @@ class ConfigSource(Plugin):
         res: List[DefaultElement] = []
         for item in defaults:
             if isinstance(item, DictConfig):
-                optional = False
-                if "optional" in item:
-                    optional = item.pop("optional")
+                optional = item.pop("optional", False)
+                item.pop("override", False)
                 keys = list(item.keys())
                 if len(keys) > 1:
                     raise ValueError(f"Too many keys in default item {item}")
@@ -393,9 +392,9 @@ class ConfigSource(Plugin):
         res: List[DefaultElement] = []
         for item in defaults:
             if isinstance(item, DictConfig):
-                optional = False
-                if "optional" in item:
-                    optional = item.pop("optional")
+                optional = item.pop("optional", False)
+                override = item.pop("override", False)
+
                 keys = list(item.keys())
                 if len(keys) > 1:
                     raise ValueError(f"Too many keys in default item {item}")
@@ -412,6 +411,7 @@ class ConfigSource(Plugin):
                     name=config_name,
                     package=package,
                     optional=optional,
+                    override=override,
                 )
             elif isinstance(item, str):
                 path, package, _package2 = ConfigSource._split_group(item)

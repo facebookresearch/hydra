@@ -465,3 +465,30 @@ def test_defaults_tree_with_package_overrides__group_override(
     _test_defaults_tree_impl(
         config_name=config_name, input_overrides=overrides, expected=expected
     )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "override_same_level",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="override_same_level"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2"),
+                ],
+            ),
+            id="override_same_level",
+        ),
+    ],
+)
+def test_override_option_from_defaults_list(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+):
+    _test_defaults_tree_impl(
+        config_name=config_name, input_overrides=overrides, expected=expected
+    )

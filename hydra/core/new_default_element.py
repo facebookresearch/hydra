@@ -156,6 +156,8 @@ class GroupDefault(InputDefault):
     optional: bool = False
     package: Optional[str] = None
 
+    override: bool = False
+
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
     package_header: Optional[str] = field(default=None, compare=False)
