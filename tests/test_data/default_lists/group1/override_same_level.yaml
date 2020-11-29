@@ -1,0 +1,4 @@
+defaults:
+  - group2: file1
+  - group2: file2
+    override: true
