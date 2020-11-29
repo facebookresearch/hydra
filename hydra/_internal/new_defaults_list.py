@@ -54,6 +54,12 @@ class Overrides:
                     self.override_choices[key] = value
                     self.override_used[key] = False
 
+    def add_override(self, default: GroupDefault) -> None:
+        assert default.override
+        key = default.get_override_key()
+        self.override_choices[key] = default.get_name()
+        self.override_used[key] = False
+
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
             # TODO: collect overridable keys for help/useful error purposes
@@ -142,18 +148,27 @@ def _create_defaults_tree(
     path = parent.get_config_path()
 
     loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
-    # TODO: test case where the config option is overridden and the newly loaded config has a different package header.
 
     if loaded is None:
         missing_config_error(repo, root.node)
     else:
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
+
         if is_primary_config:
             for d in overrides.append_group_defaults:
                 defaults_list.append(d)
 
         if len(defaults_list) > 0:
             _validate_self(containing_node=parent, defaults=defaults_list)
+
+        for d in defaults_list:
+            if d.is_self():
+                continue
+            d.parent_base_dir = parent.get_group_path()
+            d.parent_package = parent.get_final_package()
+
+            if isinstance(d, GroupDefault) and d.override:
+                overrides.add_override(d)
 
         children = []
         for d in defaults_list:
@@ -162,9 +177,12 @@ def _create_defaults_tree(
                 d.parent_package = root.node.get_package()
                 children.append(d)
             else:
+                if isinstance(d, GroupDefault) and d.override:
+                    continue
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 d.parent_base_dir = parent.get_group_path()
                 d.parent_package = parent.get_final_package()
+
                 new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
                     repo=repo,
