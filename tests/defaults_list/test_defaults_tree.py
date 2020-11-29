@@ -482,6 +482,48 @@ def test_defaults_tree_with_package_overrides__group_override(
             ),
             id="override_same_level",
         ),
+        param(
+            "include_override_same_level",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_override_same_level"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1",
+                            name="override_same_level",
+                        ),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(
+                                group="group2",
+                                name="file2",
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            id="include_override_same_level",
+        ),
+        param(
+            "override_nested_group_item",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="override_nested_group_item"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="override_nested_group_item",
+        ),
     ],
 )
 def test_override_option_from_defaults_list(

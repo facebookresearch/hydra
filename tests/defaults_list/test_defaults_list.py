@@ -33,10 +33,14 @@ Plugins.instance()
 #    (Y) _name_
 # TODO: (Y) test with config header package override
 # TODO: (Y) test with both config header and defaults list pkg override
-# TODO: handle hydra overrides
+# TODO: Support overriding config group values from the defaults list
 #  - (X) reconsider support for overriding as before
-#  - Support marked overrides in primary config only
+#  - (Y) Support marked overrides in primary config only
 #  - Support marked override in all configs
+#  - Test overriding of config groups with a specified package (@pkg)
+#  - Error handling for duplicate entries in result list
+#  - Error handling for entries that failed to override anything
+#  - Handle hydra overrides
 # TODO: test handling missing configs mentioned in defaults list (with and without optional)
 # TODO: test overriding configs in absolute location
 # TODO: test duplicate _self_ error
