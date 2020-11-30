@@ -38,19 +38,19 @@ Plugins.instance()
 #  - (Y) Support marked overrides in primary config only
 #  - (Y) Support marked override in all configs
 #  - (Y) Test overriding of config groups with a specified package (@pkg)
-#  - Overriding of config groups with a specified package (@pkg) when there are multiple choices from the same group
+#  - (Y) Overriding of config groups with a specified package (@pkg) when there are multiple choices from same group
 #  - Error handling for duplicate entries in result list (suggest candidates)
 #  - Error handling for entries that failed to override anything
 #  - Handle hydra overrides
 # TODO: test handling missing configs mentioned in defaults list (with and without optional)
 # TODO: test overriding configs in absolute location
 # TODO: test duplicate _self_ error
-# TODO: test duplicates in result config list
 # TODO: Interpolation support
 # TODO: package header:
 #  - consider making relative
 #  - consider deprecating completely
-
+# TODO: Consider delete support
+# TODO: Consider package rename support
 # TODO: update documentation
 
 

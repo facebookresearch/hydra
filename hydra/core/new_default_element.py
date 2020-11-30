@@ -33,6 +33,12 @@ class InputDefault:
     def get_name(self) -> str:
         raise NotImplementedError()
 
+    def _get_attributes(self) -> List[str]:
+        raise NotImplementedError()
+
+    def _get_flags(self) -> List[str]:
+        raise NotImplementedError()
+
     def set_package_header(self, package_header: str) -> None:
         assert self.__dict__["package_header"] is None
         # package header is always interpreted as absolute.
@@ -87,8 +93,29 @@ class InputDefault:
             key = f"{key}@{final_pkg}"
         return key
 
+    def __repr__(self) -> str:
+        attrs = []
+        attr_names = self._get_attributes()
+        for attr in attr_names:
+            value = getattr(self, attr)
+            if value is not None:
+                attrs.append(f'{attr}="{value}"')
 
-@dataclass
+        flags = []
+        flag_names = self._get_flags()
+        for flag in flag_names:
+            value = getattr(self, flag)
+            if value:
+                flags.append(f"{flag}=True")
+
+        ret = f"{','.join(attrs)}"
+
+        if len(flags) > 0:
+            ret = f"{ret} ({','.join(flags)})"
+        return f"{type(self).__name__}({ret})"
+
+
+@dataclass(repr=False)
 class ConfigDefault(InputDefault):
     path: str
     package: Optional[str] = None
@@ -146,8 +173,14 @@ class ConfigDefault(InputDefault):
         else:
             return self.path[0:idx]
 
+    def _get_attributes(self) -> List[str]:
+        return ["path", "package"]
 
-@dataclass
+    def _get_flags(self) -> List[str]:
+        return []
+
+
+@dataclass(repr=False)
 class GroupDefault(InputDefault):
     # config group name if present
     group: Optional[str] = None
@@ -192,6 +225,12 @@ class GroupDefault(InputDefault):
 
     def _relative_group_path(self) -> str:
         return self.group
+
+    def _get_attributes(self) -> List[str]:
+        return ["group", "name", "package"]
+
+    def _get_flags(self) -> List[str]:
+        return ["optional", "override"]
 
 
 @dataclass
