@@ -645,7 +645,7 @@ def test_two_group_defaults_different_pkgs(
 
 
 @mark.parametrize(
-    "config_name, overrides, expected",
+    "config_name,overrides,expected",
     [
         param(
             "empty",
@@ -664,14 +664,59 @@ def test_two_group_defaults_different_pkgs(
                     ConfigDefault(path="empty"),
                 ],
             ),
-            id="empty",
-        )
+            id="just_hydra",
+        ),
+        param(
+            "override_hydra",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="custom1"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="override_hydra"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="override_hydra",
+        ),
+        param(
+            "override_hydra",
+            ["hydra/help=custom2"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="custom2"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="override_hydra"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="override_hydra+external",
+        ),
     ],
 )
 def test_legacy_hydra_overrides_from_primary_config(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
+    recwarn,  # Testing deprecated behavior
 ) -> None:
     _test_defaults_tree_impl(
         config_name=config_name,

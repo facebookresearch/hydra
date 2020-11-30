@@ -1,0 +1,2 @@
+defaults:
+  - hydra/help: custom1

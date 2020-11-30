@@ -1,4 +1,5 @@
 import copy
+import warnings
 from dataclasses import dataclass
 from textwrap import dedent
 from typing import Dict, List
@@ -121,6 +122,36 @@ def update_package_header(
         node.set_package_header(loaded.header["orig_package"])
 
 
+def _expand_virtual_root(
+    repo: IConfigRepository,
+    root: DefaultsTreeNode,
+    overrides: Overrides,
+) -> DefaultsTreeNode:
+    children = []
+    for d in reversed(root.children):
+        assert isinstance(d, ConfigDefault)
+        new_root = DefaultsTreeNode(node=d, parent=root)
+        d.parent_base_dir = ""
+        d.parent_package = ""
+
+        new_root.parent_base_dir = d.get_group_path()
+        subtree = _create_defaults_tree(
+            repo=repo,
+            root=new_root,
+            is_primary_config=False,
+            overrides=overrides,
+        )
+        if subtree.children is None:
+            children.append(d)
+        else:
+            children.append(subtree)
+
+    if len(children) > 0:
+        root.children = list(reversed(children))
+
+    return root
+
+
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -130,23 +161,7 @@ def _create_defaults_tree(
     parent = root.node
     children = []
     if parent.is_virtual():
-        for d in root.children:
-            assert isinstance(d, ConfigDefault)
-            new_root = DefaultsTreeNode(node=d, parent=root)
-            d.parent_base_dir = ""
-            d.parent_package = ""
-
-            new_root.parent_base_dir = d.get_group_path()
-            subtree = _create_defaults_tree(
-                repo=repo,
-                root=new_root,
-                is_primary_config=False,
-                overrides=overrides,
-            )
-            if subtree.children is None:
-                children.append(d)
-            else:
-                children.append(subtree)
+        return _expand_virtual_root(repo, root, overrides)
     else:
         if is_primary_config:
             root.node.parent_base_dir = ""
@@ -156,15 +171,14 @@ def _create_defaults_tree(
             repo=repo, node=parent, is_primary_config=is_primary_config
         )
 
-        if isinstance(parent, GroupDefault):
-            if overrides.is_overridden(parent):
-                overrides.override_default_option(parent)
-                # clear package header and obtain updated one from overridden config
-                # (for the rare case it has changed)
-                parent.package_header = None
-                update_package_header(
-                    repo=repo, node=parent, is_primary_config=is_primary_config
-                )
+        if overrides.is_overridden(parent):
+            overrides.override_default_option(parent)
+            # clear package header and obtain updated one from overridden config
+            # (for the rare case it has changed)
+            parent.package_header = None
+            update_package_header(
+                repo=repo, node=parent, is_primary_config=is_primary_config
+            )
 
         path = parent.get_config_path()
 
@@ -188,10 +202,24 @@ def _create_defaults_tree(
             d.parent_base_dir = parent.get_group_path()
             d.parent_package = parent.get_final_package()
 
-            if isinstance(d, GroupDefault) and d.override:
-                overrides.add_override(d)
+            if isinstance(d, GroupDefault):
+                is_legacy_hydra_override = not d.override and d.group.startswith(
+                    "hydra/"
+                )
+                if is_legacy_hydra_override:
+                    d.override = True
+                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
+                    msg = dedent(
+                        f"""\
+                        Default list overrides now requires 'override: true', see {url} for more information.
+                        """
+                    )
+                    warnings.warn(msg, UserWarning)
 
-        for d in defaults_list:
+                if d.override:
+                    overrides.add_override(d)
+
+        for d in reversed(defaults_list):
             if d.is_self():
                 d.parent_base_dir = root.node.parent_base_dir
                 d.parent_package = root.node.get_package()
@@ -216,7 +244,7 @@ def _create_defaults_tree(
                     children.append(subtree)
 
     if len(children) > 0:
-        root.children = children
+        root.children = list(reversed(children))
 
     return root
 
