@@ -9,7 +9,7 @@ from typing import List, Any
 from hydra._internal.new_defaults_list import (
     DefaultsTreeNode,
 )
-from hydra.core.new_default_element import GroupDefault, ConfigDefault
+from hydra.core.new_default_element import GroupDefault, ConfigDefault, VirtualRoot
 from hydra.core.plugins import Plugins
 from hydra.errors import ConfigCompositionException
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -641,4 +641,41 @@ def test_two_group_defaults_different_pkgs(
 ) -> None:
     _test_defaults_tree_impl(
         config_name=config_name, input_overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "empty",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="default"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    ConfigDefault(path="empty"),
+                ],
+            ),
+            id="empty",
+        )
+    ],
+)
+def test_legacy_hydra_overrides_from_primary_config(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
     )
