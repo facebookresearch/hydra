@@ -588,3 +588,57 @@ def test_override_option_from_defaults_list(
     _test_defaults_tree_impl(
         config_name=config_name, input_overrides=overrides, expected=expected
     )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "two_group_defaults_different_pkgs",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1", package="pkg1"),
+                    GroupDefault(group="group1", name="file1", package="pkg2"),
+                ],
+            ),
+            id="two_group_defaults_different_pkgs",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            ["group1@pkg1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2", package="pkg1"),
+                    GroupDefault(group="group1", name="file1", package="pkg2"),
+                ],
+            ),
+            id="two_group_defaults_different_pkgs:override_first",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            ["group1@pkg2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1", package="pkg1"),
+                    GroupDefault(group="group1", name="file2", package="pkg2"),
+                ],
+            ),
+            id="two_group_defaults_different_pkgs:override_second",
+        ),
+    ],
+)
+def test_two_group_defaults_different_pkgs(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name, input_overrides=overrides, expected=expected
+    )
