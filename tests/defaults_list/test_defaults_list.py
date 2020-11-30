@@ -36,9 +36,10 @@ Plugins.instance()
 # TODO: Support overriding config group values from the defaults list
 #  - (X) reconsider support for overriding as before
 #  - (Y) Support marked overrides in primary config only
-#  - Support marked override in all configs
-#  - Test overriding of config groups with a specified package (@pkg)
-#  - Error handling for duplicate entries in result list
+#  - (Y) Support marked override in all configs
+#  - (Y) Test overriding of config groups with a specified package (@pkg)
+#  - Overriding of config groups with a specified package (@pkg) when there are multiple choices from the same group
+#  - Error handling for duplicate entries in result list (suggest candidates)
 #  - Error handling for entries that failed to override anything
 #  - Handle hydra overrides
 # TODO: test handling missing configs mentioned in defaults list (with and without optional)
