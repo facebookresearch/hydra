@@ -151,7 +151,7 @@ class VirtualRoot(InputDefault):
         raise NotImplementedError()
 
     def __repr__(self) -> str:
-        return "ROOT"
+        return "VirtualRoot()"
 
 
 @dataclass(repr=False)
