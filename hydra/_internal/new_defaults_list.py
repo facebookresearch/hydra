@@ -11,6 +11,7 @@ from hydra.core.new_default_element import (
     GroupDefault,
     InputDefault,
     ResultDefault,
+    VirtualRoot,
 )
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
@@ -126,33 +127,52 @@ def _create_defaults_tree(
     is_primary_config: bool,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
-    assert root.children is None
-
-    if is_primary_config:
-        root.node.parent_base_dir = ""
-        root.node.parent_package = ""
-
     parent = root.node
+    children = []
+    if parent.is_virtual():
+        for d in root.children:
+            assert isinstance(d, ConfigDefault)
+            new_root = DefaultsTreeNode(node=d, parent=root)
+            d.parent_base_dir = ""
+            d.parent_package = ""
 
-    update_package_header(repo=repo, node=parent, is_primary_config=is_primary_config)
-
-    if isinstance(parent, GroupDefault):
-        if overrides.is_overridden(parent):
-            overrides.override_default_option(parent)
-            # clear package header and obtain updated one from overridden config
-            # (for the rare case it has changed)
-            parent.package_header = None
-            update_package_header(
-                repo=repo, node=parent, is_primary_config=is_primary_config
+            new_root.parent_base_dir = d.get_group_path()
+            subtree = _create_defaults_tree(
+                repo=repo,
+                root=new_root,
+                is_primary_config=False,
+                overrides=overrides,
             )
-
-    path = parent.get_config_path()
-
-    loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
-
-    if loaded is None:
-        missing_config_error(repo, root.node)
+            if subtree.children is None:
+                children.append(d)
+            else:
+                children.append(subtree)
     else:
+        if is_primary_config:
+            root.node.parent_base_dir = ""
+            root.node.parent_package = ""
+
+        update_package_header(
+            repo=repo, node=parent, is_primary_config=is_primary_config
+        )
+
+        if isinstance(parent, GroupDefault):
+            if overrides.is_overridden(parent):
+                overrides.override_default_option(parent)
+                # clear package header and obtain updated one from overridden config
+                # (for the rare case it has changed)
+                parent.package_header = None
+                update_package_header(
+                    repo=repo, node=parent, is_primary_config=is_primary_config
+                )
+
+        path = parent.get_config_path()
+
+        loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
+
+        if loaded is None:
+            missing_config_error(repo, root.node)
+
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
 
         if is_primary_config:
@@ -171,7 +191,6 @@ def _create_defaults_tree(
             if isinstance(d, GroupDefault) and d.override:
                 overrides.add_override(d)
 
-        children = []
         for d in defaults_list:
             if d.is_self():
                 d.parent_base_dir = root.node.parent_base_dir
@@ -196,8 +215,9 @@ def _create_defaults_tree(
                 else:
                     children.append(subtree)
 
-        if len(children) > 0:
-            root.children = children
+    if len(children) > 0:
+        root.children = children
+
     return root
 
 
@@ -240,13 +260,29 @@ def _tree_to_list(
                 _tree_to_list(tree=child, output=output)
 
 
+def _create_root(config_name: str, with_hydra: bool) -> DefaultsTreeNode:
+    if with_hydra:
+        root = DefaultsTreeNode(
+            node=VirtualRoot(),
+            children=[
+                ConfigDefault(path="hydra/config"),
+                ConfigDefault(path=config_name),
+            ],
+        )
+    else:
+        root = DefaultsTreeNode(node=ConfigDefault(path=config_name))
+    return root
+
+
 def _create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
     overrides: Overrides,
+    prepend_hydra: bool,
 ) -> List[ResultDefault]:
-    primary = ConfigDefault(path=config_name)
-    root = DefaultsTreeNode(node=primary)
+
+    root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
+
     defaults_tree = _create_defaults_tree(
         repo=repo,
         root=root,
@@ -264,9 +300,12 @@ def create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
     overrides_list: List[Override],
+    prepend_hydra: bool,
 ) -> DefaultsList:
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
-    defaults = _create_defaults_list(repo, config_name, overrides)
+    defaults = _create_defaults_list(
+        repo, config_name, overrides, prepend_hydra=prepend_hydra
+    )
     overrides.ensure_overrides_used()
     ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
     return ret
@@ -286,7 +325,7 @@ def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None
     else:
         msg = dedent(
             f"""\
-        Could not load {element.get_config_path()}.
+        Could not load '{element.get_config_path()}'.
         """
         )
 

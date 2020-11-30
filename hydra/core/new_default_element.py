@@ -39,6 +39,9 @@ class InputDefault:
     def _get_flags(self) -> List[str]:
         raise NotImplementedError()
 
+    def is_virtual(self) -> bool:
+        return False
+
     def set_package_header(self, package_header: str) -> None:
         assert self.__dict__["package_header"] is None
         # package header is always interpreted as absolute.
@@ -113,6 +116,42 @@ class InputDefault:
         if len(flags) > 0:
             ret = f"{ret} ({','.join(flags)})"
         return f"{type(self).__name__}({ret})"
+
+
+@dataclass
+class VirtualRoot(InputDefault):
+    def is_virtual(self) -> bool:
+        return True
+
+    def is_self(self) -> bool:
+        raise NotImplementedError()
+
+    def get_group_path(self) -> str:
+        raise NotImplementedError()
+
+    def get_config_path(self) -> str:
+        return "<root>"
+
+    def get_default_package(self) -> str:
+        return self.get_group_path().replace("/", ".")
+
+    def get_final_package(self) -> str:
+        raise NotImplementedError()
+
+    def _relative_group_path(self) -> str:
+        raise NotImplementedError()
+
+    def get_name(self) -> str:
+        raise NotImplementedError()
+
+    def _get_attributes(self) -> List[str]:
+        raise NotImplementedError()
+
+    def _get_flags(self) -> List[str]:
+        raise NotImplementedError()
+
+    def __repr__(self) -> str:
+        return "ROOT"
 
 
 @dataclass(repr=False)

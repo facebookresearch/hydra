@@ -39,10 +39,7 @@ Plugins.instance()
 #  - (Y) Support marked override in all configs
 #  - (Y) Test overriding of config groups with a specified package (@pkg)
 #  - (Y) Overriding of config groups with a specified package (@pkg) when there are multiple choices from same group
-#  - Error handling for duplicate entries in result list (suggest candidates)
-#  - Error handling for entries that failed to override anything
 #  - Handle hydra overrides
-# TODO: test handling missing configs mentioned in defaults list (with and without optional)
 # TODO: test overriding configs in absolute location
 # TODO: test duplicate _self_ error
 # TODO: Interpolation support
@@ -51,6 +48,14 @@ Plugins.instance()
 #  - consider deprecating completely
 # TODO: Consider delete support
 # TODO: Consider package rename support
+
+# Error handling:
+# TODO: (Y) Error handling for entries that failed to override anything
+# TODO: test handling missing configs mentioned in defaults list (with and without optional)
+# TODO: Ambiguous overrides should provide valid override keys for group
+# TODO: Should duplicate entries in results list be an error? (same override key)
+
+# Documentation
 # TODO: update documentation
 
 
@@ -110,6 +115,7 @@ def _test_defaults_list_impl(
     config_name: str,
     overrides: List[str],
     expected: Any,
+    prepend_hydra: bool = False,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
@@ -119,6 +125,7 @@ def _test_defaults_list_impl(
             repo=repo,
             config_name=config_name,
             overrides_list=overrides_list,
+            prepend_hydra=prepend_hydra,
         )
         assert result.defaults == expected
     else:
@@ -127,6 +134,7 @@ def _test_defaults_list_impl(
                 repo=repo,
                 config_name=config_name,
                 overrides_list=overrides_list,
+                prepend_hydra=prepend_hydra,
             )
 
 
@@ -1003,4 +1011,44 @@ def test_overriding_package_header_from_defaults_list(
 ):
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "empty",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/config",
+                    parent="<root>",
+                    package="hydra",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="hydra/help/default",
+                    parent="hydra/config",
+                    package="hydra.help",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    parent="hydra/config",
+                    package="hydra",
+                ),
+                ResultDefault(config_path="empty", parent="<root>", package=""),
+            ],
+            id="just_hydra_config",
+        ),
+    ],
+)
+def test_with_hydra_config(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
     )
