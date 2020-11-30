@@ -57,8 +57,9 @@ class Overrides:
     def add_override(self, default: GroupDefault) -> None:
         assert default.override
         key = default.get_override_key()
-        self.override_choices[key] = default.get_name()
-        self.override_used[key] = False
+        if key not in self.override_choices:
+            self.override_choices[key] = default.get_name()
+            self.override_used[key] = False
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
@@ -275,10 +276,11 @@ def create_defaults_list(
 def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None:
     options = None
     if isinstance(element, GroupDefault):
-        options = repo.get_group_options(element.group, ObjectType.CONFIG)
+        group = element.get_group_path()
+        options = repo.get_group_options(group, ObjectType.CONFIG)
         opt_list = "\n".join(["\t" + x for x in options])
         msg = (
-            f"Could not find '{element.name}' in the config group '{element.get_group_path()}'"
+            f"Could not find '{element.name}' in the config group '{group}'"
             f"\nAvailable options:\n{opt_list}\n"
         )
     else:
