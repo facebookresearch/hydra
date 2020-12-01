@@ -1,0 +1,5 @@
+# @package _global_
+
+defaults:
+  - /hydra/help: custom1
+    override: true

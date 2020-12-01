@@ -41,24 +41,35 @@ Plugins.instance()
 #  - (Y) Test overriding of config groups with a specified package (@pkg)
 #  - (Y) Overriding of config groups with a specified package (@pkg) when there are multiple choices from same group
 #  - (Y) Handle hydra overrides
-# TODO: test overriding configs in absolute location
-# TODO: test duplicate _self_ error
+# TODO: Experiment use case: test the following from a config in an experiment group
+#  - (Y) Override user config group with and without an external override of the same config group
+#  - (Y) Experiment specified in primary defaults
+#  - (Y) Append experiment file from external overrides
+#  - (Y) Override hydra config group from experiment [+ external override]
+#  - (Y) Include config with an absolute path
+#  - (Y) Test final defaults list with an experiment file
+# TODO: Primary config in a config group (automatically _global_ and considered in root?)
 # TODO: Interpolation support
 # TODO: package header:
 #  - consider making relative
 #  - consider deprecating completely
 # TODO: Consider delete support
 # TODO: Consider package rename support
+# TODO: Integrate with Hydra
+# TODO: cleanup
 
-# Error handling:
-# TODO: (Y) Error handling for entries that failed to override anything
-# TODO: test handling missing configs mentioned in defaults list (with and without optional)
-# TODO: Ambiguous overrides should provide valid override keys for group
-# TODO: Should duplicate entries in results list be an error? (same override key)
+# TODO: Error handling:
+#  - (Y) Error handling for entries that failed to override anything
+#  - Duplicate _self_ error
+#  - test handling missing configs mentioned in defaults list (with and without optional)
+#  - Ambiguous overrides should provide valid override keys for group
+#  - Test deprecation message when attempting to override hydra configs without override: true
+#  - Should duplicate entries in results list be an error? (same override key)
 
-# Documentation
-# TODO: update documentation
-# TODO: Create https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override
+# TODO Documentation
+#  - Update defaults list documentation
+#  - Create a page describing configuring experiments with Hydra (experiment use case)
+#  - Create https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override
 
 
 @mark.parametrize(  # type: ignore
@@ -170,6 +181,19 @@ def _test_defaults_list_impl(
             "zoo/foo/bar",
             id="group_default:with_parent_basedir",
         ),
+        # absolute group
+        param(
+            ConfigDefault(path="/foo/zoo", parent_base_dir="irrelevant"),
+            "foo",
+            "foo/zoo",
+            id="config_default:absolute",
+        ),
+        param(
+            GroupDefault(group="/foo", name="zoo", parent_base_dir="irrelevant"),
+            "foo",
+            "foo/zoo",
+            id="group_default:absolute",
+        ),
     ],
 )
 def test_get_paths(
@@ -216,6 +240,17 @@ def test_get_paths(
             GroupDefault(group="a/b", name="a1", parent_base_dir="x"),
             "x.a.b",
             id="group_default",
+        ),
+        # absolute group/path
+        param(
+            ConfigDefault(path="/foo/bar", parent_base_dir="irrelevant"),
+            "foo",
+            id="config_default:absolute",
+        ),
+        param(
+            GroupDefault(group="/foo", name="bar", parent_base_dir="irrelevant"),
+            "foo",
+            id="group_default:absolute",
         ),
     ],
 )
@@ -1090,4 +1125,41 @@ def test_with_hydra_config(
         overrides=overrides,
         expected=expected,
         prepend_hydra=True,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default",
+            ["+experiment=include_absolute_config"],
+            [
+                ResultDefault(config_path="group_default", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="group_default"
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.group2",
+                    parent="experiment/include_absolute_config",
+                ),
+                ResultDefault(
+                    config_path="experiment/include_absolute_config",
+                    package="",
+                    parent="group_default",
+                    is_self=True,
+                ),
+            ],
+            id="group_default:experiment=include_absolute_config",
+        ),
+    ],
+)
+def test_experiment_use_case(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
     )
