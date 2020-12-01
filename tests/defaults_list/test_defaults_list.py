@@ -48,15 +48,13 @@ Plugins.instance()
 #  - (Y) Override hydra config group from experiment [+ external override]
 #  - (Y) Include config with an absolute path
 #  - (Y) Test final defaults list with an experiment file
-# TODO: Primary config in a config group (automatically _global_ and considered in root?)
+#  - (Y) Test experiment config as a primary (must have @package _global_ and absolute addressing of config groups)
+# TODO: (Y) package header:
+#  - (Y) Consider making relative. Decision: package header will remain absolute.
+#  - (Y) Consider deprecating completely. Decision: package will not be deprecated for now
 # TODO: Interpolation support
-# TODO: package header:
-#  - consider making relative
-#  - consider deprecating completely
 # TODO: Consider delete support
 # TODO: Consider package rename support
-# TODO: Integrate with Hydra
-# TODO: cleanup
 
 # TODO: Error handling:
 #  - (Y) Error handling for entries that failed to override anything
@@ -65,6 +63,13 @@ Plugins.instance()
 #  - Ambiguous overrides should provide valid override keys for group
 #  - Test deprecation message when attempting to override hydra configs without override: true
 #  - Should duplicate entries in results list be an error? (same override key)
+
+# TODO: Integrate with Hydra
+#  - replace old defaults list computation
+#  - enable --info=defaults output
+#  - ensure all tests are passing
+#  - cleanup
+
 
 # TODO Documentation
 #  - Update defaults list documentation
@@ -1163,3 +1168,49 @@ def test_experiment_use_case(
         overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "experiment/override_hydra",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/config",
+                    package="hydra",
+                    parent="<root>",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="hydra/help/custom1",
+                    package="hydra.help",
+                    parent="hydra/config",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    package="hydra",
+                    parent="hydra/config",
+                ),
+                ResultDefault(
+                    config_path="experiment/override_hydra",
+                    package="",
+                    parent="<root>",
+                    is_self=True,
+                ),
+            ],
+            id="group_default:experiment=include_absolute_config",
+        ),
+    ],
+)
+def test_as_as_primary(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+    ...
