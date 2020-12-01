@@ -133,7 +133,7 @@ def _expand_virtual_root(
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
     assert root.children is not None
-
+    assert len(root.children) == 2
     for gd in overrides.append_group_defaults:
         root.children.append(gd)
 
