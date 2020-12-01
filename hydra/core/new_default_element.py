@@ -193,13 +193,11 @@ class ConfigDefault(InputDefault):
     path: Optional[str] = None
     package: Optional[str] = None
 
-    # parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
-    # parent_package: Optional[str] = field(default=None, compare=False, repr=False)
-    # package_header: Optional[str] = field(default=None, compare=False)
-
     def __post_init__(self) -> None:
         if self.is_self() and self.package is not None:
             raise ValueError("_self_@PACKAGE is not supported")
+        if self.package == "_here_":
+            self.package = ""
 
     def is_self(self) -> bool:
         return self.path == "_self_"
@@ -299,6 +297,8 @@ class GroupDefault(InputDefault):
     def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
         assert self.name is not None
+        if self.package == "_here_":
+            self.package = ""
 
     def is_self(self) -> bool:
         return self.name == "_self_"

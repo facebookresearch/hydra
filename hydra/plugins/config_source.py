@@ -251,6 +251,7 @@ class ConfigSource(Plugin):
 
         return res
 
+    # TODO: cleanup and rename _split_group2 to _split_group
     @staticmethod
     def _split_group(
         group_with_package: str,
@@ -278,6 +279,30 @@ class ConfigSource(Plugin):
 
         if package2 == "":
             package2 = None
+
+        return group, package, package2
+
+    @staticmethod
+    def _split_group2(
+        group_with_package: str,
+    ) -> Tuple[str, Optional[str], Optional[str]]:
+        idx = group_with_package.find("@")
+        if idx == -1:
+            # group
+            group = group_with_package
+            package = None
+        else:
+            # group@package
+            group = group_with_package[0:idx]
+            package = group_with_package[idx + 1 :]
+
+        package2 = None
+        if package is not None:
+            # if we have a package, break it down if it's a rename
+            idx = package.find(":")
+            if idx != -1:
+                package2 = package[idx + 1 :]
+                package = package[0:idx]
 
         return group, package, package2
 
@@ -415,7 +440,7 @@ class ConfigSource(Plugin):
                     override=override,
                 )
             elif isinstance(item, str):
-                path, package, _package2 = ConfigSource._split_group(item)
+                path, package, _package2 = ConfigSource._split_group2(item)
                 default = ConfigDefault(path=path, package=package)
             else:
                 raise ValueError(

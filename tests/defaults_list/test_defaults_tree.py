@@ -1004,3 +1004,92 @@ def test_experiment_as_primary_config(
         expected=expected,
         prepend_hydra=True,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "test_extend_same_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="test_extend_same_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="extend", name="here"),
+                        children=[
+                            ConfigDefault(path="base_db"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="test_extend_same_group",
+        ),
+        param(
+            "test_extend_from_external_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="test_extend_from_external_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="extend", name="external"),
+                        children=[
+                            ConfigDefault(path="/db/base_db", package=""),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="test_extend_from_external_group",
+        ),
+        param(
+            "test_extend_from_nested_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="test_extend_from_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="extend", name="nested"),
+                        children=[
+                            ConfigDefault(path="nested/base_db", package=""),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="test_extend_from_nested_group",
+        ),
+        param(
+            "test_extend_from_nested_group",
+            ["extend=nested_here_keyword"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="test_extend_from_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="extend", name="nested_here_keyword"),
+                        children=[
+                            ConfigDefault(path="nested/base_db", package=""),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="nested_here_keyword",
+        ),
+    ],
+)
+def test_extension_use_cases(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
