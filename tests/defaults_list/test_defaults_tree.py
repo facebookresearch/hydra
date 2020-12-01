@@ -725,3 +725,242 @@ def test_legacy_hydra_overrides_from_primary_config(
         expected=expected,
         prepend_hydra=True,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default_with_explicit_experiment",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_explicit_experiment"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="override_config_group"
+                        ),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="group_default_with_explicit_experiment",
+        ),
+        param(
+            "group_default_with_explicit_experiment",
+            ["group1=file3"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_explicit_experiment"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file3"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="override_config_group"
+                        ),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="group_default_with_explicit_experiment:with_external_override",
+        ),
+    ],
+)
+def test_group_default_with_explicit_experiment(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default",
+            ["+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="override_config_group"
+                        ),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="group_default_with_appended_experiment",
+        ),
+        param(
+            "group_default",
+            ["group1=file3", "+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file3"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="override_config_group"
+                        ),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="group_default_with_appended_experiment:with_external_override",
+        ),
+    ],
+)
+def test_group_default_with_appended_experiment(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default",
+            ["+experiment=include_absolute_config"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="include_absolute_config"
+                        ),
+                        children=[
+                            GroupDefault(group="/group1/group2", name="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="include_absolute_config",
+        ),
+        param(
+            "group_default",
+            ["+experiment=include_absolute_config", "group1/group2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment", name="include_absolute_config"
+                        ),
+                        children=[
+                            GroupDefault(group="/group1/group2", name="file2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="include_absolute_config:with_external_override",
+        ),
+    ],
+)
+def test_experiment_include_absolute_config(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name, input_overrides=overrides, expected=expected
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default",
+            ["+experiment=override_hydra"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="custom1"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="group_default"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group1", name="file1"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="experiment", name="override_hydra"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="experiment_overriding_hydra_group",
+        ),
+        param(
+            "group_default",
+            ["+experiment=override_hydra", "hydra/help=custom2"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="custom2"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="group_default"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group1", name="file1"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="experiment", name="override_hydra"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="experiment_overriding_hydra_group:with_external_hydra_override",
+        ),
+    ],
+)
+def test_experiment_overriding_hydra_group(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )

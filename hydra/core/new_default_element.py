@@ -11,6 +11,24 @@ class ResultDefault:
     package: Optional[str] = None
     is_self: bool = False
 
+    def __repr__(self) -> str:
+        attrs = []
+        attr_names = "config_path", "package", "parent"
+        for attr in attr_names:
+            value = getattr(self, attr)
+            if value is not None:
+                attrs.append(f'{attr}="{value}"')
+
+        flags = []
+        flag_names = ["is_self"]
+        for flag in flag_names:
+            value = getattr(self, flag)
+            if value:
+                flags.append(f"{flag}=True")
+
+        ret = f"{','.join(attrs + flags)}"
+        return f"{type(self).__name__}({ret})"
+
 
 @dataclass
 class InputDefault:
@@ -189,19 +207,30 @@ class ConfigDefault(InputDefault):
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
         assert self.path is not None
-        idx = self.path.rfind("/")
+
+        if self.path.startswith("/"):
+            path = self.path[1:]
+            absolute = True
+        else:
+            path = self.path
+            absolute = False
+
+        idx = path.rfind("/")
         if idx == -1:
             group = ""
         else:
-            group = self.path[0:idx]
+            group = path[0:idx]
 
-        if self.parent_base_dir == "":
-            return group
-        else:
-            if group == "":
-                return f"{self.parent_base_dir}"
+        if not absolute:
+            if self.parent_base_dir == "":
+                return group
             else:
-                return f"{self.parent_base_dir}/{group}"
+                if group == "":
+                    return f"{self.parent_base_dir}"
+                else:
+                    return f"{self.parent_base_dir}/{group}"
+        else:
+            return group
 
     def get_name(self) -> str:
         assert self.path is not None
@@ -214,10 +243,20 @@ class ConfigDefault(InputDefault):
     def get_config_path(self) -> str:
         assert self.parent_base_dir is not None
         assert self.path is not None
-        if self.parent_base_dir == "":
-            return self.path
+        if self.path.startswith("/"):
+            path = self.path[1:]
+            absolute = True
         else:
-            return f"{self.parent_base_dir}/{self.path}"
+            path = self.path
+            absolute = False
+
+        if not absolute:
+            if self.parent_base_dir == "":
+                return path
+            else:
+                return f"{self.parent_base_dir}/{path}"
+        else:
+            return path
 
     def get_final_package(self) -> str:
         return self._get_final_package(
@@ -226,11 +265,16 @@ class ConfigDefault(InputDefault):
 
     def _relative_group_path(self) -> str:
         assert self.path is not None
-        idx = self.path.rfind("/")
+        if self.path.startswith("/"):
+            path = self.path[1:]
+        else:
+            path = self.path
+
+        idx = path.rfind("/")
         if idx == -1:
             return ""
         else:
-            return self.path[0:idx]
+            return path[0:idx]
 
     def _get_attributes(self) -> List[str]:
         return ["path", "package"]
@@ -262,10 +306,18 @@ class GroupDefault(InputDefault):
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
         assert self.group is not None
-        if self.parent_base_dir == "":
-            return self.group
+
+        if self.group.startswith("/"):
+            group = self.group[1:]
+            absolute = True
         else:
-            return f"{self.parent_base_dir}/{self.group}"
+            group = self.group
+            absolute = False
+
+        if self.parent_base_dir == "" or absolute:
+            return group
+        else:
+            return f"{self.parent_base_dir}/{group}"
 
     def get_config_path(self) -> str:
         group_path = self.get_group_path()
@@ -284,7 +336,10 @@ class GroupDefault(InputDefault):
 
     def _relative_group_path(self) -> str:
         assert self.group is not None
-        return self.group
+        if self.group.startswith("/"):
+            return self.group[1:]
+        else:
+            return self.group
 
     def _get_attributes(self) -> List[str]:
         return ["group", "name", "package"]

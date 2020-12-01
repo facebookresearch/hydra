@@ -1,0 +1,5 @@
+# @package _global_
+
+defaults:
+  - /group1/group2: file1
+  - _self_

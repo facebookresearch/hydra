@@ -133,8 +133,11 @@ def _expand_virtual_root(
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
     assert root.children is not None
+
+    for gd in overrides.append_group_defaults:
+        root.children.append(gd)
+
     for d in reversed(root.children):
-        assert isinstance(d, ConfigDefault)
         new_root = DefaultsTreeNode(node=d, parent=root)
         d.parent_base_dir = ""
         d.parent_package = ""
