@@ -52,9 +52,14 @@ Plugins.instance()
 # TODO: (Y) package header:
 #  - (Y) Consider making relative. Decision: package header will remain absolute.
 #  - (Y) Consider deprecating completely. Decision: package will not be deprecated for now
+# TODO: (Y) Test use cases for config extension:
+#  - (Y) Extension from the same config group
+#  - (Y) Extension from absolute config group
+#  - (Y) Extension from a nested config group
 # TODO: Interpolation support
 # TODO: Consider delete support
 # TODO: Consider package rename support
+# TODO: Support placeholder element
 
 # TODO: Error handling:
 #  - (Y) Error handling for entries that failed to override anything

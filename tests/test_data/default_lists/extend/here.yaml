@@ -1,0 +1,3 @@
+defaults:
+  - base_db
+  - _self_
