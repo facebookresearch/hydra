@@ -1,8 +1,10 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import copy
 import warnings
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
@@ -77,7 +79,7 @@ class Overrides:
             default.config_name_overridden = True
             self.override_used[key] = True
 
-    def ensure_overrides_used(self):
+    def ensure_overrides_used(self) -> None:
         for key, used in self.override_used.items():
             if not used:
                 msg = dedent(
@@ -110,8 +112,10 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
 
 
 def update_package_header(
-    repo: IConfigRepository, node: InputDefault, is_primary_config: bool
-):
+    repo: IConfigRepository,
+    node: InputDefault,
+    is_primary_config: bool,
+) -> None:
     # This loads the same config loaded in _create_defaults_tree
     # To avoid loading it twice, the repo implementation is expected to cache
     # loaded configs
@@ -127,14 +131,14 @@ def _expand_virtual_root(
     root: DefaultsTreeNode,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
-    children = []
+    children: List[Union[DefaultsTreeNode, InputDefault]] = []
+    assert root.children is not None
     for d in reversed(root.children):
         assert isinstance(d, ConfigDefault)
         new_root = DefaultsTreeNode(node=d, parent=root)
         d.parent_base_dir = ""
         d.parent_package = ""
 
-        new_root.parent_base_dir = d.get_group_path()
         subtree = _create_defaults_tree(
             repo=repo,
             root=new_root,
@@ -159,7 +163,7 @@ def _create_defaults_tree(
     overrides: Overrides,
 ) -> DefaultsTreeNode:
     parent = root.node
-    children = []
+    children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
         return _expand_virtual_root(repo, root, overrides)
     else:
@@ -172,6 +176,7 @@ def _create_defaults_tree(
         )
 
         if overrides.is_overridden(parent):
+            assert isinstance(parent, GroupDefault)
             overrides.override_default_option(parent)
             # clear package header and obtain updated one from overridden config
             # (for the rare case it has changed)
@@ -187,11 +192,12 @@ def _create_defaults_tree(
         if loaded is None:
             missing_config_error(repo, root.node)
 
+        assert loaded is not None
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
 
         if is_primary_config:
-            for d in overrides.append_group_defaults:
-                defaults_list.append(d)
+            for gd in overrides.append_group_defaults:
+                defaults_list.append(gd)
 
         if len(defaults_list) > 0:
             _validate_self(containing_node=parent, defaults=defaults_list)
@@ -203,6 +209,7 @@ def _create_defaults_tree(
             d.parent_package = parent.get_final_package()
 
             if isinstance(d, GroupDefault):
+                assert d.group is not None
                 is_legacy_hydra_override = not d.override and d.group.startswith(
                     "hydra/"
                 )
@@ -231,7 +238,6 @@ def _create_defaults_tree(
                 d.parent_base_dir = parent.get_group_path()
                 d.parent_package = parent.get_final_package()
 
-                new_root.parent_base_dir = d.get_group_path()
                 subtree = _create_defaults_tree(
                     repo=repo,
                     root=new_root,
@@ -249,9 +255,12 @@ def _create_defaults_tree(
     return root
 
 
-def _create_result_default(tree: DefaultsTreeNode, node: InputDefault) -> ResultDefault:
+def _create_result_default(
+    tree: Optional[DefaultsTreeNode], node: InputDefault
+) -> ResultDefault:
     res = ResultDefault()
     if node.is_self():
+        assert tree is not None
         res.config_path = tree.node.get_config_path()
         res.is_self = True
         pn = tree.parent_node()
@@ -272,7 +281,7 @@ def _create_result_default(tree: DefaultsTreeNode, node: InputDefault) -> Result
 def _tree_to_list(
     tree: DefaultsTreeNode,
     output: List[ResultDefault],
-):
+) -> None:
     node = tree.node
 
     if tree.children is None or len(tree.children) == 0:
@@ -318,7 +327,7 @@ def _create_defaults_list(
         is_primary_config=True,
     )
 
-    output = []
+    output: List[ResultDefault] = []
     _tree_to_list(tree=defaults_tree, output=output)
     # TODO: fail if duplicate items exists
     return output

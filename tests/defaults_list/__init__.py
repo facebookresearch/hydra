@@ -1,14 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Any
+from typing import Any, List
 
-from hydra._internal.config_repository import IConfigRepository, ConfigRepository
+from hydra._internal.config_repository import ConfigRepository, IConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.new_defaults_list import (
-    DefaultsTreeNode,
-    _create_defaults_tree,
     Overrides,
+    _create_defaults_tree,
     _create_root,
 )
+from hydra.core.new_default_element import DefaultsTreeNode
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
 

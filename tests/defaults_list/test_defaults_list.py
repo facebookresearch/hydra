@@ -1,16 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from textwrap import dedent
-
 import re
+from textwrap import dedent
+from typing import Any, List
 
 from pytest import mark, param, raises
-from typing import List, Any
 
-from hydra._internal.new_defaults_list import (
-    create_defaults_list,
+from hydra._internal.new_defaults_list import create_defaults_list
+from hydra.core.new_default_element import (
+    ConfigDefault,
+    GroupDefault,
+    InputDefault,
     ResultDefault,
 )
-from hydra.core.new_default_element import InputDefault, GroupDefault, ConfigDefault
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.errors import ConfigCompositionException
@@ -60,7 +61,7 @@ Plugins.instance()
 # TODO: Create https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_path,expected_list",
     [
         param("empty", [], id="empty"),
@@ -106,9 +107,12 @@ Plugins.instance()
         ),
     ],
 )
-def test_loaded_defaults_list(config_path: str, expected_list: List[InputDefault]):
+def test_loaded_defaults_list(
+    config_path: str, expected_list: List[InputDefault]
+) -> None:
     repo = create_repo()
     result = repo.load_config(config_path=config_path, is_primary_config=True)
+    assert result is not None
     assert result.new_defaults_list == expected_list
 
 
@@ -139,7 +143,7 @@ def _test_defaults_list_impl(
             )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "default,expected_group_path,expected_config_path",
     [
         param(
@@ -169,13 +173,13 @@ def _test_defaults_list_impl(
     ],
 )
 def test_get_paths(
-    default: InputDefault, expected_group_path, expected_config_path
+    default: InputDefault, expected_group_path: Any, expected_config_path: Any
 ) -> None:
     assert default.get_group_path() == expected_group_path
     assert default.get_config_path() == expected_config_path
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "default,expected",
     [
         param(
@@ -215,11 +219,11 @@ def test_get_paths(
         ),
     ],
 )
-def test_get_default_package(default: InputDefault, expected) -> None:
+def test_get_default_package(default: InputDefault, expected: Any) -> None:
     assert default.get_default_package() == expected
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "default,expected",
     [
         # empty parent package
@@ -271,11 +275,11 @@ def test_get_default_package(default: InputDefault, expected) -> None:
         ),
     ],
 )
-def test_get_final_package(default: InputDefault, expected) -> None:
+def test_get_final_package(default: InputDefault, expected: Any) -> None:
     assert default.get_final_package() == expected
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -357,7 +361,7 @@ def test_simple_defaults_list_cases(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -429,7 +433,7 @@ def test_override_package_in_defaults_list(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -484,7 +488,7 @@ def test_include_nested_group_pkg2(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -542,7 +546,7 @@ def test_group_default_pkg1(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -601,7 +605,7 @@ def test_include_nested_group_global(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -660,7 +664,7 @@ def test_include_nested_group_global_foo(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -719,7 +723,7 @@ def test_include_nested_group_name_(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -770,13 +774,13 @@ def test_include_nested_group_name_(
 )
 def test_primary_cfg_pkg_header_foo(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -875,13 +879,13 @@ def test_primary_cfg_pkg_header_foo(
 )
 def test_include_nested_group_pkg_header_foo(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -921,13 +925,13 @@ def test_include_nested_group_pkg_header_foo(
 )
 def test_nested_package_header_is_absolute(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -1009,13 +1013,13 @@ def test_nested_package_header_is_absolute(
 )
 def test_overriding_package_header_from_defaults_list(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name, overrides=overrides, expected=expected
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name,overrides,expected",
     [
         param(
@@ -1079,8 +1083,8 @@ def test_with_hydra_config(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
-    recwarn,  # Testing deprecated behavior
-):
+    recwarn: Any,  # Testing deprecated behavior
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
