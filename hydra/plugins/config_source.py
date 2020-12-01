@@ -9,7 +9,7 @@ import re
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Tuple, MutableSequence
+from typing import List, Optional, Dict, Tuple, MutableSequence, Union
 
 from hydra.core import DefaultElement
 from hydra.core.new_default_element import InputDefault, ConfigDefault, GroupDefault
@@ -389,8 +389,9 @@ class ConfigSource(Plugin):
     def _create_new_defaults_list(
         defaults: ListConfig,
     ) -> List[InputDefault]:
-        res: List[DefaultElement] = []
+        res: List[InputDefault] = []
         for item in defaults:
+            default: InputDefault
             if isinstance(item, DictConfig):
                 optional = item.pop("optional", False)
                 override = item.pop("override", False)
@@ -424,12 +425,13 @@ class ConfigSource(Plugin):
         return res
 
     @staticmethod
-    def _extract_raw_defaults_list(cfg: Container) -> List[InputDefault]:
+    def _extract_raw_defaults_list(cfg: Container) -> Union[ListConfig, DictConfig]:
+        empty = OmegaConf.create([])
         if not OmegaConf.is_dict(cfg):
-            return []
-
+            return empty
+        assert isinstance(cfg, DictConfig)
         with read_write(cfg):
             with open_dict(cfg):
-                defaults = cfg.pop("defaults", [])
+                defaults = cfg.pop("defaults", empty)
 
         return defaults

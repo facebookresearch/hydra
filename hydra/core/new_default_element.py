@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
@@ -12,6 +14,11 @@ class ResultDefault:
 
 @dataclass
 class InputDefault:
+
+    parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
+    parent_package: Optional[str] = field(default=None, compare=False, repr=False)
+    package_header: Optional[str] = field(default=None, compare=False)
+
     def is_self(self) -> bool:
         raise NotImplementedError()
 
@@ -39,6 +46,11 @@ class InputDefault:
     def _get_flags(self) -> List[str]:
         raise NotImplementedError()
 
+    def _get_parent_package(self) -> Optional[str]:
+        ret = self.__dict__["parent_package"]
+        assert ret is None or isinstance(ret, str)
+        return ret
+
     def is_virtual(self) -> bool:
         return False
 
@@ -54,13 +66,17 @@ class InputDefault:
         self.__dict__["package_header"] = package_header
 
     def get_package_header(self) -> Optional[str]:
-        return self.__dict__["package_header"]
+        ret = self.__dict__["package_header"]
+        assert ret is None or isinstance(ret, str)
+        return ret
 
-    def get_package(self) -> str:
+    def get_package(self) -> Optional[str]:
         if self.__dict__["package"] is None:
-            return self.__dict__["package_header"]
+            ret = self.__dict__["package_header"]
         else:
-            return self.__dict__["package"]
+            ret = self.__dict__["package"]
+        assert ret is None or isinstance(ret, str)
+        return ret
 
     def _get_final_package(
         self,
@@ -156,14 +172,14 @@ class VirtualRoot(InputDefault):
 
 @dataclass(repr=False)
 class ConfigDefault(InputDefault):
-    path: str
+    path: Optional[str] = None
     package: Optional[str] = None
 
-    parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
-    parent_package: Optional[str] = field(default=None, compare=False, repr=False)
-    package_header: Optional[str] = field(default=None, compare=False)
+    # parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
+    # parent_package: Optional[str] = field(default=None, compare=False, repr=False)
+    # package_header: Optional[str] = field(default=None, compare=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.is_self() and self.package is not None:
             raise ValueError("_self_@PACKAGE is not supported")
 
@@ -172,6 +188,7 @@ class ConfigDefault(InputDefault):
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
+        assert self.path is not None
         idx = self.path.rfind("/")
         if idx == -1:
             group = ""
@@ -187,6 +204,7 @@ class ConfigDefault(InputDefault):
                 return f"{self.parent_base_dir}/{group}"
 
     def get_name(self) -> str:
+        assert self.path is not None
         idx = self.path.rfind("/")
         if idx == -1:
             return self.path
@@ -195,6 +213,7 @@ class ConfigDefault(InputDefault):
 
     def get_config_path(self) -> str:
         assert self.parent_base_dir is not None
+        assert self.path is not None
         if self.parent_base_dir == "":
             return self.path
         else:
@@ -206,6 +225,7 @@ class ConfigDefault(InputDefault):
         )
 
     def _relative_group_path(self) -> str:
+        assert self.path is not None
         idx = self.path.rfind("/")
         if idx == -1:
             return ""
@@ -230,12 +250,11 @@ class GroupDefault(InputDefault):
 
     override: bool = False
 
-    parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
-    package_header: Optional[str] = field(default=None, compare=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
+        assert self.name is not None
 
     def is_self(self) -> bool:
         return self.name == "_self_"
@@ -252,17 +271,19 @@ class GroupDefault(InputDefault):
         group_path = self.get_group_path()
         assert group_path != ""
 
-        return f"{group_path}/{self.name}"
+        return f"{group_path}/{self.get_name()}"
 
     def get_name(self) -> str:
+        assert self.name is not None
         return self.name
 
     def get_final_package(self) -> str:
         return self._get_final_package(
-            self.parent_package, self.get_package(), self.get_name()
+            self._get_parent_package(), self.get_package(), self.get_name()
         )
 
     def _relative_group_path(self) -> str:
+        assert self.group is not None
         return self.group
 
     def _get_attributes(self) -> List[str]:

@@ -1,15 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from textwrap import dedent
-
 import re
+from textwrap import dedent
+from typing import Any, List
 
 from pytest import mark, param, raises
-from typing import List, Any
 
-from hydra._internal.new_defaults_list import (
+from hydra.core.new_default_element import (
+    ConfigDefault,
+    GroupDefault,
+    VirtualRoot,
     DefaultsTreeNode,
 )
-from hydra.core.new_default_element import GroupDefault, ConfigDefault, VirtualRoot
 from hydra.core.plugins import Plugins
 from hydra.errors import ConfigCompositionException
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -21,7 +22,7 @@ chdir_hydra_root()
 Plugins.instance()
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -135,7 +136,7 @@ def test_simple_defaults_tree_cases(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -221,7 +222,7 @@ def test_tree_with_append_override(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -296,7 +297,7 @@ def test_simple_group_override(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -317,7 +318,7 @@ def test_errors(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -392,7 +393,7 @@ def test_defaults_tree_with_package_overrides(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -467,7 +468,7 @@ def test_defaults_tree_with_package_overrides__group_override(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -584,13 +585,13 @@ def test_override_option_from_defaults_list(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
-):
+) -> None:
     _test_defaults_tree_impl(
         config_name=config_name, input_overrides=overrides, expected=expected
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name, overrides, expected",
     [
         param(
@@ -644,7 +645,7 @@ def test_two_group_defaults_different_pkgs(
     )
 
 
-@mark.parametrize(
+@mark.parametrize(  # type: ignore
     "config_name,overrides,expected",
     [
         param(
@@ -716,7 +717,7 @@ def test_legacy_hydra_overrides_from_primary_config(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
-    recwarn,  # Testing deprecated behavior
+    recwarn: Any,  # Testing deprecated behavior
 ) -> None:
     _test_defaults_tree_impl(
         config_name=config_name,
