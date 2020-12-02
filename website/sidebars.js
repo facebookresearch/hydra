@@ -83,14 +83,22 @@ module.exports = {
         ],
 
         'Plugins': [
-            'plugins/ax_sweeper',
             'plugins/colorlog',
-            'plugins/joblib_launcher',
-            'plugins/nevergrad_sweeper',
-            'plugins/optuna_sweeper',
-            'plugins/ray_launcher',
-            'plugins/rq_launcher',
-            'plugins/submitit_launcher',
+            {
+                'Launchers': [
+                    'plugins/joblib_launcher',
+                    'plugins/ray_launcher',
+                    'plugins/rq_launcher',
+                    'plugins/submitit_launcher',
+                ]
+            },
+            {
+                'Sweepers': [
+                    'plugins/ax_sweeper',
+                    'plugins/nevergrad_sweeper',
+                    'plugins/optuna_sweeper',
+                ]
+            },
         ],
 
         'Reference manual': [
