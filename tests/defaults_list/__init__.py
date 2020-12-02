@@ -23,6 +23,7 @@ def _test_defaults_tree_impl(
     input_overrides: List[str],
     expected: Any,
     prepend_hydra: bool = False,
+    skip_missing: bool = False,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
@@ -30,12 +31,13 @@ def _test_defaults_tree_impl(
     overrides_list = parser.parse_overrides(overrides=input_overrides)
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
 
-    if isinstance(expected, DefaultsTreeNode):
+    if expected is None or isinstance(expected, DefaultsTreeNode):
         result = _create_defaults_tree(
             repo=repo,
             root=root,
             overrides=overrides,
             is_primary_config=True,
+            skip_missing=skip_missing,
         )
         overrides.ensure_overrides_used()
         assert result == expected
@@ -46,5 +48,6 @@ def _test_defaults_tree_impl(
                 root=root,
                 overrides=overrides,
                 is_primary_config=True,
+                skip_missing=skip_missing,
             )
             overrides.ensure_overrides_used()
