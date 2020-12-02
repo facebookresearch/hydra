@@ -83,17 +83,13 @@ module.exports = {
         ],
 
         'Plugins': [
+            'plugins/colorlog',
             {
                 'Launchers': [
                     'plugins/joblib_launcher',
                     'plugins/ray_launcher',
                     'plugins/rq_launcher',
                     'plugins/submitit_launcher',
-                ]
-            },
-            {
-                'Misc.': [
-                    'plugins/colorlog',
                 ]
             },
             {

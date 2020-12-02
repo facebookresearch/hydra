@@ -201,6 +201,10 @@
       "label": "Plugins",
       "items": [
         {
+          "type": "doc",
+          "id": "version-1.0/plugins/colorlog"
+        },
+        {
           "collapsed": true,
           "type": "category",
           "label": "Launchers",
@@ -216,17 +220,6 @@
             {
               "type": "doc",
               "id": "version-1.0/plugins/submitit_launcher"
-            }
-          ]
-        },
-        {
-          "collapsed": true,
-          "type": "category",
-          "label": "Misc.",
-          "items": [
-            {
-              "type": "doc",
-              "id": "version-1.0/plugins/colorlog"
             }
           ]
         },
