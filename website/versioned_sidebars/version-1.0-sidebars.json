@@ -201,28 +201,49 @@
       "label": "Plugins",
       "items": [
         {
-          "type": "doc",
-          "id": "version-1.0/plugins/ax_sweeper"
+          "collapsed": true,
+          "type": "category",
+          "label": "Launchers",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/joblib_launcher"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/rq_launcher"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/submitit_launcher"
+            }
+          ]
         },
         {
-          "type": "doc",
-          "id": "version-1.0/plugins/colorlog"
+          "collapsed": true,
+          "type": "category",
+          "label": "Misc.",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/colorlog"
+            }
+          ]
         },
         {
-          "type": "doc",
-          "id": "version-1.0/plugins/joblib_launcher"
-        },
-        {
-          "type": "doc",
-          "id": "version-1.0/plugins/nevergrad_sweeper"
-        },
-        {
-          "type": "doc",
-          "id": "version-1.0/plugins/rq_launcher"
-        },
-        {
-          "type": "doc",
-          "id": "version-1.0/plugins/submitit_launcher"
+          "collapsed": true,
+          "type": "category",
+          "label": "Sweepers",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/ax_sweeper"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/plugins/nevergrad_sweeper"
+            }
+          ]
         }
       ]
     },
