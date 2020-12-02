@@ -24,11 +24,6 @@
   showcontent = true
 
   [[tool.towncrier.type]]
-  directory = "plugin"
-  name = "Plugins"
-  showcontent = true
-
-  [[tool.towncrier.type]]
   directory = "config"
   name = "Configuration structure changes"
   showcontent = true
