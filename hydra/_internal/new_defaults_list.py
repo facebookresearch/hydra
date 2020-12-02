@@ -146,6 +146,7 @@ def _expand_virtual_root(
             repo=repo,
             root=new_root,
             is_primary_config=False,
+            skip_missing=False,
             overrides=overrides,
         )
         if subtree.children is None:
@@ -159,10 +160,42 @@ def _expand_virtual_root(
     return root
 
 
+def _check_not_missing(
+    repo: IConfigRepository,
+    default: InputDefault,
+    skip_missing: bool,
+) -> bool:
+    path = default.get_config_path()
+    if path.endswith("???"):
+        if skip_missing:
+            return True
+        if isinstance(default, GroupDefault):
+            group_path = default.get_group_path()
+            options = repo.get_group_options(
+                group_path,
+                results_filter=ObjectType.CONFIG,
+            )
+            opt_list = "\n".join(["\t" + x for x in options])
+            msg = dedent(
+                f"""\
+                You must specify '{group_path}', e.g, {group_path}=<OPTION>
+                Available options:
+                """
+            )
+            raise ConfigCompositionException(msg + opt_list)
+        elif isinstance(default, ConfigDefault):
+            raise ValueError(f"Missing ConfigDefault is not supported : {path}")
+        else:
+            assert False
+
+    return False
+
+
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
     is_primary_config: bool,
+    skip_missing: bool,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
     parent = root.node
@@ -188,12 +221,14 @@ def _create_defaults_tree(
                 repo=repo, node=parent, is_primary_config=is_primary_config
             )
 
-        path = parent.get_config_path()
+        if _check_not_missing(repo=repo, default=parent, skip_missing=skip_missing):
+            return root
 
+        path = parent.get_config_path()
         loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
         if loaded is None:
-            missing_config_error(repo, root.node)
+            config_not_found_error(repo, root.node)
 
         assert loaded is not None
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
@@ -245,6 +280,7 @@ def _create_defaults_tree(
                     repo=repo,
                     root=new_root,
                     is_primary_config=False,
+                    skip_missing=skip_missing,
                     overrides=overrides,
                 )
                 if subtree.children is None:
@@ -319,6 +355,7 @@ def _create_defaults_list(
     config_name: str,
     overrides: Overrides,
     prepend_hydra: bool,
+    skip_missing: bool,
 ) -> List[ResultDefault]:
 
     root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
@@ -328,6 +365,7 @@ def _create_defaults_list(
         root=root,
         overrides=overrides,
         is_primary_config=True,
+        skip_missing=skip_missing,
     )
 
     output: List[ResultDefault] = []
@@ -341,10 +379,23 @@ def create_defaults_list(
     config_name: str,
     overrides_list: List[Override],
     prepend_hydra: bool,
+    skip_missing: bool,
 ) -> DefaultsList:
+    """
+    :param repo:
+    :param config_name:
+    :param overrides_list:
+    :param prepend_hydra:
+    :param skip_missing: True to skip config group with the value '???' and not fail on them. Useful when sweeping.
+    :return:
+    """
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
     defaults = _create_defaults_list(
-        repo, config_name, overrides, prepend_hydra=prepend_hydra
+        repo,
+        config_name,
+        overrides,
+        prepend_hydra=prepend_hydra,
+        skip_missing=skip_missing,
     )
     overrides.ensure_overrides_used()
     ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
@@ -352,7 +403,7 @@ def create_defaults_list(
 
 
 # TODO: show parent config name in the error (where is my error?)
-def missing_config_error(repo: IConfigRepository, element: InputDefault) -> None:
+def config_not_found_error(repo: IConfigRepository, element: InputDefault) -> None:
     options = None
     if isinstance(element, GroupDefault):
         group = element.get_group_path()

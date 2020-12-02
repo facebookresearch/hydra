@@ -56,6 +56,7 @@ Plugins.instance()
 #  - (Y) Extension from the same config group
 #  - (Y) Extension from absolute config group
 #  - (Y) Extension from a nested config group
+# TODO: Test missing ('???') in Defaults List
 # TODO: Interpolation support
 # TODO: Consider delete support
 # TODO: Consider package rename support
@@ -142,6 +143,7 @@ def _test_defaults_list_impl(
     overrides: List[str],
     expected: Any,
     prepend_hydra: bool = False,
+    skip_missing: bool = False,
 ) -> None:
     parser = OverridesParser.create()
     repo = create_repo()
@@ -152,6 +154,7 @@ def _test_defaults_list_impl(
             config_name=config_name,
             overrides_list=overrides_list,
             prepend_hydra=prepend_hydra,
+            skip_missing=skip_missing,
         )
         assert result.defaults == expected
     else:
@@ -161,6 +164,7 @@ def _test_defaults_list_impl(
                 config_name=config_name,
                 overrides_list=overrides_list,
                 prepend_hydra=prepend_hydra,
+                skip_missing=skip_missing,
             )
 
 

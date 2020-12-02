@@ -1093,3 +1093,106 @@ def test_extension_use_cases(
         input_overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "with_missing",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=dedent(
+                    """\
+                You must specify 'db', e.g, db=<OPTION>
+                Available options:"""
+                ),
+            ),
+            id="with_missing",
+        ),
+        param(
+            "with_missing",
+            ["db=base_db"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="with_missing"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="db", name="base_db"),
+                ],
+            ),
+            id="with_missing:override",
+        ),
+        param(
+            "empty",
+            ["+group1=with_missing"],
+            raises(
+                ConfigCompositionException,
+                match=dedent(
+                    """\
+                    You must specify 'group1/group2', e.g, group1/group2=<OPTION>
+                    Available options"""
+                ),
+            ),
+            id="nested_missing",
+        ),
+        param(
+            "empty",
+            ["+group1=with_missing", "group1/group2=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="with_missing"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="nested_missing:override",
+        ),
+    ],
+)
+def test_with_missing(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "with_missing",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="with_missing"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="db", name="???"),
+                ],
+            ),
+            id="with_missing",
+        ),
+    ],
+)
+def test_with_missing_and_skip_missing_flag(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        skip_missing=True,
+    )
