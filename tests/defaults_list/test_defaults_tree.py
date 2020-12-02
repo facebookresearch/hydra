@@ -1196,3 +1196,77 @@ def test_with_missing_and_skip_missing_flag(
         expected=expected,
         skip_missing=True,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "placeholder",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="placeholder"),
+                children=[ConfigDefault(path="_self_"), GroupDefault(group="group1")],
+            ),
+            id="placeholder",
+        ),
+        param(
+            "placeholder",
+            ["group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="placeholder"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                ],
+            ),
+            id="placeholder:override",
+        ),
+        param(
+            "nested_placeholder",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="nested_placeholder"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="placeholder"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="nested_placeholder",
+        ),
+        param(
+            "nested_placeholder",
+            ["group1/group2=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="nested_placeholder"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="placeholder"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="nested_placeholder:override",
+        ),
+    ],
+)
+def test_placeholder(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )

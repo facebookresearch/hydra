@@ -56,11 +56,12 @@ Plugins.instance()
 #  - (Y) Extension from the same config group
 #  - (Y) Extension from absolute config group
 #  - (Y) Extension from a nested config group
-# TODO: Test missing ('???') in Defaults List
+# TODO: (Y) Test missing ('???') in Defaults List
+# TODO: (Y) Support placeholder element
 # TODO: Interpolation support
 # TODO: Consider delete support
 # TODO: Consider package rename support
-# TODO: Support placeholder element
+
 
 # TODO: Error handling:
 #  - (Y) Error handling for entries that failed to override anything
@@ -1222,4 +1223,72 @@ def test_as_as_primary(
         expected=expected,
         prepend_hydra=True,
     )
-    ...
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "placeholder",
+            [],
+            [ResultDefault(config_path="placeholder", package="", is_self=True)],
+            id="placeholder",
+        ),
+        param(
+            "placeholder",
+            ["group1=file1"],
+            [
+                ResultDefault(config_path="placeholder", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="placeholder"
+                ),
+            ],
+            id="placeholder:override",
+        ),
+        param(
+            "nested_placeholder",
+            [],
+            [
+                ResultDefault(
+                    config_path="nested_placeholder", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/placeholder",
+                    package="group1",
+                    parent="nested_placeholder",
+                    is_self=True,
+                ),
+            ],
+            id="nested_placeholder",
+        ),
+        param(
+            "nested_placeholder",
+            ["group1/group2=file1"],
+            [
+                ResultDefault(
+                    config_path="nested_placeholder", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/placeholder",
+                    package="group1",
+                    parent="nested_placeholder",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.group2",
+                    parent="group1/placeholder",
+                ),
+            ],
+            id="nested_placeholder:override",
+        ),
+    ],
+)
+def test_placeholder(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )

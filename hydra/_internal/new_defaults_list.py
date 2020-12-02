@@ -221,6 +221,9 @@ def _create_defaults_tree(
                 repo=repo, node=parent, is_primary_config=is_primary_config
             )
 
+        if parent.get_name() is None:
+            return root
+
         if _check_not_missing(repo=repo, default=parent, skip_missing=skip_missing):
             return root
 
@@ -296,7 +299,10 @@ def _create_defaults_tree(
 
 def _create_result_default(
     tree: Optional[DefaultsTreeNode], node: InputDefault
-) -> ResultDefault:
+) -> Optional[ResultDefault]:
+    if node.get_name() is None:
+        return None
+
     res = ResultDefault()
     if node.is_self():
         assert tree is not None
@@ -325,12 +331,14 @@ def _tree_to_list(
 
     if tree.children is None or len(tree.children) == 0:
         rd = _create_result_default(tree=tree.parent, node=node)
-        output.append(rd)
+        if rd is not None:
+            output.append(rd)
     else:
         for child in tree.children:
             if isinstance(child, InputDefault):
                 rd = _create_result_default(tree=tree, node=child)
-                output.append(rd)
+                if rd is not None:
+                    output.append(rd)
             else:
                 assert isinstance(child, DefaultsTreeNode)
                 _tree_to_list(tree=child, output=output)

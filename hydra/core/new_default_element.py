@@ -55,7 +55,7 @@ class InputDefault:
     def _relative_group_path(self) -> str:
         raise NotImplementedError()
 
-    def get_name(self) -> str:
+    def get_name(self) -> Optional[str]:
         raise NotImplementedError()
 
     def _get_attributes(self) -> List[str]:
@@ -106,7 +106,8 @@ class InputDefault:
         if package is None:
             package = self._relative_group_path().replace("/", ".")
 
-        package = package.replace("_name_", name)
+        if name is not None:
+            package = package.replace("_name_", name)
 
         if parent_package == "":
             ret = package
@@ -230,7 +231,7 @@ class ConfigDefault(InputDefault):
         else:
             return group
 
-    def get_name(self) -> str:
+    def get_name(self) -> Optional[str]:
         assert self.path is not None
         idx = self.path.rfind("/")
         if idx == -1:
@@ -296,7 +297,6 @@ class GroupDefault(InputDefault):
 
     def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
-        assert self.name is not None
         if self.package == "_here_":
             self.package = ""
 
@@ -325,8 +325,7 @@ class GroupDefault(InputDefault):
 
         return f"{group_path}/{self.get_name()}"
 
-    def get_name(self) -> str:
-        assert self.name is not None
+    def get_name(self) -> Optional[str]:
         return self.name
 
     def get_final_package(self) -> str:
