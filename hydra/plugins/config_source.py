@@ -3,8 +3,6 @@ import copy
 
 from textwrap import dedent
 
-import warnings
-
 import re
 
 from abc import abstractmethod
@@ -179,7 +177,7 @@ class ConfigSource(Plugin):
 
         if "package" in header:
             # keep a backup of the original package header
-            # TODO: clean up manipulation of pacakge header in config sources
+            # TODO: clean up manipulation of package header in config sources
             header["orig_package"] = header["package"]
 
         package = ConfigSource._resolve_package(
@@ -187,28 +185,6 @@ class ConfigSource(Plugin):
             header=header,
             package_override=package_override,
         )
-
-        # TODO: cleanup
-        # if is_primary_config:
-        #     if "package" not in header:
-        #         header["package"] = "_global_"
-        #     else:
-        #         if package != "":
-        #             raise HydraException(
-        #                 f"Primary config '{config_without_ext}' must be "
-        #                 f"in the _global_ package; effective package : '{package}'"
-        #             )
-        # else:
-        #     if "package" not in header:
-        #         # Loading a config group option.
-        #         # Hydra 1.0: default to _global_ and warn.
-        #         # Hydra 1.1: default will change to _package_ and the warning will be removed.
-        #         header["package"] = "_global_"
-        #         msg = (
-        #             f"\nMissing @package directive {normalized_config_path} in {self.full_path()}.\n"
-        #             f"See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/adding_a_package_directive"
-        #         )
-        #         warnings.warn(message=msg, category=UserWarning)
 
         header["package"] = package
 
@@ -344,17 +320,6 @@ class ConfigSource(Plugin):
 
                 is_delete = False
                 if config_name is None:
-                    warnings.warn(
-                        category=UserWarning,
-                        message=dedent(
-                            f"""
-                    Deprecated form of deletion used in the defaults list of '{config_path}'.
-                    'group: null' is deprecated, use '~group' instead.
-                    You can also delete group with a specific value with '~group: value'.
-                    Support for the 'group: null' form will be removed in Hydra 1.2.
-                    """
-                        ),
-                    )
                     is_delete = True
                 elif config_group.startswith("~"):
                     is_delete = True
