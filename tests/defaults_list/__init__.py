@@ -37,6 +37,7 @@ def _test_defaults_tree_impl(
             root=root,
             overrides=overrides,
             is_primary_config=True,
+            interpolated_subtree=False,
             skip_missing=skip_missing,
         )
         overrides.ensure_overrides_used()
@@ -48,6 +49,7 @@ def _test_defaults_tree_impl(
                 root=root,
                 overrides=overrides,
                 is_primary_config=True,
+                interpolated_subtree=False,
                 skip_missing=skip_missing,
             )
             overrides.ensure_overrides_used()

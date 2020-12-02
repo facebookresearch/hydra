@@ -1,0 +1,5 @@
+# @package _global_
+defaults:
+  - group1: file1
+  - group2: file2
+  - group1_group2: ${defaults.0.group1}_${defaults.1.group2}

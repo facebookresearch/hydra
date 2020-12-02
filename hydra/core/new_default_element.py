@@ -1,7 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
+import re
+import warnings
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from textwrap import dedent
+from typing import List, Optional, Pattern, Union
+
+from omegaconf import AnyNode, DictConfig, OmegaConf
 
 
 @dataclass
@@ -152,6 +156,20 @@ class InputDefault:
             ret = f"{ret} ({','.join(flags)})"
         return f"{type(self).__name__}({ret})"
 
+    def is_interpolation(self) -> bool:
+        """
+        True if config_name is an interpolation
+        """
+        name = self.get_name()
+        if isinstance(name, str):
+            node = AnyNode(name)
+            return node._is_interpolation()
+        else:
+            return False
+
+    def resolve_interpolation(self, known_choices: DictConfig) -> None:
+        raise NotImplementedError()
+
 
 @dataclass
 class VirtualRoot(InputDefault):
@@ -187,6 +205,9 @@ class VirtualRoot(InputDefault):
 
     def __repr__(self) -> str:
         return "VirtualRoot()"
+
+    def resolve_interpolation(self, known_choices: DictConfig) -> None:
+        raise NotImplementedError()
 
 
 @dataclass(repr=False)
@@ -281,6 +302,12 @@ class ConfigDefault(InputDefault):
     def _get_flags(self) -> List[str]:
         return []
 
+    def resolve_interpolation(self, known_choices: DictConfig) -> None:
+        raise NotImplementedError()
+
+
+_legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
+
 
 @dataclass(repr=False)
 class GroupDefault(InputDefault):
@@ -345,6 +372,23 @@ class GroupDefault(InputDefault):
 
     def _get_flags(self) -> List[str]:
         return ["optional", "override"]
+
+    def resolve_interpolation(self, known_choices: DictConfig) -> None:
+        name = self.get_name()
+        if name is not None:
+            if re.match(_legacy_interpolation_pattern, name) is not None:
+                msg = dedent(
+                    f"""
+Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
+See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+                )
+                warnings.warn(
+                    category=UserWarning,
+                    message=msg,
+                )
+        node = OmegaConf.create({"_dummy_": self.get_name()})
+        node._set_parent(known_choices)
+        self.name = node["_dummy_"]
 
 
 @dataclass
