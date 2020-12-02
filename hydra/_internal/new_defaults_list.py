@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from textwrap import dedent
 from typing import Dict, List, Optional, Union
 
+from omegaconf import DictConfig, OmegaConf
+
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
 from hydra.core.new_default_element import (
@@ -29,11 +31,15 @@ class Overrides:
     append_group_defaults: List[GroupDefault]
     config_overrides: List[Override]
 
+    known_choices: Dict[str, str]
+
     def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
         self.override_choices = {}
         self.override_used = {}
         self.append_group_defaults = []
         self.config_overrides = []
+
+        self.known_choices = {}
 
         for override in overrides_list:
             is_group = repo.group_exists(override.key_or_group)
@@ -89,6 +95,18 @@ class Overrides:
                 )
                 raise ConfigCompositionException(msg)
 
+    def set_known_choice(self, default: InputDefault) -> None:
+        if isinstance(default, GroupDefault):
+            key = default.get_override_key()
+            if key not in self.known_choices:
+                self.known_choices[key] = default.get_name()
+            else:
+                prev = self.known_choices[key]
+                if default.get_name() != prev:
+                    raise ValueError(
+                        f"Internal error, value of {key} is being changed from {prev} to {default.get_name()}"
+                    )
+
 
 @dataclass
 class DefaultsList:
@@ -109,6 +127,8 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
 
     if not has_self:
         defaults.insert(0, ConfigDefault(path="_self_"))
+
+    return not has_self
 
 
 def update_package_header(
@@ -147,6 +167,7 @@ def _expand_virtual_root(
             root=new_root,
             is_primary_config=False,
             skip_missing=False,
+            interpolated_subtree=False,
             overrides=overrides,
         )
         if subtree.children is None:
@@ -191,11 +212,30 @@ def _check_not_missing(
     return False
 
 
+def _create_interpolation_map(
+    overrides: Overrides,
+    defaults_list: List[InputDefault],
+    self_added: bool,
+) -> DictConfig:
+    known_choices = OmegaConf.create(overrides.known_choices)
+    known_choices.defaults = []
+    for d in defaults_list:
+        if self_added and d.is_self():
+            continue
+        if isinstance(d, ConfigDefault):
+            known_choices.defaults.append(d.get_config_path())
+        elif isinstance(d, GroupDefault):
+            name = d.get_name()
+            known_choices.defaults.append({d.get_override_key(): name})
+    return known_choices
+
+
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
     is_primary_config: bool,
     skip_missing: bool,
+    interpolated_subtree: bool,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
     parent = root.node
@@ -221,6 +261,8 @@ def _create_defaults_tree(
                 repo=repo, node=parent, is_primary_config=is_primary_config
             )
 
+        overrides.set_known_choice(parent)
+
         if parent.get_name() is None:
             return root
 
@@ -240,8 +282,9 @@ def _create_defaults_tree(
             for gd in overrides.append_group_defaults:
                 defaults_list.append(gd)
 
+        self_added = False
         if len(defaults_list) > 0:
-            _validate_self(containing_node=parent, defaults=defaults_list)
+            self_added = _validate_self(containing_node=parent, defaults=defaults_list)
 
         for d in defaults_list:
             if d.is_self():
@@ -265,6 +308,13 @@ def _create_defaults_tree(
                     warnings.warn(msg, UserWarning)
 
                 if d.override:
+                    if interpolated_subtree:
+                        # Since interpolations are deferred for until all the config groups are already set,
+                        # Their subtree may not contain config group overrides
+                        raise ConfigCompositionException(
+                            f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
+                            f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
+                        )
                     overrides.add_override(d)
 
         for d in reversed(defaults_list):
@@ -279,10 +329,15 @@ def _create_defaults_tree(
                 d.parent_base_dir = parent.get_group_path()
                 d.parent_package = parent.get_final_package()
 
+                if d.is_interpolation():
+                    children.append(d)
+                    continue
+
                 subtree = _create_defaults_tree(
                     repo=repo,
                     root=new_root,
                     is_primary_config=False,
+                    interpolated_subtree=interpolated_subtree,
                     skip_missing=skip_missing,
                     overrides=overrides,
                 )
@@ -290,6 +345,26 @@ def _create_defaults_tree(
                     children.append(d)
                 else:
                     children.append(subtree)
+
+        # processed deferred interpolations
+        known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
+
+        for idx, d in enumerate(children):
+            if isinstance(d, InputDefault) and d.is_interpolation():
+                d.resolve_interpolation(known_choices)
+                new_root = DefaultsTreeNode(node=d, parent=root)
+                d.parent_base_dir = parent.get_group_path()
+                d.parent_package = parent.get_final_package()
+                subtree = _create_defaults_tree(
+                    repo=repo,
+                    root=new_root,
+                    is_primary_config=False,
+                    skip_missing=skip_missing,
+                    interpolated_subtree=True,
+                    overrides=overrides,
+                )
+                if subtree.children is not None:
+                    children[idx] = subtree
 
     if len(children) > 0:
         root.children = list(reversed(children))
@@ -373,6 +448,7 @@ def _create_defaults_list(
         root=root,
         overrides=overrides,
         is_primary_config=True,
+        interpolated_subtree=False,
         skip_missing=skip_missing,
     )
 

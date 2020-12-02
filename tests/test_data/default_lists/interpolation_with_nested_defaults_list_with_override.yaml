@@ -1,0 +1,4 @@
+defaults:
+  - group1: file1
+  - group2: file1
+  - group1_group2: ${group1}_${group2}_defaults_with_override

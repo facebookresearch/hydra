@@ -3,7 +3,7 @@ import re
 from textwrap import dedent
 from typing import Any, List
 
-from pytest import mark, param, raises
+from pytest import mark, param, raises, warns
 
 from hydra.core.new_default_element import (
     ConfigDefault,
@@ -193,7 +193,7 @@ def test_simple_defaults_tree_cases(
         ),
         param(
             "include_nested_group",
-            ["+group1=file1"],
+            ["+group2=file1"],
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
@@ -205,7 +205,7 @@ def test_simple_defaults_tree_cases(
                             GroupDefault(group="group2", name="file1"),
                         ],
                     ),
-                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file1"),
                 ],
             ),
             id="include_nested_group:append",
@@ -1270,3 +1270,237 @@ def test_placeholder(
         input_overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "interpolation_simple",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_simple"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file1_file2"),
+                ],
+            ),
+            id="interpolation_simple",
+        ),
+        param(
+            "interpolation_simple",
+            ["group1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_simple"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file2_file2"),
+                ],
+            ),
+            id="interpolation_simple:override",
+        ),
+        param(
+            "interpolation_forward",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_forward"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1_group2", name="file1_file2"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file2"),
+                ],
+            ),
+            id="interpolation_forward",
+        ),
+        param(
+            "interpolation_forward",
+            ["group1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_forward"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1_group2", name="file2_file2"),
+                    GroupDefault(group="group1", name="file2"),
+                    GroupDefault(group="group2", name="file2"),
+                ],
+            ),
+            id="interpolation_forward:override",
+        ),
+        param(
+            "interpolation_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_nested"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1/group2", name="file1"),
+                    GroupDefault(group="group1_group2", name="foo_file1"),
+                ],
+            ),
+            id="interpolation_nested",
+        ),
+        param(
+            "interpolation_nested",
+            ["group1/group2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_nested"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1/group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="foo_file2"),
+                ],
+            ),
+            id="interpolation_nested:override",
+        ),
+        param(
+            "interpolation_with_package_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_package_override"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1", package="package"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file1_file2"),
+                ],
+            ),
+            id="interpolation_with_package_override",
+        ),
+        param(
+            "interpolation_with_package_override",
+            ["group1@package=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_package_override"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2", package="package"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file2_file2"),
+                ],
+            ),
+            id="interpolation_with_package_override:override",
+        ),
+        param(
+            "interpolation_with_nested_defaults_list",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_defaults_list"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1_group2", name="file1_file1_with_defaults_list"
+                        ),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            ConfigDefault(path="empty1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="interpolation_with_nested_defaults_list",
+        ),
+        param(
+            "interpolation_with_nested_defaults_list",
+            ["group2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_defaults_list"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file2"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1_group2", name="file1_file2_with_defaults_list"
+                        ),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            ConfigDefault(path="empty2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="interpolation_with_nested_defaults_list:override",
+        ),
+        param(
+            "interpolation_with_nested_defaults_list_with_override",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "group1_group2/file1_file1_defaults_with_override: Overrides are not allowed in the subtree"
+                    " of an in interpolated config group (group1_group2/foo=bar)"
+                ),
+            ),
+            id="interpolation_with_nested_defaults_list_with_override",
+        ),
+    ],
+)
+def test_interpolation(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "interpolation_legacy_with_self",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_legacy_with_self"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file1_file2"),
+                ],
+            ),
+            id="interpolation_legacy_with_self",
+        ),
+        param(
+            "interpolation_legacy_without_self",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_legacy_without_self"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                    GroupDefault(group="group2", name="file2"),
+                    GroupDefault(group="group1_group2", name="file1_file2"),
+                ],
+            ),
+            id="interpolation_legacy_without_self",
+        ),
+    ],
+)
+def test_legacy_interpolation(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    msg = dedent(
+        """
+    Defaults list element '.*=.*' is using a deprecated interpolation form.
+    See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+    )
+    with warns(expected_warning=UserWarning, match=msg):
+        _test_defaults_tree_impl(
+            config_name=config_name,
+            input_overrides=overrides,
+            expected=expected,
+        )

@@ -59,12 +59,19 @@ Plugins.instance()
 # TODO: (Y) Test missing ('???') in Defaults List
 # TODO: (Y) Support placeholder element
 # TODO: Interpolation support
+#  - (Y) Simple + override
+#  - (Y) Forward + override
+#  - (Y) Interpolate with nested groups
+#  - (Y) Interpolate with group@pkg1
+#  - (Y) Test interpolated config with a defaults list
+#  - (Y) Error if interpolated config defaults list has an overrides
+#  - (Y) Support and deprecate legacy defaults list interpolation style
 # TODO: Consider delete support
 # TODO: Consider package rename support
 
 
 # TODO: Error handling:
-#  - (Y) Error handling for entries that failed to override anything
+#  - Error handling for entries that failed to override anything
 #  - Duplicate _self_ error
 #  - test handling missing configs mentioned in defaults list (with and without optional)
 #  - Ambiguous overrides should provide valid override keys for group
@@ -1285,6 +1292,79 @@ def test_as_as_primary(
     ],
 )
 def test_placeholder(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "interpolation_simple",
+            ["group1=file2"],
+            [
+                ResultDefault(
+                    config_path="interpolation_simple", package="", is_self=True
+                ),
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="group1",
+                    parent="interpolation_simple",
+                ),
+                ResultDefault(
+                    config_path="group2/file2",
+                    package="group2",
+                    parent="interpolation_simple",
+                ),
+                ResultDefault(
+                    config_path="group1_group2/file2_file2",
+                    package="group1_group2",
+                    parent="interpolation_simple",
+                ),
+            ],
+            id="interpolation_simple",
+        ),
+        param(
+            "interpolation_with_nested_defaults_list",
+            [],
+            [
+                ResultDefault(
+                    config_path="interpolation_with_nested_defaults_list",
+                    package="",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="group1",
+                    parent="interpolation_with_nested_defaults_list",
+                ),
+                ResultDefault(
+                    config_path="group2/file1",
+                    package="group2",
+                    parent="interpolation_with_nested_defaults_list",
+                ),
+                ResultDefault(
+                    config_path="group1_group2/file1_file1_with_defaults_list",
+                    package="group1_group2",
+                    parent="interpolation_with_nested_defaults_list",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="group1_group2/empty1",
+                    package="group1_group2",
+                    parent="group1_group2/file1_file1_with_defaults_list",
+                ),
+            ],
+            id="interpolation_with_nested_defaults_list",
+        ),
+    ],
+)
+def test_interpolation_simple(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ):
     _test_defaults_list_impl(

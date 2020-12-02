@@ -1,0 +1,4 @@
+defaults:
+  - group1@package: file1
+  - group2: file2
+  - group1_group2: ${group1@package}_${group2}
