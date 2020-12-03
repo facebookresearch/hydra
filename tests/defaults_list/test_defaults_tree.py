@@ -7,9 +7,9 @@ from pytest import mark, param, raises, warns
 
 from hydra.core.new_default_element import (
     ConfigDefault,
+    DefaultsTreeNode,
     GroupDefault,
     VirtualRoot,
-    DefaultsTreeNode,
 )
 from hydra.core.plugins import Plugins
 from hydra.errors import ConfigCompositionException
@@ -1504,3 +1504,185 @@ def test_legacy_interpolation(
             input_overrides=overrides,
             expected=expected,
         )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "override_nested_to_null",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="override_nested_to_null"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="override_nested_to_null",
+        ),
+        param(
+            "override_nested_to_null",
+            ["group1/group2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="override_nested_to_null"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file2"),
+                        ],
+                    ),
+                ],
+            ),
+            id="override_nested_to_null:override",
+        ),
+    ],
+)
+def test_override_nested_to_null(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "include_nested_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="delete:include_nested_group:baseline",
+        ),
+        param(
+            "include_nested_group",
+            ["~group1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="group_item1", deleted=True),
+                ],
+            ),
+            id="delete:include_nested_group:group1",
+        ),
+        param(
+            "include_nested_group",
+            ["~group1/group2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file1", deleted=True),
+                        ],
+                    ),
+                ],
+            ),
+            id="delete:include_nested_group:group1/group2",
+        ),
+        param(
+            "include_nested_group",
+            ["~group1=group_item1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="group_item1", deleted=True),
+                ],
+            ),
+            id="delete:include_nested_group:group1=group_item1",
+        ),
+        param(
+            "include_nested_group",
+            ["~group1=wrong"],
+            raises(
+                ConfigCompositionException,
+                match="Could not delete 'group1=wrong'. No match in the defaults list",
+            ),
+            id="delete:include_nested_group:group1=wrong",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1", package="pkg1"),
+                    GroupDefault(group="group1", name="file1", package="pkg2"),
+                ],
+            ),
+            id="delete:two_group_defaults_different_pkgs:baseline",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            ["~group1@pkg1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(
+                        group="group1", name="file1", package="pkg1", deleted=True
+                    ),
+                    GroupDefault(group="group1", name="file1", package="pkg2"),
+                ],
+            ),
+            id="delete:two_group_defaults_different_pkgs:delete_pkg1",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            ["~group1@pkg2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_group_defaults_different_pkgs"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1", package="pkg1"),
+                    GroupDefault(
+                        group="group1", name="file1", package="pkg2", deleted=True
+                    ),
+                ],
+            ),
+            id="delete:two_group_defaults_different_pkgs:delete_pkg1",
+        ),
+    ],
+)
+def test_deletion(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )

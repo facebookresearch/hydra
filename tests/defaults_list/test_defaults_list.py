@@ -66,17 +66,24 @@ Plugins.instance()
 #  - (Y) Test interpolated config with a defaults list
 #  - (Y) Error if interpolated config defaults list has an overrides
 #  - (Y) Support and deprecate legacy defaults list interpolation style
-# TODO: Consider delete support
+# TODO: delete support from overrides
+#  - (Y) override to null from defaults list
+#  - (Y) Support delete by group
+#  - (Y) Support delete by group=value
+#  - (Y) Test deletion with a specific package
+#  - (Y) Deletion test with final defaults list
 # TODO: Consider package rename support
 
 
 # TODO: Error handling:
 #  - Error handling for entries that failed to override anything
+#  - Error if delete override did not delete anything
 #  - Duplicate _self_ error
 #  - test handling missing configs mentioned in defaults list (with and without optional)
 #  - Ambiguous overrides should provide valid override keys for group
 #  - Test deprecation message when attempting to override hydra configs without override: true
 #  - Should duplicate entries in results list be an error? (same override key)
+
 
 # TODO: Integrate with Hydra
 #  - replace old defaults list computation
@@ -156,7 +163,7 @@ def _test_defaults_list_impl(
     parser = OverridesParser.create()
     repo = create_repo()
     overrides_list = parser.parse_overrides(overrides=overrides)
-    if isinstance(expected, list):
+    if isinstance(expected, list) or expected is None:
         result = create_defaults_list(
             repo=repo,
             config_name=config_name,
@@ -1365,6 +1372,31 @@ def test_placeholder(
     ],
 )
 def test_interpolation_simple(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+):
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "include_nested_group",
+            ["~group1"],
+            [
+                ResultDefault(
+                    config_path="include_nested_group", package="", is_self=True
+                ),
+            ],
+            id="delete:include_nested_group:group1",
+        ),
+    ],
+)
+def test_deletion(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ):
     _test_defaults_list_impl(

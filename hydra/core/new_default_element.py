@@ -76,6 +76,12 @@ class InputDefault:
     def is_virtual(self) -> bool:
         return False
 
+    def is_deleted(self) -> bool:
+        if "deleted" in self.__dict__:
+            return bool(self.__dict__["deleted"])
+        else:
+            return False
+
     def set_package_header(self, package_header: str) -> None:
         assert self.__dict__["package_header"] is None
         # package header is always interpreted as absolute.
@@ -141,7 +147,11 @@ class InputDefault:
         for attr in attr_names:
             value = getattr(self, attr)
             if value is not None:
-                attrs.append(f'{attr}="{value}"')
+                if isinstance(value, str):
+                    svalue = f'"{value}"'
+                else:
+                    svalue = value
+                attrs.append(f"{attr}={svalue}")
 
         flags = []
         flag_names = self._get_flags()
@@ -184,9 +194,6 @@ class VirtualRoot(InputDefault):
 
     def get_config_path(self) -> str:
         return "<root>"
-
-    def get_default_package(self) -> str:
-        return self.get_group_path().replace("/", ".")
 
     def get_final_package(self) -> str:
         raise NotImplementedError()
@@ -319,6 +326,7 @@ class GroupDefault(InputDefault):
     package: Optional[str] = None
 
     override: bool = False
+    deleted: Optional[bool] = None
 
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
 
@@ -368,7 +376,7 @@ class GroupDefault(InputDefault):
             return self.group
 
     def _get_attributes(self) -> List[str]:
-        return ["group", "name", "package"]
+        return ["group", "name", "package", "deleted"]
 
     def _get_flags(self) -> List[str]:
         return ["optional", "override"]

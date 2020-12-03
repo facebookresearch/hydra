@@ -41,6 +41,7 @@ def _test_defaults_tree_impl(
             skip_missing=skip_missing,
         )
         overrides.ensure_overrides_used()
+        overrides.ensure_deletions_used()
         assert result == expected
     else:
         with expected:
@@ -53,3 +54,4 @@ def _test_defaults_tree_impl(
                 skip_missing=skip_missing,
             )
             overrides.ensure_overrides_used()
+            overrides.ensure_deletions_used()
