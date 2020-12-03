@@ -4,7 +4,7 @@
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"
-    template = "news/_template.rst"
+    template = "../../news/_template.rst"
     issue_format = "[#{issue}](https://github.com/facebookresearch/hydra/issues/{issue})"
     start_string = "<!-- TOWNCRIER -->\n"
 
