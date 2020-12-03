@@ -110,7 +110,7 @@ class InputDefault:
         self,
         parent_package: Optional[str],
         package: Optional[str],
-        name: str,
+        name: Optional[str],
     ) -> str:
         assert parent_package is not None
         if package is None:
@@ -287,7 +287,9 @@ class ConfigDefault(InputDefault):
 
     def get_final_package(self) -> str:
         return self._get_final_package(
-            self.parent_package, self.get_package(), self.get_name()
+            self.parent_package,
+            self.get_package(),
+            self.get_name(),
         )
 
     def _relative_group_path(self) -> str:
