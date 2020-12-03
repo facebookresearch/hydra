@@ -2,9 +2,9 @@
 
 import copy
 import warnings
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -24,6 +24,12 @@ from hydra.errors import ConfigCompositionException
 
 
 @dataclass
+class Deletion:
+    name: Optional[str]
+    used: bool = field(default=False, compare=False)
+
+
+@dataclass
 class Overrides:
     override_choices: Dict[str, str]
     override_used: Dict[str, bool]
@@ -33,11 +39,14 @@ class Overrides:
 
     known_choices: Dict[str, str]
 
+    deletions: Dict[str, Deletion]
+
     def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
         self.override_choices = {}
         self.override_used = {}
         self.append_group_defaults = []
         self.config_overrides = []
+        self.deletions = {}
 
         self.known_choices = {}
 
@@ -47,11 +56,21 @@ class Overrides:
             if not is_group:
                 self.config_overrides.append(override)
             else:
-                if not isinstance(value, str):
+                if override.is_delete():
+                    key = override.get_key_element()[1:]
+                    value = override.value()
+                    if value is not None and not isinstance(value, str):
+                        raise ValueError(
+                            f"Config group override deletion value must be a string : {override}"
+                        )
+
+                    self.deletions[key] = Deletion(name=value)
+
+                elif not isinstance(value, str):
                     raise ValueError(
                         f"Config group override must be a string : {override}"
                     )
-                if override.is_add():
+                elif override.is_add():
                     self.append_group_defaults.append(
                         GroupDefault(
                             group=override.key_or_group,
@@ -95,6 +114,13 @@ class Overrides:
                 )
                 raise ConfigCompositionException(msg)
 
+    def ensure_deletions_used(self) -> None:
+        for key, deletion in self.deletions.items():
+            if not deletion.used:
+                desc = f"{key}={deletion.name}" if deletion.name is not None else key
+                msg = f"Could not delete '{desc}'. No match in the defaults list"
+                raise ConfigCompositionException(msg)
+
     def set_known_choice(self, default: InputDefault) -> None:
         if isinstance(default, GroupDefault):
             key = default.get_override_key()
@@ -107,6 +133,24 @@ class Overrides:
                         f"Internal error, value of {key} is being changed from {prev} to {default.get_name()}"
                     )
 
+    def is_deleted(self, default: InputDefault) -> bool:
+        if not isinstance(default, GroupDefault):
+            return False
+        key = default.get_override_key()
+        if key in self.deletions:
+            deletion = self.deletions[key]
+            if deletion.name is None:
+                return True
+            else:
+                return deletion.name == default.get_name()
+
+    def delete(self, default: InputDefault) -> bool:
+        assert isinstance(default, GroupDefault)
+        default.deleted = True
+
+        key = default.get_override_key()
+        self.deletions[key].used = True
+
 
 @dataclass
 class DefaultsList:
@@ -114,7 +158,7 @@ class DefaultsList:
     config_overrides: List[Override]
 
 
-def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> None:
+def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
     # check that self is present only once
     has_self = False
     for d in defaults:
@@ -162,7 +206,7 @@ def _expand_virtual_root(
         d.parent_base_dir = ""
         d.parent_package = ""
 
-        subtree = _create_defaults_tree(
+        subtree = _create_defaults_tree_impl(
             repo=repo,
             root=new_root,
             is_primary_config=False,
@@ -238,6 +282,26 @@ def _create_defaults_tree(
     interpolated_subtree: bool,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
+    ret = _create_defaults_tree_impl(
+        repo=repo,
+        root=root,
+        is_primary_config=is_primary_config,
+        skip_missing=skip_missing,
+        interpolated_subtree=interpolated_subtree,
+        overrides=overrides,
+    )
+
+    return ret
+
+
+def _create_defaults_tree_impl(
+    repo: IConfigRepository,
+    root: DefaultsTreeNode,
+    is_primary_config: bool,
+    skip_missing: bool,
+    interpolated_subtree: bool,
+    overrides: Overrides,
+) -> DefaultsTreeNode:
     parent = root.node
     children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
@@ -260,6 +324,11 @@ def _create_defaults_tree(
             update_package_header(
                 repo=repo, node=parent, is_primary_config=is_primary_config
             )
+
+        if overrides.is_deleted(parent):
+            overrides.delete(parent)
+            # parent.deleted = True
+            return root
 
         overrides.set_known_choice(parent)
 
@@ -333,7 +402,7 @@ def _create_defaults_tree(
                     children.append(d)
                     continue
 
-                subtree = _create_defaults_tree(
+                subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
                     is_primary_config=False,
@@ -355,7 +424,7 @@ def _create_defaults_tree(
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 d.parent_base_dir = parent.get_group_path()
                 d.parent_package = parent.get_final_package()
-                subtree = _create_defaults_tree(
+                subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
                     is_primary_config=False,
@@ -398,25 +467,39 @@ def _create_result_default(
     return res
 
 
-def _tree_to_list(
+def _dfs_walk(
     tree: DefaultsTreeNode,
-    output: List[ResultDefault],
+    operator: Callable[[DefaultsTreeNode, InputDefault], None],
 ) -> None:
-    node = tree.node
-
     if tree.children is None or len(tree.children) == 0:
-        rd = _create_result_default(tree=tree.parent, node=node)
-        if rd is not None:
-            output.append(rd)
+        operator(tree.parent, tree.node)
     else:
         for child in tree.children:
             if isinstance(child, InputDefault):
-                rd = _create_result_default(tree=tree, node=child)
-                if rd is not None:
-                    output.append(rd)
+                operator(tree, child)
             else:
                 assert isinstance(child, DefaultsTreeNode)
-                _tree_to_list(tree=child, output=output)
+                _dfs_walk(tree=child, operator=operator)
+
+
+def _tree_to_list(
+    tree: DefaultsTreeNode,
+) -> List[ResultDefault]:
+    class Collector:
+        def __init__(self) -> None:
+            self.output: List[ResultDefault] = []
+
+        def __call__(self, tree_node: DefaultsTreeNode, node: InputDefault) -> None:
+            if node.is_deleted():
+                return
+
+            rd = _create_result_default(tree=tree_node, node=node)
+            if rd is not None:
+                self.output.append(rd)
+
+    visitor = Collector()
+    _dfs_walk(tree, visitor)
+    return visitor.output
 
 
 def _create_root(config_name: str, with_hydra: bool) -> DefaultsTreeNode:
@@ -452,8 +535,7 @@ def _create_defaults_list(
         skip_missing=skip_missing,
     )
 
-    output: List[ResultDefault] = []
-    _tree_to_list(tree=defaults_tree, output=output)
+    output = _tree_to_list(tree=defaults_tree)
     # TODO: fail if duplicate items exists
     return output
 
@@ -482,6 +564,7 @@ def create_defaults_list(
         skip_missing=skip_missing,
     )
     overrides.ensure_overrides_used()
+    overrides.ensure_deletions_used()
     ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
     return ret
 
