@@ -72,7 +72,9 @@ Plugins.instance()
 #  - (Y) Support delete by group=value
 #  - (Y) Test deletion with a specific package
 #  - (Y) Deletion test with final defaults list
-# TODO: Consider package rename support
+# TODO: (Y) rename support:
+#  - Remove rename support form 1.1
+#  - Deprecate rename support in 1.0
 
 
 # TODO: Error handling:
@@ -1186,7 +1188,7 @@ def test_with_hydra_config(
 )
 def test_experiment_use_case(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1230,7 +1232,7 @@ def test_experiment_use_case(
 )
 def test_as_as_primary(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1300,7 +1302,7 @@ def test_as_as_primary(
 )
 def test_placeholder(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1373,7 +1375,7 @@ def test_placeholder(
 )
 def test_interpolation_simple(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1398,7 +1400,7 @@ def test_interpolation_simple(
 )
 def test_deletion(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
-):
+) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,

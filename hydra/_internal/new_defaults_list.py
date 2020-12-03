@@ -31,13 +31,13 @@ class Deletion:
 
 @dataclass
 class Overrides:
-    override_choices: Dict[str, str]
+    override_choices: Dict[str, Optional[str]]
     override_used: Dict[str, bool]
 
     append_group_defaults: List[GroupDefault]
     config_overrides: List[Override]
 
-    known_choices: Dict[str, str]
+    known_choices: Dict[str, Optional[str]]
 
     deletions: Dict[str, Deletion]
 
@@ -143,8 +143,9 @@ class Overrides:
                 return True
             else:
                 return deletion.name == default.get_name()
+        return False
 
-    def delete(self, default: InputDefault) -> bool:
+    def delete(self, default: InputDefault) -> None:
         assert isinstance(default, GroupDefault)
         default.deleted = True
 
@@ -202,6 +203,7 @@ def _expand_virtual_root(
         root.children.append(gd)
 
     for d in reversed(root.children):
+        assert isinstance(d, InputDefault)
         new_root = DefaultsTreeNode(node=d, parent=root)
         d.parent_base_dir = ""
         d.parent_package = ""
@@ -418,12 +420,12 @@ def _create_defaults_tree_impl(
         # processed deferred interpolations
         known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
 
-        for idx, d in enumerate(children):
-            if isinstance(d, InputDefault) and d.is_interpolation():
-                d.resolve_interpolation(known_choices)
-                new_root = DefaultsTreeNode(node=d, parent=root)
-                d.parent_base_dir = parent.get_group_path()
-                d.parent_package = parent.get_final_package()
+        for idx, dd in enumerate(children):
+            if isinstance(dd, InputDefault) and dd.is_interpolation():
+                dd.resolve_interpolation(known_choices)
+                new_root = DefaultsTreeNode(node=dd, parent=root)
+                dd.parent_base_dir = parent.get_group_path()
+                dd.parent_package = parent.get_final_package()
                 subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
@@ -469,7 +471,7 @@ def _create_result_default(
 
 def _dfs_walk(
     tree: DefaultsTreeNode,
-    operator: Callable[[DefaultsTreeNode, InputDefault], None],
+    operator: Callable[[Optional[DefaultsTreeNode], InputDefault], None],
 ) -> None:
     if tree.children is None or len(tree.children) == 0:
         operator(tree.parent, tree.node)
@@ -489,7 +491,9 @@ def _tree_to_list(
         def __init__(self) -> None:
             self.output: List[ResultDefault] = []
 
-        def __call__(self, tree_node: DefaultsTreeNode, node: InputDefault) -> None:
+        def __call__(
+            self, tree_node: Optional[DefaultsTreeNode], node: InputDefault
+        ) -> None:
             if node.is_deleted():
                 return
 
