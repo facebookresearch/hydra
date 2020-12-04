@@ -72,19 +72,14 @@ Plugins.instance()
 #  - (Y) Support delete by group=value
 #  - (Y) Test deletion with a specific package
 #  - (Y) Deletion test with final defaults list
-# TODO: (Y) rename support:
-#  - Remove rename support form 1.1
-#  - Deprecate rename support in 1.0
-
-
 # TODO: Error handling:
-#  - Error handling for entries that failed to override anything
-#  - Error if delete override did not delete anything
-#  - Duplicate _self_ error
-#  - test handling missing configs mentioned in defaults list (with and without optional)
-#  - Ambiguous overrides should provide valid override keys for group
-#  - Test deprecation message when attempting to override hydra configs without override: true
-#  - Should duplicate entries in results list be an error? (same override key)
+#  - (Y) Error handling for overrides that did not match any config group in the defaults list
+#  - (Y) Error if delete override did not delete anything
+#  - (Y) Duplicate _self_ error
+#  - (Y) test handling missing configs mentioned in defaults list
+#  - (Y) Ambiguous overrides should provide valid override keys for group
+#  - (Y) Test deprecation message when attempting to override hydra configs without override: true
+#  - (Y) duplicate entries in final defaults list raises an error
 
 
 # TODO: Integrate with Hydra
@@ -92,9 +87,16 @@ Plugins.instance()
 #  - enable --info=defaults output
 #  - ensure all tests are passing
 
+# TODO: (Y) rename support:
+#  - Remove rename support form 1.1
+#  - Deprecate rename support in 1.0
+
+
 # TODO: cleanup
+#  - Remove previous implementation of recursive defaults list and rename new_defaults_list to defaults_list etc.
 #  - Clean up package logic from config sources
 #  - Clean up Hydra 1.0 warnings related to package header
+#  - Delete tests and test data of old defaults list impl
 
 
 # TODO Documentation
@@ -598,7 +600,8 @@ def test_include_nested_group_pkg2(
                 match=re.escape(
                     dedent(
                         """\
-                        Could not override 'group1@wrong'. No match in the defaults list.
+                        Could not override 'group1@wrong'.
+                        Did you mean to override group1@pkg1?
                         To append to your default list use +group1@wrong=file2"""
                     )
                 ),
@@ -1116,7 +1119,7 @@ def test_overriding_package_header_from_defaults_list(
             id="just_hydra_config",
         ),
         param(
-            "override_hydra",
+            "legacy_override_hydra",
             [],
             [
                 ResultDefault(
@@ -1138,7 +1141,7 @@ def test_overriding_package_header_from_defaults_list(
                     is_self=False,
                 ),
                 ResultDefault(
-                    config_path="override_hydra",
+                    config_path="legacy_override_hydra",
                     parent="<root>",
                     package="",
                     is_self=True,
@@ -1402,6 +1405,43 @@ def test_interpolation_simple(
     ],
 )
 def test_deletion(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "error_duplicate_group",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "group1 appears more than once in the final defaults list"
+                ),
+            ),
+            id="error_duplicate_group",
+        ),
+        param(
+            "error_duplicate_group_nested",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "group1/group2 appears more than once in the final defaults list"
+                ),
+            ),
+            id="error_duplicate_group_nested",
+        ),
+    ],
+)
+def test_duplicate_items(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(

@@ -4,7 +4,7 @@ import copy
 import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Set, Union
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -38,6 +38,7 @@ class Overrides:
     config_overrides: List[Override]
 
     known_choices: Dict[str, Optional[str]]
+    known_choices_per_group: Dict[str, Set[str]]
 
     deletions: Dict[str, Deletion]
 
@@ -49,6 +50,7 @@ class Overrides:
         self.deletions = {}
 
         self.known_choices = {}
+        self.known_choices_per_group = {}
 
         for override in overrides_list:
             is_group = repo.group_exists(override.key_or_group)
@@ -92,7 +94,6 @@ class Overrides:
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
-            # TODO: collect overridable keys for help/useful error purposes
             return default.get_override_key() in self.override_choices
 
         return False
@@ -107,11 +108,31 @@ class Overrides:
     def ensure_overrides_used(self) -> None:
         for key, used in self.override_used.items():
             if not used:
-                msg = dedent(
-                    f"""\
-                    Could not override '{key}'. No match in the defaults list.
-                    To append to your default list use +{key}={self.override_choices[key]}"""
+                group = key.split("@")[0]
+                choices = (
+                    self.known_choices_per_group[group]
+                    if group in self.known_choices_per_group
+                    else set()
                 )
+                if len(choices) > 1:
+                    msg = (
+                        f"Could not override '{key}'."
+                        f"\nDid you mean to override one of {', '.join(sorted(list(choices)))}?"
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                elif len(choices) == 1:
+                    msg = (
+                        f"Could not override '{key}'."
+                        f"\nDid you mean to override {copy.copy(choices).pop()}?"
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                elif len(choices) == 0:
+                    msg = (
+                        f"Could not override '{key}'. No match in the defaults list."
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                else:
+                    assert False
                 raise ConfigCompositionException(msg)
 
     def ensure_deletions_used(self) -> None:
@@ -129,9 +150,15 @@ class Overrides:
             else:
                 prev = self.known_choices[key]
                 if default.get_name() != prev:
-                    raise ValueError(
-                        f"Internal error, value of {key} is being changed from {prev} to {default.get_name()}"
+                    raise ConfigCompositionException(
+                        f"Multiple values for {key} ({prev}, {default.get_name()})."
+                        " To override a value use 'override: true'"
                     )
+
+            group = default.get_group_path()
+            if group not in self.known_choices_per_group:
+                self.known_choices_per_group[group] = set()
+            self.known_choices_per_group[group].add(key)
 
     def is_deleted(self, default: InputDefault) -> bool:
         if not isinstance(default, GroupDefault):
@@ -344,7 +371,7 @@ def _create_defaults_tree_impl(
         loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
         if loaded is None:
-            config_not_found_error(repo, root.node)
+            config_not_found_error(repo, root)
 
         assert loaded is not None
         defaults_list = copy.deepcopy(loaded.new_defaults_list)
@@ -373,7 +400,9 @@ def _create_defaults_tree_impl(
                     url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
                     msg = dedent(
                         f"""\
-                        Default list overrides now requires 'override: true', see {url} for more information.
+                        Invalid overriding of {d.group}:
+                        Default list overrides requires 'override: true'.
+                        See {url} for more information.
                         """
                     )
                     warnings.warn(msg, UserWarning)
@@ -466,6 +495,7 @@ def _create_result_default(
         if tree is not None:
             res.parent = tree.node.get_config_path()
         res.package = node.get_final_package()
+        res.override_key = node.get_override_key()
     return res
 
 
@@ -520,6 +550,18 @@ def _create_root(config_name: str, with_hydra: bool) -> DefaultsTreeNode:
     return root
 
 
+def ensure_no_duplicates_in_list(result: List[ResultDefault]) -> None:
+    keys = set()
+    for item in result:
+        if not item.is_self:
+            key = item.override_key
+            if key in keys:
+                raise ConfigCompositionException(
+                    f"{key} appears more than once in the final defaults list"
+                )
+            keys.add(key)
+
+
 def _create_defaults_list(
     repo: IConfigRepository,
     config_name: str,
@@ -540,7 +582,7 @@ def _create_defaults_list(
     )
 
     output = _tree_to_list(tree=defaults_tree)
-    # TODO: fail if duplicate items exists
+    ensure_no_duplicates_in_list(output)
     return output
 
 
@@ -573,23 +615,27 @@ def create_defaults_list(
     return ret
 
 
-# TODO: show parent config name in the error (where is my error?)
-def config_not_found_error(repo: IConfigRepository, element: InputDefault) -> None:
+def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> None:
+    element = tree.node
+    parent = tree.parent.node if tree.parent is not None else None
     options = None
     if isinstance(element, GroupDefault):
         group = element.get_group_path()
         options = repo.get_group_options(group, ObjectType.CONFIG)
-        opt_list = "\n".join(["\t" + x for x in options])
-        msg = (
-            f"Could not find '{element.name}' in the config group '{group}'"
-            f"\nAvailable options:\n{opt_list}\n"
-        )
+
+        msg = f"Could not find '{element.get_config_path()}'\n"
+        if len(options) > 0:
+            opt_list = "\n".join(["\t" + x for x in options])
+            msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
     else:
         msg = dedent(
             f"""\
         Could not load '{element.get_config_path()}'.
         """
         )
+
+    if parent is not None:
+        msg = f"In '{parent.get_config_path()}': {msg}"
 
     descs = []
     for src in repo.get_sources():

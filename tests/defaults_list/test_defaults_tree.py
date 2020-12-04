@@ -416,7 +416,8 @@ def test_defaults_tree_with_package_overrides(
                 match=re.escape(
                     dedent(
                         """\
-                        Could not override 'group1@wrong'. No match in the defaults list.
+                        Could not override 'group1@wrong'.
+                        Did you mean to override group1@pkg1?
                         To append to your default list use +group1@wrong=file2"""
                     )
                 ),
@@ -449,7 +450,8 @@ def test_defaults_tree_with_package_overrides(
                 match=re.escape(
                     dedent(
                         """\
-                        Could not override 'group1/group2'. No match in the defaults list.
+                        Could not override 'group1/group2'.
+                        Did you mean to override group1/group2@group1.pkg2?
                         To append to your default list use +group1/group2=file2"""
                     )
                 ),
@@ -649,26 +651,7 @@ def test_two_group_defaults_different_pkgs(
     "config_name,overrides,expected",
     [
         param(
-            "empty",
-            [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            ConfigDefault(path="_self_"),
-                            GroupDefault(group="help", name="default"),
-                            GroupDefault(group="output", name="default"),
-                        ],
-                    ),
-                    ConfigDefault(path="empty"),
-                ],
-            ),
-            id="just_hydra",
-        ),
-        param(
-            "override_hydra",
+            "legacy_override_hydra",
             [],
             DefaultsTreeNode(
                 node=VirtualRoot(),
@@ -682,15 +665,15 @@ def test_two_group_defaults_different_pkgs(
                         ],
                     ),
                     DefaultsTreeNode(
-                        node=ConfigDefault(path="override_hydra"),
+                        node=ConfigDefault(path="legacy_override_hydra"),
                         children=[ConfigDefault(path="_self_")],
                     ),
                 ],
             ),
-            id="override_hydra",
+            id="legacy_override_hydra",
         ),
         param(
-            "override_hydra",
+            "legacy_override_hydra",
             ["hydra/help=custom2"],
             DefaultsTreeNode(
                 node=VirtualRoot(),
@@ -704,12 +687,12 @@ def test_two_group_defaults_different_pkgs(
                         ],
                     ),
                     DefaultsTreeNode(
-                        node=ConfigDefault(path="override_hydra"),
+                        node=ConfigDefault(path="legacy_override_hydra"),
                         children=[ConfigDefault(path="_self_")],
                     ),
                 ],
             ),
-            id="override_hydra+external",
+            id="legacy_override_hydra+external",
         ),
     ],
 )
@@ -717,14 +700,20 @@ def test_legacy_hydra_overrides_from_primary_config(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
-    recwarn: Any,  # Testing deprecated behavior
 ) -> None:
-    _test_defaults_tree_impl(
-        config_name=config_name,
-        input_overrides=overrides,
-        expected=expected,
-        prepend_hydra=True,
+    msg = dedent(
+        """\
+        Invalid overriding of hydra/help:
+        Default list overrides requires 'override: true'.
+        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override for more information."""
     )
+    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+        _test_defaults_tree_impl(
+            config_name=config_name,
+            input_overrides=overrides,
+            expected=expected,
+            prepend_hydra=True,
+        )
 
 
 @mark.parametrize(  # type: ignore
@@ -1677,6 +1666,233 @@ def test_override_nested_to_null(
     ],
 )
 def test_deletion(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "empty",
+            ["~group1"],
+            raises(
+                ConfigCompositionException,
+                match="Could not delete 'group1'. No match in the defaults list",
+            ),
+            id="override_non_existing",
+        ),
+        param(
+            "empty",
+            ["~group1=abc"],
+            raises(
+                ConfigCompositionException,
+                match="Could not delete 'group1=abc'. No match in the defaults list",
+            ),
+            id="override_non_existing",
+        ),
+        param(
+            "empty",
+            ["~group1@pkg1=abc"],
+            raises(
+                ConfigCompositionException,
+                match="Could not delete 'group1@pkg1=abc'. No match in the defaults list",
+            ),
+            id="override_non_existing",
+        ),
+    ],
+)
+def test_delete_non_existing(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "duplicate_self",
+            [],
+            raises(
+                ConfigCompositionException,
+                match="Duplicate _self_ defined in duplicate_self",
+            ),
+            id="duplicate_self",
+        ),
+    ],
+)
+def test_duplicate_self_error(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "not_found",
+            [],
+            raises(
+                ConfigCompositionException,
+                match="^Could not load 'not_found'.*",
+            ),
+            id="missing_primary",
+        ),
+        param(
+            "empty",
+            ["+group1=not_found"],
+            raises(
+                ConfigCompositionException,
+                match="^In 'empty': Could not find 'group1/not_found'\n\nAvailable options in 'group1':",
+            ),
+            id="missing_included_config",
+        ),
+        param(
+            "empty",
+            ["+group1=not_found"],
+            raises(
+                ConfigCompositionException,
+                match="^In 'empty': Could not find 'group1/not_found'\n\nAvailable options in 'group1':",
+            ),
+            id="missing_included_config",
+        ),
+    ],
+)
+def test_missing_config_errors(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "empty",
+            ["group1=file1"],
+            raises(
+                ConfigCompositionException,
+                match="Could not override 'group1'. No match in the defaults list.",
+            ),
+            id="override_non_existing",
+        ),
+        param(
+            "empty",
+            ["group1@pkg1=file1"],
+            raises(
+                ConfigCompositionException,
+                match="Could not override 'group1@pkg1'. No match in the defaults list.",
+            ),
+            id="override_non_existing",
+        ),
+        param(
+            "empty",
+            ["group1/group2=file1"],
+            raises(
+                ConfigCompositionException,
+                match="Could not override 'group1/group2'. No match in the defaults list.",
+            ),
+            id="override_non_existing",
+        ),
+        param(
+            "error_invalid_override",
+            [],
+            raises(
+                ConfigCompositionException,
+                match="Could not override 'group1'. No match in the defaults list.",
+            ),
+            id="error_invalid_override",
+        ),
+        param(
+            "group_default",
+            ["group1@foo=file1"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                Could not override 'group1@foo'.
+                Did you mean to override group1?
+                To append to your default list use +group1@foo=file1"""
+                    )
+                ),
+            ),
+            id="no_match_package_one_candidate",
+        ),
+        param(
+            "two_group_defaults_different_pkgs",
+            ["group1@foo=file1"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Could not override 'group1@foo'.
+                        Did you mean to override one of group1@pkg1, group1@pkg2?
+                        To append to your default list use +group1@foo=file1"""
+                    )
+                ),
+            ),
+            id="no_match_package_multiple_candidates",
+        ),
+    ],
+)
+def test_override_errors(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "error_changing_group",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Multiple values for group1 (file2, file1). To override a value use 'override: true'"
+                ),
+            ),
+            id="error_changing_group",
+        ),
+    ],
+)
+def test_error_changing_group_choice(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
