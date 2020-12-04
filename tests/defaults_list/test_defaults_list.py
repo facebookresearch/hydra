@@ -91,7 +91,10 @@ Plugins.instance()
 #  - replace old defaults list computation
 #  - enable --info=defaults output
 #  - ensure all tests are passing
-#  - cleanup
+
+# TODO: cleanup
+#  - Clean up package logic from config sources
+#  - Clean up Hydra 1.0 warnings related to package header
 
 
 # TODO Documentation

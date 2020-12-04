@@ -450,22 +450,6 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             ),
             id="error:left_overs",
         ),
-        pytest.param(
-            "key",
-            "foo@",
-            pytest.raises(
-                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
-            ),
-            id="error:left_overs",
-        ),
-        pytest.param(
-            "key",
-            "foo@abc:",
-            pytest.raises(
-                HydraException, match=re.escape("missing {DOT_PATH, ID} at '<EOF>'")
-            ),
-            id="error:left_overs",
-        ),
     ],
 )
 def test_parse_errors(rule: str, value: str, expected: Any) -> None:
