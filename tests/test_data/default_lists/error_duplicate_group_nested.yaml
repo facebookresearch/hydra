@@ -1,0 +1,3 @@
+defaults:
+  - group1: group_item1
+  - group1/group2: file1

@@ -15,6 +15,8 @@ class ResultDefault:
     package: Optional[str] = None
     is_self: bool = False
 
+    override_key: Optional[str] = field(default=None, compare=False)
+
     def __repr__(self) -> str:
         attrs = []
         attr_names = "config_path", "package", "parent"
