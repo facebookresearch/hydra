@@ -5,6 +5,8 @@ import os
 import re
 import sys
 import warnings
+import pytz
+import datetime
 from contextlib import contextmanager
 from dataclasses import dataclass
 from os.path import basename, dirname, splitext
@@ -147,7 +149,14 @@ def setup_globals() -> None:
             pass
 
     # please add documentation when you add a new resolver
-    register("now", lambda pattern: strftime(pattern, localtime()))
+    def resolver_now(pattern: str, tz: str) -> str:
+        if tz is None:
+            return strftime(pattern, localtime())
+
+        else:
+            return datetime.datetime.now(pytz.timezone(tz)).strftime(pattern)
+
+    register("now", lambda pattern, tz=None: resolver_now(pattern, tz))
     register(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
