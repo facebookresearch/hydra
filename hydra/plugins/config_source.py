@@ -7,7 +7,7 @@ import re
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Tuple, MutableSequence
+from typing import List, Optional, Dict, Tuple
 
 from hydra.core import DefaultElement
 from hydra.core.new_default_element import InputDefault, ConfigDefault, GroupDefault
@@ -185,7 +185,6 @@ class ConfigSource(Plugin):
             header=header,
             package_override=package_override,
         )
-
         header["package"] = package
 
     @staticmethod
@@ -287,20 +286,6 @@ class ConfigSource(Plugin):
         config_path: Optional[str],
         defaults: ListConfig,
     ) -> List[DefaultElement]:
-        if not isinstance(defaults, MutableSequence):
-            raise ValueError(
-                dedent(
-                    f"""\
-                    Invalid defaults list in '{config_path}', defaults must be a list.
-                    Example of a valid defaults:
-                    defaults:
-                      - dataset: imagenet
-                      - model: alexnet
-                        optional: true
-                      - optimizer: nesterov
-                    """
-                )
-            )
         defaults = copy.deepcopy(defaults)
         res: List[DefaultElement] = []
         for item in defaults:
@@ -415,7 +400,7 @@ class ConfigSource(Plugin):
         return res
 
     @staticmethod
-    def _extract_raw_defaults_list(cfg: Container) -> ListConfig:
+    def _extract_raw_defaults_list(config_path: str, cfg: Container) -> ListConfig:
         empty = OmegaConf.create([])
         if not OmegaConf.is_dict(cfg):
             return empty
@@ -423,5 +408,19 @@ class ConfigSource(Plugin):
         with read_write(cfg):
             with open_dict(cfg):
                 defaults = cfg.pop("defaults", empty)
-        assert isinstance(defaults, ListConfig)
+        if not isinstance(defaults, ListConfig):
+            raise ValueError(
+                dedent(
+                    f"""\
+                    Invalid defaults list in '{config_path}', defaults must be a list.
+                    Example of a valid defaults:
+                    defaults:
+                      - dataset: imagenet
+                      - model: alexnet
+                        optional: true
+                      - optimizer: nesterov
+                    """
+                )
+            )
+
         return defaults

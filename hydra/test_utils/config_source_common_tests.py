@@ -312,21 +312,15 @@ class ConfigSourceTestSuite:
         cfg = src.load_config(config_path="primary_config", is_primary_config=True)
         assert cfg.header["package"] == ""
 
-    def test_primary_config_with_non_global_package_errors(
+    def test_primary_config_with_non_global_package(
         self, type_: Type[ConfigSource], path: str
     ) -> None:
         src = type_(provider="foo", path=path)
-        with raises(
-            HydraException,
-            match=re.escape(
-                "Primary config 'primary_config_with_non_global_package' must be in the _global_ package; "
-                "effective package : 'foo'"
-            ),
-        ):
-            src.load_config(
-                config_path="primary_config_with_non_global_package",
-                is_primary_config=True,
-            )
+        cfg = src.load_config(
+            config_path="primary_config_with_non_global_package",
+            is_primary_config=True,
+        )
+        assert cfg.header["package"] == "foo"
 
     def test_load_defaults_list(self, type_: Type[ConfigSource], path: str) -> None:
         src = type_(provider="foo", path=path)

@@ -41,7 +41,10 @@ class FileConfigSource(ConfigSource):
             f.seek(0)
             cfg = OmegaConf.load(f)
 
-            raw_defaults_list = self._extract_raw_defaults_list(cfg=cfg)
+            raw_defaults_list = self._extract_raw_defaults_list(
+                config_path=config_path, cfg=cfg
+            )
+
             return ConfigResult(
                 config=self._embed_config(cfg, header["package"]),
                 path=f"{self.scheme()}://{self.path}",

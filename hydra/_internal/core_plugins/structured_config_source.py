@@ -50,7 +50,9 @@ class StructuredConfigSource(ConfigSource):
             is_primary_config=is_primary_config,
             package_override=package_override,
         )
-        raw_defaults_list = self._extract_raw_defaults_list(cfg=ret.node)
+        raw_defaults_list = self._extract_raw_defaults_list(
+            config_path=config_path, cfg=ret.node
+        )
 
         return ConfigResult(
             config=self._embed_config(ret.node, header["package"]),
