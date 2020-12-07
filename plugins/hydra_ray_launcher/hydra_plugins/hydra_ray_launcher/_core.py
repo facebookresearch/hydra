@@ -12,15 +12,13 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     launch_job_on_ray,
     start_ray,
 )
-from hydra_plugins.hydra_ray_launcher.ray_local_launcher import (  # type: ignore
-    RayLocalLauncher,
-)
+from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher  # type: ignore
 
 log = logging.getLogger(__name__)
 
 
 def launch(
-    launcher: RayLocalLauncher,
+    launcher: RayLauncher,
     job_overrides: Sequence[Sequence[str]],
     initial_job_idx: int,
 ) -> Sequence[JobReturn]:
