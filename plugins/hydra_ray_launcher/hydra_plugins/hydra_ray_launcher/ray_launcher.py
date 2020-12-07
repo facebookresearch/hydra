@@ -8,7 +8,7 @@ from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
 
-class RayLocalLauncher(Launcher):
+class RayLauncher(Launcher):
     def __init__(self, ray_init_cfg: DictConfig, ray_remote_cfg: DictConfig) -> None:
         self.ray_init_cfg = ray_init_cfg
         self.ray_remote_cfg = ray_remote_cfg
@@ -29,8 +29,8 @@ class RayLocalLauncher(Launcher):
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
-        from . import _core_local
+        from . import _core
 
-        return _core_local.launch(
+        return _core.launch(
             launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
         )

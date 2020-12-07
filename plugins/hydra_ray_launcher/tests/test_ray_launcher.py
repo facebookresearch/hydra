@@ -10,9 +10,7 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
 
-from hydra_plugins.hydra_ray_launcher.ray_local_launcher import (  # type: ignore
-    RayLocalLauncher,
-)
+from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher  # type: ignore
 
 chdir_plugin_root()
 
@@ -22,14 +20,14 @@ win_msg = "Ray doesn't support Windows."
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
-    assert RayLocalLauncher.__name__ in [
+    assert RayLauncher.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Launcher)
     ]
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
-@pytest.mark.parametrize("launcher_name, overrides", [("ray_local", [])])
-class TestRayLocalLauncher(LauncherTestSuite):
+@pytest.mark.parametrize("launcher_name, overrides", [("ray", [])])
+class TestRayLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
     """
@@ -44,7 +42,7 @@ class TestRayLocalLauncher(LauncherTestSuite):
         (
             {
                 "defaults": [
-                    {"hydra/launcher": "ray_local"},
+                    {"hydra/launcher": "ray"},
                     {"hydra/hydra_logging": "hydra_debug"},
                     {"hydra/job_logging": "disabled"},
                 ]
@@ -53,7 +51,7 @@ class TestRayLocalLauncher(LauncherTestSuite):
         )
     ],
 )
-class TestRayLocalLauncherIntegration(IntegrationTestSuite):
+class TestRayLauncherIntegration(IntegrationTestSuite):
     """
     Run this launcher through the integration test suite.
     """
