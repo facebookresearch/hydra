@@ -13,10 +13,8 @@ from omegaconf import MISSING
 
 
 @dataclass
-class RayLocalLauncherConf:
-    _target_: str = (
-        "hydra_plugins.hydra_ray_launcher.ray_local_launcher.RayLocalLauncher"
-    )
+class RayLauncherConf:
+    _target_: str = "hydra_plugins.hydra_ray_launcher.ray_launcher.RayLauncher"
     ray_init_cfg: Dict[str, Any] = field(default_factory=dict)
     ray_remote_cfg: Dict[str, Any] = field(default_factory=dict)
 
@@ -87,6 +85,9 @@ class PluginMandatoryInstallConf:
     cloudpickle_version: str = cloudpickle.__version__
     omegaconf_version: str = omegaconf.__version__
     pickle5_version: str = pkg_resources.get_distribution("pickle5").version
+    hydra_ray_launcher_version: str = pkg_resources.get_distribution(
+        "hydra_ray_launcher"
+    ).version
 
     install_commands: List[str] = field(
         default_factory=lambda: [
@@ -94,13 +95,10 @@ class PluginMandatoryInstallConf:
             "echo 'export PATH=\"$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH\"' >> ~/.bashrc",
             "pip install omegaconf==${hydra.launcher.mandatory_install.omegaconf_version}",
             "pip install hydra-core==${hydra.launcher.mandatory_install.hydra_version}",
+            "pip install hydra-ray-launcher==${hydra.launcher.mandatory_install.hydra_ray_launcher_version}",
             "pip install ray==${hydra.launcher.mandatory_install.ray_version}",
             "pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}",
             "pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}",
-            (
-                "pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/"
-                "hydra_ray_launcher-0.1.0-py3-none-any.whl"
-            ),
         ]
     )
 
@@ -213,8 +211,8 @@ class RayAWSLauncherConf:
 config_store = ConfigStore.instance()
 config_store.store(
     group="hydra/launcher",
-    name="ray_local",
-    node=RayLocalLauncherConf,
+    name="ray",
+    node=RayLauncherConf,
     provider="ray_launcher",
 )
 config_store.store(

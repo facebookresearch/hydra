@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-ray-launcher",
-        version="0.1.0",
+        version="0.1.1",
         author="Jieru Hu",
         author_email="jieru@fb.com",
         description="Hydra Ray launcher plugin",
