@@ -215,6 +215,10 @@
             },
             {
               "type": "doc",
+              "id": "version-1.0/plugins/ray_launcher"
+            },
+            {
+              "type": "doc",
               "id": "version-1.0/plugins/rq_launcher"
             },
             {
