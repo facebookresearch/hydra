@@ -19,9 +19,9 @@ class TestBasicLauncher(LauncherTestSuite):
         pytest.param(
             {
                 "defaults": [
-                    {"hydra/launcher": "basic"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
+                    {"hydra/launcher": "basic", "override": True},
+                    {"hydra/hydra_logging": "hydra_debug", "override": True},
+                    {"hydra/job_logging": "disabled", "override": True},
                 ]
             },
             ["-m"],

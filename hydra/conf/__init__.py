@@ -156,11 +156,28 @@ class HydraConf:
     verbose: Any = False
 
 
-cstore = ConfigStore.instance()
+cs = ConfigStore.instance()
 
-cstore.store(
+cs.store(
     name="hydra_config",
     node=HydraConf,
     package="hydra",
+    provider="hydra",
+)
+
+cs.store(
+    group="hydra",
+    name="config",
+    node=HydraConf(
+        defaults=[
+            {"hydra_logging": "default"},
+            {"job_logging": "default"},
+            {"launcher": "basic"},
+            {"sweeper": "basic"},
+            {"output": "default"},
+            {"help": "default"},
+            {"hydra_help": "default"},
+        ]
+    ),
     provider="hydra",
 )

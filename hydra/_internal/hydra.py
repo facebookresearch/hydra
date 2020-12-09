@@ -11,7 +11,7 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
 from omegaconf import Container, DictConfig, OmegaConf, open_dict
 
 from hydra._internal.utils import get_column_widths, run_and_report
-from hydra.core.config_loader import ConfigLoader, LoadTrace
+from hydra.core.config_loader import ConfigLoader, LoadTrace2
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
@@ -411,44 +411,40 @@ class Hydra:
         self._log_header("Composition trace", filler="*")
         box: List[List[str]] = [
             [
-                "Config group",
-                "Config name",
+                "Config Path",
+                "Package",
                 "Search path",
                 "Provider",
-                "Schema provider",
             ]
         ]
-        composition_trace = [LoadTrace(**x) for x in cfg.hydra.composition_trace]
+        composition_trace = [LoadTrace2(**x) for x in cfg.hydra.composition_trace]
         for trace in composition_trace:
             box.append(
                 [
-                    trace.config_group if trace.config_group is not None else "",
-                    trace.config_name if trace.config_name is not None else "",
+                    trace.config_path if trace.config_path is not None else "",
+                    trace.package if trace.package is not None else "",
                     trace.search_path if trace.search_path is not None else "",
                     trace.provider if trace.provider is not None else "",
-                    trace.schema_provider if trace.schema_provider is not None else "",
                 ]
             )
         padding = get_column_widths(box)
         del box[0]
 
-        header = "| {} | {} | {} | {} | {} |".format(
-            "Config group".ljust(padding[0]),
-            "Config name".ljust(padding[1]),
+        header = "| {} | {} | {} | {} |".format(
+            "Config Path".ljust(padding[0]),
+            "Package".ljust(padding[1]),
             "Search path".ljust(padding[2]),
             "Provider".ljust(padding[3]),
-            "Schema provider".ljust(padding[4]),
         )
         self._log_header(header=header, filler="-")
 
         for row in box:
             log.debug(
-                "| {} | {} | {} | {} | {} |".format(
+                "| {} | {} | {} | {} |".format(
                     row[0].ljust(padding[0]),
                     row[1].ljust(padding[1]),
                     row[2].ljust(padding[2]),
                     row[3].ljust(padding[3]),
-                    row[4].ljust(padding[4]),
                 )
             )
 

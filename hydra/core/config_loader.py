@@ -11,6 +11,7 @@ from hydra.plugins.config_source import ConfigSource
 from hydra.types import RunMode
 
 
+# TODO: cleanup old LogTrace
 @dataclass
 class LoadTrace:
     config_group: Optional[str] = None
@@ -21,6 +22,16 @@ class LoadTrace:
     provider: Optional[str] = None
     schema_provider: Optional[str] = None
     skip_reason: Optional[str] = None
+
+
+@dataclass
+class LoadTrace2:
+    config_path: Optional[str] = None
+    package: Optional[str] = None
+    parent: Optional[str] = None
+    is_self: bool = False
+    search_path: Optional[str] = None
+    provider: Optional[str] = None
 
 
 class ConfigLoader(ABC):
