@@ -39,12 +39,27 @@ class ResultDefault:
 @dataclass
 class InputDefault:
 
+    package: Optional[str] = None
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     parent_package: Optional[str] = field(default=None, compare=False, repr=False)
     package_header: Optional[str] = field(default=None, compare=False)
 
     def is_self(self) -> bool:
         raise NotImplementedError()
+
+    def update_parent(
+        self, parent_base_dir: Optional[str], parent_package: Optional[str]
+    ) -> None:
+        assert self.parent_package is None or self.parent_package == parent_package
+        assert self.parent_base_dir is None or self.parent_base_dir == parent_base_dir
+        self.parent_base_dir = parent_base_dir
+        self.parent_package = parent_package
+
+        if self.package is not None:
+            if "_group_" in self.package:
+                pkg = self.package
+                resolved = pkg.replace("_group_", self.get_default_package())
+                self.package = f"_global_.{resolved}"
 
     def is_optional(self) -> bool:
         raise NotImplementedError()
@@ -96,6 +111,7 @@ class InputDefault:
                 package_header = "_global_"
             else:
                 package_header = f"_global_.{package_header}"
+        package_header = package_header.replace("_group_", self.get_default_package())
         self.__dict__["package_header"] = package_header
 
     def get_package_header(self) -> Optional[str]:
@@ -123,10 +139,11 @@ class InputDefault:
             package = self._relative_group_path().replace("/", ".")
 
         if name is not None:
+            # name computation should be deferred to after the final config group choice is done
             package = package.replace("_name_", name)
-            package = package.replace(
-                "_group_", self.get_group_path().replace("/", ".")
-            )
+            # package = package.replace(
+            #     "_group_", self.get_group_path().replace("/", ".")
+            # )
 
         if parent_package == "":
             ret = package
@@ -232,7 +249,6 @@ class VirtualRoot(InputDefault):
 @dataclass(repr=False)
 class ConfigDefault(InputDefault):
     path: Optional[str] = None
-    package: Optional[str] = None
 
     def __post_init__(self) -> None:
         if self.is_self() and self.package is not None:
@@ -340,7 +356,6 @@ class GroupDefault(InputDefault):
     # config file name
     name: Optional[str] = None
     optional: bool = False
-    package: Optional[str] = None
 
     override: bool = False
     deleted: Optional[bool] = None

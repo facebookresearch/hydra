@@ -295,38 +295,42 @@ def test_get_default_package(default: InputDefault, expected: Any) -> None:
 
 
 @mark.parametrize(  # type: ignore
-    "default,expected",
+    "default,parent_package, parent_base_dir, expected",
     [
         # empty parent package
         param(
-            ConfigDefault(path="bar", parent_package="", parent_base_dir=""),
+            ConfigDefault(path="bar"),
+            "",
+            "",
             "",
             id="config_default:path=bar,parent_package=,package=",
         ),
         param(
-            ConfigDefault(path="group1/bar", parent_package="", parent_base_dir=""),
+            ConfigDefault(path="group1/bar"),
+            "",
+            "",
             "group1",
             id="config_default:path=group1/bar,parent_package=, package=",
         ),
         param(
-            ConfigDefault(
-                path="bar", parent_package="", parent_base_dir="", package="pkg1"
-            ),
+            ConfigDefault(path="bar", package="pkg1"),
+            "",
+            "",
             "pkg1",
             id="config_default:path=bar,parent_package=, package=pkg1",
         ),
         param(
-            ConfigDefault(
-                path="group1/bar", parent_package="", parent_base_dir="", package="pkg1"
-            ),
+            ConfigDefault(path="group1/bar", package="pkg1"),
+            "",
+            "",
             "pkg1",
             id="config_default:path=group1/bar,parent_package=,package=pkg1",
         ),
         # non empty parent package
         param(
-            ConfigDefault(
-                path="bar", parent_package="a", parent_base_dir="", package="pkg1"
-            ),
+            ConfigDefault(path="bar", package="pkg1"),
+            "a",
+            "",
             "a.pkg1",
             id="config_default:path=bar,parent_package=a, package=pkg1",
         ),
@@ -334,78 +338,69 @@ def test_get_default_package(default: InputDefault, expected: Any) -> None:
         param(
             ConfigDefault(
                 path="bar",
-                parent_package="a",
-                parent_base_dir="",
                 package="_global_.pkg1",
             ),
+            "",
+            "",
             "pkg1",
             id="config_default:parent_package=a, package=_global_.pkg1",
         ),
         # global parent package
         param(
-            ConfigDefault(
-                path="bar",
-                parent_package="_global_.foo",
-                parent_base_dir="",
-                package="pkg1",
-            ),
+            ConfigDefault(path="bar", package="pkg1"),
+            "_global_.foo",
+            "",
             "foo.pkg1",
             id="config_default:parent_package=_global_.foo, package=pkg1",
         ),
         # both globals
         param(
-            ConfigDefault(
-                path="bar",
-                parent_package="_global_.foo",
-                parent_base_dir="",
-                package="_global_.pkg1",
-            ),
+            ConfigDefault(path="bar", package="_global_.pkg1"),
+            "_global_.foo",
+            "",
             "pkg1",
             id="config_default:parent_package=_global_.foo, package=_global_.pkg1",
         ),
         # _group_
         param(
-            GroupDefault(
-                group="foo",
-                name="bar",
-                parent_package="",
-                parent_base_dir="",
-                package="_group_",
-            ),
+            GroupDefault(group="foo", name="bar", package="_group_"),
+            "",
+            "",
             "foo",
             id="group_default:parent_package=, package=_group_",
         ),
         param(
-            ConfigDefault(
-                path="foo/bar", parent_package="", parent_base_dir="", package="_group_"
-            ),
+            ConfigDefault(path="foo/bar", package="_group_"),
+            "",
+            "",
             "foo",
             id="config_default:parent_package=, package=_group_",
         ),
         param(
-            GroupDefault(
-                group="foo",
-                name="bar",
-                parent_package="",
-                parent_base_dir="",
-                package="_group_.zoo",
-            ),
+            GroupDefault(group="foo", name="bar", package="_group_.zoo"),
+            "",
+            "",
             "foo.zoo",
             id="group_default:parent_package=, package=_group_.zoo",
         ),
         param(
             ConfigDefault(
                 path="foo/bar",
-                parent_package="",
-                parent_base_dir="",
                 package="_group_.zoo",
             ),
+            "",
+            "",
             "foo.zoo",
             id="config_default:parent_package=, package=_group_.zoo",
         ),
     ],
 )
-def test_get_final_package(default: InputDefault, expected: Any) -> None:
+def test_get_final_package(
+    default: InputDefault, parent_package: str, parent_base_dir: str, expected: Any
+) -> None:
+    default.update_parent(
+        parent_base_dir=parent_base_dir, parent_package=parent_package
+    )
     assert default.get_final_package() == expected
 
 
