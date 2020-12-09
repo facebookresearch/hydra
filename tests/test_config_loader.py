@@ -3,6 +3,7 @@ import os
 import re
 from copy import deepcopy
 from dataclasses import dataclass
+from itertools import filterfalse
 from typing import Any, List
 
 import pytest
@@ -10,7 +11,7 @@ from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
-from hydra.core.config_loader import LoadTrace
+from hydra.core.config_loader import LoadTrace2
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import env_override, setup_globals
@@ -41,67 +42,69 @@ class TopLevelConfig:
     db: MySQLConfig = MySQLConfig()
 
 
-hydra_load_list: List[LoadTrace] = [
-    LoadTrace(
-        config_group=None,
-        config_name="hydra_config",
+hydra_load_list: List[LoadTrace2] = [
+    LoadTrace2(
+        config_path="hydra/config",
+        package="hydra",
+        parent="<root>",
+        is_self=True,
         search_path="structured://",
         provider="hydra",
     ),
-    LoadTrace(
-        config_group="hydra/hydra_logging",
-        config_name="default",
+    LoadTrace2(
+        config_path="hydra/hydra_logging/default",
+        package="hydra.hydra_logging",
+        parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/job_logging",
-        config_name="default",
+    LoadTrace2(
+        config_path="hydra/job_logging/default",
+        package="hydra.job_logging",
+        parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/launcher",
-        config_name="basic",
+    LoadTrace2(
+        config_path="hydra/launcher/basic",
+        package="hydra.launcher",
+        parent="hydra/config",
         search_path="structured://",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/sweeper",
-        config_name="basic",
+    LoadTrace2(
+        config_path="hydra/sweeper/basic",
+        package="hydra.sweeper",
+        parent="hydra/config",
         search_path="structured://",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/output",
-        config_name="default",
+    LoadTrace2(
+        config_path="hydra/output/default",
+        package="hydra",
+        parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/help",
-        config_name="default",
+    LoadTrace2(
+        config_path="hydra/help/default",
+        package="hydra.help",
+        parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
-        parent="hydra_config",
     ),
-    LoadTrace(
-        config_group="hydra/hydra_help",
-        config_name="default",
+    LoadTrace2(
+        config_path="hydra/hydra_help/default",
+        package="hydra.hydra_help",
+        parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
-        parent="hydra_config",
     ),
 ]
 
 
 def assert_same_composition_trace(composition_trace: Any, expected: Any) -> None:
-    actual = [LoadTrace(**x) for x in composition_trace]
+    actual = [LoadTrace2(**x) for x in composition_trace]
     assert actual == expected
 
 
@@ -139,6 +142,7 @@ class TestConfigLoader:
                 run_mode=RunMode.RUN,
             )
 
+    # TODO: delete test: it's now in defaults list tests
     def test_load_with_missing_optional_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
@@ -288,19 +292,13 @@ class TestConfigLoader:
         )
         expected = deepcopy(hydra_load_list)
         expected.append(
-            LoadTrace(
-                config_group=None,
-                config_name="missing-optional-default.yaml",
-                provider="main",
+            LoadTrace2(
+                config_path="missing-optional-default.yaml",
+                package="",
+                parent="<root>",
+                is_self=True,
                 search_path=path,
-            )
-        )
-        expected.append(
-            LoadTrace(
-                config_group="foo",
-                config_name="missing",
-                skip_reason="missing_optional_config",
-                parent="missing-optional-default.yaml",
+                provider="main",
             )
         )
 
@@ -319,8 +317,10 @@ class TestConfigLoader:
 
         expected = deepcopy(hydra_load_list)
         expected.append(
-            LoadTrace(
-                config_name="custom_default_launcher.yaml",
+            LoadTrace2(
+                config_path="custom_default_launcher.yaml",
+                package="",
+                parent="<root>",
                 search_path=path,
                 provider="main",
             )
@@ -388,21 +388,23 @@ class TestConfigLoader:
 
         expected = deepcopy(hydra_load_list)
         expected.append(
-            LoadTrace(
-                config_name="config",
+            LoadTrace2(
+                config_path="config",
+                package="",
+                parent="<root>",
+                is_self=False,
                 search_path=path,
                 provider="main",
-                schema_provider="this_test",
             )
         )
         expected.append(
-            LoadTrace(
-                config_group="db",
-                config_name="mysql",
+            LoadTrace2(
+                config_path="db/mysql",
+                package="",
+                parent="<root>",
+                is_self=False,
                 search_path=path,
                 provider="main",
-                schema_provider="this_test",
-                parent="overrides",
             )
         )
         assert_same_composition_trace(cfg.hydra.composition_trace, expected)
@@ -449,23 +451,23 @@ class TestConfigLoader:
         )
 
         expected = deepcopy(hydra_load_list)
-        expected.append(
-            LoadTrace(
-                config_name="config",
-                search_path=path,
-                provider="main",
-                schema_provider="this_test",
-            )
-        )
-        expected.append(
-            LoadTrace(
-                config_group="db",
-                config_name="mysql",
-                search_path=path,
-                provider="main",
-                schema_provider="this_test",
-                parent="overrides",
-            )
+        expected.extend(
+            [
+                LoadTrace2(
+                    config_path="config",
+                    package="",
+                    parent="<root>",
+                    search_path=path,
+                    provider="main",
+                ),
+                LoadTrace2(
+                    config_path="db/mysql",
+                    package="",
+                    parent="<root>",
+                    search_path=path,
+                    provider="main",
+                ),
+            ]
         )
         assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
@@ -532,13 +534,21 @@ class TestConfigLoader:
     "config_file, overrides",
     [
         # remove from config
-        ("removing-hydra-launcher-default.yaml", []),
+        pytest.param(
+            "removing-hydra-launcher-default.yaml", [], id="remove-from-config"
+        ),
         # remove from override
-        ("config.yaml", ["~hydra/launcher"]),
+        pytest.param("config.yaml", ["~hydra/launcher"], id="override"),
         # remove from both
-        ("removing-hydra-launcher-default.yaml", ["~hydra/launcher"]),
+        pytest.param(
+            "removing-hydra-launcher-default.yaml", ["~hydra/launcher"], id="both"
+        ),
         # second overrides removes
-        ("config.yaml", ["hydra/launcher=submitit", "~hydra/launcher"]),
+        pytest.param(
+            "config.yaml",
+            ["hydra/launcher=submitit", "~hydra/launcher"],
+            id="second-override",
+        ),
     ],
 )
 def test_default_removal(config_file: str, overrides: List[str]) -> None:
@@ -550,14 +560,14 @@ def test_default_removal(config_file: str, overrides: List[str]) -> None:
     )
 
     expected = deepcopy(hydra_load_list)
-    for x in expected:
-        if x.config_group == "hydra/launcher":
-            x.skip_reason = "deleted_from_list"
-            x.search_path = None
-            x.provider = None
+    expected = list(
+        filterfalse(lambda x: x.config_path == "hydra/launcher/basic", expected)
+    )
     expected.append(
-        LoadTrace(
-            config_name=config_file,
+        LoadTrace2(
+            config_path=config_file,
+            package="",
+            parent="<root>",
             search_path="file://hydra/test_utils/configs",
             provider="main",
         )
@@ -604,60 +614,67 @@ def test_override_hydra_config_group_from_config_file() -> None:
         run_mode=RunMode.RUN,
     )
     expected = [
-        LoadTrace(
-            config_name="hydra_config", search_path="structured://", provider="hydra"
-        ),
-        LoadTrace(
-            config_group="hydra/hydra_logging",
-            config_name="hydra_debug",
-            search_path="pkg://hydra.conf",
-            provider="hydra",
-            parent="hydra_config",
-        ),
-        LoadTrace(
-            config_group="hydra/job_logging",
-            config_name="disabled",
-            search_path="pkg://hydra.conf",
-            provider="hydra",
-            parent="hydra_config",
-        ),
-        LoadTrace(
-            config_group="hydra/launcher",
-            config_name="basic",
-            parent="hydra_config",
+        LoadTrace2(
+            config_path="hydra/config",
+            package="hydra",
+            parent="<root>",
+            is_self=True,
             search_path="structured://",
             provider="hydra",
         ),
-        LoadTrace(
-            config_group="hydra/sweeper",
-            config_name="basic",
+        LoadTrace2(
+            config_path="hydra/hydra_logging/hydra_debug",
+            package="hydra.hydra_logging",
+            parent="hydra/config",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+        ),
+        LoadTrace2(
+            config_path="hydra/job_logging/disabled",
+            package="hydra.job_logging",
+            parent="hydra/config",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+        ),
+        LoadTrace2(
+            config_path="hydra/launcher/basic",
+            package="hydra.launcher",
+            parent="hydra/config",
             search_path="structured://",
             provider="hydra",
-            parent="hydra_config",
         ),
-        LoadTrace(
-            config_group="hydra/output",
-            config_name="default",
+        LoadTrace2(
+            config_path="hydra/sweeper/basic",
+            package="hydra.sweeper",
+            parent="hydra/config",
+            search_path="structured://",
+            provider="hydra",
+        ),
+        LoadTrace2(
+            config_path="hydra/output/default",
+            package="hydra",
+            parent="hydra/config",
             search_path="pkg://hydra.conf",
             provider="hydra",
-            parent="hydra_config",
         ),
-        LoadTrace(
-            config_group="hydra/help",
-            config_name="default",
+        LoadTrace2(
+            config_path="hydra/help/default",
+            package="hydra.help",
+            parent="hydra/config",
             search_path="pkg://hydra.conf",
             provider="hydra",
-            parent="hydra_config",
         ),
-        LoadTrace(
-            config_group="hydra/hydra_help",
-            config_name="default",
+        LoadTrace2(
+            config_path="hydra/hydra_help/default",
+            package="hydra.hydra_help",
+            parent="hydra/config",
             search_path="pkg://hydra.conf",
             provider="hydra",
-            parent="hydra_config",
         ),
-        LoadTrace(
-            config_name="overriding_logging_default.yaml",
+        LoadTrace2(
+            config_path="overriding_logging_default.yaml",
+            package="",
+            parent="<root>",
             search_path="file://hydra/test_utils/configs",
             provider="main",
         ),
@@ -706,18 +723,22 @@ def test_non_config_group_default() -> None:
     expected = deepcopy(hydra_load_list)
     expected.extend(
         [
-            LoadTrace(
-                config_name="non_config_group_default.yaml",
+            LoadTrace2(
+                config_path="non_config_group_default.yaml",
+                package="",
+                parent="<root>",
+                is_self=True,
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
             ),
-            LoadTrace(
-                config_name="some_config",
-                search_path="file://hydra/test_utils/configs",
-                provider="main",
+            LoadTrace2(
+                config_path="some_config",
+                package="",
                 parent="non_config_group_default.yaml",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
             ),
-        ]
+        ],
     )
 
     assert_same_composition_trace(cfg.hydra.composition_trace, expected)
@@ -741,29 +762,34 @@ def test_mixed_composition_order() -> None:
     expected = deepcopy(hydra_load_list)
     expected.extend(
         [
-            LoadTrace(
-                config_name="mixed_compose.yaml",
+            LoadTrace2(
+                config_path="mixed_compose.yaml",
+                package="",
+                parent="<root>",
+                is_self=True,
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
             ),
-            LoadTrace(
-                config_name="some_config",
+            LoadTrace2(
+                config_path="some_config",
+                package="",
+                parent="mixed_compose.yaml",
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
-                parent="mixed_compose.yaml",
             ),
-            LoadTrace(
-                config_group="group1",
-                config_name="file1",
+            LoadTrace2(
+                config_path="group1/file1",
+                package="",
+                parent="mixed_compose.yaml",
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
-                parent="mixed_compose.yaml",
             ),
-            LoadTrace(
-                config_name="config",
+            LoadTrace2(
+                config_path="config",
+                package="",
+                parent="mixed_compose.yaml",
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
-                parent="mixed_compose.yaml",
             ),
         ]
     )
@@ -789,12 +815,14 @@ def test_load_schema_as_config(hydra_restore_singletons: Any) -> None:
     )
 
     expected = deepcopy(hydra_load_list)
-    expected.extend(
-        [
-            LoadTrace(
-                config_name="config", search_path="structured://", provider="this_test"
-            )
-        ]
+    expected.append(
+        LoadTrace2(
+            config_path="config",
+            package="",
+            parent="<root>",
+            search_path="structured://",
+            provider="this_test",
+        )
     )
     assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 

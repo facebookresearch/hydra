@@ -81,7 +81,6 @@ Plugins.instance()
 #  - (Y) Test deprecation message when attempting to override hydra configs without override: true
 #  - (Y) duplicate entries in final defaults list raises an error
 
-# TODO: Integrate with Hydra
 #  - (Y) replace old defaults list computation
 #  - (Y) enable --info=defaults output
 #  - (Y) ensure all tests are passing
