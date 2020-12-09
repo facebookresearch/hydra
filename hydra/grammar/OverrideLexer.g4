@@ -22,7 +22,6 @@ TILDE: '~';
 PLUS: '+';
 AT: '@';
 COLON: ':';
-ATCOLON: '@:';
 SLASH: '/';
 
 KEY_ID: ID -> type(ID);

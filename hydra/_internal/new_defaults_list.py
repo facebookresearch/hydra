@@ -76,7 +76,7 @@ class Overrides:
                     self.append_group_defaults.append(
                         GroupDefault(
                             group=override.key_or_group,
-                            package=override.get_subject_package(),
+                            package=override.package,
                             name=value,
                         )
                     )
@@ -371,6 +371,7 @@ def _create_defaults_tree_impl(
 
         if loaded is None:
             if parent.is_optional():
+                assert isinstance(parent, GroupDefault)
                 parent.deleted = True
                 return root
             config_not_found_error(repo, root)

@@ -168,62 +168,6 @@ class TestConfigLoader:
         assert cfg == {"foo": 10}
 
     @pytest.mark.parametrize(  # type: ignore
-        "override,expected",
-        [
-            ("group1@:xyz=file2", {"xyz": {"foo": 20}}),
-            ("group1@:a.b=file2", {"a": {"b": {"foo": 20}}}),
-        ],
-    )
-    def test_load_changing_group_in_default(
-        self, path: str, override: str, expected: Dict[Any, Any]
-    ) -> None:
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
-        )
-        cfg = config_loader.load_configuration(
-            config_name="optional-default",
-            overrides=[override],
-            strict=False,
-            run_mode=RunMode.RUN,
-        )
-        with open_dict(cfg):
-            del cfg["hydra"]
-        assert cfg == expected
-
-    @pytest.mark.parametrize(  # type: ignore
-        "overrides,expected",
-        [
-            pytest.param(
-                [],
-                {"group1_option1": True, "pkg1": {"group2_option1": True}},
-                id="no_overrides",
-            ),
-            pytest.param(
-                ["group1@:pkg2=option1"],
-                {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
-                id="override_unspecified_pkg_of_default",
-            ),
-            pytest.param(
-                ["group1@:pkg1=option1"],
-                {"pkg1": {"group1_option1": True, "group2_option1": True}},
-                id="override_two_groups_to_same_package",
-            ),
-        ],
-    )
-    def test_load_changing_group_and_package_in_default(
-        self, path: str, overrides: List[str], expected: Any
-    ) -> None:
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(f"{path}/package_tests")
-        )
-        cfg = config_loader.load_configuration(
-            config_name="pkg_override", overrides=overrides, run_mode=RunMode.RUN
-        )
-        with open_dict(cfg):
-            del cfg["hydra"]
-        assert cfg == expected
-
-    @pytest.mark.parametrize(  # type: ignore
         "overrides,expected",
         [
             pytest.param(
@@ -244,16 +188,6 @@ class TestConfigLoader:
                 ["~group1@pkg1"],
                 {"pkg2": {"group1_option1": True}},
                 id="delete_package",
-            ),
-            pytest.param(
-                ["group1@pkg1:new_pkg=option1"],
-                {"new_pkg": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
-                id="change_pkg1",
-            ),
-            pytest.param(
-                ["group1@pkg2:new_pkg=option1"],
-                {"pkg1": {"group1_option1": True}, "new_pkg": {"group1_option1": True}},
-                id="change_pkg2",
             ),
         ],
     )

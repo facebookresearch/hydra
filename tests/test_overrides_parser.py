@@ -491,22 +491,12 @@ def test_package_or_group(value: str, expected: Any) -> None:
         pytest.param("list.0", Key(key_or_group="list.0"), id="list.0"),
         pytest.param(
             "package_or_group@pkg1",
-            Key(key_or_group="package_or_group", pkg1="pkg1"),
+            Key(key_or_group="package_or_group", package="pkg1"),
             id="package_or_group@pkg1",
         ),
         pytest.param(
-            "package_or_group@pkg1:pkg2",
-            Key(key_or_group="package_or_group", pkg1="pkg1", pkg2="pkg2"),
-            id="package_or_group@pkg1:pkg2",
-        ),
-        pytest.param(
-            "package_or_group@:pkg2",
-            Key(key_or_group="package_or_group", pkg1=None, pkg2="pkg2"),
-            id="package_or_group@:pkg2",
-        ),
-        pytest.param(
             "package_or_group@",
-            Key(key_or_group="package_or_group", pkg1=""),
+            Key(key_or_group="package_or_group", package=""),
             id="package_or_group@",
         ),
     ],
@@ -667,20 +657,6 @@ def test_primitive(value: str, expected: Any) -> None:
         assert value == ret.with_quotes()
 
     assert eq(ret, expected)
-
-
-@pytest.mark.parametrize(  # type: ignore
-    "value,expected",
-    [
-        pytest.param("abc=xyz", False, id="no_rename"),
-        pytest.param("abc@pkg=xyz", False, id="no_rename"),
-        pytest.param("abc@pkg1:pkg2=xyz", True, id="rename"),
-        pytest.param("abc@:pkg2=xyz", True, id="rename_from_current"),
-    ],
-)
-def test_key_rename(value: str, expected: bool) -> None:
-    ret = parse_rule(value, "override")
-    assert ret.is_package_rename() == expected
 
 
 @pytest.mark.parametrize(  # type: ignore
@@ -923,18 +899,12 @@ def test_parse_overrides() -> None:
         # change
         pytest.param("key=value", "key", id="key"),
         pytest.param("key@pkg1=value", "key@pkg1", id="key@pkg1"),
-        pytest.param("key@pkg1:pkg2=value", "key@pkg1:pkg2", id="key@pkg1:pkg2"),
-        pytest.param("key@:pkg2=value", "key@:pkg2", id="key@:pkg2"),
         # add
         pytest.param("+key=value", "+key", id="+key"),
         pytest.param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
-        pytest.param("+key@pkg1:pkg2=value", "+key@pkg1:pkg2", id="+key@pkg1:pkg2"),
-        pytest.param("+key@:pkg2=value", "+key@:pkg2", id="+key@:pkg2"),
         # del
         pytest.param("~key=value", "~key", id="~key"),
         pytest.param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
-        pytest.param("~key@pkg1:pkg2=value", "~key@pkg1:pkg2", id="~key@pkg1:pkg2"),
-        pytest.param("~key@:pkg2=value", "~key@:pkg2", id="~key@:pkg2"),
     ],
 )
 def test_get_key_element(override: str, expected: str) -> None:

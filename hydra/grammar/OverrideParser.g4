@@ -14,13 +14,8 @@ override: (
     | PLUS key EQUAL value?                      // +key= | +key=value
 ) EOF;
 
-// Keys.
-
-key :
-    packageOrGroup                               // key
-    | packageOrGroup AT package (COLON package)? // group@pkg | group@pkg1:pkg2
-    | packageOrGroup ATCOLON package             // group@:pkg2
-;
+// Key:
+key : packageOrGroup (AT package)?;              // key | group@pkg
 
 packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
 package: ( | ID | DOT_PATH);                     // db, hydra.launcher, or the empty (for _global_ package)

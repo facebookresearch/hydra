@@ -301,7 +301,7 @@ class ConfigLoaderImpl(ConfigLoader):
     @staticmethod
     def _apply_overrides_to_config(overrides: List[Override], cfg: DictConfig) -> None:
         for override in overrides:
-            if override.get_subject_package() is not None:
+            if override.package is not None:
                 raise ConfigCompositionException(
                     f"Override {override.input_line} looks like a config group override, "
                     f"but config group '{override.key_or_group}' does not exist."
