@@ -228,7 +228,7 @@ class VirtualRoot(InputDefault):
     def get_config_path(self) -> str:
         return "<root>"
 
-    def get_final_package(self) -> str:
+    def get_final_package(self, default_to_package_header: bool = True) -> str:
         raise NotImplementedError()
 
     def _relative_group_path(self) -> str:

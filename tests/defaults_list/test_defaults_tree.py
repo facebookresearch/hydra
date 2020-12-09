@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 from textwrap import dedent
-from typing import Any, List
+from typing import Any, List, Optional
 
 from pytest import mark, param, raises, warns
 
@@ -1974,4 +1974,93 @@ def test_overriding_group_file_with_global_header(
         config_name=config_name,
         input_overrides=overrides,
         expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            None,
+            [],
+            DefaultsTreeNode(node=VirtualRoot()),
+            id="none_config",
+        ),
+        param(
+            None,
+            ["+group1=file1"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[GroupDefault(group="group1", name="file1")],
+            ),
+            id="none_config+group1=file1",
+        ),
+    ],
+)
+def test_none_config(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            None,
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="default"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    VirtualRoot(),
+                ],
+            ),
+            id="none_config",
+        ),
+        param(
+            None,
+            ["+group1=file1"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="default"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    VirtualRoot(),
+                    GroupDefault(group="group1", name="file1"),
+                ],
+            ),
+            id="none_config+group1=file1",
+        ),
+    ],
+)
+def test_none_config_with_hydra(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
     )
