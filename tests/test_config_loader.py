@@ -3,7 +3,7 @@ import os
 import re
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, List
 
 import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict

@@ -232,8 +232,7 @@ def _expand_virtual_root(
     for d in reversed(root.children):
         assert isinstance(d, InputDefault)
         new_root = DefaultsTreeNode(node=d, parent=root)
-        d.parent_base_dir = ""
-        d.parent_package = ""
+        d.update_parent("", "")
 
         subtree = _create_defaults_tree_impl(
             repo=repo,
@@ -337,8 +336,7 @@ def _create_defaults_tree_impl(
         return _expand_virtual_root(repo, root, overrides)
     else:
         if is_primary_config:
-            root.node.parent_base_dir = ""
-            root.node.parent_package = ""
+            root.node.update_parent("", "")
 
         update_package_header(
             repo=repo, node=parent, is_primary_config=is_primary_config
@@ -390,8 +388,7 @@ def _create_defaults_tree_impl(
         for d in defaults_list:
             if d.is_self():
                 continue
-            d.parent_base_dir = parent.get_group_path()
-            d.parent_package = parent.get_final_package()
+            d.update_parent(parent.get_group_path(), parent.get_final_package())
 
             if isinstance(d, GroupDefault):
                 assert d.group is not None
@@ -422,15 +419,13 @@ def _create_defaults_tree_impl(
 
         for d in reversed(defaults_list):
             if d.is_self():
-                d.parent_base_dir = root.node.parent_base_dir
-                d.parent_package = root.node.get_package()
+                d.update_parent(root.node.parent_base_dir, root.node.get_package())
                 children.append(d)
             else:
                 if isinstance(d, GroupDefault) and d.override:
                     continue
                 new_root = DefaultsTreeNode(node=d, parent=root)
-                d.parent_base_dir = parent.get_group_path()
-                d.parent_package = parent.get_final_package()
+                d.update_parent(parent.get_group_path(), parent.get_final_package())
 
                 if d.is_interpolation():
                     children.append(d)
@@ -456,8 +451,7 @@ def _create_defaults_tree_impl(
             if isinstance(dd, InputDefault) and dd.is_interpolation():
                 dd.resolve_interpolation(known_choices)
                 new_root = DefaultsTreeNode(node=dd, parent=root)
-                dd.parent_base_dir = parent.get_group_path()
-                dd.parent_package = parent.get_final_package()
+                dd.update_parent(parent.get_group_path(), parent.get_final_package())
                 subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
