@@ -1665,3 +1665,38 @@ def test_with_none_primary_with_hydra(
         expected=expected,
         prepend_hydra=True,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "two_config_items",
+            [],
+            [
+                ResultDefault(config_path="two_config_items", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file1",
+                    package="group1",
+                    parent="two_config_items",
+                ),
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="group1",
+                    parent="two_config_items",
+                ),
+            ],
+            id="two_config_items",
+        ),
+    ],
+)
+def test_two_config_items(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
