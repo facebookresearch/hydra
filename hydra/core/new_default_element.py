@@ -118,11 +118,15 @@ class InputDefault:
         name: Optional[str],
     ) -> str:
         assert parent_package is not None
+
         if package is None:
             package = self._relative_group_path().replace("/", ".")
 
         if name is not None:
             package = package.replace("_name_", name)
+            package = package.replace(
+                "_group_", self.get_group_path().replace("/", ".")
+            )
 
         if parent_package == "":
             ret = package

@@ -299,50 +299,109 @@ def test_get_default_package(default: InputDefault, expected: Any) -> None:
     [
         # empty parent package
         param(
-            ConfigDefault(path="bar", parent_package=""),
+            ConfigDefault(path="bar", parent_package="", parent_base_dir=""),
             "",
             id="config_default:path=bar,parent_package=,package=",
         ),
         param(
-            ConfigDefault(path="group1/bar", parent_package=""),
+            ConfigDefault(path="group1/bar", parent_package="", parent_base_dir=""),
             "group1",
             id="config_default:path=group1/bar,parent_package=, package=",
         ),
         param(
-            ConfigDefault(path="bar", parent_package="", package="pkg1"),
+            ConfigDefault(
+                path="bar", parent_package="", parent_base_dir="", package="pkg1"
+            ),
             "pkg1",
             id="config_default:path=bar,parent_package=, package=pkg1",
         ),
         param(
-            ConfigDefault(path="group1/bar", parent_package="", package="pkg1"),
+            ConfigDefault(
+                path="group1/bar", parent_package="", parent_base_dir="", package="pkg1"
+            ),
             "pkg1",
             id="config_default:path=group1/bar,parent_package=,package=pkg1",
         ),
         # non empty parent package
         param(
-            ConfigDefault(path="bar", parent_package="a", package="pkg1"),
+            ConfigDefault(
+                path="bar", parent_package="a", parent_base_dir="", package="pkg1"
+            ),
             "a.pkg1",
             id="config_default:path=bar,parent_package=a, package=pkg1",
         ),
         # global package
         param(
-            ConfigDefault(path="bar", parent_package="a", package="_global_.pkg1"),
+            ConfigDefault(
+                path="bar",
+                parent_package="a",
+                parent_base_dir="",
+                package="_global_.pkg1",
+            ),
             "pkg1",
             id="config_default:parent_package=a, package=_global_.pkg1",
         ),
         # global parent package
         param(
-            ConfigDefault(path="bar", parent_package="_global_.foo", package="pkg1"),
+            ConfigDefault(
+                path="bar",
+                parent_package="_global_.foo",
+                parent_base_dir="",
+                package="pkg1",
+            ),
             "foo.pkg1",
             id="config_default:parent_package=_global_.foo, package=pkg1",
         ),
         # both globals
         param(
             ConfigDefault(
-                path="bar", parent_package="_global_.foo", package="_global_.pkg1"
+                path="bar",
+                parent_package="_global_.foo",
+                parent_base_dir="",
+                package="_global_.pkg1",
             ),
             "pkg1",
             id="config_default:parent_package=_global_.foo, package=_global_.pkg1",
+        ),
+        # _group_
+        param(
+            GroupDefault(
+                group="foo",
+                name="bar",
+                parent_package="",
+                parent_base_dir="",
+                package="_group_",
+            ),
+            "foo",
+            id="group_default:parent_package=, package=_group_",
+        ),
+        param(
+            ConfigDefault(
+                path="foo/bar", parent_package="", parent_base_dir="", package="_group_"
+            ),
+            "foo",
+            id="config_default:parent_package=, package=_group_",
+        ),
+        param(
+            GroupDefault(
+                group="foo",
+                name="bar",
+                parent_package="",
+                parent_base_dir="",
+                package="_group_.zoo",
+            ),
+            "foo.zoo",
+            id="group_default:parent_package=, package=_group_.zoo",
+        ),
+        param(
+            ConfigDefault(
+                path="foo/bar",
+                parent_package="",
+                parent_base_dir="",
+                package="_group_.zoo",
+            ),
+            "foo.zoo",
+            id="config_default:parent_package=, package=_group_.zoo",
         ),
     ],
 )
@@ -1442,6 +1501,68 @@ def test_deletion(
     ],
 )
 def test_duplicate_items(
+    config_name: str, overrides: List[str], expected: List[ResultDefault]
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group1/file_with_group_header",
+            [],
+            [
+                ResultDefault(
+                    config_path="group1/file_with_group_header", package="group1"
+                )
+            ],
+            id="group1/file_with_group_header",
+        ),
+        param(
+            "empty",
+            ["+group1=file_with_group_header"],
+            [
+                ResultDefault(config_path="empty", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/file_with_group_header",
+                    package="group1",
+                    parent="empty",
+                ),
+            ],
+            id="empty_group1/file_with_group_header",
+        ),
+        param(
+            "group1/group2/file_with_group_header",
+            [],
+            [
+                ResultDefault(
+                    config_path="group1/group2/file_with_group_header",
+                    package="group1.group2",
+                )
+            ],
+            id="group1/group2/file_with_group_header",
+        ),
+        param(
+            "empty",
+            ["+group1/group2=file_with_group_header"],
+            [
+                ResultDefault(config_path="empty", package="", is_self=True),
+                ResultDefault(
+                    config_path="group1/group2/file_with_group_header",
+                    package="group1.group2",
+                    parent="empty",
+                ),
+            ],
+            id="empty+group1/group2/file_with_group_header",
+        ),
+    ],
+)
+def test_load_group_header(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
     _test_defaults_list_impl(
