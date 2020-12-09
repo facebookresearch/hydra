@@ -957,7 +957,7 @@ def test_primary_cfg_pkg_header_foo(
         ),
         param(
             "include_nested_group_pkg_header_foo",
-            ["group1@foo=group_item2_pkg_header_foo"],
+            ["group1=group_item2_pkg_header_foo"],
             [
                 ResultDefault(
                     config_path="include_nested_group_pkg_header_foo",
@@ -980,7 +980,7 @@ def test_primary_cfg_pkg_header_foo(
         ),
         param(
             "include_nested_group_pkg_header_foo",
-            ["group1@foo=group_item2_pkg_header_bar"],
+            ["group1=group_item2_pkg_header_bar"],
             [
                 ResultDefault(
                     config_path="include_nested_group_pkg_header_foo",
