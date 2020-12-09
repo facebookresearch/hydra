@@ -73,7 +73,11 @@ class InputDefault:
     def get_default_package(self) -> str:
         return self.get_group_path().replace("/", ".")
 
-    def get_final_package(self) -> str:
+    def get_final_package(self, default_to_package_header: bool = True) -> str:
+        """
+        :param default_to_package_header: if package is not present, fallback to package header
+        :return:
+        """
         raise NotImplementedError()
 
     def _relative_group_path(self) -> str:
@@ -119,8 +123,8 @@ class InputDefault:
         assert ret is None or isinstance(ret, str)
         return ret
 
-    def get_package(self) -> Optional[str]:
-        if self.__dict__["package"] is None:
+    def get_package(self, default_to_package_header: bool = True) -> Optional[str]:
+        if self.__dict__["package"] is None and default_to_package_header:
             ret = self.__dict__["package_header"]
         else:
             ret = self.__dict__["package"]
@@ -161,7 +165,7 @@ class InputDefault:
 
     def get_override_key(self) -> str:
         default_pkg = self.get_default_package()
-        final_pkg = self.get_final_package()
+        final_pkg = self.get_final_package(default_to_package_header=False)
         key = self.get_group_path()
         if default_pkg != final_pkg:
             key = f"{key}@{final_pkg}"
@@ -316,10 +320,10 @@ class ConfigDefault(InputDefault):
         else:
             return path
 
-    def get_final_package(self) -> str:
+    def get_final_package(self, default_to_package_header: bool = True) -> str:
         return self._get_final_package(
             self.parent_package,
-            self.get_package(),
+            self.get_package(default_to_package_header),
             self.get_name(),
         )
 
@@ -398,9 +402,11 @@ class GroupDefault(InputDefault):
     def get_name(self) -> Optional[str]:
         return self.name
 
-    def get_final_package(self) -> str:
+    def get_final_package(self, default_to_package_header: bool = True) -> str:
         return self._get_final_package(
-            self._get_parent_package(), self.get_package(), self.get_name()
+            self._get_parent_package(),
+            self.get_package(default_to_package_header=default_to_package_header),
+            self.get_name(),
         )
 
     def _relative_group_path(self) -> str:

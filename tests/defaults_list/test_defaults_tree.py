@@ -1934,3 +1934,44 @@ def test_load_missing_optional(
         input_overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "group_default_global",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_global"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file_with_global_header"),
+                ],
+            ),
+            id="group_default_global",
+        ),
+        param(
+            "group_default_global",
+            ["group1=file_with_global_header"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_global"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file_with_global_header"),
+                ],
+            ),
+            id="group_default_global",
+        ),
+    ],
+)
+def test_overriding_group_file_with_global_header(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
