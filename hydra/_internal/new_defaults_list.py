@@ -55,7 +55,8 @@ class Overrides:
         for override in overrides_list:
             is_group = repo.group_exists(override.key_or_group)
             value = override.value()
-            if not is_group:
+            is_dict = isinstance(override.value(), dict)
+            if is_dict or not is_group:
                 self.config_overrides.append(override)
             else:
                 if override.is_delete():
@@ -405,7 +406,7 @@ def _create_defaults_tree_impl(
                     url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
                     msg = dedent(
                         f"""\
-                        Invalid overriding of {d.group}:
+                        In {parent.get_config_path()}: Invalid overriding of {d.group}:
                         Default list overrides requires 'override: true'.
                         See {url} for more information.
                         """

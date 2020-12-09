@@ -624,10 +624,9 @@ def test_override_hydra_config_group_from_config_file() -> None:
         LoadTrace(
             config_group="hydra/launcher",
             config_name="basic",
-            search_path=None,
-            provider=None,
             parent="hydra_config",
-            skip_reason="deleted_from_list",
+            search_path="structured://",
+            provider="hydra",
         ),
         LoadTrace(
             config_group="hydra/sweeper",

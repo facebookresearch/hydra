@@ -1,4 +1,5 @@
 defaults:
-  - ~hydra/launcher
   - hydra/hydra_logging: hydra_debug
+    override: true
   - hydra/job_logging: disabled
+    override: true
