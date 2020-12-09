@@ -499,7 +499,8 @@ def _create_result_default(
         if tree is not None:
             res.parent = tree.node.get_config_path()
         res.package = node.get_final_package()
-        res.override_key = node.get_override_key()
+        if isinstance(node, GroupDefault):
+            res.override_key = node.get_override_key()
     return res
 
 
@@ -565,11 +566,12 @@ def ensure_no_duplicates_in_list(result: List[ResultDefault]) -> None:
     for item in result:
         if not item.is_self:
             key = item.override_key
-            if key in keys:
-                raise ConfigCompositionException(
-                    f"{key} appears more than once in the final defaults list"
-                )
-            keys.add(key)
+            if key is not None:
+                if key in keys:
+                    raise ConfigCompositionException(
+                        f"{key} appears more than once in the final defaults list"
+                    )
+                keys.add(key)
 
 
 def _create_defaults_list(
