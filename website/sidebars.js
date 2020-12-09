@@ -158,6 +158,7 @@ module.exports = {
             'fb/fbcode',
             'fb/internal-fb-cluster',
             'fb/fair-cluster',
+            'fb/fbcode-configerator-config-source',
         ]),
     }
 }

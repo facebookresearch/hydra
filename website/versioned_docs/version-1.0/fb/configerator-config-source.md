@@ -23,15 +23,29 @@ a `domain` for Hydra to access.
    
    Note: There will be an easier way to add the Configerator path to the list of search paths, with a planned change in Hydra 1.1 to [allow configuring the search path via the config file](https://github.com/facebookresearch/hydra/issues/274).
 
-1. Modify the `config_name` in the `@hydra.main` decorator of your application.
-   1.To fetch a config file, one way is to  modify the `config_name` in the `@hydra.main` decorator of your application should be a logical path to a config within the domain passed to your SearchPathPlugin.
-
-1. Your config file can contain a [defaults list](https://hydra.cc/docs/next/tutorials/basic/your_first_app/defaults) to select defaults for config groups. To use a defaults list in your config, import the [`configerator/source/fair_infra/hydra_plugins/configerator_config_source/defults`](https://fburl.com/diffusion/xhmy4bwc) thrift structure and specify a default_dict (for defaults in config groups) and/or default_string (for default configs)
-- When the application is run, the configs specified in the defaults list are loaded by default.
-- For example, [`config.cconf`](https://fburl.com/diffusion/tm9qbpm8) imports the `hydra_configerator_config_default` thrift to create the defaults list, with [`mysql`](https://fburl.com/diffusion/cxgennae) as the default for the [`db`](https://fburl.com/diffusion/99i3uxpu) config group
-
 ### Example:
 
-An example [application](https://fburl.com/diffusion/pndzq58m) using the ConfigeratorConfigSource plugin and example [SearchPathPlugin](https://fburl.com/diffusion/j86krh3r) are provided. The example app has the decorator `@hydra.main(config_name=…)`, where config_name specifies the path to the configs that will be loaded and printed.
+#### Example SearchPathPlugin
+[`ConfigeratorExampleSearchPathPlugin`](https://fburl.com/diffusion/vwa82fbg) adds the example configerator domain to the search path of the example applications.
 
-To run the app, run `buck run //fair_infra/fbcode_hydra_plugins/configerator_config_source/example:my_app` from the fbsource/fbcode directory.
+#### Reading primary config from configerator
+This example reads its primary config from configerator [here](https://fburl.com/diffusion/twk3smkj) which has a default list defined.
+
+```commandline
+$ buck run //fair_infra/fbcode_hydra_plugins/configerator_config_source/example/primary_config:my_app 
+...
+Parsing buck files: finished in 1.1 sec
+...
+{'driver': 'mysql', 'user': 'alau'}
+```
+
+#### Compose config with configerator
+This example reads its primary config from local yaml file `primary_config.yaml` but reads config groups info from configerator.
+
+```commandline
+$ buck run //fair_infra/fbcode_hydra_plugins/configerator_config_source/example/config_group:my_app -- +db=mysql
+...
+Parsing buck files: finished in 1.1 sec
+...
+{'foo': 'bar', 'driver': 'mysql', 'user': 'alau'}
+```
