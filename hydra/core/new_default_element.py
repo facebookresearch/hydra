@@ -46,6 +46,9 @@ class InputDefault:
     def is_self(self) -> bool:
         raise NotImplementedError()
 
+    def is_optional(self) -> bool:
+        raise NotImplementedError()
+
     def get_group_path(self) -> str:
         raise NotImplementedError()
 
@@ -165,7 +168,7 @@ class InputDefault:
         ret = f"{','.join(attrs)}"
 
         if len(flags) > 0:
-            ret = f"{ret} ({','.join(flags)})"
+            ret = f"{ret},{','.join(flags)}"
         return f"{type(self).__name__}({ret})"
 
     def is_interpolation(self) -> bool:
@@ -189,6 +192,9 @@ class VirtualRoot(InputDefault):
         return True
 
     def is_self(self) -> bool:
+        raise NotImplementedError()
+
+    def is_optional(self) -> bool:
         raise NotImplementedError()
 
     def get_group_path(self) -> str:
@@ -232,6 +238,9 @@ class ConfigDefault(InputDefault):
 
     def is_self(self) -> bool:
         return self.path == "_self_"
+
+    def is_optional(self) -> bool:
+        return False
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
@@ -341,6 +350,9 @@ class GroupDefault(InputDefault):
 
     def is_self(self) -> bool:
         return self.name == "_self_"
+
+    def is_optional(self) -> bool:
+        return self.optional
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
