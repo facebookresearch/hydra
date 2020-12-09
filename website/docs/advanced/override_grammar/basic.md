@@ -19,8 +19,6 @@ The rest are manipulating the config object.
 
 ### Modifying the Defaults List
 - Overriding selected Option: `db=mysql`
-- Changing a package: `db@src_pkg:dst_pkg`
-- Overriding selected Option and changing the package: `db@src_pkg:dst_pkg=mysql`
 - Appending to defaults: `+db=mysql`
 - Deleting from defaults: `~db`, `~db=mysql`
 
@@ -42,11 +40,7 @@ override: (
 
 // Keys.
 
-key :
-    packageOrGroup                               // key
-    | packageOrGroup AT package (COLON package)? // group@pkg | group@pkg1:pkg2
-    | packageOrGroup ATCOLON package             // group@:pkg2
-;
+key : packageOrGroup (AT package)?;              // key | group@pkg
 
 packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
 package: (ID | DOT_PATH);                        // db, hydra.launcher

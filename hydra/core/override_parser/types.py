@@ -169,8 +169,7 @@ class ValueType(Enum):
 class Key:
     # the config-group or config dot-path
     key_or_group: str
-    pkg1: Optional[str] = None
-    pkg2: Optional[str] = None
+    package: Optional[str] = None
 
 
 @dataclass
@@ -225,10 +224,8 @@ class Override:
     # The parsed value (component after the =).
     _value: Union[ParsedElementType, ChoiceSweep, RangeSweep, IntervalSweep]
 
-    # When updating a config group option, the first package
-    pkg1: Optional[str] = None
-    # When updating a config group, the second package (used when renaming a package)
-    pkg2: Optional[str] = None
+    # Optional qualifying package
+    package: Optional[str] = None
 
     # Input line used to construct this
     input_line: Optional[str] = None
@@ -247,12 +244,6 @@ class Override:
         :return: True if this override represents an addition of a config value or config group option
         """
         return self.type == OverrideType.ADD
-
-    def get_source_package(self) -> Optional[str]:
-        return self.pkg1
-
-    def get_subject_package(self) -> Optional[str]:
-        return self.pkg1 if self.pkg2 is None else self.pkg2
 
     @staticmethod
     def _convert_value(value: ParsedElementType) -> Optional[ElementType]:
@@ -339,16 +330,6 @@ class Override:
         iterator = cast(Iterator[str], self.sweep_iterator(transformer=Transformer.str))
         return iterator
 
-    def get_source_item(self) -> str:
-        pkg = self.get_source_package()
-        if pkg is None:
-            return self.key_or_group
-        else:
-            return f"{self.key_or_group}@{pkg}"
-
-    def is_package_rename(self) -> bool:
-        return self.pkg2 is not None
-
     def is_sweep_override(self) -> bool:
         return self.value_type is not None and self.value_type != ValueType.ELEMENT
 
@@ -377,14 +358,10 @@ class Override:
 
     def get_key_element(self) -> str:
         def get_key() -> str:
-            if self.pkg1 is None and self.pkg2 is None:
+            if self.package is None:
                 return self.key_or_group
-            elif self.pkg1 is not None and self.pkg2 is None:
-                return f"{self.key_or_group}@{self.pkg1}"
-            elif self.pkg1 is None and self.pkg2 is not None:
-                return f"{self.key_or_group}@:{self.pkg2}"
             else:
-                return f"{self.key_or_group}@{self.pkg1}:{self.pkg2}"
+                return f"{self.key_or_group}@{self.package}"
 
         def get_prefix() -> str:
             if self.is_delete():

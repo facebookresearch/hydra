@@ -88,7 +88,7 @@ Plugins.instance()
 #  - ensure all tests are passing
 
 # TODO: (Y) rename support:
-#  - Remove rename support form 1.1
+#  - (Y) Remove rename support form 1.1
 #  - Deprecate rename support in 1.0
 
 

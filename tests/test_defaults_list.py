@@ -836,60 +836,60 @@ def test_expand_defaults_list(
             ],
             id="change_option",
         ),
-        pytest.param(
-            "test_overrides",
-            ["a@:pkg2=a6"],
-            [
-                DefaultElement(config_name="test_overrides", parent="this_test"),
-                DefaultElement(
-                    config_group="a",
-                    package="pkg2",
-                    config_name="a6",
-                    parent="test_overrides",
-                ),
-                DefaultElement(
-                    config_group="a",
-                    package="pkg",
-                    config_name="a1",
-                    parent="test_overrides",
-                ),
-                DefaultElement(
-                    config_group="c", config_name="c1", parent="test_overrides"
-                ),
-            ],
-            id="change_both",
-        ),
-        pytest.param(
-            "test_overrides",
-            ["a@pkg:pkg2=a6"],
-            [
-                DefaultElement(config_name="test_overrides", parent="this_test"),
-                DefaultElement(
-                    config_group="a", config_name="a1", parent="test_overrides"
-                ),
-                DefaultElement(
-                    config_group="a",
-                    package="pkg2",
-                    config_name="a6",
-                    parent="test_overrides",
-                ),
-                DefaultElement(
-                    config_group="c", config_name="c1", parent="test_overrides"
-                ),
-            ],
-            id="change_both",
-        ),
-        pytest.param(
-            "test_overrides",
-            ["a@XXX:dest=a6"],
-            pytest.raises(
-                ConfigCompositionException,
-                match=re.escape(
-                    "Could not rename package. No match for 'a@XXX' in the defaults list"
-                ),
-            ),
-            id="change_both_invalid_package",
-        ),
+        # pytest.param(
+        #     "test_overrides",
+        #     ["a@:pkg2=a6"],
+        #     [
+        #         DefaultElement(config_name="test_overrides", parent="this_test"),
+        #         DefaultElement(
+        #             config_group="a",
+        #             package="pkg2",
+        #             config_name="a6",
+        #             parent="test_overrides",
+        #         ),
+        #         DefaultElement(
+        #             config_group="a",
+        #             package="pkg",
+        #             config_name="a1",
+        #             parent="test_overrides",
+        #         ),
+        #         DefaultElement(
+        #             config_group="c", config_name="c1", parent="test_overrides"
+        #         ),
+        #     ],
+        #     id="change_both",
+        # ),
+        # pytest.param(
+        #     "test_overrides",
+        #     ["a@pkg:pkg2=a6"],
+        #     [
+        #         DefaultElement(config_name="test_overrides", parent="this_test"),
+        #         DefaultElement(
+        #             config_group="a", config_name="a1", parent="test_overrides"
+        #         ),
+        #         DefaultElement(
+        #             config_group="a",
+        #             package="pkg2",
+        #             config_name="a6",
+        #             parent="test_overrides",
+        #         ),
+        #         DefaultElement(
+        #             config_group="c", config_name="c1", parent="test_overrides"
+        #         ),
+        #     ],
+        #     id="change_both",
+        # ),
+        # pytest.param(
+        #     "test_overrides",
+        #     ["a@XXX:dest=a6"],
+        #     pytest.raises(
+        #         ConfigCompositionException,
+        #         match=re.escape(
+        #             "Could not rename package. No match for 'a@XXX' in the defaults list"
+        #         ),
+        #     ),
+        #     id="change_both_invalid_package",
+        # ),
         # adding item
         pytest.param(
             "no_defaults",
@@ -977,17 +977,17 @@ def test_expand_defaults_list(
             ),
             id="adding_duplicate_item_recursive",
         ),
-        pytest.param(
-            "test_overrides",
-            ["+a@pkg:pkg2=a1"],
-            pytest.raises(
-                ConfigCompositionException,
-                match=re.escape(
-                    "Add syntax does not support package rename, remove + prefix"
-                ),
-            ),
-            id="add_rename_error",
-        ),
+        # pytest.param(
+        #     "test_overrides",
+        #     ["+a@pkg:pkg2=a1"],
+        #     pytest.raises(
+        #         ConfigCompositionException,
+        #         match=re.escape(
+        #             "Add syntax does not support package rename, remove + prefix"
+        #         ),
+        #     ),
+        #     id="add_rename_error",
+        # ),
         pytest.param(
             "test_overrides",
             ["+a@pkg=a2"],

@@ -46,31 +46,23 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         return ctx.getText()  # type: ignore
 
     def visitKey(self, ctx: OverrideParser.KeyContext) -> Key:
-        # key : packageOrGroup (AT package? (COLON package)? )?;
+        # key : packageOrGroup (AT package)?
 
         nc = ctx.getChildCount()
-        pkg1 = None
-        pkg2 = None
+        package = None
         if nc == 1:
             # packageOrGroup
             key = ctx.getChild(0).getText()
         elif nc > 1:
             key = ctx.getChild(0).getText()
-            if ctx.getChild(1).symbol.text == "@:":
-                pkg1 = None
-                pkg2 = ctx.getChild(2).getText()
-            elif ctx.getChild(1).symbol.text == "@":
-                pkg1 = ctx.getChild(2).getText()
-                if nc > 3:
-                    assert ctx.getChild(3).symbol.text == ":"
-                    pkg2 = ctx.getChild(4).getText()
+            if ctx.getChild(1).symbol.text == "@":
+                package = ctx.getChild(2).getText()
             else:
                 assert False
-
         else:
             assert False
 
-        return Key(key_or_group=key, pkg1=pkg1, pkg2=pkg2)
+        return Key(key_or_group=key, package=package)
 
     def is_ws(self, c: Any) -> bool:
         return isinstance(c, TerminalNodeImpl) and c.symbol.type == OverrideLexer.WS
@@ -193,8 +185,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             key_or_group=key.key_or_group,
             _value=value,
             value_type=value_type,
-            pkg1=key.pkg1,
-            pkg2=key.pkg2,
+            package=key.package,
         )
 
     def is_matching_terminal(self, node: Any, symbol_type: int) -> bool:

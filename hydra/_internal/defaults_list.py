@@ -496,11 +496,6 @@ def convert_overrides_to_defaults(
 ) -> List[DefaultElement]:
     ret = []
     for override in parsed_overrides:
-        if override.is_add() and override.is_package_rename():
-            raise ConfigCompositionException(
-                "Add syntax does not support package rename, remove + prefix"
-            )
-
         value = override.value()
         if override.is_delete() and value is None:
             value = "_delete_"
@@ -511,23 +506,13 @@ def convert_overrides_to_defaults(
                 " ~group and ~group=value, where value is a group name (string)"
             )
 
-        if override.is_package_rename():
-            default = DefaultElement(
-                config_group=override.key_or_group,
-                config_name=value,
-                package=override.pkg1,
-                rename_package_to=override.pkg2,
-                from_override=True,
-                parent="overrides",
-            )
-        else:
-            default = DefaultElement(
-                config_group=override.key_or_group,
-                config_name=value,
-                package=override.get_subject_package(),
-                from_override=True,
-                parent="overrides",
-            )
+        default = DefaultElement(
+            config_group=override.key_or_group,
+            config_name=value,
+            package=override.package,
+            from_override=True,
+            parent="overrides",
+        )
 
         if override.is_delete():
             default.is_delete = True
