@@ -1902,3 +1902,35 @@ def test_error_changing_group_choice(
         input_overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "missing_optional_default",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="missing_optional_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    ConfigDefault(path="empty"),
+                    GroupDefault(
+                        group="foo", name="missing", optional=True, deleted=True
+                    ),
+                ],
+            ),
+            id="missing_optional_default",
+        ),
+    ],
+)
+def test_load_missing_optional(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )

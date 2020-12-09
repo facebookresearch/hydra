@@ -356,7 +356,6 @@ def _create_defaults_tree_impl(
 
         if overrides.is_deleted(parent):
             overrides.delete(parent)
-            # parent.deleted = True
             return root
 
         overrides.set_known_choice(parent)
@@ -371,6 +370,9 @@ def _create_defaults_tree_impl(
         loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
 
         if loaded is None:
+            if parent.is_optional():
+                parent.deleted = True
+                return root
             config_not_found_error(repo, root)
 
         assert loaded is not None
