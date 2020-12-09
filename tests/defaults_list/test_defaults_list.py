@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 from textwrap import dedent
-from typing import Any, List
+from typing import Any, List, Optional
 
 from pytest import mark, param, raises
 
@@ -161,7 +161,7 @@ def test_loaded_defaults_list(
 
 
 def _test_defaults_list_impl(
-    config_name: str,
+    config_name: Optional[str],
     overrides: List[str],
     expected: Any,
     prepend_hydra: bool = False,
@@ -1564,4 +1564,104 @@ def test_load_group_header(
         config_name=config_name,
         overrides=overrides,
         expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            None,
+            [],
+            [],
+            id="none",
+        ),
+        param(
+            None,
+            ["+group1=file1"],
+            [
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="<root>"
+                )
+            ],
+            id="none+group1=file1",
+        ),
+    ],
+)
+def test_with_none_primary(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            None,
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/config",
+                    package="hydra",
+                    parent="<root>",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="hydra/help/default",
+                    package="hydra.help",
+                    parent="hydra/config",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    package="hydra",
+                    parent="hydra/config",
+                ),
+            ],
+            id="none",
+        ),
+        param(
+            None,
+            ["+group1=file1"],
+            [
+                ResultDefault(
+                    config_path="hydra/config",
+                    package="hydra",
+                    parent="<root>",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="hydra/help/default",
+                    package="hydra.help",
+                    parent="hydra/config",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    package="hydra",
+                    parent="hydra/config",
+                ),
+                ResultDefault(
+                    config_path="group1/file1", package="group1", parent="<root>"
+                ),
+            ],
+            id="none+group1=file1",
+        ),
+    ],
+)
+def test_with_none_primary_with_hydra(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
     )

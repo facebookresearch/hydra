@@ -224,28 +224,30 @@ def _expand_virtual_root(
     overrides: Overrides,
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
-    assert root.children is not None
-    assert len(root.children) == 2
-    for gd in overrides.append_group_defaults:
-        root.children.append(gd)
+    if len(overrides.append_group_defaults) > 0:
+        if root.children is None:
+            root.children = []
+        for gd in overrides.append_group_defaults:
+            root.children.append(gd)
 
-    for d in reversed(root.children):
-        assert isinstance(d, InputDefault)
-        new_root = DefaultsTreeNode(node=d, parent=root)
-        d.update_parent("", "")
+    if root.children is not None:
+        for d in reversed(root.children):
+            assert isinstance(d, InputDefault)
+            new_root = DefaultsTreeNode(node=d, parent=root)
+            d.update_parent("", "")
 
-        subtree = _create_defaults_tree_impl(
-            repo=repo,
-            root=new_root,
-            is_primary_config=False,
-            skip_missing=False,
-            interpolated_subtree=False,
-            overrides=overrides,
-        )
-        if subtree.children is None:
-            children.append(d)
-        else:
-            children.append(subtree)
+            subtree = _create_defaults_tree_impl(
+                repo=repo,
+                root=new_root,
+                is_primary_config=False,
+                skip_missing=False,
+                interpolated_subtree=False,
+                overrides=overrides,
+            )
+            if subtree.children is None:
+                children.append(d)
+            else:
+                children.append(subtree)
 
     if len(children) > 0:
         root.children = list(reversed(children))
@@ -333,7 +335,10 @@ def _create_defaults_tree_impl(
     parent = root.node
     children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
-        return _expand_virtual_root(repo, root, overrides)
+        if is_primary_config:
+            return _expand_virtual_root(repo, root, overrides)
+        else:
+            return root
     else:
         if is_primary_config:
             root.node.update_parent("", "")
@@ -472,6 +477,8 @@ def _create_defaults_tree_impl(
 def _create_result_default(
     tree: Optional[DefaultsTreeNode], node: InputDefault
 ) -> Optional[ResultDefault]:
+    if node.is_virtual():
+        return None
     if node.get_name() is None:
         return None
 
@@ -533,17 +540,23 @@ def _tree_to_list(
     return visitor.output
 
 
-def _create_root(config_name: str, with_hydra: bool) -> DefaultsTreeNode:
+def _create_root(config_name: Optional[str], with_hydra: bool) -> DefaultsTreeNode:
+    primary: InputDefault
+    if config_name is not None:
+        primary = ConfigDefault(path=config_name)
+    else:
+        primary = VirtualRoot()
+
     if with_hydra:
         root = DefaultsTreeNode(
             node=VirtualRoot(),
             children=[
                 ConfigDefault(path="hydra/config"),
-                ConfigDefault(path=config_name),
+                primary,
             ],
         )
     else:
-        root = DefaultsTreeNode(node=ConfigDefault(path=config_name))
+        root = DefaultsTreeNode(node=primary)
     return root
 
 
@@ -561,7 +574,7 @@ def ensure_no_duplicates_in_list(result: List[ResultDefault]) -> None:
 
 def _create_defaults_list(
     repo: IConfigRepository,
-    config_name: str,
+    config_name: Optional[str],
     overrides: Overrides,
     prepend_hydra: bool,
     skip_missing: bool,
@@ -585,7 +598,7 @@ def _create_defaults_list(
 
 def create_defaults_list(
     repo: IConfigRepository,
-    config_name: str,
+    config_name: Optional[str],
     overrides_list: List[Override],
     prepend_hydra: bool,
     skip_missing: bool,
