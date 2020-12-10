@@ -1,3 +1,4 @@
 defaults:
   - db: mysql
   - hydra/help: my_app_help
+    override: true
