@@ -14,12 +14,13 @@ such, but it is preferred to have a dedicated issue (for example, in case the
 PR ends up rejected due to code quality reasons).
 
 Once you have an issue or pull request, you take the number, and you create a
-file inside the ``news/`` directory named after that issue number with one of the following extensions:
+file inside the ``news/`` directory (in case the change is directly related to Hydra)
+or in the ``news/`` directory of the relevant plugin. The file is named after the
+issue number with one of the following extensions:
 * `api_change` : API Change (Renames, deprecations, and removals)
 * `feature` : Addition of a new feature
 * `bugfix` : Fixing of a bug
 * `docs` : Addition or updates to documentation
-* `plugin` : Addition of changes to a plugin
 * `config` : Changes or addition to the configuration structure
 * `maintenance` : Changes that improve the maintainability of the code
 
