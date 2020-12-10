@@ -1,5 +1,5 @@
 defaults:
-  - ~group
+  - group: null
 
 # a mapping item
 dict:
