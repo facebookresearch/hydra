@@ -727,12 +727,7 @@ def test_legacy_hydra_overrides_from_primary_config(
                 children=[
                     ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
-                    DefaultsTreeNode(
-                        node=GroupDefault(
-                            group="experiment", name="override_config_group"
-                        ),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
             id="group_default_with_explicit_experiment",
@@ -745,12 +740,7 @@ def test_legacy_hydra_overrides_from_primary_config(
                 children=[
                     ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file3"),
-                    DefaultsTreeNode(
-                        node=GroupDefault(
-                            group="experiment", name="override_config_group"
-                        ),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
             id="group_default_with_explicit_experiment:with_external_override",
@@ -780,12 +770,7 @@ def test_group_default_with_explicit_experiment(
                 children=[
                     ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
-                    DefaultsTreeNode(
-                        node=GroupDefault(
-                            group="experiment", name="override_config_group"
-                        ),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
             id="group_default_with_appended_experiment",
@@ -798,12 +783,7 @@ def test_group_default_with_explicit_experiment(
                 children=[
                     ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file3"),
-                    DefaultsTreeNode(
-                        node=GroupDefault(
-                            group="experiment", name="override_config_group"
-                        ),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
             id="group_default_with_appended_experiment:with_external_override",
@@ -903,10 +883,7 @@ def test_experiment_include_absolute_config(
                             GroupDefault(group="group1", name="file1"),
                         ],
                     ),
-                    DefaultsTreeNode(
-                        node=GroupDefault(group="experiment", name="override_hydra"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_hydra"),
                 ],
             ),
             id="experiment_overriding_hydra_group",
@@ -932,10 +909,7 @@ def test_experiment_include_absolute_config(
                             GroupDefault(group="group1", name="file1"),
                         ],
                     ),
-                    DefaultsTreeNode(
-                        node=GroupDefault(group="experiment", name="override_hydra"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    GroupDefault(group="experiment", name="override_hydra"),
                 ],
             ),
             id="experiment_overriding_hydra_group:with_external_hydra_override",
@@ -972,10 +946,7 @@ def test_experiment_overriding_hydra_group(
                             GroupDefault(group="output", name="default"),
                         ],
                     ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="experiment/override_hydra"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
+                    ConfigDefault(path="experiment/override_hydra"),
                 ],
             ),
             id="experiment_overriding_hydra_group_as_primary",
@@ -2054,6 +2025,43 @@ def test_none_config(
     ],
 )
 def test_none_config_with_hydra(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,expected",
+    [
+        param(
+            "defaults_with_override_only",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="help", name="custom1"),
+                            GroupDefault(group="output", name="default"),
+                        ],
+                    ),
+                    ConfigDefault(path="defaults_with_override_only"),
+                ],
+            ),
+            id="defaults_with_override_only",
+        ),
+    ],
+)
+def test_defaults_with_overrides_only(
     config_name: Optional[str],
     overrides: List[str],
     expected: DefaultsTreeNode,
