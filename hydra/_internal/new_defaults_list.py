@@ -192,7 +192,11 @@ class DefaultsList:
 def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
     # check that self is present only once
     has_self = False
+    has_none_override_items = False
     for d in defaults:
+        if isinstance(d, GroupDefault) and d.override:
+            continue
+        has_none_override_items = True
         if d.is_self():
             if has_self:
                 raise ConfigCompositionException(
@@ -200,7 +204,7 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
                 )
             has_self = True
 
-    if not has_self:
+    if not has_self and has_none_override_items:
         defaults.insert(0, ConfigDefault(path="_self_"))
 
     return not has_self

@@ -1,0 +1,3 @@
+defaults:
+  - /hydra/help: custom1
+    override: true

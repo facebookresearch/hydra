@@ -1283,7 +1283,6 @@ def test_experiment_use_case(
                     config_path="experiment/override_hydra",
                     package="",
                     parent="<root>",
-                    is_self=True,
                 ),
             ],
             id="group_default:experiment=include_absolute_config",
