@@ -799,8 +799,9 @@ def test_override_with_invalid_group_choice(
 ) -> None:
     msg = dedent(
         f"""\
-    Could not find '{override}' in the config group 'db'
-    Available options:
+    In 'db_conf': Could not find 'db/{override}'
+
+    Available options in 'db':
     \tmysql
     \tpostgresql
     """
@@ -815,7 +816,9 @@ def test_override_with_invalid_group_choice(
             overrides=[f"db={override}"],
         ):
             pass
-    assert re.search(re.escape(msg), str(e.value)) is not None
+
+    # assert_text_same(from_line=msg, to_line=str(e.value))
+    assert re.search(msg, str(e.value)) is not None
 
 
 @pytest.mark.parametrize("config_path", ["dir1", "dir2"])  # type: ignore

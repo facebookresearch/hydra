@@ -53,6 +53,8 @@ class Overrides:
         self.known_choices_per_group = {}
 
         for override in overrides_list:
+            if override.is_sweep_override():
+                continue
             is_group = repo.group_exists(override.key_or_group)
             value = override.value()
             is_dict = isinstance(override.value(), dict)
@@ -71,7 +73,7 @@ class Overrides:
 
                 elif not isinstance(value, str):
                     raise ValueError(
-                        f"Config group override must be a string : {override}"
+                        f"Config group override must be a string. Got {type(value).__name__}"
                     )
                 elif override.is_add():
                     self.append_group_defaults.append(
@@ -552,10 +554,7 @@ def _create_root(config_name: Optional[str], with_hydra: bool) -> DefaultsTreeNo
     if with_hydra:
         root = DefaultsTreeNode(
             node=VirtualRoot(),
-            children=[
-                ConfigDefault(path="hydra/config"),
-                primary,
-            ],
+            children=[ConfigDefault(path="hydra/config"), primary],
         )
     else:
         root = DefaultsTreeNode(node=primary)

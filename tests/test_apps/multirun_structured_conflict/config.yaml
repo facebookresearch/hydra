@@ -1,3 +1,4 @@
 defaults:
-  - hydra/hydra_logging: disabled
   - test: default
+  - hydra/hydra_logging: disabled
+    override: true

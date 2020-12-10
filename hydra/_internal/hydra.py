@@ -297,14 +297,17 @@ class Hydra:
         self, help_cfg: DictConfig, cfg: DictConfig, args_parser: ArgumentParser
     ) -> str:
         s = string.Template(help_cfg.template)
+
+        def is_hydra_group(x: str):
+            return x.startswith("hydra/") or x == "hydra"
+
+        def is_not_hydra_group(x: str):
+            return not is_hydra_group(x)
+
         help_text = s.substitute(
             FLAGS_HELP=self.format_args_help(args_parser),
-            HYDRA_CONFIG_GROUPS=self.format_config_groups(
-                lambda x: x.startswith("hydra/")
-            ),
-            APP_CONFIG_GROUPS=self.format_config_groups(
-                lambda x: not x.startswith("hydra/")
-            ),
+            HYDRA_CONFIG_GROUPS=self.format_config_groups(is_hydra_group),
+            APP_CONFIG_GROUPS=self.format_config_groups(is_not_hydra_group),
             CONFIG=OmegaConf.to_yaml(cfg, resolve=False),
         )
         return help_text
