@@ -14,15 +14,22 @@ Add the following to your `TARGET` file
 
 ### Usage
 
-1. Since `configerator` does not have a client for listing configs under a path, you need to group your configs under
-a `domain` for Hydra to access. 
-   1. Matching the name of your domain and directory of configs is necessary for the plugin to extract information on the full config names, due to limitations from Configerator APIs
-   1. For example, the config paths returned by Configerator API could look like `fair_infra/hydra_plugins/configerator_config_source/example/db/mysql`. The plugin needs to know where the directory of configs begins ([`example`](https://fburl.com/diffusion/7c0c5tig)), in order to determine the full config name (`db/mysql`). So in this case the domain should be named [`example.cconf`](https://fburl.com/diffusion/pyymoo1t)
-1. Create a [SearchPathPlugin](https://hydra.cc/docs/next/advanced/search_path) to add the Configerator path to the list of search paths.
-   
-   1. The path you add in your SearchPathPlugin should be the name of your domain of configs, such as in this [example SearchPathPlugin](https://fburl.com/diffusion/ljggtux5)
-   
-   Note: There will be an easier way to add the Configerator path to the list of search paths, with a planned change in Hydra 1.1 to [allow configuring the search path via the config file](https://github.com/facebookresearch/hydra/issues/274).
+1. The Configerator Config Source plugin requires that you place the configs under a [domain](https://fburl.com/wiki/n5cgchxe).
+You can find an example domain [here](https://fburl.com/diffusion/ms50g5hu)
+
+:::important
+Due to the limitations of Configerator APIs, matching the name of your domain and directory of configs is necessary for the plugin to extract information on the full config names. 
+For example, the config paths returned by Configerator API could look like `fair_infra/hydra_plugins/configerator_config_source/example/db/mysql`. The plugin needs to know where the directory of configs begins ([`example`](https://fburl.com/diffusion/7c0c5tig)), in order to determine the full config name (`db/mysql`). So in this case the domain should be named [`example.cconf`](https://fburl.com/diffusion/pyymoo1t)
+:::
+
+
+2. Create a [SearchPathPlugin](https://hydra.cc/docs/next/advanced/search_path) to add the Configerator path to the list of search paths.
+   The path you add in your SearchPathPlugin should be the name of your domain of configs, such as in this [example SearchPathPlugin](https://fburl.com/diffusion/ljggtux5)
+
+:::info
+Adding a new search path will become much easier once [#274](https://github.com/facebookresearch/hydra/issues/274) is resolved, which is planned for Hydra 1.1.
+:::
+ 
 
 ### Example:
 
