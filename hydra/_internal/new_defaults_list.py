@@ -536,6 +536,9 @@ def _tree_to_list(
             if node.is_deleted():
                 return
 
+            if node.is_missing():
+                return
+
             rd = _create_result_default(tree=tree_node, node=node)
             if rd is not None:
                 self.output.append(rd)

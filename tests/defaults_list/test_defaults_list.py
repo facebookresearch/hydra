@@ -1700,3 +1700,60 @@ def test_two_config_items(
         overrides=overrides,
         expected=expected,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "config_name,overrides,skip_missing,expected",
+    [
+        param(
+            "with_missing",
+            [],
+            True,
+            [
+                ResultDefault(config_path="with_missing", package="", is_self=True),
+            ],
+            id="with_missing:ignore_missing",
+        ),
+        param(
+            "with_missing",
+            ["db=base_db"],
+            True,
+            [
+                ResultDefault(config_path="with_missing", package="", is_self=True),
+                ResultDefault(
+                    config_path="db/base_db", package="db", parent="with_missing"
+                ),
+            ],
+            id="with_missing:ignore_missing+override",
+        ),
+        param(
+            "with_missing",
+            [],
+            False,
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        You must specify 'db', e.g, db=<OPTION>
+                        Available options:
+                        \tbase_db"""
+                    )
+                ),
+            ),
+            id="with_missing:not_ignore_missing",
+        ),
+    ],
+)
+def test_with_missing_config(
+    config_name: str,
+    overrides: List[str],
+    skip_missing: bool,
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        skip_missing=skip_missing,
+    )

@@ -207,6 +207,13 @@ class InputDefault:
         else:
             return False
 
+    def is_missing(self) -> bool:
+        """
+        True if the name of the config is '???'
+        :return:
+        """
+        raise NotImplementedError()
+
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
 
@@ -236,6 +243,9 @@ class VirtualRoot(InputDefault):
 
     def get_name(self) -> str:
         raise NotImplementedError()
+
+    def is_missing(self) -> bool:
+        return False
 
     def _get_attributes(self) -> List[str]:
         raise NotImplementedError()
@@ -349,6 +359,9 @@ class ConfigDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
 
+    def is_missing(self) -> bool:
+        return self.get_name() == "???"
+
 
 _legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
 
@@ -438,6 +451,9 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
         node = OmegaConf.create({"_dummy_": self.get_name()})
         node._set_parent(known_choices)
         self.name = node["_dummy_"]
+
+    def is_missing(self) -> bool:
+        return self.get_name() == "???"
 
 
 @dataclass
