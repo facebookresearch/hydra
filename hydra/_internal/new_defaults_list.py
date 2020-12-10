@@ -225,6 +225,7 @@ def _expand_virtual_root(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
     overrides: Overrides,
+    skip_missing: bool,
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
     if len(overrides.append_group_defaults) > 0:
@@ -243,7 +244,7 @@ def _expand_virtual_root(
                 repo=repo,
                 root=new_root,
                 is_primary_config=False,
-                skip_missing=False,
+                skip_missing=skip_missing,
                 interpolated_subtree=False,
                 overrides=overrides,
             )
@@ -339,7 +340,7 @@ def _create_defaults_tree_impl(
     children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
         if is_primary_config:
-            return _expand_virtual_root(repo, root, overrides)
+            return _expand_virtual_root(repo, root, overrides, skip_missing)
         else:
             return root
     else:
