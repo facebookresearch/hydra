@@ -82,9 +82,10 @@ Plugins.instance()
 #  - (Y) duplicate entries in final defaults list raises an error
 
 # TODO: Integrate with Hydra
-#  - replace old defaults list computation
-#  - enable --info=defaults output
-#  - ensure all tests are passing
+#  - (Y) replace old defaults list computation
+#  - (Y) enable --info=defaults output
+#  - (Y) ensure all tests are passing
+#  - implement --info=defaults-tree output
 
 # TODO: Followup changes
 #  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
@@ -108,6 +109,8 @@ Plugins.instance()
 #  - Update defaults list documentation
 #  - Create a page describing configuring experiments with Hydra (experiment use case)
 #  - Create https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override
+#  - Update Structured Configs tutorial to utilize recursive defaults as an alternative to automatic schema
+#  - Consider deprecating automtic schema support in favor of extending a config via recursive defaults
 
 
 @mark.parametrize(  # type: ignore
