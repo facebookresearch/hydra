@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[119],{175:function(a){a.exports=JSON.parse('{"hydra":{"allTagsPath":"/blog/tags","slug":"hydra","name":"hydra","count":2,"permalink":"/blog/tags/hydra"},"release":{"allTagsPath":"/blog/tags","slug":"release","name":"release","count":1,"permalink":"/blog/tags/release"}}')}}]);
