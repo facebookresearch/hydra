@@ -1,3 +1,4 @@
 defaults:
-  - hydra/launcher: example
   - db: mysql
+  - hydra/launcher: example
+    override: true

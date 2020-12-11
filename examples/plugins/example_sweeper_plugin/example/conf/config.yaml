@@ -1,3 +1,4 @@
 defaults:
-  - hydra/sweeper: example
   - db: mysql
+  - hydra/sweeper: example
+    override: true
