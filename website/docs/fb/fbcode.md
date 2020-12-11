@@ -16,6 +16,7 @@ title: Hydra at fbcode
 
 ### Facebook specified plugins
  - fbcode_defaults : Changes configuration defaults to be appropriate for fbcode (e.g: Output directories are in `fbcode/outputs` and `fbcode/multirun`)
+ - configerator_config_source: See [doc](/fb/configerator-config-source.md)  for more information.
 
 #### TARGETS
 Hydra includes buck TARGETS you can use in fbcode. In general, if there is TARGET there are two options:
