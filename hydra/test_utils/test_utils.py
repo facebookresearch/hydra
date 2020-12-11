@@ -429,10 +429,10 @@ def assert_text_same(
 def assert_regex_match(
     from_line: str, to_line: str, from_name: str = "Expected", to_name: str = "Actual"
 ) -> None:
-    from_line = [x for x in normalize_newlines(from_line).split("\n") if x]
-    normalized_ret = [x for x in normalize_newlines(to_line).split("\n") if x]
-    assert len(from_line) == len(normalized_ret)
-    for line1, line2 in zip(from_line, normalized_ret):
+    normalized_from_line = [x for x in normalize_newlines(from_line).split("\n") if x]
+    normalized_to_line = [x for x in normalize_newlines(to_line).split("\n") if x]
+    assert len(normalized_from_line) == len(normalized_to_line)
+    for line1, line2 in zip(normalized_from_line, normalized_to_line):
         if line1 != line2 and re.match(line1, line2) is None:
             assert_text_same(
                 from_line=from_line,
