@@ -404,52 +404,6 @@ class Hydra:
             )
         self._log_footer(header=header, filler="-")
 
-    def _print_composition_trace(self, cfg: DictConfig) -> None:
-        # Print configurations used to compose the config object
-        assert log is not None
-        log.debug("")
-        self._log_header("Composition trace", filler="*")
-        box: List[List[str]] = [
-            [
-                "Config Path",
-                "Package",
-                "Search path",
-                "Provider",
-            ]
-        ]
-        composition_trace = [LoadTrace2(**x) for x in cfg.hydra.composition_trace]
-        for trace in composition_trace:
-            box.append(
-                [
-                    trace.config_path if trace.config_path is not None else "",
-                    trace.package if trace.package is not None else "",
-                    trace.search_path if trace.search_path is not None else "",
-                    trace.provider if trace.provider is not None else "",
-                ]
-            )
-        padding = get_column_widths(box)
-        del box[0]
-
-        header = "| {} | {} | {} | {} |".format(
-            "Config Path".ljust(padding[0]),
-            "Package".ljust(padding[1]),
-            "Search path".ljust(padding[2]),
-            "Provider".ljust(padding[3]),
-        )
-        self._log_header(header=header, filler="-")
-
-        for row in box:
-            log.debug(
-                "| {} | {} | {} | {} |".format(
-                    row[0].ljust(padding[0]),
-                    row[1].ljust(padding[1]),
-                    row[2].ljust(padding[2]),
-                    row[3].ljust(padding[3]),
-                )
-            )
-
-        self._log_footer(header=header, filler="-")
-
     def _print_plugins_profiling_info(self, top_n: int) -> None:
         assert log is not None
         stats = Plugins.instance().get_stats()
@@ -541,8 +495,8 @@ class Hydra:
         if log.isEnabledFor(logging.DEBUG):
             self._print_plugins()
             self._print_search_path()
-            self._print_composition_trace(cfg)
             self._print_plugins_profiling_info(10)
+            self._print_defaults_list()
 
     def compose_config(
         self,
@@ -583,12 +537,7 @@ class Hydra:
     ) -> None:
         from .. import __version__
 
-        simple_stdout_log_config(level=logging.DEBUG)
-        global log
-        log = logging.getLogger(__name__)
-        self._log_header(f"Hydra {__version__}", filler="=")
-
-        if info == "all":
+        def show_all() -> None:
             self._print_plugins()
             self._print_search_path()
             self._print_plugins_profiling_info(top_n=10)
@@ -602,12 +551,22 @@ class Hydra:
                     with_log_configuration=False,
                 )
             )
-            self._print_composition_trace(cfg)
-            log.debug("\n")
             self._log_header(header="Config", filler="*")
             with open_dict(cfg):
                 del cfg["hydra"]
             print(OmegaConf.to_yaml(cfg))
 
-        elif info == "defaults":
+        def show_defaults_list() -> None:
             self._print_defaults_list(config_name, overrides)
+
+        options = {"all": show_all, "defaults": show_defaults_list}
+
+        simple_stdout_log_config(level=logging.DEBUG)
+        global log
+        log = logging.getLogger(__name__)
+
+        if info not in options:
+            log.error("Info usage: --info [all|defaults]")
+        else:
+            self._log_header(f"Hydra {__version__}", filler="=")
+            options[info]()
