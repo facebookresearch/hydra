@@ -37,7 +37,7 @@ class TestRQLauncher(LauncherTestSuite):
 )  # https://github.com/rq/rq/issues/1244
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
-    [({"defaults": [{"hydra/launcher": "rq"}]}, ["-m"])],
+    [({}, ["-m", "hydra/launcher=rq"])],
 )
 class TestRQLauncherIntegration(IntegrationTestSuite):
     """

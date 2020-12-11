@@ -1,3 +1,5 @@
 defaults:
   - hydra/job_logging: colorlog
+    override: true
   - hydra/hydra_logging: colorlog
+    override: true

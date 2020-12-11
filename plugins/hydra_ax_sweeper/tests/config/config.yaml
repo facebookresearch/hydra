@@ -1,7 +1,8 @@
 defaults:
+  - quadratic: null
+  - params: null
   - hydra/sweeper: ax
-  - ~quadratic
-  - ~params
+    override: true
 
 quadratic:
   x: ???

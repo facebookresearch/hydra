@@ -27,6 +27,7 @@ Please set `hydra/sweeper` to `optuna` in your config file.
 ```yaml
 defaults:
   - hydra/sweeper: optuna
+    override: true
 ```
 
 Alternatively, add `hydra/sweeper=optuna` option to your command line.

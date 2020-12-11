@@ -36,14 +36,13 @@ class TestJoblibLauncher(LauncherTestSuite):
     [
         # joblib with process-based backend (default)
         (
-            {
-                "defaults": [
-                    {"hydra/launcher": "joblib"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ]
-            },
-            ["-m"],
+            {},
+            [
+                "-m",
+                "hydra/job_logging=hydra_debug",
+                "hydra/job_logging=disabled",
+                "hydra/launcher=joblib",
+            ],
         )
     ],
 )

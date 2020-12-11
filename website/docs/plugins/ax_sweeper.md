@@ -23,6 +23,7 @@ Once installed, add `hydra/sweeper=ax` to your command line. Alternatively, over
 ```yaml
 defaults:
   - hydra/sweeper: ax
+    override: true
 ```
 
 We include an example of how to use this plugin. The file [`example/banana.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ax_sweeper/example/banana.py) implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). The return value of the function should be the value that we want to optimize.

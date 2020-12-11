@@ -1,4 +1,5 @@
 defaults:
   - hydra/launcher: rq
+    override: true
 
 task: 1
