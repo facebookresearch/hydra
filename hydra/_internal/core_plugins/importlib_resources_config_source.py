@@ -2,16 +2,27 @@
 import os
 from typing import List, Optional
 
+from omegaconf import OmegaConf
+
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-# import importlib_resources
-from omegaconf import OmegaConf
-
 try:
-    from importlib import resources as importlib_resources
-except ModuleNotFoundError:
     import importlib_resources
+
+    # `importlib_resources` is avilable only till Python 3.8. Beyond this,
+    # one should use `importlib.resources`.
+    # Note that `importlib.resources` is available on Python 3.8 but its
+    # API does not match the API of `importlib_resources`. However, in
+    # Python 3.9, the API of `importlib.resources` matches the API of
+    # `importlib_resources`.
+    # So, by default, we try to use `importlib_resources` (supported till 3.8)
+    # and if that is not found, we use `importlib.resources`.
+    # Switching the order of import statements breaks the code for Python 3.8.
+except ModuleNotFoundError:
+    from importlib import resources as importlib_resources  # type: ignore
+
+    # This is a mypy bug: https://github.com/python/mypy/issues/1153
 
 
 class ImportlibResourcesConfigSource(ConfigSource):
