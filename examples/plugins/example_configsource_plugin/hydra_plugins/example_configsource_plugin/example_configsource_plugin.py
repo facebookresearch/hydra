@@ -81,13 +81,21 @@ class ConfigSourceExample(ConfigSource):
             package_override=package_override,
         )
         cfg = OmegaConf.create(self.configs[normalized_config_path])
+
+        raw_defaults_list = self._extract_raw_defaults_list(
+            config_path=config_path, cfg=cfg
+        )
+
         defaults_list = self._extract_defaults_list(config_path=config_path, cfg=cfg)
         return ConfigResult(
             config=self._embed_config(cfg, header["package"]),
             path=f"{self.scheme()}://{self.path}",
             provider=self.provider,
             header=header,
-            defaults_list=defaults_list,
+            defaults_list=self._create_defaults_list(
+                config_path=config_path, defaults=raw_defaults_list
+            ),
+            new_defaults_list=self._create_new_defaults_list(raw_defaults_list),
         )
 
     def available(self) -> bool:
