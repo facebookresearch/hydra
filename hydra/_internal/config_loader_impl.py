@@ -470,6 +470,23 @@ class ConfigLoaderImpl(ConfigLoader):
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
 
+    def compute_defaults_list(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode,
+    ) -> List[ResultDefault]:
+        parser = OverridesParser.create()
+        repo = CachingConfigRepository(self.repository)
+        defaults_list = create_defaults_list(
+            repo=repo,
+            config_name=config_name,
+            overrides_list=parser.parse_overrides(overrides=overrides),
+            prepend_hydra=True,
+            skip_missing=run_mode == RunMode.MULTIRUN,
+        )
+        return defaults_list.defaults
+
 
 def get_overrides_dirname(
     overrides: List[Override], exclude_keys: List[str], item_sep: str, kv_sep: str
