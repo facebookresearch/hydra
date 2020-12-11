@@ -81,11 +81,16 @@ Plugins.instance()
 #  - (Y) Test deprecation message when attempting to override hydra configs without override: true
 #  - (Y) duplicate entries in final defaults list raises an error
 
-
 # TODO: Integrate with Hydra
 #  - replace old defaults list computation
 #  - enable --info=defaults output
 #  - ensure all tests are passing
+
+# TODO: Followup changes
+#  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
+#  - Consider enforcing that overrides are at the end of the defaults list
+#    (with the exception of _self_ that can be after them)
+
 
 # TODO: (Y) rename support:
 #  - (Y) Remove rename support form 1.1
@@ -1756,3 +1761,65 @@ def test_with_missing_config(
         expected=expected,
         skip_missing=skip_missing,
     )
+
+
+@mark.parametrize(  # type: ignore
+    "default,package_header,expected",
+    [
+        param(
+            GroupDefault(group="group1", name="file"),
+            "_group_",
+            "group1",
+            id="gd:_group_",
+        ),
+        param(
+            GroupDefault(group="group1", name="file"),
+            "group1",
+            "group1",
+            id="gd:group1",
+        ),
+        param(
+            GroupDefault(group="group1", name="file"),
+            "abc",
+            "abc",
+            id="gd:abc",
+        ),
+        param(
+            GroupDefault(group="group1", name="file"),
+            "_global_",
+            "",
+            id="gd:_global_",
+        ),
+        param(
+            GroupDefault(group="group1", name="file"),
+            "_group_._name_",
+            "group1.file",
+            id="gd:_group_._name_",
+        ),
+    ],
+)
+def test_set_package_header_no_parent_pkg(
+    default: InputDefault, package_header: Optional[str], expected: Optional[str]
+) -> None:
+    default.update_parent(parent_base_dir="", parent_package="")
+    default.set_package_header(package_header)
+    assert default.get_final_package() == expected
+
+
+@mark.parametrize(  # type: ignore
+    "default,package_header,expected",
+    [
+        param(
+            GroupDefault(group="group1", name="file"),
+            "_group_",
+            "parent_pkg.group1",
+            id="gd:_group_",
+        ),
+    ],
+)
+def test_set_package_header_with_parent_pkg(
+    default: InputDefault, package_header: Optional[str], expected: Optional[str]
+) -> None:
+    default.update_parent(parent_base_dir="", parent_package="parent_pkg")
+    default.set_package_header(package_header)
+    assert default.get_final_package() == expected
