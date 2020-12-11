@@ -29,18 +29,7 @@ class TestExampleLauncher(LauncherTestSuite):
 
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
-    [
-        (
-            {
-                "defaults": [
-                    {"hydra/launcher": "example"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ],
-            },
-            ["-m"],
-        )
-    ],
+    [({}, ["-m", "hydra/launcher=example"])],
 )
 class TestExampleLauncherIntegration(IntegrationTestSuite):
     """

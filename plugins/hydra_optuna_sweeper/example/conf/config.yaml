@@ -1,5 +1,6 @@
 defaults:
   - hydra/sweeper: optuna
+    override: true
 
 hydra:
   sweeper:

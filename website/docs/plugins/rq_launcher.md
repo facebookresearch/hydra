@@ -29,6 +29,7 @@ Once installed, add `hydra/launcher=rq` to your command line. Alternatively, ove
 ```yaml
 defaults:
   - hydra/launcher: rq
+    override: true
 ```
 
 The configuration packaged with the plugin is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py). The default configuration is as follows:

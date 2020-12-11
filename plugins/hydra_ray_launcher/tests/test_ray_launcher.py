@@ -40,14 +40,13 @@ class TestRayLauncher(LauncherTestSuite):
     "task_launcher_cfg, extra_flags",
     [
         (
-            {
-                "defaults": [
-                    {"hydra/launcher": "ray"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ]
-            },
-            ["-m"],
+            {},
+            [
+                "-m",
+                "hydra/launcher=ray",
+                "hydra/hydra_logging=hydra_debug",
+                "hydra/job_logging=disabled",
+            ],
         )
     ],
 )

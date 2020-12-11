@@ -1,5 +1,6 @@
 defaults:
   - hydra/sweeper: nevergrad
+    override: true
 
 hydra:
   sweeper:

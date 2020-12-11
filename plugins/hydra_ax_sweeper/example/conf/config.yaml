@@ -1,5 +1,6 @@
 defaults:
   - hydra/sweeper: ax
+    override: true
 
 # Banana function
 # https://en.wikipedia.org/wiki/Rosenbrock_function

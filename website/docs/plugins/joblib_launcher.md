@@ -23,6 +23,7 @@ Once installed, add `hydra/launcher=joblib` to your command line. Alternatively,
 ```yaml
 defaults:
   - hydra/launcher: joblib
+    override: true
 ```
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
