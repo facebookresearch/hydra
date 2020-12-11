@@ -2,11 +2,16 @@
 import os
 from typing import List, Optional
 
-import importlib_resources
-from omegaconf import OmegaConf
-
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
+
+# import importlib_resources
+from omegaconf import OmegaConf
+
+try:
+    from importlib import resources as importlib_resources
+except ModuleNotFoundError:
+    import importlib_resources
 
 
 class ImportlibResourcesConfigSource(ConfigSource):

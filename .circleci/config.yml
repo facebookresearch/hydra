@@ -240,16 +240,15 @@ workflows:
       - test_macos:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
       - test_linux:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
       - test_win:
           matrix:
             parameters:
-#              py_version: ["3.6", "3.7", "3.8"]
-              py_version: ["3.6"]
+              py_version: ["3.6", "3.9"]
 
 
   plugin_tests:
@@ -258,18 +257,17 @@ workflows:
       - test_plugin_linux:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_macos:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
       - test_plugin_win:
           matrix:
             parameters:
-#              py_version: ["3.6", "3.7", "3.8"]
-              py_version: ["3.6"]
+              py_version: ["3.6", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
