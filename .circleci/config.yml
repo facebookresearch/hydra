@@ -93,7 +93,7 @@ commands:
       - run:
           name: Preparing environment - Hydra
           command: |
-            conda create -n hydra python=<< parameters.py_version >> pywin32 -qy
+            conda create -n hydra python=<< parameters.py_version >> pywin32 -qy virtualenv==20.0.33
             conda activate hydra
             pip install nox dataclasses --progress-bar off
       - save_cache:
