@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+import sys
 from typing import List, Optional
 
 from omegaconf import OmegaConf
@@ -7,7 +8,7 @@ from omegaconf import OmegaConf
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-try:
+if sys.version_info[0] == 3 and sys.version_info[1] < 9:
     import importlib_resources
 
     # `importlib_resources` is avilable only till Python 3.8. Beyond this,
@@ -19,7 +20,7 @@ try:
     # So, by default, we try to use `importlib_resources` (supported till 3.8)
     # and if that is not found, we use `importlib.resources`.
     # Switching the order of import statements breaks the code for Python 3.8.
-except ModuleNotFoundError:
+else:
     from importlib import resources as importlib_resources  # type: ignore
 
     # This is a mypy bug: https://github.com/python/mypy/issues/1153
