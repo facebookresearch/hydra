@@ -21,9 +21,7 @@ if sys.version_info[0] == 3 and sys.version_info[1] < 9:
     # and if that is not found, we use `importlib.resources`.
     # Switching the order of import statements breaks the code for Python 3.8.
 else:
-    from importlib import resources as importlib_resources  # type: ignore
-
-    # This is a mypy bug: https://github.com/python/mypy/issues/1153
+    from importlib import resources as importlib_resources
 
 
 class ImportlibResourcesConfigSource(ConfigSource):
