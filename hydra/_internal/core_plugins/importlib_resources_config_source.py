@@ -9,10 +9,11 @@ from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
 if float(f"{sys.version_info[0]}.{sys.version_info[1]}") >= 3.9:
-    from importlib import resources as importlib_resources
+    from importlib import resources
 else:
-    import importlib_resources
+    import importlib_resources as resources  # type:ignore
 
+    # Relevant issue: https://github.com/python/mypy/issues/1153
     # Use importlib backport for Python older than 3.9
 
 
@@ -33,7 +34,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
         package_override: Optional[str] = None,
     ) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
-        res = importlib_resources.files(self.path).joinpath(normalized_config_path)
+        res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
@@ -61,7 +62,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def available(self) -> bool:
         try:
-            ret = importlib_resources.is_resource(self.path, "__init__.py")
+            ret = resources.is_resource(self.path, "__init__.py")  # type:ignore
             assert isinstance(ret, bool)
             return ret
         except ValueError:
@@ -71,7 +72,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def is_group(self, config_path: str) -> bool:
         try:
-            files = importlib_resources.files(self.path)
+            files = resources.files(self.path)  # type:ignore
         except Exception:
             return False
 
@@ -83,7 +84,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def is_config(self, config_path: str) -> bool:
         config_path = self._normalize_file_name(config_path)
         try:
-            files = importlib_resources.files(self.path)
+            files = resources.files(self.path)  # type:ignore
         except Exception:
             return False
         res = files.joinpath(config_path)
@@ -94,7 +95,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
         for file in (
-            importlib_resources.files(self.path).joinpath(config_path).iterdir()
+            resources.files(self.path).joinpath(config_path).iterdir()  # type:ignore
         ):
             fname = file.name
             fpath = os.path.join(config_path, fname)
