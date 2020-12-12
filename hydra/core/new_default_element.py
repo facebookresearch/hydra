@@ -219,6 +219,9 @@ class InputDefault:
             key = f"{key}@{final_pkg}"
         return key
 
+    def is_override(self) -> bool:
+        raise NotImplementedError()
+
 
 @dataclass
 class VirtualRoot(InputDefault):
@@ -260,6 +263,9 @@ class VirtualRoot(InputDefault):
 
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
+
+    def is_override(self) -> bool:
+        return False
 
 
 @dataclass(repr=False)
@@ -364,6 +370,9 @@ class ConfigDefault(InputDefault):
     def is_missing(self) -> bool:
         return self.get_name() == "???"
 
+    def is_override(self) -> bool:
+        return False
+
 
 _legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
 
@@ -391,6 +400,9 @@ class GroupDefault(InputDefault):
 
     def is_optional(self) -> bool:
         return self.optional
+
+    def is_override(self) -> bool:
+        return self.override
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None

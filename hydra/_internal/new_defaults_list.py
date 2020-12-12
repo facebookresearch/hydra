@@ -195,7 +195,7 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
     has_self = False
     has_none_override_items = False
     for d in defaults:
-        if isinstance(d, GroupDefault) and d.override:
+        if d.is_override():
             continue
         has_none_override_items = True
         if d.is_self():
@@ -333,6 +333,60 @@ def _create_defaults_tree(
     return ret
 
 
+def _update_overrides(
+    defaults_list: List[InputDefault],
+    overrides: Overrides,
+    parent: InputDefault,
+    interpolated_subtree: bool,
+):
+    seen_override = False
+    last_override_seen = None
+    for d in defaults_list:
+        if d.is_self():
+            continue
+        d.update_parent(parent.get_group_path(), parent.get_final_package())
+
+        if seen_override and not d.is_override():
+            assert isinstance(last_override_seen, GroupDefault)
+            pcp = parent.get_config_path()
+            okey = last_override_seen.get_override_key()
+            oval = last_override_seen.get_name()
+            raise ConfigCompositionException(
+                dedent(
+                    f"""\
+                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
+                    Overrides must be at the end of the defaults list"""
+                )
+            )
+
+        if isinstance(d, GroupDefault):
+            assert d.group is not None
+            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
+            if legacy_hydra_override:
+                d.override = True
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
+                msg = dedent(
+                    f"""\
+                    In {parent.get_config_path()}: Invalid overriding of {d.group}:
+                    Default list overrides requires 'override: true'.
+                    See {url} for more information.
+                    """
+                )
+                warnings.warn(msg, UserWarning)
+
+            if d.override:
+                seen_override = True
+                last_override_seen = d
+                if interpolated_subtree:
+                    # Since interpolations are deferred for until all the config groups are already set,
+                    # Their subtree may not contain config group overrides
+                    raise ConfigCompositionException(
+                        f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
+                        f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
+                    )
+                overrides.add_override(d)
+
+
 def _create_defaults_tree_impl(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -399,44 +453,14 @@ def _create_defaults_tree_impl(
         if len(defaults_list) > 0:
             self_added = _validate_self(containing_node=parent, defaults=defaults_list)
 
-        for d in defaults_list:
-            if d.is_self():
-                continue
-            d.update_parent(parent.get_group_path(), parent.get_final_package())
-
-            if isinstance(d, GroupDefault):
-                assert d.group is not None
-                is_legacy_hydra_override = not d.override and d.group.startswith(
-                    "hydra/"
-                )
-                if is_legacy_hydra_override:
-                    d.override = True
-                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
-                    msg = dedent(
-                        f"""\
-                        In {parent.get_config_path()}: Invalid overriding of {d.group}:
-                        Default list overrides requires 'override: true'.
-                        See {url} for more information.
-                        """
-                    )
-                    warnings.warn(msg, UserWarning)
-
-                if d.override:
-                    if interpolated_subtree:
-                        # Since interpolations are deferred for until all the config groups are already set,
-                        # Their subtree may not contain config group overrides
-                        raise ConfigCompositionException(
-                            f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
-                            f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
-                        )
-                    overrides.add_override(d)
+        _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
         for d in reversed(defaults_list):
             if d.is_self():
                 d.update_parent(root.node.parent_base_dir, root.node.get_package())
                 children.append(d)
             else:
-                if isinstance(d, GroupDefault) and d.override:
+                if d.is_override():
                     continue
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 d.update_parent(parent.get_group_path(), parent.get_final_package())

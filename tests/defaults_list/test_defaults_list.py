@@ -80,16 +80,18 @@ Plugins.instance()
 #  - (Y) Ambiguous overrides should provide valid override keys for group
 #  - (Y) Test deprecation message when attempting to override hydra configs without override: true
 #  - (Y) duplicate entries in final defaults list raises an error
-
+# TODO: Integration
 #  - (Y) replace old defaults list computation
 #  - (Y) enable --info=defaults output
 #  - (Y) ensure all tests are passing
-#  - implement --info=defaults-tree output
+#  - (Y) implement --info=defaults-tree output
 
 # TODO: Followup changes
 #  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
-#  - Consider enforcing that overrides are at the end of the defaults list
+#  - (Y) Enforce that overrides are at the end of the defaults list
 #    (with the exception of _self_ that can be after them)
+#  - Consider override style of: - override hydra/launcher: submitit
+#  - Fix error message when overriding a non-existing config group from the command line to not say "append with +"
 
 
 # TODO: (Y) rename support:
