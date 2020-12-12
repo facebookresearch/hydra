@@ -581,6 +581,21 @@ def test_defaults_tree_with_package_overrides__group_override(
             ),
             id="override_nested_group_item:external_override",
         ),
+        param(
+            "override_wrong_order",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        In override_wrong_order: Override 'group1 : file2' is defined before 'group1: file1'.
+                        Overrides must be at the end of the defaults list"""
+                    )
+                ),
+            ),
+            id="test_override_wrong_order_in_defaults_list",
+        ),
     ],
 )
 def test_override_option_from_defaults_list(
