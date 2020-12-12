@@ -39,15 +39,15 @@ def type_str(t: Any) -> str:
         if hasattr(t, "__name__"):
             name = str(t.__name__)
         else:
-            if t.name is None:
+            if t._name is None:
                 if t.__origin__ is not None:
                     name = type_str(t.__origin__)
             else:
-                name = str(t.name)
+                name = str(t._name)
 
     args = getattr(t, "__args__", None)
     if args is not None:
-        args = ", ".join([type_str(t) for t in (list(t.__args__))])
+        args = ", ".join([type_str(t) for t in t.__args__])
         ret = f"{name}[{args}]"
     else:
         ret = name

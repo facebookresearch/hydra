@@ -1,4 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - c: c2

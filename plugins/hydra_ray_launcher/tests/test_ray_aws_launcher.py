@@ -283,19 +283,14 @@ class TestRayAWSLauncher(LauncherTestSuite):
 @pytest.mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
 @pytest.mark.usefixtures("manage_cluster")
 @pytest.mark.parametrize(
-    "tmpdir,  task_launcher_cfg, extra_flags",
+    "tmpdir,task_launcher_cfg,extra_flags",
     [
         (
             Path(temp_remote_dir),
-            {
-                "defaults": [
-                    {"hydra/launcher": "ray_aws"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ]
-            },
+            {},
             [
                 "-m",
+                "hydra/launcher=ray_aws",
                 f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
                 "hydra.launcher.stop_cluster=False",
                 f"hydra.launcher.sync_down.source_dir={temp_remote_dir}/",

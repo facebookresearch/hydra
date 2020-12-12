@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from omegaconf import DictConfig
 
@@ -11,21 +11,8 @@ from hydra.plugins.config_source import ConfigSource
 from hydra.types import RunMode
 
 
-# TODO: cleanup old LogTrace
 @dataclass
 class LoadTrace:
-    config_group: Optional[str] = None
-    config_name: Optional[str] = None
-    package: Optional[str] = None
-    parent: Optional[str] = None
-    search_path: Optional[str] = None
-    provider: Optional[str] = None
-    schema_provider: Optional[str] = None
-    skip_reason: Optional[str] = None
-
-
-@dataclass
-class LoadTrace2:
     config_path: Optional[str] = None
     package: Optional[str] = None
     parent: Optional[str] = None
@@ -80,5 +67,5 @@ class ConfigLoader(ABC):
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-    ) -> "DefaultsList":
+    ) -> Any:
         ...

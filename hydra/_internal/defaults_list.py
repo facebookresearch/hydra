@@ -1,474 +1,689 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import copy
-from dataclasses import dataclass
-from itertools import filterfalse
+import warnings
+from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
-from omegaconf import II, DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
+from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
-from hydra.core import DefaultElement
+from hydra.core.default_element import (
+    ConfigDefault,
+    DefaultsTreeNode,
+    GroupDefault,
+    InputDefault,
+    ResultDefault,
+    VirtualRoot,
+)
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
-from hydra.errors import ConfigCompositionException, MissingConfigException
+from hydra.errors import ConfigCompositionException
 
 
-@dataclass(frozen=True, eq=True)
-class DeleteKey:
-    fqgn: str
-    config_name: Optional[str]
-    must_delete: bool
+@dataclass
+class Deletion:
+    name: Optional[str]
+    used: bool = field(default=False, compare=False)
 
-    def __repr__(self) -> str:
-        if self.config_name is None:
-            return self.fqgn
-        else:
-            return f"{self.fqgn}={self.config_name}"
+
+@dataclass
+class Overrides:
+    override_choices: Dict[str, Optional[str]]
+    override_used: Dict[str, bool]
+
+    append_group_defaults: List[GroupDefault]
+    config_overrides: List[Override]
+
+    known_choices: Dict[str, Optional[str]]
+    known_choices_per_group: Dict[str, Set[str]]
+
+    deletions: Dict[str, Deletion]
+
+    def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
+        self.override_choices = {}
+        self.override_used = {}
+        self.append_group_defaults = []
+        self.config_overrides = []
+        self.deletions = {}
+
+        self.known_choices = {}
+        self.known_choices_per_group = {}
+
+        for override in overrides_list:
+            if override.is_sweep_override():
+                continue
+            is_group = repo.group_exists(override.key_or_group)
+            value = override.value()
+            is_dict = isinstance(override.value(), dict)
+            if is_dict or not is_group:
+                self.config_overrides.append(override)
+            else:
+                if override.is_delete():
+                    key = override.get_key_element()[1:]
+                    value = override.value()
+                    if value is not None and not isinstance(value, str):
+                        raise ValueError(
+                            f"Config group override deletion value must be a string : {override}"
+                        )
+
+                    self.deletions[key] = Deletion(name=value)
+
+                elif not isinstance(value, str):
+                    raise ValueError(
+                        f"Config group override must be a string. Got {type(value).__name__}"
+                    )
+                elif override.is_add():
+                    self.append_group_defaults.append(
+                        GroupDefault(
+                            group=override.key_or_group,
+                            package=override.package,
+                            name=value,
+                        )
+                    )
+                else:
+                    key = override.get_key_element()
+                    self.override_choices[key] = value
+                    self.override_used[key] = False
+
+    def add_override(self, default: GroupDefault) -> None:
+        assert default.override
+        key = default.get_override_key()
+        if key not in self.override_choices:
+            self.override_choices[key] = default.get_name()
+            self.override_used[key] = False
+
+    def is_overridden(self, default: InputDefault) -> bool:
+        if isinstance(default, GroupDefault):
+            return default.get_override_key() in self.override_choices
+
+        return False
+
+    def override_default_option(self, default: GroupDefault) -> None:
+        key = default.get_override_key()
+        if key in self.override_choices:
+            default.name = self.override_choices[key]
+            default.config_name_overridden = True
+            self.override_used[key] = True
+
+    def ensure_overrides_used(self) -> None:
+        for key, used in self.override_used.items():
+            if not used:
+                group = key.split("@")[0]
+                choices = (
+                    self.known_choices_per_group[group]
+                    if group in self.known_choices_per_group
+                    else set()
+                )
+                if len(choices) > 1:
+                    msg = (
+                        f"Could not override '{key}'."
+                        f"\nDid you mean to override one of {', '.join(sorted(list(choices)))}?"
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                elif len(choices) == 1:
+                    msg = (
+                        f"Could not override '{key}'."
+                        f"\nDid you mean to override {copy.copy(choices).pop()}?"
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                elif len(choices) == 0:
+                    msg = (
+                        f"Could not override '{key}'. No match in the defaults list."
+                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+                    )
+                else:
+                    assert False
+                raise ConfigCompositionException(msg)
+
+    def ensure_deletions_used(self) -> None:
+        for key, deletion in self.deletions.items():
+            if not deletion.used:
+                desc = f"{key}={deletion.name}" if deletion.name is not None else key
+                msg = f"Could not delete '{desc}'. No match in the defaults list"
+                raise ConfigCompositionException(msg)
+
+    def set_known_choice(self, default: InputDefault) -> None:
+        if isinstance(default, GroupDefault):
+            key = default.get_override_key()
+            if key not in self.known_choices:
+                self.known_choices[key] = default.get_name()
+            else:
+                prev = self.known_choices[key]
+                if default.get_name() != prev:
+                    raise ConfigCompositionException(
+                        f"Multiple values for {key} ({prev}, {default.get_name()})."
+                        " To override a value use 'override: true'"
+                    )
+
+            group = default.get_group_path()
+            if group not in self.known_choices_per_group:
+                self.known_choices_per_group[group] = set()
+            self.known_choices_per_group[group].add(key)
+
+    def is_deleted(self, default: InputDefault) -> bool:
+        if not isinstance(default, GroupDefault):
+            return False
+        key = default.get_override_key()
+        if key in self.deletions:
+            deletion = self.deletions[key]
+            if deletion.name is None:
+                return True
+            else:
+                return deletion.name == default.get_name()
+        return False
+
+    def delete(self, default: InputDefault) -> None:
+        assert isinstance(default, GroupDefault)
+        default.deleted = True
+
+        key = default.get_override_key()
+        self.deletions[key].used = True
 
 
 @dataclass
 class DefaultsList:
-    original: List[DefaultElement]
-    effective: List[DefaultElement]
+    defaults: List[ResultDefault]
+    defaults_tree: DefaultsTreeNode
+    config_overrides: List[Override]
 
 
-def compute_element_defaults_list(
-    element: DefaultElement,
-    repo: IConfigRepository,
-    skip_missing: bool,
-) -> List[DefaultElement]:
-    group_to_choice = OmegaConf.create({})
-    delete_groups: Dict[DeleteKey, int] = {}
-    ret = _compute_element_defaults_list_impl(
-        element=element,
-        group_to_choice=group_to_choice,
-        delete_groups=delete_groups,
-        skip_missing=skip_missing,
-        repo=repo,
-    )
-
-    _post_process_deletes(ret, delete_groups)
-    return ret
-
-
-def _post_process_deletes(
-    ret: List[DefaultElement],
-    delete_groups: Dict[DeleteKey, int],
-) -> None:
-    # verify all deletions deleted something
-    for g, c in delete_groups.items():
-        if c == 0 and g.must_delete:
-            raise ConfigCompositionException(
-                f"Could not delete. No match for '{g}' in the defaults list."
-            )
-
-    # remove delete overrides
-    ret[:] = filterfalse(lambda x: x.is_delete, ret)
-
-
-def expand_defaults_list(
-    defaults: List[DefaultElement],
-    skip_missing: bool,
-    repo: IConfigRepository,
-) -> List[DefaultElement]:
-    return _expand_defaults_list(
-        self_element=None,
-        defaults=defaults,
-        skip_missing=skip_missing,
-        repo=repo,
-    )
-
-
-def _update_known_state(
-    d: DefaultElement,
-    group_to_choice: DictConfig,
-    delete_groups: Dict[DeleteKey, int],
-) -> None:
-    fqgn = d.fully_qualified_group_name()
-    if fqgn is None:
-        return
-
-    is_overridden = fqgn in group_to_choice
-
-    if d.config_group is not None:
-        if (
-            fqgn not in group_to_choice
-            and not d.is_delete
-            and d.config_name not in ("_self_", "_keep_")
-            and not is_matching_deletion(delete_groups=delete_groups, d=d)
-        ):
-            group_to_choice[fqgn] = d.config_name
-
-    if d.is_delete:
-        if is_overridden:
-            d.is_delete = False
-            d.config_name = group_to_choice[fqgn]
-        else:
-            delete_key = DeleteKey(
-                fqgn,
-                d.config_name if d.config_name != "_delete_" else None,
-                must_delete=d.from_override,
-            )
-            if delete_key not in delete_groups:
-                delete_groups[delete_key] = 0
-
-
-def _expand_defaults_list(
-    self_element: Optional[DefaultElement],
-    defaults: List[DefaultElement],
-    skip_missing: bool,
-    repo: IConfigRepository,
-) -> List[DefaultElement]:
-    group_to_choice = OmegaConf.create({})
-    delete_groups: Dict[DeleteKey, int] = {}
-    for d in reversed(defaults):
-        _update_known_state(
-            d,
-            group_to_choice=group_to_choice,
-            delete_groups=delete_groups,
-        )
-
-    dl = DefaultsList(
-        original=copy.deepcopy(defaults),
-        effective=copy.deepcopy(defaults),
-    )
-    ret = _expand_defaults_list_impl(
-        self_element=self_element,
-        defaults_list=dl,
-        group_to_choice=group_to_choice,
-        delete_groups=delete_groups,
-        skip_missing=skip_missing,
-        repo=repo,
-    )
-
-    _post_process_deletes(ret, delete_groups)
-
-    return ret
-
-
-def _validate_self(element: DefaultElement, defaults: DefaultsList) -> None:
+def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
     # check that self is present only once
     has_self = False
-    for d in defaults.effective:
-        if d.config_name == "_self_":
-            if has_self is True:
+    has_none_override_items = False
+    for d in defaults:
+        if d.is_override():
+            continue
+        has_none_override_items = True
+        if d.is_self():
+            if has_self:
                 raise ConfigCompositionException(
-                    f"Duplicate _self_ defined in {element.config_path()}"
+                    f"Duplicate _self_ defined in {containing_node.get_config_path()}"
                 )
             has_self = True
-            assert d.config_group is None
-            d.config_group = element.config_group
-            d.package = element.package
-            d.parent = element.parent
 
-    if not has_self:
-        me = copy.deepcopy(element)
-        me.config_name = "_self_"
-        me.from_override = False
-        me.parent = element.parent
-        defaults.effective.insert(0, me)
+    if not has_self and has_none_override_items:
+        defaults.insert(0, ConfigDefault(path="_self_"))
+
+    return not has_self
 
 
-def _compute_element_defaults_list_impl(
-    element: DefaultElement,
-    group_to_choice: DictConfig,
-    delete_groups: Dict[DeleteKey, int],
-    skip_missing: bool,
+def update_package_header(
     repo: IConfigRepository,
-) -> List[DefaultElement]:
-    deleted = delete_if_matching(delete_groups, element)
-    if deleted:
-        return []
-
-    if element.config_name == "???":
-        if skip_missing:
-            element.set_skip_load("missing_skipped")
-            return [element]
-        else:
-            if element.config_group is not None:
-                options = repo.get_group_options(
-                    element.config_group, results_filter=ObjectType.CONFIG
-                )
-                opt_list = "\n".join(["\t" + x for x in options])
-                msg = (
-                    f"You must specify '{element.config_group}', e.g, {element.config_group}=<OPTION>"
-                    f"\nAvailable options:"
-                    f"\n{opt_list}"
-                )
-            else:
-                msg = f"You must specify '{element.config_group}', e.g, {element.config_group}=<OPTION>"
-
-            raise ConfigCompositionException(msg)
-
+    node: InputDefault,
+    is_primary_config: bool,
+) -> None:
+    # This loads the same config loaded in _create_defaults_tree
+    # To avoid loading it twice, the repo implementation is expected to cache
+    # loaded configs
     loaded = repo.load_config(
-        config_path=element.config_path(),
-        is_primary_config=element.primary,
+        config_path=node.get_config_path(), is_primary_config=is_primary_config
     )
-
-    if loaded is None:
-        if element.optional:
-            element.set_skip_load("missing_optional_config")
-            return [element]
-        else:
-            missing_config_error(repo=repo, element=element)
-    else:
-        original = copy.deepcopy(loaded.defaults_list)
-        effective = copy.deepcopy(loaded.defaults_list)
-
-    defaults = DefaultsList(original=original, effective=effective)
-    _validate_self(element, defaults)
-
-    return _expand_defaults_list_impl(
-        self_element=element,
-        defaults_list=defaults,
-        group_to_choice=group_to_choice,
-        delete_groups=delete_groups,
-        skip_missing=skip_missing,
-        repo=repo,
-    )
+    if loaded is not None and "orig_package" in loaded.header:
+        node.set_package_header(loaded.header["orig_package"])
 
 
-def _find_match_before(
-    defaults: List[DefaultElement], like: DefaultElement
-) -> Optional[DefaultElement]:
-    fqgn = like.fully_qualified_group_name()
-    for d2 in defaults:
-        if d2 == like:
-            break
-        if d2.fully_qualified_group_name() == fqgn:
-            return d2
-    return None
-
-
-def _verify_no_add_conflicts(defaults: List[DefaultElement]) -> None:
-    for d in reversed(defaults):
-        if d.from_override and not d.skip_load and not d.is_delete:
-            fqgn = d.fully_qualified_group_name()
-            match = _find_match_before(defaults, d)
-            if d.is_add and match is not None:
-                raise ConfigCompositionException(
-                    f"Could not add '{fqgn}={d.config_name}'. '{fqgn}' is already in the defaults list."
-                )
-            if not d.is_add and match is None:
-                msg = (
-                    f"Could not override '{fqgn}'. No match in the defaults list."
-                    f"\nTo append to your default list use +{fqgn}={d.config_name}"
-                )
-                raise ConfigCompositionException(msg)
-
-
-def _process_renames(defaults: List[DefaultElement]) -> None:
-    while True:
-        last_rename_index = -1
-        for idx, d in reversed(list(enumerate(defaults))):
-            if d.is_package_rename():
-                last_rename_index = idx
-                break
-        if last_rename_index != -1:
-            rename = defaults.pop(last_rename_index)
-            renamed = False
-            for d in defaults:
-                if is_matching(rename, d):
-                    d.package = rename.get_subject_package()
-                    renamed = True
-            if not renamed:
-                raise ConfigCompositionException(
-                    f"Could not rename package. "
-                    f"No match for '{rename.config_group}@{rename.package}' in the defaults list"
-                )
-        else:
-            break
-
-
-def delete_if_matching(delete_groups: Dict[DeleteKey, int], d: DefaultElement) -> bool:
-    return is_matching_deletion(
-        delete_groups=delete_groups, d=d, mark_item_as_deleted=True
-    )
-
-
-def is_matching_deletion(
-    delete_groups: Dict[DeleteKey, int],
-    d: DefaultElement,
-    mark_item_as_deleted: bool = False,
-) -> bool:
-    matched = False
-    for delete in delete_groups:
-        if delete.fqgn == d.fully_qualified_group_name():
-            if delete.config_name is None:
-                # fqdn only
-                matched = True
-                if mark_item_as_deleted:
-                    delete_groups[delete] += 1
-                    d.is_deleted = True
-                    d.set_skip_load("deleted_from_list")
-            else:
-                if delete.config_name == d.config_name:
-                    matched = True
-                    if mark_item_as_deleted:
-                        delete_groups[delete] += 1
-                        d.is_deleted = True
-                        d.set_skip_load("deleted_from_list")
-    return matched
-
-
-def _expand_defaults_list_impl(
-    self_element: Optional[DefaultElement],
-    defaults_list: DefaultsList,
-    group_to_choice: DictConfig,
-    delete_groups: Dict[DeleteKey, int],
-    skip_missing: bool,
+def _expand_virtual_root(
     repo: IConfigRepository,
-) -> List[DefaultElement]:
+    root: DefaultsTreeNode,
+    overrides: Overrides,
+    skip_missing: bool,
+) -> DefaultsTreeNode:
+    children: List[Union[DefaultsTreeNode, InputDefault]] = []
+    if len(overrides.append_group_defaults) > 0:
+        if root.children is None:
+            root.children = []
+        for gd in overrides.append_group_defaults:
+            root.children.append(gd)
 
-    # list order is determined by first instance from that config group
-    # selected config group is determined by the last override
+    if root.children is not None:
+        for d in reversed(root.children):
+            assert isinstance(d, InputDefault)
+            new_root = DefaultsTreeNode(node=d, parent=root)
+            d.update_parent("", "")
 
-    deferred_overrides = []
-    defaults = defaults_list.effective
-
-    ret: List[Union[DefaultElement, List[DefaultElement]]] = []
-    for d in reversed(defaults):
-        _update_known_state(
-            d, group_to_choice=group_to_choice, delete_groups=delete_groups
-        )
-
-        fqgn = d.fully_qualified_group_name()
-        if d.config_name == "_self_":
-            if self_element is None:
-                raise ConfigCompositionException(
-                    "self_name is not specified and defaults list contains a _self_ item"
-                )
-            d = copy.deepcopy(d)
-            # override self_name
-            if fqgn is not None and fqgn in group_to_choice:
-                d.config_name = group_to_choice[fqgn]
+            subtree = _create_defaults_tree_impl(
+                repo=repo,
+                root=new_root,
+                is_primary_config=False,
+                skip_missing=skip_missing,
+                interpolated_subtree=False,
+                overrides=overrides,
+            )
+            if subtree.children is None:
+                children.append(d)
             else:
-                d.config_name = self_element.config_name
-            added_sublist = [d]
-        elif d.is_package_rename():
-            added_sublist = [d]  # defer rename
-        elif d.is_delete:
-            added_sublist = [d]
-        elif d.from_override:
-            added_sublist = [d]  # defer override processing
-            deferred_overrides.append(d)
-        elif d.is_interpolation():
-            deferred_overrides.append(d)
-            added_sublist = [d]  # defer interpolation
+                children.append(subtree)
+
+    if len(children) > 0:
+        root.children = list(reversed(children))
+
+    return root
+
+
+def _check_not_missing(
+    repo: IConfigRepository,
+    default: InputDefault,
+    skip_missing: bool,
+) -> bool:
+    path = default.get_config_path()
+    if path.endswith("???"):
+        if skip_missing:
+            return True
+        if isinstance(default, GroupDefault):
+            group_path = default.get_group_path()
+            options = repo.get_group_options(
+                group_path,
+                results_filter=ObjectType.CONFIG,
+            )
+            opt_list = "\n".join(["\t" + x for x in options])
+            msg = dedent(
+                f"""\
+                You must specify '{group_path}', e.g, {group_path}=<OPTION>
+                Available options:
+                """
+            )
+            raise ConfigCompositionException(msg + opt_list)
+        elif isinstance(default, ConfigDefault):
+            raise ValueError(f"Missing ConfigDefault is not supported : {path}")
         else:
-            if delete_if_matching(delete_groups, d):
-                added_sublist = [d]
-            else:
-                if fqgn is not None and fqgn in group_to_choice:
-                    d.config_name = group_to_choice[fqgn]
-                    if d.is_delete:
-                        d.is_delete = False
+            assert False
 
-                added_sublist = _compute_element_defaults_list_impl(
-                    element=d,
-                    group_to_choice=group_to_choice,
-                    delete_groups=delete_groups,
-                    skip_missing=skip_missing,
-                    repo=repo,
-                )
-
-        ret.append(added_sublist)
-
-    ret.reverse()
-    result: List[DefaultElement] = [item for sublist in ret for item in sublist]  # type: ignore
-
-    _process_renames(result)
-
-    # process deletes
-    for element in reversed(result):
-        if not element.is_delete:
-            delete_if_matching(delete_groups, element)
-
-    _verify_no_add_conflicts(result)
-
-    # prepare a local group_to_choice with the defaults to support
-    # legacy interpolations like ${defaults.1.a}
-    # Support for this will be removed in Hydra 1.2
-    group_to_choice2 = copy.deepcopy(group_to_choice)
-    group_to_choice2.defaults = []
-    for d in defaults_list.original:
-        if d.config_group is not None:
-            group_to_choice2.defaults.append({d.config_group: II(d.config_group)})
-        else:
-            group_to_choice2.defaults.append(d.config_name)
-
-    deferred_overrides = deduplicate_deferred(deferred_overrides, result)
-
-    # expand deferred
-    for d in deferred_overrides:
-        if d.is_interpolation():
-            d.resolve_interpolation(group_to_choice2)
-
-        item_defaults = _compute_element_defaults_list_impl(
-            element=d,
-            group_to_choice=group_to_choice,
-            delete_groups=delete_groups,
-            skip_missing=skip_missing,
-            repo=repo,
-        )
-        index = result.index(d)
-        result[index:index] = item_defaults
-
-    dedupped_defaults = _deduplicate(result)
-    return dedupped_defaults
+    return False
 
 
-def deduplicate_deferred(
-    deferred: List[DefaultElement],
-    defaults_list: List[DefaultElement],
-) -> List[DefaultElement]:
-    # this is a bit hacky. deferred overrides that exists in current defaults list
-    # were already processed via the known state and should not be processed again
-    res = []
-    seen_groups = set()
+def _create_interpolation_map(
+    overrides: Overrides,
+    defaults_list: List[InputDefault],
+    self_added: bool,
+) -> DictConfig:
+    known_choices = OmegaConf.create(overrides.known_choices)
+    known_choices.defaults = []
     for d in defaults_list:
-        if d.config_group is not None:
-            seen_groups.add(d.fully_qualified_group_name())
+        if self_added and d.is_self():
+            continue
+        if isinstance(d, ConfigDefault):
+            known_choices.defaults.append(d.get_config_path())
+        elif isinstance(d, GroupDefault):
+            name = d.get_name()
+            known_choices.defaults.append({d.get_override_key(): name})
+    return known_choices
 
-    for de in deferred:
-        if not de.from_override or de.is_add:
-            res.append(de)
+
+def _create_defaults_tree(
+    repo: IConfigRepository,
+    root: DefaultsTreeNode,
+    is_primary_config: bool,
+    skip_missing: bool,
+    interpolated_subtree: bool,
+    overrides: Overrides,
+) -> DefaultsTreeNode:
+    ret = _create_defaults_tree_impl(
+        repo=repo,
+        root=root,
+        is_primary_config=is_primary_config,
+        skip_missing=skip_missing,
+        interpolated_subtree=interpolated_subtree,
+        overrides=overrides,
+    )
+
+    return ret
+
+
+def _update_overrides(
+    defaults_list: List[InputDefault],
+    overrides: Overrides,
+    parent: InputDefault,
+    interpolated_subtree: bool,
+) -> None:
+    seen_override = False
+    last_override_seen = None
+    for d in defaults_list:
+        if d.is_self():
+            continue
+        d.update_parent(parent.get_group_path(), parent.get_final_package())
+
+        if seen_override and not d.is_override():
+            assert isinstance(last_override_seen, GroupDefault)
+            pcp = parent.get_config_path()
+            okey = last_override_seen.get_override_key()
+            oval = last_override_seen.get_name()
+            raise ConfigCompositionException(
+                dedent(
+                    f"""\
+                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
+                    Overrides must be at the end of the defaults list"""
+                )
+            )
+
+        if isinstance(d, GroupDefault):
+            assert d.group is not None
+            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
+            if legacy_hydra_override:
+                d.override = True
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override"
+                msg = dedent(
+                    f"""\
+                    In {parent.get_config_path()}: Invalid overriding of {d.group}:
+                    Default list overrides requires 'override: true'.
+                    See {url} for more information.
+                    """
+                )
+                warnings.warn(msg, UserWarning)
+
+            if d.override:
+                seen_override = True
+                last_override_seen = d
+                if interpolated_subtree:
+                    # Since interpolations are deferred for until all the config groups are already set,
+                    # Their subtree may not contain config group overrides
+                    raise ConfigCompositionException(
+                        f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
+                        f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
+                    )
+                overrides.add_override(d)
+
+
+def _create_defaults_tree_impl(
+    repo: IConfigRepository,
+    root: DefaultsTreeNode,
+    is_primary_config: bool,
+    skip_missing: bool,
+    interpolated_subtree: bool,
+    overrides: Overrides,
+) -> DefaultsTreeNode:
+    parent = root.node
+    children: List[Union[InputDefault, DefaultsTreeNode]] = []
+    if parent.is_virtual():
+        if is_primary_config:
+            return _expand_virtual_root(repo, root, overrides, skip_missing)
         else:
-            if not de.fully_qualified_group_name() in seen_groups:
-                res.append(de)
+            return root
+    else:
+        if is_primary_config:
+            root.node.update_parent("", "")
+
+        update_package_header(
+            repo=repo, node=parent, is_primary_config=is_primary_config
+        )
+
+        if overrides.is_overridden(parent):
+            assert isinstance(parent, GroupDefault)
+            overrides.override_default_option(parent)
+            # clear package header and obtain updated one from overridden config
+            # (for the rare case it has changed)
+            parent.package_header = None
+            update_package_header(
+                repo=repo, node=parent, is_primary_config=is_primary_config
+            )
+
+        if overrides.is_deleted(parent):
+            overrides.delete(parent)
+            return root
+
+        overrides.set_known_choice(parent)
+
+        if parent.get_name() is None:
+            return root
+
+        if _check_not_missing(repo=repo, default=parent, skip_missing=skip_missing):
+            return root
+
+        path = parent.get_config_path()
+        loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
+
+        if loaded is None:
+            if parent.is_optional():
+                assert isinstance(parent, GroupDefault)
+                parent.deleted = True
+                return root
+            config_not_found_error(repo, root)
+
+        assert loaded is not None
+        defaults_list = copy.deepcopy(loaded.defaults_list)
+
+        if is_primary_config:
+            for gd in overrides.append_group_defaults:
+                defaults_list.append(gd)
+
+        self_added = False
+        if len(defaults_list) > 0:
+            self_added = _validate_self(containing_node=parent, defaults=defaults_list)
+
+        _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
+
+        for d in reversed(defaults_list):
+            if d.is_self():
+                d.update_parent(root.node.parent_base_dir, root.node.get_package())
+                children.append(d)
+            else:
+                if d.is_override():
+                    continue
+                new_root = DefaultsTreeNode(node=d, parent=root)
+                d.update_parent(parent.get_group_path(), parent.get_final_package())
+
+                if d.is_interpolation():
+                    children.append(d)
+                    continue
+
+                subtree = _create_defaults_tree_impl(
+                    repo=repo,
+                    root=new_root,
+                    is_primary_config=False,
+                    interpolated_subtree=interpolated_subtree,
+                    skip_missing=skip_missing,
+                    overrides=overrides,
+                )
+                if subtree.children is None:
+                    children.append(d)
+                else:
+                    children.append(subtree)
+
+        # processed deferred interpolations
+        known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
+
+        for idx, dd in enumerate(children):
+            if isinstance(dd, InputDefault) and dd.is_interpolation():
+                dd.resolve_interpolation(known_choices)
+                new_root = DefaultsTreeNode(node=dd, parent=root)
+                dd.update_parent(parent.get_group_path(), parent.get_final_package())
+                subtree = _create_defaults_tree_impl(
+                    repo=repo,
+                    root=new_root,
+                    is_primary_config=False,
+                    skip_missing=skip_missing,
+                    interpolated_subtree=True,
+                    overrides=overrides,
+                )
+                if subtree.children is not None:
+                    children[idx] = subtree
+
+    if len(children) > 0:
+        root.children = list(reversed(children))
+
+    return root
+
+
+def _create_result_default(
+    tree: Optional[DefaultsTreeNode], node: InputDefault
+) -> Optional[ResultDefault]:
+    if node.is_virtual():
+        return None
+    if node.get_name() is None:
+        return None
+
+    res = ResultDefault()
+    if node.is_self():
+        assert tree is not None
+        res.config_path = tree.node.get_config_path()
+        res.is_self = True
+        pn = tree.parent_node()
+        if pn is not None:
+            cp = pn.get_config_path()
+            res.parent = cp
+        else:
+            res.parent = None
+        res.package = tree.node.get_final_package()
+    else:
+        res.config_path = node.get_config_path()
+        if tree is not None:
+            res.parent = tree.node.get_config_path()
+        res.package = node.get_final_package()
+        if isinstance(node, GroupDefault):
+            res.override_key = node.get_override_key()
     return res
 
 
-def _deduplicate(defaults_list: List[DefaultElement]) -> List[DefaultElement]:
-    deduped = []
-    seen_groups = set()
-    for d in defaults_list:
-        if d.config_group is not None:
-            fqgn = d.fully_qualified_group_name()
-            if fqgn not in seen_groups:
-                seen_groups.add(fqgn)
-                deduped.append(d)
-        else:
-            deduped.append(d)
-    return deduped
+def _dfs_walk(
+    tree: DefaultsTreeNode,
+    operator: Callable[[Optional[DefaultsTreeNode], InputDefault], None],
+) -> None:
+    if tree.children is None or len(tree.children) == 0:
+        operator(tree.parent, tree.node)
+    else:
+        for child in tree.children:
+            if isinstance(child, InputDefault):
+                operator(tree, child)
+            else:
+                assert isinstance(child, DefaultsTreeNode)
+                _dfs_walk(tree=child, operator=operator)
 
 
-def missing_config_error(repo: IConfigRepository, element: DefaultElement) -> None:
-    options = None
-    if element.config_group is not None:
-        options = repo.get_group_options(element.config_group, ObjectType.CONFIG)
-        opt_list = "\n".join(["\t" + x for x in options])
-        msg = (
-            f"Could not find '{element.config_name}' in the config group '{element.config_group}'"
-            f"\nAvailable options:\n{opt_list}\n"
+def _tree_to_list(
+    tree: DefaultsTreeNode,
+) -> List[ResultDefault]:
+    class Collector:
+        def __init__(self) -> None:
+            self.output: List[ResultDefault] = []
+
+        def __call__(
+            self, tree_node: Optional[DefaultsTreeNode], node: InputDefault
+        ) -> None:
+            if node.is_deleted():
+                return
+
+            if node.is_missing():
+                return
+
+            rd = _create_result_default(tree=tree_node, node=node)
+            if rd is not None:
+                self.output.append(rd)
+
+    visitor = Collector()
+    _dfs_walk(tree, visitor)
+    return visitor.output
+
+
+def _create_root(config_name: Optional[str], with_hydra: bool) -> DefaultsTreeNode:
+    primary: InputDefault
+    if config_name is not None:
+        primary = ConfigDefault(path=config_name)
+    else:
+        primary = VirtualRoot()
+
+    if with_hydra:
+        root = DefaultsTreeNode(
+            node=VirtualRoot(),
+            children=[ConfigDefault(path="hydra/config"), primary],
         )
+    else:
+        root = DefaultsTreeNode(node=primary)
+    return root
+
+
+def ensure_no_duplicates_in_list(result: List[ResultDefault]) -> None:
+    keys = set()
+    for item in result:
+        if not item.is_self:
+            key = item.override_key
+            if key is not None:
+                if key in keys:
+                    raise ConfigCompositionException(
+                        f"{key} appears more than once in the final defaults list"
+                    )
+                keys.add(key)
+
+
+def _create_defaults_list(
+    repo: IConfigRepository,
+    config_name: Optional[str],
+    overrides: Overrides,
+    prepend_hydra: bool,
+    skip_missing: bool,
+) -> Tuple[List[ResultDefault], DefaultsTreeNode]:
+
+    root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
+
+    defaults_tree = _create_defaults_tree(
+        repo=repo,
+        root=root,
+        overrides=overrides,
+        is_primary_config=True,
+        interpolated_subtree=False,
+        skip_missing=skip_missing,
+    )
+
+    output = _tree_to_list(tree=defaults_tree)
+    ensure_no_duplicates_in_list(output)
+    return output, defaults_tree
+
+
+def create_defaults_list(
+    repo: IConfigRepository,
+    config_name: Optional[str],
+    overrides_list: List[Override],
+    prepend_hydra: bool,
+    skip_missing: bool,
+) -> DefaultsList:
+    """
+    :param repo:
+    :param config_name:
+    :param overrides_list:
+    :param prepend_hydra:
+    :param skip_missing: True to skip config group with the value '???' and not fail on them. Useful when sweeping.
+    :return:
+    """
+    overrides = Overrides(repo=repo, overrides_list=overrides_list)
+    defaults, tree = _create_defaults_list(
+        repo,
+        config_name,
+        overrides,
+        prepend_hydra=prepend_hydra,
+        skip_missing=skip_missing,
+    )
+    overrides.ensure_overrides_used()
+    overrides.ensure_deletions_used()
+    return DefaultsList(
+        defaults=defaults,
+        config_overrides=overrides.config_overrides,
+        defaults_tree=tree,
+    )
+
+
+def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> None:
+    element = tree.node
+    parent = tree.parent.node if tree.parent is not None else None
+    options = None
+    if isinstance(element, GroupDefault):
+        group = element.get_group_path()
+        options = repo.get_group_options(group, ObjectType.CONFIG)
+
+        msg = f"Could not find '{element.get_config_path()}'\n"
+        if len(options) > 0:
+            opt_list = "\n".join(["\t" + x for x in options])
+            msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
     else:
         msg = dedent(
             f"""\
-        Could not load {element.config_path()}.
+        Could not load '{element.get_config_path()}'.
         """
         )
+
+    if parent is not None:
+        msg = f"In '{parent.get_config_path()}': {msg}"
 
     descs = []
     for src in repo.get_sources():
@@ -477,47 +692,7 @@ def missing_config_error(repo: IConfigRepository, element: DefaultElement) -> No
     msg += "\nConfig search path:" + f"\n{lines}"
 
     raise MissingConfigException(
-        missing_cfg_file=element.config_path(),
+        missing_cfg_file=element.get_config_path(),
         message=msg,
         options=options,
     )
-
-
-def is_matching(rename: DefaultElement, other: DefaultElement) -> bool:
-    if rename.config_group != other.config_group:
-        return False
-    if rename.package == other.package:
-        return True
-    return False
-
-
-def convert_overrides_to_defaults(
-    parsed_overrides: List[Override],
-) -> List[DefaultElement]:
-    ret = []
-    for override in parsed_overrides:
-        value = override.value()
-        if override.is_delete() and value is None:
-            value = "_delete_"
-
-        if not isinstance(value, str):
-            raise ConfigCompositionException(
-                "Defaults list supported delete syntax is in the form"
-                " ~group and ~group=value, where value is a group name (string)"
-            )
-
-        default = DefaultElement(
-            config_group=override.key_or_group,
-            config_name=value,
-            package=override.package,
-            from_override=True,
-            parent="overrides",
-        )
-
-        if override.is_delete():
-            default.is_delete = True
-
-        if override.is_add():
-            default.is_add = True
-        ret.append(default)
-    return ret

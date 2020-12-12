@@ -147,9 +147,6 @@ class InputDefault:
         if name is not None:
             # name computation should be deferred to after the final config group choice is done
             package = package.replace("_name_", name)
-            # package = package.replace(
-            #     "_group_", self.get_group_path().replace("/", ".")
-            # )
 
         if parent_package == "":
             ret = package

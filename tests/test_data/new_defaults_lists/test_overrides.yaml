@@ -1,5 +1,0 @@
-# @package _global_
-defaults:
-  - a: a1
-  - a@pkg: a1
-  - c: c1

@@ -1,4 +1,0 @@
-# @package _group_
-defaults:
-  b: b3
-  b@file_pkg: b3

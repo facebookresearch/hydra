@@ -1,4 +1,0 @@
-# @package _group_
-defaults:
-  - schema/c/c1
-  - _self_

@@ -59,10 +59,7 @@ class StructuredConfigSource(ConfigSource):
             path=f"{self.scheme()}://{self.path}",
             provider=provider,
             header=header,
-            defaults_list=self._create_defaults_list(
-                config_path=config_path, defaults=raw_defaults_list
-            ),
-            new_defaults_list=self._create_new_defaults_list(raw_defaults_list),
+            defaults_list=self._create_defaults_list(raw_defaults_list),
         )
 
     def available(self) -> bool:

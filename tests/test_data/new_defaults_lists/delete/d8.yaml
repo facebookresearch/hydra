@@ -1,5 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - b: b2  # will add b:b2, c:c2
-  - ~c: c2

@@ -1,5 +1,0 @@
-# @package _group_
-defaults:
-  - b: b1
-  - b@pkg1: b1
-  - ~b

@@ -3,12 +3,8 @@ from typing import Any, List, Optional
 
 from hydra._internal.config_repository import ConfigRepository, IConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
-from hydra._internal.new_defaults_list import (
-    Overrides,
-    _create_defaults_tree,
-    _create_root,
-)
-from hydra.core.new_default_element import DefaultsTreeNode
+from hydra._internal.defaults_list import Overrides, _create_defaults_tree, _create_root
+from hydra.core.default_element import DefaultsTreeNode
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
 

@@ -1,5 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - b: b3
-  - b@file_pkg: b3

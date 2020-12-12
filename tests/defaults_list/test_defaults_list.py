@@ -5,8 +5,8 @@ from typing import Any, List, Optional
 
 from pytest import mark, param, raises
 
-from hydra._internal.new_defaults_list import create_defaults_list
-from hydra.core.new_default_element import (
+from hydra._internal.defaults_list import create_defaults_list
+from hydra.core.default_element import (
     ConfigDefault,
     GroupDefault,
     InputDefault,
@@ -100,10 +100,10 @@ Plugins.instance()
 
 
 # TODO: cleanup
-#  - Remove previous implementation of recursive defaults list and rename new_defaults_list to defaults_list etc.
+#  - (Y) Remove previous implementation of recursive defaults list and rename new_defaults_list to defaults_list etc.
+#  - (Y) Delete tests and test data of old defaults list impl
 #  - Clean up package logic from config sources
 #  - Clean up Hydra 1.0 warnings related to package header
-#  - Delete tests and test data of old defaults list impl
 
 
 # TODO Documentation
@@ -166,7 +166,7 @@ def test_loaded_defaults_list(
     repo = create_repo()
     result = repo.load_config(config_path=config_path, is_primary_config=True)
     assert result is not None
-    assert result.new_defaults_list == expected_list
+    assert result.defaults_list == expected_list
 
 
 def _test_defaults_list_impl(
@@ -1803,7 +1803,7 @@ def test_with_missing_config(
     ],
 )
 def test_set_package_header_no_parent_pkg(
-    default: InputDefault, package_header: Optional[str], expected: Optional[str]
+    default: InputDefault, package_header: str, expected: str
 ) -> None:
     default.update_parent(parent_base_dir="", parent_package="")
     default.set_package_header(package_header)
@@ -1822,7 +1822,7 @@ def test_set_package_header_no_parent_pkg(
     ],
 )
 def test_set_package_header_with_parent_pkg(
-    default: InputDefault, package_header: Optional[str], expected: Optional[str]
+    default: InputDefault, package_header: str, expected: str
 ) -> None:
     default.update_parent(parent_base_dir="", parent_package="parent_pkg")
     default.set_package_header(package_header)

@@ -5,7 +5,7 @@ from typing import Any, List, Optional
 
 from pytest import mark, param, raises, warns
 
-from hydra.core.new_default_element import (
+from hydra.core.default_element import (
     ConfigDefault,
     DefaultsTreeNode,
     GroupDefault,

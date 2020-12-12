@@ -1,5 +1,5 @@
 defaults:
   # Error: overrides must come at the end of the defaults list
   - group1: file2
-    override: true 
+    override: true
   - group1: file1
