@@ -431,7 +431,13 @@ def assert_regex_match(
 ) -> None:
     normalized_from_line = [x for x in normalize_newlines(from_line).split("\n") if x]
     normalized_to_line = [x for x in normalize_newlines(to_line).split("\n") if x]
-    assert len(normalized_from_line) == len(normalized_to_line)
+    if len(normalized_from_line) != len(normalized_to_line):
+        assert_text_same(
+            from_line=from_line,
+            to_line=to_line,
+            from_name=from_name,
+            to_name=to_name,
+        )
     for line1, line2 in zip(normalized_from_line, normalized_to_line):
         if line1 != line2 and re.match(line1, line2) is None:
             assert_text_same(

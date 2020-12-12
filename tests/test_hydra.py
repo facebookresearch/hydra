@@ -1177,7 +1177,6 @@ def test_hydra_exception(
 ) -> None:
     monkeypatch.chdir("tests/test_apps/app_exception")
     ret = run_with_error(["my_app.py", f"hydra.run.dir={tmpdir}"])
-
     assert_regex_match(
         from_line=expected,
         to_line=ret,
