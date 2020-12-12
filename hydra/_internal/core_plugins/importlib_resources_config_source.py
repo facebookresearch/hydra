@@ -8,7 +8,9 @@ from omegaconf import OmegaConf
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-if float(f"{sys.version_info[0]}.{sys.version_info[1]}") >= 3.9:
+if sys.version_info.major >= 4 or (
+    sys.version_info.major >= 3 and sys.version_info.minor >= 9
+):
     from importlib import resources
 else:
     import importlib_resources as resources  # type:ignore
