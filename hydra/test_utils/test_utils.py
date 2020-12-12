@@ -429,6 +429,11 @@ def assert_text_same(
 def assert_regex_match(
     from_line: str, to_line: str, from_name: str = "Expected", to_name: str = "Actual"
 ) -> None:
+    """Check that the lines of `from_line` (which can be a regex expression)
+    matches the corresponding lines of `to_line` string.
+
+    In case the regex match fails, we display the diff as if `from_line` was a regular string.
+    """
     normalized_from_line = [x for x in normalize_newlines(from_line).split("\n") if x]
     normalized_to_line = [x for x in normalize_newlines(to_line).split("\n") if x]
     if len(normalized_from_line) != len(normalized_to_line):

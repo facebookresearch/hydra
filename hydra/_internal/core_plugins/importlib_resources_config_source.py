@@ -8,20 +8,12 @@ from omegaconf import OmegaConf
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-if sys.version_info[0] == 3 and sys.version_info[1] < 9:
+if float(f"{sys.version_info[0]}.{sys.version_info[1]}") >= 3.9:
+    from importlib import resources as importlib_resources
+else:
     import importlib_resources
 
-    # `importlib_resources` is avilable only till Python 3.8. Beyond this,
-    # one should use `importlib.resources`.
-    # Note that `importlib.resources` is available on Python 3.8 but its
-    # API does not match the API of `importlib_resources`. However, in
-    # Python 3.9, the API of `importlib.resources` matches the API of
-    # `importlib_resources`.
-    # So, by default, we try to use `importlib_resources` (supported till 3.8)
-    # and if that is not found, we use `importlib.resources`.
-    # Switching the order of import statements breaks the code for Python 3.8.
-else:
-    from importlib import resources as importlib_resources
+    # Use importlib backport for Python older than 3.9
 
 
 class ImportlibResourcesConfigSource(ConfigSource):

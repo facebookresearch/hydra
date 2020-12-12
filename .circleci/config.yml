@@ -93,7 +93,8 @@ commands:
       - run:
           name: Preparing environment - Hydra
           command: |
-            conda create -n hydra python=<< parameters.py_version >> pywin32 virtualenv==20.0.33 -qy
+            conda create -n hydra python=<< parameters.py_version >> pywin32 virtualenv==20.0.33 -qy 
+          # Higher versions of virtualenv are not compatible with conda on windows. Relevant issue: https://github.com/ContinuumIO/anaconda-issues/issues/12094
             conda activate hydra
             pip install nox dataclasses --progress-bar off
       - save_cache:
@@ -248,7 +249,7 @@ workflows:
       - test_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
 
 
   plugin_tests:
@@ -267,7 +268,7 @@ workflows:
       - test_plugin_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
