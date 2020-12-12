@@ -4,7 +4,7 @@ import copy
 import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Callable, Dict, List, Optional, Set, Union
+from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -186,6 +186,7 @@ class Overrides:
 @dataclass
 class DefaultsList:
     defaults: List[ResultDefault]
+    defaults_tree: DefaultsTreeNode
     config_overrides: List[Override]
 
 
@@ -588,7 +589,7 @@ def _create_defaults_list(
     overrides: Overrides,
     prepend_hydra: bool,
     skip_missing: bool,
-) -> List[ResultDefault]:
+) -> Tuple[List[ResultDefault], DefaultsTreeNode]:
 
     root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
 
@@ -603,7 +604,7 @@ def _create_defaults_list(
 
     output = _tree_to_list(tree=defaults_tree)
     ensure_no_duplicates_in_list(output)
-    return output
+    return output, defaults_tree
 
 
 def create_defaults_list(
@@ -622,7 +623,7 @@ def create_defaults_list(
     :return:
     """
     overrides = Overrides(repo=repo, overrides_list=overrides_list)
-    defaults = _create_defaults_list(
+    defaults, tree = _create_defaults_list(
         repo,
         config_name,
         overrides,
@@ -631,8 +632,11 @@ def create_defaults_list(
     )
     overrides.ensure_overrides_used()
     overrides.ensure_deletions_used()
-    ret = DefaultsList(defaults=defaults, config_overrides=overrides.config_overrides)
-    return ret
+    return DefaultsList(
+        defaults=defaults,
+        config_overrides=overrides.config_overrides,
+        defaults_tree=tree,
+    )
 
 
 def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> None:

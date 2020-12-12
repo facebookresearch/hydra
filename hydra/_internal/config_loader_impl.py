@@ -26,7 +26,7 @@ from hydra._internal.defaults_list import (
     convert_overrides_to_defaults,
     expand_defaults_list,
 )
-from hydra._internal.new_defaults_list import create_defaults_list
+from hydra._internal.new_defaults_list import DefaultsList, create_defaults_list
 from hydra.core import DefaultElement
 from hydra.core.config_loader import ConfigLoader, LoadTrace, LoadTrace2
 from hydra.core.config_search_path import ConfigSearchPath
@@ -688,7 +688,7 @@ class ConfigLoaderImpl(ConfigLoader):
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-    ) -> List[ResultDefault]:
+    ) -> DefaultsList:
         parser = OverridesParser.create()
         repo = CachingConfigRepository(self.repository)
         defaults_list = create_defaults_list(
@@ -698,7 +698,7 @@ class ConfigLoaderImpl(ConfigLoader):
             prepend_hydra=True,
             skip_missing=run_mode == RunMode.MULTIRUN,
         )
-        return defaults_list.defaults
+        return defaults_list
 
 
 def get_overrides_dirname(
