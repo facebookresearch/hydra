@@ -1,4 +1,0 @@
-# @package _global_
-defaults:
-  - no_defaults
-  - _self_

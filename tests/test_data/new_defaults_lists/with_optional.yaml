@@ -1,6 +1,0 @@
-# @package _global_
-defaults:
-  - a: a1  # not missing
-    optional: true
-  - foo: bar  # missing
-    optional: true

@@ -366,7 +366,10 @@ def run_with_error(cmd: Any, env: Any = None) -> str:
 
 
 def get_run_output(
-    cmd: Any, env: Any = None, allow_warnings: bool = False
+    cmd: Any,
+    env: Any = None,
+    allow_warnings: bool = False,
+    print_stderr: bool = True,
 ) -> Tuple[str, str]:
     if allow_warnings:
         cmd = [sys.executable] + cmd
@@ -385,7 +388,8 @@ def get_run_output(
         stdout = normalize_newlines(bstdout.decode().rstrip())
         stderr = normalize_newlines(bstderr.decode().rstrip())
         if process.returncode != 0:
-            sys.stderr.write(f"Subprocess error:\n{stderr}\n")
+            if print_stderr:
+                sys.stderr.write(f"Subprocess error:\n{stderr}\n")
             raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
         return stdout, stderr
     except Exception as e:

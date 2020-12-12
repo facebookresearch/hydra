@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
-
 from textwrap import dedent
 
 import re
@@ -9,8 +7,7 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Tuple
 
-from hydra.core import DefaultElement
-from hydra.core.new_default_element import InputDefault, ConfigDefault, GroupDefault
+from hydra.core.default_element import InputDefault, ConfigDefault, GroupDefault
 from hydra.errors import HydraException
 from omegaconf import (
     Container,
@@ -31,8 +28,7 @@ class ConfigResult:
     path: str
     config: Container
     header: Dict[str, str]
-    defaults_list: List[DefaultElement]
-    new_defaults_list: List[InputDefault]
+    defaults_list: List[InputDefault]
     is_schema_source: bool = False
 
 
@@ -226,39 +222,8 @@ class ConfigSource(Plugin):
 
         return res
 
-    # TODO: cleanup and rename _split_group2 to _split_group
     @staticmethod
     def _split_group(
-        group_with_package: str,
-    ) -> Tuple[str, Optional[str], Optional[str]]:
-        idx = group_with_package.find("@")
-        if idx == -1:
-            # group
-            group = group_with_package
-            package = None
-        else:
-            # group@package
-            group = group_with_package[0:idx]
-            package = group_with_package[idx + 1 :]
-
-        package2 = None
-        if package is not None:
-            # if we have a package, break it down if it's a rename
-            idx = package.find(":")
-            if idx != -1:
-                package2 = package[idx + 1 :]
-                package = package[0:idx]
-
-        if package == "":
-            package = None
-
-        if package2 == "":
-            package2 = None
-
-        return group, package, package2
-
-    @staticmethod
-    def _split_group2(
         group_with_package: str,
     ) -> Tuple[str, Optional[str], Optional[str]]:
         idx = group_with_package.find("@")
@@ -283,85 +248,6 @@ class ConfigSource(Plugin):
 
     @staticmethod
     def _create_defaults_list(
-        config_path: Optional[str],
-        defaults: ListConfig,
-    ) -> List[DefaultElement]:
-        defaults = copy.deepcopy(defaults)
-        res: List[DefaultElement] = []
-        for item in defaults:
-            if isinstance(item, DictConfig):
-                optional = item.pop("optional", False)
-                item.pop("override", False)
-                keys = list(item.keys())
-                if len(keys) > 1:
-                    raise ValueError(f"Too many keys in default item {item}")
-                if len(keys) == 0:
-                    raise ValueError(f"Missing group name in {item}")
-                key = keys[0]
-                config_group, package, package2 = ConfigSource._split_group(key)
-                node = item._get_node(key)
-                assert node is not None
-                config_name = node._value()
-
-                is_delete = False
-                if config_name is None:
-                    is_delete = True
-                elif config_group.startswith("~"):
-                    is_delete = True
-                    config_group = config_group[1:]
-
-                default = DefaultElement(
-                    config_group=config_group,
-                    config_name=config_name,
-                    package=package,
-                    rename_package_to=package2,
-                    optional=optional,
-                    is_delete=is_delete,
-                    parent=config_path,
-                )
-            elif isinstance(item, str):
-                if item.startswith("~"):
-                    item = item[1:]
-                    default = DefaultElement(
-                        config_group=item,
-                        config_name="_delete_",
-                        is_delete=True,
-                        parent=config_path,
-                    )
-                else:
-                    default = DefaultElement(
-                        config_group=None,
-                        config_name=item,
-                        parent=config_path,
-                    )
-            else:
-                raise ValueError(
-                    f"Unsupported type in defaults : {type(item).__name__}"
-                )
-            res.append(default)
-        return res
-
-    @staticmethod
-    def _extract_defaults_list(
-        config_path: Optional[str], cfg: Container
-    ) -> List[DefaultElement]:
-        if not OmegaConf.is_dict(cfg):
-            return []
-
-        assert isinstance(cfg, DictConfig)
-        with read_write(cfg):
-            with open_dict(cfg):
-                defaults = cfg.pop("defaults", OmegaConf.create([]))
-
-        if len(defaults) > 0:
-            return ConfigSource._create_defaults_list(
-                config_path=config_path, defaults=defaults
-            )
-        else:
-            return []
-
-    @staticmethod
-    def _create_new_defaults_list(
         defaults: ListConfig,
     ) -> List[InputDefault]:
         res: List[InputDefault] = []
@@ -390,7 +276,7 @@ class ConfigSource(Plugin):
                     override=override,
                 )
             elif isinstance(item, str):
-                path, package, _package2 = ConfigSource._split_group2(item)
+                path, package, _package2 = ConfigSource._split_group(item)
                 default = ConfigDefault(path=path, package=package)
             else:
                 raise ValueError(

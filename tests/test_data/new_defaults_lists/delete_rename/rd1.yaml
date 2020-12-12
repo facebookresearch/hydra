@@ -1,6 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - b: b1
-  - ~b
-  - 'b@:pkg': _keep_  # no package -> b@pkg

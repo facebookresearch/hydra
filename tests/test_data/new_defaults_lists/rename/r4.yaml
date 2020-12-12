@@ -1,5 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - b@pkg: b1
-  - 'b@pkg:pkg2': b4  # pkg -> pkg2, option change

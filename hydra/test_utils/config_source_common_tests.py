@@ -5,9 +5,8 @@ from typing import Any, List, Optional, Type
 import pytest
 from pytest import mark, param, raises
 
-from hydra.core import DefaultElement
+from hydra.core.default_element import GroupDefault, InputDefault
 from hydra.core.object_type import ObjectType
-from hydra.errors import HydraException
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
 
@@ -211,37 +210,19 @@ class ConfigSourceTestSuite:
             param(
                 "config_with_defaults_list",
                 {"key": "value"},
-                [
-                    DefaultElement(
-                        config_group="dataset",
-                        config_name="imagenet",
-                        parent="config_with_defaults_list",
-                    )
-                ],
+                [GroupDefault(group="dataset", name="imagenet")],
                 id="config_with_defaults_list",
             ),
             param(
                 "configs_with_defaults_list/global_package",
                 {"configs_with_defaults_list": {"x": 10}},
-                [
-                    DefaultElement(
-                        config_group="foo",
-                        config_name="bar",
-                        parent="configs_with_defaults_list/global_package",
-                    )
-                ],
+                [GroupDefault(group="foo", name="bar")],
                 id="configs_with_defaults_list/global_package",
             ),
             param(
                 "configs_with_defaults_list/group_package",
                 {"configs_with_defaults_list": {"x": 10}},
-                [
-                    DefaultElement(
-                        config_group="foo",
-                        config_name="bar",
-                        parent="configs_with_defaults_list/group_package",
-                    )
-                ],
+                [GroupDefault(group="foo", name="bar")],
                 id="configs_with_defaults_list/group_package",
             ),
         ],
@@ -251,7 +232,7 @@ class ConfigSourceTestSuite:
         type_: Type[ConfigSource],
         path: str,
         config_path: str,
-        expected_defaults_list: List[DefaultElement],
+        expected_defaults_list: List[InputDefault],
         expected_config: Any,
         recwarn: Any,
     ) -> None:
@@ -327,10 +308,4 @@ class ConfigSourceTestSuite:
         ret = src.load_config(
             config_path="config_with_defaults_list", is_primary_config=True
         )
-        assert ret.defaults_list == [
-            DefaultElement(
-                config_group="dataset",
-                config_name="imagenet",
-                parent="config_with_defaults_list",
-            )
-        ]
+        assert ret.defaults_list == [GroupDefault(group="dataset", name="imagenet")]

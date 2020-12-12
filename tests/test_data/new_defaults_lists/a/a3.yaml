@@ -1,5 +1,0 @@
-# @package _group_
-defaults:
-  - _self_
-  - c: c1
-  - b: b2

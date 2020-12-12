@@ -6,12 +6,12 @@ import sys
 import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
-from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type
+from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
 from omegaconf import Container, DictConfig, OmegaConf, open_dict
 
 from hydra._internal.utils import get_column_widths, run_and_report
-from hydra.core.config_loader import ConfigLoader, LoadTrace2
+from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
@@ -30,7 +30,7 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import RunMode, TaskFunction
 
-from ..core.new_default_element import DefaultsTreeNode
+from ..core.default_element import DefaultsTreeNode, InputDefault
 from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
 
@@ -299,10 +299,10 @@ class Hydra:
     ) -> str:
         s = string.Template(help_cfg.template)
 
-        def is_hydra_group(x: str):
+        def is_hydra_group(x: str) -> bool:
             return x.startswith("hydra/") or x == "hydra"
 
-        def is_not_hydra_group(x: str):
+        def is_not_hydra_group(x: str) -> bool:
             return not is_hydra_group(x)
 
         help_text = s.substitute(
@@ -443,6 +443,7 @@ class Hydra:
     def _print_defaults_list(
         self, config_name: Optional[str], overrides: List[str]
     ) -> None:
+        assert log is not None
         defaults = self.config_loader.compute_defaults_list(
             config_name=config_name,
             overrides=overrides,
@@ -555,23 +556,30 @@ class Hydra:
             del cfg["hydra"]
         print(OmegaConf.to_yaml(cfg))
 
-    def _print_defaults_tree_impl(self, tree: DefaultsTreeNode, indent=0) -> None:
-        from ..core.new_default_element import GroupDefault, InputDefault, VirtualRoot
+    def _print_defaults_tree_impl(
+        self,
+        tree: Union[DefaultsTreeNode, InputDefault],
+        indent: int = 0,
+    ) -> None:
+        assert log is not None
+        from ..core.default_element import GroupDefault, InputDefault, VirtualRoot
 
         def to_str(node: InputDefault) -> str:
             if isinstance(node, VirtualRoot):
                 return node.get_config_path()
             elif isinstance(node, GroupDefault):
-                return node.get_override_key() + ": " + node.get_name()
+                name = node.get_name()
+                if name is None:
+                    name = "null"
+                return node.get_override_key() + ": " + name
             else:
                 return node.get_config_path()
 
         pad = "  " * indent
 
         if isinstance(tree, DefaultsTreeNode):
-            has_children = tree.children is not None and len(tree.children) > 0
             node_str = to_str(tree.node)
-            if has_children:
+            if tree.children is not None and len(tree.children) > 0:
                 log.info(pad + node_str + ":")
                 for child in tree.children:
                     self._print_defaults_tree_impl(tree=child, indent=indent + 1)

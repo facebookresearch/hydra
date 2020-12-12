@@ -81,19 +81,13 @@ class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
     "task_launcher_cfg, extra_flags",
     [
         (
-            {
-                "defaults": [
-                    {
-                        # CHANGE THIS TO YOUR SWEEPER CONFIG NAME
-                        "hydra/sweeper": "example"
-                    },
-                    {"hydra/launcher": "basic"},
-                    {"hydra/hydra_logging": "hydra_debug"},
-                    {"hydra/job_logging": "disabled"},
-                ],
-                "hydra": {},
-            },
-            ["-m"],
+            {},
+            [
+                "-m",
+                # CHANGE THIS TO YOUR SWEEPER CONFIG NAME
+                "hydra/sweeper=example",
+                "hydra/launcher=basic",
+            ],
         )
     ],
 )

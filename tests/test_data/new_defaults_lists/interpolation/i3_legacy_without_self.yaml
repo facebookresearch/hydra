@@ -1,5 +1,0 @@
-# @package _global_
-defaults:
-  - a: a1
-  - b: b1
-  - a_b: ${defaults.0.a}_${defaults.1.b}
