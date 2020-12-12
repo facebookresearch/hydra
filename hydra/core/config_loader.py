@@ -73,3 +73,12 @@ class ConfigLoader(ABC):
         self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
     ) -> List[str]:
         ...
+
+    @abstractmethod
+    def compute_defaults_list(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode,
+    ) -> "DefaultsList":
+        ...

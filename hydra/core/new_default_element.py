@@ -165,14 +165,6 @@ class InputDefault:
         else:
             return ret[lgi + len("_global_") + 1 :]
 
-    def get_override_key(self) -> str:
-        default_pkg = self.get_default_package()
-        final_pkg = self.get_final_package(default_to_package_header=False)
-        key = self.get_group_path()
-        if default_pkg != final_pkg:
-            key = f"{key}@{final_pkg}"
-        return key
-
     def __repr__(self) -> str:
         attrs = []
         attr_names = self._get_attributes()
@@ -219,6 +211,14 @@ class InputDefault:
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
 
+    def get_override_key(self) -> str:
+        default_pkg = self.get_default_package()
+        final_pkg = self.get_final_package(default_to_package_header=False)
+        key = self.get_group_path()
+        if default_pkg != final_pkg:
+            key = f"{key}@{final_pkg}"
+        return key
+
 
 @dataclass
 class VirtualRoot(InputDefault):
@@ -226,7 +226,7 @@ class VirtualRoot(InputDefault):
         return True
 
     def is_self(self) -> bool:
-        raise NotImplementedError()
+        return False
 
     def is_optional(self) -> bool:
         raise NotImplementedError()
