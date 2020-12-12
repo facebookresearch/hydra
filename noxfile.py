@@ -88,14 +88,16 @@ def install_hydra(session, cmd):
         session.run("pipdeptree", "-p", "hydra-core")
 
 
-def pytest_args(*args):
-    ret = ["pytest", "-Werror"]
+def pytest_args(warnings_as_error: bool, *args):
+    ret = ["pytest"]
+    if warnings_as_error:
+        ret.append("-Werror")
     ret.extend(args)
     return ret
 
 
-def run_pytest(session, directory=".", *args):
-    pytest_cmd = pytest_args(directory, *args)
+def run_pytest(session, directory=".", warnings_as_error: bool = True, *args):
+    pytest_cmd = pytest_args(warnings_as_error, directory, *args)
     # silent=False to enable some output on CI
     # (otherwise we risk no-output timeout)
     session.run(*pytest_cmd, silent=False)
@@ -342,9 +344,16 @@ def test_core(session):
     _upgrade_basic(session)
     install_hydra(session, INSTALL_COMMAND)
     session.install("pytest")
+    warnings_as_error = True
 
     if not SKIP_CORE_TESTS:
-        run_pytest(session, "build_helpers", "tests", *session.posargs)
+        run_pytest(
+            session,
+            "build_helpers",
+            warnings_as_error,
+            "tests",
+            *session.posargs,
+        )
     else:
         session.log("Skipping Hydra core tests")
 
@@ -353,7 +362,7 @@ def test_core(session):
     for subdir in apps:
         session.chdir(subdir)
         session.run(*INSTALL_COMMAND, ".", silent=SILENT)
-        run_pytest(session, ".")
+        run_pytest(session, ".", warnings_as_error)
 
     session.chdir(BASE)
 
@@ -396,9 +405,14 @@ def test_plugins_in_directory(
         session.run("python", "-c", f"import {plugin.module}")
 
     # Run Hydra tests to verify installed plugins did not break anything
+    warnings_as_error = True
+    if get_current_os() == "Windows" and session.python in ["3.7", "3.8"]:
+        warnings_as_error = False
     if test_hydra_core:
         if not SKIP_CORE_TESTS:
-            run_pytest(session, "tests")
+            run_pytest(
+                session=session, directory="tests", warnings_as_error=warnings_as_error
+            )
         else:
             session.log("Skipping Hydra core tests")
 
@@ -406,7 +420,7 @@ def test_plugins_in_directory(
     for plugin in selected_plugin:
         # install all other plugins that are compatible with the current Python version
         session.chdir(os.path.join(BASE, directory, plugin.path))
-        run_pytest(session)
+        run_pytest(session=session, warnings_as_error=warnings_as_error)
 
 
 @nox.session(python="3.8")
@@ -437,7 +451,7 @@ def coverage(session):
         for plugin in selected_plugins:
             session.chdir(os.path.join(directory, plugin.path))
             cov_args = ["coverage", "run", "--append", "-m"]
-            cov_args.extend(pytest_args())
+            cov_args.extend(pytest_args(warnings_as_error=True))
             session.run(*cov_args, silent=SILENT, env=coverage_env)
             session.chdir(BASE)
 
@@ -449,7 +463,7 @@ def coverage(session):
         "-m",
         silent=SILENT,
         env=coverage_env,
-        *pytest_args(),
+        *pytest_args(warnings_as_error=True),
     )
 
     # Increase the fail_under as coverage improves
@@ -467,7 +481,9 @@ def test_jupyter_notebooks(session):
     session.install("jupyter", "nbval")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
+        "--nbval",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
+        warnings_as_error=True,
     )
     # Jupyter notebook test on Windows yield warnings
     args = [x for x in args if x != "-Werror"]
@@ -477,6 +493,6 @@ def test_jupyter_notebooks(session):
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args("--nbval", str(notebook))
+        args = pytest_args("--nbval", str(notebook), warnings_as_error=True)
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
