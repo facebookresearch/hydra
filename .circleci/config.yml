@@ -102,7 +102,6 @@ commands:
           paths:
             - C:\tools\miniconda3
 
-
 jobs:
   test_macos:
     parameters:
@@ -249,7 +248,7 @@ workflows:
       - test_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8"]
 
 
   plugin_tests:
@@ -268,7 +267,7 @@ workflows:
       - test_plugin_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8",]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
