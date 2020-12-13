@@ -41,7 +41,7 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
@@ -76,7 +76,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
@@ -99,7 +99,7 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -119,7 +119,7 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
