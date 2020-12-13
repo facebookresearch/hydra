@@ -487,6 +487,7 @@ class GroupDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
+            # DEPRECATED: remove in 1.2
             if re.match(_legacy_interpolation_pattern, name) is not None:
                 msg = dedent(
                     f"""

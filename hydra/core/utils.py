@@ -198,6 +198,7 @@ def split_config_path(
         # assuming dir/config.yaml form
         config_file: Optional[str] = basename(config_path)
         config_dir: Optional[str] = dirname(config_path)
+        # DEPRECATED: remove in 1.1
         msg = (
             "\nUsing config_path to specify the config name is deprecated, specify the config name via config_name"
             "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes"

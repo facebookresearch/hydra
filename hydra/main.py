@@ -8,6 +8,7 @@ from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
 
+# TODO: remove strict flag (deprecated since Hydra 1.0)
 def main(
     config_path: Optional[str] = None,
     config_name: Optional[str] = None,

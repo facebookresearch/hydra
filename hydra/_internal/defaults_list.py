@@ -381,6 +381,7 @@ def _update_overrides(
             assert d.group is not None
             legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
             if legacy_hydra_override:
+                # DEPRECATED: remove in 1.2
                 d.override = True
                 url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override"
                 msg = dedent(

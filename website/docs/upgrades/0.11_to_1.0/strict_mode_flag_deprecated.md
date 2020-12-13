@@ -8,7 +8,7 @@ The strict mode is a flag added to `@hydra.main()` to enable two features:
 - Command line error detection (overriding a field not in the config)
 - Runtime config access error detection (accessing/setting a field not in the config)
 
-This flag is now deprecated and the ability to turn it off will be removed in Hydra 1.1.
+This flag is now deprecated, and the ability to turn it off will be removed in Hydra 1.1.
 
 ## Alternatives to `strict=False`
 Below are a few common reasons for people disabling strict mode along with recommended alternatives.
