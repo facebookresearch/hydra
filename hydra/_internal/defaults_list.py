@@ -216,6 +216,8 @@ def update_package_header(
     node: InputDefault,
     is_primary_config: bool,
 ) -> None:
+    if node.is_missing():
+        return
     # This loads the same config loaded in _create_defaults_tree
     # To avoid loading it twice, the repo implementation is expected to cache
     # loaded configs
