@@ -152,9 +152,9 @@ class IntervalSweep(Sweep):
             return NotImplemented
 
 
-# Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem
-# to support recursive type definitions.
-ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
+# Ideally we would use List[ElementType] and Dict[ElementType, ElementType] but Python
+# does not seem to support recursive type definitions.
+ElementType = Union[str, int, float, bool, List[Any], Dict[Any, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
 TransformerType = Callable[[ParsedElementType], Any]
 
