@@ -1,5 +1,4 @@
 # @package _global_
 
 defaults:
-  - /group1: file2
-    override: true
+  - override /group1: file2

@@ -1,3 +1,2 @@
 defaults:
-  - hydra/launcher: fancy_launcher
-    override: true
+  - override hydra/launcher: fancy_launcher

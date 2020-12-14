@@ -108,7 +108,11 @@ class InputDefault:
 
     def set_package_header(self, package_header: str) -> None:
         assert self.__dict__["package_header"] is None
-        if package_header == "_group_" or self.get_default_package() == package_header:
+        if (
+            package_header is None
+            or package_header == "_group_"
+            or self.get_default_package() == package_header
+        ):
             return
         # package header is always interpreted as absolute.
         # if it does not have a _global_ prefix, add it.

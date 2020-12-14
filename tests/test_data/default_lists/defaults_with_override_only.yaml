@@ -1,3 +1,2 @@
 defaults:
-  - /hydra/help: custom1
-    override: true
+  - override /hydra/help: custom1

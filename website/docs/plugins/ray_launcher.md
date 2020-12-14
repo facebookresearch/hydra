@@ -27,8 +27,7 @@ Once installed, add `hydra/launcher=ray_aws` or `hydra/launcher=ray` to your com
 
 ```yaml
 defaults:
-  - hydra/launcher: ray_aws
-    override: true
+  - override hydra/launcher: ray_aws
 ```
 
 

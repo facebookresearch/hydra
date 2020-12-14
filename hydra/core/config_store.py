@@ -56,7 +56,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        package: Optional[str] = "_group_",
+        package: Optional[str] = None,
         provider: Optional[str] = None,
     ) -> None:
         """

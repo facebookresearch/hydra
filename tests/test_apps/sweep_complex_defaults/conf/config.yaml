@@ -2,5 +2,4 @@
 defaults:
   - optimizer: adam
   - dataset: imagenet
-  - optimizer_dataset: ${optimizer}_${dataset}
-    optional: true
+  - optional optimizer_dataset: ${optimizer}_${dataset}

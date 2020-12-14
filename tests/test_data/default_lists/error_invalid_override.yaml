@@ -1,3 +1,2 @@
 defaults:
-  - group1: file
-    override: true
+  - override group1: file

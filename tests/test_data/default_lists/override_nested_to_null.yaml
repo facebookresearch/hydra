@@ -1,4 +1,3 @@
 defaults:
   - group1: group_item1
-  - group1/group2: null
-    override: true
+  - override group1/group2: null

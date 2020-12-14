@@ -154,8 +154,8 @@ class Overrides:
                 prev = self.known_choices[key]
                 if default.get_name() != prev:
                     raise ConfigCompositionException(
-                        f"Multiple values for {key} ({prev}, {default.get_name()})."
-                        " To override a value use 'override: true'"
+                        f"Multiple values for {key}."
+                        f" To override a value use 'override {key}: {prev}'"
                     )
 
             group = default.get_group_path()
@@ -224,8 +224,8 @@ def update_package_header(
     loaded = repo.load_config(
         config_path=node.get_config_path(), is_primary_config=is_primary_config
     )
-    if loaded is not None and "orig_package" in loaded.header:
-        node.set_package_header(loaded.header["orig_package"])
+    if loaded is not None:
+        node.set_package_header(loaded.header["package"])
 
 
 def _expand_virtual_root(
@@ -370,7 +370,7 @@ def _update_overrides(
                 msg = dedent(
                     f"""\
                     In {parent.get_config_path()}: Invalid overriding of {d.group}:
-                    Default list overrides requires 'override: true'.
+                    Default list overrides requires 'override' keyword.
                     See {url} for more information.
                     """
                 )

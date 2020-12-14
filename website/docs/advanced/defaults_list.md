@@ -117,8 +117,7 @@ The Defaults List supports a limited form of interpolation that differs from the
 defaults:
  - dataset: imagenet
  - model: alexnet
- - dataset_model: ${dataset}_{model} # will become imagenet_alexnet
-   optional: true                    # do not fail if this config is not found
+ - optional dataset_model: ${dataset}_{model} # will become imagenet_alexnet
 ```
 
 See [Specializing Configs](/patterns/specializing_config.md) for a more detailed explanation of this example.

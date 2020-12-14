@@ -1,3 +1,2 @@
 defaults:
-  - hydra/job_logging: custom
-    override: true
+  - override hydra/job_logging: custom

@@ -29,12 +29,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def scheme() -> str:
         return "pkg"
 
-    def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
-    ) -> ConfigResult:
+    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
         res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
         if not res.exists():
@@ -43,25 +38,13 @@ class ImportlibResourcesConfigSource(ConfigSource):
         with res.open(encoding="utf-8") as f:
             header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
-            self._update_package_in_header(
-                header=header,
-                normalized_config_path=normalized_config_path,
-                is_primary_config=is_primary_config,
-                package_override=package_override,
-            )
             f.seek(0)
             cfg = OmegaConf.load(f)
-
-            raw_defaults_list = self._extract_raw_defaults_list(
-                config_path=config_path, cfg=cfg
-            )
-
             return ConfigResult(
-                config=self._embed_config(cfg, header["package"]),
+                config=cfg,
                 path=f"{self.scheme()}://{self.path}",
                 provider=self.provider,
                 header=header,
-                defaults_list=self._create_defaults_list(raw_defaults_list),
             )
 
     def available(self) -> bool:

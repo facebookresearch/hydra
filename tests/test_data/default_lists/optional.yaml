@@ -1,3 +1,2 @@
 defaults:
-  - group1: file1
-    optional: true
+  - optional group1: file1

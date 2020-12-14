@@ -1,11 +1,25 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
+import warnings
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from dataclasses import dataclass
+from textwrap import dedent
+from typing import Dict, List, Optional, Tuple
+
+from omegaconf import (
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    open_dict,
+    read_write,
+)
 
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
+from ..core.default_element import ConfigDefault, GroupDefault, InputDefault
 from .sources_registry import SourcesRegistry
 
 
@@ -40,6 +54,28 @@ class IConfigRepository(ABC):
     @abstractmethod
     def get_sources(self) -> List[ConfigSource]:
         ...
+
+    @staticmethod
+    def _embed_config(node: Container, package: str) -> Container:
+        if package == "_global_":
+            package = ""
+
+        if package is not None and package != "":
+            cfg = OmegaConf.create()
+            OmegaConf.update(cfg, package, node, merge=False)
+        else:
+            cfg = OmegaConf.structured(node)
+        return cfg
+
+    @staticmethod
+    def _embed_result_config(ret: ConfigResult, package_override: str) -> ConfigResult:
+        package = ret.header["package"]
+        if package_override is not None:
+            package = package_override
+
+        ret = copy.copy(ret)
+        ret.config = ConfigRepository._embed_config(ret.config, package)
+        return ret
 
 
 class ConfigRepository(IConfigRepository):
@@ -78,15 +114,21 @@ class ConfigRepository(IConfigRepository):
         ret = None
         if source is not None:
             ret = source.load_config(
-                config_path=config_path,
-                is_primary_config=is_primary_config,
-                package_override=package_override,
+                config_path=config_path, is_primary_config=is_primary_config
             )
             # if this source is THE schema source, flag the result as coming from it.
             ret.is_schema_source = (
                 source.__class__.__name__ == "StructuredConfigSource"
                 and source.provider == "schema"
             )
+
+        if ret is not None:
+            raw_defaults = self._extract_defaults_list(config_path, ret.config)
+            ret.defaults_list = self._create_defaults_list(config_path, raw_defaults)
+
+            # TODO: push to a higher level?
+            ret = self._embed_result_config(ret, package_override)
+
         return ret
 
     def group_exists(self, config_path: str) -> bool:
@@ -133,6 +175,135 @@ class ConfigRepository(IConfigRepository):
             return "file"
         else:
             return path[0:idx]
+
+    def _split_group(
+        self,
+        group_with_package: str,
+    ) -> Tuple[str, Optional[str], Optional[str]]:
+        idx = group_with_package.find("@")
+        if idx == -1:
+            # group
+            group = group_with_package
+            package = None
+        else:
+            # group@package
+            group = group_with_package[0:idx]
+            package = group_with_package[idx + 1 :]
+
+        package2 = None
+        if package is not None:
+            # if we have a package, break it down if it's a rename
+            idx = package.find(":")
+            if idx != -1:
+                package2 = package[idx + 1 :]
+                package = package[0:idx]
+
+        return group, package, package2
+
+    def _create_defaults_list(
+        self,
+        config_path: str,
+        defaults: ListConfig,
+    ) -> List[InputDefault]:
+        res: List[InputDefault] = []
+        for item in defaults:
+            default: InputDefault
+            if isinstance(item, DictConfig):
+
+                old_optional = None
+                if "optional" in item:
+                    old_optional = item.pop("optional")
+                keys = list(item.keys())
+
+                if len(keys) > 1:
+                    raise ValueError(
+                        f"In {config_path}: Too many keys in default item {item}"
+                    )
+                if len(keys) == 0:
+                    raise ValueError(f"In {config_path}: Missing group name in {item}")
+
+                key = keys[0]
+                config_group, package, _package2 = self._split_group(key)
+                keywords = ConfigRepository.Keywords()
+                self._extract_keywords_from_config_group(config_group, keywords)
+
+                if not keywords.optional and old_optional is not None:
+                    keywords.optional = old_optional
+
+                node = item._get_node(key)
+                assert node is not None
+                config_name = node._value()
+
+                if old_optional is not None:
+                    # DEPRECATED: remove in 1.2
+                    msg = dedent(
+                        f"""
+                        In {config_path}: 'optional: true' is deprecated.
+                        Use 'optional {key}: {config_name}' instead.
+                        Support for the old style will be removed in a future version of Hydra"""
+                    )
+
+                    warnings.warn(msg)
+
+                default = GroupDefault(
+                    group=keywords.group,
+                    name=config_name,
+                    package=package,
+                    optional=keywords.optional,
+                    override=keywords.override,
+                )
+            elif isinstance(item, str):
+                path, package, _package2 = self._split_group(item)
+                default = ConfigDefault(path=path, package=package)
+            else:
+                raise ValueError(
+                    f"Unsupported type in defaults : {type(item).__name__}"
+                )
+            res.append(default)
+        return res
+
+    def _extract_defaults_list(self, config_path: str, cfg: Container) -> ListConfig:
+        empty = OmegaConf.create([])
+        if not OmegaConf.is_dict(cfg):
+            return empty
+        assert isinstance(cfg, DictConfig)
+        with read_write(cfg):
+            with open_dict(cfg):
+                defaults = cfg.pop("defaults", empty)
+        if not isinstance(defaults, ListConfig):
+            raise ValueError(
+                dedent(
+                    f"""\
+                    Invalid defaults list in '{config_path}', defaults must be a list.
+                    Example of a valid defaults:
+                    defaults:
+                      - dataset: imagenet
+                      - override hydra/launcher: fancy_launcher
+                    """
+                )
+            )
+
+        return defaults
+
+    @dataclass
+    class Keywords:
+        optional: bool = False
+        override: bool = False
+        group: str = ""
+
+    @staticmethod
+    def _extract_keywords_from_config_group(
+        group: str, keywords: "ConfigRepository.Keywords"
+    ) -> None:
+        elements = group.split(" ")
+        for idx, e in enumerate(elements):
+            if e == "optional":
+                keywords.optional = True
+            elif e == "override":
+                keywords.override = True
+            else:
+                break
+        keywords.group = " ".join(elements[idx:])
 
 
 class CachingConfigRepository(IConfigRepository):

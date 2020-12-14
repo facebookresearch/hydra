@@ -1,5 +1,4 @@
 defaults:
-  - hydra/launcher: joblib
-    override: true
+  - override hydra/launcher: joblib
 
 task: 1

@@ -24,8 +24,7 @@ Once installed, add `hydra/launcher=submitit_slurm` to your command line. Altern
 
 ```yaml
 defaults:
-  - hydra/launcher: submitit_slurm
-    override: true
+  - override hydra/launcher: submitit_slurm
 ```
 
 Note that this plugin expects a valid environment in the target host. usually this means a shared file system between

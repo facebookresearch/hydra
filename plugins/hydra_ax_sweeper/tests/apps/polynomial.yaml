@@ -1,6 +1,5 @@
 defaults:
-  - hydra/sweeper: ax
-    override: true
+  - override hydra/sweeper: ax
 
 polynomial:
   x: ???

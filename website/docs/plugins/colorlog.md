@@ -23,10 +23,8 @@ Override `hydra/job_logging` and `hydra/hydra_logging` your config:
 
 ```yaml
 defaults:
-  - hydra/job_logging: colorlog
-    override: true
-  - hydra/hydra_logging: colorlog
-    override: true 
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
 ```
 
 See included [example](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_colorlog/example).

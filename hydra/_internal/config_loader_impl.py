@@ -370,13 +370,8 @@ class ConfigLoaderImpl(ConfigLoader):
             schema = None
             try:
                 schema_source = repo.get_schema_source()
-                schema = schema_source.load_config(
-                    ConfigSource._normalize_file_name(filename=config_path),
-                    is_primary_config=is_primary,
-                    # TODO: really weird that this seems to work.
-                    #  hopefully things will be cleaner after package cleanup
-                    package_override=None,
-                )
+                cname = ConfigSource._normalize_file_name(filename=config_path)
+                schema = schema_source.load_config(cname, is_primary_config=is_primary)
             except ConfigLoadError:
                 # schema not found, ignore
                 pass
@@ -393,6 +388,8 @@ class ConfigLoaderImpl(ConfigLoader):
                     )
                     if "hydra" in ret.config and not hydra_config_group:
                         hydra = ret.config.pop("hydra")
+
+                    schema = repo._embed_result_config(schema, package)
                     merged = OmegaConf.merge(schema.config, ret.config)
                     assert isinstance(merged, DictConfig)
 

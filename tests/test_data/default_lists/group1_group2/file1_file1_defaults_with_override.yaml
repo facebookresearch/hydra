@@ -1,3 +1,2 @@
 defaults:
-  - foo: bar
-    override: true
+  - override foo: bar

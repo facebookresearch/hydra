@@ -1,6 +1,4 @@
-# @package _global_
-db:
-  driver: postgresql
-  user: postgre_user
-  password: drowssap
-  timeout: 10
+driver: postgresql
+user: postgre_user
+password: drowssap
+timeout: 10
