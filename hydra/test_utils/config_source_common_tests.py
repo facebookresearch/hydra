@@ -1,11 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import re
 from typing import Any, List, Optional, Type
 
 import pytest
 from pytest import mark, param, raises
 
-from hydra.core.default_element import GroupDefault, InputDefault
+from hydra.core.default_element import InputDefault
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 
@@ -163,66 +162,85 @@ class ConfigSourceTestSuite:
         assert ret == sorted(ret)
 
     @mark.parametrize(  # type: ignore
-        "config_path,expected_config,expected_defaults_list",
+        "config_path,expected_config,expected_defaults_list,expected_package",
         [
             param(
                 "config_without_group",
                 {"group": False},
-                [],
+                None,
+                None,
                 id="config_without_group",
             ),
             param(
                 "config_with_unicode",
                 {"group": "数据库"},
-                [],
+                None,
+                None,
                 id="config_with_unicode",
             ),
             param(
                 "dataset/imagenet",
-                {"dataset": {"name": "imagenet", "path": "/datasets/imagenet"}},
-                [],
+                {"name": "imagenet", "path": "/datasets/imagenet"},
+                None,
+                None,
                 id="dataset/imagenet",
             ),
             param(
                 "dataset/cifar10",
-                {"dataset": {"name": "cifar10", "path": "/datasets/cifar10"}},
-                [],
+                {"name": "cifar10", "path": "/datasets/cifar10"},
+                None,
+                None,
                 id="dataset/cifar10",
             ),
             param(
                 "dataset/not_found",
                 raises(ConfigLoadError),
-                [],
+                None,
+                None,
                 id="dataset/not_found",
             ),
             param(
                 "level1/level2/nested1",
                 {"l1_l2_n1": True},
-                [],
+                None,
+                None,
                 id="level1/level2/nested1",
             ),
             param(
                 "level1/level2/nested2",
                 {"l1_l2_n2": True},
-                [],
+                None,
+                None,
                 id="level1/level2/nested2",
             ),
             param(
                 "config_with_defaults_list",
-                {"key": "value"},
-                [GroupDefault(group="dataset", name="imagenet")],
+                {
+                    "defaults": [{"dataset": "imagenet"}],
+                    "key": "value",
+                },
+                None,
+                None,
                 id="config_with_defaults_list",
             ),
             param(
                 "configs_with_defaults_list/global_package",
-                {"configs_with_defaults_list": {"x": 10}},
-                [GroupDefault(group="foo", name="bar")],
+                {
+                    "defaults": [{"foo": "bar"}],
+                    "x": 10,
+                },
+                None,
+                "_global_",
                 id="configs_with_defaults_list/global_package",
             ),
             param(
                 "configs_with_defaults_list/group_package",
-                {"configs_with_defaults_list": {"x": 10}},
-                [GroupDefault(group="foo", name="bar")],
+                {
+                    "defaults": [{"foo": "bar"}],
+                    "x": 10,
+                },
+                None,
+                "_group_",
                 id="configs_with_defaults_list/group_package",
             ),
         ],
@@ -233,6 +251,7 @@ class ConfigSourceTestSuite:
         path: str,
         config_path: str,
         expected_defaults_list: List[InputDefault],
+        expected_package,
         expected_config: Any,
         recwarn: Any,
     ) -> None:
@@ -241,6 +260,7 @@ class ConfigSourceTestSuite:
         if isinstance(expected_config, dict):
             ret = src.load_config(config_path=config_path, is_primary_config=False)
             assert ret.config == expected_config
+            assert ret.header["package"] == expected_package
             assert ret.defaults_list == expected_defaults_list
         else:
             with expected_config:
@@ -249,27 +269,17 @@ class ConfigSourceTestSuite:
     @mark.parametrize(  # type: ignore
         "config_path, expected_result, expected_package",
         [
-            param("package_test/none", {"foo": "bar"}, "", id="none"),
-            param(
-                "package_test/explicit",
-                {"a": {"b": {"foo": "bar"}}},
-                "a.b",
-                id="explicit",
-            ),
-            param("package_test/global", {"foo": "bar"}, "", id="global"),
-            param(
-                "package_test/group",
-                {"package_test": {"foo": "bar"}},
-                "package_test",
-                id="group",
-            ),
+            param("package_test/none", {"foo": "bar"}, None, id="none"),
+            param("package_test/explicit", {"foo": "bar"}, "a.b", id="explicit"),
+            param("package_test/global", {"foo": "bar"}, "_global_", id="global"),
+            param("package_test/group", {"foo": "bar"}, "_group_", id="group"),
             param(
                 "package_test/group_name",
-                {"foo": {"package_test": {"group_name": {"foo": "bar"}}}},
-                "foo.package_test.group_name",
+                {"foo": "bar"},
+                "foo._group_._name_",
                 id="group_name",
             ),
-            param("package_test/name", {"name": {"foo": "bar"}}, "name", id="name"),
+            param("package_test/name", {"foo": "bar"}, "_name_", id="name"),
         ],
     )
     def test_package_behavior(
@@ -279,7 +289,6 @@ class ConfigSourceTestSuite:
         config_path: str,
         expected_result: Any,
         expected_package: str,
-        recwarn: Any,
     ) -> None:
         src = type_(provider="foo", path=path)
         cfg = src.load_config(config_path=config_path, is_primary_config=False)
@@ -291,7 +300,7 @@ class ConfigSourceTestSuite:
     ) -> None:
         src = type_(provider="foo", path=path)
         cfg = src.load_config(config_path="primary_config", is_primary_config=True)
-        assert cfg.header["package"] == ""
+        assert cfg.header["package"] == None
 
     def test_primary_config_with_non_global_package(
         self, type_: Type[ConfigSource], path: str
@@ -302,10 +311,3 @@ class ConfigSourceTestSuite:
             is_primary_config=True,
         )
         assert cfg.header["package"] == "foo"
-
-    def test_load_defaults_list(self, type_: Type[ConfigSource], path: str) -> None:
-        src = type_(provider="foo", path=path)
-        ret = src.load_config(
-            config_path="config_with_defaults_list", is_primary_config=True
-        )
-        assert ret.defaults_list == [GroupDefault(group="dataset", name="imagenet")]

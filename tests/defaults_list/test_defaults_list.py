@@ -3,7 +3,7 @@ import re
 from textwrap import dedent
 from typing import Any, List, Optional
 
-from pytest import mark, param, raises
+from pytest import mark, param, raises, warns
 
 from hydra._internal.defaults_list import create_defaults_list
 from hydra.core.default_element import (
@@ -78,7 +78,7 @@ Plugins.instance()
 #  - (Y) Duplicate _self_ error
 #  - (Y) test handling missing configs mentioned in defaults list
 #  - (Y) Ambiguous overrides should provide valid override keys for group
-#  - (Y) Test deprecation message when attempting to override hydra configs without override: true
+#  - (Y) Test deprecation message when attempting to override hydra configs without override
 #  - (Y) duplicate entries in final defaults list raises an error
 # TODO: Integration
 #  - (Y) replace old defaults list computation
@@ -86,13 +86,15 @@ Plugins.instance()
 #  - (Y) ensure all tests are passing
 #  - (Y) implement --info=defaults-tree output
 
-# TODO: Followup changes
+# TODO: Followup items
 #  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
 #  - (Y) Enforce that overrides are at the end of the defaults list
 #    (with the exception of _self_ that can be after them)
 #  - Consider override style of: - override hydra/launcher: submitit
 #  - Fix error message when overriding a non-existing config group from the command line to not say "append with +"
-
+#  - Improve --info defaults-tree output
+#  - (Y) Profile and optimize default tree composition: speed in line with 1.0
+#  - Test cases when config group name matches a keyword (optional, override)
 
 # TODO: (Y) rename support:
 #  - (Y) Remove rename support form 1.1
@@ -146,16 +148,12 @@ Plugins.instance()
         ),
         param(
             "optional",
-            [
-                GroupDefault(group="group1", name="file1", optional=True),
-            ],
+            [GroupDefault(group="group1", name="file1", optional=True)],
             id="optional",
         ),
         param(
             "config_default",
-            [
-                ConfigDefault(path="empty"),
-            ],
+            [ConfigDefault(path="empty")],
             id="non_config_group_default",
         ),
     ],
@@ -165,6 +163,35 @@ def test_loaded_defaults_list(
 ) -> None:
     repo = create_repo()
     result = repo.load_config(config_path=config_path, is_primary_config=True)
+    assert result is not None
+    assert result.defaults_list == expected_list
+
+
+@mark.parametrize(  # type: ignore
+    "config_path,expected_list",
+    [
+        param(
+            "optional_deprecated",
+            [GroupDefault(group="group1", name="file1", optional=True)],
+            id="optional",
+        ),
+    ],
+)
+def test_deprecated_optional(
+    config_path: str, expected_list: List[InputDefault]
+) -> None:
+    repo = create_repo()
+    warning = dedent(
+        """
+            In optional_deprecated: 'optional: true' is deprecated.
+            Use 'optional group1: file1' instead.
+            Support for the old style will be removed in a future version of Hydra"""
+    )
+    with warns(
+        UserWarning,
+        match=re.escape(warning),
+    ):
+        result = repo.load_config(config_path=config_path, is_primary_config=True)
     assert result is not None
     assert result.defaults_list == expected_list
 

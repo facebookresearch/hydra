@@ -142,21 +142,6 @@ class TestConfigLoader:
                 run_mode=RunMode.RUN,
             )
 
-    # TODO: delete test: it's now in defaults list tests
-    def test_load_with_missing_optional_default(self, path: str) -> None:
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
-        )
-        cfg = config_loader.load_configuration(
-            config_name="missing-optional-default.yaml",
-            overrides=[],
-            strict=False,
-            run_mode=RunMode.RUN,
-        )
-        with open_dict(cfg):
-            del cfg["hydra"]
-        assert cfg == {}
-
     def test_load_with_optional_default(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
@@ -400,7 +385,7 @@ class TestConfigLoader:
         expected.append(
             LoadTrace(
                 config_path="db/mysql",
-                package="",
+                package="db",
                 parent="<root>",
                 is_self=False,
                 search_path=path,
@@ -462,7 +447,7 @@ class TestConfigLoader:
                 ),
                 LoadTrace(
                     config_path="db/mysql",
-                    package="",
+                    package="db",
                     parent="<root>",
                     search_path=path,
                     provider="main",

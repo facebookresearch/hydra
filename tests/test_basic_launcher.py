@@ -17,14 +17,13 @@ class TestBasicLauncher(LauncherTestSuite):
     "task_launcher_cfg, extra_flags",
     [
         pytest.param(
-            {
-                "defaults": [
-                    {"hydra/launcher": "basic", "override": True},
-                    {"hydra/hydra_logging": "hydra_debug", "override": True},
-                    {"hydra/job_logging": "disabled", "override": True},
-                ]
-            },
-            ["-m"],
+            {},
+            [
+                "-m",
+                "hydra/launcher=basic",
+                "hydra/hydra_logging=disabled",
+                "hydra/job_logging=disabled",
+            ],
             id="basic_launcher_multirun",
         )
     ],

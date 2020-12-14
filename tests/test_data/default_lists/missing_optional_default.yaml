@@ -1,4 +1,3 @@
 defaults:
   - empty
-  - foo: missing
-    optional: true
+  - optional foo: missing

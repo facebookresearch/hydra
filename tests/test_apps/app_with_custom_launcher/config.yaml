@@ -1,4 +1,3 @@
 # @package _global_
 defaults:
-  - hydra/launcher: custom_launcher
-    override: true
+  - override hydra/launcher: custom_launcher

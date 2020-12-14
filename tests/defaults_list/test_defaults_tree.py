@@ -719,7 +719,7 @@ def test_legacy_hydra_overrides_from_primary_config(
     msg = dedent(
         """\
         Invalid overriding of hydra/help:
-        Default list overrides requires 'override: true'.
+        Default list overrides requires 'override' keyword.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
@@ -1871,7 +1871,7 @@ def test_override_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "Multiple values for group1 (file2, file1). To override a value use 'override: true'"
+                    "Multiple values for group1. To override a value use 'override group1: file2'"
                 ),
             ),
             id="error_changing_group",

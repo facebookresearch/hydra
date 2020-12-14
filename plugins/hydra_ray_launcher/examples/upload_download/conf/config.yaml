@@ -1,6 +1,5 @@
 defaults:
-  - hydra/launcher: ray_aws
-    override: true
+  - override hydra/launcher: ray_aws
 
 
 random_seed: 0

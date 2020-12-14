@@ -60,13 +60,9 @@ s.store(group="dataset", name="cifar10", node=Cifar10)
 s.store(group="dataset", name="imagenet.yaml", node=ImageNet)
 s.store(group="optimizer", name="adam", node=Adam)
 s.store(group="optimizer", name="nesterov", node=Nesterov)
-s.store(
-    group="level1/level2", name="nested1", node={"l1_l2_n1": True}, package="_global_"
-)
-s.store(
-    group="level1/level2", name="nested2", node={"l1_l2_n2": True}, package="_global_"
-)
-s.store(group="package_test", name="none", node={"foo": "bar"}, package="_global_")
+s.store(group="level1/level2", name="nested1", node={"l1_l2_n1": True})
+s.store(group="level1/level2", name="nested2", node={"l1_l2_n2": True})
+s.store(group="package_test", name="none", node={"foo": "bar"}, package=None)
 s.store(group="package_test", name="explicit", node={"foo": "bar"}, package="a.b")
 s.store(group="package_test", name="global", node={"foo": "bar"}, package="_global_")
 s.store(group="package_test", name="group", node={"foo": "bar"}, package="_group_")
@@ -88,7 +84,6 @@ s.store(
         "defaults": [{"dataset": "imagenet"}],
         "key": "value",
     },
-    package="_global_",
 )
 
 s.store(
@@ -96,7 +91,7 @@ s.store(
     name="global_package",
     node={
         "defaults": [{"foo": "bar"}],
-        "configs_with_defaults_list": {"x": 10},
+        "x": 10,
     },
     package="_global_",
 )

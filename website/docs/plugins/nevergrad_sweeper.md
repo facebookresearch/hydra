@@ -24,8 +24,7 @@ Once installed, add `hydra/sweeper=nevergrad` to your command. Alternatively, ov
 
 ```yaml
 defaults:
-  - hydra/sweeper: nevergrad
-    override: true
+  - override hydra/sweeper: nevergrad
 ```
 
 

@@ -1,22 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from textwrap import dedent
-
 import re
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict
 
-from hydra.core.default_element import InputDefault, ConfigDefault, GroupDefault
+from hydra.core.default_element import InputDefault
 from hydra.errors import HydraException
-from omegaconf import (
-    Container,
-    OmegaConf,
-    ListConfig,
-    DictConfig,
-    open_dict,
-    read_write,
-)
+from omegaconf import Container
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.plugin import Plugin
@@ -28,7 +19,7 @@ class ConfigResult:
     path: str
     config: Container
     header: Dict[str, str]
-    defaults_list: List[InputDefault]
+    defaults_list: List[InputDefault] = None
     is_schema_source: bool = False
 
 
@@ -55,12 +46,7 @@ class ConfigSource(Plugin):
         ...
 
     @abstractmethod
-    def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
-    ) -> ConfigResult:
+    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
         ...
 
     # subclasses may override to improve performance
@@ -135,67 +121,6 @@ class ConfigSource(Plugin):
         return filename
 
     @staticmethod
-    def _resolve_package(
-        config_without_ext: str, header: Dict[str, str], package_override: Optional[str]
-    ) -> str:
-        last = config_without_ext.rfind("/")
-        if last == -1:
-            group = ""
-            name = config_without_ext
-        else:
-            group = config_without_ext[0:last]
-            name = config_without_ext[last + 1 :]
-
-        if "package" in header:
-            package = header["package"]
-        else:
-            package = ""
-
-        if package_override is not None:
-            package = package_override
-
-        if package == "_global_":
-            package = ""
-        else:
-            package = package.replace("_group_", group).replace("/", ".")
-            package = package.replace("_name_", name)
-
-        return package
-
-    def _update_package_in_header(
-        self,
-        header: Dict[str, str],
-        normalized_config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str],
-    ) -> None:
-        config_without_ext = normalized_config_path[0 : -len(".yaml")]
-
-        if "package" in header:
-            # keep a backup of the original package header
-            # TODO: clean up manipulation of package header in config sources
-            header["orig_package"] = header["package"]
-
-        package = ConfigSource._resolve_package(
-            config_without_ext=config_without_ext,
-            header=header,
-            package_override=package_override,
-        )
-        header["package"] = package
-
-    @staticmethod
-    def _embed_config(node: Container, package: str) -> Container:
-        if package == "_global_":
-            package = ""
-
-        if package is not None and package != "":
-            cfg = OmegaConf.create()
-            OmegaConf.update(cfg, package, node, merge=False)
-        else:
-            cfg = OmegaConf.structured(node)
-        return cfg
-
-    @staticmethod
     def _get_header_dict(config_text: str) -> Dict[str, str]:
         res = {}
         for line in config_text.splitlines():
@@ -220,93 +145,6 @@ class ConfigSource(Plugin):
                 # stop parsing header on first non-header line
                 break
 
+        if "package" not in res:
+            res["package"] = None
         return res
-
-    @staticmethod
-    def _split_group(
-        group_with_package: str,
-    ) -> Tuple[str, Optional[str], Optional[str]]:
-        idx = group_with_package.find("@")
-        if idx == -1:
-            # group
-            group = group_with_package
-            package = None
-        else:
-            # group@package
-            group = group_with_package[0:idx]
-            package = group_with_package[idx + 1 :]
-
-        package2 = None
-        if package is not None:
-            # if we have a package, break it down if it's a rename
-            idx = package.find(":")
-            if idx != -1:
-                package2 = package[idx + 1 :]
-                package = package[0:idx]
-
-        return group, package, package2
-
-    @staticmethod
-    def _create_defaults_list(
-        defaults: ListConfig,
-    ) -> List[InputDefault]:
-        res: List[InputDefault] = []
-        for item in defaults:
-            default: InputDefault
-            if isinstance(item, DictConfig):
-                optional = item.pop("optional", False)
-                override = item.pop("override", False)
-
-                keys = list(item.keys())
-                if len(keys) > 1:
-                    raise ValueError(f"Too many keys in default item {item}")
-                if len(keys) == 0:
-                    raise ValueError(f"Missing group name in {item}")
-                key = keys[0]
-                config_group, package, _package2 = ConfigSource._split_group(key)
-                node = item._get_node(key)
-                assert node is not None
-                config_name = node._value()
-
-                default = GroupDefault(
-                    group=config_group,
-                    name=config_name,
-                    package=package,
-                    optional=optional,
-                    override=override,
-                )
-            elif isinstance(item, str):
-                path, package, _package2 = ConfigSource._split_group(item)
-                default = ConfigDefault(path=path, package=package)
-            else:
-                raise ValueError(
-                    f"Unsupported type in defaults : {type(item).__name__}"
-                )
-            res.append(default)
-        return res
-
-    @staticmethod
-    def _extract_raw_defaults_list(config_path: str, cfg: Container) -> ListConfig:
-        empty = OmegaConf.create([])
-        if not OmegaConf.is_dict(cfg):
-            return empty
-        assert isinstance(cfg, DictConfig)
-        with read_write(cfg):
-            with open_dict(cfg):
-                defaults = cfg.pop("defaults", empty)
-        if not isinstance(defaults, ListConfig):
-            raise ValueError(
-                dedent(
-                    f"""\
-                    Invalid defaults list in '{config_path}', defaults must be a list.
-                    Example of a valid defaults:
-                    defaults:
-                      - dataset: imagenet
-                      - model: alexnet
-                        optional: true
-                      - optimizer: nesterov
-                    """
-                )
-            )
-
-        return defaults

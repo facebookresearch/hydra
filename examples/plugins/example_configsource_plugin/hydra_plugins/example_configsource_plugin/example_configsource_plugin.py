@@ -27,12 +27,8 @@ class ConfigSourceExample(ConfigSource):
             "primary_config_with_non_global_package.yaml": {"primary": True},
             "config_without_group.yaml": {"group": False},
             "config_with_unicode.yaml": {"group": "数据库"},
-            "dataset/imagenet.yaml": {
-                "dataset": {"name": "imagenet", "path": "/datasets/imagenet"}
-            },
-            "dataset/cifar10.yaml": {
-                "dataset": {"name": "cifar10", "path": "/datasets/cifar10"}
-            },
+            "dataset/imagenet.yaml": {"name": "imagenet", "path": "/datasets/imagenet"},
+            "dataset/cifar10.yaml": {"name": "cifar10", "path": "/datasets/cifar10"},
             "level1/level2/nested1.yaml": {"l1_l2_n1": True},
             "level1/level2/nested2.yaml": {"l1_l2_n2": True},
             "package_test/explicit.yaml": {"foo": "bar"},
@@ -47,7 +43,7 @@ class ConfigSourceExample(ConfigSource):
             },
             "configs_with_defaults_list/global_package.yaml": {
                 "defaults": [{"foo": "bar"}],
-                "configs_with_defaults_list": {"x": 10},
+                "x": 10,
             },
             "configs_with_defaults_list/group_package.yaml": {
                 "defaults": [{"foo": "bar"}],
@@ -65,33 +61,22 @@ class ConfigSourceExample(ConfigSource):
         is_primary_config: bool,
         package_override: Optional[str] = None,
     ) -> ConfigResult:
-        normalized_config_path = self._normalize_file_name(config_path)
+        name = self._normalize_file_name(config_path)
 
-        if normalized_config_path not in self.configs:
+        if name not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
-        header = (
-            copy(self.headers[normalized_config_path])
-            if normalized_config_path in self.headers
-            else {}
-        )
-        self._update_package_in_header(
-            header=header,
-            normalized_config_path=normalized_config_path,
-            is_primary_config=is_primary_config,
-            package_override=package_override,
-        )
-        cfg = OmegaConf.create(self.configs[normalized_config_path])
 
-        raw_defaults_list = self._extract_raw_defaults_list(
-            config_path=config_path, cfg=cfg
-        )
+        res_header = {"package": None}
+        if name in self.headers:
+            header = self.headers[name]
+            res_header["package"] = header["package"] if "package" in header else None
 
+        cfg = OmegaConf.create(self.configs[name])
         return ConfigResult(
-            config=self._embed_config(cfg, header["package"]),
+            config=cfg,
             path=f"{self.scheme()}://{self.path}",
             provider=self.provider,
-            header=header,
-            defaults_list=self._create_defaults_list(raw_defaults_list),
+            header=res_header,
         )
 
     def available(self) -> bool:

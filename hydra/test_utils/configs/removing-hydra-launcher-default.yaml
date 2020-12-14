@@ -1,3 +1,2 @@
 defaults:
-  - hydra/launcher: null
-    override: true
+  - override hydra/launcher: null

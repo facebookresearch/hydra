@@ -25,8 +25,7 @@ The idea is that we can add another element to the defaults list that would load
 defaults:
   - dataset: imagenet
   - model: alexnet
-  - dataset_model: ${dataset}_${model}
-    optional: true
+  - optional dataset_model: ${dataset}_${model}
 ```
 
 Let's break this down:
@@ -42,10 +41,10 @@ This is not standard interpolations and there are some subtle differences and li
 :::
 
 
-#### optional: true
-By default, Hydra would fail with an error if a config specified in the defaults does not exist.
+#### optional
+By default, Hydra fails with an error if a config specified in the defaults does not exist.
 In this case we only want to specialize cifar10 + alexnet, not all 4 combinations.
-indication optional: true here tells Hydra to just continue if it can't find this file.
+the keyword `optional` tells Hydra to just continue if it can't find this file.
 
 When specializing config, you usually want to only specify what's different, and not the whole thing.
 We want the model for alexnet, when trained on cifar - to have 5 layers.
