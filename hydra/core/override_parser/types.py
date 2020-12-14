@@ -26,6 +26,16 @@ class QuotedString:
 
     quote: Quote
 
+    def __hash__(self) -> int:
+        return hash(self.text)
+
+    def __eq__(self, other: Any) -> Any:
+        # We do not care whether quotes match for equality.
+        if isinstance(other, QuotedString):
+            return self.text == other.text
+        else:
+            return NotImplemented
+
     def with_quotes(self) -> str:
         if self.quote == Quote.single:
             q = "'"
@@ -258,7 +268,10 @@ class Override:
         if isinstance(value, list):
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
-            return {k: Override._convert_value(v) for k, v in value.items()}
+            return {
+                Override._convert_value(k): Override._convert_value(v)
+                for k, v in value.items()
+            }
         elif isinstance(value, QuotedString):
             return value.text
         else:
@@ -413,7 +426,8 @@ class Override:
         elif isinstance(value, dict):
             s = comma.join(
                 [
-                    f"{k}{colon}{Override._get_value_element_as_str(v, space_after_sep=space_after_sep)}"
+                    f"{Override._get_value_element_as_str(k)}{colon}"
+                    f"{Override._get_value_element_as_str(v, space_after_sep=space_after_sep)}"
                     for k, v in value.items()
                 ]
             )

@@ -206,8 +206,8 @@ def test_value(value: str, expected: Any) -> None:
         pytest.param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
     ],
 )
-def test_list_value(value: str, expected: Any) -> None:
-    ret = parse_rule(value, "listValue")
+def test_list_container(value: str, expected: Any) -> None:
+    ret = parse_rule(value, "listContainer")
     assert ret == expected
 
 
@@ -277,10 +277,40 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         pytest.param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         pytest.param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
         pytest.param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
+        pytest.param(
+            "{'0a': 0, \"1b\": 1}",
+            {
+                QuotedString(text="0a", quote=Quote.double): 0,
+                QuotedString(text="1b", quote=Quote.single): 1,
+            },
+            id="dict_quoted_key",
+        ),
+        pytest.param("{null: 1}", {None: 1}, id="dict_null_key"),
+        pytest.param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
+        pytest.param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
+        pytest.param("{true: 1, fAlSe: 0}", {True: 1, False: 0}, id="dict_bool_key"),
+        pytest.param("{/-\\+.$%*@: 1}", {"/-\\+.$%*@": 1}, id="dict_unquoted_char_key"),
+        pytest.param(
+            "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1}",
+            {"\\()[]{}:= \t,": 1},
+            id="dict_esc_key",
+        ),
+        pytest.param("{white spaces: 1}", {"white spaces": 1}, id="dict_ws_key"),
+        pytest.param(
+            "{'a:b': 1, ab 123.5 True: 2, null false: 3, 1: 4, null: 5}",
+            {
+                QuotedString(text="a:b", quote=Quote.single): 1,
+                "ab 123.5 True": 2,
+                "null false": 3,
+                1: 4,
+                None: 5,
+            },
+            id="dict_mixed_keys",
+        ),
     ],
 )
-def test_dict_value(value: str, expected: Any) -> None:
-    ret = parse_rule(value, "dictValue")
+def test_dict_container(value: str, expected: Any) -> None:
+    ret = parse_rule(value, "dictContainer")
     assert ret == expected
 
 

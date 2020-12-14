@@ -1047,6 +1047,29 @@ bar: 100"""
         ret, _err = get_run_output(cmd)
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
 
+    def test_multirun_dict_keys(self, cmd_base: List[str], tmpdir: Any) -> None:
+        cmd = cmd_base + [
+            "+foo={'null': 0},{'NuLl': 1},{123abc: 0},{/-\\+.$%*@: 1},{white space: 3}",
+            "--multirun",
+        ]
+        expected = """\
+foo:
+  'null': 0
+
+foo:
+  NuLl: 1
+
+foo:
+  123abc: 0
+
+foo:
+  /-\\+.$%*@: 1
+
+foo:
+  white space: 3"""
+        ret, _err = get_run_output(cmd)
+        assert normalize_newlines(ret) == normalize_newlines(expected)
+
 
 def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
     monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
@@ -1185,3 +1208,35 @@ def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
     ]
     result, _err = get_run_output(cmd)
     assert result == "{'list': None}"
+
+
+def test_overrides_dict_keys(tmpdir: Path) -> None:
+    """Test that different types of dictionary keys can be overridden"""
+    # Not currently testing non-string keys since they are not supported
+    # by OmegaConf.
+    cfg = OmegaConf.create(
+        {
+            "foo": {
+                "quoted_$(){}[]": 0,
+                "id123": 0,
+                "123id": 0,
+                "a/-\\+.$%*@": 0,
+                "\\()[]{}:= \t,": 0,
+                "white space": 0,
+            }
+        }
+    )
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[
+            "foo={'quoted_$(){}[]': 1, id123: 1, 123id: 1, a/-\\+.$%*@: 1, "
+            "\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1, white space: 1}"
+        ],
+        prints=(
+            "','.join(map(repr, [cfg.foo[x] for x in ["
+            "'quoted_$(){}[]', 'id123', '123id', 'a/-\\+.$%*@', '\\()[]{}:= \t,', 'white space'"
+            "]]))"
+        ),
+        expected_outputs="1,1,1,1,1,1",
+    )

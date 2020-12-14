@@ -76,7 +76,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         return isinstance(c, TerminalNodeImpl) and c.symbol.type == OverrideLexer.WS
 
     def visitPrimitive(
-        self, ctx: OverrideParser.PrimitiveContext
+        self, ctx: Union[OverrideParser.PrimitiveContext, OverrideParser.DictKeyContext]
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
         ret: Optional[Union[int, bool, float, str]]
         first_idx = 0
@@ -144,8 +144,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 return node.getText()  # type: ignore
         return ret
 
-    def visitListValue(
-        self, ctx: OverrideParser.ListValueContext
+    def visitListContainer(
+        self, ctx: OverrideParser.ListContainerContext
     ) -> List[ParsedElementType]:
         ret: List[ParsedElementType] = []
 
@@ -159,8 +159,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 ret.append(self.visitElement(element))
         return ret
 
-    def visitDictValue(
-        self, ctx: OverrideParser.DictValueContext
+    def visitDictContainer(
+        self, ctx: OverrideParser.DictContainerContext
     ) -> Dict[str, ParsedElementType]:
         assert self.is_matching_terminal(ctx.getChild(0), OverrideLexer.BRACE_OPEN)
         return dict(
@@ -168,13 +168,17 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             for i in range(1, ctx.getChildCount() - 1, 2)
         )
 
+    def visitDictKey(self, ctx: OverrideParser.DictKeyContext) -> Any:
+        # Dictionary keys are a subset of primitives, they may thus be parsed as such.
+        return self.visitPrimitive(ctx)
+
     def visitDictKeyValuePair(
         self, ctx: OverrideParser.DictKeyValuePairContext
     ) -> Tuple[str, ParsedElementType]:
         children = ctx.getChildren()
         item = next(children)
-        assert self.is_matching_terminal(item, OverrideLexer.ID)
-        pkey = item.getText()
+        assert isinstance(item, OverrideParser.DictKeyContext)
+        pkey = self.visitDictKey(item)
         assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
         value = next(children)
         assert isinstance(value, OverrideParser.ElementContext)
@@ -186,10 +190,10 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             return self.visitFunction(ctx.function())  # type: ignore
         elif ctx.primitive():
             return self.visitPrimitive(ctx.primitive())
-        elif ctx.listValue():
-            return self.visitListValue(ctx.listValue())
-        elif ctx.dictValue():
-            return self.visitDictValue(ctx.dictValue())
+        elif ctx.listContainer():
+            return self.visitListContainer(ctx.listContainer())
+        elif ctx.dictContainer():
+            return self.visitDictContainer(ctx.dictContainer())
         else:
             assert False
 

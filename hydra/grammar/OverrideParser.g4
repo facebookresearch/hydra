@@ -31,8 +31,8 @@ value: element | simpleChoiceSweep;
 
 element:
       primitive
-    | listValue
-    | dictValue
+    | listContainer
+    | dictContainer
     | function
 ;
 
@@ -47,12 +47,12 @@ function: ID POPEN (argName? element (COMMA argName? element )* )? PCLOSE;
 
 // Data structures.
 
-listValue: BRACKET_OPEN                          // [], [1,2,3], [a,b,[1,2]]
+listContainer: BRACKET_OPEN                      // [], [1,2,3], [a,b,[1,2]]
     (element(COMMA element)*)?
 BRACKET_CLOSE;
 
-dictValue: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
-dictKeyValuePair: ID COLON element;
+dictContainer: BRACE_OPEN (dictKeyValuePair (COMMA dictKeyValuePair)*)? BRACE_CLOSE;  // {}, {a:10,b:20}
+dictKeyValuePair: dictKey COLON element;
 
 // Primitive types.
 
@@ -66,6 +66,19 @@ primitive:
         | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
         | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @
         | COLON                                  // :
+        | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
+        | WS                                     // whitespaces
+    )+;
+
+// Same as `primitive` except that `COLON` and `INTERPOLATION` are not allowed.
+dictKey:
+      QUOTED_VALUE                               // 'hello world', "hello world"
+    | (   ID                                     // foo_10
+        | NULL                                   // null, NULL
+        | INT                                    // 0, 10, -20, 1_000_000
+        | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
+        | BOOL                                   // true, TrUe, false, False
+        | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @
         | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
         | WS                                     // whitespaces
     )+;
