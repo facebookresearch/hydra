@@ -528,6 +528,7 @@ def _create_result_default(
         return None
 
     res = ResultDefault()
+
     if node.is_self():
         assert tree is not None
         res.config_path = tree.node.get_config_path()
@@ -539,6 +540,7 @@ def _create_result_default(
         else:
             res.parent = None
         res.package = tree.node.get_final_package()
+        res.primary = tree.node.primary
     else:
         res.config_path = node.get_config_path()
         if tree is not None:
@@ -546,6 +548,7 @@ def _create_result_default(
         res.package = node.get_final_package()
         if isinstance(node, GroupDefault):
             res.override_key = node.get_override_key()
+        res.primary = node.primary
     return res
 
 

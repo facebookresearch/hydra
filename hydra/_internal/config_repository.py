@@ -90,9 +90,6 @@ class ConfigRepository(IConfigRepository):
             raw_defaults = self._extract_defaults_list(config_path, ret.config)
             ret.defaults_list = self._create_defaults_list(config_path, raw_defaults)
 
-            # # TODO: push to a higher level?
-            # ret = self._embed_result_config(ret, package_override)
-
         return ret
 
     def group_exists(self, config_path: str) -> bool:

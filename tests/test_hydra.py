@@ -174,42 +174,6 @@ def test_app_with_config_file__no_overrides(
         verify_dir_outputs(task.job_ret)
 
 
-# TODO: cleanup
-#
-# @pytest.mark.parametrize(  # type: ignore
-#     "calling_file, calling_module",
-#     [
-#         ("tests/test_apps/app_with_cfg_groups_no_header/my_app.py", None),
-#         (None, "tests.test_apps.app_with_cfg_groups_no_header.my_app"),
-#     ],
-# )
-# def test_config_without_package_header_warnings(
-#     hydra_restore_singletons: Any,
-#     hydra_task_runner: TTaskRunner,
-#     calling_file: str,
-#     calling_module: str,
-#     recwarn: Any,
-# ) -> None:
-#     task = hydra_task_runner(
-#         calling_file=calling_file,
-#         calling_module=calling_module,
-#         config_path="conf",
-#         config_name="config.yaml",
-#     )
-#     with task:
-#         assert task.job_ret is not None and task.job_ret.cfg == {
-#             "optimizer": {"type": "nesterov", "lr": 0.001}
-#         }
-#
-#     assert len(recwarn) == 1
-#     msg = recwarn.pop().message.args[0]
-#     assert "Missing @package directive optimizer/nesterov.yaml in " in msg
-#     assert (
-#         "See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/adding_a_package_directive"
-#         in msg
-#     )
-
-
 @pytest.mark.parametrize(  # type: ignore
     "calling_file, calling_module",
     [
