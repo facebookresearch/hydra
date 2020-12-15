@@ -56,10 +56,7 @@ class ConfigSourceExample(ConfigSource):
         return "example"
 
     def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
+        self, config_path: str, package_override: Optional[str] = None
     ) -> ConfigResult:
         name = self._normalize_file_name(config_path)
 

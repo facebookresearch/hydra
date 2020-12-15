@@ -258,13 +258,13 @@ class ConfigSourceTestSuite:
         assert issubclass(type_, ConfigSource)
         src = type_(provider="foo", path=path)
         if isinstance(expected_config, dict):
-            ret = src.load_config(config_path=config_path, is_primary_config=False)
+            ret = src.load_config(config_path=config_path)
             assert ret.config == expected_config
             assert ret.header["package"] == expected_package
             assert ret.defaults_list == expected_defaults_list
         else:
             with expected_config:
-                src.load_config(config_path=config_path, is_primary_config=False)
+                src.load_config(config_path=config_path)
 
     @mark.parametrize(  # type: ignore
         "config_path, expected_result, expected_package",
@@ -291,7 +291,7 @@ class ConfigSourceTestSuite:
         expected_package: str,
     ) -> None:
         src = type_(provider="foo", path=path)
-        cfg = src.load_config(config_path=config_path, is_primary_config=False)
+        cfg = src.load_config(config_path=config_path)
         assert cfg.header["package"] == expected_package
         assert cfg.config == expected_result
 
@@ -299,15 +299,12 @@ class ConfigSourceTestSuite:
         self, type_: Type[ConfigSource], path: str
     ) -> None:
         src = type_(provider="foo", path=path)
-        cfg = src.load_config(config_path="primary_config", is_primary_config=True)
+        cfg = src.load_config(config_path="primary_config")
         assert cfg.header["package"] == None
 
     def test_primary_config_with_non_global_package(
         self, type_: Type[ConfigSource], path: str
     ) -> None:
         src = type_(provider="foo", path=path)
-        cfg = src.load_config(
-            config_path="primary_config_with_non_global_package",
-            is_primary_config=True,
-        )
+        cfg = src.load_config(config_path="primary_config_with_non_global_package")
         assert cfg.header["package"] == "foo"

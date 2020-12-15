@@ -211,19 +211,13 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
     return not has_self
 
 
-def update_package_header(
-    repo: IConfigRepository,
-    node: InputDefault,
-    is_primary_config: bool,
-) -> None:
+def update_package_header(repo: IConfigRepository, node: InputDefault) -> None:
     if node.is_missing():
         return
     # This loads the same config loaded in _create_defaults_tree
     # To avoid loading it twice, the repo implementation is expected to cache
     # loaded configs
-    loaded = repo.load_config(
-        config_path=node.get_config_path(), is_primary_config=is_primary_config
-    )
+    loaded = repo.load_config(config_path=node.get_config_path())
     if loaded is not None:
         node.set_package_header(loaded.header["package"])
 
@@ -408,9 +402,7 @@ def _create_defaults_tree_impl(
         if is_primary_config:
             root.node.update_parent("", "")
 
-        update_package_header(
-            repo=repo, node=parent, is_primary_config=is_primary_config
-        )
+        update_package_header(repo=repo, node=parent)
 
         if overrides.is_overridden(parent):
             assert isinstance(parent, GroupDefault)
@@ -418,9 +410,7 @@ def _create_defaults_tree_impl(
             # clear package header and obtain updated one from overridden config
             # (for the rare case it has changed)
             parent.package_header = None
-            update_package_header(
-                repo=repo, node=parent, is_primary_config=is_primary_config
-            )
+            update_package_header(repo=repo, node=parent)
 
         if overrides.is_deleted(parent):
             overrides.delete(parent)
@@ -435,7 +425,7 @@ def _create_defaults_tree_impl(
             return root
 
         path = parent.get_config_path()
-        loaded = repo.load_config(config_path=path, is_primary_config=is_primary_config)
+        loaded = repo.load_config(config_path=path)
 
         if loaded is None:
             if parent.is_optional():

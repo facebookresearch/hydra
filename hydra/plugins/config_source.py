@@ -46,7 +46,7 @@ class ConfigSource(Plugin):
         ...
 
     @abstractmethod
-    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
+    def load_config(self, config_path: str) -> ConfigResult:
         ...
 
     # subclasses may override to improve performance

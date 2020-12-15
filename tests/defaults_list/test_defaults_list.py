@@ -162,7 +162,7 @@ def test_loaded_defaults_list(
     config_path: str, expected_list: List[InputDefault]
 ) -> None:
     repo = create_repo()
-    result = repo.load_config(config_path=config_path, is_primary_config=True)
+    result = repo.load_config(config_path=config_path)
     assert result is not None
     assert result.defaults_list == expected_list
 
@@ -191,7 +191,7 @@ def test_deprecated_optional(
         UserWarning,
         match=re.escape(warning),
     ):
-        result = repo.load_config(config_path=config_path, is_primary_config=True)
+        result = repo.load_config(config_path=config_path)
     assert result is not None
     assert result.defaults_list == expected_list
 
