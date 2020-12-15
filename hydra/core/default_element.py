@@ -38,11 +38,11 @@ class ResultDefault:
 
 @dataclass
 class InputDefault:
-
     package: Optional[str] = None
     parent_base_dir: Optional[str] = field(default=None, compare=False, repr=False)
     parent_package: Optional[str] = field(default=None, compare=False, repr=False)
     package_header: Optional[str] = field(default=None, compare=False)
+    primary: bool = field(default=False, compare=False)
 
     def is_self(self) -> bool:
         raise NotImplementedError()

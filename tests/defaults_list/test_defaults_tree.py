@@ -1747,7 +1747,7 @@ def test_delete_non_existing(
             [],
             raises(
                 ConfigCompositionException,
-                match="^Could not load 'not_found'.*",
+                match="^Cannot find primary config 'not_found'. Check that it's in your config search path.",
             ),
             id="missing_primary",
         ),
