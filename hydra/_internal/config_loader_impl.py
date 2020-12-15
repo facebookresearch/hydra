@@ -59,23 +59,18 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     @staticmethod
-    def parse_overrides(
-        overrides: List[str],
+    def validate_sweep_overrides_legal(
+        overrides: List[Override],
         run_mode: RunMode,
         from_shell: bool,
-    ) -> List[Override]:
-        parser = OverridesParser.create()
-        parsed_overrides = parser.parse_overrides(overrides=overrides)
-        config_overrides = []
-        for x in parsed_overrides:
+    ) -> None:
+        for x in overrides:
             if x.is_sweep_override():
                 if run_mode == RunMode.MULTIRUN:
                     if x.is_hydra_override():
                         raise ConfigCompositionException(
                             f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
                         )
-                    # do not process sweep overrides in multirun mode.
-                    # They will be handled directly by the sweeper
                 elif run_mode == RunMode.RUN:
                     if x.value_type == ValueType.SIMPLE_CHOICE_SWEEP:
                         vals = "value1,value2"
@@ -98,9 +93,6 @@ class ConfigLoaderImpl(ConfigLoader):
                         )
                 else:
                     assert False
-            else:
-                config_overrides.append(x)
-        return config_overrides
 
     def _missing_config_error(
         self, config_name: Optional[str], msg: str, with_search_path: bool
@@ -184,11 +176,10 @@ class ConfigLoaderImpl(ConfigLoader):
         parser = OverridesParser.create()
         parsed_overrides = parser.parse_overrides(overrides=overrides)
 
-        # TODO: decide where the error checking in this function should be.
-        #  This function can parse and validate the overrides without splitting them into types
-        config_overrides = ConfigLoaderImpl.parse_overrides(
-            overrides=overrides, run_mode=run_mode, from_shell=from_shell
+        self.validate_sweep_overrides_legal(
+            overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
         )
+
         defaults_list = create_defaults_list(
             repo=caching_repo,
             config_name=config_name,
