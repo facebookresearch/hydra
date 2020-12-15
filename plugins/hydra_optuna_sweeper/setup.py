@@ -28,8 +28,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         # "Programming Language :: Python :: 3.9",
         # Python 3.9 support depends on https://github.com/optuna/optuna/issues/2034
-        "Operating System :: POSIX :: Linux",
-        "Operating System :: MacOS",
+        "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
     install_requires=["hydra-core", "optuna"],
