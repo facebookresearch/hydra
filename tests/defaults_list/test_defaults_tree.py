@@ -306,9 +306,41 @@ def test_simple_group_override(
             raises(ValueError, match=re.escape("_self_@PACKAGE is not supported")),
             id="error_self_pkg1",
         ),
+        param(
+            "error_changing_group",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Multiple values for group1. To override a value use 'override group1: file2'"
+                ),
+            ),
+            id="error_changing_group",
+        ),
+        param(
+            "duplicate_self",
+            [],
+            raises(
+                ConfigCompositionException,
+                match="Duplicate _self_ defined in duplicate_self",
+            ),
+            id="duplicate_self",
+        ),
+        param(
+            "invalid_override_in_defaults",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'invalid_override_in_defaults': Could not override 'foo'. No match in the defaults list."
+                )
+                + "$",
+            ),
+            id="invalid_override_in_defaults",
+        ),
     ],
 )
-def test_errors(
+def test_misc_errors(
     config_name: str,
     overrides: List[str],
     expected: Any,
@@ -1711,32 +1743,6 @@ def test_delete_non_existing(
     "config_name,overrides,expected",
     [
         param(
-            "duplicate_self",
-            [],
-            raises(
-                ConfigCompositionException,
-                match="Duplicate _self_ defined in duplicate_self",
-            ),
-            id="duplicate_self",
-        ),
-    ],
-)
-def test_duplicate_self_error(
-    config_name: str,
-    overrides: List[str],
-    expected: DefaultsTreeNode,
-) -> None:
-    _test_defaults_tree_impl(
-        config_name=config_name,
-        input_overrides=overrides,
-        expected=expected,
-    )
-
-
-@mark.parametrize(  # type: ignore
-    "config_name,overrides,expected",
-    [
-        param(
             "not_found",
             [],
             raises(
@@ -1851,34 +1857,6 @@ def test_missing_config_errors(
     ],
 )
 def test_override_errors(
-    config_name: str,
-    overrides: List[str],
-    expected: DefaultsTreeNode,
-) -> None:
-    _test_defaults_tree_impl(
-        config_name=config_name,
-        input_overrides=overrides,
-        expected=expected,
-    )
-
-
-@mark.parametrize(  # type: ignore
-    "config_name,overrides,expected",
-    [
-        param(
-            "error_changing_group",
-            [],
-            raises(
-                ConfigCompositionException,
-                match=re.escape(
-                    "Multiple values for group1. To override a value use 'override group1: file2'"
-                ),
-            ),
-            id="error_changing_group",
-        ),
-    ],
-)
-def test_error_changing_group_choice(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
