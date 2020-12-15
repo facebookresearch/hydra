@@ -87,6 +87,9 @@ class Parameters:
             return self.params == other.params
         return False
 
+    def __deepcopy__(self, memodict: Any = {}) -> Any:
+        raise NotImplementedError("Pytorch parameters does not support deepcopy")
+
 
 @dataclass
 class Adam:
