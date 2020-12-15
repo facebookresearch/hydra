@@ -32,7 +32,7 @@ def _test_defaults_tree_impl(
             repo=repo,
             root=root,
             overrides=overrides,
-            is_primary_config=True,
+            is_root_config=True,
             interpolated_subtree=False,
             skip_missing=skip_missing,
         )
@@ -45,7 +45,7 @@ def _test_defaults_tree_impl(
                 repo=repo,
                 root=root,
                 overrides=overrides,
-                is_primary_config=True,
+                is_root_config=True,
                 interpolated_subtree=False,
                 skip_missing=skip_missing,
             )

@@ -102,21 +102,6 @@ class ConfigLoaderImpl(ConfigLoader):
                 config_overrides.append(x)
         return config_overrides
 
-    def split_by_override_type(self, overrides: List[Override]) -> SplitOverrides:
-        config_group_overrides = []
-        config_overrides = []
-        for override in overrides:
-            is_group = self.repository.group_exists(override.key_or_group)
-            is_dict = isinstance(override.value(), dict)
-            if is_dict or not is_group:
-                config_overrides.append(override)
-            else:
-                config_group_overrides.append(override)
-        return SplitOverrides(
-            config_group_overrides=config_group_overrides,
-            config_overrides=config_overrides,
-        )
-
     def _missing_config_error(
         self, config_name: Optional[str], msg: str, with_search_path: bool
     ) -> None:
@@ -193,13 +178,6 @@ class ConfigLoaderImpl(ConfigLoader):
         self.ensure_main_config_source_available()
         caching_repo = CachingConfigRepository(self.repository)
 
-        if config_name is not None and not caching_repo.config_exists(config_name):
-            self._missing_config_error(
-                config_name=config_name,
-                msg=f"Cannot find primary config : {config_name}, check that it's in your config search path",
-                with_search_path=True,
-            )
-
         if strict is None:
             strict = self.default_strict
 
@@ -211,7 +189,6 @@ class ConfigLoaderImpl(ConfigLoader):
         config_overrides = ConfigLoaderImpl.parse_overrides(
             overrides=overrides, run_mode=run_mode, from_shell=from_shell
         )
-
         defaults_list = create_defaults_list(
             repo=caching_repo,
             config_name=config_name,

@@ -258,7 +258,7 @@ def _expand_virtual_root(
             subtree = _create_defaults_tree_impl(
                 repo=repo,
                 root=new_root,
-                is_primary_config=False,
+                is_root_config=False,
                 skip_missing=skip_missing,
                 interpolated_subtree=False,
                 overrides=overrides,
@@ -326,7 +326,7 @@ def _create_interpolation_map(
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
-    is_primary_config: bool,
+    is_root_config: bool,
     skip_missing: bool,
     interpolated_subtree: bool,
     overrides: Overrides,
@@ -334,7 +334,7 @@ def _create_defaults_tree(
     ret = _create_defaults_tree_impl(
         repo=repo,
         root=root,
-        is_primary_config=is_primary_config,
+        is_root_config=is_root_config,
         skip_missing=skip_missing,
         interpolated_subtree=interpolated_subtree,
         overrides=overrides,
@@ -400,7 +400,7 @@ def _update_overrides(
 def _create_defaults_tree_impl(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
-    is_primary_config: bool,
+    is_root_config: bool,
     skip_missing: bool,
     interpolated_subtree: bool,
     overrides: Overrides,
@@ -408,13 +408,17 @@ def _create_defaults_tree_impl(
     parent = root.node
     children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
-        if is_primary_config:
+        if is_root_config:
             return _expand_virtual_root(repo, root, overrides, skip_missing)
         else:
             return root
     else:
-        if is_primary_config:
+        if is_root_config:
             root.node.update_parent("", "")
+
+        if is_root_config:
+            if not repo.config_exists(root.node.get_config_path()):
+                config_not_found_error(repo=repo, tree=root)
 
         update_package_header(repo=repo, node=parent)
 
@@ -446,14 +450,14 @@ def _create_defaults_tree_impl(
                 assert isinstance(parent, GroupDefault)
                 parent.deleted = True
                 return root
-            config_not_found_error(repo, root)
+            config_not_found_error(repo=repo, tree=root)
 
         assert loaded is not None
         defaults_list = copy.deepcopy(loaded.defaults_list)
         if defaults_list is None:
             defaults_list = []
 
-        if is_primary_config:
+        if is_root_config:
             for gd in overrides.append_group_defaults:
                 defaults_list.append(gd)
 
@@ -480,7 +484,7 @@ def _create_defaults_tree_impl(
                 subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
-                    is_primary_config=False,
+                    is_root_config=False,
                     interpolated_subtree=interpolated_subtree,
                     skip_missing=skip_missing,
                     overrides=overrides,
@@ -501,7 +505,7 @@ def _create_defaults_tree_impl(
                 subtree = _create_defaults_tree_impl(
                     repo=repo,
                     root=new_root,
-                    is_primary_config=False,
+                    is_root_config=False,
                     skip_missing=skip_missing,
                     interpolated_subtree=True,
                     overrides=overrides,
@@ -588,7 +592,7 @@ def _tree_to_list(
 def _create_root(config_name: Optional[str], with_hydra: bool) -> DefaultsTreeNode:
     primary: InputDefault
     if config_name is not None:
-        primary = ConfigDefault(path=config_name)
+        primary = ConfigDefault(path=config_name, primary=True)
     else:
         primary = VirtualRoot()
 
@@ -629,7 +633,7 @@ def _create_defaults_list(
         repo=repo,
         root=root,
         overrides=overrides,
-        is_primary_config=True,
+        is_root_config=True,
         interpolated_subtree=False,
         skip_missing=skip_missing,
     )
@@ -673,25 +677,34 @@ def create_defaults_list(
 
 def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> None:
     element = tree.node
-    parent = tree.parent.node if tree.parent is not None else None
     options = None
+    group = None
     if isinstance(element, GroupDefault):
         group = element.get_group_path()
         options = repo.get_group_options(group, ObjectType.CONFIG)
 
-        msg = f"Could not find '{element.get_config_path()}'\n"
-        if len(options) > 0:
-            opt_list = "\n".join(["\t" + x for x in options])
-            msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
-    else:
+    if element.primary:
         msg = dedent(
             f"""\
-        Could not load '{element.get_config_path()}'.
+        Cannot find primary config '{element.get_config_path()}'. Check that it's in your config search path.
         """
         )
+    else:
+        parent = tree.parent.node if tree.parent is not None else None
+        if isinstance(element, GroupDefault):
+            msg = f"Could not find '{element.get_config_path()}'\n"
+            if options is not None and len(options) > 0:
+                opt_list = "\n".join(["\t" + x for x in options])
+                msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
+        else:
+            msg = dedent(
+                f"""\
+            Could not load '{element.get_config_path()}'.
+            """
+            )
 
-    if parent is not None:
-        msg = f"In '{parent.get_config_path()}': {msg}"
+        if parent is not None:
+            msg = f"In '{parent.get_config_path()}': {msg}"
 
     descs = []
     for src in repo.get_sources():
