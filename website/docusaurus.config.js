@@ -84,6 +84,12 @@ module.exports = {
                             target: '_blank',
                             rel: 'noreferrer noopener',
                         },
+                        {
+                            label: 'Cookies',
+                            href: 'https://opensource.facebook.com/legal/cookie-policy',
+                            target: '_blank',
+                            rel: 'noreferrer noopener',
+                        },
                     ],
                 },
             ],
