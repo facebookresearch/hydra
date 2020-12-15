@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
 import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -29,9 +28,7 @@ class IConfigRepository(ABC):
         ...
 
     @abstractmethod
-    def load_config(
-        self, config_path: str, package_override: Optional[str] = None
-    ) -> Optional[ConfigResult]:
+    def load_config(self, config_path: str) -> Optional[ConfigResult]:
         ...
 
     @abstractmethod
@@ -51,28 +48,6 @@ class IConfigRepository(ABC):
     @abstractmethod
     def get_sources(self) -> List[ConfigSource]:
         ...
-
-    @staticmethod
-    def _embed_config(node: Container, package: str) -> Container:
-        if package == "_global_":
-            package = ""
-
-        if package is not None and package != "":
-            cfg = OmegaConf.create()
-            OmegaConf.update(cfg, package, node, merge=False)
-        else:
-            cfg = OmegaConf.structured(node)
-        return cfg
-
-    @staticmethod
-    def _embed_result_config(ret: ConfigResult, package_override: str) -> ConfigResult:
-        package = ret.header["package"]
-        if package_override is not None:
-            package = package_override
-
-        ret = copy.copy(ret)
-        ret.config = ConfigRepository._embed_config(ret.config, package)
-        return ret
 
 
 class ConfigRepository(IConfigRepository):
@@ -98,9 +73,7 @@ class ConfigRepository(IConfigRepository):
         )
         return source
 
-    def load_config(
-        self, config_path: str, package_override: Optional[str] = None
-    ) -> Optional[ConfigResult]:
+    def load_config(self, config_path: str) -> Optional[ConfigResult]:
         source = self._find_object_source(
             config_path=config_path, object_type=ObjectType.CONFIG
         )
@@ -117,8 +90,8 @@ class ConfigRepository(IConfigRepository):
             raw_defaults = self._extract_defaults_list(config_path, ret.config)
             ret.defaults_list = self._create_defaults_list(config_path, raw_defaults)
 
-            # TODO: push to a higher level?
-            ret = self._embed_result_config(ret, package_override)
+            # # TODO: push to a higher level?
+            # ret = self._embed_result_config(ret, package_override)
 
         return ret
 
@@ -305,16 +278,12 @@ class CachingConfigRepository(IConfigRepository):
     def get_schema_source(self) -> ConfigSource:
         return self.delegate.get_schema_source()
 
-    def load_config(
-        self, config_path: str, package_override: Optional[str] = None
-    ) -> Optional[ConfigResult]:
-        cache_key = f"config_path={config_path},package_override={package_override}"
+    def load_config(self, config_path: str) -> Optional[ConfigResult]:
+        cache_key = f"config_path={config_path}"
         if cache_key in self.cache:
             return self.cache[cache_key]
         else:
-            ret = self.delegate.load_config(
-                config_path=config_path, package_override=package_override
-            )
+            ret = self.delegate.load_config(config_path=config_path)
             self.cache[cache_key] = ret
             return ret
 

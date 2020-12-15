@@ -1,4 +1,2 @@
-# @package _global_
-dataset:
-  name: imagenet
-  path: /datasets/imagenet
+name: imagenet
+path: /datasets/imagenet

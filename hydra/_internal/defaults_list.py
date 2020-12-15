@@ -436,6 +436,8 @@ def _create_defaults_tree_impl(
 
         assert loaded is not None
         defaults_list = copy.deepcopy(loaded.defaults_list)
+        if defaults_list is None:
+            defaults_list = []
 
         if is_primary_config:
             for gd in overrides.append_group_defaults:

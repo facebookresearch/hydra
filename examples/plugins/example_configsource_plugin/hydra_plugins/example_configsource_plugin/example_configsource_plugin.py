@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from copy import copy
 from typing import Any, Dict, List, Optional
 
 from hydra.core.object_type import ObjectType
@@ -63,7 +62,7 @@ class ConfigSourceExample(ConfigSource):
         if name not in self.configs:
             raise ConfigLoadError("Config not found : " + config_path)
 
-        res_header = {"package": None}
+        res_header: Dict[str, Optional[str]] = {"package": None}
         if name in self.headers:
             header = self.headers[name]
             res_header["package"] = header["package"] if "package" in header else None

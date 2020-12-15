@@ -106,7 +106,7 @@ class InputDefault:
         else:
             return False
 
-    def set_package_header(self, package_header: str) -> None:
+    def set_package_header(self, package_header: Optional[str]) -> None:
         assert self.__dict__["package_header"] is None
         if (
             package_header is None
