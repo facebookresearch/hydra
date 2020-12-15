@@ -30,9 +30,16 @@ class Deletion:
 
 
 @dataclass
+class OverrideMetadata:
+    external_override: bool
+    containing_config_path: Optional[str] = None
+    used: bool = False
+
+
+@dataclass
 class Overrides:
     override_choices: Dict[str, Optional[str]]
-    override_used: Dict[str, bool]
+    override_metadata: Dict[str, OverrideMetadata]
 
     append_group_defaults: List[GroupDefault]
     config_overrides: List[Override]
@@ -44,7 +51,7 @@ class Overrides:
 
     def __init__(self, repo: IConfigRepository, overrides_list: List[Override]) -> None:
         self.override_choices = {}
-        self.override_used = {}
+        self.override_metadata = {}
         self.append_group_defaults = []
         self.config_overrides = []
         self.deletions = {}
@@ -86,14 +93,19 @@ class Overrides:
                 else:
                     key = override.get_key_element()
                     self.override_choices[key] = value
-                    self.override_used[key] = False
+                    self.override_metadata[key] = OverrideMetadata(
+                        external_override=True
+                    )
 
-    def add_override(self, default: GroupDefault) -> None:
+    def add_override(self, parent_config_path: str, default: GroupDefault) -> None:
         assert default.override
         key = default.get_override_key()
         if key not in self.override_choices:
             self.override_choices[key] = default.get_name()
-            self.override_used[key] = False
+            self.override_metadata[key] = OverrideMetadata(
+                external_override=False,
+                containing_config_path=parent_config_path,
+            )
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
@@ -106,11 +118,11 @@ class Overrides:
         if key in self.override_choices:
             default.name = self.override_choices[key]
             default.config_name_overridden = True
-            self.override_used[key] = True
+            self.override_metadata[key].used = True
 
     def ensure_overrides_used(self) -> None:
-        for key, used in self.override_used.items():
-            if not used:
+        for key, meta in self.override_metadata.items():
+            if not meta.used:
                 group = key.split("@")[0]
                 choices = (
                     self.known_choices_per_group[group]
@@ -121,21 +133,23 @@ class Overrides:
                     msg = (
                         f"Could not override '{key}'."
                         f"\nDid you mean to override one of {', '.join(sorted(list(choices)))}?"
-                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
                     )
                 elif len(choices) == 1:
                     msg = (
                         f"Could not override '{key}'."
                         f"\nDid you mean to override {copy.copy(choices).pop()}?"
-                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
                     )
                 elif len(choices) == 0:
-                    msg = (
-                        f"Could not override '{key}'. No match in the defaults list."
-                        f"\nTo append to your default list use +{key}={self.override_choices[key]}"
-                    )
+                    msg = f"Could not override '{key}'. No match in the defaults list."
                 else:
                     assert False
+
+                if meta.containing_config_path is not None:
+                    msg = f"In '{meta.containing_config_path}': {msg}"
+
+                if meta.external_override:
+                    msg += f"\nTo append to your default list use +{key}={self.override_choices[key]}"
+
                 raise ConfigCompositionException(msg)
 
     def ensure_deletions_used(self) -> None:
@@ -380,7 +394,7 @@ def _update_overrides(
                         f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
                         f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
                     )
-                overrides.add_override(d)
+                overrides.add_override(parent.get_config_path(), d)
 
 
 def _create_defaults_tree_impl(

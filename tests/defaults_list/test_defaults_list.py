@@ -90,11 +90,13 @@ Plugins.instance()
 #  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
 #  - (Y) Enforce that overrides are at the end of the defaults list
 #    (with the exception of _self_ that can be after them)
-#  - Consider override style of: - override hydra/launcher: submitit
-#  - Fix error message when overriding a non-existing config group from the command line to not say "append with +"
+#  - (Y) Consider override style of: - override hydra/launcher: submitit
+#  - (Y) Profile and optimize default tree composition: speed in line with 1.0
+#  - (Y) Fix error message when overriding a non-existing config group from the command line to not say "append with +"
 #  - Improve --info defaults-tree output
 #  - (Y) Profile and optimize default tree composition: speed in line with 1.0
 #  - Test cases when config group name matches a keyword (optional, override)
+#  - Clean up sporadic TODOs in the code
 
 # TODO: (Y) rename support:
 #  - (Y) Remove rename support form 1.1
