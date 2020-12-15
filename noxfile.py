@@ -67,7 +67,7 @@ def _upgrade_basic(session):
         "install",
         "--upgrade",
         "setuptools",
-        "pip",
+        "pip==20.3.1",
         silent=SILENT,
     )
 
