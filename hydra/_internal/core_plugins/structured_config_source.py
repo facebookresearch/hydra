@@ -28,7 +28,7 @@ class StructuredConfigSource(ConfigSource):
     def scheme() -> str:
         return "structured"
 
-    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
+    def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
         ret = self.store.load(config_path=normalized_config_path)
         provider = ret.provider if ret.provider is not None else self.provider

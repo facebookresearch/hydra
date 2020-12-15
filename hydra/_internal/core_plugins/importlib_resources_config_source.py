@@ -29,7 +29,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def scheme() -> str:
         return "pkg"
 
-    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
+    def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
         res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
         if not res.exists():

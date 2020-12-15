@@ -30,10 +30,7 @@ class IConfigRepository(ABC):
 
     @abstractmethod
     def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
+        self, config_path: str, package_override: Optional[str] = None
     ) -> Optional[ConfigResult]:
         ...
 
@@ -101,21 +98,15 @@ class ConfigRepository(IConfigRepository):
         )
         return source
 
-    # TODO: Consider cleaning is_primary_config after behavior of @package normalizes
     def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
+        self, config_path: str, package_override: Optional[str] = None
     ) -> Optional[ConfigResult]:
         source = self._find_object_source(
             config_path=config_path, object_type=ObjectType.CONFIG
         )
         ret = None
         if source is not None:
-            ret = source.load_config(
-                config_path=config_path, is_primary_config=is_primary_config
-            )
+            ret = source.load_config(config_path=config_path)
             # if this source is THE schema source, flag the result as coming from it.
             ret.is_schema_source = (
                 source.__class__.__name__ == "StructuredConfigSource"
@@ -315,19 +306,14 @@ class CachingConfigRepository(IConfigRepository):
         return self.delegate.get_schema_source()
 
     def load_config(
-        self,
-        config_path: str,
-        is_primary_config: bool,
-        package_override: Optional[str] = None,
+        self, config_path: str, package_override: Optional[str] = None
     ) -> Optional[ConfigResult]:
-        cache_key = f"config_path={config_path},primary={is_primary_config},package_override={package_override}"
+        cache_key = f"config_path={config_path},package_override={package_override}"
         if cache_key in self.cache:
             return self.cache[cache_key]
         else:
             ret = self.delegate.load_config(
-                config_path=config_path,
-                is_primary_config=is_primary_config,
-                package_override=package_override,
+                config_path=config_path, package_override=package_override
             )
             self.cache[cache_key] = ret
             return ret

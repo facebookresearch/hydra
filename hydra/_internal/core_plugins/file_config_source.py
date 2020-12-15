@@ -18,7 +18,7 @@ class FileConfigSource(ConfigSource):
     def scheme() -> str:
         return "file"
 
-    def load_config(self, config_path: str, is_primary_config: bool) -> ConfigResult:
+    def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
         full_path = os.path.realpath(os.path.join(self.path, normalized_config_path))
         if not os.path.exists(full_path):

@@ -71,15 +71,10 @@ class TestConfigRepository:
         Plugins.instance()  # initializes
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
-        ret = repo.load_config(
-            config_path="dataset/imagenet.yaml", is_primary_config=False
-        )
+        ret = repo.load_config(config_path="dataset/imagenet.yaml")
         assert ret is not None
         assert ret.config == {"name": "imagenet", "path": "/datasets/imagenet"}
-        assert (
-            repo.load_config(config_path="not_found.yaml", is_primary_config=True)
-            is None
-        )
+        assert repo.load_config(config_path="not_found.yaml") is None
 
     def test_config_repository_exists(
         self, hydra_restore_singletons: Any, path: str
@@ -130,7 +125,7 @@ class TestConfigRepository:
         Plugins.instance()
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
-        ret = repo.load_config(config_path, is_primary_config=False)
+        ret = repo.load_config(config_path)
         assert ret.defaults_list == expected
 
 

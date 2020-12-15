@@ -354,11 +354,7 @@ class ConfigLoaderImpl(ConfigLoader):
         package = default.package
 
         assert config_path is not None
-        ret = repo.load_config(
-            config_path=config_path,
-            is_primary_config=is_primary,
-            package_override=package,
-        )
+        ret = repo.load_config(config_path=config_path, package_override=package)
         assert ret is not None
 
         if not isinstance(ret.config, DictConfig):
@@ -371,7 +367,7 @@ class ConfigLoaderImpl(ConfigLoader):
             try:
                 schema_source = repo.get_schema_source()
                 cname = ConfigSource._normalize_file_name(filename=config_path)
-                schema = schema_source.load_config(cname, is_primary_config=is_primary)
+                schema = schema_source.load_config(cname)
             except ConfigLoadError:
                 # schema not found, ignore
                 pass
