@@ -8,5 +8,5 @@ setup(
     author_email="omry@fb.com",
     url="https://github.com/facebookresearch/hydra/",
     packages=find_namespace_packages(include=["some_namespace.*"]),
-    install_requires=["hydra-core>=1.0.0"],
+    install_requires=["hydra-core"],
 )
