@@ -236,7 +236,7 @@ class CoreAxSweeper(Sweeper):
     ) -> List[Dict[str, Union[ax_types.TParamValue, List[ax_types.TParamValue]]]]:
         """Method to parse the command line arguments and convert them into Ax parameters"""
         parser = OverridesParser.create()
-        parsed = parser.validate_sweep_overrides_legal(arguments)
+        parsed = parser.parse_overrides(arguments)
         parameters: List[Dict[str, Any]] = []
         for override in parsed:
             if override.is_sweep_override():

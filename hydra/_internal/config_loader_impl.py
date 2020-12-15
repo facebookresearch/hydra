@@ -207,6 +207,10 @@ class ConfigLoaderImpl(ConfigLoader):
                 cfg.hydra.overrides.task.append(override.input_line)
                 app_overrides.append(override)
 
+        # TODO: should this open_dict be required given that choices is a Dict?
+        with open_dict(cfg.hydra.choices):
+            cfg.hydra.choices.update(defaults_list.overrides.known_choices)
+
         with open_dict(cfg.hydra):
             from hydra import __version__
 

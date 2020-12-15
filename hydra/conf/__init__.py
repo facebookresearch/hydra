@@ -155,6 +155,9 @@ class HydraConf:
     # TODO: good use case for Union support in OmegaConf
     verbose: Any = False
 
+    # Composition choices dictionary
+    choices: Dict[str, str] = field(default_factory=lambda: {})
+
 
 cs = ConfigStore.instance()
 

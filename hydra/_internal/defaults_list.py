@@ -202,6 +202,7 @@ class DefaultsList:
     defaults: List[ResultDefault]
     defaults_tree: DefaultsTreeNode
     config_overrides: List[Override]
+    overrides: Overrides
 
 
 def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
@@ -675,6 +676,7 @@ def create_defaults_list(
         defaults=defaults,
         config_overrides=overrides.config_overrides,
         defaults_tree=tree,
+        overrides=overrides,
     )
 
 

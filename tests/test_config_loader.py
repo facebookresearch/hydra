@@ -1131,3 +1131,51 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
     with open_dict(cfg):
         del cfg["hydra"]
     assert cfg == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    ("config", "overrides", "expected_choices"),
+    [
+        pytest.param(
+            "config",
+            [],
+            {
+                "optimizer": "nesterov",
+                "hydra/hydra_help": "default",
+                "hydra/help": "default",
+                "hydra/output": "default",
+                "hydra/sweeper": "basic",
+                "hydra/launcher": "basic",
+                "hydra/job_logging": "default",
+                "hydra/hydra_logging": "default",
+            },
+            id="test_choices",
+        ),
+        pytest.param(
+            "config",
+            ["optimizer=adam"],
+            {
+                "optimizer": "adam",
+                "hydra/hydra_help": "default",
+                "hydra/help": "default",
+                "hydra/output": "default",
+                "hydra/sweeper": "basic",
+                "hydra/launcher": "basic",
+                "hydra/job_logging": "default",
+                "hydra/hydra_logging": "default",
+            },
+            id="test_choices:override",
+        ),
+    ],
+)
+def test_hydra_choices(config: str, overrides: Any, expected_choices: Any) -> None:
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path(
+            "tests/test_apps/app_with_cfg_groups/conf"
+        ),
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name=config, overrides=overrides, run_mode=RunMode.RUN
+    )
+    assert cfg.hydra.choices == expected_choices
