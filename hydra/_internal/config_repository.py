@@ -173,10 +173,10 @@ class ConfigRepository(IConfigRepository):
         for item in defaults:
             default: InputDefault
             if isinstance(item, DictConfig):
-
                 old_optional = None
-                if "optional" in item:
-                    old_optional = item.pop("optional")
+                if len(item) > 1:
+                    if "optional" in item:
+                        old_optional = item.pop("optional")
                 keys = list(item.keys())
 
                 if len(keys) > 1:
@@ -260,6 +260,8 @@ class ConfigRepository(IConfigRepository):
         group: str, keywords: "ConfigRepository.Keywords"
     ) -> None:
         elements = group.split(" ")
+        group = elements[-1]
+        elements = elements[0:-1]
         for idx, e in enumerate(elements):
             if e == "optional":
                 keywords.optional = True
@@ -267,7 +269,7 @@ class ConfigRepository(IConfigRepository):
                 keywords.override = True
             else:
                 break
-        keywords.group = " ".join(elements[idx:])
+        keywords.group = group
 
 
 class CachingConfigRepository(IConfigRepository):
