@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
 from textwrap import dedent
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pytest import mark, param, raises, warns
 
@@ -2119,4 +2119,94 @@ def test_group_with_keyword_names(
         input_overrides=overrides,
         expected=expected,
     )
-    ...
+
+
+@mark.parametrize(  # type: ignore
+    ("config_name", "overrides", "expected", "expected_choices"),
+    [
+        param(
+            "empty",
+            [],
+            DefaultsTreeNode(node=ConfigDefault(path="empty")),
+            {},
+            id="empty",
+        ),
+        param(
+            "group_default",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file1"),
+                ],
+            ),
+            {"group1": "file1"},
+            id="group_default",
+        ),
+        param(
+            "group_default",
+            ["group1=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", name="file2"),
+                ],
+            ),
+            {"group1": "file2"},
+            id="group_default:override",
+        ),
+        param(
+            "nested_placeholder",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="nested_placeholder"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="placeholder"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2"),
+                        ],
+                    ),
+                ],
+            ),
+            {"group1": "placeholder", "group1/group2": None},
+            id="nested_placeholder",
+        ),
+        param(
+            "include_nested_group_pkg2",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_nested_group_pkg2"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", name="group_item1_pkg2"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group2", name="file1", package="pkg2"),
+                        ],
+                    ),
+                ],
+            ),
+            {"group1": "group_item1_pkg2", "group1/group2@group1.pkg2": "file1"},
+            id="include_nested_group_pkg2",
+        ),
+    ],
+)
+def test_choices(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+    expected_choices: Dict[str, str],
+) -> None:
+    res = _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+    assert res is not None
+    assert res.overrides.known_choices == expected_choices

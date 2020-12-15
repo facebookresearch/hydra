@@ -87,9 +87,8 @@ Plugins.instance()
 #  - (Y) implement --info=defaults-tree output
 
 # TODO: Followup items
-#  - Consider retaining the final choices in the hydra config node to allow interpolation with their values.
+#  - (Y) Consider retaining the final choices in the hydra config node to allow interpolation with their values.
 #  - (Y) Enforce that overrides are at the end of the defaults list
-#    (with the exception of _self_ that can be after them)
 #  - (Y) Consider override style of: - override hydra/launcher: submitit
 #  - (Y) Profile and optimize default tree composition: speed in line with 1.0
 #  - (Y) Fix error message when overriding a non-existing config group from the command line to not say "append with +"
@@ -114,7 +113,15 @@ Plugins.instance()
 #  - Create a page describing configuring experiments with Hydra (experiment use case)
 #  - Create https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_list_override
 #  - Update Structured Configs tutorial to utilize recursive defaults as an alternative to automatic schema
-#  - Consider deprecating automtic schema support in favor of extending a config via recursive defaults
+#  - Consider deprecating automatic schema support in favor of extending a config via recursive defaults
+#  - Document --info defaults and --info defaults-tree
+#  - Document hydra.choices
+#  - Add news fragments for user facing features
+
+
+# TODO: Followup items to explore
+#  - Consider deprecating automatic schema support in favor of extending a config via recursive defaults
+>>>>>>> e19da87be... added hydra.choices node
 
 
 @mark.parametrize(  # type: ignore

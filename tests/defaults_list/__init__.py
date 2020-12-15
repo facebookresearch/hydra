@@ -3,7 +3,12 @@ from typing import Any, List, Optional
 
 from hydra._internal.config_repository import ConfigRepository, IConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
-from hydra._internal.defaults_list import Overrides, _create_defaults_tree, _create_root
+from hydra._internal.defaults_list import (
+    DefaultsList,
+    Overrides,
+    _create_defaults_tree,
+    _create_root,
+)
 from hydra.core.default_element import DefaultsTreeNode
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
@@ -20,7 +25,7 @@ def _test_defaults_tree_impl(
     expected: Any,
     prepend_hydra: bool = False,
     skip_missing: bool = False,
-) -> None:
+) -> Optional[DefaultsList]:
     parser = OverridesParser.create()
     repo = create_repo()
     root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
@@ -39,6 +44,9 @@ def _test_defaults_tree_impl(
         overrides.ensure_overrides_used()
         overrides.ensure_deletions_used()
         assert result == expected
+        return DefaultsList(
+            defaults=[], defaults_tree=result, overrides=overrides, config_overrides=[]
+        )
     else:
         with expected:
             _create_defaults_tree(
@@ -51,3 +59,4 @@ def _test_defaults_tree_impl(
             )
             overrides.ensure_overrides_used()
             overrides.ensure_deletions_used()
+        return None
