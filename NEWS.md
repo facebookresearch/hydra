@@ -97,7 +97,7 @@ To see the complete release notes for 1.0 take a look at the release notes of:
 
 1.0.0rc4 (2020-08-18)
 =====================
-Be aware that `cfg.pretty()` is now deprecated and you should use `OmegeConf.to_yaml(cfg)` instead.
+Be aware that `cfg.pretty()` is now deprecated and you should use `OmegaConf.to_yaml(cfg)` instead.
 
 ### Features
 
