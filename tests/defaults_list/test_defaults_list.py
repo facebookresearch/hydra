@@ -95,7 +95,7 @@ Plugins.instance()
 #  - (Y) Fix error message when overriding a non-existing config group from the command line to not say "append with +"
 #  - (Y) Profile and optimize default tree composition: speed in line with 1.0
 #  - (Y) Test cases when config group name matches a keyword (optional, override)
-#  - Clean up sporadic TODOs in the code
+#  - (Y) Clean up sporadic TODOs in the code
 
 # TODO: (Y) rename support:
 #  - (Y) Remove rename support form 1.1

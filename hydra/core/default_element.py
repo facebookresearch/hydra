@@ -14,6 +14,7 @@ class ResultDefault:
     parent: Optional[str] = None
     package: Optional[str] = None
     is_self: bool = False
+    primary: bool = field(default=False, compare=False)
 
     override_key: Optional[str] = field(default=None, compare=False)
 
@@ -26,7 +27,7 @@ class ResultDefault:
                 attrs.append(f'{attr}="{value}"')
 
         flags = []
-        flag_names = ["is_self"]
+        flag_names = ["is_self", "primary"]
         for flag in flag_names:
             value = getattr(self, flag)
             if value:
