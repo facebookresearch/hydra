@@ -93,9 +93,8 @@ Plugins.instance()
 #  - (Y) Consider override style of: - override hydra/launcher: submitit
 #  - (Y) Profile and optimize default tree composition: speed in line with 1.0
 #  - (Y) Fix error message when overriding a non-existing config group from the command line to not say "append with +"
-#  - Improve --info defaults-tree output
 #  - (Y) Profile and optimize default tree composition: speed in line with 1.0
-#  - Test cases when config group name matches a keyword (optional, override)
+#  - (Y) Test cases when config group name matches a keyword (optional, override)
 #  - Clean up sporadic TODOs in the code
 
 # TODO: (Y) rename support:

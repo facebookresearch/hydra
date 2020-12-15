@@ -2031,7 +2031,7 @@ def test_none_config_with_hydra(
 
 
 @mark.parametrize(  # type: ignore
-    "config_name,overrides,expected",
+    ("config_name", "overrides", "expected"),
     [
         param(
             "defaults_with_override_only",
@@ -2065,3 +2065,58 @@ def test_defaults_with_overrides_only(
         expected=expected,
         prepend_hydra=True,
     )
+
+
+@mark.parametrize(  # type: ignore
+    ("config_name", "overrides", "expected"),
+    [
+        param(
+            "keyword_as_groups",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="keyword_as_groups"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="optional", name="file1"),
+                    GroupDefault(group="override", name="file1"),
+                ],
+            ),
+            id="keyword_override_as_group",
+        ),
+        param(
+            "keyword_override_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="keyword_override_override"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="override", name="file2"),
+                ],
+            ),
+            id="keyword_override_override",
+        ),
+        param(
+            "keyword_optional_optional",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="keyword_optional_optional"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="optional", name="file1", optional=True),
+                ],
+            ),
+            id="keyword_optional_optional",
+        ),
+    ],
+)
+def test_group_with_keyword_names(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+    ...
