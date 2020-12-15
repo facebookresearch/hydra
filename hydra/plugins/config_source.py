@@ -18,8 +18,8 @@ class ConfigResult:
     provider: str
     path: str
     config: Container
-    header: Dict[str, str]
-    defaults_list: List[InputDefault] = None
+    header: Dict[str, Optional[str]]
+    defaults_list: Optional[List[InputDefault]] = None
     is_schema_source: bool = False
 
 
@@ -121,8 +121,8 @@ class ConfigSource(Plugin):
         return filename
 
     @staticmethod
-    def _get_header_dict(config_text: str) -> Dict[str, str]:
-        res = {}
+    def _get_header_dict(config_text: str) -> Dict[str, Optional[str]]:
+        res: Dict[str, Optional[str]] = {}
         for line in config_text.splitlines():
             line = line.strip()
             if len(line) == 0:

@@ -1,3 +1,2 @@
 # @package foo
-# This is an error, primary configs must be in the _global_ package.
 primary: true

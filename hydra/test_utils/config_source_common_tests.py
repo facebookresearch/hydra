@@ -251,7 +251,7 @@ class ConfigSourceTestSuite:
         path: str,
         config_path: str,
         expected_defaults_list: List[InputDefault],
-        expected_package,
+        expected_package: Any,
         expected_config: Any,
         recwarn: Any,
     ) -> None:

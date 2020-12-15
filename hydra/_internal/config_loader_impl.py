@@ -2,6 +2,7 @@
 """
 Configuration loader
 """
+import copy
 import os
 import re
 import sys
@@ -351,10 +352,9 @@ class ConfigLoaderImpl(ConfigLoader):
         self, default: ResultDefault, repo: IConfigRepository, is_primary: bool
     ) -> Tuple[ConfigResult, LoadTrace]:
         config_path = default.config_path
-        package = default.package
 
         assert config_path is not None
-        ret = repo.load_config(config_path=config_path, package_override=package)
+        ret = repo.load_config(config_path=config_path)
         assert ret is not None
 
         if not isinstance(ret.config, DictConfig):
@@ -385,7 +385,6 @@ class ConfigLoaderImpl(ConfigLoader):
                     if "hydra" in ret.config and not hydra_config_group:
                         hydra = ret.config.pop("hydra")
 
-                    schema = repo._embed_result_config(schema, package)
                     merged = OmegaConf.merge(schema.config, ret.config)
                     assert isinstance(merged, DictConfig)
 
@@ -408,7 +407,26 @@ class ConfigLoaderImpl(ConfigLoader):
             search_path=ret.path,
             provider=ret.provider,
         )
+
+        ret = self._embed_result_config(ret, default.package)
+
         return ret, trace
+
+    @staticmethod
+    def _embed_result_config(
+        ret: ConfigResult, package_override: Optional[str]
+    ) -> ConfigResult:
+        package = ret.header["package"]
+        if package_override is not None:
+            package = package_override
+
+        if package is not None and package != "":
+            cfg = OmegaConf.create()
+            OmegaConf.update(cfg, package, ret.config, merge=False)
+            ret = copy.copy(ret)
+            ret.config = cfg
+
+        return ret
 
     def list_groups(self, parent_name: str) -> List[str]:
         return self.get_group_options(

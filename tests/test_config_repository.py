@@ -12,7 +12,7 @@ from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
 )
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
-from hydra.core.default_element import InputDefault, GroupDefault
+from hydra.core.default_element import GroupDefault, InputDefault
 from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigSource
@@ -126,6 +126,7 @@ class TestConfigRepository:
         config_search_path = create_config_search_path(path)
         repo = ConfigRepository(config_search_path=config_search_path)
         ret = repo.load_config(config_path)
+        assert ret is not None
         assert ret.defaults_list == expected
 
 
@@ -173,7 +174,7 @@ def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
             ConfigSource._get_header_dict(cfg_text)
 
 
-def test_restore_singleton_state_hack():
+def test_restore_singleton_state_hack() -> None:
     """
     This is a hack that allow us to undo changes to the ConfigStore.
     During this test, the config store is being modified in Python imports.
