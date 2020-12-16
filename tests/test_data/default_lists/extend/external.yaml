@@ -1,3 +1,2 @@
 defaults:
   - /db/base_db@
-  - _self_
