@@ -76,6 +76,11 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         return isinstance(c, TerminalNodeImpl) and c.symbol.type == OverrideLexer.WS
 
     def visitPrimitive(
+        self, ctx: OverrideParser.PrimitiveContext
+    ) -> Optional[Union[QuotedString, int, bool, float, str]]:
+        return self.visitPrimitiveOrDictKey(ctx)
+
+    def visitPrimitiveOrDictKey(
         self, ctx: Union[OverrideParser.PrimitiveContext, OverrideParser.DictKeyContext]
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
         ret: Optional[Union[int, bool, float, str]]
@@ -169,8 +174,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         )
 
     def visitDictKey(self, ctx: OverrideParser.DictKeyContext) -> Any:
-        # Dictionary keys are a subset of primitives, they may thus be parsed as such.
-        return self.visitPrimitive(ctx)
+        return self.visitPrimitiveOrDictKey(ctx)
 
     def visitDictKeyValuePair(
         self, ctx: OverrideParser.DictKeyValuePairContext
