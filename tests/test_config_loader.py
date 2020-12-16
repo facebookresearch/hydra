@@ -1152,14 +1152,12 @@ def test_apply_overrides_to_config(
             id="default_change",
         ),
         pytest.param(
-            # need to unset optimizer config group first, otherwise they get merged
             "config",
             ["optimizer={type:nesterov2,lr:1}"],
             {"optimizer": {"type": "nesterov2", "lr": 1}},
             id="dict_merge",
         ),
         pytest.param(
-            # need to unset optimizer config group first, otherwise they get merged
             "config",
             ["+optimizer={foo:10}"],
             {"optimizer": {"type": "nesterov", "lr": 0.001, "foo": 10}},
