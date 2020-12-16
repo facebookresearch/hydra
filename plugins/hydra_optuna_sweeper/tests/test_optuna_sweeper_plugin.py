@@ -25,7 +25,7 @@ chdir_plugin_root()
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-# @pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)

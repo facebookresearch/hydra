@@ -19,8 +19,6 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             # "Programming Language :: Python :: 3.9",
-            # Python 3.9 support pending on scikit 2.4.0 release
-            # https://github.com/scikit-learn/scikit-learn/issues/18621#issuecomment-733078676
             "Operating System :: POSIX :: Linux",
             "Operating System :: MacOS",
             "Development Status :: 4 - Beta",

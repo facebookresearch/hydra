@@ -26,8 +26,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        # "Programming Language :: Python :: 3.9",
-        # Python 3.9 support depends on https://github.com/optuna/optuna/issues/2034
+        "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
