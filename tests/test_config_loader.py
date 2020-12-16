@@ -44,14 +44,6 @@ class TopLevelConfig:
 
 hydra_load_list: List[LoadTrace] = [
     LoadTrace(
-        config_path="hydra/config",
-        package="hydra",
-        parent="<root>",
-        is_self=True,
-        search_path="structured://",
-        provider="hydra",
-    ),
-    LoadTrace(
         config_path="hydra/hydra_logging/default",
         package="hydra.hydra_logging",
         parent="hydra/config",
@@ -98,6 +90,14 @@ hydra_load_list: List[LoadTrace] = [
         package="hydra.hydra_help",
         parent="hydra/config",
         search_path="pkg://hydra.conf",
+        provider="hydra",
+    ),
+    LoadTrace(
+        config_path="hydra/config",
+        package="hydra",
+        parent="<root>",
+        is_self=True,
+        search_path="structured://",
         provider="hydra",
     ),
 ]
@@ -600,14 +600,6 @@ def test_override_hydra_config_group_from_config_file() -> None:
     )
     expected = [
         LoadTrace(
-            config_path="hydra/config",
-            package="hydra",
-            parent="<root>",
-            is_self=True,
-            search_path="structured://",
-            provider="hydra",
-        ),
-        LoadTrace(
             config_path="hydra/hydra_logging/hydra_debug",
             package="hydra.hydra_logging",
             parent="hydra/config",
@@ -654,6 +646,14 @@ def test_override_hydra_config_group_from_config_file() -> None:
             package="hydra.hydra_help",
             parent="hydra/config",
             search_path="pkg://hydra.conf",
+            provider="hydra",
+        ),
+        LoadTrace(
+            config_path="hydra/config",
+            package="hydra",
+            parent="<root>",
+            is_self=True,
+            search_path="structured://",
             provider="hydra",
         ),
         LoadTrace(
@@ -709,17 +709,17 @@ def test_non_config_group_default() -> None:
     expected.extend(
         [
             LoadTrace(
-                config_path="non_config_group_default.yaml",
+                config_path="some_config",
                 package="",
-                parent="<root>",
-                is_self=True,
+                parent="non_config_group_default.yaml",
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
             ),
             LoadTrace(
-                config_path="some_config",
+                config_path="non_config_group_default.yaml",
                 package="",
-                parent="non_config_group_default.yaml",
+                parent="<root>",
+                is_self=True,
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
             ),
@@ -748,14 +748,6 @@ def test_mixed_composition_order() -> None:
     expected.extend(
         [
             LoadTrace(
-                config_path="mixed_compose.yaml",
-                package="",
-                parent="<root>",
-                is_self=True,
-                search_path="file://hydra/test_utils/configs",
-                provider="main",
-            ),
-            LoadTrace(
                 config_path="some_config",
                 package="",
                 parent="mixed_compose.yaml",
@@ -773,6 +765,14 @@ def test_mixed_composition_order() -> None:
                 config_path="config",
                 package="",
                 parent="mixed_compose.yaml",
+                search_path="file://hydra/test_utils/configs",
+                provider="main",
+            ),
+            LoadTrace(
+                config_path="mixed_compose.yaml",
+                package="",
+                parent="<root>",
+                is_self=True,
                 search_path="file://hydra/test_utils/configs",
                 provider="main",
             ),

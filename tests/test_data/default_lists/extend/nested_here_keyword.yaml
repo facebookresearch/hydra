@@ -1,3 +1,2 @@
 defaults:
   - nested/base_db@_here_
-  - _self_

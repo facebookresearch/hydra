@@ -208,11 +208,10 @@ class DefaultsList:
 def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
     # check that self is present only once
     has_self = False
-    has_none_override_items = False
+    has_non_override = False
     for d in defaults:
-        if d.is_override():
-            continue
-        has_none_override_items = True
+        if not d.is_override():
+            has_non_override = True
         if d.is_self():
             if has_self:
                 raise ConfigCompositionException(
@@ -220,8 +219,8 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
                 )
             has_self = True
 
-    if not has_self and has_none_override_items:
-        defaults.insert(0, ConfigDefault(path="_self_"))
+    if not has_self and has_non_override or len(defaults) == 0:
+        defaults.append(ConfigDefault(path="_self_"))
 
     return not has_self
 
@@ -458,13 +457,16 @@ def _create_defaults_tree_impl(
         if defaults_list is None:
             defaults_list = []
 
-        if is_root_config:
-            for gd in overrides.append_group_defaults:
-                defaults_list.append(gd)
-
         self_added = False
-        if len(defaults_list) > 0:
+        if (
+            len(defaults_list) > 0
+            or is_root_config
+            and len(overrides.append_group_defaults) > 0
+        ):
             self_added = _validate_self(containing_node=parent, defaults=defaults_list)
+
+        if is_root_config:
+            defaults_list.extend(overrides.append_group_defaults)
 
         _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 

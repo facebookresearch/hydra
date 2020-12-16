@@ -36,7 +36,7 @@ Plugins.instance()
             [],
             DefaultsTreeNode(
                 node=ConfigDefault(path="config_default"),
-                children=[ConfigDefault(path="_self_"), ConfigDefault(path="empty")],
+                children=[ConfigDefault(path="empty"), ConfigDefault(path="_self_")],
             ),
             id="config_default",
         ),
@@ -46,8 +46,8 @@ Plugins.instance()
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default",
@@ -58,8 +58,8 @@ Plugins.instance()
             DefaultsTreeNode(
                 node=ConfigDefault(path="optional"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", optional=True),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="optional",
@@ -94,14 +94,14 @@ Plugins.instance()
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_group",
@@ -112,14 +112,14 @@ Plugins.instance()
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_config_item"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="config_item"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             ConfigDefault(path="group2/file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_config_item",
@@ -157,8 +157,8 @@ def test_simple_defaults_tree_cases(
             DefaultsTreeNode(
                 node=ConfigDefault(path="config_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     ConfigDefault(path="empty"),
+                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                 ],
             ),
@@ -170,9 +170,9 @@ def test_simple_defaults_tree_cases(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     # config tree allow for duplicate items
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                 ],
             ),
@@ -197,14 +197,14 @@ def test_simple_defaults_tree_cases(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group2", name="file1"),
                 ],
             ),
@@ -231,8 +231,8 @@ def test_tree_with_append_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default:override",
@@ -243,8 +243,8 @@ def test_tree_with_append_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="optional"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2", optional=True),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="optional:override",
@@ -255,14 +255,14 @@ def test_tree_with_append_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item2"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_group:override",
@@ -273,14 +273,14 @@ def test_tree_with_append_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_group:override_nested",
@@ -359,8 +359,8 @@ def test_misc_errors(
             DefaultsTreeNode(
                 node=ConfigDefault(path="config_default_pkg1"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     ConfigDefault(path="empty", package="pkg1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="config_default_pkg1",
@@ -371,8 +371,8 @@ def test_misc_errors(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_pkg1"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="pkg1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default_pkg1",
@@ -383,14 +383,14 @@ def test_misc_errors(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group_pkg2"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1_pkg2"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_group_pkg2",
@@ -401,14 +401,14 @@ def test_misc_errors(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_config_item_pkg2"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="config_item_pkg2"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             ConfigDefault(path="group2/file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_nested_config_item_pkg2",
@@ -434,8 +434,8 @@ def test_defaults_tree_with_package_overrides(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_pkg1"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2", package="pkg1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="option_override:group_default_pkg1",
@@ -462,14 +462,14 @@ def test_defaults_tree_with_package_overrides(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group_pkg2"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1_pkg2"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file2", package="pkg2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="option_override:include_nested_group_pkg2",
@@ -511,8 +511,8 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_same_level"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_same_level",
@@ -523,8 +523,8 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_same_level"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file3"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_same_level:external_override",
@@ -535,20 +535,20 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_override_same_level"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(
                             group="group1",
                             name="override_same_level",
                         ),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(
                                 group="group2",
                                 name="file2",
                             ),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_override_same_level",
@@ -559,20 +559,20 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_override_same_level"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(
                             group="group1",
                             name="override_same_level",
                         ),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(
                                 group="group2",
                                 name="file3",
                             ),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="include_override_same_level:external_override",
@@ -583,14 +583,14 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_nested_group_item"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_nested_group_item",
@@ -601,14 +601,14 @@ def test_defaults_tree_with_package_overrides__group_override(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_nested_group_item"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file3"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_nested_group_item:external_override",
@@ -649,9 +649,9 @@ def test_override_option_from_defaults_list(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="pkg1"),
                     GroupDefault(group="group1", name="file1", package="pkg2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="two_group_defaults_different_pkgs",
@@ -662,9 +662,9 @@ def test_override_option_from_defaults_list(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2", package="pkg1"),
                     GroupDefault(group="group1", name="file1", package="pkg2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="two_group_defaults_different_pkgs:override_first",
@@ -675,9 +675,9 @@ def test_override_option_from_defaults_list(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="pkg1"),
                     GroupDefault(group="group1", name="file2", package="pkg2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="two_group_defaults_different_pkgs:override_second",
@@ -706,9 +706,9 @@ def test_two_group_defaults_different_pkgs(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom1"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     DefaultsTreeNode(
@@ -728,9 +728,9 @@ def test_two_group_defaults_different_pkgs(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom2"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     DefaultsTreeNode(
@@ -772,9 +772,9 @@ def test_legacy_hydra_overrides_from_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_with_explicit_experiment"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
                     GroupDefault(group="experiment", name="override_config_group"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default_with_explicit_experiment",
@@ -785,9 +785,9 @@ def test_legacy_hydra_overrides_from_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_with_explicit_experiment"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file3"),
                     GroupDefault(group="experiment", name="override_config_group"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default_with_explicit_experiment:with_external_override",
@@ -815,8 +815,8 @@ def test_group_default_with_explicit_experiment(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
+                    ConfigDefault(path="_self_"),
                     GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
@@ -828,8 +828,8 @@ def test_group_default_with_explicit_experiment(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file3"),
+                    ConfigDefault(path="_self_"),
                     GroupDefault(group="experiment", name="override_config_group"),
                 ],
             ),
@@ -858,8 +858,8 @@ def test_group_default_with_appended_experiment(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(
                             group="experiment", name="include_absolute_config"
@@ -879,8 +879,8 @@ def test_group_default_with_appended_experiment(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(
                             group="experiment", name="include_absolute_config"
@@ -918,16 +918,16 @@ def test_experiment_include_absolute_config(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom1"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     DefaultsTreeNode(
                         node=ConfigDefault(path="group_default"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group1", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     GroupDefault(group="experiment", name="override_hydra"),
@@ -944,16 +944,16 @@ def test_experiment_include_absolute_config(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom2"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     DefaultsTreeNode(
                         node=ConfigDefault(path="group_default"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group1", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     GroupDefault(group="experiment", name="override_hydra"),
@@ -988,9 +988,9 @@ def test_experiment_overriding_hydra_group(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom1"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     ConfigDefault(path="experiment/override_hydra"),
@@ -1022,7 +1022,6 @@ def test_experiment_as_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="test_extend_same_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="extend", name="here"),
                         children=[
@@ -1030,6 +1029,7 @@ def test_experiment_as_primary_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="test_extend_same_group",
@@ -1040,7 +1040,6 @@ def test_experiment_as_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="test_extend_from_external_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="extend", name="external"),
                         children=[
@@ -1048,6 +1047,7 @@ def test_experiment_as_primary_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="test_extend_from_external_group",
@@ -1058,7 +1058,6 @@ def test_experiment_as_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="test_extend_from_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="extend", name="nested"),
                         children=[
@@ -1066,6 +1065,7 @@ def test_experiment_as_primary_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="test_extend_from_nested_group",
@@ -1076,7 +1076,6 @@ def test_experiment_as_primary_config(
             DefaultsTreeNode(
                 node=ConfigDefault(path="test_extend_from_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="extend", name="nested_here_keyword"),
                         children=[
@@ -1084,6 +1083,7 @@ def test_experiment_as_primary_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="nested_here_keyword",
@@ -1124,8 +1124,8 @@ def test_extension_use_cases(
             DefaultsTreeNode(
                 node=ConfigDefault(path="with_missing"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="db", name="base_db"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="with_missing:override",
@@ -1153,8 +1153,8 @@ def test_extension_use_cases(
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="with_missing"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                 ],
@@ -1184,8 +1184,8 @@ def test_with_missing(
             DefaultsTreeNode(
                 node=ConfigDefault(path="with_missing"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="db", name="???"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="with_missing",
@@ -1213,7 +1213,10 @@ def test_with_missing_and_skip_missing_flag(
             [],
             DefaultsTreeNode(
                 node=ConfigDefault(path="placeholder"),
-                children=[ConfigDefault(path="_self_"), GroupDefault(group="group1")],
+                children=[
+                    GroupDefault(group="group1"),
+                    ConfigDefault(path="_self_"),
+                ],
             ),
             id="placeholder",
         ),
@@ -1223,8 +1226,8 @@ def test_with_missing_and_skip_missing_flag(
             DefaultsTreeNode(
                 node=ConfigDefault(path="placeholder"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="placeholder:override",
@@ -1235,14 +1238,14 @@ def test_with_missing_and_skip_missing_flag(
             DefaultsTreeNode(
                 node=ConfigDefault(path="nested_placeholder"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="placeholder"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="nested_placeholder",
@@ -1253,14 +1256,14 @@ def test_with_missing_and_skip_missing_flag(
             DefaultsTreeNode(
                 node=ConfigDefault(path="nested_placeholder"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="placeholder"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="nested_placeholder:override",
@@ -1288,10 +1291,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_simple"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                     GroupDefault(group="group2", name="file2"),
                     GroupDefault(group="group1_group2", name="file1_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_simple",
@@ -1302,10 +1305,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_simple"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
                     GroupDefault(group="group2", name="file2"),
                     GroupDefault(group="group1_group2", name="file2_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_simple:override",
@@ -1316,10 +1319,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_forward"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1_group2", name="file1_file2"),
                     GroupDefault(group="group1", name="file1"),
                     GroupDefault(group="group2", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_forward",
@@ -1330,10 +1333,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_forward"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1_group2", name="file2_file2"),
                     GroupDefault(group="group1", name="file2"),
                     GroupDefault(group="group2", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_forward:override",
@@ -1344,9 +1347,9 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_nested"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1/group2", name="file1"),
                     GroupDefault(group="group1_group2", name="foo_file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_nested",
@@ -1357,9 +1360,9 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_nested"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1/group2", name="file2"),
                     GroupDefault(group="group1_group2", name="foo_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_nested:override",
@@ -1370,10 +1373,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_with_package_override"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="package"),
                     GroupDefault(group="group2", name="file2"),
                     GroupDefault(group="group1_group2", name="file1_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_with_package_override",
@@ -1384,10 +1387,10 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_with_package_override"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2", package="package"),
                     GroupDefault(group="group2", name="file2"),
                     GroupDefault(group="group1_group2", name="file2_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_with_package_override:override",
@@ -1398,7 +1401,6 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_with_nested_defaults_list"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                     GroupDefault(group="group2", name="file1"),
                     DefaultsTreeNode(
@@ -1406,10 +1408,11 @@ def test_placeholder(
                             group="group1_group2", name="file1_file1_with_defaults_list"
                         ),
                         children=[
-                            ConfigDefault(path="_self_"),
                             ConfigDefault(path="empty1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_with_nested_defaults_list",
@@ -1420,7 +1423,6 @@ def test_placeholder(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_with_nested_defaults_list"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                     GroupDefault(group="group2", name="file2"),
                     DefaultsTreeNode(
@@ -1428,10 +1430,11 @@ def test_placeholder(
                             group="group1_group2", name="file1_file2_with_defaults_list"
                         ),
                         children=[
-                            ConfigDefault(path="_self_"),
                             ConfigDefault(path="empty2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_with_nested_defaults_list:override",
@@ -1485,10 +1488,10 @@ def test_interpolation(
             DefaultsTreeNode(
                 node=ConfigDefault(path="interpolation_legacy_without_self"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
                     GroupDefault(group="group2", name="file2"),
                     GroupDefault(group="group1_group2", name="file1_file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="interpolation_legacy_without_self",
@@ -1522,14 +1525,14 @@ def test_legacy_interpolation(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_nested_to_null"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_nested_to_null",
@@ -1540,14 +1543,14 @@ def test_legacy_interpolation(
             DefaultsTreeNode(
                 node=ConfigDefault(path="override_nested_to_null"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="override_nested_to_null:override",
@@ -1575,14 +1578,14 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:include_nested_group:baseline",
@@ -1593,8 +1596,8 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="group_item1", deleted=True),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:include_nested_group:group1",
@@ -1605,14 +1608,14 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1", deleted=True),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:include_nested_group:group1/group2",
@@ -1623,8 +1626,8 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="group_item1", deleted=True),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:include_nested_group:group1=group_item1",
@@ -1644,9 +1647,9 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="pkg1"),
                     GroupDefault(group="group1", name="file1", package="pkg2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:two_group_defaults_different_pkgs:baseline",
@@ -1657,11 +1660,11 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(
                         group="group1", name="file1", package="pkg1", deleted=True
                     ),
                     GroupDefault(group="group1", name="file1", package="pkg2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:two_group_defaults_different_pkgs:delete_pkg1",
@@ -1672,11 +1675,11 @@ def test_override_nested_to_null(
             DefaultsTreeNode(
                 node=ConfigDefault(path="two_group_defaults_different_pkgs"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1", package="pkg1"),
                     GroupDefault(
                         group="group1", name="file1", package="pkg2", deleted=True
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="delete:two_group_defaults_different_pkgs:delete_pkg1",
@@ -1877,11 +1880,11 @@ def test_override_errors(
             DefaultsTreeNode(
                 node=ConfigDefault(path="missing_optional_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     ConfigDefault(path="empty"),
                     GroupDefault(
                         group="foo", name="missing", optional=True, deleted=True
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="missing_optional_default",
@@ -1909,8 +1912,8 @@ def test_load_missing_optional(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_global"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file_with_global_header"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default_global",
@@ -1921,8 +1924,8 @@ def test_load_missing_optional(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default_global"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file_with_global_header"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="group_default_global",
@@ -1985,9 +1988,9 @@ def test_none_config(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="default"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     VirtualRoot(),
@@ -2004,9 +2007,9 @@ def test_none_config(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="default"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     VirtualRoot(),
@@ -2042,9 +2045,9 @@ def test_none_config_with_hydra(
                     DefaultsTreeNode(
                         node=ConfigDefault(path="hydra/config"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="help", name="custom1"),
                             GroupDefault(group="output", name="default"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
                     ConfigDefault(path="defaults_with_override_only"),
@@ -2076,9 +2079,9 @@ def test_defaults_with_overrides_only(
             DefaultsTreeNode(
                 node=ConfigDefault(path="keyword_as_groups"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="optional", name="file1"),
                     GroupDefault(group="override", name="file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="keyword_override_as_group",
@@ -2089,8 +2092,8 @@ def test_defaults_with_overrides_only(
             DefaultsTreeNode(
                 node=ConfigDefault(path="keyword_override_override"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="override", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="keyword_override_override",
@@ -2101,8 +2104,8 @@ def test_defaults_with_overrides_only(
             DefaultsTreeNode(
                 node=ConfigDefault(path="keyword_optional_optional"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="optional", name="file1", optional=True),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             id="keyword_optional_optional",
@@ -2137,8 +2140,8 @@ def test_group_with_keyword_names(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             {"group1": "file1"},
@@ -2150,8 +2153,8 @@ def test_group_with_keyword_names(
             DefaultsTreeNode(
                 node=ConfigDefault(path="group_default"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     GroupDefault(group="group1", name="file2"),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             {"group1": "file2"},
@@ -2163,14 +2166,14 @@ def test_group_with_keyword_names(
             DefaultsTreeNode(
                 node=ConfigDefault(path="nested_placeholder"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="placeholder"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             {"group1": "placeholder", "group1/group2": None},
@@ -2182,14 +2185,14 @@ def test_group_with_keyword_names(
             DefaultsTreeNode(
                 node=ConfigDefault(path="include_nested_group_pkg2"),
                 children=[
-                    ConfigDefault(path="_self_"),
                     DefaultsTreeNode(
                         node=GroupDefault(group="group1", name="group_item1_pkg2"),
                         children=[
-                            ConfigDefault(path="_self_"),
                             GroupDefault(group="group2", name="file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
                         ],
                     ),
+                    ConfigDefault(path="_self_"),
                 ],
             ),
             {"group1": "group_item1_pkg2", "group1/group2@group1.pkg2": "file1"},
