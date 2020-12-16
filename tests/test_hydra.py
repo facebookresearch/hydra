@@ -1208,35 +1208,3 @@ def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
     ]
     result, _err = get_run_output(cmd)
     assert result == "{'list': None}"
-
-
-def test_overrides_dict_keys(tmpdir: Path) -> None:
-    """Test that different types of dictionary keys can be overridden"""
-    # Not currently testing non-string keys since they are not supported
-    # by OmegaConf.
-    cfg = OmegaConf.create(
-        {
-            "foo": {
-                "quoted_$(){}[]": 0,
-                "id123": 0,
-                "123id": 0,
-                "a/-\\+.$%*@": 0,
-                "\\()[]{}:= \t,": 0,
-                "white space": 0,
-            }
-        }
-    )
-    integration_test(
-        tmpdir=tmpdir,
-        task_config=cfg,
-        overrides=[
-            "foo={'quoted_$(){}[]': 1, id123: 1, 123id: 1, a/-\\+.$%*@: 1, "
-            "\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1, white space: 1}"
-        ],
-        prints=(
-            "','.join(map(repr, [cfg.foo[x] for x in ["
-            "'quoted_$(){}[]', 'id123', '123id', 'a/-\\+.$%*@', '\\()[]{}:= \t,', 'white space'"
-            "]]))"
-        ),
-        expected_outputs="1,1,1,1,1,1",
-    )
