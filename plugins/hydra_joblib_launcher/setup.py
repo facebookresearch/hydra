@@ -18,6 +18,7 @@ with open("README.md", "r") as fh:
             "License :: OSI Approved :: MIT License",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
             "Operating System :: POSIX :: Linux",
