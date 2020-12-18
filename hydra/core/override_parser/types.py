@@ -425,7 +425,6 @@ class Override:
         elif isinstance(value, (str, int, bool, float)):
             return str(value)
         elif is_structured_config(value):
-            print(value)
             return Override._get_value_element_as_str(
                 OmegaConf.to_container(OmegaConf.structured(value))
             )
