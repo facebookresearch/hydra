@@ -143,9 +143,9 @@ class IntervalSweep(Sweep):
             return NotImplemented
 
 
-# Ideally we would use List[ElementType] and Dict[ElementType, ElementType] but Python
-# does not seem to support recursive type definitions.
-ElementType = Union[str, int, float, bool, List[Any], Dict[Any, Any]]
+# Ideally we would use List[ElementType] and Dict[str, ElementType] but Python does not seem
+# to support recursive type definitions.
+ElementType = Union[str, int, float, bool, List[Any], Dict[str, Any]]
 ParsedElementType = Optional[Union[ElementType, QuotedString]]
 TransformerType = Callable[[ParsedElementType], Any]
 
@@ -259,8 +259,14 @@ class Override:
         if isinstance(value, list):
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
+
+            # Currently only strings are allowed as dictionary keys.
+            def check_str(k: Any) -> str:
+                assert isinstance(k, str)
+                return k
+
             return {
-                Override._convert_value(k): Override._convert_value(v)
+                check_str(Override._convert_value(k)): Override._convert_value(v)
                 for k, v in value.items()
             }
         elif isinstance(value, QuotedString):
