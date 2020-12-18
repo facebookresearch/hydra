@@ -12,7 +12,7 @@ _ESC = "\\()[]{}:=, \t"
 _ESC_REGEX = re.compile(f"[{re.escape(_ESC)}]+")
 
 
-def escape(s: str) -> str:
+def escape_special_characters(s: str) -> str:
     """Escape special characters in `s`"""
     matches = _ESC_REGEX.findall(s)
     if not matches:
