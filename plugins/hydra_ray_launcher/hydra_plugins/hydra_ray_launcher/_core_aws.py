@@ -92,7 +92,9 @@ def launch(
 
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
             with open(f.name, "w") as file:
-                OmegaConf.save(config=launcher.ray_cfg.cluster, f=file.name, resolve=True)
+                OmegaConf.save(
+                    config=launcher.ray_cfg.cluster, f=file.name, resolve=True
+                )
             launcher.ray_yaml_path = f.name
             log.info(
                 f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."
