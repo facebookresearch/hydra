@@ -1030,6 +1030,16 @@ def test_override_get_value_element_method(
         pytest.param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         pytest.param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         pytest.param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
+        pytest.param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
+        pytest.param("key={' abc ': 0}", {" abc ": 0}, id="dict_key_quoted_single"),
+        pytest.param('key={" abc ": 0}', {" abc ": 0}, id="dict_key_quoted_double"),
+        pytest.param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
+        pytest.param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
+        pytest.param(
+            "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 0}",
+            {"\\()[]{}:= \t,": 0},
+            id="dict_key_esc",
+        ),
     ],
 )
 def test_override_value_method(override: str, expected: str) -> None:

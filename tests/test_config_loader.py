@@ -593,38 +593,6 @@ class TestConfigLoader:
         monkeypatch.setenv("HOME", "/another/home/dir/")
         assert sweep_cfg.home == os.getenv("HOME")
 
-    @pytest.mark.parametrize(  # type: ignore
-        "key,expected",
-        [
-            pytest.param("id123", "id123", id="id"),
-            pytest.param("123id", "123id", id="int_plus_id"),
-            pytest.param("'quoted_single'", "quoted_single", id="quoted_single"),
-            pytest.param('"quoted_double"', "quoted_double", id="quoted_double"),
-            pytest.param("'quoted_$(){}[]'", "quoted_$(){}[]", id="quoted_misc_chars"),
-            pytest.param("a/-\\+.$%*@", "a/-\\+.$%*@", id="unquoted_misc_chars"),
-            pytest.param("white space", "white space", id="whitespace"),
-            pytest.param(
-                "\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,",
-                "\\()[]{}:= \t,",
-                id="unquoted_esc",
-            ),
-        ],
-    )
-    def test_dict_key_formats(
-        self, hydra_restore_singletons: Any, path: str, key: str, expected: str
-    ) -> None:
-        """Test that we can assign dictionaries with keys that are not just IDs"""
-        config_loader = ConfigLoaderImpl(
-            config_search_path=create_config_search_path(path)
-        )
-        cfg = config_loader.load_configuration(
-            config_name="config.yaml",
-            overrides=[f"+dict={{{key}: 123}}"],
-            run_mode=RunMode.RUN,
-        )
-        assert "dict" in cfg
-        assert cfg.dict == {expected: 123}
-
 
 @pytest.mark.parametrize(  # type:ignore
     "config_file, overrides",
