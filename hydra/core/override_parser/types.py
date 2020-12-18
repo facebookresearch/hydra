@@ -260,13 +260,10 @@ class Override:
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
 
-            # Currently only strings are allowed as dictionary keys.
-            def check_str(k: Any) -> str:
-                assert isinstance(k, str)
-                return k
-
             return {
-                check_str(Override._convert_value(k)): Override._convert_value(v)
+                # We ignore potential type mismatch here so as to let OmegaConf
+                # raise an explicit error in case of invalid type.
+                Override._convert_value(k): Override._convert_value(v)  # type: ignore
                 for k, v in value.items()
             }
         elif isinstance(value, QuotedString):
