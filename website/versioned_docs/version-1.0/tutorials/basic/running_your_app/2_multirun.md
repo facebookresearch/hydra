@@ -43,7 +43,6 @@ For example, the [Ax Sweeper](/plugins/ax_sweeper.md) can automatically find the
 
 ### Launcher
 A Launcher is what runs your job. Hydra comes with a simple launcher that runs the jobs locally and serially.
-However, other launchers are available as plugins. For example, the [JobLib Launcher](/plugins/joblib_launcher.md)
-can execute the different parameter combinations in parallel on your local machine using multi-processing, the 
-[Ray Launcher](/plugins/ray_launcher.md) can launch your application code to AWS, and the
-[Submitit Launcher](/plugins/submitit_launcher.md) enables launching to slurm.
+Other launchers are available as plugins for launching in parallel and on different clusters. For example, the [JobLib Launcher](/plugins/joblib_launcher.md)
+can execute the different parameter combinations in parallel on your local machine using multi-processing.
+
