@@ -5,6 +5,7 @@ Utilities used by tests
 import copy
 import logging
 import os
+import re
 import shutil
 import string
 import subprocess
@@ -423,3 +424,30 @@ def assert_text_same(
         print(diff)
         print("-------------------------------")
         assert False, "Mismatch between expected and actual text"
+
+
+def assert_regex_match(
+    from_line: str, to_line: str, from_name: str = "Expected", to_name: str = "Actual"
+) -> None:
+    """Check that the lines of `from_line` (which can be a regex expression)
+    matches the corresponding lines of `to_line` string.
+
+    In case the regex match fails, we display the diff as if `from_line` was a regular string.
+    """
+    normalized_from_line = [x for x in normalize_newlines(from_line).split("\n") if x]
+    normalized_to_line = [x for x in normalize_newlines(to_line).split("\n") if x]
+    if len(normalized_from_line) != len(normalized_to_line):
+        assert_text_same(
+            from_line=from_line,
+            to_line=to_line,
+            from_name=from_name,
+            to_name=to_name,
+        )
+    for line1, line2 in zip(normalized_from_line, normalized_to_line):
+        if line1 != line2 and re.match(line1, line2) is None:
+            assert_text_same(
+                from_line=from_line,
+                to_line=to_line,
+                from_name=from_name,
+                to_name=to_name,
+            )

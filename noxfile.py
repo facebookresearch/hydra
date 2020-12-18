@@ -12,7 +12,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8"]
+DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8", "3.9"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(

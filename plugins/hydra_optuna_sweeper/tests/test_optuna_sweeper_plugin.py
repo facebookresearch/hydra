@@ -24,6 +24,8 @@ from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 chdir_plugin_root()
 
 
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
@@ -40,6 +42,8 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
     assert set(expected.choices) == set(actual.choices)
 
 
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
@@ -73,6 +77,8 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
     check_distribution(expected, actual)
 
 
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize(  # type: ignore
     "input, expected",
     [
@@ -94,6 +100,8 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     check_distribution(expected, actual)
 
 
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -112,6 +120,8 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
 @pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
