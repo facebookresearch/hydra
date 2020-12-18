@@ -59,10 +59,10 @@ def launch(
     assert launcher.task_function is not None
 
     setup_commands = launcher.mandatory_install.install_commands
-    setup_commands.extend(launcher.ray_cluster.setup_commands)
+    setup_commands.extend(launcher.ray.cluster.setup_commands)
 
-    with read_write(launcher.ray_cluster):
-        launcher.ray_cluster.setup_commands = setup_commands
+    with read_write(launcher.ray.cluster):
+        launcher.ray.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
 
@@ -92,7 +92,7 @@ def launch(
 
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
             with open(f.name, "w") as file:
-                OmegaConf.save(config=launcher.ray_cluster, f=file.name, resolve=True)
+                OmegaConf.save(config=launcher.ray.cluster, f=file.name, resolve=True)
             launcher.ray_yaml_path = f.name
             log.info(
                 f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."
@@ -179,7 +179,7 @@ def launch_jobs(
 
         if launcher.stop_cluster:
             log.info("Stopping cluster now. (stop_cluster=true)")
-            if launcher.ray_cluster.provider.cache_stopped_nodes:
+            if launcher.ray.cluster.provider.cache_stopped_nodes:
                 log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")

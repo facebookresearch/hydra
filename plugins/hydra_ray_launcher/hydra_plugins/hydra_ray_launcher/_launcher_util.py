@@ -18,11 +18,11 @@ JOB_SPEC_PICKLE = "job_spec.pkl"
 JOB_RETURN_PICKLE = "returns.pkl"
 
 
-def start_ray(ray_init: DictConfig) -> None:
+def start_ray(init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
-        log.info(f"Initializing ray with config: {ray_init}")
-        if ray_init:
-            ray.init(**ray_init)
+        log.info(f"Initializing ray with config: {init_cfg}")
+        if ray.init:
+            ray.init(**init_cfg)
         else:
             ray.init()
     else:

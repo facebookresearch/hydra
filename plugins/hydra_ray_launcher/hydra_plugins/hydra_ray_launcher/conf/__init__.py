@@ -13,10 +13,15 @@ from omegaconf import MISSING
 
 
 @dataclass
+class RayConf:
+    init: Dict[str, Any] = field(default_factory=lambda: {"address": None})
+    remote: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class RayLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_launcher.RayLauncher"
-    ray_init: Dict[str, Any] = field(default_factory=lambda: {"address": None})
-    ray_remote: Dict[str, Any] = field(default_factory=dict)
+    ray: RayConf = RayConf()
 
 
 # Ray AWS config, more info on ray's schema here:
@@ -184,13 +189,17 @@ class RayClusterConf:
 
 
 @dataclass
+class RayAWSConf(RayConf):
+    cluster: RayClusterConf = RayClusterConf()
+
+
+@dataclass
 class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
     mandatory_install: PluginMandatoryInstallConf = PluginMandatoryInstallConf()
-    ray_init: Dict[str, Any] = field(default_factory=lambda: {"address": None})
-    ray_remote: Dict[str, Any] = field(default_factory=dict)
-    ray_cluster: RayClusterConf = RayClusterConf()
+
+    ray: RayAWSConf = RayAWSConf()
 
     # Stop Ray AWS cluster after jobs are finished.
     # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").

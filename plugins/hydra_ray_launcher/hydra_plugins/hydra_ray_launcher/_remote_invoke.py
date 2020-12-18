@@ -46,8 +46,8 @@ def launch_jobs(temp_dir: str) -> None:
             setup_globals()
             Singleton.set_state(singleton_state)
             HydraConfig.instance().set_config(sweep_config)
-            ray_init = sweep_config.hydra.launcher.ray_init
-            ray_remote = sweep_config.hydra.launcher.ray_remote
+            ray_init = sweep_config.hydra.launcher.ray.init
+            ray_remote = sweep_config.hydra.launcher.ray.remote
 
             if not sweep_dir:
                 sweep_dir = Path(str(HydraConfig.get().sweep.dir))
