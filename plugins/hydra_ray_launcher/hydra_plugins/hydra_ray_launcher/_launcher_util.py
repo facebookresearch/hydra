@@ -21,7 +21,7 @@ JOB_RETURN_PICKLE = "returns.pkl"
 def start_ray(init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
         log.info(f"Initializing ray with config: {init_cfg}")
-        if ray.init:
+        if init_cfg:
             ray.init(**init_cfg)
         else:
             ray.init()

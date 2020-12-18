@@ -10,7 +10,7 @@ from omegaconf import DictConfig
 
 class RayLauncher(Launcher):
     def __init__(self, ray: DictConfig) -> None:
-        self.ray = ray
+        self.ray_cfg = ray
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None

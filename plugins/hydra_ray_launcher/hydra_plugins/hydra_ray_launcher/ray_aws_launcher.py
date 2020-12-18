@@ -22,8 +22,8 @@ class RayAWSLauncher(Launcher):
         sync_up: RsyncConf,
         sync_down: RsyncConf,
     ) -> None:
-        self.ray = ray
-        self.docker_enabled = self.ray.cluster.docker.image != ""
+        self.ray_cfg = ray
+        self.docker_enabled = self.ray_cfg.cluster.docker.image != ""
         self.stop_cluster = stop_cluster
         self.sync_up = sync_up
         self.sync_down = sync_down
