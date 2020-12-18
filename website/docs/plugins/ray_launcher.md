@@ -13,7 +13,7 @@ sidebar_label: Ray Launcher plugin
 
 
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`. 
- `ray_aws` launches jobs remotely on AWS and is built on top of [Ray Autoscaler](https://docs.ray.io/en/latest/autoscaling.html). `ray` launches jobs on your local machine or existing ray cluster. 
+ `ray_aws` launches jobs remotely on AWS and is built on top of [Ray cluster launcher](https://docs.ray.io/en/latest/cluster/launcher.html). `ray` launches jobs on your local machine or existing ray cluster. 
 
 
 ### Installation
@@ -34,12 +34,12 @@ defaults:
 ### `ray_aws` launcher
 
 :::important
-`ray_aws` launcher is built on top of ray's [autoscaler cli](https://docs.ray.io/en/latest/autoscaling.html). To get started, you need to 
+`ray_aws` launcher is built on top of ray's [cluster launcher cli](https://docs.ray.io/en/latest/cluster/launcher.html). To get started, you need to 
 [config your AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-`ray autoscaler` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
+`ray cluster launcher` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
 :::
 
-`ray autoscaler` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
+`ray cluster launcher` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
 
 <details><summary>Discover ray_aws launcher's config</summary>
 
@@ -63,10 +63,10 @@ mandatory_install:
   - pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}
   - pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}
   - pip install -U https://hydra-test-us-west-2.s3-us-west-2.amazonaws.com/hydra_ray_launcher-0.1.0-py3-none-any.whl
-ray_init_cfg:
+ray_init:
   num_cpus: 1
   num_gpus: 0
-ray_remote_cfg:
+ray_remote:
   num_cpus: 1
   num_gpus: 0
 ray_cluster_cfg:
@@ -126,10 +126,12 @@ sync_down:
 
 #### Examples
 
+The following examples can be found [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples).
+
 <details><summary>Simple app</summary>
 
 ```commandline
-$ python example/simple/my_app.py --multirun task=1,2,3
+$ python my_app.py --multirun task=1,2,3
 [HYDRA] Ray Launcher is launching 3 jobs, 
 [HYDRA]        #0 : task=1
 [HYDRA]        #1 : task=2
@@ -202,7 +204,7 @@ You can manage the Ray EC2 cluster lifecycle by configuring the two flags provid
 - Default setting (no need to specify on commandline): Delete cluster after job finishes remotely:
 ```commandline
 hydra.launcher.stop_cluster=true
-hydra.launcher.ray_cluster_cfg.provider.cache_stopped_nodes=False
+hydra.launcher.ray_cluster.provider.cache_stopped_nodes=False
 ```
 
 - Keep cluster running after jobs finishes remotely
@@ -212,7 +214,7 @@ hydra.launcher.stop_cluster=False
 
 - Power off EC2 instances without deletion
 ```commandline
-hydra.launcher.ray_cluster_cfg.provider.cache_stopped_nodes=true
+hydra.launcher.ray_cluster.provider.cache_stopped_nodes=true
 ```
 
 
@@ -231,9 +233,9 @@ INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8266
 (pid=97801) [__main__][INFO] - Executing task 1
 ```
 
-You can run the example application on your existing ray cluster as well by overriding `hydra.launcher.ray_init_cfg.address`:
+You can run the example application on your existing ray cluster as well by overriding `hydra.launcher.ray_init.address`:
 ```commandline
-$ python my_app.py  --multirun hydra/launcher=ray +hydra.launcher.ray_init_cfg='{address: localhost:6379}'
+$ python my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray_init.address=localhost:6379'
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
 [HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
 INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
@@ -242,4 +244,4 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 ```
 
 ### Configure `ray.init()` and `ray.remote()`
-Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init_cfg` and `hydra.launcher.ray_remote_cfg`. Check out an [example config](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml).
+Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray_init` and `hydra.launcher.ray_remote`. Check out an [example config](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml).

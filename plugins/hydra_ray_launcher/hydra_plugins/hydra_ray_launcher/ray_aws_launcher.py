@@ -20,17 +20,17 @@ class RayAWSLauncher(Launcher):
     def __init__(
         self,
         mandatory_install: DictConfig,
-        ray_init_cfg: DictConfig,
-        ray_remote_cfg: DictConfig,
-        ray_cluster_cfg: RayClusterConf,
+        ray_init: DictConfig,
+        ray_remote: DictConfig,
+        ray_cluster: RayClusterConf,
         stop_cluster: bool,
         sync_up: RsyncConf,
         sync_down: RsyncConf,
     ) -> None:
-        self.ray_init_cfg = ray_init_cfg
-        self.ray_remote_cfg = ray_remote_cfg
-        self.ray_cluster_cfg = ray_cluster_cfg
-        self.docker_enabled = self.ray_cluster_cfg.docker.image != ""
+        self.ray_init = ray_init
+        self.ray_remote = ray_remote
+        self.ray_cluster = ray_cluster
+        self.docker_enabled = self.ray_cluster.docker.image != ""
         self.stop_cluster = stop_cluster
         self.sync_up = sync_up
         self.sync_down = sync_down

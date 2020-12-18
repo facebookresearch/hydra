@@ -9,9 +9,9 @@ from omegaconf import DictConfig
 
 
 class RayLauncher(Launcher):
-    def __init__(self, ray_init_cfg: DictConfig, ray_remote_cfg: DictConfig) -> None:
-        self.ray_init_cfg = ray_init_cfg
-        self.ray_remote_cfg = ray_remote_cfg
+    def __init__(self, ray_init: DictConfig, ray_remote: DictConfig) -> None:
+        self.ray_init = ray_init
+        self.ray_remote = ray_remote
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None

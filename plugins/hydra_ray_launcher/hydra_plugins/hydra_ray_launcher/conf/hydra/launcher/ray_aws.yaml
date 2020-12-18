@@ -2,7 +2,7 @@
 
 # This yaml will be validated against RayAWSLauncherConf
 
-ray_cluster_cfg:
+ray_cluster:
   provider:
     key_pair:
       key_name: "hydra"
