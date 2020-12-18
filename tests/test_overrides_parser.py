@@ -280,8 +280,8 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         pytest.param(
             "{'0a': 0, \"1b\": 1}",
             {
-                QuotedString(text="0a", quote=Quote.double): 0,
-                QuotedString(text="1b", quote=Quote.single): 1,
+                QuotedString(text="0a", quote=Quote.single): 0,
+                QuotedString(text="1b", quote=Quote.double): 1,
             },
             id="dict_quoted_key",
         ),

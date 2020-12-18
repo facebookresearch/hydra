@@ -20,21 +20,11 @@ class Quote(Enum):
     double = 1
 
 
-@dataclass
+@dataclass(frozen=True)
 class QuotedString:
     text: str
 
     quote: Quote
-
-    def __hash__(self) -> int:
-        return hash(self.text)
-
-    def __eq__(self, other: Any) -> Any:
-        # We do not care whether quotes match for equality.
-        if isinstance(other, QuotedString):
-            return self.text == other.text
-        else:
-            return NotImplemented
 
     def with_quotes(self) -> str:
         if self.quote == Quote.single:
