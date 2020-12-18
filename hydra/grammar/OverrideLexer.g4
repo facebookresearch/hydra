@@ -61,6 +61,8 @@ NULL: [Nn][Uu][Ll][Ll];
 
 UNQUOTED_CHAR: [/\-\\+.$%*@];  // other characters allowed in unquoted strings
 ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
+// Note: when adding more characters to the ESC rule below, also add them to
+// the `_ESC` string in `_internal/grammar/utils.py`.
 ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |
       '\\:' | '\\=' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;

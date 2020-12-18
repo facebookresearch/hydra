@@ -1047,29 +1047,6 @@ bar: 100"""
         ret, _err = get_run_output(cmd)
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
 
-    def test_multirun_dict_keys(self, cmd_base: List[str], tmpdir: Any) -> None:
-        cmd = cmd_base + [
-            "+foo={'null': 0},{'NuLl': 1},{123abc: 0},{/-\\+.$%*@: 1},{white space: 3}",
-            "--multirun",
-        ]
-        expected = """\
-foo:
-  'null': 0
-
-foo:
-  NuLl: 1
-
-foo:
-  123abc: 0
-
-foo:
-  /-\\+.$%*@: 1
-
-foo:
-  white space: 3"""
-        ret, _err = get_run_output(cmd)
-        assert normalize_newlines(ret) == normalize_newlines(expected)
-
 
 def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
     monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")

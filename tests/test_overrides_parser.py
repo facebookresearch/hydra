@@ -959,6 +959,12 @@ def test_get_key_element(override: str, expected: str) -> None:
         pytest.param("key='value'", "'value'", False, id="single_quoted"),
         pytest.param('key="value"', '"value"', False, id="double_quoted"),
         pytest.param("key='שלום'", "'שלום'", False, id="quoted_unicode"),
+        pytest.param(
+            "key=\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,",
+            "\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,",
+            False,
+            id="escaped_chars",
+        ),
         pytest.param("key=10", "10", False, id="int"),
         pytest.param("key=3.1415", "3.1415", False, id="float"),
         pytest.param("key=[]", "[]", False, id="list"),
@@ -972,6 +978,30 @@ def test_get_key_element(override: str, expected: str) -> None:
         pytest.param("key={a:10,b:20}", "{a:10,b:20}", False, id="dict"),
         pytest.param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
         pytest.param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
+        pytest.param(
+            "key={'null':1, \"a:b\": 0}",
+            "{'null': 1, \"a:b\": 0}",
+            True,
+            id="dict_quoted_key",
+        ),
+        pytest.param(
+            "key={/-\\+.$%*@: 1}",
+            "{/-\\\\+.$%*@: 1}",  # note that \ gets escaped
+            True,
+            id="dict_unquoted_key_special",
+        ),
+        pytest.param(
+            "key={ white  space\t: 2}",
+            "{white\\ \\ space: 2}",
+            True,
+            id="dict_ws_in_key",
+        ),
+        pytest.param(
+            "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 2}",
+            "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 2}",
+            True,
+            id="dict_esc_key",
+        ),
     ],
 )
 def test_override_get_value_element_method(

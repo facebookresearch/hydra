@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
+from hydra._internal.grammar.utils import escape
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
@@ -422,7 +423,9 @@ class Override:
                 ]
             )
             return "{" + s + "}"
-        elif isinstance(value, (str, int, bool, float)):
+        elif isinstance(value, str):
+            return escape(value)  # ensure special characters are escaped
+        elif isinstance(value, (int, bool, float)):
             return str(value)
         elif is_structured_config(value):
             return Override._get_value_element_as_str(
