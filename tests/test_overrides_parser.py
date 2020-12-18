@@ -9,6 +9,7 @@ import pytest
 from _pytest.python_api import RaisesContext
 
 from hydra._internal.grammar.functions import Functions
+from hydra._internal.grammar.utils import escape_special_characters
 from hydra.core.override_parser.overrides_parser import (
     OverridesParser,
     create_functions,
@@ -2024,3 +2025,26 @@ def test_sweep_iterators(
     ]
     assert actual_sweep_string_list == expected_sweep_string_list
     assert actual_sweep_encoded_list == expected_sweep_encoded_list
+
+
+@pytest.mark.parametrize(  # type: ignore
+    ("s", "expected"),
+    [
+        pytest.param("abc", "abc", id="no_esc"),
+        pytest.param("\\", "\\\\", id="esc_backslash"),
+        pytest.param("\\\\\\", "\\\\\\\\\\\\", id="esc_backslash_x3"),
+        pytest.param("()", "\\(\\)", id="esc_parentheses"),
+        pytest.param("[]", "\\[\\]", id="esc_brackets"),
+        pytest.param("{}", "\\{\\}", id="esc_braces"),
+        pytest.param(":=,", "\\:\\=\\,", id="esc_symbols"),
+        pytest.param("  \t", "\\ \\ \\\t", id="esc_ws"),
+        pytest.param(
+            "ab\\(cd{ef}[gh]): ij,kl\t",
+            "ab\\\\\\(cd\\{ef\\}\\[gh\\]\\)\\:\\ ij\\,kl\\\t",
+            id="esc_mixed",
+        ),
+    ],
+)
+def test_escape_special_characters(s: str, expected: str) -> None:
+    escaped = escape_special_characters(s)
+    assert escaped == expected
