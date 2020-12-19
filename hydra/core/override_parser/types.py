@@ -418,14 +418,14 @@ class Override:
             )
             return "[" + s + "]"
         elif isinstance(value, dict):
-            s = comma.join(
-                [
-                    f"{Override._get_value_element_as_str(k)}{colon}"
-                    f"{Override._get_value_element_as_str(v, space_after_sep=space_after_sep)}"
-                    for k, v in value.items()
-                ]
-            )
-            return "{" + s + "}"
+            str_items = []
+            for k, v in value.items():
+                str_key = Override._get_value_element_as_str(k)
+                str_value = Override._get_value_element_as_str(
+                    v, space_after_sep=space_after_sep
+                )
+                str_items.append(f"{str_key}{colon}{str_value}")
+            return "{" + comma.join(str_items) + "}"
         elif isinstance(value, str):
             return escape_special_characters(value)
         elif isinstance(value, (int, bool, float)):
