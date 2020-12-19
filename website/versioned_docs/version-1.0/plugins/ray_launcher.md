@@ -48,64 +48,61 @@ $ python my_app.py hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
 mandatory_install:
-  hydra_version: 1.0.4
-  ray_version: 1.0.1.post1
-  cloudpickle_version: 1.6.0
-  omegaconf_version: 2.0.5
-  pickle5_version: 0.0.11
-  hydra_ray_launcher_version: 0.1.1
+  pip_packages:
+    hydra_core: 1.0.4
+    ray: 1.0.1.post1
+    cloudpickle: 1.6.0
+    omegaconf: 2.0.5
+    pickle5: 0.0.11
+    hydra_ray_launcher: 0.1.2
   install_commands:
   - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
   - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"'
     >> ~/.bashrc
-  - pip install omegaconf==${hydra.launcher.mandatory_install.omegaconf_version}
-  - pip install hydra-core==${hydra.launcher.mandatory_install.hydra_version}
-  - pip install hydra-ray-launcher==${hydra.launcher.mandatory_install.hydra_ray_launcher_version}
-  - pip install ray==${hydra.launcher.mandatory_install.ray_version}
-  - pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}
-  - pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}
-ray_init_cfg: {}
-ray_remote_cfg: {}
-ray_cluster_cfg:
-  cluster_name: default
-  min_workers: 0
-  max_workers: 1
-  initial_workers: 0
-  autoscaling_mode: default
-  target_utilization_fraction: 0.8
-  idle_timeout_minutes: 5
-  docker:
-    image: ''
-    container_name: ''
-    pull_before_run: true
-    run_options: []
-  provider:
-    type: aws
-    region: us-west-2
-    availability_zone: us-west-2a,us-west-2b
-    cache_stopped_nodes: false
-    key_pair:
-      key_name: hydra
-  auth:
-    ssh_user: ubuntu
-  head_node:
-    InstanceType: m5.large
-    ImageId: ami-008d8ed4bd7dc2485
-  worker_nodes:
-    InstanceType: m5.large
-    ImageId: ami-008d8ed4bd7dc2485
-  file_mounts: {}
-  initialization_commands: []
-  setup_commands: []
-  head_setup_commands: []
-  worker_setup_commands: []
-  head_start_ray_commands:
-  - ray stop
-  - ulimit -n 65536; ray start --head --redis-port=6379 --object-manager-port=8076
-    --autoscaling-config=~/ray_bootstrap_config.yaml
-  worker_start_ray_commands:
-  - ray stop
-  - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+ray:
+  init:
+    address: null
+  remote: {}
+  cluster:
+    cluster_name: default
+    min_workers: 0
+    max_workers: 1
+    initial_workers: 0
+    autoscaling_mode: default
+    target_utilization_fraction: 0.8
+    idle_timeout_minutes: 5
+    docker:
+      image: ''
+      container_name: ''
+      pull_before_run: true
+      run_options: []
+    provider:
+      type: aws
+      region: us-west-2
+      availability_zone: us-west-2a,us-west-2b
+      cache_stopped_nodes: false
+      key_pair:
+        key_name: hydra
+    auth:
+      ssh_user: ubuntu
+    head_node:
+      InstanceType: m5.large
+      ImageId: ami-008d8ed4bd7dc2485
+    worker_nodes:
+      InstanceType: m5.large
+      ImageId: ami-008d8ed4bd7dc2485
+    file_mounts: {}
+    initialization_commands: []
+    setup_commands: []
+    head_setup_commands: []
+    worker_setup_commands: []
+    head_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536; ray start --head --redis-port=6379 --object-manager-port=8076
+      --autoscaling-config=~/ray_bootstrap_config.yaml
+    worker_start_ray_commands:
+    - ray stop
+    - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
 stop_cluster: true
 sync_up:
   source_dir: null

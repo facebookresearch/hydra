@@ -84,26 +84,24 @@ class RsyncConf:
 
 
 @dataclass
-class PluginMandatoryInstallConf:
-    hydra_version: str = hydra.__version__
-    ray_version: str = ray.__version__
-    cloudpickle_version: str = cloudpickle.__version__
-    omegaconf_version: str = omegaconf.__version__
-    pickle5_version: str = pkg_resources.get_distribution("pickle5").version
-    hydra_ray_launcher_version: str = pkg_resources.get_distribution(
-        "hydra_ray_launcher"
-    ).version
+class MandatoryInstallConf:
+    pip_packages: Dict[str, str] = field(
+        default_factory=lambda: {
+            "hydra_core": hydra.__version__,
+            "ray": ray.__version__,
+            "cloudpickle": cloudpickle.__version__,
+            "omegaconf": omegaconf.__version__,
+            "pickle5": pkg_resources.get_distribution("pickle5").version,
+            "hydra_ray_launcher": pkg_resources.get_distribution(
+                "hydra_ray_launcher"
+            ).version,
+        }
+    )
 
     install_commands: List[str] = field(
         default_factory=lambda: [
             "conda create -n hydra_${python_version:micro} python=${python_version:micro} -y",
             "echo 'export PATH=\"$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH\"' >> ~/.bashrc",
-            "pip install omegaconf==${hydra.launcher.mandatory_install.omegaconf_version}",
-            "pip install hydra-core==${hydra.launcher.mandatory_install.hydra_version}",
-            "pip install hydra-ray-launcher==${hydra.launcher.mandatory_install.hydra_ray_launcher_version}",
-            "pip install ray==${hydra.launcher.mandatory_install.ray_version}",
-            "pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}",
-            "pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}",
         ]
     )
 
@@ -197,7 +195,7 @@ class RayAWSConf(RayConf):
 class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
-    mandatory_install: PluginMandatoryInstallConf = PluginMandatoryInstallConf()
+    mandatory_install: MandatoryInstallConf = MandatoryInstallConf()
 
     ray: RayAWSConf = RayAWSConf()
 
