@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import pytest
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
+from pytest import mark, param, raises, warns
 
 from hydra import utils
 from hydra._internal.utils import _convert_container_targets_to_strings
@@ -50,9 +50,7 @@ from tests import (
 )
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "path,expected_type", [("tests.AClass", AClass)]
-)
+@mark.parametrize("path,expected_type", [("tests.AClass", AClass)])  # type: ignore
 def test_get_class(path: str, expected_type: type) -> None:
     assert utils.get_class(path) == expected_type
 
@@ -62,103 +60,103 @@ def test_a_class_eq() -> None:
     assert AClass(a=10, b=20, c=30, d=40) == AClass(a=10, b=20, c=30, d=40)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "recursive",
     [
-        pytest.param(False, id="non_recursive"),
-        pytest.param(True, id="recursive"),
+        param(False, id="non_recursive"),
+        param(True, id="recursive"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_conf, passthrough, expected",
     [
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
             {},
             AClass(10, 20, 30, 40),
             id="class",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "b": 20, "c": 30},
             {"a": 10, "d": 40},
             AClass(10, 20, 30, 40),
             id="class+override",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
             AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
         # Check class and static methods
-        pytest.param(
+        param(
             {"_target_": "tests.ASubclass.class_method", "y": 10},
             {},
             ASubclass(11),
             id="class_method",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass.static_method", "z": 43},
             {},
             43,
             id="static_method",
         ),
         # Check nested types and static methods
-        pytest.param(
+        param(
             {"_target_": "tests.NestingClass"},
             {},
             NestingClass(ASubclass(10)),
             id="class_with_nested_class",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.nesting.a.class_method", "y": 10},
             {},
             ASubclass(11),
             id="class_method_on_an_object_nested_in_a_global",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.nesting.a.static_method", "z": 43},
             {},
             43,
             id="static_method_on_an_object_nested_in_a_global",
         ),
         # Check that default value is respected
-        pytest.param(
+        param(
             {"_target_": "tests.AClass"},
             {"a": 10, "b": 20, "c": 30},
             AClass(10, 20, 30, "default_value"),
             id="instantiate_respects_default_value",
         ),
         # call a function from a module
-        pytest.param(
+        param(
             {"_target_": "tests.module_function", "x": 43},
             {},
             43,
             id="call_function_in_module",
         ),
         # Check builtins
-        pytest.param(
+        param(
             {"_target_": "builtins.str", "object": 43},
             {},
             "43",
             id="builtin_types",
         ),
         # Check that none is instantiated correctly
-        pytest.param(None, {}, None, id="instantiate_none"),
+        param(None, {}, None, id="instantiate_none"),
         # passthrough
-        pytest.param(
+        param(
             {"_target_": "tests.AClass"},
             {"a": 10, "b": 20, "c": 30},
             AClass(a=10, b=20, c=30),
             id="passthrough",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass"},
             {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
             AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
             id="passthrough",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass"},
             {
                 "a": 10,
@@ -169,7 +167,7 @@ def test_a_class_eq() -> None:
             AClass(a=10, b=20, c=30, d={"x": [10, IllegalType()]}),
             id="passthrough:list",
         ),
-        pytest.param(
+        param(
             UntypedPassthroughConf,
             {"a": IllegalType()},
             UntypedPassthroughClass(a=IllegalType()),
@@ -192,10 +190,10 @@ def test_class_instantiate(
     test(OmegaConf.create(input_conf))
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_conf, passthrough, expected",
     [
-        pytest.param(
+        param(
             {
                 "node": {
                     "_target_": "tests.AClass",
@@ -270,11 +268,11 @@ def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
 
 
 def test_get_original_cwd_without_hydra(hydra_restore_singletons: Any) -> None:
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         utils.get_original_cwd()
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "orig_cwd, path, expected",
     [
         ("/home/omry/hydra", "foo/bar", "/home/omry/hydra/foo/bar"),
@@ -295,7 +293,7 @@ def test_to_absolute_path(
     assert utils.to_absolute_path(path) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "path, expected",
     [
         ("foo/bar", f"{os.getcwd()}/foo/bar"),
@@ -313,7 +311,7 @@ def test_to_absolute_path_without_hydra(
 
 
 def test_instantiate_adam() -> None:
-    with pytest.raises(Exception):
+    with raises(Exception):
         # can't instantiate without passing params
         utils.instantiate({"_target_": "tests.Adam"})
 
@@ -323,7 +321,7 @@ def test_instantiate_adam() -> None:
 
 
 def test_instantiate_adam_conf() -> None:
-    with pytest.raises(Exception):
+    with raises(Exception):
         # can't instantiate without passing params
         utils.instantiate({"_target_": "tests.Adam"})
 
@@ -339,7 +337,7 @@ def test_instantiate_adam_conf() -> None:
 
 
 def test_targetconf_deprecated() -> None:
-    with pytest.warns(
+    with warns(
         expected_warning=UserWarning,
         match=re.escape(
             "TargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
@@ -353,7 +351,7 @@ def test_instantiate_bad_adam_conf(recwarn: Any) -> None:
         "Missing value for BadAdamConf._target_. Check that it's properly annotated and overridden."
         "\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
     )
-    with pytest.raises(
+    with raises(
         InstantiationException,
         match=re.escape(msg),
     ):
@@ -362,7 +360,7 @@ def test_instantiate_bad_adam_conf(recwarn: Any) -> None:
 
 def test_instantiate_with_missing_module() -> None:
 
-    with pytest.raises(
+    with raises(
         ModuleNotFoundError, match=re.escape("No module named 'some_missing_module'")
     ):
         # can't instantiate when importing a missing module
@@ -374,11 +372,11 @@ def test_pass_extra_variables() -> None:
     assert utils.instantiate(cfg, c=30) == AClass(a=10, b=20, c=30)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "cfg, passthrough, expected",
     [
         # direct
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "value": 1,
@@ -395,19 +393,19 @@ def test_pass_extra_variables() -> None:
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
             id="recursive:direct:dict",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.Tree"},
             {"value": 1},
             Tree(value=1),
             id="recursive:direct:dict:passthrough",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.Tree"},
             {"value": 1, "left": {"_target_": "tests.Tree", "value": 2}},
             Tree(value=1, left=Tree(2)),
             id="recursive:direct:dict:passthrough",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.Tree"},
             {
                 "value": 1,
@@ -417,19 +415,19 @@ def test_pass_extra_variables() -> None:
             Tree(value=1, left=Tree(2), right=Tree(3)),
             id="recursive:direct:dict:passthrough",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.Tree"},
             {"value": IllegalType()},
             Tree(value=IllegalType()),
             id="recursive:direct:dict:passthrough:incompatible_value",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.Tree"},
             {"value": 1, "left": {"_target_": "tests.Tree", "value": IllegalType()}},
             Tree(value=1, left=Tree(value=IllegalType())),
             id="recursive:direct:dict:passthrough:incompatible_value",
         ),
-        pytest.param(
+        param(
             TreeConf(
                 value=1,
                 left=TreeConf(value=21),
@@ -439,7 +437,7 @@ def test_pass_extra_variables() -> None:
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
             id="recursive:direct:dataclass",
         ),
-        pytest.param(
+        param(
             TreeConf(
                 value=1,
                 left=TreeConf(value=21),
@@ -448,7 +446,7 @@ def test_pass_extra_variables() -> None:
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
             id="recursive:direct:dataclass:passthrough",
         ),
-        pytest.param(
+        param(
             TreeConf(
                 value=1,
                 left=TreeConf(value=21),
@@ -457,7 +455,7 @@ def test_pass_extra_variables() -> None:
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
             id="recursive:direct:dataclass:passthrough",
         ),
-        pytest.param(
+        param(
             TreeConf(
                 value=1,
                 left=TreeConf(value=21),
@@ -470,7 +468,7 @@ def test_pass_extra_variables() -> None:
         ),
         # list
         # note that passthrough to a list element is not currently supported
-        pytest.param(
+        param(
             ComposeConf(
                 transforms=[
                     CenterCropConf(size=10),
@@ -486,7 +484,7 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:list:dataclass",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Compose",
                 "transforms": [
@@ -504,7 +502,7 @@ def test_pass_extra_variables() -> None:
             id="recursive:list:dict",
         ),
         # map
-        pytest.param(
+        param(
             MappingConf(
                 dictionary={
                     "a": MappingConf(),
@@ -520,7 +518,7 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:map:dataclass",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Mapping",
                 "dictionary": {
@@ -537,7 +535,7 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:map:dict",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Mapping",
                 "dictionary": {
@@ -568,10 +566,10 @@ def test_recursive_instantiation(
     assert obj == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "cfg, passthrough, expected",
     [
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "value": 1,
@@ -584,7 +582,7 @@ def test_recursive_instantiation(
             Tree(value=1, left=Tree(value=21)),
             id="default",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "_recursive_": True,
@@ -598,7 +596,7 @@ def test_recursive_instantiation(
             Tree(value=1, left=Tree(value=21)),
             id="cfg:true,override:true",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "_recursive_": True,
@@ -612,7 +610,7 @@ def test_recursive_instantiation(
             Tree(value=1, left={"_target_": "tests.Tree", "value": 21}),
             id="cfg:true,override:false",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "_recursive_": False,
@@ -626,7 +624,7 @@ def test_recursive_instantiation(
             Tree(value=1, left=Tree(value=21)),
             id="cfg:false,override:true",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "_recursive_": False,
@@ -640,7 +638,7 @@ def test_recursive_instantiation(
             Tree(value=1, left={"_target_": "tests.Tree", "value": 21}),
             id="cfg:false,override:false",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "value": 1,
@@ -657,7 +655,7 @@ def test_recursive_instantiation(
             Tree(value=1, left=Tree(value=2, left=Tree(value=3))),
             id="3_levels:default",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "_recursive_": False,
@@ -682,7 +680,7 @@ def test_recursive_instantiation(
             ),
             id="3_levels:cfg1=false",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.Tree",
                 "value": 1,
@@ -713,34 +711,34 @@ def test_recursive_override(
     assert obj == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_conf, passthrough, expected",
     [
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
             {"_target_": "tests.BClass"},
             BClass(10, 20, 30, 40),
             id="str:override_same_args",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
             {"_target_": BClass},
             BClass(10, 20, 30, 40),
             id="type:override_same_args",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "a": 10, "b": 20},
             {"_target_": "tests.BClass"},
             BClass(10, 20, "c", "d"),
             id="str:override_other_args",
         ),
-        pytest.param(
+        param(
             {"_target_": "tests.AClass", "a": 10, "b": 20},
             {"_target_": BClass},
             BClass(10, 20, "c", "d"),
             id="type:override_other_args",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.AClass",
                 "a": 10,
@@ -761,7 +759,7 @@ def test_recursive_override(
             BClass(10, 20, BClass(a="aa", b="bb", c="cc"), "d"),
             id="str:recursive_override",
         ),
-        pytest.param(
+        param(
             {
                 "_target_": "tests.AClass",
                 "a": 10,
@@ -787,28 +785,26 @@ def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> No
     assert input_conf == conf_copy
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_, expected",
     [
-        pytest.param({"a": 10}, {"a": 10}),
-        pytest.param([1, 2, 3], [1, 2, 3]),
-        pytest.param({"_target_": "abc", "a": 10}, {"_target_": "abc", "a": 10}),
-        pytest.param(
-            {"_target_": AClass, "a": 10}, {"_target_": "tests.AClass", "a": 10}
-        ),
-        pytest.param(
+        param({"a": 10}, {"a": 10}),
+        param([1, 2, 3], [1, 2, 3]),
+        param({"_target_": "abc", "a": 10}, {"_target_": "abc", "a": 10}),
+        param({"_target_": AClass, "a": 10}, {"_target_": "tests.AClass", "a": 10}),
+        param(
             {"_target_": AClass.static_method, "a": 10},
             {"_target_": "tests.AClass.static_method", "a": 10},
         ),
-        pytest.param(
+        param(
             {"_target_": ASubclass.class_method, "a": 10},
             {"_target_": "tests.ASubclass.class_method", "a": 10},
         ),
-        pytest.param(
+        param(
             {"_target_": module_function, "a": 10},
             {"_target_": "tests.module_function", "a": 10},
         ),
-        pytest.param(
+        param(
             {
                 "_target_": AClass,
                 "a": {"_target_": AClass, "b": 10},
@@ -818,7 +814,7 @@ def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> No
                 "a": {"_target_": "tests.AClass", "b": 10},
             },
         ),
-        pytest.param(
+        param(
             [1, {"_target_": AClass, "a": 10}],
             [1, {"_target_": "tests.AClass", "a": 10}],
         ),
@@ -829,19 +825,19 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
     assert input_ == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "primitive,expected_primitive",
     [
-        pytest.param(None, False, id="unspecified"),
-        pytest.param(ConvertMode.NONE, False, id="none"),
-        pytest.param(ConvertMode.PARTIAL, True, id="partial"),
-        pytest.param(ConvertMode.ALL, True, id="all"),
+        param(None, False, id="unspecified"),
+        param(ConvertMode.NONE, False, id="none"),
+        param(ConvertMode.PARTIAL, True, id="partial"),
+        param(ConvertMode.ALL, True, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_,expected",
     [
-        pytest.param(
+        param(
             {
                 "obj": {
                     "_target_": "tests.AClass",
@@ -859,7 +855,7 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
             ),
             id="simple",
         ),
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": {
@@ -905,19 +901,19 @@ def test_convert_params_override(
     assert isinstance(ret.d, expected_list)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "convert_mode",
     [  # type: ignore
-        pytest.param(None, id="none"),
-        pytest.param(ConvertMode.NONE, id="none"),
-        pytest.param(ConvertMode.PARTIAL, id="partial"),
-        pytest.param(ConvertMode.ALL, id="all"),
+        param(None, id="none"),
+        param(ConvertMode.NONE, id="none"),
+        param(ConvertMode.PARTIAL, id="partial"),
+        param(ConvertMode.ALL, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_,expected",
     [
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": {
@@ -956,19 +952,19 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
     assert ret.a == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "convert",
     [  # type: ignore
-        pytest.param(None, id="p=unspecified"),
-        pytest.param(ConvertMode.NONE, id="none"),
-        pytest.param(ConvertMode.PARTIAL, id="partial"),
-        pytest.param(ConvertMode.ALL, id="all"),
+        param(None, id="p=unspecified"),
+        param(ConvertMode.NONE, id="none"),
+        param(ConvertMode.PARTIAL, id="partial"),
+        param(ConvertMode.ALL, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_,expected",
     [
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": {
@@ -1008,10 +1004,10 @@ def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: 
     assert isinstance(ret.a.b, ListConfig)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(  # type: ignore
     "input_,is_primitive,expected",
     [
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": SimpleClassPrimitiveConf(
@@ -1022,7 +1018,7 @@ def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: 
             SimpleClass(a={"foo": 99}, b=[1, 99]),
             id="primitive_specified_true",
         ),
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": SimpleClassNonPrimitiveConf(
@@ -1033,7 +1029,7 @@ def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: 
             SimpleClass(a={"foo": 99}, b=[1, 99]),
             id="primitive_specified_false",
         ),
-        pytest.param(
+        param(
             {
                 "value": 99,
                 "obj": SimpleClassDefaultPrimitiveConf(
