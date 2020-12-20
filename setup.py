@@ -36,6 +36,7 @@ with open("README.md", "r") as fh:
         author="Omry Yadan",
         author_email="omry@fb.com",
         description="A framework for elegantly configuring complex applications",
+        license="MIT",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra",
