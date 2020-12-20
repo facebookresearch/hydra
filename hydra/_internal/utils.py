@@ -679,6 +679,8 @@ def _unbox(obj: Any) -> Any:
 
     if OmegaConf.is_config(obj):
         obj._set_flag("allow_objects", None)
+        obj._set_flag("readonly", None)
+        obj._set_flag("struct", None)
 
     return obj
 
@@ -757,8 +759,6 @@ def _get_kwargs_impl(
         for k, v in config.items_ex(resolve=False):
             final_kwargs[k] = v
 
-    final_kwargs._set_flag("readonly", None)
-    final_kwargs._set_flag("struct", None)
     if not root:
         # This is tricky, since the root kwargs is exploded anyway we can treat is as an untyped dict
         # the motivation is that the object type is used as an indicator to treat the object differently during
