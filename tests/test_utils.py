@@ -987,23 +987,23 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
     ],
 )
 def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: Any):
-    # Instantiated dataclasses are never converted to primitives.
-    # This is due to the ambiguity between dataclass as an object and as
-    # an input for creating a config object (Structured Configs)
-    # Even in ConvertMode.ALL - the underlying dict and list are converted to DictConfig and ListConfig
-    # because the parent DictConfig cannot hold unwrapped list and dict.
-    # This behavior is unique to instantiated objects that are dataclasses.
+    """Test instantiation of dataclass instances.DictConfig
 
+    Except for when convert = ConvertMode.ALL, dataclass instances are
+    treated as OmegaConf DictConfig.
+    """
     cfg = OmegaConf.create(input_)
-    kwargs = {"a": {"_convert_": convert}}
+    kwargs = {"_convert_": convert}
     ret = utils.instantiate(cfg.obj, **kwargs)
 
+    # True if a is either a DataClass or a OmegaConf.DictConfig
     assert ret.a == expected
-    # as close as it gets for dataclasses:
-    # Object is a DictConfig and the underlying type is the expected type.
-    assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
-    # Since these are nested in , they are not getting converted. not the greatest behavior.
-    # Can potentially be solved if this is causing issues.
+
+    if convert is ConvertMode.ALL:
+        assert isinstance(ret.a, SimpleDataClass)
+    else:
+        assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
+
     assert isinstance(ret.a.a, DictConfig)
     assert isinstance(ret.a.b, ListConfig)
 

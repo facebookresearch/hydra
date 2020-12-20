@@ -16,6 +16,7 @@ from hydra._internal.utils import (
     _get_target_type,
     _locate,
     _pop_convert_mode,
+    Boxed
 )
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraException, InstantiationException
@@ -31,6 +32,36 @@ class ConvertMode(Enum):
     PARTIAL = 1
     # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
     ALL = 2
+
+
+def unbox(obj: Any, convert: ConvertMode):
+    """Unbox object."""
+    if isinstance(obj, Boxed):
+        result = unbox(obj.obj, convert)
+    elif isinstance(obj, dict):
+        result = {key: unbox(value, convert) for key, value in obj.items()}
+    elif OmegaConf.is_dict(obj):
+        d = {} if convert == ConvertMode.ALL else OmegaConf.create(flags={"allow_objects": True})
+        for key, value in obj.items():
+            d[key] = unbox(value, convert)
+        result = d
+    elif isinstance(obj, list):
+        result = [unbox(item, convert) for item in obj]
+    elif OmegaConf.is_list(obj):
+        lst = [] if convert == ConvertMode.ALL else OmegaConf.create([], flags={"allow_objects": True})
+        for it in obj:
+            lst.append(unbox(it, convert))
+        result = lst
+    elif convert != ConvertMode.ALL:
+        final_obj = OmegaConf.create(flags={"allow_objects": True})
+        final_obj["obj"] = obj
+        final_obj = OmegaConf.to_container(
+            final_obj, resolve=True, exclude_structured_configs=True
+        )
+        result = final_obj["obj"]
+    else:
+        result = obj
+    return result
 
 
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
@@ -56,7 +87,6 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
-
     if OmegaConf.is_none(config):
         return None
 
@@ -91,8 +121,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     assert OmegaConf.is_config(config)
     OmegaConf.set_readonly(config, False)
     OmegaConf.set_struct(config, False)
-
     target = _get_target_type(config, kwargs)
+
     try:
         config._set_flag("allow_objects", True)
         final_kwargs = _get_kwargs(config, **kwargs)
@@ -101,14 +131,13 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             final_kwargs = OmegaConf.to_container(
                 final_kwargs, resolve=True, exclude_structured_configs=True
             )
-            return target(*args, **final_kwargs)
         elif convert == ConvertMode.ALL:
             final_kwargs = OmegaConf.to_container(final_kwargs, resolve=True)
-            return target(*args, **final_kwargs)
         elif convert == ConvertMode.NONE:
-            return target(*args, **final_kwargs)
+            pass
         else:
             assert False
+        return target(*args, **unbox(final_kwargs, convert))
     except Exception as e:
         # preserve the original exception backtrace
         raise type(e)(

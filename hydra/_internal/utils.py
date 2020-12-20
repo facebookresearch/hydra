@@ -650,6 +650,19 @@ def _pop_convert_mode(d: Any) -> Any:
     return ret
 
 
+class Boxed:
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __repr__(self) -> str:
+        return f"Boxed({repr(self.obj)})"
+
+
+def box(obj):
+    return Boxed(obj)
+
+
 def _get_kwargs(
     config: Union[DictConfig, ListConfig],
     root: bool = True,
@@ -680,12 +693,12 @@ def _get_kwargs(
             if OmegaConf.is_none(v):
                 final_kwargs[k] = v
             elif _is_target(v):
-                final_kwargs[k] = instantiate(v)
+                final_kwargs[k] = box(instantiate(v))
             elif OmegaConf.is_dict(v):
                 d = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in v.items_ex(resolve=False):
                     if _is_target(value):
-                        d[key] = instantiate(value)
+                        d[key] = box(instantiate(value))
                     elif OmegaConf.is_config(value):
                         d[key] = _get_kwargs(value, root=False)
                     else:
@@ -696,7 +709,7 @@ def _get_kwargs(
                 lst = OmegaConf.create([], flags={"allow_objects": True})
                 for x in v:
                     if _is_target(x):
-                        lst.append(instantiate(x))
+                        lst.append(box(instantiate(x)))
                     elif OmegaConf.is_config(x):
                         lst.append(_get_kwargs(x, root=False))
                         lst[-1]._metadata.object_type = x._metadata.object_type
