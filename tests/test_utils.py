@@ -956,6 +956,44 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
     assert ret.a == expected
 
 
+@dataclass
+class A:
+    x: int
+
+
+@dataclass
+class B:
+    a: A
+
+
+@pytest.mark.parametrize("convert", ["none", "partial", "all"])
+def test_instantiate_dataclass_modes(convert):
+    """Test instantiation of dataclasses based on convert mode."""
+    raw = {
+        "_target_": "tests.test_utils.B",
+        "a": {
+            "_target_": "tests.test_utils.A",
+            "x": {
+                "y": 0
+            }
+        }
+    }
+    config = OmegaConf.create(raw)
+    instance = utils.instantiate(config, _convert_=convert)
+    if convert == "all":
+        assert isinstance(instance, B)
+        assert isinstance(instance.a, A)
+        assert isinstance(instance.a.x, dict) and not isinstance(instance.a.x, DictConfig)
+    elif convert == "partial":
+        assert isinstance(instance, B)
+        assert isinstance(instance.a, A)
+        assert isinstance(instance.a.x, DictConfig)
+    else:
+        assert isinstance(instance, DictConfig)
+        assert isinstance(instance.a, DictConfig)
+        assert isinstance(instance.a.x, DictConfig)
+
+
 @pytest.mark.parametrize(  # type: ignore
     "convert",
     [  # type: ignore

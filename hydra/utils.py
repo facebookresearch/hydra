@@ -1,5 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import logging.config
+import collections
 import os
 import sys
 from enum import Enum
@@ -7,30 +9,26 @@ from pathlib import Path
 from typing import Any, Callable
 
 from omegaconf import OmegaConf
-from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import (
-    _convert_container_targets_to_strings,
     _convert_target_to_string,
-    _get_kwargs,
     _get_target_type,
     _locate,
     _pop_convert_mode,
+    _is_recursive,
 )
 from hydra.core.hydra_config import HydraConfig
-from hydra.errors import HydraException, InstantiationException
-from hydra.types import TargetConf
 
 log = logging.getLogger(__name__)
 
 
-class ConvertMode(Enum):
+class ConvertMode(str, Enum):
     # Use DictConfig/ListConfig
-    NONE = 0
+    NONE = "none"
     # Convert the OmegaConf config to primitive container, Structured Configs are preserved
-    PARTIAL = 1
+    PARTIAL = "partial"
     # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
-    ALL = 2
+    ALL = "all"
 
 
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
@@ -57,62 +55,41 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
              if _target_ is a callable: the return value of the call
     """
 
-    if OmegaConf.is_none(config):
-        return None
+    def _rec_instantiate(cfg):
+        recursive = _is_recursive(config, {})
+        if not recursive:
+            return cfg
+        if isinstance(cfg, collections.MutableSequence):
+            return [_rec_instantiate(it) for it in cfg]
+        if isinstance(cfg, collections.MutableMapping):
+            if "_target_" in cfg:
+                target = _get_target_type(cfg, {})
+                # Do not repack kwargs in OmegaConf object
+                return target(**{key: _rec_instantiate(value) for key, value in cfg.items()})
+            else:
+                # Keep original type (OmegaConfg DictConfig or dict)
+                for key, value in cfg.items():
+                    cfg[key] = _rec_instantiate(value)
+                return cfg
+        return cfg
 
-    if isinstance(config, TargetConf) and config._target_ == "???":
-        # Specific check to give a good warning about failure to annotate _target_ as a string.
-        raise InstantiationException(
-            f"Missing value for {type(config).__name__}._target_. Check that it's properly annotated and overridden."
-            f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
-        )
-
-    if not (
-        isinstance(config, dict)
-        or OmegaConf.is_config(config)
-        or is_structured_config(config)
-    ):
-        raise HydraException(f"Unsupported config type : {type(config).__name__}")
-
-    if isinstance(config, dict):
-        configc = config.copy()
-        _convert_container_targets_to_strings(configc)
-        config = configc
-
-    kwargsc = kwargs.copy()
-    _convert_container_targets_to_strings(kwargsc)
-    kwargs = kwargsc
-
-    # make a copy to ensure we do not change the provided object
-    config_copy = OmegaConf.structured(config, flags={"allow_objects": True})
-    if OmegaConf.is_config(config):
-        config_copy._set_parent(config._get_parent())
-    config = config_copy
-    assert OmegaConf.is_config(config)
-    OmegaConf.set_readonly(config, False)
-    OmegaConf.set_struct(config, False)
-
-    target = _get_target_type(config, kwargs)
     try:
-        config._set_flag("allow_objects", True)
-        final_kwargs = _get_kwargs(config, **kwargs)
-        convert = _pop_convert_mode(final_kwargs)
-        if convert == ConvertMode.PARTIAL:
-            final_kwargs = OmegaConf.to_container(
-                final_kwargs, resolve=True, exclude_structured_configs=True
-            )
-            return target(*args, **final_kwargs)
-        elif convert == ConvertMode.ALL:
-            final_kwargs = OmegaConf.to_container(final_kwargs, resolve=True)
-            return target(*args, **final_kwargs)
-        elif convert == ConvertMode.NONE:
-            return target(*args, **final_kwargs)
-        else:
-            assert False
+        convert_mode = ConvertMode(kwargs.get("_convert_", "none"))
+        if convert_mode is ConvertMode.ALL:
+            # Resolve config then instantiate
+            config = OmegaConf.to_container(config, resolve=True)
+            return _rec_instantiate(config)
+        if convert_mode is ConvertMode.PARTIAL:
+            # Instantiate, keep OmegaConf objects
+            return _rec_instantiate(config)
+        if convert_mode is ConvertMode.NONE:
+            # Do nothing
+            return config
+        raise ValueError(f"convert_mode {convert_mode} unknown.")
     except Exception as e:
         # preserve the original exception backtrace
         raise type(e)(
-            f"Error instantiating/calling '{_convert_target_to_string(target)}' : {e}"
+            f"Error instantiating/calling '{_convert_target_to_string(config)}' : {e}"
         ).with_traceback(sys.exc_info()[2])
 
 
