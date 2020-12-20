@@ -151,6 +151,13 @@ class UserMap:
 
 
 @dataclass
+class UserFamily:
+    family_name: str = MISSING
+    parent1: User = MISSING
+    parent2: User = MISSING
+
+
+@dataclass
 class UserConf:
     _target_: str = "tests.User"
     name: str = MISSING
@@ -169,6 +176,14 @@ class UserMapConf:
     _target_: str = "tests.UserMap"
     name: str = MISSING
     users: Dict[str, UserConf] = MISSING
+
+
+@dataclass
+class UserFamilyConf:
+    _target_: str = "tests.UserFamily"
+    family_name: str = MISSING
+    parent1: UserConf = MISSING
+    parent2: UserConf = MISSING
 
 
 # RECURSIVE

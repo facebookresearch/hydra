@@ -40,7 +40,6 @@ from tests import (
     SimpleClassDefaultPrimitiveConf,
     SimpleClassNonPrimitiveConf,
     SimpleClassPrimitiveConf,
-    SimpleDataClass,
     Tree,
     TreeConf,
     UntypedPassthroughClass,
@@ -52,6 +51,8 @@ from tests import (
     UserMap,
     UserMapConf,
     module_function,
+    UserFamilyConf,
+    UserFamily,
 )
 
 
@@ -230,7 +231,7 @@ def test_interpolation_accessing_parent(
     assert obj == expected
 
 
-def test_class_instantiate_omegaconf_node() -> Any:
+def test_class_instantiate_with_dataclass_instance_passthrough() -> Any:
     conf = OmegaConf.structured(
         {
             "_target_": "tests.AClass",
@@ -238,9 +239,9 @@ def test_class_instantiate_omegaconf_node() -> Any:
             "c": {"x": 10, "y": "${b}"},
         }
     )
-    obj = utils.instantiate(conf, a=10, d=AnotherClass(99))
+    d = AnotherClass(99)
+    obj = utils.instantiate(conf, a=10, d=d)
     assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
-    assert OmegaConf.is_config(obj.c)
 
 
 def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
@@ -364,14 +365,8 @@ def test_pass_extra_variables() -> None:
             {
                 "_target_": "tests.Tree",
                 "value": 1,
-                "left": {
-                    "_target_": "tests.Tree",
-                    "value": 21,
-                },
-                "right": {
-                    "_target_": "tests.Tree",
-                    "value": 22,
-                },
+                "left": {"_target_": "tests.Tree", "value": 21},
+                "right": {"_target_": "tests.Tree", "value": 22},
             },
             {},
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
@@ -485,12 +480,6 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:list:dict",
         ),
-        param(
-            UserGroupConf(name="admins", users=[UserConf(name="root", age=1)]),
-            {},
-            UserGroup(name="admins", users=[User(name="root", age=1)]),
-            id="recursive:list:instantiate_dataclass",
-        ),
         # map
         param(
             MappingConf(
@@ -545,12 +534,6 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:map:dict:passthrough",
         ),
-        param(
-            UserMapConf(name="admins", users={"root": UserConf(name="root", age=1)}),
-            {},
-            UserMap(name="admins", users={"root": User(name="root", age=1)}),
-            id="recursive:dict:instantiate_dataclass",
-        ),
     ],
 )
 def test_recursive_instantiation(
@@ -560,6 +543,7 @@ def test_recursive_instantiation(
 ) -> None:
     obj = utils.instantiate(cfg, **passthrough)
     assert obj == expected
+    assert type(obj) == type(expected)
 
 
 @mark.parametrize(  # type: ignore
@@ -948,56 +932,57 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
     assert ret.a == expected
 
 
-@mark.parametrize(  # type: ignore
-    "convert",
-    [  # type: ignore
-        param(None, id="p=unspecified"),
-        param(ConvertMode.NONE, id="none"),
-        param(ConvertMode.PARTIAL, id="partial"),
-        param(ConvertMode.ALL, id="all"),
-    ],
-)
-@mark.parametrize(  # type: ignore
-    "input_,expected",
-    [
-        param(
-            {
-                "value": 99,
-                "obj": {
-                    "_target_": "tests.SimpleDataClass",
-                    "a": {
-                        "_target_": "tests.SimpleDataClass",
-                        "a": {"foo": "${value}"},
-                        "b": [1, "${value}"],
-                    },
-                    "b": None,
-                },
-            },
-            SimpleDataClass(a={"foo": 99}, b=[1, 99]),
-            id="simple",
-        ),
-    ],
-)
-def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: Any):
-    # Instantiated dataclasses are never converted to primitives.
-    # This is due to the ambiguity between dataclass as an object and as
-    # an input for creating a config object (Structured Configs)
-    # Even in ConvertMode.ALL - the underlying dict and list are converted to DictConfig and ListConfig
-    # because the parent DictConfig cannot hold unwrapped list and dict.
-    # This behavior is unique to instantiated objects that are dataclasses.
-
-    cfg = OmegaConf.create(input_)
-    kwargs = {"a": {"_convert_": convert}}
-    ret = utils.instantiate(cfg.obj, **kwargs)
-
-    assert ret.a == expected
-    # as close as it gets for dataclasses:
-    # Object is a DictConfig and the underlying type is the expected type.
-    assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
-    # Since these are nested in , they are not getting converted. not the greatest behavior.
-    # Can potentially be solved if this is causing issues.
-    assert isinstance(ret.a.a, DictConfig)
-    assert isinstance(ret.a.b, ListConfig)
+# TODO: this test is no longer required if dataclass instantiated is supported
+# @mark.parametrize(  # type: ignore
+#     "convert",
+#     [  # type: ignore
+#         param(None, id="p=unspecified"),
+#         param(ConvertMode.NONE, id="none"),
+#         param(ConvertMode.PARTIAL, id="partial"),
+#         param(ConvertMode.ALL, id="all"),
+#     ],
+# )
+# @mark.parametrize(  # type: ignore
+#     "input_,expected",
+#     [
+#         param(
+#             {
+#                 "value": 99,
+#                 "obj": {
+#                     "_target_": "tests.SimpleDataClass",
+#                     "a": {
+#                         "_target_": "tests.SimpleDataClass",
+#                         "a": {"foo": "${value}"},
+#                         "b": [1, "${value}"],
+#                     },
+#                     "b": None,
+#                 },
+#             },
+#             SimpleDataClass(a={"foo": 99}, b=[1, 99]),
+#             id="simple",
+#         ),
+#     ],
+# )
+# def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: Any):
+#     # Instantiated dataclasses are never converted to primitives.
+#     # This is due to the ambiguity between dataclass as an object and as
+#     # an input for creating a config object (Structured Configs)
+#     # Even in ConvertMode.ALL - the underlying dict and list are converted to DictConfig and ListConfig
+#     # because the parent DictConfig cannot hold unwrapped list and dict.
+#     # This behavior is unique to instantiated objects that are dataclasses.
+#
+#     cfg = OmegaConf.create(input_)
+#     kwargs = {"a": {"_convert_": convert}}
+#     ret = utils.instantiate(cfg.obj, **kwargs)
+#
+#     assert ret.a == expected
+#     # as close as it gets for dataclasses:
+#     # Object is a DictConfig and the underlying type is the expected type.
+#     assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
+#     # Since these are nested in , they are not getting converted. not the greatest behavior.
+#     # Can potentially be solved if this is causing issues.
+#     assert isinstance(ret.a.a, DictConfig)
+#     assert isinstance(ret.a.b, ListConfig)
 
 
 @mark.parametrize(  # type: ignore
@@ -1089,7 +1074,7 @@ def test_dict_with_structured_config() -> None:
     schema = OmegaConf.structured(DictValuesConf)
     cfg = OmegaConf.merge(schema, {"d": {"007": {"name": "Bond", "age": 7}}})
     obj = utils.instantiate(config=cfg, _convert_="none")
-    assert OmegaConf.is_dict(obj.d)
+    # assert OmegaConf.is_dict(obj.d)
     assert OmegaConf.get_type(obj.d["007"]) == User
 
     obj = utils.instantiate(config=cfg, _convert_="partial")
@@ -1111,7 +1096,7 @@ def test_list_with_structured_config() -> None:
     cfg = OmegaConf.merge(schema, {"d": [{"name": "Bond", "age": 7}]})
 
     obj = utils.instantiate(config=cfg, _convert_="none")
-    assert isinstance(obj.d, ListConfig)
+    # assert isinstance(obj.d, ListConfig)
     assert OmegaConf.get_type(obj.d[0]) == User
 
     obj = utils.instantiate(config=cfg, _convert_="partial")
@@ -1132,3 +1117,42 @@ def test_list_as_none() -> None:
     cfg = OmegaConf.structured(ListValuesConf)
     obj = utils.instantiate(config=cfg)
     assert obj.d is None
+
+
+def test_dataclass_recursive_instantiation_direct_nesting() -> None:
+    cfg = UserFamilyConf(
+        family_name="Simpson",
+        parent1=UserConf(name="Homer", age=35),
+        parent2=UserConf(name="Marge", age=30),
+    )
+    expected = UserFamily(
+        family_name="Simpson",
+        parent1=User(name="Homer", age=35),
+        parent2=User(name="Marge", age=30),
+    )
+
+    obj = utils.instantiate(cfg)
+    assert obj == expected
+    assert isinstance(obj, UserFamily)
+    assert isinstance(obj.parent1, User)
+    assert isinstance(obj.parent2, User)
+
+
+def test_dataclass_recursive_instantiation_list_nesting() -> None:
+    cfg = UserGroupConf(name="admins", users=[UserConf(name="root", age=1)])
+    expected = UserGroup(name="admins", users=[User(name="root", age=1)])
+
+    obj = utils.instantiate(cfg)
+    assert obj == expected
+    assert isinstance(obj, UserGroup)
+    assert isinstance(obj.users[0], User)
+
+
+def test_dataclass_recursive_instantiation_dict_nesting() -> None:
+    cfg = UserMapConf(name="admins", users={"root": UserConf(name="root", age=1)})
+    expected = UserMap(name="admins", users={"root": User(name="root", age=1)})
+
+    obj = utils.instantiate(cfg)
+    assert obj == expected
+    assert type(obj) == type(expected)
+    assert type(obj.users["root"]) == User
