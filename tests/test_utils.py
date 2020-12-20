@@ -46,12 +46,12 @@ from tests import (
     UntypedPassthroughClass,
     UntypedPassthroughConf,
     User,
-    module_function,
     UserConf,
     UserGroup,
     UserGroupConf,
-    UserMapConf,
     UserMap,
+    UserMapConf,
+    module_function,
 )
 
 

@@ -663,7 +663,7 @@ def _pop_convert_mode(d: Any) -> Any:
 class Boxed:
     obj: Any
 
-    def __init__(self, obj) -> None:
+    def __init__(self, obj: Any) -> None:
         self.obj = obj
 
 
