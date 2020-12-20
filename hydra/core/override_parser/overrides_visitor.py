@@ -3,7 +3,7 @@ import sys
 import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from antlr4 import TerminalNode, Token
+from antlr4 import ParserRuleContext, TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
 from antlr4.tree.Tree import TerminalNodeImpl
 
@@ -78,74 +78,10 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitPrimitive(
         self, ctx: OverrideParser.PrimitiveContext
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
-        ret: Optional[Union[int, bool, float, str]]
-        first_idx = 0
-        last_idx = ctx.getChildCount()
-        # skip first if whitespace
-        if self.is_ws(ctx.getChild(0)):
-            if last_idx == 1:
-                # Only whitespaces => this is not allowed.
-                raise HydraException(
-                    "Trying to parse a primitive that is all whitespaces"
-                )
-            first_idx = 1
-        if self.is_ws(ctx.getChild(-1)):
-            last_idx = last_idx - 1
-        num = last_idx - first_idx
-        if num > 1:
-            # Concatenate, while un-escaping as needed.
-            tokens = []
-            for i, n in enumerate(ctx.getChildren()):
-                if n.symbol.type == OverrideLexer.WS and (
-                    i < first_idx or i >= last_idx
-                ):
-                    # Skip leading / trailing whitespaces.
-                    continue
-                tokens.append(
-                    n.symbol.text[1::2]  # un-escape by skipping every other char
-                    if n.symbol.type == OverrideLexer.ESC
-                    else n.symbol.text
-                )
-            ret = "".join(tokens)
-        else:
-            node = ctx.getChild(first_idx)
-            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
-                text = node.getText()
-                qc = text[0]
-                text = text[1:-1]
-                if qc == "'":
-                    quote = Quote.single
-                    text = text.replace("\\'", "'")
-                elif qc == '"':
-                    quote = Quote.double
-                    text = text.replace('\\"', '"')
-                else:
-                    assert False
-                return QuotedString(text=text, quote=quote)
-            elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
-                ret = node.symbol.text
-            elif node.symbol.type == OverrideLexer.INT:
-                ret = int(node.symbol.text)
-            elif node.symbol.type == OverrideLexer.FLOAT:
-                ret = float(node.symbol.text)
-            elif node.symbol.type == OverrideLexer.NULL:
-                ret = None
-            elif node.symbol.type == OverrideLexer.BOOL:
-                text = node.getText().lower()
-                if text == "true":
-                    ret = True
-                elif text == "false":
-                    ret = False
-                else:
-                    assert False
-            elif node.symbol.type == OverrideLexer.ESC:
-                ret = node.symbol.text[1::2]
-            else:
-                return node.getText()  # type: ignore
-        return ret
+        return self._createPrimitive(ctx)
 
-    def visitListValue(
-        self, ctx: OverrideParser.ListValueContext
+    def visitListContainer(
+        self, ctx: OverrideParser.ListContainerContext
     ) -> List[ParsedElementType]:
         ret: List[ParsedElementType] = []
 
@@ -159,8 +95,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 ret.append(self.visitElement(element))
         return ret
 
-    def visitDictValue(
-        self, ctx: OverrideParser.DictValueContext
+    def visitDictContainer(
+        self, ctx: OverrideParser.DictContainerContext
     ) -> Dict[str, ParsedElementType]:
         assert self.is_matching_terminal(ctx.getChild(0), OverrideLexer.BRACE_OPEN)
         return dict(
@@ -168,13 +104,16 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             for i in range(1, ctx.getChildCount() - 1, 2)
         )
 
+    def visitDictKey(self, ctx: OverrideParser.DictKeyContext) -> Any:
+        return self._createPrimitive(ctx)
+
     def visitDictKeyValuePair(
         self, ctx: OverrideParser.DictKeyValuePairContext
     ) -> Tuple[str, ParsedElementType]:
         children = ctx.getChildren()
         item = next(children)
-        assert self.is_matching_terminal(item, OverrideLexer.ID)
-        pkey = item.getText()
+        assert isinstance(item, OverrideParser.DictKeyContext)
+        pkey = self.visitDictKey(item)
         assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
         value = next(children)
         assert isinstance(value, OverrideParser.ElementContext)
@@ -186,10 +125,10 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             return self.visitFunction(ctx.function())  # type: ignore
         elif ctx.primitive():
             return self.visitPrimitive(ctx.primitive())
-        elif ctx.listValue():
-            return self.visitListValue(ctx.listValue())
-        elif ctx.dictValue():
-            return self.visitDictValue(ctx.dictValue())
+        elif ctx.listContainer():
+            return self.visitListContainer(ctx.listContainer())
+        elif ctx.dictContainer():
+            return self.visitDictContainer(ctx.dictContainer())
         else:
             assert False
 
@@ -304,6 +243,75 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             raise HydraException(
                 f"{type(e).__name__} while evaluating '{ctx.getText()}': {e}"
             ) from e
+
+    def _createPrimitive(
+        self, ctx: ParserRuleContext
+    ) -> Optional[Union[QuotedString, int, bool, float, str]]:
+        ret: Optional[Union[int, bool, float, str]]
+        first_idx = 0
+        last_idx = ctx.getChildCount()
+        # skip first if whitespace
+        if self.is_ws(ctx.getChild(0)):
+            if last_idx == 1:
+                # Only whitespaces => this is not allowed.
+                raise HydraException(
+                    "Trying to parse a primitive that is all whitespaces"
+                )
+            first_idx = 1
+        if self.is_ws(ctx.getChild(-1)):
+            last_idx = last_idx - 1
+        num = last_idx - first_idx
+        if num > 1:
+            # Concatenate, while un-escaping as needed.
+            tokens = []
+            for i, n in enumerate(ctx.getChildren()):
+                if n.symbol.type == OverrideLexer.WS and (
+                    i < first_idx or i >= last_idx
+                ):
+                    # Skip leading / trailing whitespaces.
+                    continue
+                tokens.append(
+                    n.symbol.text[1::2]  # un-escape by skipping every other char
+                    if n.symbol.type == OverrideLexer.ESC
+                    else n.symbol.text
+                )
+            ret = "".join(tokens)
+        else:
+            node = ctx.getChild(first_idx)
+            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
+                text = node.getText()
+                qc = text[0]
+                text = text[1:-1]
+                if qc == "'":
+                    quote = Quote.single
+                    text = text.replace("\\'", "'")
+                elif qc == '"':
+                    quote = Quote.double
+                    text = text.replace('\\"', '"')
+                else:
+                    assert False
+                return QuotedString(text=text, quote=quote)
+            elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
+                ret = node.symbol.text
+            elif node.symbol.type == OverrideLexer.INT:
+                ret = int(node.symbol.text)
+            elif node.symbol.type == OverrideLexer.FLOAT:
+                ret = float(node.symbol.text)
+            elif node.symbol.type == OverrideLexer.NULL:
+                ret = None
+            elif node.symbol.type == OverrideLexer.BOOL:
+                text = node.getText().lower()
+                if text == "true":
+                    ret = True
+                elif text == "false":
+                    ret = False
+                else:
+                    assert False
+            elif node.symbol.type == OverrideLexer.ESC:
+                ret = node.symbol.text[1::2]
+            else:
+                return node.getText()  # type: ignore
+        return ret
 
 
 class HydraErrorListener(ErrorListener):  # type: ignore

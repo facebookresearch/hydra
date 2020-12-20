@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
+from hydra._internal.grammar.utils import escape_special_characters
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
@@ -20,7 +21,7 @@ class Quote(Enum):
     double = 1
 
 
-@dataclass
+@dataclass(frozen=True)
 class QuotedString:
     text: str
 
@@ -258,7 +259,13 @@ class Override:
         if isinstance(value, list):
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
-            return {k: Override._convert_value(v) for k, v in value.items()}
+
+            return {
+                # We ignore potential type mismatch here so as to let OmegaConf
+                # raise an explicit error in case of invalid type.
+                Override._convert_value(k): Override._convert_value(v)  # type: ignore
+                for k, v in value.items()
+            }
         elif isinstance(value, QuotedString):
             return value.text
         else:
@@ -411,17 +418,19 @@ class Override:
             )
             return "[" + s + "]"
         elif isinstance(value, dict):
-            s = comma.join(
-                [
-                    f"{k}{colon}{Override._get_value_element_as_str(v, space_after_sep=space_after_sep)}"
-                    for k, v in value.items()
-                ]
-            )
-            return "{" + s + "}"
-        elif isinstance(value, (str, int, bool, float)):
+            str_items = []
+            for k, v in value.items():
+                str_key = Override._get_value_element_as_str(k)
+                str_value = Override._get_value_element_as_str(
+                    v, space_after_sep=space_after_sep
+                )
+                str_items.append(f"{str_key}{colon}{str_value}")
+            return "{" + comma.join(str_items) + "}"
+        elif isinstance(value, str):
+            return escape_special_characters(value)
+        elif isinstance(value, (int, bool, float)):
             return str(value)
         elif is_structured_config(value):
-            print(value)
             return Override._get_value_element_as_str(
                 OmegaConf.to_container(OmegaConf.structured(value))
             )
