@@ -47,6 +47,11 @@ from tests import (
     UntypedPassthroughConf,
     User,
     module_function,
+    UserConf,
+    UserGroup,
+    UserGroupConf,
+    UserMapConf,
+    UserMap,
 )
 
 
@@ -173,6 +178,12 @@ def test_a_class_eq() -> None:
             UntypedPassthroughClass(a=IllegalType()),
             id="untyped_passthrough",
         ),
+        param(
+            UserConf(name="Bond", age=7),
+            {},
+            User(name="Bond", age=7),
+            id="instantiate_dataclass",
+        ),
     ],
 )
 def test_class_instantiate(
@@ -185,6 +196,7 @@ def test_class_instantiate(
         assert obj == expected
         # make sure config is not modified by instantiate
         assert conf == conf_copy
+        assert type(obj) == type(expected)
 
     test(input_conf)
     test(OmegaConf.create(input_conf))
@@ -216,34 +228,6 @@ def test_interpolation_accessing_parent(
     input_conf = OmegaConf.create(input_conf)
     obj = utils.instantiate(input_conf.node, **passthrough)
     assert obj == expected
-
-
-def test_interpolation_is_live_in_instantiated_object() -> None:
-    """
-    Interpolations in instantiated objects are live config objects but not for primitive objects.
-    """
-    cfg = OmegaConf.create(
-        {
-            "node": {
-                "_target_": "tests.AClass",
-                "a": "${value}",
-                "b": {"x": "${value}"},
-                "c": 30,
-                "d": 40,
-            },
-            "value": 99,
-        }
-    )
-    obj = utils.instantiate(cfg.node)
-    assert obj.a == 99
-    assert obj.b.x == 99
-
-    cfg.value = 3.14
-
-    # interpolation is not live for primitive objects
-    assert obj.a == 99  # unchanged
-    # but is live for config objects
-    assert obj.b.x == 3.14
 
 
 def test_class_instantiate_omegaconf_node() -> Any:
@@ -501,6 +485,12 @@ def test_pass_extra_variables() -> None:
             ),
             id="recursive:list:dict",
         ),
+        param(
+            UserGroupConf(name="admins", users=[UserConf(name="root", age=1)]),
+            {},
+            UserGroup(name="admins", users=[User(name="root", age=1)]),
+            id="recursive:list:instantiate_dataclass",
+        ),
         # map
         param(
             MappingConf(
@@ -554,6 +544,12 @@ def test_pass_extra_variables() -> None:
                 }
             ),
             id="recursive:map:dict:passthrough",
+        ),
+        param(
+            UserMapConf(name="admins", users={"root": UserConf(name="root", age=1)}),
+            {},
+            UserMap(name="admins", users={"root": User(name="root", age=1)}),
+            id="recursive:dict:instantiate_dataclass",
         ),
     ],
 )

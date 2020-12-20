@@ -144,6 +144,33 @@ class UserGroup:
     users: List[User] = MISSING
 
 
+@dataclass
+class UserMap:
+    name: str = MISSING
+    users: Dict[str, User] = MISSING
+
+
+@dataclass
+class UserConf:
+    _target_: str = "tests.User"
+    name: str = MISSING
+    age: int = MISSING
+
+
+@dataclass
+class UserGroupConf:
+    _target_: str = "tests.UserGroup"
+    name: str = MISSING
+    users: List[UserConf] = MISSING
+
+
+@dataclass
+class UserMapConf:
+    _target_: str = "tests.UserMap"
+    name: str = MISSING
+    users: Dict[str, UserConf] = MISSING
+
+
 # RECURSIVE
 # Classes
 class Transform:

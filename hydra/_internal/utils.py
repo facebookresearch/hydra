@@ -8,10 +8,20 @@ from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    List,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
-from omegaconf._utils import type_str
+from omegaconf._utils import is_structured_config, type_str
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -650,7 +660,40 @@ def _pop_convert_mode(d: Any) -> Any:
     return ret
 
 
+class Boxed:
+    obj: Any
+
+    def __init__(self, obj) -> None:
+        self.obj = obj
+
+
+def _unbox(obj: Any) -> Any:
+    if isinstance(obj, Boxed):
+        obj = obj.obj
+    elif isinstance(obj, MutableSequence):
+        for idx in range(len(obj)):
+            obj[idx] = _unbox(obj[idx])
+    elif isinstance(obj, MutableMapping):
+        for k, v in obj.items():
+            obj[k] = _unbox(v)
+
+    if OmegaConf.is_config(obj):
+        obj._set_flag("allow_objects", None)
+
+    return obj
+
+
 def _get_kwargs(
+    config: Union[DictConfig, ListConfig],
+    root: bool = True,
+    **kwargs: Any,
+) -> Any:
+    ret = _get_kwargs_impl(config, root, **kwargs)
+    ret = _unbox(ret)
+    return ret
+
+
+def _get_kwargs_impl(
     config: Union[DictConfig, ListConfig],
     root: bool = True,
     **kwargs: Any,
@@ -662,7 +705,8 @@ def _get_kwargs(
     if OmegaConf.is_list(config):
         assert isinstance(config, ListConfig)
         return [
-            _get_kwargs(x, root=False) if OmegaConf.is_config(x) else x for x in config
+            _get_kwargs_impl(x, root=False) if OmegaConf.is_config(x) else x
+            for x in config
         ]
 
     assert OmegaConf.is_dict(config), "Input config is not an OmegaConf DictConfig"
@@ -687,7 +731,7 @@ def _get_kwargs(
                     if _is_target(value):
                         d[key] = instantiate(value)
                     elif OmegaConf.is_config(value):
-                        d[key] = _get_kwargs(value, root=False)
+                        d[key] = _get_kwargs_impl(value, root=False)
                     else:
                         d[key] = value
                 d._metadata.object_type = v._metadata.object_type
@@ -696,9 +740,13 @@ def _get_kwargs(
                 lst = OmegaConf.create([], flags={"allow_objects": True})
                 for x in v:
                     if _is_target(x):
-                        lst.append(instantiate(x))
+                        obj = instantiate(x)
+                        if is_structured_config(obj):
+                            lst.append(Boxed(obj))
+                        else:
+                            lst.append(obj)
                     elif OmegaConf.is_config(x):
-                        lst.append(_get_kwargs(x, root=False))
+                        lst.append(_get_kwargs_impl(x, root=False))
                         lst[-1]._metadata.object_type = x._metadata.object_type
                     else:
                         lst.append(x)
@@ -711,7 +759,6 @@ def _get_kwargs(
 
     final_kwargs._set_flag("readonly", None)
     final_kwargs._set_flag("struct", None)
-    final_kwargs._set_flag("allow_objects", None)
     if not root:
         # This is tricky, since the root kwargs is exploded anyway we can treat is as an untyped dict
         # the motivation is that the object type is used as an indicator to treat the object differently during
