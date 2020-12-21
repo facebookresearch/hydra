@@ -18,11 +18,11 @@ JOB_SPEC_PICKLE = "job_spec.pkl"
 JOB_RETURN_PICKLE = "returns.pkl"
 
 
-def start_ray(ray_init_cfg: DictConfig) -> None:
+def start_ray(init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
-        log.info(f"Initializing ray with config: {ray_init_cfg}")
-        if ray_init_cfg:
-            ray.init(**ray_init_cfg)
+        log.info(f"Initializing ray with config: {init_cfg}")
+        if init_cfg:
+            ray.init(**init_cfg)
         else:
             ray.init()
     else:
@@ -46,13 +46,13 @@ def _run_job(
 
 
 def launch_job_on_ray(
-    ray_remote_cfg: DictConfig,
+    ray_remote: DictConfig,
     sweep_config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Any,
 ) -> Any:
-    if ray_remote_cfg:
-        run_job_ray = ray.remote(**ray_remote_cfg)(_run_job)
+    if ray_remote:
+        run_job_ray = ray.remote(**ray_remote)(_run_job)
     else:
         run_job_ray = ray.remote(_run_job)
 
@@ -139,14 +139,14 @@ def _ray_get_head_ip(yaml_path: str) -> str:
     return out.strip()
 
 
-def _get_pem(ray_cluster_cfg: Any) -> Any:
-    key_name = ray_cluster_cfg.auth.get("ssh_private_key")
+def _get_pem(ray_cluster: Any) -> Any:
+    key_name = ray_cluster.auth.get("ssh_private_key")
     if key_name is not None:
         return key_name
-    key_name = ray_cluster_cfg.provider.get("key_pair", {}).get("key_name")
+    key_name = ray_cluster.provider.get("key_pair", {}).get("key_name")
     if key_name:
         return os.path.expanduser(os.path.expanduser(f"~/.ssh/{key_name}.pem"))
-    region = ray_cluster_cfg.provider.region
+    region = ray_cluster.provider.region
     key_pair_name = f"ray-autoscaler_{region}"
     return os.path.expanduser(f"~/.ssh/{key_pair_name}.pem")
 
@@ -159,10 +159,10 @@ def rsync(
     target: str,
     up: bool = True,
 ) -> None:
-    ray_cluster_cfg = OmegaConf.load(yaml_path)
-    keypair = _get_pem(ray_cluster_cfg)
+    ray_cluster = OmegaConf.load(yaml_path)
+    keypair = _get_pem(ray_cluster)
     remote_ip = _ray_get_head_ip(yaml_path)
-    user = ray_cluster_cfg.auth.ssh_user
+    user = ray_cluster.auth.ssh_user
     args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
 
     for i in include:

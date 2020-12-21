@@ -35,7 +35,7 @@ def launch(
         f"sweep output dir: {sweep_dir}"
     )
 
-    start_ray(launcher.ray_init_cfg)
+    start_ray(launcher.ray_cfg.init)
 
     runs = []
     for idx, overrides in enumerate(job_overrides):
@@ -52,7 +52,7 @@ def launch(
             sweep_config.hydra.job.id = f"job_id_for_{idx}"
             sweep_config.hydra.job.num = idx
             ray_obj = launch_job_on_ray(
-                launcher.ray_remote_cfg,
+                launcher.ray_cfg.remote,
                 sweep_config,
                 launcher.task_function,
                 Singleton.get_state(),
