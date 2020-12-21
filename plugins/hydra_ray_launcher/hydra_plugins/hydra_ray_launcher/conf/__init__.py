@@ -84,13 +84,13 @@ class RsyncConf:
 
 
 @dataclass
-class MandatoryInstallConf:
+class EnvSetupConf:
     pip_packages: Dict[str, str] = field(
         default_factory=lambda: {
+            "omegaconf": omegaconf.__version__,
             "hydra_core": hydra.__version__,
             "ray": ray.__version__,
             "cloudpickle": cloudpickle.__version__,
-            "omegaconf": omegaconf.__version__,
             "pickle5": pkg_resources.get_distribution("pickle5").version,
             "hydra_ray_launcher": pkg_resources.get_distribution(
                 "hydra_ray_launcher"
@@ -98,7 +98,7 @@ class MandatoryInstallConf:
         }
     )
 
-    install_commands: List[str] = field(
+    commands: List[str] = field(
         default_factory=lambda: [
             "conda create -n hydra_${python_version:micro} python=${python_version:micro} -y",
             "echo 'export PATH=\"$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH\"' >> ~/.bashrc",
@@ -195,7 +195,7 @@ class RayAWSConf(RayConf):
 class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
-    mandatory_install: MandatoryInstallConf = MandatoryInstallConf()
+    env_setup: EnvSetupConf = EnvSetupConf()
 
     ray: RayAWSConf = RayAWSConf()
 

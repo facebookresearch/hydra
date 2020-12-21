@@ -58,12 +58,12 @@ def launch(
     assert launcher.config_loader is not None
     assert launcher.task_function is not None
 
-    setup_commands = launcher.mandatory_install.install_commands
+    setup_commands = launcher.env_setup.commands
     with read_write(setup_commands):
         setup_commands.extend(
             [
                 f"pip install {package}=={version}"
-                for package, version in launcher.mandatory_install.pip_packages.items()
+                for package, version in launcher.env_setup.pip_packages.items()
             ]
         )
         setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)

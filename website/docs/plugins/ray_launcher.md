@@ -47,15 +47,15 @@ defaults:
 $ python my_app.py hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
-mandatory_install:
+env_setup:
   pip_packages:
+    omegaconf: 2.0.5
     hydra_core: 1.0.4
     ray: 1.0.1.post1
     cloudpickle: 1.6.0
-    omegaconf: 2.0.5
     pickle5: 0.0.11
     hydra_ray_launcher: 0.1.2
-  install_commands:
+  commands:
   - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
   - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"'
     >> ~/.bashrc
