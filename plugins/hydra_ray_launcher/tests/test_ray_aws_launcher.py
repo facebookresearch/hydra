@@ -264,6 +264,8 @@ def manage_cluster() -> Generator[None, None, None]:
                 f"hydra.launcher.sync_down.source_dir={sweep_dir}/",
                 f"hydra.launcher.sync_down.target_dir={sweep_dir}",
                 f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
+                # Port 443 is blocked for testing instance, as a result, pip install would fail.
+                # To get around this, we pre-install all the dependencies on the test AMI.
                 "hydra.launcher.ray.cluster.setup_commands=[]",
                 "hydra.launcher.env_setup.commands=[]",
                 f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
@@ -299,6 +301,8 @@ class TestRayAWSLauncher(LauncherTestSuite):
                 f"hydra.launcher.sync_down.source_dir={temp_remote_dir}/",
                 f"hydra.launcher.sync_down.target_dir={temp_remote_dir}",
                 f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
+                # Port 443 is blocked for testing instance, as a result, pip install would fail.
+                # To get around this, we pre-install all the dependencies on the test AMI.
                 "hydra.launcher.ray.cluster.setup_commands=[]",
                 "hydra.launcher.env_setup.commands=[]",
                 f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
