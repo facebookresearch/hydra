@@ -13,10 +13,15 @@ from omegaconf import MISSING
 
 
 @dataclass
+class RayConf:
+    init: Dict[str, Any] = field(default_factory=lambda: {"address": None})
+    remote: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class RayLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_launcher.RayLauncher"
-    ray_init_cfg: Dict[str, Any] = field(default_factory=dict)
-    ray_remote_cfg: Dict[str, Any] = field(default_factory=dict)
+    ray: RayConf = RayConf()
 
 
 # Ray AWS config, more info on ray's schema here:
@@ -79,26 +84,24 @@ class RsyncConf:
 
 
 @dataclass
-class PluginMandatoryInstallConf:
-    hydra_version: str = hydra.__version__
-    ray_version: str = ray.__version__
-    cloudpickle_version: str = cloudpickle.__version__
-    omegaconf_version: str = omegaconf.__version__
-    pickle5_version: str = pkg_resources.get_distribution("pickle5").version
-    hydra_ray_launcher_version: str = pkg_resources.get_distribution(
-        "hydra_ray_launcher"
-    ).version
+class EnvSetupConf:
+    pip_packages: Dict[str, str] = field(
+        default_factory=lambda: {
+            "omegaconf": omegaconf.__version__,
+            "hydra_core": hydra.__version__,
+            "ray": ray.__version__,
+            "cloudpickle": cloudpickle.__version__,
+            "pickle5": pkg_resources.get_distribution("pickle5").version,
+            "hydra_ray_launcher": pkg_resources.get_distribution(
+                "hydra_ray_launcher"
+            ).version,
+        }
+    )
 
-    install_commands: List[str] = field(
+    commands: List[str] = field(
         default_factory=lambda: [
             "conda create -n hydra_${python_version:micro} python=${python_version:micro} -y",
             "echo 'export PATH=\"$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH\"' >> ~/.bashrc",
-            "pip install omegaconf==${hydra.launcher.mandatory_install.omegaconf_version}",
-            "pip install hydra-core==${hydra.launcher.mandatory_install.hydra_version}",
-            "pip install hydra-ray-launcher==${hydra.launcher.mandatory_install.hydra_ray_launcher_version}",
-            "pip install ray==${hydra.launcher.mandatory_install.ray_version}",
-            "pip install cloudpickle==${hydra.launcher.mandatory_install.cloudpickle_version}",
-            "pip install pickle5==${hydra.launcher.mandatory_install.pickle5_version}",
         ]
     )
 
@@ -184,13 +187,17 @@ class RayClusterConf:
 
 
 @dataclass
+class RayAWSConf(RayConf):
+    cluster: RayClusterConf = RayClusterConf()
+
+
+@dataclass
 class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
-    mandatory_install: PluginMandatoryInstallConf = PluginMandatoryInstallConf()
-    ray_init_cfg: Dict[str, Any] = field(default_factory=dict)
-    ray_remote_cfg: Dict[str, Any] = field(default_factory=dict)
-    ray_cluster_cfg: RayClusterConf = RayClusterConf()
+    env_setup: EnvSetupConf = EnvSetupConf()
+
+    ray: RayAWSConf = RayAWSConf()
 
     # Stop Ray AWS cluster after jobs are finished.
     # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").

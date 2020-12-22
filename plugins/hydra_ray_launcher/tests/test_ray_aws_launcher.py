@@ -259,15 +259,17 @@ def manage_cluster() -> Generator[None, None, None]:
         (
             "ray_aws",
             [
-                f"hydra.launcher.ray_cluster_cfg.cluster_name={cluster_name}",
+                f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
                 "hydra.launcher.stop_cluster=False",
                 f"hydra.launcher.sync_down.source_dir={sweep_dir}/",
                 f"hydra.launcher.sync_down.target_dir={sweep_dir}",
-                f"hydra.launcher.ray_cluster_cfg.provider.key_pair.key_name=hydra_test_{cluster_name}",
-                "hydra.launcher.ray_cluster_cfg.setup_commands=[]",
-                "hydra.launcher.mandatory_install.install_commands=[]",
-                f"+hydra.launcher.ray_cluster_cfg.worker_nodes={ray_nodes_conf_override}",
-                f"+hydra.launcher.ray_cluster_cfg.head_node={ray_nodes_conf_override}",
+                f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
+                # Port 443 is blocked for testing instance, as a result, pip install would fail.
+                # To get around this, we pre-install all the dependencies on the test AMI.
+                "hydra.launcher.ray.cluster.setup_commands=[]",
+                "hydra.launcher.env_setup.commands=[]",
+                f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
+                f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
             ],
             Path(sweep_dir),
         )
@@ -294,15 +296,17 @@ class TestRayAWSLauncher(LauncherTestSuite):
             },
             [
                 "-m",
-                f"hydra.launcher.ray_cluster_cfg.cluster_name={cluster_name}",
+                f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
                 "hydra.launcher.stop_cluster=False",
                 f"hydra.launcher.sync_down.source_dir={temp_remote_dir}/",
                 f"hydra.launcher.sync_down.target_dir={temp_remote_dir}",
-                f"hydra.launcher.ray_cluster_cfg.provider.key_pair.key_name=hydra_test_{cluster_name}",
-                "hydra.launcher.ray_cluster_cfg.setup_commands=[]",
-                "hydra.launcher.mandatory_install.install_commands=[]",
-                f"+hydra.launcher.ray_cluster_cfg.worker_nodes={ray_nodes_conf_override}",
-                f"+hydra.launcher.ray_cluster_cfg.head_node={ray_nodes_conf_override}",
+                f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
+                # Port 443 is blocked for testing instance, as a result, pip install would fail.
+                # To get around this, we pre-install all the dependencies on the test AMI.
+                "hydra.launcher.ray.cluster.setup_commands=[]",
+                "hydra.launcher.env_setup.commands=[]",
+                f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
+                f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
             ],
         )
     ],

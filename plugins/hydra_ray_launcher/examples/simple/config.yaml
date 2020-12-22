@@ -1,9 +1,4 @@
 defaults:
   - hydra/launcher: ray_aws
 
-hydra:
-  launcher:
-    ray_remote_cfg:
-      num_cpus: 1
-
 task: 1

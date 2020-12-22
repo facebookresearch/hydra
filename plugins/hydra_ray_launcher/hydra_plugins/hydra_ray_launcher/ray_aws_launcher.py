@@ -8,10 +8,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
-from hydra_plugins.hydra_ray_launcher.conf import (  # type: ignore
-    RayClusterConf,
-    RsyncConf,
-)
+from hydra_plugins.hydra_ray_launcher.conf import RayAWSConf, RsyncConf  # type: ignore
 
 log = logging.getLogger(__name__)
 
@@ -19,18 +16,14 @@ log = logging.getLogger(__name__)
 class RayAWSLauncher(Launcher):
     def __init__(
         self,
-        mandatory_install: DictConfig,
-        ray_init_cfg: DictConfig,
-        ray_remote_cfg: DictConfig,
-        ray_cluster_cfg: RayClusterConf,
+        env_setup: DictConfig,
+        ray: RayAWSConf,
         stop_cluster: bool,
         sync_up: RsyncConf,
         sync_down: RsyncConf,
     ) -> None:
-        self.ray_init_cfg = ray_init_cfg
-        self.ray_remote_cfg = ray_remote_cfg
-        self.ray_cluster_cfg = ray_cluster_cfg
-        self.docker_enabled = self.ray_cluster_cfg.docker.image != ""
+        self.ray_cfg = ray
+        self.docker_enabled = bool(self.ray_cfg.cluster.docker.image)
         self.stop_cluster = stop_cluster
         self.sync_up = sync_up
         self.sync_down = sync_down
@@ -38,7 +31,7 @@ class RayAWSLauncher(Launcher):
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
         self.ray_yaml_path: Optional[str] = None
-        self.mandatory_install = mandatory_install
+        self.env_setup = env_setup
 
     def setup(
         self,
