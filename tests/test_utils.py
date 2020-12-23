@@ -4,7 +4,7 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import pytest
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
@@ -47,6 +47,7 @@ from tests import (
     UntypedPassthroughConf,
     User,
     module_function,
+    recisinstance,
 )
 
 
@@ -935,12 +936,8 @@ def test_convert_params_override(
 )
 def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
     cfg = OmegaConf.create(input_)
-    ret = utils.instantiate(
-        cfg.obj,
-        **{
-            "a": {"_convert_": convert_mode},
-        },
-    )
+    kwargs = {"a": {"_convert_": convert_mode}}
+    ret = utils.instantiate(cfg.obj, **kwargs)  # type: ignore
 
     if convert_mode in (ConvertMode.PARTIAL, ConvertMode.ALL):
         assert isinstance(ret.a.a, dict)
@@ -955,16 +952,7 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
 
 
 @pytest.mark.parametrize(
-    "convert",
-    [
-        pytest.param(None, id="p=unspecified"),
-        pytest.param(ConvertMode.NONE, id="none"),
-        pytest.param(ConvertMode.PARTIAL, id="partial"),
-        pytest.param(ConvertMode.ALL, id="all"),
-    ],
-)
-@pytest.mark.parametrize(
-    "input_,expected",
+    "config,expected",
     [
         pytest.param(
             {
@@ -979,33 +967,109 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
                     "b": None,
                 },
             },
-            SimpleDataClass(a={"foo": 99}, b=[1, 99]),
-            id="simple",
+            (
+                SimpleDataClass(
+                    a=SimpleDataClass(
+                        a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                    ),
+                    b=None,
+                ),
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+            ),
+            id="dataclass+dataclass",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": {
+                    "_target_": "tests.SimpleClass",
+                    "a": {
+                        "_target_": "tests.SimpleDataClass",
+                        "a": {"foo": "${value}"},
+                        "b": [1, "${value}"],
+                    },
+                    "b": None,
+                },
+            },
+            (
+                SimpleClass(
+                    a=SimpleDataClass(
+                        a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                    ),
+                    b=None,
+                ),
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+            ),
+            id="class+dataclass",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": {
+                    "a": {
+                        "_target_": "tests.SimpleDataClass",
+                        "a": {"foo": "${value}"},
+                        "b": [1, "${value}"],
+                    },
+                    "b": None,
+                },
+            },
+            (
+                # a is a DictConfig because of top level DictConfig
+                OmegaConf.create(
+                    {
+                        "a": SimpleDataClass(
+                            a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                        ),
+                        "b": None,
+                    }
+                ),
+                {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
+                {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
+            ),
+            id="dict+dataclass",
+        ),
+        pytest.param(
+            {
+                "value": 99,
+                "obj": [
+                    {
+                        "_target_": "tests.SimpleDataClass",
+                        "a": {"foo": "${value}"},
+                        "b": [1, "${value}"],
+                    },
+                    None,
+                ],
+            },
+            (
+                # Item 0 is a DictConfig because of top level ListConfig
+                OmegaConf.create(
+                    [
+                        SimpleDataClass(
+                            a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                        ),
+                        None,
+                    ]
+                ),
+                [SimpleDataClass(a={"foo": 99}, b=[1, 99]), None],
+                [SimpleDataClass(a={"foo": 99}, b=[1, 99]), None],
+            ),
+            id="list+dataclass",
         ),
     ],
 )
-def test_convert_params_with_dataclass_obj(
-    input_: Any, expected: Any, convert: Any
+def test_instantiate_convert_dataclasses(
+    config: Any, expected: Tuple[Any, Any, Any]
 ) -> None:
-    # Instantiated dataclasses are never converted to primitives.
-    # This is due to the ambiguity between dataclass as an object and as
-    # an input for creating a config object (Structured Configs)
-    # Even in ConvertMode.ALL - the underlying dict and list are converted to DictConfig and ListConfig
-    # because the parent DictConfig cannot hold unwrapped list and dict.
-    # This behavior is unique to instantiated objects that are dataclasses.
-
-    cfg = OmegaConf.create(input_)
-    kwargs = {"a": {"_convert_": convert}}
-    ret = utils.instantiate(cfg.obj, **kwargs)
-
-    assert ret.a == expected
-    # as close as it gets for dataclasses:
-    # Object is a DictConfig and the underlying type is the expected type.
-    assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == type(expected)
-    # Since these are nested in , they are not getting converted. not the greatest behavior.
-    # Can potentially be solved if this is causing issues.
-    assert isinstance(ret.a.a, DictConfig)
-    assert isinstance(ret.a.b, ListConfig)
+    """Instantiate on nested dataclass + dataclass."""
+    modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
+    for exp, mode in zip(expected, modes):
+        cfg = OmegaConf.create(config)
+        instance = utils.instantiate(cfg.obj, convert=mode)
+        assert instance == exp
+        assert recisinstance(instance, exp)
 
 
 @pytest.mark.parametrize(
