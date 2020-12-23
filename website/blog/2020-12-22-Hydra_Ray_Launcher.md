@@ -8,8 +8,7 @@ image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 ---
 
 It is common for researchers to work with multiple compute clusters. 
-Hydra provides several Launcher plugins which make switching between experiment environments as easy as overriding 
-the `hydra/launcher` config - without changing existing workflows or application code. 
+Hydra provides several Launcher plugins which enable launching in different clusters without changing existing workflows or application code.
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
 The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
 locally or on AWS. In this post we focus on demoing the major functionalities of the Launcher. 
@@ -48,7 +47,7 @@ $ python my_app.py hydra/launcher=ray_aws task=1,2 --multirun
 [HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpfm2ems9v.yaml']
 ```
 
-### Launch by spinning up a new Ray cluster locally (For testing)
+### Launching to a new local Ray Cluster
 If you want to do a quick local test, 
 you can spin up a local Ray cluster at application run time by specifying `hydra/launcher=ray`. 
 In this example, we create a new Ray cluster at application time. 
@@ -60,7 +59,7 @@ $ python my_app.py  --multirun hydra/launcher=ray
 [HYDRA]        #0 : 
 (pid=62642) [__main__][INFO] - Executing task 1
 ```
-### Launching to an existing Ray cluster on your local network
+### Launching to an existing local Ray Cluster
 You can launch the application on an existing local Ray cluster by configuring the cluster address
  and overriding `hydra/launcher=ray`. In the following example we configure the Ray cluster address
   to local ray cluster and Hydra Ray Launcher was able to connect to the existing Ray cluster and 
@@ -76,13 +75,13 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 
 Hydra Ray Launcher is built on top of Hydra 1.0 and you have access to all of the benefits Hydra brings:
 
-### Launching together with one of Hydra’s Sweepers
+### Parameter sweeps and optimization
 Hyperparameter sweeps are common in machine learning research. 
 Hydra has built-in grid search and provides several Sweeper plugins for hyperparameter optimization.
  Sweepers can be used together with Launchers for sweeping on different computing platforms. 
  Start from our documentation [here](https://hydra.cc/docs/tutorials/basic/running_your_app/multi-run/) to find more.
 
-### Structured Configs of the Launcher config
+### Config type safety
 Modern Hydra applications and Hydra Plugins leverage Structured Configs for config validation,
  and Hydra Ray Launcher is no exception. In the following example, we try to override the Ray cluster’s 
  autoscaling mode with an illegal value:
