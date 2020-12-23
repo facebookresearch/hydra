@@ -7,8 +7,9 @@ tags: [Hydra, Ray, Plugin]
 image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 ---
 
-<p align="center"><img src="/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
-
+It is common for researchers to work with multiple compute clusters. 
+Hydra provides several Launcher plugins which make switching between experiment environments as easy as overriding 
+the `hydra/launcher` config - without changing existing workflows or application code. 
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
 The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
 locally or on AWS. In this post we focus on demoing the major functionalities of the Launcher. 
@@ -21,6 +22,7 @@ As always, please [join our communities](https://github.com/facebookresearch/hyd
  [cluster launcher](https://docs.ray.io/en/master/cluster/launcher.html#ref-automatic-cluster) that can be used to provision resources and start a Ray cluster on top of them. 
 Hydra Ray Launcher is built on top of the [Ray Tasks API](https://docs.ray.io/en/master/ray-overview/index.html#parallelizing-python-java-functions-with-ray-tasks) and the Ray cluster launcher. 
 
+
 ### Launching to a new or existing AWS cluster
 Hydra Ray Launcher simplifies your experience by allowing the Ray cluster setup to be 
 configured transparently by Hydra (eliminating the need for an external YAML file while maintaining 
@@ -32,7 +34,7 @@ the flexibility). Hydra Ray Launcher comes with reasonable default configuration
 Launch your Hydra application to AWS by simply overriding: `hydra/launcher=ray_aws`:
 
 ```commandline
-$ python simple/my_app.py hydra/launcher=ray_aws task=1,2 --multirun
+$ python my_app.py hydra/launcher=ray_aws task=1,2 --multirun
 [HYDRA] Ray Launcher is launching 2 jobs, 
 [HYDRA]        #0 : task=1
 [HYDRA]        #1 : task=2
@@ -51,7 +53,7 @@ If you want to do a quick local test,
 you can spin up a local Ray cluster at application run time by specifying `hydra/launcher=ray`. 
 In this example, we create a new Ray cluster at application time. 
 ```commandline
-$ python simple/my_app.py  --multirun hydra/launcher=ray 
+$ python my_app.py  --multirun hydra/launcher=ray 
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-12-17/16-11-28
 [HYDRA] Initializing ray with config: {'address': None}
 2020-12-17 16:11:29,340 INFO services.py:1090 -- View the Ray dashboard at http://127.0.0.1:8265
@@ -64,7 +66,7 @@ You can launch the application on an existing local Ray cluster by configuring t
   to local ray cluster and Hydra Ray Launcher was able to connect to the existing Ray cluster and 
   execute the application code:
 ```commandline
-$ python simple/my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379
+$ python my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
 [HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
 INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
@@ -72,14 +74,7 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 (pid=93358) [__main__][INFO] - Executing task 1
 ```
 
-## Hydra 1.0
 Hydra Ray Launcher is built on top of Hydra 1.0 and you have access to all of the benefits Hydra brings:
-
-### Launching to different clusters without changing application code or your workflow
-It is common for researchers to work with multiple compute clusters. 
-Hydra makes switching between experiment environments as easy as possible. 
-For example, you can switch from [launching on slurm](https://hydra.cc/docs/next/plugins/submitit_launcher/) to AWS by 
-changing the `hydra/launcher` override without changing your application code.
 
 ### Launching together with one of Hydra’s Sweepers
 Hyperparameter sweeps are common in machine learning research. 
