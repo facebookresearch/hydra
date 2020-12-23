@@ -36,4 +36,4 @@ Missing mandatory value: waldo
         reference_type=Optional[Dict[Any, Any]]
         object_type=dict
 ```
-You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/2.0_branch/usage.html#access-and-manipulation" target="_blank">here</a>.
