@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 
@@ -62,6 +62,8 @@ class SlurmQueueConf(BaseQueueConf):
     additional_parameters: Dict[str, Any] = field(default_factory=dict)
     # Maximum number of jobs running in parallel
     array_parallelism: int = 256
+    # A list of commands to run in sbatch befure running srun
+    setup: Optional[List[str]] = None
 
 
 @dataclass

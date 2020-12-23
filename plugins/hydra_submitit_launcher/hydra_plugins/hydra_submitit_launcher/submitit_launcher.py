@@ -11,7 +11,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
 
 from .config import BaseQueueConf
 
@@ -119,6 +119,9 @@ class BaseSubmititLauncher(Launcher):
             for x, y in params.items()
             if x not in init_keys
         }
+        # submitit `setup` parameter must be a primitive list container
+        if "setup" in params and isinstance(params["setup"], ListConfig):
+            params["setup"] = OmegaConf.to_container(params["setup"], resolve=True)
         executor.update_parameters(**params)
 
         log.info(
