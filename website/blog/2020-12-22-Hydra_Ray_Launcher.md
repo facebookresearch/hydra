@@ -7,19 +7,19 @@ tags: [Hydra, Ray, Plugin]
 image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 ---
 
-<p align="center"><img src="/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
-
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
+Hydra's Launcher plugins enable launching to different environments without changing your existing workflows or application code.
 The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
-locally or on AWS. In this post we focus on demoing the major functionalities of the Launcher. 
+locally or on AWS. In this post we demonstrate the major functionalities of the Launcher. 
 For more details on installation and configuration, please check out the [Hydra Ray Launcher documentation](https://hydra.cc/docs/plugins/ray_launcher/). 
-As always, please [join our communities](https://github.com/facebookresearch/hydra#community) and give us feedback!
+As always, please [join our community](https://github.com/facebookresearch/hydra#community) and give us feedback!
 <!--truncate-->
 
 
 [Ray](https://github.com/ray-project/ray) is a simple yet powerful Python library for parallel and distributed programming. Among the many features it provides, Ray comes with a 
  [cluster launcher](https://docs.ray.io/en/master/cluster/launcher.html#ref-automatic-cluster) that can be used to provision resources and start a Ray cluster on top of them. 
 Hydra Ray Launcher is built on top of the [Ray Tasks API](https://docs.ray.io/en/master/ray-overview/index.html#parallelizing-python-java-functions-with-ray-tasks) and the Ray cluster launcher. 
+
 
 ### Launching to a new or existing AWS cluster
 Hydra Ray Launcher simplifies your experience by allowing the Ray cluster setup to be 
@@ -32,7 +32,7 @@ the flexibility). Hydra Ray Launcher comes with reasonable default configuration
 Launch your Hydra application to AWS by simply overriding: `hydra/launcher=ray_aws`:
 
 ```commandline
-$ python simple/my_app.py hydra/launcher=ray_aws task=1,2 --multirun
+$ python my_app.py hydra/launcher=ray_aws task=1,2 --multirun
 [HYDRA] Ray Launcher is launching 2 jobs, 
 [HYDRA]        #0 : task=1
 [HYDRA]        #1 : task=2
@@ -46,25 +46,25 @@ $ python simple/my_app.py hydra/launcher=ray_aws task=1,2 --multirun
 [HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpfm2ems9v.yaml']
 ```
 
-### Launch by spinning up a new Ray cluster locally (For testing)
+### Launching to a new local Ray Cluster
 If you want to do a quick local test, 
 you can spin up a local Ray cluster at application run time by specifying `hydra/launcher=ray`. 
 In this example, we create a new Ray cluster at application time. 
 ```commandline
-$ python simple/my_app.py  --multirun hydra/launcher=ray 
+$ python my_app.py  --multirun hydra/launcher=ray 
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-12-17/16-11-28
 [HYDRA] Initializing ray with config: {'address': None}
 2020-12-17 16:11:29,340 INFO services.py:1090 -- View the Ray dashboard at http://127.0.0.1:8265
 [HYDRA]        #0 : 
 (pid=62642) [__main__][INFO] - Executing task 1
 ```
-### Launching to an existing Ray cluster on your local network
+### Launching to an existing local Ray Cluster
 You can launch the application on an existing local Ray cluster by configuring the cluster address
  and overriding `hydra/launcher=ray`. In the following example we configure the Ray cluster address
   to local ray cluster and Hydra Ray Launcher was able to connect to the existing Ray cluster and 
   execute the application code:
 ```commandline
-$ python simple/my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379
+$ python my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
 [HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
 INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
@@ -72,22 +72,15 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 (pid=93358) [__main__][INFO] - Executing task 1
 ```
 
-## Hydra 1.0
 Hydra Ray Launcher is built on top of Hydra 1.0 and you have access to all of the benefits Hydra brings:
 
-### Launching to different clusters without changing application code or your workflow
-It is common for researchers to work with multiple compute clusters. 
-Hydra makes switching between experiment environments as easy as possible. 
-For example, you can switch from [launching on slurm](https://hydra.cc/docs/next/plugins/submitit_launcher/) to AWS by 
-changing the `hydra/launcher` override without changing your application code.
-
-### Launching together with one of Hydra’s Sweepers
+### Parameter sweeps and optimization
 Hyperparameter sweeps are common in machine learning research. 
 Hydra has built-in grid search and provides several Sweeper plugins for hyperparameter optimization.
  Sweepers can be used together with Launchers for sweeping on different computing platforms. 
  Start from our documentation [here](https://hydra.cc/docs/tutorials/basic/running_your_app/multi-run/) to find more.
 
-### Structured Configs of the Launcher config
+### Config type safety
 Modern Hydra applications and Hydra Plugins leverage Structured Configs for config validation,
  and Hydra Ray Launcher is no exception. In the following example, we try to override the Ray cluster’s 
  autoscaling mode with an illegal value:
