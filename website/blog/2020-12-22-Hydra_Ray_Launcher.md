@@ -7,7 +7,6 @@ tags: [Hydra, Ray, Plugin]
 image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 ---
 
-It is common for researchers to work with multiple compute clusters. 
 Hydra provides several Launcher plugins which enable launching in different clusters without changing existing workflows or application code.
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
 The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
