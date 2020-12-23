@@ -8,11 +8,11 @@ image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 ---
 
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
-Hydra's Launcher plugins enable launching in different clusters without changing existing workflows or application code.
+Hydra's Launcher plugins enable launching to different environments without changing your existing workflows or application code.
 The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
-locally or on AWS. In this post we focus on demoing the major functionalities of the Launcher. 
+locally or on AWS. In this post we demonstrate the major functionalities of the Launcher. 
 For more details on installation and configuration, please check out the [Hydra Ray Launcher documentation](https://hydra.cc/docs/plugins/ray_launcher/). 
-As always, please [join our communities](https://github.com/facebookresearch/hydra#community) and give us feedback!
+As always, please [join our community](https://github.com/facebookresearch/hydra#community) and give us feedback!
 <!--truncate-->
 
 
