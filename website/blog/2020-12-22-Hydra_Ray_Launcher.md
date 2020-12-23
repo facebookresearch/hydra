@@ -9,16 +9,15 @@ image: https://hydra.cc/img/Hydra-Readme-logo2.svg
 
 <p align="center"><img src="/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
 
-We are happy to announce that we are adding a Ray Launcher to the Hydra Launchers family. 
-The Hydra Ray Launcher can be used to launch your application to a new or existing Ray cluster, 
+We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
+The Hydra Ray Launcher can be used to launch your application to a new or existing [Ray cluster](https://docs.ray.io/en/master/cluster/launcher.html), 
 locally or on AWS. In this post we focus on demoing the major functionalities of the Launcher. 
 For more details on installation and configuration, please check out the [Hydra Ray Launcher documentation](https://hydra.cc/docs/plugins/ray_launcher/). 
 As always, please [join our communities](https://github.com/facebookresearch/hydra#community) and give us feedback!
 <!--truncate-->
 
 
-[Ray](https://github.com/ray-project/ray) is a framework that provides a simple, universal API for building
- and running distributed applications. Among the many features it provides, Ray comes with a 
+[Ray](https://github.com/ray-project/ray) is a simple yet powerful Python library for parallel and distributed programming. Among the many features it provides, Ray comes with a 
  [cluster launcher](https://docs.ray.io/en/master/cluster/launcher.html#ref-automatic-cluster) that can be used to provision resources and start a Ray cluster on top of them. 
 Hydra Ray Launcher is built on top of the [Ray Tasks API](https://docs.ray.io/en/master/ray-overview/index.html#parallelizing-python-java-functions-with-ray-tasks) and the Ray cluster launcher. 
 
