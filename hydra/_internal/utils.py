@@ -1,5 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import argparse
+import collections.abc
 import inspect
 import logging.config
 import os
@@ -10,8 +12,7 @@ from traceback import print_exc, print_exception
 from types import FrameType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
-from omegaconf import DictConfig, ListConfig, OmegaConf, open_dict
-from omegaconf._utils import type_str
+from omegaconf import OmegaConf
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -573,30 +574,21 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
 
 
 def _is_target(x: Any) -> bool:
+    if isinstance(x, dict):
+        return "_target_" in x
     if OmegaConf.is_dict(x) and not OmegaConf.is_none(x):
         return "_target_" in x
     return False
 
 
-def _is_recursive(config: Any, kwargs: Any) -> bool:
-    def _is_rec(d: Any) -> Optional[bool]:
-        if "_recursive_" in d:
-            rec = d.pop("_recursive_")
-            if not isinstance(rec, bool):
-                raise ValueError(
-                    f"_recursive_ flag must be a bool, got {type_str(rec)}"
-                )
-            return rec
-        return None
-
-    # pop both in any case
-    kwrec = _is_rec(kwargs)
-    configrec = _is_rec(config)
-    if kwrec is not None:
-        return kwrec
-    elif configrec is not None:
-        return configrec
-    return True
+def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
+    """Call target (type) with args and kwargs."""
+    try:
+        return target(*args, **kwargs)
+    except Exception as e:
+        raise type(e)(
+            f"Error instantiating '{_convert_target_to_string(target)}' : {e}"
+        ).with_traceback(sys.exc_info()[2])
 
 
 def _convert_target_to_string(t: Any) -> Any:
@@ -612,7 +604,7 @@ def _convert_container_targets_to_strings(d: Any) -> None:
     if isinstance(d, dict):
         if "_target_" in d:
             d["_target_"] = _convert_target_to_string(d["_target_"])
-        for k, v in d.items():
+        for _, v in d.items():
             _convert_container_targets_to_strings(v)
     elif isinstance(d, list):
         for e in d:
@@ -620,133 +612,54 @@ def _convert_container_targets_to_strings(d: Any) -> None:
                 _convert_container_targets_to_strings(e)
 
 
-def _get_target_type(config: Any, kwargs: Any) -> Union[type, Callable[..., Any]]:
-    kwargs_target = None
-    config_target = None
-    if "_target_" in kwargs:
-        kwargs_target = kwargs.pop("_target_")
+def _merge(config: Any, overrides: Any) -> Any:
+    """Mutate and return config with overrides.
 
-    if "_target_" in config:
-        config_target = config.pop("_target_")
+    NOTE: This is an anti-pattern since we mutate the config and return.
+    This allows us not to do copies of input objects but requires the
+    caller to be aware of the input config mutation during the call.
+    """
+    # Use OmegaConf merge if config is OmegaConf container
+    if OmegaConf.is_config(config):
+        config.merge_with(OmegaConf.create(overrides, flags={"allow_objects": True}))
+        return config
 
-    target = None
-    if kwargs_target is not None:
-        target = kwargs_target
-    elif config_target is not None:
-        target = config_target
+    # Manual Override if native mapping type
+    if isinstance(config, collections.abc.MutableMapping):
+        if not isinstance(overrides, collections.abc.Mapping):
+            raise TypeError(f"Expected type dict but got {type(overrides)}")
+        config = dict(config.items())  # Shallow copy
+        for key, item in overrides.items():
+            config[key] = _merge(config[key], item) if key in config else item
+        return config
 
-    if target is None:
-        raise InstantiationException("Unable to determine target")
+    # Manual Override if native sequence type
+    if isinstance(config, collections.abc.MutableSequence):
+        if not isinstance(overrides, collections.abc.Sequence):
+            raise TypeError(f"Expected type list but got {type(overrides)}")
+        for idx, item in enumerate(overrides):
+            if idx < len(config):
+                config[idx] = _merge(config[idx], item)
+            else:
+                config.append(item)
+        return config
 
+    # Final case, overrides instead of config. Note that this can lead
+    # to unexpected behaviors (_merge({1: 2}, None) returns None).
+    return overrides
+
+
+def _resolve_target(
+    target: Union[str, type, Callable[..., Any]]
+) -> Union[type, Callable[..., Any]]:
+    """Resolve target string, type or callable into type or callable."""
     if isinstance(target, str):
         return _locate(target)
-    elif isinstance(target, type):
+    if isinstance(target, type):
         return target
-    elif callable(target):
-        return target  # type: ignore
-    else:
-        raise InstantiationException(f"Unsupported target type : {type(target)}")
-
-
-def _pop_convert_mode(d: Any) -> Any:
-    from hydra.utils import ConvertMode
-
-    # default value is to not convert OmegaConf containers
-    ret = ConvertMode.NONE
-
-    if "_convert_" in d:
-        with open_dict(d):
-            convert = d.pop("_convert_")
-            if convert is not None:
-                if isinstance(convert, str):
-                    convert = convert.lower()
-                    if convert == "none":
-                        ret = ConvertMode.NONE
-                    elif convert == "partial":
-                        ret = ConvertMode.PARTIAL
-                    elif convert == "all":
-                        ret = ConvertMode.ALL
-                    else:
-                        raise InstantiationException(
-                            f"Unsupported _convert_ value: {convert}"
-                        )
-                elif isinstance(convert, ConvertMode):
-                    ret = convert
-                else:
-                    raise InstantiationException(
-                        f"_convert_ must be a string or ConvertMode enum (got `{type(convert).__name__}`)"
-                    )
-    return ret
-
-
-def _get_kwargs(
-    config: Union[DictConfig, ListConfig],
-    root: bool = True,
-    **kwargs: Any,
-) -> Any:
-    from hydra.utils import instantiate
-
-    assert OmegaConf.is_config(config)
-
-    if OmegaConf.is_list(config):
-        assert isinstance(config, ListConfig)
-        return [
-            _get_kwargs(x, root=False) if OmegaConf.is_config(x) else x for x in config
-        ]
-
-    assert OmegaConf.is_dict(config), "Input config is not an OmegaConf DictConfig"
-
-    recursive = _is_recursive(config, kwargs)
-    overrides = OmegaConf.create(kwargs, flags={"allow_objects": True})
-    config.merge_with(overrides)
-
-    final_kwargs = OmegaConf.create(flags={"allow_objects": True})
-    final_kwargs._set_parent(config._get_parent())
-    final_kwargs._set_flag("readonly", False)
-    final_kwargs._set_flag("struct", False)
-    if recursive:
-        for k, v in config.items_ex(resolve=False):
-            if OmegaConf.is_none(v):
-                final_kwargs[k] = v
-            elif _is_target(v):
-                final_kwargs[k] = instantiate(v)
-            elif OmegaConf.is_dict(v):
-                d = OmegaConf.create({}, flags={"allow_objects": True})
-                for key, value in v.items_ex(resolve=False):
-                    if _is_target(value):
-                        d[key] = instantiate(value)
-                    elif OmegaConf.is_config(value):
-                        d[key] = _get_kwargs(value, root=False)
-                    else:
-                        d[key] = value
-                d._metadata.object_type = v._metadata.object_type
-                final_kwargs[k] = d
-            elif OmegaConf.is_list(v):
-                lst = OmegaConf.create([], flags={"allow_objects": True})
-                for x in v:
-                    if _is_target(x):
-                        lst.append(instantiate(x))
-                    elif OmegaConf.is_config(x):
-                        lst.append(_get_kwargs(x, root=False))
-                        lst[-1]._metadata.object_type = x._metadata.object_type
-                    else:
-                        lst.append(x)
-                final_kwargs[k] = lst
-            else:
-                final_kwargs[k] = v
-    else:
-        for k, v in config.items_ex(resolve=False):
-            final_kwargs[k] = v
-
-    final_kwargs._set_flag("readonly", None)
-    final_kwargs._set_flag("struct", None)
-    final_kwargs._set_flag("allow_objects", None)
-    if not root:
-        # This is tricky, since the root kwargs is exploded anyway we can treat is as an untyped dict
-        # the motivation is that the object type is used as an indicator to treat the object differently during
-        # conversion to a primitive container in some cases
-        final_kwargs._metadata.object_type = config._metadata.object_type
-    return final_kwargs
+    if callable(target):
+        return target
+    raise InstantiationException(f"Unsupported target type : {type(target)}")
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:
