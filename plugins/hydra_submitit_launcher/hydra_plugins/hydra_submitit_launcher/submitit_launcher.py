@@ -120,8 +120,12 @@ class BaseSubmititLauncher(Launcher):
             if x not in init_keys
         }
         # submitit `setup` parameter must be a primitive list container
-        if "setup" in params and isinstance(params["setup"], ListConfig):
-            params["setup"] = OmegaConf.to_container(params["setup"], resolve=True)
+        if f"{self._EXECUTOR}_setup" in params and isinstance(
+            params[f"{self._EXECUTOR}_setup"], ListConfig
+        ):
+            params[f"{self._EXECUTOR}_setup"] = OmegaConf.to_container(
+                params[f"{self._EXECUTOR}_setup"], resolve=True
+            )
         executor.update_parameters(**params)
 
         log.info(
