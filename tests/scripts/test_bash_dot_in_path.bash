@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 # Navigate to app with minimal configuration
 cd tests/test_apps/app_with_cfg/
