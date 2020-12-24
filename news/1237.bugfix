@@ -1,0 +1,1 @@
+No longer modifies exception stack trace when running under a debugger

@@ -157,6 +157,22 @@ def compute_search_path_dir(
     return search_path_dir
 
 
+def is_under_debugger() -> bool:
+    """
+    Attempts to detect if running under a debugger
+    """
+    frames = inspect.stack()
+    if len(frames) >= 3:
+        filename = frames[-3].filename
+        if filename.endswith("/pdb.py"):
+            return True
+        elif filename.endswith("/pydevd.py"):
+            return True
+
+    # unknown debugging will sometimes set sys.trace
+    return sys.gettrace() is not None
+
+
 def create_automatic_config_search_path(
     calling_file: Optional[str],
     calling_module: Optional[str],
@@ -195,7 +211,7 @@ def run_and_report(func: Any) -> Any:
     try:
         return func()
     except Exception as ex:
-        if _is_env_set("HYDRA_FULL_ERROR"):
+        if _is_env_set("HYDRA_FULL_ERROR") or is_under_debugger():
             raise ex
         else:
             if isinstance(ex, CompactHydraException):
