@@ -36,6 +36,7 @@ ignore: |
   **/multirun.yaml
   .*
   .nox
+  temp
   # yamllint does not support unicode
   # https://github.com/adrienverge/yamllint/issues/238
   tests/standalone_apps/namespace_pkg_config_source_test/some_namespace/namespace_test/dir/config_with_unicode.yaml
