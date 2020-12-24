@@ -183,23 +183,20 @@ class Hydra:
             cfg_type=cfg_type,
             with_log_configuration=False,
         )
+        if package == "_global_":
+            package = None
         if package is not None:
-            if package == "_global_":
-                package = ""
             ret = OmegaConf.select(cfg, package)
             if ret is None:
                 sys.stderr.write(f"package '{package}' not found in config\n")
                 sys.exit(1)
             else:
                 if isinstance(ret, Container):
-                    if package == "":
-                        package = "_global_"
                     print(f"# @package {package}")
                     sys.stdout.write(OmegaConf.to_yaml(ret))
                 else:
                     print(ret)
         else:
-            print("# @package _global_")
             sys.stdout.write(OmegaConf.to_yaml(cfg))
 
     @staticmethod

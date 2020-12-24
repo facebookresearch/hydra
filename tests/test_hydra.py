@@ -405,31 +405,38 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
     [
         pytest.param(
             ["--cfg=job"],
-            """# @package _global_
-db:
-  driver: mysql
-  user: omry
-  pass: secret
-""",
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: omry
+                  pass: secret
+                """
+            ),
             id="no-package",
         ),
         pytest.param(
             ["--cfg=job", "--package=_global_"],
-            """# @package _global_
-db:
-  driver: mysql
-  user: omry
-  pass: secret
-""",
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: omry
+                  pass: secret
+                """
+            ),
             id="package=_global_",
         ),
         pytest.param(
             ["--cfg=job", "--package=db"],
-            """# @package db
-driver: mysql
-user: omry
-pass: secret
-""",
+            dedent(
+                """\
+                # @package db
+                driver: mysql
+                user: omry
+                pass: secret
+                """
+            ),
             id="package=db",
         ),
         pytest.param(
