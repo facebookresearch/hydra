@@ -1445,8 +1445,12 @@ def test_placeholder(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "group1_group2/file1_file1_defaults_with_override: Overrides are not allowed in the subtree"
-                    " of an in interpolated config group (group1_group2/foo=bar)"
+                    dedent(
+                        """\
+                group1_group2/file1_file1_defaults_with_override: Default List Overrides are not allowed in the subtree
+                of an in interpolated config group (override group1_group2/foo=bar).
+                """
+                    )
                 ),
             ),
             id="interpolation_with_nested_defaults_list_with_override",
