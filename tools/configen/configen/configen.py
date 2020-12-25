@@ -1,6 +1,9 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import inspect
 import logging
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
+import pkgutil
 import sys
 from dataclasses import dataclass
 from enum import Enum
@@ -28,6 +31,10 @@ from configen.utils import (
     type_str,
 )
 
+# Adding the current working directory to the PYTHONPATH to allow generation of code
+# that is not installed properly
+sys.path.append(os.getcwd())
+
 log = logging.getLogger(__name__)
 
 jinja_env = Environment(
@@ -40,15 +47,16 @@ jinja_env.tests["empty"] = lambda x: x == inspect.Signature.empty
 
 def init_config(conf_dir: str) -> None:
     log.info(f"Initializing config in '{conf_dir}'")
-    template = jinja_env.get_template("sample_config.yaml")
+
     path = Path(hydra.utils.to_absolute_path(conf_dir))
     path.mkdir(parents=True, exist_ok=True)
     file = path / "configen.yaml"
     if file.exists():
-        raise IOError(f"Config file '{file}' already exists")
+        sys.stderr.write(f"Config file '{file}' already exists\n")
+        sys.exit(1)
 
-    sample_config = template.render()
-    file.write_text(sample_config)
+    sample_config = pkgutil.get_data(__name__, "templates/sample_config.yaml")
+    file.write_bytes(sample_config)
 
 
 def save(cfg: ConfigenConf, module: str, code: str) -> None:
