@@ -1451,6 +1451,17 @@ def test_placeholder(
             ),
             id="interpolation_with_nested_defaults_list_with_override",
         ),
+        param(
+            "interpolation_in_nested",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'group1/interpolation': Defaults List interpolation is only supported in the primary config"
+                ),
+            ),
+            id="interpolation_in_nested",
+        ),
     ],
 )
 def test_interpolation(

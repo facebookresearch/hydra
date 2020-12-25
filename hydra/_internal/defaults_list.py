@@ -502,6 +502,13 @@ def _create_defaults_tree_impl(
 
         for idx, dd in enumerate(children):
             if isinstance(dd, InputDefault) and dd.is_interpolation():
+                if not parent.primary:
+                    # Interpolations from nested configs would require much more work
+                    # If you have a compelling use case please file an feature request.
+                    path = parent.get_config_path()
+                    raise ConfigCompositionException(
+                        f"In '{path}': Defaults List interpolation is only supported in the primary config"
+                    )
                 dd.resolve_interpolation(known_choices)
                 new_root = DefaultsTreeNode(node=dd, parent=root)
                 dd.update_parent(parent.get_group_path(), parent.get_final_package())
