@@ -13,7 +13,7 @@ configen:
 
   # list of modules to generate configs for
   modules:
-    - name: configen.samples.user
+    - name: configen.samples.my_module
       # for each module, a list of classes
       classes:
         - User
