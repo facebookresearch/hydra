@@ -391,8 +391,12 @@ def _update_overrides(
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
                     raise ConfigCompositionException(
-                        f"{parent.get_config_path()}: Overrides are not allowed in the subtree"
-                        f" of an in interpolated config group ({d.get_override_key()}={d.get_name()})"
+                        dedent(
+                            f"""\
+                            {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
+                            of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
+                            """
+                        )
                     )
                 overrides.add_override(parent.get_config_path(), d)
 
