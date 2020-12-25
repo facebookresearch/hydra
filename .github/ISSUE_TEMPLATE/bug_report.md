@@ -13,7 +13,7 @@ assignees: ''
 
 ## Checklist
 - [ ] I checked on the latest version of Hydra
-- [ ] I created a minimal repro
+- [ ] I created a minimal repro (See [this](https://stackoverflow.com/help/minimal-reproducible-example) for tips).
 
 ## To reproduce
 
