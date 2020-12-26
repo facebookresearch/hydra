@@ -6,217 +6,294 @@ title: The Defaults List
 ## Introduction
 
 :::important
-Many of the features described in this page are new to Hydra 1.1 and are considered experimental.
-Please report any issues.
+Many of the features described in this page are new. Please report any issues.
 :::
 
-A Defaults List determines how to build a config object from other configs, and in what order. 
-Each config can have a Defaults List as a top level element. The Defaults List itself is not a part of resulting config.
+The Defaults List is a list in an input config that instructs Hydra how to build the output config.
+Each input config can have a Defaults List as a top level element. The Defaults List itself
+is not a part of output config.
 
-The most common items in the Default List are Config Group Defaults, which determines which config group option
-to use from a particular config group.
-
-```yaml
+```text title="Defaults List YAML syntax"
 defaults:
- - db: mysql # use mysql as the choice for the db config group
+ (- CONFIG|GROUP_DEFAULT)*
+
+CONFIG                 : (CONFIG_GROUP/)?CONFIG_NAME(@PACKAGE)?
+GROUP_DEFAULT          : [optional|override]? CONFIG_GROUP(@PACKAGE)?: OPTION
+OPTION                 : CONFIG_NAME|null
 ```
 
-Sometimes a config file should be loaded unconditionally. Such configs can be specified as a string in the 
-Defaults List:
-```yaml
-defaults:
-  - db/mysql  # use db/mysql.yaml unconditionally
+*CONFIG* : A config to use when creating the output config. e.g. `db/mysql`, `db/mysql@backup`.
+
+*GROUP_DEFAULT* : An *overridable* config. e.g. `db: mysql`, `db@backup: mysql`.
+- ***override*** : Overrides the option of a previously defined GROUP_DEFAULT.
+- ***optional*** : By default, an OPTION that do not exist causes an error; optional suppresses the error. 
+- ***null*** : A place-holder for a future override. If it is not overridden the entry is ignored.
+
+*CONFIG_NAME*: The name of a config, without the file system extension. e.g. `mysql` and not `mysql.yaml`.
+
+*CONFIG_GROUP* : A path to a set of OPTIONS.   
+The path is relative to the containing config. 
+It can be made absolute by prefixing it with a `/`.  
+The path separator is `/` regardless of the operating system.
+
+*OPTION*: The currently selected *CONFIG_NAME* from a *CONFIG_GROUP*.
+
+*PACKAGE* : Where to place the content of the config within the output config.
+It is relative to the Package of the containing config by default. See [Packages](overriding_packages.md).
+
+## An example
+
+```text title="Config directory structure"
+├── server
+│   ├── db
+│   │   ├── mysql.yaml
+│   │   └── sqlite.yaml
+│   └── apache.yaml
+└── config.yaml
 ```
-Config files loaded this way are not a part of a config group and will always be loaded.
-They cannot be overridden. In general it is recommended to use the first form (config group default) when possible.
-
-## Defaults list resolution
-When composing the [Output Config Object](/terminology.md#output-config-object), Hydra will first create the final Defaults List and will then compose the
-config with it.
-
-Creating the final defaults list is a complex process: Configs mentioned in the list may have
-their own defaults list, sometimes defining the same config groups!
-
-The behavior that process is implementing can be described by two simple rules:
-1. The last appearance of a config group determines the final value for that group
-2. First appearance of a config group determines the composition order for that group
-
-The first rule allows you to always override a config group selection that was made earlier.
-The second rules ensures that composition order is respected.
-
-## Composition order and `_self_`
-A config can contain both a Defaults List and config nodes.
-
-The special element `_self_` can be added to determine the composition order of this config relative to the items
-in the defaults list.
-
-If `_self_` is not specified, it is implicitly inserted at the top of the defaults list.
-This means that by default, elements in the defaults list are composed **after** the config declaring the Defaults List.
-
+Input configs:
 <div className="row">
-<div className="col col--6">
-
-```yaml title="Input without _self_"
-defaults:
- - foo: bar
-
-```
-</div>
-
-<div className="col  col--6">
-
-```yaml title="Is equivalent to"
-defaults:
- - _self_
- - foo: bar
-```
-
-</div>
-</div>
-
-An example with two config files:
-
-<div className="row">
-<div className="col col--6">
+<div className="col col--4">
 
 ```yaml title="config.yaml"
 defaults:
- - _self_
- - db: mysql
-```
+  - server/apache
 
-</div>
+debug: false
 
-<div className="col  col--6">
 
-```yaml title="db/mysql.yaml"
-defaults:
- - mysql/engine: innodb
- - _self_
+
 ```
 </div>
+
+<div className="col col--4">
+
+```yaml title="server/apache.yaml"
+defaults:
+  - db: mysql
+
+name: apache
+
+
+
+```
 </div>
 
+<div className="col col--4">
 
-When composing `config.yaml`, the resulting defaults list will be:
-```yaml
-defaults:
- - config              # per defaults list in config.yaml, it comes first (_self_)
- - mysql/engine/innodb # first per defaults list in db/mysql  
- - db/mysql            # second per defaults list in db/mysql (_self_)
+```yaml title="server/db/mysql.yaml"
+name: mysql
 ```
 
-The last two items are added as a result of the expansion of `db/mysql.yaml`.
+```yaml title="server/db/sqlite.yaml"
+name: sqlite
+```
+</div></div>
 
-## Interpolation
-The Defaults List supports a limited form of interpolation that differs from the normal interpolation in several aspects.
-- The Defaults List is resolved before the config is computed, so it cannot refer to nodes from the computed config.
-- The defaults list can interpolate with config groups directly
-
-```yaml
-defaults:
- - dataset: imagenet
- - model: alexnet
- - optional dataset_model: ${dataset}_{model} # will become imagenet_alexnet
+Output config:
+```yaml title="$ python my_app.py"
+server:
+  db:
+    name: mysql
+  name: apache
+debug: false
 ```
 
-See [Specializing Configs](/patterns/specializing_config.md) for a more detailed explanation of this example.
+## Overriding Config Group options
+A Config Group's option can be overridden using a new *GROUP_DEFAULT* with the ***override*** keyword.
+If a Group Default is overridden more than once, the last one, in depth first order, wins.
 
-## Renaming packages
-Packages of previously defined config groups can be overridden by later items in the Defaults List.
-The syntax is similar to that described in [Basic Override syntax](/advanced/override_grammar/basic.md#modifying-the-defaults-list),
- 
+Extending the previous example:
+
 <div className="row">
 <div className="col col--6">
 
-```yaml title="Moving to package src"
+```yaml title="config.yaml" {3}
 defaults:
-  - db: mysql
-  - 'db@:src': _keep_
+  - server/apache
+  - override server/db: sqlite
+
+debug: false
+```
+</div>
+<div className="col col--6">
+
+```yaml title="$ python my_app.py" {2,3}
+server:
+  db:
+    name: sqlite
+  name: apache
+debug: false
+```
+</div>
+</div>
+
+A Config Group's option can also be overridden via the command line. e.g:  
+```
+$ python my_app.py server/db=sqlite
 ```
 
-```yaml title="Renaming package from src to dst"
-defaults:
-  - db@src: mysql
-  - 'db@src:dst': _keep_
-```
+:::note
+TODO:
+- link command line overrides to a relevant page if and when we have it
+- consider adding a simple example of overriding a config group with a package override
+:::
 
-```yaml title="Renaming package and changing choice"
+## Composition order
+The Defaults List is ordered:
+- If multiple configs define the same value, the last one wins.
+- If multiple configs contribute to the same dictionary, the result is the combined dictionary.
+
+By default, the content of a config is overriding the content of configs in the defaults list.
+
+<div className="row">
+<div className="col col--6">
+
+```yaml title="config.yaml" {5}
 defaults:
-  - db: mysql
-  - 'db@:src': postgresql
+  - db: mysql  
+
+db:
+  host: backup
 ```
 
 </div>
 
 <div className="col  col--6">
 
-```yaml title="Result"
-defaults:
-  - db@src: mysql
+```yaml title="Result: db.host from config" {3}
+db:
+  driver: mysql    # db/mysql.yaml
+  host: backup     # config.yaml
+  port: 3306       # db/mysql.yaml
 
 ```
-
-```yaml title="Result"
-defaults:
-  - db@dst: mysql
-
-```
-
-```yaml title="Result"
-defaults:
-  - db@dst: postgresql
-
-```
-
 
 </div>
 </div>
 
+The `_self_` entry determines the relative position of **this** config in the Defaults List. 
+If it is not specified, it is added automatically as the last item.
 
-## Deleting from the defaults list
-Previously defined config groups can be deleted by later items in the Defaults List. 
-The syntax is similar to that described in [Basic Override syntax](/advanced/override_grammar/basic.md#modifying-the-defaults-list),
+<div className="row">
+<div className="col col--6">
 
-```yaml
+```yaml title="config.yaml" {2,6}
 defaults:
- - db: mysql
- - ~db # will delete `db` from the list regardless of the choice
-```
-
-```yaml
-defaults:
- - db: mysql
- - ~db: mysql # will delete db from the list if the selected value is mysql
-```
-
-
-
-## Config "Inheritance" via composition
-
-TODO: should probably not be here
-
-A common pattern is to "extend" a base config:
-```yaml title="agent.yaml"
-name: ???
-age: ???
-agency: mi6
-```
-
-```yaml title="bond.yaml"
-defaults:
-  - agent
   - _self_
+  - db: mysql # Overrides this config 
 
-name: Bond, James Bond
-age: 7
+db:
+  host: backup
 ```
+</div>
+<div className="col  col--6">
 
-In the above example, `bond.yaml` is overriding the name and age in `base.yaml`
-The resulting config will thus be:
+```yaml title="Result: All values from db/mysql" {3}
+db:
+  driver: mysql    # db/mysql.yaml
+  host: localhost  # db/mysql.yaml
+  port: 3306       # db/mysql.yaml
+
+
+```
+</div>
+</div>
+
+With `_self_` at the top of the Defaults List, the host field defined in *config.yaml* now precedes the host field defined 
+in *db/mysql.yaml*, and as a result is overridden.
+
+## Interpolation in the Defaults List
+
+Config Group Options can be selected using interpolation.
 ```yaml
-name: Bond, James Bond
-age: 7
-agency: mi6
+defaults:
+  - server: apache
+  - db: mysql
+  - combination_specific_config: ${server}_${db}  # apache_mysql
 ```
+Interpolation keys can be config groups with any @package overrides.  
+For example: `${db/engine}`, `${db@backup}`
+
+The selected option for *combination_specific_config* depends on the final selected options for *db* and *server*.  
+e.g. If *db* is overridden to *sqlite*, *combination_specific_config* will become *apache_sqlite*.
+
+#### Restrictions:
+
+ - Defaults List interpolation is only supported in the primary config.
+ - The subtree expanded by an Interpolated Config may not contain overrides.
+ - Interpolation Keys in the Defaults List cannot reference values in the Final Config Object (it does not yet).
+
+See [Patterns/Specializing Configs](/patterns/specializing_config.md) for more information.
+
+## Debugging the Defaults List
+Hydra's config composition process is as follows:
+
+ - The Defaults Tree is created.
+ - The Final Defaults List is created via a DFS walk of the Defaults Tree.
+ - The Output Config is composed from the entries in the Final Defaults List.
+
+You can inspect these artifacts via command line flags:
+
+- `--info defaults-tree` shows the Defaults Tree.
+- `--info defaults` Shows the Final Defaults List.
+- `--cfg job|hydra|all` Shows the Output Config.
+
+Example outputs:
+<details><summary>python my_app.py <b>--info defaults-tree</b></summary>
+
+```yaml title=""
+<root>:
+  hydra/config:
+    hydra/hydra_logging: default
+    hydra/job_logging: default
+    hydra/launcher: basic
+    hydra/sweeper: basic
+    hydra/output: default
+    hydra/help: default
+    hydra/hydra_help: default
+    _self_
+  config:
+    server/apache:
+      server/db: mysql
+      _self_
+    _self_
+```
+</details>
+<details><summary>python my_app.py <b>--info defaults</b></summary>
+
+```text
+Defaults List
+*************
+| Config path                 | Package             | _self_ | Parent        | 
+-------------------------------------------------------------------------------
+| hydra/hydra_logging/default | hydra.hydra_logging | False  | hydra/config  |
+| hydra/job_logging/default   | hydra.job_logging   | False  | hydra/config  |
+| hydra/launcher/basic        | hydra.launcher      | False  | hydra/config  |
+| hydra/sweeper/basic         | hydra.sweeper       | False  | hydra/config  |
+| hydra/output/default        | hydra               | False  | hydra/config  |
+| hydra/help/default          | hydra.help          | False  | hydra/config  |
+| hydra/hydra_help/default    | hydra.hydra_help    | False  | hydra/config  |
+| hydra/config                | hydra               | True   | <root>        |
+| server/db/mysql             | server.db           | False  | server/apache |
+| server/apache               | server              | True   | config        |
+| config                      |                     | True   | <root>        |
+-------------------------------------------------------------------------------
+```
+</details>
+<details><summary>python my_app.py <b>--cfg job</b></summary>
+
+```yaml
+server:
+  db:
+    name: mysql
+  name: apache
+debug: false
+```
+</details>
+
+## Related topics
+- [Packages](overriding_packages.md)
+- [Common Patterns/Extending Configs](patterns/extending_configs.md)
+- [Common Patterns/Configuring Experiments](patterns/configuring_experiments.md)
 

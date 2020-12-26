@@ -1,11 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pathlib import Path
 from textwrap import dedent
-from typing import Any
+from typing import Any, List
+
+from omegaconf import OmegaConf
+from pytest import mark, param
 
 from hydra.test_utils.test_utils import (
     TTaskRunner,
     assert_text_same,
     chdir_hydra_root,
+    get_run_output,
     run_with_error,
     verify_dir_outputs,
 )
@@ -51,3 +56,56 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
     )
     err = run_with_error(cmd)
     assert_text_same(from_line=expected, to_line=err)
+
+
+@mark.parametrize(  # type: ignore
+    "overrides",
+    [
+        param(["db=mysql_extending_from_this_group"], id="from_same_group"),
+        param(["db=mysql_extending_from_another_group"], id="from_different_group"),
+    ],
+)
+def test_extending_configs(
+    monkeypatch: Any, tmpdir: Path, overrides: List[str]
+) -> None:
+    monkeypatch.chdir("examples/patterns/extending_configs")
+    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    result, _err = get_run_output(cmd)
+    assert OmegaConf.create(result) == {
+        "db": {
+            "host": "localhost",
+            "port": 3307,
+            "user": "omry",
+            "password": "secret",
+            "encoding": "utf8",
+        }
+    }
+
+
+@mark.parametrize(  # type: ignore
+    ("overrides", "expected"),
+    [
+        param(
+            [],
+            {"db": {"name": "mysql"}, "server": {"name": "apache", "port": 80}},
+            id="default",
+        ),
+        param(
+            ["+experiment=nglite"],
+            {"db": {"name": "sqlite"}, "server": {"name": "nginx", "port": 8080}},
+            id="exp1",
+        ),
+        param(
+            ["+experiment=nglite", "server=apache"],
+            {"db": {"name": "sqlite"}, "server": {"name": "apache", "port": 8080}},
+            id="exp1+override",
+        ),
+    ],
+)
+def test_configuring_experiments(
+    monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: Any
+) -> None:
+    monkeypatch.chdir("examples/patterns/configuring_experiments")
+    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    result, _err = get_run_output(cmd)
+    assert OmegaConf.create(result) == expected

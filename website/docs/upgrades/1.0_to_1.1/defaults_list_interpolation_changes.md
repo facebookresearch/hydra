@@ -36,5 +36,8 @@ Note that:
  - interpolation keys in the defaults list can not access values from the composed config because it does not yet 
  exist when Hydra is processing the defaults list
 
+The Defaults List is described [here](/advanced/defaults_list.md).
+
 :::warning
 Support for the old style will be removed in Hydra 1.2.
+:::

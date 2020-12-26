@@ -49,6 +49,6 @@ Cannot change read-only config container
 
 <div class="alert alert--warning" role="alert">
 <strong>NOTE</strong>:
-A crafty user can find many ways around this. this is just making it harder to change things accidentally.
+A crafty user can find many ways around this. This is just making it harder to change things accidentally.
 </div>
 
