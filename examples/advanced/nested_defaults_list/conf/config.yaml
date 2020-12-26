@@ -1,0 +1,4 @@
+defaults:
+  - server/apache
+
+debug: false

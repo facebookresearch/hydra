@@ -1,0 +1,3 @@
+defaults:
+  - db: mysql
+  - server: apache

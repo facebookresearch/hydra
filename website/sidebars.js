@@ -70,6 +70,8 @@ module.exports = {
                     'patterns/instantiate_objects/structured_config',
                  ]
              },
+            'patterns/extending_configs',
+            'patterns/configuring_experiments',
             'patterns/specializing_config',
             'patterns/write_protect_config_node',
         ],
@@ -82,7 +84,7 @@ module.exports = {
             'configure_hydra/app_help',
         ],
 
-        'Plugins': [
+        'Available Plugins': [
             'plugins/colorlog',
             {
                 'Launchers': [
@@ -138,6 +140,8 @@ module.exports = {
             type: 'category',
             label: '1.0 to 1.1',
             items: [
+                'upgrades/1.0_to_1.1/default_composition_order',
+                'upgrades/1.0_to_1.1/defaults_list_override',
                 'upgrades/1.0_to_1.1/defaults_list_interpolation',
             ],
           },

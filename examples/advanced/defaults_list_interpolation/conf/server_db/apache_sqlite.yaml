@@ -1,0 +1,2 @@
+# @package server
+workers: 5

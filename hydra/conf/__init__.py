@@ -6,23 +6,6 @@ from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
 
-hydra_defaults = [
-    # Hydra's logging config
-    {"hydra/hydra_logging": "default"},
-    # Job's logging config
-    {"hydra/job_logging": "default"},
-    # Launcher config
-    {"hydra/launcher": "basic"},
-    # Sweeper config
-    {"hydra/sweeper": "basic"},
-    # Output directory
-    {"hydra/output": "default"},
-    # --help template
-    {"hydra/help": "default"},
-    # --hydra-help template
-    {"hydra/hydra_help": "default"},
-]
-
 
 @dataclass
 class HelpConf:
@@ -106,8 +89,17 @@ class RuntimeConf:
 
 @dataclass
 class HydraConf:
-
-    defaults: List[Any] = field(default_factory=lambda: hydra_defaults.copy())
+    defaults: List[Any] = field(
+        default_factory=lambda: [
+            {"output": "default"},
+            {"launcher": "basic"},
+            {"sweeper": "basic"},
+            {"help": "default"},
+            {"hydra_help": "default"},
+            {"hydra_logging": "default"},
+            {"job_logging": "default"},
+        ]
+    )
 
     # Normal run output configuration
     run: RunDir = RunDir()
@@ -152,7 +144,7 @@ class HydraConf:
     # Typical command lines to manipulate hydra.verbose:
     # hydra.verbose=true
     # hydra.verbose=[hydra,__main__]
-    # TODO: good use case for Union support in OmegaConf
+    # TODO: good use ca se for Union support in OmegaConf
     verbose: Any = False
 
     # Composition choices dictionary
@@ -171,16 +163,6 @@ cs.store(
 cs.store(
     group="hydra",
     name="config",
-    node=HydraConf(
-        defaults=[
-            {"hydra_logging": "default"},
-            {"job_logging": "default"},
-            {"launcher": "basic"},
-            {"sweeper": "basic"},
-            {"output": "default"},
-            {"help": "default"},
-            {"hydra_help": "default"},
-        ]
-    ),
+    node=HydraConf(),
     provider="hydra",
 )

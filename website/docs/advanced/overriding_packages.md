@@ -1,124 +1,177 @@
 ---
 id: overriding_packages
-title: Overriding packages
+title: Packages
 ---
 
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/package_overrides)
+The package determines where the content of each input config is placed in the output config.
+The default package of an input config is derived from its Config Group. e.g. The default package of `server.db/mysql.yaml` is `server.db`.
 
-The contents of a config file can be relocated, or replicated, within the config, via package overrides.
+The default package can be overridden [in the Defaults List](#overriding-packages-using-the-defaults-list)
+or via a [Package Directive](#overriding-the-package-via-the-package-directive) at the top of the config file.
+Changing the package of a config can be useful when using a config from another library, or when using the same
+config group twice in the same app.
 
-### Package specification
+The priority for determining the final package for a config is as follows:
+1. The package specified in the Defaults List (relative to the package of the including config)
+2. The package specified in the Package Directive (absolute)
+3. The default package
 
-``` text title="Definition of a package"
-PACKAGE      : _global_ | COMPONENT[.COMPONENT]*
-COMPONENT    : _group_ | _name_ | \w+
-
-_global_     : the top level package (equivalent to the empty string).
-_group_      : the config group in dot notation: foo/bar/zoo.yaml -> foo.bar
-_name_       : the config file name: foo/bar/zoo.yaml -> zoo
-```
-
-### Overriding the package in a file via a package directive
-
-A `@package directive` specifies a common [package](/terminology.md#package) for all nodes in the config file.
-It must be placed at the top of each `config group file`.
-
-```text title="Package directive examples"
-# @package foo.bar
-# @package _global_
-# @package _group_
-# @package _group_._name_
-# @package foo._group_._name_
-```
-#### Examples
-##### A package directive with a literal
+We will use the following configs in the examples below:
 <div className="row">
-<div className="col col--6">
+<div className="col col--4">
 
-```yaml title="mysql.yaml" {1-2}
-# @package foo.bar
+```yaml title="config.yaml"
+defaults:
+  - server/apache
 
-db:
-  host: localhost
-  port: 3306
+debug: false
+
+
+
+```
+</div>
+
+<div className="col col--4">
+
+```yaml title="server/apache.yaml"
+defaults:
+  - db: mysql
+
+name: apache
+
+
+
+```
+</div>
+
+<div className="col col--4">
+
+```yaml title="server/db/mysql.yaml"
+name: mysql
 ```
 
-</div>
-
-<div className="col  col--6">
-
-```yaml title="Interpretation" {1-2}
-foo:
-  bar:
-    db:
-      host: localhost
-      port: 3306
-``` 
-
-</div>
-</div>
-
-
-##### A package directive with `_group_` and `_name_`
-
-<div className="row">
-<div className="col col--6">
-
-```yaml title="db/mysql.yaml" {1-2}
-# @package _group_._name_
-
-host: localhost
-port: 3306
+```yaml title="server/db/sqlite.yaml"
+name: sqlite
 ```
-</div><div className="col  col--6">
-
-```yaml title="Interpretation" {1-2}
-db:
-  mysql:
-    host: localhost
-    port: 3306
-``` 
 </div></div>
 
-### Overriding the package via the defaults list
-The following example adds the `mysql` config in the packages `db.src` and `db.dst`.
+```text title="Config directory structure"
+├── server
+│   ├── db
+│   │   ├── mysql.yaml
+│   │   └── sqlite.yaml
+│   └── apache.yaml
+└── config.yaml
+```
 
+
+### An example using only default packages
+The default package of *config.yaml* is the global package, of *server/apache.yaml* is *server* and of *server/db/mysql.yaml* is *server.db*. 
+<div className="row">
+<div className="col col--6">
+
+```yaml title="$ python my_app.py" {1-2}
+server:
+  db:
+    name: mysql
+  name: apache
+debug: false
+```
+</div></div>
+
+### Overriding packages using the Defaults List
+By default, packages specified in the Defaults List are relative to the package of containing config. 
+As a consequence, overriding a package relocates the entire subtree. 
+
+<div className="row">
+<div className="col col--4">
+
+```yaml title="config.yaml" {2}
+defaults:
+  - server/apache@admin
+
+debug: false
+
+```
+</div>
+<div className="col col--4">
+
+```yaml title="server/apache.yaml" {2}
+defaults:
+ - db@backup: mysql
+
+name: apache
+
+```
+</div>
+<div className="col col--4">
+
+```yaml title="Output config" {1-4}
+admin:
+  backup:
+    name: mysql
+  name: apache
+debug: false
+```
+</div></div>
+
+Note that content of *server/apache.yaml* is relocated to *admin*
+and the content of *server/db/mysql.yaml* to *admin.backup*.
+
+#### Default List package keywords
+We will use this example, replacing *<@PACKAGE>* to demonstrate different cases:
+```yaml title="config_group/config.yaml"
+defaults:
+  - /server/db<@PACKAGE>: mysql
+```
+
+Without a package override, the resulting package is `config_group.server.db`.
+##### Relative keywords: 
+* **@\_here\_**: The resulting package is the same as the containing config (`config_group`). 
+* **@\_name\_**: \_name\_ is substituted by the name of the config. The resulting package is `config_group.mysql`.
+##### Absolute keywords:
+* **@\_group\_**: \_group\_ is the absolute default package of the config (`server.db`)*
+* **@\_global\_**: The global package. Anything following \_global\_ is absolute.  
+  e.g. **@\_global\_.foo** becomes `foo`.
+
+### Overriding the package via the package directive
+
+The @package directive changes the package of a config file. The package specified by a @package directive is always absolute.
+
+```yaml title="server/db/mysql.yaml" {1}
+# @package foo.bar
+name: mysql
+```
+
+To change the package to the global (empty) package, use the keyword `_global_`.
+
+### Using a config group more than once
+The following example adds the `db/server/mysql` config in the packages `src` and `dst`.
 
 <div className="row">
 <div className="col col--6">
 
 ```yaml title="config.yaml"
 defaults:
- - db@db.src: mysql
- - db@db.dst: mysql
-
-
-
+ - server/db@src: mysql
+ - server/db@dst: mysql
 
 ```
 </div><div className="col  col--6">
 
-```yaml title="Interpretation"
-db:
-  src:
-    host: localhost
-    port: 3306
-  dst:
-    host: localhost
-    port: 3306
+```yaml title="$ python my_app.py"
+src:
+  name: mysql
+dst:
+  name: mysql
 ```
 </div></div>
 
-
-### History and future of the package directive
-The primary config, named in `@hydra.main()` should not have a package directive.
-
-For config files in config groups the default depends on the version:
- - In **Hydra 0.11**, there was an implicit default of `_global_`
- - **Hydra 1.0** the default is `_global_`  
- A warning is issued for each **config group file** without a `@package` directive.
- - In **Hydra 1.1** the default for **config group files** will become `_group_`
-
-By adding an explicit `@package` to your configs files, you guarantee that they  
-will not break when you upgrade to Hydra 1.1.
+When overriding config groups with a non-default package, the package must be used:
+```yaml title="$ python my_app.py server/db@src=sqlite"
+src:
+  name: sqlite
+dst:
+  name: mysql
+```
 

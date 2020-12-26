@@ -1,0 +1,7 @@
+defaults:
+  - base_mysql
+
+user: omry
+password: secret
+port: 3307
+encoding: utf8

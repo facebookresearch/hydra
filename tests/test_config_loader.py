@@ -44,15 +44,8 @@ class TopLevelConfig:
 
 hydra_load_list: List[LoadTrace] = [
     LoadTrace(
-        config_path="hydra/hydra_logging/default",
-        package="hydra.hydra_logging",
-        parent="hydra/config",
-        search_path="pkg://hydra.conf",
-        provider="hydra",
-    ),
-    LoadTrace(
-        config_path="hydra/job_logging/default",
-        package="hydra.job_logging",
+        config_path="hydra/output/default",
+        package="hydra",
         parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
@@ -72,13 +65,6 @@ hydra_load_list: List[LoadTrace] = [
         provider="hydra",
     ),
     LoadTrace(
-        config_path="hydra/output/default",
-        package="hydra",
-        parent="hydra/config",
-        search_path="pkg://hydra.conf",
-        provider="hydra",
-    ),
-    LoadTrace(
         config_path="hydra/help/default",
         package="hydra.help",
         parent="hydra/config",
@@ -88,6 +74,20 @@ hydra_load_list: List[LoadTrace] = [
     LoadTrace(
         config_path="hydra/hydra_help/default",
         package="hydra.hydra_help",
+        parent="hydra/config",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+    ),
+    LoadTrace(
+        config_path="hydra/hydra_logging/default",
+        package="hydra.hydra_logging",
+        parent="hydra/config",
+        search_path="pkg://hydra.conf",
+        provider="hydra",
+    ),
+    LoadTrace(
+        config_path="hydra/job_logging/default",
+        package="hydra.job_logging",
         parent="hydra/config",
         search_path="pkg://hydra.conf",
         provider="hydra",
@@ -600,15 +600,8 @@ def test_override_hydra_config_group_from_config_file() -> None:
     )
     expected = [
         LoadTrace(
-            config_path="hydra/hydra_logging/hydra_debug",
-            package="hydra.hydra_logging",
-            parent="hydra/config",
-            search_path="pkg://hydra.conf",
-            provider="hydra",
-        ),
-        LoadTrace(
-            config_path="hydra/job_logging/disabled",
-            package="hydra.job_logging",
+            config_path="hydra/output/default",
+            package="hydra",
             parent="hydra/config",
             search_path="pkg://hydra.conf",
             provider="hydra",
@@ -628,13 +621,6 @@ def test_override_hydra_config_group_from_config_file() -> None:
             provider="hydra",
         ),
         LoadTrace(
-            config_path="hydra/output/default",
-            package="hydra",
-            parent="hydra/config",
-            search_path="pkg://hydra.conf",
-            provider="hydra",
-        ),
-        LoadTrace(
             config_path="hydra/help/default",
             package="hydra.help",
             parent="hydra/config",
@@ -644,6 +630,20 @@ def test_override_hydra_config_group_from_config_file() -> None:
         LoadTrace(
             config_path="hydra/hydra_help/default",
             package="hydra.hydra_help",
+            parent="hydra/config",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+        ),
+        LoadTrace(
+            config_path="hydra/hydra_logging/hydra_debug",
+            package="hydra.hydra_logging",
+            parent="hydra/config",
+            search_path="pkg://hydra.conf",
+            provider="hydra",
+        ),
+        LoadTrace(
+            config_path="hydra/job_logging/disabled",
+            package="hydra.job_logging",
             parent="hydra/config",
             search_path="pkg://hydra.conf",
             provider="hydra",

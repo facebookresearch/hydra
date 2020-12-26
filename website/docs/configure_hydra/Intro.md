@@ -21,73 +21,88 @@ your function to reduce confusion.
 You can view the configuration with `--cfg hydra|job|all`
 
 The Hydra configuration itself is composed from multiple config files. here is a partial list:
-```yaml
+```yaml title="hydra/config"
 defaults:
-  - hydra/job_logging : default     # Job's logging config
-  - hydra/launcher: basic           # Launcher config
-  - hydra/sweeper: basic            # Sweeper config
-  - hydra/output: default           # Output directory
+  - job_logging : default     # Job's logging config
+  - launcher: basic           # Launcher config
+  - sweeper: basic            # Sweeper config
+  - output: default           # Output directory
 ```
 You can view the Hydra config structure [here](https://github.com/facebookresearch/hydra/tree/master/hydra/conf).
 
-This is a subset of the composed Hydra configuration node:
-
-```yaml
+You can view the Hydra config using `--cfg hydra`:
+```yaml title="$ python my_app.py --cfg hydra"
 hydra:
   run:
-    # Output directory for normal runs
-    dir: ./outputs/${now:%Y-%m-%d_%H-%M-%S}
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
-    # Output directory for sweep runs
-    dir: /checkpoint/${env:USER}/outputs/${now:%Y-%m-%d_%H-%M-%S}
-    # Output sub directory for sweep runs.
-    subdir: ${hydra.job.num}_${hydra.job.id}
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  launcher:
+    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    max_batch_size: null
+  hydra_logging:
+    version: 1
+    formatters:
+    ...
 ```
 
 ## Runtime variables
-The `hydra` package is deleted from your config when the function runs to reduce the amount of noise
-in the config passed to the function.  
-You can still access all config nodes in Hydra through the custom resolver `hydra`. 
+The Hydra config is large. To reduce clutter in your own config it's being deleted from the config object
+Hydra is passing to the function annotated by `@hydra.main()`.
 
-For example:
+There are two ways to access the Hydra config:
+
+#### In your config, using the `hydra` resolver:
 ```yaml
-config_name: ${hydra:job.config_name}
+config_name: ${hydra:job.name}
 ```
 Pay close attention to the syntax: The resolver name is `hydra`, and the `key` is passed after the colon.
 
-The following variables are some of the variables populated at runtime.  
-You can see the full Hydra config using `--cfg hydra`:
+#### In your code, using the HydraConfig singleton.
+```python
+from hydra.core.hydra_config import HydraConfig
 
-`hydra.job`:
-- *hydra.job.name* : Job name, defaults to python file name without suffix. can be overridden.
-- *hydra.job.override_dirname* : Pathname derived from the overrides for this job
-- *hydra.job.num* : job serial number in sweep
-- *hydra.job.id* : Job ID in the underlying jobs system (SLURM etc) 
+@hydra.main()
+def my_app(cfg: DictConfig) -> None:
+    print(HydraConfig.get().job.name)
+```
 
-`hydra.runtime`:
+The following variables are populated at runtime.  
+
+#### hydra.job:
+- **hydra.job.name** : Job name, defaults to the Python file name without the suffix. can be overridden.
+- **hydra.job.override_dirname** : Pathname derived from the overrides for this job
+- **hydra.job.num** : job serial number in sweep
+- **hydra.job.id** : Job ID in the underlying jobs system (SLURM etc)
+
+#### hydra.runtime:
 - *hydra.runtime.version*: Hydra's version
 - *hydra.runtime.cwd*: Original working directory the app was executed from
 
+#### hydra.choices
+A dictionary containing the final choices of the Defaults List. Can be accessed 
+via the HydraConfig singleton or config interpolation e.g. `model : ${hydra:choices.model}`.
+
 ### Hydra resolvers
+Hydra supports several [OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
 
-Hydra supports [several OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
+**hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
 
-#### `now`
-Creates a string representing the current time using [strftime](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior).
-For example, for formatting the time you can use something like`${now:%H-%M-%S}`.
+**now**: Creates a string representing the current time using 
+[strftime](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior). 
+e.g. for formatting the time you can use something like`${now:%H-%M-%S}`.
 
-#### `hydra`
-Interpolates into the `hydra` config node.
-For example, use `${hydra:job.name}` to get the Hydra job name.
-
-#### `python_version`
-Return a string representing the runtime python version by calling `sys.version_info`.
-You can pass in a parameter to specify level of version returned. By default, the resolver returns the major and minor version.
+**python_version**: Return a string representing the runtime python version by calling `sys.version_info`.
+Takes an optional argument of a string with the values major, minor or macro.
+e.g:
 ```yaml
-python_version: ${python_version:}                         # runtime python version, eg: 3.8
-major_version: ${python_version:major}                     # runtime python major version, eg: 3
-minor_version: ${python_version:minor}                     # runtime python version in the format major.minor, eg: 3.8
-micro_version: ${python_version:micro}                     # runtime python version in the format major.minor.micro, eg: 3.8.2
+default: ${python_version:}          # 3.8
+major:   ${python_version:major}     # 3
+minor:   ${python_version:minor}     # 3.8
+micro:   ${python_version:micro}     # 3.8.2
 ```
 
 You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.

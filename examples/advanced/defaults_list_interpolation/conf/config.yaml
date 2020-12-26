@@ -1,0 +1,4 @@
+defaults:
+  - db: mysql
+  - server: apache
+  - optional server_db: ${server}_${db}

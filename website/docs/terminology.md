@@ -34,7 +34,7 @@ class User:
 
 
 ### Defaults List
-A list in [input Config](#input-configs) that instructs Hydra how to build the config. 
+A list in an [Input Config](#input-configs) that instructs Hydra how to build the config. 
 The list is typically composed of [Config Group Options](#config-group-option).
 ```yaml title="Example: config.yaml"
 defaults:
@@ -55,10 +55,14 @@ One of the configs in a Config Group.
 A Config Node is either a `Value Node` (a primitive type), or a `Container Node`.  A `Container Node` is a list or dictionary of `Value Nodes`.
 
 ### Package
-A Package is the path of the [Config Node](#config-node) in the [Config Object](#output-config-object). 
+A Package is the path to [Config Node](#config-node) in the [Config Object](#output-config-object). 
 
-### Package directive
-The [Package Directive](advanced/overriding_packages.md) specifies the root [Package](#package) of an [Config File](#input-configs)
+### Package Directive
+The [Package Directive](advanced/overriding_packages.md) specifies the root [Package](#package) of a [Config File](#input-configs)
+
+:::note
+TODO: fix
+:::
 
 ### Example
 ```yaml title="Input config: mi6/agent/james_bond.yaml"

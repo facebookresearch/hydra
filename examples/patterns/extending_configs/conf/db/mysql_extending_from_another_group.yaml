@@ -1,0 +1,7 @@
+defaults:
+  - /db_schema/base_mysql@_here_
+
+user: omry
+password: secret
+port: 3307
+encoding: utf8
