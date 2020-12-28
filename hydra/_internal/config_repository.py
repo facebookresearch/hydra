@@ -167,7 +167,7 @@ class ConfigRepository(IConfigRepository):
         defaults: ListConfig,
     ) -> List[InputDefault]:
         res: List[InputDefault] = []
-        for item in defaults:
+        for item in defaults._iter_ex(resolve=False):
             default: InputDefault
             if isinstance(item, DictConfig):
                 old_optional = None
