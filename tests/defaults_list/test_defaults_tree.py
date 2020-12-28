@@ -1466,6 +1466,30 @@ def test_placeholder(
             ),
             id="interpolation_in_nested",
         ),
+        param(
+            "interpolation_config_default",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_config_default"),
+                children=[
+                    GroupDefault(group="group1", name="file1"),
+                    ConfigDefault(path="group1/group2/file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_config_default",
+        ),
+        param(
+            "interpolation_bad_key",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Error resolving interpolation '${not_found}', possible interpolation keys: group1"
+                ),
+            ),
+            id="interpolation_bad_key",
+        ),
     ],
 )
 def test_interpolation(

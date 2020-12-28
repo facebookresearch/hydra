@@ -6,6 +6,9 @@ from textwrap import dedent
 from typing import List, Optional, Pattern, Union
 
 from omegaconf import AnyNode, DictConfig, OmegaConf
+from omegaconf.errors import ConfigKeyError
+
+from hydra.errors import ConfigCompositionException
 
 
 @dataclass
@@ -193,15 +196,7 @@ class InputDefault:
         return f"{type(self).__name__}({ret})"
 
     def is_interpolation(self) -> bool:
-        """
-        True if config_name is an interpolation
-        """
-        name = self.get_name()
-        if isinstance(name, str):
-            node = AnyNode(name)
-            return node._is_interpolation()
-        else:
-            return False
+        raise NotImplementedError()
 
     def is_missing(self) -> bool:
         """
@@ -212,6 +207,20 @@ class InputDefault:
 
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
+
+    def _resolve_interpolation_impl(self, known_choices: DictConfig, val: str) -> str:
+        node = OmegaConf.create({"_dummy_": val})
+        node._set_parent(known_choices)
+        try:
+            return node["_dummy_"]
+        except ConfigKeyError:
+            options = [x for x in known_choices.keys() if x != "defaults"]
+            if len(options) > 0:
+                options_str = ", ".join(options)
+                msg = f"Error resolving interpolation '{val}', possible interpolation keys: {options_str}"
+            else:
+                msg = (f"Error resolving interpolation '{val}'",)
+            raise ConfigCompositionException(msg)
 
     def get_override_key(self) -> str:
         default_pkg = self.get_default_package()
@@ -366,8 +375,14 @@ class ConfigDefault(InputDefault):
     def _get_flags(self) -> List[str]:
         return []
 
+    def is_interpolation(self) -> bool:
+        path = self.get_config_path()
+        node = AnyNode(path)
+        return node._is_interpolation()
+
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
-        raise NotImplementedError()
+        path = self.get_config_path()
+        self.path = self._resolve_interpolation_impl(known_choices, path)
 
     def is_missing(self) -> bool:
         return self.get_name() == "???"
@@ -451,6 +466,17 @@ class GroupDefault(InputDefault):
     def _get_flags(self) -> List[str]:
         return ["optional", "override"]
 
+    def is_interpolation(self) -> bool:
+        """
+        True if config_name is an interpolation
+        """
+        name = self.get_name()
+        if isinstance(name, str):
+            node = AnyNode(name)
+            return node._is_interpolation()
+        else:
+            return False
+
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
@@ -464,9 +490,8 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
                     category=UserWarning,
                     message=msg,
                 )
-        node = OmegaConf.create({"_dummy_": self.get_name()})
-        node._set_parent(known_choices)
-        self.name = node["_dummy_"]
+
+        self.name = self._resolve_interpolation_impl(known_choices, name)
 
     def is_missing(self) -> bool:
         return self.get_name() == "???"
