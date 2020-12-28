@@ -208,18 +208,22 @@ class InputDefault:
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         raise NotImplementedError()
 
-    def _resolve_interpolation_impl(self, known_choices: DictConfig, val: str) -> str:
+    def _resolve_interpolation_impl(
+        self, known_choices: DictConfig, val: Optional[str]
+    ) -> str:
         node = OmegaConf.create({"_dummy_": val})
         node._set_parent(known_choices)
         try:
-            return node["_dummy_"]
+            ret = node["_dummy_"]
+            assert isinstance(ret, str)
+            return ret
         except ConfigKeyError:
             options = [x for x in known_choices.keys() if x != "defaults"]
             if len(options) > 0:
                 options_str = ", ".join(options)
                 msg = f"Error resolving interpolation '{val}', possible interpolation keys: {options_str}"
             else:
-                msg = (f"Error resolving interpolation '{val}'",)
+                msg = f"Error resolving interpolation '{val}'"
             raise ConfigCompositionException(msg)
 
     def get_override_key(self) -> str:

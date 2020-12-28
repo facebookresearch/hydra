@@ -16,6 +16,7 @@ from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
     OmegaConfBaseException,
+    ValidationError,
 )
 
 from hydra._internal.config_repository import (
@@ -344,6 +345,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
             if schema is not None:
                 try:
+                    # TODO: deprecate schema matching in favor of extension via Defaults List
                     # if primary config has a hydra node, remove it during validation and add it back.
                     # This allows overriding Hydra's configuration without declaring it's node
                     # in the schema of every primary config
@@ -421,7 +423,13 @@ class ConfigLoaderImpl(ConfigLoader):
         cfg = OmegaConf.create()
         for default in defaults:
             loaded, trace = self._load_single_config(default=default, repo=repo)
-            merged = OmegaConf.merge(cfg, loaded.config)
+            try:
+                merged = OmegaConf.merge(cfg, loaded.config)
+            except ValidationError as e:
+                raise ConfigCompositionException(
+                    f"In '{default.config_path}': Validation error while composing config:\n{e}"
+                ).with_traceback(sys.exc_info()[2])
+
             assert isinstance(merged, DictConfig)
             cfg = merged
             assert cfg is not None
