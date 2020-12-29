@@ -496,20 +496,15 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Adds an additional config dir to the config search path",
     )
 
+    info_choices = ["all", "defaults", "defaults-tree", "config", "plugins"]
     parser.add_argument(
         "--info",
         "-i",
         const="all",
         nargs="?",
         action="store",
-        choices=[
-            "all",
-            "defaults",
-            "defaults-tree",
-            "config",
-            "plugins",
-        ],
-        help="Print Hydra information [all|defaults]",
+        choices=info_choices,
+        help=f"Print Hydra information [{'|'.join(info_choices)}]",
     )
     return parser
 

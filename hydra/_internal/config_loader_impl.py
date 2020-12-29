@@ -55,9 +55,7 @@ class ConfigLoaderImpl(ConfigLoader):
     ) -> None:
         self.default_strict = default_strict
         self.config_search_path = config_search_path
-        self.repository: ConfigRepository = ConfigRepository(
-            config_search_path=config_search_path
-        )
+        self.repository = ConfigRepository(config_search_path=config_search_path)
 
     @staticmethod
     def validate_sweep_overrides_legal(
@@ -149,14 +147,13 @@ class ConfigLoaderImpl(ConfigLoader):
         from_shell: bool = True,
     ) -> DictConfig:
         try:
-            cfg = self._load_configuration_impl(
+            return self._load_configuration_impl(
                 config_name=config_name,
                 overrides=overrides,
                 run_mode=run_mode,
                 strict=strict,
                 from_shell=from_shell,
             )
-            return cfg
         except OmegaConfBaseException as e:
             raise ConfigCompositionException().with_traceback(sys.exc_info()[2]) from e
 
