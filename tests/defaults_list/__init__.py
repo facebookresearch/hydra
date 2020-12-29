@@ -15,7 +15,7 @@ from hydra.core.override_parser.overrides_parser import OverridesParser
 
 def create_repo() -> IConfigRepository:
     csp = ConfigSearchPathImpl()
-    csp.append(provider="test", path="file://tests/test_data/default_lists")
+    csp.append(provider="test", path="file://tests/defaults_list/data")
     return ConfigRepository(config_search_path=csp)
 
 
