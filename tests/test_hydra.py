@@ -16,6 +16,7 @@ from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     assert_regex_match,
+    assert_text_same,
     chdir_hydra_root,
     get_run_output,
     integration_test,
@@ -536,60 +537,63 @@ def test_sweep_complex_defaults(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
-            """db:
-  driver: mysql
-  user: root
-  password: secret
-
-""",
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: root
+                  password: secret
+                """
+            ),
             id="overriding_help_template:$CONFIG",
         ),
         pytest.param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
-            """--help,-h : Application's help
---hydra-help : Hydra's help
---version : Show Hydra's version and exit
---cfg,-c : Show config instead of running [job|hydra|all]
---package,-p : Config package to show
---run,-r : Run a job
---multirun,-m : Run multiple jobs with the configured launcher and sweeper
---shell-completion,-sc : Install or Uninstall shell completion:
-    Bash - Install:
-    eval "$(python {script} -sc install=bash)"
-    Bash - Uninstall:
-    eval "$(python {script} -sc uninstall=bash)"
+            dedent(
+                """\
+                --help,-h : Application's help
+                --hydra-help : Hydra's help
+                --version : Show Hydra's version and exit
+                --cfg,-c : Show config instead of running [job|hydra|all]
+                --package,-p : Config package to show
+                --run,-r : Run a job
+                --multirun,-m : Run multiple jobs with the configured launcher and sweeper
+                --shell-completion,-sc : Install or Uninstall shell completion:
+                    Bash - Install:
+                    eval "$(python {script} -sc install=bash)"
+                    Bash - Uninstall:
+                    eval "$(python {script} -sc uninstall=bash)"
 
-    Fish - Install:
-    python {script} -sc install=fish | source
-    Fish - Uninstall:
-    python {script} -sc uninstall=fish | source
+                    Fish - Install:
+                    python {script} -sc install=fish | source
+                    Fish - Uninstall:
+                    python {script} -sc uninstall=fish | source
 
-    Zsh - Install:
-    Zsh is compatible with the Bash shell completion, see the [documentation]\
+                    Zsh - Install:
+                    Zsh is compatible with the Bash shell completion, see the [documentation]\
 (https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
-    eval "$(python {script} -sc install=bash)"
-    Zsh - Uninstall:
-    eval "$(python {script} -sc uninstall=bash)"
+                    eval "$(python {script} -sc install=bash)"
+                    Zsh - Uninstall:
+                    eval "$(python {script} -sc uninstall=bash)"
 
---config-path,-cp : Overrides the config_path specified in hydra.main().
-                    The config_path is relative to the Python file declaring @hydra.main()
---config-name,-cn : Overrides the config_name specified in hydra.main()
---config-dir,-cd : Adds an additional config dir to the config search path
---info,-i : Print Hydra information [all|defaults]
-Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
-""",
+                --config-path,-cp : Overrides the config_path specified in hydra.main().
+                                    The config_path is relative to the Python file declaring @hydra.main()
+                --config-name,-cn : Overrides the config_name specified in hydra.main()
+                --config-dir,-cd : Adds an additional config dir to the config search path
+                --info,-i : Print Hydra information [all|defaults|defaults-tree|config|plugins]
+                Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
+                """
+            ),
             id="overriding_help_template:$FLAGS_HELP",
         ),
         pytest.param(
             "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
-            """db: mysql, postgresql
-
-""",
+            "db: mysql, postgresql",
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         pytest.param(
@@ -603,39 +607,42 @@ Overrides : Any key=value arguments to override config values (use dots for.nest
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
-            """--help,-h : Application's help
---hydra-help : Hydra's help
---version : Show Hydra's version and exit
---cfg,-c : Show config instead of running [job|hydra|all]
---package,-p : Config package to show
---run,-r : Run a job
---multirun,-m : Run multiple jobs with the configured launcher and sweeper
---shell-completion,-sc : Install or Uninstall shell completion:
-    Bash - Install:
-    eval "$(python {script} -sc install=bash)"
-    Bash - Uninstall:
-    eval "$(python {script} -sc uninstall=bash)"
+            dedent(
+                """\
+                --help,-h : Application's help
+                --hydra-help : Hydra's help
+                --version : Show Hydra's version and exit
+                --cfg,-c : Show config instead of running [job|hydra|all]
+                --package,-p : Config package to show
+                --run,-r : Run a job
+                --multirun,-m : Run multiple jobs with the configured launcher and sweeper
+                --shell-completion,-sc : Install or Uninstall shell completion:
+                    Bash - Install:
+                    eval "$(python {script} -sc install=bash)"
+                    Bash - Uninstall:
+                    eval "$(python {script} -sc uninstall=bash)"
 
-    Fish - Install:
-    python {script} -sc install=fish | source
-    Fish - Uninstall:
-    python {script} -sc uninstall=fish | source
+                    Fish - Install:
+                    python {script} -sc install=fish | source
+                    Fish - Uninstall:
+                    python {script} -sc uninstall=fish | source
 
-    Zsh - Install:
-    Zsh is compatible with the Bash shell completion, see the [documentation]\
+                    Zsh - Install:
+                    Zsh is compatible with the Bash shell completion, see the [documentation]\
 (https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
-    eval "$(python {script} -sc install=bash)"
-    Zsh - Uninstall:
-    eval "$(python {script} -sc uninstall=bash)"
+                    eval "$(python {script} -sc install=bash)"
+                    Zsh - Uninstall:
+                    eval "$(python {script} -sc uninstall=bash)"
 
---config-path,-cp : Overrides the config_path specified in hydra.main().
-                    The config_path is relative to the Python file declaring @hydra.main()
---config-name,-cn : Overrides the config_name specified in hydra.main()
---config-dir,-cd : Adds an additional config dir to the config search path
---info,-i : Print Hydra information [all|defaults]
-Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
-""",
+                --config-path,-cp : Overrides the config_path specified in hydra.main().
+                                    The config_path is relative to the Python file declaring @hydra.main()
+                --config-name,-cn : Overrides the config_name specified in hydra.main()
+                --config-dir,-cd : Adds an additional config dir to the config search path
+                --info,-i : Print Hydra information [all|defaults|defaults-tree|config|plugins]
+                Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
+                """
+            ),
             id="overriding_hydra_help_template:$FLAGS_HELP",
         ),
     ],
@@ -647,8 +654,7 @@ def test_help(
     cmd.extend(overrides)
     cmd.append(flag)
     result, _err = get_run_output(cmd)
-    # normalize newlines on Windows to make testing easier
-    assert result == normalize_newlines(expected.format(script=script)).rstrip()
+    assert_text_same(result, expected.format(script=script))
 
 
 @pytest.mark.parametrize(  # type: ignore

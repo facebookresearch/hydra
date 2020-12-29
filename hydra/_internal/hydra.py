@@ -314,7 +314,7 @@ class Hydra:
         self, config_name: Optional[str], args_parser: ArgumentParser, args: Any
     ) -> None:
         cfg = self.compose_config(
-            config_name=config_name,
+            config_name=None,
             overrides=args.overrides,
             run_mode=RunMode.RUN,
             with_log_configuration=True,
@@ -440,6 +440,7 @@ class Hydra:
     def _print_config_info(
         self, config_name: Optional[str], overrides: List[str]
     ) -> None:
+        assert log is not None
         self._print_search_path()
         self._print_defaults_tree(config_name=config_name, overrides=overrides)
         self._print_defaults_list(config_name=config_name, overrides=overrides)
@@ -455,7 +456,7 @@ class Hydra:
         self._log_header(header="Config", filler="*")
         with open_dict(cfg):
             del cfg["hydra"]
-        print(OmegaConf.to_yaml(cfg))
+        log.info(OmegaConf.to_yaml(cfg))
 
     def _print_defaults_list(
         self, config_name: Optional[str], overrides: List[str]
@@ -515,10 +516,7 @@ class Hydra:
     ) -> None:
         assert log is not None
         if log.isEnabledFor(logging.DEBUG):
-            self._print_plugins()
-            self._print_search_path()
-            self._print_plugins_profiling_info(10)
-            self._print_defaults_list(config_name, overrides)
+            self._print_all_info(config_name, overrides)
 
     def compose_config(
         self,
@@ -603,6 +601,7 @@ class Hydra:
     def _print_defaults_tree(
         self, config_name: Optional[str], overrides: List[str]
     ) -> None:
+        assert log is not None
         defaults = self.config_loader.compute_defaults_list(
             config_name=config_name,
             overrides=overrides,

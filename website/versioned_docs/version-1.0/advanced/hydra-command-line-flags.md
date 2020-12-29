@@ -64,7 +64,7 @@ Use '--cfg hydra' to Show the Hydra config.
 </details>
 
 #### --help,-h : 
-Shows the jpplication's help. This can be [customized](configure_hydra/app_help.md).
+Shows the application's help. This can be [customized](configure_hydra/app_help.md).
 <details><summary>Example output</summary>
 
 ``` 
