@@ -34,6 +34,7 @@ class OverrideMetadata:
     external_override: bool
     containing_config_path: Optional[str] = None
     used: bool = False
+    relative_key: Optional[str] = None
 
 
 @dataclass
@@ -105,6 +106,7 @@ class Overrides:
             self.override_metadata[key] = OverrideMetadata(
                 external_override=False,
                 containing_config_path=parent_config_path,
+                relative_key=default.get_relative_override_key(),
             )
 
     def is_overridden(self, default: InputDefault) -> bool:
@@ -123,24 +125,30 @@ class Overrides:
     def ensure_overrides_used(self) -> None:
         for key, meta in self.override_metadata.items():
             if not meta.used:
-                group = key.split("@")[0]
-                choices = (
-                    self.known_choices_per_group[group]
-                    if group in self.known_choices_per_group
-                    else set()
-                )
+                err_key = key
+                choices = set()
+                if meta.relative_key is not None:
+                    err_key = meta.relative_key
+                else:
+                    group = key.split("@")[0]
+                    choices = (
+                        self.known_choices_per_group[group]
+                        if group in self.known_choices_per_group
+                        else set()
+                    )
+
                 if len(choices) > 1:
                     msg = (
-                        f"Could not override '{key}'."
+                        f"Could not override '{err_key}'."
                         f"\nDid you mean to override one of {', '.join(sorted(list(choices)))}?"
                     )
                 elif len(choices) == 1:
                     msg = (
-                        f"Could not override '{key}'."
+                        f"Could not override '{err_key}'."
                         f"\nDid you mean to override {copy.copy(choices).pop()}?"
                     )
                 elif len(choices) == 0:
-                    msg = f"Could not override '{key}'. No match in the defaults list."
+                    msg = f"Could not override '{err_key}'. No match in the defaults list."
                 else:
                     assert False
 

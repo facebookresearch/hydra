@@ -1896,6 +1896,28 @@ def test_missing_config_errors(
             ),
             id="no_match_package_multiple_candidates",
         ),
+        param(
+            "empty",
+            ["+group1=override_invalid"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'group1/override_invalid': Could not override 'group2@foo'. No match in the defaults list."
+                ),
+            ),
+            id="nested_override_invalid_group",
+        ),
+        param(
+            "empty",
+            ["+group1=override_invalid2"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'group1/override_invalid2': Could not override 'group2'. No match in the defaults list."
+                ),
+            ),
+            id="nested_override_invalid_group",
+        ),
     ],
 )
 def test_override_errors(
