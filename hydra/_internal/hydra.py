@@ -437,6 +437,26 @@ class Hydra:
 
         self._log_footer(header=header, filler="-")
 
+    def _print_config_info(
+        self, config_name: Optional[str], overrides: List[str]
+    ) -> None:
+        self._print_search_path()
+        self._print_defaults_tree(config_name=config_name, overrides=overrides)
+        self._print_defaults_list(config_name=config_name, overrides=overrides)
+
+        cfg = run_and_report(
+            lambda: self._get_cfg(
+                config_name=config_name,
+                overrides=overrides,
+                cfg_type="all",
+                with_log_configuration=False,
+            )
+        )
+        self._log_header(header="Config", filler="*")
+        with open_dict(cfg):
+            del cfg["hydra"]
+        print(OmegaConf.to_yaml(cfg))
+
     def _print_defaults_list(
         self, config_name: Optional[str], overrides: List[str]
     ) -> None:
@@ -534,24 +554,18 @@ class Hydra:
             self._print_debug_info(config_name, overrides)
         return cfg
 
-    def _print_all_info(self, config_name: Optional[str], overrides: List[str]) -> None:
+    def _print_plugins_info(
+        self, config_name: Optional[str], overrides: List[str]
+    ) -> None:
         self._print_plugins()
-        self._print_search_path()
         self._print_plugins_profiling_info(top_n=10)
-        self._print_defaults_list(config_name, overrides)
 
-        cfg = run_and_report(
-            lambda: self._get_cfg(
-                config_name=config_name,
-                overrides=overrides,
-                cfg_type="all",
-                with_log_configuration=False,
-            )
-        )
-        self._log_header(header="Config", filler="*")
-        with open_dict(cfg):
-            del cfg["hydra"]
-        print(OmegaConf.to_yaml(cfg))
+    def _print_all_info(self, config_name: Optional[str], overrides: List[str]) -> None:
+        from .. import __version__
+
+        self._log_header(f"Hydra {__version__}", filler="=")
+        self._print_plugins()
+        self._print_config_info(config_name, overrides)
 
     def _print_defaults_tree_impl(
         self,
@@ -594,19 +608,20 @@ class Hydra:
             overrides=overrides,
             run_mode=RunMode.RUN,
         )
+        log.info("")
+        self._log_header("Defaults Tree", filler="*")
         self._print_defaults_tree_impl(defaults.defaults_tree)
 
     def show_info(
         self, info: str, config_name: Optional[str], overrides: List[str]
     ) -> None:
-        from .. import __version__
-
         options = {
             "all": self._print_all_info,
             "defaults": self._print_defaults_list,
             "defaults-tree": self._print_defaults_tree,
+            "config": self._print_config_info,
+            "plugins": self._print_plugins_info,
         }
-
         simple_stdout_log_config(level=logging.DEBUG)
         global log
         log = logging.getLogger(__name__)
@@ -615,5 +630,4 @@ class Hydra:
             opts = sorted(options.keys())
             log.error(f"Info usage: --info [{'|'.join(opts)}]")
         else:
-            self._log_header(f"Hydra {__version__}", filler="=")
             options[info](config_name=config_name, overrides=overrides)

@@ -9,9 +9,9 @@ Hydra provides a few options to improve debuggability.
 Print the config for your app without running your function by adding `--cfg` or `-c` to the command line.
 
 The `--cfg` option takes one argument indicating which part of the config to print:
-* `job` : Your config
-* `hydra` : Hydra's config
-* `all` : The full config, which is a union of `job` and `hydra`.
+* `job`: Your config
+* `hydra`: Hydra's config
+* `all`: The full config, which is a union of `job` and `hydra`.
 
 ```yaml
 # A normal run:
@@ -44,22 +44,10 @@ config_name: config
 ```
 
 ### Info
-Hydra can print information about your plugins, config search path, composition trace and more using the  
-`--info` flag.
-```text
-$ python my_app.py --info
-```
-
-Subset of output (Complete [example](http://paste.ubuntu.com/p/JWh2cKgGtD/))
-```commandline
-Config search path
-...
-Profiling information
-...
-Composition trace
-...
-Config
-...
-```
-
-
+The `--info` flag can provide information about various aspects of Hydra and your application:
+ - `--info all`: Default behavior, prints everything
+ - `--info config`: Prints information useful to understanding the config composition:    
+   Config Search Path, Defaults Tree, Defaults List, Final config)
+ - `--info defaults`: Prints the Final Defaults List
+ - `--info defaults-tree`: Prints the Defaults Tree
+ - `--info plugins`: Prints information about installed plugins
