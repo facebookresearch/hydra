@@ -1,0 +1,3 @@
+defaults:
+  - group2@foo: file1
+  - override group2: file1

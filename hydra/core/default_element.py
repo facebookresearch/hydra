@@ -234,6 +234,9 @@ class InputDefault:
             key = f"{key}@{final_pkg}"
         return key
 
+    def get_relative_override_key(self) -> str:
+        raise NotImplementedError()
+
     def is_override(self) -> bool:
         raise NotImplementedError()
 
@@ -499,6 +502,14 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
 
     def is_missing(self) -> bool:
         return self.get_name() == "???"
+
+    def get_relative_override_key(self) -> str:
+        assert self.group is not None
+        default_pkg = self.get_default_package()
+        key = self.group
+        if default_pkg != self.get_package() and self.package is not None:
+            key = f"{key}@{self.package}"
+        return key
 
 
 @dataclass
