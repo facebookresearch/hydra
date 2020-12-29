@@ -502,6 +502,13 @@ def get_args_parser() -> argparse.ArgumentParser:
         const="all",
         nargs="?",
         action="store",
+        choices=[
+            "all",
+            "defaults",
+            "defaults-tree",
+            "config",
+            "plugins",
+        ],
         help="Print Hydra information [all|defaults]",
     )
     return parser
