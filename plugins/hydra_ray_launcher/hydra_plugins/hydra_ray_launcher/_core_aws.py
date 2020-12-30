@@ -126,7 +126,8 @@ def launch_jobs(
             )
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
-            ray_rsync_up(launcher.ray_yaml_path, script_path, remote_tmp_dir)
+            remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
+            ray_rsync_up(launcher.ray_yaml_path, script_path, remote_script_path)
 
             if launcher.sync_up.source_dir:
                 source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
@@ -146,7 +147,7 @@ def launch_jobs(
             ray_exec(
                 launcher.ray_yaml_path,
                 launcher.docker_enabled,
-                os.path.join(remote_tmp_dir, "_remote_invoke.py"),
+                remote_script_path,
                 remote_tmp_dir,
             )
 
