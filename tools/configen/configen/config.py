@@ -10,7 +10,7 @@ from omegaconf import MISSING
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
-    _convert_: Optional[str] = None
+    default_flags: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
