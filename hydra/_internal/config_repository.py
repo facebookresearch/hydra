@@ -201,7 +201,7 @@ class ConfigRepository(IConfigRepository):
                         f"""
                         In {config_path}: 'optional: true' is deprecated.
                         Use 'optional {key}: {config_name}' instead.
-                        Support for the old style will be removed in a future version of Hydra"""
+                        Support for the old style will be removed in Hydra 1.2"""
                     )
 
                     warnings.warn(msg)
@@ -232,16 +232,12 @@ class ConfigRepository(IConfigRepository):
             with open_dict(cfg):
                 defaults = cfg.pop("defaults", empty)
         if not isinstance(defaults, ListConfig):
+            if isinstance(defaults, DictConfig):
+                type_str = "mapping"
+            else:
+                type_str = type(defaults).__name__
             raise ValueError(
-                dedent(
-                    f"""\
-                    Invalid defaults list in '{config_path}', defaults must be a list.
-                    Example of a valid defaults:
-                    defaults:
-                      - dataset: imagenet
-                      - override hydra/launcher: fancy_launcher
-                    """
-                )
+                f"Invalid defaults list in '{config_path}', defaults must be a list (got {type_str})"
             )
 
         return defaults
