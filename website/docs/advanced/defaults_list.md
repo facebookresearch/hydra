@@ -133,12 +133,6 @@ A Config Group's option can also be overridden via the command line. e.g:
 $ python my_app.py server/db=sqlite
 ```
 
-:::note
-TODO:
-- link command line overrides to a relevant page if and when we have it
-- consider adding a simple example of overriding a config group with a package override
-:::
-
 ## Composition order
 The Defaults List is ordered:
 - If multiple configs define the same value, the last one wins.
