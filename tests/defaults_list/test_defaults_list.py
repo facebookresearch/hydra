@@ -193,7 +193,7 @@ def test_deprecated_optional(
         """
             In optional_deprecated: 'optional: true' is deprecated.
             Use 'optional group1: file1' instead.
-            Support for the old style will be removed in a future version of Hydra"""
+            Support for the old style will be removed in Hydra 1.2"""
     )
     with warns(
         UserWarning,
