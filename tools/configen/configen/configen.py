@@ -84,6 +84,7 @@ class ClassInfo:
     name: str
     parameters: List[Parameter]
     target: str
+    convert: Optional[str] = None
 
 
 def is_incompatible(type_: Type[Any]) -> bool:
@@ -137,6 +138,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
         params: List[Parameter] = []
+        convert = module._convert_
 
         for name, p in sig.parameters.items():
             type_ = p.annotation
@@ -192,6 +194,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
             )
         classes_map[class_name] = ClassInfo(
             target=full_name,
+            convert=convert,
             module=module.name,
             name=class_name,
             parameters=params,

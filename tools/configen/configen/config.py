@@ -10,6 +10,7 @@ from omegaconf import MISSING
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
+    _convert_: Optional[str] = None
 
 
 @dataclass

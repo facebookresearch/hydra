@@ -10,6 +10,9 @@ from dataclasses import dataclass, field
 @dataclass
 class {{class_name}}Conf:
     _target_: str = "{{ classes_map[class_name].target }}"
+{% if classes_map[class_name].convert %}
+    _convert_: 'all'
+{% endif %}
 {% for param in classes_map[class_name].parameters %}
     {{ param.name }}: {{ param.type_str }} = {{ param.default }}
 {% endfor %}
