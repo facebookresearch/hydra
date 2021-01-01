@@ -47,6 +47,11 @@
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
+**Hydra 1.1** dev release
+Please note: this is a dev release. It is more likely to have bugs, and breaking changes are possible without a special annoucement.
+- [Documentation](https://hydra.cc/docs/next/intro)
+- Installation : `pip install hydra-core --upgrade --pre`
+
 ### License
 Hydra is licensed under [MIT License](LICENSE).
 
