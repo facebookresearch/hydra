@@ -10,9 +10,6 @@ from dataclasses import dataclass, field
 @dataclass
 class {{class_name}}Conf:
     _target_: str = "{{ classes_map[class_name].target }}"
-{% for flag in classes_map[class_name].default_flags %}
-    {{ flag.name }}: {{ flag.type_str }} = "{{ flag.default }}"
-{% endfor %}
 {% for param in classes_map[class_name].parameters %}
     {{ param.name }}: {{ param.type_str }} = {{ param.default }}
 {% endfor %}

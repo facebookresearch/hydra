@@ -12,6 +12,8 @@ from omegaconf import MISSING
 @dataclass
 class UserConf:
     _target_: str = "configen.samples.my_module.User"
+    _convert_: str = "all"
+    _recursive_: bool = True
     age: int = MISSING
     name: str = MISSING
 
@@ -19,6 +21,8 @@ class UserConf:
 @dataclass
 class AdminConf:
     _target_: str = "configen.samples.my_module.Admin"
+    _convert_: str = "all"
+    _recursive_: bool = True
     private_key: str = MISSING
     age: int = MISSING
     name: str = MISSING

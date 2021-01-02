@@ -79,19 +79,12 @@ class Parameter:
 
 
 @dataclass
-class DefaultFlag:
-    name: str
-    type_str: str
-    default: Optional[str]
-
-
-@dataclass
 class ClassInfo:
     module: str
     name: str
     parameters: List[Parameter]
     target: str
-    default_flags: Optional[List[DefaultFlag]]
+    default_flags: Optional[List[Parameter]]
 
 
 def is_incompatible(type_: Type[Any]) -> bool:
@@ -141,12 +134,22 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     imports = set()
     string_imports: Set[str] = set()
 
-    def_flags: List[DefaultFlag] = []
+    flag_type_dict = {
+        "_convert_": "str",
+        "_recursive_": "bool",
+    }
+    def_flags: List[Parameter] = []
     for name, default in module.default_flags.items():
+        try:
+            flag_type = flag_type_dict[name]
+        except RuntimeError:
+            print(f"{name} flag is currently unsupported by configen.")
+        default = f'"{default}"' if flag_type == "str" else default
+
         def_flags.append(
-            DefaultFlag(
+            Parameter(
                 name=name,
-                type_str="str",
+                type_str=flag_type,
                 default=default,
             )
         )
@@ -156,6 +159,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
         params: List[Parameter] = []
+        params = params + def_flags
 
         for name, p in sig.parameters.items():
             type_ = p.annotation
