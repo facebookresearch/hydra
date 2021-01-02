@@ -77,11 +77,13 @@ class Parameter:
     type_str: str
     default: Optional[str]
 
+
 @dataclass
 class DefaultFlag:
     name: str
     type_str: str
     default: Optional[str]
+
 
 @dataclass
 class ClassInfo:
@@ -138,13 +140,13 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
     imports = set()
     string_imports: Set[str] = set()
-    
+
     def_flags: List[DefaultFlag] = []
     for name, default in module.default_flags.items():
         def_flags.append(
             DefaultFlag(
                 name=name,
-                type_str='str',
+                type_str="str",
                 default=default,
             )
         )
