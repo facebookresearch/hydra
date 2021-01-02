@@ -5,11 +5,11 @@ from typing import Any, Dict, List, Optional
 
 import cloudpickle  # type: ignore
 import hydra
-import omegaconf
 import pkg_resources
 import ray
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
+from omegaconf import __version__ as omegaconf_version
 
 
 @dataclass
@@ -87,7 +87,7 @@ class RsyncConf:
 class EnvSetupConf:
     pip_packages: Dict[str, str] = field(
         default_factory=lambda: {
-            "omegaconf": omegaconf.__version__,
+            "omegaconf": omegaconf_version,
             "hydra_core": hydra.__version__,
             "ray": ray.__version__,
             "cloudpickle": cloudpickle.__version__,
