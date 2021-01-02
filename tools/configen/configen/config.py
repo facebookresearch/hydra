@@ -1,15 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
+
 
 @dataclass
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
-    default_flags: Dict[str, Any] = field(default_factory=dict)
+    default_flags: Optional[Dict[str, Any]] = field(default_factory=dict)
 
 
 @dataclass

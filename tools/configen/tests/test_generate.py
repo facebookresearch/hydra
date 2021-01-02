@@ -3,7 +3,7 @@ from textwrap import dedent
 
 from difflib import unified_diff
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 import pytest
 
@@ -56,23 +56,23 @@ conf: ConfigenConf = OmegaConf.structured(
 
 
 MODULE_NAME = "tests.test_modules"
+classes = [
+    "Empty",
+    "UntypedArg",
+    "IntArg",
+    "UnionArg",
+    "WithLibraryClassArg",
+    "IncompatibleDataclassArg",
+    "WithStringDefault",
+    "WithUntypedStringDefault",
+    "ListValues",
+    "DictValues",
+    "Tuples",
+    "PeskySentinelUsage",
+]
 
 
 def test_generated_code() -> None:
-    classes = [
-        "Empty",
-        "UntypedArg",
-        "IntArg",
-        "UnionArg",
-        "WithLibraryClassArg",
-        "IncompatibleDataclassArg",
-        "WithStringDefault",
-        "WithUntypedStringDefault",
-        "ListValues",
-        "DictValues",
-        "Tuples",
-        "PeskySentinelUsage",
-    ]
     expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated.py"
     expected = expected_file.read_text()
 
@@ -100,9 +100,38 @@ def test_generated_code() -> None:
         assert False, f"Mismatch between {expected_file} and generated code"
 
 
+def test_generated_code_with_default_flags() -> None:
+    default_flags = {"_convert_": "all"}
+    expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated_with_defaults.py"
+    expected = expected_file.read_text()
+
+    generated = generate_module(
+        cfg=conf,
+        module=ModuleConf(
+            name=MODULE_NAME, classes=classes, default_flags=default_flags
+        ),
+    )
+
+    lines = [
+        line
+        for line in unified_diff(
+            expected.splitlines(),
+            generated.splitlines(),
+            fromfile=str(expected_file),
+            tofile="Generated",
+        )
+    ]
+
+    diff = "\n".join(lines)
+    if generated != expected:
+        print(diff)
+        assert False, f"Mismatch between {expected_file} and generated code"
+
+
 @pytest.mark.parametrize(
     "classname, params, args, kwargs, expected",
     [
+        pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
         pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
         pytest.param(
             "UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"
