@@ -14,7 +14,7 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize(  # type:ignore
+@pytest.mark.parametrize(
     "override,expected",
     [
         pytest.param(

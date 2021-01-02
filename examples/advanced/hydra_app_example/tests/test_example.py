@@ -48,7 +48,7 @@ class TestWithUnittest(unittest.TestCase):
 
 # This example drives some user logic with the composed config.
 # In this case it calls hydra_app.main.add(), passing it the composed config.
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "overrides, expected",
     [
         (["app.user=test_user"], 30),

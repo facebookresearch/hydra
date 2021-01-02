@@ -172,14 +172,12 @@ class TestRunCompletion:
         )
         assert ret == expected
 
-    @pytest.mark.skipif(  # type: ignore
+    @pytest.mark.skipif(
         not is_expect_exists(),
         reason="expect should be installed to run the expects tests",
     )
-    @pytest.mark.parametrize(  # type: ignore
-        "prog", [["python", "hydra/test_utils/completion.py"]]
-    )
-    @pytest.mark.parametrize("shell", ["bash", "fish", "zsh"])  # type: ignore
+    @pytest.mark.parametrize("prog", [["python", "hydra/test_utils/completion.py"]])
+    @pytest.mark.parametrize("shell", ["bash", "fish", "zsh"])
     def test_shell_integration(
         self,
         shell: str,
@@ -270,7 +268,7 @@ class TestMultirunCompletion:
         assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "line,expected",
     [
         ("-c job", base_completion_list),
@@ -285,9 +283,9 @@ def test_with_flags(line: str, expected: List[str]) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize("relative", [True, False])  # type: ignore
-@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])  # type: ignore
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize("relative", [True, False])
+@pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
+@pytest.mark.parametrize(
     "key_eq, fname_prefix, files, expected",
     [
         ("abc=", "", ["foo.txt"], ["foo.txt"]),
@@ -337,10 +335,8 @@ def test_file_completion(
         os.chdir(pwd)
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"]
-)
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize("prefix", ["", " ", "\t", "/foo/bar", " /foo/bar/"])
+@pytest.mark.parametrize(
     "app_prefix",
     [
         "python foo.py",
@@ -354,7 +350,7 @@ def test_file_completion(
         "python foo.py",
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args_line, args_line_index",
     [
         ("", None),
@@ -378,7 +374,7 @@ def test_strip(
     assert result_line == args_line
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "shell,script,comp_func",
     [
         (

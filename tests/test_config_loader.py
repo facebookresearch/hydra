@@ -156,7 +156,7 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == {"foo": 10}
 
-    @pytest.mark.parametrize(  # type: ignore
+    @pytest.mark.parametrize(
         "overrides,expected",
         [
             pytest.param(
@@ -515,7 +515,7 @@ class TestConfigLoader:
         assert sweep_cfg.home == os.getenv("HOME")
 
 
-@pytest.mark.parametrize(  # type:ignore
+@pytest.mark.parametrize(
     "config_file, overrides",
     [
         # remove from config
@@ -905,7 +905,7 @@ def test_job_env_copy() -> None:
         assert cfg.hydra.job.env_set == {"zonk": "123456"}
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "overrides,expected",
     [
         (
@@ -941,7 +941,7 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
     assert cfg == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_cfg,overrides,expected",
     [
         # append
@@ -1082,7 +1082,7 @@ def test_apply_overrides_to_config(
             ConfigLoaderImpl._apply_overrides_to_config(overrides=parsed, cfg=cfg)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "config,overrides,expected",
     [
         pytest.param(
@@ -1133,7 +1133,7 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
     assert cfg == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     ("config", "overrides", "expected_choices"),
     [
         pytest.param(

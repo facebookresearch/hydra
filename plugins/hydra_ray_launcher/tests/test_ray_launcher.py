@@ -17,7 +17,7 @@ chdir_plugin_root()
 win_msg = "Ray doesn't support Windows."
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert RayLauncher.__name__ in [

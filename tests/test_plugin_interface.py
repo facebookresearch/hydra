@@ -17,7 +17,7 @@ sweepers = ["hydra._internal.core_plugins.basic_sweeper.BasicSweeper"]
 search_path_plugins: List[str] = []
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "plugin_type, expected",
     [
         (Launcher, launchers),

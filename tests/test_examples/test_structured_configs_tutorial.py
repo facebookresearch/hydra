@@ -72,7 +72,7 @@ def test_2_static_complex(tmpdir: Path) -> None:
     assert result == "Title=My app, size=1024x768 pixels"
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "overrides,expected",
     [
         ([], {"db": "???"}),
@@ -93,7 +93,7 @@ def test_3_config_groups(tmpdir: Path, overrides: Any, expected: Any) -> None:
     assert res == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "overrides,expected",
     [
         ([], {"db": "???"}),

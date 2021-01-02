@@ -18,7 +18,7 @@ from hydra_plugins.hydra_submitit_launcher import submitit_launcher
 chdir_plugin_root()
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "cls", [submitit_launcher.LocalLauncher, submitit_launcher.SlurmLauncher]
 )
 def test_discovery(cls: Type[Launcher]) -> None:

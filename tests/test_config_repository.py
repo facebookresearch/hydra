@@ -85,7 +85,7 @@ class TestConfigRepository:
         assert repo.config_exists("dataset/imagenet.yaml")
         assert not repo.config_exists("not_found.yaml")
 
-    @pytest.mark.parametrize(  # type: ignore
+    @pytest.mark.parametrize(
         "config_path,expected",
         [
             pytest.param(
@@ -130,8 +130,8 @@ class TestConfigRepository:
         assert ret.defaults_list == expected
 
 
-@pytest.mark.parametrize("sep", [" "])  # type: ignore
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize("sep", [" "])
+@pytest.mark.parametrize(
     "cfg_text, expected",
     [
         ("# @package{sep}foo.bar", {"package": "foo.bar"}),

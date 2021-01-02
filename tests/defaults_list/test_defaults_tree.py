@@ -22,7 +22,7 @@ chdir_hydra_root()
 Plugins.instance()
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -136,7 +136,7 @@ def test_simple_defaults_tree_cases(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -222,7 +222,7 @@ def test_tree_with_append_override(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -297,7 +297,7 @@ def test_simple_group_override(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -350,7 +350,7 @@ def test_misc_errors(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -425,7 +425,7 @@ def test_defaults_tree_with_package_overrides(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -502,7 +502,7 @@ def test_defaults_tree_with_package_overrides__group_override(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -640,7 +640,7 @@ def test_override_option_from_defaults_list(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name, overrides, expected",
     [
         param(
@@ -694,7 +694,7 @@ def test_two_group_defaults_different_pkgs(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -763,7 +763,7 @@ def test_legacy_hydra_overrides_from_primary_config(
         )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -806,7 +806,7 @@ def test_group_default_with_explicit_experiment(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -849,7 +849,7 @@ def test_group_default_with_appended_experiment(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -906,7 +906,7 @@ def test_experiment_include_absolute_config(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -976,7 +976,7 @@ def test_experiment_overriding_hydra_group(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1013,7 +1013,7 @@ def test_experiment_as_primary_config(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1102,7 +1102,7 @@ def test_extension_use_cases(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1175,7 +1175,7 @@ def test_with_missing(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1205,7 +1205,7 @@ def test_with_missing_and_skip_missing_flag(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1282,7 +1282,7 @@ def test_placeholder(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1504,7 +1504,7 @@ def test_interpolation(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1555,7 +1555,7 @@ def test_legacy_interpolation(
         )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1608,7 +1608,7 @@ def test_override_nested_to_null(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1737,7 +1737,7 @@ def test_deletion(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1781,7 +1781,7 @@ def test_delete_non_existing(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1825,7 +1825,7 @@ def test_missing_config_errors(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1932,7 +1932,7 @@ def test_override_errors(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -1964,7 +1964,7 @@ def test_load_missing_optional(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -2005,7 +2005,7 @@ def test_overriding_group_file_with_global_header(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -2037,7 +2037,7 @@ def test_none_config(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
@@ -2094,7 +2094,7 @@ def test_none_config_with_hydra(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     ("config_name", "overrides", "expected"),
     [
         param(
@@ -2131,7 +2131,7 @@ def test_defaults_with_overrides_only(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     ("config_name", "overrides", "expected"),
     [
         param(
@@ -2185,7 +2185,7 @@ def test_group_with_keyword_names(
     )
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     ("config_name", "overrides", "expected", "expected_choices"),
     [
         param(

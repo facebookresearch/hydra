@@ -50,9 +50,7 @@ from tests import (
 )
 
 
-@pytest.mark.parametrize(  # type: ignore
-    "path,expected_type", [("tests.AClass", AClass)]
-)
+@pytest.mark.parametrize("path,expected_type", [("tests.AClass", AClass)])
 def test_get_class(path: str, expected_type: type) -> None:
     assert utils.get_class(path) == expected_type
 
@@ -62,14 +60,14 @@ def test_a_class_eq() -> None:
     assert AClass(a=10, b=20, c=30, d=40) == AClass(a=10, b=20, c=30, d=40)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "recursive",
     [
         pytest.param(False, id="non_recursive"),
         pytest.param(True, id="recursive"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_conf, passthrough, expected",
     [
         pytest.param(
@@ -192,7 +190,7 @@ def test_class_instantiate(
     test(OmegaConf.create(input_conf))
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_conf, passthrough, expected",
     [
         pytest.param(
@@ -274,7 +272,7 @@ def test_get_original_cwd_without_hydra(hydra_restore_singletons: Any) -> None:
         utils.get_original_cwd()
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "orig_cwd, path, expected",
     [
         ("/home/omry/hydra", "foo/bar", "/home/omry/hydra/foo/bar"),
@@ -295,7 +293,7 @@ def test_to_absolute_path(
     assert utils.to_absolute_path(path) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "path, expected",
     [
         ("foo/bar", f"{os.getcwd()}/foo/bar"),
@@ -374,7 +372,7 @@ def test_pass_extra_variables() -> None:
     assert utils.instantiate(cfg, c=30) == AClass(a=10, b=20, c=30)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "cfg, passthrough, expected",
     [
         # direct
@@ -568,7 +566,7 @@ def test_recursive_instantiation(
     assert obj == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "cfg, passthrough, expected",
     [
         pytest.param(
@@ -713,7 +711,7 @@ def test_recursive_override(
     assert obj == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_conf, passthrough, expected",
     [
         pytest.param(
@@ -787,7 +785,7 @@ def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> No
     assert input_conf == conf_copy
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_, expected",
     [
         pytest.param({"a": 10}, {"a": 10}),
@@ -829,7 +827,7 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
     assert input_ == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "primitive,expected_primitive",
     [
         pytest.param(None, False, id="unspecified"),
@@ -838,7 +836,7 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
         pytest.param(ConvertMode.ALL, True, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_,expected",
     [
         pytest.param(
@@ -905,16 +903,16 @@ def test_convert_params_override(
     assert isinstance(ret.d, expected_list)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "convert_mode",
-    [  # type: ignore
+    [
         pytest.param(None, id="none"),
         pytest.param(ConvertMode.NONE, id="none"),
         pytest.param(ConvertMode.PARTIAL, id="partial"),
         pytest.param(ConvertMode.ALL, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_,expected",
     [
         pytest.param(
@@ -935,7 +933,7 @@ def test_convert_params_override(
         ),
     ],
 )
-def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
+def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
     cfg = OmegaConf.create(input_)
     ret = utils.instantiate(
         cfg.obj,
@@ -956,16 +954,16 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
     assert ret.a == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "convert",
-    [  # type: ignore
+    [
         pytest.param(None, id="p=unspecified"),
         pytest.param(ConvertMode.NONE, id="none"),
         pytest.param(ConvertMode.PARTIAL, id="partial"),
         pytest.param(ConvertMode.ALL, id="all"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_,expected",
     [
         pytest.param(
@@ -986,7 +984,9 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any):
         ),
     ],
 )
-def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: Any):
+def test_convert_params_with_dataclass_obj(
+    input_: Any, expected: Any, convert: Any
+) -> None:
     # Instantiated dataclasses are never converted to primitives.
     # This is due to the ambiguity between dataclass as an object and as
     # an input for creating a config object (Structured Configs)
@@ -1008,7 +1008,7 @@ def test_convert_params_with_dataclass_obj(input_: Any, expected: Any, convert: 
     assert isinstance(ret.a.b, ListConfig)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "input_,is_primitive,expected",
     [
         pytest.param(

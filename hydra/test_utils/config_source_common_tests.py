@@ -31,7 +31,7 @@ class ConfigSourceTestSuite:
         src = type_(provider="foo", path=f"{scheme}://___NOT_FOUND___")
         assert not src.available()
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path, expected",
         [
             pytest.param("", True, id="empty"),
@@ -56,7 +56,7 @@ class ConfigSourceTestSuite:
         ret = src.is_group(config_path=config_path)
         assert ret == expected
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path, expected",
         [
             ("", False),
@@ -79,7 +79,7 @@ class ConfigSourceTestSuite:
         ret = src.is_config(config_path=config_path)
         assert ret == expected
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path, expected",
         [
             ("dataset", True),
@@ -97,7 +97,7 @@ class ConfigSourceTestSuite:
         ret = src.is_config(config_path=config_path)
         assert ret == expected
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path,results_filter,expected",
         [
             # groups
@@ -135,7 +135,7 @@ class ConfigSourceTestSuite:
             assert x in ret
         assert ret == sorted(ret)
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path,results_filter,expected",
         [
             # Configs
@@ -161,7 +161,7 @@ class ConfigSourceTestSuite:
             assert x in ret
         assert ret == sorted(ret)
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path,expected_config,expected_defaults_list,expected_package",
         [
             param(
@@ -266,7 +266,7 @@ class ConfigSourceTestSuite:
             with expected_config:
                 src.load_config(config_path=config_path)
 
-    @mark.parametrize(  # type: ignore
+    @mark.parametrize(
         "config_path, expected_result, expected_package",
         [
             param("package_test/none", {"foo": "bar"}, None, id="none"),

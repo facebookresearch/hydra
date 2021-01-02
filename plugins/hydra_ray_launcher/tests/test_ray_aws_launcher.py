@@ -203,7 +203,7 @@ def validate_lib_version(yaml: str) -> None:
     ), f"Python version mismatch, local={local_python}, remote={remove_python}"
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
+@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
     assert RayAWSLauncher.__name__ in [
@@ -211,7 +211,7 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.fixture(scope="module")  # type: ignore
+@pytest.fixture(scope="module")
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
