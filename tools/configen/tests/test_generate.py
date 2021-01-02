@@ -56,23 +56,23 @@ conf: ConfigenConf = OmegaConf.structured(
 
 
 MODULE_NAME = "tests.test_modules"
-classes = [
-    "Empty",
-    "UntypedArg",
-    "IntArg",
-    "UnionArg",
-    "WithLibraryClassArg",
-    "IncompatibleDataclassArg",
-    "WithStringDefault",
-    "WithUntypedStringDefault",
-    "ListValues",
-    "DictValues",
-    "Tuples",
-    "PeskySentinelUsage",
-]
 
 
 def test_generated_code() -> None:
+    classes = [
+        "Empty",
+        "UntypedArg",
+        "IntArg",
+        "UnionArg",
+        "WithLibraryClassArg",
+        "IncompatibleDataclassArg",
+        "WithStringDefault",
+        "WithUntypedStringDefault",
+        "ListValues",
+        "DictValues",
+        "Tuples",
+        "PeskySentinelUsage",
+    ]
     expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated.py"
     expected = expected_file.read_text()
 
@@ -100,15 +100,35 @@ def test_generated_code() -> None:
         assert False, f"Mismatch between {expected_file} and generated code"
 
 
-def test_generated_code_with_default_flags() -> None:
-    default_flags = {"_convert_": "all"}
-    expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated_with_defaults.py"
+@pytest.mark.parametrize(
+    "classname, default_flags, expected_filename",
+    [
+        pytest.param("Empty", {}, "noflags.py", id="noflags"),
+        pytest.param("Empty", {"_convert_": "all"}, "convert.py", id="convert"),
+        pytest.param("Empty", {"_recursive_": True}, "recursive.py", id="recursive"),
+        pytest.param(
+            "Empty",
+            {
+                "_convert_": "all",
+                "_recursive_": True,
+            },
+            "both.py",
+            id="both",
+        ),
+    ],
+)
+def test_generated_code_with_default_flags(
+    classname: str, default_flags: dict, expected_filename: str
+) -> None:
+    expected_file = (
+        Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename
+    )
     expected = expected_file.read_text()
 
     generated = generate_module(
         cfg=conf,
         module=ModuleConf(
-            name=MODULE_NAME, classes=classes, default_flags=default_flags
+            name=MODULE_NAME, classes=[classname], default_flags=default_flags
         ),
     )
 
@@ -131,7 +151,6 @@ def test_generated_code_with_default_flags() -> None:
 @pytest.mark.parametrize(
     "classname, params, args, kwargs, expected",
     [
-        pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
         pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
         pytest.param(
             "UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"

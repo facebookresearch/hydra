@@ -84,7 +84,6 @@ class ClassInfo:
     name: str
     parameters: List[Parameter]
     target: str
-    default_flags: Optional[List[Parameter]]
 
 
 def is_incompatible(type_: Type[Any]) -> bool:
@@ -129,21 +128,19 @@ def is_incompatible(type_: Type[Any]) -> bool:
     return True
 
 
-def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
-    classes_map: Dict[str, ClassInfo] = {}
-    imports = set()
-    string_imports: Set[str] = set()
-
+def get_default_flags(module: ModuleConf) -> List[Parameter]:
     flag_type_dict = {
         "_convert_": "str",
         "_recursive_": "bool",
     }
+
     def_flags: List[Parameter] = []
     for name, default in module.default_flags.items():
         try:
             flag_type = flag_type_dict[name]
-        except RuntimeError:
-            print(f"{name} flag is currently unsupported by configen.")
+        except KeyError:
+            log.error(f"Flag '{name}' unsupported by configen.")
+            raise
         default = f'"{default}"' if flag_type == "str" else default
 
         def_flags.append(
@@ -154,12 +151,22 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
             )
         )
 
+    return def_flags
+
+
+def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
+    classes_map: Dict[str, ClassInfo] = {}
+    imports = set()
+    string_imports: Set[str] = set()
+
+    default_flags = get_default_flags(module)
+
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
         params: List[Parameter] = []
-        params = params + def_flags
+        params = params + default_flags
 
         for name, p in sig.parameters.items():
             type_ = p.annotation
@@ -218,7 +225,6 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
             module=module.name,
             name=class_name,
             parameters=params,
-            default_flags=def_flags,
         )
 
     template = jinja_env.get_template("module.j2")
