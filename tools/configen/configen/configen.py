@@ -77,6 +77,11 @@ class Parameter:
     type_str: str
     default: Optional[str]
 
+@dataclass
+class DefaultFlag:
+    name: str
+    type_str: str
+    default: Optional[str]
 
 @dataclass
 class ClassInfo:
@@ -84,7 +89,7 @@ class ClassInfo:
     name: str
     parameters: List[Parameter]
     target: str
-    convert: Optional[str] = None
+    default_flags: Optional[List[DefaultFlag]]
 
 
 def is_incompatible(type_: Type[Any]) -> bool:
@@ -133,12 +138,22 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
     imports = set()
     string_imports: Set[str] = set()
+    
+    def_flags: List[DefaultFlag] = []
+    for name, default in module.default_flags.items():
+        def_flags.append(
+            DefaultFlag(
+                name=name,
+                type_str='str',
+                default=default,
+            )
+        )
+
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
         params: List[Parameter] = []
-        convert = module._convert_
 
         for name, p in sig.parameters.items():
             type_ = p.annotation
@@ -194,10 +209,10 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
             )
         classes_map[class_name] = ClassInfo(
             target=full_name,
-            convert=convert,
             module=module.name,
             name=class_name,
             parameters=params,
+            default_flags=def_flags,
         )
 
     template = jinja_env.get_template("module.j2")
