@@ -25,7 +25,7 @@ chdir_plugin_root()
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
@@ -43,8 +43,8 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.parametrize(
     "input, expected",
     [
         (
@@ -78,8 +78,8 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.parametrize(
     "input, expected",
     [
         ("key=choice(1,2)", CategoricalDistribution([1, 2])),
@@ -101,7 +101,7 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -121,8 +121,8 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 
 # https://github.com/pyreadline/pyreadline/issues/65
-@pytest.mark.filterwarnings("ignore::DeprecationWarning")  # type: ignore
-@pytest.mark.parametrize("with_commandline", (True, False))  # type: ignore
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.parametrize("with_commandline", (True, False))
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
         "example/sphere.py",

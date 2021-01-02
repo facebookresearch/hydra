@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 
-@pytest.fixture(autouse=True)  # type: ignore
+@pytest.fixture(autouse=True)
 def env_setup(monkeypatch: Any) -> None:
     # Tests use fake redis server by setting REDIS_MOCK to True
     monkeypatch.setenv("REDIS_MOCK", "True")

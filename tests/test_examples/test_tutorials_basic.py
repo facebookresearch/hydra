@@ -19,7 +19,7 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,output_conf",
     [
         ([], OmegaConf.create()),
@@ -52,7 +52,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
     assert result == "Working directory : {}".format(tmpdir)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,expected",
     [
         ([], ["Info level message"]),
@@ -72,7 +72,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
         assert re.findall(re.escape(expected[i]), lines[i])
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,output_conf",
     [
         (
@@ -93,7 +93,7 @@ def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -
     assert OmegaConf.create(result) == output_conf
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,expected",
     [
         (
@@ -123,7 +123,7 @@ def test_tutorial_config_file_bad_key(
         assert OmegaConf.create(stdout) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,output_conf",
     [
         ([], OmegaConf.create()),
@@ -154,7 +154,7 @@ def test_tutorial_config_groups(
     assert OmegaConf.create(result) == output_conf
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,expected",
     [
         ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
@@ -251,7 +251,7 @@ def test_sweeping_example(
             assert tuple(ret.overrides) in overrides
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "args,expected",
     [
         (

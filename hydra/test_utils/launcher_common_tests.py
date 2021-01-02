@@ -454,7 +454,7 @@ class IntegrationTestSuite:
 
         return fun
 
-    @pytest.mark.parametrize(  # type: ignore
+    @pytest.mark.parametrize(
         "task_config, overrides, filename, expected_name",
         [
             pytest.param(None, [], "no_config.py", "no_config", id="no_config"),
@@ -507,7 +507,7 @@ class IntegrationTestSuite:
             generate_custom_cmd=self.generate_custom_cmd(),
         )
 
-    @pytest.mark.parametrize(  # type: ignore
+    @pytest.mark.parametrize(
         "task_config, overrides, expected_dir",
         [
             pytest.param(

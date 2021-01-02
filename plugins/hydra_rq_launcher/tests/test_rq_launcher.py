@@ -20,9 +20,8 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.mark.filterwarnings(
-    "ignore::DeprecationWarning"
-)  # https://github.com/rq/rq/issues/1244
+# https://github.com/rq/rq/issues/1244
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @pytest.mark.parametrize("launcher_name, overrides", [("rq", [])])
 class TestRQLauncher(LauncherTestSuite):
     """
@@ -32,9 +31,8 @@ class TestRQLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.filterwarnings(
-    "ignore::DeprecationWarning"
-)  # https://github.com/rq/rq/issues/1244
+# https://github.com/rq/rq/issues/1244
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @pytest.mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [({}, ["-m", "hydra/launcher=rq"])],
@@ -47,9 +45,8 @@ class TestRQLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-@pytest.mark.filterwarnings(  # type: ignore
-    "ignore::DeprecationWarning"
-)  # https://github.com/rq/rq/issues/1244
+# https://github.com/rq/rq/issues/1244
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
     with hydra_sweep_runner(
         calling_file="example/my_app.py",

@@ -7,7 +7,7 @@ from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
 
-@pytest.mark.parametrize(  # type:ignore
+@pytest.mark.parametrize(
     "args,max_batch_size,expected",
     [
         pytest.param(["x=10"], None, [[["x=10"]]], id="simple"),

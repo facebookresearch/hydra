@@ -70,7 +70,7 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
             assert tuple(ret.overrides) in overrides
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "overrides",
     [
         "hydra.launcher.batch_size=1",

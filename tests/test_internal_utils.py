@@ -11,7 +11,7 @@ from hydra._internal.utils import _locate
 from tests import AClass, Adam, AnotherClass, ASubclass, NestingClass, Parameters
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "matrix,expected",
     [
         ([["a"]], [1]),
@@ -28,7 +28,7 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
     assert utils.get_column_widths(matrix) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "config, expected",
     [
         pytest.param(
@@ -40,7 +40,7 @@ def test_get_class_name(config: DictConfig, expected: Any) -> None:
     assert utils._get_cls_name(config) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "name,expected",
     [
         ("tests.Adam", Adam),

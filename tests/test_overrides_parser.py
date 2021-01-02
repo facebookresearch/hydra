@@ -45,7 +45,7 @@ def eq(item1: Any, item2: Any) -> bool:
         return item1 == item2  # type: ignore
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("abc", "abc", id="value:id"),
@@ -90,7 +90,7 @@ def test_element(value: str, expected: Any) -> None:
     assert eq(ret, expected)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("abc", "abc", id="value:simple"),
@@ -187,7 +187,7 @@ def test_value(value: str, expected: Any) -> None:
         assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("[]", [], id="list:empty"),
@@ -212,7 +212,7 @@ def test_list_container(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         # list
@@ -267,7 +267,7 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         assert False
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("{}", {}, id="dict"),
@@ -315,7 +315,7 @@ def test_dict_container(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("choice(a)", ChoiceSweep(list=["a"]), id="sweep:choice(a)"),
@@ -338,7 +338,7 @@ def test_choice_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("a,b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a,b"),
@@ -362,7 +362,7 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
@@ -390,7 +390,7 @@ def test_range_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param(
@@ -413,7 +413,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "rule,value,expected",
     [
         # errors
@@ -457,7 +457,7 @@ def test_parse_errors(rule: str, value: str, expected: Any) -> None:
         parse_rule(value, rule)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("abc", "abc", id="package"),
@@ -469,7 +469,7 @@ def test_package(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("abc", "abc", id="package"),
@@ -482,7 +482,7 @@ def test_package_or_group(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("abc", Key(key_or_group="abc"), id="abc"),
@@ -506,7 +506,7 @@ def test_key(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("a", "a", id="a"),
@@ -659,7 +659,7 @@ def test_primitive(value: str, expected: Any) -> None:
     assert eq(ret, expected)
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "prefix,override_type",
     [
         pytest.param("", OverrideType.CHANGE, id="change"),
@@ -667,7 +667,7 @@ def test_primitive(value: str, expected: Any) -> None:
         pytest.param("~", OverrideType.DEL, id="del"),
     ],
 )
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected_key,expected_value,expected_value_type",
     [
         pytest.param("key=value", "key", "value", ValueType.ELEMENT, id="simple_value"),
@@ -819,7 +819,7 @@ def test_override(
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param(
@@ -893,7 +893,7 @@ def test_parse_overrides() -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "override,expected",
     [
         # change
@@ -912,7 +912,7 @@ def test_get_key_element(override: str, expected: str) -> None:
     assert ret.get_key_element() == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "override,expected,space_after_sep",
     [
         pytest.param("key=value", "value", False, id="str"),
@@ -971,7 +971,7 @@ def test_override_get_value_element_method(
     assert ret.get_value_element_as_str(space_after_sep=space_after_sep) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "override,expected",
     [
         pytest.param("key=value", "value", id="str"),
@@ -1007,7 +1007,7 @@ def test_override_value_method(override: str, expected: str) -> None:
     assert ret.value() == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "start,stop,step,expected",
     [
         # empty
@@ -1033,7 +1033,7 @@ def test_float_range(
         assert math.fabs(res[i] - expected[i]) < 10e-6
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value, expected",
     [
         # choice
@@ -1077,7 +1077,7 @@ def test_tag_sweep(value: str, expected: str) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value, expected",
     [
         # value
@@ -1170,7 +1170,7 @@ def test_sort(value: str, expected: str) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value, expected",
     [
         # simple choice sweep
@@ -1249,7 +1249,7 @@ class CastResults:
         return pytest.raises(HydraException, match=f"^{re.escape(msg)}")
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected_value",
     [
         # int
@@ -1603,7 +1603,7 @@ def test_cast_conversions(value: Any, expected_value: Any) -> None:
             assert eq(result, expected), f"{field} cast result mismatch"
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected_value",
     [
         pytest.param("abs(10)", 10, id="abs(10)"),
@@ -1648,7 +1648,7 @@ class F:
             return list(sorted(args))
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "func_name, func, value, expected",
     [
         pytest.param("foo_1", F.foo1, "foo_1(10)", "int:10", id="foo_1(10)"),
@@ -1723,7 +1723,7 @@ def test_eval(
     assert parser.parse_rule(value, "function") == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "func_name, func, value, expected",
     [
         pytest.param(
@@ -1821,7 +1821,7 @@ def test_eval_errors(
         parser.parse_rule(value, "function")
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected",
     [
         pytest.param("glob(*)", Glob(include=["*"], exclude=[])),
@@ -1838,7 +1838,7 @@ def test_glob(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "include,exclude,expected",
     [
         pytest.param(
@@ -1866,7 +1866,7 @@ def test_glob_filter(
     assert Glob(include=include, exclude=exclude).filter(strings) == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value,expected_key,expected_value,expected_value_type",
     [
         pytest.param(
@@ -1944,7 +1944,7 @@ def test_whitespaces(
     assert ret == expected
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "value, expected_sweep_string_list, expected_sweep_encoded_list",
     [
         ("x=choice(1,2,3)", ["1", "2", "3"], [1, 2, 3]),
@@ -1986,7 +1986,7 @@ def test_sweep_iterators(
     assert actual_sweep_encoded_list == expected_sweep_encoded_list
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     ("s", "expected"),
     [
         pytest.param("abc", "abc", id="no_esc"),

@@ -58,7 +58,7 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
     assert_text_same(from_line=expected, to_line=err)
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     "overrides",
     [
         param(["db=mysql_extending_from_this_group"], id="from_same_group"),
@@ -82,7 +82,7 @@ def test_extending_configs(
     }
 
 
-@mark.parametrize(  # type: ignore
+@mark.parametrize(
     ("overrides", "expected"),
     [
         param(

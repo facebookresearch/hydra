@@ -217,7 +217,7 @@ def test_initialize_config_dir_ctx_with_absolute_dir(
         assert ret == {"test_group": cfg}
 
 
-@pytest.mark.parametrize(  # type: ignore
+@pytest.mark.parametrize(
     "job_name,expected", [(None, "test_compose"), ("test_job", "test_job")]
 )
 def test_jobname_override_initialize_ctx(
