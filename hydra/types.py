@@ -25,9 +25,6 @@ class TargetConf:
         msg = "\nTargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
         warnings.warn(message=msg, category=UserWarning)
 
-    def is_missing(self) -> bool:
-        return self._target_ == MISSING  # type: ignore
-
 
 class RunMode(Enum):
     RUN = 1
