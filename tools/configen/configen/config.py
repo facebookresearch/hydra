@@ -1,16 +1,23 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from dataclasses import dataclass
+from typing import List, Optional
 
 from hydra.core.config_store import ConfigStore
+from hydra.utils import ConvertMode
 from omegaconf import MISSING
+
+
+@dataclass
+class Flags:
+    _convert_: Optional[ConvertMode] = None
+    _recursive_: Optional[bool] = None
 
 
 @dataclass
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
-    default_flags: Optional[Dict[str, Any]] = field(default_factory=dict)
+    default_flags: Optional[Flags] = None
 
 
 @dataclass

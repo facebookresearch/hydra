@@ -7,7 +7,7 @@ from typing import Any, Dict
 
 import pytest
 
-from hydra.utils import get_class, instantiate
+from hydra.utils import get_class, instantiate, ConvertMode
 from omegaconf import OmegaConf
 
 from configen.config import ConfigenConf, ModuleConf
@@ -104,12 +104,14 @@ def test_generated_code() -> None:
     "classname, default_flags, expected_filename",
     [
         pytest.param("Empty", {}, "noflags.py", id="noflags"),
-        pytest.param("Empty", {"_convert_": "all"}, "convert.py", id="convert"),
+        pytest.param(
+            "Empty", {"_convert_": ConvertMode.ALL}, "convert.py", id="convert"
+        ),
         pytest.param("Empty", {"_recursive_": True}, "recursive.py", id="recursive"),
         pytest.param(
             "Empty",
             {
-                "_convert_": "all",
+                "_convert_": ConvertMode.ALL,
                 "_recursive_": True,
             },
             "both.py",
