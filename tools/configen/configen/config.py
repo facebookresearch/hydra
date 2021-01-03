@@ -17,7 +17,7 @@ class Flags:
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
-    default_flags: Optional[Flags] = Flags()
+    default_flags: Flags = Flags()
 
 
 @dataclass
