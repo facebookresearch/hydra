@@ -1,18 +1,27 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import argparse
-import collections.abc
 import inspect
 import logging.config
 import os
 import sys
 from dataclasses import dataclass
+from enum import Enum
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -26,6 +35,15 @@ from hydra.errors import (
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
+
+
+class _Keys(str, Enum):
+    """Special keys in configs used by instantiate."""
+
+    TARGET = "_target_"
+    CONVERT = "_convert_"
+    PARSE = "_parse_"
+    RECURSIVE = "_recursive_"
 
 
 def _get_module_name_override() -> Optional[str]:
@@ -612,41 +630,30 @@ def _convert_container_targets_to_strings(d: Any) -> None:
                 _convert_container_targets_to_strings(e)
 
 
-def _merge(config: Any, overrides: Any) -> Any:
-    """Mutate and return config with overrides.
+def _merge_overrides_into_config(
+    config: Union[MutableMapping[Any, Any], DictConfig], overrides: Mapping[Any, Any]
+) -> None:
+    """Merge overrides into config recursively."""
 
-    NOTE: This is an anti-pattern since we mutate the config and return.
-    This allows us not to do copies of input objects but requires the
-    caller to be aware of the input config mutation during the call.
-    """
-    # Use OmegaConf merge if config is OmegaConf container
-    if OmegaConf.is_config(config):
-        config.merge_with(OmegaConf.create(overrides, flags={"allow_objects": True}))
-        return config
+    def _rec_merge(a: Any, b: Any) -> Any:
+        """Recursively merge mappings from b into a."""
+        if isinstance(a, Mapping):
+            if not isinstance(a, MutableMapping):
+                raise TypeError(f"Expected type MutableMapping but got {type(a)}")
+            if not isinstance(b, Mapping):
+                raise TypeError(f"Expected type Mapping but got {type(b)}")
+            for key, item in b.items():
+                a[key] = _rec_merge(a[key], item) if key in a else item
+            return a
+        return b
 
-    # Manual Override if native mapping type
-    if isinstance(config, collections.abc.MutableMapping):
-        if not isinstance(overrides, collections.abc.Mapping):
-            raise TypeError(f"Expected type dict but got {type(overrides)}")
-        config = dict(config.items())  # Shallow copy
-        for key, item in overrides.items():
-            config[key] = _merge(config[key], item) if key in config else item
-        return config
-
-    # Manual Override if native sequence type
-    if isinstance(config, collections.abc.MutableSequence):
-        if not isinstance(overrides, collections.abc.Sequence):
-            raise TypeError(f"Expected type list but got {type(overrides)}")
-        for idx, item in enumerate(overrides):
-            if idx < len(config):
-                config[idx] = _merge(config[idx], item)
-            else:
-                config.append(item)
-        return config
-
-    # Final case, overrides instead of config. Note that this can lead
-    # to unexpected behaviors (_merge({1: 2}, None) returns None).
-    return overrides
+    if OmegaConf.is_dict(config):
+        assert isinstance(config, DictConfig)  # For mypy
+        config.merge_with(OmegaConf.create(overrides, flags={"allow_objects": True}))  # type: ignore
+    elif isinstance(config, MutableMapping):
+        _rec_merge(config, overrides)
+    else:
+        raise TypeError(f"Expected DictConfig or MutableMapping but got {type(config)}")
 
 
 def _resolve_target(
@@ -659,7 +666,9 @@ def _resolve_target(
         return target
     if callable(target):
         return target
-    raise InstantiationException(f"Unsupported target type : {type(target)}")
+    raise InstantiationException(
+        f"Unsupported target type : {type(target)} (target = {target})"
+    )
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:
