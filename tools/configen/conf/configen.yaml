@@ -19,7 +19,7 @@ configen:
       # default_flags:
       #   _convert_ : 'all'
       #   _recursive_ : True
-      
+      #
       # for each module, a list of classes
       classes:
         - User
