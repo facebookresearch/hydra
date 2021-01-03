@@ -110,7 +110,7 @@ def instantiate(
         return None
 
     # TargetConf edge case
-    if isinstance(config, TargetConf) and config.is_missing():
+    if isinstance(config, TargetConf) and config._target_ == "???":
         # Specific check to give a good warning about failure to annotate _target_ as a string.
         raise InstantiationException(
             f"Missing value for {type(config).__name__}._target_. Check that it's properly annotated and overridden."
