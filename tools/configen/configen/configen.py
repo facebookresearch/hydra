@@ -129,23 +129,24 @@ def is_incompatible(type_: Type[Any]) -> bool:
     return True
 
 
-def get_default_flags(module: ModuleConf, imports_set) -> List[Parameter]:
+def get_default_flags(module: ModuleConf, imports_set: set) -> List[Parameter]:
 
     def_flags: List[Parameter] = []
     if module.default_flags:
         for name, default in module.default_flags.items():
-            flag_type = Flags.__annotations__[name].__args__[0].__name__
+            if default:
+                flag_type = Flags.__annotations__[name].__args__[0].__name__
 
-            if name == "_convert_":
-                imports_set.add(ConvertMode)
+                if name == "_convert_":
+                    imports_set.add(ConvertMode)
 
-            def_flags.append(
-                Parameter(
-                    name=name,
-                    type_str=flag_type,
-                    default=default,
+                def_flags.append(
+                    Parameter(
+                        name=name,
+                        type_str=flag_type,
+                        default=default,
+                    )
                 )
-            )
 
     return def_flags
 
