@@ -11,5 +11,5 @@ from dataclasses import dataclass, field
 @dataclass
 class EmptyConf:
     _target_: str = "tests.test_modules.Empty"
-    _convert_: str = "ALL"
+    _convert_: str = "all"
     _recursive_: bool = True
