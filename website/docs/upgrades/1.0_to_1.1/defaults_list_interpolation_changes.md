@@ -1,10 +1,8 @@
 ---
 id: defaults_list_interpolation
 title: Defaults List interpolation
-hide_title: true
 ---
 
-## Defaults List interpolation
 The defaults lists are used to compose the final config object.
 Hydra supports a limited form of interpolation in the defaults list.
 The interpolation style described there is deprecated in favor of a cleaner style more

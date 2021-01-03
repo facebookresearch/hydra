@@ -1,7 +1,6 @@
 ---
 id: default_composition_order
 title: Changes to default composition order
-hide_title: true
 ---
 Default composition order is changing in Hydra 1.1.
 

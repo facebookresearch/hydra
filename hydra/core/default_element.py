@@ -112,12 +112,25 @@ class InputDefault:
 
     def set_package_header(self, package_header: Optional[str]) -> None:
         assert self.__dict__["package_header"] is None
-        if (
-            package_header is None
-            or package_header == "_group_"
-            or self.get_default_package() == package_header
-        ):
+
+        if package_header is None:
             return
+
+        if "_group_" in package_header or "_name_" in package_header:
+            path = self.get_config_path()
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+            warnings.warn(
+                category=UserWarning,
+                message=dedent(
+                    f"""\
+                    In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
+                    See {url} for more information"""
+                ),
+            )
+
+        if package_header == "_group_":
+            return
+
         # package header is always interpreted as absolute.
         # if it does not have a _global_ prefix, add it.
         if package_header != "_global_" and not package_header.startswith("_global_."):
@@ -125,6 +138,7 @@ class InputDefault:
                 package_header = "_global_"
             else:
                 package_header = f"_global_.{package_header}"
+
         package_header = package_header.replace("_group_", self.get_default_package())
         self.__dict__["package_header"] = package_header
 
