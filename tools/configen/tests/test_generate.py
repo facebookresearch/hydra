@@ -10,7 +10,7 @@ import pytest
 from hydra.utils import get_class, instantiate, ConvertMode
 from omegaconf import OmegaConf
 
-from configen.config import ConfigenConf, ModuleConf
+from configen.config import ConfigenConf, ModuleConf, Flags
 from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
 from tests.test_modules import (
@@ -103,24 +103,24 @@ def test_generated_code() -> None:
 @pytest.mark.parametrize(
     "classname, default_flags, expected_filename",
     [
-        pytest.param("Empty", {}, "noflags.py", id="noflags"),
+        pytest.param("Empty", Flags(), "noflags.py", id="noflags"),
         pytest.param(
-            "Empty", {"_convert_": ConvertMode.ALL}, "convert.py", id="convert"
+            "Empty", Flags(_convert_=ConvertMode.ALL), "convert.py", id="convert"
         ),
-        pytest.param("Empty", {"_recursive_": True}, "recursive.py", id="recursive"),
+        pytest.param("Empty", Flags(_recursive_=True), "recursive.py", id="recursive"),
         pytest.param(
             "Empty",
-            {
-                "_convert_": ConvertMode.ALL,
-                "_recursive_": True,
-            },
+            Flags(
+                _convert_=ConvertMode.ALL,
+                _recursive_=True,
+            ),
             "both.py",
             id="both",
         ),
     ],
 )
 def test_generated_code_with_default_flags(
-    classname: str, default_flags: dict, expected_filename: str
+    classname: str, default_flags: Flags, expected_filename: str
 ) -> None:
     expected_file = (
         Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename

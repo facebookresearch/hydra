@@ -23,7 +23,7 @@ from omegaconf._utils import (
     is_structured_config,
 )
 
-from configen.config import Config, ConfigenConf, Flags, ModuleConf
+from configen.config import Config, ConfigenConf, ModuleConf
 from configen.utils import (
     collect_imports,
     convert_imports,
@@ -131,23 +131,24 @@ def is_incompatible(type_: Type[Any]) -> bool:
 def get_default_flags(module: ModuleConf) -> List[Parameter]:
 
     def_flags: List[Parameter] = []
-    if module.default_flags and hasattr(module.default_flags, "items"):
-        for name, default in module.default_flags.items():
-            if default:
-                flag_type = Flags.__annotations__[name].__args__[0].__name__
-                if "ConvertMode" in flag_type:
-                    flag_type = "str"
-                    default = str(default).strip("ConvertMode.").lower()
 
-                default = f'"{default}"' if flag_type == "str" else default
+    if module.default_flags._convert_ is not None:
+        def_flags.append(
+            Parameter(
+                name="_convert_",
+                type_str="str",
+                default=f"""\"{str(module.default_flags._convert_.name).lower()}\"""",
+            )
+        )
 
-                def_flags.append(
-                    Parameter(
-                        name=name,
-                        type_str=flag_type,
-                        default=default,
-                    )
-                )
+    if module.default_flags._recursive_ is not None:
+        def_flags.append(
+            Parameter(
+                name="_recursive_",
+                type_str="bool",
+                default=module.default_flags._recursive_,
+            )
+        )
 
     return def_flags
 
