@@ -1,7 +1,6 @@
 ---
 id: defaults_list_override
 title: Defaults List Overrides
-hide_title: true
 ---
 Hydra versions prior to 1.1 supported overriding of Hydra config groups via the Defaults List in this manner:
 ```yaml {3}

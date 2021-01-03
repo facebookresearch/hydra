@@ -2274,3 +2274,55 @@ def test_choices(
     )
     assert res is not None
     assert res.overrides.known_choices == expected_choices
+
+
+@mark.parametrize(
+    ("config_name", "overrides", "package_header", "expected"),
+    [
+        param(
+            "deprecated_headers/group",
+            [],
+            "_group_",
+            DefaultsTreeNode(node=ConfigDefault(path="deprecated_headers/group")),
+            id="deprecated_headers/group",
+        ),
+        param(
+            "deprecated_headers/name",
+            [],
+            "_name_",
+            DefaultsTreeNode(node=ConfigDefault(path="deprecated_headers/name")),
+            id="deprecated_headers/name",
+        ),
+        param(
+            "deprecated_headers/group_name",
+            [],
+            "_group_._name_",
+            DefaultsTreeNode(node=ConfigDefault(path="deprecated_headers/group_name")),
+            id="deprecated_headers/group_name",
+        ),
+        param(
+            "deprecated_headers/group_foo",
+            [],
+            "_group_.foo",
+            DefaultsTreeNode(node=ConfigDefault(path="deprecated_headers/group_foo")),
+            id="deprecated_headers/group_foo",
+        ),
+    ],
+)
+def test_deprecated_package_header_keywords(
+    config_name: Optional[str],
+    overrides: List[str],
+    package_header: str,
+    expected: DefaultsTreeNode,
+) -> None:
+    msg = dedent(
+        f"""\
+        In '{config_name}': Usage of deprecated keyword in package header '# @package {package_header}'.
+        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
+    )
+    with warns(UserWarning, match=re.escape(msg)):
+        _test_defaults_tree_impl(
+            config_name=config_name,
+            input_overrides=overrides,
+            expected=expected,
+        )

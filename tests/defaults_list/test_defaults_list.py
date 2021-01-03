@@ -1503,7 +1503,7 @@ def test_duplicate_items(
     ],
 )
 def test_load_group_header(
-    config_name: str, overrides: List[str], expected: List[ResultDefault]
+    config_name: str, overrides: List[str], expected: List[ResultDefault], recwarn: Any
 ) -> None:
     _test_defaults_list_impl(
         config_name=config_name,
@@ -1740,7 +1740,7 @@ def test_with_missing_config(
     ],
 )
 def test_set_package_header_no_parent_pkg(
-    default: InputDefault, package_header: str, expected: str
+    default: InputDefault, package_header: str, expected: str, recwarn: Any
 ) -> None:
     default.update_parent(parent_base_dir="", parent_package="")
     default.set_package_header(package_header)
@@ -1759,7 +1759,7 @@ def test_set_package_header_no_parent_pkg(
     ],
 )
 def test_set_package_header_with_parent_pkg(
-    default: InputDefault, package_header: str, expected: str
+    default: InputDefault, package_header: str, expected: str, recwarn: Any
 ) -> None:
     default.update_parent(parent_base_dir="", parent_package="parent_pkg")
     default.set_package_header(package_header)
