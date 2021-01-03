@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Type
 
 import hydra
-from hydra.utils import ConvertMode
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
 from omegaconf._utils import (
@@ -129,16 +128,18 @@ def is_incompatible(type_: Type[Any]) -> bool:
     return True
 
 
-def get_default_flags(module: ModuleConf, imports_set: set) -> List[Parameter]:
+def get_default_flags(module: ModuleConf) -> List[Parameter]:
 
     def_flags: List[Parameter] = []
-    if module.default_flags:
+    if module.default_flags and hasattr(module.default_flags, "items"):
         for name, default in module.default_flags.items():
             if default:
                 flag_type = Flags.__annotations__[name].__args__[0].__name__
+                if "ConvertMode" in flag_type:
+                    flag_type = "str"
+                    default = str(default).strip("ConvertMode.").lower()
 
-                if name == "_convert_":
-                    imports_set.add(ConvertMode)
+                default = f'"{default}"' if flag_type == "str" else default
 
                 def_flags.append(
                     Parameter(
@@ -156,7 +157,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     imports = set()
     string_imports: Set[str] = set()
 
-    default_flags = get_default_flags(module, imports)
+    default_flags = get_default_flags(module)
 
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"

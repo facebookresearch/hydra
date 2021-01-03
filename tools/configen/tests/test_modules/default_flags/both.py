@@ -6,11 +6,10 @@
 # flake8: noqa
 
 from dataclasses import dataclass, field
-from hydra.utils import ConvertMode
 
 
 @dataclass
 class EmptyConf:
     _target_: str = "tests.test_modules.Empty"
-    _convert_: ConvertMode = ConvertMode.ALL
+    _convert_: str = "ALL"
     _recursive_: bool = True
