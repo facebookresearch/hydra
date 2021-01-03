@@ -20,3 +20,9 @@ repos:
     hooks:
       - id: flake8
         additional_dependencies: [-e, "git+git://github.com/pycqa/pyflakes.git@1911c20#egg=pyflakes"]
+
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.25.0
+    hooks:
+      - id: yamllint
+        args: [-c=.yamllint]
