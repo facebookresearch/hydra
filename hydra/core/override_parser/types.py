@@ -239,9 +239,11 @@ class Override:
     def __post_init__(self) -> None:
         if self.pkg2 is not None:
             # DEPRECATED: remove in 1.1
-            msg = """\nSupport for overriding the package via the command line
-                is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1.
-                For more details, refer https://github.com/facebookresearch/hydra/issues/1140."""
+            msg = (
+                "\nSupport for overriding the package via the command line "
+                "is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1. "
+                "For more details, refer https://github.com/facebookresearch/hydra/issues/1140."
+            )
             warnings.warn(message=msg, category=UserWarning)
 
     def is_delete(self) -> bool:
