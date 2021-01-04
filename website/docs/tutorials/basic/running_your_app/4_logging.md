@@ -24,6 +24,8 @@ log = logging.getLogger(__name__)
 
 @hydra.main()
 def my_app(_cfg: DictConfig) -> None:
+    log.error("Error level message")
+    log.warning("Warning level message")
     log.info("Info level message")
     log.debug("Debug level message")
 
@@ -31,9 +33,10 @@ if __name__ == "__main__":
     my_app()
 
 $ python my_app.py
-[2019-06-27 00:52:46,653][__main__][INFO] - Info level message
-
+[2021-01-04 11:17:20,261][__main__][ERROR] - Error level message
+[2021-01-04 11:17:20,261][__main__][WARNING] - Warning level message
 ```
+By default, Python log level is WARNING.
 You can enable DEBUG level logging from the command line  by overriding `hydra.verbose`.
 
 `hydra.verbose` can be a Boolean, a String or a List:
@@ -46,11 +49,15 @@ Examples:
 Example output:
 ``` text
 $ python my_app.py hydra.verbose=[__main__,hydra]
-[2019-09-29 13:06:00,880] - Installed Hydra Plugins
-[2019-09-29 13:06:00,880] - ***********************
+[2021-01-04 11:18:32,776][HYDRA] Hydra 1.1.0                 
+[2021-01-04 11:18:32,776][HYDRA] ===============               
+[2021-01-04 11:18:32,776][HYDRA] Installed Hydra Plugins
+[2021-01-04 11:18:32,776][HYDRA] ***********************
 ...
-[2019-09-29 13:06:00,896][__main__][INFO] - Info level message
-[2019-09-29 13:06:00,896][__main__][DEBUG] - Debug level message
+[2021-01-04 11:18:32,994][__main__][ERROR] - Error level message
+[2021-01-04 11:18:32,994][__main__][WARNING] - Warning level message
+[2021-01-04 11:18:32,994][__main__][INFO] - Info level message
+[2021-01-04 11:18:32,994][__main__][DEBUG] - Debug level message
 ```
 
 You can disable the logging output by setting `hydra/job_logging` to `disabled`   
@@ -59,6 +66,6 @@ $ python my_app.py hydra/job_logging=disabled
 <NO OUTPUT>
 ```
 
-You can also set `hydra/job_logging=none` and `hydra/hydra_logging=none` if you do not want Hydra to configure the logging.
+To completely prevent Hydra from configuring the logging, set `hydra/job_logging=none` and `hydra/hydra_logging=none`.
 
 Logging can be [customized](/configure_hydra/logging.md).

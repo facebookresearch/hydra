@@ -1,0 +1,1 @@
+Default log level for Hydra apps is now WARNING (consistent with the default log level for all Python apps)

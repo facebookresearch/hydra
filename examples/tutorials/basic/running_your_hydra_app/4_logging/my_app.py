@@ -11,6 +11,8 @@ log = logging.getLogger(__name__)
 
 @hydra.main()
 def my_app(_cfg: DictConfig) -> None:
+    log.error("Error level message")
+    log.warning("Warning level message")
     log.info("Info level message")
     log.debug("Debug level message")
 

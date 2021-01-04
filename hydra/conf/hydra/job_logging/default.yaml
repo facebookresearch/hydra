@@ -16,7 +16,6 @@ handlers:
     # relative to the job log directory
     filename: ${hydra.job.name}.log
 root:
-  level: INFO
   handlers: [console, file]
 
 disable_existing_loggers: false

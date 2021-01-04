@@ -10,11 +10,12 @@ handlers:
     formatter: simple
     stream: ext://sys.stdout
 root:
-  level: INFO
   handlers: [console]
 
 loggers:
-  logging_example:
-    level: DEBUG
+  hydra:
+    level: INFO
+  hydra_plugins:
+    level: INFO
 
 disable_existing_loggers: false

@@ -75,7 +75,15 @@ def test_logging(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
     result, _err = get_run_output(cmd)
-    assert result == "[INFO] - Info level message"
+    assert_text_same(
+        result,
+        dedent(
+            """\
+            [WARNING] - WARN level message
+            [ERROR] - ERROR level message
+            """
+        ),
+    )
 
 
 def test_disabling_logging(tmpdir: Path) -> None:

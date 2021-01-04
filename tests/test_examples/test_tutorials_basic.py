@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import re
 import subprocess
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, List
 
 import pytest
@@ -11,6 +11,7 @@ from omegaconf import DictConfig, OmegaConf
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
+    assert_text_same,
     chdir_hydra_root,
     get_run_output,
     verify_dir_outputs,
@@ -55,21 +56,37 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
 @pytest.mark.parametrize(
     "args,expected",
     [
-        ([], ["Info level message"]),
-        (["hydra.verbose=[__main__]"], ["Info level message", "Debug level message"]),
+        (
+            [],
+            dedent(
+                """\
+                Error level message
+                Warning level message
+                """
+            ),
+        ),
+        (
+            ["hydra.verbose=[__main__]"],
+            dedent(
+                """\
+                Error level message
+                Warning level message
+                Info level message
+                Debug level message
+                """
+            ),
+        ),
     ],
 )
-def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) -> None:
+def test_tutorial_logging(tmpdir: Path, args: List[str], expected: str) -> None:
     cmd = [
         "examples/tutorials/basic/running_your_hydra_app/4_logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job_logging.formatters.simple.format='%(message)s'",
     ]
     cmd.extend(args)
     result, _err = get_run_output(cmd)
-    lines = result.splitlines()
-    assert len(lines) == len(expected)
-    for i in range(len(lines)):
-        assert re.findall(re.escape(expected[i]), lines[i])
+    assert_text_same(result, expected)
 
 
 @pytest.mark.parametrize(
