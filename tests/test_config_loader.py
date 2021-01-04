@@ -127,12 +127,13 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        cfg = config_loader.load_configuration(
-            config_name="optional-default",
-            overrides=[override],
-            strict=False,
-            run_mode=RunMode.RUN,
-        )
+        with pytest.warns(UserWarning):
+            cfg = config_loader.load_configuration(
+                config_name="optional-default",
+                overrides=[override],
+                strict=False,
+                run_mode=RunMode.RUN,
+            )
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == expected
@@ -144,16 +145,6 @@ class TestConfigLoader:
                 [],
                 {"group1_option1": True, "pkg1": {"group2_option1": True}},
                 id="no_overrides",
-            ),
-            pytest.param(
-                ["group1@:pkg2=option1"],
-                {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
-                id="override_unspecified_pkg_of_default",
-            ),
-            pytest.param(
-                ["group1@:pkg1=option1"],
-                {"pkg1": {"group1_option1": True, "group2_option1": True}},
-                id="override_two_groups_to_same_package",
             ),
         ],
     )
@@ -174,33 +165,38 @@ class TestConfigLoader:
         "overrides,expected",
         [
             pytest.param(
+                ["group1@:pkg2=option1"],
+                {"pkg2": {"group1_option1": True}, "pkg1": {"group2_option1": True}},
+                id="override_unspecified_pkg_of_default",
+            ),
+            pytest.param(
+                ["group1@:pkg1=option1"],
+                {"pkg1": {"group1_option1": True, "group2_option1": True}},
+                id="override_two_groups_to_same_package",
+            ),
+        ],
+    )
+    def test_load_changing_group_and_package_in_default_deprecated(
+        self, path: str, overrides: List[str], expected: Any
+    ) -> None:
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(f"{path}/package_tests")
+        )
+        with pytest.warns(UserWarning):
+            cfg = config_loader.load_configuration(
+                config_name="pkg_override", overrides=overrides, run_mode=RunMode.RUN
+            )
+        with open_dict(cfg):
+            del cfg["hydra"]
+        assert cfg == expected
+
+    @pytest.mark.parametrize(  # type: ignore
+        "overrides,expected",
+        [
+            pytest.param(
                 [],
                 {"pkg1": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
                 id="baseline",
-            ),
-            pytest.param(
-                ["+group1@pkg3=option1"],
-                {
-                    "pkg1": {"group1_option1": True},
-                    "pkg2": {"group1_option1": True},
-                    "pkg3": {"group1_option1": True},
-                },
-                id="append",
-            ),
-            pytest.param(
-                ["~group1@pkg1"],
-                {"pkg2": {"group1_option1": True}},
-                id="delete_package",
-            ),
-            pytest.param(
-                ["group1@pkg1:new_pkg=option1"],
-                {"new_pkg": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
-                id="change_pkg1",
-            ),
-            pytest.param(
-                ["group1@pkg2:new_pkg=option1"],
-                {"pkg1": {"group1_option1": True}, "new_pkg": {"group1_option1": True}},
-                id="change_pkg2",
             ),
         ],
     )
@@ -215,6 +211,37 @@ class TestConfigLoader:
             overrides=overrides,
             run_mode=RunMode.RUN,
         )
+        with open_dict(cfg):
+            del cfg["hydra"]
+        assert cfg == expected
+
+    @pytest.mark.parametrize(  # type: ignore
+        "overrides,expected",
+        [
+            pytest.param(
+                ["group1@pkg1:new_pkg=option1"],
+                {"new_pkg": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
+                id="change_pkg1",
+            ),
+            pytest.param(
+                ["group1@pkg2:new_pkg=option1"],
+                {"pkg1": {"group1_option1": True}, "new_pkg": {"group1_option1": True}},
+                id="change_pkg2",
+            ),
+        ],
+    )
+    def test_override_compose_two_package_one_group_deprecated(
+        self, path: str, overrides: List[str], expected: Any
+    ) -> None:
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(f"{path}/package_tests")
+        )
+        with pytest.warns(UserWarning):
+            cfg = config_loader.load_configuration(
+                config_name="two_packages_one_group",
+                overrides=overrides,
+                run_mode=RunMode.RUN,
+            )
         with open_dict(cfg):
             del cfg["hydra"]
         assert cfg == expected
@@ -883,33 +910,6 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
             [{"db": "mysql"}, {"db@src": "postgresql"}, {"hydra/launcher": "basic"}],
             id="change_option",
         ),
-        pytest.param(
-            defaults_list,
-            ["db@:dest=postgresql"],
-            [
-                {"db@dest": "postgresql"},
-                {"db@src": "mysql"},
-                {"hydra/launcher": "basic"},
-            ],
-            id="change_both",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@src:dest=postgresql"],
-            [{"db": "mysql"}, {"db@dest": "postgresql"}, {"hydra/launcher": "basic"}],
-            id="change_both",
-        ),
-        pytest.param(
-            defaults_list,
-            ["db@XXX:dest=postgresql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Could not rename package. No match for 'db@XXX' in the defaults list."
-                ),
-            ),
-            id="change_both_invalid_package",
-        ),
         # adding item
         pytest.param([], ["+db=mysql"], [{"db": "mysql"}], id="adding_item"),
         pytest.param(
@@ -933,17 +933,6 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
                 ),
             ),
             id="adding_duplicate_item",
-        ),
-        pytest.param(
-            defaults_list,
-            ["+db@src:foo=mysql"],
-            pytest.raises(
-                HydraException,
-                match=re.escape(
-                    "Add syntax does not support package rename, remove + prefix"
-                ),
-            ),
-            id="add_rename_error",
         ),
         pytest.param(
             defaults_list,
@@ -1061,6 +1050,78 @@ def test_apply_overrides_to_defaults(
     else:
         with expected:
             parsed_overrides = parser.parse_overrides(overrides=overrides)
+            ConfigLoaderImpl._apply_overrides_to_defaults(
+                overrides=parsed_overrides, defaults=defaults
+            )
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_defaults,overrides,expected",
+    [
+        # change item
+        pytest.param(
+            defaults_list,
+            ["db@:dest=postgresql"],
+            [
+                {"db@dest": "postgresql"},
+                {"db@src": "mysql"},
+                {"hydra/launcher": "basic"},
+            ],
+            id="change_both",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@src:dest=postgresql"],
+            [{"db": "mysql"}, {"db@dest": "postgresql"}, {"hydra/launcher": "basic"}],
+            id="change_both",
+        ),
+        pytest.param(
+            defaults_list,
+            ["db@XXX:dest=postgresql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Could not rename package. No match for 'db@XXX' in the defaults list."
+                ),
+            ),
+            id="change_both_invalid_package",
+        ),
+        # adding item
+        pytest.param(
+            defaults_list,
+            ["+db@src:foo=mysql"],
+            pytest.raises(
+                HydraException,
+                match=re.escape(
+                    "Add syntax does not support package rename, remove + prefix"
+                ),
+            ),
+            id="add_rename_error",
+        ),
+    ],
+)
+def test_apply_overrides_to_defaults_deprecated(
+    input_defaults: List[str], overrides: List[str], expected: Any
+) -> None:
+    defaults = ConfigLoaderImpl._parse_defaults(
+        OmegaConf.create({"defaults": input_defaults})
+    )
+
+    parser = OverridesParser.create()
+    if isinstance(expected, list):
+        with pytest.warns(UserWarning):
+            parsed_overrides = parser.parse_overrides(overrides=overrides)
+        expected_defaults = ConfigLoaderImpl._parse_defaults(
+            OmegaConf.create({"defaults": expected})
+        )
+        ConfigLoaderImpl._apply_overrides_to_defaults(
+            overrides=parsed_overrides, defaults=defaults
+        )
+        assert defaults == expected_defaults
+    else:
+        with expected:
+            with pytest.warns(UserWarning):
+                parsed_overrides = parser.parse_overrides(overrides=overrides)
             ConfigLoaderImpl._apply_overrides_to_defaults(
                 overrides=parsed_overrides, defaults=defaults
             )
