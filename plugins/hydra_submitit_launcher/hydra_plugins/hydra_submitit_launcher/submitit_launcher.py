@@ -115,17 +115,14 @@ class BaseSubmititLauncher(Launcher):
         # specify resources/parameters
         baseparams = set(OmegaConf.structured(BaseQueueConf).keys())
         params = {
-            x if x in baseparams else f"{self._EXECUTOR}_{x}": y
+            x
+            if x in baseparams
+            else f"{self._EXECUTOR}_{x}": y
+            if not OmegaConf.is_config(y)
+            else OmegaConf.to_container(y, resolve=True)
             for x, y in params.items()
             if x not in init_keys
         }
-        # submitit `setup` parameter must be a primitive list container
-        if f"{self._EXECUTOR}_setup" in params and isinstance(
-            params[f"{self._EXECUTOR}_setup"], ListConfig
-        ):
-            params[f"{self._EXECUTOR}_setup"] = OmegaConf.to_container(
-                params[f"{self._EXECUTOR}_setup"], resolve=True
-            )
         executor.update_parameters(**params)
 
         log.info(
