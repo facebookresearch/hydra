@@ -3,13 +3,21 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from hydra.core.config_store import ConfigStore
+from hydra.utils import ConvertMode
 from omegaconf import MISSING
+
+
+@dataclass
+class Flags:
+    _convert_: Optional[ConvertMode] = None
+    _recursive_: Optional[bool] = None
 
 
 @dataclass
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
+    default_flags: Flags = Flags()
 
 
 @dataclass

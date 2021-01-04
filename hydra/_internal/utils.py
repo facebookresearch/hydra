@@ -660,6 +660,7 @@ def _pop_convert_mode(d: Any) -> Any:
             convert = d.pop("_convert_")
             if convert is not None:
                 if isinstance(convert, str):
+                    convert = convert.lower()
                     if convert == "none":
                         ret = ConvertMode.NONE
                     elif convert == "partial":
