@@ -137,7 +137,7 @@ def get_default_flags(module: ModuleConf) -> List[Parameter]:
             Parameter(
                 name="_convert_",
                 type_str="str",
-                default=f"""\"{str(module.default_flags._convert_.name).lower()}\"""",
+                default=f"""\"{str(module.default_flags._convert_.name)}\"""",
             )
         )
 
