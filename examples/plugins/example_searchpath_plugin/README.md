@@ -7,4 +7,4 @@ Typical use cases includes:
  * A plugin that can replace the default configuration of another plugin or of Hydra itself by prepending its configurations before those that it want to replace.
  
 SearchPath plugins are discovered and enabled automatically once they are installed.
-You can use `python foo.py hydra.verbose=true --cfg` to see the search path and the installed plugins.
+You can use `python foo.py --info` to see the search path and the installed plugins.
