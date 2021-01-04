@@ -654,12 +654,23 @@ def test_primitive(value: str, expected: Any) -> None:
     [
         pytest.param("abc=xyz", False, id="no_rename"),
         pytest.param("abc@pkg=xyz", False, id="no_rename"),
-        pytest.param("abc@pkg1:pkg2=xyz", True, id="rename"),
-        pytest.param("abc@:pkg2=xyz", True, id="rename_from_current"),
     ],
 )
 def test_key_rename(value: str, expected: bool) -> None:
     ret = parse_rule(value, "override")
+    assert ret.is_package_rename() == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "value,expected",
+    [
+        pytest.param("abc@pkg1:pkg2=xyz", True, id="rename"),
+        pytest.param("abc@:pkg2=xyz", True, id="rename_from_current"),
+    ],
+)
+def test_key_rename_deprecated(value: str, expected: bool) -> None:
+    with pytest.warns(UserWarning):
+        ret = parse_rule(value, "override")
     assert ret.is_package_rename() == expected
 
 
@@ -903,22 +914,36 @@ def test_parse_overrides() -> None:
         # change
         pytest.param("key=value", "key", id="key"),
         pytest.param("key@pkg1=value", "key@pkg1", id="key@pkg1"),
-        pytest.param("key@pkg1:pkg2=value", "key@pkg1:pkg2", id="key@pkg1:pkg2"),
-        pytest.param("key@:pkg2=value", "key@:pkg2", id="key@:pkg2"),
         # add
         pytest.param("+key=value", "+key", id="+key"),
         pytest.param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
-        pytest.param("+key@pkg1:pkg2=value", "+key@pkg1:pkg2", id="+key@pkg1:pkg2"),
-        pytest.param("+key@:pkg2=value", "+key@:pkg2", id="+key@:pkg2"),
         # del
         pytest.param("~key=value", "~key", id="~key"),
         pytest.param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
-        pytest.param("~key@pkg1:pkg2=value", "~key@pkg1:pkg2", id="~key@pkg1:pkg2"),
-        pytest.param("~key@:pkg2=value", "~key@:pkg2", id="~key@:pkg2"),
     ],
 )
 def test_get_key_element(override: str, expected: str) -> None:
     ret = parse_rule(override, "override")
+    assert ret.get_key_element() == expected
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "override,expected",
+    [
+        # change
+        pytest.param("key@pkg1:pkg2=value", "key@pkg1:pkg2", id="key@pkg1:pkg2"),
+        pytest.param("key@:pkg2=value", "key@:pkg2", id="key@:pkg2"),
+        # add
+        pytest.param("+key@pkg1:pkg2=value", "+key@pkg1:pkg2", id="+key@pkg1:pkg2"),
+        pytest.param("+key@:pkg2=value", "+key@:pkg2", id="+key@:pkg2"),
+        # del
+        pytest.param("~key@pkg1:pkg2=value", "~key@pkg1:pkg2", id="~key@pkg1:pkg2"),
+        pytest.param("~key@:pkg2=value", "~key@:pkg2", id="~key@:pkg2"),
+    ],
+)
+def test_get_key_element_deprecated(override: str, expected: str) -> None:
+    with pytest.warns(UserWarning):
+        ret = parse_rule(override, "override")
     assert ret.get_key_element() == expected
 
 
