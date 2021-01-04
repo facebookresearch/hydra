@@ -1,4 +1,3 @@
-# @package _group_
 windows:
   create_db: true
   view: true

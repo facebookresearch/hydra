@@ -209,7 +209,6 @@ def test_initialize_config_dir_ctx_with_absolute_dir(
 
     cfg_file = tmpdir / "test_group" / "test.yaml"
     with open(str(cfg_file), "w") as f:
-        f.write("# @package _group_\n")
         OmegaConf.save(cfg, f)
 
     with initialize_config_dir(config_dir=str(tmpdir)):

@@ -1,4 +1,3 @@
-# @package _group_
 driver: postgresql
 host: postgresql01.staging
 timeout: 10

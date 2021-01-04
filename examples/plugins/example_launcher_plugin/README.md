@@ -4,7 +4,6 @@ This plugin provides an example for how to write a custom Launcher for Hydra.
 The configuration for this launcher is in packages with the plugin:
 
 ```yaml title="hydra_plugins/example_launcher_plugiun/conf/hydra/launcher/example.yaml"
-# @package _group_
 _target_: hydra_plugins.example_launcher_plugin.example_launcher.ExampleLauncher
 foo: 10
 bar: abcde
