@@ -1,5 +1,3 @@
-# @package _group_
-
 # A logger config that directs hydra verbose logging to a file
 version: 1
 formatters:

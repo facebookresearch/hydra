@@ -1,3 +1,2 @@
-# @package _group_
 type: alexnet
 num_layers: 7

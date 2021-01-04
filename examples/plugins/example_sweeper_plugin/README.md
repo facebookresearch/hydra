@@ -3,7 +3,6 @@
 This plugin provides an example for how to write a custom Sweeper for Hydra.
 The provided example has a custom configuration for the sweeper that takes overrides a few parameters:
 ```yaml
-# @package _group_
 _target_: hydra_plugins.example_sweeper_plugin.example_sweeper.ExampleSweeper
 # max number of jobs to run in the same batch.
 max_batch_size: null

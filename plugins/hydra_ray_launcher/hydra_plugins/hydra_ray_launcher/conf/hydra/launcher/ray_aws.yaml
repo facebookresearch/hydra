@@ -1,7 +1,4 @@
-# @package _group_
-
 # This yaml will be validated against RayAWSLauncherConf
-
 ray:
   cluster:
     provider:

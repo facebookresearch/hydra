@@ -1,4 +1,3 @@
-# @package _group_
 _target_: my_app.MySQLConnection
 host: localhost
 user: root

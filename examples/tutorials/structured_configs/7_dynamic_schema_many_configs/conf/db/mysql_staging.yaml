@@ -1,4 +1,3 @@
-# @package _group_
 driver: mysql
 host: mysql001.staging
 encoding: utf-8

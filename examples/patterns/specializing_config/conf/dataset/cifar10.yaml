@@ -1,3 +1,2 @@
-# @package _group_
 name: cifar10
 path: /datasets/cifar10
