@@ -4,7 +4,7 @@ title: Packages
 ---
 
 The package determines where the content of each input config is placed in the output config.
-The default package of an input config is derived from its Config Group. e.g. The default package of `server.db/mysql.yaml` is `server.db`.
+The default package of an input config is derived from its Config Group. e.g. The default package of `server/db/mysql.yaml` is `server.db`.
 
 The default package can be overridden [in the Defaults List](#overriding-packages-using-the-defaults-list)
 or via a [Package Directive](#overriding-the-package-via-the-package-directive) at the top of the config file.
@@ -146,7 +146,7 @@ name: mysql
 To change the package to the global (empty) package, use the keyword `_global_`.
 
 ### Using a config group more than once
-The following example adds the `db/server/mysql` config in the packages `src` and `dst`.
+The following example adds the `server/db/mysql` config in the packages `src` and `dst`.
 
 <div className="row">
 <div className="col col--6">
