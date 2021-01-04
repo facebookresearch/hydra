@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
+import warnings
 from typing import Any, List, Optional
 
 from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
@@ -11,7 +12,7 @@ from hydra.core.override_parser.overrides_visitor import (
     HydraErrorListener,
     HydraOverrideVisitor,
 )
-from hydra.core.override_parser.types import Override
+from hydra.core.override_parser.types import Override, OverrideType
 from hydra.errors import HydraException, OverrideParseException
 
 try:
@@ -79,6 +80,12 @@ class OverridesParser:
         for override in overrides:
             try:
                 parsed = self.parse_rule(override, "override")
+                if parsed.type == OverrideType.CHANGE:
+                    # DEPRECATED: remove in 1.1
+                    msg = """\nSupport for overriding the package via the command line
+                    is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1.
+                    For more details, refer https://github.com/facebookresearch/hydra/issues/1140."""
+                    warnings.warn(message=msg, category=UserWarning)
             except HydraException as e:
                 cause = e.__cause__
                 if isinstance(cause, LexerNoViableAltException):
