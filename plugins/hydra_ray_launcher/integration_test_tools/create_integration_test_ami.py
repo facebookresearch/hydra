@@ -49,11 +49,23 @@ def set_up_machine(cfg: DictConfig) -> None:
         _run_command(
             f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "
         )
+        _run_command("conda update --all -y")
+        output = _run_command("conda search python").split("\n")
 
-        print(
-            "Installing dependencies now, this may take a while (very likely more than 20 mins) ..."
-        )
-        _run_command(f"ray exec {yaml} 'python ./setup_integration_test_ami.py' ")
+        # gather all the python versions and install conda envs
+        versions = set()
+        for o in output:
+            o = o.split()
+            if len(o) > 2 and o[0] == "python" and float(o[1][:3]) >= 3.6:
+
+                versions.add(o[1])
+        print(f"Found python versions {sorted( versions )}")
+
+        for v in versions:
+            print(f"Setting up conda env for py version {v}")
+            _run_command(
+                f"ray exec {yaml} 'python ./setup_integration_test_ami.py {v}' "
+            )
 
         # remove security group egress rules
         _run_command(

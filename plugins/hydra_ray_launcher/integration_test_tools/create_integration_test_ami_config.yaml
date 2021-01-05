@@ -1,4 +1,4 @@
-security_group_id: ${env:RAY_BUILD_AMI_SEC_GROUP}
+security_group_id: sg-095ac7c26aa0d33bb
 ray_yaml:
   cluster_name: ray_test_base_AMI
   min_workers: 0
@@ -25,19 +25,19 @@ ray_yaml:
   head_node:
     InstanceType: m5.large
     ImageId: ami-008d8ed4bd7dc2485
-    SubnetId: ${env:AWS_RAY_SUBNET}
+    SubnetId: subnet-acd2cfe7
     SecurityGroupIds:
-      - ${env:AWS_RAY_SECURITY_GROUP}
+      - sg-0a12b09a5ff961aee
     IamInstanceProfile:
-      Arn: ${env:INSTANCE_ROLE_ARN}
+      Arn: arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1
   worker_nodes:
     InstanceType: m5.large
     ImageId: ami-008d8ed4bd7dc2485
-    SubnetId: ${env:AWS_RAY_SUBNET}
+    SubnetId: subnet-acd2cfe7
     SecurityGroupIds:
-      - ${env:AWS_RAY_SECURITY_GROUP}
+      - sg-0a12b09a5ff961aee
     IamInstanceProfile:
-      Arn: ${env:INSTANCE_ROLE_ARN}
+      Arn: arn:aws:iam::135937774131:instance-profile/ray-autoscaler-v1
     InstanceMarketOptions:
       MarketType: spot
   file_mounts: {}
