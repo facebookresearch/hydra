@@ -243,7 +243,8 @@ class Override:
 
             msg = dedent(
                 """\n
-                    Support for renaming packages via the command line is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1.
+                    Support for renaming packages via the command line is deprecated since Hydra 1.0.5.
+                    The support will be removed in Hydra 1.1.
                     For more details, see https://github.com/facebookresearch/hydra/issues/1140.
                     """
             )
