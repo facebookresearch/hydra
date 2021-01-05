@@ -335,6 +335,8 @@ def sweep_1_job(
         assert job_ret[0].hydra_cfg.hydra.job.name == "a_module", (
             "Unexpected job name: " + job_ret[0].hydra_cfg.hydra.job.name
         )
+        assert job_ret[0].hydra_cfg.hydra.job.id is not None
+        assert job_ret[0].hydra_cfg.hydra.job.num is not None
         verify_dir_outputs(sweep.returns[0][0])
 
 
@@ -381,6 +383,9 @@ def sweep_2_jobs(
             assert job_ret.hydra_cfg.hydra.job.name == "a_module", (
                 "Unexpected job name: " + job_ret.hydra_cfg.hydra.job.name
             )
+            assert job_ret.hydra_cfg.hydra.job.id is not None
+            assert job_ret.hydra_cfg.hydra.job.num is not None
+
             verify_dir_outputs(job_ret, job_ret.overrides)
             path = temp_dir / str(i)
             lst = [x for x in temp_dir.iterdir() if x.is_dir()]
