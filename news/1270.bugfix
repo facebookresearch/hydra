@@ -1,0 +1,1 @@
+Fixed hydra.job.id and hydra.job.num not getting passed to jobs in multirun 
