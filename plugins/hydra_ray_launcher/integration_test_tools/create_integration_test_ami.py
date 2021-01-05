@@ -49,8 +49,6 @@ def set_up_machine(cfg: DictConfig) -> None:
         _run_command(
             f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "
         )
-        _run_command(f"ray rsync_up {yaml} '../requirements.txt' '/home/ubuntu/' ")
-
         _run_command("conda update --all -y")
         output = _run_command("conda search python").split("\n")
 
