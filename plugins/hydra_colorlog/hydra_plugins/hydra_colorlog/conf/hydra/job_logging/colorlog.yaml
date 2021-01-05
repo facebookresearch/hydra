@@ -1,3 +1,4 @@
+# @package hydra.job_logging
 # python logging configuration for tasks
 version: 1
 formatters:
