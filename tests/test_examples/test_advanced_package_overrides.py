@@ -36,9 +36,9 @@ def test_advanced_package_override_simple_with_cli_pakcage_override(
         "source": {"driver": "mysql", "user": "omry", "pass": "secret"}
     }
     from_line = (
-        "Support for overriding the package via the command line "
+        "Support for renaming packages via the command line "
         "is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1. "
-        "For more details, refer https://github.com/facebookresearch/hydra/issues/1140."
+        "For more details, see https://github.com/facebookresearch/hydra/issues/1140."
         "\n  warnings.warn(message=msg, category=UserWarning)"
     )
     assert_text_same(from_line, err.split("\n", 1)[1])
@@ -68,9 +68,9 @@ def test_advanced_package_override_two_packages_with_cli_override(tmpdir: Path) 
         "backup": {"driver": "mysql", "user": "omry", "pass": "secret"},
     }
     from_line = (
-        "Support for overriding the package via the command line "
+        "Support for renaming packages via the command line "
         "is deprecated since Hydra 1.0.5 and will be removed in Hydra 1.1. "
-        "For more details, refer https://github.com/facebookresearch/hydra/issues/1140."
+        "For more details, see https://github.com/facebookresearch/hydra/issues/1140."
         "\n  warnings.warn(message=msg, category=UserWarning)"
     )
     assert_text_same(from_line, err.split("\n", 1)[1])

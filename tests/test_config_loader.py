@@ -122,7 +122,7 @@ class TestConfigLoader:
         ],
     )
     def test_load_changing_group_in_default(
-        self, path: str, override: str, expected: Dict[Any, Any]
+        self, path: str, override: str, expected: Dict[Any, Any], recwarn: Any
     ) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
@@ -149,7 +149,7 @@ class TestConfigLoader:
         ],
     )
     def test_load_changing_group_and_package_in_default(
-        self, path: str, overrides: List[str], expected: Any
+        self, path: str, overrides: List[str], expected: Any, recwarn: Any
     ) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(f"{path}/package_tests")
@@ -201,7 +201,7 @@ class TestConfigLoader:
         ],
     )
     def test_override_compose_two_package_one_group(
-        self, path: str, overrides: List[str], expected: Any
+        self, path: str, overrides: List[str], expected: Any, recwarn: Any
     ) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(f"{path}/package_tests")
@@ -1031,7 +1031,7 @@ defaults_list = [{"db": "mysql"}, {"db@src": "mysql"}, {"hydra/launcher": "basic
     ],
 )
 def test_apply_overrides_to_defaults(
-    input_defaults: List[str], overrides: List[str], expected: Any
+    input_defaults: List[str], overrides: List[str], expected: Any, recwarn: Any
 ) -> None:
     defaults = ConfigLoaderImpl._parse_defaults(
         OmegaConf.create({"defaults": input_defaults})
