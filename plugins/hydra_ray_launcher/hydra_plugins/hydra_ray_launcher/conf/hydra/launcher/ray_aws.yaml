@@ -1,3 +1,5 @@
+# @package hydra.launcher
+
 # This yaml will be validated against RayAWSLauncherConf
 ray:
   cluster:
