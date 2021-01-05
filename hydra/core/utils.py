@@ -88,6 +88,7 @@ def run_job(
 ) -> "JobReturn":
     old_cwd = os.getcwd()
     working_dir = str(OmegaConf.select(config, job_dir_key))
+    orig_hydra_cfg = HydraConfig.instance().cfg
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
@@ -98,11 +99,16 @@ def run_job(
         ret = JobReturn()
         ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
+        hydra_cfg = OmegaConf.masked_copy(task_cfg, "hydra")
+        # maintain parent to preserve interpolation links from hydra_cfg to job_cfg
+        hydra_cfg._set_parent(task_cfg)
         with read_write(task_cfg):
             with open_dict(task_cfg):
                 del task_cfg["hydra"]
+        HydraConfig.instance().cfg = hydra_cfg  # type: ignore
+
         ret.cfg = task_cfg
-        ret.hydra_cfg = OmegaConf.create({"hydra": HydraConfig.get()})
+        ret.hydra_cfg = hydra_cfg
         overrides = OmegaConf.to_container(config.hydra.overrides.task)
         assert isinstance(overrides, list)
         ret.overrides = overrides
@@ -112,9 +118,6 @@ def run_job(
 
         if configure_logging:
             configure_log(config.hydra.job_logging, config.hydra.verbose)
-
-        hydra_cfg = OmegaConf.masked_copy(config, "hydra")
-        assert isinstance(hydra_cfg, DictConfig)
 
         if config.hydra.output_subdir is not None:
             hydra_output = Path(config.hydra.output_subdir)
@@ -130,6 +133,7 @@ def run_job(
 
         return ret
     finally:
+        HydraConfig.instance().cfg = orig_hydra_cfg
         os.chdir(old_cwd)
 
 
