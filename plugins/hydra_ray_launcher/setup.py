@@ -22,6 +22,7 @@ with open("README.md", "r") as fh:
             "Operating System :: POSIX :: Linux",
         ],
         install_requires=[
+            "boto3==1.16.48",
             "hydra-core>=1.0.0",
             "ray==1.1.0",
             "cloudpickle==1.6.0",
