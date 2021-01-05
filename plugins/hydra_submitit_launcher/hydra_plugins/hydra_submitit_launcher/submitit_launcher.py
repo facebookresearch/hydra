@@ -31,7 +31,11 @@ class BaseSubmititLauncher(Launcher):
     _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:
-        self.params = params
+        self.params = {}
+        for k, v in params.items():
+            if OmegaConf.is_config(v):
+                v = OmegaConf.to_container(v, resolve=True)
+            self.params[k] = v
         self.config: Optional[DictConfig] = None
         self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
@@ -115,11 +119,7 @@ class BaseSubmititLauncher(Launcher):
         # specify resources/parameters
         baseparams = set(OmegaConf.structured(BaseQueueConf).keys())
         params = {
-            x
-            if x in baseparams
-            else f"{self._EXECUTOR}_{x}": y
-            if not OmegaConf.is_config(y)
-            else OmegaConf.to_container(y, resolve=True)
+            x if x in baseparams else f"{self._EXECUTOR}_{x}": y
             for x, y in params.items()
             if x not in init_keys
         }
