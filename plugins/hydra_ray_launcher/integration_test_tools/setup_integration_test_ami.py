@@ -3,7 +3,9 @@ import subprocess
 from datetime import datetime
 
 dependencies = [
-    "ray>=1.0.0",
+    "ray==1.1.0",
+    "cloudpickle==1.6.0",
+    "pickle5==0.0.11",
 ]
 
 
