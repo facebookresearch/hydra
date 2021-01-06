@@ -7,6 +7,10 @@ title: Extending Configs
 A common pattern is to extend an existing config, overriding and/or adding new config values to it.
 The extension is done by including the base configuration, and then overriding the chosen values in the current config.
 
+:::info
+This page assumes that you are familiar with the contents of [The Defaults List](../advanced/defaults_list.md).
+:::
+
 #### Extending a config from the same config group:
 
 <div className="row">
@@ -60,7 +64,7 @@ db:
 
 #### Extending a config from another config group:
 To extend a config from a different config group, include it using an absolute path (/), and override
-the package to `_here_`.
+the package to *\_here\_*. (*\_here\_* is described in [Packages](../advanced/overriding_packages.md#default-list-package-keywords))
 
 ```yaml title="db/mysql.yaml" {2}
 defaults:

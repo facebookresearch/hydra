@@ -143,11 +143,15 @@ def test_4_defaults(tmpdir: Path) -> None:
     }
 
 
-def test_5_structured_config_schema(tmpdir: Path) -> None:
-    cmd = [
-        "examples/tutorials/structured_configs/5_structured_config_schema/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
+@pytest.mark.parametrize(
+    "path",
+    [
+        "examples/tutorials/structured_configs/5.1_structured_config_schema_same_config_group/my_app.py",
+        "examples/tutorials/structured_configs/5.2_structured_config_schema_different_config_group/my_app.py",
+    ],
+)
+def test_5_structured_config_schema(tmpdir: Path, path: str) -> None:
+    cmd = [path, "hydra.run.dir=" + str(tmpdir)]
     result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == {
         "db": {

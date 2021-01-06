@@ -33,11 +33,3 @@ This tutorial covers both. \***Read it in order**\*.
 Hydra supports OmegaConf's Structured Configs via the `ConfigStore` API.
 This tutorial does not assume any knowledge of them.
 It is recommended that you visit the <a class="external" href="https://omegaconf.readthedocs.io/en/latest/structured_config.html" target="_blank">OmegaConf Structured Configs page</a> to learn more later.
-
-
-<div class="alert alert--info" role="alert">
-1. The ConfigStore API is new and subject to change.<br/>
-2. OmegaConf's Structured Configs are new.<br/>  
-Please report any issues.<br/>
-</div>
-<br/>
