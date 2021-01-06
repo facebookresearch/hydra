@@ -40,7 +40,6 @@ sweep_dir = "tmp_pytest_dir"  # nosec
 cluster_name = "IntegrationTest-" + "".join(
     [random.choice(string.ascii_letters + string.digits) for n in range(5)]
 )
-
 win_msg = "Ray doesn't support Windows."
 cur_py_version = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
@@ -55,7 +54,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-099b85625184ce698")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0e597fd7c6b402fce")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -164,27 +163,17 @@ def upload_and_install_wheels(
 def validate_lib_version(yaml: str) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
-    local_versions = set()
     for lib in libs:
-        v = pkg_resources.get_distribution(lib).version
-        local_versions.add(f"{lib}=={v}")
-
-    log.info(f"Locally running {local_versions}")
-    out, _ = _run_command(
-        [
-            "ray",
-            "exec",
-            yaml,
-            "pip freeze",
-        ]
-    )
-    remote_versions = out.split()
-    log.info(f"Remotely running {remote_versions}")
-    for local in local_versions:
-        if local not in remote_versions:
-            raise ValueError(
-                f"lib version not matching, local_version: {local} \nremote_versions: {remote_versions}"
-            )
+        local_version = f"{pkg_resources.get_distribution(lib).version}"
+        out, _ = _run_command(
+            [
+                "ray",
+                "exec",
+                yaml,
+                f"pip freeze | grep {lib}",
+            ]
+        )
+        assert local_version in out, f"{lib} version mismatch"
 
     # validate python version
     info = sys.version_info

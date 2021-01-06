@@ -22,11 +22,11 @@ with open("README.md", "r") as fh:
             "Development Status :: 4 - Beta",
         ],
         install_requires=[
-            "boto3==1.15.6",
+            "boto3==1.16.48",
             "hydra-core>=1.0.0",
-            "ray>=1.0.0",
-            "cloudpickle>=1.6.0",
-            "pickle5",
+            "ray==1.1.0",
+            "cloudpickle==1.6.0",
+            "pickle5==0.0.11",
         ],
         include_package_data=True,
     )
