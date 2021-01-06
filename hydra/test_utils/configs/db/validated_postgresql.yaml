@@ -1,0 +1,7 @@
+defaults:
+  - base_postgresql
+
+driver: postgresql
+user: postgre_user
+password: drowssap
+timeout: 10

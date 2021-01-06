@@ -8,3 +8,6 @@ tree:
         value: 300
       left:
         value: 400
+
+defaults:
+  - config_schema

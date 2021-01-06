@@ -1,0 +1,6 @@
+defaults:
+  - base_mysql
+
+driver: mysql
+user: omry
+password: secret
