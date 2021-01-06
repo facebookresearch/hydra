@@ -15,17 +15,17 @@ To do this in Hydra, we first add a `schema` and a `ui` config group:
 
 ``` text title="Directory layout"
 ├── conf
-│   ├── config.yaml
-│   ├── db
-│   │   ├── mysql.yaml
-│   │   └── postgresql.yaml
-│   ├── schema
-│   │   ├── school.yaml
-│   │   ├── support.yaml
-│   │   └── warehouse.yaml
-│   └── ui
-│       ├── full.yaml
-│       └── view.yaml
+│   ├── config.yaml
+│   ├── db
+│   │   ├── mysql.yaml
+│   │   └── postgresql.yaml
+│   ├── schema
+│   │   ├── school.yaml
+│   │   ├── support.yaml
+│   │   └── warehouse.yaml
+│   └── ui
+│       ├── full.yaml
+│       └── view.yaml
 └── my_app.py
 ```
 

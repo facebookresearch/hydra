@@ -8,10 +8,12 @@ title: Selecting defaults for config groups
 After office politics, you decide that you want to use MySQL by default.
 You no longer want to type `+db=mysql` every time you run your application.
 
-You can add a `defaults` list into your config file.
+You can add a **Default List** to your config file.
 
-This tutorial page briefly describes the Defaults List.  
-Refer to [The Defaults List page](../../../advanced/defaults_list) for more information.
+:::info
+This tutorial page briefly describes the Defaults List. Refer to [The Defaults List](../../../advanced/defaults_list) 
+page for more information.
+:::
 
 ## Config group defaults
 

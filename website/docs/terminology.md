@@ -3,7 +3,11 @@ id: terminology
 title: Terminology
 ---
 ## Overview
-This page describes some of the common concepts in Hydra. 
+:::note
+TODO: Update this page prior tp the 1.1 release.
+:::
+
+This page describes some common concepts in Hydra. 
 Most of the concepts are described in much more details throughout the documentation.
 
 ## Input Configs
