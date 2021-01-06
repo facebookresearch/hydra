@@ -16,7 +16,7 @@ class Config:
     group: Dict[str, str] = MISSING
 
 
-ConfigStore.instance().store(name="config", node=Config)
+ConfigStore.instance().store(name="config_schema", node=Config)
 
 
 @hydra.main(config_name="config")

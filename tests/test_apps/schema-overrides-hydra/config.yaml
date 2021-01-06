@@ -6,4 +6,5 @@ hydra:
     name: test
 
 defaults:
+  - config_schema
   - group: a

@@ -142,6 +142,7 @@ module.exports = {
                 'upgrades/1.0_to_1.1/defaults_list_override',
                 'upgrades/1.0_to_1.1/defaults_list_interpolation',
                 'upgrades/1.0_to_1.1/changes_to_package_header',
+                'upgrades/1.0_to_1.1/automatic_schema_matching',
             ],
           },
           {

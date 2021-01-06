@@ -162,31 +162,3 @@ def test_5_structured_config_schema(tmpdir: Path, path: str) -> None:
             "user": "omry",
         }
     }
-
-
-def test_6_one_schema_many_configs(tmpdir: Path) -> None:
-    cmd = [
-        "examples/tutorials/structured_configs/6_static_schema_many_configs/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-        "db=prod",
-    ]
-    result, _err = get_run_output(cmd)
-    assert OmegaConf.create(result) == {
-        "db": {
-            "driver": "mysql",
-            "host": "mysql001.prod",
-            "user": "root",
-            "password": "1234",
-        }
-    }
-
-
-def test_7_multiple_schemas_multiple_configs(tmpdir: Path) -> None:
-    cmd = [
-        "examples/tutorials/structured_configs/7_dynamic_schema_many_configs/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-    ]
-    result, _err = get_run_output(cmd)
-    assert OmegaConf.create(result) == {
-        "db": {"driver": "mysql", "host": "mysql001.staging", "encoding": "utf-8"}
-    }

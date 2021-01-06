@@ -6,6 +6,7 @@ import copy
 import os
 import re
 import sys
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass
 from textwrap import dedent
@@ -342,7 +343,19 @@ class ConfigLoaderImpl(ConfigLoader):
 
             if schema is not None:
                 try:
-                    # TODO: deprecate schema matching in favor of extension via Defaults List
+                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching"
+                    warnings.warn(
+                        dedent(
+                            f"""\
+
+                            '{config_path}' is validated against ConfigStore schema with the same name.
+                            This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
+                            See {url} for migration instructions."""
+                        ),
+                        category=UserWarning,
+                        stacklevel=11,
+                    )
+
                     # if primary config has a hydra node, remove it during validation and add it back.
                     # This allows overriding Hydra's configuration without declaring it's node
                     # in the schema of every primary config

@@ -4,6 +4,7 @@ import re
 from copy import deepcopy
 from dataclasses import dataclass
 from itertools import filterfalse
+from textwrap import dedent
 from typing import Any, List
 
 import pytest
@@ -357,10 +358,10 @@ class TestConfigLoader:
     ) -> None:
 
         ConfigStore.instance().store(
-            name="config", node=TopLevelConfig, provider="this_test"
+            name="config_with_schema", node=TopLevelConfig, provider="this_test"
         )
         ConfigStore.instance().store(
-            group="db", name="mysql", node=MySQLConfig, provider="this_test"
+            group="db", name="base_mysql", node=MySQLConfig, provider="this_test"
         )
 
         config_loader = ConfigLoaderImpl(
@@ -368,31 +369,10 @@ class TestConfigLoader:
         )
 
         cfg = config_loader.load_configuration(
-            config_name="config", overrides=["+db=mysql"], run_mode=RunMode.RUN
+            config_name="config",
+            overrides=["+db=validated_mysql"],
+            run_mode=RunMode.RUN,
         )
-
-        expected = deepcopy(hydra_load_list)
-        expected.append(
-            LoadTrace(
-                config_path="config",
-                package="",
-                parent="<root>",
-                is_self=False,
-                search_path=path,
-                provider="main",
-            )
-        )
-        expected.append(
-            LoadTrace(
-                config_path="db/mysql",
-                package="db",
-                parent="<root>",
-                is_self=False,
-                search_path=path,
-                provider="main",
-            )
-        )
-        assert_same_composition_trace(cfg.hydra.composition_trace, expected)
 
         with open_dict(cfg):
             del cfg["hydra"]
@@ -428,12 +408,20 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        cfg = config_loader.load_configuration(
-            config_name="config",
-            overrides=["+db=mysql"],
-            strict=False,
-            run_mode=RunMode.RUN,
+
+        msg = dedent(
+            """\
+          'config' is validated against ConfigStore schema with the same name.
+          This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
+          See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
         )
+        with pytest.warns(UserWarning, match=re.escape(msg)):
+            cfg = config_loader.load_configuration(
+                config_name="config",
+                overrides=["+db=mysql"],
+                strict=False,
+                run_mode=RunMode.RUN,
+            )
 
         expected = deepcopy(hydra_load_list)
         expected.extend(

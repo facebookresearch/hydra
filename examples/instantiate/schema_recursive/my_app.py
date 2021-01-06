@@ -33,7 +33,7 @@ class Config:
 
 
 cs = ConfigStore.instance()
-cs.store(name="config", node=Config)
+cs.store(name="config_schema", node=Config)
 
 
 # pretty print utility
