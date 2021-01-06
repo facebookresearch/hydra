@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from omegaconf import MISSING, OmegaConf
+from omegaconf import OmegaConf
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -25,8 +25,8 @@ class PostGreSQLConfig:
 
 @dataclass
 class Config:
-    # Keep db omegaconf.MISSING. We will populate it using composition.
-    db: Any = MISSING
+    # We will populate db using composition.
+    db: Any
 
 
 cs = ConfigStore.instance()

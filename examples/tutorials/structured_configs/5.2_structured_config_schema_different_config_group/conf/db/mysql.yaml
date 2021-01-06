@@ -1,0 +1,5 @@
+defaults:
+  - /database_lib/db/mysql@_here_
+
+user: omry
+password: secret

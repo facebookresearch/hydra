@@ -31,7 +31,7 @@ class PostGreSQLConfig(DBConfig):
 class Config:
     # We can now annotate db as DBConfig which
     # improves both static and dynamic type safety.
-    db: DBConfig = MISSING
+    db: DBConfig
 
 
 cs = ConfigStore.instance()
