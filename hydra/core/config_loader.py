@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import Any, List, Optional
 
 from omegaconf import DictConfig
@@ -9,16 +8,6 @@ from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigSource
 from hydra.types import RunMode
-
-
-@dataclass
-class LoadTrace:
-    config_path: Optional[str] = None
-    package: Optional[str] = None
-    parent: Optional[str] = None
-    is_self: bool = False
-    search_path: Optional[str] = None
-    provider: Optional[str] = None
 
 
 class ConfigLoader(ABC):

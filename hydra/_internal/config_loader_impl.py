@@ -10,7 +10,7 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 from omegaconf.errors import (
@@ -26,7 +26,7 @@ from hydra._internal.config_repository import (
     IConfigRepository,
 )
 from hydra._internal.defaults_list import DefaultsList, create_defaults_list
-from hydra.core.config_loader import ConfigLoader, LoadTrace
+from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.default_element import ResultDefault
 from hydra.core.object_type import ObjectType
@@ -189,7 +189,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
         config_overrides = defaults_list.config_overrides
 
-        cfg, composition_trace = self._compose_config_from_defaults_list(
+        cfg = self._compose_config_from_defaults_list(
             defaults=defaults_list.defaults, repo=caching_repo
         )
 
@@ -216,7 +216,6 @@ class ConfigLoaderImpl(ConfigLoader):
             cfg.hydra.runtime.version = __version__
             cfg.hydra.runtime.cwd = os.getcwd()
 
-            cfg.hydra.composition_trace = composition_trace
             if "name" not in cfg.hydra.job:
                 cfg.hydra.job.name = JobRuntime().get("name")
             cfg.hydra.job.override_dirname = get_overrides_dirname(
@@ -319,7 +318,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
     def _load_single_config(
         self, default: ResultDefault, repo: IConfigRepository
-    ) -> Tuple[ConfigResult, LoadTrace]:
+    ) -> ConfigResult:
         config_path = default.config_path
 
         assert config_path is not None
@@ -385,18 +384,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
                 assert isinstance(merged, DictConfig)
 
-        trace = LoadTrace(
-            config_path=default.config_path,
-            package=default.package,
-            parent=default.parent,
-            is_self=default.is_self,
-            search_path=ret.path,
-            provider=ret.provider,
-        )
-
-        ret = self._embed_result_config(ret, default.package)
-
-        return ret, trace
+        return self._embed_result_config(ret, default.package)
 
     @staticmethod
     def _embed_result_config(
@@ -428,11 +416,10 @@ class ConfigLoaderImpl(ConfigLoader):
         self,
         defaults: List[ResultDefault],
         repo: IConfigRepository,
-    ) -> Tuple[DictConfig, List[LoadTrace]]:
-        composition_trace = []
+    ) -> DictConfig:
         cfg = OmegaConf.create()
         for default in defaults:
-            loaded, trace = self._load_single_config(default=default, repo=repo)
+            loaded = self._load_single_config(default=default, repo=repo)
             try:
                 merged = OmegaConf.merge(cfg, loaded.config)
             except ValidationError as e:
@@ -443,12 +430,11 @@ class ConfigLoaderImpl(ConfigLoader):
             assert isinstance(merged, DictConfig)
             cfg = merged
             assert cfg is not None
-            composition_trace.append(trace)
 
         # This is primarily cosmetic
         cfg._metadata.ref_type = cfg._metadata.object_type
 
-        return cfg, composition_trace
+        return cfg
 
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
