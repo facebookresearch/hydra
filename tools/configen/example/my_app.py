@@ -10,7 +10,7 @@ from omegaconf import DictConfig
 from configen.samples.my_module import Admin, User
 
 ConfigStore.instance().store(
-    name="config",
+    name="config_schema",
     node={
         "user": UserConf,
         "admin": AdminConf,
