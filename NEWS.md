@@ -1,3 +1,28 @@
+1.0.5 (2021-01-07)
+==================
+
+### Features
+
+- Support Python 3.9 . ([#1062](https://github.com/facebookresearch/hydra/issues/1062))
+
+### API Change (Renames, deprecations and removals)
+
+- Deprecate support for renaming packages via the command line. ([#1140](https://github.com/facebookresearch/hydra/issues/1140))
+
+### Bug Fixes
+
+- Fixed hydra.job.id and hydra.job.num not getting passed to jobs in multirun ([#1270](https://github.com/facebookresearch/hydra/issues/1270))
+
+### Plugins
+
+- Support `additional_parameters` as an optional param in the Submitit launcher plugin.
+- Add [Optuna](https://optuna.org/) Sweeper plugin
+
+### Maintenance Changes
+
+- Limit OmegaConf depedency to 2.0 versions ([#1253](https://github.com/facebookresearch/hydra/issues/1253))
+
+
 1.0.4 (2020-11-17)
 ==================
 
