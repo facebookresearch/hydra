@@ -2,3 +2,8 @@ defaults:
   - override hydra/launcher: rq
 
 task: 1
+
+hydra:
+  launcher:
+    enqueue:
+      job_timeout: '1d'
