@@ -1,3 +1,0 @@
-defaults:
-  - override hydra/hydra_logging: hydra_debug
-  - override hydra/job_logging: disabled
