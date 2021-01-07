@@ -658,7 +658,7 @@ def test_primitive(value: str, expected: Any) -> None:
         pytest.param("abc@:pkg2=xyz", True, id="rename_from_current"),
     ],
 )
-def test_key_rename(value: str, expected: bool) -> None:
+def test_key_rename(value: str, expected: bool, recwarn: Any) -> None:
     ret = parse_rule(value, "override")
     assert ret.is_package_rename() == expected
 
@@ -917,7 +917,7 @@ def test_parse_overrides() -> None:
         pytest.param("~key@:pkg2=value", "~key@:pkg2", id="~key@:pkg2"),
     ],
 )
-def test_get_key_element(override: str, expected: str) -> None:
+def test_get_key_element(override: str, expected: str, recwarn: Any) -> None:
     ret = parse_rule(override, "override")
     assert ret.get_key_element() == expected
 

@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import decimal
 import fnmatch
+import warnings
 from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
+from textwrap import dedent
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
@@ -234,6 +236,19 @@ class Override:
 
     # Configs repo
     config_loader: Optional[ConfigLoader] = None
+
+    def __post_init__(self) -> None:
+        if self.pkg2 is not None:
+            # DEPRECATED: remove in 1.1
+
+            msg = dedent(
+                """\n
+                    Support for renaming packages via the command line is deprecated since Hydra 1.0.5.
+                    The support will be removed in Hydra 1.1.
+                    For more details, see https://github.com/facebookresearch/hydra/issues/1140.
+                    """
+            )
+            warnings.warn(message=msg, category=UserWarning)
 
     def is_delete(self) -> bool:
         """
