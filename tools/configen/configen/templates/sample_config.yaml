@@ -1,3 +1,6 @@
+defaults:
+  - configen_schema
+
 configen:
   # output directory
   output_dir: ${hydra:runtime.cwd}/gen

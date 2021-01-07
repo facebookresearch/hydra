@@ -41,4 +41,4 @@ class Config:
 
 
 config_store = ConfigStore.instance()
-config_store.store(name="configen", node=Config)
+config_store.store(name="configen_schema", node=Config)
