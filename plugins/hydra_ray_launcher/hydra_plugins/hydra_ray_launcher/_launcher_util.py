@@ -66,7 +66,7 @@ def launch_job_on_ray(
 
 def _run_command(args: Any) -> Tuple[str, str]:
     with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
-        log.info(f"Running command: {args}")
+        log.info(f"Running command: {' '.join(args)}")
         out, err = proc.communicate()
         out_str = out.decode().strip() if out is not None else ""
         err_str = err.decode().strip() if err is not None else ""

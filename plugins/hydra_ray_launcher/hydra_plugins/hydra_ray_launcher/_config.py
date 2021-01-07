@@ -8,7 +8,6 @@ import hydra
 import pkg_resources
 import ray
 from hydra.core.config_store import ConfigStore
-from omegaconf import MISSING
 from omegaconf import __version__ as omegaconf_version
 
 
@@ -174,16 +173,29 @@ class RayClusterConf:
 
     initialization_commands: List[str] = field(default_factory=list)
 
-    setup_commands: List[str] = MISSING
+    # populated automatically
+    setup_commands: List[str] = field(default_factory=list)
 
     head_setup_commands: List[str] = field(default_factory=list)
 
     worker_setup_commands: List[str] = field(default_factory=list)
 
-    head_start_ray_commands: List[str] = MISSING
+    head_start_ray_commands: List[str] = field(
+        default_factory=lambda: [
+            "ray stop",
+            "ulimit -n 65536;ray start --head --redis-port=6379 --object-manager-port=8076\
+--autoscaling-config=~/ray_bootstrap_config.yaml",
+        ]
+    )
 
     # Custom commands that will be run on worker nodes after common setup.
-    worker_start_ray_commands: List[str] = field(default_factory=list)
+    # Custom commands that will be run on worker nodes after common setup.
+    worker_start_ray_commands: List[str] = field(
+        default_factory=lambda: [
+            "ray stop",
+            "ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076",
+        ]
+    )
 
 
 @dataclass
