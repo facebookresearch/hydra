@@ -5,12 +5,12 @@ from setuptools import find_packages, setup
 
 setup(
     name="hydra-configen",
-    version="0.9.0dev6",
+    version="0.9.0dev7",
     packages=find_packages(include=["configen"]),
     entry_points={"console_scripts": ["configen = configen.configen:main"]},
     author="Omry Yadan, Rosario Scalise",
     author_email="omry@fb.com, rosario@cs.uw.edu",
-    url="http://hydra.cc",
+    url="https://github.com/facebookresearch/hydra/tree/master/tools/configen",
     include_package_data=True,
-    install_requires=["hydra-core>=1.0.0", "jinja2"],
+    install_requires=["hydra-core>=1.1.0dev1", "jinja2"],
 )
