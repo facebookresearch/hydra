@@ -1,0 +1,1 @@
+Adds missing `setup` field to SlurmQueueConf and converts config objects to primitive containers
