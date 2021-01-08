@@ -1,13 +1,14 @@
 import inspect
 import logging
-
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import pkgutil
 import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from textwrap import dedent
 from typing import Any, Dict, List, Optional, Set, Type
 
 import hydra
@@ -235,7 +236,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     )
 
 
-@hydra.main(config_name="configen")
+@hydra.main(config_name="configen_schema")
 def main(cfg: Config):
     if cfg.init_config_dir is not None:
         init_config(cfg.init_config_dir)
@@ -243,9 +244,18 @@ def main(cfg: Config):
 
     if OmegaConf.is_missing(cfg.configen, "modules"):  # type: ignore
         log.error(
-            "Use --config-dir DIR."
-            "\nIf you have no config dir yet use the following command to create an initial config in the `conf` dir:"
-            "\n\tconfigen init_config_dir=conf"
+            dedent(
+                """\
+
+        Use --config-dir DIR --config-name NAME
+        e.g:
+        \tconfigen --config-dir conf --config-name configen
+
+        If you have no config dir yet use init_config_dir=DIR to create an initial config dir.
+        e.g:
+        \tconfigen init_config_dir=conf
+        """
+            )
         )
         sys.exit(1)
 
