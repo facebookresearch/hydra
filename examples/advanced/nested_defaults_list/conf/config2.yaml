@@ -1,5 +1,0 @@
-defaults:
-  - server/apache
-  - override server/db: sqlite
-
-debug: false

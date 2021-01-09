@@ -1,0 +1,4 @@
+defaults:
+  - group2:
+      - file1
+      - file2

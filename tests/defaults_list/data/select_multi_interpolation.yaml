@@ -1,0 +1,5 @@
+defaults:
+  - group2: file2
+  - group1:
+      - file1
+      - ${group2}

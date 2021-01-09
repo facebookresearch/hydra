@@ -166,7 +166,7 @@ class InputDefault:
         if package is None:
             package = self._relative_group_path().replace("/", ".")
 
-        if name is not None:
+        if isinstance(name, str):
             # name computation should be deferred to after the final config group choice is done
             package = package.replace("_name_", name)
 
@@ -303,6 +303,8 @@ class VirtualRoot(InputDefault):
 @dataclass(repr=False)
 class ConfigDefault(InputDefault):
     path: Optional[str] = None
+    optional: bool = False
+    deleted: Optional[bool] = None
 
     def __post_init__(self) -> None:
         if self.is_self() and self.package is not None:
@@ -314,7 +316,7 @@ class ConfigDefault(InputDefault):
         return self.path == "_self_"
 
     def is_optional(self) -> bool:
-        return False
+        return self.optional
 
     def get_group_path(self) -> str:
         assert self.parent_base_dir is not None
@@ -391,10 +393,10 @@ class ConfigDefault(InputDefault):
             return path[0:idx]
 
     def _get_attributes(self) -> List[str]:
-        return ["path", "package"]
+        return ["path", "package", "deleted"]
 
     def _get_flags(self) -> List[str]:
-        return []
+        return ["optional"]
 
     def is_interpolation(self) -> bool:
         path = self.get_config_path()
@@ -420,7 +422,7 @@ class GroupDefault(InputDefault):
     # config group name if present
     group: Optional[str] = None
     # config file name
-    name: Optional[str] = None
+    value: Optional[Union[str, List[str]]] = None
     optional: bool = False
 
     override: bool = False
@@ -434,7 +436,7 @@ class GroupDefault(InputDefault):
             self.package = ""
 
     def is_self(self) -> bool:
-        return self.name == "_self_"
+        return self.value == "_self_"
 
     def is_optional(self) -> bool:
         return self.optional
@@ -464,14 +466,26 @@ class GroupDefault(InputDefault):
 
         return f"{group_path}/{self.get_name()}"
 
+    def is_name(self) -> bool:
+        return self.value is None or isinstance(self.value, str)
+
+    def is_options(self) -> bool:
+        return isinstance(self.value, list)
+
     def get_name(self) -> Optional[str]:
-        return self.name
+        assert self.value is None or isinstance(self.value, str)
+        return self.value
+
+    def get_options(self) -> List[str]:
+        assert isinstance(self.value, list)
+        return self.value
 
     def get_final_package(self, default_to_package_header: bool = True) -> str:
+        name = self.get_name() if self.is_name() else None
         return self._get_final_package(
             self._get_parent_package(),
             self.get_package(default_to_package_header=default_to_package_header),
-            self.get_name(),
+            name,
         )
 
     def _relative_group_path(self) -> str:
@@ -482,7 +496,7 @@ class GroupDefault(InputDefault):
             return self.group
 
     def _get_attributes(self) -> List[str]:
-        return ["group", "name", "package", "deleted"]
+        return ["group", "value", "package", "deleted"]
 
     def _get_flags(self) -> List[str]:
         return ["optional", "override"]
@@ -491,6 +505,9 @@ class GroupDefault(InputDefault):
         """
         True if config_name is an interpolation
         """
+        if not self.is_name():
+            return False
+
         name = self.get_name()
         if isinstance(name, str):
             node = AnyNode(name)
@@ -513,7 +530,7 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
                     message=msg,
                 )
 
-        self.name = self._resolve_interpolation_impl(known_choices, name)
+            self.value = self._resolve_interpolation_impl(known_choices, name)
 
     def is_missing(self) -> bool:
         return self.get_name() == "???"

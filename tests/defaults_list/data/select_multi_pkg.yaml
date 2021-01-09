@@ -1,0 +1,4 @@
+defaults:
+  - group1@foo:
+      - file1
+      - file2

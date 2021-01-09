@@ -1,0 +1,4 @@
+defaults:
+  - group2@bar:
+      - file1
+      - file2

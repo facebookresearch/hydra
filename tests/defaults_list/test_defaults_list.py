@@ -30,33 +30,33 @@ Plugins.instance()
         param("empty", [], id="empty"),
         param(
             "group_default",
-            [GroupDefault(group="group1", name="file1")],
+            [GroupDefault(group="group1", value="file1")],
             id="one_item",
         ),
         param(
             "group_default",
-            [GroupDefault(group="group1", name="file1")],
+            [GroupDefault(group="group1", value="file1")],
             id="one_item",
         ),
         param(
             "self_leading",
             [
                 ConfigDefault(path="_self_"),
-                GroupDefault(group="group1", name="file1"),
+                GroupDefault(group="group1", value="file1"),
             ],
             id="self_leading",
         ),
         param(
             "self_trailing",
             [
-                GroupDefault(group="group1", name="file1"),
+                GroupDefault(group="group1", value="file1"),
                 ConfigDefault(path="_self_"),
             ],
             id="self_trailing",
         ),
         param(
             "optional",
-            [GroupDefault(group="group1", name="file1", optional=True)],
+            [GroupDefault(group="group1", value="file1", optional=True)],
             id="optional",
         ),
         param(
@@ -80,7 +80,7 @@ def test_loaded_defaults_list(
     [
         param(
             "optional_deprecated",
-            [GroupDefault(group="group1", name="file1", optional=True)],
+            [GroupDefault(group="group1", value="file1", optional=True)],
             id="optional",
         ),
     ],
@@ -150,13 +150,13 @@ def _test_defaults_list_impl(
             id="config_default:with_parent_basedir",
         ),
         param(
-            GroupDefault(group="foo", name="bar", parent_base_dir=""),
+            GroupDefault(group="foo", value="bar", parent_base_dir=""),
             "foo",
             "foo/bar",
             id="group_default:empty_basedir",
         ),
         param(
-            GroupDefault(group="foo", name="bar", parent_base_dir="zoo"),
+            GroupDefault(group="foo", value="bar", parent_base_dir="zoo"),
             "zoo/foo",
             "zoo/foo/bar",
             id="group_default:with_parent_basedir",
@@ -169,7 +169,7 @@ def _test_defaults_list_impl(
             id="config_default:absolute",
         ),
         param(
-            GroupDefault(group="/foo", name="zoo", parent_base_dir="irrelevant"),
+            GroupDefault(group="/foo", value="zoo", parent_base_dir="irrelevant"),
             "foo",
             "foo/zoo",
             id="group_default:absolute",
@@ -207,17 +207,17 @@ def test_get_paths(
             id="config_default",
         ),
         param(
-            GroupDefault(group="a", name="a1", parent_base_dir=""),
+            GroupDefault(group="a", value="a1", parent_base_dir=""),
             "a",
             id="group_default",
         ),
         param(
-            GroupDefault(group="a/b", name="a1", parent_base_dir=""),
+            GroupDefault(group="a/b", value="a1", parent_base_dir=""),
             "a.b",
             id="group_default",
         ),
         param(
-            GroupDefault(group="a/b", name="a1", parent_base_dir="x"),
+            GroupDefault(group="a/b", value="a1", parent_base_dir="x"),
             "x.a.b",
             id="group_default",
         ),
@@ -228,7 +228,7 @@ def test_get_paths(
             id="config_default:absolute",
         ),
         param(
-            GroupDefault(group="/foo", name="bar", parent_base_dir="irrelevant"),
+            GroupDefault(group="/foo", value="bar", parent_base_dir="irrelevant"),
             "foo",
             id="group_default:absolute",
         ),
@@ -307,7 +307,7 @@ def test_get_default_package(default: InputDefault, expected: Any) -> None:
         ),
         # _group_
         param(
-            GroupDefault(group="foo", name="bar", package="_group_"),
+            GroupDefault(group="foo", value="bar", package="_group_"),
             "",
             "",
             "foo",
@@ -321,7 +321,7 @@ def test_get_default_package(default: InputDefault, expected: Any) -> None:
             id="config_default:parent_package=, package=_group_",
         ),
         param(
-            GroupDefault(group="foo", name="bar", package="_group_.zoo"),
+            GroupDefault(group="foo", value="bar", package="_group_.zoo"),
             "",
             "",
             "foo.zoo",
@@ -1708,31 +1708,31 @@ def test_with_missing_config(
     "default,package_header,expected",
     [
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "_group_",
             "group1",
             id="gd:_group_",
         ),
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "group1",
             "group1",
             id="gd:group1",
         ),
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "abc",
             "abc",
             id="gd:abc",
         ),
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "_global_",
             "",
             id="gd:_global_",
         ),
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "_group_._name_",
             "group1.file",
             id="gd:_group_._name_",
@@ -1751,7 +1751,7 @@ def test_set_package_header_no_parent_pkg(
     "default,package_header,expected",
     [
         param(
-            GroupDefault(group="group1", name="file"),
+            GroupDefault(group="group1", value="file"),
             "_group_",
             "parent_pkg.group1",
             id="gd:_group_",
@@ -1764,3 +1764,42 @@ def test_set_package_header_with_parent_pkg(
     default.update_parent(parent_base_dir="", parent_package="parent_pkg")
     default.set_package_header(package_header)
     assert default.get_final_package() == expected
+
+
+@mark.parametrize(
+    "config_name,overrides,skip_missing,expected",
+    [
+        param(
+            "select_multi_pkg",
+            [],
+            True,
+            [
+                ResultDefault(
+                    config_path="group1/file1", package="foo", parent="select_multi_pkg"
+                ),
+                ResultDefault(
+                    config_path="group1/file2", package="foo", parent="select_multi_pkg"
+                ),
+                ResultDefault(
+                    config_path="select_multi_pkg",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            id="select_multi_pkg",
+        )
+    ],
+)
+def test_select_multi_pkg(
+    config_name: str,
+    overrides: List[str],
+    skip_missing: bool,
+    expected: List[ResultDefault],
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        skip_missing=skip_missing,
+    )
