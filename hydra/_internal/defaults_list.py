@@ -39,7 +39,7 @@ class OverrideMetadata:
 
 @dataclass
 class Overrides:
-    override_choices: Dict[str, Optional[str]]
+    override_choices: Dict[str, Optional[Union[str, List[str]]]]
     override_metadata: Dict[str, OverrideMetadata]
 
     append_group_defaults: List[GroupDefault]
@@ -79,16 +79,16 @@ class Overrides:
 
                     self.deletions[key] = Deletion(name=value)
 
-                elif not isinstance(value, str):
+                elif not isinstance(value, (str, list)):
                     raise ValueError(
-                        f"Config group override must be a string. Got {type(value).__name__}"
+                        f"Config group override must be a string or a list. Got {type(value).__name__}"
                     )
                 elif override.is_add():
                     self.append_group_defaults.append(
                         GroupDefault(
                             group=override.key_or_group,
                             package=override.package,
-                            name=value,
+                            value=value,
                         )
                     )
                 else:
@@ -102,7 +102,7 @@ class Overrides:
         assert default.override
         key = default.get_override_key()
         if key not in self.override_choices:
-            self.override_choices[key] = default.get_name()
+            self.override_choices[key] = default.value
             self.override_metadata[key] = OverrideMetadata(
                 external_override=False,
                 containing_config_path=parent_config_path,
@@ -118,7 +118,8 @@ class Overrides:
     def override_default_option(self, default: GroupDefault) -> None:
         key = default.get_override_key()
         if key in self.override_choices:
-            default.name = self.override_choices[key]
+            if isinstance(default, GroupDefault):
+                default.value = self.override_choices[key]
             default.config_name_overridden = True
             self.override_metadata[key].used = True
 
@@ -326,8 +327,7 @@ def _create_interpolation_map(
         if isinstance(d, ConfigDefault):
             known_choices.defaults.append(d.get_config_path())
         elif isinstance(d, GroupDefault):
-            name = d.get_name()
-            known_choices.defaults.append({d.get_override_key(): name})
+            known_choices.defaults.append({d.get_override_key(): d.value})
     return known_choices
 
 
@@ -460,7 +460,7 @@ def _create_defaults_tree_impl(
 
         if loaded is None:
             if parent.is_optional():
-                assert isinstance(parent, GroupDefault)
+                assert isinstance(parent, (GroupDefault, ConfigDefault))
                 parent.deleted = True
                 return root
             config_not_found_error(repo=repo, tree=root)
@@ -483,6 +483,23 @@ def _create_defaults_tree_impl(
 
         _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
+        def add_child(
+            child_list: List[Union[InputDefault, DefaultsTreeNode]],
+            new_root_: DefaultsTreeNode,
+        ) -> None:
+            subtree_ = _create_defaults_tree_impl(
+                repo=repo,
+                root=new_root_,
+                is_root_config=False,
+                interpolated_subtree=interpolated_subtree,
+                skip_missing=skip_missing,
+                overrides=overrides,
+            )
+            if subtree_.children is None:
+                child_list.append(new_root_.node)
+            else:
+                child_list.append(subtree_)
+
         for d in reversed(defaults_list):
             if d.is_self():
                 d.update_parent(root.node.parent_base_dir, root.node.get_package())
@@ -490,25 +507,41 @@ def _create_defaults_tree_impl(
             else:
                 if d.is_override():
                     continue
-                new_root = DefaultsTreeNode(node=d, parent=root)
+
                 d.update_parent(parent.get_group_path(), parent.get_final_package())
+                if isinstance(d, GroupDefault) and d.is_options():
+                    if overrides.is_overridden(d):
+                        overrides.override_default_option(d)
 
-                if d.is_interpolation():
-                    children.append(d)
-                    continue
+                    # overriding may change from options to name
+                    if d.is_options():
+                        for item in reversed(d.get_options()):
+                            if "${" in item:
+                                raise ConfigCompositionException(
+                                    f"In '{path}': Defaults List interpolation is not supported in options list items"
+                                )
 
-                subtree = _create_defaults_tree_impl(
-                    repo=repo,
-                    root=new_root,
-                    is_root_config=False,
-                    interpolated_subtree=interpolated_subtree,
-                    skip_missing=skip_missing,
-                    overrides=overrides,
-                )
-                if subtree.children is None:
-                    children.append(d)
+                            assert d.group is not None
+                            node = ConfigDefault(
+                                path=d.group + "/" + item,
+                                package=d.package,
+                                optional=d.is_optional(),
+                            )
+                            node.update_parent(
+                                parent.get_group_path(), parent.get_final_package()
+                            )
+                            new_root = DefaultsTreeNode(node=node, parent=root)
+                            add_child(children, new_root)
+                    else:
+                        new_root = DefaultsTreeNode(node=d, parent=root)
+                        add_child(children, new_root)
+
                 else:
-                    children.append(subtree)
+                    if d.is_interpolation():
+                        children.append(d)
+                        continue
+                    new_root = DefaultsTreeNode(node=d, parent=root)
+                    add_child(children, new_root)
 
         # processed deferred interpolations
         known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
@@ -558,8 +591,7 @@ def _create_result_default(
         res.is_self = True
         pn = tree.parent_node()
         if pn is not None:
-            cp = pn.get_config_path()
-            res.parent = cp
+            res.parent = pn.get_config_path()
         else:
             res.parent = None
         res.package = tree.node.get_final_package()

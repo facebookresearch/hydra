@@ -95,22 +95,22 @@ class TestConfigRepository:
             ),
             pytest.param(
                 "config_with_defaults_list",
-                [GroupDefault(group="dataset", name="imagenet")],
+                [GroupDefault(group="dataset", value="imagenet")],
                 id="defaults_in_root",
             ),
             pytest.param(
                 "configs_with_defaults_list/global_package",
-                [GroupDefault(group="foo", name="bar")],
+                [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/global_package",
             ),
             pytest.param(
                 "configs_with_defaults_list/group_package",
-                [GroupDefault(group="foo", name="bar")],
+                [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/group_package",
             ),
             pytest.param(
                 "configs_with_defaults_list/no_package",
-                [GroupDefault(group="foo", name="bar")],
+                [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/no_package",
             ),
         ],

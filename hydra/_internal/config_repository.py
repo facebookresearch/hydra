@@ -193,26 +193,47 @@ class ConfigRepository(IConfigRepository):
 
                 node = item._get_node(key)
                 assert node is not None
-                config_name = node._value()
+                config_value = node._value()
 
                 if old_optional is not None:
                     # DEPRECATED: remove in 1.2
                     msg = dedent(
                         f"""
                         In {config_path}: 'optional: true' is deprecated.
-                        Use 'optional {key}: {config_name}' instead.
+                        Use 'optional {key}: {config_value}' instead.
                         Support for the old style will be removed in Hydra 1.2"""
                     )
 
                     warnings.warn(msg)
 
+                if config_value is not None and not isinstance(
+                    config_value, (str, list)
+                ):
+                    raise ValueError(
+                        f"Unsupported item value in defaults : {type(config_value).__name__}."
+                        " Supported: string or list"
+                    )
+
+                if isinstance(config_value, list):
+                    options = []
+                    for v in config_value:
+                        vv = v._value()
+                        if not isinstance(vv, str):
+                            raise ValueError(
+                                f"Unsupported item value in defaults : {type(vv).__name__},"
+                                " nested list items must be strings"
+                            )
+                        options.append(vv)
+                    config_value = options
+
                 default = GroupDefault(
                     group=keywords.group,
-                    name=config_name,
+                    value=config_value,
                     package=package,
                     optional=keywords.optional,
                     override=keywords.override,
                 )
+
             elif isinstance(item, str):
                 path, package, _package2 = self._split_group(item)
                 default = ConfigDefault(path=path, package=package)
