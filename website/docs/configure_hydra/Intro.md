@@ -92,7 +92,7 @@ Hydra supports several [OmegaConf resolvers](https://github.com/facebookresearch
 **hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
 
 **now**: Creates a string representing the current time using 
-[strftime](https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior). 
+[strftime](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior).
 e.g. for formatting the time you can use something like`${now:%H-%M-%S}`.
 
 **python_version**: Return a string representing the runtime python version by calling `sys.version_info`.

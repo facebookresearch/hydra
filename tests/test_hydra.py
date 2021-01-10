@@ -730,6 +730,24 @@ def test_local_run_workdir(
     )
 
 
+@pytest.mark.parametrize(
+    "task_config",
+    [
+        ({"hydra": {"run": {"dir": "${now:%Y%m%d_%H%M%S_%f}"}}}),
+    ],
+)
+def test_run_dir_microseconds(tmpdir: Path, task_config: DictConfig) -> None:
+    cfg = OmegaConf.create(task_config)
+    assert isinstance(cfg, DictConfig)
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[],
+        prints="str('%f' not in os.getcwd())",
+        expected_outputs="True",
+    )
+
+
 def test_hydra_env_set_with_config(tmpdir: Path) -> None:
     cfg = OmegaConf.create({"hydra": {"job": {"env_set": {"foo": "bar"}}}})
     integration_test(

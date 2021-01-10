@@ -7,9 +7,9 @@ import sys
 import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import datetime
 from os.path import basename, dirname, splitext
 from pathlib import Path
-from time import localtime, strftime
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
@@ -151,7 +151,7 @@ def setup_globals() -> None:
             pass
 
     # please add documentation when you add a new resolver
-    register("now", lambda pattern: strftime(pattern, localtime()))
+    register("now", lambda pattern: datetime.now().strftime(pattern))
     register(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
