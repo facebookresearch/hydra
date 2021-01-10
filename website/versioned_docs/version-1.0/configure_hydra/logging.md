@@ -16,7 +16,7 @@ to the default logging behavior:
 
 ```yaml title="config.yaml"
 defaults:
-  - hydra/job_logging: custom
+  - override hydra/job_logging: custom
 ```
 
 ```yaml title="hydra/job_logging/custom.yaml"
