@@ -1,1 +1,1 @@
-Bug fix to make %f strftime directive to work for ${now:} resolver
+Add support for %f directive (microseconds) to the ${now:} resolver
