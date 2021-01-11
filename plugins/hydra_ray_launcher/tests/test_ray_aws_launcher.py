@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Generator, List, Optional
+from typing import Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
@@ -54,7 +54,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0e597fd7c6b402fce")
+ami = os.environ.get("AWS_RAY_AMI", "ami-04dd9d05269d635cf")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -79,12 +79,36 @@ ray_nodes_conf = {
 
 ray_nodes_conf_override = str(ray_nodes_conf).replace("'", "").replace(" ", "")
 
+pip_lib_skip = [
+    "omegaconf",
+    "hydra_core",
+    "ray",
+    "cloudpickle",
+    "pickle5",
+    "hydra_ray_launcher",
+]
+
+common_overrides = [
+    f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
+    "hydra.launcher.stop_cluster=False",
+    f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
+    # Port 443 is blocked for testing instance, as a result, pip install would fail.
+    # To get around this, we pre-install all the dependencies on the test AMI.
+    "hydra.launcher.ray.cluster.setup_commands=[]",
+    "hydra.launcher.env_setup.commands=[]",
+    f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
+    f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
+]
+common_overrides.extend(
+    [f"~hydra.launcher.env_setup.pip_packages.{lib}" for lib in pip_lib_skip]
+)
+
 log = logging.getLogger(__name__)
 
 chdir_plugin_root()
 
 
-def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
+def build_ray_launcher_wheel(tmpdir: str) -> str:
     """
     This  only works on ray launcher plugin wheels for now, reasons being in our base AMI
     we do not necessarily have the dependency for other plugins.
@@ -96,25 +120,23 @@ def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
         len(plugins_path) == 1 and "hydra_ray_launcher" == plugins_path[0]
     ), "Ray test AMI doesn't have dependency installed for other plugins."
 
-    wheels = []
-    for p in plugins_path:
-        wheel = build_plugin_wheel(p, tmpdir)
-        wheels.append(wheel)
-    return wheels
+    return build_plugin_wheel(tmpdir)
 
 
-def build_plugin_wheel(plugin: str, tmp_wheel_dir: str) -> str:
+def build_plugin_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
+    plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
+    version = subprocess.getoutput("python setup.py --version")
+    plugin_wheel = f"{plugin}-{version}-py3-none-any.whl"
     subprocess.getoutput(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
+        f"python setup.py sdist bdist_wheel && cp dist/{plugin_wheel} {tmp_wheel_dir}"
     )
     log.info("Download all plugin dependency wheels.")
     subprocess.getoutput(f"pip download . -d {tmp_wheel_dir}")
-    wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
-    return wheel
+    return plugin_wheel
 
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
@@ -135,7 +157,7 @@ def upload_and_install_wheels(
     tmp_wheel_dir: str,
     yaml: str,
     core_wheel: str,
-    plugin_wheels: List[str],
+    plugin_wheel: str,
 ) -> None:
     ray_rsync_up(yaml, tmp_wheel_dir + "/", temp_remote_wheel_dir)
     log.info(f"Install hydra-core wheel {core_wheel}")
@@ -148,16 +170,15 @@ def upload_and_install_wheels(
         ]
     )
 
-    for p in plugin_wheels:
-        log.info(f"Install plugin wheel {p}")
-        _run_command(
-            [
-                "ray",
-                "exec",
-                yaml,
-                f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{p}",
-            ]
-        )
+    log.info(f"Install plugin wheel {plugin_wheel}")
+    _run_command(
+        [
+            "ray",
+            "exec",
+            yaml,
+            f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
+        ]
+    )
 
 
 def validate_lib_version(yaml: str) -> None:
@@ -207,7 +228,7 @@ def manage_cluster() -> Generator[None, None, None]:
 
     # build all the wheels
     tmpdir = tempfile.mkdtemp()
-    plugin_wheels = build_ray_launcher_wheel(tmpdir)
+    plugin_wheel = build_ray_launcher_wheel(tmpdir)
     core_wheel = build_core_wheel(tmpdir)
     connect_config = {
         "cluster_name": cluster_name,
@@ -233,10 +254,17 @@ def manage_cluster() -> Generator[None, None, None]:
         ray_up(temp_yaml)
         ray_new_dir(temp_yaml, temp_remote_dir, False)
         ray_new_dir(temp_yaml, temp_remote_wheel_dir, False)
-        upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheels)
+        upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheel)
         validate_lib_version(temp_yaml)
         yield
         ray_down(f.name)
+
+
+launcher_test_suites_overrides = [
+    f"hydra.launcher.sync_down.source_dir={sweep_dir}/",
+    f"hydra.launcher.sync_down.target_dir={sweep_dir}",
+]
+launcher_test_suites_overrides.extend(common_overrides)
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
@@ -247,25 +275,22 @@ def manage_cluster() -> Generator[None, None, None]:
     [
         (
             "ray_aws",
-            [
-                f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
-                "hydra.launcher.stop_cluster=False",
-                f"hydra.launcher.sync_down.source_dir={sweep_dir}/",
-                f"hydra.launcher.sync_down.target_dir={sweep_dir}",
-                f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
-                # Port 443 is blocked for testing instance, as a result, pip install would fail.
-                # To get around this, we pre-install all the dependencies on the test AMI.
-                "hydra.launcher.ray.cluster.setup_commands=[]",
-                "hydra.launcher.env_setup.commands=[]",
-                f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
-                f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
-            ],
+            launcher_test_suites_overrides,
             Path(sweep_dir),
         )
     ],
 )
 class TestRayAWSLauncher(LauncherTestSuite):
     pass
+
+
+integration_tests_override = [
+    "-m",
+    "hydra/launcher=ray_aws",
+    f"hydra.launcher.sync_down.source_dir={temp_remote_dir}/",
+    f"hydra.launcher.sync_down.target_dir={temp_remote_dir}",
+]
+integration_tests_override.extend(common_overrides)
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
@@ -277,21 +302,7 @@ class TestRayAWSLauncher(LauncherTestSuite):
         (
             Path(temp_remote_dir),
             {},
-            [
-                "-m",
-                "hydra/launcher=ray_aws",
-                f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
-                "hydra.launcher.stop_cluster=False",
-                f"hydra.launcher.sync_down.source_dir={temp_remote_dir}/",
-                f"hydra.launcher.sync_down.target_dir={temp_remote_dir}",
-                f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
-                # Port 443 is blocked for testing instance, as a result, pip install would fail.
-                # To get around this, we pre-install all the dependencies on the test AMI.
-                "hydra.launcher.ray.cluster.setup_commands=[]",
-                "hydra.launcher.env_setup.commands=[]",
-                f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
-                f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
-            ],
+            integration_tests_override,
         )
     ],
 )
