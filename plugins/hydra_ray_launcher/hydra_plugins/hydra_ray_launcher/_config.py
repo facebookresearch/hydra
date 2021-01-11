@@ -112,6 +112,12 @@ class EnvSetupConf:
     )
 
 
+class RayRunEnv(Enum):
+    auto = "auto"
+    host = "host"
+    docker = "docker"
+
+
 @dataclass
 class RayClusterConf:
     """
@@ -208,6 +214,8 @@ class RayClusterConf:
 @dataclass
 class RayAWSConf(RayConf):
     cluster: RayClusterConf = RayClusterConf()
+    run_env: RayRunEnv = RayRunEnv.auto
+    no_config_cache: bool = False
 
 
 @dataclass

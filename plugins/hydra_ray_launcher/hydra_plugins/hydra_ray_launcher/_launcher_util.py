@@ -81,10 +81,8 @@ def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
 
 
 @contextmanager
-def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
-    args = ["ray", "exec"]
-    if docker:
-        args.append("--run-env=docker")
+def ray_tmp_dir(yaml_path: str, run_env: str) -> Generator[Any, None, None]:
+    args = ["ray", "exec", f"--run-env={run_env}"]
 
     mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
     out, _ = _run_command(mktemp_args)
@@ -101,14 +99,11 @@ def ray_tmp_dir(yaml_path: str, docker: bool) -> Generator[Any, None, None]:
     _run_command(rmtemp_args)
 
 
-def ray_new_dir(yaml_path: str, new_dir: str, docker: bool) -> None:
+def ray_new_dir(yaml_path: str, new_dir: str, run_env: str) -> None:
     """
     The output of exec os.getcwd() via ray on remote cluster.
     """
-    args = ["ray", "exec"]
-    if docker:
-        args += "--run-env=docker"
-
+    args = ["ray", "exec", f"--run-env={run_env}"]
     mktemp_args = args + [yaml_path, f"mkdir -p {new_dir}"]
     _run_command(mktemp_args)
 
@@ -121,15 +116,16 @@ def ray_down(yaml_path: str) -> None:
     _run_command(["ray", "down", "-y", yaml_path])
 
 
-def ray_up(yaml_path: str) -> None:
-    _run_command(["ray", "up", "-y", yaml_path])
+def ray_up(yaml_path: str, no_config_cache: bool) -> None:
+    args = ["ray", "up", "-y", yaml_path]
+    if no_config_cache:
+        args.append("--no-config-cache")
+    _run_command(args)
 
 
-def ray_exec(yaml_path: str, docker: bool, file_path: str, pickle_path: str) -> None:
+def ray_exec(yaml_path: str, run_env: str, file_path: str, pickle_path: str) -> None:
     command = f"python {file_path} {pickle_path}"
-    args = ["ray", "exec"]
-    if docker:
-        args.append("--run-env=docker")
+    args = ["ray", "exec", f"--run-env={run_env}"]
     args += [yaml_path, command]
     _run_command(args)
 

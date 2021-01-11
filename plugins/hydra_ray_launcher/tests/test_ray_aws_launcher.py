@@ -236,7 +236,7 @@ def manage_cluster() -> Generator[None, None, None]:
         with open(f.name, "w") as file:
             OmegaConf.save(config=connect_config, f=file.name, resolve=True)
         temp_yaml = f.name
-        ray_up(temp_yaml)
+        ray_up(temp_yaml, no_config_cache=True)
         ray_new_dir(temp_yaml, temp_remote_dir, False)
         ray_new_dir(temp_yaml, temp_remote_wheel_dir, False)
         upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheel)
