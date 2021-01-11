@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Generator, List, Optional
+from typing import Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
@@ -108,7 +108,7 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
-def build_ray_launcher_wheel(tmpdir: str) -> List[str]:
+def build_ray_launcher_wheel(tmpdir: str) -> str:
     """
     This  only works on ray launcher plugin wheels for now, reasons being in our base AMI
     we do not necessarily have the dependency for other plugins.
