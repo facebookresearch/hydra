@@ -168,7 +168,10 @@ class InputDefault:
 
         if isinstance(name, str):
             # name computation should be deferred to after the final config group choice is done
-            package = package.replace("_name_", name)
+
+            if "_name_" in package:
+                # DEPRECATED: remove in 1.2 (Warning in TODO)
+                package = package.replace("_name_", name)
 
         if parent_package == "":
             ret = package
@@ -533,7 +536,10 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
             self.value = self._resolve_interpolation_impl(known_choices, name)
 
     def is_missing(self) -> bool:
-        return self.get_name() == "???"
+        if self.is_name():
+            return self.get_name() == "???"
+        else:
+            return False
 
     def get_relative_override_key(self) -> str:
         assert self.group is not None

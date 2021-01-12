@@ -788,9 +788,13 @@ def test_include_nested_group_global_foo(
 def test_include_nested_group_name_(
     config_name: str, overrides: List[str], expected: List[ResultDefault]
 ) -> None:
-    _test_defaults_list_impl(
-        config_name=config_name, overrides=overrides, expected=expected
-    )
+    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+    msg = f"In group1/group_item1_name_: Defaults List contains deprecated keyword _name_, see {url}\n"
+
+    with warns(UserWarning, match=re.escape(msg)):
+        _test_defaults_list_impl(
+            config_name=config_name, overrides=overrides, expected=expected
+        )
 
 
 @mark.parametrize(
