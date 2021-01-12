@@ -169,8 +169,7 @@ class OptunaSweeperImpl(Sweeper):
         sampler_class = get_class(samplers[self.optuna_config.sampler.name])
         sampler = sampler_class(seed=self.optuna_config.seed)
 
-        # TODO (toshihikoyanase): Remove type-ignore when optuna==2.4.0 is released.
-        study = optuna.create_study(  # type: ignore
+        study = optuna.create_study(
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
             sampler=sampler,
@@ -201,8 +200,7 @@ class OptunaSweeperImpl(Sweeper):
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
-                # TODO (toshihikoyanase): Remove type-ignore when optuna==2.4.0 is released.
-                study._tell(trial, optuna.trial.TrialState.COMPLETE, ret.return_value)  # type: ignore
+                study._tell(trial, optuna.trial.TrialState.COMPLETE, [ret.return_value])
             n_trials_to_go -= batch_size
 
         best_trial = study.best_trial
