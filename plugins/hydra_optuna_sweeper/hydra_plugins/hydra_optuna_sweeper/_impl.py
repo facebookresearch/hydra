@@ -200,7 +200,7 @@ class OptunaSweeperImpl(Sweeper):
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
-                study._tell(trial, optuna.trial.TrialState.COMPLETE, ret.return_value)
+                study._tell(trial, optuna.trial.TrialState.COMPLETE, [ret.return_value])
             n_trials_to_go -= batch_size
 
         best_trial = study.best_trial
