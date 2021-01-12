@@ -125,12 +125,10 @@ defaults:
   - /server/db<@PACKAGE>: mysql
 ```
 
-Without a package override, the resulting package is `config_group.server.db`.
-##### Relative keywords: 
-* **@\_here\_**: The resulting package is the same as the containing config (`config_group`). 
-* **@\_name\_**: \_name\_ is substituted by the name of the config. The resulting package is `config_group.mysql`.
+Without a package override, the resulting package is `config_group.server.db`.  
+With the **@\_here\_** keyword, The resulting package is the same as the containing config (`config_group`). 
 ##### Absolute keywords:
-* **@\_group\_**: \_group\_ is the absolute default package of the config (`server.db`)*
+* **@\_group\_**: \_group\_ is the absolute default package of the config (`server.db`)
 * **@\_global\_**: The global package. Anything following \_global\_ is absolute.  
   e.g. **@\_global\_.foo** becomes `foo`.
 

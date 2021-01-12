@@ -226,6 +226,18 @@ class ConfigRepository(IConfigRepository):
                         options.append(vv)
                     config_value = options
 
+                if package is not None and "_name_" in package:
+                    # DEPRECATED: remove in 1.2
+                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+                    warnings.warn(
+                        category=UserWarning,
+                        message=dedent(
+                            f"""\
+                            In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
+                            """
+                        ),
+                    )
+
                 default = GroupDefault(
                     group=keywords.group,
                     value=config_value,
