@@ -109,3 +109,70 @@ def test_configuring_experiments(
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
     result, _err = get_run_output(cmd)
     assert OmegaConf.create(result) == expected
+
+
+@mark.parametrize(
+    ("overrides", "expected"),
+    [
+        param(
+            [],
+            {
+                "server": {
+                    "site": {
+                        "fb": {"domain": "facebook.com"},
+                        "google": {"domain": "google.com"},
+                    },
+                    "host": "localhost",
+                    "port": 443,
+                }
+            },
+            id="default",
+        ),
+        param(
+            ["server/site=[amazon,google]"],
+            {
+                "server": {
+                    "site": {
+                        "amazon": {"domain": "amazon.com"},
+                        "google": {"domain": "google.com"},
+                    },
+                    "host": "localhost",
+                    "port": 443,
+                }
+            },
+            id="default:override",
+        ),
+        param(
+            ["server=apache_https"],
+            {
+                "server": {
+                    "https": {
+                        "fb": {"domain": "facebook.com"},
+                        "google": {"domain": "google.com"},
+                    },
+                    "host": "localhost",
+                    "port": 443,
+                }
+            },
+            id="pkg_override",
+        ),
+        param(
+            ["server=apache_https", "server/site@server.https=amazon"],
+            {
+                "server": {
+                    "https": {"amazon": {"domain": "amazon.com"}},
+                    "host": "localhost",
+                    "port": 443,
+                }
+            },
+            id="pkg_override:override",
+        ),
+    ],
+)
+def test_multi_select(
+    monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: Any
+) -> None:
+    monkeypatch.chdir("examples/patterns/multi-select")
+    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    result, _err = get_run_output(cmd)
+    assert OmegaConf.create(result) == expected
