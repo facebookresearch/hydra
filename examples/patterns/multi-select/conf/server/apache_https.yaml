@@ -1,0 +1,7 @@
+defaults:
+  - site@https:
+      - fb
+      - google
+
+host: localhost
+port: 443

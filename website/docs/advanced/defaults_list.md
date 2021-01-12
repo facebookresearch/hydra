@@ -19,7 +19,7 @@ defaults:
 
 CONFIG                 : (CONFIG_GROUP/)?CONFIG_NAME(@PACKAGE)?
 GROUP_DEFAULT          : [optional|override]? CONFIG_GROUP(@PACKAGE)?: OPTION
-OPTION                 : CONFIG_NAME|null
+OPTION                 : CONFIG_NAME|CONFIG_NAMES|null
 ```
 
 *CONFIG* : A config to use when creating the output config. e.g. `db/mysql`, `db/mysql@backup`.
@@ -31,12 +31,14 @@ OPTION                 : CONFIG_NAME|null
 
 *CONFIG_NAME*: The name of a config, without the file system extension. e.g. `mysql` and not `mysql.yaml`.
 
-*CONFIG_GROUP* : A path to a set of OPTIONS.   
+*CONFIG_NAMES* : A list of config names. e.g. `[mysql, sqlite]`
+
+*CONFIG_GROUP* : A path to a set of configs.   
 The path is relative to the containing config. 
 It can be made absolute by prefixing it with a `/`.  
 The path separator is `/` regardless of the operating system.
 
-*OPTION*: The currently selected *CONFIG_NAME* from a *CONFIG_GROUP*.
+*OPTION*: The currently selected *CONFIG_NAME* or *CONFIG_NAMES* from a *CONFIG_GROUP*. 
 
 *PACKAGE* : Where to place the content of the config within the output config.
 It is relative to the Package of the containing config by default. See [Packages](overriding_packages.md).
