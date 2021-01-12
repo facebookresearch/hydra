@@ -77,17 +77,6 @@ ray_nodes_conf = {
     "IamInstanceProfile": {"Arn": instance_role},
 }
 
-head_start_ray_commands = [
-    "ray stop",
-    "ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076\
-            --autoscaling-config=~/ray_bootstrap_config.yaml",
-]
-
-worker_start_ray_commands = [
-    "ray stop",
-    "ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076",
-]
-
 ray_nodes_conf_override = str(ray_nodes_conf).replace("'", "").replace(" ", "")
 
 pip_lib_skip = [
@@ -241,8 +230,6 @@ def manage_cluster() -> Generator[None, None, None]:
             f"echo 'export PATH=\"$HOME/anaconda3/envs/hydra_{cur_py_version}/bin:$PATH\"' >> ~/.bashrc"
         ],
         "head_setup_commands": [],
-        "head_start_ray_commands": head_start_ray_commands,
-        "worker_start_ray_commands": worker_start_ray_commands,
         "head_node": ray_nodes_conf,
         "worker_nodes": ray_nodes_conf,
     }
