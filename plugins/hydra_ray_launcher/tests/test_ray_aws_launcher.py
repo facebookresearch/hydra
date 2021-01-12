@@ -78,15 +78,15 @@ ray_nodes_conf = {
 }
 
 head_start_ray_commands = [
-            "ray stop",
-            "ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076\
+    "ray stop",
+    "ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076\
             --autoscaling-config=~/ray_bootstrap_config.yaml",
-        ]
+]
 
 worker_start_ray_commands = [
-            "ray stop",
-            "ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076",
-        ]
+    "ray stop",
+    "ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076",
+]
 
 ray_nodes_conf_override = str(ray_nodes_conf).replace("'", "").replace(" ", "")
 
@@ -211,7 +211,8 @@ def validate_lib_version(yaml: str) -> None:
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 def test_discovery() -> None:
-    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
+    # Tests that this plugin can be discovered via the plugins subsystem when
+    # looking for Launchers
     assert RayAWSLauncher.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Launcher)
     ]
@@ -305,6 +306,7 @@ integration_tests_override.extend(common_overrides)
     ],
 )
 class TestRayAWSLauncherIntegration(IntegrationTestSuite):
+
     """
     Run this launcher through the integration test suite.
     """
