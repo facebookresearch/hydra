@@ -54,6 +54,9 @@ class DistributionConfig:
 class OptunaConfig:
 
     # Direction of optimization
+    # For single objective optimization
+    direction: Direction = Direction.minimize
+    # For multi-objective optimization. If exists, direction will be ignored.
     directions: Optional[List[Direction]] = None
 
     # Storage URL to persist optimization results
@@ -80,9 +83,11 @@ class OptunaConfig:
     seed: Optional[int] = None
 
     def __post_init__(self) -> None:
-        if self.directions is None:
-            self.directions = [Direction.minimize]
+        if self.direction is not None and self.directions is None:
+            self.directions = [self.direction]
+
         if len(self.directions) > 1 and self.sampler == Sampler.tpe:
+            # The default sampler of multi-objective optimization is NSGAIISampler
             self.sampler = Sampler.nsgaii
 
 
