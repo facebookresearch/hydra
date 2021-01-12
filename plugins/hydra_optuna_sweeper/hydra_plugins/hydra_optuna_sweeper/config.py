@@ -21,6 +21,8 @@ class Sampler(Enum):
     tpe = 1
     random = 2
     cmaes = 3
+    nsgaii = 4
+    motpe = 5
 
 
 @dataclass
@@ -52,7 +54,7 @@ class DistributionConfig:
 class OptunaConfig:
 
     # Direction of optimization
-    direction: Direction = Direction.minimize
+    directions: Optional[List[Direction]] = None
 
     # Storage URL to persist optimization results
     # For example, you can use SQLite if you set 'sqlite:///example.db'
@@ -76,6 +78,12 @@ class OptunaConfig:
 
     # Random seed of sampler
     seed: Optional[int] = None
+
+    def __post_init__(self) -> None:
+        if self.directions is None:
+            self.directions = [Direction.minimize]
+        if len(self.directions) > 1 and self.sampler == Sampler.tpe:
+            self.sampler = Sampler.nsgaii
 
 
 @dataclass
