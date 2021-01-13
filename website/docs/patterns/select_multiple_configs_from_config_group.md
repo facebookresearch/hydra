@@ -107,7 +107,7 @@ You can relocate the package of all the configs in the list. e.g:
 <div className="row">
 <div className="col col--6">
 
-```yaml title="server/apache" {2}
+```yaml title="server/apache.yaml" {2}
 defaults:
   - site@https:
     - fb
@@ -168,7 +168,7 @@ defaults:
 
 All default package for all the configs in `server/site` is `server.site`.
 This example uses an explicit nesting level inside each of the website configs to prevent them stepping over one another:
-```yaml title="server/site/amazon" {1}
+```yaml title="server/site/amazon.yaml" {1}
 amazon:
   ...
 ```
