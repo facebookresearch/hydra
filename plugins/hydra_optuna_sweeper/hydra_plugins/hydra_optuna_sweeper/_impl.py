@@ -16,7 +16,7 @@ from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from hydra.utils import get_class
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, ListConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalChoiceType,
@@ -28,7 +28,7 @@ from optuna.distributions import (
     UniformDistribution,
 )
 
-from .config import DistributionConfig, DistributionType, OptunaConfig
+from .config import Direction, DistributionConfig, DistributionType, OptunaConfig
 
 log = logging.getLogger(__name__)
 
@@ -171,19 +171,29 @@ class OptunaSweeperImpl(Sweeper):
         sampler_class = get_class(samplers[self.optuna_config.sampler.name])
         sampler = sampler_class(seed=self.optuna_config.seed)
 
-        assert self.optuna_config.directions is not None
+        directions: List[str]
+        if isinstance(self.optuna_config.direction, ListConfig):
+            directions = [
+                d.name if isinstance(d, Direction) else d
+                for d in self.optuna_config.direction
+            ]
+        else:
+            if isinstance(self.optuna_config.direction, str):
+                directions = [self.optuna_config.direction]
+            else:
+                directions = [self.optuna_config.direction.name]
 
         study = optuna.create_study(
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
             sampler=sampler,
-            directions=[d.name for d in self.optuna_config.directions],
+            directions=directions,
             load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
         log.info(f"Sampler: {self.optuna_config.sampler.name}")
-        log.info(f"Directions: {self.optuna_config.directions}")
+        log.info(f"Directions: {directions}")
 
         batch_size = self.optuna_config.n_jobs
         n_trials_to_go = self.optuna_config.n_trials
@@ -204,18 +214,47 @@ class OptunaSweeperImpl(Sweeper):
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
-                if len(self.optuna_config.directions) == 1:
-                    study._tell(
-                        trial, optuna.trial.TrialState.COMPLETE, [ret.return_value]
-                    )
+                if len(directions) == 1:
+                    try:
+                        study._tell(
+                            trial,
+                            optuna.trial.TrialState.COMPLETE,
+                            [float(ret.return_value)],
+                        )
+                    except (TypeError, ValueError):
+                        study._tell(trial, optuna.trial.TrialState.FAIL, None)
+                        log.warning(
+                            f"Return value must be a float value. Got {ret.return_value}."
+                        )
                 else:
-                    study._tell(
-                        trial, optuna.trial.TrialState.COMPLETE, ret.return_value
-                    )
+                    if not isinstance(ret.return_value, (list, tuple)):
+                        study._tell(trial, optuna.trial.TrialState.FAIL, None)
+                        log.warning(
+                            f"Return value is not a sequence. Got {ret.return_value}."
+                        )
+                    else:
+                        if len(ret.return_value) != len(directions):
+                            study._tell(trial, optuna.trial.TrialState.FAIL, None)
+                            log.warning(
+                                f"The number of directions is {len(directions)}, but the number"
+                                f" of returned objective values is {len(ret.return_value)}"
+                            )
+                        else:
+                            try:
+                                study._tell(
+                                    trial,
+                                    optuna.trial.TrialState.COMPLETE,
+                                    [float(v) for v in ret.return_value],
+                                )
+                            except (TypeError, ValueError):
+                                log.warning(
+                                    f"Return value must be a sequence of float values. Got {ret.return_value}."
+                                )
+
             n_trials_to_go -= batch_size
 
         results_to_serialize: Dict[str, Any]
-        if len(self.optuna_config.directions) < 2:
+        if len(directions) < 2:
             best_trial = study.best_trial
             results_to_serialize = {
                 "name": "optuna",
