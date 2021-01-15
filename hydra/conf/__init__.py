@@ -141,7 +141,7 @@ class HydraConf:
     # Typical command lines to manipulate hydra.verbose:
     # hydra.verbose=true
     # hydra.verbose=[hydra,__main__]
-    # TODO: good use ca se for Union support in OmegaConf
+    # TODO: good use case for Union support in OmegaConf
     verbose: Any = False
 
     # Composition choices dictionary
@@ -149,13 +149,6 @@ class HydraConf:
 
 
 cs = ConfigStore.instance()
-
-cs.store(
-    name="hydra_config",
-    node=HydraConf,
-    package="hydra",
-    provider="hydra",
-)
 
 cs.store(
     group="hydra",
