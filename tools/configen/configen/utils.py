@@ -84,7 +84,11 @@ def convert_imports(imports: Set[Type], string_imports: List[str]) -> List[str]:
             elif origin is dict:
                 classname = "Dict"
             else:
-                classname = t.__name__
+                try:
+                    classname = t.__name__
+                except AttributeError:
+                    # Some types (such as typing.Callable) only have a _name attribute
+                    classname = t._name
 
         if not is_primitive_type(t) or issubclass(t, Enum):
             s = f"from {t.__module__} import {classname}"

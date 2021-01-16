@@ -114,9 +114,12 @@ def is_incompatible(type_: Type[Any]) -> bool:
             return False
     except ValidationError:
         return True
-
-    if type_ is Any or issubclass(type_, (int, float, str, bool, Enum)):
-        return False
+    try:
+        if type_ is Any or issubclass(type_, (int, float, str, bool, Enum)):
+            return False
+    except TypeError:
+        # If type does not have a base class, assume it is incompatible
+        return True
     if is_structured_config(type_):
         try:
             OmegaConf.structured(type_)  # verify it's actually legal
