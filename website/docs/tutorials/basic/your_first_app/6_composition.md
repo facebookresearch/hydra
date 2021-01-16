@@ -6,7 +6,7 @@ title: Putting it all together
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/6_composition)
 
 As software gets more complex, we resort to modularity and composition to keep it manageable. 
-We can do the same with configs: suppose we want our working example to support multiple databases, with
+We can do the same with configs. Suppose we want our working example to support multiple databases, with
 multiple schemas per database, and different UIs. We wouldn't write a separate class
 for each permutation of db, schema and UI, so we shouldn't write separate configs either. We use 
 the same solution in configuration as in writing the underlying software: composition. 
@@ -29,10 +29,10 @@ To do this in Hydra, we first add a `schema` and a `ui` config group:
 └── my_app.py
 ```
 
-With these configs, we already have 12 possible combinations. Without composition we would need 12 separate configs, 
-and a single change (such as renaming `db.user` to `db.username`) would need to be done separately in every one of them. 
+With these configs, we already have 12 possible combinations. Without composition, we would need 12 separate configs. 
+A single change (such as renaming `db.user` to `db.username`) would need to be done separately in every one of them. 
 
-This is a maintainability nightmare -- but composition can come to the rescue.
+This is a maintenance nightmare. Composition can come to the rescue.
 
 ```yaml title="config.yaml"
 defaults:

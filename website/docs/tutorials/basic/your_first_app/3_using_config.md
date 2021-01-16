@@ -5,8 +5,7 @@ title: Using the config object
 
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/3_using_config)
 
-You configuration object is an instance of OmegaConf's DictConfig.  
-Here are some of the basic features:
+Here are some basic features of the Hydra Configuration Object:
 
 ```yaml title="config.yaml"
 node:                         # Config is hierarchical
@@ -36,4 +35,6 @@ Missing mandatory value: waldo
         reference_type=Optional[Dict[Any, Any]]
         object_type=dict
 ```
+
+Hydra's configuration object is an instance of OmegaConf's DictConfig.
 You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.

@@ -34,7 +34,7 @@ db:
   password: 1234
 ```
 
-You can use `--package` or `-p` to select a a specific config package:
+You can use --package or -p to display a subset of the configuration:
 ```yaml
 python my_app.py --cfg hydra --package hydra.job
 # @package hydra.job
@@ -46,8 +46,8 @@ config_name: config
 ### Info
 The `--info` flag can provide information about various aspects of Hydra and your application:
  - `--info all`: Default behavior, prints everything
- - `--info config`: Prints information useful to understanding the config composition:    
-   Config Search Path, Defaults Tree, Defaults List, Final config)
+ - `--info config`: Prints information useful to understanding the config composition:  
+   Config Search Path, Defaults Tree, Defaults List and the final config.
  - `--info defaults`: Prints the Final Defaults List
  - `--info defaults-tree`: Prints the Defaults Tree
  - `--info plugins`: Prints information about installed plugins

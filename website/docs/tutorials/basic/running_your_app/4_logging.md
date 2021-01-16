@@ -7,12 +7,12 @@ sidebar_label: Logging
 [![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/blob/master/examples/tutorials/basic/running_your_hydra_app/4_logging/my_app.py)
 
 People often do not use Python logging due to the setup cost.
-Hydra solves that by configuring the Python logging for you.
+Hydra solves this by configuring the Python logging for you.
 
 
-By default Hydra logs at the INFO level to both the console and a log file in the automatic working directory.
+By default, Hydra logs at the INFO level to both the console and a log file in the automatic working directory.
 
-Example of logging with Hydra:
+An example of logging with Hydra:
 
 ```python
 import logging
