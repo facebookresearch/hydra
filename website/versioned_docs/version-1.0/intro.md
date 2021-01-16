@@ -46,6 +46,8 @@ db:
   user: omry
   pass: secret
 ```
+Note: File extension needs to be `.yaml`. `.yml` will be ignored.
+
 Application:
 ```python {4-6} title="my_app.py"
 import hydra
