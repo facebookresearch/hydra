@@ -8,7 +8,11 @@ import pytest
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    chdir_plugin_root,
+    run_python_script,
+)
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
@@ -210,7 +214,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
@@ -246,7 +250,7 @@ def test_jobs_using_choice_between_lists(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -282,7 +286,7 @@ def test_jobs_using_choice_between_dicts(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -297,6 +301,6 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result

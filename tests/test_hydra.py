@@ -18,9 +18,9 @@ from hydra.test_utils.test_utils import (
     assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
-    get_run_output,
     integration_test,
     normalize_newlines,
+    run_python_script,
     run_with_error,
     verify_dir_outputs,
 )
@@ -69,7 +69,7 @@ def test_missing_conf_file(
 
 
 def test_run_dir() -> None:
-    get_run_output(["tests/test_apps/run_dir_test/my_app.py"])
+    run_python_script(["tests/test_apps/run_dir_test/my_app.py"])
 
 
 @pytest.mark.parametrize(
@@ -348,7 +348,7 @@ def test_short_module_name(tmpdir: Path) -> None:
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    out, _err = get_run_output(cmd)
+    out, _err = run_python_script(cmd)
     assert OmegaConf.create(out) == {
         "db": {"driver": "mysql", "password": "secret", "user": "omry"}
     }
@@ -379,7 +379,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     ]
     modified_env = os.environ.copy()
     modified_env[env_name] = "hydra.test_utils.configs.Foo"
-    result, _err = get_run_output(cmd, env=modified_env)
+    result, _err = run_python_script(cmd, env=modified_env)
     assert OmegaConf.create(result) == {"normal_yaml_config": True}
 
 
@@ -393,7 +393,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
         "hydra.run.dir=" + str(tmpdir),
         flag,
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     conf = OmegaConf.create(result)
     for key in expected_keys:
         assert key in conf
@@ -449,7 +449,7 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
         "hydra.run.dir=" + str(tmpdir),
     ] + flags
 
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert normalize_newlines(result) == expected.rstrip()
 
 
@@ -651,7 +651,7 @@ def test_help(
     cmd = [script, "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(overrides)
     cmd.append(flag)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert_text_same(result, expected.format(script=script))
 
 
@@ -826,7 +826,7 @@ def test_config_name_and_path_overrides(
         f"--config-path={config_path}",
     ]
     print(" ".join(cmd))
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
     assert result == f"{config_path}_{config_name}: true"
@@ -896,7 +896,7 @@ def test_module_run(
         ret = run_with_error(cmd, modified_env)
         assert re.search(re.escape(error), ret) is not None
     else:
-        result, _err = get_run_output(cmd, env=modified_env)
+        result, _err = run_python_script(cmd, env=modified_env)
         assert OmegaConf.create(result) == {"x": 10}
 
 
@@ -952,7 +952,7 @@ def test_multirun_structured_conflict(
         ret = normalize_newlines(run_with_error(cmd))
         assert re.search(re.escape(expected), ret) is not None
     else:
-        ret, _err = get_run_output(cmd)
+        ret, _err = run_python_script(cmd)
         assert ret == expected
 
 
@@ -1000,7 +1000,7 @@ bar: 10
 
 foo: 20
 bar: 20"""
-        ret, _err = get_run_output(cmd)
+        ret, _err = run_python_script(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_config_overrides_evaluated_lazily(
@@ -1017,7 +1017,7 @@ bar: 10
 
 foo: 20
 bar: 20"""
-        ret, _err = get_run_output(cmd)
+        ret, _err = run_python_script(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_multirun_defaults_override(self, cmd_base: List[str], tmpdir: Any) -> None:
@@ -1033,7 +1033,7 @@ bar: 100
 
 foo: 20
 bar: 100"""
-        ret, _err = get_run_output(cmd)
+        ret, _err = run_python_script(cmd)
         assert normalize_newlines(ret) == normalize_newlines(expected)
 
     def test_run_pass_list(self, cmd_base: List[str], tmpdir: Any) -> None:
@@ -1042,7 +1042,7 @@ bar: 100"""
             "+foo=[1,2,3]",
         ]
         expected = {"foo": [1, 2, 3]}
-        ret, _err = get_run_output(cmd)
+        ret, _err = run_python_script(cmd)
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
 
 
@@ -1081,7 +1081,7 @@ def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
         "a=foo",
     ]
     expected = "override_a=foo,b=foo"
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == expected.strip()
 
 
@@ -1107,7 +1107,7 @@ def test_config_dir_argument(
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(overrides)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
 
 
@@ -1117,7 +1117,7 @@ def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == "job_name: test, name: James Bond, age: 7, group: a"
 
 
@@ -1127,7 +1127,7 @@ def test_defaults_pkg_with_dot(monkeypatch: Any, tmpdir: Path) -> None:
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
         "dataset": {"test": {"name": "imagenet", "path": "/datasets/imagenet"}}
     }
@@ -1189,5 +1189,5 @@ def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == "{'list': None}"

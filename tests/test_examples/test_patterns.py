@@ -10,7 +10,7 @@ from hydra.test_utils.test_utils import (
     TTaskRunner,
     assert_text_same,
     chdir_hydra_root,
-    get_run_output,
+    run_python_script,
     run_with_error,
     verify_dir_outputs,
 )
@@ -70,7 +70,7 @@ def test_extending_configs(
 ) -> None:
     monkeypatch.chdir("examples/patterns/extending_configs")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
         "db": {
             "host": "localhost",
@@ -107,7 +107,7 @@ def test_configuring_experiments(
 ) -> None:
     monkeypatch.chdir("examples/patterns/configuring_experiments")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
 
 
@@ -174,5 +174,5 @@ def test_multi_select(
 ) -> None:
     monkeypatch.chdir("examples/patterns/multi-select")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected

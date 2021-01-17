@@ -12,7 +12,7 @@ from typing import List, Tuple
 import hydra
 import requests
 from hydra.core.config_store import ConfigStore
-from hydra.test_utils.test_utils import find_parent_dir_containing, get_run_output
+from hydra.test_utils.test_utils import find_parent_dir_containing, run_python_script
 from omegaconf import MISSING, DictConfig, OmegaConf
 from packaging.version import Version, parse
 
@@ -87,11 +87,11 @@ def get_package_info(path: str) -> Package:
     try:
         prev = os.getcwd()
         os.chdir(path)
-        out, _err = get_run_output(
+        out, _err = run_python_script(
             cmd=[f"{path}/setup.py", "--version"], allow_warnings=True
         )
         local_version: Version = parse_version(out)
-        package_name, _err = get_run_output(
+        package_name, _err = run_python_script(
             cmd=[f"{path}/setup.py", "--name"], allow_warnings=True
         )
     finally:
@@ -110,7 +110,7 @@ def build_package(cfg: Config, pkg_path: str) -> None:
         os.chdir(pkg_path)
         log.info(f"Building {get_package_info('.').name}")
         shutil.rmtree("dist", ignore_errors=True)
-        get_run_output(
+        run_python_script(
             cmd=["setup.py", "build", *cfg.build_targets], allow_warnings=True
         )
     finally:
