@@ -1,3 +1,0 @@
-defaults:
-  - schema/db: mysql
-  - db: mysql_staging

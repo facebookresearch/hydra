@@ -1,3 +1,0 @@
-driver: postgresql
-host: postgresql01.staging
-timeout: 10
