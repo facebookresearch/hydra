@@ -1,4 +1,0 @@
-driver: mysql
-host: mysql001.prod
-user: root
-password: 1234

@@ -1,3 +1,0 @@
-driver: postgresql
-host: postgresql01.prod
-timeout: 10
