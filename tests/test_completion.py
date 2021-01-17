@@ -14,7 +14,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
 from hydra._internal.utils import create_config_search_path
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
-from hydra.test_utils.test_utils import chdir_hydra_root
+from hydra.test_utils.test_utils import chdir_hydra_root, run_process
 
 chdir_hydra_root()
 
@@ -203,16 +203,15 @@ class TestRunCompletion:
 
         verbose = os.environ.get("VERBOSE", "0") != "0"
 
-        line1 = "line={}".format(line_prefix + line)
         cmd = ["expect"]
         if verbose:
             cmd.append("-d")
 
         cmd.extend(
             [
-                "tests/scripts/test_{}_completion.exp".format(shell),
+                f"tests/scripts/test_{shell}_completion.exp",
                 f"{' '.join(prog)}",
-                line1,
+                f"line={line_prefix + line}",
                 str(num_tabs),
             ]
         )
@@ -228,7 +227,8 @@ class TestRunCompletion:
         cmd.extend(expected)
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
-        subprocess.check_call(cmd)
+
+        run_process(cmd)
 
 
 @pytest.mark.parametrize(
@@ -369,7 +369,7 @@ def test_strip(
     app_prefix = prefix + app_prefix
     if args_line:
         app_prefix = app_prefix + " "
-    line = "{}{}".format(app_prefix, args_line)
+    line = f"{app_prefix}{args_line}"
     result_line = BashCompletion.strip_python_or_app_name(line)
     assert result_line == args_line
 
