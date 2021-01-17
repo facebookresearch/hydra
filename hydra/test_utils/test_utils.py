@@ -365,7 +365,7 @@ def run_with_error(cmd: Any, env: Any = None) -> str:
     return err
 
 
-def get_run_output(
+def run_python_script(
     cmd: Any,
     env: Any = None,
     allow_warnings: bool = False,
@@ -375,7 +375,14 @@ def get_run_output(
         cmd = [sys.executable] + cmd
     else:
         cmd = [sys.executable, "-Werror"] + cmd
+    return run_process(cmd, env, print_stderr)
 
+
+def run_process(
+    cmd: Any,
+    env: Any = None,
+    print_stderr: bool = True,
+) -> Tuple[str, str]:
     try:
         process = subprocess.Popen(
             args=cmd,

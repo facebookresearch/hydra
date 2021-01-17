@@ -12,7 +12,7 @@ from omegaconf import OmegaConf
 
 from configen.config import ConfigenConf, ModuleConf, Flags
 from configen.configen import generate_module
-from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
+from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
 from tests.test_modules import (
     User,
     Color,
@@ -277,7 +277,7 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         f"hydra.run.dir={tmpdir}",
         "user.name=Batman",
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == dedent(
         """\
     User: name=Batman, age=7

@@ -12,7 +12,7 @@ from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     chdir_hydra_root,
-    get_run_output,
+    run_python_script,
     verify_dir_outputs,
 )
 
@@ -39,7 +39,7 @@ def test_tutorial_simple_cli_app(
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -48,7 +48,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == "Working directory : {}".format(tmpdir)
 
 
@@ -65,7 +65,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     lines = result.splitlines()
     assert len(lines) == len(expected)
     for i in range(len(lines)):
@@ -89,7 +89,7 @@ def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -117,9 +117,9 @@ def test_tutorial_config_file_bad_key(
     cmd.extend(args)
     if isinstance(expected, RaisesContext):
         with expected:
-            get_run_output(cmd, print_stderr=False)
+            run_python_script(cmd, print_stderr=False)
     else:
-        stdout, _stderr = get_run_output(cmd)
+        stdout, _stderr = run_python_script(cmd)
         assert OmegaConf.create(stdout) == expected
 
 
@@ -150,7 +150,7 @@ def test_tutorial_config_groups(
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == output_conf
 
 
@@ -188,7 +188,7 @@ def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) 
         "hydra.run.dir=" + str(tmpdir),
     ]
     cmd.extend(args)
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
@@ -289,7 +289,7 @@ def test_advanced_ad_hoc_composition(
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 
@@ -299,4 +299,4 @@ def test_examples_using_the_config_object(tmpdir: Path) -> None:
         "hydra.run.dir=" + str(tmpdir),
     ]
 
-    get_run_output(cmd)
+    run_python_script(cmd)

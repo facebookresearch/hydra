@@ -7,7 +7,11 @@ import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    chdir_plugin_root,
+    run_python_script,
+)
 from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
@@ -139,7 +143,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
             "lr=tag(log, interval(0.001, 1.0))",
             "dropout=interval(0,1)",
         ]
-    get_run_output(cmd)
+    run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "nevergrad"

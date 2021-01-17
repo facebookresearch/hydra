@@ -8,7 +8,7 @@ import pytest
 from hydra.test_utils.test_utils import (
     assert_text_same,
     chdir_hydra_root,
-    get_run_output,
+    run_python_script,
 )
 
 chdir_hydra_root()
@@ -26,7 +26,7 @@ def test_instantiate_object(
 ) -> None:
     monkeypatch.chdir("examples/instantiate/object")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == output
 
 
@@ -45,7 +45,7 @@ def test_instantiate_object_recursive(
 ) -> None:
     monkeypatch.chdir("examples/instantiate/object_recursive")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == output
 
 
@@ -61,7 +61,7 @@ def test_instantiate_schema(
 ) -> None:
     monkeypatch.chdir("examples/instantiate/schema")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert result == output
 
 
@@ -87,7 +87,7 @@ def test_instantiate_schema_recursive(
 ) -> None:
     monkeypatch.chdir("examples/instantiate/schema_recursive")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert_text_same(result, expected)
 
 
@@ -122,5 +122,5 @@ def test_instantiate_docs_example(
 ) -> None:
     monkeypatch.chdir("examples/instantiate/docs_example")
     cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
-    result, _err = get_run_output(cmd)
+    result, _err = run_python_script(cmd)
     assert_text_same(result, expected)
