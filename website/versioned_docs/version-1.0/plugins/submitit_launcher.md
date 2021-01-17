@@ -7,8 +7,8 @@ sidebar_label: Submitit Launcher plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-submitit-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-submitit-launcher)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-submitit-launcher.svg)](https://pypistats.org/packages/hydra-submitit-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_submitit_launcher/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_submitit_launcher)
 
 The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [Submitit](https://github.com/facebookincubator/submitit).
 
@@ -79,7 +79,7 @@ For more details, including descriptions for each parameter, check out the [conf
 
 ### Example
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
+An [example application](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py task=1,2,3 --multirun` (see [Multi-run](../tutorials/basic/running_your_app/2_multirun.md) for details) will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
 

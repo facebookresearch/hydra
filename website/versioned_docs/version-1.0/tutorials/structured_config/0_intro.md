@@ -4,7 +4,7 @@ title: Introduction to Structured Configs
 sidebar_label: Introduction to Structured Configs
 ---
 This is an advanced tutorial that assumes that you are comfortable with the concepts introduced in the [Basic Tutorial](/tutorials/basic/your_first_app/1_simple_cli.md).
-The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs).
+The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs).
 
 Structured Configs use Python [dataclasses](https://docs.python.org/3.7/library/dataclasses.html) to 
 describe your configuration structure and types. They enable:

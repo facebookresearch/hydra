@@ -2,7 +2,7 @@
 id: dynamic_schema
 title: Dynamic schema with many configs
 ---
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/7_dynamic_schema_many_configs/)
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/7_dynamic_schema_many_configs/)
 
 In this page we will see how to get runtime type safety for configs with dynamic schema.
 Our top level config contains a single field - `db`, with the type `DBConfig`.
