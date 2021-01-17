@@ -15,7 +15,7 @@ For example:
 
 - Inside a Jupyter notebook ([Example](../advanced/jupyter_notebooks.md))
 - Inside a unit test ([Example](../advanced/unit_testing.md))
-- In parts of your application that does not have access to the command line ([Example](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/ad_hoc_composition))
+- In parts of your application that does not have access to the command line ([Example](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/advanced/ad_hoc_composition))
 - If you want to compose multiple configuration objects ([Example with Ray](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/ray_example/ray_compose_example.py))
 
 <div class="alert alert--info" role="alert">

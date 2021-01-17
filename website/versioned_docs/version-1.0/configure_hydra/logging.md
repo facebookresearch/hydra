@@ -3,7 +3,7 @@ id: logging
 title: Customizing logging
 sidebar_label: Customizing logging
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/logging)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/configure_hydra/logging)
 
 Hydra is configuring Python standard logging library with the dictConfig method. You can learn more about it [here](https://docs.python.org/3/howto/logging.html).
 There are two logging configurations, one for Hydra itself and one for the executed jobs.

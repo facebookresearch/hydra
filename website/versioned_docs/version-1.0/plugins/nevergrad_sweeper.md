@@ -8,8 +8,8 @@ sidebar_label: Nevergrad Sweeper plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-nevergrad-sweeper)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-nevergrad-sweeper)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-nevergrad-sweeper.svg)](https://pypistats.org/packages/hydra-nevergrad-sweeper)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_nevergrad_sweeper/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_nevergrad_sweeper)
 
 
 [Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform providing a library of state-of-the-art algorithms for hyperparameter search. This plugin provides Hydra applications a mechanism to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms to optimize experiment/application parameters.

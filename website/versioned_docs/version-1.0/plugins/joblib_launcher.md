@@ -7,8 +7,8 @@ sidebar_label: Joblib Launcher plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-joblib-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-joblib-launcher)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-joblib-launcher.svg)](https://pypistats.org/packages/hydra-joblib-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_joblib_launcher/example)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_joblib_launcher)
 
 The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
@@ -51,7 +51,7 @@ See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/pa
 NOTE: The only supported JobLib backend is Loky (process-based parallelism).
 </div><br/>
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in the plugin repository.
+An [example application](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_joblib_launcher/example) using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions:
 

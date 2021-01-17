@@ -2,7 +2,7 @@
 id: config_groups
 title: Config Groups
 ---
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/3_config_groups/)
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/3_config_groups/)
 
 Structured Configs can be used to implement config groups. Special care needs to be taken when specifying a 
 default value for fields populated by a config group. We will look at why below.

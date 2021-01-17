@@ -8,8 +8,8 @@ sidebar_label: Ray Launcher plugin
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-ray-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ray-launcher)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_ray_launcher/examples)
+[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_ray_launcher)
 
 
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`. 
@@ -120,7 +120,7 @@ sync_down:
 
 #### Examples
 
-The following examples can be found [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples).
+The following examples can be found [here](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_ray_launcher/examples).
 
 <details><summary>Simple app</summary>
 
@@ -217,7 +217,7 @@ hydra.launcher.ray.cluster.provider.cache_stopped_nodes=true
 `ray` launcher lets you launch application on your ray cluster or local machine. You can easily config how your jobs are executed by changing `ray` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray.yaml`
  
- The [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples/simple) starts a new ray cluster. 
+ The [example application](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_ray_launcher/examples/simple) starts a new ray cluster. 
 ```commandline
 $ python my_app.py  --multirun hydra/launcher=ray
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-16-28

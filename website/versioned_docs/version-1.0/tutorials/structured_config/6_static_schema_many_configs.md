@@ -2,7 +2,7 @@
 id: static_schema
 title: Static schema with many configs
 ---
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/structured_configs/6_static_schema_many_configs/)
+[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/6_static_schema_many_configs/)
 
 We have seen that if the name of the config file matches the name of a configs stored in the `ConfigStore` it will be used to validate the config file automatically.
 This is useful if there is a one-to-one mapping between the Structured Configs and the YAML files.

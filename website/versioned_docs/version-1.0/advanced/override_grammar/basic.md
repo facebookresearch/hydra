@@ -26,8 +26,8 @@ The rest are manipulating the config object.
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.
 Below are the parser rules from grammar.
 You can see the full grammar on GitHub
-([lexer](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideLexer.g4) and
-[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4)).
+([lexer](https://github.com/facebookresearch/hydra/tree/1.0_branch/hydra/grammar/OverrideLexer.g4) and
+[parser](https://github.com/facebookresearch/hydra/tree/1.0_branch/hydra/grammar/OverrideParser.g4)).
 
 ```antlr4 title="OverrideParser.g4"
 // High-level command-line override.

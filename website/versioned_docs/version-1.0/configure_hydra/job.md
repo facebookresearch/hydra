@@ -54,7 +54,7 @@ class JobConf:
 
 ## Documentation
 ### hydra.job.name
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/job_name)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/configure_hydra/job_name)
 
 The job name is used by different things in Hydra, such as the log file name (`${hydra.job.name}.log`).
 It is normally derived from the Python file name (file: `train.py` -> name: `train`).

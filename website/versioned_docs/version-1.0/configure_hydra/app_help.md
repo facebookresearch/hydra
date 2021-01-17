@@ -3,7 +3,7 @@ id: app_help
 title: Customizing Application's help
 sidebar_label: Customizing Application's help
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/custom_help)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/configure_hydra/custom_help)
 
 Hydra provides two different help options:
 * `--help` : Application specific help

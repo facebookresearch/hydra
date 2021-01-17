@@ -4,7 +4,7 @@ title: Structured Configs example
 sidebar_label: Structured Configs example
 ---
 
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/instantiate_structured_config/my_app.py)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/patterns/instantiate_structured_config/my_app.py)
 
 This example demonstrates the use of Structured Configs to instantiated objects.
 

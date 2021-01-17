@@ -35,7 +35,7 @@ hydra-submitit==0.2.0
 <details>
 <summary>1.0 (Release candidate), compatible with Hydra 1.0rc</summary>
 
-With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher). Read this [doc](/docs/plugins/submitit_launcher) on installation/usage info.
+With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved [here](https://github.com/facebookresearch/hydra/tree/1.0_branch/plugins/hydra_submitit_launcher). Read this [doc](/docs/plugins/submitit_launcher) on installation/usage info.
 
 ### Clean Install
  

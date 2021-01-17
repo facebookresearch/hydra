@@ -3,7 +3,7 @@ id: overriding_packages
 title: Overriding packages
 ---
 
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/package_overrides)
+[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/advanced/package_overrides)
 
 The contents of a config file can be relocated, or replicated, within the config, via package overrides.
 
