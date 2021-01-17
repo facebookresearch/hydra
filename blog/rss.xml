@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Hydra Blog</title>
+        <link>https://hydra.cc/blog</link>
+        <description>Hydra Blog</description>
+        <lastBuildDate>Tue, 22 Dec 2020 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Hydra Ray Launcher]]></title>
+            <link>https://hydra.cc/blog/2020/12/22/Hydra_Ray_Launcher</link>
+            <guid>Hydra Ray Launcher</guid>
+            <pubDate>Tue, 22 Dec 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[We are happy to announce that we are adding a Ray Launcher to the Hydra Launchers family.]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Hydra 1.0]]></title>
+            <link>https://hydra.cc/blog/2020/09/03/Hydra_1.0</link>
+            <guid>Hydra 1.0</guid>
+            <pubDate>Thu, 03 Sep 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[After many months and a lot of hard work by many people, Hydra 1.0 is finally out!]]></description>
+        </item>
+        <item>
+            <title><![CDATA[New Hydra blog]]></title>
+            <link>https://hydra.cc/blog/2020/05/04/New-blog</link>
+            <guid>New Hydra blog</guid>
+            <pubDate>Mon, 04 May 2020 00:00:00 GMT</pubDate>
+            <description><![CDATA[Welcome to the Hydra blog.]]></description>
+        </item>
+    </channel>
+</rss>
