@@ -3,13 +3,15 @@ id: simple_cli
 title: A simple command-line application
 ---
 
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/blob/master/examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py)
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py"/>
 
 This is a simple Hydra application that prints your configuration.
 The `my_app` function is a place holder for your code.
 We will slowly evolve this example to showcase more Hydra features.
 
-The examples in this tutorial are available [here](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/basic).
+The examples in this tutorial are available <GithubLink to="examples/tutorials/basic">here</GithubLink>.
 
 ```python title="my_app.py"
 from omegaconf import DictConfig, OmegaConf
