@@ -228,7 +228,7 @@ class TestRunCompletion:
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
 
-        run_process(cmd)
+        run_process(cmd, timeout=30)
 
 
 @pytest.mark.parametrize(
