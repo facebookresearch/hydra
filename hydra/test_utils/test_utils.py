@@ -276,7 +276,7 @@ def integration_test(
     expected_outputs: Union[str, List[str]],
     prolog: Union[None, str, List[str]] = None,
     filename: str = "task.py",
-    env_override: Dict[str, str] = {},
+    env_override: Optional[Dict[str, str]] = None,
     clean_environment: bool = False,
     generate_custom_cmd: Callable[..., List[str]] = lambda cmd, *args, **kwargs: cmd,
 ) -> str:
@@ -335,7 +335,8 @@ if __name__ == "__main__":
             modified_env = {}
         else:
             modified_env = os.environ.copy()
-            modified_env.update(env_override)
+            if env_override is not None:
+                modified_env.update(env_override)
         subprocess.check_call(cmd, env=modified_env)
 
         with open(output_file, "r") as f:
@@ -382,6 +383,7 @@ def run_process(
     cmd: Any,
     env: Any = None,
     print_stderr: bool = True,
+    timeout: Optional[float] = None,
 ) -> Tuple[str, str]:
     try:
         process = subprocess.Popen(
@@ -391,7 +393,7 @@ def run_process(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
-        bstdout, bstderr = process.communicate()
+        bstdout, bstderr = process.communicate(timeout=timeout)
         stdout = normalize_newlines(bstdout.decode().rstrip())
         stderr = normalize_newlines(bstderr.decode().rstrip())
         if process.returncode != 0:
@@ -401,7 +403,7 @@ def run_process(
         return stdout, stderr
     except Exception as e:
         cmd = " ".join(cmd)
-        print(f"=== Error executing:\n{cmd}\n===================")
+        sys.stderr.write(f"=== Error executing:\n{cmd}\n===================")
         raise e
 
 
