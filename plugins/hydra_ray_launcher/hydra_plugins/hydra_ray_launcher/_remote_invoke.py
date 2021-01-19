@@ -12,7 +12,6 @@ import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
 import ray
 from hydra.core.hydra_config import HydraConfig
-from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, setup_globals
 from omegaconf import open_dict
 
@@ -30,9 +29,10 @@ def launch_jobs(temp_dir: str) -> None:
     runs = []
     with open(os.path.join(temp_dir, JOB_SPEC_PICKLE), "rb") as f:
         job_spec = pickle.load(f)  # nosec
-        singleton_state = job_spec["singleton_state"]
         sweep_configs = job_spec["sweep_configs"]
         task_function = job_spec["task_function"]
+        job_runtime = job_spec["job_runtime"]
+        omegaconf_resolvers = job_spec["omegaconf_resolvers"]
 
         instance_id = _get_instance_id()
 
@@ -44,7 +44,6 @@ def launch_jobs(temp_dir: str) -> None:
                     f"{instance_id}_{sweep_config.hydra.job.num}"
                 )
             setup_globals()
-            Singleton.set_state(singleton_state)
             HydraConfig.instance().set_config(sweep_config)
             ray_init = sweep_config.hydra.launcher.ray.init
             ray_remote = sweep_config.hydra.launcher.ray.remote
@@ -55,7 +54,11 @@ def launch_jobs(temp_dir: str) -> None:
 
             start_ray(ray_init)
             ray_obj = launch_job_on_ray(
-                ray_remote, sweep_config, task_function, singleton_state
+                ray_remote,
+                sweep_config,
+                task_function,
+                job_runtime,
+                omegaconf_resolvers,
             )
             runs.append(ray_obj)
 

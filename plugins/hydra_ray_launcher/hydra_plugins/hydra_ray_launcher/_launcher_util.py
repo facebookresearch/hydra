@@ -2,15 +2,16 @@
 import logging
 import os
 from contextlib import contextmanager
+from copy import deepcopy
 from subprocess import PIPE, Popen
 from typing import Any, Dict, Generator, List, Tuple
 
 import ray
 from hydra.core.hydra_config import HydraConfig
-from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, run_job, setup_globals
+from hydra.core.utils import JobReturn, JobRuntime, run_job
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
+from omegaconf.basecontainer import BaseContainer
 
 log = logging.getLogger(__name__)
 
@@ -32,11 +33,12 @@ def start_ray(init_cfg: DictConfig) -> None:
 def _run_job(
     sweep_config: DictConfig,
     task_function: TaskFunction,
-    singleton_state: Dict[Any, Any],
+    job_runtime: DictConfig,
+    resolvers: Dict[str, Any],
 ) -> JobReturn:
-    setup_globals()
-    Singleton.set_state(singleton_state)
     HydraConfig.instance().set_config(sweep_config)
+    JobRuntime.instance().conf = job_runtime
+    BaseContainer._resolvers = deepcopy(resolvers)
     return run_job(
         config=sweep_config,
         task_function=task_function,
@@ -49,7 +51,8 @@ def launch_job_on_ray(
     ray_remote: DictConfig,
     sweep_config: DictConfig,
     task_function: TaskFunction,
-    singleton_state: Any,
+    job_runtime: DictConfig,
+    omegaconf_resolvers: Dict[str, Any],
 ) -> Any:
     if ray_remote:
         run_job_ray = ray.remote(**ray_remote)(_run_job)
@@ -59,7 +62,8 @@ def launch_job_on_ray(
     ret = run_job_ray.remote(
         sweep_config=sweep_config,
         task_function=task_function,
-        singleton_state=singleton_state,
+        job_runtime=job_runtime,
+        resolvers=omegaconf_resolvers,
     )
     return ret
 
