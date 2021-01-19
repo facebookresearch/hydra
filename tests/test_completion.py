@@ -14,7 +14,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
 from hydra._internal.utils import create_config_search_path
 from hydra.plugins.completion_plugin import DefaultCompletionPlugin
-from hydra.test_utils.test_utils import chdir_hydra_root, run_process
+from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
 
@@ -228,7 +228,7 @@ class TestRunCompletion:
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
 
-        run_process(cmd, timeout=30)
+        subprocess.check_call(cmd)
 
 
 @pytest.mark.parametrize(
