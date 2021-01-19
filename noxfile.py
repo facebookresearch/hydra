@@ -398,7 +398,11 @@ def test_plugins_in_directory(
     # Run Hydra tests to verify installed plugins did not break anything
     if test_hydra_core:
         if not SKIP_CORE_TESTS:
-            run_pytest(session, "tests")
+            # exclude test_completion for plugins tests.
+            # 1. It's tested during normal core tests.
+            # 2. it's somewhat fragile and tend to timeout in mac.
+            # 3. it's expensive and it's not worth the cost to run it for plugins as well.
+            run_pytest(session, "tests", "--ignore=tests/test_completion.py")
         else:
             session.log("Skipping Hydra core tests")
 
