@@ -3,11 +3,10 @@ import logging
 import os
 from contextlib import contextmanager
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Generator, List, Tuple
+from typing import Any, Generator, List, Tuple
 
 import ray
 from hydra.core.hydra_config import HydraConfig
-from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
@@ -32,10 +31,8 @@ def start_ray(init_cfg: DictConfig) -> None:
 def _run_job(
     sweep_config: DictConfig,
     task_function: TaskFunction,
-    singleton_state: Dict[Any, Any],
 ) -> JobReturn:
     setup_globals()
-    Singleton.set_state(singleton_state)
     HydraConfig.instance().set_config(sweep_config)
     return run_job(
         config=sweep_config,
@@ -49,7 +46,6 @@ def launch_job_on_ray(
     ray_remote: DictConfig,
     sweep_config: DictConfig,
     task_function: TaskFunction,
-    singleton_state: Any,
 ) -> Any:
     if ray_remote:
         run_job_ray = ray.remote(**ray_remote)(_run_job)
@@ -59,7 +55,6 @@ def launch_job_on_ray(
     ret = run_job_ray.remote(
         sweep_config=sweep_config,
         task_function=task_function,
-        singleton_state=singleton_state,
     )
     return ret
 
