@@ -1,14 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
 from enum import Enum
+from importlib import import_module
 from typing import Any, Dict, List, Optional
 
-import cloudpickle  # type: ignore
-import hydra
-import pkg_resources
-import ray
 from hydra.core.config_store import ConfigStore
-from omegaconf import __version__ as omegaconf_version
+from omegaconf import OmegaConf
+from pkg_resources import get_distribution
 
 
 @dataclass
@@ -22,6 +20,15 @@ class RayLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_launcher.RayLauncher"
     ray: RayConf = RayConf()
 
+
+def _pkg_version(mdl_name: str) -> Optional[str]:
+    mdl = import_module(mdl_name)
+    ret = getattr(mdl, "__version__")
+    assert ret is None or isinstance(ret, str)
+    return ret
+
+
+OmegaConf.register_resolver("ray_pkg_version", _pkg_version)
 
 # Ray AWS config, more info on ray's schema here:
 # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/ray-schema.json
@@ -86,14 +93,12 @@ class RsyncConf:
 class EnvSetupConf:
     pip_packages: Dict[str, str] = field(
         default_factory=lambda: {
-            "omegaconf": omegaconf_version,
-            "hydra_core": hydra.__version__,
-            "ray": ray.__version__,
-            "cloudpickle": cloudpickle.__version__,
-            "pickle5": pkg_resources.get_distribution("pickle5").version,
-            "hydra_ray_launcher": pkg_resources.get_distribution(
-                "hydra_ray_launcher"
-            ).version,
+            "omegaconf": "${ray_pkg_version:omegaconf}",
+            "hydra_core": "${ray_pkg_version:hydra}",
+            "ray": "${ray_pkg_version:ray}",
+            "cloudpickle": "${ray_pkg_version:cloudpickle}",
+            "pickle5": get_distribution("pickle5").version,
+            "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
         }
     )
 
