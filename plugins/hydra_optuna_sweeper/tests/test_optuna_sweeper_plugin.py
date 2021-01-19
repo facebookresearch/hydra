@@ -152,3 +152,41 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     else:
         assert returns["best_params"]["y"] == 0
     assert returns["best_value"] == 0
+
+
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.parametrize("with_commandline", (True, False))
+def test_optuna_mo_example(with_commandline: bool, tmpdir: Path) -> None:
+    cmd = [
+        "example/mo.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.sweeper.optuna_config.n_trials=20",
+        "hydra.sweeper.optuna_config.n_jobs=1",
+        "hydra.sweeper.optuna_config.sampler=random",
+        "hydra.sweeper.optuna_config.seed=123",
+    ]
+    if with_commandline:
+        cmd += [
+            "x=range(0, 5)",
+            "y=range(0, 3)",
+        ]
+    get_run_output(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
+    assert returns.name == "optuna"
+    if with_commandline:
+        assert len(returns["pareto_front"]) == 12
+        for trial in returns["pareto_front"]:
+            assert trial["params"]["x"] % 1 == 0
+            assert trial["params"]["y"] % 1 == 0
+            assert trial["values"][0] % 1 == 0
+            assert trial["values"][1] % 1 == 0
+    else:
+        assert len(returns["pareto_front"]) == 13
+        for trial in returns["pareto_front"]:
+            assert trial["params"]["x"] % 1 in {0, 0.5}
+            assert trial["params"]["y"] % 1 in {0, 0.5}
+            assert trial["values"][0] % 1 == 0
+            assert trial["values"][1] % 1 in {0, 0.25, 0.5}
