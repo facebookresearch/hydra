@@ -21,9 +21,11 @@ class RayLauncherConf:
     ray: RayConf = RayConf()
 
 
-def _pkg_version(mdl_name: str) -> str:
+def _pkg_version(mdl_name: str) -> Optional[str]:
     mdl = import_module(mdl_name)
-    return mdl.__version__
+    ret = getattr(mdl, ".__version__")
+    assert ret is None or isinstance(ret, str)
+    return ret
 
 
 OmegaConf.register_resolver("ray_pkg_version", _pkg_version)

@@ -8,7 +8,10 @@ from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 
-from hydra_plugins.hydra_ray_launcher._config import RayAWSConf, RsyncConf
+from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore
+    RayAWSConf,
+    RsyncConf,
+)
 
 log = logging.getLogger(__name__)
 
