@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Dict, List, MutableMapping, Optional
+from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
 
 import optuna
 from hydra.core.config_loader import ConfigLoader
@@ -16,7 +16,7 @@ from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from hydra.utils import get_class
-from omegaconf import DictConfig, ListConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalChoiceType,
@@ -172,7 +172,7 @@ class OptunaSweeperImpl(Sweeper):
         sampler = sampler_class(seed=self.optuna_config.seed)
 
         directions: List[str]
-        if isinstance(self.optuna_config.direction, ListConfig):
+        if isinstance(self.optuna_config.direction, MutableSequence):
             directions = [
                 d.name if isinstance(d, Direction) else d
                 for d in self.optuna_config.direction
