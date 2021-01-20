@@ -157,9 +157,9 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
 # https://github.com/pyreadline/pyreadline/issues/65
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @pytest.mark.parametrize("with_commandline", (True, False))
-def test_optuna_mo_example(with_commandline: bool, tmpdir: Path) -> None:
+def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
-        "example/mo.py",
+        "example/multi-objective.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.sweeper.optuna_config.n_trials=20",
@@ -172,7 +172,7 @@ def test_optuna_mo_example(with_commandline: bool, tmpdir: Path) -> None:
             "x=range(0, 5)",
             "y=range(0, 3)",
         ]
-    get_run_output(cmd)
+    run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
