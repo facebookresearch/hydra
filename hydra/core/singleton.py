@@ -20,6 +20,7 @@ class Singleton(type):
     def get_state() -> Any:
         try:
             from hydra.core.plugins import Plugins
+
             del Singleton._instances[Plugins]
         except KeyError:
             pass
@@ -32,5 +33,6 @@ class Singleton(type):
     def set_state(state: Any) -> None:
         Singleton._instances = state["instances"]
         from hydra.core.plugins import Plugins
+
         Plugins.instance()
         BaseContainer._resolvers = deepcopy(state["omegaconf_resolvers"])
