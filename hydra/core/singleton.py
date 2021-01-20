@@ -18,6 +18,11 @@ class Singleton(type):
 
     @staticmethod
     def get_state() -> Any:
+        try:
+            from hydra.core.plugins import Plugins
+            del Singleton._instances[Plugins]
+        except KeyError:
+            pass
         return {
             "instances": Singleton._instances,
             "omegaconf_resolvers": deepcopy(BaseContainer._resolvers),
@@ -26,4 +31,6 @@ class Singleton(type):
     @staticmethod
     def set_state(state: Any) -> None:
         Singleton._instances = state["instances"]
+        from hydra.core.plugins import Plugins
+        Plugins.instance()
         BaseContainer._resolvers = deepcopy(state["omegaconf_resolvers"])
