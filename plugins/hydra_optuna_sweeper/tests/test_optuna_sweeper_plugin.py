@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -177,16 +177,22 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
     if with_commandline:
-        assert len(returns["pareto_front"]) == 12
-        for trial in returns["pareto_front"]:
-            assert trial["params"]["x"] % 1 == 0
-            assert trial["params"]["y"] % 1 == 0
-            assert trial["values"][0] % 1 == 0
-            assert trial["values"][1] % 1 == 0
+        for trial_x in returns["pareto_front"]:
+            assert trial_x["params"]["x"] % 1 == 0
+            assert trial_x["params"]["y"] % 1 == 0
+            # The trials must not dominate each other.
+            for trial_y in returns["pareto_front"]:
+                assert not _dominates(trial_x, trial_y)
     else:
-        assert len(returns["pareto_front"]) == 13
-        for trial in returns["pareto_front"]:
-            assert trial["params"]["x"] % 1 in {0, 0.5}
-            assert trial["params"]["y"] % 1 in {0, 0.5}
-            assert trial["values"][0] % 1 == 0
-            assert trial["values"][1] % 1 in {0, 0.25, 0.5}
+        for trial_x in returns["pareto_front"]:
+            assert trial_x["params"]["x"] % 1 in {0, 0.5}
+            assert trial_x["params"]["y"] % 1 in {0, 0.5}
+            # The trials must not dominate each other.
+            for trial_y in returns["pareto_front"]:
+                assert not _dominates(trial_x, trial_y)
+
+
+def _dominates(values_x: List[float], values_y: List[float]) -> bool:
+    return all(x <= y for x, y in zip(values_x, values_y)) and any(
+        x < y for x, y in zip(values_x, values_y)
+    )
