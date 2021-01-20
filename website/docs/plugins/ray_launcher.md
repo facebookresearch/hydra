@@ -4,17 +4,15 @@ title: Ray Launcher plugin
 sidebar_label: Ray Launcher plugin
 ---
 
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-ray-launcher)](https://pypi.org/project/hydra-ray-launcher/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-ray-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ray-launcher)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher)
-
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)(https://pypistats.org/packages/hydra-optuna-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_ray_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ray_launcher"/>
 
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`. 
  `ray_aws` launches jobs remotely on AWS and is built on top of [Ray cluster launcher](https://docs.ray.io/en/latest/cluster/launcher.html). `ray` launches jobs on your local machine or existing ray cluster. 
-
 
 ### Installation
 
@@ -39,7 +37,7 @@ defaults:
 `ray cluster launcher` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
 :::
 
-`ray cluster launcher` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in [`RayClusterConf`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/__init__.py), 
+`ray cluster launcher` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in <GithubLink to="plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/_config.py">here</GithubLink>
 
 <details><summary>Discover ray_aws launcher's config</summary>
 
@@ -120,7 +118,7 @@ sync_down:
 
 #### Examples
 
-The following examples can be found [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples).
+The following examples can be found <GithubLink to="plugins/hydra_ray_launcher/examples">here</GithubLink>.
 
 <details><summary>Simple app</summary>
 
@@ -217,7 +215,7 @@ hydra.launcher.ray.cluster.provider.cache_stopped_nodes=true
 `ray` launcher lets you launch application on your ray cluster or local machine. You can easily config how your jobs are executed by changing `ray` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray.yaml`
  
- The [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ray_launcher/examples/simple) starts a new ray cluster. 
+ The <GithubLink to="plugins/hydra_ray_launcher/examples/simple">example application</GithubLink> starts a new ray cluster.
 ```commandline
 $ python my_app.py  --multirun hydra/launcher=ray
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-16-28
@@ -238,4 +236,7 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 ```
 
 ### Configure `ray.init()` and `ray.remote()`
-Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). You can configure `ray` by overriding `hydra.launcher.ray.init` and `hydra.launcher.ray.remote`. Check out an [example config](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ray_launcher/examples/simple/config.yaml).
+Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init) 
+and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). 
+You can configure `ray` by overriding `hydra.launcher.ray.init` and `hydra.launcher.ray.remote`. 
+Check out an <GithubLink to="plugins/hydra_ray_launcher/examples/simple/config.yaml">example config</GithubLink>.

@@ -4,6 +4,8 @@ title: Compose API
 sidebar_label: Compose API
 ---
 
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 The compose API can compose a config similarly to `@hydra.main()` anywhere in the code.  
 Prior to calling compose(), you have to initialize Hydra: This can be done by using the standard `@hydra.main()`
 or by calling one of the initialization methods listed below.
@@ -15,8 +17,8 @@ For example:
 
 - Inside a Jupyter notebook ([Example](../advanced/jupyter_notebooks.md))
 - Inside a unit test ([Example](../advanced/unit_testing.md))
-- In parts of your application that does not have access to the command line ([Example](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/ad_hoc_composition))
-- If you want to compose multiple configuration objects ([Example with Ray](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/ray_example/ray_compose_example.py))
+- In parts of your application that does not have access to the command line (<GithubLink to="examples/advanced/ad_hoc_composition">Example</GithubLink>).
+- To compose multiple configuration objects (<GithubLink to="examples/advanced/ray_example/ray_compose_example.py">Example with Ray</GithubLink>).
 
 <div class="alert alert--info" role="alert">
 Please avoid using the Compose API in cases where <b>@hydra.main()</b> can be used.  

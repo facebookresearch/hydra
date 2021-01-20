@@ -3,11 +3,13 @@ id: unit_testing
 title: Hydra in Unit Tests
 ---
 
+import GithubLink from "@site/src/components/GithubLink"
+
 Use `initialize()`, `initialize_config_module()` or `initialize_config_dir()` in conjunction with `compose()`
 to compose configs inside your unit tests.  
 Be sure to read the [Compose API documentation](../experimental/hydra_compose.md).
 
-The Hydra example application contains c complete [example test](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example/tests/test_example.py).
+The Hydra example application contains an <GithubLink to="examples/advanced/hydra_app_example/tests/test_example.py">example test</GithubLink>.
 
 ```python title="Testing example with initialize()"
 from hydra.experimental import initialize, compose

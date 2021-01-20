@@ -3,7 +3,10 @@ id: overview
 title: Instantiating objects with Hydra
 sidebar_label: Overview
 ---
-[![Example applications](https://img.shields.io/badge/-Example%20applications-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/instantiate)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink text="Example applications" to="examples/instantiate"/>
 
 One of the best ways to drive different behavior in an application is to instantiate different implementations of an interface.
 The code using the instantiated object only knows the interface which remains constant, but the behavior

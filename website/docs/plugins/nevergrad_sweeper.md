@@ -4,13 +4,12 @@ title: Nevergrad Sweeper plugin
 sidebar_label: Nevergrad Sweeper plugin
 ---
 
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-nevergrad-sweeper)](https://pypi.org/project/hydra-nevergrad-sweeper/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-nevergrad-sweeper)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-nevergrad-sweeper)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-nevergrad-sweeper.svg)](https://pypistats.org/packages/hydra-nevergrad-sweeper)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_nevergrad_sweeper)
-
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-nevergrad-sweeper.svg)](https://pypistats.org/packages/hydra-nevergrad-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_nevergrad_sweeper/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_nevergrad_sweeper"/>
 
 [Nevergrad](https://facebookresearch.github.io/nevergrad/) is a derivative-free optimization platform providing a library of state-of-the-art algorithms for hyperparameter search. This plugin provides Hydra applications a mechanism to use [Nevergrad](https://facebookresearch.github.io/nevergrad/) algorithms to optimize experiment/application parameters.
 
@@ -27,12 +26,11 @@ defaults:
   - override hydra/sweeper: nevergrad
 ```
 
-
-The default configuration is [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py).
+The default configuration is <GithubLink to="plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py">here</GithubLink>.
 
 ## Example of training using Nevergrad hyperparameter search
 
-We include an example of how to use this plugin. The file [`example/my_app.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_nevergrad_sweeper/example/my_app.py) implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.
+We include an example of how to use this plugin. The file <GithubLink to="plugins/hydra_nevergrad_sweeper/example/my_app.py">example/my_app.py</GithubLink> implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.
 
 You can discover the Nevergrad sweeper parameters with:
 ```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"

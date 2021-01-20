@@ -4,12 +4,12 @@ title: Optuna Sweeper plugin
 sidebar_label: Optuna Sweeper plugin
 ---
 
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-optuna-sweeper)](https://img.shields.io/pypi/v/hydra-optuna-sweeper)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-optuna-sweeper)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-optuna-sweeper)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-optuna-sweeper.svg)](https://pypistats.org/packages/hydra-optuna-sweeper)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_optuna_sweeper/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_optuna_sweeper)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-optuna-sweeper.svg)](https://pypistats.org/packages/hydra-optuna-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_optuna_sweeper/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_optuna_sweeper"/>
 
 
 This plugin enables Hydra applications to utilize [Optuna](https://optuna.org) for the optimization of the parameters of experiments.
@@ -31,7 +31,7 @@ defaults:
 
 Alternatively, add `hydra/sweeper=optuna` option to your command line.
 
-The default configuration is [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py).
+The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py">here</GithubLink>.
 
 ## Example
 

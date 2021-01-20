@@ -2,7 +2,10 @@
 id: minimal_example
 title: Minimal example
 ---
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/1_minimal/)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/1_minimal"/>
 
 There are four key elements in this example:
 - A `@dataclass` describes the application's configuration

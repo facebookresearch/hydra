@@ -3,6 +3,8 @@ id: fair-cluster
 title: Hydra on the FAIR cluster
 ---
 
+import GithubLink from "@site/src/components/GithubLink"
+
 Hydra 1.0rc is available on FAIR Cluster. The recommended way for installation is via meta package [hydra-fair-plugin](https://github.com/fairinternal/hydra-fair-plugins).
 
 ## Hydra FAIR Plugins
@@ -35,7 +37,8 @@ hydra-submitit==0.2.0
 <details>
 <summary>1.0 (Release candidate), compatible with Hydra 1.0rc</summary>
 
-With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved [here](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher). Read this [doc](/docs/plugins/submitit_launcher) on installation/usage info.
+With [`Submitit`](https://github.com/facebookincubator/submitit) open sourced, the corresponding plugin has been moved 
+<GithubLink to="plugins/hydra_submitit_launcher">here</GithubLink>. Read this [doc](/docs/plugins/submitit_launcher) on installation/usage info.
 
 ### Clean Install
  

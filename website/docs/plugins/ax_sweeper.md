@@ -3,12 +3,14 @@ id: ax_sweeper
 title: Ax Sweeper plugin
 sidebar_label: Ax Sweeper plugin
 ---
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-ax-sweeper)](https://img.shields.io/pypi/v/hydra-ax-sweeper)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-ax-sweeper)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ax-sweeper)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ax-sweeper.svg)](https://pypistats.org/packages/hydra-ax-sweeper)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ax_sweeper/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_ax_sweeper)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ax-sweeper.svg)](https://pypistats.org/packages/hydra-ax-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_ax_sweeper/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ax_sweeper"/>
+
 
 This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform, aka Ax](https://ax.dev/). Ax can optimize any experiment - machine learning experiments, A/B tests, and simulations. 
 
@@ -25,7 +27,10 @@ defaults:
   - override hydra/sweeper: ax
 ```
 
-We include an example of how to use this plugin. The file [`example/banana.py`](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_ax_sweeper/example/banana.py) implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). The return value of the function should be the value that we want to optimize.
+We include an example of how to use this plugin. The file <GithubLink to="plugins/hydra_ax_sweeper/example/banana.py">example/banana.py</GithubLink>
+implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). 
+The return value of the function should be the value that we want to optimize.
+
 
 To compute the best parameters for the Banana function, clone the code and run the following command in the `plugins/hydra_ax_sweeper` directory:
 

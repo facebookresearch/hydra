@@ -2,7 +2,10 @@
 id: select_multiple_configs_from_config_group
 title: Selecting multiple configs from a Config Group
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/multi-select)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink text="Example application" to="examples/patterns/multi-select"/>
 
 ### Problem
 In some scenarios, one may need to select multiple configs from the same Config Group.

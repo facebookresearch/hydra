@@ -3,15 +3,15 @@ id: submitit_launcher
 title: Submitit Launcher plugin
 sidebar_label: Submitit Launcher plugin
 ---
+
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-submitit-launcher)](https://pypi.org/project/hydra-submitit-launcher/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-submitit-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-submitit-launcher)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-submitit-launcher.svg)](https://pypistats.org/packages/hydra-submitit-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-submitit-launcher.svg)](https://pypistats.org/packages/hydra-submitit-launcher)<ExampleGithubLink text="Example application" to="plugins/hydra_submitit_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_submitit_launcher"/>
 
-The Submitit Launcher plugin provides a [SLURM ](https://slurm.schedmd.com/documentation.html) Launcher based on [Submitit](https://github.com/facebookincubator/submitit).
-
+The Submitit Launcher plugin provides a [SLURM](https://slurm.schedmd.com/documentation.html) Launcher based on [Submitit](https://github.com/facebookincubator/submitit).
 
 ### Installation
 ```commandline
@@ -73,13 +73,15 @@ You can set all these parameters in your configuration file and/or override them
 ```text
 python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
-For more details, including descriptions for each parameter, check out the [config file](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py). You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
+For more details, including descriptions for each parameter, check out the <GithubLink to="plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">config file</GithubLink>. 
+You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
+
 
 **Caution**: use of `--multirun` is required for the launcher to be picked up.
 
 ### Example
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_submitit_launcher/example) using this launcher is provided in the plugin repository.
+An <GithubLink to="plugins/hydra_submitit_launcher/example">example application</GithubLink> using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py task=1,2,3 --multirun` (see [Multi-run](../tutorials/basic/running_your_app/2_multirun.md) for details) will launch 3 executions (you can override the launcher to run locally for testing by adding `hydra/launcher=submitit_local`):
 

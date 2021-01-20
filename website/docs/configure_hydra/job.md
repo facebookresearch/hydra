@@ -5,8 +5,10 @@ hide_title: true
 ---
 ## Job configuration
 
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 The job configuration resides in `hydra.job`.
-The structure definition is below, the latest definition [in the code](https://github.com/facebookresearch/hydra/blob/master/hydra/conf/__init__.py).
+The Structured Config is below, the latest definition is <GithubLink to="hydra/conf/__init__.py">here</GithubLink>.
 
 <details><summary>Expand definition</summary>
 
@@ -54,11 +56,11 @@ class JobConf:
 
 ## Documentation
 ### hydra.job.name
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/configure_hydra/job_name)
+<ExampleGithubLink text="Example application" to="examples/configure_hydra/job_name"/>
 
 The job name is used by different things in Hydra, such as the log file name (`${hydra.job.name}.log`).
-It is normally derived from the Python file name (file: `train.py` -> name: `train`).
-You can override it via the command line or your config file. 
+It is normally derived from the Python file name (The job name of the file `train.py` is `train`).
+You can override it via the command line, or your config file. 
 
 ### hydra.job.override_dirname
 This field is populated automatically using your command line arguments and is typically being used as a part of your 

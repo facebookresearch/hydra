@@ -4,16 +4,14 @@ title: Hydra plugins types
 sidebar_label: Hydra plugins
 ---
 
+import GithubLink from "@site/src/components/GithubLink"
+
 Hydra can be extended via plugins.
-You can see example plugins [here](https://github.com/facebookresearch/hydra/tree/master/examples/plugins).
+The example plugins <GithubLink to="examples/plugins">here</GithubLink> can help you get started with plugin development.
 
-<div class="alert alert--info" role="alert">
-<strong>NOTE</strong>:
-If you develop plugins, please join the <a href="https://hydra-framework.zulipchat.com/#narrow/stream/233935-Hydra-plugin.20dev.20announcements">plugin developer announcement channel</a> in the chat.
-</div>
-<br/>
-
-
+:::info
+If you develop plugins, please join the <a href="https://hydra-framework.zulipchat.com/#narrow/stream/233935-Hydra-plugin.20dev.20announcements">Plugin developer announcement chat channel</a>.
+:::
 
 ## Plugin discovery
 The plugin discovery process runs whenever Hydra starts. During plugin discovery, Hydra scans for plugins in all the submodules of `hydra_plugins`. Hydra will import each module and look for plugins defined in that module.

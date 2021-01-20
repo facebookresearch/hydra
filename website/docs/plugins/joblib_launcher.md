@@ -3,12 +3,13 @@ id: joblib_launcher
 title: Joblib Launcher plugin
 sidebar_label: Joblib Launcher plugin
 ---
+
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-joblib-launcher)](https://pypi.org/project/hydra-joblib-launcher/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-joblib-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-joblib-launcher)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-joblib-launcher.svg)](https://pypistats.org/packages/hydra-joblib-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-joblib-launcher.svg)](https://pypistats.org/packages/hydra-joblib-launcher)<ExampleGithubLink text="Example application" to="plugins/hydra_joblib_launcher/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_joblib_launcher"/>
 
 The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
@@ -26,7 +27,7 @@ defaults:
 ```
 By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
 
-The JobLibLauncherConf backing the config is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py):
+The JobLibLauncherConf backing the config is defined <GithubLink to="plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py">here</GithubLink>:
 
 You can discover the Joblib Launcher parameters with:
 ```yaml title="$ python your_app.py hydra/launcher=joblib --cfg hydra -p hydra.launcher"
@@ -51,7 +52,7 @@ See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/pa
 NOTE: The only supported JobLib backend is Loky (process-based parallelism).
 </div><br/>
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_joblib_launcher/example) using this launcher is provided in the plugin repository.
+An <GithubLink to="plugins/hydra_joblib_launcher/example">example application</GithubLink> using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch five parallel executions:
 
