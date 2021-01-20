@@ -65,7 +65,9 @@ class RayProviderConf:
     region: str = "us-west-2"
     availability_zone: str = "us-west-2a,us-west-2b"
     cache_stopped_nodes: bool = False
-    key_pair: Dict[str, str] = field(default_factory=lambda: {"key_name": "hydra"})
+    key_pair: Dict[str, str] = field(
+        default_factory=lambda: {"key_name": "hydra-${env:USER,user}"}
+    )
 
 
 @dataclass
