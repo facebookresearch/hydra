@@ -3,7 +3,9 @@ id: hierarchical_static_config
 title: A hierarchical static configuration
 ---
 
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/2_static_complex/)
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/2_static_complex"/>
 
 Dataclasses can be nested and then accessed via a common root.  The entire tree is type checked.
 

@@ -3,12 +3,13 @@ id: rq_launcher
 title: RQ Launcher plugin
 sidebar_label: RQ Launcher plugin
 ---
+
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 [![PyPI](https://img.shields.io/pypi/v/hydra-rq-launcher)](https://pypi.org/project/hydra-rq-launcher/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-rq-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-rq-launcher)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-rq-launcher.svg)](https://pypistats.org/packages/hydra-rq-launcher)
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_rq_launcher/example)
-[![Plugin source](https://img.shields.io/badge/-Plugin%20source-informational)](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_rq_launcher)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-rq-launcher.svg)](https://pypistats.org/packages/hydra-rq-launcher)<ExampleGithubLink text="Example application" to="plugins/hydra_rq_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_rq_launcher"/>
 
 The RQ Launcher plugin provides a launcher for distributed execution and job queuing based on [Redis Queue (RQ)](https://python-rq.org).
 
@@ -31,7 +32,8 @@ defaults:
   - override hydra/launcher: rq
 ```
 
-The configuration packaged with the plugin is defined [here](https://github.com/facebookresearch/hydra/blob/master/plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py). The default configuration is as follows:
+The configuration packaged with the plugin is defined <GithubLink to="plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py">here</GithubLink>.
+The default configuration is as follows:
 
 ```yaml title="$ python your_app.py hydra/launcher=rq --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
@@ -72,7 +74,7 @@ Assuming configured environment variables, workers connecting to the Redis serve
 rq worker --url redis://:$REDIS_PASSWORD@$REDIS_HOST:$REDIS_PORT/$REDIS_DB
 ```
 
-An [example application](https://github.com/facebookresearch/hydra/tree/master/plugins/hydra_rq_launcher/example) using this launcher is provided in the plugin repository.
+An <GithubLink to="plugins/hydra_rq_launcher/example">example application</GithubLink> using this launcher is provided in the plugin repository.
 
 Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will enqueue five jobs to be processed by worker instances:
 

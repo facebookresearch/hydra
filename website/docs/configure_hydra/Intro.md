@@ -4,6 +4,8 @@ title: Overview
 sidebar_label: Introduction
 ---
 
+import GithubLink from "@site/src/components/GithubLink"
+
 Many things in Hydra can be customized. This includes:
 * Launcher configurations
 * Sweeper configuration
@@ -28,7 +30,7 @@ defaults:
   - sweeper: basic            # Sweeper config
   - output: default           # Output directory
 ```
-You can view the Hydra config structure [here](https://github.com/facebookresearch/hydra/tree/master/hydra/conf).
+You can view the Hydra config structure <GithubLink to="hydra/conf/__init__.py">here</GithubLink>.
 
 You can view the Hydra config using `--cfg hydra`:
 ```yaml title="$ python my_app.py --cfg hydra"

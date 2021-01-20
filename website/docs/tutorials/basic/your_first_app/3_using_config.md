@@ -3,7 +3,9 @@ id: using_config
 title: Using the config object
 ---
 
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/3_using_config)
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/3_using_config"/>
 
 Here are some basic features of the Hydra Configuration Object:
 

@@ -4,8 +4,10 @@ title: Documentation
 sidebar_label: Documentation
 ---
 
+import GithubLink from "@site/src/components/GithubLink"
+
 ## NEWS Entries
-The [`NEWS.md`](https://github.com/facebookresearch/hydra/blob/master/NEWS.md) file is managed using `towncrier` and all non-trivial changes
+The <GithubLink to="NEWS.md">NEWS.md</GithubLink> file is managed using `towncrier` and all non-trivial changes
 must be accompanied by a news entry.
 
 To add an entry to the news file, first, you need to have created an issue
@@ -66,4 +68,4 @@ $ yarn start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
-For more details, refer [here](https://github.com/facebookresearch/hydra/blob/master/website/README.md).
+For more details, refer <GithubLink to="website/README.md">here</GithubLink>.

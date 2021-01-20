@@ -3,7 +3,10 @@ id: config_files
 title: Config files example
 sidebar_label: Config files example
 ---
-[![Example applications](https://img.shields.io/badge/-Example%20applications-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/instantiate)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink text="Example applications" to="examples/instantiate"/>
 
 This example demonstrates the use of config files to instantiated objects.
 

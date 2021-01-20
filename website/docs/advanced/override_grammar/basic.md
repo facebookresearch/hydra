@@ -3,6 +3,9 @@ id: basic
 hide_title: true
 sidebar_label: Basic Override syntax
 ---
+
+import GithubLink from "@site/src/components/GithubLink"
+
 ## Basic Override syntax
 You can manipulate your configuration with overrides (via the command line or the Compose API). This includes:
 - Modifying the the `Defaults List`
@@ -24,10 +27,7 @@ The rest are manipulating the config object.
 
 ## Grammar
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.
-Below are the parser rules from grammar.
-You can see the full grammar on GitHub
-([lexer](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideLexer.g4) and
-[parser](https://github.com/facebookresearch/hydra/tree/master/hydra/grammar/OverrideParser.g4)).
+Below are the parser rules from grammar. You can see the full <GithubLink to="hydra/grammar/OverrideLexer.g4">Lexer</GithubLink> and <GithubLink to="hydra/grammar/OverrideParser.g4">Parser</GithubLink> definitions on GitHub.
 
 ```antlr4 title="OverrideParser.g4"
 // High-level command-line override.

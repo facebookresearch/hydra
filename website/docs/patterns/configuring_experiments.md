@@ -2,7 +2,10 @@
 id: configuring_experiments
 title: Configuring Experiments
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/configuring_experiments)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink text="Example application" to="examples/patterns/configuring_experiments"/>
 
 ### Problem
 A common problem is maintaining multiple configurations of an application.  This can get especially 

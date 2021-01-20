@@ -3,13 +3,15 @@ id: app_packaging
 title: Application packaging
 sidebar_label: Application packaging 
 ---
-[![Example application](https://img.shields.io/badge/-Example%20application-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example)
+
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/advanced/hydra_app_example"/>
 
 You can package your Hydra application along with its configuration.
-There is a working example [here](https://github.com/facebookresearch/hydra/tree/master/examples/advanced/hydra_app_example).
+An example <GithubLink to="examples/advanced/hydra_app_example">standalone application</GithubLink> is included in the repo.
 
-You can run it with:
-
+Run it with:
 ```yaml
 $ python examples/advanced/hydra_app_example/hydra_app/main.py
 dataset:
@@ -17,14 +19,14 @@ dataset:
   path: /datasets/imagenet
 ```
 
-To install it, use:
+Install it with:
 ```text
 $ pip install examples/advanced/hydra_app_example
 ...
 Successfully installed hydra-app-0.1
 ```
 
-Run the installed app with:
+Once installed, run the installed app with:
 ```yaml
 $ hydra_app
 dataset:

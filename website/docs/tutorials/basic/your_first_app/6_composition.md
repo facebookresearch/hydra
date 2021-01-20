@@ -3,7 +3,9 @@ id: composition
 title: Putting it all together
 ---
 
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/6_composition)
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/6_composition"/>
 
 As software gets more complex, we resort to modularity and composition to keep it manageable. 
 We can do the same with configs. Suppose we want our working example to support multiple databases, with

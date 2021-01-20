@@ -2,7 +2,10 @@
 id: extending_configs
 title: Extending Configs
 ---
-[![Example application](https://img.shields.io/badge/-Example%20applications-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/patterns/extending_configs)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink text="Example application" to="examples/patterns/extending_configs"/>
 
 A common pattern is to extend an existing config, overriding and/or adding new config values to it.
 The extension is done by including the base configuration, and then overriding the chosen values in the current config.

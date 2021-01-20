@@ -3,6 +3,7 @@ id: intro
 title: Getting started
 sidebar_label: Getting started
 ---
+
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Link from '@docusaurus/Link';
 

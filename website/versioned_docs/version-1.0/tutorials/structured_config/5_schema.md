@@ -2,7 +2,10 @@
 id: schema
 title: Structured config schema
 ---
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/tutorials/structured_configs/5_structured_config_schema/)
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/5_structured_config_schema"/>
 
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
 

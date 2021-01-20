@@ -3,7 +3,9 @@ id: config_file
 title: Specifying a config file
 ---
 
-[![Example](https://img.shields.io/badge/-Example-informational)](https://github.com/facebookresearch/hydra/tree/master/examples/tutorials/basic/your_first_hydra_app/2_config_file)
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/2_config_file"/>
 
 It can get tedious to type all those command line arguments.
 One solution is to create a configuration file in YAML format and place it next to `my_app.py`.
