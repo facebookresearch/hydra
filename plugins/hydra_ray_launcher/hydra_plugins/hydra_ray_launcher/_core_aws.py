@@ -9,13 +9,7 @@ import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
-from hydra.core.utils import (
-    JobReturn,
-    JobRuntime,
-    configure_log,
-    filter_overrides,
-    setup_globals,
-)
+from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
@@ -100,8 +94,7 @@ def launch(
             tmp_dir=local_tmp_dir,
             sweep_configs=sweep_configs,  # type: ignore
             task_function=launcher.task_function,
-            job_runtime=JobRuntime.instance().conf,
-            omegaconf_resolvers=Singleton.get_state().get("omegaconf_resolvers"),
+            singleton_state=Singleton.get_state(),
         )
 
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:

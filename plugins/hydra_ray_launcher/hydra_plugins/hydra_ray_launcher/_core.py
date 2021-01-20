@@ -5,13 +5,7 @@ from typing import Sequence
 
 import ray
 from hydra.core.singleton import Singleton
-from hydra.core.utils import (
-    JobReturn,
-    JobRuntime,
-    configure_log,
-    filter_overrides,
-    setup_globals,
-)
+from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import open_dict
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
@@ -57,13 +51,11 @@ def launch(
             # but instead should be populated remotely before calling the task_function.
             sweep_config.hydra.job.id = f"job_id_for_{idx}"
             sweep_config.hydra.job.num = idx
-
             ray_obj = launch_job_on_ray(
                 launcher.ray_cfg.remote,
                 sweep_config,
                 launcher.task_function,
-                JobRuntime.instance().conf,
-                Singleton.get_state().get("omegaconf_resolvers"),
+                Singleton.get_state(),
             )
             runs.append(ray_obj)
 
