@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Sequence
 import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
 from hydra.core.hydra_config import HydraConfig
+from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
@@ -89,6 +90,10 @@ def launch(
                 sweep_config.hydra.job.num = idx
 
             sweep_configs.append(sweep_config)
+
+        state = Singleton.get_state()
+        del state.get("instances")[Plugins]
+        Singleton.set_state(state)
 
         _pickle_jobs(
             tmp_dir=local_tmp_dir,
