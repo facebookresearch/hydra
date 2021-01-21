@@ -4,35 +4,31 @@ title: Multi-run
 sidebar_label: Multi-run
 ---
 
-Sometimes you want to run the same application with multiple different values for the same parameter.  
-e.g. running a performance test on each of the databases.
+Sometimes you want to run the same application with multiple different configurations.  
+E.g. running a performance test on each of the databases with each of the schemas.
 
-To do that, use the `--multirun` (`-m`) flag and pass a comma separated list for each dimension you want to sweep.  
+Use the `--multirun` (`-m`) flag and pass a comma separated list specifying the values for each dimension you want to sweep.
 
-To run your program with the 3 different schemas in schema config group:
-```
-$ python my_app.py -m schema=warehouse,support,school
-```
-
-You can sweep over multiple parameters at the same time.  
 The following sweeps over all combinations of the dbs and schemas.
-```text
- $ python my_app.py schema=warehouse,support,school db=mysql,postgresql -m
-[2019-10-01 14:44:16,254] - Launching 6 jobs locally
-[2019-10-01 14:44:16,254] - Sweep output dir : multirun/2019-10-01/14-44-16
-[2019-10-01 14:44:16,254] -     #0 : schema=warehouse db=mysql
-[2019-10-01 14:44:16,321] -     #1 : schema=warehouse db=postgresql
-[2019-10-01 14:44:16,390] -     #2 : schema=support db=mysql
-[2019-10-01 14:44:16,458] -     #3 : schema=support db=postgresql
-[2019-10-01 14:44:16,527] -     #4 : schema=school db=mysql
-[2019-10-01 14:44:16,602] -     #5 : schema=school db=postgresql
+```text title="$ python my_app.py -m db=mysql,postgresql schema=warehouse,support,school"
+[2021-01-20 17:25:03,317][HYDRA] Launching 6 jobs locally
+[2021-01-20 17:25:03,318][HYDRA]        #0 : db=mysql schema=warehouse
+[2021-01-20 17:25:03,458][HYDRA]        #1 : db=mysql schema=support
+[2021-01-20 17:25:03,602][HYDRA]        #2 : db=mysql schema=school
+[2021-01-20 17:25:03,755][HYDRA]        #3 : db=postgresql schema=warehouse
+[2021-01-20 17:25:03,895][HYDRA]        #4 : db=postgresql schema=support
+[2021-01-20 17:25:04,040][HYDRA]        #5 : db=postgresql schema=school
 ```
-The printed configurations have been omitted for brevity
+The printed configurations have been omitted for brevity.
 
-:::info
-Hydra supports other kinds of sweeps. For example a range sweep: **x=range(1,10)** or a glob: **support=glob(*)**. 
+### Additional sweep types
+Hydra supports other kinds of sweeps, e.g:
+```python
+x=range(1,10)                  # 1-9
+schema=glob(*)                 # warehouse,support,school
+schema=glob(*,exclude=w*)      # support,school
+```
 See the [Extended Override syntax](/advanced/override_grammar/extended.md) for details.
-:::
 
 ### Sweeper
 The default sweeping logic is built into Hydra. Additional sweepers are available as plugins.

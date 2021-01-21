@@ -1,6 +1,6 @@
 ---
 id: defaults
-title: The Defaults List
+title: Selecting default configs
 ---
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
@@ -10,7 +10,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 After office politics, you decide that you want to use MySQL by default.
 You no longer want to type `+db=mysql` every time you run your application.
 
-You can add a **Default List** to your config file.  
+You can add a **Default List** to your config file. 
 A **Defaults List** is a list telling Hydra how to compose the final config object. 
 By convention, it is the first item in the config.
 
@@ -79,6 +79,5 @@ Config files that are not part of a config group will always be loaded. They can
 Prefer using a config group.
 
 :::info
-This tutorial page briefly describes the Defaults List. 
-Refer to [Reference Manual/The Defaults List](../../../advanced/defaults_list) for more information.
+For more information about the Defaults List see [Reference Manual/The Defaults List](../../../advanced/defaults_list).
 :::
