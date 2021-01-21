@@ -32,9 +32,12 @@ To do this in Hydra, we first add a `schema` and a `ui` config group:
 ```
 
 With these configs, we already have 12 possible combinations. Without composition, we would need 12 separate configs. 
-A single change (such as renaming `db.user` to `db.username`) would need to be done separately in every one of them. 
+A single change, such as renaming `db.user` to `db.username`, requires editing all 12 of them. 
+This is a maintenance nightmare.
 
-This is a maintenance nightmare. Composition can come to the rescue.
+Composition can come to the rescue.
+Instead of creating 12 different config files, that fully specify each
+config, create a single config that specifies the different configuration dimensions, and the default for each.
 
 ```yaml title="config.yaml"
 defaults:
@@ -43,7 +46,9 @@ defaults:
   - schema: school
 ```
 
-The resulting configuration would be a composition of `mysql`, `full` ui and the `school` database schema (which we are seeing for the first time here):
+The resulting configuration is a composition of the *mysql* database, the *full* ui, and the *school* schema 
+(which we are seeing for the first time here):
+
 ```yaml
 $ python my_app.py
 db:
@@ -68,9 +73,10 @@ schema:
     - class: int
 ```
 
-### Summary
- - The addition of each new db, schema, or ui only requires a single file
- - Each config group can have a default specified in the `defaults` list
- - Any combination can be composed by selecting the desired option from each config group in the `defaults` list or the command line.
-
 Stay tuned to see how to run all of the combinations automatically ([Multi-run](/tutorials/basic/running_your_app/2_multirun.md)).
+
+### Summary
+ - The addition of each new db, schema, or ui only requires a single file.
+ - Each config group can have a default specified in the Defaults List.
+ - Any combination can be composed by selecting the desired option from each config group in the 
+   Defaults List or the command line.

@@ -66,8 +66,8 @@ $ python my_app.py
 {}
 ```
 
-Select an item from the defaults list with **+GROUP=OPTION**, e.g: 
-```yaml
+Select an item from a config group with `+GROUP=OPTION`, e.g: 
+```yaml {2}
 $ python my_app.py +db=postgresql
 db:
   driver: postgresql
@@ -75,6 +75,11 @@ db:
   timeout: 10
   user: postgre_user
 ```
+
+By default, the config group determines where the config content is placed inside the final config object. 
+In Hydra, the path to the config content is referred to as the config `package`. 
+The package of `db/postgresql.yaml` is `db`:
+
 
 Like before, you can still override individual values in the resulting config:
 ```yaml
@@ -86,42 +91,9 @@ db:
   user: postgre_user
 ```
 
-By default, the config group determines the `package` of the config content inside the final config object.
-The package of `db/mysql.yaml` is `db`:
-```yaml title="Interpretation of db/mysql.yaml" {1}
-db:
-  driver: mysql
-  user: omry
-  password: secret 
-```
-
-:::info Advanced
-Config content can be relocated via package overrides.  
-This is an advanced topic covered in [Reference Manual/Packages](advanced/overriding_packages.md).
-:::
-
-
-### More advanced usages of config groups
-Config groups can be nested. For example the config group `db/mysql/engine` can contain `innodb.yaml` and `myisam.yaml`.
-When selecting an option from a nested config group, use `/`:
-```
-$ python my_app.py +db=mysql +db/mysql/engine=innodb
-db:
-  driver: mysql
-  user: omry
-  password: secret 
-  mysql:
-    engine:
-      innodb_data_file_path: /var/lib/mysql/ibdata1
-      max_file_size: 1G
-```
-
-This simple example also demonstrated a very powerful feature of Hydra:
-You can compose your configuration object from multiple configuration groups.
-
-:::info Advanced
-You can select multiple options from the same Config Group by specifying them as a list.  
-This is an advanced topic covered in [Common Patterns/Selecting multiple configs from a Config Group](patterns/select_multiple_configs_from_config_group.md).
-:::
+### Advanced topics
+ - Config content can be relocated via package overrides. See [Reference Manual/Packages](advanced/overriding_packages.md).    
+ - Multiple options can be selected from the same Config Group by specifying them as a list.  
+   See [Common Patterns/Selecting multiple configs from a Config Group](patterns/select_multiple_configs_from_config_group.md)  
 
 
