@@ -10,6 +10,10 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 It can get tedious to type all those command line arguments.
 One solution is to create a configuration file in YAML format and place it next to `my_app.py`.
 
+:::info NOTE
+Hydra only supports `.yaml` suffix.
+:::
+
 ```yaml title="config.yaml"
 db: 
   driver: mysql
