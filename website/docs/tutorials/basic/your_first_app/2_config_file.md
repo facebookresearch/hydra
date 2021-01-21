@@ -7,12 +7,9 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/2_config_file"/>
 
-It can get tedious to type all those command line arguments.
-One solution is to create a configuration file in YAML format and place it next to `my_app.py`.
-
-:::info NOTE
-Hydra only supports `.yaml` suffix.
-:::
+It can get tedious to type all those command line arguments. 
+You can solve it by creating a configuration file next to my_app.py.
+Hydra configuration files are yaml files and should have the .yaml file extension.
 
 ```yaml title="config.yaml"
 db: 
