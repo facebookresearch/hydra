@@ -214,42 +214,32 @@ class OptunaSweeperImpl(Sweeper):
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
-                if len(directions) == 1:
-                    try:
-                        study._tell(
-                            trial,
-                            optuna.trial.TrialState.COMPLETE,
-                            [float(ret.return_value)],
-                        )
-                    except (TypeError, ValueError):
-                        study._tell(trial, optuna.trial.TrialState.FAIL, None)
-                        log.warning(
-                            f"Return value must be a float value. Got {ret.return_value}."
-                        )
-                else:
-                    if not isinstance(ret.return_value, (list, tuple)):
-                        study._tell(trial, optuna.trial.TrialState.FAIL, None)
-                        log.warning(
-                            f"Return value is not a sequence. Got {ret.return_value}."
-                        )
+                values: Optional[List[float]] = None
+                state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
+                func_error: Optional[Exception] = None
+                try:
+                    if len(directions) == 1:
+                        values = [float(ret.return_value)]
                     else:
-                        if len(ret.return_value) != len(directions):
-                            study._tell(trial, optuna.trial.TrialState.FAIL, None)
-                            log.warning(
-                                f"The number of directions is {len(directions)}, but the number"
-                                f" of returned objective values is {len(ret.return_value)}"
+                        if not isinstance(ret.return_value, (list, tuple)):
+                            raise ValueError(
+                                f"Return value must be a float value. Got {ret.return_value}."
                             )
-                        else:
-                            try:
-                                study._tell(
-                                    trial,
-                                    optuna.trial.TrialState.COMPLETE,
-                                    [float(v) for v in ret.return_value],
-                                )
-                            except (TypeError, ValueError):
-                                log.warning(
-                                    f"Return value must be a sequence of float values. Got {ret.return_value}."
-                                )
+                        values = [float(v) for v in ret.return_value]
+                        if len(values) != len(directions):
+                            raise ValueError(
+                                "The number of the values and the number of the objectives are"
+                                f" mismatched. Expect {len(directions)}, but actually "
+                                f"{len(values)}."
+                            )
+                except Exception as e:
+                    state = optuna.trial.TrialState.FAIL
+                    func_error = e
+                finally:
+                    study._tell(trial, state, values)
+
+                if func_error is not None:
+                    raise func_error
 
             n_trials_to_go -= batch_size
 
