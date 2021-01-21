@@ -116,7 +116,7 @@ class OptunaSweeperImpl(Sweeper):
         if search_space:
             assert isinstance(search_space, DictConfig)
             self.search_space = {
-                x: create_optuna_distribution_from_config(y)
+                str(x): create_optuna_distribution_from_config(y)
                 for x, y in search_space.items()
             }
         self.job_idx: int = 0

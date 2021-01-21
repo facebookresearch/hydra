@@ -198,7 +198,7 @@ class CoreAxSweeper(Sweeper):
 
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
-        parameters: List[Dict[str, Any]] = []
+        parameters: List[Dict[Any, Any]] = []
         for key, value in self.ax_params.items():
             param = OmegaConf.to_container(value, resolve=True)
             assert isinstance(param, Dict)

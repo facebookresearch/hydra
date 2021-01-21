@@ -497,8 +497,8 @@ class IntegrationTestSuite:
         extra_flags: List[str],
     ) -> None:
         overrides = extra_flags + overrides
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
-        task_config = OmegaConf.create(task_config or {})  # type: ignore
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
+        task_config = OmegaConf.create(task_config or {})
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
 
@@ -606,7 +606,7 @@ class IntegrationTestSuite:
         extra_flags: List[str],
     ) -> None:
         overrides = extra_flags + overrides
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
         task_config = OmegaConf.create(task_config or {})  # type: ignore
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
@@ -630,7 +630,7 @@ class IntegrationTestSuite:
         self, tmpdir: Path, task_launcher_cfg: DictConfig, extra_flags: List[str]
     ) -> None:
         overrides = extra_flags
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
         task_config = OmegaConf.create()
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
@@ -652,7 +652,7 @@ class IntegrationTestSuite:
             "hydra.sweep.dir=cli_dir",
             "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
         ]
-        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})  # type: ignore
+        task_launcher_cfg = OmegaConf.create(task_launcher_cfg or {})
         task_config = OmegaConf.create()
         cfg = OmegaConf.merge(task_launcher_cfg, task_config)
         assert isinstance(cfg, DictConfig)
