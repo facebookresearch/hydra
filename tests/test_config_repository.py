@@ -174,6 +174,14 @@ def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
             ConfigSource._get_header_dict(cfg_text)
 
 
+def test_singleton_get_state(hydra_restore_singletons: Any) -> None:
+    s = Singleton.get_state()
+    assert Plugins not in s["instances"]
+    assert Plugins in Singleton._instances
+    Singleton.set_state(s)
+    assert Plugins in Singleton._instances
+
+
 def test_restore_singleton_state_hack() -> None:
     """
     This is a hack that allow us to undo changes to the ConfigStore.
