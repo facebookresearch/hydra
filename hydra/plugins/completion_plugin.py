@@ -16,7 +16,7 @@ from omegaconf import (
     OmegaConf,
     ListConfig,
 )
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -96,7 +96,7 @@ class CompletionPlugin(Plugin):
 
     @staticmethod
     def _get_matches(config: Container, word: str) -> List[str]:
-        def str_rep(in_key: Union[str, int], in_value: Any) -> str:
+        def str_rep(in_key: Any, in_value: Any) -> str:
             if OmegaConf.is_config(in_value):
                 return f"{in_key}."
             else:
@@ -137,7 +137,8 @@ class CompletionPlugin(Plugin):
                 else:
                     if isinstance(config, DictConfig):
                         for key, value in config.items_ex(resolve=False):
-                            if key.startswith(word):
+                            str_key = str(key)
+                            if str_key.startswith(word):
                                 matches.append(str_rep(key, value))
                     elif OmegaConf.is_list(config):
                         assert isinstance(config, ListConfig)

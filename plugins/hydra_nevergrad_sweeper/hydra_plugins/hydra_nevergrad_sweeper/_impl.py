@@ -95,7 +95,7 @@ class NevergradSweeperImpl(Sweeper):
         if parametrization is not None:
             assert isinstance(parametrization, DictConfig)
             self.parametrization = {
-                x: create_nevergrad_param_from_config(y)
+                str(x): create_nevergrad_param_from_config(y)
                 for x, y in parametrization.items()
             }
         self.job_idx: Optional[int] = None
