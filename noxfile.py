@@ -484,3 +484,12 @@ def test_jupyter_notebooks(session):
         args = pytest_args("--nbval", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
+
+
+@nox.session(python=PYTHON_VERSIONS)
+def benchmark(session):
+    _upgrade_basic(session)
+    install_dev_deps(session)
+    install_hydra(session, INSTALL_COMMAND)
+    session.install("pytest")
+    run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)
