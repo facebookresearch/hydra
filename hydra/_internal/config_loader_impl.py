@@ -421,15 +421,11 @@ class ConfigLoaderImpl(ConfigLoader):
         for default in defaults:
             loaded = self._load_single_config(default=default, repo=repo)
             try:
-                merged = OmegaConf.merge(cfg, loaded.config)
+                cfg.merge_with(loaded.config)
             except ValidationError as e:
                 raise ConfigCompositionException(
                     f"In '{default.config_path}': Validation error while composing config:\n{e}"
                 ).with_traceback(sys.exc_info()[2])
-
-            assert isinstance(merged, DictConfig)
-            cfg = merged
-            assert cfg is not None
 
         # This is primarily cosmetic
         cfg._metadata.ref_type = cfg._metadata.object_type
