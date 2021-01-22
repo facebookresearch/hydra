@@ -4,8 +4,6 @@ import sys
 import zipfile
 from typing import List, Optional
 
-from pkg_resources import parse_version
-
 from omegaconf import OmegaConf
 
 from hydra.core.object_type import ObjectType
@@ -43,13 +41,12 @@ class ImportlibResourcesConfigSource(ConfigSource):
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
-        vi = sys.version_info
-        python_version = f"{vi.major}.{vi.minor}.{vi.micro}"
-        zipfile_path = parse_version(python_version) >= parse_version(
-            "3.8"
-        ) and isinstance(res, zipfile.Path)
+        zipfile_path = sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path)
+        if zipfile_path:
+            f = res.open()
+        else:
+            f = res.open(encoding="utf-8")
 
-        f = res.open() if zipfile_path else res.open(encoding="utf-8")
         header_text = f.read(512)
         if zipfile_path:
             header_text = header_text.decode("utf-8")
