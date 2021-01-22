@@ -5,7 +5,7 @@ coverage
 flake8
 flake8-copyright
 isort==5.5.2
-mypy
+mypy==0.790
 nox
 packaging
 pre-commit
