@@ -299,8 +299,8 @@ class ConfigRepository(IConfigRepository):
 
 
 class CachingConfigRepository(IConfigRepository):
-    def __init__(self, delegeate: IConfigRepository):
-        self.delegate = delegeate
+    def __init__(self, delegate: IConfigRepository):
+        self.delegate = delegate
         self.cache: Dict[str, Optional[ConfigResult]] = {}
 
     def get_schema_source(self) -> ConfigSource:

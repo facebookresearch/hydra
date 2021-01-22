@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
-from omegaconf import DictConfig, OmegaConf, open_dict
+from omegaconf import DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -418,14 +418,15 @@ class ConfigLoaderImpl(ConfigLoader):
         repo: IConfigRepository,
     ) -> DictConfig:
         cfg = OmegaConf.create()
-        for default in defaults:
-            loaded = self._load_single_config(default=default, repo=repo)
-            try:
-                cfg.merge_with(loaded.config)
-            except ValidationError as e:
-                raise ConfigCompositionException(
-                    f"In '{default.config_path}': Validation error while composing config:\n{e}"
-                ).with_traceback(sys.exc_info()[2])
+        with flag_override(cfg, "no_deepcopy_set_nodes", True):
+            for default in defaults:
+                loaded = self._load_single_config(default=default, repo=repo)
+                try:
+                    cfg.merge_with(loaded.config)
+                except ValidationError as e:
+                    raise ConfigCompositionException(
+                        f"In '{default.config_path}': Validation error while composing config:\n{e}"
+                    ).with_traceback(sys.exc_info()[2])
 
         # This is primarily cosmetic
         cfg._metadata.ref_type = cfg._metadata.object_type
