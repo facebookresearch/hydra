@@ -19,7 +19,8 @@ class Singleton(type):
     @staticmethod
     def get_state() -> Any:
         instances = deepcopy(Singleton._instances)
-        # Plugins can cause issues for pickling Singleton.get_state().
+        # Plugins can cause issues for pickling the singleton state
+        # Exclude them and re-initialize them on set_state()
         from hydra.core.plugins import Plugins
 
         instances.pop(Plugins, None)
@@ -31,7 +32,7 @@ class Singleton(type):
     @staticmethod
     def set_state(state: Any) -> None:
         Singleton._instances = state["instances"]
-        # Re-init Plugins since it was removed  in get_state()
+        # Reinitialize the the Plugin singleton (discover all plugins etc).
         from hydra.core.plugins import Plugins
 
         Plugins.instance()
