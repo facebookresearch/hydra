@@ -44,12 +44,10 @@ class ImportlibResourcesConfigSource(ConfigSource):
         zipfile_path = sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path)
         if zipfile_path:
             f = res.open()
+            header_text = f.read(512)            
         else:
             f = res.open(encoding="utf-8")
-
-        header_text = f.read(512)
-        if zipfile_path:
-            header_text = header_text.decode("utf-8")
+            header_text = f.read(512).decode("utf-8")
         header = ConfigSource._get_header_dict(header_text)
         f.seek(0)
         cfg = OmegaConf.load(f)
