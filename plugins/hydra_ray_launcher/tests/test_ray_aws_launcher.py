@@ -108,22 +108,7 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
-def build_ray_launcher_wheel(tmpdir: str) -> str:
-    """
-    This  only works on ray launcher plugin wheels for now, reasons being in our base AMI
-    we do not necessarily have the dependency for other plugins.
-    """
-    command = "python -m pip --disable-pip-version-check list | grep hydra | grep -v hydra-core "
-    output = subprocess.getoutput(command).split("\n")
-    plugins_path = [x.split()[0].replace("-", "_") for x in output]
-    assert (
-        len(plugins_path) == 1 and "hydra_ray_launcher" == plugins_path[0]
-    ), "Ray test AMI doesn't have dependency installed for other plugins."
-
-    return build_plugin_wheel(tmpdir)
-
-
-def build_plugin_wheel(tmp_wheel_dir: str) -> str:
+def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)

@@ -13,6 +13,7 @@ from hydra._internal.core_plugins.importlib_resources_config_source import (
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.object_type import ObjectType
 from hydra.core.plugins import Plugins
+from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -182,3 +183,11 @@ def test_get_config_header(cfg_text: str, expected: Any, sep: str) -> None:
     else:
         with expected:
             ConfigSource._get_header_dict(cfg_text)
+
+
+def test_singleton_get_state(hydra_restore_singletons: Any) -> None:
+    s = Singleton.get_state()
+    assert Plugins not in s["instances"]
+    assert Plugins in Singleton._instances
+    Singleton.set_state(s)
+    assert Plugins in Singleton._instances
