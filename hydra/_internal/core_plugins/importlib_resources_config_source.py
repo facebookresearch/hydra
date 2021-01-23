@@ -41,9 +41,8 @@ class ImportlibResourcesConfigSource(ConfigSource):
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
-        zipfile_path = sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path)
         try:
-            if zipfile_path:
+            if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
                 f = res.open()
                 header_text = f.read(512).decode("utf-8")
             else:
