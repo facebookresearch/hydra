@@ -42,16 +42,18 @@ class ImportlibResourcesConfigSource(ConfigSource):
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
         zipfile_path = sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path)
-        if zipfile_path:
-            f = res.open()
-            header_text = f.read(512)            
-        else:
-            f = res.open(encoding="utf-8")
-            header_text = f.read(512).decode("utf-8")
-        header = ConfigSource._get_header_dict(header_text)
-        f.seek(0)
-        cfg = OmegaConf.load(f)
-        f.close()
+        try:
+            if zipfile_path:
+                f = res.open()
+                header_text = f.read(512).decode("utf-8")
+            else:
+                f = res.open(encoding="utf-8")
+                header_text = f.read(512)
+            header = ConfigSource._get_header_dict(header_text)
+            f.seek(0)
+            cfg = OmegaConf.load(f)
+        finally:
+            f.close()
 
         self._update_package_in_header(
             header=header,
