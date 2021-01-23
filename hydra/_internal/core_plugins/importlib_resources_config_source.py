@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-from typing import List, Optional
+from pathlib import Path
+from typing import List, Optional, Union
+from zipfile import Path as ZipPath  # type: ignore
 
 from omegaconf import OmegaConf
 
@@ -29,14 +31,14 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def scheme() -> str:
         return "pkg"
 
-    def load_config(self, config_path: str) -> ConfigResult:
-        normalized_config_path = self._normalize_file_name(config_path)
-        res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
-        if not res.exists():
-            raise ConfigLoadError(f"Config not found : {normalized_config_path}")
-
-        with res.open(encoding="utf-8") as f:
-            header_text = f.read(512)
+    def _read_config(self, res: Union[Path, ZipPath]) -> ConfigResult:
+        try:
+            if sys.version_info[0:2] >= (3, 8) and isinstance(res, ZipPath):
+                f = res.open()
+                header_text = f.read(512).decode("utf-8")
+            else:
+                f = res.open(encoding="utf-8")
+                header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
             f.seek(0)
             cfg = OmegaConf.load(f)
@@ -46,6 +48,16 @@ class ImportlibResourcesConfigSource(ConfigSource):
                 provider=self.provider,
                 header=header,
             )
+        finally:
+            f.close()
+
+    def load_config(self, config_path: str) -> ConfigResult:
+        normalized_config_path = self._normalize_file_name(config_path)
+        res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
+        if not res.exists():
+            raise ConfigLoadError(f"Config not found : {normalized_config_path}")
+
+        return self._read_config(res)
 
     def available(self) -> bool:
         try:
