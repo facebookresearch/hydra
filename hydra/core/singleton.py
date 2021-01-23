@@ -18,12 +18,22 @@ class Singleton(type):
 
     @staticmethod
     def get_state() -> Any:
+        instances = deepcopy(Singleton._instances)
+        # Plugins can cause issues for pickling the singleton state
+        # Exclude them and re-initialize them on set_state()
+        from hydra.core.plugins import Plugins
+
+        instances.pop(Plugins, None)
         return {
-            "instances": Singleton._instances,
+            "instances": instances,
             "omegaconf_resolvers": deepcopy(BaseContainer._resolvers),
         }
 
     @staticmethod
     def set_state(state: Any) -> None:
         Singleton._instances = state["instances"]
+        # Reinitialize the the Plugin singleton (discover all plugins etc).
+        from hydra.core.plugins import Plugins
+
+        Plugins.instance()
         BaseContainer._resolvers = deepcopy(state["omegaconf_resolvers"])
