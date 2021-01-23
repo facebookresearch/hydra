@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
+import zipfile
 from typing import List, Optional
 
 from omegaconf import OmegaConf
@@ -40,23 +41,31 @@ class ImportlibResourcesConfigSource(ConfigSource):
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
-        with res.open(encoding="utf-8") as f:
-            header_text = f.read(512)
+        try:
+            if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
+                f = res.open()
+                header_text = f.read(512).decode("utf-8")
+            else:
+                f = res.open(encoding="utf-8")
+                header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
-            self._update_package_in_header(
-                header=header,
-                normalized_config_path=normalized_config_path,
-                is_primary_config=is_primary_config,
-                package_override=package_override,
-            )
             f.seek(0)
             cfg = OmegaConf.load(f)
-            return ConfigResult(
-                config=self._embed_config(cfg, header["package"]),
-                path=f"{self.scheme()}://{self.path}",
-                provider=self.provider,
-                header=header,
-            )
+        finally:
+            f.close()
+
+        self._update_package_in_header(
+            header=header,
+            normalized_config_path=normalized_config_path,
+            is_primary_config=is_primary_config,
+            package_override=package_override,
+        )
+        return ConfigResult(
+            config=self._embed_config(cfg, header["package"]),
+            path=f"{self.scheme()}://{self.path}",
+            provider=self.provider,
+            header=header,
+        )
 
     def available(self) -> bool:
         try:
