@@ -6,7 +6,7 @@ sidebar_label: Optuna Sweeper plugin
 
 import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 
-[![PyPI](https://img.shields.io/pypi/v/hydra-optuna-sweeper)](https://img.shields.io/pypi/v/hydra-optuna-sweeper)
+[![PyPI](https://img.shields.io/pypi/v/hydra-optuna-sweeper)](https://pypi.org/project/hydra-optuna-sweeper/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-optuna-sweeper)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-optuna-sweeper)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-optuna-sweeper.svg)](https://pypistats.org/packages/hydra-optuna-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_optuna_sweeper/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_optuna_sweeper"/>
@@ -33,7 +33,7 @@ Alternatively, add `hydra/sweeper=optuna` option to your command line.
 
 The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py">here</GithubLink>.
 
-## Example
+## Example 1: Single-Objective Optimization
 
 We include an example in this directory. `example/sphere.py` implements a simple benchmark function to be minimized.
 
@@ -208,3 +208,46 @@ If `log` is `false`, the parameter is mapped to [`UniformDistribution`](https://
   - `choices`: a list of parameter value candidates
 
 The parameters are mapped to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
+
+
+## Example 2:  Multi-Objective Optimization
+
+We include another example in the directory. `example/multi-objective.py` implements a simple benchmark function which has two objective values. We'd like to minimize both objectives simultaneously.
+
+You can discover the Optuna sweeper parameters with:
+
+```yaml title="python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper"
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+optuna_config:
+  direction:
+  - minimize
+  - minimize
+  storage: null
+  study_name: multi-objective
+  n_trials: 20
+  n_jobs: 1
+  sampler: nsgaii
+  seed: 123
+search_space:
+  x:
+    type: float
+    low: 0
+    high: 5
+    step: 0.5
+  y:
+    type: float
+    low: 0
+    high: 3
+    step: 0.5
+```
+
+To run optimization, run the following command in the `plugins/hydra_optuna_sweeper` directoy:
+
+```commandline
+python example/multi-objective.py --multirun
+```
+
+For this problem, no single solution exists that simultaneously minimizes both objectives. Instead, we obtained a set of solutions, namely Pareto optimal solutions, that shapes the trade-off relationship between the objectives. In the following figure, the blue dots show the Pareto optimal solutions in the optimization results.
+
+![Pareto-optimal solutions](/plugins/optuna_sweeper/multi_objective_result.png)
