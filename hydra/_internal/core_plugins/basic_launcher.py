@@ -8,7 +8,6 @@ from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.utils import (
     JobReturn,
     configure_log,
@@ -72,7 +71,6 @@ class BasicLauncher(Launcher):
             with open_dict(sweep_config):
                 sweep_config.hydra.job.id = idx
                 sweep_config.hydra.job.num = idx
-            HydraConfig.instance().set_config(sweep_config)
             ret = run_job(
                 config=sweep_config,
                 task_function=self.task_function,
