@@ -1191,3 +1191,25 @@ def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
     ]
     result, _err = run_python_script(cmd)
     assert result == "{'list': None}"
+
+
+def test_self_hydra_config_interpolation_integration(tmpdir: Path) -> None:
+    cfg = OmegaConf.create()
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[],
+        prints="HydraConfig.get().job_logging.handlers.file.filename",
+        expected_outputs="task.log",
+    )
+
+
+def test_job_id_and_num_in_sweep(tmpdir: Path) -> None:
+    cfg = OmegaConf.create()
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=["-m"],
+        prints=["HydraConfig.get().job.id", "str(HydraConfig.get().job.num)"],
+        expected_outputs=["0", "0"],
+    )
