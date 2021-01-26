@@ -13,7 +13,6 @@ from omegaconf import Container, DictConfig, OmegaConf, open_dict
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,
@@ -104,7 +103,6 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
         )
-        HydraConfig.instance().set_config(cfg)
 
         return run_job(
             config=cfg,
@@ -129,7 +127,6 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
-        HydraConfig.instance().set_config(cfg)
 
         sweeper = Plugins.instance().instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function

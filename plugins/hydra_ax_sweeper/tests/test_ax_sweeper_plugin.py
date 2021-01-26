@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, List
 
 import pytest
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
@@ -177,10 +176,6 @@ def test_configuration_set_via_cmd_and_default_config(
         ],
     )
     with sweep:
-        ax_config = HydraConfig.get().sweeper.ax_config
-        assert ax_config.max_trials == 2
-        assert ax_config.early_stop.max_epochs_without_improvement == 2
-        assert ax_config.experiment.minimize is True
         assert sweep.returns is None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)

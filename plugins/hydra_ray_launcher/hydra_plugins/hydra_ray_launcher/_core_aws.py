@@ -7,7 +7,6 @@ from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
@@ -108,7 +107,7 @@ def launch(
             )
 
             return launch_jobs(
-                launcher, local_tmp_dir, Path(HydraConfig.get().sweep.dir)
+                launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
             )
 
 

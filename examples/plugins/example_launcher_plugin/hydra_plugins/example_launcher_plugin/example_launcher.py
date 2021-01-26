@@ -7,7 +7,6 @@ from typing import Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
@@ -101,7 +100,6 @@ class ExampleLauncher(Launcher):
                 # but instead should be populated remotely before calling the task_function.
                 sweep_config.hydra.job.id = f"job_id_for_{idx}"
                 sweep_config.hydra.job.num = idx
-            HydraConfig.instance().set_config(sweep_config)
 
             # If your launcher is executing code in a different process, it is important to restore
             # the singleton state in the new process.
