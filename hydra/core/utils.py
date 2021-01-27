@@ -4,13 +4,13 @@ import logging
 import os
 import re
 import sys
-import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
-from os.path import basename, dirname, splitext
+from os.path import splitext
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
+from textwrap import dedent
+from typing import Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
@@ -191,41 +191,17 @@ class JobRuntime(metaclass=Singleton):
         self.conf[key] = value
 
 
-def split_config_path(
-    config_path: Optional[str], config_name: Optional[str]
-) -> Tuple[Optional[str], Optional[str]]:
-    if config_path is None or config_path == "":
-        return None, config_name
-    split_file = splitext(config_path)
-    if split_file[1] in (".yaml", ".yml"):
-        # assuming dir/config.yaml form
-        config_file: Optional[str] = basename(config_path)
-        config_dir: Optional[str] = dirname(config_path)
-        # DEPRECATED: remove in 1.1
-        msg = (
-            "\nUsing config_path to specify the config name is deprecated, specify the config name via config_name"
-            "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes"
-        )
-        warnings.warn(category=UserWarning, message=msg)
-    else:
-        # assuming dir form without a config file.
-        config_file = None
-        config_dir = config_path
-
-    if config_dir == "":
-        config_dir = None
-
-    if config_file == "":
-        config_file = None
-
-    if config_file is not None:
-        if config_name is not None:
-            raise ValueError(
-                "Config name should be specified in either normalized_config_path or config_name, but not both"
+def validate_config_path(config_path: Optional[str]) -> None:
+    if config_path is not None:
+        split_file = splitext(config_path)
+        if split_file[1] in (".yaml", ".yml"):
+            msg = dedent(
+                """\
+            Using config_path to specify the config name is not supported, specify the config name via config_name.
+            See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+            """
             )
-        config_name = config_file
-
-    return config_dir, config_name
+            raise ValueError(msg)
 
 
 @contextmanager

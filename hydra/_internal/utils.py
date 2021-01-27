@@ -16,7 +16,7 @@ from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
-from hydra.core.utils import get_valid_filename, split_config_path
+from hydra.core.utils import get_valid_filename, validate_config_path
 from hydra.errors import (
     CompactHydraException,
     InstantiationException,
@@ -310,10 +310,10 @@ def _run_hydra(
         task_name,
     ) = detect_calling_file_or_module_from_task_function(task_function)
 
-    config_dir, config_name = split_config_path(config_path, config_name)
+    validate_config_path(config_path)
 
     search_path = create_automatic_config_search_path(
-        calling_file, calling_module, config_dir
+        calling_file, calling_module, config_path
     )
 
     def add_conf_dir() -> None:
