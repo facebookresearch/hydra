@@ -23,7 +23,7 @@ from typing_extensions import Protocol
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
-from hydra.core.utils import JobReturn, split_config_path
+from hydra.core.utils import JobReturn, validate_config_path
 from hydra.types import TaskFunction
 
 
@@ -58,16 +58,14 @@ class TaskTestFunction:
 
     def __enter__(self) -> "TaskTestFunction":
         try:
-            config_dir, config_name = split_config_path(
-                self.config_path, self.config_name
-            )
+            validate_config_path(self.config_path)
 
             job_name = detect_task_name(self.calling_file, self.calling_module)
 
             self.hydra = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
-                config_path=config_dir,
+                config_path=self.config_path,
                 job_name=job_name,
                 strict=self.strict,
             )
@@ -76,7 +74,7 @@ class TaskTestFunction:
             assert overrides is not None
             overrides.append(f"hydra.run.dir={self.temp_dir}")
             self.job_ret = self.hydra.run(
-                config_name=config_name,
+                config_name=self.config_name,
                 task_function=self,
                 overrides=overrides,
                 with_log_configuration=self.configure_logging,
@@ -146,21 +144,19 @@ class SweepTaskFunction:
         overrides.append(f"hydra.sweep.dir={self.temp_dir}")
 
         try:
-            config_dir, config_name = split_config_path(
-                self.config_path, self.config_name
-            )
+            validate_config_path(self.config_path)
             job_name = detect_task_name(self.calling_file, self.calling_module)
 
             hydra_ = Hydra.create_main_hydra_file_or_module(
                 calling_file=self.calling_file,
                 calling_module=self.calling_module,
-                config_path=config_dir,
+                config_path=self.config_path,
                 job_name=job_name,
                 strict=self.strict,
             )
 
             self.returns = hydra_.multirun(
-                config_name=config_name,
+                config_name=self.config_name,
                 task_function=self,
                 overrides=overrides,
                 with_log_configuration=self.configure_logging,

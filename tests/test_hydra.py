@@ -186,12 +186,14 @@ def test_app_with_config_path_backward_compatibility(
     calling_file: str,
     calling_module: str,
 ) -> None:
-    msg = (
-        "\nUsing config_path to specify the config name is deprecated, specify the config name via config_name"
-        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes"
+    msg = dedent(
+        """\
+    Using config_path to specify the config name is not supported, specify the config name via config_name.
+    See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+    """
     )
 
-    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
+    with pytest.raises(ValueError, match=re.escape(msg)):
         task = hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
