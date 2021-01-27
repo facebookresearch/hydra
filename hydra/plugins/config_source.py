@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import warnings
 import re
 
 from abc import abstractmethod
@@ -116,6 +117,11 @@ class ConfigSource(Plugin):
 
     @staticmethod
     def _normalize_file_name(filename: str) -> str:
+        if filename.endswith(".yml"):
+            # DEPRECATED: remove in 1.2
+            warnings.warn(
+                "Support for .yml files is deprecated. Use .yaml extension for Hydra config files"
+            )
         if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
             filename += ".yaml"
         return filename

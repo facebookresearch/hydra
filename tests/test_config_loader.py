@@ -202,9 +202,17 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        cfg = config_loader.load_configuration(
-            config_name="config.yml", overrides=[], strict=False, run_mode=RunMode.RUN
-        )
+        with pytest.warns(
+            UserWarning,
+            match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
+        ):
+            cfg = config_loader.load_configuration(
+                config_name="config.yml",
+                overrides=[],
+                strict=False,
+                run_mode=RunMode.RUN,
+            )
+
         with open_dict(cfg):
             del cfg["hydra"]
 
