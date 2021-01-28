@@ -212,7 +212,7 @@ The parameters are mapped to [`CategoricalDistribution`](https://optuna.readthed
 
 ## Example 2:  Multi-Objective Optimization
 
-We include another example in the directory. `example/multi-objective.py` implements a simple benchmark function which has two objective values. We'd like to minimize both objectives simultaneously.
+In the same directory, `example/multi-objective.py` implements a simple benchmark function, which has two objective values. We want to minimize two objectives simultaneously.
 
 You can discover the Optuna sweeper parameters with:
 
