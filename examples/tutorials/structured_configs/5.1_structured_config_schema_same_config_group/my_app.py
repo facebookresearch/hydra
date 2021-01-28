@@ -34,6 +34,7 @@ class PostGreSQLConfig(DBConfig):
 @dataclass
 class Config:
     db: DBConfig = MISSING
+    debug: bool = False
 
 
 cs = ConfigStore.instance()
