@@ -216,7 +216,13 @@ In the same directory, `example/multi-objective.py` implements a simple benchmar
 
 You can discover the Optuna sweeper parameters with:
 
-```yaml title="python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper"
+```commandline
+python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper
+```
+
+<details><summary>Configuration of the multi-objective optimization example</summary>
+
+```yaml
 # @package hydra.sweeper
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 optuna_config:
@@ -241,6 +247,8 @@ search_space:
     high: 3
     step: 0.5
 ```
+</details>
+
 
 To run the optimization, use the following command in the `plugins/hydra_optuna_sweeper` directory:
 
