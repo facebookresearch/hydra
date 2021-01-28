@@ -20,8 +20,7 @@ defaults:
 
 <details><summary>Discover Flow Launcher's config</summary>
 
-```commandline
-$ buck run @mode/opt  //github/facebookresearch/hydra/plugins/hydra_flow_launcher/example:my_app -- --cfg hydra -p hydra.launcher
+```commandline title="$ buck run @mode/opt  //path:my_app -- --cfg hydra -p hydra.launcher"
 
 # @package hydra.launcher
 _target_: hydra_plugins.flow_launcher_plugin.flow_launcher.FlowLauncher
