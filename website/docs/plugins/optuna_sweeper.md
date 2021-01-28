@@ -242,7 +242,7 @@ search_space:
     step: 0.5
 ```
 
-To run optimization, run the following command in the `plugins/hydra_optuna_sweeper` directoy:
+To run the optimization, use the following command in the `plugins/hydra_optuna_sweeper` directory:
 
 ```commandline
 python example/multi-objective.py --multirun
