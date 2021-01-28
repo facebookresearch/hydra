@@ -6,7 +6,7 @@ title: Flow Launcher
 The Flow Launcher plugin provides a way to launch application via `flow`.
 
 ## Dependency
-To use the flow launcher, add the following to your `TARGETS`
+To use the Flow Launcher, add the following to your `TARGETS`
 ```commandline
 //github/facebookresearch/hydra/plugins/hydra_flow_launcher:hydra_flow_launcher
 ```
@@ -18,7 +18,8 @@ defaults:
   - hydra/launcher: flow
 ```
 
-You can discover the Launcher's config with:
+<details><summary>Discover Flow Launcher's config</summary>
+
 ```commandline
 $ buck run @mode/opt  //github/facebookresearch/hydra/plugins/hydra_flow_launcher/example:my_app -- --cfg hydra -p hydra.launcher
 
@@ -39,11 +40,12 @@ resource_requirements:
 run_as_secure_group: fair_research_and_engineering
 retries: 2
 tags: []
-par_style: xar
 ```
+</details>
 
-You can override `resource_requirements` just like how you would via `flow-cli`.
-The Launcher currently support both `par` and `xar` style. Please override `hydra.launcher.par_style` to match your application's packaging.
+
+
+The Launcher currently support both `par` and `xar` style. You can override `resource_requirements` just like how you would via `flow-cli`.
 
 
 :::info NOTE
