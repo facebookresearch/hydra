@@ -33,7 +33,7 @@ export function ExampleGithubLink(props) {
     const text = props.text ?? "Example" 
     return (
         <GithubLink {...props}>
-            <img
+            <span>&nbsp;</span><img
                 src={"https://img.shields.io/badge/-" + text + "-informational"}
                 alt="Example"
             />

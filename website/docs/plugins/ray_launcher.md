@@ -9,7 +9,7 @@ import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 [![PyPI](https://img.shields.io/pypi/v/hydra-ray-launcher)](https://pypi.org/project/hydra-ray-launcher/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-ray-launcher)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-ray-launcher)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)(https://pypistats.org/packages/hydra-optuna-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_ray_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ray_launcher"/>
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)<ExampleGithubLink text="Example application" to="plugins/hydra_ray_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ray_launcher"/>
 
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`. 
  `ray_aws` launches jobs remotely on AWS and is built on top of [Ray cluster launcher](https://docs.ray.io/en/latest/cluster/launcher.html). `ray` launches jobs on your local machine or existing ray cluster. 
