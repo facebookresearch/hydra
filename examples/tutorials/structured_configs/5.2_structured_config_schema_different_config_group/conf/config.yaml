@@ -1,3 +1,5 @@
 defaults:
   - base_config
   - db: mysql
+
+debug: true

@@ -5,8 +5,6 @@ title: Structured Config schema
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
-<ExampleGithubLink to="examples/tutorials/structured_configs/5_structured_config_schema"/>
-
 We have seen how to use Structured Configs as configuration, but they can also be used as a schema (i.e. validating configuration files).
 To achieve this, we will follow the common pattern of [Extending Configs](../../patterns/extending_configs.md) - but instead of extending another config file,
 we will extend a Structured Config.
@@ -14,7 +12,9 @@ we will extend a Structured Config.
 This page shows how to validate the config files `config.yaml`, `db/mysql.yaml` and `db/postgresql.yaml` 
 against a Structured Config schema.
 
-## Validating against a schema in the same config group
+### Validating against a schema in the same config group
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/5.1_structured_config_schema_same_config_group"/>
 
 Given the config directory structure:
 ```text
@@ -38,7 +38,7 @@ defaults:
   - base_config
   - db: mysql
 
-
+debug: true
 ```
 
 </div>
@@ -67,7 +67,7 @@ password: drowssap
 Nothing much is new in the source code: 
 <details><summary>my_app.py (Click to expand)</summary>
 
-```python {27-29}
+```python {28-30}
 @dataclass
 class DBConfig:
     driver: str = MISSING
@@ -92,6 +92,7 @@ class PostGreSQLConfig(DBConfig):
 @dataclass
 class Config:
     db: DBConfig = MISSING
+    debug: bool = False
 
 cs = ConfigStore.instance()
 cs.store(name="base_config", node=Config)
@@ -119,7 +120,10 @@ Value 'fail' could not be converted to Integer
         object_type=MySQLConfig
 ```
 
-## Validating against a schema from a different config group
+### Validating against a schema from a different config group
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/5.2_structured_config_schema_different_config_group"/>
+
 In the above example, the schema we used was stored in the same config group.
 This is not always the case, for example - A library might provide schemas in its own config group.
 
@@ -137,6 +141,7 @@ import database_lib
 @dataclass
 class Config:
     db: database_lib.DBConfig = MISSING
+    debug: bool = False
 
 cs = ConfigStore.instance()
 cs.store(name="base_config", node=Config)
@@ -156,7 +161,6 @@ def my_app(cfg: Config) -> None:
 
 if __name__ == "__main__":
     my_app()
-
 ```
 </div>
 <div className="col col--6">

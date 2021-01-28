@@ -11,6 +11,7 @@ from hydra.core.config_store import ConfigStore
 @dataclass
 class Config:
     db: database_lib.DBConfig = MISSING
+    debug: bool = False
 
 
 cs = ConfigStore.instance()

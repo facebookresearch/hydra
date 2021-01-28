@@ -164,5 +164,6 @@ def test_5_structured_config_schema(tmpdir: Path, path: str) -> None:
             "password": "secret",
             "port": 3306,
             "user": "omry",
-        }
+        },
+        "debug": True,
     }
