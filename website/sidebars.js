@@ -164,6 +164,7 @@ module.exports = {
             'fb/internal-fb-cluster',
             'fb/fair-cluster',
             'fb/fbcode-configerator-config-source',
+            'fb/flow-launcher',
         ]),
     }
 }
