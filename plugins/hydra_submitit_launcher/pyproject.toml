@@ -1,6 +1,6 @@
 [tool.towncrier]
-    package = "hydra"
-    package_dir = ""
+    package = "hydra_submitit_launcher"
+    package_dir = "hydra_plugins"
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"
