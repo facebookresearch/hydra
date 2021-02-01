@@ -216,7 +216,6 @@ class OptunaSweeperImpl(Sweeper):
             for trial, ret in zip(trials, returns):
                 values: Optional[List[float]] = None
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
-                func_error: Optional[Exception] = None
                 try:
                     if len(directions) == 1:
                         values = [float(ret.return_value)]
@@ -232,14 +231,11 @@ class OptunaSweeperImpl(Sweeper):
                                 f" mismatched. Expect {len(directions)}, but actually "
                                 f"{len(values)}."
                             )
+                    study._tell(trial, state, values)
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
-                    func_error = e
-                finally:
                     study._tell(trial, state, values)
-
-                if func_error is not None:
-                    raise func_error
+                    raise e
 
             n_trials_to_go -= batch_size
 
