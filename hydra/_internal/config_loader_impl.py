@@ -428,9 +428,6 @@ class ConfigLoaderImpl(ConfigLoader):
                         f"In '{default.config_path}': Validation error while composing config:\n{e}"
                     ).with_traceback(sys.exc_info()[2])
 
-        # This is primarily cosmetic
-        cfg._metadata.ref_type = cfg._metadata.object_type
-
         return cfg
 
     def get_sources(self) -> List[ConfigSource]:

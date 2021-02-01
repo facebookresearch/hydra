@@ -366,19 +366,19 @@ def run_python_script(
     cmd: Any,
     env: Any = None,
     allow_warnings: bool = False,
-    print_stderr: bool = True,
+    print_error: bool = True,
 ) -> Tuple[str, str]:
     if allow_warnings:
         cmd = [sys.executable] + cmd
     else:
         cmd = [sys.executable, "-Werror"] + cmd
-    return run_process(cmd, env, print_stderr)
+    return run_process(cmd, env, print_error)
 
 
 def run_process(
     cmd: Any,
     env: Any = None,
-    print_stderr: bool = True,
+    print_error: bool = True,
     timeout: Optional[float] = None,
 ) -> Tuple[str, str]:
     try:
@@ -393,13 +393,14 @@ def run_process(
         stdout = normalize_newlines(bstdout.decode().rstrip())
         stderr = normalize_newlines(bstderr.decode().rstrip())
         if process.returncode != 0:
-            if print_stderr:
+            if print_error:
                 sys.stderr.write(f"Subprocess error:\n{stderr}\n")
             raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
         return stdout, stderr
     except Exception as e:
-        cmd = " ".join(cmd)
-        sys.stderr.write(f"=== Error executing:\n{cmd}\n===================")
+        if print_error:
+            cmd = " ".join(cmd)
+            sys.stderr.write(f"=== Error executing:\n{cmd}\n===================")
         raise e
 
 

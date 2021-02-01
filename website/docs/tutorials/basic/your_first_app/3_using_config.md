@@ -32,10 +32,12 @@ def my_app(cfg: DictConfig):
 Outputs:
 ```
 $ python my_app.py 
-Missing mandatory value: waldo
-        full_key: waldo
-        reference_type=Optional[Dict[Any, Any]]
-        object_type=dict
+Traceback (most recent call last):
+  File "my_app.py", line 32, in my_app
+    cfg.node.waldo
+omegaconf.errors.MissingMandatoryValue: Missing mandatory value: node.waldo
+    full_key: node.waldo
+    object_type=dict
 ```
 
 Hydra's configuration object is an instance of OmegaConf's DictConfig.

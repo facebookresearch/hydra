@@ -45,7 +45,6 @@ $ python frozen.py data_bits=10
 Error merging override data_bits=10
 Cannot change read-only config container
     full_key: data_bits
-    reference_type=Optional[SerialPort]
     object_type=SerialPort
 ```
 </div></div>
