@@ -218,13 +218,25 @@ class OptunaSweeperImpl(Sweeper):
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
                 try:
                     if len(directions) == 1:
-                        values = [float(ret.return_value)]
+                        try:
+                            values = [float(ret.return_value)]
+                        except Exception:
+                            raise ValueError(
+                                f"Return value must be float-castable. Got '{ret.return_value}'."
+                            )
                     else:
                         if not isinstance(ret.return_value, (list, tuple)):
                             raise ValueError(
-                                f"Return value must be a float value. Got {ret.return_value}."
+                                "Return value must be a list or tuple of float-castable values."
+                                f" Got '{ret.return_value}'."
                             )
-                        values = [float(v) for v in ret.return_value]
+                        try:
+                            values = [float(v) for v in ret.return_value]
+                        except Exception:
+                            raise ValueError(
+                                "Return value must be a list or tuple of float-castable values."
+                                f" Got '{ret.return_value}'."
+                            )
                         if len(values) != len(directions):
                             raise ValueError(
                                 "The number of the values and the number of the objectives are"
