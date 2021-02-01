@@ -57,7 +57,6 @@ Traceback (most recent call last):
     if cfg.pork == 80:
 omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
         full_key: pork
-        reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
@@ -69,7 +68,6 @@ $ python my_app_type_error.py port=fail
 Error merging override port=fail
 Value 'fail' could not be converted to Integer
         full_key: port
-        reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 ```
 We will see additional types of runtime errors that Hydra can catch later in this tutorial. Such as:

@@ -116,7 +116,6 @@ $ python my_app.py db.port=fail
 Error merging override db.port=fail
 Value 'fail' could not be converted to Integer
         full_key: db.port
-        reference_type=Optional[MySQLConfig]
         object_type=MySQLConfig
 ```
 

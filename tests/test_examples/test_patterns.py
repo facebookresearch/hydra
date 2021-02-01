@@ -47,9 +47,8 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
         """\
         Error merging override data_bits=10
         Cannot change read-only config container
-        \tfull_key: data_bits
-        \treference_type=Optional[SerialPort]
-        \tobject_type=SerialPort
+            full_key: data_bits
+            object_type=SerialPort
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
         """

@@ -927,9 +927,8 @@ def test_module_run(
                 """\
                 Error merging override test.param=[1,2]
                 Value '[1, 2]' could not be converted to Integer
-                \tfull_key: test.param
-                \treference_type=Optional[TestConfig]
-                \tobject_type=TestConfig
+                    full_key: test.param
+                    object_type=TestConfig
 
                 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
             ),
@@ -951,8 +950,13 @@ def test_multirun_structured_conflict(
     cmd.extend(overrides)
     if error:
         expected = normalize_newlines(expected)
-        ret = normalize_newlines(run_with_error(cmd))
-        assert re.search(re.escape(expected), ret) is not None
+        ret = run_with_error(cmd)
+        assert_regex_match(
+            from_line=expected,
+            to_line=ret,
+            from_name="Expected output",
+            to_name="Actual output",
+        )
     else:
         ret, _err = run_python_script(cmd)
         assert ret == expected
@@ -1054,17 +1058,19 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         "my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
     ]
-    expected = """Traceback (most recent call last):
-  File ".*my_app.py", line 13, in my_app
-    foo(cfg)
-  File ".*my_app.py", line 8, in foo
-    cfg.foo = "bar"  # does not exist in the config
-omegaconf.errors.ConfigAttributeError: Key 'foo' is not in struct
-\tfull_key: foo
-\treference_type=Optional[Dict[Union[str, Enum], Any]]
-\tobject_type=dict
+    expected = dedent(
+        """\
+        Traceback (most recent call last):
+          File ".*my_app.py", line 13, in my_app
+            foo(cfg)
+          File ".*my_app.py", line 8, in foo
+            cfg.foo = "bar"  # does not exist in the config
+        omegaconf.errors.ConfigAttributeError: Key 'foo' is not in struct
+            full_key: foo
+            object_type=dict
 
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
+        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
+    )
 
     ret = run_with_error(cmd)
     assert_regex_match(

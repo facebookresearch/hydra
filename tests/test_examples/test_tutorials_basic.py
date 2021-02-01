@@ -117,7 +117,7 @@ def test_tutorial_config_file_bad_key(
     cmd.extend(args)
     if isinstance(expected, RaisesContext):
         with expected:
-            run_python_script(cmd, print_stderr=False)
+            run_python_script(cmd, print_error=False)
     else:
         stdout, _stderr = run_python_script(cmd)
         assert OmegaConf.create(stdout) == expected
