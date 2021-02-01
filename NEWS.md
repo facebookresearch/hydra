@@ -1,3 +1,15 @@
+1.0.6 (2021-01-29)
+==================
+
+### Bug Fixes
+
+- Fix interpolation in Hydra config node ([#1335](https://github.com/facebookresearch/hydra/issues/1335))
+
+### Maintenance Changes
+
+- Remove `Plugins` from `Singleton.get_state()` ([#1330](https://github.com/facebookresearch/hydra/issues/1330))
+
+
 1.0.5 (2021-01-07)
 ==================
 
