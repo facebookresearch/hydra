@@ -23,6 +23,10 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
             "Development Status :: 4 - Beta",
         ],
-        install_requires=["hydra-core>=1.0.0", "nevergrad>=0.4.1.post4"],
+        install_requires=[
+            "hydra-core>=1.0.0",
+            "nevergrad>=0.4.1.post4",
+            "numpy<1.20.0",  # remove once nevergrad is upgraded to support numpy 1.20
+        ],
         include_package_data=True,
     )
