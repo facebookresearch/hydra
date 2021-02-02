@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+import sys
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
 
 import optuna
@@ -223,7 +224,7 @@ class OptunaSweeperImpl(Sweeper):
                         except (ValueError, TypeError):
                             raise ValueError(
                                 f"Return value must be float-castable. Got '{ret.return_value}'."
-                            )
+                            ).with_traceback(sys.exc_info()[2])
                     else:
                         if not isinstance(ret.return_value, (list, tuple)):
                             raise ValueError(
@@ -236,7 +237,7 @@ class OptunaSweeperImpl(Sweeper):
                             raise ValueError(
                                 "Return value must be a list or tuple of float-castable values."
                                 f" Got '{ret.return_value}'."
-                            )
+                            ).with_traceback(sys.exc_info()[2])
                         if len(values) != len(directions):
                             raise ValueError(
                                 "The number of the values and the number of the objectives are"
