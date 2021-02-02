@@ -247,7 +247,7 @@ class InputDefault:
         default_pkg = self.get_default_package()
         final_pkg = self.get_final_package(default_to_package_header=False)
         key = self.get_group_path()
-        if default_pkg != final_pkg:
+        if default_pkg != final_pkg and final_pkg != "":
             key = f"{key}@{final_pkg}"
         return key
 
