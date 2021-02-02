@@ -980,6 +980,39 @@ def test_experiment_overriding_hydra_group(
     "config_name,overrides,expected",
     [
         param(
+            "group_default",
+            ["+experiment=override_with_global_default"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default"),
+                children=[
+                    GroupDefault(group="group1", value="file2"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(
+                        group="experiment", value="override_with_global_default"
+                    ),
+                ],
+            ),
+            id="include_absolute_config:override_with_global_default",
+        ),
+    ],
+)
+def test_experiment_overriding_global_group(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=False,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "experiment/override_hydra",
             [],
             DefaultsTreeNode(
@@ -1904,7 +1937,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid': Could not override 'group2@foo'. No match in the defaults list."
+                    "In 'group1/override_invalid': Could not override 'group1/group2@group1.foo'."
+                    "\nDid you mean to override group1/group2?"
                 ),
             ),
             id="nested_override_invalid_group",
@@ -1915,7 +1949,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid2': Could not override 'group2'. No match in the defaults list."
+                    "In 'group1/override_invalid2': Could not override 'group1/group2'."
+                    "\nDid you mean to override group1/group2@group1.foo?"
                 ),
             ),
             id="nested_override_invalid_group",
@@ -2553,6 +2588,47 @@ def test_select_multi(
     ],
 )
 def test_select_multi_pkg(
+    config_name: Optional[str],
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(
+    ("config_name", "overrides", "expected"),
+    [
+        param(
+            "experiment/error_override_without_abs_and_header",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'experiment/error_override_without_abs_and_header': "
+                    "Could not override 'experiment/group1'. No match in the defaults list"
+                ),
+            ),
+            id="experiment/error_override_without_abs_and_header",
+        ),
+        param(
+            "experiment/error_override_without_global",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'experiment/error_override_without_global': "
+                    "Could not override 'group1@experiment.group1'. No match in the defaults list"
+                ),
+            ),
+            id="experiment/error_override_without_global",
+        ),
+    ],
+)
+def test_nested_override_errors(
     config_name: Optional[str],
     overrides: List[str],
     expected: DefaultsTreeNode,
