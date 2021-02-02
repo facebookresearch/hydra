@@ -220,7 +220,7 @@ class OptunaSweeperImpl(Sweeper):
                     if len(directions) == 1:
                         try:
                             values = [float(ret.return_value)]
-                        except Exception:
+                        except (ValueError, TypeError):
                             raise ValueError(
                                 f"Return value must be float-castable. Got '{ret.return_value}'."
                             )
@@ -232,7 +232,7 @@ class OptunaSweeperImpl(Sweeper):
                             )
                         try:
                             values = [float(v) for v in ret.return_value]
-                        except Exception:
+                        except (ValueError, TypeError):
                             raise ValueError(
                                 "Return value must be a list or tuple of float-castable values."
                                 f" Got '{ret.return_value}'."
