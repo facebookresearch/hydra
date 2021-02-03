@@ -265,6 +265,6 @@ To run the optimization, use the following command in the `plugins/hydra_optuna_
 python example/multi-objective.py --multirun
 ```
 
-For problems with trade-offs between two different objectives, there may be no single solution that simultaneously minimizes both objectives. Instead, we obtained a set of solutions, namely Pareto optimal solutions, that show the best trade-offs possible between the objectives. In the following figure, the blue dots show the Pareto optimal solutions in the optimization results.
+For problems with trade-offs between two different objectives, there may be no single solution that simultaneously minimizes both objectives. Instead, we obtained a set of solutions, namely [Pareto optimal solutions](https://en.wikipedia.org/wiki/Pareto_efficiency), that show the best trade-offs possible between the objectives. In the following figure, the blue dots show the Pareto optimal solutions in the optimization results.
 
 ![Pareto-optimal solutions](/plugins/optuna_sweeper/multi_objective_result.png)
