@@ -37,7 +37,7 @@ You can discover the Nevergrad sweeper parameters with:
 # @package hydra.sweeper
 _target_: hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper
 optim:
-  optimizer: OnePlusOne
+  optimizer: NGOpt
   budget: 80
   num_workers: 10
   noisy: false
@@ -69,7 +69,7 @@ python example/my_app.py --multirun db=mnist,cifar batch_size=4,8,16 \
 The initialization of the sweep and the first 5 evaluations (out of 100) look like this:
 
 ```text
-[2020-10-08 20:13:53,592][HYDRA] NevergradSweeper(optimizer=OnePlusOne, budget=100, num_workers=10) minimization
+[2020-10-08 20:13:53,592][HYDRA] NevergradSweeper(optimizer=NGOpt, budget=100, num_workers=10) minimization
 [2020-10-08 20:13:53,593][HYDRA] with parametrization Dict(batch_size=Choice(choices=Tuple(4,8,16),weights=Array{(1,3)}),db=Choice(choices=Tuple(mnist,cifar),weights=Array{(1,2)}),dropout=Scalar{Cl(0,1,b)}[sigma=Log{exp=2.0}],lr=Log{exp=3.162277660168379,Cl(0.001,1,b)}):{'db': 'mnist', 'lr': 0.03162277660168379, 'dropout': 0.5, 'batch_size': 8}
 [2020-10-08 20:13:53,593][HYDRA] Sweep output dir: multirun/2020-10-08/20-13-53
 [2020-10-08 20:13:55,023][HYDRA] Launching 10 jobs locally
