@@ -226,11 +226,6 @@ class OptunaSweeperImpl(Sweeper):
                                 f"Return value must be float-castable. Got '{ret.return_value}'."
                             ).with_traceback(sys.exc_info()[2])
                     else:
-                        if not isinstance(ret.return_value, (list, tuple)):
-                            raise ValueError(
-                                "Return value must be a list or tuple of float-castable values."
-                                f" Got '{ret.return_value}'."
-                            )
                         try:
                             values = [float(v) for v in ret.return_value]
                         except (ValueError, TypeError):
@@ -241,8 +236,7 @@ class OptunaSweeperImpl(Sweeper):
                         if len(values) != len(directions):
                             raise ValueError(
                                 "The number of the values and the number of the objectives are"
-                                f" mismatched. Expect {len(directions)}, but actually "
-                                f"{len(values)}."
+                                f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
                     study._tell(trial, state, values)
                 except Exception as e:
