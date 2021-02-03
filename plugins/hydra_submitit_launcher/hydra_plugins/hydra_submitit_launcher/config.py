@@ -14,13 +14,13 @@ class BaseQueueConf:
     # maximum time for the job in minutes
     timeout_min: int = 60
     # number of cpus to use for each task
-    cpus_per_task: int = 1
+    cpus_per_task: Optional[int] = None
     # number of gpus to use on each node
-    gpus_per_node: int = 0
+    gpus_per_node: Optional[int] = None
     # number of tasks to spawn on each node
     tasks_per_node: int = 1
     # memory to reserve for the job on each node (in GB)
-    mem_gb: int = 4
+    mem_gb: Optional[int] = None
     # number of nodes to use for the job
     nodes: int = 1
     # name of the job
@@ -46,6 +46,10 @@ class SlurmQueueConf(BaseQueueConf):
     comment: Optional[str] = None
     constraint: Optional[str] = None
     exclude: Optional[str] = None
+    cpus_per_gpu: Optional[int] = None
+    gpus_per_task: Optional[int] = None
+    mem_per_gpu: Optional[str] = None
+    mem_per_cpu: Optional[str] = None
 
     # Following parameters are submitit specifics
     #

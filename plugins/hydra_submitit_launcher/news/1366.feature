@@ -1,0 +1,1 @@
+Add support for advanced GPU scheduling parameters
