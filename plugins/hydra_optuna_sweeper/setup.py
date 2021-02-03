@@ -32,7 +32,7 @@ setup(
         "Development Status :: 4 - Beta",
     ],
     install_requires=[
-        "hydra-core>1.0",
+        "hydra-core>=1.1",
         "optuna<2.5.0",
         "numpy<1.20.0",  # remove once optuna is upgraded to support numpy 1.20
     ],
