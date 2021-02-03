@@ -177,18 +177,18 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
     if with_commandline:
-        for trial_x in returns["pareto_front"]:
+        for trial_x in returns["solutions"]:
             assert trial_x["params"]["x"] % 1 == 0
             assert trial_x["params"]["y"] % 1 == 0
             # The trials must not dominate each other.
-            for trial_y in returns["pareto_front"]:
+            for trial_y in returns["solutions"]:
                 assert not _dominates(trial_x, trial_y)
     else:
-        for trial_x in returns["pareto_front"]:
+        for trial_x in returns["solutions"]:
             assert trial_x["params"]["x"] % 1 in {0, 0.5}
             assert trial_x["params"]["y"] % 1 in {0, 0.5}
             # The trials must not dominate each other.
-            for trial_y in returns["pareto_front"]:
+            for trial_y in returns["solutions"]:
                 assert not _dominates(trial_x, trial_y)
 
 

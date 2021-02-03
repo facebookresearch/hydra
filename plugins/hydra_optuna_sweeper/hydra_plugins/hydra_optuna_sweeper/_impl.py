@@ -263,7 +263,7 @@ class OptunaSweeperImpl(Sweeper):
             ]
             results_to_serialize = {
                 "name": "optuna",
-                "pareto_front": pareto_front,
+                "solutions": pareto_front,
             }
             log.info(f"Number of Pareto solutions: {len(best_trials)}")
             for t in best_trials:
