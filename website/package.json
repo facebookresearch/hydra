@@ -13,7 +13,7 @@
     "@docusaurus/core": "2.0.0-alpha.70",
     "@docusaurus/preset-classic": "2.0.0-alpha.70",
     "classnames": "^2.2.6",
-    "docusaurus-plugin-internaldocs-fb": "^0.3.3",
+    "docusaurus-plugin-internaldocs-fb": "^0.5.7",
     "node-fetch": "^2.6.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4"

@@ -4593,10 +4593,14 @@ dns-txt@^2.0.2:
   dependencies:
     buffer-indexof "^1.0.0"
 
-docusaurus-plugin-internaldocs-fb@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/docusaurus-plugin-internaldocs-fb/-/docusaurus-plugin-internaldocs-fb-0.3.3.tgz#f59b6d6cf11e2ab73d9a3622e7629ab5f92ef0bc"
-  integrity sha512-9xPQWw04M6v3uN9spxHovGDhAVsjLbQUmq8ngZZVzZxysMOEIFs/bt5TS6LLDRUfKoZ/JB2V6eIoYihsNOmWoQ==
+docusaurus-plugin-internaldocs-fb@^0.5.7:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/docusaurus-plugin-internaldocs-fb/-/docusaurus-plugin-internaldocs-fb-0.5.7.tgz#7f2a1b1bbbe1edd22d817001edc2c3a5c1e8d988"
+  integrity sha512-FIDNifFK3jB10NlEaiunMV3JdcDgOvCPgxFKFPzf8oe7W5fVSeY4stIcepnXbo5umpyKFMRtLT8Bw6loJkJF3Q==
+  dependencies:
+    internaldocs-fb-helpers "^1.1.0"
+    remark-code-snippets "^0.1.1"
+    remark-mdx-filter-imports "^0.1.2"
 
 dom-converter@^0.2:
   version "0.2.0"
@@ -6159,6 +6163,11 @@ internal-ip@^4.3.0:
   dependencies:
     default-gateway "^4.2.0"
     ipaddr.js "^1.9.0"
+
+internaldocs-fb-helpers@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/internaldocs-fb-helpers/-/internaldocs-fb-helpers-1.2.0.tgz#bdaf2a503ebbaa1eb69a5caa4f827f7beccda391"
+  integrity sha512-qlJ19P13nt5kVXniEQZfZPnU+RK20jGIyuchn2eDI9KoZ65EnNBOo0Mpb31y/+7FQtadd4oC8OWpwoEbsTWgXA==
 
 interpret@^1.0.0:
   version "1.4.0"
@@ -9341,6 +9350,13 @@ remark-admonitions@^1.2.1:
     unified "^8.4.2"
     unist-util-visit "^2.0.1"
 
+remark-code-snippets@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/remark-code-snippets/-/remark-code-snippets-0.1.1.tgz#46d3b45e5c27d048141b6f79211e47e0ef53b89e"
+  integrity sha512-qOupYCWAiOf+Y2W0ApcaeQVvElRc5GBSLkVjsUP4avf9WAU73+8n41yTHhSVZdAUB6hw+Z7LOPmZ9Rz6FLIiTw==
+  dependencies:
+    unist-util-visit "^2.0.1"
+
 remark-emoji@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/remark-emoji/-/remark-emoji-2.1.0.tgz#69165d1181b98a54ad5d9ef811003d53d7ebc7db"
@@ -9354,6 +9370,11 @@ remark-footnotes@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/remark-footnotes/-/remark-footnotes-2.0.0.tgz#9001c4c2ffebba55695d2dd80ffb8b82f7e6303f"
   integrity sha512-3Clt8ZMH75Ayjp9q4CorNeyjwIxHFcTkaektplKGl2A1jNGEUey8cKL0ZC5vJwfcD5GFGsNLImLG/NGzWIzoMQ==
+
+remark-mdx-filter-imports@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/remark-mdx-filter-imports/-/remark-mdx-filter-imports-0.1.2.tgz#fa521585a14822a8e177f1b1d353b695e278cc96"
+  integrity sha512-8MAgusHtNjbNXKkBc/ckjh2U25N/D0aCfN2KDdnBQaWknLupU60pQzTEBpsZLZN67MsC6rVt6ZQgEzthOmQAAw==
 
 remark-mdx@1.6.22:
   version "1.6.22"
