@@ -219,7 +219,7 @@ class Hydra:
     ) -> None:
         subcommands = ["install", "uninstall", "query"]
         arguments = OmegaConf.from_dotlist(overrides)
-        num_commands = sum(1 for key in subcommands if arguments[key] is not None)
+        num_commands = sum(1 for key in subcommands if key in arguments)
         if num_commands != 1:
             raise ValueError(f"Expecting one subcommand from {subcommands} to be set")
 
@@ -233,13 +233,13 @@ class Hydra:
                 )
             return shell_to_plugin[cmd][0]
 
-        if arguments.install is not None:
+        if "install" in arguments:
             plugin = find_plugin(arguments.install)
             plugin.install()
-        elif arguments.uninstall is not None:
+        elif "uninstall" in arguments:
             plugin = find_plugin(arguments.uninstall)
             plugin.uninstall()
-        elif arguments.query is not None:
+        elif "query" in arguments:
             plugin = find_plugin(arguments.query)
             plugin.query(config_name=config_name)
 
