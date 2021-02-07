@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax.core import types as ax_types  # type: ignore
-from ax.exceptions.core import SearchSpaceExhausted as AxSearchSpaceExhaustedException
+from ax.exceptions.core import SearchSpaceExhausted  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -86,7 +86,7 @@ def get_one_batch_of_trials(
     for _ in range(max_parallelism_setting):
         try:
             parameters, trial_index = ax_client.get_next_trial()
-        except AxSearchSpaceExhaustedException as exception:
+        except SearchSpaceExhausted as exception:
             is_search_space_exhausted = True
             exception_msg = str(exception)
             break

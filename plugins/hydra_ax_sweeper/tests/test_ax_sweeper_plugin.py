@@ -222,7 +222,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         ["polynomial.y=1", "polynomial.x=range(2,4)"],
     ],
 )
-def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: str) -> None:
+def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> None:
     cmd = [
         "tests/apps/polynomial.py",
         "-m",
