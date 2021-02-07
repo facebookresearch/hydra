@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax.core import types as ax_types  # type: ignore
+from ax.exceptions.core import SearchSpaceExhausted as AxSearchSpaceExhaustedException
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -62,8 +63,15 @@ def get_one_batch_of_trials(
     parallelism: Tuple[int, int],
     num_trials_so_far: int,
     num_max_trials_to_do: int,
-) -> BatchOfTrialType:
-    """Produce a batch of trials that can be run in parallel"""
+) -> Tuple[BatchOfTrialType, bool, str]:
+    """Produce a batch of trials that can be run in parallel. It also
+    checks if the search space is exhausted. In case it is exhausted,
+    an exception message from Ax is also returned."""
+
+    is_search_space_exhausted = False
+    # Ax throws an exception if the search space is exhausted. We catch
+    # the exception and set the flag to True
+    exception_msg = ""
     (num_trials, max_parallelism_setting) = parallelism
     if max_parallelism_setting == -1:
         # Special case, we can group all the trials into one batch
@@ -76,14 +84,20 @@ def get_one_batch_of_trials(
 
     batch_of_trials = []
     for _ in range(max_parallelism_setting):
-        parameters, trial_index = ax_client.get_next_trial()
-        batch_of_trials.append(
-            Trial(
-                overrides=map_params_to_arg_list(params=parameters),
-                trial_index=trial_index,
+        try:
+            parameters, trial_index = ax_client.get_next_trial()
+        except AxSearchSpaceExhaustedException as exception:
+            is_search_space_exhausted = True
+            exception_msg = str(exception)
+            break
+        else:
+            batch_of_trials.append(
+                Trial(
+                    overrides=map_params_to_arg_list(params=parameters),
+                    trial_index=trial_index,
+                )
             )
-        )
-    return batch_of_trials
+    return (batch_of_trials, is_search_space_exhausted, exception_msg)
 
 
 class CoreAxSweeper(Sweeper):
@@ -131,15 +145,23 @@ class CoreAxSweeper(Sweeper):
         max_parallelism = ax_client.get_max_parallelism()
         current_parallelism_index = 0
         # Index to track the parallelism value we are using right now.
+        is_search_space_exhausted = False
+        # Ax throws an exception if the search space is exhausted. We catch
+        # the exception and set the flag to True
+
         best_parameters = {}
-        while num_trials_left > 0:
+        while num_trials_left > 0 and not is_search_space_exhausted:
             current_parallelism = max_parallelism[current_parallelism_index]
             num_trials, max_parallelism_setting = current_parallelism
             num_trials_so_far = 0
             while (
                 num_trials > num_trials_so_far or num_trials == -1
             ) and num_trials_left > 0:
-                batch_of_trials = get_one_batch_of_trials(
+                (
+                    batch_of_trials,
+                    is_search_space_exhausted,
+                    search_space_exhausted_exception_msg,
+                ) = get_one_batch_of_trials(
                     ax_client=ax_client,
                     parallelism=current_parallelism,
                     num_trials_so_far=num_trials_so_far,
@@ -165,6 +187,13 @@ class CoreAxSweeper(Sweeper):
 
                 if self.early_stopper.should_stop(metric, best_parameters):
                     num_trials_left = -1
+                    break
+
+                if is_search_space_exhausted:
+                    log.info(
+                        "Ax has exhausted the search space and raised "
+                        f"the exception: {search_space_exhausted_exception_msg}"
+                    )
                     break
 
             current_parallelism_index += 1
