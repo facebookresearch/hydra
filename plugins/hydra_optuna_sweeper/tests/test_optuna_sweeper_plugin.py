@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -152,3 +152,47 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     else:
         assert returns["best_params"]["y"] == 0
     assert returns["best_value"] == 0
+
+
+# https://github.com/pyreadline/pyreadline/issues/65
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@pytest.mark.parametrize("with_commandline", (True, False))
+def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) -> None:
+    cmd = [
+        "example/multi-objective.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.sweeper.optuna_config.n_trials=20",
+        "hydra.sweeper.optuna_config.n_jobs=1",
+        "hydra.sweeper.optuna_config.sampler=random",
+        "hydra.sweeper.optuna_config.seed=123",
+    ]
+    if with_commandline:
+        cmd += [
+            "x=range(0, 5)",
+            "y=range(0, 3)",
+        ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
+    assert returns.name == "optuna"
+    if with_commandline:
+        for trial_x in returns["solutions"]:
+            assert trial_x["params"]["x"] % 1 == 0
+            assert trial_x["params"]["y"] % 1 == 0
+            # The trials must not dominate each other.
+            for trial_y in returns["solutions"]:
+                assert not _dominates(trial_x, trial_y)
+    else:
+        for trial_x in returns["solutions"]:
+            assert trial_x["params"]["x"] % 1 in {0, 0.5}
+            assert trial_x["params"]["y"] % 1 in {0, 0.5}
+            # The trials must not dominate each other.
+            for trial_y in returns["solutions"]:
+                assert not _dominates(trial_x, trial_y)
+
+
+def _dominates(values_x: List[float], values_y: List[float]) -> bool:
+    return all(x <= y for x, y in zip(values_x, values_y)) and any(
+        x < y for x, y in zip(values_x, values_y)
+    )

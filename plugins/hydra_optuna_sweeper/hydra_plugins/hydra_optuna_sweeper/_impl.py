@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, List, MutableMapping, Optional
+import sys
+from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
 
 import optuna
 from hydra.core.config_loader import ConfigLoader
@@ -28,7 +29,7 @@ from optuna.distributions import (
     UniformDistribution,
 )
 
-from .config import DistributionConfig, DistributionType, OptunaConfig
+from .config import Direction, DistributionConfig, DistributionType, OptunaConfig
 
 log = logging.getLogger(__name__)
 
@@ -160,6 +161,8 @@ class OptunaSweeperImpl(Sweeper):
             "tpe": "optuna.samplers.TPESampler",
             "random": "optuna.samplers.RandomSampler",
             "cmaes": "optuna.samplers.CmaEsSampler",
+            "nsgaii": "optuna.samplers.NSGAIISampler",
+            "motpe": "optuna.samplers.MOTPESampler",
         }
         if self.optuna_config.sampler.name not in samplers:
             raise NotImplementedError(
@@ -169,17 +172,29 @@ class OptunaSweeperImpl(Sweeper):
         sampler_class = get_class(samplers[self.optuna_config.sampler.name])
         sampler = sampler_class(seed=self.optuna_config.seed)
 
+        directions: List[str]
+        if isinstance(self.optuna_config.direction, MutableSequence):
+            directions = [
+                d.name if isinstance(d, Direction) else d
+                for d in self.optuna_config.direction
+            ]
+        else:
+            if isinstance(self.optuna_config.direction, str):
+                directions = [self.optuna_config.direction]
+            else:
+                directions = [self.optuna_config.direction.name]
+
         study = optuna.create_study(
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
             sampler=sampler,
-            direction=self.optuna_config.direction.name,
+            directions=directions,
             load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
         log.info(f"Sampler: {self.optuna_config.sampler.name}")
-        log.info(f"Direction: {self.optuna_config.direction.name}")
+        log.info(f"Directions: {directions}")
 
         batch_size = self.optuna_config.n_jobs
         n_trials_to_go = self.optuna_config.n_trials
@@ -200,18 +215,60 @@ class OptunaSweeperImpl(Sweeper):
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
             for trial, ret in zip(trials, returns):
-                study._tell(trial, optuna.trial.TrialState.COMPLETE, [ret.return_value])
+                values: Optional[List[float]] = None
+                state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
+                try:
+                    if len(directions) == 1:
+                        try:
+                            values = [float(ret.return_value)]
+                        except (ValueError, TypeError):
+                            raise ValueError(
+                                f"Return value must be float-castable. Got '{ret.return_value}'."
+                            ).with_traceback(sys.exc_info()[2])
+                    else:
+                        try:
+                            values = [float(v) for v in ret.return_value]
+                        except (ValueError, TypeError):
+                            raise ValueError(
+                                "Return value must be a list or tuple of float-castable values."
+                                f" Got '{ret.return_value}'."
+                            ).with_traceback(sys.exc_info()[2])
+                        if len(values) != len(directions):
+                            raise ValueError(
+                                "The number of the values and the number of the objectives are"
+                                f" mismatched. Expect {len(directions)}, but actually {len(values)}."
+                            )
+                    study._tell(trial, state, values)
+                except Exception as e:
+                    state = optuna.trial.TrialState.FAIL
+                    study._tell(trial, state, values)
+                    raise e
+
             n_trials_to_go -= batch_size
 
-        best_trial = study.best_trial
-        results_to_serialize = {
-            "name": "optuna",
-            "best_params": best_trial.params,
-            "best_value": best_trial.value,
-        }
+        results_to_serialize: Dict[str, Any]
+        if len(directions) < 2:
+            best_trial = study.best_trial
+            results_to_serialize = {
+                "name": "optuna",
+                "best_params": best_trial.params,
+                "best_value": best_trial.value,
+            }
+            log.info(f"Best parameters: {best_trial.params}")
+            log.info(f"Best value: {best_trial.value}")
+        else:
+            best_trials = study.best_trials
+            pareto_front = [
+                {"params": t.params, "values": t.values} for t in best_trials
+            ]
+            results_to_serialize = {
+                "name": "optuna",
+                "solutions": pareto_front,
+            }
+            log.info(f"Number of Pareto solutions: {len(best_trials)}")
+            for t in best_trials:
+                log.info(f"    Values: {t.values}, Params: {t.params}")
         OmegaConf.save(
             OmegaConf.create(results_to_serialize),
             f"{self.config.hydra.sweep.dir}/optimization_results.yaml",
         )
-        log.info(f"Best parameters: {best_trial.params}")
-        log.info(f"Best value: {best_trial.value}")
