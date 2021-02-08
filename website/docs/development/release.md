@@ -16,9 +16,10 @@ One should check that the version is the correct one against pypi before releasi
 - Check the version in `hydra/__init__.py`. This should be one version higher than the version available on PyPI. If it is the same version as PyPI, bump the version locally.
 - Create draft release notes using `towncrier build --draft`.
 - If the draft notes are correct, update NEWS.md using `towncrier build`.
+- Push the news file to release branch.
 - Create a pip package: `python setup.py sdist bdist_wheel`
 - Upload pip package: `python -m twine upload dist/*`
-- Bump the version in `hydra/__init__.py`.
+- Bump the version in `hydra/__init__.py` and push to master.
 
 ### Plugin Release Process
 
@@ -26,6 +27,7 @@ One should check that the version is the correct one against pypi before releasi
 - Bump the version in `setup.py`. This should be one version higher than the version available on PyPI. If it is the same version as PyPI, bump the version locally.
 - Create draft release notes using `towncrier build --draft  --version x.y`
 - If the draft notes are correct, update NEWS.md using `towncrier build  --version x.y`
+- Push the news file to release branch.
 - Create a pip package: `python setup.py sdist bdist_wheel`
 - Upload pip package: `python -m twine upload dist/*`
-- Bump the version in `setup.py`.
+- Bump the version in `setup.py` and push to master.
