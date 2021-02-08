@@ -25,7 +25,6 @@ issue number with one of the following extensions:
 * `docs` : Addition or updates to documentation
 * `config` : Changes or addition to the configuration structure
 * `maintenance` : Changes that improve the maintainability of the code
-* `trivial`: Minor Changes
 
 If your issue or PR number is ``1234`` and this change is fixing a bug, you would
 create a file ``news/1234.bugfix``. PRs can span multiple categories by creating

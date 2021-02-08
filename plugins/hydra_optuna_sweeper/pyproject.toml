@@ -34,11 +34,6 @@
   showcontent = true
 
   [[tool.towncrier.type]]
-  directory = "trivial"
-  name = "Trivial Changes"
-  showcontent = false
-
-  [[tool.towncrier.type]]
   directory = "maintenance"
   name = "Maintenance Changes"
   showcontent = true
