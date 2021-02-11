@@ -86,17 +86,17 @@ def get_one_batch_of_trials(
     for _ in range(max_parallelism_setting):
         try:
             parameters, trial_index = ax_client.get_next_trial()
-        except SearchSpaceExhausted as exception:
-            is_search_space_exhausted = True
-            exception_msg = str(exception)
-            break
-        else:
             batch_of_trials.append(
                 Trial(
                     overrides=map_params_to_arg_list(params=parameters),
                     trial_index=trial_index,
                 )
             )
+        except SearchSpaceExhausted as exception:
+            is_search_space_exhausted = True
+            exception_msg = str(exception)
+            break
+
     return (batch_of_trials, is_search_space_exhausted, exception_msg)
 
 
