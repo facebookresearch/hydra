@@ -6,7 +6,7 @@ from textwrap import dedent
 from typing import List, Optional, Pattern, Union
 
 from omegaconf import AnyNode, DictConfig, OmegaConf
-from omegaconf.errors import ConfigKeyError
+from omegaconf.errors import InterpolationResolutionError
 
 from hydra.errors import ConfigCompositionException
 
@@ -234,7 +234,7 @@ class InputDefault:
             ret = node["_dummy_"]
             assert isinstance(ret, str)
             return ret
-        except ConfigKeyError:
+        except InterpolationResolutionError:
             options = [x for x in known_choices.keys() if x != "defaults"]
             if len(options) > 0:
                 options_str = ", ".join(options)

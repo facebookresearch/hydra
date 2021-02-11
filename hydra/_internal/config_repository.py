@@ -9,6 +9,7 @@ from omegaconf import (
     Container,
     DictConfig,
     ListConfig,
+    Node,
     OmegaConf,
     open_dict,
     read_write,
@@ -192,7 +193,7 @@ class ConfigRepository(IConfigRepository):
                     keywords.optional = old_optional
 
                 node = item._get_node(key)
-                assert node is not None
+                assert node is not None and isinstance(node, Node)
                 config_value = node._value()
 
                 if old_optional is not None:
