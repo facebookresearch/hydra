@@ -54,8 +54,7 @@ class TestConfigLoader:
         )
         cfg = config_loader.load_configuration(
             config_name="config.yaml",
-            strict=False,
-            overrides=["abc=123"],
+            overrides=["+abc=123"],
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
@@ -68,10 +67,7 @@ class TestConfigLoader:
         )
         with pytest.raises(MissingConfigException):
             config_loader.load_configuration(
-                config_name="missing-default.yaml",
-                overrides=[],
-                strict=False,
-                run_mode=RunMode.RUN,
+                config_name="missing-default.yaml", overrides=[], run_mode=RunMode.RUN
             )
 
     def test_load_with_optional_default(self, path: str) -> None:
@@ -79,10 +75,7 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
-            config_name="optional-default.yaml",
-            overrides=[],
-            strict=False,
-            run_mode=RunMode.RUN,
+            config_name="optional-default.yaml", overrides=[], run_mode=RunMode.RUN
         )
         with open_dict(cfg):
             del cfg["hydra"]
@@ -134,7 +127,6 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="optional-default.yaml",
             overrides=["+group2=file1"],
-            strict=False,
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
@@ -148,7 +140,6 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="overriding_run_dir.yaml",
             overrides=["hydra.run.dir=abc"],
-            strict=False,
             run_mode=RunMode.RUN,
         )
         assert cfg.hydra.run.dir == "abc"
@@ -160,7 +151,6 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="overriding_run_dir.yaml",
             overrides=[],
-            strict=False,
             run_mode=RunMode.RUN,
         )
         assert cfg.hydra.run.dir == "cde"
@@ -177,7 +167,6 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="compose.yaml",
             overrides=["foo=ZZZ"],
-            strict=True,
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
@@ -194,7 +183,6 @@ class TestConfigLoader:
             config_loader.load_configuration(
                 config_name="compose.yaml",
                 overrides=["f00=ZZZ"],
-                strict=True,
                 run_mode=RunMode.RUN,
             )
 
@@ -209,7 +197,6 @@ class TestConfigLoader:
             cfg = config_loader.load_configuration(
                 config_name="config.yml",
                 overrides=[],
-                strict=False,
                 run_mode=RunMode.RUN,
             )
 
@@ -223,9 +210,8 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
         cfg = config_loader.load_configuration(
-            config_name="config.yaml",
-            overrides=["abc='cde=12'"],
-            strict=False,
+            config_name="config",
+            overrides=["+abc='cde=12'"],
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
@@ -239,7 +225,6 @@ class TestConfigLoader:
         cfg = config_loader.load_configuration(
             config_name="compose.yaml",
             overrides=["group1=abc.cde"],
-            strict=False,
             run_mode=RunMode.RUN,
         )
         with open_dict(cfg):
@@ -312,7 +297,6 @@ class TestConfigLoader:
             cfg = config_loader.load_configuration(
                 config_name="config",
                 overrides=["+db=mysql"],
-                strict=False,
                 run_mode=RunMode.RUN,
             )
 
@@ -350,7 +334,6 @@ class TestConfigLoader:
         )
         master_cfg = config_loader.load_configuration(
             config_name="config.yaml",
-            strict=False,
             overrides=["+time=${now:%H-%M-%S}", "+home=${env:HOME}"],
             run_mode=RunMode.RUN,
         )
@@ -383,7 +366,6 @@ def test_defaults_not_list_exception() -> None:
         config_loader.load_configuration(
             config_name="defaults_not_list.yaml",
             overrides=[],
-            strict=False,
             run_mode=RunMode.RUN,
         )
 
@@ -396,7 +378,6 @@ def test_override_hydra_config_value_from_config_file() -> None:
     cfg = config_loader.load_configuration(
         config_name="overriding_output_dir.yaml",
         overrides=[],
-        strict=False,
         run_mode=RunMode.RUN,
     )
     assert cfg.hydra.run.dir == "foo"

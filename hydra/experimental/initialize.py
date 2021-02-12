@@ -41,7 +41,6 @@ class initialize:
     - Jupyter notebooks.
     :param config_path: path relative to the parent of the caller
     :param job_name: the value for hydra.job.name (By default it is automatically detected based on the caller)
-    :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
     """
 
@@ -49,7 +48,6 @@ class initialize:
         self,
         config_path: Optional[str] = None,
         job_name: Optional[str] = None,
-        strict: Optional[bool] = None,
         caller_stack_depth: int = 1,
     ) -> None:
         self._gh_backup = get_gh_backup()
@@ -69,7 +67,6 @@ class initialize:
             calling_module=calling_module,
             config_path=config_path,
             job_name=job_name,
-            strict=strict,
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
@@ -98,7 +95,6 @@ class initialize_config_module:
             calling_module=f"{config_module}.{job_name}",
             config_path=None,
             job_name=job_name,
-            strict=None,
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
@@ -130,9 +126,7 @@ class initialize_config_dir:
                 "initialize_config_dir() requires an absolute config_dir as input"
             )
         csp = create_config_search_path(search_path_dir=config_dir)
-        Hydra.create_main_hydra2(
-            task_name=job_name, config_search_path=csp, strict=None
-        )
+        Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
         ...

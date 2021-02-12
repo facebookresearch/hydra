@@ -211,7 +211,7 @@ class CompletionPlugin(Plugin):
 
         run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
         config = self.config_loader.load_configuration(
-            config_name=config_name, overrides=words, run_mode=run_mode, strict=True
+            config_name=config_name, overrides=words, run_mode=run_mode
         )
 
         fname_prefix, filename = CompletionPlugin._get_filename(word)

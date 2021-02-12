@@ -3,7 +3,6 @@ import copy
 import logging
 import string
 import sys
-import warnings
 from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
@@ -44,34 +43,21 @@ class Hydra:
         calling_module: Optional[str],
         config_path: Optional[str],
         job_name: str,
-        strict: Optional[bool],
     ) -> "Hydra":
         config_search_path = create_automatic_config_search_path(
             calling_file, calling_module, config_path
         )
 
-        return Hydra.create_main_hydra2(job_name, config_search_path, strict)
+        return Hydra.create_main_hydra2(job_name, config_search_path)
 
     @classmethod
     def create_main_hydra2(
         cls,
         task_name: str,
         config_search_path: ConfigSearchPath,
-        strict: Optional[bool],
     ) -> "Hydra":
-
-        if strict is None:
-            strict = True
-        else:
-            # DEPRECATED: remove in 1.1
-            msg = (
-                "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
-                "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
-            )
-            warnings.warn(message=msg, category=UserWarning)
-
         config_loader: ConfigLoader = ConfigLoaderImpl(
-            config_search_path=config_search_path, default_strict=strict
+            config_search_path=config_search_path
         )
 
         hydra = cls(task_name=task_name, config_loader=config_loader)
@@ -119,11 +105,9 @@ class Hydra:
         overrides: List[str],
         with_log_configuration: bool = True,
     ) -> Any:
-        # Initial config is loaded without strict (individual job configs may have strict).
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
-            strict=False,
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
@@ -521,7 +505,6 @@ class Hydra:
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-        strict: Optional[bool] = None,
         with_log_configuration: bool = False,
         from_shell: bool = True,
     ) -> DictConfig:
@@ -530,8 +513,6 @@ class Hydra:
         :param overrides:
         :param run_mode: compose config for run or for multirun?
         :param with_log_configuration: True to configure logging subsystem from the loaded config
-        :param strict: None for default behavior (default to true for config file, false if no config file).
-                       otherwise forces specific behavior.
         :param from_shell: True if the parameters are passed from the shell. used for more helpful error messages
         :return:
         """
@@ -539,7 +520,6 @@ class Hydra:
         cfg = self.config_loader.load_configuration(
             config_name=config_name,
             overrides=overrides,
-            strict=strict,
             run_mode=run_mode,
             from_shell=from_shell,
         )

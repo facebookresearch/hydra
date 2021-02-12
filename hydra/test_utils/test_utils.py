@@ -44,7 +44,6 @@ class TaskTestFunction:
         self.calling_module: Optional[str] = None
         self.config_path: Optional[str] = None
         self.config_name: Optional[str] = None
-        self.strict: Optional[bool] = None
         self.hydra: Optional[Hydra] = None
         self.job_ret: Optional[JobReturn] = None
         self.configure_logging: bool = False
@@ -67,7 +66,6 @@ class TaskTestFunction:
                 calling_module=self.calling_module,
                 config_path=self.config_path,
                 job_name=job_name,
-                strict=self.strict,
             )
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
@@ -99,7 +97,6 @@ class TTaskRunner(Protocol):
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
-        strict: Optional[bool] = None,
         configure_logging: bool = False,
     ) -> TaskTestFunction:
         ...
@@ -121,7 +118,6 @@ class SweepTaskFunction:
         self.task_function: Optional[TaskFunction] = None
         self.config_path: Optional[str] = None
         self.config_name: Optional[str] = None
-        self.strict: Optional[bool] = None
         self.sweeps = None
         self.returns = None
         self.configure_logging: bool = False
@@ -152,7 +148,6 @@ class SweepTaskFunction:
                 calling_module=self.calling_module,
                 config_path=self.config_path,
                 job_name=job_name,
-                strict=self.strict,
             )
 
             self.returns = hydra_.multirun(
@@ -184,7 +179,6 @@ class TSweepRunner(Protocol):
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]],
-        strict: Optional[bool] = None,
         temp_dir: Optional[Path] = None,
     ) -> SweepTaskFunction:
         ...

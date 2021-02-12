@@ -290,7 +290,6 @@ def _run_hydra(
     task_function: TaskFunction,
     config_path: Optional[str],
     config_name: Optional[str],
-    strict: Optional[bool],
 ) -> None:
 
     from hydra.core.global_hydra import GlobalHydra
@@ -332,7 +331,7 @@ def _run_hydra(
     run_and_report(add_conf_dir)
     hydra = run_and_report(
         lambda: Hydra.create_main_hydra2(
-            task_name=task_name, config_search_path=search_path, strict=strict
+            task_name=task_name, config_search_path=search_path
         )
     )
 
