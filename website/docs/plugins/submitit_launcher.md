@@ -34,7 +34,7 @@ Submitit actually implements 2 different launchers: `submitit_slurm` to run on a
 
 You can discover the SLURM Launcher parameters with:
 
-<details><summary>$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher (click to expand)</summary>
+<details><summary>$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher <b>(Expand)<b/></summary>
 
 ```yaml
 # @package hydra.launcher
@@ -65,7 +65,7 @@ setup: null
 
 Similarly, you can discover the local launcher parameters with:
 
-<details><summary>$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher (click to expand)</summary>
+<details><summary>$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher <b>(Expand)<b/></summary>
 
 ```yaml
 # @package hydra.launcher
