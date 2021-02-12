@@ -358,7 +358,7 @@ class ConfigLoaderImpl(ConfigLoader):
                         warnings.warn(
                             dedent(
                                 f"""\
-    
+
                                 '{config_path}' is validated against ConfigStore schema with the same name.
                                 This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
                                 See {url} for migration instructions."""
