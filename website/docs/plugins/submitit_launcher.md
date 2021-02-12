@@ -34,9 +34,9 @@ Submitit actually implements 2 different launchers: `submitit_slurm` to run on a
 
 You can discover the SLURM Launcher parameters with:
 
-<details><summary>Discover SLURM launcher's config</summary>
+<details><summary>$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher (click to expand)</summary>
 
-```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
+```yaml
 # @package hydra.launcher
 submitit_folder: $&#123;hydra.sweep.dir/.submitit/%j
 timeout_min: 60
@@ -60,15 +60,14 @@ max_num_timeout: 0
 additional_parameters: {}
 array_parallelism: 256
 setup: null
-
 ```
 </details>
 
 Similarly, you can discover the local launcher parameters with:
 
-<details><summary>Discover local launcher's config</summary>
+<details><summary>$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher (click to expand)</summary>
 
-```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
+```yaml
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
 submitit_folder: ${hydra.sweep.dir}/.submitit/%j
