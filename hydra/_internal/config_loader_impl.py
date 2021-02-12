@@ -52,9 +52,7 @@ class ConfigLoaderImpl(ConfigLoader):
     def __init__(
         self,
         config_search_path: ConfigSearchPath,
-        default_strict: Optional[bool] = True,
     ) -> None:
-        self.default_strict = default_strict
         self.config_search_path = config_search_path
         self.repository = ConfigRepository(config_search_path=config_search_path)
 
@@ -144,7 +142,6 @@ class ConfigLoaderImpl(ConfigLoader):
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-        strict: Optional[bool] = None,
         from_shell: bool = True,
     ) -> DictConfig:
         try:
@@ -152,7 +149,6 @@ class ConfigLoaderImpl(ConfigLoader):
                 config_name=config_name,
                 overrides=overrides,
                 run_mode=run_mode,
-                strict=strict,
                 from_shell=from_shell,
             )
         except OmegaConfBaseException as e:
@@ -163,14 +159,10 @@ class ConfigLoaderImpl(ConfigLoader):
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-        strict: Optional[bool] = None,
         from_shell: bool = True,
     ) -> DictConfig:
         self.ensure_main_config_source_available()
         caching_repo = CachingConfigRepository(self.repository)
-
-        if strict is None:
-            strict = self.default_strict
 
         parser = OverridesParser.create()
         parsed_overrides = parser.parse_overrides(overrides=overrides)
@@ -193,7 +185,7 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults=defaults_list.defaults, repo=caching_repo
         )
 
-        OmegaConf.set_struct(cfg, strict)
+        OmegaConf.set_struct(cfg, True)
         OmegaConf.set_readonly(cfg.hydra, False)
 
         # Apply command line overrides after enabling strict flag
@@ -240,7 +232,6 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides = overrides + sweep_overrides
         sweep_config = self.load_configuration(
             config_name=master_config.hydra.job.config_name,
-            strict=self.default_strict,
             overrides=overrides,
             run_mode=RunMode.RUN,
         )

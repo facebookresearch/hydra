@@ -74,18 +74,6 @@ class TestCompose:
                 compose(config_file, overrides)
 
 
-def test_strict_deprecation_warning(hydra_restore_singletons: Any) -> None:
-    msg = (
-        "\n@hydra.main(strict) flag is deprecated and will removed in the next version."
-        "\nSee https://hydra.cc/docs/next/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
-    )
-    with pytest.warns(expected_warning=UserWarning, match=re.escape(msg)):
-        try:
-            initialize(config_path=None, strict=True)
-        finally:
-            GlobalHydra.instance().clear()
-
-
 @pytest.mark.usefixtures("hydra_restore_singletons")
 @pytest.mark.parametrize(
     "config_file, overrides, expected",

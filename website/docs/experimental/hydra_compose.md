@@ -58,14 +58,12 @@ if __name__ == "__main__":
 def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
-    strict: Optional[bool] = None,
     return_hydra_config: bool = False,
 ) -> DictConfig:
     """
     :param config_name: the name of the config
            (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
-    :param strict: optionally override the default strict mode
     :param return_hydra_config: True to return the hydra config node in the result
     :return: the composed config
     """
@@ -75,7 +73,6 @@ def compose(
 def initialize(
     config_path: Optional[str] = None,
     job_name: Optional[str] = "app",
-    strict: Optional[bool] = None,
     caller_stack_depth: int = 1,
 ) -> None:
     """
@@ -90,7 +87,6 @@ def initialize(
     - Jupyter notebooks.
     :param config_path: path relative to the parent of the caller
     :param job_name: the value for hydra.job.name (By default it is automatically detected based on the caller)
-    :param strict: (Deprecated), will be removed in the next major version
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
     """
 ```
