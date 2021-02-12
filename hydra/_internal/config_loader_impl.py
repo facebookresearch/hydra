@@ -343,17 +343,29 @@ class ConfigLoaderImpl(ConfigLoader):
             if schema is not None:
                 try:
                     url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching"
-                    warnings.warn(
-                        dedent(
-                            f"""\
-
+                    if "defaults" in schema.config:
+                        raise ConfigCompositionException(
+                            dedent(
+                                f"""\
                             '{config_path}' is validated against ConfigStore schema with the same name.
                             This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
+                            In addition, the automatically matched schema contains a defaults list.
+                            This combination is no longer supported.
                             See {url} for migration instructions."""
-                        ),
-                        category=UserWarning,
-                        stacklevel=11,
-                    )
+                            )
+                        )
+                    else:
+                        warnings.warn(
+                            dedent(
+                                f"""\
+
+                                '{config_path}' is validated against ConfigStore schema with the same name.
+                                This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
+                                See {url} for migration instructions."""
+                            ),
+                            category=UserWarning,
+                            stacklevel=11,
+                        )
 
                     # if primary config has a hydra node, remove it during validation and add it back.
                     # This allows overriding Hydra's configuration without declaring it's node
