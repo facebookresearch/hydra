@@ -60,7 +60,7 @@ array_parallelism: 256
 setup: null
 ```
 </details>
-<details><summary>Discover the local launcher parameters <b>(Expand)</b></summary>
+<details><summary>Discover the Local Launcher parameters <b>(Expand)</b></summary>
 
 ```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
