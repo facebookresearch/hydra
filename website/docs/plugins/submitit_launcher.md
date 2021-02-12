@@ -30,13 +30,11 @@ defaults:
 Note that this plugin expects a valid environment in the target host. usually this means a shared file system between
 the launching host and the target host.
 
-Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
+The Submitit Plugin implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
 
-You can discover the SLURM Launcher parameters with:
+<details><summary>Discover the SLURM Launcher parameters <b>(Expand)</b></summary>
 
-<details><summary>$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher <b>(Expand)<b/></summary>
-
-```yaml
+```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
 submitit_folder: $&#123;hydra.sweep.dir/.submitit/%j
 timeout_min: 60
@@ -62,12 +60,9 @@ array_parallelism: 256
 setup: null
 ```
 </details>
+<details><summary>Discover the local launcher parameters <b>(Expand)</b></summary>
 
-Similarly, you can discover the local launcher parameters with:
-
-<details><summary>$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher <b>(Expand)<b/></summary>
-
-```yaml
+```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
 submitit_folder: ${hydra.sweep.dir}/.submitit/%j
@@ -81,7 +76,9 @@ name: ${hydra.job.name}
 ```
 </details>
 
-You can set all these parameters in your configuration file and/or override them in the commandline: 
+<br/>
+You can set all these parameters in your configuration file and/or override them in the command-line:
+
 ```text
 python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
