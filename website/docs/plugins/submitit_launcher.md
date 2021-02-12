@@ -27,7 +27,7 @@ defaults:
   - override hydra/launcher: submitit_slurm
 ```
 
-Note that this plugin expects a valid environment in the target host. usually this means a shared file system between
+Note that this plugin expects a valid environment in the target host. Usually this means a shared file system between
 the launching host and the target host.
 
 Submitit actually implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
