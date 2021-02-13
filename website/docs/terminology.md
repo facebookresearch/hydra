@@ -32,8 +32,8 @@ There are two primary patterns for using Structured configs:
 ```python title="Example:"
 @dataclass
 class User:
-  name: str = MISSING
-  age: int = MISSING
+  name: str
+  age: int
 ```
 
 
