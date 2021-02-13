@@ -5,7 +5,7 @@ title: Config Groups
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
-<ExampleGithubLink to="examples/tutorials/structured_configs/3_config_groups"/>
+<ExampleGithubLink to="examples/tutorials/structured_configs/3_config_groups/my_app.py"/>
 
 Structured Configs can be used to implement config groups. Special care needs to be taken when specifying a 
 default value for fields populated by a config group. We will look at why below.
@@ -60,6 +60,9 @@ The `+` above is required because there is no default choice for the config grou
 The next page will reintroduce the Defaults List, eliminating the need for the `+`.
 
 ### Config inheritance
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py"/>
+
 Standard Python inheritance can be used to get improved type safety, and to move common fields to the parent class.
 
 ```python title="Defining a config group for database using inheritance"
@@ -97,5 +100,5 @@ Omitting a default value is equivalent to assigning *MISSING* to it, although it
 convenient to be able to assign MISSING it to a field.
 
 :::caution
-Do not confuse *omegaconf.MISSING* with *dataclass.MISSING*.
+Do not confuse **omegaconf.MISSING** with **dataclass.MISSING**.
 :::

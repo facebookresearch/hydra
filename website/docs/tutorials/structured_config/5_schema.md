@@ -64,7 +64,8 @@ password: drowssap
 </div>
 </div>
 
-Nothing much is new in the source code: 
+One difference in the source code is that we have removed the Defaults List from the `Config` dataclass.
+The primary Defaults List will come from `config.yaml`.
 <details><summary>my_app.py (Click to expand)</summary>
 
 ```python {28-30}
@@ -108,16 +109,64 @@ if __name__ == "__main__":
 ```
 </details>
 <br/>
-When Hydra composes the final config object, the schemas from the config store are used to 
-validate that the both the configuration files and command line overrides are conforming to the schema. 
 
-```
+When Hydra composes the final config object it will use the config schemas as specified in the Default Lists.  
+Like before, Hydra will catch user errors in the command line:
+
+```yaml
 $ python my_app.py db.port=fail
 Error merging override db.port=fail
 Value 'fail' could not be converted to Integer
         full_key: db.port
         object_type=MySQLConfig
 ```
+
+<details><summary>Use <b>--info</b> commands to see how a config was composed (<b>Expand</b>)</summary>
+
+```text
+$ python my_app.py --info defaults-tree
+
+Defaults Tree
+*************
+<root>:
+  hydra/config:
+    hydra/output: default
+    hydra/launcher: basic
+    hydra/sweeper: basic
+    hydra/help: default
+    hydra/hydra_help: default
+    hydra/hydra_logging: default
+    hydra/job_logging: default
+    _self_
+  config:
+    base_config
+    db: mysql:
+      db/base_mysql
+      _self_
+    _self_
+
+$ python my_app.py --info defaults
+
+Defaults List
+*************
+| Config path                 | Package             | _self_ | Parent       | 
+------------------------------------------------------------------------------
+| hydra/output/default        | hydra               | False  | hydra/config |
+| hydra/launcher/basic        | hydra.launcher      | False  | hydra/config |
+| hydra/sweeper/basic         | hydra.sweeper       | False  | hydra/config |
+| hydra/help/default          | hydra.help          | False  | hydra/config |
+| hydra/hydra_help/default    | hydra.hydra_help    | False  | hydra/config |
+| hydra/hydra_logging/default | hydra.hydra_logging | False  | hydra/config |
+| hydra/job_logging/default   | hydra.job_logging   | False  | hydra/config |
+| hydra/config                | hydra               | True   | <root>       |
+| base_config                 |                     | False  | config       |
+| db/base_mysql               | db                  | False  | db/mysql     |
+| db/mysql                    | db                  | True   | config       |
+| config                      |                     | True   | <root>       |
+------------------------------------------------------------------------------
+```
+
+</details>
 
 ### Validating against a schema from a different config group
 
