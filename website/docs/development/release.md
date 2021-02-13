@@ -19,7 +19,9 @@ One should check that the version is the correct one against pypi before releasi
 - Push the news file to release branch.
 - Create a pip package: `python setup.py sdist bdist_wheel`
 - Upload pip package: `python -m twine upload dist/*`
-- Bump the version in `hydra/__init__.py` and push to release branch.
+- Bump the version in `hydra/__init__.py`.
+- Create a pull request to the release branch.
+- Merge once the CI completes successfully.
 
 ### Plugin Release Process
 
@@ -30,4 +32,6 @@ One should check that the version is the correct one against pypi before releasi
 - Push the news file to release branch.
 - Create a pip package: `python setup.py sdist bdist_wheel`
 - Upload pip package: `python -m twine upload dist/*`
-- Bump the version in `setup.py` and push to release branch.
+- Bump the version in `setup.py`.
+- Create a pull request to the release branch.
+- Merge once the CI completes successfully.
