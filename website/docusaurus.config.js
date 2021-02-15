@@ -19,7 +19,6 @@ module.exports = {
             current: "https://github.com/facebookresearch/hydra/blob/master/",
         },
     },    
-    plugins: [require.resolve('docusaurus-plugin-internaldocs-fb')],
     themeConfig: {
         googleAnalytics: {
             trackingID: 'UA-149862507-1',
@@ -110,7 +109,7 @@ module.exports = {
     },
     presets: [
         [
-            '@docusaurus/preset-classic',
+            require.resolve('docusaurus-plugin-internaldocs-fb/docusaurus-preset'),
             {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
