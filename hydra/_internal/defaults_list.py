@@ -425,10 +425,6 @@ def _create_defaults_tree_impl(
         if not repo.config_exists(root.node.get_config_path()):
             config_not_found_error(repo=repo, tree=root)
 
-    if overrides.is_overridden(parent):
-        assert isinstance(parent, GroupDefault)
-        overrides.override_default_option(parent)
-
     update_package_header(repo=repo, node=parent)
 
     if overrides.is_deleted(parent):
@@ -497,10 +493,12 @@ def _create_defaults_tree_impl(
                 continue
 
             d.update_parent(parent.get_group_path(), parent.get_final_package())
-            if isinstance(d, GroupDefault) and d.is_options():
-                if overrides.is_overridden(d):
-                    overrides.override_default_option(d)
 
+            if overrides.is_overridden(d):
+                assert isinstance(d, GroupDefault)
+                overrides.override_default_option(d)
+
+            if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
                 if d.is_options():
                     for item in reversed(d.get_options()):
@@ -528,6 +526,7 @@ def _create_defaults_tree_impl(
                 if d.is_interpolation():
                     children.append(d)
                     continue
+
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 add_child(children, new_root)
 

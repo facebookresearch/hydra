@@ -2585,6 +2585,19 @@ def test_select_multi(
             ),
             id="group1/select_multi:override",
         ),
+        param(
+            "group1/group_item1",
+            ["group1/group2=[file1,file2]"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group1/group_item1"),
+                children=[
+                    ConfigDefault(path="group2/file1"),
+                    ConfigDefault(path="group2/file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group1/override_single_to_list",
+        ),
     ],
 )
 def test_select_multi_pkg(
