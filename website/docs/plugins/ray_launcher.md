@@ -190,6 +190,13 @@ Loaded cached provider configuration
 ```
 </details>
 
+<details><summary>Dockerized app</summary>
+
+```commandline
+python docker_app.py --multirun hydra/launcher=ray_aws task=1,2,3
+```
+</details>
+
 ##### Manage Cluster LifeCycle
 You can manage the Ray EC2 cluster lifecycle by configuring the two flags provided by the plugin:
 
@@ -240,3 +247,61 @@ Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/pac
 and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote). 
 You can configure `ray` by overriding `hydra.launcher.ray.init` and `hydra.launcher.ray.remote`. 
 Check out an <GithubLink to="plugins/hydra_ray_launcher/examples/simple/config.yaml">example config</GithubLink>.
+
+
+### Using Docker with AWS
+If you have a docker container publicly hosted, you can launch containerized jobs with only a 
+minimal change to the config. Note that the Amazon AMI will need 
+to have Docker already installed.
+
+<details><summary>Example config for dockerized app</summary>
+
+```
+hydra:
+  launcher:
+    _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
+    env_setup:
+      pip_packages:
+        omegaconf: null
+        hydra_core: null
+        ray: null
+        cloudpickle: null
+        pickle5: null
+        hydra_ray_launcher: null
+      commands: []
+    ray:
+      cluster:
+        cluster_name: example-cluster
+        min_workers: 0
+        max_workers: 0
+        initial_workers: 0
+        autoscaling_mode: default
+        target_utilization_fraction: 0.8
+        idle_timeout_minutes: 5
+        docker:
+          image: 'samuelstanton/ray-plugin-example'
+          container_name: 'hydra-container'
+          pull_before_run: true
+          run_options: []
+        provider:
+          type: aws
+          region: us-east-2
+          availability_zone: us-east-2a,us-east-2b
+          cache_stopped_nodes: false
+          key_pair:
+            key_name: hydra
+        auth:
+          ssh_user: ubuntu
+        head_node:
+          IamInstanceProfile:
+            Arn: arn:aws:iam::312649332277:instance-profile/ray-head-v1
+          InstanceType: m4.large
+          ImageId: ami-010bc10395b6826fb
+        worker_nodes:
+          IamInstanceProfile:
+            Arn: arn:aws:iam::312649332277:instance-profile/ray-worker-v1
+          InstanceType: m4.large
+          ImageId: ami-010bc10395b6826fb
+    stop_cluster: true
+```
+</details>
