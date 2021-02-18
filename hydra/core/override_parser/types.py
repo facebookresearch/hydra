@@ -7,7 +7,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
 from textwrap import dedent
-
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
