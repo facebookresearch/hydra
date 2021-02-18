@@ -114,7 +114,7 @@ def launch(
 def launch_jobs(
     launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
 ) -> Sequence[JobReturn]:
-    ray_up(launcher.ray_yaml_path, launcher.ray_cfg.no_config_cache)
+    ray_up(launcher.ray_yaml_path)
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
         with ray_tmp_dir(

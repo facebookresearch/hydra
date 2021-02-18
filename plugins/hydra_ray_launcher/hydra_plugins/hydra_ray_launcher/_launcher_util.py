@@ -116,10 +116,8 @@ def ray_down(yaml_path: str) -> None:
     _run_command(["ray", "down", "-y", yaml_path])
 
 
-def ray_up(yaml_path: str, no_config_cache: bool) -> None:
+def ray_up(yaml_path: str) -> None:
     args = ["ray", "up", "-y", yaml_path]
-    if no_config_cache:
-        args.append("--no-config-cache")
     _run_command(args)
 
 
