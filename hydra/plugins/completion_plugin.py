@@ -9,6 +9,8 @@ import os
 import re
 import sys
 from abc import abstractmethod
+
+from hydra.errors import ConfigCompositionException
 from omegaconf import (
     Container,
     DictConfig,
@@ -209,11 +211,6 @@ class CompletionPlugin(Plugin):
             word = words[-1]
             words = words[0:-1]
 
-        run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
-        config = self.config_loader.load_configuration(
-            config_name=config_name, overrides=words, run_mode=run_mode
-        )
-
         fname_prefix, filename = CompletionPlugin._get_filename(word)
         if filename is not None:
             assert fname_prefix is not None
@@ -223,7 +220,22 @@ class CompletionPlugin(Plugin):
             matched_groups, exact_match = self._query_config_groups(word)
             config_matches: List[str] = []
             if not exact_match:
-                config_matches = CompletionPlugin._get_matches(config, word)
+
+                run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
+                config_matches = []
+                try:
+                    config = self.config_loader.load_configuration(
+                        config_name=config_name, overrides=words, run_mode=run_mode
+                    )
+                    config_matches = CompletionPlugin._get_matches(config, word)
+                except ConfigCompositionException:
+                    # if config fails to load for whatever reason, do not provide config matches.
+                    # possible reasons:
+                    # - missing entry in defaults list (- group: ???) and not populated in command line
+                    # - a config file is not found
+                    # etc.
+                    pass
+
             result = list(set(matched_groups + config_matches))
 
         return sorted(result)

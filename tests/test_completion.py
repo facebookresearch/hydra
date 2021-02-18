@@ -283,6 +283,26 @@ def test_with_flags(line: str, expected: List[str]) -> None:
     assert ret == expected
 
 
+@pytest.mark.parametrize(
+    "line,expected",
+    [
+        ("", ["group=", "hydra", "test_hydra/"]),
+        ("group=", ["group=dict", "group=list"]),
+        ("group=d", ["group=dict"]),
+        (
+            "group=dict ",
+            ["group.", "group=", "hydra", "hydra.", "test_hydra/", "toys."],
+        ),
+        ("group=dict toys.", ["toys.andy=", "toys.list.", "toys.slinky="]),
+    ],
+)
+def test_missing_default_value(line: str, expected: List[str]) -> None:
+    config_loader = create_config_loader()
+    bc = DefaultCompletionPlugin(config_loader)
+    ret = bc._query(config_name="missing_default", line=line)
+    assert ret == expected
+
+
 @pytest.mark.parametrize("relative", [True, False])
 @pytest.mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @pytest.mark.parametrize(
