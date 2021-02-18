@@ -819,6 +819,26 @@ def test_override(
     assert ret == expected
 
 
+def test_deprecated_name_package() -> None:
+    msg = (
+        "In override key@_name_=value: _name_ keyword is deprecated in packages, "
+        "see https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+    )
+    with pytest.warns(
+        UserWarning,
+        match=re.escape(msg),
+    ):
+        assert parse_rule("key@_name_=value", "override") == Override(
+            type=OverrideType.CHANGE,
+            key_or_group="key",
+            value_type=ValueType.ELEMENT,
+            _value="value",
+            package="_name_",
+            input_line="key@_name_=value",
+            config_loader=None,
+        )
+
+
 @pytest.mark.parametrize(
     "value,expected",
     [
