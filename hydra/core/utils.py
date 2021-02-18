@@ -31,7 +31,8 @@ def simple_stdout_log_config(level: int = logging.INFO) -> None:
 
 
 def configure_log(
-    log_config: DictConfig, verbose_config: Union[bool, str, Sequence[str]]
+    log_config: DictConfig,
+    verbose_config: Union[bool, str, Sequence[str]] = False,
 ) -> None:
     assert isinstance(verbose_config, (bool, str)) or OmegaConf.is_list(verbose_config)
     if log_config is not None:
