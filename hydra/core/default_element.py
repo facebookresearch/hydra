@@ -170,7 +170,7 @@ class InputDefault:
             # name computation should be deferred to after the final config group choice is done
 
             if "_name_" in package:
-                # DEPRECATED: remove in 1.2 (Warning in TODO)
+                # DEPRECATED: remove in 1.2 (Warning in config_repository.py)
                 package = package.replace("_name_", name)
 
         if parent_package == "":

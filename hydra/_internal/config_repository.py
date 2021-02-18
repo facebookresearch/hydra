@@ -167,6 +167,18 @@ class ConfigRepository(IConfigRepository):
         config_path: str,
         defaults: ListConfig,
     ) -> List[InputDefault]:
+        def issue_deprecated_name_warning() -> None:
+            # DEPRECATED: remove in 1.2
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+            warnings.warn(
+                category=UserWarning,
+                message=dedent(
+                    f"""\
+                    In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
+                    """
+                ),
+            )
+
         res: List[InputDefault] = []
         for item in defaults._iter_ex(resolve=False):
             default: InputDefault
@@ -228,16 +240,7 @@ class ConfigRepository(IConfigRepository):
                     config_value = options
 
                 if package is not None and "_name_" in package:
-                    # DEPRECATED: remove in 1.2
-                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-                    warnings.warn(
-                        category=UserWarning,
-                        message=dedent(
-                            f"""\
-                            In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
-                            """
-                        ),
-                    )
+                    issue_deprecated_name_warning()
 
                 default = GroupDefault(
                     group=keywords.group,
@@ -249,6 +252,9 @@ class ConfigRepository(IConfigRepository):
 
             elif isinstance(item, str):
                 path, package, _package2 = self._split_group(item)
+                if package is not None and "_name_" in package:
+                    issue_deprecated_name_warning()
+
                 default = ConfigDefault(path=path, package=package)
             else:
                 raise ValueError(

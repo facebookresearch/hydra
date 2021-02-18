@@ -735,7 +735,7 @@ def test_include_nested_group_global_foo(
 
 
 @mark.parametrize(
-    "config_name, overrides, expected",
+    "config_name, overrides, expected, warning_file",
     [
         param(
             "include_nested_group_name_",
@@ -758,6 +758,7 @@ def test_include_nested_group_global_foo(
                     is_self=True,
                 ),
             ],
+            "group1/group_item1_name_",
             id="include_nested_group_name_",
         ),
         param(
@@ -781,15 +782,44 @@ def test_include_nested_group_global_foo(
                     is_self=True,
                 ),
             ],
+            "group1/group_item1_name_",
             id="include_nested_group_name_",
+        ),
+        param(
+            "include_nested_config_item_name_",
+            [],
+            [
+                ResultDefault(
+                    config_path="group1/group2/file1",
+                    package="group1.file1",
+                    parent="group1/config_item_name_",
+                ),
+                ResultDefault(
+                    config_path="group1/config_item_name_",
+                    package="group1",
+                    parent="include_nested_config_item_name_",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="include_nested_config_item_name_",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            "group1/config_item_name_",
+            id="include_nested_config_item_name_",
         ),
     ],
 )
 def test_include_nested_group_name_(
-    config_name: str, overrides: List[str], expected: List[ResultDefault]
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    warning_file: str,
 ) -> None:
     url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-    msg = f"In group1/group_item1_name_: Defaults List contains deprecated keyword _name_, see {url}\n"
+    msg = f"In {warning_file}: Defaults List contains deprecated keyword _name_, see {url}\n"
 
     with warns(UserWarning, match=re.escape(msg)):
         _test_defaults_list_impl(
