@@ -37,12 +37,12 @@ hydra:
           ssh_user: ubuntu
         head_node:
           IamInstanceProfile:
-            Arn: arn:aws:iam::312649332277:instance-profile/ray-head-v1
+            Arn: arn:aws:iam::<AWS_ACCOUNT_ID>:instance-profile/ray-head-v1
           InstanceType: m4.large
           ImageId: ami-010bc10395b6826fb
         worker_nodes:
           IamInstanceProfile:
-            Arn: arn:aws:iam::312649332277:instance-profile/ray-worker-v1
+            Arn: arn:aws:iam::<AWS_ACCOUNT_ID>:instance-profile/ray-worker-v1
           InstanceType: m4.large
           ImageId: ami-010bc10395b6826fb
     stop_cluster: true

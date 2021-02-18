@@ -1,7 +1,7 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import time
 
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
 
 log = logging.getLogger(__name__)
