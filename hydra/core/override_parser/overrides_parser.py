@@ -67,6 +67,7 @@ class OverridesParser:
         ret = visitor.visit(tree)
         if isinstance(ret, Override):
             ret.input_line = s
+            ret.validate()
         return ret
 
     def parse_override(self, s: str) -> Override:

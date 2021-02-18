@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import decimal
 import fnmatch
+import warnings
 from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
+from textwrap import dedent
+
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
@@ -438,3 +441,16 @@ class Override:
         return Override._get_value_element_as_str(
             self._value, space_after_sep=space_after_sep
         )
+
+    def validate(self) -> None:
+        if self.package is not None and "_name_" in self.package:
+            # DEPRECATED: remove in 1.2
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+            warnings.warn(
+                category=UserWarning,
+                message=dedent(
+                    f"""\
+                    In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
+                    """
+                ),
+            )
