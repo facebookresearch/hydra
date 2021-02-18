@@ -1,6 +1,8 @@
-import hydra
 import logging
 import time
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import hydra
 
 log = logging.getLogger(__name__)
 
@@ -11,5 +13,5 @@ def docker_app(cfg) -> None:
     time.sleep(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     docker_app()
