@@ -233,7 +233,7 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  core_tests:
     unless: << pipeline.parameters.plugin_test >>
     jobs:
       - trigger_plugin_piplines
