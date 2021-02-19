@@ -30,19 +30,12 @@ hydra:
           type: aws
           region: us-east-2
           availability_zone: us-east-2a,us-east-2b
-          cache_stopped_nodes: false
-          key_pair:
-            key_name: hydra
         auth:
           ssh_user: ubuntu
         head_node:
-          IamInstanceProfile:
-            Arn: arn:aws:iam::<AWS_ACCOUNT_ID>:instance-profile/ray-head-v1
           InstanceType: m4.large
           ImageId: ami-010bc10395b6826fb
         worker_nodes:
-          IamInstanceProfile:
-            Arn: arn:aws:iam::<AWS_ACCOUNT_ID>:instance-profile/ray-worker-v1
           InstanceType: m4.large
           ImageId: ami-010bc10395b6826fb
     stop_cluster: true

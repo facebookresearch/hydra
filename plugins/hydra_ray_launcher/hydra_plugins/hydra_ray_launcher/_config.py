@@ -113,6 +113,10 @@ class EnvSetupConf:
 
 
 class RayRunEnv(Enum):
+    """
+    https://docs.ray.io/en/releases-1.1.0/package-ref.html?highlight=exec#ray-exec
+    """
+
     auto = "auto"
     host = "host"
     docker = "docker"
