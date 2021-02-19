@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 
 from ax.core import types as ax_types  # type: ignore
+from ax.exceptions.core import SearchSpaceExhausted  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -26,7 +27,10 @@ class Trial:
     trial_index: int
 
 
-BatchOfTrialType = List[Trial]
+@dataclass
+class TrialBatch:
+    list_of_trials: List[Trial]
+    is_search_space_exhausted: bool
 
 
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
@@ -62,8 +66,13 @@ def get_one_batch_of_trials(
     parallelism: Tuple[int, int],
     num_trials_so_far: int,
     num_max_trials_to_do: int,
-) -> BatchOfTrialType:
-    """Produce a batch of trials that can be run in parallel"""
+) -> TrialBatch:
+    """Returns a TrialBatch that contains a list of trials that can be
+    run in parallel. TrialBatch also flags if the search space is exhausted."""
+
+    is_search_space_exhausted = False
+    # Ax throws an exception if the search space is exhausted. We catch
+    # the exception and set the flag to True
     (num_trials, max_parallelism_setting) = parallelism
     if max_parallelism_setting == -1:
         # Special case, we can group all the trials into one batch
@@ -74,16 +83,24 @@ def get_one_batch_of_trials(
             # Given that num_trials is also -1, we can run all the trials in parallel.
             max_parallelism_setting = num_max_trials_to_do
 
-    batch_of_trials = []
+    list_of_trials = []
     for _ in range(max_parallelism_setting):
-        parameters, trial_index = ax_client.get_next_trial()
-        batch_of_trials.append(
-            Trial(
-                overrides=map_params_to_arg_list(params=parameters),
-                trial_index=trial_index,
+        try:
+            parameters, trial_index = ax_client.get_next_trial()
+            list_of_trials.append(
+                Trial(
+                    overrides=map_params_to_arg_list(params=parameters),
+                    trial_index=trial_index,
+                )
             )
-        )
-    return batch_of_trials
+        except SearchSpaceExhausted:
+            is_search_space_exhausted = True
+            break
+
+    return TrialBatch(
+        list_of_trials=list_of_trials,
+        is_search_space_exhausted=is_search_space_exhausted,
+    )
 
 
 class CoreAxSweeper(Sweeper):
@@ -131,40 +148,50 @@ class CoreAxSweeper(Sweeper):
         max_parallelism = ax_client.get_max_parallelism()
         current_parallelism_index = 0
         # Index to track the parallelism value we are using right now.
+        is_search_space_exhausted = False
+        # Ax throws an exception if the search space is exhausted. We catch
+        # the exception and set the flag to True
+
         best_parameters = {}
-        while num_trials_left > 0:
+        while num_trials_left > 0 and not is_search_space_exhausted:
             current_parallelism = max_parallelism[current_parallelism_index]
             num_trials, max_parallelism_setting = current_parallelism
             num_trials_so_far = 0
             while (
                 num_trials > num_trials_so_far or num_trials == -1
             ) and num_trials_left > 0:
-                batch_of_trials = get_one_batch_of_trials(
+                trial_batch = get_one_batch_of_trials(
                     ax_client=ax_client,
                     parallelism=current_parallelism,
                     num_trials_so_far=num_trials_so_far,
                     num_max_trials_to_do=num_trials_left,
                 )
-                batch_of_trials_to_launch = batch_of_trials[:num_trials_left]
+
+                list_of_trials_to_launch = trial_batch.list_of_trials[:num_trials_left]
+                is_search_space_exhausted = trial_batch.is_search_space_exhausted
 
                 log.info(
                     "AxSweeper is launching {} jobs".format(
-                        len(batch_of_trials_to_launch)
+                        len(list_of_trials_to_launch)
                     )
                 )
 
                 self.sweep_over_batches(
-                    ax_client=ax_client, batch_of_trials=batch_of_trials_to_launch
+                    ax_client=ax_client, list_of_trials=list_of_trials_to_launch
                 )
 
-                num_trials_so_far += len(batch_of_trials_to_launch)
-                num_trials_left -= len(batch_of_trials_to_launch)
+                num_trials_so_far += len(list_of_trials_to_launch)
+                num_trials_left -= len(list_of_trials_to_launch)
 
                 best_parameters, predictions = ax_client.get_best_parameters()
                 metric = predictions[0][ax_client.objective_name]
 
                 if self.early_stopper.should_stop(metric, best_parameters):
                     num_trials_left = -1
+                    break
+
+                if is_search_space_exhausted:
+                    log.info("Ax has exhausted the search space")
                     break
 
             current_parallelism_index += 1
@@ -177,12 +204,12 @@ class CoreAxSweeper(Sweeper):
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self, ax_client: AxClient, batch_of_trials: BatchOfTrialType
+        self, ax_client: AxClient, list_of_trials: List[Trial]
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None
 
-        chunked_batches = self.chunks(batch_of_trials, self.max_batch_size)
+        chunked_batches = self.chunks(list_of_trials, self.max_batch_size)
         for batch in chunked_batches:
             overrides = [x.overrides for x in batch]
             self.validate_batch_is_legal(overrides)

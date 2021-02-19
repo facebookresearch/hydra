@@ -216,6 +216,23 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
 
 
 @pytest.mark.parametrize(
+    "cmd_args",
+    [
+        ["polynomial.y=choice(-1, 0, 1)", "polynomial.x=range(2,4)"],
+        ["polynomial.y=1", "polynomial.x=range(2,4)"],
+    ],
+)
+def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> None:
+    cmd = [
+        "tests/apps/polynomial.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweeper.ax_config.max_trials=2",
+    ] + cmd_args
+    run_python_script(cmd)
+
+
+@pytest.mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
