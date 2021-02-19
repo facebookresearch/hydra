@@ -26,6 +26,10 @@ hydra:
         # An Epoch is defined as a batch of trials executed in parallel
         max_epochs_without_improvement: 10
 
+      # the synthetic measurements in this example have 0 error
+      # which is specified by setting is_errorless to true
+      is_errorless: true
+
       params:
         banana.x:
           type: range

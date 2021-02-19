@@ -50,6 +50,7 @@ class AxConfig:
     experiment: ExperimentConfig = ExperimentConfig()
     client: ClientConfig = ClientConfig()
     params: Dict[str, Any] = field(default_factory=dict)
+    is_errorless: bool = False
 
 
 @dataclass
