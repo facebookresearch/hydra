@@ -422,7 +422,7 @@ Check out an <GithubLink to="plugins/hydra_ray_launcher/examples/simple/config.y
 
 ### Using Docker with AWS
 If you have a docker container publicly hosted, you can launch containerized jobs with only a 
-minimal change to the config. Note that the Amazon AMI will need 
+minimal change to the config. Note that the Amazon EC2 AMI will need 
 to have Docker already installed.
 
 <details><summary>Example config for dockerized app</summary>
