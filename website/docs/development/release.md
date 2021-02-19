@@ -22,11 +22,11 @@ One should check that the version is the correct one against pypi before releasi
 - Create a pip package: `python setup.py sdist bdist_wheel`
 - Upload pip package: `python -m twine upload dist/*`
 - [Create a release on GitHub](https://github.com/facebookresearch/hydra/releases/new)
-- Tag the version, tags start with v, for example v1.0.4
-- Tag target to be the release branch.
-- Set release title to be Hydra with release version, for example "Hydra 1.0.4"
-- Copy the release notes from added changes in NEWS.md from previous pull request.
-- Publish the release.
+    - Tag the version, tags start with v, for example v1.0.4
+    - Tag target to be the release branch.
+    - Set release title to be Hydra with release version, for example "Hydra 1.0.4"
+    - Copy the release notes from added changes in NEWS.md from previous pull request.
+    - Publish the release.
 - Bump the version in `hydra/__init__.py`.
 - Create a pull request to the release branch.
 - Merge once the CI completes successfully.
