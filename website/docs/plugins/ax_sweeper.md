@@ -12,7 +12,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ax-sweeper.svg)](https://pypistats.org/packages/hydra-ax-sweeper)<ExampleGithubLink text="Example application" to="plugins/hydra_ax_sweeper/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ax_sweeper"/>
 
 
-This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform, aka Ax](https://ax.dev/). Ax can optimize any experiment - machine learning experiments, A/B tests, and simulations. 
+This plugin provides a mechanism for Hydra applications to use the [Adaptive Experimentation Platform, aka Ax](https://ax.dev/). Ax can optimize any experiment - machine learning experiments, A/B tests, and simulations.
 
 ### Installation
 ```commandline
@@ -28,14 +28,14 @@ defaults:
 ```
 
 We include an example of how to use this plugin. The file <GithubLink to="plugins/hydra_ax_sweeper/example/banana.py">example/banana.py</GithubLink>
-implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function). 
+implements the [Rosenbrock function (aka Banana function)](https://en.wikipedia.org/wiki/Rosenbrock_function).
 The return value of the function should be the value that we want to optimize.
 
 
 To compute the best parameters for the Banana function, clone the code and run the following command in the `plugins/hydra_ax_sweeper` directory:
 
 ```
-python example/banana.py -m 'banana.x=int(interval(-5, 5))' 'banana.y=interval(-5, 10.1)' hydra.sweeper.ax_config.is_errorless=true
+python example/banana.py -m 'banana.x=int(interval(-5, 5))' 'banana.y=interval(-5, 10.1)' hydra.sweeper.ax_config.is_noisy=false
 ```
 
 The output of a run looks like:
@@ -81,11 +81,14 @@ In general, the plugin supports setting all the Ax supported [Parameters](https:
 * `type` - Type of the parameter. It can take the following values: `range`, `fixed`, or `choice`.
 * `bounds` - Required only for the `range` parameters. It should be a list of two values, with the lower bound first.
 * `values` - Required only for the `choice` parameters. It should be a list of values.
-* `value` - Required only for the `fixed` parameters. It should be a single value. 
+* `value` - Required only for the `fixed` parameters. It should be a single value.
 
 Note that if you want to sample integers in the range `-5` to `5`, you need to specify the range as `int(interval(-5, 5))` (in the command line) or `[-5, 5]` (in config). If you want to sample floats in range `-5` to `5`, you need to specify the range as `interval(-5, 5)` (in the command line) or `[-5.0, 5.0]` (in config).
 
-Generally, Ax expects the function being optimized to return a tuple of `(measurement_value, measurement_uncertainty)`. If the return value is instead a scalar, Ax by default treats the uncertainty as an unknown and infers its value as the experiment progresses. The example above uses an exact function, so the `is_errorless` parameter is set to `True`. As a result, the uncertainty of each scalar measurement is set to 0. Note that returning a `(measurement_value, measurement_uncertainty)` tuple will override this behavior.
+The Ax Sweeper assumes the optimized function is a noisy function with unknown measurement uncertainty.
+This can be changed by overriding the `is_noisy` parameter to False, which specifies that each measurement is exact, i.e., each measurement has a measurement uncertainty of zero.
+
+If measurement uncertainty is known or can be estimated (e.g., via a heuristic or via the [standard error of the mean](https://en.wikipedia.org/wiki/Standard_error) of repeated measurements), the measurement function can return the tuple `(measurement_value, measurement_uncertainty)` instead of a scalar value.
 
 The parameters for the optimization process can also be set in the config file. Specifying the Ax config is optional. You can discover the Ax Sweeper parameters with:
 
@@ -109,6 +112,6 @@ ax_config:
   client:
     verbose_logging: false
     random_seed: null
-  is_errorless: false
+  is_noisy: true
   params: {}
 ```

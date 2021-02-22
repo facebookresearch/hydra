@@ -27,8 +27,8 @@ hydra:
         max_epochs_without_improvement: 10
 
       # the synthetic measurements in this example have 0 error
-      # which is specified by setting is_errorless to true
-      is_errorless: true
+      # which is specified by setting is_noisy to false
+      is_noisy: False
 
       params:
         banana.x:
