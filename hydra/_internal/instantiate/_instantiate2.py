@@ -20,8 +20,7 @@ from hydra.types import ConvertMode, TargetConf
 def instantiate(
     config: Any,
     *args: Any,
-    convert: Union[str, ConvertMode] = ConvertMode.NONE,
-    recursive: bool = True,
+    _convert_: Union[str, ConvertMode] = ConvertMode.NONE,
     **kwargs: Any,
 ) -> Any:
     """
@@ -47,8 +46,6 @@ def instantiate(
                               and cannot be used as passthrough
     :param convert: Optional ConvertMode or str from parent. Will be
                     used if _convert_ is not set in kwargs or config.
-    :param recursive: Optional bool from parent. Will be used if
-                      _recursive is not set in kwargs or config.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
@@ -84,7 +81,12 @@ def instantiate(
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
 
-        return instantiate_node(config, *args, recursive=recursive, convert=convert)
+        if OmegaConf.is_dict(config):
+            _recursive_ = config.pop("_recursive_", True)
+        else:
+            _recursive_ = True
+
+        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_)
     else:
         raise InstantiationException(
             "Top level config has to be OmegaConf DictConfig or a plain dict"

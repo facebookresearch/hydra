@@ -1132,7 +1132,7 @@ def test_instantiate_convert_dataclasses(
     for exp, mode in zip(expected, modes):
         # create DictConfig to ensure interpolations are working correctly when we pass a cfg.obj
         cfg = OmegaConf.create(config)
-        instance = instantiate_func(cfg.obj, convert=mode)
+        instance = instantiate_func(cfg.obj, _convert_=mode)
         assert instance == exp
         assert recisinstance(instance, exp)
 
