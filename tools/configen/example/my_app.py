@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
+
+# Generated config dataclasses
+from example.config.configen.samples.my_module import AdminConf, UserConf
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig
 
+# Underlying objects
 from configen.samples.my_module import Admin, User
-from example.config.configen.samples.my_module import AdminConf, UserConf
 
 ConfigStore.instance().store(
     name="config_schema",

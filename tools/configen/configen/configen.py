@@ -1,13 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from collections.abc import Callable
-from dataclasses import dataclass
-from enum import Enum
 import inspect
 import logging
 import os
-from pathlib import Path
 import pkgutil
 import sys
+from collections.abc import Callable
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
 from textwrap import dedent
 from typing import (
     Any,
@@ -21,8 +21,9 @@ from typing import (
     get_type_hints,
 )
 
-import hydra
 from jinja2 import Environment, PackageLoader, Template
+
+import hydra
 from omegaconf import OmegaConf, ValidationError
 from omegaconf._utils import (
     _is_union,
