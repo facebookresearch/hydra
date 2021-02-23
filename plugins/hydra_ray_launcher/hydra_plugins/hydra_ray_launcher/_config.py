@@ -201,7 +201,7 @@ class RayClusterConf:
         default_factory=lambda: [
             "ray stop",
             "ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076 \
-             --autoscaling-config=~/ray_bootstrap_config.yaml",
+            --autoscaling-config=~/ray_bootstrap_config.yaml",
         ]
     )
 
