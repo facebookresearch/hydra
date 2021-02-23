@@ -52,27 +52,9 @@ class ConvertMode(str, Enum):
     ALL = "all"
 
 
-class ParseMode(str, Enum):
-    """ParseMode for instantiate, controls input type.
-
-    If the config is a native python dictionary (no trace of OmegaConf
-    containers), it is automatically converted to an OmegaConf container
-    during instantiate. This is the expected behavior, since the
-    interpolation syntax might be used in the native python dictionary.
-
-    This behavior can be disable with ParseMode.NONE. Please make sure
-    the config given to instantiate is fully defined (no interpolation).
-    """
-
-    NONE = "none"  # Keep original config type
-    NATIVE = "native"  # Convert to dict / list if OmegaConf config
-    OMEGACONF = "omegaconf"  # Convert config to OmegaConf container
-
-
 def instantiate(
     config: Any,
     *args: Any,
-    parse: Union[str, ParseMode] = ParseMode.OMEGACONF,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     **kwargs: Any,
@@ -96,8 +78,6 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
-    :param parse: Optional ParseMode or str from parent. Will be used
-                  if _parse_ is not set in kwargs or config.
     :param convert: Optional ConvertMode or str from parent. Will be
                     used if _convert_ is not set in kwargs or config.
     :param recursive: Optional bool from parent. Will be used if
@@ -153,8 +133,6 @@ def instantiate(
     # Cannot use pop with default because of OmegaConf typed config
     # Also interpret python None as Mode.NONE
     if isinstance(config, dict) or OmegaConf.is_dict(config):
-        parse = config.pop(_Keys.PARSE) if _Keys.PARSE in config else parse
-        parse = ParseMode(parse if parse is not None else ParseMode.NONE)
         convert = config.pop(_Keys.CONVERT) if _Keys.CONVERT in config else convert
         convert = ConvertMode(convert if convert is not None else ConvertMode.NONE)
         recursive = (
@@ -163,22 +141,15 @@ def instantiate(
         if not isinstance(recursive, bool):
             raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
 
-    # Parse as OmegaConf container if dict, list or structured config
-    if parse == ParseMode.OMEGACONF and (isinstance(config, (dict, list))):
+    if isinstance(config, (dict, list)):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
-
-    # Parse as native dict if OmegaConf container
-    if parse == ParseMode.NATIVE and OmegaConf.is_config(config):
-        config = OmegaConf.to_container(config, resolve=True)
 
     # If list, create new list of instances if recursive else config
     if isinstance(config, list):
         if recursive:
             result = []
             for item in config:
-                result.append(
-                    instantiate(item, parse=parse, convert=convert, recursive=recursive)
-                )
+                result.append(instantiate(item, convert=convert, recursive=recursive))
             return result
         else:
             return config
@@ -189,7 +160,7 @@ def instantiate(
             # If ALL or PARTIAL, instantiate in list
             if convert in (ConvertMode.ALL, ConvertMode.PARTIAL):
                 return [
-                    instantiate(item, parse=parse, convert=convert, recursive=recursive)
+                    instantiate(item, convert=convert, recursive=recursive)
                     for item in config._iter_ex(resolve=True)
                 ]
 
@@ -197,9 +168,7 @@ def instantiate(
             lst = OmegaConf.create([], flags={"allow_objects": True})
             lst._set_parent(config)
             for item in config._iter_ex(resolve=False):
-                lst.append(
-                    instantiate(item, parse=parse, convert=convert, recursive=recursive)
-                )
+                lst.append(instantiate(item, convert=convert, recursive=recursive))
             lst._metadata.object_type = config._metadata.object_type
             return lst
 
@@ -220,7 +189,7 @@ def instantiate(
             final_kwargs = {}
             for key, value in config.items():
                 final_kwargs[key] = instantiate(
-                    value, parse=parse, convert=convert, recursive=recursive
+                    value, convert=convert, recursive=recursive
                 )
         else:
             final_kwargs = config
@@ -240,7 +209,7 @@ def instantiate(
                 final_kwargs = {}
                 for key, value in config.items_ex(resolve=True):
                     final_kwargs[key] = instantiate(
-                        value, parse=parse, convert=convert, recursive=recursive
+                        value, convert=convert, recursive=recursive
                     )
             else:
                 final_kwargs = config
@@ -254,16 +223,14 @@ def instantiate(
                 final_kwargs = {}
                 for key, value in config.items_ex(resolve=True):
                     final_kwargs[key] = instantiate(
-                        value, parse=parse, convert=convert, recursive=recursive
+                        value, convert=convert, recursive=recursive
                     )
                 return final_kwargs
 
             # Otherwise, new OmegaConf container
             cfg = OmegaConf.create({}, flags={"allow_objects": True})
             for key, value in config.items_ex(resolve=False):
-                cfg[key] = instantiate(
-                    value, parse=parse, convert=convert, recursive=recursive
-                )
+                cfg[key] = instantiate(value, convert=convert, recursive=recursive)
             cfg._set_parent(config)
             cfg._metadata.object_type = config._metadata.object_type
 
