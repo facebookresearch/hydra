@@ -142,7 +142,6 @@ def instantiate_node(
                 # Otherwise, use ListConfig as container
                 lst = OmegaConf.create(items, flags={"allow_objects": True})
                 lst._set_parent(config)
-                # TODO : add test, this should be return _convert_conf(lst, convert)
                 return lst
         else:
             return _convert_conf(config, convert)

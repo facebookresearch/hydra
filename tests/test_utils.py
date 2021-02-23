@@ -358,6 +358,19 @@ def test_instantiate_adam_conf(instantiate_func: Any) -> None:
     assert res.amsgrad == expected.amsgrad
 
 
+def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
+    adam_params = Parameters([1, 2, 3])
+    res = instantiate_func(AdamConf(lr=0.123), params=adam_params, _convert_="all")
+    expected = Adam(lr=0.123, params=adam_params)
+    assert res.params == expected.params
+    assert res.lr == expected.lr
+    assert isinstance(res.betas, list)
+    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert res.eps == expected.eps
+    assert res.weight_decay == expected.weight_decay
+    assert res.amsgrad == expected.amsgrad
+
+
 def test_targetconf_deprecated() -> None:
     with warns(
         expected_warning=UserWarning,
@@ -1121,10 +1134,75 @@ def test_instantiate_convert_dataclasses(
     """Instantiate on nested dataclass + dataclass."""
     modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
     for exp, mode in zip(expected, modes):
+        # create DictConfig to ensure interpolations are working correctly when we pass a cfg.obj
         cfg = OmegaConf.create(config)
         instance = instantiate_func(cfg.obj, convert=mode)
         assert instance == exp
         assert recisinstance(instance, exp)
+
+
+@mark.parametrize(
+    ("mode", "expected_dict", "expected_list"),
+    [
+        param(ConvertMode.NONE, DictConfig, ListConfig, id="none"),
+        param(ConvertMode.ALL, dict, list, id="all"),
+        param(ConvertMode.PARTIAL, dict, list, id="partial"),
+    ],
+)
+def test_instantiated_regular_class_container_types(
+    instantiate_func: Any, mode: Any, expected_dict, expected_list
+) -> None:
+    cfg = {"_target_": "tests.SimpleClass", "a": {}, "b": []}
+    ret = instantiate_func(cfg, _convert_=mode)
+    assert isinstance(ret.a, expected_dict)
+    assert isinstance(ret.b, expected_list)
+
+    cfg = {
+        "_target_": "tests.SimpleClass",
+        "a": {"_target_": "tests.SimpleClass", "a": {}, "b": []},
+        "b": [{"_target_": "tests.SimpleClass", "a": {}, "b": []}],
+    }
+    ret = instantiate_func(cfg, _convert_=mode)
+    assert isinstance(ret.a.a, expected_dict)
+    assert isinstance(ret.a.b, expected_list)
+    assert isinstance(ret.b[0].a, expected_dict)
+    assert isinstance(ret.b[0].b, expected_list)
+
+
+def test_instantiated_regular_class_container_types_partial(
+    instantiate_func: Any,
+) -> None:
+    cfg = {"_target_": "tests.SimpleClass", "a": {}, "b": User()}
+    ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
+    assert isinstance(ret.a, dict)
+    assert isinstance(ret.b, DictConfig)
+    assert OmegaConf.get_type(ret.b) is User
+
+
+def test_instantiated_regular_class_container_types_partial2(
+    instantiate_func: Any,
+) -> None:
+    cfg = {"_target_": "tests.SimpleClass", "a": [{}, User()], "b": None}
+    ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
+    assert isinstance(ret.a, list)
+    assert isinstance(ret.a[0], dict)
+    assert isinstance(ret.a[1], DictConfig)
+    assert OmegaConf.get_type(ret.a[1]) is User
+
+
+def test_instantiated_regular_class_container_types_partial__recursive(
+    instantiate_func: Any,
+) -> None:
+    cfg = {
+        "_target_": "tests.SimpleClass",
+        "a": {"_target_": "tests.SimpleClass", "a": {}, "b": User},
+        "b": None,
+    }
+    ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
+    assert isinstance(ret.a, SimpleClass)
+    assert isinstance(ret.a.a, dict)
+    assert isinstance(ret.a.b, DictConfig)
+    assert OmegaConf.get_type(ret.a.b) is User
 
 
 @mark.parametrize(
