@@ -6,19 +6,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import tests
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
-from pytest import mark, param, raises, warns, fixture
+from pytest import fixture, mark, param, raises, warns
 
-from hydra import utils
 import hydra._internal.instantiate._instantiate1
 import hydra._internal.instantiate._instantiate2
+import tests
+from hydra import utils
 from hydra._internal.utils import _convert_container_targets_to_strings
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException
-from hydra.types import TargetConf
-from hydra.types import ConvertMode
+from hydra.types import ConvertMode, TargetConf
 from tests import (
     AClass,
     Adam,
@@ -1005,7 +1004,7 @@ def test_convert_params(
 ) -> None:
     cfg = OmegaConf.create(input_)
     kwargs = {"a": {"_convert_": convert_mode}}
-    ret = instantiate_func(cfg.obj, **kwargs)  # type: ignore
+    ret = instantiate_func(cfg.obj, **kwargs)
 
     if convert_mode in (ConvertMode.PARTIAL, ConvertMode.ALL):
         assert isinstance(ret.a.a, dict)
@@ -1150,19 +1149,19 @@ def test_instantiate_convert_dataclasses(
     ],
 )
 def test_instantiated_regular_class_container_types(
-    instantiate_func: Any, mode: Any, expected_dict, expected_list
+    instantiate_func: Any, mode: Any, expected_dict: Any, expected_list: Any
 ) -> None:
     cfg = {"_target_": "tests.SimpleClass", "a": {}, "b": []}
     ret = instantiate_func(cfg, _convert_=mode)
     assert isinstance(ret.a, expected_dict)
     assert isinstance(ret.b, expected_list)
 
-    cfg = {
+    cfg2 = {
         "_target_": "tests.SimpleClass",
         "a": {"_target_": "tests.SimpleClass", "a": {}, "b": []},
         "b": [{"_target_": "tests.SimpleClass", "a": {}, "b": []}],
     }
-    ret = instantiate_func(cfg, _convert_=mode)
+    ret = instantiate_func(cfg2, _convert_=mode)
     assert isinstance(ret.a.a, expected_dict)
     assert isinstance(ret.a.b, expected_list)
     assert isinstance(ret.b[0].a, expected_dict)

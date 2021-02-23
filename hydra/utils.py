@@ -5,13 +5,14 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from hydra._internal.instantiate._instantiate2 import instantiate
+import hydra._internal.instantiate._instantiate2
 from hydra._internal.utils import _locate
 from hydra.core.hydra_config import HydraConfig
 
 log = logging.getLogger(__name__)
 
 # alias call to instantiate
+instantiate = hydra._internal.instantiate._instantiate2.instantiate
 call = instantiate
 
 

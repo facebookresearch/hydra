@@ -91,7 +91,7 @@ def instantiate(
         )
 
 
-def _convert_conf(config: Container, convert: ConvertMode) -> Any:
+def _convert_conf(config: Container, convert: Union[ConvertMode, str]) -> Any:
     if convert == ConvertMode.ALL:
         return OmegaConf.to_container(config, resolve=True)
     if convert == ConvertMode.PARTIAL:
@@ -164,12 +164,12 @@ def instantiate_node(
             if convert == ConvertMode.ALL or (
                 convert == ConvertMode.PARTIAL and config._metadata.object_type is None
             ):
-                items = {}
+                dict_items = {}
                 for key, value in config.items_ex(resolve=True):
-                    items[key] = instantiate_node(
+                    dict_items[key] = instantiate_node(
                         value, convert=convert, recursive=recursive
                     )
-                return items
+                return dict_items
             else:
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
