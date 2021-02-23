@@ -1,16 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
-
-# Generated config dataclasses
-from example.config.configen.samples.my_module import AdminConf, UserConf
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig
 
-# Underlying objects
 from configen.samples.my_module import Admin, User
+from example.config.configen.samples.my_module import AdminConf, UserConf
 
 ConfigStore.instance().store(
-    name="config_schema",
+    name="config",
     node={
         "user": UserConf,
         "admin": AdminConf,
@@ -18,7 +15,7 @@ ConfigStore.instance().store(
 )
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_name="config_schema")
 def my_app(cfg: DictConfig) -> None:
     user: User = hydra.utils.instantiate(cfg.user)
     admin: Admin = hydra.utils.instantiate(cfg.admin)

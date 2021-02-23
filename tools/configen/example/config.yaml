@@ -1,6 +1,3 @@
-defaults:
-  - config_schema
-
 user:
   age: 7
   name: Bond

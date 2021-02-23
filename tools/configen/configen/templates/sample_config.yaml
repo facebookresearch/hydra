@@ -1,5 +1,5 @@
 defaults:
-  - configen_schema
+  - config_schema
 
 configen:
   # output directory

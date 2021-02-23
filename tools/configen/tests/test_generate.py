@@ -1,37 +1,34 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from textwrap import dedent
-
 from difflib import unified_diff
 from pathlib import Path
-from typing import Any, Dict
+from textwrap import dedent
+from typing import Any
 
+from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
+from hydra.utils import get_class, instantiate
+from omegaconf import OmegaConf
 import pytest
 
-from hydra.utils import get_class, instantiate, ConvertMode
-from omegaconf import OmegaConf
-
-from configen.config import ConfigenConf, ModuleConf, Flags
+from configen.config import ConfigenConf, ModuleConf
 from configen.configen import generate_module
-from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
 from tests.test_modules import (
-    User,
     Color,
-    Empty,
-    UntypedArg,
-    IntArg,
-    UnionArg,
-    WithLibraryClassArg,
-    LibraryClass,
-    IncompatibleDataclassArg,
-    IncompatibleDataclass,
-    WithStringDefault,
-    WithUntypedStringDefault,
-    ListValues,
     DictValues,
+    Empty,
+    IncompatibleDataclass,
+    IncompatibleDataclassArg,
+    IntArg,
+    LibraryClass,
+    ListValues,
     PeskySentinelUsage,
     Tuples,
+    UnionArg,
+    UntypedArg,
+    User,
+    WithLibraryClassArg,
+    WithStringDefault,
+    WithUntypedStringDefault,
 )
-
 from tests.test_modules.generated import PeskySentinelUsageConf
 
 chdir_hydra_root(subdir="tools/configen")
@@ -101,62 +98,10 @@ def test_generated_code() -> None:
 
 
 @pytest.mark.parametrize(
-    "classname, default_flags, expected_filename",
-    [
-        pytest.param("Empty", Flags(), "noflags.py", id="noflags"),
-        pytest.param(
-            "Empty", Flags(_convert_=ConvertMode.ALL), "convert.py", id="convert"
-        ),
-        pytest.param("Empty", Flags(_recursive_=True), "recursive.py", id="recursive"),
-        pytest.param(
-            "Empty",
-            Flags(
-                _convert_=ConvertMode.ALL,
-                _recursive_=True,
-            ),
-            "both.py",
-            id="both",
-        ),
-    ],
-)
-def test_generated_code_with_default_flags(
-    classname: str, default_flags: Flags, expected_filename: str
-) -> None:
-    expected_file = (
-        Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename
-    )
-    expected = expected_file.read_text()
-
-    generated = generate_module(
-        cfg=conf,
-        module=ModuleConf(
-            name=MODULE_NAME, classes=[classname], default_flags=default_flags
-        ),
-    )
-
-    lines = [
-        line
-        for line in unified_diff(
-            expected.splitlines(),
-            generated.splitlines(),
-            fromfile=str(expected_file),
-            tofile="Generated",
-        )
-    ]
-
-    diff = "\n".join(lines)
-    if generated != expected:
-        print(diff)
-        assert False, f"Mismatch between {expected_file} and generated code"
-
-
-@pytest.mark.parametrize(
     "classname, params, args, kwargs, expected",
     [
         pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
-        pytest.param(
-            "UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"
-        ),
+        pytest.param("UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"),
         pytest.param(
             "UntypedArg",
             {},
@@ -166,12 +111,8 @@ def test_generated_code_with_default_flags(
             id="UntypedArg_passthrough_lib_class",
         ),
         pytest.param("IntArg", {"param": 1}, [], {}, IntArg(param=1), id="IntArg"),
-        pytest.param(
-            "UnionArg", {"param": 1}, [], {}, UnionArg(param=1), id="UnionArg"
-        ),
-        pytest.param(
-            "UnionArg", {"param": 3.14}, [], {}, UnionArg(param=3.14), id="UnionArg"
-        ),
+        pytest.param("UnionArg", {"param": 1}, [], {}, UnionArg(param=1), id="UnionArg"),
+        pytest.param("UnionArg", {"param": 3.14}, [], {}, UnionArg(param=3.14), id="UnionArg"),
         # This is okay because Union is not supported and is treated as Any
         pytest.param(
             "UnionArg",
@@ -247,9 +188,7 @@ def test_generated_code_with_default_flags(
             ),
             id="DictValues",
         ),
-        pytest.param(
-            "Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"
-        ),
+        pytest.param("Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"),
         pytest.param(
             "PeskySentinelUsage",
             {},
@@ -277,7 +216,7 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         f"hydra.run.dir={tmpdir}",
         "user.name=Batman",
     ]
-    result, _err = run_python_script(cmd)
+    result, _err = get_run_output(cmd, env={"PYTHONPATH": ".."})
     assert result == dedent(
         """\
     User: name=Batman, age=7

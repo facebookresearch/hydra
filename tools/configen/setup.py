@@ -4,13 +4,13 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="hydra-configen",
-    version="0.9.0dev8",
+    name="neoconfigen",
+    version="1.0.0",
     packages=find_packages(include=["configen"]),
     entry_points={"console_scripts": ["configen = configen.configen:main"]},
     author="Omry Yadan, Rosario Scalise",
     author_email="omry@fb.com, rosario@cs.uw.edu",
-    url="https://github.com/facebookresearch/hydra/tree/master/tools/configen",
+    url="https://github.com/predictive-analytics-lab/neoconfigen",
     include_package_data=True,
-    install_requires=["hydra-core>=1.1.0dev1", "jinja2"],
+    install_requires=["hydra-core>=1.1.0dev1", "jinja2"]
 )
