@@ -228,9 +228,9 @@ class CoreAxSweeper(Sweeper):
                 # if false, the error of each measurement is set to 0.
                 if isinstance(val, (int, float)):
                     if self.is_noisy:
-                        val = (val, None) # specify unknown noise
+                        val = (val, None)  # specify unknown noise
                     else:
-                        val = (val, 0) # specify no noise
+                        val = (val, 0)  # specify no noise
                 ax_client.complete_trial(
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
