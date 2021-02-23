@@ -5,7 +5,7 @@ from textwrap import dedent
 from typing import Any
 
 from hydra.test_utils.test_utils import chdir_hydra_root, get_run_output
-from hydra.utils import get_class, instantiate
+from hydra.utils import get_class, instantiate, ConvertMode
 from omegaconf import OmegaConf
 import pytest
 
@@ -78,6 +78,56 @@ def test_generated_code() -> None:
         module=ModuleConf(
             name=MODULE_NAME,
             classes=classes,
+        ),
+    )
+
+    lines = [
+        line
+        for line in unified_diff(
+            expected.splitlines(),
+            generated.splitlines(),
+            fromfile=str(expected_file),
+            tofile="Generated",
+        )
+    ]
+
+    diff = "\n".join(lines)
+    if generated != expected:
+        print(diff)
+        assert False, f"Mismatch between {expected_file} and generated code"
+
+
+@pytest.mark.parametrize(
+    "classname, default_flags, expected_filename",
+    [
+        pytest.param("Empty", Flags(), "noflags.py", id="noflags"),
+        pytest.param(
+            "Empty", Flags(_convert_=ConvertMode.ALL), "convert.py", id="convert"
+        ),
+        pytest.param("Empty", Flags(_recursive_=True), "recursive.py", id="recursive"),
+        pytest.param(
+            "Empty",
+            Flags(
+                _convert_=ConvertMode.ALL,
+                _recursive_=True,
+            ),
+            "both.py",
+            id="both",
+        ),
+    ],
+)
+def test_generated_code_with_default_flags(
+    classname: str, default_flags: Flags, expected_filename: str
+) -> None:
+    expected_file = (
+        Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename
+    )
+    expected = expected_file.read_text()
+
+    generated = generate_module(
+        cfg=conf,
+        module=ModuleConf(
+            name=MODULE_NAME, classes=[classname], default_flags=default_flags
         ),
     )
 
@@ -207,37 +257,6 @@ def test_generated_code() -> None:
         ),
     ],
 )
-def test_generated_code_with_default_flags(
-    classname: str, default_flags: Flags, expected_filename: str
-) -> None:
-    expected_file = (
-        Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename
-    )
-    expected = expected_file.read_text()
-
-    generated = generate_module(
-        cfg=conf,
-        module=ModuleConf(
-            name=MODULE_NAME, classes=[classname], default_flags=default_flags
-        ),
-    )
-
-    lines = [
-        line
-        for line in unified_diff(
-            expected.splitlines(),
-            generated.splitlines(),
-            fromfile=str(expected_file),
-            tofile="Generated",
-        )
-    ]
-
-    diff = "\n".join(lines)
-    if generated != expected:
-        print(diff)
-        assert False, f"Mismatch between {expected_file} and generated code"
-
-
 def test_instantiate_classes(
     classname: str, params: Any, args: Any, kwargs: Any, expected: Any
 ) -> None:
