@@ -9,19 +9,9 @@ from enum import Enum
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
-from typing import (
-    Any,
-    Callable,
-    List,
-    Mapping,
-    MutableMapping,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-)
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import OmegaConf
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -628,31 +618,6 @@ def _convert_container_targets_to_strings(d: Any) -> None:
         for e in d:
             if isinstance(e, (list, dict)):
                 _convert_container_targets_to_strings(e)
-
-
-# TODO : remove once deleting current impl.
-def _merge_overrides_into_config(
-    config: Union[MutableMapping[Any, Any], DictConfig], overrides: Mapping[Any, Any]
-) -> None:
-    """Merge overrides into config recursively."""
-
-    def _rec_merge(a: Any, b: Any) -> Any:
-        """Recursively merge mappings from b into a."""
-        if isinstance(a, Mapping):
-            if not isinstance(a, MutableMapping):
-                raise TypeError(f"Expected type MutableMapping but got {type(a)}")
-            for key, item in b.items():
-                a[key] = _rec_merge(a[key], item) if key in a else item
-            return a
-        return b
-
-    if OmegaConf.is_dict(config):
-        assert isinstance(config, DictConfig)
-        config.merge_with(OmegaConf.create(overrides, flags={"allow_objects": True}))  # type: ignore
-    elif isinstance(config, MutableMapping):
-        _rec_merge(config, overrides)
-    else:
-        raise TypeError(f"Expected DictConfig or MutableMapping but got {type(config)}")
 
 
 def _resolve_target(

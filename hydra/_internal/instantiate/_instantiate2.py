@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import copy
 from typing import Any, Union
 
@@ -12,8 +14,7 @@ from hydra._internal.utils import (
     _resolve_target,
 )
 from hydra.errors import InstantiationException
-from hydra.types import TargetConf
-from hydra.utils import ConvertMode
+from hydra.types import ConvertMode, TargetConf
 
 
 def instantiate(

@@ -29,3 +29,30 @@ class TargetConf:
 class RunMode(Enum):
     RUN = 1
     MULTIRUN = 2
+
+
+class ConvertMode(str, Enum):
+    """ConvertMode for instantiate, controls return type.
+
+    A config is either config or instance-like (`_target_` field).
+
+    If instance-like, instantiate resolves the callable (class or
+    function) and returns the result of the call on the rest of the
+    parameters.
+
+    If "none", config-like configs will be kept as is.
+
+    If "partial", config-like configs will be converted to native python
+    containers (list and dict), unless they are structured configs (
+    dataclasses or attr instances).
+
+    If "all", config-like configs will all be converted to native python
+    containers (list and dict).
+    """
+
+    # Use DictConfig/ListConfig
+    NONE = "none"
+    # Convert the OmegaConf config to primitive container, Structured Configs are preserved
+    PARTIAL = "partial"
+    # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
+    ALL = "all"

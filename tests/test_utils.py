@@ -11,13 +11,14 @@ from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import mark, param, raises, warns, fixture
 
 from hydra import utils
-from hydra._internal import instantiate2
+import hydra._internal.instantiate._instantiate1
+import hydra._internal.instantiate._instantiate2
 from hydra._internal.utils import _convert_container_targets_to_strings
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException
 from hydra.types import TargetConf
-from hydra.utils import ConvertMode
+from hydra.types import ConvertMode
 from tests import (
     AClass,
     Adam,
@@ -55,11 +56,11 @@ from tests import (
 
 @fixture(
     params=[
-        utils.instantiate,
-        instantiate2.instantiate,
+        hydra._internal.instantiate._instantiate1.instantiate,
+        hydra._internal.instantiate._instantiate2.instantiate,
     ],
     ids=[
-        "instantiate",
+        "instantiate1",
         "instantiate2",
     ],
 )
