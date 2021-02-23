@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import tests
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import mark, param, raises, warns, fixture
 
@@ -55,9 +56,11 @@ from tests import (
 @fixture(
     params=[
         utils.instantiate,
+        instantiate2.instantiate,
     ],
     ids=[
         "instantiate",
+        "instantiate2",
     ],
 )
 def instantiate_func(request: Any) -> Any:
@@ -848,6 +851,29 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
 
 
 @mark.parametrize(
+    "input_conf, passthrough, expected",
+    [
+        param(
+            {"_target_": tests.AClass, "a": 10, "b": 20, "c": 30, "d": 40},
+            {},
+            AClass(10, 20, 30, 40),
+            id="class_in_config_dict",
+        ),
+        param(
+            {"_target_": tests.AClass, "a": 10, "b": 20, "c": 30, "d": 40},
+            {"_target_": tests.BClass},
+            BClass(10, 20, 30, 40),
+            id="class_target_in_passthrough",
+        ),
+    ],
+)
+def test_instantiate_from_class_in_dict(
+    instantiate_func: Any, input_conf: Any, passthrough: Any, expected: Any
+) -> None:
+    assert instantiate_func(input_conf, **passthrough) == expected
+
+
+@mark.parametrize(
     "primitive,expected_primitive",
     [
         param(None, False, id="unspecified"),
@@ -932,8 +958,11 @@ def test_convert_params_override(
     [
         param(None, id="none"),
         param(ConvertMode.NONE, id="none"),
+        param("none", id="none"),
         param(ConvertMode.PARTIAL, id="partial"),
+        param("partial", id="partial"),
         param(ConvertMode.ALL, id="all"),
+        param("all", id="all"),
     ],
 )
 @mark.parametrize(

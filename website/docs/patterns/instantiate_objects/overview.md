@@ -41,10 +41,15 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
+                   IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                              and cannot be used as passthrough
+    :param convert: Optional ConvertMode or str from parent. Will be
+                    used if _convert_ is not set in kwargs or config.
+    :param recursive: Optional bool from parent. Will be used if
+                      _recursive is not set in kwargs or config.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
-
 # Alias for instantiate
 call = instantiate
 ```

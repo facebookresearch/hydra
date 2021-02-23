@@ -630,6 +630,7 @@ def _convert_container_targets_to_strings(d: Any) -> None:
                 _convert_container_targets_to_strings(e)
 
 
+# TODO : remove once deleting current impl.
 def _merge_overrides_into_config(
     config: Union[MutableMapping[Any, Any], DictConfig], overrides: Mapping[Any, Any]
 ) -> None:
