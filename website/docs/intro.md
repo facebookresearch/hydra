@@ -100,7 +100,7 @@ defaults:
 `defaults` is a special directive telling Hydra to use db/mysql.yaml when composing the configuration object.
 The resulting cfg object is a composition of configs from defaults with configs specified in your `config.yaml`.
 
-You can now choose which database configuration to use from the and override values from the command line: 
+You can now choose which database configuration to use and override values from the command line: 
 ```yaml
 $ python my_app.py db=postgresql db.timeout=20
 db:
