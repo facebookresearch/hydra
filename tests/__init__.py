@@ -23,6 +23,10 @@ def verify_hydra_pytest_plugin_not_installed() -> None:
 verify_hydra_pytest_plugin_not_installed()
 
 
+def add_values(a: int, b: int) -> int:
+    return a + b
+
+
 def module_function(x: int) -> int:
     return x
 

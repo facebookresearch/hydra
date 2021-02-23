@@ -640,15 +640,13 @@ def _merge_overrides_into_config(
         if isinstance(a, Mapping):
             if not isinstance(a, MutableMapping):
                 raise TypeError(f"Expected type MutableMapping but got {type(a)}")
-            if not isinstance(b, Mapping):
-                raise TypeError(f"Expected type Mapping but got {type(b)}")
             for key, item in b.items():
                 a[key] = _rec_merge(a[key], item) if key in a else item
             return a
         return b
 
     if OmegaConf.is_dict(config):
-        assert isinstance(config, DictConfig)  # For mypy
+        assert isinstance(config, DictConfig)
         config.merge_with(OmegaConf.create(overrides, flags={"allow_objects": True}))  # type: ignore
     elif isinstance(config, MutableMapping):
         _rec_merge(config, overrides)

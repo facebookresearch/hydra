@@ -204,6 +204,15 @@ def test_class_instantiate(
             AClass(99, 20, 30, 40),
             id="interpolation_into_parent",
         ),
+        param(
+            {
+                "A": {"_target_": "tests.add_values", "a": 1, "b": 2},
+                "node": {"_target_": "tests.add_values", "a": "${A}", "b": 3},
+            },
+            {},
+            6,
+            id="interpolation_from_recursive",
+        ),
     ],
 )
 def test_interpolation_accessing_parent(
