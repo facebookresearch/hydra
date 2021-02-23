@@ -146,14 +146,43 @@ def is_incompatible(type_: Type[Any]) -> bool:
     return True
 
 
+def get_default_flags(module: ModuleConf) -> List[Parameter]:
+
+    def_flags: List[Parameter] = []
+
+    if module.default_flags._convert_ is not None:
+        def_flags.append(
+            Parameter(
+                name="_convert_",
+                type_str="str",
+                default=f'"{module.default_flags._convert_.name}"',
+            )
+        )
+
+    if module.default_flags._recursive_ is not None:
+        def_flags.append(
+            Parameter(
+                name="_recursive_",
+                type_str="bool",
+                default=module.default_flags._recursive_,
+            )
+        )
+
+    return def_flags
+
+
 def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
     imports = set()
     string_imports: Set[str] = set()
+
+    default_flags = get_default_flags(module)
+
     for class_name in module.classes:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         params: List[Parameter] = []
+        params = params + default_flags
         resolved_hints = get_type_hints(cls.__init__)
         sig = inspect.signature(cls.__init__)
 

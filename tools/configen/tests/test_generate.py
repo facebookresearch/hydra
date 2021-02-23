@@ -9,7 +9,7 @@ from hydra.utils import get_class, instantiate
 from omegaconf import OmegaConf
 import pytest
 
-from configen.config import ConfigenConf, ModuleConf
+from configen.config import ConfigenConf, Flags, ModuleConf
 from configen.configen import generate_module
 from tests.test_modules import (
     Color,
@@ -199,6 +199,33 @@ def test_generated_code() -> None:
         ),
     ],
 )
+def test_generated_code_with_default_flags(
+    classname: str, default_flags: Flags, expected_filename: str
+) -> None:
+    expected_file = Path(MODULE_NAME.replace(".", "/")) / "default_flags" / expected_filename
+    expected = expected_file.read_text()
+
+    generated = generate_module(
+        cfg=conf,
+        module=ModuleConf(name=MODULE_NAME, classes=[classname], default_flags=default_flags),
+    )
+
+    lines = [
+        line
+        for line in unified_diff(
+            expected.splitlines(),
+            generated.splitlines(),
+            fromfile=str(expected_file),
+            tofile="Generated",
+        )
+    ]
+
+    diff = "\n".join(lines)
+    if generated != expected:
+        print(diff)
+        assert False, f"Mismatch between {expected_file} and generated code"
+
+
 def test_instantiate_classes(
     classname: str, params: Any, args: Any, kwargs: Any, expected: Any
 ) -> None:
