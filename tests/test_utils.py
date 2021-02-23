@@ -9,7 +9,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
-import hydra._internal.instantiate._instantiate1
 import hydra._internal.instantiate._instantiate2
 import tests
 from hydra import utils
@@ -55,11 +54,9 @@ from tests import (
 
 @fixture(
     params=[
-        hydra._internal.instantiate._instantiate1.instantiate,
         hydra._internal.instantiate._instantiate2.instantiate,
     ],
     ids=[
-        "instantiate1",
         "instantiate2",
     ],
 )
