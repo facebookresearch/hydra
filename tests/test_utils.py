@@ -1095,33 +1095,6 @@ def test_convert_params(
             ),
             id="dict+dataclass",
         ),
-        param(
-            {
-                "value": 99,
-                "obj": [
-                    {
-                        "_target_": "tests.SimpleDataClass",
-                        "a": {"foo": "${value}"},
-                        "b": [1, "${value}"],
-                    },
-                    None,
-                ],
-            },
-            (
-                # Item 0 is a DictConfig because of top level ListConfig
-                OmegaConf.create(
-                    [
-                        SimpleDataClass(
-                            a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
-                        ),
-                        None,
-                    ]
-                ),
-                [SimpleDataClass(a={"foo": 99}, b=[1, 99]), None],
-                [SimpleDataClass(a={"foo": 99}, b=[1, 99]), None],
-            ),
-            id="list+dataclass",
-        ),
     ],
 )
 def test_instantiate_convert_dataclasses(

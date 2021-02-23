@@ -17,12 +17,7 @@ from hydra.errors import InstantiationException
 from hydra.types import ConvertMode, TargetConf
 
 
-def instantiate(
-    config: Any,
-    *args: Any,
-    _convert_: Union[str, ConvertMode] = ConvertMode.NONE,
-    **kwargs: Any,
-) -> Any:
+def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
     :param config: An config object describing what to call and what params to use.
                    In addition to the parameters, the config must contain:
@@ -44,8 +39,6 @@ def instantiate(
                    in the config objects are being passed as is to the target.
                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
                               and cannot be used as passthrough
-    :param convert: Optional ConvertMode or str from parent. Will be
-                    used if _convert_ is not set in kwargs or config.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
@@ -69,7 +62,7 @@ def instantiate(
     if is_structured_config(config) or isinstance(config, dict):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
-    if OmegaConf.is_config(config):
+    if OmegaConf.is_dict(config):
         # Finalize config (convert targets to strings, merge with kwargs)
         config_copy = copy.deepcopy(config)
         config_copy._set_flag(
@@ -81,15 +74,13 @@ def instantiate(
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
 
-        if OmegaConf.is_dict(config):
-            _recursive_ = config.pop("_recursive_", True)
-        else:
-            _recursive_ = True
+        _recursive_ = config.pop("_recursive_", True)
+        _convert_ = config.pop("_convert_", ConvertMode.NONE)
 
         return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_)
     else:
         raise InstantiationException(
-            "Top level config has to be OmegaConf DictConfig or a plain dict"
+            "Top level config has to be OmegaConf DictConfig, plain dict, or a Structured Config class or instance"
         )
 
 
