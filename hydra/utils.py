@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from hydra._internal.instantiate._instantiate1 import instantiate
+from hydra._internal.instantiate._instantiate2 import instantiate
 from hydra._internal.utils import _locate
 from hydra.core.hydra_config import HydraConfig
 
