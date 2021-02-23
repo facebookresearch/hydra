@@ -7,9 +7,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
-from pytest import mark, param, raises, warns
+from pytest import mark, param, raises, warns, fixture
 
 from hydra import utils
+from hydra._internal import instantiate2
 from hydra._internal.utils import _convert_container_targets_to_strings
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
@@ -51,17 +52,25 @@ from tests import (
 )
 
 
+@fixture(
+    params=[
+        utils.instantiate,
+    ],
+    ids=[
+        "instantiate",
+    ],
+)
+def instantiate_func(request: Any) -> Any:
+    return request.param
+
+
 @mark.parametrize("path,expected_type", [("tests.AClass", AClass)])
 def test_get_class(path: str, expected_type: type) -> None:
     assert utils.get_class(path) == expected_type
 
 
 @mark.parametrize(
-    "recursive",
-    [
-        param(False, id="non_recursive"),
-        param(True, id="recursive"),
-    ],
+    "recursive", [param(False, id="not_recursive"), param(True, id="recursive")]
 )
 @mark.parametrize(
     "input_conf, passthrough, expected",
@@ -150,7 +159,7 @@ def test_get_class(path: str, expected_type: type) -> None:
             {"_target_": "tests.AClass"},
             {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
             AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
-            id="passthrough",
+            id="oc_incompatible_passthrough",
         ),
         param(
             {"_target_": "tests.AClass"},
@@ -172,12 +181,16 @@ def test_get_class(path: str, expected_type: type) -> None:
     ],
 )
 def test_class_instantiate(
-    input_conf: Any, passthrough: Dict[str, Any], expected: Any, recursive: bool
+    instantiate_func: Any,
+    input_conf: Any,
+    passthrough: Dict[str, Any],
+    expected: Any,
+    recursive: bool,
 ) -> Any:
     def test(conf: Any) -> None:
         passthrough["_recursive_"] = recursive
         conf_copy = copy.deepcopy(conf)
-        obj = utils.instantiate(conf, **passthrough)
+        obj = instantiate_func(conf, **passthrough)
         assert obj == expected
         # make sure config is not modified by instantiate
         assert conf == conf_copy
@@ -216,14 +229,14 @@ def test_class_instantiate(
     ],
 )
 def test_interpolation_accessing_parent(
-    input_conf: Any, passthrough: Dict[str, Any], expected: Any
+    instantiate_func: Any, input_conf: Any, passthrough: Dict[str, Any], expected: Any
 ) -> Any:
     input_conf = OmegaConf.create(input_conf)
-    obj = utils.instantiate(input_conf.node, **passthrough)
+    obj = instantiate_func(input_conf.node, **passthrough)
     assert obj == expected
 
 
-def test_interpolation_is_live_in_instantiated_object() -> None:
+def test_interpolation_is_live_in_instantiated_object(instantiate_func: Any) -> None:
     """
     Interpolations in instantiated objects are live config objects but not for primitive objects.
     """
@@ -239,7 +252,7 @@ def test_interpolation_is_live_in_instantiated_object() -> None:
             "value": 99,
         }
     )
-    obj = utils.instantiate(cfg.node)
+    obj = instantiate_func(cfg.node)
     assert obj.a == 99
     assert obj.b.x == 99
 
@@ -251,7 +264,7 @@ def test_interpolation_is_live_in_instantiated_object() -> None:
     assert obj.b.x == 3.14
 
 
-def test_class_instantiate_omegaconf_node() -> Any:
+def test_class_instantiate_omegaconf_node(instantiate_func: Any) -> Any:
     conf = OmegaConf.structured(
         {
             "_target_": "tests.AClass",
@@ -259,7 +272,7 @@ def test_class_instantiate_omegaconf_node() -> Any:
             "c": {"x": 10, "y": "${b}"},
         }
     )
-    obj = utils.instantiate(conf, a=10, d=AnotherClass(99))
+    obj = instantiate_func(conf, a=10, d=AnotherClass(99))
     assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
     assert OmegaConf.is_config(obj.c)
 
@@ -315,23 +328,23 @@ def test_to_absolute_path_without_hydra(
     assert utils.to_absolute_path(path) == expected
 
 
-def test_instantiate_adam() -> None:
+def test_instantiate_adam(instantiate_func: Any) -> None:
     with raises(Exception):
         # can't instantiate without passing params
-        utils.instantiate({"_target_": "tests.Adam"})
+        instantiate_func({"_target_": "tests.Adam"})
 
     adam_params = Parameters([1, 2, 3])
-    res = utils.instantiate({"_target_": "tests.Adam"}, params=adam_params)
+    res = instantiate_func({"_target_": "tests.Adam"}, params=adam_params)
     assert res == Adam(params=adam_params)
 
 
-def test_instantiate_adam_conf() -> None:
+def test_instantiate_adam_conf(instantiate_func: Any) -> None:
     with raises(Exception):
         # can't instantiate without passing params
-        utils.instantiate({"_target_": "tests.Adam"})
+        instantiate_func({"_target_": "tests.Adam"})
 
     adam_params = Parameters([1, 2, 3])
-    res = utils.instantiate(AdamConf(lr=0.123), params=adam_params)
+    res = instantiate_func(AdamConf(lr=0.123), params=adam_params)
     expected = Adam(lr=0.123, params=adam_params)
     assert res.params == expected.params
     assert res.lr == expected.lr
@@ -351,7 +364,7 @@ def test_targetconf_deprecated() -> None:
         TargetConf()
 
 
-def test_instantiate_bad_adam_conf(recwarn: Any) -> None:
+def test_instantiate_bad_adam_conf(instantiate_func: Any, recwarn: Any) -> None:
     msg = (
         "Missing value for BadAdamConf._target_. Check that it's properly annotated and overridden."
         "\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
@@ -360,21 +373,21 @@ def test_instantiate_bad_adam_conf(recwarn: Any) -> None:
         InstantiationException,
         match=re.escape(msg),
     ):
-        utils.instantiate(BadAdamConf())
+        instantiate_func(BadAdamConf())
 
 
-def test_instantiate_with_missing_module() -> None:
+def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
 
     with raises(
         ModuleNotFoundError, match=re.escape("No module named 'some_missing_module'")
     ):
         # can't instantiate when importing a missing module
-        utils.instantiate({"_target_": "tests.ClassWithMissingModule"})
+        instantiate_func({"_target_": "tests.ClassWithMissingModule"})
 
 
-def test_pass_extra_variables() -> None:
+def test_pass_extra_variables(instantiate_func: Any) -> None:
     cfg = OmegaConf.create({"_target_": "tests.AClass", "a": 10, "b": 20})
-    assert utils.instantiate(cfg, c=30) == AClass(a=10, b=20, c=30)
+    assert instantiate_func(cfg, c=30) == AClass(a=10, b=20, c=30)
 
 
 @mark.parametrize(
@@ -563,11 +576,12 @@ def test_pass_extra_variables() -> None:
     ],
 )
 def test_recursive_instantiation(
+    instantiate_func: Any,
     cfg: Any,
     passthrough: Dict[str, Any],
     expected: Any,
 ) -> None:
-    obj = utils.instantiate(cfg, **passthrough)
+    obj = instantiate_func(cfg, **passthrough)
     assert obj == expected
 
 
@@ -708,11 +722,12 @@ def test_recursive_instantiation(
     ],
 )
 def test_recursive_override(
+    instantiate_func: Any,
     cfg: Any,
     passthrough: Any,
     expected: Any,
 ) -> None:
-    obj = utils.instantiate(cfg, **passthrough)
+    obj = instantiate_func(cfg, **passthrough)
     assert obj == expected
 
 
@@ -782,9 +797,11 @@ def test_recursive_override(
         ),
     ],
 )
-def test_override_target(input_conf: Any, passthrough: Any, expected: Any) -> None:
+def test_override_target(
+    instantiate_func: Any, input_conf: Any, passthrough: Any, expected: Any
+) -> None:
     conf_copy = copy.deepcopy(input_conf)
-    obj = utils.instantiate(input_conf, **passthrough)
+    obj = instantiate_func(input_conf, **passthrough)
     assert obj == expected
     # make sure config is not modified by instantiate
     assert input_conf == conf_copy
@@ -882,13 +899,17 @@ def test_convert_target_to_string(input_: Any, expected: Any) -> None:
     ],
 )
 def test_convert_params_override(
-    primitive: Optional[bool], expected_primitive: bool, input_: Any, expected: Any
+    instantiate_func: Any,
+    primitive: Optional[bool],
+    expected_primitive: bool,
+    input_: Any,
+    expected: Any,
 ) -> None:
     input_cfg = OmegaConf.create(input_)
     if primitive is not None:
-        ret = utils.instantiate(input_cfg.obj, _convert_=primitive)
+        ret = instantiate_func(input_cfg.obj, _convert_=primitive)
     else:
-        ret = utils.instantiate(input_cfg.obj)
+        ret = instantiate_func(input_cfg.obj)
 
     expected_list: Any
     expected_dict: Any
@@ -936,10 +957,12 @@ def test_convert_params_override(
         ),
     ],
 )
-def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
+def test_convert_params(
+    instantiate_func: Any, input_: Any, expected: Any, convert_mode: Any
+) -> None:
     cfg = OmegaConf.create(input_)
     kwargs = {"a": {"_convert_": convert_mode}}
-    ret = utils.instantiate(cfg.obj, **kwargs)  # type: ignore
+    ret = instantiate_func(cfg.obj, **kwargs)  # type: ignore
 
     if convert_mode in (ConvertMode.PARTIAL, ConvertMode.ALL):
         assert isinstance(ret.a.a, dict)
@@ -1063,13 +1086,13 @@ def test_convert_params(input_: Any, expected: Any, convert_mode: Any) -> None:
     ],
 )
 def test_instantiate_convert_dataclasses(
-    config: Any, expected: Tuple[Any, Any, Any]
+    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any]
 ) -> None:
     """Instantiate on nested dataclass + dataclass."""
     modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
     for exp, mode in zip(expected, modes):
         cfg = OmegaConf.create(config)
-        instance = utils.instantiate(cfg.obj, convert=mode)
+        instance = instantiate_func(cfg.obj, convert=mode)
         assert instance == exp
         assert recisinstance(instance, exp)
 
@@ -1112,9 +1135,11 @@ def test_instantiate_convert_dataclasses(
         ),
     ],
 )
-def test_convert_in_config(input_: Any, is_primitive: bool, expected: Any) -> None:
+def test_convert_in_config(
+    instantiate_func: Any, input_: Any, is_primitive: bool, expected: Any
+) -> None:
     cfg = OmegaConf.create(input_)
-    ret = utils.instantiate(cfg.obj)
+    ret = instantiate_func(cfg.obj)
     assert ret == expected
 
     if is_primitive:
@@ -1125,10 +1150,10 @@ def test_convert_in_config(input_: Any, is_primitive: bool, expected: Any) -> No
         assert isinstance(ret.b, ListConfig)
 
 
-def test_nested_dataclass_with_partial_convert() -> None:
+def test_nested_dataclass_with_partial_convert(instantiate_func: Any) -> None:
     # dict
     cfg = OmegaConf.structured(NestedConf)
-    ret = utils.instantiate(cfg, _convert_="partial")
+    ret = instantiate_func(cfg, _convert_="partial")
     assert isinstance(ret.a, DictConfig) and OmegaConf.get_type(ret.a) == User
     assert isinstance(ret.b, DictConfig) and OmegaConf.get_type(ret.b) == User
     expected = SimpleClass(a=User(name="a", age=1), b=User(name="b", age=2))
@@ -1137,7 +1162,7 @@ def test_nested_dataclass_with_partial_convert() -> None:
     # list
     lst = [User(name="a", age=1)]
     cfg = OmegaConf.structured(NestedConf(a=lst))
-    ret = utils.instantiate(cfg, _convert_="partial")
+    ret = instantiate_func(cfg, _convert_="partial")
     assert isinstance(ret.a, list) and OmegaConf.get_type(ret.a[0]) == User
     assert isinstance(ret.b, DictConfig) and OmegaConf.get_type(ret.b) == User
     expected = SimpleClass(a=lst, b=User(name="b", age=2))
@@ -1154,7 +1179,7 @@ class ListValues:
         self.d = d
 
 
-def test_dict_with_structured_config() -> None:
+def test_dict_with_structured_config(instantiate_func: Any) -> None:
     @dataclass
     class DictValuesConf:
         _target_: str = "tests.test_utils.DictValues"
@@ -1162,20 +1187,20 @@ def test_dict_with_structured_config() -> None:
 
     schema = OmegaConf.structured(DictValuesConf)
     cfg = OmegaConf.merge(schema, {"d": {"007": {"name": "Bond", "age": 7}}})
-    obj = utils.instantiate(config=cfg, _convert_="none")
+    obj = instantiate_func(config=cfg, _convert_="none")
     assert OmegaConf.is_dict(obj.d)
     assert OmegaConf.get_type(obj.d["007"]) == User
 
-    obj = utils.instantiate(config=cfg, _convert_="partial")
+    obj = instantiate_func(config=cfg, _convert_="partial")
     assert isinstance(obj.d, dict)
     assert OmegaConf.get_type(obj.d["007"]) == User
 
-    obj = utils.instantiate(config=cfg, _convert_="all")
+    obj = instantiate_func(config=cfg, _convert_="all")
     assert isinstance(obj.d, dict)
     assert isinstance(obj.d["007"], dict)
 
 
-def test_list_with_structured_config() -> None:
+def test_list_with_structured_config(instantiate_func: Any) -> None:
     @dataclass
     class ListValuesConf:
         _target_: str = "tests.test_utils.ListValues"
@@ -1184,25 +1209,25 @@ def test_list_with_structured_config() -> None:
     schema = OmegaConf.structured(ListValuesConf)
     cfg = OmegaConf.merge(schema, {"d": [{"name": "Bond", "age": 7}]})
 
-    obj = utils.instantiate(config=cfg, _convert_="none")
+    obj = instantiate_func(config=cfg, _convert_="none")
     assert isinstance(obj.d, ListConfig)
     assert OmegaConf.get_type(obj.d[0]) == User
 
-    obj = utils.instantiate(config=cfg, _convert_="partial")
+    obj = instantiate_func(config=cfg, _convert_="partial")
     assert isinstance(obj.d, list)
     assert OmegaConf.get_type(obj.d[0]) == User
 
-    obj = utils.instantiate(config=cfg, _convert_="all")
+    obj = instantiate_func(config=cfg, _convert_="all")
     assert isinstance(obj.d, list)
     assert isinstance(obj.d[0], dict)
 
 
-def test_list_as_none() -> None:
+def test_list_as_none(instantiate_func: Any) -> None:
     @dataclass
     class ListValuesConf:
         _target_: str = "tests.test_utils.ListValues"
         d: Optional[List[User]] = None
 
     cfg = OmegaConf.structured(ListValuesConf)
-    obj = utils.instantiate(config=cfg)
+    obj = instantiate_func(config=cfg)
     assert obj.d is None

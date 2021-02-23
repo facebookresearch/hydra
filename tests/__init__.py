@@ -217,7 +217,7 @@ class Tree:
 
 
 class Mapping:
-    dict: Optional[Dict[str, "Mapping"]] = None
+    dictionary: Optional[Dict[str, "Mapping"]] = None
     value: Any = None
 
     def __init__(
@@ -233,7 +233,7 @@ class Mapping:
             return False
 
     def __repr__(self) -> str:
-        return f"dict={self.dict}"
+        return f"dictionary={self.dictionary}"
 
 
 # Configs
