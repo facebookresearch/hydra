@@ -12,5 +12,5 @@ setup(
     author_email="omry@fb.com, rosario@cs.uw.edu",
     url="https://github.com/predictive-analytics-lab/neoconfigen",
     include_package_data=True,
-    install_requires=["hydra-core>=1.1.0dev1", "jinja2"]
+    install_requires=["hydra-core>=1.1.0dev1", "jinja2"],
 )

@@ -7,7 +7,7 @@ from configen.samples.my_module import Admin, User
 from example.config.configen.samples.my_module import AdminConf, UserConf
 
 ConfigStore.instance().store(
-    name="config",
+    name="config_schema",
     node={
         "user": UserConf,
         "admin": AdminConf,
@@ -15,7 +15,7 @@ ConfigStore.instance().store(
 )
 
 
-@hydra.main(config_name="config_schema")
+@hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
     user: User = hydra.utils.instantiate(cfg.user)
     admin: Admin = hydra.utils.instantiate(cfg.admin)

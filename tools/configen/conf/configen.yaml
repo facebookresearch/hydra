@@ -12,11 +12,16 @@ configen:
     # isort:skip_file
     # flake8: noqa
 
-  module_path_pattern: "config/{{module_path}}.py"
+  module_path_pattern: 'config/{{module_path}}.py'
 
   # list of modules to generate configs for
   modules:
     - name: configen.samples.my_module
+      # Optional dict defining hydra flags for all classes in this module:
+      # default_flags:
+      #   _convert_ : ALL
+      #   _recursive_ : True
+      #
       # for each module, a list of classes
       classes:
         - User
