@@ -105,13 +105,12 @@ def instantiate_node(
     if config is None or OmegaConf.is_none(config):
         return None
 
-    # If OmegaConf, copy, make it mutable and set parent for live interpolation
     if OmegaConf.is_config(config):
-        config_copy = OmegaConf.structured(config, flags={"allow_objects": True})
-        OmegaConf.set_readonly(config_copy, False)
-        OmegaConf.set_struct(config_copy, False)
-        config_copy._set_parent(config._get_parent())
-        config = config_copy
+        # Turn off struct flag on node to enable popping fields from Structured Configs.
+        OmegaConf.set_struct(config, False)
+    else:
+        # probably a primitive node, return as is.
+        return config
 
     # Override parent modes from config if specified
     if OmegaConf.is_dict(config):
@@ -141,7 +140,7 @@ def instantiate_node(
         else:
             return _convert_conf(config, convert)
 
-    if OmegaConf.is_dict(config):
+    elif OmegaConf.is_dict(config):
         if _is_target(config):
             target = _resolve_target(config.pop(_Keys.TARGET))
             if recursive:
@@ -178,5 +177,5 @@ def instantiate_node(
         else:
             return _convert_conf(config, convert)
 
-    # Default case, return config (no target or recursive to handle)
-    return config
+    else:
+        assert False, f"Unexpected config type : {type(config).__name__}"
