@@ -50,6 +50,9 @@ class AxConfig:
     experiment: ExperimentConfig = ExperimentConfig()
     client: ClientConfig = ClientConfig()
     params: Dict[str, Any] = field(default_factory=dict)
+    # is_noisy = True indicates measurements have unknown uncertainty
+    # is_noisy = False indicates measurements have an uncertainty of zero
+    is_noisy: bool = True
 
 
 @dataclass

@@ -109,6 +109,7 @@ class CoreAxSweeper(Sweeper):
         self.sweep_dir: str
         self.job_idx: Optional[int] = None
         self.max_batch_size = max_batch_size
+        self.is_noisy: bool = ax_config.is_noisy
 
     def setup(
         self,
@@ -191,7 +192,18 @@ class CoreAxSweeper(Sweeper):
             )
             self.job_idx += len(rets)
             for idx in range(len(batch)):
-                val = rets[idx].return_value
+                val: Any = rets[idx].return_value
+                # Ax expects a measured value (int or float), which can optionally
+                # be given in a tuple along with the error of that measurement
+                assert isinstance(val, (int, float, tuple))
+                # is_noisy specifies how Ax should behave when not given an error value.
+                # if true (default), the error of each measurement is inferred by Ax.
+                # if false, the error of each measurement is set to 0.
+                if isinstance(val, (int, float)):
+                    if self.is_noisy:
+                        val = (val, None)  # specify unknown noise
+                    else:
+                        val = (val, 0)  # specify no noise
                 ax_client.complete_trial(
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
