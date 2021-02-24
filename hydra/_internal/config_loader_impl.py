@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
-from omegaconf import DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import DictConfig, OmegaConf, flag_override, open_dict, read_write
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -185,41 +185,47 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults=defaults_list.defaults, repo=caching_repo
         )
 
-        OmegaConf.set_struct(cfg, True)
-        OmegaConf.set_readonly(cfg.hydra, False)
+        # set struct mode on user config if the root node is not typed.
+        if OmegaConf.get_type(cfg) is dict:
+            OmegaConf.set_struct(cfg, True)
 
-        # Apply command line overrides after enabling strict flag
-        ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
-        app_overrides = []
-        for override in parsed_overrides:
-            if override.is_hydra_override():
-                cfg.hydra.overrides.hydra.append(override.input_line)
-            else:
-                cfg.hydra.overrides.task.append(override.input_line)
-                app_overrides.append(override)
+        # Turn off struct mode on the Hydra node. It gets its type safety from it being a Structured Config.
+        # This enables adding fields to nested dicts like hydra.job.env_set without having to using + to append.
+        OmegaConf.set_struct(cfg.hydra, False)
 
-        # TODO: should this open_dict be required given that choices is a Dict?
-        with open_dict(cfg.hydra.choices):
-            cfg.hydra.choices.update(defaults_list.overrides.known_choices)
+        with read_write(cfg.hydra):
+            # Apply command line overrides after enabling strict flag
+            ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
+            app_overrides = []
+            for override in parsed_overrides:
+                if override.is_hydra_override():
+                    cfg.hydra.overrides.hydra.append(override.input_line)
+                else:
+                    cfg.hydra.overrides.task.append(override.input_line)
+                    app_overrides.append(override)
 
-        with open_dict(cfg.hydra):
-            from hydra import __version__
+            # TODO: should this open_dict be required given that choices is a Dict?
+            with open_dict(cfg.hydra.choices):
+                cfg.hydra.choices.update(defaults_list.overrides.known_choices)
 
-            cfg.hydra.runtime.version = __version__
-            cfg.hydra.runtime.cwd = os.getcwd()
+            with open_dict(cfg.hydra):
+                from hydra import __version__
 
-            if "name" not in cfg.hydra.job:
-                cfg.hydra.job.name = JobRuntime().get("name")
-            cfg.hydra.job.override_dirname = get_overrides_dirname(
-                overrides=app_overrides,
-                kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
-                item_sep=cfg.hydra.job.config.override_dirname.item_sep,
-                exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
-            )
-            cfg.hydra.job.config_name = config_name
+                cfg.hydra.runtime.version = __version__
+                cfg.hydra.runtime.cwd = os.getcwd()
 
-            for key in cfg.hydra.job.env_copy:
-                cfg.hydra.job.env_set[key] = os.environ[key]
+                if "name" not in cfg.hydra.job:
+                    cfg.hydra.job.name = JobRuntime().get("name")
+                cfg.hydra.job.override_dirname = get_overrides_dirname(
+                    overrides=app_overrides,
+                    kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
+                    item_sep=cfg.hydra.job.config.override_dirname.item_sep,
+                    exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
+                )
+                cfg.hydra.job.config_name = config_name
+
+                for key in cfg.hydra.job.env_copy:
+                    cfg.hydra.job.env_set[key] = os.environ[key]
 
         return cfg
 
