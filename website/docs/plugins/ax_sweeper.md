@@ -35,7 +35,7 @@ The return value of the function should be the value that we want to optimize.
 To compute the best parameters for the Banana function, clone the code and run the following command in the `plugins/hydra_ax_sweeper` directory:
 
 ```
-python example/banana.py -m 'banana.x=int(interval(-5, 5))' 'banana.y=interval(-5, 10.1)' hydra.sweeper.ax_config.is_noisy=false
+python example/banana.py -m 'banana.x=int(interval(-5, 5))' 'banana.y=interval(-5, 10.1)'
 ```
 
 The output of a run looks like:
