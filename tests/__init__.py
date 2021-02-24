@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import collections.abc
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -20,6 +21,10 @@ def verify_hydra_pytest_plugin_not_installed() -> None:
 
 
 verify_hydra_pytest_plugin_not_installed()
+
+
+def add_values(a: int, b: int) -> int:
+    return a + b
 
 
 def module_function(x: int) -> int:
@@ -208,11 +213,11 @@ class Tree:
             return False
 
     def __repr__(self) -> str:
-        return f"value={self.value}, left={self.left}, right={self.right}"
+        return f"Tree(value={self.value}, left={self.left}, right={self.right})"
 
 
 class Mapping:
-    dict: Optional[Dict[str, "Mapping"]] = None
+    dictionary: Optional[Dict[str, "Mapping"]] = None
     value: Any = None
 
     def __init__(
@@ -228,7 +233,7 @@ class Mapping:
             return False
 
     def __repr__(self) -> str:
-        return f"dict={self.dict}"
+        return f"dictionary={self.dictionary}"
 
 
 # Configs
@@ -320,3 +325,14 @@ class NestedConf:
     _target_: str = "tests.SimpleClass"
     a: Any = User(name="a", age=1)
     b: Any = User(name="b", age=2)
+
+
+def recisinstance(got: Any, expected: Any) -> bool:
+    """Compare got with expected type, recursively on dict and list."""
+    if not isinstance(got, type(expected)):
+        return False
+    if isinstance(expected, collections.abc.Mapping):
+        return all(recisinstance(got[key], expected[key]) for key in expected)
+    elif isinstance(expected, collections.abc.Iterable):
+        return all(recisinstance(got[idx], exp) for idx, exp in enumerate(expected))
+    return True
