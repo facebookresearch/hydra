@@ -1,20 +1,78 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import copy
-from typing import Any, Union
+import sys
+from enum import Enum
+from typing import Any, Callable, Union
 
 from omegaconf import Container, OmegaConf
 from omegaconf._utils import is_structured_config
 
-from hydra._internal.utils import (
-    _call_target,
-    _convert_container_targets_to_strings,
-    _is_target,
-    _Keys,
-    _resolve_target,
-)
+from hydra._internal.utils import _locate
 from hydra.errors import InstantiationException
 from hydra.types import ConvertMode, TargetConf
+
+
+class _Keys(str, Enum):
+    """Special keys in configs used by instantiate."""
+
+    TARGET = "_target_"
+    CONVERT = "_convert_"
+    RECURSIVE = "_recursive_"
+
+
+def _is_target(x: Any) -> bool:
+    if isinstance(x, dict):
+        return "_target_" in x
+    if OmegaConf.is_dict(x) and not OmegaConf.is_none(x):
+        return "_target_" in x
+    return False
+
+
+def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
+    """Call target (type) with args and kwargs."""
+    try:
+        return target(*args, **kwargs)
+    except Exception as e:
+        raise type(e)(
+            f"Error instantiating '{_convert_target_to_string(target)}' : {e}"
+        ).with_traceback(sys.exc_info()[2])
+
+
+def _convert_target_to_string(t: Any) -> Any:
+    if isinstance(t, type):
+        return f"{t.__module__}.{t.__name__}"
+    elif callable(t):
+        return f"{t.__module__}.{t.__qualname__}"
+    else:
+        return t
+
+
+def _convert_container_targets_to_strings(d: Any) -> None:
+    if isinstance(d, dict):
+        if "_target_" in d:
+            d["_target_"] = _convert_target_to_string(d["_target_"])
+        for _, v in d.items():
+            _convert_container_targets_to_strings(v)
+    elif isinstance(d, list):
+        for e in d:
+            if isinstance(e, (list, dict)):
+                _convert_container_targets_to_strings(e)
+
+
+def _resolve_target(
+    target: Union[str, type, Callable[..., Any]]
+) -> Union[type, Callable[..., Any]]:
+    """Resolve target string, type or callable into type or callable."""
+    if isinstance(target, str):
+        return _locate(target)
+    if isinstance(target, type):
+        return target
+    if callable(target):
+        return target
+    raise InstantiationException(
+        f"Unsupported target type : {type(target)} (target = {target})"
+    )
 
 
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:

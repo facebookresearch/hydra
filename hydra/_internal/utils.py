@@ -5,13 +5,11 @@ import logging.config
 import os
 import sys
 from dataclasses import dataclass
-from enum import Enum
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
-from omegaconf import OmegaConf
 from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -25,14 +23,6 @@ from hydra.errors import (
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
-
-
-class _Keys(str, Enum):
-    """Special keys in configs used by instantiate."""
-
-    TARGET = "_target_"
-    CONVERT = "_convert_"
-    RECURSIVE = "_recursive_"
 
 
 def _get_module_name_override() -> Optional[str]:
@@ -578,60 +568,6 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     else:
         # dummy case
         raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
-
-
-def _is_target(x: Any) -> bool:
-    if isinstance(x, dict):
-        return "_target_" in x
-    if OmegaConf.is_dict(x) and not OmegaConf.is_none(x):
-        return "_target_" in x
-    return False
-
-
-def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
-    """Call target (type) with args and kwargs."""
-    try:
-        return target(*args, **kwargs)
-    except Exception as e:
-        raise type(e)(
-            f"Error instantiating '{_convert_target_to_string(target)}' : {e}"
-        ).with_traceback(sys.exc_info()[2])
-
-
-def _convert_target_to_string(t: Any) -> Any:
-    if isinstance(t, type):
-        return f"{t.__module__}.{t.__name__}"
-    elif callable(t):
-        return f"{t.__module__}.{t.__qualname__}"
-    else:
-        return t
-
-
-def _convert_container_targets_to_strings(d: Any) -> None:
-    if isinstance(d, dict):
-        if "_target_" in d:
-            d["_target_"] = _convert_target_to_string(d["_target_"])
-        for _, v in d.items():
-            _convert_container_targets_to_strings(v)
-    elif isinstance(d, list):
-        for e in d:
-            if isinstance(e, (list, dict)):
-                _convert_container_targets_to_strings(e)
-
-
-def _resolve_target(
-    target: Union[str, type, Callable[..., Any]]
-) -> Union[type, Callable[..., Any]]:
-    """Resolve target string, type or callable into type or callable."""
-    if isinstance(target, str):
-        return _locate(target)
-    if isinstance(target, type):
-        return target
-    if callable(target):
-        return target
-    raise InstantiationException(
-        f"Unsupported target type : {type(target)} (target = {target})"
-    )
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:

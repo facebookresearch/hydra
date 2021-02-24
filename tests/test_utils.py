@@ -12,7 +12,9 @@ from pytest import fixture, mark, param, raises, warns
 import hydra._internal.instantiate._instantiate2
 import tests
 from hydra import utils
-from hydra._internal.utils import _convert_container_targets_to_strings
+from hydra._internal.instantiate._instantiate2 import (
+    _convert_container_targets_to_strings,
+)
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException

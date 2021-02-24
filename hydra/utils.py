@@ -12,7 +12,7 @@ from hydra.core.hydra_config import HydraConfig
 
 log = logging.getLogger(__name__)
 
-# alias call to instantiate
+# Instantiation related symbols
 instantiate = hydra._internal.instantiate._instantiate2.instantiate
 call = instantiate
 ConvertMode = hydra.types.ConvertMode
