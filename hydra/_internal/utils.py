@@ -32,7 +32,6 @@ class _Keys(str, Enum):
 
     TARGET = "_target_"
     CONVERT = "_convert_"
-    PARSE = "_parse_"
     RECURSIVE = "_recursive_"
 
 

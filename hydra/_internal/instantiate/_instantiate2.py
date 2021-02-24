@@ -74,8 +74,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
 
-        _recursive_ = config.pop("_recursive_", True)
-        _convert_ = config.pop("_convert_", ConvertMode.NONE)
+        _recursive_ = config.pop(_Keys.RECURSIVE, True)
+        _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
 
         return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_)
     else:
@@ -115,8 +115,10 @@ def instantiate_node(
 
     # Override parent modes from config if specified
     if OmegaConf.is_dict(config):
-        convert = config.pop(_Keys.CONVERT, convert)
-        recursive = config.pop(_Keys.RECURSIVE, recursive)
+        convert = config.pop(_Keys.CONVERT) if _Keys.CONVERT in config else convert
+        recursive = (
+            config.pop(_Keys.RECURSIVE) if _Keys.RECURSIVE in config else recursive
+        )
         if not isinstance(recursive, bool):
             raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
 
