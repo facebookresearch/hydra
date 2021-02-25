@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-"""
-Configuration loader
-"""
+
 import copy
 import os
 import re
@@ -12,7 +10,7 @@ from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
-from omegaconf import DictConfig, OmegaConf, flag_override, open_dict, read_write
+from omegaconf import DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -193,39 +191,39 @@ class ConfigLoaderImpl(ConfigLoader):
         # This enables adding fields to nested dicts like hydra.job.env_set without having to using + to append.
         OmegaConf.set_struct(cfg.hydra, False)
 
-        with read_write(cfg.hydra):
-            # Apply command line overrides after enabling strict flag
-            ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
-            app_overrides = []
-            for override in parsed_overrides:
-                if override.is_hydra_override():
-                    cfg.hydra.overrides.hydra.append(override.input_line)
-                else:
-                    cfg.hydra.overrides.task.append(override.input_line)
-                    app_overrides.append(override)
+        # Make the Hydra node writeable (The user may have made the primary node read-only).
+        OmegaConf.set_readonly(cfg.hydra, False)
 
-            # TODO: should this open_dict be required given that choices is a Dict?
-            with open_dict(cfg.hydra.choices):
-                cfg.hydra.choices.update(defaults_list.overrides.known_choices)
+        # Apply command line overrides after enabling strict flag
+        ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
+        app_overrides = []
+        for override in parsed_overrides:
+            if override.is_hydra_override():
+                cfg.hydra.overrides.hydra.append(override.input_line)
+            else:
+                cfg.hydra.overrides.task.append(override.input_line)
+                app_overrides.append(override)
 
-            with open_dict(cfg.hydra):
-                from hydra import __version__
+        cfg.hydra.choices.update(defaults_list.overrides.known_choices)
 
-                cfg.hydra.runtime.version = __version__
-                cfg.hydra.runtime.cwd = os.getcwd()
+        with open_dict(cfg.hydra):
+            from hydra import __version__
 
-                if "name" not in cfg.hydra.job:
-                    cfg.hydra.job.name = JobRuntime().get("name")
-                cfg.hydra.job.override_dirname = get_overrides_dirname(
-                    overrides=app_overrides,
-                    kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
-                    item_sep=cfg.hydra.job.config.override_dirname.item_sep,
-                    exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
-                )
-                cfg.hydra.job.config_name = config_name
+            cfg.hydra.runtime.version = __version__
+            cfg.hydra.runtime.cwd = os.getcwd()
 
-                for key in cfg.hydra.job.env_copy:
-                    cfg.hydra.job.env_set[key] = os.environ[key]
+            if "name" not in cfg.hydra.job:
+                cfg.hydra.job.name = JobRuntime().get("name")
+            cfg.hydra.job.override_dirname = get_overrides_dirname(
+                overrides=app_overrides,
+                kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
+                item_sep=cfg.hydra.job.config.override_dirname.item_sep,
+                exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
+            )
+            cfg.hydra.job.config_name = config_name
+
+            for key in cfg.hydra.job.env_copy:
+                cfg.hydra.job.env_set[key] = os.environ[key]
 
         return cfg
 
