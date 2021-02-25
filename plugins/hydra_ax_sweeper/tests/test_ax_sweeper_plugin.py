@@ -4,12 +4,15 @@ import os
 from pathlib import Path
 from typing import Any, List
 
-import pytest
-from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root, get_run_output
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    chdir_plugin_root,
+    run_python_script,
+)
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark, raises
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
 
@@ -30,7 +33,7 @@ def quadratic(cfg: DictConfig) -> Any:
     return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(
     "n,expected",
     [
         (None, [[1, 2, 3, 4, 5]]),
@@ -49,13 +52,13 @@ def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> Non
     assert out == expected
 
 
-@pytest.mark.parametrize("n", [-1, -11, 0])  # type: ignore
+@mark.parametrize("n", [-1, -11, 0])
 def test_chunk_method_for_invalid_inputs(n: int) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         list(chunk_func(batch, n))
 
 
@@ -173,10 +176,6 @@ def test_configuration_set_via_cmd_and_default_config(
         ],
     )
     with sweep:
-        ax_config = HydraConfig.get().sweeper.ax_config
-        assert ax_config.max_trials == 2
-        assert ax_config.early_stop.max_epochs_without_improvement == 2
-        assert ax_config.experiment.minimize is True
         assert sweep.returns is None
         returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
         assert isinstance(returns, DictConfig)
@@ -185,7 +184,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic.y" in best_parameters
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(
     "cmd_arg, expected_str",
     [
         ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
@@ -210,13 +209,30 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(
+    "cmd_args",
+    [
+        ["polynomial.y=choice(-1, 0, 1)", "polynomial.x=range(2,4)"],
+        ["polynomial.y=1", "polynomial.x=range(2,4)"],
+    ],
+)
+def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> None:
+    cmd = [
+        "tests/apps/polynomial.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweeper.ax_config.max_trials=2",
+    ] + cmd_args
+    run_python_script(cmd, allow_warnings=True)
+
+
+@mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
@@ -246,13 +262,13 @@ def test_jobs_using_choice_between_lists(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
 
 
-@pytest.mark.parametrize(  # type: ignore
+@mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
@@ -282,7 +298,7 @@ def test_jobs_using_choice_between_dicts(
         "hydra.run.dir=" + str(tmpdir),
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -297,6 +313,6 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result, _ = get_run_output(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result
