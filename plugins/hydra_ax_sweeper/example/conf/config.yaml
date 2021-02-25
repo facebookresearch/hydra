@@ -28,7 +28,7 @@ hydra:
 
       # the synthetic measurements in this example have 0 error
       # which is specified by setting is_noisy to false
-      is_noisy: False
+      is_noisy: false
 
       params:
         banana.x:
