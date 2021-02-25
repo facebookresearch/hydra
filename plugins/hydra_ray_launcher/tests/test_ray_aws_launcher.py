@@ -54,7 +54,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-04dd9d05269d635cf")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0ac9a9540abaebf14")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -192,10 +192,10 @@ def validate_lib_version(yaml: str) -> None:
             "python --version",
         ]
     )
-    remove_python = out.split()[1]
+    remote_python = out.split()[1]
     assert (
-        local_python == remove_python
-    ), f"Python version mismatch, local={local_python}, remote={remove_python}"
+        local_python == remote_python
+    ), f"Python version mismatch, local={local_python}, remote={remote_python}"
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
