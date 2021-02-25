@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-"""
-Configuration loader
-"""
+
 import copy
 import os
 import re
@@ -185,7 +183,15 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults=defaults_list.defaults, repo=caching_repo
         )
 
-        OmegaConf.set_struct(cfg, True)
+        # set struct mode on user config if the root node is not typed.
+        if OmegaConf.get_type(cfg) is dict:
+            OmegaConf.set_struct(cfg, True)
+
+        # Turn off struct mode on the Hydra node. It gets its type safety from it being a Structured Config.
+        # This enables adding fields to nested dicts like hydra.job.env_set without having to using + to append.
+        OmegaConf.set_struct(cfg.hydra, False)
+
+        # Make the Hydra node writeable (The user may have made the primary node read-only).
         OmegaConf.set_readonly(cfg.hydra, False)
 
         # Apply command line overrides after enabling strict flag
@@ -198,9 +204,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 cfg.hydra.overrides.task.append(override.input_line)
                 app_overrides.append(override)
 
-        # TODO: should this open_dict be required given that choices is a Dict?
-        with open_dict(cfg.hydra.choices):
-            cfg.hydra.choices.update(defaults_list.overrides.known_choices)
+        cfg.hydra.choices.update(defaults_list.overrides.known_choices)
 
         with open_dict(cfg.hydra):
             from hydra import __version__
