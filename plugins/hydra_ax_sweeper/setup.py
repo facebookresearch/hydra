@@ -24,8 +24,7 @@ with open("README.md", "r") as fh:
         ],
         install_requires=[
             "hydra-core>=1.0.0",
-            "ax-platform>=0.1.14",
-            "numpy<1.20.0",  # remove once ax is upgraded to support numpy 1.20
+            "ax-platform>=0.1.20",
         ],
         include_package_data=True,
     )
