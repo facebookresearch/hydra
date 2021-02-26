@@ -5,7 +5,7 @@ import sys
 from enum import Enum
 from typing import Any, Callable, Union
 
-from omegaconf import Container, OmegaConf
+from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import _locate
@@ -48,16 +48,25 @@ def _convert_target_to_string(t: Any) -> Any:
         return t
 
 
-def _convert_container_targets_to_strings(d: Any) -> None:
+def _prepare_input_dict(d: Any) -> Any:
+    res: Any
     if isinstance(d, dict):
-        if "_target_" in d:
-            d["_target_"] = _convert_target_to_string(d["_target_"])
-        for _, v in d.items():
-            _convert_container_targets_to_strings(v)
+        res = {}
+        for k, v in d.items():
+            if k == "_target_":
+                v = _convert_target_to_string(d["_target_"])
+            elif isinstance(v, (dict, list)):
+                v = _prepare_input_dict(v)
+            res[k] = v
     elif isinstance(d, list):
-        for e in d:
-            if isinstance(e, (list, dict)):
-                _convert_container_targets_to_strings(e)
+        res = []
+        for v in d:
+            if isinstance(v, (list, dict)):
+                v = _prepare_input_dict(v)
+            res.append(v)
+    else:
+        assert False
+    return res
 
 
 def _resolve_target(
@@ -71,7 +80,7 @@ def _resolve_target(
     if callable(target):
         return target
     raise InstantiationException(
-        f"Unsupported target type : {type(target)} (target = {target})"
+        f"Unsupported target type: {type(target).__name__}. value: {target}"
     )
 
 
@@ -113,8 +122,10 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
         )
 
-    _convert_container_targets_to_strings(config)
-    _convert_container_targets_to_strings(kwargs)
+    if isinstance(config, dict):
+        config = _prepare_input_dict(config)
+
+    kwargs = _prepare_input_dict(kwargs)
 
     # Structured Config always converted first to OmegaConf
     if is_structured_config(config) or isinstance(config, dict):
@@ -142,82 +153,77 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         )
 
 
-def _convert_conf(config: Container, convert: Union[ConvertMode, str]) -> Any:
-    if convert == ConvertMode.ALL:
-        return OmegaConf.to_container(config, resolve=True)
-    if convert == ConvertMode.PARTIAL:
-        return OmegaConf.to_container(
-            config, resolve=True, exclude_structured_configs=True
-        )
-    else:
-        return config
+def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
+    if OmegaConf.is_config(node):
+        if convert == ConvertMode.ALL:
+            node = OmegaConf.to_container(node, resolve=True)
+        elif convert == ConvertMode.PARTIAL:
+            node = OmegaConf.to_container(
+                node, resolve=True, structured_config_mode=SCMode.DICT_CONFIG
+            )
+    return node
 
 
 def instantiate_node(
-    config: Any,
+    node: Any,
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
 ) -> Any:
     # Return None if config is None
-    if config is None or OmegaConf.is_none(config):
+    if node is None or OmegaConf.is_none(node):
         return None
 
-    if OmegaConf.is_config(config):
-        # Turn off struct flag on node to enable popping fields from Structured Configs.
-        OmegaConf.set_struct(config, False)
-    else:
-        # probably a primitive node, return as is.
-        return config
+    if not OmegaConf.is_config(node):
+        return node
 
     # Override parent modes from config if specified
-    if OmegaConf.is_dict(config):
-        convert = config.pop(_Keys.CONVERT) if _Keys.CONVERT in config else convert
-        recursive = (
-            config.pop(_Keys.RECURSIVE) if _Keys.RECURSIVE in config else recursive
-        )
-        if not isinstance(recursive, bool):
-            raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
+    if OmegaConf.is_dict(node):
+        # using getitem instead of get(key, default) because OmegaConf will raise an exception
+        # if the key type is incompatible on get.
+        convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
+        recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
+
+    if not isinstance(recursive, bool):
+        raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
 
     # If OmegaConf list, create new list of instances if recursive
-    if OmegaConf.is_list(config):
-        if recursive:
-            items = [
-                instantiate_node(item, convert=convert, recursive=recursive)
-                for item in config._iter_ex(resolve=True)
-            ]
+    if OmegaConf.is_list(node):
+        items = [
+            instantiate_node(item, convert=convert, recursive=recursive)
+            for item in node._iter_ex(resolve=True)
+        ]
 
-            if convert in (ConvertMode.ALL, ConvertMode.PARTIAL):
-                # If ALL or PARTIAL, use plain list as container
-                return items
-            else:
-                # Otherwise, use ListConfig as container
-                lst = OmegaConf.create(items, flags={"allow_objects": True})
-                lst._set_parent(config)
-                return lst
+        if convert in (ConvertMode.ALL, ConvertMode.PARTIAL):
+            # If ALL or PARTIAL, use plain list as container
+            return items
         else:
-            return _convert_conf(config, convert)
+            # Otherwise, use ListConfig as container
+            lst = OmegaConf.create(items, flags={"allow_objects": True})
+            lst._set_parent(node)
+            return lst
 
-    elif OmegaConf.is_dict(config):
-        if _is_target(config):
-            target = _resolve_target(config.pop(_Keys.TARGET))
-            if recursive:
-                final_kwargs = {}
-                for key, value in config.items_ex(resolve=True):
-                    final_kwargs[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
-                    )
-            else:
-                final_kwargs = config
-            return _call_target(target, *args, **final_kwargs)
-
-        if recursive:
+    elif OmegaConf.is_dict(node):
+        exclude_keys = set({"_target_", "_convert_", "_recursive_"})
+        if _is_target(node):
+            target = _resolve_target(node.get(_Keys.TARGET))
+            kwargs = {}
+            for key, value in node.items_ex(resolve=True):
+                if key not in exclude_keys:
+                    if recursive:
+                        value = instantiate_node(
+                            value, convert=convert, recursive=recursive
+                        )
+                    kwargs[key] = _convert_node(value, convert)
+            return _call_target(target, *args, **kwargs)
+        else:
             # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
-                convert == ConvertMode.PARTIAL and config._metadata.object_type is None
+                convert == ConvertMode.PARTIAL and node._metadata.object_type is None
             ):
                 dict_items = {}
-                for key, value in config.items_ex(resolve=True):
+                for key, value in node.items_ex(resolve=True):
+                    # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
                         value, convert=convert, recursive=recursive
                     )
@@ -225,15 +231,13 @@ def instantiate_node(
             else:
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
-                for key, value in config.items_ex(resolve=False):
+                for key, value in node.items_ex(resolve=False):
                     cfg[key] = instantiate_node(
                         value, convert=convert, recursive=recursive
                     )
-                cfg._set_parent(config)
-                cfg._metadata.object_type = config._metadata.object_type
+                cfg._set_parent(node)
+                cfg._metadata.object_type = node._metadata.object_type
                 return cfg
-        else:
-            return _convert_conf(config, convert)
 
     else:
-        assert False, f"Unexpected config type : {type(config).__name__}"
+        assert False, f"Unexpected config type : {type(node).__name__}"
