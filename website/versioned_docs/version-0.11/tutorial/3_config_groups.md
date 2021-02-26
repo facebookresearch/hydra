@@ -49,7 +49,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 10
-  user: postgre_user
+  user: postgres_user
 ```
 
 Like before, you can still override individual values in the resulting config:
@@ -59,7 +59,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 20
-  user: postgre_user
+  user: postgres_user
 ```
 
 This simple example demonstrated a very powerful feature of Hydra:

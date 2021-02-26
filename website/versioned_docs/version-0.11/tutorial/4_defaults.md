@@ -42,7 +42,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 20
-  user: postgre_user
+  user: postgres_user
 ```
 
 You can prevent a default from being loaded by assigning `null` to it in the command line:

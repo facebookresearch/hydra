@@ -42,7 +42,7 @@ password: secret
 
 ```yaml title="db/postgresql.yaml"
 driver: postgresql
-user: postgre_user
+user: postgres_user
 password: drowssap
 timeout: 10
 
@@ -73,7 +73,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 10
-  user: postgre_user
+  user: postgres_user
 ```
 
 By default, the config group determines where the config content is placed inside the final config object. 
@@ -88,7 +88,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 20
-  user: postgre_user
+  user: postgres_user
 ```
 
 ### Advanced topics

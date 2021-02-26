@@ -21,7 +21,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 10
-  user: postgre_user
+  user: postgres_user
 
 [2019-10-22 19:45:05,135] -     #1 : db=mysql
 db:
