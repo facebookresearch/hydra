@@ -23,7 +23,7 @@ class PostGreSQLConfig:
     host: str = "localhost"
     port: int = 5432
     timeout: int = 10
-    user: str = "postgre_user"
+    user: str = "postgres_user"
     password: str = "drowssap"
 
 

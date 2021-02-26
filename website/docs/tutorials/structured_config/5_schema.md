@@ -58,7 +58,7 @@ password: secret
 defaults:
   - base_postgresql
 
-user: postgre_user
+user: postgres_user
 password: drowssap
 ```
 </div>
@@ -262,7 +262,7 @@ password: secret
 defaults:
   - /database_lib/db/postgresql@_here_
 
-user: postgre_user
+user: postgres_user
 password: drowssap
 ```
 </div>

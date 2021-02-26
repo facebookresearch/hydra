@@ -1,4 +1,4 @@
 driver: postgresql
-user: postgre_user
+user: postgres_user
 password: drowssap
 timeout: 10

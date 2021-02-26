@@ -53,7 +53,7 @@ db:
   password: drowssap
   port: 5432
   timeout: 10
-  user: postgre_user
+  user: postgres_user
 ```
 
 The `+` above is required because there is no default choice for the config group `db`.

@@ -56,7 +56,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 20
-  user: postgre_user
+  user: postgres_user
 ```
 
 You can remove a default entry from the defaults list by prefixing it with ~:

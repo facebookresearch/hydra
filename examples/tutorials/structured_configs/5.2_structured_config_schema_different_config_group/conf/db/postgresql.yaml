@@ -1,5 +1,5 @@
 defaults:
   - /database_lib/db/postgresql@_here_
 
-user: postgre_user
+user: postgres_user
 password: drowssap

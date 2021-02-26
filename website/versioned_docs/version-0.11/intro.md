@@ -109,7 +109,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 20
-  user: postgre_user
+  user: postgres_user
 website:
     domain: example.com
 ```
@@ -136,7 +136,7 @@ db:
   driver: postgresql
   pass: drowssap
   timeout: 10
-  user: postgre_user
+  user: postgres_user
 website:
     domain: example.com
 ```
