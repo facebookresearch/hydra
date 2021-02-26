@@ -15,7 +15,7 @@ class RedisConf:
     # database via REDIS_DB environment variable, default: 0
     db: Optional[str] = II("env:REDIS_DB,0")
     # password via REDIS_PASSWORD environment variable, default: no password
-    password: str = II("env:REDIS_PASSWORD")
+    password: str = II("env:REDIS_PASSWORD,null")
     # switch to run without redis server in single thread, for testing purposes only
     mock: bool = II("env:REDIS_MOCK,False")
 
