@@ -12,9 +12,6 @@ from pytest import fixture, mark, param, raises, warns
 import hydra._internal.instantiate._instantiate2
 import tests
 from hydra import utils
-from hydra._internal.instantiate._instantiate2 import (
-    _convert_container_targets_to_strings,
-)
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import InstantiationException
@@ -49,7 +46,6 @@ from tests import (
     UntypedPassthroughClass,
     UntypedPassthroughConf,
     User,
-    module_function,
     recisinstance,
 )
 
@@ -66,6 +62,23 @@ def instantiate_func(request: Any) -> Any:
     return request.param
 
 
+@fixture(
+    params=[
+        lambda cfg: copy.deepcopy(cfg),
+        lambda cfg: OmegaConf.create(cfg),
+    ],
+    ids=[
+        "dict",
+        "dict_config",
+    ],
+)
+def config(request: Any, src: Any) -> Any:
+    config = request.param(src)
+    cfg_copy = copy.deepcopy(config)
+    yield config
+    assert config == cfg_copy
+
+
 @mark.parametrize("path,expected_type", [("tests.AClass", AClass)])
 def test_get_class(path: str, expected_type: type) -> None:
     assert utils.get_class(path) == expected_type
@@ -75,7 +88,7 @@ def test_get_class(path: str, expected_type: type) -> None:
     "recursive", [param(False, id="not_recursive"), param(True, id="recursive")]
 )
 @mark.parametrize(
-    "input_conf, passthrough, expected",
+    "src, passthrough, expected",
     [
         param(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
@@ -184,21 +197,14 @@ def test_get_class(path: str, expected_type: type) -> None:
 )
 def test_class_instantiate(
     instantiate_func: Any,
-    input_conf: Any,
+    config: Any,
     passthrough: Dict[str, Any],
     expected: Any,
     recursive: bool,
 ) -> Any:
-    def test(conf: Any) -> None:
-        passthrough["_recursive_"] = recursive
-        conf_copy = copy.deepcopy(conf)
-        obj = instantiate_func(conf, **passthrough)
-        assert obj == expected
-        # make sure config is not modified by instantiate
-        assert conf == conf_copy
-
-    test(input_conf)
-    test(OmegaConf.create(input_conf))
+    passthrough["_recursive_"] = recursive
+    obj = instantiate_func(config, **passthrough)
+    assert obj == expected
 
 
 @mark.parametrize(
@@ -233,9 +239,11 @@ def test_class_instantiate(
 def test_interpolation_accessing_parent(
     instantiate_func: Any, input_conf: Any, passthrough: Dict[str, Any], expected: Any
 ) -> Any:
+    cfg_copy = OmegaConf.create(input_conf)
     input_conf = OmegaConf.create(input_conf)
     obj = instantiate_func(input_conf.node, **passthrough)
     assert obj == expected
+    assert input_conf == cfg_copy
 
 
 def test_interpolation_is_live_in_instantiated_object(instantiate_func: Any) -> None:
@@ -266,15 +274,12 @@ def test_interpolation_is_live_in_instantiated_object(instantiate_func: Any) -> 
     assert obj.b.x == 3.14
 
 
-def test_class_instantiate_omegaconf_node(instantiate_func: Any) -> Any:
-    conf = OmegaConf.structured(
-        {
-            "_target_": "tests.AClass",
-            "b": 200,
-            "c": {"x": 10, "y": "${b}"},
-        }
-    )
-    obj = instantiate_func(conf, a=10, d=AnotherClass(99))
+@mark.parametrize(
+    "src",
+    [({"_target_": "tests.AClass", "b": 200, "c": {"x": 10, "y": "${b}"}})],
+)
+def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) -> Any:
+    obj = instantiate_func(config, a=10, d=AnotherClass(99))
     assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
     assert OmegaConf.is_config(obj.c)
 
@@ -330,13 +335,14 @@ def test_to_absolute_path_without_hydra(
     assert utils.to_absolute_path(path) == expected
 
 
-def test_instantiate_adam(instantiate_func: Any) -> None:
+@mark.parametrize("src", [{"_target_": "tests.Adam"}])
+def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
     with raises(Exception):
         # can't instantiate without passing params
-        instantiate_func({"_target_": "tests.Adam"})
+        instantiate_func(config)
 
     adam_params = Parameters([1, 2, 3])
-    res = instantiate_func({"_target_": "tests.Adam"}, params=adam_params)
+    res = instantiate_func(config, params=adam_params)
     assert res == Adam(params=adam_params)
 
 
@@ -406,7 +412,7 @@ def test_pass_extra_variables(instantiate_func: Any) -> None:
 
 
 @mark.parametrize(
-    "cfg, passthrough, expected",
+    "src, passthrough, expected",
     [
         # direct
         param(
@@ -592,16 +598,16 @@ def test_pass_extra_variables(instantiate_func: Any) -> None:
 )
 def test_recursive_instantiation(
     instantiate_func: Any,
-    cfg: Any,
+    config: Any,
     passthrough: Dict[str, Any],
     expected: Any,
 ) -> None:
-    obj = instantiate_func(cfg, **passthrough)
+    obj = instantiate_func(config, **passthrough)
     assert obj == expected
 
 
 @mark.parametrize(
-    "cfg, passthrough, expected",
+    ("src", "passthrough", "expected"),
     [
         param(
             {
@@ -738,16 +744,16 @@ def test_recursive_instantiation(
 )
 def test_recursive_override(
     instantiate_func: Any,
-    cfg: Any,
+    config: Any,
     passthrough: Any,
     expected: Any,
 ) -> None:
-    obj = instantiate_func(cfg, **passthrough)
+    obj = instantiate_func(config, **passthrough)
     assert obj == expected
 
 
 @mark.parametrize(
-    "input_conf, passthrough, expected",
+    ("src", "passthrough", "expected"),
     [
         param(
             {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
@@ -813,76 +819,52 @@ def test_recursive_override(
     ],
 )
 def test_override_target(
-    instantiate_func: Any, input_conf: Any, passthrough: Any, expected: Any
+    instantiate_func: Any, config: Any, passthrough: Any, expected: Any
 ) -> None:
-    conf_copy = copy.deepcopy(input_conf)
-    obj = instantiate_func(input_conf, **passthrough)
+    obj = instantiate_func(config, **passthrough)
     assert obj == expected
-    # make sure config is not modified by instantiate
-    assert input_conf == conf_copy
 
 
 @mark.parametrize(
-    "input_, expected",
-    [
-        param({"a": 10}, {"a": 10}),
-        param([1, 2, 3], [1, 2, 3]),
-        param({"_target_": "abc", "a": 10}, {"_target_": "abc", "a": 10}),
-        param({"_target_": AClass, "a": 10}, {"_target_": "tests.AClass", "a": 10}),
-        param(
-            {"_target_": AClass.static_method, "a": 10},
-            {"_target_": "tests.AClass.static_method", "a": 10},
-        ),
-        param(
-            {"_target_": ASubclass.class_method, "a": 10},
-            {"_target_": "tests.ASubclass.class_method", "a": 10},
-        ),
-        param(
-            {"_target_": module_function, "a": 10},
-            {"_target_": "tests.module_function", "a": 10},
-        ),
-        param(
-            {
-                "_target_": AClass,
-                "a": {"_target_": AClass, "b": 10},
-            },
-            {
-                "_target_": "tests.AClass",
-                "a": {"_target_": "tests.AClass", "b": 10},
-            },
-        ),
-        param(
-            [1, {"_target_": AClass, "a": 10}],
-            [1, {"_target_": "tests.AClass", "a": 10}],
-        ),
-    ],
-)
-def test_convert_target_to_string(input_: Any, expected: Any) -> None:
-    _convert_container_targets_to_strings(input_)
-    assert input_ == expected
-
-
-@mark.parametrize(
-    "input_conf, passthrough, expected",
+    "config, passthrough, expected",
     [
         param(
-            {"_target_": tests.AClass, "a": 10, "b": 20, "c": 30, "d": 40},
+            {"_target_": tests.AnotherClass, "x": 10},
             {},
-            AClass(10, 20, 30, 40),
+            AnotherClass(10),
             id="class_in_config_dict",
-        ),
-        param(
-            {"_target_": tests.AClass, "a": 10, "b": 20, "c": 30, "d": 40},
-            {"_target_": tests.BClass},
-            BClass(10, 20, 30, 40),
-            id="class_target_in_passthrough",
         ),
     ],
 )
 def test_instantiate_from_class_in_dict(
-    instantiate_func: Any, input_conf: Any, passthrough: Any, expected: Any
+    instantiate_func: Any, config: Any, passthrough: Any, expected: Any
 ) -> None:
-    assert instantiate_func(input_conf, **passthrough) == expected
+    config_copy = copy.deepcopy(config)
+    assert instantiate_func(config, **passthrough) == expected
+    assert config == config_copy
+
+
+@mark.parametrize(
+    "config, passthrough, expected",
+    [
+        param(
+            OmegaConf.create({"_target_": tests.AClass}),
+            {},
+            AClass(10, 20, 30, 40),
+            id="class_in_config_dict",
+        ),
+    ],
+)
+def test_instantiate_from_dataclass_in_dict_fails(
+    instantiate_func: Any, config: Any, passthrough: Any, expected: Any
+) -> None:
+    # not the best error, but it will get the user to check their input config.
+    msg = "Unsupported target type: DictConfig. value: {'a': '???', 'b': '???', 'c': '???', 'd': 'default_value'}"
+    with raises(
+        InstantiationException,
+        match=re.escape(msg),
+    ):
+        assert instantiate_func(config, **passthrough) == expected
 
 
 @mark.parametrize(
@@ -1017,8 +999,29 @@ def test_convert_params(
     assert ret.a == expected
 
 
+@mark.parametrize("nested_recursive", [True, False])
+def test_convert_and_recursive_node(
+    instantiate_func: Any, nested_recursive: bool
+) -> None:
+    cfg = {
+        "_target_": "tests.SimpleClass",
+        "a": {
+            "_target_": "tests.SimpleClass",
+            "_convert_": "all",
+            "_recursive_": nested_recursive,
+            "a": {},
+            "b": [],
+        },
+        "b": None,
+    }
+
+    obj = instantiate_func(cfg)
+    assert isinstance(obj.a.a, dict)
+    assert isinstance(obj.a.b, list)
+
+
 @mark.parametrize(
-    "config,expected",
+    "src,expected",
     [
         param(
             {
@@ -1161,15 +1164,20 @@ def test_instantiated_regular_class_container_types_partial2(
     assert OmegaConf.get_type(ret.a[1]) is User
 
 
+@mark.parametrize(
+    "src",
+    [
+        {
+            "_target_": "tests.SimpleClass",
+            "a": {"_target_": "tests.SimpleClass", "a": {}, "b": User},
+            "b": None,
+        }
+    ],
+)
 def test_instantiated_regular_class_container_types_partial__recursive(
-    instantiate_func: Any,
+    instantiate_func: Any, config: Any
 ) -> None:
-    cfg = {
-        "_target_": "tests.SimpleClass",
-        "a": {"_target_": "tests.SimpleClass", "a": {}, "b": User},
-        "b": None,
-    }
-    ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
+    ret = instantiate_func(config, _convert_=ConvertMode.PARTIAL)
     assert isinstance(ret.a, SimpleClass)
     assert isinstance(ret.a.a, dict)
     assert isinstance(ret.a.b, DictConfig)
