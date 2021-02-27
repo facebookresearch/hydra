@@ -4,9 +4,9 @@ import sys
 from datetime import datetime
 
 dependencies = [
-    "boto3==1.16.48",
+    "boto3==1.17.17",
     "hydra-core>=1.0.0",
-    "ray==1.1.0",
+    "ray==1.2.0",
     "cloudpickle==1.6.0",
     "pickle5==0.0.11",
 ]
