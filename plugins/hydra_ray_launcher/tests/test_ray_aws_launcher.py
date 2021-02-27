@@ -54,7 +54,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0ac9a9540abaebf14")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0bb600864743d4be3")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -176,7 +176,7 @@ def validate_lib_version(yaml: str) -> None:
                 "ray",
                 "exec",
                 yaml,
-                f"pip freeze | grep {lib}",
+                f"pip show {lib} | grep Version",
             ]
         )
         assert local_version in out, f"{lib} version mismatch"
