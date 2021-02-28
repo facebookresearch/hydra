@@ -8,7 +8,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 The Config Search Path is a list of paths that Hydra searches in order to find configs. It is similar to
 the Python `PYTHONPATH`. 
  - When a config is requested, The first matching config in the search path is used.
- - Each search path element has a schema prefix such as `file://` or `pkg://` that is corresponding to a `ConfigSourcePlugin`.
+ - Each search path element has a schema prefix such as `file://` or `pkg://` that corresponds to a `ConfigSourcePlugin`.
     - `file://` points to a file system path. It can either be an absolute path or a relative path.
     Relative path will be resolved to absolute based on the current working dir. Path separator is `/` on all Operating
     Systems.
