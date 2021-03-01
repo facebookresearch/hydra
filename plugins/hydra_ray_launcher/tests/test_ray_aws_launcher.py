@@ -200,7 +200,8 @@ def validate_lib_version(yaml: str) -> None:
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)  # type: ignore
 def test_discovery() -> None:
-    # Tests that this plugin can be discovered via the plugins subsystem when looking for Launchers
+    # Tests that this plugin can be discovered via the plugins subsystem when
+    # looking for Launchers
     assert RayAWSLauncher.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Launcher)
     ]
@@ -237,8 +238,8 @@ def manage_cluster() -> Generator[None, None, None]:
             OmegaConf.save(config=connect_config, f=file.name, resolve=True)
         temp_yaml = f.name
         ray_up(temp_yaml)
-        ray_new_dir(temp_yaml, temp_remote_dir, False)
-        ray_new_dir(temp_yaml, temp_remote_wheel_dir, False)
+        ray_new_dir(temp_yaml, temp_remote_dir, "auto")
+        ray_new_dir(temp_yaml, temp_remote_wheel_dir, "auto")
         upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheel)
         validate_lib_version(temp_yaml)
         yield
@@ -298,6 +299,7 @@ integration_tests_override.extend(common_overrides)
     ],
 )
 class TestRayAWSLauncherIntegration(IntegrationTestSuite):
+
     """
     Run this launcher through the integration test suite.
     """
