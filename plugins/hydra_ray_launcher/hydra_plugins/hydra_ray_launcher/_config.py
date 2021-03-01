@@ -112,6 +112,16 @@ class EnvSetupConf:
     )
 
 
+class RayRunEnv(Enum):
+    """
+    https://docs.ray.io/en/releases-1.1.0/package-ref.html?highlight=exec#ray-exec
+    """
+
+    auto = "auto"
+    host = "host"
+    docker = "docker"
+
+
 @dataclass
 class RayClusterConf:
     """
@@ -190,8 +200,8 @@ class RayClusterConf:
     head_start_ray_commands: List[str] = field(
         default_factory=lambda: [
             "ray stop",
-            "ulimit -n 65536;ray start --head --redis-port=6379 --object-manager-port=8076\
---autoscaling-config=~/ray_bootstrap_config.yaml",
+            "ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076 \
+            --autoscaling-config=~/ray_bootstrap_config.yaml",
         ]
     )
 
@@ -208,6 +218,7 @@ class RayClusterConf:
 @dataclass
 class RayAWSConf(RayConf):
     cluster: RayClusterConf = RayClusterConf()
+    run_env: RayRunEnv = RayRunEnv.auto
 
 
 @dataclass

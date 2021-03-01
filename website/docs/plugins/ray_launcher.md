@@ -190,6 +190,7 @@ Loaded cached provider configuration
 ```
 </details>
 
+
 ##### Manage Cluster LifeCycle
 You can manage the Ray EC2 cluster lifecycle by configuring the two flags provided by the plugin:
 

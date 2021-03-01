@@ -58,12 +58,12 @@ def launch(
     assert launcher.task_function is not None
 
     setup_commands = launcher.env_setup.commands
+    packages = filter(
+        lambda x: x[1] is not None, launcher.env_setup.pip_packages.items()
+    )
     with read_write(setup_commands):
         setup_commands.extend(
-            [
-                f"pip install {package}=={version}"
-                for package, version in launcher.env_setup.pip_packages.items()
-            ]
+            [f"pip install {package}=={version}" for package, version in packages]
         )
         setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)
 
@@ -118,7 +118,7 @@ def launch_jobs(
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
         with ray_tmp_dir(
-            launcher.ray_yaml_path, launcher.docker_enabled
+            launcher.ray_yaml_path, launcher.ray_cfg.run_env.name
         ) as remote_tmp_dir:
 
             ray_rsync_up(
@@ -126,7 +126,8 @@ def launch_jobs(
             )
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
-            ray_rsync_up(launcher.ray_yaml_path, script_path, remote_tmp_dir)
+            remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
+            ray_rsync_up(launcher.ray_yaml_path, script_path, remote_script_path)
 
             if launcher.sync_up.source_dir:
                 source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
@@ -145,8 +146,8 @@ def launch_jobs(
 
             ray_exec(
                 launcher.ray_yaml_path,
-                launcher.docker_enabled,
-                os.path.join(remote_tmp_dir, "_remote_invoke.py"),
+                launcher.ray_cfg.run_env.name,
+                remote_script_path,
                 remote_tmp_dir,
             )
 
