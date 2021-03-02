@@ -5,7 +5,7 @@ import sys
 from enum import Enum
 from typing import Any, Callable, Union
 
-from omegaconf import OmegaConf, SCMode
+from omegaconf import ListConfig, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import _locate
@@ -19,6 +19,7 @@ class _Keys(str, Enum):
     TARGET = "_target_"
     CONVERT = "_convert_"
     RECURSIVE = "_recursive_"
+    ARGS = "_args_"
 
 
 def _is_target(x: Any) -> bool:
@@ -29,9 +30,27 @@ def _is_target(x: Any) -> bool:
     return False
 
 
+def _extract_pos_args(*args, **kwargs) -> bool:
+    _args_ = kwargs.pop(_Keys.ARGS, ())
+
+    if (
+        isinstance(_args_, tuple)
+        or isinstance(_args_, list)
+        or isinstance(_args_, ListConfig)
+    ):
+        args = tuple(_args_) + args
+    else:
+        raise InstantiationException(
+            f"Unsupported _args_ type: {type(_args_).__name__}. value: {_args_}"
+        )
+
+    return args, kwargs
+
+
 def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
+        args, kwargs = _extract_pos_args(*args, **kwargs)
         return target(*args, **kwargs)
     except Exception as e:
         raise type(e)(
@@ -100,6 +119,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   the exception of Structured Configs (and their fields).
                         all     : Passed objects are dicts, lists and primitives without
                                   a trace of OmegaConf containers
+                   _args_: List-like of positional arguments
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
