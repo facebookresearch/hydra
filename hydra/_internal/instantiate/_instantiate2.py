@@ -3,7 +3,7 @@
 import copy
 import sys
 from enum import Enum
-from typing import Any, Callable, Union
+from typing import Any, Callable, Tuple, Union
 
 from omegaconf import ListConfig, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -30,7 +30,7 @@ def _is_target(x: Any) -> bool:
     return False
 
 
-def _extract_pos_args(*args, **kwargs) -> tuple:
+def _extract_pos_args(*args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     _args_ = kwargs.pop(_Keys.ARGS, ())
 
     if (
