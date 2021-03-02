@@ -13,7 +13,7 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import HydraException, ConfigCompositionException
+from hydra.errors import ConfigCompositionException, HydraException
 from hydra.experimental import (
     compose,
     initialize,

@@ -295,6 +295,7 @@ class ConfigLoaderImpl(ConfigLoader):
                         with open_dict(cfg):
                             OmegaConf.update(cfg, key, value, merge=True)
                     else:
+                        assert override.input_line is not None
                         raise ConfigCompositionException(
                             dedent(
                                 f"""\
