@@ -7,7 +7,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink to="examples/tutorials/basic/your_first_hydra_app/3_using_config"/>
 
-You configuration object is an instance of OmegaConf's DictConfig.  
+Your configuration object is an instance of OmegaConf's DictConfig.  
 Here are some of the basic features:
 
 ```yaml title="config.yaml"
