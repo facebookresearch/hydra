@@ -45,4 +45,15 @@ db:
   password: 1234
 ```
 
+
+Use `++` to override a config value if it's already in the config, or add it otherwise.
+e.g:
+```shell
+# Override an existing item
+$ python my_app.py ++db.password=1234
+
+# Add a new item
+$ python my_app.py ++db.timeout=5
+```
+
 You can enable [tab completion](/tutorials/basic/running_your_app/6_tab_completion.md) for your Hydra applications.

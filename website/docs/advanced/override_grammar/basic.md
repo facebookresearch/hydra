@@ -18,12 +18,13 @@ The rest are manipulating the config object.
 ### Modifying the Config Object
 - Overriding a config value : `foo.bar=value`
 - Appending a config value : `+foo.bar=value`
+- Appending or overriding a config value : `++foo.bar=value`
 - Removing a config value : `~foo.bar`, `~foo.bar=value`
 
 ### Modifying the Defaults List
 - Overriding selected Option: `db=mysql`
-- Appending to defaults: `+db=mysql`
-- Deleting from defaults: `~db`, `~db=mysql`
+- Appending to Defaults List: `+db=mysql`
+- Deleting from Defaults List: `~db`, `~db=mysql`
 
 ## Grammar
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.
@@ -35,7 +36,7 @@ Below are the parser rules from grammar. You can see the full <GithubLink to="hy
 override: (
       key EQUAL value?                           // key=value, key= (for empty value)
     | TILDE key (EQUAL value?)?                  // ~key | ~key=value
-    | PLUS key EQUAL value?                      // +key= | +key=value
+    | PLUS PLUS? key EQUAL value?                // +key= | +key=value | ++key=value
 ) EOF;
 
 // Keys.
