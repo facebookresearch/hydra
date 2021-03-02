@@ -68,40 +68,37 @@ class Overrides:
             is_dict = isinstance(override.value(), dict)
             if is_dict or not is_group:
                 self.config_overrides.append(override)
-            else:
-                if override.is_force_add():
-                    # This could probably be made to work if there is a compelling use case.
-                    raise ConfigCompositionException(
-                        f"force-add of config groups is not supported: '{override.input_line}'"
-                    )
-                elif override.is_delete():
-                    key = override.get_key_element()[1:]
-                    value = override.value()
-                    if value is not None and not isinstance(value, str):
-                        raise ValueError(
-                            f"Config group override deletion value must be a string : {override}"
-                        )
-
-                    self.deletions[key] = Deletion(name=value)
-
-                elif not isinstance(value, (str, list)):
+            elif override.is_force_add():
+                # This could probably be made to work if there is a compelling use case.
+                raise ConfigCompositionException(
+                    f"force-add of config groups is not supported: '{override.input_line}'"
+                )
+            elif override.is_delete():
+                key = override.get_key_element()[1:]
+                value = override.value()
+                if value is not None and not isinstance(value, str):
                     raise ValueError(
-                        f"Config group override must be a string or a list. Got {type(value).__name__}"
+                        f"Config group override deletion value must be a string : {override}"
                     )
-                elif override.is_add():
-                    self.append_group_defaults.append(
-                        GroupDefault(
-                            group=override.key_or_group,
-                            package=override.package,
-                            value=value,
-                        )
+
+                self.deletions[key] = Deletion(name=value)
+
+            elif not isinstance(value, (str, list)):
+                raise ValueError(
+                    f"Config group override must be a string or a list. Got {type(value).__name__}"
+                )
+            elif override.is_add():
+                self.append_group_defaults.append(
+                    GroupDefault(
+                        group=override.key_or_group,
+                        package=override.package,
+                        value=value,
                     )
-                else:
-                    key = override.get_key_element()
-                    self.override_choices[key] = value
-                    self.override_metadata[key] = OverrideMetadata(
-                        external_override=True
-                    )
+                )
+            else:
+                key = override.get_key_element()
+                self.override_choices[key] = value
+                self.override_metadata[key] = OverrideMetadata(external_override=True)
 
     def add_override(self, parent_config_path: str, default: GroupDefault) -> None:
         assert default.override
