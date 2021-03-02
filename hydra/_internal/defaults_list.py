@@ -69,7 +69,12 @@ class Overrides:
             if is_dict or not is_group:
                 self.config_overrides.append(override)
             else:
-                if override.is_delete():
+                if override.is_force_add():
+                    # This could probably be made to work if there is a compelling use case.
+                    raise ConfigCompositionException(
+                        f"force-add of config groups is not supported: '{override.input_line}'"
+                    )
+                elif override.is_delete():
                     key = override.get_key_element()[1:]
                     value = override.value()
                     if value is not None and not isinstance(value, str):

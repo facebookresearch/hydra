@@ -340,3 +340,28 @@ class TestAdd:
 
             cfg = compose(config_name="config", overrides=["++key2=1"])
             assert cfg == {"key": 0, "key2": 1}
+
+    def test_add_config_group(self, hydra_restore_singletons: Any) -> None:
+        ConfigStore.instance().store(group="group", name="a0", node={"key": 0})
+        ConfigStore.instance().store(group="group", name="a1", node={"key": 1})
+        ConfigStore.instance().store(name="config1", node={})
+        ConfigStore.instance().store(
+            name="config_with_defaults", node={"defaults": [{"group": "a0"}]}
+        )
+        with initialize():
+            # overriding non existing group throws
+            with raises(ConfigCompositionException):
+                compose(config_name="config1", overrides=["group=a0"])
+
+            # appending a new group
+            cfg = compose(config_name="config1", overrides=["+group=a0"])
+            assert cfg == {"group": {"key": 0}}
+
+            # force adding is not supported for config groups.
+            with raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "force-add of config groups is not supported: '++group=a1'"
+                ),
+            ):
+                compose(config_name="config1", overrides=["++group=a1"])
