@@ -377,6 +377,8 @@ class Override:
                 return "~"
             elif self.is_add():
                 return "+"
+            elif self.is_force_add():
+                return "++"
             else:
                 return ""
 

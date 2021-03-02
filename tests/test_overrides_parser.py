@@ -923,6 +923,9 @@ def test_parse_overrides() -> None:
         # add
         pytest.param("+key=value", "+key", id="+key"),
         pytest.param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
+        # force-add
+        pytest.param("++key=value", "++key", id="++key"),
+        pytest.param("++key@pkg1=value", "++key@pkg1", id="++key@pkg1"),
         # del
         pytest.param("~key=value", "~key", id="~key"),
         pytest.param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
