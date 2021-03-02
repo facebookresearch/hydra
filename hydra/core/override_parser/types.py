@@ -250,7 +250,7 @@ class Override:
 
     def is_force_add(self) -> bool:
         """
-        :return: True if this override represents an addition of a config value or config group option
+        :return: True if this override represents a forced addition of a config value
         """
         return self.type == OverrideType.FORCE_ADD
 
