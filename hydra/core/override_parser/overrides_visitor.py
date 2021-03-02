@@ -141,18 +141,16 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             symbol_text = first_node.symbol.text
             if symbol_text == "+":
                 override_type = OverrideType.ADD
+                key_node = next(children)
+                if self.is_matching_terminal(key_node, OverrideLexer.PLUS):
+                    override_type = OverrideType.FORCE_ADD
+                    key_node = next(children)
+
             elif symbol_text == "~":
                 override_type = OverrideType.DEL
+                key_node = next(children)
             else:
                 assert False
-            key_node = next(children)
-
-            if override_type == OverrideType.ADD and self.is_matching_terminal(
-                key_node, OverrideLexer.PLUS
-            ):
-                override_type = OverrideType.FORCE_ADD
-                key_node = next(children)
-
         else:
             key_node = first_node
 
