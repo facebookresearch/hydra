@@ -298,6 +298,9 @@ class ConfigLoaderImpl(ConfigLoader):
                         raise ConfigCompositionException(
                             f"Could not append to config. An item is already at '{override.key_or_group}'."
                         )
+                elif override.is_force_add():
+                    with open_dict(cfg):
+                        OmegaConf.update(cfg, key, value, merge=True)
                 else:
                     try:
                         OmegaConf.update(cfg, key, value, merge=True)

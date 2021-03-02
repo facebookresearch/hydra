@@ -13,7 +13,7 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import HydraException
+from hydra.errors import HydraException, ConfigCompositionException
 from hydra.experimental import (
     compose,
     initialize,
@@ -317,3 +317,26 @@ def test_adding_to_sc_dict(
     with initialize():
         cfg = compose(config_name="config", overrides=overrides)
         assert cfg == expected
+
+
+class TestAdd:
+    def test_add(self, hydra_restore_singletons: Any) -> None:
+        ConfigStore.instance().store(name="config", node={"key": 0})
+        with initialize():
+            with raises(
+                ConfigCompositionException,
+                match="Could not append to config. An item is already at 'key'",
+            ):
+                compose(config_name="config", overrides=["+key=value"])
+
+            cfg = compose(config_name="config", overrides=["key=1"])
+            assert cfg == {"key": 1}
+
+    def test_force_add(self, hydra_restore_singletons: Any) -> None:
+        ConfigStore.instance().store(name="config", node={"key": 0})
+        with initialize():
+            cfg = compose(config_name="config", overrides=["++key=1"])
+            assert cfg == {"key": 1}
+
+            cfg = compose(config_name="config", overrides=["++key2=1"])
+            assert cfg == {"key": 0, "key2": 1}

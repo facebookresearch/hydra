@@ -155,7 +155,8 @@ TransformerType = Callable[[ParsedElementType], Any]
 class OverrideType(Enum):
     CHANGE = 1
     ADD = 2
-    DEL = 3
+    FORCE_ADD = 3
+    DEL = 4
 
 
 class ValueType(Enum):
@@ -246,6 +247,12 @@ class Override:
         :return: True if this override represents an addition of a config value or config group option
         """
         return self.type == OverrideType.ADD
+
+    def is_force_add(self) -> bool:
+        """
+        :return: True if this override represents an addition of a config value or config group option
+        """
+        return self.type == OverrideType.FORCE_ADD
 
     @staticmethod
     def _convert_value(value: ParsedElementType) -> Optional[ElementType]:

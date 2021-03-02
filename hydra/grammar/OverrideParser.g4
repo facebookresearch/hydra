@@ -11,7 +11,7 @@ options {tokenVocab = OverrideLexer;}
 override: (
       key EQUAL value?                           // key=value, key= (for empty value)
     | TILDE key (EQUAL value?)?                  // ~key | ~key=value
-    | PLUS key EQUAL value?                      // +key= | +key=value
+    | PLUS PLUS? key EQUAL value?                // +key= | +key=value | ++key=value
 ) EOF;
 
 // Key:

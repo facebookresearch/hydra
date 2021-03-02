@@ -664,6 +664,7 @@ def test_primitive(value: str, expected: Any) -> None:
     [
         pytest.param("", OverrideType.CHANGE, id="change"),
         pytest.param("+", OverrideType.ADD, id="add"),
+        pytest.param("++", OverrideType.FORCE_ADD, id="force_add"),
         pytest.param("~", OverrideType.DEL, id="del"),
     ],
 )

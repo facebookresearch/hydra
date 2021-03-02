@@ -146,6 +146,13 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             else:
                 assert False
             key_node = next(children)
+
+            if override_type == OverrideType.ADD and self.is_matching_terminal(
+                key_node, OverrideLexer.PLUS
+            ):
+                override_type = OverrideType.FORCE_ADD
+                key_node = next(children)
+
         else:
             key_node = first_node
 
