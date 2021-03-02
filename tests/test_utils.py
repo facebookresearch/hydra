@@ -97,16 +97,34 @@ def test_get_class(path: str, expected_type: type) -> None:
             id="class",
         ),
         param(
+            {"_target_": "tests.AClass", "_args_": [10, 20, 30, 40]},
+            {},
+            AClass(10, 20, 30, 40),
+            id="class+pos_only",
+        ),
+        param(
             {"_target_": "tests.AClass", "b": 20, "c": 30},
             {"a": 10, "d": 40},
             AClass(10, 20, 30, 40),
             id="class+override",
         ),
         param(
+            {"_target_": "tests.AClass", "_args_": [10, 20, 30, 40]},
+            {"_args_": [50, 60, 70]},
+            AClass(50, 60, 70),
+            id="class+override+pos_only",
+        ),
+        param(
             {"_target_": "tests.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
             AClass(10, 99, 99, 40),
             id="class+override+interpolation",
+        ),
+        param(
+            {"_target_": "tests.AClass", "_args_": [10, 20, "${d}"], "d": 99},
+            {},
+            AClass(10, 20, 99, 99),
+            id="class+interpolation+pos_only",
         ),
         # Check class and static methods
         param(
@@ -161,6 +179,12 @@ def test_get_class(path: str, expected_type: type) -> None:
             "43",
             id="builtin_types",
         ),
+        param(
+            {"_target_": "builtins.tuple", "_args_": [[1, 2, 3]]},
+            {},
+            (1, 2, 3),
+            id="builtin_types_tuple",
+        ),
         # Check that none is instantiated correctly
         param(None, {}, None, id="instantiate_none"),
         # passthrough
@@ -169,6 +193,12 @@ def test_get_class(path: str, expected_type: type) -> None:
             {"a": 10, "b": 20, "c": 30},
             AClass(a=10, b=20, c=30),
             id="passthrough",
+        ),
+        param(
+            {"_target_": "tests.AClass"},
+            {"_args_": [10, 20], "c": 30, "d": {"_args_": [1, 2, 3]}},
+            AClass(a=10, b=20, c=30, d={"_args_": [1, 2, 3]}),
+            id="passthrough+pos_only",
         ),
         param(
             {"_target_": "tests.AClass"},
@@ -433,6 +463,23 @@ def test_pass_extra_variables(instantiate_func: Any) -> None:
             id="recursive:direct:dict",
         ),
         param(
+            {
+                "_target_": "tests.Tree",
+                "_args_": [1],
+                "left": {
+                    "_target_": "tests.Tree",
+                    "_args_": [21],
+                },
+                "right": {
+                    "_target_": "tests.Tree",
+                    "_args_": [22],
+                },
+            },
+            {},
+            Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
+            id="recursive:direct:dict:pos_only",
+        ),
+        param(
             {"_target_": "tests.Tree"},
             {"value": 1},
             Tree(value=1),
@@ -453,6 +500,16 @@ def test_pass_extra_variables(instantiate_func: Any) -> None:
             },
             Tree(value=1, left=Tree(2), right=Tree(3)),
             id="recursive:direct:dict:passthrough",
+        ),
+        param(
+            {"_target_": "tests.Tree"},
+            {
+                "value": 1,
+                "left": {"_target_": "tests.Tree", "_args_": [2]},
+                "right": {"_target_": "tests.Tree", "_args_": [3]},
+            },
+            Tree(value=1, left=Tree(2), right=Tree(3)),
+            id="recursive:direct:dict:passthrough:pos_only",
         ),
         param(
             {"_target_": "tests.Tree"},

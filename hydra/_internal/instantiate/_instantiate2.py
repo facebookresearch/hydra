@@ -30,7 +30,7 @@ def _is_target(x: Any) -> bool:
     return False
 
 
-def _extract_pos_args(*args, **kwargs) -> bool:
+def _extract_pos_args(*args, **kwargs) -> tuple:
     _args_ = kwargs.pop(_Keys.ARGS, ())
 
     if (
@@ -120,7 +120,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                         all     : Passed objects are dicts, lists and primitives without
                                   a trace of OmegaConf containers
                    _args_: List-like of positional arguments
-    :param args: Optional positional parameters pass-through
+    :param args: Optional positional parameters pass-through, appended to _args_ when passed
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
