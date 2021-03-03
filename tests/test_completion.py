@@ -177,7 +177,15 @@ class TestRunCompletion:
         reason="expect should be installed to run the expects tests",
     )
     @pytest.mark.parametrize("prog", [["python", "hydra/test_utils/completion.py"]])
-    @pytest.mark.parametrize("shell", ["bash", "fish", "zsh"])
+    @pytest.mark.parametrize(
+        "shell",
+        [
+            "bash",
+            # Temporarily disabled, see https://github.com/facebookresearch/hydra/issues/1442
+            # "fish",
+            "zsh",
+        ],
+    )
     def test_shell_integration(
         self,
         shell: str,
