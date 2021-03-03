@@ -8,8 +8,8 @@ import re
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Set
 
-import pytest
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark, param, raises
 
 from hydra import TaskFunction
 from hydra.errors import HydraException
@@ -20,7 +20,7 @@ from hydra.test_utils.test_utils import (
 )
 
 
-@pytest.mark.usefixtures("hydra_restore_singletons")
+@mark.usefixtures("hydra_restore_singletons")
 class LauncherTestSuite:
     def get_task_function(self) -> Optional[Callable[[Any], Any]]:
         def task_func(_: DictConfig) -> Any:
@@ -63,7 +63,7 @@ class LauncherTestSuite:
         overrides: List[str],
         tmpdir: Path,
     ) -> None:
-        with pytest.raises(
+        with raises(
             HydraException,
             match=re.escape(
                 "Sweeping over Hydra's configuration is not supported : 'hydra.verbose=true,false'"
@@ -108,7 +108,7 @@ class LauncherTestSuite:
     ) -> None:
         # Ideally this would be KeyError, This can't be more specific because some launcher plugins
         # like submitit raises a different exception on job failure and not the underlying exception.
-        with pytest.raises(Exception):
+        with raises(Exception):
             sweep_1_job(
                 hydra_sweep_runner,
                 overrides=["hydra/launcher=" + launcher_name, "boo=bar"] + overrides,
@@ -242,7 +242,7 @@ class LauncherTestSuite:
             assert job_ret[0].return_value == "foo"
 
 
-@pytest.mark.usefixtures("hydra_restore_singletons")
+@mark.usefixtures("hydra_restore_singletons")
 class BatchedSweeperTestSuite:
     def test_sweep_2_jobs_2_batches(
         self,
@@ -427,7 +427,7 @@ def sweep_two_config_groups(
             verify_dir_outputs(job_ret, job_ret.overrides)
 
 
-@pytest.mark.usefixtures("hydra_restore_singletons")
+@mark.usefixtures("hydra_restore_singletons")
 class IntegrationTestSuite:
     def get_test_app_working_dir(self) -> Optional[Path]:
         """
@@ -438,7 +438,7 @@ class IntegrationTestSuite:
 
     def get_test_scratch_dir(self, tmpdir: Path) -> Path:
         """
-        By default test applications will use tmpdir provided by the pytest.
+        By default test applications will use tmpdir provided by the
         This can be customized by applications.
         """
         return tmpdir
@@ -459,25 +459,25 @@ class IntegrationTestSuite:
 
         return fun
 
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         "task_config, overrides, filename, expected_name",
         [
-            pytest.param(None, [], "no_config.py", "no_config", id="no_config"),
-            pytest.param(
+            param(None, [], "no_config.py", "no_config", id="no_config"),
+            param(
                 None,
                 ["hydra.job.name=overridden_name"],
                 "no_config.py",
                 "overridden_name",
                 id="different_filename",
             ),
-            pytest.param(
+            param(
                 {"hydra": {"job": {"name": "name_from_config_file"}}},
                 [],
                 "with_config.py",
                 "name_from_config_file",
                 id="different_filename_and_config_file_name_override",
             ),
-            pytest.param(
+            param(
                 {"hydra": {"job": {"name": "name_from_config_file"}}},
                 ["hydra.job.name=overridden_name"],
                 "with_config.py",
@@ -512,10 +512,10 @@ class IntegrationTestSuite:
             generate_custom_cmd=self.generate_custom_cmd(),
         )
 
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         "task_config, overrides, expected_dir",
         [
-            pytest.param(
+            param(
                 {
                     "hydra": {
                         "sweep": {
@@ -528,7 +528,7 @@ class IntegrationTestSuite:
                 "task_cfg/task_cfg_0",
                 id="sweep_dir_config_override",
             ),
-            pytest.param(
+            param(
                 {},
                 [
                     "hydra.sweep.dir=cli_dir",
@@ -537,7 +537,7 @@ class IntegrationTestSuite:
                 "cli_dir/cli_dir_0",
                 id="sweep_dir_cli_override",
             ),
-            pytest.param(
+            param(
                 {
                     "hydra": {
                         "sweep": {
@@ -553,7 +553,7 @@ class IntegrationTestSuite:
                 "cli_dir/cli_dir_0",
                 id="sweep_dir_cli_overridding_config",
             ),
-            pytest.param(
+            param(
                 {
                     "hydra": {
                         "sweep": {
@@ -568,7 +568,7 @@ class IntegrationTestSuite:
                 "hydra_cfg/a=1,b=2",
                 id="subdir:override_dirname",
             ),
-            pytest.param(
+            param(
                 # Test override_dirname integration
                 {
                     "hydra": {

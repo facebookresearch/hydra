@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
 from omegaconf import DictConfig, MissingMandatoryValue, open_dict
+from pytest import raises
 
 import hydra
 
@@ -14,7 +14,7 @@ def my_app(cfg: DictConfig) -> None:
     assert cfg.node.do == "oompa 10"  # string interpolation
 
     # Accessing a field that is not in the config results in an exception:
-    with pytest.raises(AttributeError):
+    with raises(AttributeError):
         cfg.new_field = 10
 
     # you can enable config field addition in a context with open_dict:
@@ -27,7 +27,7 @@ def my_app(cfg: DictConfig) -> None:
     assert hasattr(cfg, "new_field")  # attribute style
 
     # Accessing a field marked as missing ('???') raises in an exception
-    with pytest.raises(MissingMandatoryValue):
+    with raises(MissingMandatoryValue):
         cfg.node.waldo
 
 

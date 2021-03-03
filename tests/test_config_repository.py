@@ -3,7 +3,7 @@ import copy
 import re
 from typing import Any, List
 
-import pytest
+from pytest import mark, param, raises
 
 from hydra._internal.config_repository import ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
@@ -27,20 +27,20 @@ chdir_hydra_root()
 state = copy.deepcopy(Singleton.get_state())
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "type_, path",
     [
-        pytest.param(
+        param(
             FileConfigSource,
             "file://tests/test_apps/config_source_test/dir",
             id="FileConfigSource",
         ),
-        pytest.param(
+        param(
             ImportlibResourcesConfigSource,
             "pkg://tests.test_apps.config_source_test.dir",
             id="ImportlibResourcesConfigSource",
         ),
-        pytest.param(
+        param(
             StructuredConfigSource,
             "structured://tests.test_apps.config_source_test.structured",
             id="StructuredConfigSource",
@@ -57,7 +57,7 @@ def create_config_search_path(path: str) -> ConfigSearchPathImpl:
     return csp
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "path",
     [
         "file://tests/test_apps/config_source_test/dir",
@@ -85,30 +85,30 @@ class TestConfigRepository:
         assert repo.config_exists("dataset/imagenet.yaml")
         assert not repo.config_exists("not_found.yaml")
 
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         "config_path,expected",
         [
-            pytest.param(
+            param(
                 "primary_config",
                 [],
                 id="no_defaults",
             ),
-            pytest.param(
+            param(
                 "config_with_defaults_list",
                 [GroupDefault(group="dataset", value="imagenet")],
                 id="defaults_in_root",
             ),
-            pytest.param(
+            param(
                 "configs_with_defaults_list/global_package",
                 [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/global_package",
             ),
-            pytest.param(
+            param(
                 "configs_with_defaults_list/group_package",
                 [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/group_package",
             ),
-            pytest.param(
+            param(
                 "configs_with_defaults_list/no_package",
                 [GroupDefault(group="foo", value="bar")],
                 id="configs_with_defaults_list/no_package",
@@ -130,8 +130,8 @@ class TestConfigRepository:
         assert ret.defaults_list == expected
 
 
-@pytest.mark.parametrize("sep", [" "])
-@pytest.mark.parametrize(
+@mark.parametrize("sep", [" "])
+@mark.parametrize(
     "cfg_text, expected",
     [
         ("# @package{sep}foo.bar", {"package": "foo.bar"}),
@@ -141,11 +141,11 @@ class TestConfigRepository:
         ("#@package{sep}foo.bar ", {"package": "foo.bar"}),
         (
             "#@package{sep}foo.bar bah",
-            pytest.raises(ValueError, match=re.escape("Too many components in")),
+            raises(ValueError, match=re.escape("Too many components in")),
         ),
         (
             "#@package",
-            pytest.raises(
+            raises(
                 ValueError, match=re.escape("Expected header format: KEY VALUE, got")
             ),
         ),

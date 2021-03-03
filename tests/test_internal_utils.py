@@ -2,16 +2,16 @@
 import re
 from typing import Any
 
-import pytest
 from _pytest.python_api import RaisesContext
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark, param, raises
 
 from hydra._internal import utils
 from hydra._internal.utils import _locate
 from tests import AClass, Adam, AnotherClass, ASubclass, NestingClass, Parameters
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "matrix,expected",
     [
         ([["a"]], [1]),
@@ -28,19 +28,17 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
     assert utils.get_column_widths(matrix) == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "config, expected",
     [
-        pytest.param(
-            OmegaConf.create({"_target_": "foo"}), "foo", id="ObjectConf:target"
-        ),
+        param(OmegaConf.create({"_target_": "foo"}), "foo", id="ObjectConf:target"),
     ],
 )
 def test_get_class_name(config: DictConfig, expected: Any) -> None:
     assert utils._get_cls_name(config) == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "name,expected",
     [
         ("tests.Adam", Adam),
@@ -49,16 +47,14 @@ def test_get_class_name(config: DictConfig, expected: Any) -> None:
         ("tests.ASubclass", ASubclass),
         ("tests.NestingClass", NestingClass),
         ("tests.AnotherClass", AnotherClass),
-        ("", pytest.raises(ImportError, match=re.escape("Empty path"))),
+        ("", raises(ImportError, match=re.escape("Empty path"))),
         (
             "not_found",
-            pytest.raises(
-                ImportError, match=re.escape("Error loading module 'not_found'")
-            ),
+            raises(ImportError, match=re.escape("Error loading module 'not_found'")),
         ),
         (
             "tests.b.c.Door",
-            pytest.raises(ImportError, match=re.escape("No module named 'tests.b'")),
+            raises(ImportError, match=re.escape("No module named 'tests.b'")),
         ),
     ],
 )

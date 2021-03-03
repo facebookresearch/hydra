@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 from typing import Any, List
 
-import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
@@ -13,6 +12,7 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark, raises
 
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
 
@@ -33,7 +33,7 @@ def quadratic(cfg: DictConfig) -> Any:
     return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "n,expected",
     [
         (None, [[1, 2, 3, 4, 5]]),
@@ -52,13 +52,13 @@ def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> Non
     assert out == expected
 
 
-@pytest.mark.parametrize("n", [-1, -11, 0])
+@mark.parametrize("n", [-1, -11, 0])
 def test_chunk_method_for_invalid_inputs(n: int) -> None:
     from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         list(chunk_func(batch, n))
 
 
@@ -184,7 +184,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic.y" in best_parameters
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "cmd_arg, expected_str",
     [
         ("polynomial.y=choice(-1, 0, 1)", "polynomial.y: choice=[-1, 0, 1]"),
@@ -215,7 +215,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     assert "polynomial.z: fixed=10" in result
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "cmd_args",
     [
         ["polynomial.y=choice(-1, 0, 1)", "polynomial.x=range(2,4)"],
@@ -232,7 +232,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
     run_python_script(cmd, allow_warnings=True)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
@@ -268,7 +268,7 @@ def test_jobs_using_choice_between_lists(
     assert f"New best value: {best_value}" in result
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (

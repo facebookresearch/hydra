@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
+from pytest import mark, param
 
 from hydra.test_utils.launcher_common_tests import (
     BatchedSweeperTestSuite,
@@ -8,15 +8,15 @@ from hydra.test_utils.launcher_common_tests import (
 )
 
 
-@pytest.mark.parametrize("launcher_name, overrides", [("basic", [])])
+@mark.parametrize("launcher_name, overrides", [("basic", [])])
 class TestBasicLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [
-        pytest.param(
+        param(
             {},
             [
                 "-m",
@@ -36,7 +36,7 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
     pass
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "launcher_name, overrides",
     [
         (

@@ -1,8 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any, List, Optional, Type
 
-import pytest
-from pytest import mark, param, raises
+from pytest import mark, param, raises, skip
 
 from hydra.core.default_element import InputDefault
 from hydra.core.object_type import ObjectType
@@ -34,19 +33,19 @@ class ConfigSourceTestSuite:
     @mark.parametrize(
         "config_path, expected",
         [
-            pytest.param("", True, id="empty"),
-            pytest.param("dataset", True, id="dataset"),
-            pytest.param("optimizer", True, id="optimizer"),
-            pytest.param(
+            param("", True, id="empty"),
+            param("dataset", True, id="dataset"),
+            param("optimizer", True, id="optimizer"),
+            param(
                 "configs_with_defaults_list",
                 True,
                 id="configs_with_defaults_list",
             ),
-            pytest.param("dataset/imagenet", False, id="dataset/imagenet"),
-            pytest.param("level1", True, id="level1"),
-            pytest.param("level1/level2", True, id="level1/level2"),
-            pytest.param("level1/level2/nested1", False, id="level1/level2/nested1"),
-            pytest.param("not_found", False, id="not_found"),
+            param("dataset/imagenet", False, id="dataset/imagenet"),
+            param("level1", True, id="level1"),
+            param("level1/level2", True, id="level1/level2"),
+            param("level1/level2/nested1", False, id="level1/level2/nested1"),
+            param("not_found", False, id="not_found"),
         ],
     )
     def test_is_group(
@@ -89,7 +88,7 @@ class ConfigSourceTestSuite:
         self, type_: Type[ConfigSource], path: str, config_path: str, expected: bool
     ) -> None:
         if self.skip_overlap_config_path_name():
-            pytest.skip(
+            skip(
                 f"ConfigSourcePlugin {type_.__name__} does not support config objects and config groups "
                 f"with overlapping names."
             )
@@ -151,7 +150,7 @@ class ConfigSourceTestSuite:
         expected: List[str],
     ) -> None:
         if self.skip_overlap_config_path_name():
-            pytest.skip(
+            skip(
                 f"ConfigSourcePlugin {type_.__name__} does not support config objects and config groups "
                 f"with overlapping names."
             )

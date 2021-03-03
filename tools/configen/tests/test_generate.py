@@ -3,9 +3,9 @@ from textwrap import dedent
 
 from difflib import unified_diff
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
-import pytest
+from pytest import mark, param
 
 from hydra.utils import get_class, instantiate, ConvertMode
 from omegaconf import OmegaConf
@@ -100,15 +100,13 @@ def test_generated_code() -> None:
         assert False, f"Mismatch between {expected_file} and generated code"
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "classname, default_flags, expected_filename",
     [
-        pytest.param("Empty", Flags(), "noflags.py", id="noflags"),
-        pytest.param(
-            "Empty", Flags(_convert_=ConvertMode.ALL), "convert.py", id="convert"
-        ),
-        pytest.param("Empty", Flags(_recursive_=True), "recursive.py", id="recursive"),
-        pytest.param(
+        param("Empty", Flags(), "noflags.py", id="noflags"),
+        param("Empty", Flags(_convert_=ConvertMode.ALL), "convert.py", id="convert"),
+        param("Empty", Flags(_recursive_=True), "recursive.py", id="recursive"),
+        param(
             "Empty",
             Flags(
                 _convert_=ConvertMode.ALL,
@@ -150,14 +148,14 @@ def test_generated_code_with_default_flags(
         assert False, f"Mismatch between {expected_file} and generated code"
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "classname, params, args, kwargs, expected",
     [
-        pytest.param("Empty", {}, [], {}, Empty(), id="Empty"),
-        pytest.param(
+        param("Empty", {}, [], {}, Empty(), id="Empty"),
+        param(
             "UntypedArg", {"param": 11}, [], {}, UntypedArg(param=11), id="UntypedArg"
         ),
-        pytest.param(
+        param(
             "UntypedArg",
             {},
             [],
@@ -165,15 +163,11 @@ def test_generated_code_with_default_flags(
             UntypedArg(param=LibraryClass()),
             id="UntypedArg_passthrough_lib_class",
         ),
-        pytest.param("IntArg", {"param": 1}, [], {}, IntArg(param=1), id="IntArg"),
-        pytest.param(
-            "UnionArg", {"param": 1}, [], {}, UnionArg(param=1), id="UnionArg"
-        ),
-        pytest.param(
-            "UnionArg", {"param": 3.14}, [], {}, UnionArg(param=3.14), id="UnionArg"
-        ),
+        param("IntArg", {"param": 1}, [], {}, IntArg(param=1), id="IntArg"),
+        param("UnionArg", {"param": 1}, [], {}, UnionArg(param=1), id="UnionArg"),
+        param("UnionArg", {"param": 3.14}, [], {}, UnionArg(param=3.14), id="UnionArg"),
         # This is okay because Union is not supported and is treated as Any
-        pytest.param(
+        param(
             "UnionArg",
             {"param": "str"},
             [],
@@ -181,7 +175,7 @@ def test_generated_code_with_default_flags(
             UnionArg(param="str"),
             id="UnionArg:illegal_but_ok_arg",
         ),
-        pytest.param(
+        param(
             "WithLibraryClassArg",
             {"num": 10},
             [],
@@ -189,7 +183,7 @@ def test_generated_code_with_default_flags(
             WithLibraryClassArg(num=10, param=LibraryClass()),
             id="WithLibraryClassArg",
         ),
-        pytest.param(
+        param(
             "IncompatibleDataclassArg",
             {"num": 10},
             [],
@@ -197,7 +191,7 @@ def test_generated_code_with_default_flags(
             IncompatibleDataclassArg(num=10, incompat=IncompatibleDataclass()),
             id="IncompatibleDataclassArg",
         ),
-        pytest.param(
+        param(
             "WithStringDefault",
             {"no_default": "foo"},
             [],
@@ -205,7 +199,7 @@ def test_generated_code_with_default_flags(
             WithStringDefault(no_default="foo"),
             id="WithStringDefault",
         ),
-        pytest.param(
+        param(
             "WithUntypedStringDefault",
             {"default_str": "foo"},
             [],
@@ -213,7 +207,7 @@ def test_generated_code_with_default_flags(
             WithUntypedStringDefault(default_str="foo"),
             id="WithUntypedStringDefault",
         ),
-        pytest.param(
+        param(
             "ListValues",
             {
                 "lst": ["1"],
@@ -230,7 +224,7 @@ def test_generated_code_with_default_flags(
             ),
             id="ListValues",
         ),
-        pytest.param(
+        param(
             "DictValues",
             {
                 "dct": {"foo": "bar"},
@@ -247,10 +241,8 @@ def test_generated_code_with_default_flags(
             ),
             id="DictValues",
         ),
-        pytest.param(
-            "Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"
-        ),
-        pytest.param(
+        param("Tuples", {"t1": [1.0, 2.1]}, [], {}, Tuples(t1=(1.0, 2.1)), id="Tuples"),
+        param(
             "PeskySentinelUsage",
             {},
             [],

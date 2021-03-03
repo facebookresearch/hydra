@@ -1,5 +1,3 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.launcher_common_tests import (
@@ -8,6 +6,9 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pytest import mark
 
 from hydra_plugins.example_sweeper_plugin.example_sweeper import ExampleSweeper
 
@@ -39,7 +40,7 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 
 # Run launcher test suite with the basic launcher and this sweeper
-@pytest.mark.parametrize(
+@mark.parametrize(
     "launcher_name, overrides",
     [
         (
@@ -57,7 +58,7 @@ class TestExampleSweeper(LauncherTestSuite):
 
 # Many sweepers are batching jobs in groups.
 # This test suite verifies that the spawned jobs are not overstepping the directories of one another.
-@pytest.mark.parametrize(
+@mark.parametrize(
     "launcher_name, overrides",
     [
         (
@@ -77,7 +78,7 @@ class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
 
 
 # Run integration test suite with the basic launcher and this sweeper
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [
         (

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Type
 
-import pytest
+from pytest import mark
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -17,7 +17,7 @@ sweepers = ["hydra._internal.core_plugins.basic_sweeper.BasicSweeper"]
 search_path_plugins: List[str] = []
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "plugin_type, expected",
     [
         (Launcher, launchers),

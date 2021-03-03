@@ -3,7 +3,7 @@ import os
 from os.path import realpath
 from typing import List, Optional, Tuple
 
-import pytest
+from pytest import mark
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.utils import compute_search_path_dir
@@ -22,7 +22,7 @@ def to_tuples_list(
     return [(x.provider, x.path) for x in search_path.config_search_path]
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "input_list, reference, expected_idx",
     [
         ([], ("", ""), -1),
@@ -41,7 +41,7 @@ def test_find_last_match(
     )
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "input_list, reference, expected_idx",
     [
         ([], ("", ""), -1),
@@ -59,7 +59,7 @@ def test_find_first_match(
     assert csp.find_first_match(sp) == expected_idx
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "base_list, provider, path, anchor_provider, result_list",
     [
         # appending to an empty list
@@ -104,7 +104,7 @@ def test_append(
     assert to_tuples_list(csp) == result_list
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "base_list, provider, path, anchor_provider, result_list",
     [
         # prepending to an empty list
@@ -149,7 +149,7 @@ def test_prepend(
     assert to_tuples_list(csp) == result_list
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module, config_path, expected",
     [
         ("foo.py", None, None, realpath("")),

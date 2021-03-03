@@ -4,8 +4,8 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any
 
-import pytest
 from omegaconf import OmegaConf
+from pytest import mark
 
 from hydra.test_utils.test_utils import (
     chdir_hydra_root,
@@ -81,7 +81,7 @@ def test_2_static_complex(tmpdir: Path) -> None:
     assert result == "Title=My app, size=1024x768 pixels"
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
         ([], {"db": "???"}),
@@ -102,7 +102,7 @@ def test_3_config_groups(tmpdir: Path, overrides: Any, expected: Any) -> None:
     assert res == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
         ([], {"db": "???"}),
@@ -152,7 +152,7 @@ def test_4_defaults(tmpdir: Path) -> None:
     }
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "path",
     [
         "examples/tutorials/structured_configs/5.1_structured_config_schema_same_config_group/my_app.py",

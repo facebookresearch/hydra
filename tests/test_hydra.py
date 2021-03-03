@@ -8,8 +8,8 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, List, Optional, Set
 
-import pytest
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark, param, raises
 
 from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
@@ -28,14 +28,14 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
+@mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
 def test_missing_conf_dir(
     hydra_restore_singletons: Any,
     hydra_task_runner: TTaskRunner,
     calling_file: str,
     calling_module: str,
 ) -> None:
-    with pytest.raises(MissingConfigException):
+    with raises(MissingConfigException):
         with hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -45,7 +45,7 @@ def test_missing_conf_dir(
             pass
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_without_config/my_app.py", None),
@@ -58,7 +58,7 @@ def test_missing_conf_file(
     calling_file: str,
     calling_module: str,
 ) -> None:
-    with pytest.raises(MissingConfigException):
+    with raises(MissingConfigException):
         with hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -72,7 +72,7 @@ def test_run_dir() -> None:
     run_python_script(["tests/test_apps/run_dir_test/my_app.py"])
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_without_config/my_app.py", None),
@@ -95,7 +95,7 @@ def test_app_without_config___no_overrides(
         assert task.job_ret.cfg == {}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/hydra_main_rerun/my_app.py", None),
@@ -118,7 +118,7 @@ def test_hydra_main_rerun(
         assert task.job_ret.cfg == {}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_without_config/my_app.py", None),
@@ -145,7 +145,7 @@ def test_app_without_config__with_append(
         verify_dir_outputs(task.job_ret, task.overrides)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg/my_app.py", None),
@@ -173,7 +173,7 @@ def test_app_with_config_file__no_overrides(
         verify_dir_outputs(task.job_ret)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
@@ -193,7 +193,7 @@ def test_app_with_config_path_backward_compatibility(
     """
     )
 
-    with pytest.raises(ValueError, match=re.escape(msg)):
+    with raises(ValueError, match=re.escape(msg)):
         task = hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -209,7 +209,7 @@ def test_app_with_config_path_backward_compatibility(
             verify_dir_outputs(task.job_ret)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg/my_app.py", None),
@@ -236,7 +236,7 @@ def test_app_with_config_file__with_overide(
         verify_dir_outputs(task.job_ret, task.overrides)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_split_cfg/my_app.py", None),
@@ -263,7 +263,7 @@ def test_app_with_split_config(
         verify_dir_outputs(task.job_ret)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
@@ -276,7 +276,7 @@ def test_app_with_config_groups__override_dataset__wrong(
     calling_file: str,
     calling_module: str,
 ) -> None:
-    with pytest.raises(MissingConfigException) as ex:
+    with raises(MissingConfigException) as ex:
         with hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -288,7 +288,7 @@ def test_app_with_config_groups__override_dataset__wrong(
     assert sorted(ex.value.options) == sorted(["adam", "nesterov"])  # type: ignore
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg_groups/my_app.py", None),
@@ -315,7 +315,7 @@ def test_app_with_config_groups__override_all_configs(
         verify_dir_outputs(task.job_ret, overrides=task.overrides)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_custom_launcher/my_app.py", None),
@@ -368,7 +368,7 @@ def test_hydra_main_module_override_name(tmpdir: Path) -> None:
     )
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "env_name", ["HYDRA_MAIN_MODULE", "FB_PAR_MAIN_MODULE", "FB_XAR_MAIN_MODULE"]
 )
 def test_module_env_override(tmpdir: Path, env_name: str) -> None:
@@ -385,7 +385,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     assert OmegaConf.create(result) == {"normal_yaml_config": True}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "flag,expected_keys",
     [("--cfg=all", ["db", "hydra"]), ("--cfg=hydra", ["hydra"]), ("--cfg=job", ["db"])],
 )
@@ -401,10 +401,10 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
         assert key in conf
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "flags,expected",
     [
-        pytest.param(
+        param(
             ["--cfg=job"],
             dedent(
                 """\
@@ -416,7 +416,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
             ),
             id="no-package",
         ),
-        pytest.param(
+        param(
             ["--cfg=job", "--package=_global_"],
             dedent(
                 """\
@@ -428,7 +428,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
             ),
             id="package=_global_",
         ),
-        pytest.param(
+        param(
             ["--cfg=job", "--package=db"],
             dedent(
                 """\
@@ -440,9 +440,7 @@ def test_cfg(tmpdir: Path, flag: str, expected_keys: List[str]) -> None:
             ),
             id="package=db",
         ),
-        pytest.param(
-            ["--cfg=job", "--package=db.driver"], "mysql\n", id="package=db.driver"
-        ),
+        param(["--cfg=job", "--package=db.driver"], "mysql\n", id="package=db.driver"),
     ],
 )
 def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None:
@@ -455,14 +453,14 @@ def test_cfg_with_package(tmpdir: Path, flags: List[str], expected: str) -> None
     assert normalize_newlines(result) == expected.rstrip()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_config_with_free_group/my_app.py", None),
         (None, "tests.test_apps.app_with_config_with_free_group.my_app"),
     ],
 )
-@pytest.mark.parametrize("overrides", [["+free_group=opt1,opt2"]])
+@mark.parametrize("overrides", [["+free_group=opt1,opt2"]])
 def test_multirun_with_free_override(
     hydra_restore_singletons: Any,
     hydra_sweep_runner: TSweepRunner,
@@ -486,15 +484,11 @@ def test_multirun_with_free_override(
         assert sweep.returns[0][1].cfg == {"group_opt1": True, "free_group_opt2": True}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
-        pytest.param(
-            "tests/test_apps/sweep_complex_defaults/my_app.py", None, id="file_path"
-        ),
-        pytest.param(
-            None, "tests.test_apps.sweep_complex_defaults.my_app", id="pkg_path"
-        ),
+        param("tests/test_apps/sweep_complex_defaults/my_app.py", None, id="file_path"),
+        param(None, "tests.test_apps.sweep_complex_defaults.my_app", id="pkg_path"),
     ],
 )
 def test_sweep_complex_defaults(
@@ -516,24 +510,24 @@ def test_sweep_complex_defaults(
         assert sweep.returns[0][1].overrides == ["optimizer=nesterov"]
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "script, flag, overrides,expected",
     [
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="simple_cli_app",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=foo"],
             "foo\n",
             id="overriding_help_template",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$CONFIG", "db.user=root"],
@@ -547,7 +541,7 @@ def test_sweep_complex_defaults(
             ),
             id="overriding_help_template:$CONFIG",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--help",
             ["hydra.help.template=$FLAGS_HELP"],
@@ -589,21 +583,21 @@ for details.
             ),
             id="overriding_help_template:$FLAGS_HELP",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
             "--help",
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             "db: mysql, postgresql",
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=foo"],
             "foo\n",
             id="overriding_hydra_help_template",
         ),
-        pytest.param(
+        param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
             "--hydra-help",
             ["hydra.hydra_help.template=$FLAGS_HELP"],
@@ -657,7 +651,7 @@ def test_help(
     assert_text_same(result, expected.format(script=script))
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/interpolating_dir_hydra_to_app/my_app.py", None),
@@ -693,7 +687,7 @@ def test_sys_exit(tmpdir: Path) -> None:
     assert subprocess.run(cmd).returncode == 42
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_config, overrides, expected_dir",
     [
         ({"hydra": {"run": {"dir": "foo"}}}, [], "foo"),
@@ -732,7 +726,7 @@ def test_local_run_workdir(
     )
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_config",
     [
         ({"hydra": {"run": {"dir": "${now:%Y%m%d_%H%M%S_%f}"}}}),
@@ -771,18 +765,18 @@ def test_hydra_env_set_with_override(tmpdir: Path) -> None:
     )
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "override",
     [
-        pytest.param("xyz", id="db=xyz"),
-        pytest.param("", id="db="),
+        param("xyz", id="db=xyz"),
+        param("", id="db="),
     ],
 )
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
-        pytest.param("hydra/test_utils/example_app.py", None, id="file"),
-        pytest.param(None, "hydra.test_utils.example_app", id="module"),
+        param("hydra/test_utils/example_app.py", None, id="file"),
+        param(None, "hydra.test_utils.example_app", id="module"),
     ],
 )
 def test_override_with_invalid_group_choice(
@@ -802,7 +796,7 @@ def test_override_with_invalid_group_choice(
     """
     )
 
-    with pytest.raises(MissingConfigException) as e:
+    with raises(MissingConfigException) as e:
         with hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
@@ -816,8 +810,8 @@ def test_override_with_invalid_group_choice(
     assert re.search(msg, str(e.value)) is not None
 
 
-@pytest.mark.parametrize("config_path", ["dir1", "dir2"])
-@pytest.mark.parametrize("config_name", ["cfg1", "cfg2"])
+@mark.parametrize("config_path", ["dir1", "dir2"])
+@mark.parametrize("config_name", ["cfg1", "cfg2"])
 def test_config_name_and_path_overrides(
     tmpdir: Path, config_path: str, config_name: str
 ) -> None:
@@ -834,7 +828,7 @@ def test_config_name_and_path_overrides(
     assert result == f"{config_path}_{config_name}: true"
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides, expected_files",
     [
         ([], {".hydra"}),
@@ -842,7 +836,7 @@ def test_config_name_and_path_overrides(
         (["hydra.output_subdir=null"], set()),
     ],
 )
-@pytest.mark.parametrize(
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/app_with_cfg/my_app.py", None),
@@ -870,7 +864,7 @@ def test_hydra_output_dir(
         assert files == expected_files
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "directory,file,module, error",
     [
         (
@@ -902,11 +896,11 @@ def test_module_run(
         assert OmegaConf.create(result) == {"x": 10}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,error,expected",
     [
-        pytest.param(["test.param=1"], False, "1", id="run:value"),
-        pytest.param(
+        param(["test.param=1"], False, "1", id="run:value"),
+        param(
             ["test.param=1,2"],
             True,
             dedent(
@@ -920,7 +914,7 @@ def test_module_run(
             ),
             id="run:choice_sweep",
         ),
-        pytest.param(
+        param(
             ["test.param=[1,2]"],
             True,
             dedent(
@@ -934,10 +928,8 @@ def test_module_run(
             ),
             id="run:list_value",
         ),
-        pytest.param(["test.param=1", "-m"], False, "1", id="multirun:value"),
-        pytest.param(
-            ["test.param=1,2", "-m"], False, "1\n2", id="multirun:choice_sweep"
-        ),
+        param(["test.param=1", "-m"], False, "1", id="multirun:value"),
+        param(["test.param=1,2", "-m"], False, "1\n2", id="multirun:choice_sweep"),
     ],
 )
 def test_multirun_structured_conflict(
@@ -962,16 +954,16 @@ def test_multirun_structured_conflict(
         assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "cmd_base",
     [(["tests/test_apps/simple_app/my_app.py", "hydra/hydra_logging=disabled"])],
 )
 class TestVariousRuns:
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         "sweep",
         [
-            pytest.param(False, id="run"),
-            pytest.param(True, id="sweep"),
+            param(False, id="run"),
+            param(True, id="sweep"),
         ],
     )
     def test_run_with_missing_default(
@@ -1093,13 +1085,13 @@ def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
     assert result == expected.strip()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
-        pytest.param(
+        param(
             ["dataset=imagenet"], {"dataset": {"name": "imagenet"}}, id="no_conf_dir"
         ),
-        pytest.param(
+        param(
             ["dataset=cifar10", "--config-dir=user-dir"],
             {"dataset": {"name": "cifar10"}},
             id="no_conf_dir",
@@ -1159,7 +1151,7 @@ class TestTaskRunnerLogging:
         logger.info("test_2")
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "expected",
     [
         (

@@ -2,7 +2,7 @@
 import unittest
 from typing import List
 
-import pytest
+from pytest import mark
 
 import hydra_app.main
 from hydra.experimental import compose, initialize, initialize_config_module
@@ -48,7 +48,7 @@ class TestWithUnittest(unittest.TestCase):
 
 # This example drives some user logic with the composed config.
 # In this case it calls hydra_app.main.add(), passing it the composed config.
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides, expected",
     [
         (["app.user=test_user"], 30),

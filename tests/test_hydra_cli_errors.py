@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-import pytest
+from pytest import mark, param
 
 from hydra.test_utils.test_utils import (
     chdir_hydra_root,
@@ -14,33 +14,33 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "override,expected",
     [
-        pytest.param(
+        param(
             "+key=int(",
             "no viable alternative at input 'int('",
             id="parse_error_in_function",
         ),
-        pytest.param(
+        param(
             "+key=sort()",
             """Error parsing override '+key=sort()'
 ValueError while evaluating 'sort()': empty sort input""",
             id="empty_sort",
         ),
-        pytest.param(
+        param(
             "key=sort(interval(1,10))",
             """Error parsing override 'key=sort(interval(1,10))'
 TypeError while evaluating 'sort(interval(1,10))': mismatch type argument args[0]""",
             id="sort_interval",
         ),
-        pytest.param(
+        param(
             "+key=choice()",
             """Error parsing override '+key=choice()'
 ValueError while evaluating 'choice()': empty choice is not legal""",
             id="empty choice",
         ),
-        pytest.param(
+        param(
             ["+key=choice(choice(a,b))", "-m"],
             """Error parsing override '+key=choice(choice(a,b))'
 ValueError while evaluating 'choice(choice(a,b))': nesting choices is not supported
@@ -50,7 +50,7 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 """,
             id="empty choice",
         ),
-        pytest.param(
+        param(
             "--config-dir=/dir/not/found",
             f"""Additional config directory '{Path('/dir/not/found').absolute()}' not found
 
