@@ -295,9 +295,19 @@ class ConfigLoaderImpl(ConfigLoader):
                         with open_dict(cfg):
                             OmegaConf.update(cfg, key, value, merge=True)
                     else:
+                        assert override.input_line is not None
                         raise ConfigCompositionException(
-                            f"Could not append to config. An item is already at '{override.key_or_group}'."
+                            dedent(
+                                f"""\
+                        Could not append to config. An item is already at '{override.key_or_group}'.
+                        Either remove + prefix: '{override.input_line[1:]}'
+                        Or add a second + to add or override '{override.key_or_group}': '+{override.input_line}'
+                        """
+                            )
                         )
+                elif override.is_force_add():
+                    with open_dict(cfg):
+                        OmegaConf.update(cfg, key, value, merge=True)
                 else:
                     try:
                         OmegaConf.update(cfg, key, value, merge=True)

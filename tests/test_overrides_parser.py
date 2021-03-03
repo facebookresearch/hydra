@@ -664,6 +664,7 @@ def test_primitive(value: str, expected: Any) -> None:
     [
         pytest.param("", OverrideType.CHANGE, id="change"),
         pytest.param("+", OverrideType.ADD, id="add"),
+        pytest.param("++", OverrideType.FORCE_ADD, id="force_add"),
         pytest.param("~", OverrideType.DEL, id="del"),
     ],
 )
@@ -922,6 +923,9 @@ def test_parse_overrides() -> None:
         # add
         pytest.param("+key=value", "+key", id="+key"),
         pytest.param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
+        # force-add
+        pytest.param("++key=value", "++key", id="++key"),
+        pytest.param("++key@pkg1=value", "++key@pkg1", id="++key@pkg1"),
         # del
         pytest.param("~key=value", "~key", id="~key"),
         pytest.param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
