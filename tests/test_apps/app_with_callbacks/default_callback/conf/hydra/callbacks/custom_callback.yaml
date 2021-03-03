@@ -1,0 +1,6 @@
+# @package hydra.callbacks
+
+custom_callback:
+  _target_: callbacks_impl.CustomCallback
+  param1: value1
+  param2: value2

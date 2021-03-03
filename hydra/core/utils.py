@@ -89,6 +89,8 @@ def run_job(
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
+    from hydra.core.callbacks import Callbacks
+
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
     HydraConfig.instance().set_config(config)
@@ -128,6 +130,9 @@ def run_job(
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         with env_override(hydra_cfg.hydra.job.env_set):
+            Callbacks.instance().on_job_start(
+                config=config,
+            )
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
@@ -138,6 +143,11 @@ def run_job(
         ret.task_name = JobRuntime.instance().get("name")
 
         _flush_loggers()
+
+        Callbacks.instance().on_job_end(
+            config=config,
+            job_return=ret,
+        )
 
         return ret
     finally:

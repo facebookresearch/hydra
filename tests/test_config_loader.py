@@ -402,6 +402,8 @@ def test_list_groups() -> None:
     ]
 
     assert sorted(config_loader.list_groups("hydra")) == [
+        "callbacks",
+        "env",
         "help",
         "hydra_help",
         "hydra_logging",
@@ -757,6 +759,8 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
             [],
             {
                 "optimizer": "nesterov",
+                "hydra/callbacks": "default",
+                "hydra/env": "default",
                 "hydra/hydra_help": "default",
                 "hydra/help": "default",
                 "hydra/output": "default",
@@ -772,6 +776,8 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
             ["optimizer=adam"],
             {
                 "optimizer": "adam",
+                "hydra/callbacks": "default",
+                "hydra/env": "default",
                 "hydra/hydra_help": "default",
                 "hydra/help": "default",
                 "hydra/output": "default",

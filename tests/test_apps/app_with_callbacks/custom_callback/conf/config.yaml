@@ -1,0 +1,5 @@
+defaults:
+  - override hydra/callbacks:
+      - custom_callback
+
+foo: bar
