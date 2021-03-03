@@ -40,7 +40,7 @@ the value `${dataset}_${model}` is using OmegaConf's [variable interpolation](ht
 At runtime, that value would resolve to *imagenet_alexnet*, or *cifar_resnet* - depending on the values of defaults.dataset and defaults.model.
 
 :::info
-This is not standard interpolations and there are some subtle differences and limitations.
+This is non-standard interpolation and there are some subtle differences and limitations.
 :::
 
 
