@@ -108,8 +108,6 @@ db:
   pass: drowssap
   timeout: 20
   user: postgres_user
-website:
-  domain: example.com
 ```
 You can have as many config groups as you need.
 
@@ -126,8 +124,6 @@ db:
   driver: mysql
   pass: secret
   user: omry
-website:
-    domain: example.com
 
 [HYDRA]        #1 : db=postgresql
 db:
@@ -135,8 +131,6 @@ db:
   pass: drowssap
   timeout: 10
   user: postgres_user
-website:
-    domain: example.com
 ```
 
 There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to learn more.
