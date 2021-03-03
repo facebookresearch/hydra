@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, List
 
-import pytest
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
+from pytest import mark, param, raises, warns
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
@@ -40,11 +40,11 @@ class TopLevelConfig:
     db: MySQLConfig = MySQLConfig()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "path",
     [
-        pytest.param("file://hydra/test_utils/configs", id="file"),
-        pytest.param("pkg://hydra.test_utils.configs", id="pkg"),
+        param("file://hydra/test_utils/configs", id="file"),
+        param("pkg://hydra.test_utils.configs", id="pkg"),
     ],
 )
 class TestConfigLoader:
@@ -65,7 +65,7 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        with pytest.raises(MissingConfigException):
+        with raises(MissingConfigException):
             config_loader.load_configuration(
                 config_name="missing-default.yaml", overrides=[], run_mode=RunMode.RUN
             )
@@ -81,15 +81,15 @@ class TestConfigLoader:
             del cfg["hydra"]
         assert cfg == {"foo": 10}
 
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         "overrides,expected",
         [
-            pytest.param(
+            param(
                 [],
                 {"pkg1": {"group1_option1": True}, "pkg2": {"group1_option1": True}},
                 id="baseline",
             ),
-            pytest.param(
+            param(
                 ["+group1@pkg3=option1"],
                 {
                     "pkg1": {"group1_option1": True},
@@ -98,7 +98,7 @@ class TestConfigLoader:
                 },
                 id="append",
             ),
-            pytest.param(
+            param(
                 ["~group1@pkg1"],
                 {"pkg2": {"group1_option1": True}},
                 id="delete_package",
@@ -174,12 +174,12 @@ class TestConfigLoader:
         assert cfg == {"foo": "ZZZ", "bar": 100}
 
         # Test that accessing a key that is not there will fail
-        with pytest.raises(AttributeError):
+        with raises(AttributeError):
             # noinspection PyStatementEffect
             cfg.not_here
 
         # Test that bad overrides triggers the KeyError
-        with pytest.raises(HydraException):
+        with raises(HydraException):
             config_loader.load_configuration(
                 config_name="compose.yaml",
                 overrides=["f00=ZZZ"],
@@ -190,7 +190,7 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        with pytest.warns(
+        with warns(
             UserWarning,
             match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
         ):
@@ -266,11 +266,11 @@ class TestConfigLoader:
         }
 
         # verify illegal modification is rejected at runtime
-        with pytest.raises(ValidationError):
+        with raises(ValidationError):
             cfg.db.port = "fail"
 
         # verify illegal override is rejected during load
-        with pytest.raises(HydraException):
+        with raises(HydraException):
             config_loader.load_configuration(
                 config_name="db/mysql", overrides=["db.port=fail"], run_mode=RunMode.RUN
             )
@@ -293,7 +293,7 @@ class TestConfigLoader:
           This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
           See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
         )
-        with pytest.warns(UserWarning, match=re.escape(msg)):
+        with warns(UserWarning, match=re.escape(msg)):
             cfg = config_loader.load_configuration(
                 config_name="config",
                 overrides=["+db=mysql"],
@@ -362,7 +362,7 @@ def test_defaults_not_list_exception() -> None:
     config_loader = ConfigLoaderImpl(
         config_search_path=create_config_search_path("hydra/test_utils/configs")
     )
-    with pytest.raises(ValueError):
+    with raises(ValueError):
         config_loader.load_configuration(
             config_name="defaults_not_list.yaml",
             overrides=[],
@@ -493,7 +493,7 @@ def test_overlapping_schemas(hydra_restore_singletons: Any) -> None:
     assert cfg == {"plugin": {"name": "foobar_plugin", "params": {"foo": 10}}}
     assert OmegaConf.get_type(cfg.plugin) == ConcretePlugin
     assert OmegaConf.get_type(cfg.plugin.params) == ConcretePlugin.FoobarParams
-    with pytest.raises(ValidationError):
+    with raises(ValidationError):
         cfg.plugin = 10
 
 
@@ -503,7 +503,7 @@ def test_invalid_plugin_merge(hydra_restore_singletons: Any) -> Any:
     cs.store(group="plugin", name="invalid", node=InvalidPlugin)
 
     cl = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
-    with pytest.raises(HydraException):
+    with raises(HydraException):
         cl.load_configuration(
             config_name="config", overrides=["plugin=invalid"], run_mode=RunMode.RUN
         )
@@ -520,7 +520,7 @@ def test_job_env_copy() -> None:
         assert cfg.hydra.job.env_set == {"zonk": "123456"}
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
         (
@@ -556,14 +556,14 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
     assert cfg == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "input_cfg,overrides,expected",
     [
         # append
-        pytest.param(
+        param(
             {},
             ["x=10"],
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "Could not override 'x'.\nTo append to your config use +x=10"
@@ -571,18 +571,16 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             ),
             id="append:error:no_match",
         ),
-        pytest.param({}, ["+x=10"], {"x": 10}, id="append"),
-        pytest.param({}, ["+x=[1,2,3]"], {"x": [1, 2, 3]}, id="append:list"),
-        pytest.param({}, ["+x={}"], {"x": {}}, id="append:dict:empty"),
-        pytest.param({}, ["+x={a:1}"], {"x": {"a": 1}}, id="append:dict"),
-        pytest.param({}, ["+x={a:1,b:2}"], {"x": {"a": 1, "b": 2}}, id="append:dict"),
-        pytest.param(
-            {}, ["+x={a:10,b:20}"], {"x": {"a": 10, "b": 20}}, id="append:dict"
-        ),
-        pytest.param(
+        param({}, ["+x=10"], {"x": 10}, id="append"),
+        param({}, ["+x=[1,2,3]"], {"x": [1, 2, 3]}, id="append:list"),
+        param({}, ["+x={}"], {"x": {}}, id="append:dict:empty"),
+        param({}, ["+x={a:1}"], {"x": {"a": 1}}, id="append:dict"),
+        param({}, ["+x={a:1,b:2}"], {"x": {"a": 1, "b": 2}}, id="append:dict"),
+        param({}, ["+x={a:10,b:20}"], {"x": {"a": 10, "b": 20}}, id="append:dict"),
+        param(
             {"x": 20},
             ["+x=10"],
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "Could not append to config. An item is already at 'x'"
@@ -591,76 +589,76 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             id="append:error:already_there",
         ),
         # override
-        pytest.param({"x": 20}, ["x=10"], {"x": 10}, id="override"),
-        pytest.param({"x": 20}, ["x=10"], {"x": 10}, id="override"),
-        pytest.param({"x": None}, ["x=[1,2,3]"], {"x": [1, 2, 3]}, id="override:list"),
-        pytest.param({"x": 20}, ["x=null"], {"x": None}, id="override_with_null"),
-        pytest.param({"x": {"a": 10}}, ["x={a:20}"], {"x": {"a": 20}}, id="merge_dict"),
-        pytest.param(
+        param({"x": 20}, ["x=10"], {"x": 10}, id="override"),
+        param({"x": 20}, ["x=10"], {"x": 10}, id="override"),
+        param({"x": None}, ["x=[1,2,3]"], {"x": [1, 2, 3]}, id="override:list"),
+        param({"x": 20}, ["x=null"], {"x": None}, id="override_with_null"),
+        param({"x": {"a": 10}}, ["x={a:20}"], {"x": {"a": 20}}, id="merge_dict"),
+        param(
             {"x": {"a": 10, "b": None}},
             ["x={b:20}"],
             {"x": {"a": 10, "b": 20}},
             id="merge_dict",
         ),
-        pytest.param(
+        param(
             {"x": {"a": 10}},
             ["+x={b:20}"],
             {"x": {"a": 10, "b": 20}},
             id="merge_dict",
         ),
-        pytest.param(
+        param(
             UserGroup,
             ["name=agents", "users=[]"],
             {"name": "agents", "users": []},
             id="merge_list",
         ),
-        pytest.param(
+        param(
             UserGroup,
             ["name=agents", "users=[{}]"],
             {"name": "agents", "users": [{"name": MISSING, "age": MISSING}]},
             id="merge_list",
         ),
-        pytest.param(
+        param(
             UserGroup,
             ["name=agents", "users=[{name:bond,age:7}]"],
             {"name": "agents", "users": [{"name": "bond", "age": 7}]},
             id="merge_list",
         ),
-        pytest.param(
+        param(
             UserGroup,
             ["name=agents", "users=[{name:bond,age:nope}]"],
-            pytest.raises(
+            raises(
                 ConfigCompositionException,
                 match=re.escape("Error merging override users=[{name:bond,age:nope}]"),
             ),
             id="merge_list",
         ),
         # delete
-        pytest.param({"x": 20}, ["~x"], {}, id="delete"),
-        pytest.param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
-        pytest.param({"x": {"y": 10}}, ["~x"], {}, id="delete"),
-        pytest.param({"x": {"y": 10}}, ["~x.y"], {"x": {}}, id="delete"),
-        pytest.param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
-        pytest.param({"x": 20}, ["~x"], {}, id="delete"),
-        pytest.param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
-        pytest.param({"x": {"y": 10}}, ["~x"], {}, id="delete"),
-        pytest.param({"x": {"y": 10}}, ["~x.y"], {"x": {}}, id="delete"),
-        pytest.param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
-        pytest.param({"x": [1, 2, 3]}, ["~x"], {}, id="delete:list"),
-        pytest.param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
-        pytest.param(
+        param({"x": 20}, ["~x"], {}, id="delete"),
+        param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
+        param({"x": {"y": 10}}, ["~x"], {}, id="delete"),
+        param({"x": {"y": 10}}, ["~x.y"], {"x": {}}, id="delete"),
+        param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
+        param({"x": 20}, ["~x"], {}, id="delete"),
+        param({"x": 20}, ["~x=20"], {}, id="delete_strict"),
+        param({"x": {"y": 10}}, ["~x"], {}, id="delete"),
+        param({"x": {"y": 10}}, ["~x.y"], {"x": {}}, id="delete"),
+        param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
+        param({"x": [1, 2, 3]}, ["~x"], {}, id="delete:list"),
+        param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
+        param(
             {"x": 20},
             ["~z"],
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape("Could not delete from config. 'z' does not exist."),
             ),
             id="delete_error_key",
         ),
-        pytest.param(
+        param(
             {"x": 20},
             ["~x=10"],
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "Could not delete from config. The value of 'x' is 20 and not 10."
@@ -668,10 +666,10 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             ),
             id="delete_error_value",
         ),
-        pytest.param(
+        param(
             {"x": 20},
             ["foo@bar=10"],
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "Override foo@bar=10 looks like a config group override, but config group 'foo' does not exist."
@@ -697,34 +695,34 @@ def test_apply_overrides_to_config(
             ConfigLoaderImpl._apply_overrides_to_config(overrides=parsed, cfg=cfg)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "config,overrides,expected",
     [
-        pytest.param(
+        param(
             "config",
             [],
             {"optimizer": {"type": "nesterov", "lr": 0.001}},
             id="default_choice",
         ),
-        pytest.param(
+        param(
             "config",
             ["optimizer=adam"],
             {"optimizer": {"type": "adam", "lr": 0.1, "beta": 0.01}},
             id="default_change",
         ),
-        pytest.param(
+        param(
             "config",
             ["optimizer={type:nesterov2,lr:1}"],
             {"optimizer": {"type": "nesterov2", "lr": 1}},
             id="dict_merge",
         ),
-        pytest.param(
+        param(
             "config",
             ["+optimizer={foo:10}"],
             {"optimizer": {"type": "nesterov", "lr": 0.001, "foo": 10}},
             id="dict_merge_append",
         ),
-        pytest.param(
+        param(
             # need to unset optimizer config group first, otherwise they get merged
             "missing_default",
             ["~optimizer", "+optimizer={type:super,good:true,fast:true}"],
@@ -748,10 +746,10 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
     assert cfg == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     ("config", "overrides", "expected_choices"),
     [
-        pytest.param(
+        param(
             "config",
             [],
             {
@@ -766,7 +764,7 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
             },
             id="test_choices",
         ),
-        pytest.param(
+        param(
             "config",
             ["optimizer=adam"],
             {

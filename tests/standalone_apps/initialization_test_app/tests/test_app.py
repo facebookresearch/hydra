@@ -3,11 +3,10 @@ import subprocess
 import sys
 from typing import List
 
-import pytest
-from pytest import param
+from pytest import mark, param
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "run_cmd",
     [
         param(["initialization-test-app", "module_installed"], id="run_as_app"),

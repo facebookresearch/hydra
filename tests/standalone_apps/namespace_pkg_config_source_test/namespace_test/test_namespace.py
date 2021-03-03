@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
+from pytest import mark, param
 
 from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
@@ -12,10 +12,10 @@ from hydra.test_utils.test_utils import chdir_plugin_root
 chdir_plugin_root()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "type_, path",
     [
-        pytest.param(
+        param(
             ImportlibResourcesConfigSource,
             "pkg://some_namespace.namespace_test.dir",
             id="pkg_in_namespace",

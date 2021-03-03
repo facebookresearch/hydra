@@ -1,11 +1,12 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pytest import mark
 
 from hydra_plugins.example_launcher_plugin.example_launcher import ExampleLauncher
 
@@ -17,7 +18,7 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.mark.parametrize("launcher_name, overrides", [("example", [])])
+@mark.parametrize("launcher_name, overrides", [("example", [])])
 class TestExampleLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
@@ -27,7 +28,7 @@ class TestExampleLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [({}, ["-m", "hydra/launcher=example"])],
 )

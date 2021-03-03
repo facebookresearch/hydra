@@ -5,8 +5,8 @@ from builtins import isinstance
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 
-import pytest
 from _pytest.python_api import RaisesContext
+from pytest import mark, param, raises, warns
 
 from hydra._internal.grammar.functions import Functions
 from hydra._internal.grammar.utils import escape_special_characters
@@ -45,44 +45,42 @@ def eq(item1: Any, item2: Any) -> bool:
         return item1 == item2  # type: ignore
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("abc", "abc", id="value:id"),
-        pytest.param("abc123", "abc123", id="value:idint"),
-        pytest.param("abc-123", "abc-123", id="value:id-int"),
-        pytest.param("a b c\t-\t1 2 3", "a b c\t-\t1 2 3", id="value:str-ws-in"),
-        pytest.param(" abc-123 ", "abc-123", id="value:str-ws-out"),
-        pytest.param("123abc", "123abc", id="value:str-int-id"),
-        pytest.param(r"a\,b", "a,b", id="value:str-esc-comma"),
-        pytest.param(r"a\:b", "a:b", id="value:str-esc-colon"),
-        pytest.param(r"a\=b", "a=b", id="value:str-esc-equal"),
-        pytest.param(r"\ ab", " ab", id="value:str-esc-space"),
-        pytest.param("ab\\\t", "ab\t", id="value:str-esc-tab"),
-        pytest.param("ab\\\\", "ab\\", id="value:str-esc-backslash"),
-        pytest.param(r"\,", ",", id="value:str-esc-comma-alone"),
-        pytest.param(r"f\(a\, b\)", "f(a, b)", id="value:str-esc-parentheses"),
-        pytest.param(r"\[a\, b\]", "[a, b]", id="value:str-esc-brackets"),
-        pytest.param(r"\{a\: b\}", "{a: b}", id="value:str-esc-braces"),
-        pytest.param(r"$\{foo.bar\}", "${foo.bar}", id="value:str-esc-braces"),
-        pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
-        pytest.param(
-            "${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"
-        ),
-        pytest.param("c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="value:windows_path"),
+        param("abc", "abc", id="value:id"),
+        param("abc123", "abc123", id="value:idint"),
+        param("abc-123", "abc-123", id="value:id-int"),
+        param("a b c\t-\t1 2 3", "a b c\t-\t1 2 3", id="value:str-ws-in"),
+        param(" abc-123 ", "abc-123", id="value:str-ws-out"),
+        param("123abc", "123abc", id="value:str-int-id"),
+        param(r"a\,b", "a,b", id="value:str-esc-comma"),
+        param(r"a\:b", "a:b", id="value:str-esc-colon"),
+        param(r"a\=b", "a=b", id="value:str-esc-equal"),
+        param(r"\ ab", " ab", id="value:str-esc-space"),
+        param("ab\\\t", "ab\t", id="value:str-esc-tab"),
+        param("ab\\\\", "ab\\", id="value:str-esc-backslash"),
+        param(r"\,", ",", id="value:str-esc-comma-alone"),
+        param(r"f\(a\, b\)", "f(a, b)", id="value:str-esc-parentheses"),
+        param(r"\[a\, b\]", "[a, b]", id="value:str-esc-brackets"),
+        param(r"\{a\: b\}", "{a: b}", id="value:str-esc-braces"),
+        param(r"$\{foo.bar\}", "${foo.bar}", id="value:str-esc-braces"),
+        param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
+        param("${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"),
+        param("c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="value:windows_path"),
         # null
-        pytest.param("null", None, id="value:null"),
+        param("null", None, id="value:null"),
         # int
-        pytest.param("1", 1, id="value:int:pos"),
-        pytest.param("+1", 1, id="value:int:explicit_pos"),
-        pytest.param("1___0___", "1___0___", id="value:int:not_an_int"),
+        param("1", 1, id="value:int:pos"),
+        param("+1", 1, id="value:int:explicit_pos"),
+        param("1___0___", "1___0___", id="value:int:not_an_int"),
         # float
-        pytest.param("0.51", 0.51, id="value:float:positive"),
-        pytest.param("10e0", 10.0, id="value:float:exp"),
-        pytest.param("+inf", math.inf, id="value:float:plus_inf"),
+        param("0.51", 0.51, id="value:float:positive"),
+        param("10e0", 10.0, id="value:float:exp"),
+        param("+inf", math.inf, id="value:float:plus_inf"),
         # bool
-        pytest.param("true", True, id="value:bool"),
-        pytest.param(".", ".", id="value:dot"),
+        param("true", True, id="value:bool"),
+        param(".", ".", id="value:dot"),
     ],
 )
 def test_element(value: str, expected: Any) -> None:
@@ -90,74 +88,70 @@ def test_element(value: str, expected: Any) -> None:
     assert eq(ret, expected)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("abc", "abc", id="value:simple"),
-        pytest.param("abc ", "abc", id="value:simple_ws"),
-        pytest.param(" abc", "abc", id="ws_value:simple"),
-        pytest.param("[1,2,3]", [1, 2, 3], id="value:list"),
-        pytest.param("[1 ]", [1], id="value:list1_ws"),
-        pytest.param("[1, 2, 3]", [1, 2, 3], id="value:list_ws"),
-        pytest.param(
-            "1,2,3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int"
-        ),
-        pytest.param(
+        param("abc", "abc", id="value:simple"),
+        param("abc ", "abc", id="value:simple_ws"),
+        param(" abc", "abc", id="ws_value:simple"),
+        param("[1,2,3]", [1, 2, 3], id="value:list"),
+        param("[1 ]", [1], id="value:list1_ws"),
+        param("[1, 2, 3]", [1, 2, 3], id="value:list_ws"),
+        param("1,2,3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int"),
+        param(
             "1, 2, 3", ChoiceSweep(list=[1, 2, 3], simple_form=True), id="sweep:int_ws"
         ),
-        pytest.param(
+        param(
             "${a}, ${b}, ${c}",
             ChoiceSweep(list=["${a}", "${b}", "${c}"], simple_form=True),
             id="sweep:interpolations",
         ),
-        pytest.param(
+        param(
             "[a,b],[c,d]",
             ChoiceSweep(list=[["a", "b"], ["c", "d"]], simple_form=True),
             id="sweep:lists",
         ),
         # bool
-        pytest.param("true", True, id="value:bool"),
-        pytest.param("True", True, id="value:bool"),
-        pytest.param("TRUE", True, id="value:bool"),
-        pytest.param("trUe", True, id="value:bool"),
-        pytest.param("false", False, id="value:bool"),
-        pytest.param("False", False, id="value:bool"),
-        pytest.param("FALSE", False, id="value:bool"),
-        pytest.param("faLse", False, id="value:bool"),
+        param("true", True, id="value:bool"),
+        param("True", True, id="value:bool"),
+        param("TRUE", True, id="value:bool"),
+        param("trUe", True, id="value:bool"),
+        param("false", False, id="value:bool"),
+        param("False", False, id="value:bool"),
+        param("FALSE", False, id="value:bool"),
+        param("faLse", False, id="value:bool"),
         # casts
-        pytest.param("int(10.0)", 10, id="int(10.0)"),
-        pytest.param("str(10.0)", "10.0", id="str(10.0)"),
-        pytest.param("bool(10.0)", True, id="bool(10.0)"),
-        pytest.param("float(10)", 10.0, id="float(10)"),
-        pytest.param("float(float(10))", 10.0, id="float(float(10))"),
+        param("int(10.0)", 10, id="int(10.0)"),
+        param("str(10.0)", "10.0", id="str(10.0)"),
+        param("bool(10.0)", True, id="bool(10.0)"),
+        param("float(10)", 10.0, id="float(10)"),
+        param("float(float(10))", 10.0, id="float(float(10))"),
         # ordering
-        pytest.param("sort([2,3,1])", [1, 2, 3], id="sort([2,3,1])"),
-        pytest.param(
-            "sort([2,3,1],reverse=true)", [3, 2, 1], id="sort([2,3,1],reverse=true)"
-        ),
-        pytest.param(
+        param("sort([2,3,1])", [1, 2, 3], id="sort([2,3,1])"),
+        param("sort([2,3,1],reverse=true)", [3, 2, 1], id="sort([2,3,1],reverse=true)"),
+        param(
             "sort(3,2,1)",
             ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set()),
             id="sort(3,2,1)",
         ),
-        pytest.param(
+        param(
             "sort(a,c,b,reverse=true)",
             ChoiceSweep(simple_form=True, list=["c", "b", "a"], tags=set()),
             id="sort(a,c,b,reverse=true)",
         ),
-        pytest.param(
+        param(
             "float(sort(3,2,1))",
             ChoiceSweep(simple_form=True, list=[1.0, 2.0, 3.0], tags=set()),
             id="float(sort(3,2,1))",
         ),
-        pytest.param(
+        param(
             "sort(float(3,2,1))",
             ChoiceSweep(simple_form=True, list=[1.0, 2.0, 3.0], tags=set()),
             id="sort(float(3,2,1))",
         ),
-        pytest.param(
+        param(
             "sort(3,2,str(1))",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'sort(3,2,str(1))':"
@@ -166,12 +160,12 @@ def test_element(value: str, expected: Any) -> None:
             ),
             id="sort(3,2,str(1))",
         ),
-        pytest.param(
+        param(
             "shuffle(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], shuffle=True, simple_form=True),
             id="shuffle(1,2,3)",
         ),
-        pytest.param(
+        param(
             "shuffle(choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3], shuffle=True),
             id="shuffle(choice(1,2,3))",
@@ -187,24 +181,24 @@ def test_value(value: str, expected: Any) -> None:
         assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("[]", [], id="list:empty"),
-        pytest.param("[1]", [1], id="list:item"),
-        pytest.param(
+        param("[]", [], id="list:empty"),
+        param("[1]", [1], id="list:item"),
+        param(
             "['a b']",
             [QuotedString(text="a b", quote=Quote.single)],
             id="list:quoted_item",
         ),
-        pytest.param(
+        param(
             "['[a,b]']",
             [QuotedString(text="[a,b]", quote=Quote.single)],
             id="list:quoted_item",
         ),
-        pytest.param("[[a]]", [["a"]], id="list:nested_list"),
-        pytest.param("[[[a]]]", [[["a"]]], id="list:double_nested_list"),
-        pytest.param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
+        param("[[a]]", [["a"]], id="list:nested_list"),
+        param("[[[a]]]", [[["a"]]], id="list:double_nested_list"),
+        param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
     ],
 )
 def test_list_container(value: str, expected: Any) -> None:
@@ -212,25 +206,25 @@ def test_list_container(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
         # list
-        pytest.param("x=shuffle([1,2,3])", [1, 2, 3], id="shuffle:list"),
-        pytest.param("x=shuffle(list=[1,2,3])", [1, 2, 3], id="shuffle:list"),
+        param("x=shuffle([1,2,3])", [1, 2, 3], id="shuffle:list"),
+        param("x=shuffle(list=[1,2,3])", [1, 2, 3], id="shuffle:list"),
         # choice
-        pytest.param(
+        param(
             "x=shuffle(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], simple_form=True, shuffle=True),
             id="x=shuffle:choice:simple",
         ),
-        pytest.param(
+        param(
             "x=shuffle(choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3], shuffle=True),
             id="shuffle:choice",
         ),
         # range
-        pytest.param(
+        param(
             "x=shuffle(range(1,10))",
             ChoiceSweep(list=[1, 2, 3, 4, 5, 6, 7, 8, 9], shuffle=True),
             id="shuffle:range",
@@ -267,18 +261,18 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         assert False
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("{}", {}, id="dict"),
-        pytest.param("{a:b}", {"a": "b"}, id="dict"),
-        pytest.param("{a:10}", {"a": 10}, id="dict"),
-        pytest.param("{a:[a,10]}", {"a": ["a", 10]}, id="dict"),
-        pytest.param("{a:[true,10]}", {"a": [True, 10]}, id="dict"),
-        pytest.param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
-        pytest.param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
-        pytest.param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
-        pytest.param(
+        param("{}", {}, id="dict"),
+        param("{a:b}", {"a": "b"}, id="dict"),
+        param("{a:10}", {"a": 10}, id="dict"),
+        param("{a:[a,10]}", {"a": ["a", 10]}, id="dict"),
+        param("{a:[true,10]}", {"a": [True, 10]}, id="dict"),
+        param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
+        param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
+        param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
+        param(
             "{'0a': 0, \"1b\": 1}",
             {
                 QuotedString(text="0a", quote=Quote.single): 0,
@@ -286,18 +280,18 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
             },
             id="dict_quoted_key",
         ),
-        pytest.param("{null: 1}", {None: 1}, id="dict_null_key"),
-        pytest.param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
-        pytest.param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
-        pytest.param("{true: 1, fAlSe: 0}", {True: 1, False: 0}, id="dict_bool_key"),
-        pytest.param("{/-\\+.$%*@: 1}", {"/-\\+.$%*@": 1}, id="dict_unquoted_char_key"),
-        pytest.param(
+        param("{null: 1}", {None: 1}, id="dict_null_key"),
+        param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
+        param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
+        param("{true: 1, fAlSe: 0}", {True: 1, False: 0}, id="dict_bool_key"),
+        param("{/-\\+.$%*@: 1}", {"/-\\+.$%*@": 1}, id="dict_unquoted_char_key"),
+        param(
             "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1}",
             {"\\()[]{}:= \t,": 1},
             id="dict_esc_key",
         ),
-        pytest.param("{white spaces: 1}", {"white spaces": 1}, id="dict_ws_key"),
-        pytest.param(
+        param("{white spaces: 1}", {"white spaces": 1}, id="dict_ws_key"),
+        param(
             "{'a:b': 1, ab 123.5 True: 2, null false: 3, 1: 4, null: 5}",
             {
                 QuotedString(text="a:b", quote=Quote.single): 1,
@@ -315,22 +309,18 @@ def test_dict_container(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("choice(a)", ChoiceSweep(list=["a"]), id="sweep:choice(a)"),
-        pytest.param(
-            "choice(a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice(a,b)"
-        ),
-        pytest.param(
-            "choice (a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice (a,b)"
-        ),
-        pytest.param(
+        param("choice(a)", ChoiceSweep(list=["a"]), id="sweep:choice(a)"),
+        param("choice(a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice(a,b)"),
+        param("choice (a,b)", ChoiceSweep(list=["a", "b"]), id="sweep:choice (a,b)"),
+        param(
             "choice( 10 , 20 )",
             ChoiceSweep(list=[10, 20]),
             id="sweep:choice( 10 , 20 )",
         ),
-        pytest.param("choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))"),
+        param("choice(str(10))", ChoiceSweep(list=["10"]), id="choice(str(10))"),
     ],
 )
 def test_choice_sweep(value: str, expected: Any) -> None:
@@ -338,19 +328,17 @@ def test_choice_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("a,b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a,b"),
-        pytest.param(
+        param("a,b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a,b"),
+        param(
             "a,10,3.14",
             ChoiceSweep(list=["a", 10, 3.14], simple_form=True),
             id="a,10,3.14",
         ),
-        pytest.param(
-            "a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b"
-        ),
-        pytest.param(
+        param("a , b", ChoiceSweep(list=["a", "b"], simple_form=True), id="a , b"),
+        param(
             "${a},${b}",
             ChoiceSweep(list=["${a}", "${b}"], simple_form=True),
             id="${a},${a}",
@@ -362,23 +350,23 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
-        pytest.param("range (10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
-        pytest.param(
+        param("range(10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
+        param("range (10,11)", RangeSweep(start=10, stop=11, step=1), id="ints"),
+        param(
             "range(1,10,2)", RangeSweep(start=1, stop=10, step=2), id="ints_with_step"
         ),
-        pytest.param(
+        param(
             "range(start=1,stop=10,step=2)",
             RangeSweep(start=1, stop=10, step=2),
             id="ints_with_step",
         ),
-        pytest.param(
+        param(
             "range(1.0, 3.14)", RangeSweep(start=1.0, stop=3.14, step=1), id="floats"
         ),
-        pytest.param(
+        param(
             "range(1.0, 3.14, 0.1)",
             RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
@@ -390,16 +378,16 @@ def test_range_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param(
+        param(
             "interval(10,11)", IntervalSweep(start=10.0, end=11.0), id="interval(10,11)"
         ),
-        pytest.param(
+        param(
             "interval(2.72,3.14)", IntervalSweep(start=2.72, end=3.14), id="interval"
         ),
-        pytest.param(
+        param(
             "interval(start=2.72,end=3.14)",
             IntervalSweep(start=2.72, end=3.14),
             id="interval:named",
@@ -413,41 +401,39 @@ def test_interval_sweep(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "rule,value,expected",
     [
         # errors
-        pytest.param(
+        param(
             "primitive",
             " ",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape("Trying to parse a primitive that is all whitespaces"),
             ),
             id="error:value:whitespace",
         ),
-        pytest.param(
+        param(
             "value",
             "[",
-            pytest.raises(
+            raises(
                 HydraException, match=re.escape("no viable alternative at input '['")
             ),
             id="error:partial_list",
         ),
-        pytest.param(
+        param(
             "override",
             "key=[]aa",
-            pytest.raises(
+            raises(
                 HydraException, match=re.escape("extraneous input 'aa' expecting <EOF>")
             ),
             id="error:left_overs",
         ),
-        pytest.param(
+        param(
             "override",
             "key=[1,2,3]'",
-            pytest.raises(
-                HydraException, match=re.escape("token recognition error at: '''")
-            ),
+            raises(HydraException, match=re.escape("token recognition error at: '''")),
             id="error:left_overs",
         ),
     ],
@@ -457,11 +443,11 @@ def test_parse_errors(rule: str, value: str, expected: Any) -> None:
         parse_rule(value, rule)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("abc", "abc", id="package"),
-        pytest.param("abc.cde", "abc.cde", id="package"),
+        param("abc", "abc", id="package"),
+        param("abc.cde", "abc.cde", id="package"),
     ],
 )
 def test_package(value: str, expected: Any) -> None:
@@ -469,12 +455,12 @@ def test_package(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("abc", "abc", id="package"),
-        pytest.param("abc.cde", "abc.cde", id="package"),
-        pytest.param("a/b/c", "a/b/c", id="group"),
+        param("abc", "abc", id="package"),
+        param("abc.cde", "abc.cde", id="package"),
+        param("a/b/c", "a/b/c", id="group"),
     ],
 )
 def test_package_or_group(value: str, expected: Any) -> None:
@@ -482,19 +468,19 @@ def test_package_or_group(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("abc", Key(key_or_group="abc"), id="abc"),
-        pytest.param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
-        pytest.param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
-        pytest.param("list.0", Key(key_or_group="list.0"), id="list.0"),
-        pytest.param(
+        param("abc", Key(key_or_group="abc"), id="abc"),
+        param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
+        param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
+        param("list.0", Key(key_or_group="list.0"), id="list.0"),
+        param(
             "package_or_group@pkg1",
             Key(key_or_group="package_or_group", package="pkg1"),
             id="package_or_group@pkg1",
         ),
-        pytest.param(
+        param(
             "package_or_group@",
             Key(key_or_group="package_or_group", package=""),
             id="package_or_group@",
@@ -506,149 +492,147 @@ def test_key(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("a", "a", id="a"),
-        pytest.param("/:-\\+.$%*@", "/:-\\+.$%*@", id="accepted_specials"),
-        pytest.param("abc10", "abc10", id="abc10"),
-        pytest.param("a.b.c", "a.b.c", id="a.b.c"),
-        pytest.param("list.0.bar", "list.0.bar", id="list.0.bar"),
-        pytest.param("0.foo", "0.foo", id="0.foo"),
-        pytest.param("10", 10, id="10"),
-        pytest.param("10abc", "10abc", id="10abc"),
-        pytest.param("abc-cde", "abc-cde", id="abc-cde"),
-        pytest.param("true", True, id="primitive:bool"),
-        pytest.param("True", True, id="primitive:bool"),
-        pytest.param("TRUE", True, id="primitive:bool"),
-        pytest.param("trUe", True, id="primitive:bool"),
-        pytest.param("false", False, id="primitive:bool"),
-        pytest.param("False", False, id="primitive:bool"),
-        pytest.param("FALSE", False, id="primitive:bool"),
-        pytest.param("faLse", False, id="primitive:bool"),
-        pytest.param("abc", "abc", id="primitive:id"),
-        pytest.param("abc123", "abc123", id="primitive:idint"),
-        pytest.param("abc-123", "abc-123", id="primitive:id-int"),
-        pytest.param("xyz_${a.b.c}", "xyz_${a.b.c}", id="primitive:str_interpolation"),
-        pytest.param(
+        param("a", "a", id="a"),
+        param("/:-\\+.$%*@", "/:-\\+.$%*@", id="accepted_specials"),
+        param("abc10", "abc10", id="abc10"),
+        param("a.b.c", "a.b.c", id="a.b.c"),
+        param("list.0.bar", "list.0.bar", id="list.0.bar"),
+        param("0.foo", "0.foo", id="0.foo"),
+        param("10", 10, id="10"),
+        param("10abc", "10abc", id="10abc"),
+        param("abc-cde", "abc-cde", id="abc-cde"),
+        param("true", True, id="primitive:bool"),
+        param("True", True, id="primitive:bool"),
+        param("TRUE", True, id="primitive:bool"),
+        param("trUe", True, id="primitive:bool"),
+        param("false", False, id="primitive:bool"),
+        param("False", False, id="primitive:bool"),
+        param("FALSE", False, id="primitive:bool"),
+        param("faLse", False, id="primitive:bool"),
+        param("abc", "abc", id="primitive:id"),
+        param("abc123", "abc123", id="primitive:idint"),
+        param("abc-123", "abc-123", id="primitive:id-int"),
+        param("xyz_${a.b.c}", "xyz_${a.b.c}", id="primitive:str_interpolation"),
+        param(
             "${env:USER,root}", "${env:USER,root}", id="primitive:custom_interpolation"
         ),
-        pytest.param(
-            "c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="primitive:windows_path"
-        ),
+        param("c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="primitive:windows_path"),
         # null
-        pytest.param("null", None, id="primitive:null"),
+        param("null", None, id="primitive:null"),
         # int
-        pytest.param("0", 0, id="primitive:int:zero"),
-        pytest.param("-1", -1, id="primitive:int:neg"),
-        pytest.param("1", 1, id="primitive:int:pos"),
-        pytest.param("10_0", 100, id="primitive:int:underscore"),
+        param("0", 0, id="primitive:int:zero"),
+        param("-1", -1, id="primitive:int:neg"),
+        param("1", 1, id="primitive:int:pos"),
+        param("10_0", 100, id="primitive:int:underscore"),
         # float
-        pytest.param("0.0", 0.0, id="primitive:float:zero"),
-        pytest.param("0.51", 0.51, id="primitive:float:positive"),
-        pytest.param("1e-05", 1e-05, id="primitive:float:small"),
-        pytest.param("-3.14", -3.14, id="primitive:float:negative"),
-        pytest.param("3.1_4", 3.14, id="primitive:float:underscore"),
-        pytest.param("10e0", 10.0, id="primitive:float:exp"),
-        pytest.param("-10e1", -100.0, id="primitive:float:exp:neg"),
-        pytest.param("inf", math.inf, id="primitive:float:inf"),
-        pytest.param("INF", math.inf, id="primitive:float:inf"),
-        pytest.param("-inf", -math.inf, id="primitive:float:inf:neg"),
-        pytest.param("nan", math.nan, id="primitive:float:nan"),
-        pytest.param("NaN", math.nan, id="primitive:float:nan"),
+        param("0.0", 0.0, id="primitive:float:zero"),
+        param("0.51", 0.51, id="primitive:float:positive"),
+        param("1e-05", 1e-05, id="primitive:float:small"),
+        param("-3.14", -3.14, id="primitive:float:negative"),
+        param("3.1_4", 3.14, id="primitive:float:underscore"),
+        param("10e0", 10.0, id="primitive:float:exp"),
+        param("-10e1", -100.0, id="primitive:float:exp:neg"),
+        param("inf", math.inf, id="primitive:float:inf"),
+        param("INF", math.inf, id="primitive:float:inf"),
+        param("-inf", -math.inf, id="primitive:float:inf:neg"),
+        param("nan", math.nan, id="primitive:float:nan"),
+        param("NaN", math.nan, id="primitive:float:nan"),
         # bool
-        pytest.param("true", True, id="primitive:bool"),
-        pytest.param("false", False, id="primitive:bool"),
+        param("true", True, id="primitive:bool"),
+        param("false", False, id="primitive:bool"),
         # quoted string
-        pytest.param(
+        param(
             "'foo \\'bar'",
             QuotedString(text="foo 'bar", quote=Quote.single),
             id="value:escape_single_quote",
         ),
-        pytest.param(
+        param(
             '"foo \\"bar"',
             QuotedString(text='foo "bar', quote=Quote.double),
             id="value:escape_double_quote",
         ),
-        pytest.param(
+        param(
             "'\t []{},=+~'",
             QuotedString(text="\t []{},=+~", quote=Quote.single),
             id="value:quoted_specials",
         ),
-        pytest.param(
+        param(
             '"\t []{},=+~"',
             QuotedString(text="\t []{},=+~", quote=Quote.double),
             id="value:quoted_specials",
         ),
-        pytest.param(
+        param(
             "'a b c'",
             QuotedString(text="a b c", quote=Quote.single),
             id="value:quoted_with_whitespace",
         ),
-        pytest.param(
+        param(
             "'a,b'",
             QuotedString(text="a,b", quote=Quote.single),
             id="value:quoted_with_comma",
         ),
-        pytest.param(
+        param(
             "'[1,2,3]'",
             QuotedString(text="[1,2,3]", quote=Quote.single),
             id="value:quoted_list",
         ),
-        pytest.param(
+        param(
             '"[1,2,3]"',
             QuotedString(text="[1,2,3]", quote=Quote.double),
             id="value:quoted_list",
         ),
-        pytest.param(
+        param(
             "\"[1,'2',3]\"",
             QuotedString(text="[1,'2',3]", quote=Quote.double),
             id="value:quoted_list_with_quoted_element",
         ),
-        pytest.param(
+        param(
             "'null'",
             QuotedString(text="null", quote=Quote.single),
             id="value:null:quoted",
         ),
-        pytest.param(
+        param(
             "'100'", QuotedString(text="100", quote=Quote.single), id="value:int:quoted"
         ),
-        pytest.param(
+        param(
             "'3.14'",
             QuotedString(text="3.14", quote=Quote.single),
             id="value:float:quoted",
         ),
-        pytest.param(
+        param(
             "'nan'",
             QuotedString(text="nan", quote=Quote.single),
             id="value:float:constant:quoted",
         ),
-        pytest.param(
+        param(
             "'inf'",
             QuotedString(text="inf", quote=Quote.single),
             id="value:float:constant:quoted",
         ),
-        pytest.param(
+        param(
             "'nan'",
             QuotedString(text="nan", quote=Quote.single),
             id="value:float:constant:quoted",
         ),
-        pytest.param(
+        param(
             "'true'",
             QuotedString(text="true", quote=Quote.single),
             id="value:bool:quoted",
         ),
-        pytest.param(
+        param(
             "'false'",
             QuotedString(text="false", quote=Quote.single),
             id="value:bool:quoted",
         ),
         # interpolations:
-        pytest.param("${a}", "${a}", id="primitive:interpolation"),
-        pytest.param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
-        pytest.param("${foo:a}", "${foo:a}", id="primitive:interpolation"),
-        pytest.param("${foo:1,2,3}", "${foo:1,2,3}", id="primitive:interpolation"),
-        pytest.param("${foo:[1,2,3]}", "${foo:[1,2,3]}", id="primitive:interpolation"),
+        param("${a}", "${a}", id="primitive:interpolation"),
+        param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
+        param("${foo:a}", "${foo:a}", id="primitive:interpolation"),
+        param("${foo:1,2,3}", "${foo:1,2,3}", id="primitive:interpolation"),
+        param("${foo:[1,2,3]}", "${foo:[1,2,3]}", id="primitive:interpolation"),
     ],
 )
 def test_primitive(value: str, expected: Any) -> None:
@@ -659,114 +643,108 @@ def test_primitive(value: str, expected: Any) -> None:
     assert eq(ret, expected)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "prefix,override_type",
     [
-        pytest.param("", OverrideType.CHANGE, id="change"),
-        pytest.param("+", OverrideType.ADD, id="add"),
-        pytest.param("++", OverrideType.FORCE_ADD, id="force_add"),
-        pytest.param("~", OverrideType.DEL, id="del"),
+        param("", OverrideType.CHANGE, id="change"),
+        param("+", OverrideType.ADD, id="add"),
+        param("++", OverrideType.FORCE_ADD, id="force_add"),
+        param("~", OverrideType.DEL, id="del"),
     ],
 )
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected_key,expected_value,expected_value_type",
     [
-        pytest.param("key=value", "key", "value", ValueType.ELEMENT, id="simple_value"),
-        pytest.param(
+        param("key=value", "key", "value", ValueType.ELEMENT, id="simple_value"),
+        param(
             "key='1,2,3'",
             "key",
             QuotedString(text="1,2,3", quote=Quote.single),
             ValueType.ELEMENT,
             id="simple_value",
         ),
-        pytest.param(
+        param(
             "key='שלום'",
             "key",
             QuotedString(text="שלום", quote=Quote.single),
             ValueType.ELEMENT,
             id="unicode",
         ),
-        pytest.param(
-            "key=value-123", "key", "value-123", ValueType.ELEMENT, id="id-int"
-        ),
-        pytest.param(
-            "key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, id="id-float"
-        ),
-        pytest.param(
-            "key=value-true", "key", "value-true", ValueType.ELEMENT, id="id-bool"
-        ),
-        pytest.param("key=", "key", "", ValueType.ELEMENT, id="empty_value"),
-        pytest.param(
+        param("key=value-123", "key", "value-123", ValueType.ELEMENT, id="id-int"),
+        param("key=value-1.0", "key", "value-1.0", ValueType.ELEMENT, id="id-float"),
+        param("key=value-true", "key", "value-true", ValueType.ELEMENT, id="id-bool"),
+        param("key=", "key", "", ValueType.ELEMENT, id="empty_value"),
+        param(
             "key='foo,bar'",
             "key",
             QuotedString(text="foo,bar", quote=Quote.single),
             ValueType.ELEMENT,
             id="quoted_value",
         ),
-        pytest.param(
+        param(
             "key='foo , bar'",
             "key",
             QuotedString(text="foo , bar", quote=Quote.single),
             ValueType.ELEMENT,
             id="quoted_value",
         ),
-        pytest.param(
+        param(
             "key=1,2,3",
             "key",
             ChoiceSweep(list=[1, 2, 3], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
             id="choice",
         ),
-        pytest.param(
+        param(
             "key=choice(1)",
             "key",
             ChoiceSweep(list=[1]),
             ValueType.CHOICE_SWEEP,
             id="choice_1_element",
         ),
-        pytest.param(
+        param(
             "key=choice(1,2,3)",
             "key",
             ChoiceSweep(list=[1, 2, 3]),
             ValueType.CHOICE_SWEEP,
             id="choice_sweep",
         ),
-        pytest.param(
+        param(
             "key=[1,2],[3,4]",
             "key",
             ChoiceSweep(list=[[1, 2], [3, 4]], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
             id="choice",
         ),
-        pytest.param(
+        param(
             "key=choice([1,2],[3,4])",
             "key",
             ChoiceSweep(list=[[1, 2], [3, 4]]),
             ValueType.CHOICE_SWEEP,
             id="choice",
         ),
-        pytest.param(
+        param(
             "key=range(0,2)",
             "key",
             RangeSweep(start=0, stop=2),
             ValueType.RANGE_SWEEP,
             id="range",
         ),
-        pytest.param(
+        param(
             "key=range(1,5,2)",
             "key",
             RangeSweep(start=1, stop=5, step=2),
             ValueType.RANGE_SWEEP,
             id="range",
         ),
-        pytest.param(
+        param(
             "key=range(10.0, 11.0)",
             "key",
             RangeSweep(start=10.0, stop=11.0, step=1.0),
             ValueType.RANGE_SWEEP,
             id="range",
         ),
-        pytest.param(
+        param(
             "key=interval(0,1)",
             "key",
             IntervalSweep(start=0.0, end=1.0),
@@ -774,24 +752,22 @@ def test_primitive(value: str, expected: Any) -> None:
             id="interval",
         ),
         # tags
-        pytest.param(
+        param(
             "key=tag(a,b,choice([1,2],[3,4]))",
             "key",
             ChoiceSweep(list=[[1, 2], [3, 4]], tags={"a", "b"}),
             ValueType.CHOICE_SWEEP,
             id="choice:tags",
         ),
-        pytest.param(
+        param(
             "key=tag(a,b,interval(0,1))",
             "key",
             IntervalSweep(tags={"a", "b"}, start=0.0, end=1.0),
             ValueType.INTERVAL_SWEEP,
             id="interval:tags",
         ),
-        pytest.param(
-            "key=str([1,2])", "key", ["1", "2"], ValueType.ELEMENT, id="cast_list"
-        ),
-        pytest.param(
+        param("key=str([1,2])", "key", ["1", "2"], ValueType.ELEMENT, id="cast_list"),
+        param(
             "choice=reverse",
             "choice",
             "reverse",
@@ -825,7 +801,7 @@ def test_deprecated_name_package() -> None:
         "In override key@_name_=value: _name_ keyword is deprecated in packages, "
         "see https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
     )
-    with pytest.warns(
+    with warns(
         UserWarning,
         match=re.escape(msg),
     ):
@@ -840,17 +816,17 @@ def test_deprecated_name_package() -> None:
         )
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param(
+        param(
             "~x",
             Override(
                 type=OverrideType.DEL, key_or_group="x", value_type=None, _value=None
             ),
             id="bare_del",
         ),
-        pytest.param(
+        param(
             "~x=10",
             Override(
                 type=OverrideType.DEL,
@@ -860,7 +836,7 @@ def test_deprecated_name_package() -> None:
             ),
             id="specific_del",
         ),
-        pytest.param(
+        param(
             "~x=",
             Override(
                 type=OverrideType.DEL,
@@ -914,21 +890,21 @@ def test_parse_overrides() -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "override,expected",
     [
         # change
-        pytest.param("key=value", "key", id="key"),
-        pytest.param("key@pkg1=value", "key@pkg1", id="key@pkg1"),
+        param("key=value", "key", id="key"),
+        param("key@pkg1=value", "key@pkg1", id="key@pkg1"),
         # add
-        pytest.param("+key=value", "+key", id="+key"),
-        pytest.param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
+        param("+key=value", "+key", id="+key"),
+        param("+key@pkg1=value", "+key@pkg1", id="+key@pkg1"),
         # force-add
-        pytest.param("++key=value", "++key", id="++key"),
-        pytest.param("++key@pkg1=value", "++key@pkg1", id="++key@pkg1"),
+        param("++key=value", "++key", id="++key"),
+        param("++key@pkg1=value", "++key@pkg1", id="++key@pkg1"),
         # del
-        pytest.param("~key=value", "~key", id="~key"),
-        pytest.param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
+        param("~key=value", "~key", id="~key"),
+        param("~key@pkg1=value", "~key@pkg1", id="~key@pkg1"),
     ],
 )
 def test_get_key_element(override: str, expected: str) -> None:
@@ -936,51 +912,51 @@ def test_get_key_element(override: str, expected: str) -> None:
     assert ret.get_key_element() == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "override,expected,space_after_sep",
     [
-        pytest.param("key=value", "value", False, id="str"),
-        pytest.param("key='value'", "'value'", False, id="single_quoted"),
-        pytest.param('key="value"', '"value"', False, id="double_quoted"),
-        pytest.param("key='שלום'", "'שלום'", False, id="quoted_unicode"),
-        pytest.param(
+        param("key=value", "value", False, id="str"),
+        param("key='value'", "'value'", False, id="single_quoted"),
+        param('key="value"', '"value"', False, id="double_quoted"),
+        param("key='שלום'", "'שלום'", False, id="quoted_unicode"),
+        param(
             "key=\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,",
             "\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,",
             False,
             id="escaped_chars",
         ),
-        pytest.param("key=10", "10", False, id="int"),
-        pytest.param("key=3.1415", "3.1415", False, id="float"),
-        pytest.param("key=[]", "[]", False, id="list"),
-        pytest.param("key=[1,2,3]", "[1,2,3]", False, id="list"),
-        pytest.param("key=[1,2,3]", "[1, 2, 3]", True, id="list"),
-        pytest.param("key=['a b', 2, 3]", "['a b',2,3]", False, id="list"),
-        pytest.param("key=['a b', 2, 3]", "['a b', 2, 3]", True, id="list"),
-        pytest.param("key={}", "{}", False, id="dict"),
-        pytest.param("key={a:10}", "{a:10}", False, id="dict"),
-        pytest.param("key={a:10}", "{a: 10}", True, id="dict"),
-        pytest.param("key={a:10,b:20}", "{a:10,b:20}", False, id="dict"),
-        pytest.param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
-        pytest.param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
-        pytest.param(
+        param("key=10", "10", False, id="int"),
+        param("key=3.1415", "3.1415", False, id="float"),
+        param("key=[]", "[]", False, id="list"),
+        param("key=[1,2,3]", "[1,2,3]", False, id="list"),
+        param("key=[1,2,3]", "[1, 2, 3]", True, id="list"),
+        param("key=['a b', 2, 3]", "['a b',2,3]", False, id="list"),
+        param("key=['a b', 2, 3]", "['a b', 2, 3]", True, id="list"),
+        param("key={}", "{}", False, id="dict"),
+        param("key={a:10}", "{a:10}", False, id="dict"),
+        param("key={a:10}", "{a: 10}", True, id="dict"),
+        param("key={a:10,b:20}", "{a:10,b:20}", False, id="dict"),
+        param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
+        param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
+        param(
             "key={'null':1, \"a:b\": 0}",
             "{'null': 1, \"a:b\": 0}",
             True,
             id="dict_quoted_key",
         ),
-        pytest.param(
+        param(
             "key={/-\\+.$%*@: 1}",
             "{/-\\\\+.$%*@: 1}",  # note that \ gets escaped
             True,
             id="dict_unquoted_key_special",
         ),
-        pytest.param(
+        param(
             "key={ white  space\t: 2}",
             "{white\\ \\ space: 2}",
             True,
             id="dict_ws_in_key",
         ),
-        pytest.param(
+        param(
             "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 2}",
             "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 2}",
             True,
@@ -995,31 +971,31 @@ def test_override_get_value_element_method(
     assert ret.get_value_element_as_str(space_after_sep=space_after_sep) == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "override,expected",
     [
-        pytest.param("key=value", "value", id="str"),
-        pytest.param("key='value'", "value", id="quoted_str"),
-        pytest.param('key="value"', "value", id="quoted_str"),
-        pytest.param("key=10", 10, id="int"),
-        pytest.param("key=3.1415", 3.1415, id="float"),
-        pytest.param("key=[]", [], id="list"),
-        pytest.param("key=[1,2,3]", [1, 2, 3], id="list"),
-        pytest.param("key=[1,2,3]", [1, 2, 3], id="list"),
-        pytest.param("key=['a b', 2, 3]", ["a b", 2, 3], id="list"),
-        pytest.param("key=['a b', 2, 3]", ["a b", 2, 3], id="list"),
-        pytest.param("key={}", {}, id="dict"),
-        pytest.param("key={a:10}", {"a": 10}, id="dict"),
-        pytest.param("key={a:10}", {"a": 10}, id="dict"),
-        pytest.param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
-        pytest.param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
-        pytest.param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
-        pytest.param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
-        pytest.param("key={' abc ': 0}", {" abc ": 0}, id="dict_key_quoted_single"),
-        pytest.param('key={" abc ": 0}', {" abc ": 0}, id="dict_key_quoted_double"),
-        pytest.param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
-        pytest.param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
-        pytest.param(
+        param("key=value", "value", id="str"),
+        param("key='value'", "value", id="quoted_str"),
+        param('key="value"', "value", id="quoted_str"),
+        param("key=10", 10, id="int"),
+        param("key=3.1415", 3.1415, id="float"),
+        param("key=[]", [], id="list"),
+        param("key=[1,2,3]", [1, 2, 3], id="list"),
+        param("key=[1,2,3]", [1, 2, 3], id="list"),
+        param("key=['a b', 2, 3]", ["a b", 2, 3], id="list"),
+        param("key=['a b', 2, 3]", ["a b", 2, 3], id="list"),
+        param("key={}", {}, id="dict"),
+        param("key={a:10}", {"a": 10}, id="dict"),
+        param("key={a:10}", {"a": 10}, id="dict"),
+        param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
+        param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
+        param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
+        param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
+        param("key={' abc ': 0}", {" abc ": 0}, id="dict_key_quoted_single"),
+        param('key={" abc ": 0}', {" abc ": 0}, id="dict_key_quoted_double"),
+        param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
+        param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
+        param(
             "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 0}",
             {"\\()[]{}:= \t,": 0},
             id="dict_key_esc",
@@ -1031,21 +1007,21 @@ def test_override_value_method(override: str, expected: str) -> None:
     assert ret.value() == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "start,stop,step,expected",
     [
         # empty
-        pytest.param(0, 0, 1, [], id="FloatRange:empty"),
-        pytest.param(0, 0, -1, [], id="FloatRange:empty"),
-        pytest.param(10, 0, 1, [], id="FloatRange:empty"),
-        pytest.param(0, 10, -1, [], id="FloatRange:empty"),
+        param(0, 0, 1, [], id="FloatRange:empty"),
+        param(0, 0, -1, [], id="FloatRange:empty"),
+        param(10, 0, 1, [], id="FloatRange:empty"),
+        param(0, 10, -1, [], id="FloatRange:empty"),
         # up
-        pytest.param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
-        pytest.param(0, 2, 0.5, [0.0, 0.5, 1.0, 1.5], id="FloatRange:up"),
-        pytest.param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
+        param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
+        param(0, 2, 0.5, [0.0, 0.5, 1.0, 1.5], id="FloatRange:up"),
+        param(0, 2, 1, [0.0, 1.0], id="FloatRange:up"),
         # down
-        pytest.param(2, 0, -1, [2.0, 1.0], id="FloatRange:down"),
-        pytest.param(10.0, 5.0, -2, [10.0, 8.0, 6.0], id="FloatRange:down"),
+        param(2, 0, -1, [2.0, 1.0], id="FloatRange:down"),
+        param(10.0, 5.0, -2, [10.0, 8.0, 6.0], id="FloatRange:down"),
     ],
 )
 def test_float_range(
@@ -1057,39 +1033,35 @@ def test_float_range(
         assert math.fabs(res[i] - expected[i]) < 10e-6
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value, expected",
     [
         # choice
-        pytest.param(
-            "tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="tag(choice(a,b))"
-        ),
-        pytest.param(
+        param("tag(choice(a,b))", ChoiceSweep(list=["a", "b"]), id="tag(choice(a,b))"),
+        param(
             "tag(tag1,tag2,choice(a,b))",
             ChoiceSweep(list=["a", "b"], tags={"tag1", "tag2"}),
             id="tag(tag1,tag2,choice(a,b))",
         ),
         # interval
-        pytest.param(
+        param(
             "tag(interval(0,2))",
             IntervalSweep(start=0.0, end=2.0),
             id="tag(interval(0,2))",
         ),
-        pytest.param(
+        param(
             "tag(tag1,tag2,interval(0,2))",
             IntervalSweep(start=0.0, end=2.0, tags={"tag1", "tag2"}),
             id="tag(tag1,tag2,interval(0,2))",
         ),
         # range
-        pytest.param(
-            "tag(range(1,2))", RangeSweep(start=1, stop=2), id="tag(range(1,2))"
-        ),
-        pytest.param(
+        param("tag(range(1,2))", RangeSweep(start=1, stop=2), id="tag(range(1,2))"),
+        param(
             "tag(tag1,tag2,range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
             id="tag(tag1,tag2,range(1,2))",
         ),
-        pytest.param(
+        param(
             "tag(tag1,tag2,sweep=range(1,2))",
             RangeSweep(start=1, stop=2, tags={"tag1", "tag2"}),
             id="tag(tag1,tag2,sweep=range(1,2))",
@@ -1101,88 +1073,84 @@ def test_tag_sweep(value: str, expected: str) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value, expected",
     [
         # value
-        pytest.param("sort(1)", 1, id="sort:value"),
-        pytest.param("sort({a:10})", {"a": 10}, id="sort:value"),
+        param("sort(1)", 1, id="sort:value"),
+        param("sort({a:10})", {"a": 10}, id="sort:value"),
         # list
-        pytest.param("sort([1])", [1], id="sort:list"),
-        pytest.param("sort([1,2,3])", [1, 2, 3], id="sort:list"),
-        pytest.param("sort(list=[1,2,3])", [1, 2, 3], id="sort:list:named"),
-        pytest.param("sort(list=[])", [], id="sort:list:named:empty"),
-        pytest.param(
-            "sort(list=[1,2,3], reverse=True)", [3, 2, 1], id="sort:list:named:rev"
-        ),
+        param("sort([1])", [1], id="sort:list"),
+        param("sort([1,2,3])", [1, 2, 3], id="sort:list"),
+        param("sort(list=[1,2,3])", [1, 2, 3], id="sort:list:named"),
+        param("sort(list=[])", [], id="sort:list:named:empty"),
+        param("sort(list=[1,2,3], reverse=True)", [3, 2, 1], id="sort:list:named:rev"),
         # simple choice sweep
-        pytest.param(
+        param(
             "sort(1,2,3)",
             ChoiceSweep(list=[1, 2, 3], simple_form=True),
             id="sort:choice:simple",
         ),
-        pytest.param(
+        param(
             "sort(1,2,3,reverse=True)",
             ChoiceSweep(list=[3, 2, 1], simple_form=True),
             id="sort:choice:simple:rev",
         ),
         # choice sweep
-        pytest.param(
-            "sort(choice(1,2,3))", ChoiceSweep(list=[1, 2, 3]), id="sort:choice"
-        ),
-        pytest.param(
+        param("sort(choice(1,2,3))", ChoiceSweep(list=[1, 2, 3]), id="sort:choice"),
+        param(
             "sort(sweep=choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3]),
             id="sort:choice:named",
         ),
-        pytest.param(
+        param(
             "sort(choice(1,2,3), reverse=True)",
             ChoiceSweep(list=[3, 2, 1]),
             id="sort:choice:rev",
         ),
-        pytest.param(
+        param(
             "sort(tag(a,b,choice(1,2,3)), reverse=True)",
             ChoiceSweep(list=[3, 2, 1], tags={"a", "b"}),
             id="sort:tag:choice:rev",
         ),
         # sort integer range
-        pytest.param(
+        param(
             "sort(range(1, 10))",
             RangeSweep(start=1, stop=10, step=1),
             id="sort(range(1, 10))",
         ),
-        pytest.param(
+        param(
             "sort(range(9,0,-1))",
             RangeSweep(start=1, stop=10, step=1),
             id="sort(range(1, 10))",
         ),
-        pytest.param(
+        param(
             "sort(range(1,10),reverse=True)",
             RangeSweep(start=9, stop=0, step=-1),
             id="sort(range(1,10),reverse=True)",
         ),
-        pytest.param(
+        param(
             "sort(sort(range(1, 10),reverse=true))",
             RangeSweep(start=1, stop=10, step=1),
             id="sort(sort(range(1, 10),reverse=true))",
         ),
         # sort float range
-        pytest.param(
+        param(
             "sort(range(0,2,0.5))",
             RangeSweep(start=0, stop=2, step=0.5),
             id="sort(range(0,2,0.5))",
         ),
-        pytest.param(
+        param(
             "sort(range(1.5,-0.5,-0.5))",
             RangeSweep(start=0.0, stop=2.0, step=0.5),
             id="sort(range(1.5,-0.5,-0.5))",
         ),
-        pytest.param(
+        param(
             "sort(range(0,2,0.5),reverse=true)",
             RangeSweep(start=1.5, stop=-0.5, step=-0.5),
             id="range:sort:reverse)",
         ),
-        pytest.param(
+        param(
             "shuffle(range(1, 10))",
             RangeSweep(start=1, stop=10, step=1, shuffle=True),
             id="range:shuffle",
@@ -1194,38 +1162,38 @@ def test_sort(value: str, expected: str) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value, expected",
     [
         # simple choice sweep
-        pytest.param(
+        param(
             "shuffle(1,2,3)",
             ChoiceSweep(simple_form=True, list=[1, 2, 3], tags=set(), shuffle=True),
             id="shuffle:choice:simple",
         ),
         # choice sweep
-        pytest.param(
+        param(
             "shuffle(choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3], tags=set(), shuffle=True),
             id="shuffle:choice",
         ),
-        pytest.param(
+        param(
             "shuffle(tag(a,b,choice(1,2,3)))",
             ChoiceSweep(list=[1, 2, 3], tags={"a", "b"}, shuffle=True),
             id="shuffle:tag:choice",
         ),
         # range sweep
-        pytest.param(
+        param(
             "shuffle(range(10,1))",
             RangeSweep(start=10, stop=1, shuffle=True),
             id="shuffle:range",
         ),
-        pytest.param(
+        param(
             "shuffle(float(range(10,1))))",
             RangeSweep(start=10.0, stop=1.0, shuffle=True),
             id="shuffle:float:range",
         ),
-        pytest.param(
+        param(
             "shuffle(tag(a,b,range(1,10,2)))",
             RangeSweep(start=1, stop=10, step=2, tags={"a", "b"}, shuffle=True),
             id="shuffle:tag:range",
@@ -1270,23 +1238,19 @@ class CastResults:
 
     @staticmethod
     def error(msg: str) -> Any:
-        return pytest.raises(HydraException, match=f"^{re.escape(msg)}")
+        return raises(HydraException, match=f"^{re.escape(msg)}")
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected_value",
     [
         # int
-        pytest.param(10, CastResults(int=10, float=10.0, str="10", bool=True), id="10"),
-        pytest.param(0, CastResults(int=0, float=0.0, str="0", bool=False), id="0"),
+        param(10, CastResults(int=10, float=10.0, str="10", bool=True), id="10"),
+        param(0, CastResults(int=0, float=0.0, str="0", bool=False), id="0"),
         # float
-        pytest.param(
-            10.0, CastResults(int=10, float=10.0, str="10.0", bool=True), id="10.0"
-        ),
-        pytest.param(
-            0.0, CastResults(int=0, float=0.0, str="0.0", bool=False), id="0.0"
-        ),
-        pytest.param(
+        param(10.0, CastResults(int=10, float=10.0, str="10.0", bool=True), id="10.0"),
+        param(0.0, CastResults(int=0, float=0.0, str="0.0", bool=False), id="0.0"),
+        param(
             "inf",
             CastResults(
                 int=CastResults.error(
@@ -1298,7 +1262,7 @@ class CastResults:
             ),
             id="inf",
         ),
-        pytest.param(
+        param(
             "nan",
             CastResults(
                 int=CastResults.error(
@@ -1310,12 +1274,12 @@ class CastResults:
             ),
             id="nan",
         ),
-        pytest.param(
+        param(
             "1e6",
             CastResults(int=1000000, float=1e6, str="1000000.0", bool=True),
             id="1e6",
         ),
-        pytest.param(
+        param(
             "''",
             CastResults(
                 int=CastResults.error(
@@ -1332,7 +1296,7 @@ class CastResults:
             id="''",
         ),
         # string
-        pytest.param(
+        param(
             "'10'",
             CastResults(
                 int=10,
@@ -1344,7 +1308,7 @@ class CastResults:
             ),
             id="'10'",
         ),
-        pytest.param(
+        param(
             "'10.0'",
             CastResults(
                 int=CastResults.error(
@@ -1358,7 +1322,7 @@ class CastResults:
             ),
             id="'10.0'",
         ),
-        pytest.param(
+        param(
             "'true'",
             CastResults(
                 int=CastResults.error(
@@ -1372,7 +1336,7 @@ class CastResults:
             ),
             id="'true'",
         ),
-        pytest.param(
+        param(
             "'false'",
             CastResults(
                 int=CastResults.error(
@@ -1386,7 +1350,7 @@ class CastResults:
             ),
             id="'false'",
         ),
-        pytest.param(
+        param(
             "'[1,2,3]'",
             CastResults(
                 int=CastResults.error(
@@ -1402,7 +1366,7 @@ class CastResults:
             ),
             id="'[1,2,3]'",
         ),
-        pytest.param(
+        param(
             "'{a:10}'",
             CastResults(
                 int=CastResults.error(
@@ -1419,15 +1383,13 @@ class CastResults:
             id="'{a:10}'",
         ),
         # bool
-        pytest.param(
-            "true", CastResults(int=1, float=1.0, str="true", bool=True), id="true"
-        ),
-        pytest.param(
+        param("true", CastResults(int=1, float=1.0, str="true", bool=True), id="true"),
+        param(
             "false", CastResults(int=0, float=0.0, str="false", bool=False), id="false"
         ),
         # list
-        pytest.param("[]", CastResults(int=[], float=[], str=[], bool=[]), id="[]"),
-        pytest.param(
+        param("[]", CastResults(int=[], float=[], str=[], bool=[]), id="[]"),
+        param(
             "[0,1,2]",
             CastResults(
                 int=[0, 1, 2],
@@ -1437,14 +1399,14 @@ class CastResults:
             ),
             id="[1,2,3]",
         ),
-        pytest.param(
+        param(
             "[1,[2]]",
             CastResults(
                 int=[1, [2]], float=[1.0, [2.0]], str=["1", ["2"]], bool=[True, [True]]
             ),
             id="[1,[2]]",
         ),
-        pytest.param(
+        param(
             "[a,1]",
             CastResults(
                 int=CastResults.error(
@@ -1461,15 +1423,15 @@ class CastResults:
             id="[a,1]",
         ),
         # dicts
-        pytest.param("{}", CastResults(int={}, float={}, str={}, bool={}), id="{}"),
-        pytest.param(
+        param("{}", CastResults(int={}, float={}, str={}, bool={}), id="{}"),
+        param(
             "{a:10}",
             CastResults(
                 int={"a": 10}, float={"a": 10.0}, str={"a": "10"}, bool={"a": True}
             ),
             id="{a:10}",
         ),
-        pytest.param(
+        param(
             "{a:[0,1,2]}",
             CastResults(
                 int={"a": [0, 1, 2]},
@@ -1479,7 +1441,7 @@ class CastResults:
             ),
             id="{a:[0,1,2]}",
         ),
-        pytest.param(
+        param(
             "{a:10,b:xyz}",
             CastResults(
                 int=CastResults.error(
@@ -1496,7 +1458,7 @@ class CastResults:
             id="{a:10,b:xyz}",
         ),
         # choice
-        pytest.param(
+        param(
             "choice(0,1)",
             CastResults(
                 int=ChoiceSweep(list=[0, 1]),
@@ -1506,7 +1468,7 @@ class CastResults:
             ),
             id="choice(0,1)",
         ),
-        pytest.param(
+        param(
             "2,1,0",
             CastResults(
                 int=ChoiceSweep(list=[2, 1, 0], simple_form=True),
@@ -1516,7 +1478,7 @@ class CastResults:
             ),
             id="simple_choice:ints",
         ),
-        pytest.param(
+        param(
             "a,'b',1,1.0,true,[a,b],{a:10}",
             CastResults(
                 int=CastResults.error(
@@ -1537,7 +1499,7 @@ class CastResults:
             ),
             id="simple_choice:types",
         ),
-        pytest.param(
+        param(
             "choice(a,b)",
             CastResults(
                 int=CastResults.error(
@@ -1553,7 +1515,7 @@ class CastResults:
             ),
             id="choice(a,b)",
         ),
-        pytest.param(
+        param(
             "choice(1,a)",
             CastResults(
                 int=CastResults.error(
@@ -1570,7 +1532,7 @@ class CastResults:
             id="choice(1,a)",
         ),
         # interval
-        pytest.param(
+        param(
             "interval(1.0, 2.0)",
             CastResults(
                 int=IntervalSweep(start=1, end=2),
@@ -1585,7 +1547,7 @@ class CastResults:
             id="interval(1.0, 2.0)",
         ),
         # range
-        pytest.param(
+        param(
             "range(1,10)",
             CastResults(
                 int=RangeSweep(start=1, stop=10, step=1),
@@ -1599,7 +1561,7 @@ class CastResults:
             ),
             id="range(1,10)",
         ),
-        pytest.param(
+        param(
             "range(1.0,10.0)",
             CastResults(
                 int=RangeSweep(start=1, stop=10, step=1),
@@ -1627,12 +1589,12 @@ def test_cast_conversions(value: Any, expected_value: Any) -> None:
             assert eq(result, expected), f"{field} cast result mismatch"
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected_value",
     [
-        pytest.param("abs(10)", 10, id="abs(10)"),
-        pytest.param("abs(-10)", 10, id="abs(-10)"),
-        pytest.param("mul(abs(-10),2)", 20, id="mul(abs(-10),2)"),
+        param("abs(10)", 10, id="abs(10)"),
+        param("abs(-10)", 10, id="abs(-10)"),
+        param("mul(abs(-10),2)", 20, id="mul(abs(-10),2)"),
     ],
 )
 def test_function(value: Any, expected_value: Any) -> None:
@@ -1672,64 +1634,60 @@ class F:
             return list(sorted(args))
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "func_name, func, value, expected",
     [
-        pytest.param("foo_1", F.foo1, "foo_1(10)", "int:10", id="foo_1(10)"),
-        pytest.param(
-            "foo_1", F.foo1, "foo_1(value=10)", "int:10", id="foo_1(value=10)"
-        ),
-        pytest.param(
-            "foo_2", F.foo2, "foo_2('10',10)", "str:10,int:10", id="foo_2('10',10)"
-        ),
-        pytest.param("empty", F.empty, "empty()", 10, id="empty()"),
-        pytest.param("sum", F.sum, "sum()", 0, id="sum()"),
-        pytest.param("sum", F.sum, "sum(1)", 1, id="sum(1)"),
-        pytest.param("sum", F.sum, "sum(1,2,3)", 6, id="sum(1,2,3)"),
-        pytest.param(
+        param("foo_1", F.foo1, "foo_1(10)", "int:10", id="foo_1(10)"),
+        param("foo_1", F.foo1, "foo_1(value=10)", "int:10", id="foo_1(value=10)"),
+        param("foo_2", F.foo2, "foo_2('10',10)", "str:10,int:10", id="foo_2('10',10)"),
+        param("empty", F.empty, "empty()", 10, id="empty()"),
+        param("sum", F.sum, "sum()", 0, id="sum()"),
+        param("sum", F.sum, "sum(1)", 1, id="sum(1)"),
+        param("sum", F.sum, "sum(1,2,3)", 6, id="sum(1,2,3)"),
+        param(
             "range",
             F.range,
             "range(10,20)",
             "res:range(start=10,stop=20,step=1)",
             id="range(10,20)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(10,20,5)",
             "res:range(start=10,stop=20,step=5)",
             id="range(10,20,5)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(10,20,step=5)",
             "res:range(start=10,stop=20,step=5)",
             id="range(10,20,step=5)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(start=10,stop=20,step=5)",
             "res:range(start=10,stop=20,step=5)",
             id="range(start=10,stop=20,step=5)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(step=5,start=10,stop=20)",
             "res:range(start=10,stop=20,step=5)",
             id="range(step=5,start=10,stop=20)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(10,step=5,stop=20)",
             "res:range(start=10,stop=20,step=5)",
             id="range(10,step=5,stop=20)",
         ),
-        pytest.param("sort", F.sort, "sort(10,1,5)", [1, 5, 10], id="sort(10,1,5)"),
-        pytest.param(
+        param("sort", F.sort, "sort(10,1,5)", [1, 5, 10], id="sort(10,1,5)"),
+        param(
             "sort",
             F.sort,
             "sort(10,1,5,reverse=true)",
@@ -1747,23 +1705,21 @@ def test_eval(
     assert parser.parse_rule(value, "function") == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "func_name, func, value, expected",
     [
-        pytest.param(
+        param(
             "empty",
             F.empty,
             "empty(100)",
-            pytest.raises(
-                HydraException, match=re.escape("too many positional arguments")
-            ),
+            raises(HydraException, match=re.escape("too many positional arguments")),
             id="empty(100)",
         ),
-        pytest.param(
+        param(
             "foo",
             F.foo1,
             "foo(true)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'foo(true)':"
@@ -1772,11 +1728,11 @@ def test_eval(
             ),
             id="foo_1(true)",
         ),
-        pytest.param(
+        param(
             "foo",
             F.foo1,
             "foo(value=true)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'foo(value=true)':"
@@ -1785,11 +1741,11 @@ def test_eval(
             ),
             id="foo_1(value:true)",
         ),
-        pytest.param(
+        param(
             "empty",
             F.foo1,
             "empty(no_such_name=10)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'empty(no_such_name=10)': missing a required argument: 'value'"
@@ -1797,11 +1753,11 @@ def test_eval(
             ),
             id="empty(no_such_name=10)",
         ),
-        pytest.param(
+        param(
             "empty",
             F.foo1,
             "empty(value=10,no_such_name=10)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'empty(value=10,no_such_name=10)':"
@@ -1810,11 +1766,11 @@ def test_eval(
             ),
             id="empty(value=10,no_such_name=10)",
         ),
-        pytest.param(
+        param(
             "sum",
             F.sum,
             "sum(true)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape(
                     "TypeError while evaluating 'sum(true)':"
@@ -1823,11 +1779,11 @@ def test_eval(
             ),
             id="sum(true)",
         ),
-        pytest.param(
+        param(
             "range",
             F.range,
             "range(start=10,20,1)",
-            pytest.raises(
+            raises(
                 HydraException,
                 match=re.escape("positional argument follows keyword argument"),
             ),
@@ -1845,13 +1801,13 @@ def test_eval_errors(
         parser.parse_rule(value, "function")
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected",
     [
-        pytest.param("glob(*)", Glob(include=["*"], exclude=[])),
-        pytest.param("glob(include=*)", Glob(include=["*"], exclude=[])),
-        pytest.param("glob(include=[*])", Glob(include=["*"], exclude=[])),
-        pytest.param(
+        param("glob(*)", Glob(include=["*"], exclude=[])),
+        param("glob(include=*)", Glob(include=["*"], exclude=[])),
+        param("glob(include=[*])", Glob(include=["*"], exclude=[])),
+        param(
             "glob(include=[a*, b*], exclude=c*)",
             Glob(include=["a*", "b*"], exclude=["c*"]),
         ),
@@ -1862,25 +1818,23 @@ def test_glob(value: str, expected: Any) -> None:
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "include,exclude,expected",
     [
-        pytest.param(
+        param(
             ["*"],
             [],
             ["the", "quick", "brown", "fox", "jumped", "under", "the", "lazy", "dog"],
             id="include=*",
         ),
-        pytest.param(
+        param(
             ["*"],
             ["quick", "under"],
             ["the", "brown", "fox", "jumped", "the", "lazy", "dog"],
             id="include=*, exclude=[quick,under]]",
         ),
-        pytest.param(
-            ["*"], ["*d*"], ["the", "quick", "brown", "fox", "the", "lazy"], id="=*"
-        ),
-        pytest.param(["t*"], [], ["the", "the"], id="=*"),
+        param(["*"], ["*d*"], ["the", "quick", "brown", "fox", "the", "lazy"], id="=*"),
+        param(["t*"], [], ["the", "the"], id="=*"),
     ],
 )
 def test_glob_filter(
@@ -1890,62 +1844,62 @@ def test_glob_filter(
     assert Glob(include=include, exclude=exclude).filter(strings) == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value,expected_key,expected_value,expected_value_type",
     [
-        pytest.param(
+        param(
             "key= \tvalue \t", "key", "value", ValueType.ELEMENT, id="leading+trailing"
         ),
-        pytest.param(
+        param(
             "key=value \t 123",
             "key",
             "value \t 123",
             ValueType.ELEMENT,
             id="inside_primitive",
         ),
-        pytest.param(
+        param(
             "key='  foo,bar\t'",
             "key",
             QuotedString(text="  foo,bar\t", quote=Quote.single),
             ValueType.ELEMENT,
             id="inside_quoted_value_outer",
         ),
-        pytest.param(
+        param(
             "key='foo , \t\t bar'",
             "key",
             QuotedString(text="foo , \t\t bar", quote=Quote.single),
             ValueType.ELEMENT,
             id="inside_quoted_value_inter",
         ),
-        pytest.param(
+        param(
             "key=1 ,  2,\t\t3",
             "key",
             ChoiceSweep(list=[1, 2, 3], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
             id="around_commas",
         ),
-        pytest.param(
+        param(
             "key=choice\t(  1\t\t )",
             "key",
             ChoiceSweep(list=[1]),
             ValueType.CHOICE_SWEEP,
             id="function_one_arg",
         ),
-        pytest.param(
+        param(
             "key=choice(\t\t1,   2, \t 3 )",
             "key",
             ChoiceSweep(list=[1, 2, 3]),
             ValueType.CHOICE_SWEEP,
             id="function_many_args",
         ),
-        pytest.param(
+        param(
             "key=[1  ,\t2\t],[\t3\t   ,4  ]",
             "key",
             ChoiceSweep(list=[[1, 2], [3, 4]], simple_form=True),
             ValueType.SIMPLE_CHOICE_SWEEP,
             id="in_lists",
         ),
-        pytest.param(
+        param(
             "key=str(\t  [  1,\t2  ]\t   )",
             "key",
             ["1", "2"],
@@ -1968,7 +1922,7 @@ def test_whitespaces(
     assert ret == expected
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "value, expected_sweep_string_list, expected_sweep_encoded_list",
     [
         ("x=choice(1,2,3)", ["1", "2", "3"], [1, 2, 3]),
@@ -2010,18 +1964,18 @@ def test_sweep_iterators(
     assert actual_sweep_encoded_list == expected_sweep_encoded_list
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     ("s", "expected"),
     [
-        pytest.param("abc", "abc", id="no_esc"),
-        pytest.param("\\", "\\\\", id="esc_backslash"),
-        pytest.param("\\\\\\", "\\\\\\\\\\\\", id="esc_backslash_x3"),
-        pytest.param("()", "\\(\\)", id="esc_parentheses"),
-        pytest.param("[]", "\\[\\]", id="esc_brackets"),
-        pytest.param("{}", "\\{\\}", id="esc_braces"),
-        pytest.param(":=,", "\\:\\=\\,", id="esc_symbols"),
-        pytest.param("  \t", "\\ \\ \\\t", id="esc_ws"),
-        pytest.param(
+        param("abc", "abc", id="no_esc"),
+        param("\\", "\\\\", id="esc_backslash"),
+        param("\\\\\\", "\\\\\\\\\\\\", id="esc_backslash_x3"),
+        param("()", "\\(\\)", id="esc_parentheses"),
+        param("[]", "\\[\\]", id="esc_brackets"),
+        param("{}", "\\{\\}", id="esc_braces"),
+        param(":=,", "\\:\\=\\,", id="esc_symbols"),
+        param("  \t", "\\ \\ \\\t", id="esc_ws"),
+        param(
             "ab\\(cd{ef}[gh]): ij,kl\t",
             "ab\\\\\\(cd\\{ef\\}\\[gh\\]\\)\\:\\ ij\\,kl\\\t",
             id="esc_mixed",

@@ -3,16 +3,16 @@ import os.path
 from pathlib import Path
 from typing import List
 
-import pytest
+from pytest import mark, param
 
 from build_helpers.build_helpers import find, matches
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "path,include_files,include_dirs,excludes,scan_exclude,expected",
     [
-        pytest.param("test_files", [], [], [], [], [], id="none"),
-        pytest.param(
+        param("test_files", [], [], [], [], [], id="none"),
+        param(
             "test_files",
             [".*"],
             [],
@@ -30,7 +30,7 @@ from build_helpers.build_helpers import find, matches
             ],
             id="all",
         ),
-        pytest.param(
+        param(
             "test_files",
             [".*"],
             [],
@@ -39,7 +39,7 @@ from build_helpers.build_helpers import find, matches
             ["c/bad_dir/.gitkeep", "c/file2.txt", "c/file1.txt", "c/junk.txt"],
             id="filter_a",
         ),
-        pytest.param(
+        param(
             "test_files",
             ["^a/.*"],
             [],
@@ -48,7 +48,7 @@ from build_helpers.build_helpers import find, matches
             ["a/b/bad_dir/.gitkeep", "a/b/file2.txt", "a/b/file1.txt", "a/b/junk.txt"],
             id="include_a",
         ),
-        pytest.param(
+        param(
             "test_files",
             ["^a/.*"],
             [],
@@ -57,7 +57,7 @@ from build_helpers.build_helpers import find, matches
             ["a/b/bad_dir/.gitkeep", "a/b/file2.txt", "a/b/junk.txt"],
             id="include_a,exclude_file1",
         ),
-        pytest.param(
+        param(
             "test_files",
             [".*"],
             [],
@@ -73,7 +73,7 @@ from build_helpers.build_helpers import find, matches
             ],
             id="no_junk",
         ),
-        pytest.param(
+        param(
             "test_files",
             ["^.*/junk.txt"],
             [],
@@ -82,8 +82,8 @@ from build_helpers.build_helpers import find, matches
             ["a/b/junk.txt", "c/junk.txt"],
             id="junk_only",
         ),
-        pytest.param("test_files", [], ["^a$"], [], [], ["a"], id="exact_a"),
-        pytest.param(
+        param("test_files", [], ["^a$"], [], [], ["a"], id="exact_a"),
+        param(
             "test_files",
             [],
             [".*bad_dir$"],
@@ -117,7 +117,7 @@ def test_find(
     assert ret_set == expected_set
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "patterns,query,expected",
     [
         (["^a/.*"], "a/", True),

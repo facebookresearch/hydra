@@ -1,31 +1,31 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-import pytest
+from pytest import mark, param
 
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 from hydra.core.override_parser.overrides_parser import OverridesParser
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "args,max_batch_size,expected",
     [
-        pytest.param(["x=10"], None, [[["x=10"]]], id="simple"),
-        pytest.param(["x=10,20"], None, [[["x=10"], ["x=20"]]], id="split_1d"),
-        pytest.param(["x=[10,20]"], None, [[["x=[10,20]"]]], id="not_split_yaml_list"),
-        pytest.param(
+        param(["x=10"], None, [[["x=10"]]], id="simple"),
+        param(["x=10,20"], None, [[["x=10"], ["x=20"]]], id="split_1d"),
+        param(["x=[10,20]"], None, [[["x=[10,20]"]]], id="not_split_yaml_list"),
+        param(
             ["x=[a,b,c],[d,e,f]"],
             None,
             [[["x=[a,b,c]"], ["x=[d,e,f]"]]],
             id="list_of_lists",
         ),
-        pytest.param(
+        param(
             ["a=1,2", "b=10,11"],
             None,
             [[["a=1", "b=10"], ["a=1", "b=11"], ["a=2", "b=10"], ["a=2", "b=11"]]],
             id="no_batching",
         ),
-        pytest.param(
+        param(
             ["a=1,2", "b=10,11"],
             1,
             [
@@ -36,13 +36,13 @@ from hydra.core.override_parser.overrides_parser import OverridesParser
             ],
             id="batches_of_1",
         ),
-        pytest.param(
+        param(
             ["a=1,2", "b=10,11"],
             2,
             [[["a=1", "b=10"], ["a=1", "b=11"]], [["a=2", "b=10"], ["a=2", "b=11"]]],
             id="batches_of_2",
         ),
-        pytest.param(["a=range(0,3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range"),
+        param(["a=range(0,3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range"),
     ],
 )
 def test_split(

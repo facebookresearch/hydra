@@ -3,7 +3,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, List
 
-import pytest
+from pytest import mark
 
 from hydra.test_utils.test_utils import (
     assert_text_same,
@@ -14,7 +14,7 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,output",
     [
         ([], "MySQL connecting to localhost"),
@@ -30,7 +30,7 @@ def test_instantiate_object(
     assert result == output
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,output",
     [
         ([], "Driver : James Bond, 4 wheels"),
@@ -49,7 +49,7 @@ def test_instantiate_object_recursive(
     assert result == output
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,output",
     [
         ([], "MySQL connecting to localhost"),
@@ -65,7 +65,7 @@ def test_instantiate_schema(
     assert result == output
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
         (
@@ -91,7 +91,7 @@ def test_instantiate_schema_recursive(
     assert_text_same(result, expected)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides,expected",
     [
         (

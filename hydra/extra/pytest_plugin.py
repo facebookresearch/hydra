@@ -3,14 +3,14 @@ import copy
 from pathlib import Path
 from typing import Callable, List, Optional
 
-import pytest
+from pytest import fixture
 
 from hydra.core.singleton import Singleton
 from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
 
 
-@pytest.fixture(scope="function")  # type: ignore
+@fixture(scope="function")  # type: ignore
 def hydra_restore_singletons() -> None:
     """
     Restore singletons state after the function returns
@@ -20,7 +20,7 @@ def hydra_restore_singletons() -> None:
     Singleton.set_state(state)
 
 
-@pytest.fixture(scope="function")  # type: ignore
+@fixture(scope="function")  # type: ignore
 def hydra_sweep_runner() -> Callable[
     [
         Optional[str],
@@ -61,7 +61,7 @@ def hydra_sweep_runner() -> Callable[
     return _
 
 
-@pytest.fixture(scope="function")  # type: ignore
+@fixture(scope="function")  # type: ignore
 def hydra_task_runner() -> Callable[
     [
         Optional[str],

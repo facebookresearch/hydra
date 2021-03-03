@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any
 
-import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -9,6 +8,7 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from pytest import mark
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
@@ -22,7 +22,7 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.mark.parametrize("launcher_name, overrides", [("joblib", [])])
+@mark.parametrize("launcher_name, overrides", [("joblib", [])])
 class TestJoblibLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
@@ -31,7 +31,7 @@ class TestJoblibLauncher(LauncherTestSuite):
     pass
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "task_launcher_cfg, extra_flags",
     [
         # joblib with process-based backend (default)
@@ -70,7 +70,7 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
             assert tuple(ret.overrides) in overrides
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "overrides",
     [
         "hydra.launcher.batch_size=1",

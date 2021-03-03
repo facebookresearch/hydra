@@ -11,7 +11,6 @@ from typing import Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
-import pytest
 from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -21,6 +20,7 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
 from omegaconf import OmegaConf
+from pytest import fixture, mark
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     _run_command,
@@ -198,7 +198,7 @@ def validate_lib_version(yaml: str) -> None:
     ), f"Python version mismatch, local={local_python}, remote={remote_python}"
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
+@mark.skipif(sys.platform.startswith("win"), reason=win_msg)
 def test_discovery() -> None:
     # Tests that this plugin can be discovered via the plugins subsystem when
     # looking for Launchers
@@ -207,7 +207,7 @@ def test_discovery() -> None:
     ]
 
 
-@pytest.fixture(scope="module")
+@fixture(scope="module")
 def manage_cluster() -> Generator[None, None, None]:
     # first assert the SHA of requirements hasn't changed
     # if changed, means we need to update test AMI.
@@ -253,10 +253,10 @@ launcher_test_suites_overrides = [
 launcher_test_suites_overrides.extend(common_overrides)
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
-@pytest.mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
-@pytest.mark.usefixtures("manage_cluster")
-@pytest.mark.parametrize(
+@mark.skipif(sys.platform.startswith("win"), reason=win_msg)
+@mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
+@mark.usefixtures("manage_cluster")
+@mark.parametrize(
     "launcher_name, overrides, tmpdir",
     [
         (
@@ -279,10 +279,10 @@ integration_tests_override = [
 integration_tests_override.extend(common_overrides)
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason=win_msg)
-@pytest.mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
-@pytest.mark.usefixtures("manage_cluster")
-@pytest.mark.parametrize(
+@mark.skipif(sys.platform.startswith("win"), reason=win_msg)
+@mark.skipif(aws_not_configured, reason=aws_not_configured_msg)
+@mark.usefixtures("manage_cluster")
+@mark.parametrize(
     "tmpdir,task_launcher_cfg,extra_flags",
     [
         (
