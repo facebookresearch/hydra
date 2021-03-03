@@ -57,7 +57,7 @@ optuna_config:
   study_name: sphere
   n_trials: 20
   n_jobs: 1
-  sampler: TPESampler
+  sampler: tpe
   seed: 123
 search_space:
   x:
