@@ -26,6 +26,7 @@ with open("README.md", "r") as fh:
         install_requires=[
             "hydra-core>=1.0.0",
             "ax-platform>=0.1.20",
+            "torch<1.8.0",  # remove once torch 1.8.0 issue is addressed in Ax.
         ],
         include_package_data=True,
     )
