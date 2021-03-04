@@ -179,12 +179,7 @@ class TestRunCompletion:
     @mark.parametrize("prog", [["python", "hydra/test_utils/completion.py"]])
     @mark.parametrize(
         "shell",
-        [
-            "bash",
-            # Temporarily disabled, see https://github.com/facebookresearch/hydra/issues/1442
-            # "fish",
-            "zsh",
-        ],
+        ["bash", "fish", "zsh"],
     )
     def test_shell_integration(
         self,
@@ -227,7 +222,7 @@ class TestRunCompletion:
 
         if shell == "fish":
             # Fish will add a space to an unambiguous completion.
-            expected = [x + " " if re.match(r".*=\w+$", x) else x for x in expected]
+            expected = [x + " " if re.search(r"\w$", x) else x for x in expected]
 
             # Exactly match token end. See
             # https://github.com/fish-shell/fish-shell/issues/6928
