@@ -101,6 +101,10 @@ class HydraConf:
         ]
     )
 
+    # Elements to append to the config search path.
+    # Note: This can only be configured in the primary config.
+    searchpath: List[str] = field(default_factory=list)
+
     # Normal run output configuration
     run: RunDir = RunDir()
     # Multi-run output configuration

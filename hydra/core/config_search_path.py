@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Sequence
+from typing import MutableSequence, Optional
 
 
 class SearchPathElement:
@@ -28,7 +28,7 @@ class SearchPathQuery:
 
 class ConfigSearchPath(ABC):
     @abstractmethod
-    def get_path(self) -> Sequence[SearchPathElement]:
+    def get_path(self) -> MutableSequence[SearchPathElement]:
         ...
 
     @abstractmethod

@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional, Sequence
+from typing import List, MutableSequence, Optional
 
 from hydra.core.config_search_path import (
     ConfigSearchPath,
@@ -14,7 +14,7 @@ class ConfigSearchPathImpl(ConfigSearchPath):
     def __init__(self) -> None:
         self.config_search_path = []
 
-    def get_path(self) -> Sequence[SearchPathElement]:
+    def get_path(self) -> MutableSequence[SearchPathElement]:
         return self.config_search_path
 
     def find_last_match(self, reference: SearchPathQuery) -> int:
