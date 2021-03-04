@@ -50,6 +50,10 @@ class IConfigRepository(ABC):
     def get_sources(self) -> List[ConfigSource]:
         ...
 
+    @abstractmethod
+    def initialize_sources(self, config_search_path: ConfigSearchPath) -> None:
+        ...
+
 
 class ConfigRepository(IConfigRepository):
 
@@ -57,6 +61,9 @@ class ConfigRepository(IConfigRepository):
     sources: List[ConfigSource]
 
     def __init__(self, config_search_path: ConfigSearchPath) -> None:
+        self.initialize_sources(config_search_path)
+
+    def initialize_sources(self, config_search_path: ConfigSearchPath) -> None:
         self.sources = []
         for search_path in config_search_path.get_path():
             assert search_path.path is not None
@@ -71,7 +78,7 @@ class ConfigRepository(IConfigRepository):
         assert (
             source.__class__.__name__ == "StructuredConfigSource"
             and source.provider == "schema"
-        )
+        ), "schema config source must be last"
         return source
 
     def load_config(self, config_path: str) -> Optional[ConfigResult]:
@@ -312,6 +319,12 @@ class CachingConfigRepository(IConfigRepository):
 
     def get_schema_source(self) -> ConfigSource:
         return self.delegate.get_schema_source()
+
+    def initialize_sources(self, config_search_path: ConfigSearchPath) -> None:
+        self.delegate.initialize_sources(config_search_path)
+        # not clearing the cache.
+        # For the use case this is used, the only thing in the cache is the primary config
+        # and we want to keep it even though we re-initialized the sources.
 
     def load_config(self, config_path: str) -> Optional[ConfigResult]:
         cache_key = f"config_path={config_path}"

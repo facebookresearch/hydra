@@ -8,9 +8,9 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass
 from textwrap import dedent
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, MutableSequence, Optional
 
-from omegaconf import DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -152,6 +152,62 @@ class ConfigLoaderImpl(ConfigLoader):
         except OmegaConfBaseException as e:
             raise ConfigCompositionException().with_traceback(sys.exc_info()[2]) from e
 
+    def _process_config_searchpath(
+        self,
+        config_name: Optional[str],
+        parsed_overrides: List[Override],
+        repo: CachingConfigRepository,
+    ) -> None:
+        if config_name is not None:
+            loaded = repo.load_config(config_path=config_name)
+            primary_config: Container
+            if loaded is None:
+                primary_config = OmegaConf.create()
+            else:
+                primary_config = loaded.config
+        else:
+            primary_config = OmegaConf.create()
+
+        def is_searchpath_override(v: Override) -> bool:
+            return v.get_key_element() == "hydra.searchpath"
+
+        override = None
+        for v in parsed_overrides:
+            if is_searchpath_override(v):
+                override = v.value()
+                break
+
+        searchpath = OmegaConf.select(primary_config, "hydra.searchpath")
+        if override is not None:
+            provider = "hydra.searchpath in command-line"
+            searchpath = override
+        else:
+            provider = "hydra.searchpath in main"
+
+        def _err() -> None:
+            raise ConfigCompositionException(
+                f"hydra.searchpath must be a list of strings. Got: {searchpath}"
+            )
+
+        if searchpath is None:
+            return
+
+        # validate hydra.searchpath.
+        # Note that we cannot rely on OmegaConf validation here because we did not yet merge with the Hydra schema node
+        if not isinstance(searchpath, MutableSequence):
+            _err()
+        for v in searchpath:
+            if not isinstance(v, str):
+                _err()
+
+        new_csp = copy.deepcopy(self.config_search_path)
+        schema = new_csp.get_path().pop(-1)
+        assert schema.provider == "schema"
+        for sp in searchpath:
+            new_csp.append(provider=provider, path=sp)
+        new_csp.append("schema", "structured://")
+        repo.initialize_sources(new_csp)
+
     def _load_configuration_impl(
         self,
         config_name: Optional[str],
@@ -164,6 +220,8 @@ class ConfigLoaderImpl(ConfigLoader):
 
         parser = OverridesParser.create()
         parsed_overrides = parser.parse_overrides(overrides=overrides)
+
+        self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
 
         self.validate_sweep_overrides_legal(
             overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
@@ -401,7 +459,17 @@ class ConfigLoaderImpl(ConfigLoader):
 
                 assert isinstance(merged, DictConfig)
 
-        return self._embed_result_config(ret, default.package)
+        res = self._embed_result_config(ret, default.package)
+        if (
+            not default.primary
+            and config_path != "hydra/config"
+            and OmegaConf.select(res.config, "hydra.searchpath") is not None
+        ):
+            raise ConfigCompositionException(
+                f"In '{config_path}': Overriding hydra.searchpath is only supported from the primary config"
+            )
+
+        return res
 
     @staticmethod
     def _embed_result_config(
