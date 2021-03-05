@@ -8,6 +8,6 @@ hydra:
         exclude_keys:
           - seed
 
-a: 1
-b: 2
-seed: 111
+a: a1
+b: b1
+seed: 1

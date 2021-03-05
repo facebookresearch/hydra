@@ -73,13 +73,14 @@ def test_job_override_dirname(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_override_dirname/my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
-        "a=10",
-        "b=20",
+        "a=a1,a2",
+        "b=b1",
         "seed=999",
         "-m",
     ]
     run_python_script(cmd)
-    assert Path(tmpdir / "a=10,b=20/seed=999/my_app.log").exists()
+    assert Path(tmpdir / "a=a1,b=b1/seed=999/my_app.log").exists()
+    assert Path(tmpdir / "a=a2,b=b1/seed=999/my_app.log").exists()
 
 
 def test_logging(tmpdir: Path) -> None:
