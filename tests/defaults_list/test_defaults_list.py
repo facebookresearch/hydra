@@ -1560,7 +1560,9 @@ def test_load_group_header(
             ["+group1=file1"],
             [
                 ResultDefault(
-                    config_path="group1/file1", package="group1", parent="<root>"
+                    config_path="group1/file1",
+                    package="group1",
+                    parent="_dummy_empty_config_",
                 )
             ],
             id="none+group1=file1",
@@ -1626,7 +1628,9 @@ def test_with_none_primary(
                     is_self=True,
                 ),
                 ResultDefault(
-                    config_path="group1/file1", package="group1", parent="<root>"
+                    config_path="group1/file1",
+                    package="group1",
+                    parent="_dummy_empty_config_",
                 ),
             ],
             id="none+group1=file1",
