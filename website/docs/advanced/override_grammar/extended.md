@@ -366,14 +366,14 @@ Input are grouped by type.
 |         []         	| []          	| []                	| []                	| []                    	|
 |       [0,1,2]      	| [0,1,2]     	| [0.0,1.0,2.0]     	| [“0”,”1”,”2”]     	| [false,true,true]     	|
 |       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	|
-|        [a,1]       	| error       	| error             	| [“a”,”1”]         	| [true,true]           	|
+|        [a,1]       	| error       	| error             	| [“a”,”1”]         	| error                 	|
 |         {}         	| {}          	| {}                	| {}                	| {}                    	|
 |       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	|
 |     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	|
 |    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	|
 |     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	|
-|     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| choice(true,true)     	|
-|     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| choice(true,true)     	|
+|     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| error                 	|
+|     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| error                 	|
 | interval(1.0, 2.0) 	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
 | interval(1, 2)     	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
 |     range(1,10)    	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
