@@ -5,3 +5,5 @@ hydra:
   sweep:
     dir: sweep_dir
     subdir: ${hydra.job.num}
+
+a: a1

@@ -63,59 +63,8 @@ It is normally derived from the Python file name (The job name of the file `trai
 You can override it via the command line, or your config file. 
 
 ### hydra.job.override_dirname
-<ExampleGithubLink text="Example application" to="examples/configure_hydra/job_override_dirname"/>
-
-This field is populated automatically using your command line arguments and is typically being used as a part of your 
-output directory pattern. It is meant to be used along with [working dir configuration](/configure_hydra/workdir.md), especially
-in `hydra.sweep.subdir`.
-
-For example, we configure the example application like the following
-```yaml
-hydra:
-  sweep:
-    dir: multirun
-    subdir: ${hydra.job.override_dirname}
-```
-
-then run the application with command-line overrides:
-
-```bash
-python my_app.py --multirun a=a1 b=b1
-```
-Would result in creating a output dir `multirun/a=a1,b=b1`
-
-You can further customized the output dir creation by configuring`hydra.job.override_dirname`.
-
-In particular, the separator char `=` and the item separator char `,` can be modified, and some command line
-override keys can be automatically excluded from the generated `override_dirname`.
-An example of a case where the exclude is useful is a random seed.
-
-```yaml
-hydra:
-  run:
-    dir: output/${hydra.job.override_dirname}/seed=${seed}
-  job:
-    config:
-      override_dirname:
-        exclude_keys:
-          - seed
-```
-With this configuration, running
-```bash
-$ python my_app.py --multirun a=a1,a2 b=b1 seed=1,2
-```
-
-Would result in a directory like:
-```
-$ tree multirun -d
-multirun
-├── a=a1,b=b1
-│   ├── seed=1
-│   └── seed=2
-└── a=a2,b=b1
-    ├── seed=1
-    └── seed=2
-```
+This config enables creating working dir based on command line overrides. 
+For more information, check [here](/configure_hydra/workdir.md).
 
 ### hydra.job.id
 The job ID is populated by active Hydra launcher. For the basic launcher, the job ID is just a serial job number, but
