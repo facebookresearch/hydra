@@ -14,6 +14,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
+    JobResult,
     JobReturn,
     JobRuntime,
     configure_log,
@@ -90,13 +91,18 @@ class Hydra:
             run_mode=RunMode.RUN,
         )
 
-        return run_job(
+        ret = run_job(
             config=cfg,
             task_function=task_function,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
             configure_logging=with_log_configuration,
         )
+
+        if ret.job_result == JobResult.FAILED:
+            raise ret.return_value
+
+        return ret
 
     def multirun(
         self,

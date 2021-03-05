@@ -1,0 +1,5 @@
+hydra:
+  hydra_logging:
+    formatters:
+      simple:
+        format: "[HYDRA] %(message)s"

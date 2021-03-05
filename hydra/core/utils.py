@@ -7,6 +7,7 @@ import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
@@ -126,7 +127,13 @@ def run_job(
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         with env_override(hydra_cfg.hydra.job.env_set):
-            ret.return_value = task_function(task_cfg)
+            try:
+                ret.return_value = task_function(task_cfg)
+                ret.job_result = JobResult.COMPLETED
+            except Exception as e:
+                ret.return_value = e
+                ret.job_result = JobResult.FAILED
+
         ret.task_name = JobRuntime.instance().get("name")
 
         _flush_loggers()
@@ -167,6 +174,11 @@ def setup_globals() -> None:
     )
 
 
+class JobResult(Enum):
+    COMPLETED = 1
+    FAILED = 2
+
+
 @dataclass
 class JobReturn:
     overrides: Optional[Sequence[str]] = None
@@ -175,6 +187,9 @@ class JobReturn:
     hydra_cfg: Optional[DictConfig] = None
     working_dir: Optional[str] = None
     task_name: Optional[str] = None
+    job_result: Optional[
+        JobResult
+    ] = None  # if job result is FAILED, return_value would be exception.
 
 
 class JobRuntime(metaclass=Singleton):

@@ -29,7 +29,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override
-from hydra.core.utils import JobReturn
+from hydra.core.utils import JobResult, JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -141,6 +141,7 @@ class BasicSweeper(Sweeper):
         OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
 
         initial_job_idx = 0
+        job_failed = False
         while not self.is_done():
             batch = self.get_job_batch()
             tic = time.perf_counter()
@@ -152,8 +153,18 @@ class BasicSweeper(Sweeper):
                 f"Validated configs of {len(batch)} jobs in {elapsed:0.2f} seconds, {len(batch)/elapsed:.2f} / second)"
             )
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+
+            idx = initial_job_idx
+            for r in results:
+                if r.job_result == JobResult.FAILED:
+                    job_failed = True
+                    log.error(f"Job #{idx} failed with exception: {r.return_value}")
+                idx += 1
+
             initial_job_idx += len(batch)
             returns.append(results)
+        if job_failed:
+            raise ValueError("Application multirun failed: not all jobs succeeded.")
         return returns
 
     def get_job_batch(self) -> Sequence[Sequence[str]]:

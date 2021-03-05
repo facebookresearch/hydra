@@ -1,10 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional
+import sys
+from subprocess import PIPE, Popen
+from textwrap import dedent
+from typing import Any, List, Optional
 
 from pytest import mark, param
 
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.test_utils.test_utils import assert_regex_match
 
 
 @mark.parametrize(
@@ -54,3 +58,42 @@ def test_split(
     )
     lret = [list(x) for x in ret]
     assert lret == expected
+
+
+def test_partial_failure(
+    monkeypatch: Any,
+    tmpdir: Any,
+) -> None:
+    monkeypatch.chdir("tests/test_apps/app_can_fail")
+    cmd = [
+        sys.executable,
+        "-Werror",
+        "my_app.py",
+        "--multirun",
+        "+divisor=1,0,2",
+        "hydra.run.dir=" + str(tmpdir),
+    ]
+    with Popen(cmd, stdout=PIPE, stderr=PIPE) as p:
+        stdout, stderr = p.communicate()
+        err = stderr.decode("utf-8").rstrip().replace("\r\n", "\n")
+        out = stdout.decode("utf-8").rstrip().replace("\r\n", "\n")
+        assert p.returncode != 0
+
+    assert "ValueError: Application multirun failed: not all jobs succeeded." in err
+    expected_out = dedent(
+        """\
+        [HYDRA] Launching 3 jobs locally
+        [HYDRA] \t#0 : +divisor=1
+        val=1.0
+        [HYDRA] \t#1 : +divisor=0
+        [HYDRA] \t#2 : +divisor=2
+        val=0.5
+        [HYDRA] Job #1 failed with exception: division by zero"""
+    )
+
+    assert_regex_match(
+        from_line=expected_out,
+        to_line=out,
+        from_name="Expected output",
+        to_name="Actual output",
+    )
