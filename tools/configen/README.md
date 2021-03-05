@@ -45,11 +45,6 @@ configen:
   # list of modules to generate configs for
   modules:
     - name: configen.samples.my_module
-      # Optional dict defining hydra flags for all classes in this module:
-      # default_flags:
-      #   _convert_ : ALL
-      #   _recursive_ : True
-      #
       # for each module, a list of classes
       classes:
         - User
