@@ -230,7 +230,7 @@ class ConfigLoaderImpl(ConfigLoader):
         defaults_list = create_defaults_list(
             repo=caching_repo,
             config_name=config_name,
-            overrides_list=parser.parse_overrides(overrides=overrides),
+            overrides_list=parsed_overrides,
             prepend_hydra=True,
             skip_missing=run_mode == RunMode.MULTIRUN,
         )

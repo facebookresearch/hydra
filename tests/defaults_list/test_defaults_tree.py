@@ -928,9 +928,9 @@ def test_experiment_include_absolute_config(
                         children=[
                             GroupDefault(group="group1", value="file1"),
                             ConfigDefault(path="_self_"),
+                            GroupDefault(group="experiment", value="override_hydra"),
                         ],
                     ),
-                    GroupDefault(group="experiment", value="override_hydra"),
                 ],
             ),
             id="experiment_overriding_hydra_group",
@@ -954,9 +954,9 @@ def test_experiment_include_absolute_config(
                         children=[
                             GroupDefault(group="group1", value="file1"),
                             ConfigDefault(path="_self_"),
+                            GroupDefault(group="experiment", value="override_hydra"),
                         ],
                     ),
-                    GroupDefault(group="experiment", value="override_hydra"),
                 ],
             ),
             id="experiment_overriding_hydra_group:with_external_hydra_override",
@@ -2048,15 +2048,18 @@ def test_overriding_group_file_with_global_header(
         param(
             None,
             [],
-            DefaultsTreeNode(node=VirtualRoot()),
+            DefaultsTreeNode(node=ConfigDefault(path="_dummy_empty_config_")),
             id="none_config",
         ),
         param(
             None,
             ["+group1=file1"],
             DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[GroupDefault(group="group1", value="file1")],
+                node=ConfigDefault(path="_dummy_empty_config_"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", value="file1"),
+                ],
             ),
             id="none_config+group1=file1",
         ),
@@ -2091,7 +2094,7 @@ def test_none_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
-                    VirtualRoot(),
+                    ConfigDefault(path="_dummy_empty_config_"),
                 ],
             ),
             id="none_config",
@@ -2110,8 +2113,13 @@ def test_none_config(
                             ConfigDefault(path="_self_"),
                         ],
                     ),
-                    VirtualRoot(),
-                    GroupDefault(group="group1", value="file1"),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="_dummy_empty_config_"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(group="group1", value="file1"),
+                        ],
+                    ),
                 ],
             ),
             id="none_config+group1=file1",
@@ -2366,11 +2374,12 @@ def test_deprecated_package_header_keywords(
 
 
 @mark.parametrize(
-    ("config_name", "overrides", "expected"),
+    ("config_name", "overrides", "with_hydra", "expected"),
     [
         param(
             "select_multi",
             [],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi"),
                 children=[
@@ -2384,6 +2393,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi",
             ["group1=[file1,file3]"],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi"),
                 children=[
@@ -2397,6 +2407,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi",
             ["group1=[]"],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi"),
                 children=[ConfigDefault(path="_self_")],
@@ -2406,6 +2417,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi",
             ["group1=file1"],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi"),
                 children=[
@@ -2419,6 +2431,7 @@ def test_deprecated_package_header_keywords(
         param(
             "group1/select_multi",
             [],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="group1/select_multi"),
                 children=[
@@ -2432,6 +2445,7 @@ def test_deprecated_package_header_keywords(
         param(
             "group1/select_multi",
             ["group1/group2=[file1,file3]"],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="group1/select_multi"),
                 children=[
@@ -2445,6 +2459,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi_interpolation",
             [],
+            False,
             raises(
                 ConfigCompositionException,
                 match=re.escape(
@@ -2457,6 +2472,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi_override",
             [],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi_override"),
                 children=[
@@ -2470,6 +2486,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi_optional",
             [],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi_optional"),
                 children=[
@@ -2482,6 +2499,7 @@ def test_deprecated_package_header_keywords(
         param(
             "select_multi_optional",
             ["group1=[file1,not_found2]"],
+            False,
             DefaultsTreeNode(
                 node=ConfigDefault(path="select_multi_optional"),
                 children=[
@@ -2494,16 +2512,96 @@ def test_deprecated_package_header_keywords(
             ),
             id="select_multi_optional:override",
         ),
+        param(
+            "empty",
+            ["+group1=[file1]"],
+            False,
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    ConfigDefault(path="group1/file1"),
+                ],
+            ),
+            id="append_new_list_to_a_config_without_a_defaults_list",
+        ),
+        param(
+            None,
+            ["+group1=[file1]"],
+            False,
+            DefaultsTreeNode(
+                node=ConfigDefault(path="_dummy_empty_config_"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    ConfigDefault(path="group1/file1"),
+                ],
+            ),
+            id="append_new_list_to_without_a_primary_config",
+        ),
+        param(
+            "empty",
+            ["+group1=[file1]"],
+            True,
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="default"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="empty"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            ConfigDefault(path="group1/file1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="append_new_list_to_a_config_without_a_defaults_list+with_hydra",
+        ),
+        param(
+            None,
+            ["+group1=[file1]"],
+            True,
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="default"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="_dummy_empty_config_"),
+                        children=[
+                            ConfigDefault(path="_self_"),
+                            ConfigDefault(path="group1/file1"),
+                        ],
+                    ),
+                ],
+            ),
+            id="append_new_list_to_without_a_primary_config+with_hydra",
+        ),
     ],
 )
 def test_select_multi(
     config_name: Optional[str],
     overrides: List[str],
+    with_hydra: bool,
     expected: DefaultsTreeNode,
 ) -> None:
     _test_defaults_tree_impl(
         config_name=config_name,
         input_overrides=overrides,
+        prepend_hydra=with_hydra,
         expected=expected,
     )
 

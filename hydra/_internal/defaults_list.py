@@ -10,6 +10,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
+from hydra.core.config_store import ConfigStore
 from hydra.core.default_element import (
     ConfigDefault,
     DefaultsTreeNode,
@@ -21,6 +22,10 @@ from hydra.core.default_element import (
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 from hydra.errors import ConfigCompositionException
+
+cs = ConfigStore.instance()
+
+cs.store(name="_dummy_empty_config_", node={}, provider="hydra")
 
 
 @dataclass
@@ -248,30 +253,24 @@ def _expand_virtual_root(
     skip_missing: bool,
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
-    if len(overrides.append_group_defaults) > 0:
-        if root.children is None:
-            root.children = []
-        for gd in overrides.append_group_defaults:
-            root.children.append(gd)
+    assert root.children is not None
+    for d in reversed(root.children):
+        assert isinstance(d, InputDefault)
+        new_root = DefaultsTreeNode(node=d, parent=root)
+        d.update_parent("", "")
 
-    if root.children is not None:
-        for d in reversed(root.children):
-            assert isinstance(d, InputDefault)
-            new_root = DefaultsTreeNode(node=d, parent=root)
-            d.update_parent("", "")
-
-            subtree = _create_defaults_tree_impl(
-                repo=repo,
-                root=new_root,
-                is_root_config=False,
-                skip_missing=skip_missing,
-                interpolated_subtree=False,
-                overrides=overrides,
-            )
-            if subtree.children is None:
-                children.append(d)
-            else:
-                children.append(subtree)
+        subtree = _create_defaults_tree_impl(
+            repo=repo,
+            root=new_root,
+            is_root_config=d.primary,
+            skip_missing=skip_missing,
+            interpolated_subtree=False,
+            overrides=overrides,
+        )
+        if subtree.children is None:
+            children.append(d)
+        else:
+            children.append(subtree)
 
     if len(children) > 0:
         root.children = list(reversed(children))
@@ -593,6 +592,10 @@ def _create_result_default(
         if isinstance(node, GroupDefault):
             res.override_key = node.get_override_key()
         res.primary = node.primary
+
+    if res.config_path == "_dummy_empty_config_":
+        return None
+
     return res
 
 
@@ -638,10 +641,10 @@ def _tree_to_list(
 
 def _create_root(config_name: Optional[str], with_hydra: bool) -> DefaultsTreeNode:
     primary: InputDefault
-    if config_name is not None:
-        primary = ConfigDefault(path=config_name, primary=True)
+    if config_name is None:
+        primary = ConfigDefault(path="_dummy_empty_config_", primary=True)
     else:
-        primary = VirtualRoot()
+        primary = ConfigDefault(path=config_name, primary=True)
 
     if with_hydra:
         root = DefaultsTreeNode(
