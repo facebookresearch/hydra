@@ -322,9 +322,8 @@ def test_initialization_root_module(monkeypatch: Any) -> None:
 @mark.parametrize(
     ("overrides", "expected"),
     [
-        param([], {"map": {}}, id="default"),
-        param(["map.foo=bar"], {"map": {"foo": "bar"}}, id="add_no_plus"),
-        param(["+map.foo=bar"], {"map": {"foo": "bar"}}, id="add_no_plus"),
+        param(["+map.foo=bar"], {"map": {"foo": "bar"}}, id="add_with_plus"),
+        param(["map.foo=bar"], raises(ConfigCompositionException), id="add_no_plus"),
     ],
 )
 def test_adding_to_sc_dict(
@@ -336,8 +335,18 @@ def test_adding_to_sc_dict(
 
     ConfigStore.instance().store(name="config", node=Config)
 
-    cfg = compose(config_name="config", overrides=overrides)
-    assert cfg == expected
+    if isinstance(expected, dict):
+        cfg = compose(config_name="config", overrides=overrides)
+        assert cfg == expected
+    else:
+        with expected:
+            compose(config_name="config", overrides=overrides)
+
+
+@mark.parametrize("override", ["hydra.foo=bar", "hydra.job_logging.foo=bar"])
+def test_hydra_node_validated(initialize_hydra_no_path: Any, override: str) -> None:
+    with raises(ConfigCompositionException):
+        compose(overrides=[override])
 
 
 @mark.usefixtures("hydra_restore_singletons")

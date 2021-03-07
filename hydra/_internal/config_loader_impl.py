@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
 import copy
 import os
 import re
@@ -215,6 +214,8 @@ class ConfigLoaderImpl(ConfigLoader):
         run_mode: RunMode,
         from_shell: bool = True,
     ) -> DictConfig:
+        from hydra import __version__
+
         self.ensure_main_config_source_available()
         caching_repo = CachingConfigRepository(self.repository)
 
@@ -241,15 +242,12 @@ class ConfigLoaderImpl(ConfigLoader):
             defaults=defaults_list.defaults, repo=caching_repo
         )
 
-        # set struct mode on user config if the root node is not typed.
-        if OmegaConf.get_type(cfg) is dict:
-            OmegaConf.set_struct(cfg, True)
+        # Set config root to struct mode.
+        # Note that this will close any dictionaries (including dicts annotated as Dict[K, V].
+        # One must use + to add new fields to them.
+        OmegaConf.set_struct(cfg, True)
 
-        # Turn off struct mode on the Hydra node. It gets its type safety from it being a Structured Config.
-        # This enables adding fields to nested dicts like hydra.job.env_set without having to using + to append.
-        OmegaConf.set_struct(cfg.hydra, False)
-
-        # Make the Hydra node writeable (The user may have made the primary node read-only).
+        # The Hydra node should not be read-only even if the root config is read-only.
         OmegaConf.set_readonly(cfg.hydra, False)
 
         # Apply command line overrides after enabling strict flag
@@ -262,26 +260,24 @@ class ConfigLoaderImpl(ConfigLoader):
                 cfg.hydra.overrides.task.append(override.input_line)
                 app_overrides.append(override)
 
-        cfg.hydra.choices.update(defaults_list.overrides.known_choices)
-
         with open_dict(cfg.hydra):
-            from hydra import __version__
-
-            cfg.hydra.runtime.version = __version__
-            cfg.hydra.runtime.cwd = os.getcwd()
-
-            if "name" not in cfg.hydra.job:
-                cfg.hydra.job.name = JobRuntime().get("name")
-            cfg.hydra.job.override_dirname = get_overrides_dirname(
-                overrides=app_overrides,
-                kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
-                item_sep=cfg.hydra.job.config.override_dirname.item_sep,
-                exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
-            )
-            cfg.hydra.job.config_name = config_name
-
+            cfg.hydra.choices.update(defaults_list.overrides.known_choices)
             for key in cfg.hydra.job.env_copy:
                 cfg.hydra.job.env_set[key] = os.environ[key]
+
+        cfg.hydra.runtime.version = __version__
+        cfg.hydra.runtime.cwd = os.getcwd()
+
+        if "name" not in cfg.hydra.job:
+            cfg.hydra.job.name = JobRuntime().get("name")
+
+        cfg.hydra.job.override_dirname = get_overrides_dirname(
+            overrides=app_overrides,
+            kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
+            item_sep=cfg.hydra.job.config.override_dirname.item_sep,
+            exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
+        )
+        cfg.hydra.job.config_name = config_name
 
         return cfg
 
