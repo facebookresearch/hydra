@@ -78,7 +78,7 @@ The config name used by the job, this is populated automatically to match the co
 
 ### hydra.job.env_set
 A Dict[str, str] that is used to set the environment variables of the running job.
-Some common use cases are to set environment variables that are effecting underlying libraries, for example
+Some common use cases are to set environment variables that are affecting underlying libraries, for example
 ```yaml
 hydra:
   job:
