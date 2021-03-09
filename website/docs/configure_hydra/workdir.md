@@ -79,7 +79,7 @@ python my_app.py --multirun lr=0.1,0.01 optimizer=adam
 ```
 Would result in creating the following output structure
 ```bash
-u$ tree multirun -d
+$ tree multirun -d
 multirun
 ├── lr=0.01,optimizer=adam
 └── lr=0.1,optimizer=adam
