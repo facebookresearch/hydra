@@ -75,9 +75,15 @@ hydra:
 then run the application with command-line overrides:
 
 ```bash
-python my_app.py --multirun a=a1 b=b1
+python my_app.py --multirun lr=0.1,0.01 optimizer=adam
 ```
-Would result in creating a output dir `multirun/a=a1,b=b1`
+Would result in creating the following output structure
+```bash
+u$ tree multirun -d
+multirun
+├── lr=0.01,optimizer=adam
+└── lr=0.1,optimizer=adam
+```
 
 You can further customized the output dir creation by configuring`hydra.job.override_dirname`.
 
@@ -99,17 +105,17 @@ hydra:
 ```
 With this configuration, running
 ```bash
-$ python my_app.py --multirun a=a1,a2 b=b1 seed=1,2
+$ python my_app.py --multirun lr=0.1,0.01 optimizer=adam seed=1,2
 ```
 
 Would result in a directory structure like:
 ```
 $ tree multirun -d
 multirun
-├── a=a1,b=b1
+├── lr=0.01,optimizer=adam
 │   ├── seed=1
 │   └── seed=2
-└── a=a2,b=b1
+└── lr=0.1,optimizer=adam
     ├── seed=1
     └── seed=2
 ```

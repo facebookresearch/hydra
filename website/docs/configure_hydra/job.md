@@ -63,8 +63,8 @@ It is normally derived from the Python file name (The job name of the file `trai
 You can override it via the command line, or your config file. 
 
 ### hydra.job.override_dirname
-This config enables creating working dir based on command line overrides. 
-For more information, check [here](/configure_hydra/workdir.md).
+Enables the creation of an output directory which is based on command line overrides.
+See [this](/configure_hydra/workdir.md) for more information.
 
 ### hydra.job.id
 The job ID is populated by active Hydra launcher. For the basic launcher, the job ID is just a serial job number, but

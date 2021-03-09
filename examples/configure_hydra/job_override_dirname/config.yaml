@@ -8,6 +8,6 @@ hydra:
         exclude_keys:
           - seed
 
-a: a1
-b: b1
+lr: 0.1
+optimizer: adam
 seed: 1
