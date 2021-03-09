@@ -20,7 +20,7 @@ pip install hydra_colorlog --upgrade
 ```
 
 ### Usage
-Override `hydra/job_logging` and `hydra/hydra_logging` your config:
+Override `hydra/job_logging` and `hydra/hydra_logging` in your config:
 
 ```yaml
 defaults:
