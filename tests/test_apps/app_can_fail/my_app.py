@@ -7,7 +7,7 @@ import hydra
 @hydra.main(config_name="config")
 def my_app(cfg: DictConfig) -> None:
     val = 1 / cfg.divisor
-    print(f"{val=}")
+    print(f"val={val}")
 
 
 if __name__ == "__main__":
