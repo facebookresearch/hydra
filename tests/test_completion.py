@@ -155,7 +155,14 @@ class TestRunCompletion:
     @pytest.mark.parametrize(  # type: ignore
         "prog", [["python", "hydra/test_utils/completion.py"]]
     )
-    @pytest.mark.parametrize("shell", ["bash", "fish"])  # type: ignore
+    @pytest.mark.parametrize(  # type: ignore
+        "shell",
+        [
+            "bash",
+            # Temporarily disabled, see https://github.com/facebookresearch/hydra/issues/1442
+            # "fish",
+        ],
+    )
     def test_shell_integration(
         self,
         shell: str,
