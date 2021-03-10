@@ -8,6 +8,6 @@ hydra:
         exclude_keys:
           - seed
 
-lr: 0.1
-optimizer: adam
+learning_rate: 0.1
+batch_size: 32
 seed: 1

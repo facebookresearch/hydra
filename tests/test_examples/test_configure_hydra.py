@@ -73,14 +73,14 @@ def test_job_override_dirname(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_override_dirname/my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
-        "lr=0.1,0.01",
-        "optimizer=adam",
+        "learning_rate=0.1,0.01",
+        "batch_size=32",
         "seed=999",
         "-m",
     ]
     run_python_script(cmd)
-    assert Path(tmpdir / "lr=0.1,optimizer=adam/seed=999/my_app.log").exists()
-    assert Path(tmpdir / "lr=0.01,optimizer=adam/seed=999/my_app.log").exists()
+    assert Path(tmpdir / "batch_size=32,learning_rate=0.01/seed=999/").is_dir()
+    assert Path(tmpdir / "batch_size=32,learning_rate=0.1/seed=999/").is_dir()
 
 
 def test_logging(tmpdir: Path) -> None:
