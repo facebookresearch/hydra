@@ -20,20 +20,22 @@ from tests.instantiate import (
 @mark.parametrize(
     "name,expected",
     [
-        ("tests.Adam", Adam),
-        ("tests.Parameters", Parameters),
-        ("tests.AClass", AClass),
-        ("tests.ASubclass", ASubclass),
-        ("tests.NestingClass", NestingClass),
-        ("tests.AnotherClass", AnotherClass),
+        ("tests.instantiate.Adam", Adam),
+        ("tests.instantiate.Parameters", Parameters),
+        ("tests.instantiate.AClass", AClass),
+        ("tests.instantiate.ASubclass", ASubclass),
+        ("tests.instantiate.NestingClass", NestingClass),
+        ("tests.instantiate.AnotherClass", AnotherClass),
         ("", raises(ImportError, match=re.escape("Empty path"))),
         [
             "not_found",
             raises(ImportError, match=re.escape("Error loading module 'not_found'")),
         ],
         (
-            "tests.b.c.Door",
-            raises(ImportError, match=re.escape("No module named 'tests.b'")),
+            "tests.instantiate.b.c.Door",
+            raises(
+                ImportError, match=re.escape("No module named 'tests.instantiate.b'")
+            ),
         ),
     ],
 )

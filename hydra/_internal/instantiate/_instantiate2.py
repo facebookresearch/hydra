@@ -3,9 +3,9 @@
 import copy
 import sys
 from enum import Enum
-from typing import Any, Callable, Tuple, Union
+from typing import Any, Callable, Sequence, Tuple, Union
 
-from omegaconf import ListConfig, OmegaConf, SCMode
+from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import _locate
@@ -34,11 +34,7 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     config_args = kwargs.pop(_Keys.ARGS, ())
     output_args = config_args
 
-    if (
-        isinstance(config_args, tuple)
-        or isinstance(config_args, list)
-        or isinstance(config_args, ListConfig)
-    ):
+    if isinstance(config_args, Sequence):
         if len(input_args) > 0:
             output_args = input_args
     else:
