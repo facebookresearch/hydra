@@ -59,15 +59,6 @@ module.exports = {
         ],
 
         'Common Patterns': [
-            {
-                type: 'category',
-                label: 'Instantiating Objects',
-                items: [
-                    'patterns/instantiate_objects/overview',
-                    'patterns/instantiate_objects/config_files',
-                    'patterns/instantiate_objects/structured_config',
-                 ]
-             },
             'patterns/extending_configs',
             'patterns/configuring_experiments',
             'patterns/select_multiple_configs_from_config_group',
@@ -115,6 +106,15 @@ module.exports = {
             'advanced/defaults_list',
             'advanced/overriding_packages',
             'advanced/search_path',
+            {
+                type: 'category',
+                label: 'Instantiating Objects',
+                items: [
+                    'advanced/instantiate_objects/overview',
+                    'advanced/instantiate_objects/config_files',
+                    'advanced/instantiate_objects/structured_config',
+                 ]
+             },            
             'advanced/plugins',
             'advanced/app_packaging',
             'advanced/jupyter_notebooks',

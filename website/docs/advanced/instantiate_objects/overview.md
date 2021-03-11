@@ -27,6 +27,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                    In addition to the parameters, the config must contain:
                    _target_ : target class or callable name (str)
                    And may contain:
+                   _args_: List-like of positional arguments to pass to the target
                    _recursive_: Construct nested objects as well (bool).
                                 True by default.
                                 may be overridden via a _recursive_ key in
@@ -46,15 +47,23 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
+
 # Alias for instantiate
 call = instantiate
 ```
 
 </details><br/>
 
-The config passed to these functions must have a key called `_target_`, with the value of a fully qualified class name, class method, static method or callable.   
-Any additional parameters are passed as keyword arguments to the target.
+The config passed to these functions must have a key called `_target_`, with the value of a fully qualified class name, class method, static method or callable.
 For convenience, `None` config results in a `None` object.
+
+**Named arguments** : Config fields (except reserved fields like `_target_`) are passed as named arguments to the target.
+Named arguments in the config can be overridden by passing named argument with the same name in the `instantiate()` call-site.
+
+**Positional arguments** : The config may contain a `_args_` field representing positional arguments to pass to the target.
+The positional arguments can be overridden together by passing positional arguments in the `instantiate()` call-site.
+
+
 
 ### Simple usage
 Your application might have an Optimizer class:
@@ -156,6 +165,17 @@ print(trainer)
 #   optimizer=Optimizer(algo=SGD,lr=0.3),
 #   dataset=Dataset(name=cifar10, path=/datasets/cifar10)
 # )
+```
+
+Similarly, positional arguments of nested objects can be overridden:
+```python
+obj = instantiate(
+    cfg.object,
+    # pass 1 and 2 as positional arguments to the target object
+    1, 2,  
+    # pass 3 and 4 as positional arguments to a nested child object
+    child={"_args_": [3, 4]},
+)
 ```
 
 ### Disable recursive instantiation

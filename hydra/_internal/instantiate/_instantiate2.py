@@ -90,6 +90,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                    In addition to the parameters, the config must contain:
                    _target_ : target class or callable name (str)
                    And may contain:
+                   _args_: List-like of positional arguments to pass to the target
                    _recursive_: Construct nested objects as well (bool).
                                 True by default.
                                 may be overridden via a _recursive_ key in
