@@ -35,11 +35,11 @@ hydra:
 
 ### Configuration for multirun
 
-Sweep sub directory contains the job number for the job instance:
+Default multirun dir configurations:
 ```yaml
 hydra:
   sweep:
-    dir: sweep_dir
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
     subdir: ${hydra.job.num}
 ```
 Run the example application
@@ -47,13 +47,24 @@ Run the example application
 python my_app.py --multirun a=a1,a2,a3 
 ```
 
-Would create working dir structure like:
+would create working dir structure like:
 ```bash
-$ tree sweep_dir -d
-sweep_dir
-├── 0
-├── 1
-└── 2
+$ tree -d multirun/
+multirun/
+└── 2021-03-10
+    └── 17-21-00
+        ├── 0
+        ├── 1
+        └── 2
+```
+Similar configuration patterns in run can be applied to config multirun dir as well.
+
+For example, multirun output directory grouped by job name, and sub dir by job num:
+```yaml
+hydra:
+  sweep:
+    dir: ${hydra.job.name}
+    subdir: ${hydra.job.num}
 ```
 
 ### Using `hydra.job.override_dirname`
