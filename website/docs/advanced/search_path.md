@@ -17,38 +17,39 @@ $ python my_app.py hydra.verbose=hydra
 ```
 
 There's a few options to modify the config search path so Hydra could discover 
-the configurations. You can pick and choose some or all of the following methods below
-to provide configuration to your apps.
+the configurations. Use a combination of the methods described below:
 
-### Set `config_name`/`config_path` in`hydra.main()`
-This is the most common use case: all config files are grouped under one directory and
-has a relative path to the application. You can add them to the search path by setting `config_path` 
-or `config_name`.
+#### Using `@hydra.main()`
+Specify a `config_path` in `@hydra.main()`. This path is relative to the application.
+All the configuration under the path will be discovered by Hydra.
 
-### Override `hydra.searchpath` config
+#### Overriding `hydra.searchpath` config
 
 <ExampleGithubLink text="Example application" to="examples/advanced/config_search_path"/>
 
-Sometimes your configurations are not grouped nicely in one folder - 
-you may need to read configurations from multiple locations, so passing one directory to `config_path` 
-won't work. In this case, you can pass in a list of config paths via `hydra.searchpath` in 
-the primary config or override from the command line.
+In some cases you may want to add multiple locations to the search path. 
+For example, an app may want to read the configs from an additional Python module or 
+an additional directory on the file system.  
+Configure this using `hydra.searchpath` in your primary config or your command line.
+:::info
+hydra.searchpath can **only** be configured in the primary config. Attempting  to configure it in other configs will result in an error.
+:::
 
 Let's say we have the following configuration and application structure:
 ```bash
-$ tree  config_search_path
-config_search_path
 ├── __init__.py
+├── additonal_conf
+│   ├── __init__.py
+│   └── dataset
+│       ├── cifar10.yaml
+│       └── imagenet.yaml
 ├── conf
 │   └── config.yaml
-├── dataset
-│   ├── cifar10.yaml
-│   └── imagenet.yaml
 └── my_app.py
 ```
-where `conf/config.yaml` is the primary config for `my_app.py`. However at the same time, we also 
-want to reference configuration from `dataset` in `config.yaml`. In this case, we can add `dataset` to 
-`hydra.searchpath` so Hydra could discover the configurations under `dataset`.
+where `conf/config.yaml` is the primary config for `my_app.py`. At the same time, we also 
+want to reference configuration from `additonal_conf/dataset` in `config.yaml`. In this case, we can add `additonal_conf` to 
+`hydra.searchpath` so Hydra could discover the configurations under `additonal_conf`.
 
 ```yaml title="config.yaml"
 defaults:
@@ -56,7 +57,7 @@ defaults:
 
 hydra:
   searchpath:
-    - pkg://examples.advanced.config_search_path
+    - pkg://additonal_conf
 ```
 
 ```python title="my_app.py"
@@ -79,18 +80,21 @@ dataset:
 In addition to override `hydra.searchpath` in primary config, one can also override from the command line.
 
 ```bash title="command line override"
-python my_app.py hydra.searchpath=[pkg://examples.advanced.config_search_path]
+python my_app.py hydra.searchpath=[pkg://additonal_conf]
 ```
 
-### Override `--config-dir` from the command line
-This is a less flexible alternative to `hydra.searchpath`. See this [page](/docs/advanced/hydra-command-line-flags) for more info.
+#### Overriding `--config-dir` from the command line
+This is a less flexible alternative to `hydra.searchpath`. 
+See this [page](/docs/advanced/hydra-command-line-flags) for more info.
 
 
-### Create `SearchPathPlugin`
+#### Creating a `SearchPathPlugin`
 
 <ExampleGithubLink text="ExampleSearchPathPlugin" to="examples/plugins/example_searchpath_plugin/"/>
 
-Hydra auto discovers all the Plugins that's created under a `hydra_plugins` package. So if modifying `hydra.searchpath` 
-is not an option for you, you can still create a `SearchPathPlugin` for the configs to be discovered. 
+If you do not have control of the primary config file but still want to provide 
+configurations to the end users, you can choose to create a `SearchPathPlugin`.
+Hydra auto discovers all the Plugins that's created under a `hydra_plugins` package. 
+A `SearchPathPlugin` serves the purpose of adding to Hydra's config search path. 
 For more details, please check the example plugin linked above.
  

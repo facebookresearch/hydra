@@ -3,4 +3,4 @@ defaults:
 
 hydra:
   searchpath:
-    - pkg://examples.advanced.config_search_path
+    - pkg://additonal_conf
