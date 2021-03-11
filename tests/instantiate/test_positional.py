@@ -1,25 +1,10 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import Any
 
-from hydra.utils import instantiate
 from pytest import mark, param
 
-
-class ArgsClass:
-    def __init__(self, *args, **kwargs):
-        assert isinstance(args, tuple)
-        assert isinstance(kwargs, dict)
-        self.args = args
-        self.kwargs = kwargs
-
-    def __repr__(self):
-        return f"{self.args=},{self.kwargs=}"
-
-    def __eq__(self, other):
-        if isinstance(other, ArgsClass):
-            return self.args == other.args and self.kwargs == other.kwargs
-        else:
-            return NotImplemented
-
+from hydra.utils import instantiate
+from tests.instantiate import ArgsClass
 
 #######################
 # non-recursive tests #
@@ -30,18 +15,18 @@ class ArgsClass:
     ("cfg", "expected"),
     [
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass"},
+            {"_target_": "tests.instantiate.ArgsClass"},
             ArgsClass(),
             id="config:no_params",
         ),
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": [1]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             ArgsClass(1),
             id="config:args_only",
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "foo": 10,
             },
@@ -50,7 +35,7 @@ class ArgsClass:
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "foo": 10,
             },
             ArgsClass(foo=10),
@@ -66,13 +51,13 @@ def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
     ("cfg", "expected"),
     [
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": ["${.1}", 2]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": ["${.1}", 2]},
             ArgsClass(2, 2),
             id="config:args_only",
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "foo": "${._args_}",
             },
@@ -81,10 +66,10 @@ def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "foo": "${._target_}",
             },
-            ArgsClass(foo="tests.test_instantiate.ArgsClass"),
+            ArgsClass(foo="tests.instantiate.ArgsClass"),
             id="config:kwargs_only)",
         ),
     ],
@@ -97,28 +82,28 @@ def test_instantiate_args_kwargs_with_interpolation(cfg: Any, expected: Any) -> 
     ("cfg", "args_override", "kwargs_override", "expected"),
     [
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": [1]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             [2],
             {},
             ArgsClass(2),
             id="direct_args",
         ),
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": [1]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             [],
             {"_args_": [2]},
             ArgsClass(2),
             id="indirect_args",
         ),
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": [1]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             [],
             {"foo": 10},
             ArgsClass(1, foo=10),
             id="kwargs",
         ),
         param(
-            {"_target_": "tests.test_instantiate.ArgsClass", "_args_": [1]},
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             [],
             {"foo": 10, "_args_": [2]},
             ArgsClass(2, foo=10),
@@ -144,18 +129,18 @@ def test_instantiate_args_kwargs_with_override(
     [
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
-                "child": {"_target_": "tests.test_instantiate.ArgsClass"},
+                "_target_": "tests.instantiate.ArgsClass",
+                "child": {"_target_": "tests.instantiate.ArgsClass"},
             },
             ArgsClass(child=ArgsClass()),
             id="config:no_params",
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
             },
@@ -164,11 +149,11 @@ def test_instantiate_args_kwargs_with_override(
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "foo": 10,
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
             },
@@ -177,9 +162,9 @@ def test_instantiate_args_kwargs_with_override(
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
                 "foo": 10,
@@ -198,8 +183,8 @@ def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
     [
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
-                "child": {"_target_": "tests.test_instantiate.ArgsClass"},
+                "_target_": "tests.instantiate.ArgsClass",
+                "child": {"_target_": "tests.instantiate.ArgsClass"},
             },
             [1],
             {},
@@ -208,10 +193,10 @@ def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
             },
@@ -222,10 +207,10 @@ def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
             },
@@ -236,10 +221,10 @@ def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
         ),
         param(
             {
-                "_target_": "tests.test_instantiate.ArgsClass",
+                "_target_": "tests.instantiate.ArgsClass",
                 "_args_": [1],
                 "child": {
-                    "_target_": "tests.test_instantiate.ArgsClass",
+                    "_target_": "tests.instantiate.ArgsClass",
                     "_args_": [2],
                 },
             },

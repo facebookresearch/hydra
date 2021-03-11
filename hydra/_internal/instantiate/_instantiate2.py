@@ -30,22 +30,23 @@ def _is_target(x: Any) -> bool:
     return False
 
 
-def _extract_pos_args(*args: Any, **kwargs: Any) -> Tuple[Any, Any]:
-    _args_ = kwargs.pop(_Keys.ARGS, ())
+def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
+    config_args = kwargs.pop(_Keys.ARGS, ())
+    output_args = config_args
 
     if (
-        isinstance(_args_, tuple)
-        or isinstance(_args_, list)
-        or isinstance(_args_, ListConfig)
+        isinstance(config_args, tuple)
+        or isinstance(config_args, list)
+        or isinstance(config_args, ListConfig)
     ):
-        if len(args) == 0:
-            args = _args_
+        if len(input_args) > 0:
+            output_args = input_args
     else:
         raise InstantiationException(
-            f"Unsupported _args_ type: {type(_args_).__name__}. value: {_args_}"
+            f"Unsupported _args_ type: {type(config_args).__name__}. value: {config_args}"
         )
 
-    return args, kwargs
+    return output_args, kwargs
 
 
 def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
