@@ -20,7 +20,7 @@ from hydra.errors import (
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.types import RunMode
-from tests import UserGroup
+from tests.instantiate import UserGroup
 
 chdir_hydra_root()
 
