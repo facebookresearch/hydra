@@ -17,7 +17,7 @@ class ArgsClass:
         self.kwargs = kwargs
 
     def __repr__(self) -> str:
-        return f"{self.args=},{self.kwargs=}"
+        return f"self.args={self.args},self.kwarg={self.kwargs}"
 
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, ArgsClass):
