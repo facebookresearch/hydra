@@ -16,8 +16,9 @@ You can inspect the search path and the configurations loaded by Hydra by turnin
 $ python my_app.py hydra.verbose=hydra
 ```
 
-There's a few options to modify the config search path so Hydra could discover 
-the configurations. Use a combination of the methods described below:
+There are a few ways to modify the config search path, enabling Hydra to access configuration in 
+different locations.
+Use a combination of the methods described below:
 
 #### Using `@hydra.main()`
 Specify a `config_path` in `@hydra.main()`. This path is relative to the application.
