@@ -34,38 +34,64 @@ hydra:
 ```
 
 ### Configuration for multirun
+We will run the application with same command but different configurations:
 
-Default multirun dir configurations:
-```yaml
-hydra:
-  sweep:
-    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
-```
-Run the example application
 ```bash
 python my_app.py --multirun a=a1,a2,a3 
 ```
 
-would create working dir structure like:
-```bash
-$ tree -d multirun/
-multirun/
-└── 2021-03-10
-    └── 17-21-00
-        ├── 0
-        ├── 1
-        └── 2
+
+Default multirun dir configurations:
+<div className="row">
+<div className="col col--8">
+
+```yaml title="config.yaml"
+hydra:
+  sweep:
+    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+
 ```
+</div>
+<div className="col  col--4">
+
+```bash title="workding dir created"
+$ tree my_app -d
+my_app
+├── 0
+├── 1
+└── 2
+```
+</div>
+</div>
+
+
 Similar configuration patterns in run can be applied to config multirun dir as well.
 
 For example, multirun output directory grouped by job name, and sub dir by job num:
-```yaml
+<div className="row">
+<div className="col col--6">
+
+```yaml title="config.yaml"
 hydra:
   sweep:
     dir: ${hydra.job.name}
     subdir: ${hydra.job.num}
+
 ```
+</div>
+<div className="col  col--6">
+
+```bash title="workding dir created"
+$ tree my_app -d
+my_app
+├── 0
+├── 1
+└── 2
+```
+</div>
+</div>
+
 
 ### Using `hydra.job.override_dirname`
 
@@ -75,26 +101,33 @@ This field is populated automatically using your command line arguments and is t
 output directory pattern. It is meant to be used along with the configuration for working dir, especially
 in `hydra.sweep.subdir`.
 
-For example, we configure the example application like the following
-```yaml
+If we run the example application with the following commandline overrides and configs:
+
+```bash
+python my_app.py --multirun batch_size=32 learning_rate=0.1,0.01
+```
+
+
+<div className="row">
+<div className="col col--6">
+
+```yaml title="config.yaml"
 hydra:
   sweep:
     dir: multirun
     subdir: ${hydra.job.override_dirname}
 ```
+</div>
+<div className="col  col--6">
 
-then run the application with command-line overrides:
-
-```bash
-python my_app.py --multirun batch_size=32 learning_rate=0.1,0.01
-```
-Would result in creating the following output structure
-```bash
+```bash title="working dir created"
 $ tree multirun -d
 multirun
 ├── batch_size=32,learning_rate=0.01
 └── batch_size=32,learning_rate=0.1
 ```
+</div>
+</div>
 
 You can further customized the output dir creation by configuring`hydra.job.override_dirname`.
 
@@ -130,3 +163,4 @@ multirun
     ├── seed=1
     └── seed=2
 ```
+
