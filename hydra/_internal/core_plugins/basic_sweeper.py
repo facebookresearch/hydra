@@ -29,7 +29,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override
-from hydra.core.utils import JobResult, JobReturn
+from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
@@ -155,10 +155,13 @@ class BasicSweeper(Sweeper):
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
 
             idx = initial_job_idx
+
             for r in results:
-                if r.job_result == JobResult.FAILED:
+                try:
+                    _ = r.return_value
+                except Exception as e:
                     job_failed = True
-                    log.error(f"Job #{idx} failed with exception: {r.return_value}")
+                    log.error(f"Job #{idx} failed with exception: {e}")
                 idx += 1
 
             initial_job_idx += len(batch)

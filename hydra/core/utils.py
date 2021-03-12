@@ -128,10 +128,10 @@ def run_job(
 
         with env_override(hydra_cfg.hydra.job.env_set):
             try:
-                ret.return_value = task_function(task_cfg)
+                ret._return_value = task_function(task_cfg)
                 ret.job_result = JobResult.COMPLETED
             except Exception as e:
-                ret.return_value = e
+                ret._return_value = e
                 ret.job_result = JobResult.FAILED
 
         ret.task_name = JobRuntime.instance().get("name")
@@ -182,14 +182,21 @@ class JobResult(Enum):
 @dataclass
 class JobReturn:
     overrides: Optional[Sequence[str]] = None
-    return_value: Any = None
     cfg: Optional[DictConfig] = None
     hydra_cfg: Optional[DictConfig] = None
     working_dir: Optional[str] = None
     task_name: Optional[str] = None
-    job_result: Optional[
-        JobResult
-    ] = None  # if job result is FAILED, return_value would be exception.
+    job_result: Optional[JobResult] = None
+    _return_value: Any = None
+
+    @property
+    def return_value(self) -> Any:
+        if self.job_result is None:
+            raise ValueError("job_result not yet available.")
+        elif self.job_result == JobResult.COMPLETED:
+            return self._return_value
+        else:
+            raise self._return_value
 
 
 class JobRuntime(metaclass=Singleton):

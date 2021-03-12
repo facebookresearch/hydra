@@ -377,6 +377,8 @@ def run_process(
     cmd: Any,
     env: Any = None,
     print_error: bool = True,
+    # set raise_exception to False if exception is expected and needs to be validated.
+    raise_exception: bool = True,
     timeout: Optional[float] = None,
 ) -> Tuple[str, str]:
     try:
@@ -393,7 +395,10 @@ def run_process(
         if process.returncode != 0:
             if print_error:
                 sys.stderr.write(f"Subprocess error:\n{stderr}\n")
-            raise subprocess.CalledProcessError(returncode=process.returncode, cmd=cmd)
+            if raise_exception:
+                raise subprocess.CalledProcessError(
+                    returncode=process.returncode, cmd=cmd
+                )
         return stdout, stderr
     except Exception as e:
         if print_error:
