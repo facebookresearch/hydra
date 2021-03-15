@@ -63,46 +63,8 @@ It is normally derived from the Python file name (The job name of the file `trai
 You can override it via the command line, or your config file. 
 
 ### hydra.job.override_dirname
-This field is populated automatically using your command line arguments and is typically being used as a part of your 
-output directory pattern.
-For example, the command line arguments:
-```bash
-$ python foo.py a=10 b=20
-```
-Would result in `hydra.job.override_dirname` getting the value a=10,b=20.
-When used with the output directory override, it can automatically generate directories that represent the 
-command line arguments used in your run.   
-```yaml
-hydra:
-  run:
-    dir: output/${hydra.job.override_dirname}
-```
-
-The generation of override_dirname can be controlled by `hydra.job.config.override_dirname`.
-In particular, the separator char `=` and the item separator char `,` can be modified, and in addition some command line
-override keys can be automatically excluded from the generated `override_dirname`.
-An example of a case where the exclude is useful is a random seed.
-
-```yaml
-hydra:
-  run:
-    dir: output/${hydra.job.override_dirname}/seed=${seed}
-  job:
-    config:
-      override_dirname:
-        exclude_keys:
-          - seed
-```
-With this configuration, running
-```bash
-$ python foo.py a=10 b=20 seed=999
-```
-
-Would result in a directory like:
-```
-output/a=10,b=20/seed=999
-```
-Allowing you to more easily group identical runs with different random seeds together.
+Enables the creation of an output directory which is based on command line overrides.
+See [this](/configure_hydra/workdir.md) for more information.
 
 ### hydra.job.id
 The job ID is populated by active Hydra launcher. For the basic launcher, the job ID is just a serial job number, but

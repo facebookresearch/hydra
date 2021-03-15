@@ -1,0 +1,13 @@
+hydra:
+  sweep:
+    dir: multirun
+    subdir: ${hydra.job.override_dirname}/seed=${seed}
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - seed
+
+learning_rate: 0.1
+batch_size: 32
+seed: 1
