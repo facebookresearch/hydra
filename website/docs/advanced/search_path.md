@@ -21,8 +21,7 @@ different locations.
 Use a combination of the methods described below:
 
 #### Using `@hydra.main()`
-Specify a `config_path` in `@hydra.main()`. This path is relative to the application.
-All the configuration under the path will be discovered by Hydra.
+Using the  `config_path` parameter `@hydra.main()`.  The `config_path` is relative to location of the Python script.
 
 #### Overriding `hydra.searchpath` config
 
@@ -36,30 +35,24 @@ Configure this using `hydra.searchpath` in your primary config or your command l
 hydra.searchpath can **only** be configured in the primary config. Attempting  to configure it in other configs will result in an error.
 :::
 
-Let's say we have the following configuration and application structure:
+Let's say we have the following configuration structure and application code:
+<div className="row">
+<div className="col col--4">
+
 ```bash
 ├── __init__.py
 ├── additonal_conf
 │   ├── __init__.py
 │   └── dataset
-│       ├── cifar10.yaml
 │       └── imagenet.yaml
 ├── conf
-│   └── config.yaml
+│   ├── config.yaml
+│   └── dataset
+│       └── cifar10.yaml
 └── my_app.py
 ```
-where `conf/config.yaml` is the primary config for `my_app.py`. At the same time, we also 
-want to reference configuration from `additonal_conf/dataset` in `config.yaml`. In this case, we can add `additonal_conf` to 
-`hydra.searchpath` so Hydra could discover the configurations under `additonal_conf`.
-
-```yaml title="config.yaml"
-defaults:
-  - dataset: imagenet
-
-hydra:
-  searchpath:
-    - pkg://additonal_conf
-```
+</div>
+<div className="col  col--8">
 
 ```python title="my_app.py"
 
@@ -71,17 +64,56 @@ def my_app(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     my_app()
 ```
+</div>
+</div>
+
+`conf/config.yaml` is the primary config for `my_app.py`. To reference `additonal_conf/dataset/imagenet` 
+in `config.yaml`, we can add `additonal_conf` to 
+`hydra.searchpath` so Hydra could discover the configurations under `additonal_conf`.
+
+<div className="row">
+<div className="col col--7">
+
+```yaml title="config.yaml"
+defaults:
+  - dataset: imagenet
+
+hydra:
+  searchpath:
+    - pkg://additonal_conf
+    # You can also use file based schema:
+    # - file:///etc/my_app
+    # - file://${env:HOME}/.my_app
+```
+
+</div>
+
+<div className="col  col--5">
 
 ```python title="my_app.py output"
 dataset:
   name: imagenet
   path: /datasets/imagenet
+
+
+
+
+
+
 ```
+</div>
+</div>
+
+
+
+
+
+
 
 In addition to override `hydra.searchpath` in primary config, one can also override from the command line.
 
 ```bash title="command line override"
-python my_app.py hydra.searchpath=[pkg://additonal_conf]
+python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
 ```
 
 #### Overriding `--config-dir` from the command line
@@ -93,9 +125,6 @@ See this [page](/docs/advanced/hydra-command-line-flags) for more info.
 
 <ExampleGithubLink text="ExampleSearchPathPlugin" to="examples/plugins/example_searchpath_plugin/"/>
 
-If you do not have control of the primary config file but still want to provide 
-configurations to the end users, you can choose to create a `SearchPathPlugin`.
-Hydra auto discovers all the Plugins that's created under a `hydra_plugins` package. 
-A `SearchPathPlugin` serves the purpose of adding to Hydra's config search path. 
-For more details, please check the example plugin linked above.
- 
+Framework authors may want to add their configs to the search path automatically once their package is installed,
+eliminating the need for any actions from the users.
+This can be achieved using a `SearchPathPlugin`. Check the example plugin linked above for more details.
