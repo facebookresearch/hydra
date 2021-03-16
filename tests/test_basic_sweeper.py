@@ -60,7 +60,6 @@ def test_split(
 
 
 def test_partial_failure(
-    monkeypatch: Any,
     tmpdir: Any,
 ) -> None:
     cmd = [
@@ -73,7 +72,7 @@ def test_partial_failure(
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]
     out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
-    assert "ValueError: Application multirun failed: not all jobs succeeded." in err
+
     expected_out = dedent(
         """\
         [HYDRA] Launching 3 jobs locally
@@ -82,7 +81,7 @@ def test_partial_failure(
         [HYDRA] \t#1 : +divisor=0
         [HYDRA] \t#2 : +divisor=2
         val=0.5
-        [HYDRA] Job #1 failed with exception: division by zero"""
+        [HYDRA] Job #1 failed."""
     )
 
     assert_regex_match(
@@ -90,4 +89,25 @@ def test_partial_failure(
         to_line=out,
         from_name="Expected output",
         to_name="Actual output",
+    )
+
+    expected_err = dedent(
+        """\
+        hydra.errors.FailedMultirunException: Multirun failed, failed job: #1
+
+        The above exception was the direct cause of the following exception:
+
+        Traceback (most recent call last):
+          File ".*my_app.py", line 9, in my_app
+            val = 1 / cfg.divisor
+        ZeroDivisionError: division by zero
+
+        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+        """
+    )
+    assert_regex_match(
+        from_line=expected_err,
+        to_line=err,
+        from_name="Expected error",
+        to_name="Actual error",
     )

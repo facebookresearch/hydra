@@ -191,9 +191,8 @@ class JobReturn:
 
     @property
     def return_value(self) -> Any:
-        if self.job_result is None:
-            raise ValueError("job_result not yet available.")
-        elif self.job_result == JobResult.COMPLETED:
+        assert self.job_result is not None, "job_result not yet available"
+        if self.job_result == JobResult.COMPLETED:
             return self._return_value
         else:
             raise self._return_value

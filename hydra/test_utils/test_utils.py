@@ -377,7 +377,6 @@ def run_process(
     cmd: Any,
     env: Any = None,
     print_error: bool = True,
-    # set raise_exception to False if exception is expected and needs to be validated.
     raise_exception: bool = True,
     timeout: Optional[float] = None,
 ) -> Tuple[str, str]:

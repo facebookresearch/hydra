@@ -100,7 +100,7 @@ class Hydra:
         )
 
         if ret.job_result == JobResult.FAILED:
-            raise ret._return_value
+            raise ret.return_value
 
         return ret
 
