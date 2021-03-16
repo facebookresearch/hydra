@@ -71,18 +71,18 @@ chdir_hydra_root()
             ],
             dedent(
                 """\
-                [HYDRA] Init DefaultCallback with self.param1=foo, self.param2=bar
                 [HYDRA] Init CustomCallback with self.param1=value1, self.param2=value2
-                [HYDRA] DefaultCallback on_run_start
+                [HYDRA] Init DefaultCallback with self.param1=foo, self.param2=bar
                 [HYDRA] CustomCallback on_run_start
-                [JOB] DefaultCallback on_job_start
+                [HYDRA] DefaultCallback on_run_start
                 [JOB] CustomCallback on_job_start
+                [JOB] DefaultCallback on_job_start
                 foo: bar
 
-                [JOB] DefaultCallback on_job_end
                 [JOB] CustomCallback on_job_end
-                [JOB] DefaultCallback on_run_end
-                [JOB] CustomCallback on_run_end"""
+                [JOB] DefaultCallback on_job_end
+                [JOB] CustomCallback on_run_end
+                [JOB] DefaultCallback on_run_end"""
             ),
         ),
         (
@@ -113,20 +113,20 @@ chdir_hydra_root()
             ],
             dedent(
                 """\
-                    [HYDRA] Init DefaultCallback with self.param1=foo, self.param2=bar
                     [HYDRA] Init CustomCallback with self.param1=value1, self.param2=value2
-                    [HYDRA] DefaultCallback on_multirun_start
+                    [HYDRA] Init DefaultCallback with self.param1=foo, self.param2=bar
                     [HYDRA] CustomCallback on_multirun_start
+                    [HYDRA] DefaultCallback on_multirun_start
                     [HYDRA] Launching 1 jobs locally
                     [HYDRA] \t#0 : foo=bar
-                    [JOB] DefaultCallback on_job_start
                     [JOB] CustomCallback on_job_start
+                    [JOB] DefaultCallback on_job_start
                     foo: bar
 
-                    [JOB] DefaultCallback on_job_end
                     [JOB] CustomCallback on_job_end
-                    [HYDRA] DefaultCallback on_multirun_end
-                    [HYDRA] CustomCallback on_multirun_end"""
+                    [JOB] DefaultCallback on_job_end
+                    [HYDRA] CustomCallback on_multirun_end
+                    [HYDRA] DefaultCallback on_multirun_end"""
             ),
         ),
     ],

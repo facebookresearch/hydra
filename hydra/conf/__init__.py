@@ -98,8 +98,8 @@ class HydraConf:
             {"hydra_help": "default"},
             {"hydra_logging": "default"},
             {"job_logging": "default"},
-            {"env": "default"},
             {"callbacks": "default"},
+            {"env": "default"},
         ]
     )
 
