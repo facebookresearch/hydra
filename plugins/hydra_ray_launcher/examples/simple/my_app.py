@@ -8,9 +8,11 @@ from omegaconf import DictConfig
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_name="./config", config_name="main")
 def my_app(cfg: DictConfig) -> None:
     log.info(f"Executing task {cfg.task}")
+    module = hydra.utils.instantiate(cfg.module)
+    log.info(repr(module))
     time.sleep(1)
 
 

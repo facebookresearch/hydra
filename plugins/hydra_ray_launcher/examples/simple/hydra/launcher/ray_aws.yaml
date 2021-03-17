@@ -1,0 +1,37 @@
+_target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
+env_setup:
+  pip_packages:
+    omegaconf: null
+    hydra_core: null
+    ray: null
+    cloudpickle: null
+    pickle5: null
+    hydra_ray_launcher: null
+  commands: []
+ray:
+  cluster:
+    setup_commands: []
+    cluster_name: simple-example
+    max_workers: 2
+    autoscaling_mode: default
+    target_utilization_fraction: 0.8
+    idle_timeout_minutes: 5
+    docker:
+      image: 'rayproject/ray-ml:latest-cpu'
+      container_name: 'hydra-container'
+      pull_before_run: True
+      run_options: []
+    provider:
+      type: aws
+      region: us-west-2
+      availability_zone: us-west-2a,us-west-2b
+    auth:
+      ssh_user: ubuntu
+    head_node:
+      InstanceType: m4.large
+      ImageId: ami-010bc10395b6826fb
+    worker_nodes:
+      InstanceType: m4.large
+      ImageId: ami-010bc10395b6826fb
+stop_cluster: true
+

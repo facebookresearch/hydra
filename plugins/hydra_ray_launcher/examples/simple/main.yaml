@@ -1,0 +1,6 @@
+defaults:
+  - module: type_a
+  - override hydra/launcher: basic
+
+task: 1
+
