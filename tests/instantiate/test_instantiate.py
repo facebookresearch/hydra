@@ -200,14 +200,35 @@ def test_class_instantiate(
     assert obj == expected
 
 
-def test_instantiate_none(
+def test_none_cases(
     instantiate_func: Any,
 ) -> Any:
     assert instantiate_func(None) is None
 
-    cfg = {"_target_": "tests.instantiate.ArgsClass", "none": DictConfig(None)}
+    cfg = {
+        "_target_": "tests.instantiate.ArgsClass",
+        "none_dict": DictConfig(None),
+        "none_list": ListConfig(None),
+        "dict": {
+            "field": 10,
+            "none_dict": DictConfig(None),
+            "none_list": ListConfig(None),
+        },
+        "list": [
+            10,
+            DictConfig(None),
+            ListConfig(None),
+        ],
+    }
     ret = instantiate_func(cfg)
-    assert ret.kwargs["none"] is None
+    assert ret.kwargs["none_dict"] is None
+    assert ret.kwargs["none_list"] is None
+    assert ret.kwargs["dict"].field == 10
+    assert ret.kwargs["dict"].none_dict is None
+    assert ret.kwargs["dict"].none_list is None
+    assert ret.kwargs["list"][0] == 10
+    assert ret.kwargs["list"][1] is None
+    assert ret.kwargs["list"][2] is None
 
 
 @mark.parametrize(

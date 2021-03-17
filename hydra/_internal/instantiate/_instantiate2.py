@@ -190,7 +190,7 @@ def instantiate_node(
     recursive: bool = True,
 ) -> Any:
     # Return None if config is None
-    if node is None:
+    if node is None or (OmegaConf.is_config(node) and node._is_none()):
         return None
 
     if not OmegaConf.is_config(node):
