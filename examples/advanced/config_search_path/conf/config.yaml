@@ -1,5 +1,5 @@
 defaults:
-  - dataset: imagenet
+  - dataset: cifar10
 
 hydra:
   searchpath:
