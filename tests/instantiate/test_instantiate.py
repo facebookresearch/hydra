@@ -156,8 +156,6 @@ def config(request: Any, src: Any) -> Any:
             "43",
             id="builtin_types",
         ),
-        # Check that none is instantiated correctly
-        param(None, {}, None, id="instantiate_none"),
         # passthrough
         param(
             {"_target_": "tests.instantiate.AClass"},
@@ -200,6 +198,16 @@ def test_class_instantiate(
     passthrough["_recursive_"] = recursive
     obj = instantiate_func(config, **passthrough)
     assert obj == expected
+
+
+def test_instantiate_none(
+    instantiate_func: Any,
+) -> Any:
+    assert instantiate_func(None) is None
+
+    cfg = {"_target_": "tests.instantiate.ArgsClass", "none": DictConfig(None)}
+    ret = instantiate_func(cfg)
+    assert ret.kwargs["none"] is None
 
 
 @mark.parametrize(
