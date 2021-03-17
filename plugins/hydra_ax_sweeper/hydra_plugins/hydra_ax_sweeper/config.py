@@ -26,7 +26,7 @@ class ExperimentConfig:
     # Defaults to minimize, set to false to maximize
     minimize: bool = True
 
-    # For the remaining paramaters, refer the Ax documentation: https://ax.dev/api/core.html#experiment
+    # For the remaining parameters, refer the Ax documentation: https://ax.dev/api/core.html#experiment
     parameter_constraints: Optional[List[str]] = None
     outcome_constraints: Optional[List[str]] = None
     status_quo: Optional[Dict[str, Any]] = None

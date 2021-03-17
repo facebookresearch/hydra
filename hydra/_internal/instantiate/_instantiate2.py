@@ -25,7 +25,7 @@ class _Keys(str, Enum):
 def _is_target(x: Any) -> bool:
     if isinstance(x, dict):
         return "_target_" in x
-    if OmegaConf.is_dict(x) and not OmegaConf.is_none(x):
+    if OmegaConf.is_dict(x):
         return "_target_" in x
     return False
 
@@ -130,7 +130,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
 
     # Return None if config is None
-    if config is None or OmegaConf.is_none(config):
+    if config is None:
         return None
 
     # TargetConf edge case
@@ -190,7 +190,7 @@ def instantiate_node(
     recursive: bool = True,
 ) -> Any:
     # Return None if config is None
-    if node is None or OmegaConf.is_none(node):
+    if node is None or (OmegaConf.is_config(node) and node._is_none()):
         return None
 
     if not OmegaConf.is_config(node):
