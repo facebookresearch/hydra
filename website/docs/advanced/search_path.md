@@ -9,6 +9,11 @@ The Config Search Path is a list of paths that Hydra searches in order to find c
 the Python `PYTHONPATH`. 
  - When a config is requested, The first matching config in the search path is used.
  - Each search path element has a schema prefix such as `file://` or `pkg://` that is corresponding to a `ConfigSourcePlugin`.
+    - `file://` points to a file system path. It can either be an absolute path or a relative path.
+    Relative path will be resolved to absolute based on the current working dir. Path separator is `/` on all Operating
+    Systems.
+    - `pkg://` points to an importable Python module, with `.` being the separator. `__init__.py` files are needed in 
+    directories for Python to treat them as packages.
 
 You can inspect the search path and the configurations loaded by Hydra via the `--info` flag:
 
@@ -137,6 +142,11 @@ dataset:
 ```bash title="command line override"
 python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
 ```
+
+#### Overriding `--config-dir` from the command line
+This is a less flexible alternative to `hydra.searchpath`. 
+See this [page](/docs/advanced/hydra-command-line-flags) for more info.
+
 
 #### Creating a `SearchPathPlugin`
 
