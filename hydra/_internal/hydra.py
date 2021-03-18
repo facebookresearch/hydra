@@ -14,7 +14,6 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
-    JobResult,
     JobReturn,
     JobRuntime,
     configure_log,
@@ -99,8 +98,8 @@ class Hydra:
             configure_logging=with_log_configuration,
         )
 
-        if ret.job_result == JobResult.FAILED:
-            raise ret.return_value
+        # access the result to trigger an exception in case the job failed.
+        _ = ret.return_value
 
         return ret
 

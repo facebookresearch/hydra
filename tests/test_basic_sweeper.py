@@ -67,7 +67,7 @@ def test_partial_failure(
         "-Werror",
         "tests/test_apps/app_can_fail/my_app.py",
         "--multirun",
-        "+divisor=1,0,2",
+        "+divisor=1,0",
         "hydra.run.dir=" + str(tmpdir),
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]
@@ -75,13 +75,10 @@ def test_partial_failure(
 
     expected_out = dedent(
         """\
-        [HYDRA] Launching 3 jobs locally
+        [HYDRA] Launching 2 jobs locally
         [HYDRA] \t#0 : +divisor=1
         val=1.0
-        [HYDRA] \t#1 : +divisor=0
-        [HYDRA] \t#2 : +divisor=2
-        val=0.5
-        [HYDRA] Job #1 failed."""
+        [HYDRA] \t#1 : +divisor=0"""
     )
 
     assert_regex_match(
@@ -93,7 +90,7 @@ def test_partial_failure(
 
     expected_err = dedent(
         """\
-        hydra.errors.FailedMultirunException: Multirun failed, failed job: #1
+        hydra.errors.HydraJobException: Job failed.
 
         The above exception was the direct cause of the following exception:
 

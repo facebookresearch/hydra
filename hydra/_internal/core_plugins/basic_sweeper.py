@@ -30,7 +30,7 @@ from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override
 from hydra.core.utils import JobReturn
-from hydra.errors import FailedMultirunException, HydraException
+from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
@@ -141,8 +141,6 @@ class BasicSweeper(Sweeper):
         OmegaConf.save(self.config, sweep_dir / "multirun.yaml")
 
         initial_job_idx = 0
-        job_failed = []
-        first_exception = None
         while not self.is_done():
             batch = self.get_job_batch()
             tic = time.perf_counter()
@@ -155,25 +153,13 @@ class BasicSweeper(Sweeper):
             )
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
 
-            idx = initial_job_idx
-
             for r in results:
-                try:
-                    _ = r.return_value
-                except Exception as e:
-                    job_failed.append(idx)
-                    log.error(f"Job #{idx} failed.")
-                    if first_exception is None:
-                        first_exception = e
-                idx += 1
+                # access the result to trigger an exception in case the job failed.
+                _ = r.return_value
 
             initial_job_idx += len(batch)
             returns.append(results)
 
-        if first_exception is not None:
-            raise first_exception from FailedMultirunException(
-                f"Multirun failed, failed job: {','.join(['#' + str(j) for j in job_failed])}"
-            )
         return returns
 
     def get_job_batch(self) -> Sequence[Sequence[str]]:

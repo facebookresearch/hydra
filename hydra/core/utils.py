@@ -17,6 +17,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
+from hydra.errors import HydraJobException
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
@@ -128,10 +129,10 @@ def run_job(
 
         with env_override(hydra_cfg.hydra.job.env_set):
             try:
-                ret._return_value = task_function(task_cfg)
+                ret.return_value = task_function(task_cfg)
                 ret.job_result = JobResult.COMPLETED
             except Exception as e:
-                ret._return_value = e
+                ret.return_value = e
                 ret.job_result = JobResult.FAILED
 
         ret.task_name = JobRuntime.instance().get("name")
@@ -195,7 +196,11 @@ class JobReturn:
         if self.job_result == JobResult.COMPLETED:
             return self._return_value
         else:
-            raise self._return_value
+            raise self._return_value from HydraJobException("Job failed.")
+
+    @return_value.setter
+    def return_value(self, value: Any) -> None:
+        self._return_value = value
 
 
 class JobRuntime(metaclass=Singleton):
