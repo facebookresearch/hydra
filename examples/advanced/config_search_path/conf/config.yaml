@@ -1,0 +1,9 @@
+defaults:
+  - dataset: cifar10
+
+hydra:
+  searchpath:
+    - pkg://additonal_conf
+    # You can also use file based schema, for example:
+    # - file:///etc/my_app
+    # - file://${env:HOME}/.my_app
