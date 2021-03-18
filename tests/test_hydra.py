@@ -1053,7 +1053,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     expected = dedent(
         """\
         hydra.errors.HydraJobException: Job failed.
-                
+
         The above exception was the direct cause of the following exception:
 
         Traceback (most recent call last):
