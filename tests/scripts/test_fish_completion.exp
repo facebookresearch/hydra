@@ -3,12 +3,16 @@ log_user 0
 set timeout 4
 
 # Start fish without user configuration
-set env(HOME) /dev/null
+set env(HOME) [exec mktemp -d]
+puts "HOME: $env(HOME)"
 
-# Suppress coloring
-set env(TERM) dumb
+spawn fish -C "function fish_prompt; echo '> '; end; function fish_greeting; ; end"
+expect >
 
-spawn fish
+send "fish --version\r"
+expect >
+
+send "set TERM dumb\r"
 expect >
 
 set in_line [lindex $argv 1]
@@ -23,11 +27,10 @@ expect >
 set command "[lindex $argv 0] $line\t"
 puts "command: '$command'"
 
-send $command
+send "complete --do-complete \"$command\"\r"
 
 puts "\nMatching:\n"
 foreach arg [lrange $argv 3 end] {
-    send "\t"
     expect {
 	-re "$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
         timeout {puts "Error matching $arg";exit 1}

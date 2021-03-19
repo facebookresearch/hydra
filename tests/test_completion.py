@@ -221,12 +221,8 @@ class TestRunCompletion:
         )
 
         if shell == "fish":
-            # Fish will add a space to an unambiguous completion.
-            expected = [x + " " if re.search(r"\w$", x) else x for x in expected]
-
-            # Exactly match token end. See
-            # https://github.com/fish-shell/fish-shell/issues/6928
-            expected = [re.escape(x) + "$" for x in expected]
+            # Escape special chars in the output
+            expected = [re.escape(x) for x in expected]
 
         cmd.extend(expected)
         if verbose:
