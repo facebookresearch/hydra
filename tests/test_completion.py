@@ -220,10 +220,6 @@ class TestRunCompletion:
             ]
         )
 
-        if shell == "fish":
-            # Escape special chars in the output
-            expected = [re.escape(x) for x in expected]
-
         cmd.extend(expected)
         if verbose:
             print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))

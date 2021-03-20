@@ -32,7 +32,7 @@ send "complete --do-complete \"$command\"\r"
 puts "\nMatching:\n"
 foreach arg [lrange $argv 3 end] {
     expect {
-	-re "$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
-        timeout {puts "Error matching $arg";exit 1}
+	"$arg" {puts "matched '$arg' to '$expect_out(0,string)'\nbuffer: '$expect_out(buffer)'";continue}
+        timeout {puts "Error matching $arg"; exit 1}
     }
 }
