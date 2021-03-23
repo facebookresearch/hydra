@@ -30,7 +30,7 @@ class Callbacks(metaclass=Singleton):
         for params in config.hydra.callbacks.values():
             self.callbacks.append(instantiate(params))
 
-    def _iterate(
+    def _notify(
         self,
         function_name: str,
         **kwargs: Any,
@@ -48,7 +48,7 @@ class Callbacks(metaclass=Singleton):
         config: DictConfig,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_run_start",
             config=config,
             **kwargs,
@@ -59,7 +59,7 @@ class Callbacks(metaclass=Singleton):
         config: DictConfig,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_run_end",
             config=config,
             **kwargs,
@@ -70,7 +70,7 @@ class Callbacks(metaclass=Singleton):
         config: DictConfig,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_multirun_start",
             config=config,
             **kwargs,
@@ -81,7 +81,7 @@ class Callbacks(metaclass=Singleton):
         config: DictConfig,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_multirun_end",
             config=config,
             **kwargs,
@@ -92,7 +92,7 @@ class Callbacks(metaclass=Singleton):
         config: DictConfig,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_job_start",
             config=config,
             **kwargs,
@@ -104,7 +104,7 @@ class Callbacks(metaclass=Singleton):
         job_return: JobReturn,
         **kwargs: Any,
     ) -> None:
-        self._iterate(
+        self._notify(
             function_name="on_job_end",
             config=config,
             job_return=job_return,

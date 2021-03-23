@@ -144,10 +144,7 @@ def run_job(
 
         _flush_loggers()
 
-        Callbacks.instance().on_job_end(
-            config=config,
-            job_return=ret,
-        )
+        Callbacks.instance().on_job_end(config=config, job_return=ret)
 
         return ret
     finally:

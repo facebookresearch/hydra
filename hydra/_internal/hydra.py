@@ -92,10 +92,7 @@ class Hydra:
         )
 
         Callbacks.instance().instantiate_callbacks(cfg)
-        Callbacks.instance().on_run_start(
-            config=cfg,
-            config_name=config_name,
-        )
+        Callbacks.instance().on_run_start(config=cfg, config_name=config_name)
 
         ret = run_job(
             config=cfg,
@@ -127,10 +124,7 @@ class Hydra:
             run_mode=RunMode.MULTIRUN,
         )
         Callbacks.instance().instantiate_callbacks(cfg)
-        Callbacks.instance().on_multirun_start(
-            config=cfg,
-            config_name=config_name,
-        )
+        Callbacks.instance().on_multirun_start(config=cfg, config_name=config_name)
 
         sweeper = Plugins.instance().instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
@@ -138,10 +132,7 @@ class Hydra:
         task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
         assert isinstance(task_overrides, list)
         ret = sweeper.sweep(arguments=task_overrides)
-        Callbacks.instance().on_multirun_end(
-            config=cfg,
-            config_name=config_name,
-        )
+        Callbacks.instance().on_multirun_end(config=cfg, config_name=config_name)
         return ret
 
     @staticmethod
