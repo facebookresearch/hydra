@@ -49,6 +49,16 @@ def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(*args, **kwargs)
+        # detaching configs from parent.
+        # At this time, everything is resolved and the parent link can cause
+        # issues when serializing objects in some scenarios.
+        for arg in args:
+            if OmegaConf.is_config(arg):
+                arg._set_parent(None)
+        for v in kwargs.values():
+            if OmegaConf.is_config(v):
+                v._set_parent(None)
+
         return target(*args, **kwargs)
     except Exception as e:
         raise type(e)(
@@ -161,6 +171,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
+
+        OmegaConf.resolve(config)
 
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
