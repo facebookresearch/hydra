@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
 import re
 from dataclasses import dataclass
 from textwrap import dedent
