@@ -89,11 +89,8 @@ def test_partial_failure(
     )
 
     expected_err = dedent(
-        """\
-        hydra.errors.HydraJobException: Job failed.
-
-        The above exception was the direct cause of the following exception:
-
+        """
+        Job failed.
         Traceback (most recent call last):
           File ".*my_app.py", line 9, in my_app
             val = 1 / cfg.divisor
@@ -102,6 +99,7 @@ def test_partial_failure(
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
         """
     )
+
     assert_regex_match(
         from_line=expected_err,
         to_line=err,

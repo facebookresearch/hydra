@@ -41,7 +41,7 @@ class MissingConfigException(IOError, ConfigCompositionException):
         self.options = options
 
 
-class HydraJobException(CompactHydraException):
+class HydraJobException(HydraException):
     """Raised when accessing a result of a failed job."""
 
     ...
