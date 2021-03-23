@@ -40,7 +40,7 @@ class Callbacks(metaclass=Singleton):
                 getattr(c, function_name)(**kwargs)
             except Exception as e:
                 warnings.warn(
-                    f"Exception occurred during {function_name} with callback {c}, error message: {e}"
+                    f"Exception occurred during {function_name} with callback {type(c).__name__}, error message: {e}"
                 )
 
     def on_run_start(
