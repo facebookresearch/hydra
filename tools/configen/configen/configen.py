@@ -170,7 +170,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         params = params + default_flags
 
         for name, p in sig.parameters.items():
-            type_ = original_type = resolved_hints.get(name, p.annotation)
+            type_ = original_type = resolved_hints.get(name, sig.empty)
             default_ = p.default
 
             missing_value = default_ == sig.empty
