@@ -334,7 +334,7 @@ class TestConfigLoader:
         )
         master_cfg = config_loader.load_configuration(
             config_name="config.yaml",
-            overrides=["+time=${now:%H-%M-%S}", "+home=${env:HOME}"],
+            overrides=["+time=${now:%H-%M-%S}", "+home=${oc.env:HOME}"],
             run_mode=RunMode.RUN,
         )
 
@@ -348,7 +348,7 @@ class TestConfigLoader:
 
         sweep_cfg = config_loader.load_sweep_config(
             master_config=master_cfg,
-            sweep_overrides=["+time=${now:%H-%M-%S}", "+home=${env:HOME}"],
+            sweep_overrides=["+time=${now:%H-%M-%S}", "+home=${oc.env:HOME}"],
         )
 
         sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)

@@ -66,7 +66,8 @@ def eq(item1: Any, item2: Any) -> bool:
         param(r"\{a\: b\}", "{a: b}", id="value:str-esc-braces"),
         param(r"$\{foo.bar\}", "${foo.bar}", id="value:str-esc-braces"),
         param("xyz_${a.b.c}", "xyz_${a.b.c}", id="value:str_interpolation"),
-        param("${env:USER,root}", "${env:USER,root}", id="value:custom_interpolation"),
+        param("${f:USER,root}", "${f:USER,root}", id="value:custom_interpolation"),
+        param("${f.g:USER,root}", "${f.g:USER,root}", id="value:custom_interpolation"),
         param("c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="value:windows_path"),
         # null
         param("null", None, id="value:null"),
@@ -516,9 +517,8 @@ def test_key(value: str, expected: Any) -> None:
         param("abc123", "abc123", id="primitive:idint"),
         param("abc-123", "abc-123", id="primitive:id-int"),
         param("xyz_${a.b.c}", "xyz_${a.b.c}", id="primitive:str_interpolation"),
-        param(
-            "${env:USER,root}", "${env:USER,root}", id="primitive:custom_interpolation"
-        ),
+        param("${f:USER,root}", "${f:USER,root}", id="primitive:custom_inter"),
+        param("${f.g:USER,root}", "${f.g:USER,root}", id="primitive:custom_inter"),
         param("c:\\foo\\a-b.txt", "c:\\foo\\a-b.txt", id="primitive:windows_path"),
         # null
         param("null", None, id="primitive:null"),

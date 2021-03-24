@@ -89,7 +89,7 @@ hydra:
     - pkg://additonal_conf
     # You can also use file based schema:
     # - file:///etc/my_app
-    # - file://${env:HOME}/.my_app
+    # - file://${oc.env:HOME}/.my_app
 ```
 
 </div>

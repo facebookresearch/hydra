@@ -25,7 +25,7 @@ defaults:
 # @package hydra.launcher
 _target_: hydra_plugins.flow_launcher_plugin.flow_launcher.FlowLauncher
 mode: flow
-owner: ${env:USER}
+owner: ${oc.env:USER}
 entitlement: gpu_pnb_fair
 pkg_version: fblearner.flow.canary:19e63cbf9945467281cf681bc8902c50
 driver_path: ''

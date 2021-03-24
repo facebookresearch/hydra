@@ -1,5 +1,5 @@
 # @package _global_
 cloud:
   name: aws
-  api_key: ${env:AWS_API_KEY}
+  api_key: ${oc.env:AWS_API_KEY}
   ami_id: 1234

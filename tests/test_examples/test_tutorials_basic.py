@@ -257,7 +257,7 @@ def test_sweeping_example(
         (
             [],
             {
-                "db": {"driver": "mysql", "pass": "secret", "user": "${env:USER}"},
+                "db": {"driver": "mysql", "pass": "secret", "user": "${oc.env:USER}"},
                 "ui": {"windows": {"create_db": True, "view": True}},
                 "schema": {
                     "database": "school",

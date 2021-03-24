@@ -9,7 +9,7 @@ Hydra 1.0rc is available on FAIR Cluster. The recommended way for installation i
 
 ## Hydra FAIR Plugins
 1. It brings the correct Hydra dependency and has been tested on the FAIR Cluster.
-2. It provides FAIR Cluster specific defaults overrides (for example, ```hydra.sweep.dir``` is set to be ```/checkpoint/${env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}```)
+2. It provides FAIR Cluster specific defaults overrides (for example, ```hydra.sweep.dir``` is set to be ```/checkpoint/${oc.env:USER}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}```)
 3. It provides a [fairtask](https://github.com/fairinternal/fairtask) launcher plugin.
 4. It installs [Submitit](https://github.com/facebookincubator/submitit) launcher plugin by default.
 
