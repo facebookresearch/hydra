@@ -196,7 +196,9 @@ class JobReturn:
         if self.job_result == JobResult.COMPLETED:
             return self._return_value
         else:
-            raise HydraJobException("Job failed.") from self._return_value
+            raise HydraJobException(
+                f"Error executing job with overrides: {self.overrides}"
+            ) from self._return_value
 
     @return_value.setter
     def return_value(self, value: Any) -> None:

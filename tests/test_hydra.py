@@ -1052,7 +1052,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     ]
     expected = dedent(
         """\
-        Job failed.
+        Error executing job with overrides: []
         Traceback (most recent call last):
           File ".*my_app.py", line 13, in my_app
             foo(cfg)
@@ -1158,7 +1158,7 @@ class TestTaskRunnerLogging:
         (
             dedent(
                 """\
-                Job failed.
+                Error executing job with overrides: []
                 Traceback (most recent call last):
                   File ".*my_app.py", line 9, in my_app
                     1 / 0
