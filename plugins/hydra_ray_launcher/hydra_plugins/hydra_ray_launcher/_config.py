@@ -28,7 +28,7 @@ def _pkg_version(mdl_name: str) -> Optional[str]:
     return ret
 
 
-OmegaConf.register_resolver("ray_pkg_version", _pkg_version)
+OmegaConf.register_new_resolver("ray_pkg_version", _pkg_version)
 
 # Ray AWS config, more info on ray's schema here:
 # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/ray-schema.json
@@ -66,7 +66,7 @@ class RayProviderConf:
     availability_zone: str = "us-west-2a,us-west-2b"
     cache_stopped_nodes: bool = False
     key_pair: Dict[str, str] = field(
-        default_factory=lambda: {"key_name": "hydra-${env:USER,user}"}
+        default_factory=lambda: {"key_name": "hydra-${oc.env:USER,user}"}
     )
 
 

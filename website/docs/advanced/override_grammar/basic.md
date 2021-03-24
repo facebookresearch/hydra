@@ -84,7 +84,7 @@ primitive:
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
         | BOOL                                   // true, TrUe, false, False
-        | INTERPOLATION                          // ${foo.bar}, ${env:USER,me}
+        | INTERPOLATION                          // ${foo.bar}, ${oc.env:USER,me}
         | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @
         | COLON                                  // :
         | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
@@ -178,9 +178,9 @@ $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 - `float`: 3.14, -10e6, inf, -inf, nan.
 - `bool`: true, false
 - `dot_path`: foo.bar
-- `interpolation`: ${foo.bar}, ${env:USER,me}
+- `interpolation`: ${foo.bar}, ${co.env:USER,me}
 
-Constants (null, true, false, inf, nan) are case insensitive.
+Constants (null, true, false, inf, nan) are case-insensitive.
 
 :::important
 Always single-quote interpolations in the shell.

@@ -48,11 +48,11 @@ enqueue:
   description: null                  # description, will be overidden automatically unless specified explicitly
 queue: default                       # queue name
 redis:
-  host: ${env:REDIS_HOST,localhost}  # host address via REDIS_HOST environment variable, default: localhost
-  port: ${env:REDIS_PORT,6379}       # port via REDIS_PORT environment variable, default: 6379
-  db: ${env:REDIS_DB,0}              # database via REDIS_DB environment variable, default: 0
-  password: ${env:REDIS_PASSWORD,}   # password via REDIS_PASSWORD environment variable, default: no password
-  mock: ${env:REDIS_MOCK,False}      # switch to run without redis server in single thread, for testing purposes only
+  host: ${oc.env:REDIS_HOST,localhost}  # host address via REDIS_HOST environment variable, default: localhost
+  port: ${oc.env:REDIS_PORT,6379}       # port via REDIS_PORT environment variable, default: 6379
+  db: ${oc.env:REDIS_DB,0}              # database via REDIS_DB environment variable, default: 0
+  password: ${oc.env:REDIS_PASSWORD,}   # password via REDIS_PASSWORD environment variable, default: no password
+  mock: ${oc.env:REDIS_MOCK,False}      # switch to run without redis server in single thread, for testing purposes only
 stop_after_enqueue: false            # stop after enqueueing by raising custom exception
 wait_polling: 1.0                    # wait time in seconds when polling results
 ```

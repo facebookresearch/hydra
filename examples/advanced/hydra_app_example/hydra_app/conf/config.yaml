@@ -2,7 +2,7 @@ defaults:
   - db: mysql
 
 app:
-  user: ${env:USER}
+  user: ${oc.env:USER}
 
   num1: 10
   num2: 20
