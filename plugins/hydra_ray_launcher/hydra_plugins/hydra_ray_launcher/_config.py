@@ -28,7 +28,7 @@ def _pkg_version(mdl_name: str) -> Optional[str]:
     return ret
 
 
-OmegaConf.register_resolver("ray_pkg_version", _pkg_version)
+OmegaConf.register_new_resolver("ray_pkg_version", _pkg_version)
 
 # Ray AWS config, more info on ray's schema here:
 # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/ray-schema.json

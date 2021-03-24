@@ -143,18 +143,17 @@ def get_valid_filename(s: str) -> str:
 
 
 def setup_globals() -> None:
-    def register(name: str, f: Any) -> None:
-        try:
-            OmegaConf.register_resolver(name, f)
-        except AssertionError:
-            # calling it again in no_workers mode will throw. safe to ignore.
-            pass
-
     # please add documentation when you add a new resolver
-    register("now", lambda pattern: datetime.now().strftime(pattern))
-    register(
+    OmegaConf.register_new_resolver(
+        "now",
+        lambda pattern: datetime.now().strftime(pattern),
+        use_cache=True,
+        replace=True,
+    )
+    OmegaConf.register_new_resolver(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
+        replace=True,
     )
 
     vi = sys.version_info
@@ -163,7 +162,9 @@ def setup_globals() -> None:
         "minor": f"{vi[0]}.{vi[1]}",
         "micro": f"{vi[0]}.{vi[1]}.{vi[2]}",
     }
-    register("python_version", lambda level="minor": version_dict.get(level))
+    OmegaConf.register_new_resolver(
+        "python_version", lambda level="minor": version_dict.get(level), replace=True
+    )
 
 
 @dataclass

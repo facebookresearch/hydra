@@ -343,7 +343,9 @@ class TestConfigLoader:
         assert type(master_cfg.home) == str
 
         master_cfg_cache = OmegaConf.get_cache(master_cfg)
-        assert "now" in master_cfg_cache.keys() and "env" in master_cfg_cache.keys()
+        assert "now" in master_cfg_cache.keys()
+        # oc.env is not cached as of OmegaConf 2.1
+        assert "oc.env" not in master_cfg_cache.keys()
         assert master_cfg.home == os.environ["HOME"]
 
         sweep_cfg = config_loader.load_sweep_config(
