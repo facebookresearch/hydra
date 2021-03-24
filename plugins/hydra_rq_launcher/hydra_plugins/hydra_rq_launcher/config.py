@@ -17,7 +17,7 @@ class RedisConf:
     # password via REDIS_PASSWORD environment variable, default: no password
     password: str = II("oc.env:REDIS_PASSWORD,null")
     # switch to run without redis server in single thread, for testing purposes only
-    mock: bool = II("oc.env:REDIS_MOCK,null")
+    mock: bool = II("oc.env:REDIS_MOCK,'False'")
 
 
 @dataclass

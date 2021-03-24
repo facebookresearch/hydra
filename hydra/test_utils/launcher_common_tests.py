@@ -234,7 +234,7 @@ class LauncherTestSuite:
         def my_custom_resolver() -> Any:
             return "foo"
 
-        OmegaConf.register_resolver("my_custom_resolver", my_custom_resolver)
+        OmegaConf.register_new_resolver("my_custom_resolver", my_custom_resolver)
         with sweep:
             assert sweep.returns is not None
             job_ret = sweep.returns[0]
