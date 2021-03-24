@@ -11,11 +11,11 @@ class RedisConf:
     # host address via REDIS_HOST environment variable, default: localhost
     host: str = II("oc.env:REDIS_HOST,localhost")
     # port via REDIS_PORT environment variable, default: 6379
-    port: int = II("oc.env:REDIS_PORT,6379")
+    port: int = II("oc.env:REDIS_PORT,'6379'")
     # database via REDIS_DB environment variable, default: 0
-    db: Optional[str] = II("oc.env:REDIS_DB,0")
+    db: Optional[str] = II("oc.env:REDIS_DB,'0'")
     # password via REDIS_PASSWORD environment variable, default: no password
-    password: str = II("oc.env:REDIS_PASSWORD,null")
+    password: Optional[str] = II("oc.env:REDIS_PASSWORD,null")
     # switch to run without redis server in single thread, for testing purposes only
     mock: bool = II("oc.env:REDIS_MOCK,'False'")
 
