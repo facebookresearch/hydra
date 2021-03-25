@@ -263,7 +263,7 @@ def run_and_report(func: Any) -> Any:
 
                 @dataclass
                 class FakeTracebackType:
-                    tb_next: Optional["FakeTracebackType"] = None
+                    tb_next: Any = None  # Optional["FakeTracebackType"]
                     tb_frame: Optional[FrameType] = None
                     tb_lasti: Optional[int] = None
                     tb_lineno: Optional[int] = None
