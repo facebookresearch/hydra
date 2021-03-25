@@ -89,7 +89,7 @@ def test_generated_code() -> None:
 
 @mark.skipif(sys.version_info < (3, 7), reason="requires Python 3.7")
 def test_generated_code_future_ann() -> None:
-    classes = ["WithStringDefault", "WithUntypedStringDefault", "ListValues"]
+    classes = ["ExampleClass"]
     expected_file = (
         Path(MODULE_NAME.replace(".", "/")) / "generated_future_annotations.py"
     )

@@ -7,7 +7,6 @@
 
 from dataclasses import dataclass, field
 from omegaconf import MISSING
-from tests.test_modules.future_annotations import Color
 from tests.test_modules.future_annotations import User
 from typing import Any
 from typing import List
@@ -15,24 +14,12 @@ from typing import Optional
 
 
 @dataclass
-class WithStringDefaultConf:
-    _target_: str = "tests.test_modules.future_annotations.WithStringDefault"
-    no_default: str = MISSING
-    default_str: str = "Bond, James Bond"
-    none_str: Optional[str] = None
-
-
-@dataclass
-class WithUntypedStringDefaultConf:
-    _target_: str = "tests.test_modules.future_annotations.WithUntypedStringDefault"
-    default_str: Any = "Bond, James Bond"
-
-
-@dataclass
-class ListValuesConf:
-    _target_: str = "tests.test_modules.future_annotations.ListValues"
+class ExampleClassConf:
+    _target_: str = "tests.test_modules.future_annotations.ExampleClass"
+    no_default: float = MISSING
     lst: List[str] = MISSING
-    enum_lst: List[Color] = MISSING
     passthrough_list: Any = MISSING  # List[LibraryClass]
     dataclass_val: List[User] = MISSING
     def_value: List[str] = field(default_factory=lambda: [])
+    default_str: Any = "Bond, James Bond"
+    none_str: Optional[str] = None
