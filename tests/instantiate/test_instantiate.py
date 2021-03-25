@@ -1233,6 +1233,18 @@ def test_convert_in_config(
         assert isinstance(ret.b, ListConfig)
 
 
+@mark.parametrize(
+    ("v1", "v2", "expected"),
+    [
+        (ConvertMode.ALL, ConvertMode.ALL, True),
+        (ConvertMode.NONE, "none", True),
+        (ConvertMode.PARTIAL, "Partial", True),
+    ],
+)
+def test_convert_mode_equality(v1: Any, v2: Any, expected: bool) -> None:
+    assert (v1 == v2) == expected
+
+
 def test_nested_dataclass_with_partial_convert(instantiate_func: Any) -> None:
     # dict
     cfg = OmegaConf.structured(NestedConf)

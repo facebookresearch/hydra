@@ -31,7 +31,7 @@ class RunMode(Enum):
     MULTIRUN = 2
 
 
-class ConvertMode(str, Enum):
+class ConvertMode(Enum):
     """ConvertMode for instantiate, controls return type.
 
     A config is either config or instance-like (`_target_` field).
@@ -56,3 +56,11 @@ class ConvertMode(str, Enum):
     PARTIAL = "partial"
     # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
     ALL = "all"
+
+    def __eq__(self, other: Any) -> Any:
+        if isinstance(other, ConvertMode):
+            return other.value == self.value
+        elif isinstance(other, str):
+            return other.upper() == self.name.upper()
+        else:
+            return NotImplemented
