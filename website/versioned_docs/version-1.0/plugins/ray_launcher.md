@@ -19,7 +19,7 @@ The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`.
 ### Installation
 
 ```commandline
-$ pip install hydra-ray-launcher --pre
+$ pip install hydra-ray-launcher --upgrade
 ```
 
 ### Usage
