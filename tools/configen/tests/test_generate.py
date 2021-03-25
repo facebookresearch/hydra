@@ -84,7 +84,7 @@ def test_generated_code() -> None:
             classes=classes,
         ),
     )
-    _print_diff(generated, expected, expected_file)
+    _assert_expected_output(generated, expected, expected_file)
 
 
 @mark.skipif(sys.version_info < (3, 7), reason="requires Python 3.7")
@@ -102,10 +102,10 @@ def test_generated_code_future_ann() -> None:
             classes=classes,
         ),
     )
-    _print_diff(generated, expected, expected_file)
+    _assert_expected_output(generated, expected, expected_file)
 
 
-def _print_diff(generated: str, expected: str, expected_file: Path) -> str:
+def _assert_expected_output(generated: str, expected: str, expected_file: Path) -> None:
     lines = [
         line
         for line in unified_diff(
