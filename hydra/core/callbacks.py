@@ -11,17 +11,13 @@ from hydra.core.utils import JobReturn
 from hydra.utils import instantiate
 
 
-class Callbacks(metaclass=Singleton):
-    @staticmethod
-    def instance(*args: Any, **kwargs: Any) -> "Callbacks":
-        ret = Singleton.instance(Callbacks, *args, **kwargs)
-        assert isinstance(ret, Callbacks)
-        return ret
+class Callbacks:
 
-    def __init__(self) -> None:
-        self.callbacks: List[Callback] = []
+    def __init__(self, config: DictConfig) -> None:
+        self.callbacks = None
+        self._instantiate_callbacks(config)
 
-    def instantiate_callbacks(self, config: DictConfig) -> None:
+    def _instantiate_callbacks(self, config: DictConfig) -> None:
         if config.hydra.callbacks is None:
             raise RuntimeError("Hydra Callbacks is not configured")
 
