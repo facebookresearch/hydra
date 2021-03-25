@@ -1142,7 +1142,11 @@ def test_instantiated_regular_class_container_types(
 def test_instantiated_regular_class_container_types_partial(
     instantiate_func: Any,
 ) -> None:
-    cfg = {"_target_": "tests.instantiate.SimpleClass", "a": {}, "b": User()}
+    cfg = {
+        "_target_": "tests.instantiate.SimpleClass",
+        "a": {},
+        "b": User(name="Bond", age=7),
+    }
     ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
     assert isinstance(ret.a, dict)
     assert isinstance(ret.b, DictConfig)
@@ -1152,7 +1156,11 @@ def test_instantiated_regular_class_container_types_partial(
 def test_instantiated_regular_class_container_types_partial2(
     instantiate_func: Any,
 ) -> None:
-    cfg = {"_target_": "tests.instantiate.SimpleClass", "a": [{}, User()], "b": None}
+    cfg = {
+        "_target_": "tests.instantiate.SimpleClass",
+        "a": [{}, User(name="Bond", age=7)],
+        "b": None,
+    }
     ret = instantiate_func(cfg, _convert_=ConvertMode.PARTIAL)
     assert isinstance(ret.a, list)
     assert isinstance(ret.a[0], dict)
@@ -1165,7 +1173,11 @@ def test_instantiated_regular_class_container_types_partial2(
     [
         {
             "_target_": "tests.instantiate.SimpleClass",
-            "a": {"_target_": "tests.instantiate.SimpleClass", "a": {}, "b": User},
+            "a": {
+                "_target_": "tests.instantiate.SimpleClass",
+                "a": {},
+                "b": User(name="Bond", age=7),
+            },
             "b": None,
         }
     ],
@@ -1239,6 +1251,8 @@ def test_convert_in_config(
         (ConvertMode.ALL, ConvertMode.ALL, True),
         (ConvertMode.NONE, "none", True),
         (ConvertMode.PARTIAL, "Partial", True),
+        (ConvertMode.ALL, ConvertMode.NONE, False),
+        (ConvertMode.NONE, "all", False),
     ],
 )
 def test_convert_mode_equality(v1: Any, v2: Any, expected: bool) -> None:
