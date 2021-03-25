@@ -10,13 +10,15 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.70",
-    "@docusaurus/preset-classic": "2.0.0-alpha.70",
+    "@docusaurus/core": "2.0.0-alpha.72",
+    "@docusaurus/preset-classic": "2.0.0-alpha.72",
     "classnames": "^2.2.6",
-    "docusaurus-plugin-internaldocs-fb": "^0.5.7",
+    "docusaurus-plugin-internaldocs-fb": "^0.7.4",
+    "is-svg": "4.3.1",
     "node-fetch": "^2.6.1",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "prism-react-renderer": "1.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "resolutions": {
     "prism-react-renderer": "1.1.0"
