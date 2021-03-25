@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import sys
 from textwrap import dedent
 
 from difflib import unified_diff
@@ -83,7 +84,28 @@ def test_generated_code() -> None:
             classes=classes,
         ),
     )
+    _assert_expected_output(generated, expected, expected_file)
 
+
+@mark.skipif(sys.version_info < (3, 7), reason="requires Python 3.7")
+def test_generated_code_future_ann() -> None:
+    classes = ["ExampleClass"]
+    expected_file = (
+        Path(MODULE_NAME.replace(".", "/")) / "generated_future_annotations.py"
+    )
+    expected = expected_file.read_text()
+
+    generated = generate_module(
+        cfg=conf,
+        module=ModuleConf(
+            name=MODULE_NAME + ".future_annotations",
+            classes=classes,
+        ),
+    )
+    _assert_expected_output(generated, expected, expected_file)
+
+
+def _assert_expected_output(generated: str, expected: str, expected_file: Path) -> None:
     lines = [
         line
         for line in unified_diff(

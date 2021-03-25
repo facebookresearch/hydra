@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from textwrap import dedent
-from typing import Any, Dict, List, Optional, Set, Type
+from typing import Any, Dict, List, Optional, Set, Type, get_type_hints
 
 import hydra
 from jinja2 import Environment, PackageLoader, Template
@@ -165,11 +165,12 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
+        resolved_hints = get_type_hints(cls.__init__)
         params: List[Parameter] = []
         params = params + default_flags
 
         for name, p in sig.parameters.items():
-            type_ = p.annotation
+            type_ = original_type = resolved_hints.get(name, sig.empty)
             default_ = p.default
 
             missing_value = default_ == sig.empty
@@ -206,7 +207,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
 
             if missing_default:
                 if incompatible_annotation_type:
-                    default_ = f"MISSING  # {type_str(p.annotation)}"
+                    default_ = f"MISSING  # {type_str(original_type)}"
                 elif incompatible_value_type:
                     default_ = f"MISSING  # {type_str(type(p.default))}"
                 else:
