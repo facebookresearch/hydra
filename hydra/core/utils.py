@@ -130,10 +130,10 @@ def run_job(
         with env_override(hydra_cfg.hydra.job.env_set):
             try:
                 ret.return_value = task_function(task_cfg)
-                ret.job_result = JobResult.COMPLETED
+                ret.status = JobStatus.COMPLETED
             except Exception as e:
                 ret.return_value = e
-                ret.job_result = JobResult.FAILED
+                ret.status = JobStatus.FAILED
 
         ret.task_name = JobRuntime.instance().get("name")
 
@@ -175,7 +175,8 @@ def setup_globals() -> None:
     )
 
 
-class JobResult(Enum):
+class JobStatus(Enum):
+    UNKNOWN = 0
     COMPLETED = 1
     FAILED = 2
 
@@ -187,13 +188,13 @@ class JobReturn:
     hydra_cfg: Optional[DictConfig] = None
     working_dir: Optional[str] = None
     task_name: Optional[str] = None
-    job_result: Optional[JobResult] = None
+    status: JobStatus = JobStatus.UNKNOWN
     _return_value: Any = None
 
     @property
     def return_value(self) -> Any:
-        assert self.job_result is not None, "job_result not yet available"
-        if self.job_result == JobResult.COMPLETED:
+        assert self.status != JobStatus.UNKNOWN, "return_value not yet available"
+        if self.status == JobStatus.COMPLETED:
             return self._return_value
         else:
             raise HydraJobException(
