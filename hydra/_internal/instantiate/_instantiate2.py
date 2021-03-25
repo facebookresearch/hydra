@@ -239,7 +239,7 @@ def instantiate_node(
         if _is_target(node):
             target = _resolve_target(node.get(_Keys.TARGET))
             kwargs = {}
-            for key, value in node.items_ex(resolve=True):
+            for key, value in node.items():
                 if key not in exclude_keys:
                     if recursive:
                         value = instantiate_node(
@@ -253,7 +253,7 @@ def instantiate_node(
                 convert == ConvertMode.PARTIAL and node._metadata.object_type is None
             ):
                 dict_items = {}
-                for key, value in node.items_ex(resolve=True):
+                for key, value in node.items():
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
                         value, convert=convert, recursive=recursive
@@ -262,7 +262,7 @@ def instantiate_node(
             else:
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
-                for key, value in node.items_ex(resolve=False):
+                for key, value in node.items():
                     cfg[key] = instantiate_node(
                         value, convert=convert, recursive=recursive
                     )
