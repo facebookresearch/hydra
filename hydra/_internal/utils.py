@@ -17,6 +17,7 @@ from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
 from hydra.core.utils import get_valid_filename, validate_config_path
 from hydra.errors import (
     CompactHydraException,
+    HydraException,
     InstantiationException,
     SearchPathException,
 )
@@ -221,6 +222,13 @@ def run_and_report(func: Any) -> Any:
                 # And any omegaconf frames from the bottom.
                 # It is possible to add additional libraries to sanitize from the bottom later,
                 # maybe even make it configurable.
+
+                # If got a HydraException that is caused by another exception,
+                # print the message of the HydraException and unwrap the cause.
+                if isinstance(ex, HydraException) and ex.__cause__ is not None:
+                    sys.stderr.write(str(ex) + os.linesep)
+                    ex = ex.__cause__  # type: ignore
+
                 tb: Any = ex.__traceback__
                 search_max = 10
                 # strip Hydra frames from start of stack
@@ -255,7 +263,7 @@ def run_and_report(func: Any) -> Any:
 
                 @dataclass
                 class FakeTracebackType:
-                    tb_next: Any = None  # Optional[FakeTracebackType]
+                    tb_next: Any = None  # Optional["FakeTracebackType"]
                     tb_frame: Optional[FrameType] = None
                     tb_lasti: Optional[int] = None
                     tb_lineno: Optional[int] = None
