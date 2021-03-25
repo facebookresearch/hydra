@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-nevergrad-sweeper",
-        version="1.1.0rc1",
+        version="1.1.0rc2",
         author="Jeremy Rapin, Omry Yadan, Jieru Hu",
         author_email="jrapin@fb.com, omry@fb.com, jieru@fb.com",
         description="Hydra Nevergrad Sweeper plugin",
@@ -23,7 +23,7 @@ with open("README.md", "r") as fh:
             "Development Status :: 4 - Beta",
         ],
         install_requires=[
-            "hydra-core>=1.0.0",
+            "hydra-core==1.0.*",
             "nevergrad>=0.4.1.post4",
             "numpy<1.20.0",  # remove once nevergrad is upgraded to support numpy 1.20
         ],
