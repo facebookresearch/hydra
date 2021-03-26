@@ -5,13 +5,6 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
-from optuna.samplers import (
-    TPESampler,
-    RandomSampler,
-    CmaEsSampler,
-    NSGAIISampler,
-    MOTPESampler,
-)
 
 
 class DistributionType(Enum):
@@ -31,7 +24,7 @@ class TPESamplerConfig:
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.TPESampler.html
     """
 
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.TPESampler"
+    _target_: str = "optuna.samplers.TPESampler"
 
     consider_prior: bool = True
     prior_weight: float = 1.0
@@ -50,7 +43,7 @@ class RandomSamplerConfig:
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.RandomSampler.html
     """
 
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.RandomSampler"
+    _target_: str = "optuna.samplers.RandomSampler"
     seed: Optional[int] = None
 
 
@@ -60,7 +53,7 @@ class CmaEsSamplerConfig:
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.CmaEsSampler.html
     """
 
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.CmaEsSampler"
+    _target_: str = "optuna.samplers.CmaEsSampler"
 
     x0: Optional[Dict[str, Any]] = None
     sigma0: Optional[float] = None
@@ -80,7 +73,7 @@ class NSGAIISamplerConfig:
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.NSGAIISampler.html
     """
 
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.NSGAIISampler"
+    _target_: str = "optuna.samplers.NSGAIISampler"
 
     population_size: int = 50
     mutation_prob: Optional[float] = None
@@ -96,7 +89,7 @@ class MOTPESamplerConfig:
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.MOTPESampler.html
     """
 
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.MOTPESampler"
+    _target_: str = "optuna.samplers.MOTPESampler"
 
     consider_prior: bool = True
     prior_weight: float = 1.0
