@@ -19,7 +19,13 @@ class Direction(Enum):
 
 
 @dataclass
-class TPESamplerConfig:
+class SamplerConfig:
+    _target_: str = MISSING
+    seed: Optional[int] = None
+
+
+@dataclass
+class TPESamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.TPESampler.html
     """
@@ -32,23 +38,21 @@ class TPESamplerConfig:
     consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ei_candidates: int = 24
-    seed: Optional[int] = None
     multivariate: bool = False
     warn_independent_sampling: bool = True
 
 
 @dataclass
-class RandomSamplerConfig:
+class RandomSamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.RandomSampler.html
     """
 
     _target_: str = "optuna.samplers.RandomSampler"
-    seed: Optional[int] = None
 
 
 @dataclass
-class CmaEsSamplerConfig:
+class CmaEsSamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.CmaEsSampler.html
     """
@@ -59,7 +63,6 @@ class CmaEsSamplerConfig:
     sigma0: Optional[float] = None
     independent_sampler: Optional[Any] = None
     warn_independent_sampling: bool = True
-    seed: Optional[int] = None
     consider_pruned_trials: bool = False
     restart_strategy: Optional[Any] = None
     inc_popsize: int = 2
@@ -68,7 +71,7 @@ class CmaEsSamplerConfig:
 
 
 @dataclass
-class NSGAIISamplerConfig:
+class NSGAIISamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.NSGAIISampler.html
     """
@@ -79,12 +82,11 @@ class NSGAIISamplerConfig:
     mutation_prob: Optional[float] = None
     crossover_prob: float = 0.9
     swapping_prob: float = 0.5
-    seed: Optional[int] = None
     constraint_func: Optional[Any] = None
 
 
 @dataclass
-class MOTPESamplerConfig:
+class MOTPESamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.MOTPESampler.html
     """
@@ -97,7 +99,6 @@ class MOTPESamplerConfig:
     consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ehvi_candidates: int = 24
-    seed: Optional[int] = None
 
 
 @dataclass
@@ -125,8 +126,18 @@ class DistributionConfig:
     step: Optional[float] = None
 
 
+defaults = [{"sampler": "tpe"}]
+
+
 @dataclass
-class OptunaConfig:
+class OptunaSweeperConf:
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
+    defaults: List[Any] = field(default_factory=lambda: defaults)
+
+    # Sampling algorithm
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler: SamplerConfig = MISSING
 
     # Direction of optimization
     # Union[Direction, List[Direction]]
@@ -147,21 +158,6 @@ class OptunaConfig:
     # Number of parallel workers
     n_jobs: int = 2
 
-
-defaults = [{"sampler": "tpe"}]
-
-
-@dataclass
-class OptunaSweeperConf:
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
-    defaults: List[Any] = field(default_factory=lambda: defaults)
-
-    # Sampling algorithm
-    # Please refer to the reference for further details
-    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: Any = MISSING
-
-    optuna_config: OptunaConfig = OptunaConfig()
     search_space: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -175,7 +171,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="tpe",
-    package="hydra.sweeper.sampler",
     node=TPESamplerConfig,
     provider="optuna_sweeper",
 )
@@ -183,7 +178,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="random",
-    package="hydra.sweeper.sampler",
     node=RandomSamplerConfig,
     provider="optuna_sweeper",
 )
@@ -191,7 +185,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="cmaes",
-    package="hydra.sweeper.sampler",
     node=CmaEsSamplerConfig,
     provider="optuna_sweeper",
 )
@@ -199,7 +192,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="nsgaii",
-    package="hydra.sweeper.sampler",
     node=NSGAIISamplerConfig,
     provider="optuna_sweeper",
 )
@@ -207,7 +199,6 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="motpe",
-    package="hydra.sweeper.sampler",
     node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )
