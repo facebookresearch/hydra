@@ -90,6 +90,7 @@ def run_job(
     configure_logging: bool = True,
 ) -> "JobReturn":
     from hydra.core.callbacks import Callbacks
+
     callbacks = Callbacks(config)
 
     old_cwd = os.getcwd()

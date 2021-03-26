@@ -102,6 +102,7 @@ class Hydra:
             configure_logging=with_log_configuration,
         )
 <<<<<<< HEAD
+<<<<<<< HEAD
         Callbacks.instance().on_run_end(
             config=cfg, config_name=config_name, job_return=ret
 =======
@@ -114,6 +115,10 @@ class Hydra:
         _ = ret.return_value
 
         return ret
+=======
+        callbacks.on_run_end(config=cfg, config_name=config_name, job_return=job_return)
+        return job_return
+>>>>>>> remove env node
 
     def multirun(
         self,

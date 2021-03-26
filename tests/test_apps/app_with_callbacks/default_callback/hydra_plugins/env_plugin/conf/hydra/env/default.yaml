@@ -1,8 +1,0 @@
-# @package _global_
-
-hydra:
-  callbacks:
-    default_callback:
-      _target_: callbacks_impl.DefaultCallback
-      param1: foo
-      param2: bar

@@ -120,8 +120,6 @@ base_completion_list: List[str] = [
             "hydra/",
             3,
             [
-                "hydra/callbacks=",
-                "hydra/env=",
                 "hydra/help=",
                 "hydra/hydra_help=",
                 "hydra/hydra_logging=",

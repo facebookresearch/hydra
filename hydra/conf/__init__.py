@@ -98,17 +98,13 @@ class HydraConf:
             {"hydra_help": "default"},
             {"hydra_logging": "default"},
             {"job_logging": "default"},
-            {"callbacks": "default"},
-            {"env": "default"},
+            {"callbacks": None},
         ]
     )
 
     # Elements to append to the config search path.
     # Note: This can only be configured in the primary config.
     searchpath: List[str] = field(default_factory=list)
-
-    # Provides environment specific overrides.
-    env: Dict[str, Any] = field(default_factory=dict)
 
     # Normal run output configuration
     run: RunDir = RunDir()
