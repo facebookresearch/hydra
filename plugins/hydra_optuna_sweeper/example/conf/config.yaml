@@ -1,5 +1,6 @@
 defaults:
   - override hydra/sweeper: optuna
+  - override hydra/sweeper/sampler: tpe
 
 hydra:
   sweeper:
@@ -9,8 +10,8 @@ hydra:
       storage: null
       n_trials: 20
       n_jobs: 1
-      sampler: tpe
-      seed: 123
+      sampler:
+          seed: 123
 
     search_space:
       x:

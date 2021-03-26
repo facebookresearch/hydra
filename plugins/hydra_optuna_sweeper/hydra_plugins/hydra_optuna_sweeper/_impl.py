@@ -16,7 +16,6 @@ from hydra.core.override_parser.types import (
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
-from hydra.utils import get_class
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -157,21 +156,6 @@ class OptunaSweeperImpl(Sweeper):
             if param_name in search_space:
                 del search_space[param_name]
 
-        samplers = {
-            "tpe": "optuna.samplers.TPESampler",
-            "random": "optuna.samplers.RandomSampler",
-            "cmaes": "optuna.samplers.CmaEsSampler",
-            "nsgaii": "optuna.samplers.NSGAIISampler",
-            "motpe": "optuna.samplers.MOTPESampler",
-        }
-        if self.optuna_config.sampler.name not in samplers:
-            raise NotImplementedError(
-                f"{self.optuna_config.sampler} is not supported by Optuna sweeper."
-            )
-
-        sampler_class = get_class(samplers[self.optuna_config.sampler.name])
-        sampler = sampler_class(seed=self.optuna_config.seed)
-
         directions: List[str]
         if isinstance(self.optuna_config.direction, MutableSequence):
             directions = [
@@ -187,13 +171,13 @@ class OptunaSweeperImpl(Sweeper):
         study = optuna.create_study(
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
-            sampler=sampler,
+            sampler=self.optuna_config.sampler,
             directions=directions,
             load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
-        log.info(f"Sampler: {self.optuna_config.sampler.name}")
+        log.info(f"Sampler: {self.optuna_config.sampler}")
         log.info(f"Directions: {directions}")
 
         batch_size = self.optuna_config.n_jobs
