@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.sweeper import Sweeper
@@ -13,11 +13,14 @@ class OptunaSweeper(Sweeper):
     """Class to interface with Optuna"""
 
     def __init__(
-        self, optuna_config: OptunaConfig, search_space: Optional[DictConfig]
+        self,
+        sampler: Any,
+        optuna_config: OptunaConfig,
+        search_space: Optional[DictConfig],
     ) -> None:
         from ._impl import OptunaSweeperImpl
 
-        self.sweeper = OptunaSweeperImpl(optuna_config, search_space)
+        self.sweeper = OptunaSweeperImpl(sampler, optuna_config, search_space)
 
     def setup(
         self,

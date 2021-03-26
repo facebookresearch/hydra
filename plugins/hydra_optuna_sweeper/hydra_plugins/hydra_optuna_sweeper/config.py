@@ -147,11 +147,6 @@ class OptunaConfig:
     # Number of parallel workers
     n_jobs: int = 2
 
-    # Sampling algorithm
-    # Please refer to the reference for further details
-    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: Any = MISSING
-
 
 defaults = [{"sampler": "tpe"}]
 
@@ -161,8 +156,12 @@ class OptunaSweeperConf:
     _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
     defaults: List[Any] = field(default_factory=lambda: defaults)
 
-    optuna_config: OptunaConfig = OptunaConfig()
+    # Sampling algorithm
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler: Any = MISSING
 
+    optuna_config: OptunaConfig = OptunaConfig()
     search_space: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -176,7 +175,7 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="tpe",
-    package="hydra.sweeper.optuna_config.sampler",
+    package="hydra.sweeper.sampler",
     node=TPESamplerConfig,
     provider="optuna_sweeper",
 )
@@ -184,7 +183,7 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="random",
-    package="hydra.sweeper.optuna_config.sampler",
+    package="hydra.sweeper.sampler",
     node=RandomSamplerConfig,
     provider="optuna_sweeper",
 )
@@ -192,7 +191,7 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="cmaes",
-    package="hydra.sweeper.optuna_config.sampler",
+    package="hydra.sweeper.sampler",
     node=CmaEsSamplerConfig,
     provider="optuna_sweeper",
 )
@@ -200,7 +199,7 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="nsgaii",
-    package="hydra.sweeper.optuna_config.sampler",
+    package="hydra.sweeper.sampler",
     node=NSGAIISamplerConfig,
     provider="optuna_sweeper",
 )
@@ -208,7 +207,7 @@ ConfigStore.instance().store(
 ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="motpe",
-    package="hydra.sweeper.optuna_config.sampler",
+    package="hydra.sweeper.sampler",
     node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )

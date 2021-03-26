@@ -50,24 +50,24 @@ You can discover the Optuna sweeper parameters with:
 
 ```yaml title="python example/sphere.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper"
 # @package hydra.sweeper
+sampler:
+  _target_: optuna.samplers.TPESampler
+  consider_prior: true
+  prior_weight: 1.0
+  consider_magic_clip: true
+  consider_endpoints: false
+  n_startup_trials: 10
+  n_ei_candidates: 24
+  seed: 123
+  multivariate: false
+  warn_independent_sampling: true
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 optuna_config:
-  sampler:
-    _target_: hydra_plugins.hydra_optuna_sweeper.config.TPESampler
-    consider_prior: true
-    prior_weight: 1.0
-    consider_magic_clip: true
-    consider_endpoints: false
-    n_startup_trials: 10
-    n_ei_candidates: 24
-    seed: 123
-    multivariate: false
-    warn_independent_sampling: true
   direction: minimize
   storage: null
   study_name: sphere
   n_trials: 20
   n_jobs: 1
-_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 search_space:
   x:
     type: float
@@ -102,7 +102,7 @@ python example/sphere.py --multirun 'x=interval(-5.0, 5.0)' 'y=interval(0, 10)'
 
 ## Sampler configuration
 This plugin supports Optuna's [samplers](https://optuna.readthedocs.io/en/stable/reference/samplers.html).
-You can change the sampler used by overriding `hydra/sweeper/sampler` or change sampler settings within `hydra.sweeper.optuna_config.sampler`.
+You can change the sampler by overriding `hydra/sweeper/sampler` or change sampler settings within `hydra.sweeper.sampler`.
 
 ## Search space configuration
 
@@ -246,15 +246,16 @@ python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.swee
 
 ```yaml
 # @package hydra.sweeper
+sampler:
+  _target_: optuna.samplers.NSGAIISampler
+  population_size: 50
+  mutation_prob: null
+  crossover_prob: 0.9
+  swapping_prob: 0.5
+  seed: 123
+  constraint_func: null
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 optuna_config:
-  sampler:
-    _target_: hydra_plugins.hydra_optuna_sweeper.config.NSGAIISampler
-    population_size: 50
-    mutation_prob: null
-    crossover_prob: 0.9
-    swapping_prob: 0.5
-    seed: 123
-    constraint_func: null
   direction:
   - minimize
   - minimize
@@ -262,7 +263,6 @@ optuna_config:
   study_name: multi-objective
   n_trials: 20
   n_jobs: 1
-_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 search_space:
   x:
     type: float

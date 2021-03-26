@@ -135,7 +135,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.sweeper.optuna_config.n_trials=20",
         "hydra.sweeper.optuna_config.n_jobs=8",
         "hydra/sweeper/sampler=random",
-        "hydra.sweeper.optuna_config.sampler.seed=123",
+        "hydra.sweeper.sampler.seed=123",
     ]
     if with_commandline:
         cmd += [
@@ -165,7 +165,7 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
         "hydra.sweeper.optuna_config.n_trials=20",
         "hydra.sweeper.optuna_config.n_jobs=1",
         "hydra/sweeper/sampler=random",
-        "hydra.sweeper.optuna_config.sampler.seed=123",
+        "hydra.sweeper.sampler.seed=123",
     ]
     if with_commandline:
         cmd += [

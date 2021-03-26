@@ -4,14 +4,14 @@ defaults:
 
 hydra:
   sweeper:
+    sampler:
+      seed: 123
     optuna_config:
       direction: minimize
       study_name: sphere
       storage: null
       n_trials: 20
       n_jobs: 1
-      sampler:
-          seed: 123
 
     search_space:
       x:

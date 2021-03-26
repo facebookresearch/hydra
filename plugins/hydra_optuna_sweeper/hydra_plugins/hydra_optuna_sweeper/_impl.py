@@ -109,8 +109,12 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
 class OptunaSweeperImpl(Sweeper):
     def __init__(
-        self, optuna_config: OptunaConfig, search_space: Optional[DictConfig]
+        self,
+        sampler: Any,
+        optuna_config: OptunaConfig,
+        search_space: Optional[DictConfig],
     ) -> None:
+        self.sampler = sampler
         self.optuna_config = optuna_config
         self.search_space = {}
         if search_space:
@@ -171,13 +175,13 @@ class OptunaSweeperImpl(Sweeper):
         study = optuna.create_study(
             study_name=self.optuna_config.study_name,
             storage=self.optuna_config.storage,
-            sampler=self.optuna_config.sampler,
+            sampler=self.sampler,
             directions=directions,
             load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.optuna_config.storage}")
-        log.info(f"Sampler: {self.optuna_config.sampler}")
+        log.info(f"Sampler: {self.sampler}")
         log.info(f"Directions: {directions}")
 
         batch_size = self.optuna_config.n_jobs
