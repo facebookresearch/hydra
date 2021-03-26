@@ -24,7 +24,12 @@ with open("README.md", "r") as fh:
             "Programming Language :: Python :: 3.8",
             "Operating System :: OS Independent",
         ],
-        install_requires=["hydra-core>=1.0.0"],
+        install_requires=[
+            # consider pinning to a specific major version of Hydra to avoid unexpected
+            # if a new major versio nof Hydra introduces introduces breaking changes for plugins.
+            # e.g: "hydra-core==1.0.*",
+            "hydra-core",
+        ],
         # If this plugin is providing configuration files, be sure to include them in the package.
         # See MANIFEST.in.
         # For configurations to be discoverable at runtime, they should also be added to the search path.
