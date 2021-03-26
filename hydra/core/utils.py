@@ -7,6 +7,7 @@ import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
@@ -16,6 +17,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
+from hydra.errors import HydraJobException
 from hydra.types import TaskFunction
 
 log = logging.getLogger(__name__)
@@ -126,7 +128,13 @@ def run_job(
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         with env_override(hydra_cfg.hydra.job.env_set):
-            ret.return_value = task_function(task_cfg)
+            try:
+                ret.return_value = task_function(task_cfg)
+                ret.status = JobStatus.COMPLETED
+            except Exception as e:
+                ret.return_value = e
+                ret.status = JobStatus.FAILED
+
         ret.task_name = JobRuntime.instance().get("name")
 
         _flush_loggers()
@@ -167,14 +175,35 @@ def setup_globals() -> None:
     )
 
 
+class JobStatus(Enum):
+    UNKNOWN = 0
+    COMPLETED = 1
+    FAILED = 2
+
+
 @dataclass
 class JobReturn:
     overrides: Optional[Sequence[str]] = None
-    return_value: Any = None
     cfg: Optional[DictConfig] = None
     hydra_cfg: Optional[DictConfig] = None
     working_dir: Optional[str] = None
     task_name: Optional[str] = None
+    status: JobStatus = JobStatus.UNKNOWN
+    _return_value: Any = None
+
+    @property
+    def return_value(self) -> Any:
+        assert self.status != JobStatus.UNKNOWN, "return_value not yet available"
+        if self.status == JobStatus.COMPLETED:
+            return self._return_value
+        else:
+            raise HydraJobException(
+                f"Error executing job with overrides: {self.overrides}"
+            ) from self._return_value
+
+    @return_value.setter
+    def return_value(self, value: Any) -> None:
+        self._return_value = value
 
 
 class JobRuntime(metaclass=Singleton):

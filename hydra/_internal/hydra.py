@@ -90,13 +90,18 @@ class Hydra:
             run_mode=RunMode.RUN,
         )
 
-        return run_job(
+        ret = run_job(
             config=cfg,
             task_function=task_function,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
             configure_logging=with_log_configuration,
         )
+
+        # access the result to trigger an exception in case the job failed.
+        _ = ret.return_value
+
+        return ret
 
     def multirun(
         self,

@@ -152,8 +152,14 @@ class BasicSweeper(Sweeper):
                 f"Validated configs of {len(batch)} jobs in {elapsed:0.2f} seconds, {len(batch)/elapsed:.2f} / second)"
             )
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
+
+            for r in results:
+                # access the result to trigger an exception in case the job failed.
+                _ = r.return_value
+
             initial_job_idx += len(batch)
             returns.append(results)
+
         return returns
 
     def get_job_batch(self) -> Sequence[Sequence[str]]:

@@ -1052,6 +1052,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     ]
     expected = dedent(
         """\
+        Error executing job with overrides: []
         Traceback (most recent call last):
           File ".*my_app.py", line 13, in my_app
             foo(cfg)
@@ -1157,13 +1158,13 @@ class TestTaskRunnerLogging:
         (
             dedent(
                 """\
+                Error executing job with overrides: []
                 Traceback (most recent call last):
                   File ".*my_app.py", line 9, in my_app
                     1 / 0
                 ZeroDivisionError: division by zero
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
-                """
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
             )
         ),
     ],

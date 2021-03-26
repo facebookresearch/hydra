@@ -1,10 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Optional
+import sys
+from textwrap import dedent
+from typing import Any, List, Optional
 
 from pytest import mark, param
 
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 from hydra.core.override_parser.overrides_parser import OverridesParser
+from hydra.test_utils.test_utils import assert_regex_match, run_process
 
 
 @mark.parametrize(
@@ -54,3 +57,52 @@ def test_split(
     )
     lret = [list(x) for x in ret]
     assert lret == expected
+
+
+def test_partial_failure(
+    tmpdir: Any,
+) -> None:
+    cmd = [
+        sys.executable,
+        "-Werror",
+        "tests/test_apps/app_can_fail/my_app.py",
+        "--multirun",
+        "+divisor=1,0",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+    ]
+    out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    expected_out = dedent(
+        """\
+        [HYDRA] Launching 2 jobs locally
+        [HYDRA] \t#0 : +divisor=1
+        val=1.0
+        [HYDRA] \t#1 : +divisor=0"""
+    )
+
+    assert_regex_match(
+        from_line=expected_out,
+        to_line=out,
+        from_name="Expected output",
+        to_name="Actual output",
+    )
+
+    expected_err = dedent(
+        """
+        Error executing job with overrides: ['+divisor=0']
+        Traceback (most recent call last):
+          File ".*my_app.py", line 9, in my_app
+            val = 1 / cfg.divisor
+        ZeroDivisionError: division by zero
+
+        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+        """
+    )
+
+    assert_regex_match(
+        from_line=expected_err,
+        to_line=err,
+        from_name="Expected error",
+        to_name="Actual error",
+    )
