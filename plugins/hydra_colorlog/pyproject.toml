@@ -1,6 +1,5 @@
 [tool.towncrier]
-    package = "hydra_colorlog"
-    package_dir = "hydra_plugins"
+    package = "hydra_plugins.hydra_colorlog"
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"

@@ -1,6 +1,5 @@
 [tool.towncrier]
-    package = "hydra_nevergrad_sweeper"
-    package_dir = "hydra_plugins"
+    package = "hydra_plugins.hydra_nevergrad_sweeper"
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"

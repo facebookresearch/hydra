@@ -1,12 +1,23 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # type: ignore
+# isort: skip_file
 from setuptools import find_namespace_packages, setup
+
+import sys
+from os.path import abspath, dirname, join
+
+helpers = join(dirname(dirname(dirname(abspath(__file__)))))
+sys.path.append(helpers)
+from build_helpers.build_helpers import find_version  # noqa E402
+
 
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-submitit-launcher",
-        version="1.2.0",
+        version=find_version(
+            dirname(__file__), "hydra_plugins/hydra_submitit_launcher/__init__.py"
+        ),
         author="Jeremy Rapin, Jieru Hu, Omry Yadan",
         author_email="jrapin@fb.com, jieru@fb.com, omry@fb.com",
         description="Submitit Launcher for Hydra apps",
