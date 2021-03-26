@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-ax-sweeper",
-        version="1.1.0rc1",
+        version="1.1.0rc2",
         author="Omry Yadan, Shagun Sodhani",
         author_email="omry@fb.com, sshagunsodhani@gmail.com",
         description="Hydra Ax Sweeper plugin",
@@ -23,9 +23,9 @@ with open("README.md", "r") as fh:
             "Development Status :: 4 - Beta",
         ],
         install_requires=[
-            "hydra-core>=1.0.0",
             "ax-platform>=0.1.20",
             "torch<1.8.0",  # remove once torch 1.8.0 issue is addressed in Ax.
+            "hydra-core==1.0.*",
         ],
         include_package_data=True,
     )
