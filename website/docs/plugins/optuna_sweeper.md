@@ -52,22 +52,21 @@ You can discover the Optuna sweeper parameters with:
 # @package hydra.sweeper
 sampler:
   _target_: optuna.samplers.TPESampler
+  seed: 123
   consider_prior: true
   prior_weight: 1.0
   consider_magic_clip: true
   consider_endpoints: false
   n_startup_trials: 10
   n_ei_candidates: 24
-  seed: 123
   multivariate: false
   warn_independent_sampling: true
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
-optuna_config:
-  direction: minimize
-  storage: null
-  study_name: sphere
-  n_trials: 20
-  n_jobs: 1
+direction: minimize
+storage: null
+study_name: sphere
+n_trials: 20
+n_jobs: 1
 search_space:
   x:
     type: float
@@ -127,12 +126,12 @@ The output is as follows:
 ```commandline
 [HYDRA] Study name: sphere
 [HYDRA] Storage: None
-[HYDRA] Sampler: <optuna.samplers._tpe.sampler.TPESampler object at 0x7fd7901d6d30>
+[HYDRA] Sampler: TPESampler
 [HYDRA] Directions: ['minimize']
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #0 : x=-3 y=1.6859762540733367
+[HYDRA] 	#0 : x=-3 y=1.6859762540733367
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #1 : x=1 y=5.237816870668193
+[HYDRA] 	#1 : x=1 y=5.237816870668193
 ...
 [HYDRA] Best parameters: {'x': 0, 'y': 1.0929184723430116}
 [HYDRA] Best value: 1.1944707871885822
@@ -155,14 +154,14 @@ The output is as follows:
 ```commandline
 [HYDRA] Study name: sphere
 [HYDRA] Storage: None
-[HYDRA] Sampler: <optuna.samplers._tpe.sampler.TPESampler object at 0x7f9f7083d730>
+[HYDRA] Sampler: TPESampler
 [HYDRA] Directions: ['minimize']
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #0 : x=-3 y=-2
+[HYDRA] 	#0 : x=-3 y=-4
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #1 : x=1 y=-4
+[HYDRA] 	#1 : x=1 y=-1
 ...
-[HYDRA] Best parameters: {'x': 1, 'y': 0}
+[HYDRA] Best parameters: {'x': 0, 'y': -1}
 [HYDRA] Best value: 1.0
 ```
 
@@ -183,12 +182,12 @@ The output is as follows:
 ```commandline
 [HYDRA] Study name: sphere
 [HYDRA] Storage: None
-[HYDRA] Sampler: <optuna.samplers._tpe.sampler.TPESampler object at 0x7fbb41f00520>
+[HYDRA] Sampler: TPESampler
 [HYDRA] Directions: ['minimize']
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #0 : x=5.0 y=5
+[HYDRA] 	#0 : x=5.0 y=5
 [HYDRA] Launching 1 jobs locally
-[HYDRA]        #1 : x=5.0 y=2
+[HYDRA] 	#1 : x=5.0 y=2
 ...
 [HYDRA] Best parameters: {'x': 0.0, 'y': 0}
 [HYDRA] Best value: 0.0
@@ -248,21 +247,20 @@ python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.swee
 # @package hydra.sweeper
 sampler:
   _target_: optuna.samplers.NSGAIISampler
+  seed: 123
   population_size: 50
   mutation_prob: null
   crossover_prob: 0.9
   swapping_prob: 0.5
-  seed: 123
   constraint_func: null
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
-optuna_config:
-  direction:
-  - minimize
-  - minimize
-  storage: null
-  study_name: multi-objective
-  n_trials: 20
-  n_jobs: 1
+direction:
+- minimize
+- minimize
+storage: null
+study_name: multi-objective
+n_trials: 20
+n_jobs: 1
 search_space:
   x:
     type: float

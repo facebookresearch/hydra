@@ -116,8 +116,8 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         overrides=[
             "hydra/sweeper=optuna",
             "hydra/launcher=basic",
-            "hydra.sweeper.optuna_config.n_trials=8",
-            "hydra.sweeper.optuna_config.n_jobs=3",
+            "hydra.sweeper.n_trials=8",
+            "hydra.sweeper.n_jobs=3",
         ],
     )
     with sweep:
@@ -132,8 +132,8 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.optuna_config.n_trials=20",
-        "hydra.sweeper.optuna_config.n_jobs=8",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=8",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
     ]
@@ -162,8 +162,8 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
         "example/multi-objective.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.optuna_config.n_trials=20",
-        "hydra.sweeper.optuna_config.n_jobs=1",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=1",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
     ]

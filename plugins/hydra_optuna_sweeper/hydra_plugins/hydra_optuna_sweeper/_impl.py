@@ -28,7 +28,7 @@ from optuna.distributions import (
     UniformDistribution,
 )
 
-from .config import Direction, DistributionConfig, DistributionType, OptunaConfig
+from .config import Direction, DistributionConfig, DistributionType
 
 log = logging.getLogger(__name__)
 
@@ -111,11 +111,19 @@ class OptunaSweeperImpl(Sweeper):
     def __init__(
         self,
         sampler: Any,
-        optuna_config: OptunaConfig,
+        direction: Any,
+        storage: Optional[str],
+        study_name: Optional[str],
+        n_trials: int,
+        n_jobs: int,
         search_space: Optional[DictConfig],
     ) -> None:
         self.sampler = sampler
-        self.optuna_config = optuna_config
+        self.direction = direction
+        self.storage = storage
+        self.study_name = study_name
+        self.n_trials = n_trials
+        self.n_jobs = n_jobs
         self.search_space = {}
         if search_space:
             assert isinstance(search_space, DictConfig)
@@ -161,31 +169,30 @@ class OptunaSweeperImpl(Sweeper):
                 del search_space[param_name]
 
         directions: List[str]
-        if isinstance(self.optuna_config.direction, MutableSequence):
+        if isinstance(self.direction, MutableSequence):
             directions = [
-                d.name if isinstance(d, Direction) else d
-                for d in self.optuna_config.direction
+                d.name if isinstance(d, Direction) else d for d in self.direction
             ]
         else:
-            if isinstance(self.optuna_config.direction, str):
-                directions = [self.optuna_config.direction]
+            if isinstance(self.direction, str):
+                directions = [self.direction]
             else:
-                directions = [self.optuna_config.direction.name]
+                directions = [self.direction.name]
 
         study = optuna.create_study(
-            study_name=self.optuna_config.study_name,
-            storage=self.optuna_config.storage,
+            study_name=self.study_name,
+            storage=self.storage,
             sampler=self.sampler,
             directions=directions,
             load_if_exists=True,
         )
         log.info(f"Study name: {study.study_name}")
-        log.info(f"Storage: {self.optuna_config.storage}")
-        log.info(f"Sampler: {self.sampler}")
+        log.info(f"Storage: {self.storage}")
+        log.info(f"Sampler: {type(self.sampler).__name__}")
         log.info(f"Directions: {directions}")
 
-        batch_size = self.optuna_config.n_jobs
-        n_trials_to_go = self.optuna_config.n_trials
+        batch_size = self.n_jobs
+        n_trials_to_go = self.n_trials
 
         while n_trials_to_go > 0:
             batch_size = min(n_trials_to_go, batch_size)
