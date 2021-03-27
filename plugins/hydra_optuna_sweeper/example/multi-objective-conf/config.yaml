@@ -1,16 +1,16 @@
 defaults:
   - override hydra/sweeper: optuna
+  - override hydra/sweeper/sampler: nsgaii
 
 hydra:
   sweeper:
-    optuna_config:
-      direction: [minimize, minimize]
-      study_name: multi-objective
-      storage: null
-      n_trials: 20
-      n_jobs: 1
-      sampler: nsgaii
+    sampler:
       seed: 123
+    direction: [minimize, minimize]
+    study_name: multi-objective
+    storage: null
+    n_trials: 20
+    n_jobs: 1
 
     search_space:
       x:

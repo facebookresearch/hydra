@@ -4,6 +4,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
+from omegaconf import MISSING
 
 
 class DistributionType(Enum):
@@ -17,12 +18,87 @@ class Direction(Enum):
     maximize = 2
 
 
-class Sampler(Enum):
-    tpe = 1
-    random = 2
-    cmaes = 3
-    nsgaii = 4
-    motpe = 5
+@dataclass
+class SamplerConfig:
+    _target_: str = MISSING
+    seed: Optional[int] = None
+
+
+@dataclass
+class TPESamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.TPESampler.html
+    """
+
+    _target_: str = "optuna.samplers.TPESampler"
+
+    consider_prior: bool = True
+    prior_weight: float = 1.0
+    consider_magic_clip: bool = True
+    consider_endpoints: bool = False
+    n_startup_trials: int = 10
+    n_ei_candidates: int = 24
+    multivariate: bool = False
+    warn_independent_sampling: bool = True
+
+
+@dataclass
+class RandomSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.RandomSampler.html
+    """
+
+    _target_: str = "optuna.samplers.RandomSampler"
+
+
+@dataclass
+class CmaEsSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.CmaEsSampler.html
+    """
+
+    _target_: str = "optuna.samplers.CmaEsSampler"
+
+    x0: Optional[Dict[str, Any]] = None
+    sigma0: Optional[float] = None
+    independent_sampler: Optional[Any] = None
+    warn_independent_sampling: bool = True
+    consider_pruned_trials: bool = False
+    restart_strategy: Optional[Any] = None
+    inc_popsize: int = 2
+    use_separable_cma: bool = False
+    source_trials: Optional[Any] = None
+
+
+@dataclass
+class NSGAIISamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.NSGAIISampler.html
+    """
+
+    _target_: str = "optuna.samplers.NSGAIISampler"
+
+    population_size: int = 50
+    mutation_prob: Optional[float] = None
+    crossover_prob: float = 0.9
+    swapping_prob: float = 0.5
+    constraints_func: Optional[Any] = None
+
+
+@dataclass
+class MOTPESamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.MOTPESampler.html
+    """
+
+    _target_: str = "optuna.samplers.MOTPESampler"
+
+    consider_prior: bool = True
+    prior_weight: float = 1.0
+    consider_magic_clip: bool = True
+    consider_endpoints: bool = False
+    n_startup_trials: int = 10
+    n_ehvi_candidates: int = 24
 
 
 @dataclass
@@ -50,8 +126,18 @@ class DistributionConfig:
     step: Optional[float] = None
 
 
+defaults = [{"sampler": "tpe"}]
+
+
 @dataclass
-class OptunaConfig:
+class OptunaSweeperConf:
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
+    defaults: List[Any] = field(default_factory=lambda: defaults)
+
+    # Sampling algorithm
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler: SamplerConfig = MISSING
 
     # Direction of optimization
     # Union[Direction, List[Direction]]
@@ -72,27 +158,6 @@ class OptunaConfig:
     # Number of parallel workers
     n_jobs: int = 2
 
-    # Sampling algorithm
-    # Please refer to the reference for further details
-    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
-    sampler: Sampler = Sampler.tpe
-
-    # Random seed of sampler
-    seed: Optional[int] = None
-
-    def __post_init__(self) -> None:
-        if isinstance(self.direction, list) and len(self.direction) > 1:
-            if self.sampler == Sampler.tpe:
-                # The default sampler of multi-objective optimization is NSGAIISampler
-                self.sampler = Sampler.nsgaii
-
-
-@dataclass
-class OptunaSweeperConf:
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
-
-    optuna_config: OptunaConfig = OptunaConfig()
-
     search_space: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -100,5 +165,40 @@ ConfigStore.instance().store(
     group="hydra/sweeper",
     name="optuna",
     node=OptunaSweeperConf,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="tpe",
+    node=TPESamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="random",
+    node=RandomSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="cmaes",
+    node=CmaEsSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="nsgaii",
+    node=NSGAIISamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="motpe",
+    node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )
