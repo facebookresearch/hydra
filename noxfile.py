@@ -469,9 +469,11 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
-    # pyzmq fails on Windows py 3.8
-    # https://github.com/zeromq/pyzmq/issues/1496
-    session.install("jupyter", "nbval", "pyzmq==21.0.2")
+
+    # importlib-metadata is an indirect dependency on Python 3.6.
+    # The recent release of importlib-metadata==3.8.0 is breaking this test.
+
+    session.install("jupyter", "nbval", "pyzmq", "importlib-metadata==3.7.3")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
