@@ -252,7 +252,7 @@ sampler:
   mutation_prob: null
   crossover_prob: 0.9
   swapping_prob: 0.5
-  constraint_func: null
+  constraints_func: null
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 direction:
 - minimize

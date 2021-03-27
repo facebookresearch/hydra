@@ -82,7 +82,7 @@ class NSGAIISamplerConfig(SamplerConfig):
     mutation_prob: Optional[float] = None
     crossover_prob: float = 0.9
     swapping_prob: float = 0.5
-    constraint_func: Optional[Any] = None
+    constraints_func: Optional[Any] = None
 
 
 @dataclass
