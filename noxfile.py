@@ -470,10 +470,7 @@ def test_jupyter_notebooks(session):
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
 
-    # importlib-metadata is an indirect dependency on Python 3.6.
-    # The recent release of importlib-metadata==3.8.0 is breaking this test.
-
-    session.install("jupyter", "nbval", "pyzmq", "importlib-metadata==3.7.3")
+    session.install("jupyter", "nbval", "pyzmq")
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
