@@ -26,7 +26,7 @@ Hydra supports Linux, Mac and Windows.
  
 |        |          Version          | Docs                          | Release notes                                                                                                       | Python Version   |
 | -------|---------------------------|------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------------- |
-| &#9658;| 1.0 (Stable)              | 1.0 Docs                                                                | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/hydra-1.0.0rc1)  | **3.6+**         | 
+| &#9658;| 1.0 (Stable)              | 1.0 Docs                                                                | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)       | **3.6+**         | 
 |        | 0.11                      | <Link to={useBaseUrl("/docs/0.11/intro")}>**Switch to 0.11 Docs**</Link>| [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)          | 2.7, 3.5+        |
 
 
