@@ -346,8 +346,23 @@ class ConfigLoaderImpl(ConfigLoader):
                     if OmegaConf.select(
                         cfg, key, throw_on_missing=False
                     ) is None or isinstance(value, (dict, list)):
-                        with open_dict(cfg):
-                            OmegaConf.update(cfg, key, value, merge=True)
+                        if '.' in key:
+                            last_dot = None
+                            node = None
+                            while node is None:
+                                last_dot = key.rfind(".", 0, last_dot)
+                                if last_dot == -1:
+                                    break
+                                node = OmegaConf.select(cfg, key[0:last_dot])
+                            if node is None:
+                                node = cfg
+
+                            node_key = key[last_dot + 1:]
+                            with open_dict(node):
+                                OmegaConf.update(node, node_key, value, merge=True)
+                        else:
+                            with open_dict(cfg):
+                                OmegaConf.update(cfg, key, value, merge=True)
                     else:
                         assert override.input_line is not None
                         raise ConfigCompositionException(
