@@ -1,0 +1,2 @@
+hydra_colorlog:
+  path: plugins/${.name}

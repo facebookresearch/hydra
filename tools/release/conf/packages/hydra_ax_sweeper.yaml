@@ -1,0 +1,2 @@
+hydra_ax_sweeper:
+  path: plugins/${.name}

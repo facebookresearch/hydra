@@ -1,0 +1,2 @@
+hydra_ray_launcher:
+  path: plugins/${.name}

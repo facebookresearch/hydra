@@ -1,0 +1,2 @@
+hydra_rq_launcher:
+  path: plugins/${.name}

@@ -1,0 +1,2 @@
+hydra_nevergrad_sweeper:
+  path: plugins/${.name}

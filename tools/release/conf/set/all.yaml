@@ -1,0 +1,13 @@
+# @package _global_
+defaults:
+  - /packages:
+      - hydra
+      - configen
+      - hydra_ax_sweeper
+      - hydra_colorlog
+      - hydra_joblib_launcher
+      - hydra_nevergrad_sweeper
+      - hydra_optuna_sweeper
+      - hydra_ray_launcher
+      - hydra_rq_launcher
+      - hydra_submitit_launcher
