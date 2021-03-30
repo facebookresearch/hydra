@@ -12,6 +12,7 @@ pre-commit
 pytest
 pytest-benchmark
 pytest-snail
+read-version
 setuptools
 towncrier
 twine
