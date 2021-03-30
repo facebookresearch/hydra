@@ -1,1 +1,1 @@
-Support Python 3.9 .
+Support Python 3.9.

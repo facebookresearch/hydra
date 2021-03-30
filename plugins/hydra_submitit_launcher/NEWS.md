@@ -1,5 +1,13 @@
-1.1 (2021-01-30)
-================
+1.1.1 (2021-03-30)
+==================
+
+### Maintenance Changes
+
+- Pin Hydra 1.0 plugins to hydra-core==1.0.* to discourage usage with Hydra 1.1 ([#1501](https://github.com/facebookresearch/hydra/issues/1501))
+
+
+1.1.0 (2021-01-30)
+==================
 
 ### Features
 
