@@ -1,0 +1,3 @@
+defaults:
+  - config_schema
+  - set: all

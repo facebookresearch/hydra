@@ -7,17 +7,16 @@ from dataclasses import dataclass
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import hydra
 import requests
 from hydra.core.config_store import ConfigStore
 from hydra.test_utils.test_utils import find_parent_dir_containing, run_python_script
-from omegaconf import MISSING, DictConfig, OmegaConf
+from omegaconf import II, MISSING, SI, DictConfig, OmegaConf
 from packaging.version import Version, parse
 
 log = logging.getLogger(__name__)
-HYDRA_ROOT = find_parent_dir_containing(target="ATTRIBUTION")
 
 
 class Action(Enum):
@@ -27,27 +26,29 @@ class Action(Enum):
 
 
 class VersionType(Enum):
-    setup_py = 1
-    file = 2
+    SETUP = 1
+    FILE = 2
 
 
 @dataclass
 class Package:
+    name: str = II("parent_key:")
+    module: str = II(".name")
     path: str = MISSING
-    version_type: VersionType = VersionType.setup_py
-    version_file: str = MISSING
+    version_type: VersionType = VersionType.FILE
+    version_file: str = SI("${.module}/__init__.py")
 
 
 @dataclass
 class Config:
     dry_run: bool = False
     action: Action = Action.check
-    packages: List[Package] = MISSING
-    build_targets: Tuple[str, ...] = ("sdist", "bdist_wheel")
+    packages: Dict[str, Package] = MISSING
+    build_targets: Tuple[str, ...] = ("--sdist", "--wheel")
     build_dir: str = "build"
 
 
-ConfigStore.instance().store(name="config", node=Config)
+ConfigStore.instance().store(name="config_schema", node=Config)
 
 
 @lru_cache()
@@ -86,6 +87,7 @@ def parse_version(ver: str) -> Version:
 def get_package_info(path: str) -> Package:
     try:
         prev = os.getcwd()
+        path = os.path.abspath(path)
         os.chdir(path)
         out, _err = run_python_script(
             cmd=[f"{path}/setup.py", "--version"], allow_warnings=True
@@ -104,21 +106,20 @@ def get_package_info(path: str) -> Package:
     )
 
 
-def build_package(cfg: Config, pkg_path: str) -> None:
+def build_package(cfg: Config, pkg_path: str, build_dir: str) -> None:
+
     try:
         prev = os.getcwd()
         os.chdir(pkg_path)
         log.info(f"Building {get_package_info('.').name}")
         shutil.rmtree("dist", ignore_errors=True)
+        cmd = ["-m", "build", "-o", build_dir, *cfg.build_targets]
         run_python_script(
-            cmd=["setup.py", "build", *cfg.build_targets], allow_warnings=True
+            cmd=cmd,
+            allow_warnings=False,
         )
     finally:
         os.chdir(prev)
-
-    dist = f"{pkg_path}/dist"
-    for file in os.listdir(dist):
-        shutil.copy(src=f"{dist}/{file}", dst=cfg.build_dir)
 
 
 def _next_version(version: str) -> str:
@@ -161,25 +162,32 @@ def bump_version_in_file(cfg: Config, ver_file: Path) -> None:
 
 
 def bump_version(cfg: Config, package: Package) -> None:
-    if package.version_type == VersionType.setup_py:
+    if package.version_type == VersionType.SETUP:
         ver_file = Path(HYDRA_ROOT) / package.path / "setup.py"
         bump_version_in_file(cfg, ver_file)
         log.info(f"Bumping version: {ver_file}")
-    elif package.version_type == VersionType.file:
+    elif package.version_type == VersionType.FILE:
         ver_file = Path(HYDRA_ROOT) / package.version_file
         bump_version_in_file(cfg, ver_file)
     else:
         raise ValueError()
 
 
-@hydra.main(config_name="config")
+HYDRA_ROOT = None
+
+
+OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
+
+
+@hydra.main(config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
+    HYDRA_ROOT = find_parent_dir_containing(target="ATTRIBUTION")
     build_dir = f"{os.getcwd()}/{cfg.build_dir}"
     Path(build_dir).mkdir(parents=True)
     log.info(f"Build outputs : {build_dir}")
     if cfg.action == Action.check:
         log.info("Checking for unpublished packages")
-        for package in cfg.packages:
+        for package in cfg.packages.values():
             pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version == ret.latest_version:
@@ -194,14 +202,14 @@ def main(cfg: Config) -> None:
                 )
     elif cfg.action == Action.build:
         log.info("Building unpublished packages")
-        for package in cfg.packages:
+        for package in cfg.packages.values():
             pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version > ret.latest_version:
-                build_package(cfg, pkg_path)
+                build_package(cfg, pkg_path, build_dir)
     elif cfg.action == Action.bump:
         log.info("Bumping version of published packages")
-        for package in cfg.packages:
+        for package in cfg.packages.values():
             pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version == ret.latest_version:
