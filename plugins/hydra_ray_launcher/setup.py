@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-ray-launcher",
-    version="0.1.4",
+    version=read_version("hydra_plugins/hydra_ray_launcher", "__init__.py"),
     author="Jieru Hu",
     author_email="jieru@fb.com",
     description="Hydra Ray launcher plugin",

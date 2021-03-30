@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-nevergrad-sweeper",
-    version="1.1.0rc2",
+    version=read_version("hydra_plugins/hydra_nevergrad_sweeper", "__init__.py"),
     author="Jeremy Rapin, Omry Yadan, Jieru Hu",
     author_email="jrapin@fb.com, omry@fb.com, jieru@fb.com",
     description="Hydra Nevergrad Sweeper plugin",

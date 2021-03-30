@@ -11,6 +11,7 @@ packaging
 pre-commit
 pytest
 pytest-snail
+read-version
 setuptools
 towncrier
 twine

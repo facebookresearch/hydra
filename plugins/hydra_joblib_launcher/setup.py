@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-joblib-launcher",
-    version="1.1.3",
+    version=read_version("hydra_plugins/hydra_joblib_launcher", "__init__.py"),
     author="Jan-Matthis Lueckmann, Omry Yadan",
     author_email="mail@jan-matthis.de, omry@fb.com",
     description="Joblib Launcher for Hydra apps",

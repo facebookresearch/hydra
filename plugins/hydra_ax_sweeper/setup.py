@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-ax-sweeper",
-    version="1.1.0rc2",
+    version=read_version("hydra_plugins/hydra_ax_sweeper", "__init__.py"),
     author="Omry Yadan, Shagun Sodhani",
     author_email="omry@fb.com, sshagunsodhani@gmail.com",
     description="Hydra Ax Sweeper plugin",

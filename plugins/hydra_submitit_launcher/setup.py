@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-submitit-launcher",
-    version="1.0.3",
+    version=read_version("hydra_plugins/hydra_submitit_launcher", "__init__.py"),
     author="Jeremy Rapin, Jieru Hu, Omry Yadan",
     author_email="jrapin@fb.com, jieru@fb.com, omry@fb.com",
     description="Submitit Launcher for Hydra apps",

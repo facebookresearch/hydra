@@ -80,6 +80,8 @@ def find_dirs(path: str):
 
 
 def install_hydra(session, cmd):
+    # needed for build
+    session.install("read-version", silent=SILENT)
     # clean install hydra
     session.chdir(BASE)
     session.run(*cmd, ".", silent=SILENT)
