@@ -1,3 +1,9 @@
 global-exclude *.pyc
 global-exclude __pycache__
 recursive-include hydra_plugins/* *.yaml
+recursive-include hydra_plugins/* *.py
+recursive-include example *.py
+recursive-include example *.yaml
+recursive-include tests *.py
+recursive-include tests *.yaml
+

@@ -1,6 +1,6 @@
 [tool.towncrier]
-    package = "hydra_ax_sweeper"
-    package_dir = "hydra_plugins"
+    package = "hydra_plugins.hydra_ax_sweeper"
+    package_dir = ""
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"
