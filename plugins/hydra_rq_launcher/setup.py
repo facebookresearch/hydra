@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-rq-launcher",
-    version="1.0.3",
+    version=read_version("hydra_plugins/hydra_rq_launcher", "__init__.py"),
     author="Jan-Matthis Lueckmann, Omry Yadan",
     author_email="mail@jan-matthis.de, omry@fb.com",
     description="Redis Queue (RQ) Launcher for Hydra apps",

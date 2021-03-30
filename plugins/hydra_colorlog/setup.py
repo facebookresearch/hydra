@@ -2,11 +2,12 @@
 # type: ignore
 from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="hydra-colorlog",
-    version="1.0.2",
+    version=read_version("hydra_plugins/hydra_colorlog", "__init__.py"),
     author="Omry Yadan",
     author_email="omry@fb.com",
     description="Enables colorlog for Hydra apps",
