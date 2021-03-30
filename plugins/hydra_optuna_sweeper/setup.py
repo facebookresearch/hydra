@@ -1,23 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
+# type: ignore
+from pathlib import Path
 
+from read_version import read_version
 from setuptools import find_namespace_packages, setup
-
-
-def get_long_description() -> str:
-
-    readme_filepath = os.path.join(os.path.dirname(__file__), "README.md")
-    with open(readme_filepath) as f:
-        return f.read()
-
 
 setup(
     name="hydra-optuna-sweeper",
-    version="0.0.1",
+    version=read_version("hydra_plugins/hydra_optuna_sweeper", "__init__.py"),
     author="Toshihiko Yanase, Hiroyuki Vincent Yamazaki",
     author_email="toshihiko.yanase@gmail.com, hiroyuki.vincent.yamazaki@gmail.com",
     description="Hydra Optuna Sweeper plugin",
-    long_description=get_long_description(),
+    long_description=(Path(__file__).parent / "README.md").read_text(),
     long_description_content_type="text/markdown",
     url="https://github.com/facebookresearch/hydra/",
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
