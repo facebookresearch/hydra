@@ -1,23 +1,21 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-
+import logging
 import warnings
 from typing import Any
 
 from omegaconf import DictConfig
 
 from hydra.core.utils import JobReturn
-from hydra.errors import HydraException
 from hydra.utils import instantiate
 
 
 class Callbacks:
+
     def __init__(self, config: DictConfig) -> None:
         self.callbacks = []
-        if config.hydra.callbacks is None:
-            raise HydraException("Hydra Callbacks is not configured")
-
-        for params in config.hydra.callbacks.values():
-            self.callbacks.append(instantiate(params))
+        if config.hydra.callbacks is not None:
+            for params in config.hydra.callbacks.values():
+                self.callbacks.append(instantiate(params))
 
     def _notify(self, function_name: str, **kwargs: Any) -> None:
         for c in self.callbacks:
