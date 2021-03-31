@@ -3,8 +3,8 @@
 A few usage examples:
 
 Check all plugins against the published versions:
-```shell
-omry@Coronadev:~/dev/hydra$ python tools/release/release.py  action=check set=plugins 
+```text
+$ python tools/release/release.py  action=check set=plugins 
 [2021-03-30 18:21:05,768][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-05/build
 [2021-03-30 18:21:05,768][__main__][INFO] - Checking for unpublished packages
 [2021-03-30 18:21:06,258][__main__][INFO] - ❋ : hydra-ax-sweeper : newer (local=1.1.5.dev1 > latest=1.1.0rc2)
@@ -18,8 +18,8 @@ omry@Coronadev:~/dev/hydra$ python tools/release/release.py  action=check set=pl
 ```
 
 Check specific packages (hydra and configen) against the published versions
-```shell
-omry@Coronadev:~/dev/hydra$ python tools/release/release.py  action=check packages=[hydra,configen]
+```text
+$ python tools/release/release.py  action=check packages=[hydra,configen]
 [2021-03-30 18:21:25,423][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-25/build
 [2021-03-30 18:21:25,423][__main__][INFO] - Checking for unpublished packages
 [2021-03-30 18:21:26,042][__main__][INFO] - ❋ : hydra-core : newer (local=1.1.0.dev6 > latest=1.1.0.dev5)
@@ -28,7 +28,7 @@ omry@Coronadev:~/dev/hydra$ python tools/release/release.py  action=check packag
 
 Build all plugins:
 ```shell
-omry@Coronadev:~/dev/hydra$ python tools/release/release.py  action=build set=plugins
+$ python tools/release/release.py  action=build set=plugins
 [2021-03-30 18:21:40,426][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-40/build
 [2021-03-30 18:21:40,426][__main__][INFO] - Building unpublished packages
 [2021-03-30 18:21:41,280][__main__][INFO] - Building hydra-ax-sweeper
