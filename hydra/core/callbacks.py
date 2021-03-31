@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import logging
 import warnings
 from typing import Any
 
@@ -10,7 +9,6 @@ from hydra.utils import instantiate
 
 
 class Callbacks:
-
     def __init__(self, config: DictConfig) -> None:
         self.callbacks = []
         if config.hydra.callbacks is not None:

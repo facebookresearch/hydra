@@ -101,14 +101,11 @@ class Hydra:
             job_subdir_key=None,
             configure_logging=with_log_configuration,
         )
-        callbacks.on_run_end(
-            config=cfg, config_name=config_name, job_return=ret
-        )
+        callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)
 
         # access the result to trigger an exception in case the job failed.
         _ = ret.return_value
 
-        callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)
         return ret
 
     def multirun(
