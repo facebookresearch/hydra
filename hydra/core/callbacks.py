@@ -11,9 +11,8 @@ from hydra.utils import instantiate
 class Callbacks:
     def __init__(self, config: DictConfig) -> None:
         self.callbacks = []
-        if config.hydra.callbacks is not None:
-            for params in config.hydra.callbacks.values():
-                self.callbacks.append(instantiate(params))
+        for params in config.hydra.callbacks.values():
+            self.callbacks.append(instantiate(params))
 
     def _notify(self, function_name: str, **kwargs: Any) -> None:
         for c in self.callbacks:
@@ -21,7 +20,7 @@ class Callbacks:
                 getattr(c, function_name)(**kwargs)
             except Exception as e:
                 warnings.warn(
-                    f"Exception occurred during {function_name} with callback {type(c).__name__}, error message: {e}"
+                    f"Callback {type(c).__name__}.{function_name} raised {type(e).__name__}: {e}"
                 )
 
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:

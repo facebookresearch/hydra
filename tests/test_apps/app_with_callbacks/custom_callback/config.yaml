@@ -3,6 +3,6 @@ foo: bar
 hydra:
   callbacks:
     custom_callback:
-      _target_: my_callbacks_impl.CustomCallback
+      _target_: my_app.CustomCallback
       param1: value1
       param2: value2
