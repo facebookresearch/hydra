@@ -5,8 +5,8 @@ import logging
 from omegaconf import DictConfig, OmegaConf
 
 import hydra
-from hydra._internal.callback import Callback
 from hydra.core.utils import JobReturn
+from hydra.experimental.callback import Callback
 
 log = logging.getLogger(__name__)
 
