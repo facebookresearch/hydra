@@ -38,6 +38,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
                 if isinstance(header_text, bytes):
                     header_text = header_text.decode("utf-8")
             else:
+                # this is needed to keep windows happy
                 f = res.open(encoding="utf-8")
                 header_text = f.read(512)
             header = ConfigSource._get_header_dict(header_text)
