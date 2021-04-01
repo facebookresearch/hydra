@@ -1,9 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-from pathlib import Path
-from typing import List, Optional, Union
-from zipfile import Path as ZipPath  # type: ignore
+import zipfile
+from typing import Any, List, Optional
 
 from omegaconf import OmegaConf
 
@@ -31,9 +30,9 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def scheme() -> str:
         return "pkg"
 
-    def _read_config(self, res: Union[Path, ZipPath]) -> ConfigResult:
+    def _read_config(self, res: Any) -> ConfigResult:
         try:
-            if sys.version_info[0:2] >= (3, 8) and isinstance(res, ZipPath):
+            if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
                 f = res.open()
                 header_text = f.read(512).decode("utf-8")
             else:
