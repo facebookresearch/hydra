@@ -34,7 +34,9 @@ class ImportlibResourcesConfigSource(ConfigSource):
         try:
             if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
                 f = res.open()
-                header_text = f.read(512).decode("utf-8")
+                header_text = f.read(512)
+                if isinstance(header_text, bytes):
+                    header_text = header_text.decode("utf-8")
             else:
                 f = res.open(encoding="utf-8")
                 header_text = f.read(512)
