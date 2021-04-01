@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-import zipfile
 from typing import Any, List, Optional
 
 from omegaconf import OmegaConf
@@ -32,14 +31,10 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def _read_config(self, res: Any) -> ConfigResult:
         try:
-            if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
-                f = res.open()
-                header_text = f.read(512)
-                if isinstance(header_text, bytes):
-                    header_text = header_text.decode("utf-8")
-            else:
-                f = res.open(encoding="utf-8")
-                header_text = f.read(512)
+            f = res.open()
+            header_text = f.read(512)
+            if isinstance(header_text, bytes):
+                header_text = header_text.decode("utf-8")
             header = ConfigSource._get_header_dict(header_text)
             f.seek(0)
             cfg = OmegaConf.load(f)

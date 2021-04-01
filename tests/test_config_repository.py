@@ -198,12 +198,12 @@ def test_restore_singleton_state_hack() -> None:
     Singleton.set_state(state)
 
 
-@mark.skipif(sys.version_info[0:2] < (3, 8), reason="only run on python 3.8+")
-def test_importlib_resource_load_zip_path(monkeypatch: Any) -> None:
+@mark.skipif(sys.version_info[0:2] < (3, 8), reason="zip.Path only in python 3.8+")
+def test_importlib_resource_load_zip_path() -> None:
     config_source = ImportlibResourcesConfigSource(provider="foo", path="pkg://bar")
     conf = config_source._read_config(
         zipfile.Path(  # type: ignore
-            "tests/test_apps/config_source_test/importlib_resource_zip_test/conf.zip",
+            "hydra/test_utils/configs/conf.zip",
             "config.yaml",
         )
     )
