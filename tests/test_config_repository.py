@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import re
+import sys
 import zipfile
 from typing import Any, List
 
@@ -197,6 +198,7 @@ def test_restore_singleton_state_hack() -> None:
     Singleton.set_state(state)
 
 
+@mark.skipif(sys.version_info[0:2] < (3, 8), reason="only run on python 3.8+")
 def test_importlib_resource_load_zip_path(monkeypatch: Any) -> None:
     config_source = ImportlibResourcesConfigSource(provider="foo", path="pkg://bar")
     conf = config_source._read_config(
