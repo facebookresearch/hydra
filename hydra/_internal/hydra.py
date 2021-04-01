@@ -28,6 +28,7 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import RunMode, TaskFunction
 
+from ..core.callbacks import Callbacks
 from ..core.default_element import DefaultsTreeNode, InputDefault
 from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
@@ -90,6 +91,9 @@ class Hydra:
             run_mode=RunMode.RUN,
         )
 
+        callbacks = Callbacks(cfg)
+        callbacks.on_run_start(config=cfg, config_name=config_name)
+
         ret = run_job(
             config=cfg,
             task_function=task_function,
@@ -97,6 +101,7 @@ class Hydra:
             job_subdir_key=None,
             configure_logging=with_log_configuration,
         )
+        callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)
 
         # access the result to trigger an exception in case the job failed.
         _ = ret.return_value
@@ -116,13 +121,17 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
+        callbacks = Callbacks(cfg)
+        callbacks.on_multirun_start(config=cfg, config_name=config_name)
 
         sweeper = Plugins.instance().instantiate_sweeper(
             config=cfg, config_loader=self.config_loader, task_function=task_function
         )
         task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
         assert isinstance(task_overrides, list)
-        return sweeper.sweep(arguments=task_overrides)
+        ret = sweeper.sweep(arguments=task_overrides)
+        callbacks.on_multirun_end(config=cfg, config_name=config_name)
+        return ret
 
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:

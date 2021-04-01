@@ -98,6 +98,7 @@ class HydraConf:
             {"hydra_help": "default"},
             {"hydra_logging": "default"},
             {"job_logging": "default"},
+            {"callbacks": None},
         ]
     )
 
@@ -118,6 +119,8 @@ class HydraConf:
     sweeper: Any = MISSING
     # Launcher configuration
     launcher: Any = MISSING
+    # Callbacks configuration
+    callbacks: Dict[str, Any] = field(default_factory=dict)
 
     # Program Help template
     help: HelpConf = HelpConf()

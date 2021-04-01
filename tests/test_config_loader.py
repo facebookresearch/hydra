@@ -757,6 +757,7 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
             [],
             {
                 "optimizer": "nesterov",
+                "hydra/callbacks": None,
                 "hydra/hydra_help": "default",
                 "hydra/help": "default",
                 "hydra/output": "default",
@@ -772,6 +773,7 @@ def test_overriding_with_dict(config: str, overrides: Any, expected: Any) -> Non
             ["optimizer=adam"],
             {
                 "optimizer": "adam",
+                "hydra/callbacks": None,
                 "hydra/hydra_help": "default",
                 "hydra/help": "default",
                 "hydra/output": "default",
