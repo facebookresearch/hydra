@@ -1,17 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
-import os
 from typing import Any, Optional
 
-from hydra._internal.hydra import Hydra
-from hydra._internal.utils import (
-    create_config_search_path,
-    detect_calling_file_or_module_from_stack_frame,
-    detect_task_name,
-)
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
-from hydra.errors import HydraException
 
 
 def get_gh_backup() -> Any:
@@ -29,51 +21,31 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
 
 
 class initialize:
-    """
-    Initializes Hydra and add the config_path to the config search path.
-    config_path is relative to the parent of the caller.
-    Hydra detects the caller type automatically at runtime.
-
-    Supported callers:
-    - Python scripts
-    - Python modules
-    - Unit tests
-    - Jupyter notebooks.
-    :param config_path: path relative to the parent of the caller
-    :param job_name: the value for hydra.job.name (By default it is automatically detected based on the caller)
-    :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
-    """
-
     def __init__(
         self,
         config_path: Optional[str] = None,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:
-        self._gh_backup = get_gh_backup()
+        from hydra import initialize as real_initialize
 
-        if config_path is not None and os.path.isabs(config_path):
-            raise HydraException("config_path in initialize() must be relative")
-        calling_file, calling_module = detect_calling_file_or_module_from_stack_frame(
-            caller_stack_depth + 1
-        )
-        if job_name is None:
-            job_name = detect_task_name(
-                calling_file=calling_file, calling_module=calling_module
-            )
+        # warnings.warn(
+        #     category=UserWarning,
+        #     message="hydra.experimental.initialize() is no longer experimental."
+        #     " Use hydra.initialize()",
+        # )
 
-        Hydra.create_main_hydra_file_or_module(
-            calling_file=calling_file,
-            calling_module=calling_module,
+        self.delegate = real_initialize(
             config_path=config_path,
             job_name=job_name,
+            caller_stack_depth=caller_stack_depth + 1,
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+        self.delegate.__enter__(*args, **kwargs)
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        restore_gh_from_backup(self._gh_backup)
+        self.delegate.__exit__(exc_type, exc_val, exc_tb)
 
     def __repr__(self) -> str:
         return "hydra.experimental.initialize()"
@@ -87,21 +59,24 @@ class initialize_config_module:
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 
-    def __init__(self, config_module: str, job_name: str = "app"):
-        self._gh_backup = get_gh_backup()
+    def __init__(self, config_module: str, job_name: str = "app") -> None:
+        from hydra import initialize_config_module as real_initialize_config_module
 
-        Hydra.create_main_hydra_file_or_module(
-            calling_file=None,
-            calling_module=f"{config_module}.{job_name}",
-            config_path=None,
-            job_name=job_name,
+        # warnings.warn(
+        #     category=UserWarning,
+        #     message="hydra.experimental.initialize_config_module() is no longer experimental."
+        #     " Use hydra.initialize_config_module().",
+        # )
+
+        self.delegate = real_initialize_config_module(
+            config_module=config_module, job_name=job_name
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+        self.delegate.__enter__(*args, **kwargs)
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        restore_gh_from_backup(self._gh_backup)
+        self.delegate.__exit__(exc_type, exc_val, exc_tb)
 
     def __repr__(self) -> str:
         return "hydra.experimental.initialize_config_module()"
@@ -117,22 +92,23 @@ class initialize_config_dir:
     """
 
     def __init__(self, config_dir: str, job_name: str = "app") -> None:
-        self._gh_backup = get_gh_backup()
-        # Relative here would be interpreted as relative to cwd, which - depending on when it run
-        # may have unexpected meaning. best to force an absolute path to avoid confusion.
-        # Can consider using hydra.utils.to_absolute_path() to convert it at a future point if there is demand.
-        if not os.path.isabs(config_dir):
-            raise HydraException(
-                "initialize_config_dir() requires an absolute config_dir as input"
-            )
-        csp = create_config_search_path(search_path_dir=config_dir)
-        Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
+        from hydra import initialize_config_dir as real_initialize_config_dir
+
+        # warnings.warn(
+        #     category=UserWarning,
+        #     message="hydra.experimental.initialize_config_dir() is no longer experimental."
+        #     " Use hydra.initialize_config_dir().",
+        # )
+
+        self.delegate = real_initialize_config_dir(
+            config_dir=config_dir, job_name=job_name
+        )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+        self.delegate.__enter__(*args, **kwargs)
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        restore_gh_from_backup(self._gh_backup)
+        self.delegate.__exit__(exc_type, exc_val, exc_tb)
 
     def __repr__(self) -> str:
         return "hydra.experimental.initialize_config_dir()"

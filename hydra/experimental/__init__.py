@@ -7,7 +7,4 @@ __all__ = [
     "initialize",
     "initialize_config_module",
     "initialize_config_dir",
-    "initialize",
-    "initialize_config_module",
-    "initialize_config_dir",
 ]

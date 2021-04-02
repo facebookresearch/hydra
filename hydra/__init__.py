@@ -7,4 +7,17 @@ from hydra.errors import MissingConfigException
 from hydra.main import main
 from hydra.types import TaskFunction
 
-__all__ = ["__version__", "MissingConfigException", "main", "utils", "TaskFunction"]
+from .compose import compose
+from .initialize import initialize, initialize_config_dir, initialize_config_module
+
+__all__ = [
+    "__version__",
+    "MissingConfigException",
+    "main",
+    "utils",
+    "TaskFunction",
+    "compose",
+    "initialize",
+    "initialize_config_module",
+    "initialize_config_dir",
+]
