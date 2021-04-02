@@ -120,6 +120,7 @@ base_completion_list: List[str] = [
             "hydra/",
             3,
             [
+                "hydra/env=",
                 "hydra/help=",
                 "hydra/hydra_help=",
                 "hydra/hydra_logging=",
@@ -165,11 +166,13 @@ class TestRunCompletion:
         config_loader = create_config_loader()
         bc = DefaultCompletionPlugin(config_loader)
         ret = bc._query(config_name="config.yaml", line=line_prefix + line)
+
         assert ret == expected
 
         ret = bc._query(
             config_name="config.yaml", line="--multirun " + line_prefix + line
         )
+
         assert ret == expected
 
     @mark.skipif(

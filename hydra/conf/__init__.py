@@ -99,6 +99,8 @@ class HydraConf:
             {"hydra_logging": "default"},
             {"job_logging": "default"},
             {"callbacks": None},
+            # env specific overrides
+            {"env": "default"},
         ]
     )
 
