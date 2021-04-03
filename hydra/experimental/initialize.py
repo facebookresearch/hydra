@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
+import warnings
 from typing import Any, Optional
 
 from hydra.core.global_hydra import GlobalHydra
@@ -29,11 +30,11 @@ class initialize:
     ) -> None:
         from hydra import initialize as real_initialize
 
-        # warnings.warn(
-        #     category=UserWarning,
-        #     message="hydra.experimental.initialize() is no longer experimental."
-        #     " Use hydra.initialize()",
-        # )
+        warnings.warn(
+            category=UserWarning,
+            message="hydra.experimental.initialize() is no longer experimental."
+            " Use hydra.initialize()",
+        )
 
         self.delegate = real_initialize(
             config_path=config_path,
@@ -62,11 +63,11 @@ class initialize_config_module:
     def __init__(self, config_module: str, job_name: str = "app") -> None:
         from hydra import initialize_config_module as real_initialize_config_module
 
-        # warnings.warn(
-        #     category=UserWarning,
-        #     message="hydra.experimental.initialize_config_module() is no longer experimental."
-        #     " Use hydra.initialize_config_module().",
-        # )
+        warnings.warn(
+            category=UserWarning,
+            message="hydra.experimental.initialize_config_module() is no longer experimental."
+            " Use hydra.initialize_config_module().",
+        )
 
         self.delegate = real_initialize_config_module(
             config_module=config_module, job_name=job_name
@@ -94,11 +95,11 @@ class initialize_config_dir:
     def __init__(self, config_dir: str, job_name: str = "app") -> None:
         from hydra import initialize_config_dir as real_initialize_config_dir
 
-        # warnings.warn(
-        #     category=UserWarning,
-        #     message="hydra.experimental.initialize_config_dir() is no longer experimental."
-        #     " Use hydra.initialize_config_dir().",
-        # )
+        warnings.warn(
+            category=UserWarning,
+            message="hydra.experimental.initialize_config_dir() is no longer experimental."
+            " Use hydra.initialize_config_dir().",
+        )
 
         self.delegate = real_initialize_config_dir(
             config_dir=config_dir, job_name=job_name

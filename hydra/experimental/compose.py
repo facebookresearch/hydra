@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import warnings
 from typing import List, Optional
 
 from omegaconf import DictConfig
@@ -11,11 +12,11 @@ def compose(
 ) -> DictConfig:
     from hydra import compose as real_compose
 
-    # warnings.warn(
-    #     category=UserWarning,
-    #     message="hydra.experimental.compose() is no longer experimental."
-    #     " Use hydra.compose()",
-    # )
+    warnings.warn(
+        category=UserWarning,
+        message="hydra.experimental.compose() is no longer experimental."
+        " Use hydra.compose()",
+    )
     return real_compose(
         config_name=config_name,
         overrides=overrides,

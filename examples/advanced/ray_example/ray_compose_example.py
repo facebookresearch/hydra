@@ -6,7 +6,7 @@ import ray
 from omegaconf import DictConfig, OmegaConf
 
 import hydra
-from hydra.experimental import compose
+from hydra import compose
 
 
 @ray.remote  # type: ignore

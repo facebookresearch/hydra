@@ -1,11 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pytest import mark, param
 
+from hydra import initialize
 from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
 )
 from hydra.core.global_hydra import GlobalHydra
-from hydra.experimental import initialize
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_plugin_root
 
