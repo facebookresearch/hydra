@@ -3,7 +3,7 @@ id: jupyter_notebooks
 title: Hydra in Jupyter Notebooks
 ---
 
-Hydra supports config composition inside Jupyter notebooks via the [Compose API](../experimental/hydra_compose.md).  
+Hydra supports config composition inside Jupyter notebooks via the [Compose API](compose_api.md).  
 
 Run the Notebook in a the Binder to see a live demo, or open the Notebook source on GitHub.
 

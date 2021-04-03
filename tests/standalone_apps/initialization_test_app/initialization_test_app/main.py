@@ -2,12 +2,7 @@
 import os
 import sys
 
-from hydra.experimental import (
-    compose,
-    initialize,
-    initialize_config_dir,
-    initialize_config_module,
-)
+from hydra import compose, initialize, initialize_config_dir, initialize_config_module
 
 
 def main() -> None:

@@ -19,7 +19,7 @@ Supported input configs are:
 
 ### Primary Config
 The input config named in [`@hydra.main()`](tutorials/basic/your_first_app/1_simple_cli.md) or in 
-the [`Compose API`](experimental/hydra_compose.md).  
+the [`Compose API`](advanced/compose_api.md).  
 
 
 ### Structured Config
