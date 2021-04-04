@@ -7,15 +7,21 @@ from omegaconf import DictConfig
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
+_UNSPECIFIED_ = object()
+
 
 def main(
-    config_path: Optional[str] = None,
+    config_path: Optional[str] = _UNSPECIFIED_,
     config_name: Optional[str] = None,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: the config path, a directory relative to the declaring python file.
     :param config_name: the name of the config (usually the file name without the .yaml extension)
     """
+
+    if config_path is _UNSPECIFIED_:
+        # TODO: issue deprecation warning
+        config_path = "."
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
         @functools.wraps(task_function)

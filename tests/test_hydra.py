@@ -161,7 +161,7 @@ def test_app_with_config_file__no_overrides(
     task = hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,  # Testing legacy mode, both path and named are in config_path
+        config_path=".",
         config_name="config.yaml",
         configure_logging=True,
     )
@@ -193,20 +193,17 @@ def test_app_with_config_path_backward_compatibility(
     """
     )
 
+    # This more is no longer supported in Hydra 1.1
     with raises(ValueError, match=re.escape(msg)):
         task = hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
-            config_path="conf/config.yaml",  # Testing legacy mode, both path and named are in config_path
+            config_path="conf/config.yaml",
             config_name=None,
             configure_logging=True,
         )
         with task:
-            assert task.job_ret is not None and task.job_ret.cfg == {
-                "optimizer": {"type": "nesterov", "lr": 0.001}
-            }
-
-            verify_dir_outputs(task.job_ret)
+            assert False  # will never get here.
 
 
 @mark.parametrize(
@@ -225,7 +222,7 @@ def test_app_with_config_file__with_overide(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["dataset.path=/datasets/imagenet2"],
         configure_logging=True,
@@ -252,7 +249,7 @@ def test_app_with_split_config(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         configure_logging=True,
     ) as task:
@@ -331,7 +328,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["hydra/launcher=basic"],
     ) as task:
@@ -668,7 +665,7 @@ def test_interpolating_dir_hydra_to_app(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["experiment.base_dir=" + basedir],
     ) as task:

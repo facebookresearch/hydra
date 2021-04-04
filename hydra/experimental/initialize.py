@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
+from hydra.initialize import _UNSPECIFIED_
 
 
 def get_gh_backup() -> Any:
@@ -25,7 +26,7 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
 class initialize:
     def __init__(
         self,
-        config_path: Optional[str] = None,
+        config_path: Optional[str] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:

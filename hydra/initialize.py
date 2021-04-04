@@ -28,6 +28,9 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
         Singleton._instances[GlobalHydra] = _gh_backup
 
 
+_UNSPECIFIED_ = object()
+
+
 class initialize:
     """
     Initializes Hydra and add the config_path to the config search path.
@@ -46,11 +49,15 @@ class initialize:
 
     def __init__(
         self,
-        config_path: Optional[str] = None,
+        config_path: Optional[str] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:
         self._gh_backup = get_gh_backup()
+
+        if config_path is _UNSPECIFIED_:
+            # TODO: issue deprecation warning
+            config_path = "."
 
         if config_path is not None and os.path.isabs(config_path):
             raise HydraException("config_path in initialize() must be relative")
