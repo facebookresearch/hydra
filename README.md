@@ -68,7 +68,7 @@ Ask questions in the chat or StackOverflow (Use the tag #fb-hydra or #omegaconf)
 
 ### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
-```text
+```BibTeX
 @Misc{Yadan2019Hydra,
   author =       {Omry Yadan},
   title =        {Hydra - A framework for elegantly configuring complex applications},
