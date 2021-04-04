@@ -292,4 +292,5 @@ debug: false
 - [Packages](overriding_packages.md)
 - [Common Patterns/Extending Configs](patterns/extending_configs.md)
 - [Common Patterns/Configuring Experiments](patterns/configuring_experiments.md)
+- [Selecting multiple configs from a Config Group](patterns/select_multiple_configs_from_config_group.md)
 

@@ -8,7 +8,6 @@ module.exports = {
     docs: {
         About: [
             'intro',
-            'terminology',
         ],
         Tutorials: [
           'tutorials/intro',
@@ -94,6 +93,7 @@ module.exports = {
         ],
 
         'Reference manual': [
+            'advanced/terminology',
             'advanced/hydra-command-line-flags',
             {
                 type: 'category',
