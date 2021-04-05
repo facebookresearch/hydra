@@ -1,0 +1,6 @@
+# @package _global_
+
+hydra:
+  job:
+    env_set:
+      FOO: bar
