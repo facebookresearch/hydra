@@ -115,6 +115,7 @@ module.exports = {
                     'advanced/instantiate_objects/structured_config',
                  ]
              },            
+            'advanced/compose_api',
             'advanced/plugins',
             'advanced/app_packaging',
             'advanced/jupyter_notebooks',
@@ -123,7 +124,6 @@ module.exports = {
 
         "Experimental": [
             "experimental/intro",
-            'experimental/compose_api',
         ],
 
         'Development': [

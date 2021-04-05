@@ -15,8 +15,8 @@ or by calling one of the initialization methods listed below.
 The Compose API is useful when `@hydra.main()` is not applicable.
 For example:
 
-- Inside a Jupyter notebook ([Example](../advanced/jupyter_notebooks.md))
-- Inside a unit test ([Example](../advanced/unit_testing.md))
+- Inside a Jupyter notebook ([Example](jupyter_notebooks.md))
+- Inside a unit test ([Example](unit_testing.md))
 - In parts of your application that does not have access to the command line (<GithubLink to="examples/advanced/ad_hoc_composition">Example</GithubLink>).
 - To compose multiple configuration objects (<GithubLink to="examples/advanced/ray_example/ray_compose_example.py">Example with Ray</GithubLink>).
 
@@ -38,7 +38,7 @@ When used as contexts, they are initializing Hydra within the context can be use
 
 ### Code example
 ```python
-from hydra.experimental import compose, initialize
+from hydra import compose, initialize
 from omegaconf import OmegaConf
 
 if __name__ == "__main__":

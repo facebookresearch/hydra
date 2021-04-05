@@ -7,19 +7,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from omegaconf import OmegaConf
-from pytest import fixture, mark, param, raises
+from pytest import fixture, mark, param, raises, warns
 
+from hydra import compose, initialize, initialize_config_dir, initialize_config_module
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
 from hydra.errors import ConfigCompositionException, HydraException
-from hydra.experimental import (
-    compose,
-    initialize,
-    initialize_config_dir,
-    initialize_config_module,
-)
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -517,3 +512,61 @@ class TestConfigSearchPathOverride:
     ) -> None:
         with expected:
             compose(config_name=config_name, overrides=overrides)
+
+
+def test_deprecated_compose() -> None:
+    from hydra import initialize
+    from hydra.experimental import compose as expr_compose
+
+    with initialize():
+        with warns(
+            expected_warning=UserWarning,
+            match=re.escape(
+                "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
+            ),
+        ):
+            assert expr_compose() == {}
+
+
+def test_deprecated_initialize() -> None:
+    from hydra.experimental import initialize as expr_initialize
+
+    with warns(
+        expected_warning=UserWarning,
+        match=re.escape(
+            "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
+        ),
+    ):
+        with expr_initialize():
+            assert compose() == {}
+
+
+def test_deprecated_initialize_config_dir() -> None:
+    from hydra.experimental import initialize_config_dir as expr_initialize_config_dir
+
+    with warns(
+        expected_warning=UserWarning,
+        match=re.escape(
+            "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
+        ),
+    ):
+        with expr_initialize_config_dir(config_dir=str(Path(".").absolute())):
+            assert compose() == {}
+
+
+def test_deprecated_initialize_config_module() -> None:
+    from hydra.experimental import (
+        initialize_config_module as expr_initialize_config_module,
+    )
+
+    with warns(
+        expected_warning=UserWarning,
+        match=re.escape(
+            "hydra.experimental.initialize_config_module() is no longer experimental."
+            " Use hydra.initialize_config_module()"
+        ),
+    ):
+        with expr_initialize_config_module(
+            config_module="examples.jupyter_notebooks.cloud_app.conf"
+        ):
+            assert compose() == {}

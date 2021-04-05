@@ -1,11 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pathlib import Path
 
-from hydra.experimental import (
-    initialize,
-    initialize_config_dir,
-    initialize_config_module,
-)
+from hydra import initialize, initialize_config_dir, initialize_config_module
 
 
 def hydra_initialize() -> None:

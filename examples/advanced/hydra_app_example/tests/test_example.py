@@ -5,7 +5,7 @@ from typing import List
 from pytest import mark
 
 import hydra_app.main
-from hydra.experimental import compose, initialize, initialize_config_module
+from hydra import compose, initialize, initialize_config_module
 
 
 # 1. initialize will add config_path the config search path within the context

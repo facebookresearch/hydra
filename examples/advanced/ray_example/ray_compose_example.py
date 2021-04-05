@@ -6,7 +6,6 @@ import ray
 from omegaconf import DictConfig, OmegaConf
 
 import hydra
-from hydra.experimental import compose
 
 
 @ray.remote  # type: ignore
@@ -24,7 +23,7 @@ def main(cfg: DictConfig) -> None:
     for model in ["alexnet", "resnet"]:
         for dataset in ["cifar10", "imagenet"]:
             overrides = [f"dataset={dataset}", f"model={model}"]
-            run_cfg = compose(overrides=overrides)
+            run_cfg = hydra.compose(overrides=overrides)
             ret = train.remote(overrides, run_cfg)
             results.append(ret)
 

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from omegaconf import OmegaConf
 
-from hydra.experimental import compose, initialize
+from hydra import compose, initialize
 
 if __name__ == "__main__":
     # initialize the Hydra subsystem.

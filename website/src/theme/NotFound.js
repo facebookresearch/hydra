@@ -12,6 +12,8 @@ function NotFound({location}) {
     const routing = {
         "/redirect-me" : "/still-not-found",
         "/docs/next/advanced/command_line_syntax" : "/docs/advanced/override_grammar/basic",
+        // TODO: activate redirect once 1.1 is released and is no longer the "next" version.  
+        // "/docs/experimental/compose_api" : "/docs/advanced/compose_api",
     }
     if (routing[location.pathname] != null){
         window.location.href = routing[location.pathname]
