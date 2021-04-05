@@ -8,6 +8,6 @@ class TestEnvDefaultSearchPathPlugin(SearchPathPlugin):
         # prepend search path to override env default
         search_path.prepend(
             provider="test-env-defaults",
-            path="pkg://hydra_plugins.env_plugin.conf",
+            path="pkg://hydra_plugins.env_defaults.conf",
             anchor="hydra",
         )

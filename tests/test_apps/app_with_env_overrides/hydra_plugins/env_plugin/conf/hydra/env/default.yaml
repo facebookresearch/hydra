@@ -1,6 +1,0 @@
-# @package _global_
-
-hydra:
-  callbacks:
-    default_callback:
-      _target_: my_app.DefaultCallback
