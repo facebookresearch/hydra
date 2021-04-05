@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+# DEPRECATED: remove in 1.2
 import copy
 import warnings
 from typing import Any, Optional
