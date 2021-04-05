@@ -503,9 +503,9 @@ def get_args_parser() -> argparse.ArgumentParser:
 
     info_choices = [
         "all",
+        "config",
         "defaults",
         "defaults-tree",
-        "config",
         "plugins",
         "searchpath",
     ]
