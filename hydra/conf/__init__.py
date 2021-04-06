@@ -82,9 +82,17 @@ class JobConf:
 
 
 @dataclass
+class ConfigSourceInfo:
+    path: str
+    schema: str
+    provider: str
+
+
+@dataclass
 class RuntimeConf:
     version: str = MISSING
     cwd: str = MISSING
+    config_sources: List[ConfigSourceInfo] = MISSING
 
 
 @dataclass
@@ -153,6 +161,7 @@ class HydraConf:
     # TODO: good use case for Union support in OmegaConf
     verbose: Any = False
 
+    # TODO: move to hydra.runtime?
     # Composition choices dictionary
     choices: Dict[str, str] = field(default_factory=lambda: {})
 

@@ -23,6 +23,7 @@ from hydra._internal.config_repository import (
     IConfigRepository,
 )
 from hydra._internal.defaults_list import DefaultsList, create_defaults_list
+from hydra.conf import ConfigSourceInfo
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.default_element import ResultDefault
@@ -267,6 +268,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
         cfg.hydra.runtime.version = __version__
         cfg.hydra.runtime.cwd = os.getcwd()
+
+        cfg.hydra.runtime.config_sources = [
+            ConfigSourceInfo(path=x.path, schema=x.scheme(), provider=x.provider)
+            for x in caching_repo.get_sources()
+        ]
 
         if "name" not in cfg.hydra.job:
             cfg.hydra.job.name = JobRuntime().get("name")
