@@ -74,19 +74,23 @@ def my_app(cfg: DictConfig) -> None:
 
 The following variables are populated at runtime.  
 
-#### hydra.job:
-- **hydra.job.name** : Job name, defaults to the Python file name without the suffix. can be overridden.
-- **hydra.job.override_dirname** : Pathname derived from the overrides for this job
-- **hydra.job.num** : job serial number in sweep
-- **hydra.job.id** : Job ID in the underlying jobs system (SLURM etc)
+### hydra.job:
+Fields under **hydra.job**:
+- **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
+- **override_dirname** : Pathname derived from the overrides for this job
+- **id** : Job ID in the underlying jobs system (SLURM etc)
+- **num** : job serial number in sweep
+- **config_name** : The name of the config used by the job (Output only)
+- **env_set**: Environment variable to set for the launched job
+- **env_copy**: Environment variable to copy from the launching machine
+- **config**: fine-grained configuration for job
 
-#### hydra.runtime:
-- *hydra.runtime.version*: Hydra's version
-- *hydra.runtime.cwd*: Original working directory the app was executed from
-
-#### hydra.choices
-A dictionary containing the final choices of the Defaults List. Can be accessed 
-via the HydraConfig singleton or config interpolation e.g. `model : ${hydra:choices.model}`.
+### hydra.runtime:
+Fields under **hydra.runtime**:
+- **version**: Hydra's version
+- **cwd**: Original working directory the app was executed from
+- **choices**: A dictionary containing the final config group choices.
+- **config_sources**: The final list of config sources used to compose the config.
 
 ### Hydra resolvers
 Hydra supports several [OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.

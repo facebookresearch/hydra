@@ -799,4 +799,4 @@ def test_hydra_choices(config: str, overrides: Any, expected_choices: Any) -> No
     cfg = config_loader.load_configuration(
         config_name=config, overrides=overrides, run_mode=RunMode.RUN
     )
-    assert cfg.hydra.choices == expected_choices
+    assert cfg.hydra.runtime.choices == expected_choices
