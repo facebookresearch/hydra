@@ -649,6 +649,33 @@ def test_help(
 
 
 @mark.parametrize(
+    "script,overrides,expected",
+    [
+        param(
+            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
+            ["hydra.searchpath=['pkg://fakeconf']"],
+            "hydra.searchpath in command-line | pkg://fakeconf",
+            id="searchpath config from command-line",
+        ),
+        param(
+            "examples/advanced/config_search_path/my_app.py",
+            [],
+            "hydra.searchpath in main | pkg://additonal_conf",
+            id="searchpath config from config file",
+        ),
+    ],
+)
+def test_searchpath_config(
+    tmpdir: Path, script: str, overrides: List[str], expected: Any
+) -> None:
+    cmd = [script, "--info", "searchpath"]
+    cmd.extend(overrides)
+    cmd.extend(["hydra.run.dir=" + str(tmpdir)])
+    result, _err = run_python_script(cmd)
+    assert expected in result
+
+
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/interpolating_dir_hydra_to_app/my_app.py", None),

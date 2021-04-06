@@ -609,6 +609,7 @@ class Hydra:
     def show_info(
         self, info: str, config_name: Optional[str], overrides: List[str]
     ) -> None:
+        # load configuration to update config sources.
         self.config_loader.load_configuration(
             config_name=config_name, overrides=overrides, run_mode=RunMode.RUN
         )
