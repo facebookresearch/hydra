@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
-from logging import warn
 from textwrap import dedent
 from typing import Any, Optional
+from warnings import warn
 
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
@@ -30,7 +30,7 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
         Singleton._instances[GlobalHydra] = _gh_backup
 
 
-_UNSPECIFIED_ = object()
+_UNSPECIFIED_: Any = object()
 
 
 class initialize:
@@ -64,7 +64,7 @@ class initialize:
             warn(
                 category=UserWarning,
                 message=dedent(
-                    f"""
+                    f"""\
                 config_path is not specified in hydra.initialize().
                 See {url} for more information."""
                 ),

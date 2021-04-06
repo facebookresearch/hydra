@@ -9,7 +9,7 @@ from omegaconf import DictConfig
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
-_UNSPECIFIED_ = object()
+_UNSPECIFIED_: Any = object()
 
 
 def main(

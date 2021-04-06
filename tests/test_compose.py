@@ -4,6 +4,7 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
 from omegaconf import OmegaConf
@@ -33,7 +34,7 @@ def initialize_hydra(config_path: Optional[str]) -> Any:
 @fixture
 def initialize_hydra_no_path() -> Any:
     try:
-        init = initialize()
+        init = initialize(config_path=None)
         init.__enter__()
         yield
     finally:
@@ -518,7 +519,7 @@ def test_deprecated_compose() -> None:
     from hydra import initialize
     from hydra.experimental import compose as expr_compose
 
-    with initialize():
+    with initialize(config_path=None):
         with warns(
             expected_warning=UserWarning,
             match=re.escape(
@@ -570,3 +571,14 @@ def test_deprecated_initialize_config_module() -> None:
             config_module="examples.jupyter_notebooks.cloud_app.conf"
         ):
             assert compose() == {}
+
+
+def test_initialize_without_config_path(tmpdir: Path) -> None:
+    expected = dedent(
+        """\
+        config_path is not specified in hydra.initialize().
+        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
+    )
+    with warns(expected_warning=UserWarning, match=re.escape(expected)):
+        with initialize():
+            pass

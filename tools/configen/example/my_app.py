@@ -18,7 +18,7 @@ ConfigStore.instance().store(
 )
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     user: User = hydra.utils.instantiate(cfg.user)
     admin: Admin = hydra.utils.instantiate(cfg.admin)

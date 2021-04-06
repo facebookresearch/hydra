@@ -1220,7 +1220,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
     _, err = run_python_script(cmd, allow_warnings=True)
 
     expected = dedent(
-        """\
+        """
         .*my_app.py:7: UserWarning:
         config_path is not specified in @hydra.main().
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.

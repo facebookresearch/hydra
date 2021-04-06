@@ -17,7 +17,7 @@ def test_discovery() -> None:
 
 
 def test_config_installed() -> None:
-    with initialize():
+    with initialize(config_path=None):
         config_loader = GlobalHydra.instance().config_loader()
         assert "my_default_output_dir" in config_loader.get_group_options(
             "hydra/output"
