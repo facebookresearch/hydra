@@ -1227,10 +1227,50 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
           @hydra.main()
         """
     )
-
     assert_regex_match(
         from_line=expected,
         to_line=err,
         from_name="Expected error",
         to_name="Actual error",
+    )
+
+
+@mark.parametrize(
+    "overrides,expected",
+    [
+        (
+            ["--cfg", "job"],
+            dedent(
+                """\
+                baud_rate: 19200
+                data_bits: 8
+                stop_bits: 1
+                """
+            ),
+        ),
+        (
+            ["--cfg", "hydra", "-p", "hydra.env"],
+            dedent(
+                """\
+                # @package hydra.env
+                {}
+                """
+            ),
+        ),
+    ],
+)
+def test_frozen_primary_config(
+    tmpdir: Path, overrides: List[str], expected: Any
+) -> None:
+    cmd = [
+        "examples/patterns/write_protect_config_node/frozen.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    cmd.extend(overrides)
+    ret, _err = run_python_script(cmd)
+    assert_regex_match(
+        from_line=expected,
+        to_line=ret,
+        from_name="Expected output",
+        to_name="Actual output",
     )
