@@ -262,7 +262,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 app_overrides.append(override)
 
         with open_dict(cfg.hydra):
-            cfg.hydra.choices.update(defaults_list.overrides.known_choices)
+            cfg.hydra.runtime.choices.update(defaults_list.overrides.known_choices)
             for key in cfg.hydra.job.env_copy:
                 cfg.hydra.job.env_set[key] = os.environ[key]
 

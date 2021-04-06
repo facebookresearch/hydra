@@ -94,6 +94,9 @@ class RuntimeConf:
     cwd: str = MISSING
     config_sources: List[ConfigSourceInfo] = MISSING
 
+    # Composition choices dictionary
+    choices: Dict[str, str] = field(default_factory=lambda: {})
+
 
 @dataclass
 class HydraConf:
@@ -160,10 +163,6 @@ class HydraConf:
     # hydra.verbose=[hydra,__main__]
     # TODO: good use case for Union support in OmegaConf
     verbose: Any = False
-
-    # TODO: move to hydra.runtime?
-    # Composition choices dictionary
-    choices: Dict[str, str] = field(default_factory=lambda: {})
 
 
 cs = ConfigStore.instance()
