@@ -22,24 +22,13 @@ def main(
     """
 
     if config_path is _UNSPECIFIED_:
+        url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
         warn(
             category=UserWarning,
             message=dedent(
-                """
-            config_path is not specified in @hydra.main. Defaulting to `.`.
-            To make this warning go away, specify the config_path.
-            Options:
-            - config_path=None   : Do not add any directory to the config searchpath.
-                                   This will become the default in Hydra 1.2
-                                   Recommended if you do not want to use configs defined next to your Python script.
-            - config_path="conf" : Create a dedicated config directory.
-                                   Recommended if you want to use configs defined next to your Python script.
-                                   (Move your config files into the config directory).
-            - config_path="."    : Use the directory/module of the Python script.
-                                   This is the behavior in Hydra <= 1.0.
-                                   Warning: Can cause surprising behavior.
-                                   See https://github.com/facebookresearch/hydra/issues/1536 for more information.
-            """
+                f"""
+            config_path is not specified in @hydra.main().
+            See {url} for more information."""
             ),
             stacklevel=2,
         )
