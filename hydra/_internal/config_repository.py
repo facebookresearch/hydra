@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
 import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -314,7 +315,8 @@ class ConfigRepository(IConfigRepository):
 
 class CachingConfigRepository(IConfigRepository):
     def __init__(self, delegate: IConfigRepository):
-        self.delegate = delegate
+        # copy the underlying repository to avoid mutating it with initialize_sources()
+        self.delegate = copy.deepcopy(delegate)
         self.cache: Dict[str, Optional[ConfigResult]] = {}
 
     def get_schema_source(self) -> ConfigSource:
