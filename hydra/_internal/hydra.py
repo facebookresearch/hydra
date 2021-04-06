@@ -372,7 +372,9 @@ class Hydra:
             for plugin_name in all_plugins:
                 log.debug("\t\t{}".format(plugin_name))
 
-    def _print_search_path(self) -> None:
+    def _print_search_path(
+        self, config_name: Optional[str], overrides: List[str]
+    ) -> None:
         assert log is not None
         log.debug("")
         self._log_header(header="Config search path", filler="*")
@@ -437,7 +439,7 @@ class Hydra:
         self, config_name: Optional[str], overrides: List[str]
     ) -> None:
         assert log is not None
-        self._print_search_path()
+        self._print_search_path(config_name=config_name, overrides=overrides)
         self._print_defaults_tree(config_name=config_name, overrides=overrides)
         self._print_defaults_list(config_name=config_name, overrides=overrides)
 
@@ -612,6 +614,7 @@ class Hydra:
             "defaults-tree": self._print_defaults_tree,
             "config": self._print_config_info,
             "plugins": self._print_plugins_info,
+            "searchpath": self._print_search_path,
         }
         simple_stdout_log_config(level=logging.DEBUG)
         global log

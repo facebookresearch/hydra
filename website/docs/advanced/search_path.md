@@ -18,7 +18,7 @@ the Python `PYTHONPATH`.
 You can inspect the search path and the configurations loaded by Hydra via the `--info` flag:
 
 ```bash
-$ python my_app.py --info config
+$ python my_app.py --info searchpath
 ```
 
 There are a few ways to modify the config search path, enabling Hydra to access configuration in 

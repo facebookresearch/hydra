@@ -501,7 +501,14 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Adds an additional config dir to the config search path",
     )
 
-    info_choices = ["all", "defaults", "defaults-tree", "config", "plugins"]
+    info_choices = [
+        "all",
+        "config",
+        "defaults",
+        "defaults-tree",
+        "plugins",
+        "searchpath",
+    ]
     parser.add_argument(
         "--info",
         "-i",
