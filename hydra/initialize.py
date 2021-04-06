@@ -1,6 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
+from logging import warn
+from textwrap import dedent
 from typing import Any, Optional
 
 from hydra._internal.hydra import Hydra
@@ -55,8 +57,19 @@ class initialize:
     ) -> None:
         self._gh_backup = get_gh_backup()
 
+        # DEPRECATED: remove in 1.2
+        # in 1.2, the default config_path should be changed to None
         if config_path is _UNSPECIFIED_:
-            # TODO: issue deprecation warning
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+            warn(
+                category=UserWarning,
+                message=dedent(
+                    f"""
+                config_path is not specified in hydra.initialize().
+                See {url} for more information."""
+                ),
+                stacklevel=2,
+            )
             config_path = "."
 
         if config_path is not None and os.path.isabs(config_path):

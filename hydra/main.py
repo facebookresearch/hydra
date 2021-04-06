@@ -21,6 +21,8 @@ def main(
     :param config_name: the name of the config (usually the file name without the .yaml extension)
     """
 
+    # DEPRECATED: remove in 1.2
+    # in 1.2, the default config_path should be changed to None
     if config_path is _UNSPECIFIED_:
         url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
         warn(
