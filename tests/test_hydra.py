@@ -1042,10 +1042,9 @@ bar: 100"""
 
 
 def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
-    monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
     cmd = [
-        "my_app.py",
-        "hydra.sweep.dir=" + str(tmpdir),
+        "tests/test_apps/app_with_runtime_config_error/my_app.py",
+        f"hydra.sweep.dir={tmpdir}",
     ]
     expected = dedent(
         """\
@@ -1210,4 +1209,40 @@ def test_job_id_and_num_in_sweep(tmpdir: Path) -> None:
         overrides=["-m"],
         prints=["HydraConfig.get().job.id", "str(HydraConfig.get().job.num)"],
         expected_outputs=["0", "0"],
+    )
+
+
+def test_hydra_main_without_config_path(tmpdir: Path) -> None:
+    cmd = [
+        "tests/test_apps/hydra_main_without_config_path/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    _, err = run_python_script(cmd, allow_warnings=True)
+
+    expected = dedent(
+        """\
+        .*my_app.py:7: UserWarning:
+        config_path is not specified in @hydra.main. Defaulting to `.`.
+        To make this warning go away, specify the config_path.
+        Options:
+        - config_path=None   : Do not add any directory to the config searchpath.
+                               This will become the default in Hydra 1.2
+                               Recommended if you do not want to use configs defined next to your Python script.
+        - config_path="conf" : Create a dedicated config directory.
+                               Recommended if you want to use configs defined next to your Python script.
+                               (Move your config files into the config directory).
+        - config_path="."    : Use the directory/module of the Python script.
+                               This is the behavior in Hydra <= 1.0.
+                               Warning: Can cause surprising behavior.
+                               See https://github.com/facebookresearch/hydra/issues/1536 for more information.
+
+          @hydra.main()
+        """
+    )
+
+    assert_regex_match(
+        from_line=expected,
+        to_line=err,
+        from_name="Expected error",
+        to_name="Actual error",
     )
