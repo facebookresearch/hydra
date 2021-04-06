@@ -1,6 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
+from textwrap import dedent
 from typing import Any, Callable, Optional
+from warnings import warn
 
 from omegaconf import DictConfig
 
@@ -20,7 +22,27 @@ def main(
     """
 
     if config_path is _UNSPECIFIED_:
-        # TODO: issue deprecation warning
+        warn(
+            category=UserWarning,
+            message=dedent(
+                """
+            config_path is not specified in @hydra.main. Defaulting to `.`.
+            To make this warning go away, specify the config_path.
+            Options:
+            - config_path=None   : Do not add any directory to the config searchpath.
+                                   This will become the default in Hydra 1.2
+                                   Recommended if you do not want to use configs defined next to your Python script.
+            - config_path="conf" : Create a dedicated config directory.
+                                   Recommended if you want to use configs defined next to your Python script.
+                                   (Move your config files into the config directory).
+            - config_path="."    : Use the directory/module of the Python script.
+                                   This is the behavior in Hydra <= 1.0.
+                                   Warning: Can cause surprising behavior.
+                                   See https://github.com/facebookresearch/hydra/issues/1536 for more information.
+            """
+            ),
+            stacklevel=2,
+        )
         config_path = "."
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
