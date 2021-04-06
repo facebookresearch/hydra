@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import subprocess
-import sys
 from pathlib import Path
 from typing import Type
 
@@ -10,7 +8,7 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import chdir_plugin_root
+from hydra.test_utils.test_utils import chdir_plugin_root, run_python_script
 from pytest import mark
 
 from hydra_plugins.hydra_submitit_launcher import submitit_launcher
@@ -54,11 +52,11 @@ class TestSubmititLauncherIntegration(IntegrationTestSuite):
 
 
 def test_example(tmpdir: Path) -> None:
-    cmd = [
-        sys.executable,
-        "example/my_app.py",
-        "-m",
-        "hydra.sweep.dir=" + str(tmpdir),
-        "hydra/launcher=submitit_local",
-    ]
-    subprocess.check_call(cmd)
+    run_python_script(
+        [
+            "example/my_app.py",
+            "-m",
+            f"hydra.sweep.dir={tmpdir}",
+            "hydra/launcher=submitit_local",
+        ]
+    )
