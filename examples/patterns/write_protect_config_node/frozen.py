@@ -16,7 +16,7 @@ cs = ConfigStore.instance()
 cs.store(name="config", node=SerialPort)
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=None, config_name="config")
 def my_app(cfg: SerialPort) -> None:
     print(cfg)
 

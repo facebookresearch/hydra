@@ -46,7 +46,7 @@ def pretty_print(tree: Tree, name: str = "root", depth: int = 0) -> None:
         pretty_print(tree.right, name="right", depth=depth + 1)
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: Config) -> None:
     tree: Tree = instantiate(cfg.tree)
     pretty_print(tree)

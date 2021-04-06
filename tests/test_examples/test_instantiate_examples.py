@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, List
+from typing import List
 
-from pytest import mark
+from pytest import mark, param
 
 from hydra.test_utils.test_utils import (
     assert_text_same,
@@ -21,11 +21,11 @@ chdir_hydra_root()
         (["db=postgresql"], "PostgreSQL connecting to localhost"),
     ],
 )
-def test_instantiate_object(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
-) -> None:
-    monkeypatch.chdir("examples/instantiate/object")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+def test_instantiate_object(tmpdir: Path, overrides: List[str], output: str) -> None:
+    cmd = [
+        "examples/instantiate/object/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
 
@@ -41,10 +41,12 @@ def test_instantiate_object(
     ],
 )
 def test_instantiate_object_recursive(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
+    tmpdir: Path, overrides: List[str], output: str
 ) -> None:
-    monkeypatch.chdir("examples/instantiate/object_recursive")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "examples/instantiate/object_recursive/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
 
@@ -56,11 +58,11 @@ def test_instantiate_object_recursive(
         (["db=postgresql"], "PostgreSQL connecting to localhost"),
     ],
 )
-def test_instantiate_schema(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], output: str
-) -> None:
-    monkeypatch.chdir("examples/instantiate/schema")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+def test_instantiate_schema(tmpdir: Path, overrides: List[str], output: str) -> None:
+    cmd = [
+        "examples/instantiate/schema/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
 
@@ -83,10 +85,12 @@ def test_instantiate_schema(
     ],
 )
 def test_instantiate_schema_recursive(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: str
+    tmpdir: Path, overrides: List[str], expected: str
 ) -> None:
-    monkeypatch.chdir("examples/instantiate/schema_recursive")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "examples/instantiate/schema_recursive/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert_text_same(result, expected)
 
@@ -94,7 +98,7 @@ def test_instantiate_schema_recursive(
 @mark.parametrize(
     "overrides,expected",
     [
-        (
+        param(
             [],
             dedent(
                 """\
@@ -114,13 +118,16 @@ def test_instantiate_schema_recursive(
                 )
                 """
             ),
+            id="default-output",
         ),
     ],
 )
 def test_instantiate_docs_example(
-    monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: str
+    tmpdir: Path, overrides: List[str], expected: str
 ) -> None:
-    monkeypatch.chdir("examples/instantiate/docs_example")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "examples/instantiate/docs_example/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert_text_same(result, expected)

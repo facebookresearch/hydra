@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 import hydra
 
 
-@hydra.main()
+@hydra.main(config_path=None)
 def my_app(_cfg: DictConfig) -> None:
     print(f"Working directory : {os.getcwd()}")
 

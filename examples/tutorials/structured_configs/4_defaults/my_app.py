@@ -48,7 +48,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=None, config_name="config")
 def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
 

@@ -5,7 +5,7 @@ from pytest import raises
 import hydra
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     assert cfg.node.loompa == 10  # attribute style access
     assert cfg["node"]["loompa"] == 10  # dictionary style access

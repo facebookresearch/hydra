@@ -9,7 +9,7 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.utils import get_original_cwd
 
 
-@hydra.main()
+@hydra.main(config_path=None)
 def my_app(_: DictConfig) -> None:
     run_dir = str(Path.cwd().relative_to(get_original_cwd()))
     time.sleep(2)
