@@ -59,7 +59,7 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
-        config_path=None,
+        config_path=".",
         config_name="config",
         overrides=["task=1,2,3,4", f"hydra.sweep.dir={tmpdir}"],
     ) as sweep:
@@ -88,7 +88,7 @@ def test_example_app_launcher_overrides(
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
-        config_path=None,
+        config_path=".",
         config_name="config",
         overrides=[overrides],
     ) as sweep:

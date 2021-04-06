@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 import hydra
 
 
-@hydra.main()
+@hydra.main(config_path=None)
 def my_app(cfg: DictConfig) -> None:
     val = 1 / cfg.divisor
     print(f"val={val}")

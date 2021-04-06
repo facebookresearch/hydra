@@ -5,7 +5,7 @@ import hydra
 from hydra.core.hydra_config import HydraConfig
 
 
-@hydra.main()
+@hydra.main(config_path=None)
 def experiment(_cfg: DictConfig) -> None:
     print(HydraConfig.get().job.name)
 

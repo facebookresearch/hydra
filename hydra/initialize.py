@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
+from textwrap import dedent
 from typing import Any, Optional
+from warnings import warn
 
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
@@ -28,6 +30,9 @@ def restore_gh_from_backup(_gh_backup: Any) -> Any:
         Singleton._instances[GlobalHydra] = _gh_backup
 
 
+_UNSPECIFIED_: Any = object()
+
+
 class initialize:
     """
     Initializes Hydra and add the config_path to the config search path.
@@ -46,11 +51,26 @@ class initialize:
 
     def __init__(
         self,
-        config_path: Optional[str] = None,
+        config_path: Optional[str] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:
         self._gh_backup = get_gh_backup()
+
+        # DEPRECATED: remove in 1.2
+        # in 1.2, the default config_path should be changed to None
+        if config_path is _UNSPECIFIED_:
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+            warn(
+                category=UserWarning,
+                message=dedent(
+                    f"""\
+                config_path is not specified in hydra.initialize().
+                See {url} for more information."""
+                ),
+                stacklevel=2,
+            )
+            config_path = "."
 
         if config_path is not None and os.path.isabs(config_path):
             raise HydraException("config_path in initialize() must be relative")

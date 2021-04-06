@@ -117,14 +117,15 @@ def compute_search_path_dir(
     calling_file: Optional[str],
     calling_module: Optional[str],
     config_path: Optional[str],
-) -> str:
+) -> Optional[str]:
     if calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
 
         if config_path is not None:
             search_path_dir = join(abs_base_dir, config_path)
         else:
-            search_path_dir = abs_base_dir
+            return None
+
         search_path_dir = normpath(search_path_dir)
     elif calling_module is not None:
         last_dot = calling_module.rfind(".")

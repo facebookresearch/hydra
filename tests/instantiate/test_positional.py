@@ -117,13 +117,9 @@ def test_instantiate_args_kwargs_with_override(
     assert instantiate(cfg, *args_override, **kwargs_override) == expected
 
 
-# TODO: recursive
-
 ###################
 # recursive tests #
 ###################
-
-
 @mark.parametrize(
     ("cfg", "expected"),
     [

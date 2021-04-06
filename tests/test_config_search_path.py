@@ -152,8 +152,8 @@ def test_prepend(
 @mark.parametrize(
     "calling_file, calling_module, config_path, expected",
     [
-        ("foo.py", None, None, realpath("")),
-        ("foo/bar.py", None, None, realpath("foo")),
+        ("foo.py", None, None, None),
+        ("foo/bar.py", None, None, None),
         ("foo/bar.py", None, "conf", realpath("foo/conf")),
         ("foo/bar.py", None, "../conf", realpath("conf")),
         ("c:/foo/bar.py", None, "conf", realpath("c:/foo/conf")),

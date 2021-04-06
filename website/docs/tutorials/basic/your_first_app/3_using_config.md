@@ -18,7 +18,7 @@ node:                         # Config is hierarchical
 ```
 
 ```python title="main.py"
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig):
     assert cfg.node.loompa == 10          # attribute style access
     assert cfg["node"]["loompa"] == 10    # dictionary style access

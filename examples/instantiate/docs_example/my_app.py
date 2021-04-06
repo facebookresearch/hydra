@@ -39,7 +39,7 @@ class Trainer:
         return f"Trainer(\n  optimizer={self.optimizer},\n  dataset={self.dataset}\n)"
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     optimizer = instantiate(cfg.trainer.optimizer)
     print(optimizer)

@@ -16,7 +16,7 @@ config_store = ConfigStore.instance()
 config_store.store(group="test", name="default", node=TestConfig)
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def run(config: DictConfig):
     print(config.test.param)
 

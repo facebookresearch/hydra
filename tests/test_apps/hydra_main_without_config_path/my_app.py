@@ -1,14 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
-
 from omegaconf import DictConfig
 
 import hydra
 
 
-@hydra.main(config_path=None)
-def my_app(_cfg: DictConfig) -> None:
-    print(f"Working directory : {os.getcwd()}")
+@hydra.main()
+def my_app(_: DictConfig) -> None:
+    pass
 
 
 if __name__ == "__main__":

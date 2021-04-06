@@ -53,7 +53,7 @@ def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
-        config_path=None,
+        config_path=".",
         config_name="config",
         overrides=["task=1,2,3,4"],
     ) as sweep:

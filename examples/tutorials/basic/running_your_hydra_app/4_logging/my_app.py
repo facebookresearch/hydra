@@ -9,7 +9,7 @@ import hydra
 log = logging.getLogger(__name__)
 
 
-@hydra.main()
+@hydra.main(config_path=None)
 def my_app(_cfg: DictConfig) -> None:
     log.info("Info level message")
     log.debug("Debug level message")

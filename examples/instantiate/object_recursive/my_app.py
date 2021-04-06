@@ -28,7 +28,7 @@ class Car:
         print(f"Driver : {self.driver.name}, {len(self.wheels)} wheels")
 
 
-@hydra.main(config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     car: Car = instantiate(cfg.car)
     car.drive()

@@ -161,7 +161,7 @@ def test_app_with_config_file__no_overrides(
     task = hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,  # Testing legacy mode, both path and named are in config_path
+        config_path=".",
         config_name="config.yaml",
         configure_logging=True,
     )
@@ -193,20 +193,17 @@ def test_app_with_config_path_backward_compatibility(
     """
     )
 
+    # This more is no longer supported in Hydra 1.1
     with raises(ValueError, match=re.escape(msg)):
         task = hydra_task_runner(
             calling_file=calling_file,
             calling_module=calling_module,
-            config_path="conf/config.yaml",  # Testing legacy mode, both path and named are in config_path
+            config_path="conf/config.yaml",
             config_name=None,
             configure_logging=True,
         )
         with task:
-            assert task.job_ret is not None and task.job_ret.cfg == {
-                "optimizer": {"type": "nesterov", "lr": 0.001}
-            }
-
-            verify_dir_outputs(task.job_ret)
+            assert False  # will never get here.
 
 
 @mark.parametrize(
@@ -225,7 +222,7 @@ def test_app_with_config_file__with_overide(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["dataset.path=/datasets/imagenet2"],
         configure_logging=True,
@@ -252,7 +249,7 @@ def test_app_with_split_config(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         configure_logging=True,
     ) as task:
@@ -331,7 +328,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["hydra/launcher=basic"],
     ) as task:
@@ -668,7 +665,7 @@ def test_interpolating_dir_hydra_to_app(
     with hydra_task_runner(
         calling_file=calling_file,
         calling_module=calling_module,
-        config_path=None,
+        config_path=".",
         config_name="config.yaml",
         overrides=["experiment.base_dir=" + basedir],
     ) as task:
@@ -1045,10 +1042,9 @@ bar: 100"""
 
 
 def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
-    monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
     cmd = [
-        "my_app.py",
-        "hydra.sweep.dir=" + str(tmpdir),
+        "tests/test_apps/app_with_runtime_config_error/my_app.py",
+        f"hydra.sweep.dir={tmpdir}",
     ]
     expected = dedent(
         """\
@@ -1213,4 +1209,28 @@ def test_job_id_and_num_in_sweep(tmpdir: Path) -> None:
         overrides=["-m"],
         prints=["HydraConfig.get().job.id", "str(HydraConfig.get().job.num)"],
         expected_outputs=["0", "0"],
+    )
+
+
+def test_hydra_main_without_config_path(tmpdir: Path) -> None:
+    cmd = [
+        "tests/test_apps/hydra_main_without_config_path/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    _, err = run_python_script(cmd, allow_warnings=True)
+
+    expected = dedent(
+        """
+        .*my_app.py:7: UserWarning:
+        config_path is not specified in @hydra.main().
+        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
+          @hydra.main()
+        """
+    )
+
+    assert_regex_match(
+        from_line=expected,
+        to_line=err,
+        from_name="Expected error",
+        to_name="Actual error",
     )

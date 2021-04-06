@@ -4,12 +4,12 @@ import os
 from hydra import compose, initialize, initialize_config_dir
 
 if __name__ == "__main__":
-    with initialize():
+    with initialize(config_path="."):
         cfg = compose(config_name="config", return_hydra_config=True)
         assert cfg.config == {"hello": "world"}
         assert cfg.hydra.job.name == "main"
 
-    with initialize(job_name="test_job"):
+    with initialize(config_path=".", job_name="test_job"):
         cfg = compose(config_name="config", return_hydra_config=True)
         assert cfg.config == {"hello": "world"}
         assert cfg.hydra.job.name == "test_job"

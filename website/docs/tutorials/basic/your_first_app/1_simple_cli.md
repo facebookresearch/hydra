@@ -17,7 +17,7 @@ The examples in this tutorial are available <GithubLink to="examples/tutorials/b
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
-@hydra.main()
+@hydra.main(config_path=None)
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
@@ -35,6 +35,10 @@ db:
   user: omry
   password: secret
 ```
+
+:::info
+We will learn more about the `config_path` in the following pages. 
+:::
 
 See [Hydra's command line flags](advanced/hydra-command-line-flags.md) and
 [Basic Override Syntax](advanced/override_grammar/basic.md) for more information about the command line.

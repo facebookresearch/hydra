@@ -139,6 +139,7 @@ module.exports = {
             type: 'category',
             label: '1.0 to 1.1',
             items: [
+                'upgrades/1.0_to_1.1/changes_to_hydra_main_config_path',
                 'upgrades/1.0_to_1.1/default_composition_order',
                 'upgrades/1.0_to_1.1/defaults_list_override',
                 'upgrades/1.0_to_1.1/defaults_list_interpolation',
