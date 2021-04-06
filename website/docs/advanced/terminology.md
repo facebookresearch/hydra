@@ -9,17 +9,28 @@ This page describes some common concepts in Hydra, most of which are covered in 
 Input configs are used to construct the config object used by the application.  
 Supported input configs are:
 - Config Files ([YAML](https://yaml.org/) files)
-- Command line arguments (Also known as **Overrides**)
 - [Structured Configs](#structured-config)
+  
+## Overrides
+[Overrides](override_grammar/basic) is list of strings that can be used to manipulate the config composition process.
+
+Overrides can be used in the command line. In the examples below, `key=value` is an override:
+```shell
+$ python my_app.py key=value
+```
+And in the [**Compose API**](compose_api.md):
+```python
+cfg = compose(config_name, overrides=["key=value"])
+```
+
 
 ### Primary Config
-The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/1_simple_cli.md) or in 
-the [**Compose API**](../experimental/hydra_compose.md).  
-
+The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/2_config_file.md) or in 
+the [**Compose API**](compose_api.md).  
 
 ### Structured Config
 
-A class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class.   
+A Config object initialized with a class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class.   
 Structured Configs provides additional type information that enables static and runtime type checking.
 
 There are two primary patterns for using Structured Configs:
@@ -55,14 +66,14 @@ A Config Node is either a **Value Node** (a primitive type), or a **Container No
 ## Package
 A Package is the path to [Config Node](#config-node) in the [Config Object](#output-config-object).
 By default, the Package of a Config Group Option is derived from the Config Group.
-*e.g:* Options of the Config Group **mi6/agent** will have the package **mi6.agent**.
+*e.g:* Config Group Options in **mi6/agent** will have the package **mi6.agent** by default.
 
 
 ## Package Directive
 The [Package Directive](overriding_packages.md#overriding-the-package-via-the-package-directive) specifies the root [Package](#package) of a [Config File](#input-configs). It can appear at the top of YAML config file.
 
 ## Output Config
-A config composed from the [Input Configs](#input-configs) by **@hydra.main()**, or the Compose API.
+A config composed from the [Input Configs](#input-configs) and [Overrides](#overrides) by **@hydra.main()**, or the Compose API.
 
 ## Example of core concepts
 
@@ -110,4 +121,4 @@ The [Config Search Path](search_path.md) is a list of paths that are searched in
 the Python [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH).
 
 ## Plugins
-[Plugins](plugins.md) extend Hydra's capabilities. Some examples are Launcher and Sweeper.
+[Plugins](plugins.md) extend Hydra's capabilities. Hydra has several plugin types, for examples Launcher and Sweeper.
