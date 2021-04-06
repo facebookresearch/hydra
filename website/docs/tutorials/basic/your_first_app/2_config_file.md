@@ -18,10 +18,11 @@ db:
   password: secret
 ```
 
-Specify the config name by passing a `config_name` parameter to the `@hydra.main()` decorator.
-Note that you should omit the `.yaml` extension.
+Specify the config name by passing a `config_name` parameter to the **@hydra.main()** decorator.
+Note that you should omit the **.yaml** extension.
+Hydra also needs to know where to find your config. Specify the directory containing it relative to the application by passing `config_path`: 
 ```python title="my_app.py" {1}
-@hydra.main(config_name='config')
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg):
     print(OmegaConf.to_yaml(cfg))
 ```

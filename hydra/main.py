@@ -17,8 +17,9 @@ def main(
     config_name: Optional[str] = None,
 ) -> Callable[[TaskFunction], Any]:
     """
-    :param config_path: the config path, a directory relative to the declaring python file.
-    :param config_name: the name of the config (usually the file name without the .yaml extension)
+    :param config_path: The config path, a directory relative to the declaring python file.
+                        If config_path is None no directory is added to the Config search path.
+    :param config_name: The name of the config (usually the file name without the .yaml extension)
     """
 
     # DEPRECATED: remove in 1.2

@@ -41,7 +41,7 @@ pip install hydra-core --upgrade
 
 ### Basic example
 Config:
-```yaml title="config.yaml"
+```yaml title="conf/config.yaml"
 db:
   driver: mysql
   user: omry
@@ -52,7 +52,7 @@ Application:
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-@hydra.main(config_name="config")
+@hydra.main(config_path="conf", config_name="config")
 def my_app(cfg : DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
@@ -84,15 +84,17 @@ You may want to alternate between two different databases. To support this creat
 and place one config file for each alternative inside:
 The directory structure of our application now looks like:
 ```text
-├── db
-│   ├── mysql.yaml
-│   └── postgresql.yaml
-├── config.yaml
+├── conf
+│   ├── config.yaml
+│   ├── db
+│   │   ├── mysql.yaml
+│   │   └── postgresql.yaml
+│   └── __init__.py
 └── my_app.py
 ```
 
 Here is the new config:
-```yaml title="config.yaml"
+```yaml title="conf/config.yaml"
 defaults:
   - db: mysql
 ```
