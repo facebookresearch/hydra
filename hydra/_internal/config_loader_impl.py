@@ -352,8 +352,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     if OmegaConf.select(
                         cfg, key, throw_on_missing=False
                     ) is None or isinstance(value, (dict, list)):
-                        with open_dict(cfg):
-                            OmegaConf.update(cfg, key, value, merge=True)
+                        OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                     else:
                         assert override.input_line is not None
                         raise ConfigCompositionException(
@@ -366,8 +365,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             )
                         )
                 elif override.is_force_add():
-                    with open_dict(cfg):
-                        OmegaConf.update(cfg, key, value, merge=True)
+                    OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                 else:
                     try:
                         OmegaConf.update(cfg, key, value, merge=True)

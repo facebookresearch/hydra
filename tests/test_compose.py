@@ -387,6 +387,25 @@ class TestAdd:
         ):
             compose(overrides=["++group=a1"])
 
+    def test_add_to_structured_config(self, hydra_restore_singletons: Any) -> None:
+        @dataclass
+        class Config:
+            a: int = 10
+
+        ConfigStore.instance().store(name="config", node=Config, package="nested")
+
+        assert compose("config", overrides=["+nested.b=20"]) == {
+            "nested": {"a": 10, "b": 20}
+        }
+
+        assert compose("config", overrides=["++nested.a=30", "++nested.b=20"]) == {
+            "nested": {"a": 30, "b": 20}
+        }
+
+        assert compose("config", overrides=["+nested.b.c=20"]) == {
+            "nested": {"a": 10, "b": {"c": 20}}
+        }
+
 
 @mark.usefixtures("hydra_restore_singletons")
 @mark.usefixtures("initialize_hydra_no_path")
