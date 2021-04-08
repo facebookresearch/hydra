@@ -170,7 +170,8 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         "error=true",
     ]
     if max_failure_rate >= 1.0:
+        # nevergrad will warn that the values are too high (infinity)
         run_python_script(cmd, allow_warnings=True)
     else:
         with pytest.raises(subprocess.CalledProcessError):
-            run_python_script(cmd, allow_warnings=True)
+            run_python_script(cmd)
