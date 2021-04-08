@@ -21,6 +21,8 @@ def dummy_training(cfg: DictConfig) -> float:
     log.info(
         f"dummy_training(dropout={do:.3f}, lr={cfg.lr:.3f}, db={cfg.db}, batch_size={bs}) = {out:.3f}",
     )
+    if cfg.error:
+        raise RuntimeError("cfg.error is True")
     return out
 
 

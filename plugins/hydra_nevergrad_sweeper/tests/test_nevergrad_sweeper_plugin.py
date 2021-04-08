@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import subprocess
 from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
+import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -12,7 +14,6 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
@@ -44,7 +45,7 @@ def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Sc
     return scalar
 
 
-@mark.parametrize(
+@pytest.mark.parametrize(
     "input, expected",
     [
         ([1, 2, 3], ng.p.Choice([1, 2, 3])),
@@ -69,7 +70,7 @@ def test_create_nevergrad_parameter_from_config(
     assert_ng_param_equals(expected, actual)
 
 
-@mark.parametrize(
+@pytest.mark.parametrize(
     "input, expected",
     [
         ("key=choice(1,2)", ng.p.Choice([1, 2])),
@@ -125,7 +126,7 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-@mark.parametrize("with_commandline", (True, False))
+@pytest.mark.parametrize("with_commandline", (True, False))
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
@@ -155,3 +156,21 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     # check that all job folders are created
     last_job = max(int(fp.name) for fp in Path(tmpdir).iterdir() if fp.name.isdigit())
     assert last_job == budget - 1
+
+
+@pytest.mark.parametrize("max_failure_rate", (0.5, 1.0))
+def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
+    cmd = [
+        "example/my_app.py",
+        "-m",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.sweeper.optim.budget=2",  # small budget to test fast
+        "hydra.sweeper.optim.num_workers=2",
+        f"hydra.sweeper.optim.max_failure_rate={max_failure_rate}",
+        "error=true",
+    ]
+    if max_failure_rate >= 1.0:
+        run_python_script(cmd, allow_warnings=True)
+    else:
+        with pytest.raises(subprocess.CalledProcessError):
+            run_python_script(cmd, allow_warnings=True)

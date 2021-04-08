@@ -12,6 +12,7 @@ from typing import (
 )
 
 import nevergrad as ng
+from hydra.core import utils
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
@@ -21,6 +22,7 @@ from hydra.core.override_parser.types import (
     Transformer,
 )
 from hydra.core.plugins import Plugins
+from hydra.errors import HydraJobException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
@@ -132,7 +134,7 @@ class NevergradSweeperImpl(Sweeper):
             ] = create_nevergrad_parameter_from_override(override)
 
         parametrization = ng.p.Dict(**params)
-        parametrization.descriptors.deterministic_function = not self.opt_config.noisy
+        parametrization.function.deterministic = not self.opt_config.noisy
         parametrization.random_state.seed(self.opt_config.seed)
         # log and build the optimizer
         opt = self.opt_config.optimizer
@@ -157,11 +159,32 @@ class NevergradSweeperImpl(Sweeper):
             )
             self.validate_batch_is_legal(overrides)
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
-            self.job_idx += len(returns)
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
+            self.job_idx += len(returns)
+            # check job status and prepare losses
+            failures = 0
+            to_tell: List[Tuple[ng.p.Parameter, float]] = []
             for cand, ret in zip(candidates, returns):
-                loss = direction * ret.return_value
+                if ret.status != utils.JobStatus.COMPLETED:
+                    to_tell.append((cand, float("inf")))
+                    failures += 1
+                    try:
+                        ret.return_value
+                    except HydraJobException as e:
+                        log.info(f"Returning infinity for failed experiment: {e}")
+                else:
+                    to_tell.append((cand, direction * ret.return_value))
+            # raise if too many failures
+            if failures / len(returns) > self.opt_config.max_failure_rate:
+                log.error(
+                    f"Failed {failures} times out of {len(returns)} "
+                    f"with max_failure_rate={self.opt_config.max_failure_rate}"
+                )
+                for ret in returns:
+                    ret.return_value  # delegate raising to JobReturn, with actual traceback
+            # tell to the optimizer
+            for cand, loss in to_tell:
                 optimizer.tell(cand, loss)
                 if loss < best[0]:
                     best = (loss, cand)
