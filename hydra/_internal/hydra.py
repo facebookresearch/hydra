@@ -382,8 +382,17 @@ class Hydra:
 
         box: List[List[str]] = [["Provider", "Search path"]]
 
-        for sp in self.config_loader.get_sources():
-            box.append([sp.provider, sp.full_path()])
+        cfg = self._get_cfg(
+            config_name=config_name,
+            overrides=overrides,
+            cfg_type="all",
+            with_log_configuration=False,
+        )
+
+        sources = cfg.hydra.runtime.config_sources
+
+        for sp in sources:
+            box.append([sp.provider, f"{sp.schema}://{sp.path}"])
 
         provider_pad, search_path_pad = get_column_widths(box)
         header = "| {} | {} |".format(
@@ -391,11 +400,11 @@ class Hydra:
         )
         self._log_header(header=header, filler="-")
 
-        for source in self.config_loader.get_sources():
+        for source in sources:
             log.debug(
                 "| {} | {} |".format(
                     source.provider.ljust(provider_pad),
-                    source.full_path().ljust(search_path_pad),
+                    f"{source.schema}://{source.path}".ljust(search_path_pad),
                 )
             )
         self._log_footer(header=header, filler="-")
@@ -609,10 +618,6 @@ class Hydra:
     def show_info(
         self, info: str, config_name: Optional[str], overrides: List[str]
     ) -> None:
-        # load configuration to update config sources.
-        self.config_loader.load_configuration(
-            config_name=config_name, overrides=overrides, run_mode=RunMode.RUN
-        )
         options = {
             "all": self._print_all_info,
             "defaults": self._print_defaults_list,
