@@ -1238,29 +1238,15 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
 @mark.parametrize(
     "overrides,expected",
     [
-        (
-            ["--cfg", "job"],
-            dedent(
-                """\
-                baud_rate: 19200
-                data_bits: 8
-                stop_bits: 1
-                """
-            ),
-        ),
-        (
-            ["--cfg", "hydra", "-p", "hydra.env"],
-            dedent(
-                """\
-                # @package hydra.env
-                {}
-                """
-            ),
-        ),
+        (["--cfg", "job", "-p", "baud_rate"], "19200"),
+        (["--cfg", "hydra", "-p", "hydra.job.name"], "frozen"),
+        (["--info", "config"], "baud_rate: 19200"),
+        (["--hydra-help"], "== Flags =="),
+        (["--help"], "frozen is powered by Hydra."),
     ],
 )
 def test_frozen_primary_config(
-    tmpdir: Path, overrides: List[str], expected: Any
+    tmpdir: Path, overrides: List[str], expected: str
 ) -> None:
     cmd = [
         "examples/patterns/write_protect_config_node/frozen.py",
@@ -1268,9 +1254,4 @@ def test_frozen_primary_config(
     ]
     cmd.extend(overrides)
     ret, _err = run_python_script(cmd)
-    assert_regex_match(
-        from_line=expected,
-        to_line=ret,
-        from_name="Expected output",
-        to_name="Actual output",
-    )
+    assert expected in ret
