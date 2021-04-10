@@ -2,38 +2,27 @@
 id: terminology
 title: Terminology
 ---
-## Overview
 This page describes some common concepts in Hydra, most of which are covered in greater details throughout the documentation.
+Examples of many of the following concepts are in the [Examples section](#example-of-core-concepts).
 
 ## Input Configs
-Input configs are used to construct the config object used by the application.  
-Supported input configs are:
-- Config Files ([YAML](https://yaml.org/) files)
-- [Structured Configs](#structured-config)
-  
-## Overrides
-[Overrides](override_grammar/basic) is list of strings that can be used to manipulate the config composition process.
+Input configs are building blocks used to construct the [Output Config](#output-config) consumed by the application.
+They can be grouped by placing them into [Config Groups](#config-group).
 
-Overrides can be used in the command line. In the examples below, `key=value` is an override:
-```shell
-$ python my_app.py key=value
+### Config files
+A form of Input Config: Hydra supports ([YAML](https://yaml.org/) files) config files. The files can physically exist on the file 
+system or in Python modules.
+```yaml title="Example config file
+user:
+  name: James Bond
+  age: 7
 ```
-And in the [**Compose API**](compose_api.md):
-```python
-cfg = compose(config_name, overrides=["key=value"])
-```
-
-
-### Primary Config
-The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/2_config_file.md) or in 
-the [**Compose API**](compose_api.md).  
 
 ### Structured Config
+A form of Input Config: A Config object initialized with a class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class.   
+Structured Configs provide additional type information that enables static and runtime type checking.
 
-A Config object initialized with a class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class.   
-Structured Configs provides additional type information that enables static and runtime type checking.
-
-There are two primary patterns for using Structured Configs:
+The two primary patterns for using Structured Configs are:
 - As an [Input Config](#input-configs).
 - As a schema validating Config Files and command line arguments.
 
@@ -44,6 +33,35 @@ class User:
   age: int
 ```
 
+## Other configs
+**Primary Config**: The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/2_config_file.md) or in the [**Compose API**](compose_api.md).  
+**Output Config**: A config composed from the [Input Configs](#input-configs) and [Overrides](#overrides) by **@hydra.main()**, or the Compose API.
+
+## Overrides
+[Overrides](override_grammar/basic) are strings that can be used to manipulate the config composition process.
+This includes updating, adding and deleting config values and [Defaults List](#defaults-list) options.  
+
+Overrides can be used in the command line and in the [Compose API](compose_api.md).  
+In the examples below, `key=value` is an override:
+<div className="row">
+<div className="col col--6">
+
+```shell title="Override in the command line"
+$ python my_app.py key=value
+
+```
+
+</div>
+<div className="col col--6">
+
+```python title="Override used in the Compose API"
+cfg = compose(config_name, 
+              overrides=["key=value"])
+```
+
+</div>
+</div>
+
 ## Defaults List
 A list in an [Input Config](#input-configs) that instructs Hydra how compose the config. 
 ```yaml title="Defaults List in a YAML config"
@@ -52,30 +70,20 @@ defaults:
   - schema/school  # A non-overridable defaults list entry
 ```
 
-### Config Group
+## Config Group
 A Config Group is directory in the [Config Search Path](#config-search-path) that contains [Input Configs](#input-configs).
 Config Groups can be nested, and in that case the path elements are separated by a forward slash ('/') regardless of the operating system.
 
-
-### Config Group Option
+## Config Group Option
 An Input Config in a Config Group. When used in a Defaults List, a Config Group Option can be a single Input Config, or a list of Input Configs from the same Config Group. 
 
-## Config Node
-A Config Node is either a **Value Node** (a primitive type), or a **Container Node**.  A **Container Node** is a list or dictionary of **Value Nodes**.
-
 ## Package
-A Package is the path to [Config Node](#config-node) in the [Config Object](#output-config-object).
-By default, the Package of a Config Group Option is derived from the Config Group.
-*e.g:* Config Group Options in **mi6/agent** will have the package **mi6.agent** by default.
+A Package is the path to node in a config. By default, the Package of a Config Group Option is derived from the Config Group.
+*e.g:* Configs in **mi6/agent** will have the package **mi6.agent** by default.
 
-
-## Package Directive
 The [Package Directive](overriding_packages.md#overriding-the-package-via-the-package-directive) specifies the root [Package](#package) of a [Config File](#input-configs). It can appear at the top of YAML config file.
 
-## Output Config
-A config composed from the [Input Configs](#input-configs) and [Overrides](#overrides) by **@hydra.main()**, or the Compose API.
-
-## Example of core concepts
+## Example of Core Concepts
 
 <div className="row">
 <div className="col col--4">
@@ -110,12 +118,9 @@ bond:
 - [Input Configs](#input-configs): **config.yaml**, **mi6/agent/james_bond.yaml**
 - [Config Group](#config-group): mi6/agent
 - [Config Group Option](#config-group-option): james_bond
-- [Container Node](#config-node): **{agent: {codename: '007'}}**
-    - [Value Node](#config-node): **'007'**
-    - [Packages](#package): **<empty\>**, **mi6**, **mi6.agent**, **mi6.agent.codename**
-- [Package directive](#package-directive) : **# @package bond.james**, overriding the default Package for the containing Input Config 
+- [Packages](#package): **<empty\>**, **mi6**, **mi6.agent**, **mi6.agent.codename**
+- [Package directive](#package-directive): **# @package bond.james**, overriding the default Package for the containing Input Config 
 
- 
 ## Config Search Path
 The [Config Search Path](search_path.md) is a list of paths that are searched in order to find configs. It is similar to
 the Python [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH).
