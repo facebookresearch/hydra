@@ -225,6 +225,13 @@ class ConfigLoaderImpl(ConfigLoader):
 
         self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
 
+        for source in caching_repo.get_sources():
+            if not source.available():
+                warnings.warn(
+                    category=UserWarning,
+                    message=f"provider={source.provider}, path={source.path} is not available.",
+                )
+
         self.validate_sweep_overrides_legal(
             overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
         )

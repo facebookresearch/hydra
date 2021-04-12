@@ -13,7 +13,9 @@ with open("README.md", "r") as fh:
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
-        packages=find_namespace_packages(include=["hydra_plugins.*"]),
+        packages=find_namespace_packages(
+            include=["hydra_plugins.*", "arbitrary_package.*"]
+        ),
         classifiers=[
             # Feel free to use another license.
             "License :: OSI Approved :: MIT License",
