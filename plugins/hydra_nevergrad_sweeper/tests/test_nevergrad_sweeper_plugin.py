@@ -173,9 +173,9 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         "error=true",
     ]
     out, err = run_process(cmd, print_error=False, raise_exception=False)
+    assert "Returning infinity for failed experiment" in out
     error_string = "RuntimeError: cfg.error is True"
     if max_failure_rate < 1.0:
         assert error_string in err
     else:
         assert error_string not in err
-        assert all(x in err for x in ("nevergrad.common.errors", "inf in tell"))
