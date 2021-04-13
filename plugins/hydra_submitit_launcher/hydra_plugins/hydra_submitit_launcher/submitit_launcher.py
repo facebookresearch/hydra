@@ -6,24 +6,14 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
-from hydra.plugins.search_path_plugin import SearchPathPlugin
 from omegaconf import DictConfig, OmegaConf, open_dict
 
 from .config import BaseQueueConf
 
 log = logging.getLogger(__name__)
-
-
-class SubmititLauncherSearchPathPlugin(SearchPathPlugin):
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        search_path.append(
-            "hydra-submitit-launcher",
-            "pkg://hydra_plugins.hydra_submitit_launcher.conf",
-        )
 
 
 class BaseSubmititLauncher(Launcher):
