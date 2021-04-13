@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +11,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     chdir_plugin_root,
+    run_process,
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
@@ -161,6 +162,8 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
 @pytest.mark.parametrize("max_failure_rate", (0.5, 1.0))
 def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
     cmd = [
+        sys.executable,
+        "-Werror",
         "example/my_app.py",
         "-m",
         f"hydra.sweep.dir={tmpdir}",
@@ -169,9 +172,10 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         f"hydra.sweeper.optim.max_failure_rate={max_failure_rate}",
         "error=true",
     ]
-    if max_failure_rate >= 1.0:
-        # nevergrad will warn that the values are too high (infinity)
-        run_python_script(cmd, allow_warnings=True)
+    out, err = run_process(cmd, print_error=False, raise_exception=False)
+    error_string = "RuntimeError: cfg.error is True"
+    if max_failure_rate < 1.0:
+        assert error_string in err
     else:
-        with pytest.raises(subprocess.CalledProcessError):
-            run_python_script(cmd)
+        assert error_string not in err
+        assert all(x in err for x in ("nevergrad.common.errors", "inf in tell"))

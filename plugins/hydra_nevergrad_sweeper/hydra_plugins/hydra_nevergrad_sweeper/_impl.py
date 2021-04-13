@@ -172,7 +172,7 @@ class NevergradSweeperImpl(Sweeper):
                     try:
                         ret.return_value
                     except HydraJobException as e:
-                        log.info(f"Returning infinity for failed experiment: {e}")
+                        log.warning(f"Returning infinity for failed experiment: {e}")
                 else:
                     to_tell.append((cand, direction * ret.return_value))
             # raise if too many failures
