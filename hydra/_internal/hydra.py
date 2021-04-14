@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -136,7 +136,7 @@ class Hydra:
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:
         cfg = copy.deepcopy(src_cfg)
-        with open_dict(cfg):
+        with flag_override(cfg, ["struct", "readonly"], [False, False]):
             for key in list(cfg.keys()):
                 if key != "hydra":
                     del cfg[key]
@@ -160,7 +160,7 @@ class Hydra:
             with_log_configuration=with_log_configuration,
         )
         if cfg_type == "job":
-            with open_dict(cfg):
+            with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 del cfg["hydra"]
         elif cfg_type == "hydra":
             cfg = self.get_sanitized_hydra_cfg(cfg)
@@ -331,7 +331,8 @@ class Hydra:
         )
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
-        with open_dict(clean_cfg):
+
+        with flag_override(clean_cfg, ["struct", "readonly"], [False, False]):
             del clean_cfg["hydra"]
         help_text = self.get_help(help_cfg, clean_cfg, args_parser)
         print(help_text)
@@ -452,7 +453,7 @@ class Hydra:
             )
         )
         self._log_header(header="Config", filler="*")
-        with open_dict(cfg):
+        with flag_override(cfg, ["struct", "readonly"], [False, False]):
             del cfg["hydra"]
         log.info(OmegaConf.to_yaml(cfg))
 
