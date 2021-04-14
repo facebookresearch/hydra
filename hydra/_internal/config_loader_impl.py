@@ -377,7 +377,7 @@ class ConfigLoaderImpl(ConfigLoader):
             except OmegaConfBaseException as ex:
                 raise ConfigCompositionException(
                     f"Error merging override {override.input_line}"
-                ) from ex
+                ).with_traceback(sys.exc_info()[2]) from ex
 
     def _load_single_config(
         self, default: ResultDefault, repo: IConfigRepository
