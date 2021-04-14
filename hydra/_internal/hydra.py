@@ -385,7 +385,7 @@ class Hydra:
         cfg = self._get_cfg(
             config_name=config_name,
             overrides=overrides,
-            cfg_type="all",
+            cfg_type="hydra",
             with_log_configuration=False,
         )
 
