@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any
 
 import nevergrad as ng
-import pytest
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -15,6 +14,7 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
+from pytest import mark
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
@@ -46,7 +46,7 @@ def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Sc
     return scalar
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "input, expected",
     [
         ([1, 2, 3], ng.p.Choice([1, 2, 3])),
@@ -71,7 +71,7 @@ def test_create_nevergrad_parameter_from_config(
     assert_ng_param_equals(expected, actual)
 
 
-@pytest.mark.parametrize(
+@mark.parametrize(
     "input, expected",
     [
         ("key=choice(1,2)", ng.p.Choice([1, 2])),
@@ -127,7 +127,7 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-@pytest.mark.parametrize("with_commandline", (True, False))
+@mark.parametrize("with_commandline", (True, False))
 def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
     cmd = [
@@ -159,7 +159,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     assert last_job == budget - 1
 
 
-@pytest.mark.parametrize("max_failure_rate", (0.5, 1.0))
+@mark.parametrize("max_failure_rate", (0.5, 1.0))
 def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
     cmd = [
         sys.executable,
