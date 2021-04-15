@@ -652,9 +652,13 @@ def test_help(
     "script,overrides,expected",
     [
         param(
-            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
-            ["--info", "searchpath", "hydra.searchpath=['pkg://fakeconf']"],
-            r".*hydra.searchpath in command-line\s+|\s+pkg://fakeconf.*",
+            "examples/advanced/config_search_path/my_app.py",
+            [
+                "--config-name",
+                "cofig_with_no_searchpath",
+                "hydra.searchpath=['pkg://additonal_conf']",
+            ],
+            r".*hydra.searchpath in command-line\s+|\s+pkg://additonal_conf.*",
             id="searchpath config from command-line",
         ),
         param(
