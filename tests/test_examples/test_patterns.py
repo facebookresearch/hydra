@@ -99,13 +99,23 @@ def test_extending_configs(
             {"db": {"name": "sqlite"}, "server": {"name": "apache", "port": 8080}},
             id="exp1+override",
         ),
+        param(
+            [
+                "--config-name=config_with_override",
+                "+experiment=nglite",
+                "server=apache",
+            ],
+            {"db": {"name": "sqlite"}, "server": {"name": "apache", "port": 8080}},
+            id="exp1+defaults_override",
+        ),
     ],
 )
 def test_configuring_experiments(
     monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: Any
 ) -> None:
     monkeypatch.chdir("examples/patterns/configuring_experiments")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = ["my_app.py"] + overrides
+    cmd.extend(["hydra.run.dir=" + str(tmpdir)])
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
 
