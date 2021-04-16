@@ -3796,11 +3796,11 @@ dns-txt@^2.0.2:
     buffer-indexof "^1.0.0"
 
 docusaurus-plugin-internaldocs-fb@^0.7.4:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/docusaurus-plugin-internaldocs-fb/-/docusaurus-plugin-internaldocs-fb-0.7.4.tgz#4831e65295aab8ff9c65595398a2bab94b0afbb2"
-  integrity sha512-7avKVfguRm+Dxq1OxBi2UzkpMm3+/mCYxvlWYhSCxmxC2f3E18Uec3JvTLkgxSBh0TodiaZFhUofp2odOvs8jg==
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/docusaurus-plugin-internaldocs-fb/-/docusaurus-plugin-internaldocs-fb-0.7.8.tgz#31fe7142da91ccc022480dbffa72d1e029209de2"
+  integrity sha512-afVxdX2QhAQzJ4INvgfVpY1r8QRWCh9HqBCVfxiSOycXvDtL6S8yxnbYqvcUfRtmhQJvtIIqgP5Dhx4VG+wviA==
   dependencies:
-    internaldocs-fb-helpers "^1.6.0"
+    internaldocs-fb-helpers "^1.6.1"
     remark-code-snippets "^1.0.1"
     remark-mdx-filter-imports "^0.1.2"
 
@@ -5243,10 +5243,10 @@ internal-ip@^4.3.0:
     default-gateway "^4.2.0"
     ipaddr.js "^1.9.0"
 
-internaldocs-fb-helpers@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/internaldocs-fb-helpers/-/internaldocs-fb-helpers-1.6.0.tgz#e9870e93f7277346d7224bdd5aa85ab33455ece9"
-  integrity sha512-aFse2t7kADe78oew4Pk8+sJvaC/4OuIThjTwVIPgFGfXxMYm8pDTK1E0q4qSd6dXitiHNajPb7t/4tEjXN1Rpg==
+internaldocs-fb-helpers@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/internaldocs-fb-helpers/-/internaldocs-fb-helpers-1.6.1.tgz#65d636aad35a99c7733ab270c959271ed57047e9"
+  integrity sha512-ToI8o/RoJc1MhGk5sFfaCX0bPBdlJoUiAm4uYbsW32lsp/4FaRezkEY90mmGZWFM0zqRVMNwMIHzkUeGcHGokA==
 
 interpret@^1.0.0:
   version "1.4.0"
