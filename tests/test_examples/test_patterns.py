@@ -115,7 +115,7 @@ def test_configuring_experiments(
 ) -> None:
     monkeypatch.chdir("examples/patterns/configuring_experiments")
     cmd = ["my_app.py"] + overrides
-    cmd.extend(["hydra.run.dir=" + str(tmpdir)])
+    cmd.extend([f"hydra.run.dir={tmpdir}"])
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
 
