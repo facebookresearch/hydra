@@ -33,7 +33,7 @@ There are 3 initialization methods:
 - `initialize_config_dir()` : Initialize with a config_dir on the file system (absolute)
 
 All 3 can be used as methods or contexts.
-When used as methods, they are are initializing Hydra globally and should only be called once.
+When used as methods, they are initializing Hydra globally and should only be called once.
 When used as contexts, they are initializing Hydra within the context can be used multiple times.
 
 ### Code example
