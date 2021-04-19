@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # type: ignore
-from setuptools import find_namespace_packages, setup
+from setuptools import find_namespace_packages, setup, find_packages
+
 
 with open("README.md", "r") as fh:
     LONG_DESC = fh.read()
@@ -14,7 +15,7 @@ with open("README.md", "r") as fh:
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
         packages=find_namespace_packages(include=["hydra_plugins.*"])
-        + ["arbitrary_package"],
+        + find_packages(include=["arbitrary_package"]),
         classifiers=[
             # Feel free to use another license.
             "License :: OSI Approved :: MIT License",
