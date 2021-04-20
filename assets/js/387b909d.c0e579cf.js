@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[50],{128:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Hydra Ray Launcher","permalink":"/blog/2020/12/22/Hydra_Ray_Launcher"},{"title":"Hydra 1.0","permalink":"/blog/2020/09/03/Hydra_1.0"},{"title":"New Hydra blog","permalink":"/blog/2020/05/04/New-blog"}]}')}}]);
