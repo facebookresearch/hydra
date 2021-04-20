@@ -653,11 +653,7 @@ def test_help(
     [
         param(
             "examples/advanced/config_search_path/my_app.py",
-            [
-                "--config-name",
-                "cofig_with_no_searchpath",
-                "hydra.searchpath=['pkg://additonal_conf']",
-            ],
+            ["hydra.searchpath=['pkg://additonal_conf']"],
             r".*hydra.searchpath in command-line\s+|\s+pkg://additonal_conf.*",
             id="searchpath config from command-line",
         ),

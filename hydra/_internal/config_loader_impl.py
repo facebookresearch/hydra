@@ -208,6 +208,13 @@ class ConfigLoaderImpl(ConfigLoader):
         new_csp.append("schema", "structured://")
         repo.initialize_sources(new_csp)
 
+        for source in repo.get_sources():
+            if not source.available():
+                warnings.warn(
+                    category=UserWarning,
+                    message=f"provider={source.provider}, path={source.path} is not available.",
+                )
+
     def _load_configuration_impl(
         self,
         config_name: Optional[str],
@@ -224,13 +231,6 @@ class ConfigLoaderImpl(ConfigLoader):
         parsed_overrides = parser.parse_overrides(overrides=overrides)
 
         self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
-
-        for source in caching_repo.get_sources():
-            if not source.available():
-                warnings.warn(
-                    category=UserWarning,
-                    message=f"provider={source.provider}, path={source.path} is not available.",
-                )
 
         self.validate_sweep_overrides_legal(
             overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
