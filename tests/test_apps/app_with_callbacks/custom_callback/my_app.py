@@ -12,13 +12,9 @@ log = logging.getLogger(__name__)
 
 
 class CustomCallback(Callback):
-    def __init__(self, param1, param2):
-        self.param1 = param1
-        self.param2 = param2
-        self.name = self.__class__.__name__
-        log.info(
-            f"Init {self.name} with self.param1={self.param1}, self.param2={self.param2}"
-        )
+    def __init__(self, callback_name):
+        self.name = callback_name
+        log.info(f"Init {self.name}")
 
     def on_job_start(self, config: DictConfig, **kwargs) -> None:
         log.info(f"{self.name} on_job_start")
@@ -41,7 +37,7 @@ class CustomCallback(Callback):
 
 @hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    print(OmegaConf.to_yaml(cfg))
+    log.info(OmegaConf.to_yaml(cfg))
 
 
 if __name__ == "__main__":
