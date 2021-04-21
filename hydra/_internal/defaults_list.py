@@ -463,24 +463,15 @@ def _create_defaults_tree_impl(
     ):
         self_added = _validate_self(containing_node=parent, defaults=defaults_list)
 
-    if is_root_config and len(overrides.append_group_defaults) > 0:
-        # check to see if override exists
-        idx = -1
-        for i in range(len(defaults_list)):
-            if isinstance(defaults_list[i], GroupDefault) and defaults_list[i].override:  # type: ignore
-                idx = i
+    if is_root_config:
+        # To ensure config overrides are last, insert the external overrides before the first config override.
+        insert_idx = len(defaults_list)
+        for idx, default in enumerate(defaults_list):
+            if default.is_override():
+                insert_idx = idx
                 break
-        agd = overrides.append_group_defaults
-        if idx != -1:
-            # if override exists:
-            # 1. add the append group to default for override.
-            # 2. set group override to be True to indicate this is from commandline override
-            for a in agd:
-                aa = copy.deepcopy(a)
-                defaults_list.insert(idx, aa)
-                a.override = True
 
-        defaults_list.extend(agd)
+        defaults_list[insert_idx:insert_idx] = overrides.append_group_defaults
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
