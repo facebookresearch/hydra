@@ -48,8 +48,8 @@
 - Installation : `pip install hydra-core --upgrade`
 
 #### Development release
-**Hydra 1.1** is still in active development and should not be considered stable.
-You are welcome to try it out at your own risk and report any issues.
+**Hydra 1.1** is still in active development and is getting close to a release candidate.
+New users and existing users that want to try the latest features are encouraged to use it and report issues.
 
 - [Documentation](https://hydra.cc/docs/next/intro)
 - Installation : `pip install hydra-core --upgrade --pre`
