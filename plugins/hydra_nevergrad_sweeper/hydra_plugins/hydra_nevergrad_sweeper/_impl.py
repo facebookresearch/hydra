@@ -132,7 +132,7 @@ class NevergradSweeperImpl(Sweeper):
             ] = create_nevergrad_parameter_from_override(override)
 
         parametrization = ng.p.Dict(**params)
-        parametrization.descriptors.deterministic_function = not self.opt_config.noisy
+        parametrization.function.deterministic = not self.opt_config.noisy
         parametrization.random_state.seed(self.opt_config.seed)
         # log and build the optimizer
         opt = self.opt_config.optimizer
