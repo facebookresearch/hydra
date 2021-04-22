@@ -649,32 +649,27 @@ def test_help(
 
 
 @mark.parametrize(
-    "script,overrides,expected",
+    "overrides,expected",
     [
         param(
-            "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
-            ["--info", "searchpath", "hydra.searchpath=['pkg://fakeconf']"],
-            r".*hydra.searchpath in command-line\s+|\s+pkg://fakeconf.*",
+            ["--info", "searchpath", "hydra.searchpath=['pkg://additonal_conf']"],
+            r".*hydra.searchpath in command-line\s+|\s+pkg://additonal_conf.*",
             id="searchpath config from command-line",
         ),
         param(
-            "examples/advanced/config_search_path/my_app.py",
             ["--info", "searchpath"],
             r".*hydra.searchpath in main\s+|\s+pkg://additonal_conf.*",
             id="print info with searchpath config",
         ),
         param(
-            "examples/advanced/config_search_path/my_app.py",
             ["--info", "all", "dataset=imagenet"],
             r".*path:\s+/datasets/imagenet",
             id="searchpath config from config file",
         ),
     ],
 )
-def test_searchpath_config(
-    tmpdir: Path, script: str, overrides: List[str], expected: str
-) -> None:
-    cmd = [script]
+def test_searchpath_config(tmpdir: Path, overrides: List[str], expected: str) -> None:
+    cmd = ["examples/advanced/config_search_path/my_app.py"]
     cmd.extend(overrides)
     cmd.extend(["hydra.run.dir=" + str(tmpdir)])
     result, _err = run_python_script(cmd)

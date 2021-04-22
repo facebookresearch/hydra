@@ -533,6 +533,20 @@ class TestConfigSearchPathOverride:
         with expected:
             compose(config_name=config_name, overrides=overrides)
 
+    def test_searchpath_invalid(
+        self,
+        init_configs: Any,
+    ) -> None:
+        config_name = "without_sp"
+        override = "hydra.searchpath=['pkg://fakeconf']"
+        with warns(
+            expected_warning=UserWarning,
+            match=re.escape(
+                "provider=hydra.searchpath in command-line, path=fakeconf is not available."
+            ),
+        ):
+            compose(config_name=config_name, overrides=[override])
+
 
 def test_deprecated_compose() -> None:
     from hydra import initialize

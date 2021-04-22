@@ -208,6 +208,13 @@ class ConfigLoaderImpl(ConfigLoader):
         new_csp.append("schema", "structured://")
         repo.initialize_sources(new_csp)
 
+        for source in repo.get_sources():
+            if not source.available():
+                warnings.warn(
+                    category=UserWarning,
+                    message=f"provider={source.provider}, path={source.path} is not available.",
+                )
+
     def _load_configuration_impl(
         self,
         config_name: Optional[str],
