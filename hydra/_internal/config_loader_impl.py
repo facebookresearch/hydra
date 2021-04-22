@@ -525,11 +525,13 @@ class ConfigLoaderImpl(ConfigLoader):
         run_mode: RunMode,
     ) -> DefaultsList:
         parser = OverridesParser.create()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
         repo = CachingConfigRepository(self.repository)
+        self._process_config_searchpath(config_name, parsed_overrides, repo)
         defaults_list = create_defaults_list(
             repo=repo,
             config_name=config_name,
-            overrides_list=parser.parse_overrides(overrides=overrides),
+            overrides_list=parsed_overrides,
             prepend_hydra=True,
             skip_missing=run_mode == RunMode.MULTIRUN,
         )
