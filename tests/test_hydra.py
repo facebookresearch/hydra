@@ -668,9 +668,7 @@ def test_help(
         ),
     ],
 )
-def test_searchpath_config(
-    tmpdir: Path, overrides: List[str], expected: str
-) -> None:
+def test_searchpath_config(tmpdir: Path, overrides: List[str], expected: str) -> None:
     cmd = ["examples/advanced/config_search_path/my_app.py"]
     cmd.extend(overrides)
     cmd.extend(["hydra.run.dir=" + str(tmpdir)])
