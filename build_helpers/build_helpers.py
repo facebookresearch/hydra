@@ -106,7 +106,6 @@ class CleanCommand(Command):  # type: ignore
                 ".*/multirun$",
                 ".*/outputs$",
                 "^build$",
-                "^dist$",
             ],
             scan_exclude=["^.git$", "^.nox/.*$", "^website/.*$"],
             excludes=[".*\\.gitignore$"],

@@ -126,7 +126,7 @@ module.exports = {
             "experimental/intro",
         ],
 
-        'Development': [
+        'Developer Guide': [
             'development/overview',
             'development/testing',
             'development/style_guide',
