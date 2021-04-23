@@ -2161,6 +2161,28 @@ def test_none_config_with_hydra(
             ),
             id="defaults_with_override_only",
         ),
+        param(
+            "defaults_with_override_only",
+            ["+group1=file1"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="defaults_with_override_only"),
+                        children=[GroupDefault(group="group1", value="file1")],
+                    ),
+                ],
+            ),
+            id="defaults_with_override_only",
+        ),
     ],
 )
 def test_defaults_with_overrides_only(
