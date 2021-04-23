@@ -1,7 +1,6 @@
 ---
 id: overview
-title: Overview
-sidebar_label: Overview
+title: Developer Guide Overview
 ---
 
 This guide assumes you have checked-out the [repository](https://github.com/facebookresearch/hydra).
@@ -21,7 +20,10 @@ Activate the environment:
 ```
 conda activate hydra38
 ```
-From the source tree, install Hydra in development mode with the following command:
-```
-pip install -r requirements/dev.txt -e .
+From the source tree, install Hydra in development mode with the following commands:
+```bash
+# install development dependencies
+pip install -r requirements/dev.txt
+# install Hydra in development (editable) mode
+pip install -e .
 ```
