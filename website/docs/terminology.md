@@ -59,7 +59,7 @@ One of the configs in a Config Group.
 A Config Node is either a `Value Node` (a primitive type), or a `Container Node`.  A `Container Node` is a list or dictionary of `Value Nodes`.
 
 ### Package
-A Package is the path to [Config Node](#config-node) in the [Config Object](#output-config-object). 
+A Package is the path to a [Config Node](#config-node) in the [Config Object](#output-config-object).
 
 ### Package Directive
 The [Package Directive](advanced/overriding_packages.md) specifies the root [Package](#package) of a [Config File](#input-configs)
