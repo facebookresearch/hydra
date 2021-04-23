@@ -22,11 +22,17 @@ class RayAWSLauncher(Launcher):
         env_setup: DictConfig,
         ray: RayAWSConf,
         stop_cluster: bool,
+        no_restart: bool,
+        restart_only: bool,
+        no_config_cache: bool,
         sync_up: RsyncConf,
         sync_down: RsyncConf,
     ) -> None:
         self.ray_cfg = ray
         self.stop_cluster = stop_cluster
+        self.no_restart = no_restart
+        self.restart_only = restart_only
+        self.no_config_cache = no_config_cache
         self.sync_up = sync_up
         self.sync_down = sync_down
         self.config: Optional[DictConfig] = None

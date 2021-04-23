@@ -96,11 +96,12 @@ class EnvSetupConf:
     pip_packages: Dict[str, str] = field(
         default_factory=lambda: {
             "omegaconf": "${ray_pkg_version:omegaconf}",
-            "hydra_core": "${ray_pkg_version:hydra}",
+            "hydra_core": "1.1.0dev5",
             "ray": "${ray_pkg_version:ray}",
             "cloudpickle": "${ray_pkg_version:cloudpickle}",
             "pickle5": get_distribution("pickle5").version,
             "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
+            "hydra_joblib_launcher": "1.1.5.dev1",
         }
     )
 
@@ -243,6 +244,10 @@ class RayAWSLauncherConf:
     # This can be used to download jobs output to local machine avoid the hassle to log on remote machine.
     # source is remote dir, target is local dir
     sync_down: RsyncConf = RsyncConf()
+
+    no_restart: bool = False
+    restart_only: bool = False
+    no_config_cache: bool = False
 
 
 config_store = ConfigStore.instance()

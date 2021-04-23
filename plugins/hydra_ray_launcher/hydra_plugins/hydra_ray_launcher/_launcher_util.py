@@ -6,6 +6,7 @@ from subprocess import PIPE, Popen
 from typing import Any, Dict, Generator, List, Tuple
 
 import ray
+from ray.autoscaler import sdk
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
@@ -81,11 +82,10 @@ def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
 
 
 @contextmanager
-def ray_tmp_dir(yaml_path: str, run_env: str) -> Generator[Any, None, None]:
-    args = ["ray", "exec", f"--run-env={run_env}"]
-
-    mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
-    out, _ = _run_command(mktemp_args)
+def ray_tmp_dir(config: Dict) -> Generator[Any, None, None]:
+    out = sdk.run_on_cluster(
+                config, cmd="echo $(mktemp -d)", with_output=True).decode()
+    
     tmppath = [
         x
         for x in out.strip().split()
@@ -95,8 +95,7 @@ def ray_tmp_dir(yaml_path: str, run_env: str) -> Generator[Any, None, None]:
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
-    rmtemp_args = args + [yaml_path, f"rm -rf {tmp_path}"]
-    _run_command(rmtemp_args)
+    sdk.run_on_cluster(config, cmd=f"rm -rf {tmp_path}")
 
 
 def ray_new_dir(yaml_path: str, new_dir: str, run_env: str) -> None:
@@ -117,8 +116,7 @@ def ray_down(yaml_path: str) -> None:
 
 
 def ray_up(yaml_path: str) -> None:
-    args = ["ray", "up", "-y", yaml_path]
-    _run_command(args)
+    sdk.create_or_update_cluster(yaml_path, no_config_cache=True)
 
 
 def ray_exec(yaml_path: str, run_env: str, file_path: str, pickle_path: str) -> None:
