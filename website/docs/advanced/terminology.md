@@ -7,11 +7,11 @@ Examples of many of the following concepts are in the [Examples section](#exampl
 
 ## Input Configs
 Input configs are building blocks used to construct the [Output Config](#output-config) consumed by the application.
-They can be grouped by placing them into [Config Groups](#config-group).
+They can be grouped by placing them in [Config Groups](#config-group).
 
 ### Config files
-A form of Input Config: Hydra supports ([YAML](https://yaml.org/) files) config files. The files can physically exist on the file 
-system or in Python modules.
+Config files are form of input configs in [YAML](https://yaml.org/) format. They can exist in the file system or
+in a Python module.
 ```yaml title="Example config file
 user:
   name: James Bond
@@ -19,8 +19,9 @@ user:
 ```
 
 ### Structured Config
-A form of Input Config: A Config object initialized with a class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class.   
-Structured Configs provide additional type information that enables static and runtime type checking.
+This term has two common meanings:
+1. A class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class which is intended to be used as config.  
+2. A Config object initialized from a class or object as defined in 1. Structured Configs provide additional type information that enables static and runtime type checking.
 
 The two primary patterns for using Structured Configs are:
 - As an [Input Config](#input-configs).
@@ -80,6 +81,7 @@ An Input Config in a Config Group. When used in a Defaults List, a Config Group 
 ## Package
 A Package is the path to node in a config. By default, the Package of a Config Group Option is derived from the Config Group.
 *e.g:* Configs in **mi6/agent** will have the package **mi6.agent** by default.
+
 
 The [Package Directive](overriding_packages.md#overriding-the-package-via-the-package-directive) specifies the root [Package](#package) of a [Config File](#input-configs). It can appear at the top of YAML config file.
 
