@@ -15,12 +15,7 @@ from omegaconf import OmegaConf, open_dict, read_write
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
     JOB_SPEC_PICKLE,
-    ray_down,
-    ray_exec,
-    ray_rsync_down,
-    ray_rsync_up,
     ray_tmp_dir,
-    rsync,
 )
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
     RayAWSLauncher,
@@ -139,44 +134,33 @@ def launch_jobs(
                     if launcher.sync_up.target_dir
                     else remote_tmp_dir
                 )
-                rsync(
-                    launcher.ray_yaml_path,
-                    launcher.sync_up.include,
-                    launcher.sync_up.exclude,
-                    os.path.join(source_dir, ""),
-                    target_dir,
-                )
+                config['rsync_exclude'] = OmegaConf.to_container(launcher.sync_up.exclude, resolve=True)
+                sdk.rsync(config, source=os.path.join(source_dir, ""), target=target_dir, down=False)
             sdk.run_on_cluster(
                 config, cmd=f"python {remote_script_path} {remote_tmp_dir}")
             
             sdk.rsync(
-                config, target=local_tmp_download_dir, source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE), down=True)
+                config, source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE), target=local_tmp_download_dir, down=True)
 
             sync_down_cfg = launcher.sync_down
 
             if (
                 sync_down_cfg.target_dir
                 or sync_down_cfg.source_dir
-                or sync_down_cfg.include
                 or sync_down_cfg.exclude
             ):
                 source_dir = (
                     sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
                 )
                 target_dir = (
-                    sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
+                    sync_down_cfg.target_dir if sync_down_cfg.target_dir else sweep_dir
                 )
                 target_dir = Path(_get_abs_code_dir(target_dir))
                 target_dir.mkdir(parents=True, exist_ok=True)
 
-                rsync(
-                    launcher.ray_yaml_path,
-                    launcher.sync_down.include,
-                    launcher.sync_down.exclude,
-                    os.path.join(source_dir),
-                    str(target_dir),
-                    up=False,
-                )
+                config['rsync_exclude'] =  OmegaConf.to_container(launcher.sync_down.exclude, resolve=True)
+                sdk.rsync(config, source=os.path.join(source_dir, ""), target=str(target_dir), down=True)
+
                 log.info(
                     f"Syncing outputs from remote dir: {source_dir} to local dir: {target_dir.absolute()} "
                 )
