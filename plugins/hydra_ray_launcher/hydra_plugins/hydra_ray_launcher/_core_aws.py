@@ -4,13 +4,13 @@ import os
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
-from ray.autoscaler import sdk
 
 import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
+from ray.autoscaler import sdk
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -109,23 +109,28 @@ def launch(
 def launch_jobs(
     launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
 ) -> Sequence[JobReturn]:
-    config = OmegaConf.to_container(launcher.ray_cfg.cluster, resolve=True, enum_to_str=True)
-    sdk.create_or_update_cluster(config,
-                                 no_restart=launcher.no_restart,
-                                 restart_only=launcher.restart_only,
-                                 no_config_cache=True)
+    config = OmegaConf.to_container(
+        launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
+    )
+    sdk.create_or_update_cluster(
+        config,
+        no_restart=launcher.no_restart,
+        restart_only=launcher.restart_only,
+        no_config_cache=True,
+    )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
-        with ray_tmp_dir(
-            config
-        ) as remote_tmp_dir:
+        with ray_tmp_dir(config) as remote_tmp_dir:
             sdk.rsync(
-                config, source=os.path.join(local_tmp_dir, ""), target=remote_tmp_dir, down=False)
+                config,
+                source=os.path.join(local_tmp_dir, ""),
+                target=remote_tmp_dir,
+                down=False,
+            )
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            sdk.rsync(
-                config, source=script_path, target=remote_script_path, down=False)
+            sdk.rsync(config, source=script_path, target=remote_script_path, down=False)
 
             if launcher.sync_up.source_dir:
                 source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
@@ -134,13 +139,25 @@ def launch_jobs(
                     if launcher.sync_up.target_dir
                     else remote_tmp_dir
                 )
-                config['rsync_exclude'] = OmegaConf.to_container(launcher.sync_up.exclude, resolve=True)
-                sdk.rsync(config, source=os.path.join(source_dir, ""), target=target_dir, down=False)
+                config["rsync_exclude"] = OmegaConf.to_container(
+                    launcher.sync_up.exclude, resolve=True
+                )
+                sdk.rsync(
+                    config,
+                    source=os.path.join(source_dir, ""),
+                    target=target_dir,
+                    down=False,
+                )
             sdk.run_on_cluster(
-                config, cmd=f"python {remote_script_path} {remote_tmp_dir}")
-            
+                config, cmd=f"python {remote_script_path} {remote_tmp_dir}"
+            )
+
             sdk.rsync(
-                config, source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE), target=local_tmp_download_dir, down=True)
+                config,
+                source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
+                target=local_tmp_download_dir,
+                down=True,
+            )
 
             sync_down_cfg = launcher.sync_down
 
@@ -158,8 +175,15 @@ def launch_jobs(
                 target_dir = Path(_get_abs_code_dir(target_dir))
                 target_dir.mkdir(parents=True, exist_ok=True)
 
-                config['rsync_exclude'] =  OmegaConf.to_container(launcher.sync_down.exclude, resolve=True)
-                sdk.rsync(config, source=os.path.join(source_dir, ""), target=str(target_dir), down=True)
+                config["rsync_exclude"] = OmegaConf.to_container(
+                    launcher.sync_down.exclude, resolve=True
+                )
+                sdk.rsync(
+                    config,
+                    source=os.path.join(source_dir, ""),
+                    target=str(target_dir),
+                    down=True,
+                )
 
                 log.info(
                     f"Syncing outputs from remote dir: {source_dir} to local dir: {target_dir.absolute()} "
@@ -176,7 +200,7 @@ def launch_jobs(
             log.warning(
                 "NOT stopping cluster, this may incur extra cost for you. (stop_cluster=false)"
             )
-        
+
         with open(os.path.join(local_tmp_download_dir, JOB_RETURN_PICKLE), "rb") as f:
             job_returns = pickle.load(f)  # nosec
             assert isinstance(job_returns, List)

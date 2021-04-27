@@ -14,7 +14,8 @@ hydra:
       # we leave target_dir to be null
       # as a result the files will be synced to a temp dir on remote cluster.
       # the temp dir will be cleaned up after the jobs are done.
-      # recommend to leave target_dir to be null if you are syncing code/artifacts to remote cluster so you don't need
+      # recommend to leave target_dir to be null if you are syncing
+      # code/artifacts to remote cluster so you don't need
       # configure $PYTHONPATH on remote cluster
       # No need to sync up config files.
       exclude: ['conf', 'multirun', "**/__pycache__"]

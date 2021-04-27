@@ -1,17 +1,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-import os
 from contextlib import contextmanager
-from subprocess import PIPE, Popen
-from typing import Any, Dict, Generator, List, Tuple
+from typing import Any, Dict, Generator
 
 import ray
-from ray.autoscaler import sdk
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
+from ray.autoscaler import sdk
 
 log = logging.getLogger(__name__)
 
@@ -67,9 +65,8 @@ def launch_job_on_ray(
 
 @contextmanager
 def ray_tmp_dir(config: Dict) -> Generator[Any, None, None]:
-    out = sdk.run_on_cluster(
-                config, cmd="echo $(mktemp -d)", with_output=True).decode()
-    
+    out = sdk.run_on_cluster(config, cmd="echo $(mktemp -d)", with_output=True).decode()
+
     tmppath = [
         x
         for x in out.strip().split()
