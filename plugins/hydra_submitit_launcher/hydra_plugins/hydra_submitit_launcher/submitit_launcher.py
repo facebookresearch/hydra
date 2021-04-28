@@ -5,9 +5,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from hydra import TaskFunction
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
+from hydra.core.utils import (
+    HydraContext,
+    JobReturn,
+    filter_overrides,
+    run_job,
+    setup_globals,
+)
 from hydra.plugins.launcher import Launcher
 from omegaconf import DictConfig, OmegaConf, open_dict
 
@@ -28,18 +33,19 @@ class BaseSubmititLauncher(Launcher):
             self.params[k] = v
 
         self.config: Optional[DictConfig] = None
-        self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
         self.sweep_configs: Optional[TaskFunction] = None
+        self.hydra_context: Optional[HydraContext] = None
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.task_function = task_function
 
     def __call__(
@@ -53,13 +59,13 @@ class BaseSubmititLauncher(Launcher):
         # lazy import to ensure plugin discovery remains fast
         import submitit
 
-        assert self.config_loader is not None
+        assert self.hydra_context is not None
         assert self.config is not None
         assert self.task_function is not None
 
         Singleton.set_state(singleton_state)
         setup_globals()
-        sweep_config = self.config_loader.load_sweep_config(
+        sweep_config = self.hydra_context.config_loader.load_sweep_config(
             self.config, sweep_overrides
         )
 
@@ -69,8 +75,9 @@ class BaseSubmititLauncher(Launcher):
             sweep_config.hydra.job.num = job_num
 
         return run_job(
-            config=sweep_config,
+            hydra_context=self.hydra_context,
             task_function=self.task_function,
+            config=sweep_config,
             job_dir_key=job_dir_key,
             job_subdir_key="hydra.sweep.subdir",
         )

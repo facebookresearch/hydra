@@ -54,7 +54,7 @@ def launch(
 ) -> Sequence[JobReturn]:
     setup_globals()
     assert launcher.config is not None
-    assert launcher.config_loader is not None
+    assert launcher.hydra_context is not None
     assert launcher.task_function is not None
 
     setup_commands = launcher.env_setup.commands
@@ -80,7 +80,7 @@ def launch(
             idx = initial_job_idx + idx
             ostr = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {ostr}")
-            sweep_config = launcher.config_loader.load_sweep_config(
+            sweep_config = launcher.hydra_context.config_loader.load_sweep_config(
                 launcher.config, list(overrides)
             )
             with open_dict(sweep_config):
@@ -91,6 +91,7 @@ def launch(
 
         _pickle_jobs(
             tmp_dir=local_tmp_dir,
+            hydra_context=launcher.hydra_context,
             sweep_configs=sweep_configs,  # type: ignore
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),

@@ -11,16 +11,26 @@ from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
+from hydra.core.config_loader import ConfigLoader
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraJobException
 from hydra.types import TaskFunction
 
+if TYPE_CHECKING:
+    from hydra._internal.callbacks import Callbacks
+
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class HydraContext:
+    config_loader: ConfigLoader
+    callbacks: "Callbacks"
 
 
 def simple_stdout_log_config(level: int = logging.INFO) -> None:
@@ -83,15 +93,16 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
 
 
 def run_job(
-    config: DictConfig,
+    *,
+    hydra_context: HydraContext,
     task_function: TaskFunction,
+    config: DictConfig,
     job_dir_key: str,
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
-    from hydra._internal.callbacks import Callbacks
 
-    callbacks = Callbacks(config)
+    callbacks = hydra_context.callbacks
 
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg

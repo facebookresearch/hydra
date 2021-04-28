@@ -14,6 +14,7 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
+    HydraContext,
     JobReturn,
     JobRuntime,
     configure_log,
@@ -95,8 +96,11 @@ class Hydra:
         callbacks.on_run_start(config=cfg, config_name=config_name)
 
         ret = run_job(
-            config=cfg,
+            hydra_context=HydraContext(
+                config_loader=self.config_loader, callbacks=callbacks
+            ),
             task_function=task_function,
+            config=cfg,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
             configure_logging=with_log_configuration,
@@ -125,7 +129,11 @@ class Hydra:
         callbacks.on_multirun_start(config=cfg, config_name=config_name)
 
         sweeper = Plugins.instance().instantiate_sweeper(
-            config=cfg, config_loader=self.config_loader, task_function=task_function
+            config=cfg,
+            hydra_context=HydraContext(
+                config_loader=self.config_loader, callbacks=callbacks
+            ),
+            task_function=task_function,
         )
         task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
         assert isinstance(task_overrides, list)

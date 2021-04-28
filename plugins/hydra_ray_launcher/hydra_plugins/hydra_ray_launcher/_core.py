@@ -24,7 +24,7 @@ def launch(
 ) -> Sequence[JobReturn]:
     setup_globals()
     assert launcher.config is not None
-    assert launcher.config_loader is not None
+    assert launcher.hydra_context is not None
     assert launcher.task_function is not None
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
@@ -42,7 +42,7 @@ def launch(
         idx = initial_job_idx + idx
         ostr = " ".join(filter_overrides(overrides))
         log.info(f"\t#{idx} : {ostr}")
-        sweep_config = launcher.config_loader.load_sweep_config(
+        sweep_config = launcher.hydra_context.config_loader.load_sweep_config(
             launcher.config, list(overrides)
         )
         with open_dict(sweep_config):
@@ -52,6 +52,7 @@ def launch(
             sweep_config.hydra.job.id = f"job_id_for_{idx}"
             sweep_config.hydra.job.num = idx
             ray_obj = launch_job_on_ray(
+                launcher.hydra_context,
                 launcher.ray_cfg.remote,
                 sweep_config,
                 launcher.task_function,

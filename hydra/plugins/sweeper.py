@@ -5,12 +5,12 @@ Sweeper plugin interface
 from abc import abstractmethod
 from typing import Any, List, Sequence, Optional
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
 from .launcher import Launcher
 
 from .plugin import Plugin
+from hydra.core.utils import HydraContext
 
 
 class Sweeper(Plugin):
@@ -20,16 +20,17 @@ class Sweeper(Plugin):
     (where each job typically takes a different command line arguments)
     """
 
-    config_loader: Optional[ConfigLoader]
+    hydra_context: Optional[HydraContext]
     config: Optional[DictConfig]
     launcher: Optional[Launcher]
 
     @abstractmethod
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         raise NotImplementedError()
 
@@ -50,9 +51,9 @@ class Sweeper(Plugin):
         This repeat work the launcher will do, but as the launcher may be performing this in a different
         process/machine it's important to do it here as well to detect failures early.
         """
-        assert self.config_loader is not None
+        assert self.hydra_context is not None
         assert self.config is not None
         for overrides in batch:
-            self.config_loader.load_sweep_config(
+            self.hydra_context.config_loader.load_sweep_config(
                 master_config=self.config, sweep_overrides=list(overrides)
             )

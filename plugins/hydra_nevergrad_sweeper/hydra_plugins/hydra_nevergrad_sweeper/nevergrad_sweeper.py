@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from hydra import TaskFunction
-from hydra.core.config_loader import ConfigLoader
+from hydra.core.utils import HydraContext
 from hydra.plugins.sweeper import Sweeper
 from omegaconf import DictConfig
 
@@ -19,11 +19,14 @@ class NevergradSweeper(Sweeper):
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
-        return self.sweeper.setup(config, config_loader, task_function)
+        return self.sweeper.setup(
+            hydra_context=hydra_context, task_function=task_function, config=config
+        )
 
     def sweep(self, arguments: List[str]) -> None:
         return self.sweeper.sweep(arguments)

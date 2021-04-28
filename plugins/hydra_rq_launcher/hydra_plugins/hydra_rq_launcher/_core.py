@@ -10,6 +10,7 @@ from fakeredis import FakeStrictRedis  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
+    HydraContext,
     JobReturn,
     configure_log,
     filter_overrides,
@@ -27,6 +28,7 @@ log = logging.getLogger(__name__)
 
 
 def execute_job(
+    hydra_context: HydraContext,
     sweep_config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
@@ -37,8 +39,9 @@ def execute_job(
     HydraConfig.instance().set_config(sweep_config)
 
     ret = run_job(
-        config=sweep_config,
+        hydra_context=hydra_context,
         task_function=task_function,
+        config=sweep_config,
         job_dir_key="hydra.sweep.dir",
         job_subdir_key="hydra.sweep.subdir",
     )
@@ -56,8 +59,8 @@ def launch(
     """
     setup_globals()
     assert launcher.config is not None
-    assert launcher.config_loader is not None
     assert launcher.task_function is not None
+    assert launcher.hydra_context is not None
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
     sweep_dir = Path(str(launcher.config.hydra.sweep.dir))
@@ -113,7 +116,7 @@ def launch(
         if enqueue_keywords["description"] is None:
             enqueue_keywords["description"] = description
 
-        sweep_config = launcher.config_loader.load_sweep_config(
+        sweep_config = launcher.hydra_context.config_loader.load_sweep_config(
             launcher.config, list(overrides)
         )
         with open_dict(sweep_config):
@@ -122,6 +125,7 @@ def launch(
 
         job = queue.enqueue(
             execute_job,
+            hydra_context=launcher.hydra_context,
             sweep_config=sweep_config,
             task_function=launcher.task_function,
             singleton_state=singleton_state,

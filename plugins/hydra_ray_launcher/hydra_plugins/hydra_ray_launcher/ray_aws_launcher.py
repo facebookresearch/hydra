@@ -2,8 +2,7 @@
 import logging
 from typing import Optional, Sequence
 
-from hydra.core.config_loader import ConfigLoader
-from hydra.core.utils import JobReturn
+from hydra.core.utils import HydraContext, JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
@@ -30,19 +29,20 @@ class RayAWSLauncher(Launcher):
         self.sync_up = sync_up
         self.sync_down = sync_down
         self.config: Optional[DictConfig] = None
-        self.config_loader: Optional[ConfigLoader] = None
+        self.hydra_context: Optional[HydraContext] = None
         self.task_function: Optional[TaskFunction] = None
         self.ray_yaml_path: Optional[str] = None
         self.env_setup = env_setup
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.task_function = task_function
 
     def launch(

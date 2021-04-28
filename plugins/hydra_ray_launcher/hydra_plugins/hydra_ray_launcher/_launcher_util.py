@@ -8,7 +8,7 @@ from typing import Any, Dict, Generator, List, Tuple
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, run_job, setup_globals
+from hydra.core.utils import HydraContext, JobReturn, run_job, setup_globals
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
@@ -30,6 +30,7 @@ def start_ray(init_cfg: DictConfig) -> None:
 
 
 def _run_job(
+    hydra_context: HydraContext,
     sweep_config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
@@ -38,14 +39,16 @@ def _run_job(
     Singleton.set_state(singleton_state)
     HydraConfig.instance().set_config(sweep_config)
     return run_job(
-        config=sweep_config,
+        hydra_context=hydra_context,
         task_function=task_function,
+        config=sweep_config,
         job_dir_key="hydra.sweep.dir",
         job_subdir_key="hydra.sweep.subdir",
     )
 
 
 def launch_job_on_ray(
+    hydra_context: HydraContext,
     ray_remote: DictConfig,
     sweep_config: DictConfig,
     task_function: TaskFunction,
@@ -57,6 +60,7 @@ def launch_job_on_ray(
         run_job_ray = ray.remote(_run_job)
 
     ret = run_job_ray.remote(
+        hydra_context=hydra_context,
         sweep_config=sweep_config,
         task_function=task_function,
         singleton_state=singleton_state,
