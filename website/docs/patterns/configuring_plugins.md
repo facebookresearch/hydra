@@ -10,8 +10,8 @@ There are two primary ways to customize the configuration of a plugin:
 - Overriding it directly in your primary config
 - Extending the config and using it from your primary config.
 	
-The first method is the simplest, but it makes it harder to switch to a different plugin configuration.
-The second method is a bit more complicated, but makes it easy to switch between different plugin configurations.
+The first method is the simpler, but it makes it harder to switch to a different plugin configuration.
+The second method is a bit more complicated, but makes it easier to switch between different plugin configurations.
 
 
 The following methods apply to all Hydra plugins. In the following examples, we will configure a imaginary Launcher plugin
@@ -39,7 +39,7 @@ class Falcon9Conf:
 
 ```python
 @dataclass
-class Sim:
+class Simulation:
   ton_fuel:  int = 10
   window_size:
     width: 1024
@@ -109,10 +109,9 @@ hydra:
 </div>
 
 
-This approach works well for common configs across different modes. What if we want to override `window_size.width`  for `sim` mode? 
-Overriding the value in primary config will limit launching option to only
-`hydra/launcher=sim` - we can no longer override `hydra/launcher=falcon9` because  `falcon9` does not support configuring
-`window_size.width`. In the next section, we will look at how to extend plugin default for more configuration flexibility.
+This approach makes the assumption that the Launcher used has all the fields we are overriding.
+If we wanted to override a field that exists in the Simulation Launcher but not in the Falcon9 Launcher, 
+like `window_size.width`, we would no longer be able to use the Falcon9 Launcher! The next section solves this problem.
 
 ### Extending plugin default config
 
@@ -130,7 +129,7 @@ Say that we want to override certain values for different Launcher mode:
 <div className="row">
 <div className="col col--6">
 
-```yaml title="hydra/launcher/my_falcon9" {4}
+```yaml title="hydra/launcher/my_falcon9.yaml" {4}
 defaults:
   - falcon9
 
@@ -141,7 +140,7 @@ ton_fuel: 2
 </div>
 <div className="col col--6">
 
-```yaml title="hydra/sweeper/my_sim" {5}
+```yaml title="hydra/sweeper/my_sim.yaml" {5}
 defaults:
   - sim
 
