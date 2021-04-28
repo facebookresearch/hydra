@@ -52,6 +52,7 @@
 New users and existing users that want to try the latest features are encouraged to use it and report issues.
 
 - [Documentation](https://hydra.cc/docs/next/intro)
+- [Provisional release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.dev6)
 - Installation : `pip install hydra-core --upgrade --pre`
 - Dev releases are more likely to have bugs, please report any issues.
 - APIs and behaviors are subject to change without notice between different dev releases.
