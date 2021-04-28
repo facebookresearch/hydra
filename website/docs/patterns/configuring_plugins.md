@@ -16,7 +16,7 @@ The second method is a bit more complicated, but makes it easy to switch between
 
 The following methods apply to all Hydra plugins. In the following examples, we will configure a imaginary Launcher plugin
 `MoonLauncher`. The Launcher has two modes: `falcon9`, which actually launches the application to the Moon and 
-`simulation` which simulates a launch.
+`sim` which simulates a launch.
 
 The config schema for MoonLauncher looks like:
 
@@ -39,7 +39,7 @@ class Falcon9Conf:
 
 ```python
 @dataclass
-class Simulation:
+class Sim:
   ton_fuel:  int = 10
   window_size:
     width: 1024
@@ -93,7 +93,7 @@ hydra:
 <div className="col col--4">
 
 ```commandline title="command-line override" 
-hydra/launcher=simulation
+hydra/launcher=sim
 
 
 ```
@@ -109,7 +109,10 @@ hydra:
 </div>
 
 
-
+This approach works well for common configs across different modes. What if we want to override `window_size.width`  for `sim` mode? 
+Overriding the value in primary config will limit launching option to only
+`hydra/launcher=sim` - we can no longer override `hydra/launcher=falcon9` because  `falcon9` does not support configuring
+`window_size.width`. In the next section, we will look at how to extend plugin default for more configuration flexibility.
 
 ### Extending plugin default config
 
@@ -133,13 +136,14 @@ defaults:
 
 ton_fuel: 2
 
+
 ```
 </div>
 <div className="col col--6">
 
-```yaml title="hydra/sweeper/my_simulation" {5}
+```yaml title="hydra/sweeper/my_sim" {5}
 defaults:
-  - simulation
+  - sim
 
 window_size:
   width: 768
@@ -170,7 +174,7 @@ hydra:
 <div className="col col--6">
 
 ```commandline title="command-line override" 
-hydra/launcher=my_simulation
+hydra/launcher=my_sim
 
 
 ```
