@@ -1,0 +1,22 @@
+_target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
+ray:
+  init:
+    address: auto
+  remote:
+    num_cpus: 2
+  cluster:
+    min_workers: 1
+    max_workers: 1
+    initial_workers: 1
+    provider:
+      type: aws
+      region: us-west-2
+      availability_zone: us-west-2b
+    auth:
+      ssh_user: ubuntu
+    head_node:
+      SubnetIds:
+        - subnet-04907b6ca5184e259
+    worker_nodes:
+      SubnetIds:
+        - subnet-04907b6ca5184e259
