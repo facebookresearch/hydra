@@ -94,6 +94,7 @@ def launch(
             sweep_configs=sweep_configs,  # type: ignore
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
+            ray_init_cfg=launcher.ray_cfg.init,
         )
 
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:

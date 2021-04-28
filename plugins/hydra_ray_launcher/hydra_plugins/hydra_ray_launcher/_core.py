@@ -59,4 +59,4 @@ def launch(
             )
             runs.append(ray_obj)
 
-    return [ray.get(run) for run in runs]
+    return ray.get(runs)
