@@ -15,7 +15,6 @@ from typing import Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra.core.callbacks import Callbacks
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraJobException
@@ -90,6 +89,8 @@ def run_job(
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
+    from hydra._internal.utils import Callbacks
+
     callbacks = Callbacks(config)
 
     old_cwd = os.getcwd()

@@ -9,7 +9,7 @@ from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, U
 
 from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 
-from hydra._internal.utils import get_column_widths, run_and_report
+from hydra._internal.utils import Callbacks, get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
@@ -28,7 +28,6 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import RunMode, TaskFunction
 
-from ..core.callbacks import Callbacks
 from ..core.default_element import DefaultsTreeNode, InputDefault
 from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
