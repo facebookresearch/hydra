@@ -89,7 +89,7 @@ def run_job(
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
-    from hydra.core.callbacks import Callbacks
+    from hydra._internal.callbacks import Callbacks
 
     callbacks = Callbacks(config)
 
