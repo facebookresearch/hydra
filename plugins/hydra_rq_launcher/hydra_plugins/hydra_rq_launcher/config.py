@@ -23,6 +23,7 @@ class RedisConf:
     # path to custom certs, via REDIS_SSL_CA_CERTS env veriable, default none
     ssl_ca_certs: Optional[str] = II("env:REDIS_SSL_CA_CERTS,")
 
+
 @dataclass
 class EnqueueConf:
     # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
