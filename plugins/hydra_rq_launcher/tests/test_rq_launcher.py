@@ -1,3 +1,4 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -5,8 +6,6 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
-
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pytest import mark
 
 from hydra_plugins.hydra_rq_launcher.rq_launcher import RQLauncher

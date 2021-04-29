@@ -1,3 +1,6 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pytest import mark
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -5,8 +8,6 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from pytest import mark
 
 from hydra_plugins.example_launcher_plugin.example_launcher import ExampleLauncher
 
