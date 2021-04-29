@@ -74,6 +74,8 @@ def launch(
             port=rq_cfg.redis.port,
             db=rq_cfg.redis.db,
             password=rq_cfg.redis.password,
+            ssl=rq_cfg.redis.ssl,
+            ssl_ca_certs=rq_cfg.redis.ssl_ca_certs
         )
     else:
         log.info("Running in synchronous mode")
