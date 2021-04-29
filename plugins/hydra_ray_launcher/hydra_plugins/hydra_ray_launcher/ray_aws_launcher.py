@@ -3,9 +3,8 @@ import logging
 from typing import Optional, Sequence
 
 from hydra.core.utils import JobReturn
-from hydra.types import HydraContext
 from hydra.plugins.launcher import Launcher
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig
 
 from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore

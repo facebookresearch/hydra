@@ -4,16 +4,10 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
-from hydra import TaskFunction
 from hydra.core.singleton import Singleton
-from hydra.core.utils import (
-    HydraContext,
-    JobReturn,
-    filter_overrides,
-    run_job,
-    setup_globals,
-)
+from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 
 from .config import BaseQueueConf

@@ -9,10 +9,9 @@ from ax.service.ax_client import AxClient  # type: ignore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import IntervalSweep, Override, Transformer
 from hydra.core.plugins import Plugins
-from hydra.types import HydraContext
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
 from ._earlystopper import EarlyStopper

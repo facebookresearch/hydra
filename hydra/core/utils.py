@@ -11,11 +11,10 @@ from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraJobException

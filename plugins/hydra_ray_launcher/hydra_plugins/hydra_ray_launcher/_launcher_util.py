@@ -9,9 +9,7 @@ import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
-from hydra.types import HydraContext
-
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
 log = logging.getLogger(__name__)

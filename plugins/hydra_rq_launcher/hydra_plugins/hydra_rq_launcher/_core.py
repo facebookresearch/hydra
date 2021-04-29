@@ -10,14 +10,13 @@ from fakeredis import FakeStrictRedis  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
-    HydraContext,
     JobReturn,
     configure_log,
     filter_overrides,
     run_job,
     setup_globals,
 )
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 from redis import Redis
 from rq import Queue  # type: ignore
