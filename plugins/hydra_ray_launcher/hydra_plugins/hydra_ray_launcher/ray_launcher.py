@@ -1,8 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Optional, Sequence
+from typing import Any, Optional, Sequence
 
 from hydra.core.config_loader import ConfigLoader
-from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
 from omegaconf import DictConfig
@@ -27,7 +26,7 @@ class RayLauncher(Launcher):
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
-    ) -> Sequence[JobReturn]:
+    ) -> Any:
         from . import _core
 
         return _core.launch(

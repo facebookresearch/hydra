@@ -1,11 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 import ray
 from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
+from hydra.core.utils import configure_log, filter_overrides, setup_globals
 from omegaconf import open_dict
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
@@ -21,7 +21,7 @@ def launch(
     launcher: RayLauncher,
     job_overrides: Sequence[Sequence[str]],
     initial_job_idx: int,
-) -> Sequence[JobReturn]:
+) -> Any:
     setup_globals()
     assert launcher.config is not None
     assert launcher.config_loader is not None
