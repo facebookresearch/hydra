@@ -13,7 +13,7 @@ from hydra.core.override_parser.types import (
     Transformer,
 )
 from hydra.core.plugins import Plugins
-from hydra.core.utils import HydraContext
+from hydra.types import HydraContext
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf

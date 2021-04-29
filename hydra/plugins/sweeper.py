@@ -10,7 +10,7 @@ from omegaconf import DictConfig
 from .launcher import Launcher
 
 from .plugin import Plugin
-from hydra.core.utils import HydraContext
+from hydra.types import HydraContext
 
 
 class Sweeper(Plugin):

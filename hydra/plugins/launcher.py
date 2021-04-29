@@ -7,8 +7,9 @@ from typing import Sequence
 
 from omegaconf import DictConfig
 
-from hydra.core.utils import JobReturn, HydraContext
-from hydra.types import TaskFunction
+from hydra.core.utils import JobReturn
+
+from hydra.types import TaskFunction, HydraContext
 
 from .plugin import Plugin
 

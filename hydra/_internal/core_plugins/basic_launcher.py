@@ -8,7 +8,6 @@ from omegaconf import DictConfig, open_dict
 
 from hydra.core.config_store import ConfigStore
 from hydra.core.utils import (
-    HydraContext,
     JobReturn,
     configure_log,
     filter_overrides,
@@ -16,7 +15,7 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 
 log = logging.getLogger(__name__)
 

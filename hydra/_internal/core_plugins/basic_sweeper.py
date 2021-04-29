@@ -28,11 +28,11 @@ from omegaconf import DictConfig, OmegaConf
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override
-from hydra.core.utils import HydraContext, JobReturn
+from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 
 
 @dataclass

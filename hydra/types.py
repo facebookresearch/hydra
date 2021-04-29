@@ -2,11 +2,22 @@
 import warnings
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from omegaconf import MISSING
 
 TaskFunction = Callable[[Any], Any]
+
+
+if TYPE_CHECKING:
+    from hydra._internal.callbacks import Callbacks
+    from hydra.core.config_loader import ConfigLoader
+
+
+@dataclass
+class HydraContext:
+    config_loader: "ConfigLoader"
+    callbacks: "Callbacks"
 
 
 @dataclass

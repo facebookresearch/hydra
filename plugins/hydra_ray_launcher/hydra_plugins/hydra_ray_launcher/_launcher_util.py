@@ -8,7 +8,9 @@ from typing import Any, Dict, Generator, List, Tuple
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
-from hydra.core.utils import HydraContext, JobReturn, run_job, setup_globals
+from hydra.core.utils import JobReturn, run_job, setup_globals
+from hydra.types import HydraContext
+
 from hydra.types import TaskFunction
 from omegaconf import DictConfig, OmegaConf
 

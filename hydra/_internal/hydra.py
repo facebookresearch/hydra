@@ -14,7 +14,6 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
-    HydraContext,
     JobReturn,
     JobRuntime,
     configure_log,
@@ -27,7 +26,7 @@ from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import RunMode, TaskFunction
+from hydra.types import HydraContext, RunMode, TaskFunction
 
 from ..core.default_element import DefaultsTreeNode, InputDefault
 from .callbacks import Callbacks

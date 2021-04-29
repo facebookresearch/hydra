@@ -20,7 +20,7 @@ from hydra.core.override_parser.types import (
     Transformer,
 )
 from hydra.core.plugins import Plugins
-from hydra.core.utils import HydraContext
+from hydra.types import HydraContext
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import TaskFunction

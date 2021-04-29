@@ -19,18 +19,9 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraJobException
-from hydra.types import TaskFunction
-
-if TYPE_CHECKING:
-    from hydra._internal.callbacks import Callbacks
+from hydra.types import HydraContext, TaskFunction
 
 log = logging.getLogger(__name__)
-
-
-@dataclass
-class HydraContext:
-    config_loader: ConfigLoader
-    callbacks: "Callbacks"
 
 
 def simple_stdout_log_config(level: int = logging.INFO) -> None:

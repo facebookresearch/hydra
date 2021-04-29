@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from hydra import TaskFunction
-from hydra.core.utils import HydraContext
+from hydra.types import HydraContext
 from hydra.plugins.sweeper import Sweeper
 from omegaconf import DictConfig
 

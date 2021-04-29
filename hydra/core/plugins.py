@@ -13,14 +13,13 @@ from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
 from hydra.core.singleton import Singleton
-from hydra.core.utils import HydraContext
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from hydra.utils import instantiate
 
 

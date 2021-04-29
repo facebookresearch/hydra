@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Sequence
 
-from hydra.core.utils import HydraContext
+from hydra.types import HydraContext
 from hydra.core.config_store import ConfigStore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
