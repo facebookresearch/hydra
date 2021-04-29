@@ -1,3 +1,6 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pytest import mark
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.launcher_common_tests import (
@@ -6,9 +9,6 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import TSweepRunner
-
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from pytest import mark
 
 from hydra_plugins.example_sweeper_plugin.example_sweeper import ExampleSweeper
 
