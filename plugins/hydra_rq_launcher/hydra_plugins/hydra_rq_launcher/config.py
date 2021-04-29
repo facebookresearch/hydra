@@ -19,9 +19,9 @@ class RedisConf:
     # switch to run without redis server in single thread, for testing purposes only
     mock: bool = II("env:REDIS_MOCK,False")
     # enable/disable SSL, via REDIS_SSL environment variable, default False
-    ssl: bool = II("oc.env:REDIS_SSL,False")
+    ssl: bool = II("env:REDIS_SSL,False")
     # path to custom certs, via REDIS_SSL_CA_CERTS env veriable, default none
-    ssl_ca_certs: Optional[str] = II("oc.env:REDIS_SSL_CA_CERTS,")
+    ssl_ca_certs: Optional[str] = II("env:REDIS_SSL_CA_CERTS,")
 
 @dataclass
 class EnqueueConf:
