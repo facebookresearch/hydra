@@ -66,8 +66,8 @@ class RayAutoScalerLauncher(Launcher):
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
-        from . import _core_aws
+        from . import _core_autoscaler
 
-        return _core_aws.launch(
+        return _core_autoscaler.launch(
             launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
         )
