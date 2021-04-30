@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from antlr4 import ParserRuleContext, TerminalNode, Token
 from antlr4.error.ErrorListener import ErrorListener
@@ -75,8 +75,16 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
     def visitListContainer(
         self, ctx: OverrideParser.ListContainerContext
     ) -> List[ParsedElementType]:
-        ret: List[ParsedElementType] = []
 
+        return (
+            []
+            if ctx.getChildCount() == 2
+            else list(self.visitSequence(ctx.getChild(1)))
+        )
+
+    def visitSequence(
+        self, ctx: OverrideParser.SequenceContext
+    ) -> Iterable[ParsedElementType]:
         idx = 0
         while True:
             element = ctx.element(idx)
@@ -84,8 +92,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 break
             else:
                 idx = idx + 1
-                ret.append(self.visitElement(element))
-        return ret
+                yield self.visitElement(element)
 
     def visitDictContainer(
         self, ctx: OverrideParser.DictContainerContext
@@ -117,6 +124,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             return self.visitFunction(ctx.function())  # type: ignore
         elif ctx.primitive():
             return self.visitPrimitive(ctx.primitive())
+        elif ctx.quotedValue():
+            return self.visitQuotedValue(ctx.quotedValue())
         elif ctx.listContainer():
             return self.visitListContainer(ctx.listContainer())
         elif ctx.dictContainer():
@@ -240,6 +249,44 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 f"{type(e).__name__} while evaluating '{ctx.getText()}': {e}"
             ) from e
 
+    def visitQuotedValue(self, ctx: OverrideParser.QuotedValueContext) -> QuotedString:
+        children = list(ctx.getChildren())
+        assert len(children) >= 2
+
+        # Single or double quote?
+        first_quote = children[0].getText()
+        if first_quote == "'":
+            quote = Quote.single
+        else:
+            assert first_quote == '"'
+            quote = Quote.double
+
+        tokens = []
+        is_interpolation = False
+        for child in children[1:-1]:  # iterate on child nodes between quotes
+            if isinstance(child, TerminalNode):
+                s = child.symbol
+                if s.type == OverrideLexer.ESC_QUOTE:
+                    # Always un-escape quotes.
+                    tokens.append(s.text[1])
+                    continue
+                if s.type == OverrideLexer.ESC_INTER:
+                    # OmegaConf processes escaped interpolations as interpolations.
+                    is_interpolation = True
+            else:
+                assert isinstance(child, OverrideParser.InterpolationContext)
+                is_interpolation = True
+            tokens.append(child.getText())
+
+        ret = "".join(tokens)
+
+        # If it is an interpolation, then OmegaConf will take care of un-escaping
+        # the `\\`. But if it is not, then we need to do it here.
+        if not is_interpolation:
+            ret = ret.replace("\\\\", "\\")
+
+        return QuotedString(text=ret, quote=quote)
+
     def _createPrimitive(
         self, ctx: ParserRuleContext
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
@@ -261,33 +308,38 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             # Concatenate, while un-escaping as needed.
             tokens = []
             for i, n in enumerate(ctx.getChildren()):
-                if n.symbol.type == OverrideLexer.WS and (
+                if isinstance(n, OverrideParser.InterpolationContext):
+                    tokens.append(n.getText())
+                elif n.symbol.type == OverrideLexer.WS and (
                     i < first_idx or i >= last_idx
                 ):
                     # Skip leading / trailing whitespaces.
                     continue
-                tokens.append(
-                    n.symbol.text[1::2]  # un-escape by skipping every other char
-                    if n.symbol.type == OverrideLexer.ESC
-                    else n.symbol.text
-                )
+                else:
+                    tokens.append(
+                        n.symbol.text[1::2]  # un-escape by skipping every other char
+                        if n.symbol.type == OverrideLexer.ESC
+                        else n.symbol.text
+                    )
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
-            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
-                text = node.getText()
-                qc = text[0]
-                text = text[1:-1]
-                if qc == "'":
-                    quote = Quote.single
-                    text = text.replace("\\'", "'")
-                elif qc == '"':
-                    quote = Quote.double
-                    text = text.replace('\\"', '"')
-                else:
-                    assert False
-                return QuotedString(text=text, quote=quote)
-            elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
+            # if node.symbol.type == OverrideLexer.QUOTED_VALUE:
+            #     text = node.getText()
+            #     qc = text[0]
+            #     text = text[1:-1]
+            #     if qc == "'":
+            #         quote = Quote.single
+            #         text = text.replace("\\'", "'")
+            #     elif qc == '"':
+            #         quote = Quote.double
+            #         text = text.replace('\\"', '"')
+            #     else:
+            #         assert False
+            #     return QuotedString(text=text, quote=quote)
+            if isinstance(node, OverrideParser.InterpolationContext):
+                ret = node.getText()
+            elif node.symbol.type == OverrideLexer.ID:
                 ret = node.symbol.text
             elif node.symbol.type == OverrideLexer.INT:
                 ret = int(node.symbol.text)
