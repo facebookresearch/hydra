@@ -95,7 +95,8 @@ class RuntimeConf:
     config_sources: List[ConfigSourceInfo] = MISSING
 
     # Composition choices dictionary
-    choices: Dict[str, str] = field(default_factory=lambda: {})
+    # Ideally, the value type would be Union[str, List[str], None]
+    choices: Dict[str, Any] = field(default_factory=lambda: {})
 
 
 @dataclass
