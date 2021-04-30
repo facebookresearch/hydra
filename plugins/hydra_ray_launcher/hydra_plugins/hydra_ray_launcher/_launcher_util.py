@@ -64,8 +64,10 @@ def launch_job_on_ray(
 
 
 @contextmanager
-def ray_tmp_dir(config: Dict) -> Generator[Any, None, None]:
-    out = sdk.run_on_cluster(config, cmd="echo $(mktemp -d)", with_output=True).decode()
+def ray_tmp_dir(config: Dict, run_env: str) -> Generator[Any, None, None]:
+    out = sdk.run_on_cluster(
+        config, run_env=run_env, cmd="echo $(mktemp -d)", with_output=True
+    ).decode()
 
     tmppath = [
         x
@@ -76,4 +78,4 @@ def ray_tmp_dir(config: Dict) -> Generator[Any, None, None]:
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
-    sdk.run_on_cluster(config, cmd=f"rm -rf {tmp_path}")
+    sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")

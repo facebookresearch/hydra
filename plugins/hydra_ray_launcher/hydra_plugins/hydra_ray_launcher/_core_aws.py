@@ -17,8 +17,8 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_SPEC_PICKLE,
     ray_tmp_dir,
 )
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
-    RayAWSLauncher,
+from hydra_plugins.hydra_ray_launcher.ray_autoscaler_launcher import (  # type: ignore
+    RayAutoScalerLauncher,
 )
 
 log = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
 
 
 def launch(
-    launcher: RayAWSLauncher,
+    launcher: RayAutoScalerLauncher,
     job_overrides: Sequence[Sequence[str]],
     initial_job_idx: int,
 ) -> Sequence[JobReturn]:
@@ -67,6 +67,8 @@ def launch(
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
 
+    log.info("Creating Ray Cluster with the following configuration:")
+    log.info(OmegaConf.to_yaml(launcher.ray_cfg.cluster))
     log.info(f"Ray Launcher is launching {len(job_overrides)} jobs, ")
 
     with tempfile.TemporaryDirectory() as local_tmp_dir:
@@ -90,28 +92,20 @@ def launch(
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
         )
-
-        with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
-            with open(f.name, "w") as file:
-                OmegaConf.save(
-                    config=launcher.ray_cfg.cluster, f=file.name, resolve=True
-                )
-            launcher.ray_yaml_path = f.name
-            log.info(
-                f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."
-            )
-
-            return launch_jobs(
-                launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
-            )
+        return launch_jobs(
+            launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
+        )
 
 
 def launch_jobs(
-    launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
+    launcher: RayAutoScalerLauncher, local_tmp_dir: str, sweep_dir: Path
 ) -> Sequence[JobReturn]:
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
+    import pdb
+
+    pdb.set_trace()
     sdk.create_or_update_cluster(
         config,
         no_restart=launcher.no_restart,
@@ -120,7 +114,7 @@ def launch_jobs(
     )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
-        with ray_tmp_dir(config) as remote_tmp_dir:
+        with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
             sdk.rsync(
                 config,
                 source=os.path.join(local_tmp_dir, ""),
@@ -149,7 +143,9 @@ def launch_jobs(
                     down=False,
                 )
             sdk.run_on_cluster(
-                config, cmd=f"python {remote_script_path} {remote_tmp_dir}"
+                config,
+                run_env=launcher.ray_cfg.run_env.name,
+                cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
             sdk.rsync(

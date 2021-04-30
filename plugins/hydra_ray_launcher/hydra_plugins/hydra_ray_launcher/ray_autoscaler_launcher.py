@@ -6,21 +6,21 @@ from hydra.core.config_loader import ConfigLoader
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.types import TaskFunction
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore
-    RayAWSConf,
+    RayAutoscalerConf,
     RsyncConf,
 )
 
 log = logging.getLogger(__name__)
 
 
-class RayAWSLauncher(Launcher):
+class RayAutoScalerLauncher(Launcher):
     def __init__(
         self,
         env_setup: DictConfig,
-        ray: RayAWSConf,
+        ray: RayAutoscalerConf,
         stop_cluster: bool,
         no_restart: bool,
         restart_only: bool,
@@ -40,6 +40,18 @@ class RayAWSLauncher(Launcher):
         self.task_function: Optional[TaskFunction] = None
         self.ray_yaml_path: Optional[str] = None
         self.env_setup = env_setup
+
+        # Need this since the autoscaler sdk API looks for docker key
+        if self.ray_cfg.cluster.docker is None:
+            with open_dict(self.ray_cfg):
+                OmegaConf.set_struct(self.ray_cfg.cluster, False)
+                del self.ray_cfg.cluster["docker"]
+
+        # workaround for the issue: https://github.com/ray-project/ray/issues/15096
+        if self.ray_cfg.cluster.auth.ssh_private_key is None:
+            with open_dict(self.ray_cfg):
+                OmegaConf.set_struct(self.ray_cfg.cluster.auth, False)
+                del self.ray_cfg.cluster.auth["ssh_private_key"]
 
     def setup(
         self,
