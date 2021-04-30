@@ -273,14 +273,6 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         param("{a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         param("{a:10,b:{}}", {"a": 10, "b": {}}, id="dict"),
         param("{a:10,b:{c:[1,2]}}", {"a": 10, "b": {"c": [1, 2]}}, id="dict"),
-        param(
-            "{'0a': 0, \"1b\": 1}",
-            {
-                QuotedString(text="0a", quote=Quote.single): 0,
-                QuotedString(text="1b", quote=Quote.double): 1,
-            },
-            id="dict_quoted_key",
-        ),
         param("{null: 1}", {None: 1}, id="dict_null_key"),
         param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
         param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
@@ -293,9 +285,9 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         ),
         param("{white spaces: 1}", {"white spaces": 1}, id="dict_ws_key"),
         param(
-            "{'a:b': 1, ab 123.5 True: 2, null false: 3, 1: 4, null: 5}",
+            "{a_b: 1, ab 123.5 True: 2, null false: 3, 1: 4, null: 5}",
             {
-                QuotedString(text="a:b", quote=Quote.single): 1,
+                "a_b": 1,
                 "ab 123.5 True": 2,
                 "null false": 3,
                 1: 4,
@@ -436,6 +428,30 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key=[1,2,3]'",
             raises(HydraException, match=re.escape("token recognition error at: '''")),
             id="error:left_overs",
+        ),
+        param(
+            "dictContainer",
+            "{'0a': 0, \"1b\": 1}",
+            raises(HydraException, match=re.escape("mismatched input ''0a''")),
+            id="error:dict_quoted_key_dictContainer",
+        ),
+        param(
+            "override",
+            "key={' abc ': 0}",
+            raises(
+                HydraException,
+                match=re.escape("no viable alternative at input '{' abc ''"),
+            ),
+            id="error:dict_quoted_key_override_single",
+        ),
+        param(
+            "override",
+            'key={" abc ": 0}',
+            raises(
+                HydraException,
+                match=re.escape("""no viable alternative at input '{" abc "'"""),
+            ),
+            id="error:dict_quoted_key_override_double",
         ),
     ],
 )
@@ -939,12 +955,6 @@ def test_get_key_element(override: str, expected: str) -> None:
         param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
         param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
         param(
-            "key={'null':1, \"a:b\": 0}",
-            "{'null': 1, \"a:b\": 0}",
-            True,
-            id="dict_quoted_key",
-        ),
-        param(
             "key={/-\\+.$%*@: 1}",
             "{/-\\\\+.$%*@: 1}",  # note that \ gets escaped
             True,
@@ -991,8 +1001,6 @@ def test_override_get_value_element_method(
         param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
         param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
-        param("key={' abc ': 0}", {" abc ": 0}, id="dict_key_quoted_single"),
-        param('key={" abc ": 0}', {" abc ": 0}, id="dict_key_quoted_double"),
         param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
         param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
         param(
