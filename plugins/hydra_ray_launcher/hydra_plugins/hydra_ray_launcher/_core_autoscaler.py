@@ -103,9 +103,6 @@ def launch_jobs(
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
-    import pdb
-
-    pdb.set_trace()
     sdk.create_or_update_cluster(
         config,
         no_restart=launcher.no_restart,
