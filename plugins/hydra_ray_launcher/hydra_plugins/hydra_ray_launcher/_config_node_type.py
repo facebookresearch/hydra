@@ -84,9 +84,17 @@ class RayGCPNodeTypeConf(RayNodeTypeConf):
                     "type": "PERSISTENT",
                     "initializeParams": {
                         "diskSizeGb": 50,
-                        "sourceImage": "projects/deeplearning-platform-release/global/images/family/common-cpu",
+                        "sourceImage": "projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20201014",
                     },
                 }
             ],
+            "metadata": {
+                "items": [
+                    {
+                        "key": "enable-oslogin",
+                        "value": "FALSE"
+                    }
+                ]
+            }
         }
     )

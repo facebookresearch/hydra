@@ -13,14 +13,6 @@ class RayAuthConf:
     """
 
     ssh_user: str = MISSING
-
-
-@dataclass
-class RayAWSAuthConf(RayAuthConf):
-    """
-    Note that for AWS, only ssh_user is required.
-    """
-
     ssh_private_key: Optional[str] = None
 
 
@@ -32,12 +24,3 @@ class RayAzureAuthConf(RayAuthConf):
 
     ssh_private_key: str = MISSING
     ssh_public_key: str = MISSING
-
-
-@dataclass
-class RayGCPAuthConf(RayAuthConf):
-    """
-    Note that for GCP, only ssh_user is required.
-    """
-
-    ssh_private_key: Optional[str] = None

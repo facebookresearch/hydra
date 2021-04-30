@@ -84,14 +84,14 @@ class RayAWSClusterConf(RayClusterConf):
     """
 
     provider: _config_provider.RayProviderConf = _config_provider.RayAWSProviderConf()
-    auth: _config_auth.RayAuthConf = _config_auth.RayAWSAuthConf()
+    auth: _config_auth.RayAuthConf = _config_auth.RayAuthConf()
     available_node_types: Dict[str, _config_node_type.RayAWSNodeTypeConf] = field(
         default_factory=lambda: {
-            "ray.head.default": _config_node_type.RayAWSNodeTypeConf(),
-            "ray.worker.default": _config_node_type.RayAWSNodeTypeConf(),
+            "ray_head_default": _config_node_type.RayAWSNodeTypeConf(),
+            "ray_worker_default": _config_node_type.RayAWSNodeTypeConf(),
         }
     )
-    head_node_type: str = "ray.head.default"
+    head_node_type: str = "ray_head_default"
     # the value of a worker_nodes key is a Node Config
     # https://docs.ray.io/en/releases-1.3.0/cluster/config.html#node-config
     worker_nodes: Dict[str, Any] = field(default_factory=dict)
@@ -109,11 +109,11 @@ class RayAzureClusterConf(RayClusterConf):
     auth: _config_auth.RayAuthConf = _config_auth.RayAzureAuthConf()
     available_node_types: Dict[str, _config_node_type.RayAzureNodeTypeConf] = field(
         default_factory=lambda: {
-            "ray.head.default": _config_node_type.RayAzureNodeTypeConf(),
-            "ray.worker.default": _config_node_type.RayAzureNodeTypeConf(),
+            "ray_head_default": _config_node_type.RayAzureNodeTypeConf(),
+            "ray_worker_default": _config_node_type.RayAzureNodeTypeConf(),
         }
     )
-    head_node_type: str = "ray.head.default"
+    head_node_type: str = "ray_head_default"
     # the value of a worker_nodes key is a Node Config
     # https://docs.ray.io/en/releases-1.3.0/cluster/config.html#node-config
     worker_nodes: Dict[str, Any] = field(default_factory=dict)
@@ -128,14 +128,14 @@ class RayGCPClusterConf(RayClusterConf):
     """
 
     provider: _config_provider.RayProviderConf = _config_provider.RayGCPProviderConf()
-    auth: _config_auth.RayAuthConf = _config_auth.RayGCPAuthConf()
+    auth: _config_auth.RayAuthConf = _config_auth.RayAuthConf()
     available_node_types: Dict[str, _config_node_type.RayGCPNodeTypeConf] = field(
         default_factory=lambda: {
-            "ray.head.default": _config_node_type.RayGCPNodeTypeConf(),
-            "ray.worker.default": _config_node_type.RayGCPNodeTypeConf(),
+            "ray_head_default": _config_node_type.RayGCPNodeTypeConf(),
+            "ray_worker_default": _config_node_type.RayGCPNodeTypeConf(),
         }
     )
-    head_node_type: str = "ray.head.default"
+    head_node_type: str = "ray_head_default"
     # the value of a worker_nodes key is a Node Config
     # https://docs.ray.io/en/releases-1.3.0/cluster/config.html#node-config
     worker_nodes: Dict[str, Any] = field(default_factory=dict)

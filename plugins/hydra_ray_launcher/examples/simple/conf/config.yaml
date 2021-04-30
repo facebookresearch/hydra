@@ -1,0 +1,4 @@
+defaults:
+  - cloud: aws
+
+task: 1

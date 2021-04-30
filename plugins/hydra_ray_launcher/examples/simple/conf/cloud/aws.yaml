@@ -14,10 +14,10 @@ hydra:
           >> ~/.bashrc
         - >-
           pip install
-          git+https://github.com/icgrp/hydra.git@feature_ray_gcp#egg=hydra-core
+          git+https://github.com/icgrp/hydra.git@ray-cluster-sdk#egg=hydra-core
         - >-
           pip install
-          git+https://github.com/icgrp/hydra.git@feature_ray_gcp#egg=hydra-ray-launcher&subdirectory=plugins/hydra_ray_launcher
+          git+https://github.com/icgrp/hydra.git@ray-cluster-sdk#egg=hydra-ray-launcher\&subdirectory=plugins/hydra_ray_launcher
       pip_packages:
         cloudpickle: '${ray_pkg_version:cloudpickle}'
         hydra_core: null
@@ -29,4 +29,4 @@ hydra:
       cluster:
         auth:
           ssh_user: ubuntu
-task: 1
+
