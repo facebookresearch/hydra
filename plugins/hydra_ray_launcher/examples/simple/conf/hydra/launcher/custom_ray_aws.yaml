@@ -27,4 +27,3 @@ ray:
   cluster:
     auth:
       ssh_user: ubuntu
-

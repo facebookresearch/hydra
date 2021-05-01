@@ -3,7 +3,9 @@ defaults:
 
 env_setup:
   commands:
-    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O conda_installer.sh
+    - >-
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+      -O conda_installer.sh
     - sudo bash conda_installer.sh -u -b -p /opt/conda && rm conda_installer.sh
     - /opt/conda/bin/conda init
     - sudo apt update && sudo apt install -y default-jre build-essential

@@ -19,13 +19,12 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
-from omegaconf import OmegaConf
 from pytest import fixture, mark
+from ray.autoscaler import sdk
 
 from hydra_plugins.hydra_ray_launcher.ray_autoscaler_launcher import (  # type: ignore
     RayAutoScalerLauncher,
 )
-from ray.autoscaler import sdk
 
 temp_remote_dir = "/tmp/hydra_test/"  # nosec
 temp_remote_wheel_dir = "/tmp/wheels/"  # nosec
@@ -93,7 +92,8 @@ common_overrides = [
     # To get around this, we pre-install all the dependencies on the test AMI.
     "hydra.launcher.ray.cluster.setup_commands=[]",
     "hydra.launcher.env_setup.commands=[]",
-    f"+hydra.launcher.ray.cluster.available_node_types.ray_head_default.node_config={ray_nodes_conf_override} +hydra.launcher.ray.cluster.head_node_type=ray_head_default"
+    f"+hydra.launcher.ray.cluster.available_node_types.ray_head_default.node_config={ray_nodes_conf_override} \
+            +hydra.launcher.ray.cluster.head_node_type=ray_head_default"
     f"+hydra.launcher.ray.cluster.available_node_types.ray_worker_default.node_config={ray_nodes_conf_override}"
     f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
 ]
@@ -167,16 +167,16 @@ def validate_lib_version(connect_config: dict) -> None:
     for lib in libs:
         local_version = f"{pkg_resources.get_distribution(lib).version}"
         out = sdk.run_on_cluster(
-                connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
-            ).decode()
+            connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
+        ).decode()
         assert local_version in out, f"{lib} version mismatch"
 
     # validate python version
     info = sys.version_info
     local_python = f"{info.major}.{info.minor}.{info.micro}"
     out = sdk.run_on_cluster(
-                connect_config, cmd="python --version", with_output=True
-            ).decode()
+        connect_config, cmd="python --version", with_output=True
+    ).decode()
     remote_python = out.split()[1]
     assert (
         local_python == remote_python
@@ -216,12 +216,8 @@ def manage_cluster() -> Generator[None, None, None]:
         ],
         "head_setup_commands": [],
         "available_node_types": {
-            "ray_head_default": {
-                "node_config": ray_nodes_conf
-            },
-            "ray_worker_default": {
-                "node_config": ray_nodes_conf
-            }
+            "ray_head_default": {"node_config": ray_nodes_conf},
+            "ray_worker_default": {"node_config": ray_nodes_conf},
         },
         "head_node_type": "ray_head_default",
     }
@@ -229,14 +225,10 @@ def manage_cluster() -> Generator[None, None, None]:
         connect_config,
     )
     sdk.run_on_cluster(
-        connect_config,
-        run_env="auto",
-        cmd=f"mkdir -p {temp_remote_dir}"
+        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_dir}"
     )
     sdk.run_on_cluster(
-        connect_config,
-        run_env="auto",
-        cmd=f"mkdir -p {temp_remote_wheel_dir}"
+        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_wheel_dir}"
     )
     upload_and_install_wheels(tmpdir, connect_config, core_wheel, plugin_wheel)
     validate_lib_version(connect_config)

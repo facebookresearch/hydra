@@ -89,13 +89,6 @@ class RayGCPNodeTypeConf(RayNodeTypeConf):
                 }
             ],
             # Ray doesn't support OS login at the moment
-            "metadata": {
-                "items": [
-                    {
-                        "key": "enable-oslogin",
-                        "value": "FALSE"
-                    }
-                ]
-            }
+            "metadata": {"items": [{"key": "enable-oslogin", "value": "FALSE"}]},
         }
     )

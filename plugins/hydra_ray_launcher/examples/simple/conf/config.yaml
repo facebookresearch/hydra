@@ -1,4 +1,3 @@
 defaults:
   - override hydra/launcher: custom_ray_aws
-
 task: 1
