@@ -3,22 +3,3 @@ defaults:
 
 random_seed: 0
 checkpoint_path: checkpoint
-
-hydra:
-  launcher:
-    sync_up:
-      # source dir is relative in this case, assuming you are running from
-      # <project_root>/hydra/plugins/hydra_ray_launcher/example
-      # absolute path is also supported.
-      source_dir: '.'
-      # we leave target_dir to be null
-      # as a result the files will be synced to a temp dir on remote cluster.
-      # the temp dir will be cleaned up after the jobs are done.
-      # recommend to leave target_dir to be null if you are syncing
-      # code/artifacts to remote cluster so you don't need
-      # configure $PYTHONPATH on remote cluster
-      # No need to sync up config files.
-      exclude: ['conf', 'multirun', "**/__pycache__"]
-    sync_down:
-      # No need to sync down config files.
-      exclude: ['conf']

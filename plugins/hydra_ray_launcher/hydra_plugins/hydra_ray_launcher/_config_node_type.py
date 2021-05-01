@@ -88,6 +88,7 @@ class RayGCPNodeTypeConf(RayNodeTypeConf):
                     },
                 }
             ],
+            # Ray doesn't support OS login at the moment
             "metadata": {
                 "items": [
                     {

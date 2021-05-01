@@ -48,5 +48,5 @@ class RayGCPProviderConf(RayProviderConf):
     type: str = "gcp"
     region: str = "us-west1"
     availability_zone: str = "us-west1-a"
-    project_id: str = "null"
+    project_id: str = MISSING
     cache_stopped_nodes: bool = False

@@ -66,6 +66,7 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
+    sdk.configure_logging(log_style="auto", color_mode="auto", verbosity=launcher.config.hydra.verbose)
 
     log.info("Creating Ray Cluster with the following configuration:")
     log.info(OmegaConf.to_yaml(launcher.ray_cfg.cluster))

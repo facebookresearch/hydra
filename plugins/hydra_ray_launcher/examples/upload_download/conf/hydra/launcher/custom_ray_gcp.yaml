@@ -1,8 +1,12 @@
 defaults:
-  - ray_aws
+  - ray_gcp
 
 env_setup:
   commands:
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O conda_installer.sh
+    - sudo bash conda_installer.sh -u -b -p /opt/conda && rm conda_installer.sh
+    - /opt/conda/bin/conda init
+    - sudo apt update && sudo apt install -y default-jre build-essential
     - >-
       conda create -n hydra_${python_version:micro}
       python=${python_version:micro} -y
@@ -26,7 +30,12 @@ env_setup:
 ray:
   cluster:
     auth:
-      ssh_user: ubuntu
+      ssh_user: stahmed_seas_upenn_edu
+    provider:
+      type: gcp
+      region: us-central1
+      availability_zone: us-central1-a
+      project_id: trim-modem-277014
 sync_up:
   # source dir is relative in this case, assuming you are running from
   # <project_root>/hydra/plugins/hydra_ray_launcher/example
