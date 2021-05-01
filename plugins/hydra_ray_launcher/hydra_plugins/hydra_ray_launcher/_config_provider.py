@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Dict
 
 from omegaconf import MISSING
 
@@ -32,6 +32,7 @@ class RayAWSProviderConf(RayProviderConf):
     region: str = "us-west-2"
     availability_zone: str = "us-west-2a,us-west-2b"
     cache_stopped_nodes: bool = False
+    key_pair: Dict[str, str] = field(default_factory=lambda: {"key_name": None})
 
 
 @dataclass

@@ -92,10 +92,12 @@ common_overrides = [
     # To get around this, we pre-install all the dependencies on the test AMI.
     "hydra.launcher.ray.cluster.setup_commands=[]",
     "hydra.launcher.env_setup.commands=[]",
-    f"+hydra.launcher.ray.cluster.available_node_types.ray_head_default.node_config={ray_nodes_conf_override} \
-            +hydra.launcher.ray.cluster.head_node_type=ray_head_default"
-    f"+hydra.launcher.ray.cluster.available_node_types.ray_worker_default.node_config={ray_nodes_conf_override}"
-    f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
+    f"++hydra.launcher.ray.cluster.available_node_types.ray_head_default.node_config={ray_nodes_conf_override}",
+    "++hydra.launcher.ray.cluster.head_node_type=ray_head_default",
+    f"++hydra.launcher.ray.cluster.available_node_types.ray_worker_default.node_config={ray_nodes_conf_override}",
+    f"++hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
+    f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",  # needed for test
+    "hydra.launcher.ray.cluster.auth.ssh_user=ubuntu",
 ]
 common_overrides.extend(
     [f"~hydra.launcher.env_setup.pip_packages.{lib}" for lib in pip_lib_skip]
@@ -220,6 +222,10 @@ def manage_cluster() -> Generator[None, None, None]:
             "ray_worker_default": {"node_config": ray_nodes_conf},
         },
         "head_node_type": "ray_head_default",
+        # without head_node and worker_nodes defined, ray creates a new security group
+        # https://github.com/ray-project/ray/blob/38b64e4fb4a7d4e6c71299d3b3eef27a5e1ffec0/python/ray/autoscaler/_private/aws/config.py#L33-L36
+        "head_node": ray_nodes_conf,
+        "worker_nodes": ray_nodes_conf,
     }
     sdk.create_or_update_cluster(
         connect_config,
