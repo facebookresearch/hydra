@@ -10,7 +10,7 @@ import pickle5 as pickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
-from ray.autoscaler import sdk
+from ray.autoscaler import sdk  # type: ignore
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -133,7 +133,7 @@ def launch_jobs(
                     if launcher.sync_up.target_dir
                     else remote_tmp_dir
                 )
-                config["rsync_exclude"] = OmegaConf.to_container(
+                config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_up.exclude, resolve=True
                 )
                 sdk.rsync(
@@ -171,7 +171,7 @@ def launch_jobs(
                 target_dir = Path(_get_abs_code_dir(target_dir))
                 target_dir.mkdir(parents=True, exist_ok=True)
 
-                config["rsync_exclude"] = OmegaConf.to_container(
+                config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_down.exclude, resolve=True
                 )
                 sdk.rsync(
