@@ -31,6 +31,8 @@ from hydra.core.override_parser.types import (
 )
 from hydra.errors import HydraException
 
+UNQUOTED_SPECIAL = r"/-\+.$%*@?"  # special characters allowed in unquoted strings
+
 parser = OverridesParser(create_functions())
 
 
@@ -277,7 +279,11 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
         param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
         param("{true: 1, fAlSe: 0}", {True: 1, False: 0}, id="dict_bool_key"),
-        param("{/-\\+.$%*@: 1}", {"/-\\+.$%*@": 1}, id="dict_unquoted_char_key"),
+        param(
+            "{%s: 1}" % UNQUOTED_SPECIAL,
+            {UNQUOTED_SPECIAL: 1},
+            id="dict_unquoted_char_key",
+        ),
         param(
             "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1}",
             {"\\()[]{}:= \t,": 1},
@@ -513,7 +519,7 @@ def test_key(value: str, expected: Any) -> None:
     "value,expected",
     [
         param("a", "a", id="a"),
-        param("/:-\\+.$%*@", "/:-\\+.$%*@", id="accepted_specials"),
+        param(UNQUOTED_SPECIAL, UNQUOTED_SPECIAL, id="accepted_specials"),
         param("abc10", "abc10", id="abc10"),
         param("a.b.c", "a.b.c", id="a.b.c"),
         param("list.0.bar", "list.0.bar", id="list.0.bar"),
@@ -955,8 +961,9 @@ def test_get_key_element(override: str, expected: str) -> None:
         param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
         param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
         param(
-            "key={/-\\+.$%*@: 1}",
-            "{/-\\\\+.$%*@: 1}",  # note that \ gets escaped
+            "key={%s: 1}" % UNQUOTED_SPECIAL,
+            # Note that \ gets escaped.
+            "{%s: 1}" % UNQUOTED_SPECIAL.replace("\\", "\\\\"),
             True,
             id="dict_unquoted_key_special",
         ),
@@ -1001,7 +1008,11 @@ def test_override_get_value_element_method(
         param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
         param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
-        param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
+        param(
+            "key={a%s: 0}" % UNQUOTED_SPECIAL,
+            {f"a{UNQUOTED_SPECIAL}": 0},
+            id="dict_key_noquote",
+        ),
         param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
         param(
             "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 0}",
