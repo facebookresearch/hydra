@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Generator, Optional
+from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
@@ -20,7 +20,7 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
 from pytest import fixture, mark
-from ray.autoscaler import sdk
+from ray.autoscaler import sdk  # type: ignore
 
 from hydra_plugins.hydra_ray_launcher.ray_autoscaler_launcher import (  # type: ignore
     RayAutoScalerLauncher,
@@ -140,7 +140,7 @@ def build_core_wheel(tmp_wheel_dir: str) -> str:
 
 def upload_and_install_wheels(
     tmp_wheel_dir: str,
-    connect_config: dict,
+    connect_config: Dict[Any, Any],
     core_wheel: str,
     plugin_wheel: str,
 ) -> None:
@@ -163,7 +163,7 @@ def upload_and_install_wheels(
     )
 
 
-def validate_lib_version(connect_config: dict) -> None:
+def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
     for lib in libs:
