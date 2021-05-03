@@ -104,6 +104,7 @@ cs.store(group="db",
 Steps:
 1. Rename the config file. Common choices are `custom_` or `my_` prefix, e.g. `custom_mysql.yaml`.
 2. Add the schema to the Defaults List of the extending config file.
+3. Update references to the config name accordingly, e.g. on the command-line `db=mysql` would become `db=custom_mysql`, and in a defaults list `db: mysql` would become `db: custom_mysql`.
 
 
 <details><summary>Click to expand</summary>
