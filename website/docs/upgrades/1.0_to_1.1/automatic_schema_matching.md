@@ -15,7 +15,7 @@ It does not work if you want to use the same schema to validate multiple config 
 config file.
 
 Hydra 1.1 deprecates this behavior in favor of an explicit config extension via the Defaults List.  
-This upgrade page aims to provide summary of the required changes. It is highly recommended that you read the following pages:
+This upgrade page aims to provide a summary of the required changes. It is highly recommended that you read the following pages:
 - [Background: The Defaults List](../../advanced/defaults_list.md)
 - [Background: Extending configs](../../patterns/extending_configs.md)
 - [Tutorial: Structured config schema](../../tutorials/structured_config/5_schema.md)
@@ -25,14 +25,14 @@ You need to rename one of them. Depending on the circumstances and your preferen
 - If you control both configs, you can rename either of them. 
 - If you only control the config file, rename it.
 
-### Rename the Structured Config
+### Option 1: rename the Structured Config
 Steps:
 1. Use a different name when storing the schema into the Config Store. Common choices:
    - `base_` prefix, e.g. `base_mysql`.
    - `_schema` suffix, e.g. `mysql_schema`.
 2. Add the schema to the Defaults List of the extending config file.
 
-<details><summary>Click to expand</summary>
+<details><summary>Click to show an example</summary>
 
 #### Hydra 1.0
 <div className="row">
@@ -100,7 +100,7 @@ cs.store(group="db",
 
 </details>
 
-### Rename the config file
+### Option 2: rename the config file
 Steps:
 1. Rename the config file. Common choices are `custom_` or `my_` prefix, e.g. `custom_mysql.yaml`.
 2. Add the schema to the Defaults List of the extending config file.
@@ -144,7 +144,7 @@ cs.store(group="db",
 <div className="row">
 <div className="col col--6">
 
-```yaml title="db/custom_mysql.yaml" {1,2}
+```yaml title="db/custom_mysql.yaml <= NEW NAME!" {1,2}
 defaults:
   - mysql
 

@@ -7,7 +7,7 @@ sidebar_label: Introduction
 Upgrading to a new Hydra version is usually an easy process.
 
 ## Major version upgrades
-Hydra will typically provide a helpful warnings about required changes, sometimes pointing to an upgrade page that provides more details about the required changes.
+Hydra will typically provide helpful warnings about required changes, sometimes pointing to an upgrade page that provides more details about the required changes.
 
 For a smooth upgrade experience, please follow these simple rules:
 - **Upgrade to the latest minor version first**.
@@ -26,4 +26,3 @@ In most cases this will not introduce new warnings. However - if there are new w
 ## Dev release upgrades
 Development releases are subject to breaking changes without notice. Please be aware that upgrading to a new development release
 is more likely to introduce some breakage. No attempt will be made to make upgrading between development releases easy.
-
