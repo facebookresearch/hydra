@@ -6,12 +6,14 @@ import sys
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
+from inspect import signature
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
+from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
@@ -103,6 +105,62 @@ class Plugins(metaclass=Singleton):
             "hydra._internal.core_plugins."
         )
 
+    @staticmethod
+    def _setup_plugin(
+        plugin: Any,
+        task_function: TaskFunction,
+        config: DictConfig,
+        config_loader: Optional[ConfigLoader] = None,
+        hydra_context: Optional[HydraContext] = None,
+    ) -> Any:
+        """
+        With HydraContext introduced in #1581, we need to set up the plugins in a way
+        that's compatible with both Hydra 1.0 and Hydra 1.1 syntax.
+        This method should be deleted in the next major release.
+        """
+        assert isinstance(plugin, Sweeper) or isinstance(plugin, Launcher)
+        assert (
+            config_loader is not None or hydra_context is not None
+        ), "config_loader and hydra_context cannot both be None"
+
+        param_keys = signature(plugin.setup).parameters.keys()
+
+        from hydra._internal.core_plugins.basic_launcher import BasicLauncher
+
+        if isinstance(plugin, BasicLauncher):
+            # BasicLauncher supports Hydra 1.0 style setup for compatibility with 3rd party Sweeper
+            plugin.setup(
+                config=config,
+                config_loader=config_loader,
+                task_function=task_function,
+                hydra_context=hydra_context,
+            )
+        elif "config_loader" in param_keys:
+            warnings.warn(
+                message=(
+                    "\n"
+                    "\tPlugin's setup() signature has changed in Hydra 1.1.\n"
+                    "\tSupport for the old style will be removed in Hydra 1.2.\n"
+                ),
+                category=UserWarning,
+            )
+            config_loader = (
+                config_loader
+                if config_loader is not None
+                else hydra_context.config_loader  # type: ignore
+            )
+            plugin.setup(  # type: ignore
+                config=config,
+                config_loader=config_loader,
+                task_function=task_function,
+            )
+        else:
+            assert hydra_context is not None
+            plugin.setup(
+                config=config, hydra_context=hydra_context, task_function=task_function
+            )
+        return plugin
+
     def instantiate_sweeper(
         self,
         *,
@@ -114,27 +172,36 @@ class Plugins(metaclass=Singleton):
         if config.hydra.sweeper is None:
             raise RuntimeError("Hydra sweeper is not configured")
         sweeper = self._instantiate(config.hydra.sweeper)
-        assert isinstance(sweeper, Sweeper)
-        sweeper.setup(
-            config=config, hydra_context=hydra_context, task_function=task_function
+        sweeper = self._setup_plugin(
+            plugin=sweeper,
+            task_function=task_function,
+            config=config,
+            config_loader=None,
+            hydra_context=hydra_context,
         )
+        assert isinstance(sweeper, Sweeper)
         return sweeper
 
     def instantiate_launcher(
         self,
-        *,
-        hydra_context: HydraContext,
         task_function: TaskFunction,
         config: DictConfig,
+        config_loader: Optional[ConfigLoader] = None,
+        hydra_context: Optional[HydraContext] = None,
     ) -> Launcher:
         Plugins.check_usage(self)
         if config.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
+
         launcher = self._instantiate(config.hydra.launcher)
-        assert isinstance(launcher, Launcher)
-        launcher.setup(
-            config=config, hydra_context=hydra_context, task_function=task_function
+        launcher = self._setup_plugin(
+            plugin=launcher,
+            config=config,
+            task_function=task_function,
+            config_loader=config_loader,
+            hydra_context=hydra_context,
         )
+        assert isinstance(launcher, Launcher)
         return launcher
 
     @staticmethod
