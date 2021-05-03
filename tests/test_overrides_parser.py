@@ -1009,8 +1009,8 @@ def test_override_get_value_element_method(
         param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
         param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
         param(
-            "key={a%s: 0}" % UNQUOTED_SPECIAL,
-            {f"a{UNQUOTED_SPECIAL}": 0},
+            "key={%s: 0}" % UNQUOTED_SPECIAL,
+            {UNQUOTED_SPECIAL: 0},
             id="dict_key_noquote",
         ),
         param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
