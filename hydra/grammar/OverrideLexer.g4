@@ -34,6 +34,9 @@ DOT_PATH: (KEY_SPECIAL | INT_UNSIGNED) ('.' (KEY_SPECIAL | INT_UNSIGNED))+;
 
 mode VALUE_MODE;
 
+QUOTE_OPEN_SINGLE: '\'' -> pushMode(QUOTED_SINGLE_MODE);
+QUOTE_OPEN_DOUBLE: '"' -> pushMode(QUOTED_DOUBLE_MODE);
+
 POPEN: WS? '(' WS?;  // whitespaces before to allow `func (x)`
 COMMA: WS? ',' WS?;
 PCLOSE: WS? ')';
@@ -67,8 +70,38 @@ ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |
       '\\:' | '\\=' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;
 
-QUOTED_VALUE:
-      '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
-    | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
-
 INTERPOLATION: '${' ~('}')+ '}';
+
+
+////////////////////////
+// QUOTED_SINGLE_MODE //
+////////////////////////
+
+mode QUOTED_SINGLE_MODE;
+
+MATCHING_QUOTE_CLOSE: '\'' -> popMode;
+
+ESC_QUOTE: '\\\'';
+QSINGLE_ESC_BACKSLASH: ESC_BACKSLASH -> type(ESC);
+
+QSINGLE_INTERPOLATION: INTERPOLATION -> type(INTERPOLATION);
+SPECIAL_CHAR: [\\$];
+ANY_STR: ~['\\$]+;
+
+
+////////////////////////
+// QUOTED_DOUBLE_MODE //
+////////////////////////
+
+mode QUOTED_DOUBLE_MODE;
+
+// Same as `QUOTED_SINGLE_MODE` but for double quotes.
+
+QDOUBLE_CLOSE: '"' -> type(MATCHING_QUOTE_CLOSE), popMode;
+
+QDOUBLE_ESC_QUOTE: '\\"' -> type(ESC_QUOTE);
+QDOUBLE_ESC_BACKSLASH: ESC_BACKSLASH -> type(ESC);
+
+QDOUBLE_INTERPOLATION: INTERPOLATION -> type(INTERPOLATION);
+QDOUBLE_SPECIAL_CHAR: SPECIAL_CHAR -> type(SPECIAL_CHAR);
+QDOUBLE_STR: ~["\\$]+ -> type(ANY_STR);
