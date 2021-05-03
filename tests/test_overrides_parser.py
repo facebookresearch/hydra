@@ -464,15 +464,13 @@ def test_interval_sweep(value: str, expected: Any) -> None:
         param(
             "override",
             "key=[1,2,3]'",
-            raises(
-                HydraException, match=re.escape("extraneous input ''' expecting <EOF>")
-            ),
+            raises(HydraException, match=re.escape("token recognition error at: '''")),
             id="error:left_overs",
         ),
         param(
             "dictContainer",
             "{'0a': 0, \"1b\": 1}",
-            raises(HydraException, match=re.escape("mismatched input '''")),
+            raises(HydraException, match=re.escape("mismatched input ''0a''")),
             id="error:dict_quoted_key_dictContainer",
         ),
         param(
@@ -480,7 +478,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "key={' abc ': 0}",
             raises(
                 HydraException,
-                match=re.escape("no viable alternative at input '{''"),
+                match=re.escape("no viable alternative at input '{' abc ''"),
             ),
             id="error:dict_quoted_key_override_single",
         ),
@@ -489,7 +487,7 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             'key={" abc ": 0}',
             raises(
                 HydraException,
-                match=re.escape("""no viable alternative at input '{"'"""),
+                match=re.escape("""no viable alternative at input '{" abc "'"""),
             ),
             id="error:dict_quoted_key_override_double",
         ),
@@ -728,37 +726,27 @@ def test_key(value: str, expected: Any) -> None:
         ),
         param(
             "'a ${b}'",
-            QuotedString(text="a ${b}", quote=Quote.single, esc_backslash=False),
+            QuotedString(text="a ${b}", quote=Quote.single),
             id="value:interpolation:quoted",
         ),
         param(
-            r"'a \${b}'",
-            QuotedString(text=r"a \${b}", quote=Quote.single, esc_backslash=False),
-            id="value:esc_interpolation:quoted",
-        ),
-        param(
             r"'a \\${b}'",
-            QuotedString(text=r"a \\${b}", quote=Quote.single, esc_backslash=False),
+            QuotedString(text=r"a \${b}", quote=Quote.single),
             id="value:backslash_and_interpolation:quoted",
         ),
         param(
             r"'a \'${b}\''",
-            QuotedString(text=r"a '${b}'", quote=Quote.single, esc_backslash=False),
+            QuotedString(text=r"a '${b}'", quote=Quote.single),
             id="value:quotes_and_interpolation:quoted",
         ),
         param(
-            r"'a \'\${b}\''",
-            QuotedString(text=r"a '\${b}'", quote=Quote.single, esc_backslash=False),
-            id="value:quotes_and_esc_interpolation:quoted",
-        ),
-        param(
             r"'a \'\\${b}\''",
-            QuotedString(text=r"a '\\${b}'", quote=Quote.single, esc_backslash=False),
+            QuotedString(text=r"a '\${b}'", quote=Quote.single),
             id="value:quotes_backslash_and_interpolation:quoted",
         ),
         param(
             r"'a \\\'${b}\\\''",
-            QuotedString(text=r"a \\'${b}\\'", quote=Quote.single, esc_backslash=False),
+            QuotedString(text=r"a \'${b}\'", quote=Quote.single),
             id="value:backaslash_quotes_and_interpolation:quoted",
         ),
         # interpolations:
@@ -791,6 +779,18 @@ def test_primitive(value: str, expected: Any) -> None:
             QuotedString(text=r"foo\bar", quote=Quote.double),
             r'"foo\\bar"',
             id="value:one_backslash_double",
+        ),
+        param(
+            r"'a \${b}'",
+            QuotedString(text=r"a \${b}", quote=Quote.single),
+            r"'a \\${b}'",
+            id="value:esc_interpolation:quoted",
+        ),
+        param(
+            r"'a \'\${b}\''",
+            QuotedString(text=r"a '\${b}'", quote=Quote.single),
+            r"'a \'\\${b}\''",
+            id="value:quotes_and_esc_interpolation:quoted",
         ),
     ],
 )

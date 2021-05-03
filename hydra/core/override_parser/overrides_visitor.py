@@ -240,42 +240,6 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
                 f"{type(e).__name__} while evaluating '{ctx.getText()}': {e}"
             ) from e
 
-    def visitQuotedValue(self, ctx: OverrideParser.QuotedValueContext) -> QuotedString:
-        children = list(ctx.getChildren())
-        assert len(children) >= 2
-
-        # Identity quote type.
-        first_quote = children[0].getText()
-        if first_quote == "'":
-            quote = Quote.single
-        else:
-            assert first_quote == '"'
-            quote = Quote.double
-
-        # Inspect string content.
-        tokens = []
-        is_interpolation = False
-        for child in children[1:-1]:
-            assert isinstance(child, TerminalNode)
-            symbol = child.symbol
-            text = symbol.text
-            if symbol.type == OverrideLexer.ESC_QUOTE:
-                # Always un-escape quotes.
-                text = text[1]
-            elif symbol.type == OverrideLexer.INTERPOLATION:
-                is_interpolation = True
-            tokens.append(text)
-
-        # Contactenate string fragments.
-        ret = "".join(tokens)
-
-        # If it is an interpolation, then OmegaConf will take care of un-escaping
-        # the `\\`. But if it is not, then we need to do it here.
-        if not is_interpolation:
-            ret = ret.replace("\\\\", "\\")
-
-        return QuotedString(text=ret, quote=quote, esc_backslash=not is_interpolation)
-
     def _createPrimitive(
         self, ctx: ParserRuleContext
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
@@ -310,8 +274,20 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)
-            if isinstance(node, OverrideParser.QuotedValueContext):
-                return self.visitQuotedValue(node)
+            if node.symbol.type == OverrideLexer.QUOTED_VALUE:
+                text = node.getText()
+                qc = text[0]
+                text = text[1:-1]
+                if qc == "'":
+                    quote = Quote.single
+                    text = text.replace("\\'", "'")
+                elif qc == '"':
+                    quote = Quote.double
+                    text = text.replace('\\"', '"')
+                else:
+                    assert False
+                text = text.replace("\\\\", "\\")
+                return QuotedString(text=text, quote=quote)
             elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
                 ret = node.symbol.text
             elif node.symbol.type == OverrideLexer.INT:

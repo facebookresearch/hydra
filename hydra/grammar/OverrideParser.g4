@@ -51,14 +51,8 @@ dictKeyValuePair: dictKey COLON element;
 
 // Primitive types.
 
-// Ex: "hello world", 'hello ${world}'
-quotedValue:
-    (QUOTE_OPEN_SINGLE | QUOTE_OPEN_DOUBLE)
-    (INTERPOLATION | ESC | ESC_QUOTE | SPECIAL_CHAR | ANY_STR)*
-    MATCHING_QUOTE_CLOSE;
-
 primitive:
-      quotedValue                               // 'hello world', "hello world"
+      QUOTED_VALUE                               // 'hello world', "hello world"
     | (   ID                                     // foo_10
         | NULL                                   // null, NULL
         | INT                                    // 0, 10, -20, 1_000_000

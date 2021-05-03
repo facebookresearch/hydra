@@ -26,13 +26,12 @@ class Quote(Enum):
 @dataclass(frozen=True)
 class QuotedString:
     text: str
+
     quote: Quote
-    esc_backslash: bool = True
 
     def with_quotes(self) -> str:
-        text = self.text
-        if self.esc_backslash:
-            text = text.replace("\\", "\\\\")
+        # Both quotes and backslashes need to be escaped.
+        text = self.text.replace("\\", "\\\\")
         if self.quote == Quote.single:
             q = "'"
             text = text.replace("'", "\\'")
