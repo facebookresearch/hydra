@@ -12,7 +12,6 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
@@ -20,7 +19,7 @@ from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from hydra.utils import instantiate
 
 
@@ -106,9 +105,10 @@ class Plugins(metaclass=Singleton):
 
     def instantiate_sweeper(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> Sweeper:
         Plugins.check_usage(self)
         if config.hydra.sweeper is None:
@@ -116,15 +116,16 @@ class Plugins(metaclass=Singleton):
         sweeper = self._instantiate(config.hydra.sweeper)
         assert isinstance(sweeper, Sweeper)
         sweeper.setup(
-            config=config, config_loader=config_loader, task_function=task_function
+            config=config, hydra_context=hydra_context, task_function=task_function
         )
         return sweeper
 
     def instantiate_launcher(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> Launcher:
         Plugins.check_usage(self)
         if config.hydra.launcher is None:
@@ -132,7 +133,7 @@ class Plugins(metaclass=Singleton):
         launcher = self._instantiate(config.hydra.launcher)
         assert isinstance(launcher, Launcher)
         launcher.setup(
-            config=config, config_loader=config_loader, task_function=task_function
+            config=config, hydra_context=hydra_context, task_function=task_function
         )
         return launcher
 

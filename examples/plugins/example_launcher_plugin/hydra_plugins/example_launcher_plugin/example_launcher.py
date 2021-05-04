@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Sequence
 
-from hydra.core.config_loader import ConfigLoader
+from hydra.types import HydraContext
 from hydra.core.config_store import ConfigStore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
@@ -48,8 +48,8 @@ ConfigStore.instance().store(
 class ExampleLauncher(Launcher):
     def __init__(self, foo: str, bar: str) -> None:
         self.config: Optional[DictConfig] = None
-        self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
+        self.hydra_context: Optional[HydraContext] = None
 
         # foo and var are coming from the the plugin's configuration
         self.foo = foo
@@ -57,12 +57,13 @@ class ExampleLauncher(Launcher):
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.task_function = task_function
 
     def launch(
@@ -75,7 +76,7 @@ class ExampleLauncher(Launcher):
         """
         setup_globals()
         assert self.config is not None
-        assert self.config_loader is not None
+        assert self.hydra_context is not None
         assert self.task_function is not None
 
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
@@ -91,7 +92,7 @@ class ExampleLauncher(Launcher):
             idx = initial_job_idx + idx
             lst = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {lst}")
-            sweep_config = self.config_loader.load_sweep_config(
+            sweep_config = self.hydra_context.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
             with open_dict(sweep_config):
@@ -113,8 +114,9 @@ class ExampleLauncher(Launcher):
             Singleton.set_state(state)
 
             ret = run_job(
-                config=sweep_config,
+                hydra_context=self.hydra_context,
                 task_function=self.task_function,
+                config=sweep_config,
                 job_dir_key="hydra.sweep.dir",
                 job_subdir_key="hydra.sweep.subdir",
             )

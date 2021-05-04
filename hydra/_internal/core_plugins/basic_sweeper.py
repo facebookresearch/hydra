@@ -25,7 +25,6 @@ from typing import Any, Iterable, List, Optional, Sequence
 
 from omegaconf import DictConfig, OmegaConf
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override
@@ -33,7 +32,7 @@ from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 
 
 @dataclass
@@ -64,23 +63,26 @@ class BasicSweeper(Sweeper):
         self.batch_index = 0
         self.max_batch_size = max_batch_size
 
-        self.config_loader: Optional[ConfigLoader] = None
+        self.hydra_context: Optional[HydraContext] = None
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         from hydra.core.plugins import Plugins
 
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.config = config
 
         self.launcher = Plugins.instance().instantiate_launcher(
-            config=config, config_loader=config_loader, task_function=task_function
+            hydra_context=hydra_context,
+            task_function=task_function,
+            config=config,
         )
 
     @staticmethod
@@ -128,8 +130,9 @@ class BasicSweeper(Sweeper):
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
+        assert self.hydra_context is not None
 
-        parser = OverridesParser.create(config_loader=self.config_loader)
+        parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)
         overrides = parser.parse_overrides(arguments)
 
         self.overrides = self.split_arguments(overrides, self.max_batch_size)

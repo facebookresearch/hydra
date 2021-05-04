@@ -23,7 +23,6 @@ chdir_hydra_root()
                 """\
                 [HYDRA] Init custom_callback
                 [HYDRA] custom_callback on_run_start
-                [HYDRA] Init custom_callback
                 [JOB] custom_callback on_job_start
                 [JOB] foo: bar
 
@@ -42,7 +41,6 @@ chdir_hydra_root()
                 [HYDRA] custom_callback on_multirun_start
                 [HYDRA] Launching 1 jobs locally
                 [HYDRA] \t#0 : foo=bar
-                [HYDRA] Init custom_callback
                 [JOB] custom_callback on_job_start
                 [JOB] foo: bar
 
@@ -61,8 +59,6 @@ chdir_hydra_root()
                 [HYDRA] Init callback_2
                 [HYDRA] callback_1 on_run_start
                 [HYDRA] callback_2 on_run_start
-                [HYDRA] Init callback_1
-                [HYDRA] Init callback_2
                 [JOB] callback_1 on_job_start
                 [JOB] callback_2 on_job_start
                 [JOB] {}

@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
@@ -13,7 +12,7 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
 
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 def execute_job(
     idx: int,
     overrides: Sequence[str],
-    config_loader: ConfigLoader,
+    hydra_context: HydraContext,
     config: DictConfig,
     task_function: TaskFunction,
     singleton_state: Dict[Any, Any],
@@ -34,13 +33,16 @@ def execute_job(
     setup_globals()
     Singleton.set_state(singleton_state)
 
-    sweep_config = config_loader.load_sweep_config(config, list(overrides))
+    sweep_config = hydra_context.config_loader.load_sweep_config(
+        config, list(overrides)
+    )
     with open_dict(sweep_config):
         sweep_config.hydra.job.id = "{}_{}".format(sweep_config.hydra.job.name, idx)
         sweep_config.hydra.job.num = idx
     HydraConfig.instance().set_config(sweep_config)
 
     ret = run_job(
+        hydra_context=hydra_context,
         config=sweep_config,
         task_function=task_function,
         job_dir_key="hydra.sweep.dir",
@@ -73,8 +75,8 @@ def launch(
     """
     setup_globals()
     assert launcher.config is not None
-    assert launcher.config_loader is not None
     assert launcher.task_function is not None
+    assert launcher.hydra_context is not None
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
     sweep_dir = Path(str(launcher.config.hydra.sweep.dir))
@@ -102,7 +104,7 @@ def launch(
         delayed(execute_job)(
             initial_job_idx + idx,
             overrides,
-            launcher.config_loader,
+            launcher.hydra_context,
             launcher.config,
             launcher.task_function,
             singleton_state,

@@ -6,7 +6,6 @@ from typing import List, Optional, Sequence
 
 from omegaconf import DictConfig, open_dict
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_store import ConfigStore
 from hydra.core.utils import (
     JobReturn,
@@ -16,7 +15,7 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.plugins.launcher import Launcher
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -35,26 +34,27 @@ class BasicLauncher(Launcher):
     def __init__(self) -> None:
         super().__init__()
         self.config: Optional[DictConfig] = None
-        self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
+        self.hydra_context: Optional[HydraContext] = None
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.task_function = task_function
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
         setup_globals()
+        assert self.hydra_context is not None
         assert self.config is not None
         assert self.task_function is not None
-        assert self.config_loader is not None
 
         configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         sweep_dir = self.config.hydra.sweep.dir
@@ -65,15 +65,16 @@ class BasicLauncher(Launcher):
             idx = initial_job_idx + idx
             lst = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {lst}")
-            sweep_config = self.config_loader.load_sweep_config(
+            sweep_config = self.hydra_context.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
             with open_dict(sweep_config):
                 sweep_config.hydra.job.id = idx
                 sweep_config.hydra.job.num = idx
             ret = run_job(
-                config=sweep_config,
+                hydra_context=self.hydra_context,
                 task_function=self.task_function,
+                config=sweep_config,
                 job_dir_key="hydra.sweep.dir",
                 job_subdir_key="hydra.sweep.subdir",
             )
