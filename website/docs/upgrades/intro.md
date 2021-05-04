@@ -27,7 +27,7 @@ For a smooth upgrade experience, please follow these simple rules:
   - Upgrading from 1.1 to 1.2, addressing all the warnings.
 
 ## Patch version upgrades
-Patch releases normally contains only bug fixes and are thus patch upgrades (e.g. **1.0.3** to **1.0.6**) are safe and easy.  
+Patch releases normally contains only bug fixes and are thus safe and easy to upgrade (e.g. **1.0.3** to **1.0.6**).  
 In rare cases, patch releases will introduce new warnings. Be sure to address them before upgrading to the next major version.
 
 ## Dev release upgrades
