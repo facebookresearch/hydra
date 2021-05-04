@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 
 from omegaconf import DictConfig
 
+from hydra._internal.callbacks import Callbacks
 from hydra._internal.sources_registry import SourcesRegistry
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
@@ -125,17 +126,7 @@ class Plugins(metaclass=Singleton):
 
         param_keys = signature(plugin.setup).parameters.keys()
 
-        from hydra._internal.core_plugins.basic_launcher import BasicLauncher
-
-        if isinstance(plugin, BasicLauncher):
-            # BasicLauncher supports Hydra 1.0 style setup for compatibility with 3rd party Sweeper
-            plugin.setup(
-                config=config,
-                config_loader=config_loader,
-                task_function=task_function,
-                hydra_context=hydra_context,
-            )
-        elif "config_loader" in param_keys:
+        if "config_loader" in param_keys:
             warnings.warn(
                 message=(
                     "\n"
@@ -156,7 +147,11 @@ class Plugins(metaclass=Singleton):
                 task_function=task_function,
             )
         else:
-            assert hydra_context is not None
+            if hydra_context is None:
+                assert config_loader is not None
+                hydra_context = HydraContext(
+                    config_loader=config_loader, callbacks=Callbacks()
+                )
             plugin.setup(
                 config=config, hydra_context=hydra_context, task_function=task_function
             )
