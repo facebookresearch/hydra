@@ -24,11 +24,11 @@ This upgrade page aims to provide a summary of the required changes. It is highl
 ## Migration
 Before the upgrade, you have two different configs with the same name (a config file, and a Structured Config in the `ConfigStore`).
 You need to rename one of them. Depending on the circumstances and your preference you may rename one or the other.
-- If you control both configs, you can rename either of them. 
+- If you control both configs, you can rename either of them.
 - If you only control the config file, rename it.
 
 ### Option 1: rename the Structured Config
-Steps:
+This option is less disruptive. Use it if you control the Structured Config.  
 1. Use a different name when storing the schema into the Config Store. Common choices:
    - `base_` prefix, e.g. `base_mysql`.
    - `_schema` suffix, e.g. `mysql_schema`.
@@ -103,8 +103,8 @@ cs.store(group="db",
 </details>
 
 ### Option 2: rename the config file
-Steps:
-1. Rename the config file. Common choices are `custom_` or `my_` prefix, e.g. `custom_mysql.yaml`.
+This option is a bit more disruptive. Use it if you only control the config file.
+1. Rename the config file. Common choices are `custom_` or `my_` prefix, e.g. `custom_mysql.yaml`. You can also use a domain specific name like `prod_mysql.yaml`.
 2. Add the schema to the Defaults List of the extending config file.
 3. Update references to the config name accordingly, e.g. on the command-line `db=mysql` would become `db=custom_mysql`, and in a defaults list `db: mysql` would become `db: custom_mysql`.
 
