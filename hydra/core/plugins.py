@@ -141,6 +141,7 @@ class Plugins(metaclass=Singleton):
                     "\n"
                     "\tPlugin's setup() signature has changed in Hydra 1.1.\n"
                     "\tSupport for the old style will be removed in Hydra 1.2.\n"
+                    "\tFor more info, check https://github.com/facebookresearch/hydra/pull/1581.\n"
                 ),
                 category=UserWarning,
             )

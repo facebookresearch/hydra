@@ -93,6 +93,7 @@ def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callba
             message="\n"
             "\trun_job's signature has changed in Hydra 1.1.\n"
             "\tSupport for the old style will be removed in Hydra 1.2.\n"
+            "\tFor more info, check https://github.com/facebookresearch/hydra/pull/1581.\n"
         )
         from hydra._internal.callbacks import Callbacks
 
