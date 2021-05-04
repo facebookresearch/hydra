@@ -163,7 +163,6 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
 def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
     cmd = [
         sys.executable,
-        "-Werror",
         "example/my_app.py",
         "-m",
         f"hydra.sweep.dir={tmpdir}",
