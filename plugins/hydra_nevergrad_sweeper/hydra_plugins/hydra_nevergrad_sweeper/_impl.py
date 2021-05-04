@@ -168,15 +168,15 @@ class NevergradSweeperImpl(Sweeper):
             # check job status and prepare losses
             failures = 0
             for cand, ret in zip(candidates, returns):
-                if ret.status != utils.JobStatus.COMPLETED:
+                if ret.status == utils.JobStatus.COMPLETED:
+                    rectified_loss = direction * ret.return_value
+                else:
                     rectified_loss = math.inf
                     failures += 1
                     try:
                         ret.return_value
                     except HydraJobException as e:
                         log.warning(f"Returning infinity for failed experiment: {e}")
-                else:  # tell to the optimizer
-                    rectified_loss = direction * ret.return_value
                 optimizer.tell(cand, rectified_loss)
                 if rectified_loss < best[0]:
                     best = (rectified_loss, cand)
