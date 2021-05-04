@@ -459,6 +459,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             ),
             id="error:dict_quoted_key_override_double",
         ),
+        param(
+            "override",
+            "$foo/bar=foobar",
+            raises(HydraException, match=re.escape("mismatched input '/'")),
+            id="error:dollar_in_group",
+        ),
     ],
 )
 def test_parse_errors(rule: str, value: str, expected: Any) -> None:
@@ -471,6 +477,8 @@ def test_parse_errors(rule: str, value: str, expected: Any) -> None:
     [
         param("abc", "abc", id="package"),
         param("abc.cde", "abc.cde", id="package"),
+        param("$foo", "$foo", id="package_dollar"),
+        param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
     ],
 )
 def test_package(value: str, expected: Any) -> None:
@@ -483,6 +491,8 @@ def test_package(value: str, expected: Any) -> None:
     [
         param("abc", "abc", id="package"),
         param("abc.cde", "abc.cde", id="package"),
+        param("$foo", "$foo", id="package_dollar"),
+        param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
         param("a/b/c", "a/b/c", id="group"),
     ],
 )
@@ -497,6 +507,8 @@ def test_package_or_group(value: str, expected: Any) -> None:
         param("abc", Key(key_or_group="abc"), id="abc"),
         param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
         param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
+        param("$foo", Key(key_or_group="$foo"), id="dollar"),
+        param("$foo.bar$.x$z", Key(key_or_group="$foo.bar$.x$z"), id="dollar_dotpath"),
         param("list.0", Key(key_or_group="list.0"), id="list.0"),
         param(
             "package_or_group@pkg1",
@@ -507,6 +519,11 @@ def test_package_or_group(value: str, expected: Any) -> None:
             "package_or_group@",
             Key(key_or_group="package_or_group", package=""),
             id="package_or_group@",
+        ),
+        param(
+            "package_or_group@$pkg1",
+            Key(key_or_group="package_or_group", package="$pkg1"),
+            id="package_dollar",
         ),
     ],
 )

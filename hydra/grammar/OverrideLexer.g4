@@ -25,7 +25,8 @@ COLON: ':';
 SLASH: '/';
 
 KEY_ID: ID -> type(ID);
-DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
+KEY_SPECIAL: (CHAR|'_'|'$') (CHAR|DIGIT|'_'|'$')*;  // same as ID but allowing $
+DOT_PATH: (KEY_SPECIAL | INT_UNSIGNED) ('.' (KEY_SPECIAL | INT_UNSIGNED))+;
 
 ////////////////
 // VALUE_MODE //

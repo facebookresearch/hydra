@@ -44,7 +44,7 @@ override: (
 key : packageOrGroup (AT package)?;              // key | group@pkg
 
 packageOrGroup: package | ID (SLASH ID)+;        // db, hydra/launcher
-package: (ID | DOT_PATH);                        // db, hydra.launcher
+package: ( | ID | KEY_SPECIAL | DOT_PATH);       // db, $db, hydra.launcher, or the empty
 
 // Elements (that may be swept over).
 
