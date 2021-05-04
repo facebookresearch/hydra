@@ -20,6 +20,8 @@ This upgrade page aims to provide a summary of the required changes. It is highl
 - [Background: Extending configs](../../patterns/extending_configs.md)
 - [Tutorial: Structured config schema](../../tutorials/structured_config/5_schema.md)
 
+
+## Migration
 Before the upgrade, you have two different configs with the same name (a config file, and a Structured Config in the `ConfigStore`).
 You need to rename one of them. Depending on the circumstances and your preference you may rename one or the other.
 - If you control both configs, you can rename either of them. 
@@ -52,7 +54,7 @@ port: 3306
 </div>
 <div className="col col--6">
 
-```python title="Schema for db/mysql.yaml"
+```python title="db/mysql schema in the ConfigStore"
 @dataclass
 class MySQLConfig:
     host: str
@@ -84,7 +86,7 @@ port: 3306
 </div>
 <div className="col col--6">
 
-```python title="Schema for db/mysql.yaml" {8}
+```python title="db/mysql schema in the ConfigStore" {8}
 @dataclass
 class MySQLConfig:
     host: str
@@ -127,7 +129,7 @@ port: 3306
 </div>
 <div className="col col--6">
 
-```python title="Schema for db/mysql.yaml"
+```python title="db/mysql schema in the ConfigStore"
 @dataclass
 class MySQLConfig:
     host: str
@@ -142,10 +144,12 @@ cs.store(group="db",
 </div>
 
 #### Hydra 1.1
+Rename `db/mysql.yaml` to `db/custom_mysql.yaml` and explicitly add the schema to the Defaults List:
 <div className="row">
+
 <div className="col col--6">
 
-```yaml title="db/custom_mysql.yaml <= NEW NAME!" {1,2}
+```yaml title="db/custom_mysql.yaml" {1,2}
 defaults:
   - mysql
 
@@ -159,12 +163,12 @@ port: 3306
 </div>
 <div className="col col--6">
 
-```python title="Schema for db/mysql.yaml"
+```python title="db/mysql schema in the ConfigStore"
 
 
 
 
-                    NO CHANGES
+                   NO CHANGES
 
 
 
