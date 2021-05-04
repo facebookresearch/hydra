@@ -182,12 +182,19 @@ $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 - `float`: 3.14, -10e6, inf, -inf, nan.
 - `bool`: true, false
 - `dot_path`: foo.bar
-- `interpolation`: ${foo.bar}, ${co.env:USER,me}
+- `interpolation`: ${foo.bar}, ${oc.env:USER,me}
 
 Constants (null, true, false, inf, nan) are case-insensitive.
 
 :::important
-Always single-quote interpolations in the shell.
+Always single-quote interpolations in the shell, to prevent the shell from replacing them with environment variables:
+```shell
+$ python my_app.py 'dir=/root/${name}'
+```
+In addition, more complex interpolations containing special characters may require being passed as quoted values:
+```shell
+$ python my_app.py 'dir="${get_dir: {root: /root, name: ${name}}}"'
+```
 :::
 
 ## Dictionaries and Lists
