@@ -41,7 +41,7 @@ defaults:
 <div className="col col--4">
 
 ```yaml title="db/mysql.yaml"
-name: sqlite
+name: mysql
 ```
 
 ```yaml title="server/apache.yaml"

@@ -16,7 +16,7 @@ If you develop plugins, please join the <a href="https://hydra-framework.zulipch
 ## Plugin discovery
 The plugin discovery process runs whenever Hydra starts. During plugin discovery, Hydra scans for plugins in all the submodules of `hydra_plugins`. Hydra will import each module and look for plugins defined in that module.
 Any module under `hydra_plugins` that is slow to import will slow down the startup of _ALL_ Hydra applicaitons.
-Plugins with expensive imports can exclude individual files from this by prefixing them with `_` (but not `__`).
+Plugins with expensive imports can exclude individual files from Hydra's plugin discovery process by prefixing them with `_` (but not `__`).
 For example, the file `_my_plugin_lib.py` would not be imported and scanned, while `my_plugin_lib.py` would be.
 
 ## Plugin types
@@ -37,7 +37,7 @@ batch_size=128 optimizer=adam learning_rate=0.1
 
 ### Launcher
 Launchers are responsible for launching a job to a specific environment.
-A Launcher is taking a batch of argument lists like the one above and launches a job for each one.
+A Launcher takes a batch of argument lists like the one above and launches a job for each one.
 The job uses those arguments to compose its configuration.
 The basic launcher simply launches the job locally. 
 
@@ -53,4 +53,4 @@ Many other plugins also implement SearchPathPlugin to add their configuration to
 
 ### ConfigSource
 ConfigSource plugins can be used to allow Hydra to access configuration in non-standard locations when composing the config.
-This can be used to enable to access an in-house private config store, or as a way to access configs from public sources like GitHub or S3.
+This can be used to enable access to an in-house private config store, or as a way to access configs from public sources like GitHub or S3.

@@ -1,9 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from typing import List, Optional
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig
 
 from .config import AxConfig
@@ -19,11 +18,14 @@ class AxSweeper(Sweeper):
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
-        return self.sweeper.setup(config, config_loader, task_function)
+        return self.sweeper.setup(
+            hydra_context=hydra_context, task_function=task_function, config=config
+        )
 
     def sweep(self, arguments: List[str]) -> None:
         return self.sweeper.sweep(arguments)

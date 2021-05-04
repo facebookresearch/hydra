@@ -208,6 +208,13 @@ class ConfigLoaderImpl(ConfigLoader):
         new_csp.append("schema", "structured://")
         repo.initialize_sources(new_csp)
 
+        for source in repo.get_sources():
+            if not source.available():
+                warnings.warn(
+                    category=UserWarning,
+                    message=f"provider={source.provider}, path={source.path} is not available.",
+                )
+
     def _load_configuration_impl(
         self,
         config_name: Optional[str],
@@ -352,8 +359,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     if OmegaConf.select(
                         cfg, key, throw_on_missing=False
                     ) is None or isinstance(value, (dict, list)):
-                        with open_dict(cfg):
-                            OmegaConf.update(cfg, key, value, merge=True)
+                        OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                     else:
                         assert override.input_line is not None
                         raise ConfigCompositionException(
@@ -366,8 +372,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             )
                         )
                 elif override.is_force_add():
-                    with open_dict(cfg):
-                        OmegaConf.update(cfg, key, value, merge=True)
+                    OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                 else:
                     try:
                         OmegaConf.update(cfg, key, value, merge=True)
@@ -379,7 +384,7 @@ class ConfigLoaderImpl(ConfigLoader):
             except OmegaConfBaseException as ex:
                 raise ConfigCompositionException(
                     f"Error merging override {override.input_line}"
-                ) from ex
+                ).with_traceback(sys.exc_info()[2]) from ex
 
     def _load_single_config(
         self, default: ResultDefault, repo: IConfigRepository
@@ -527,11 +532,13 @@ class ConfigLoaderImpl(ConfigLoader):
         run_mode: RunMode,
     ) -> DefaultsList:
         parser = OverridesParser.create()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
         repo = CachingConfigRepository(self.repository)
+        self._process_config_searchpath(config_name, parsed_overrides, repo)
         defaults_list = create_defaults_list(
             repo=repo,
             config_name=config_name,
-            overrides_list=parser.parse_overrides(overrides=overrides),
+            overrides_list=parsed_overrides,
             prepend_hydra=True,
             skip_missing=run_mode == RunMode.MULTIRUN,
         )

@@ -4,5 +4,4 @@ hydra:
   callbacks:
     custom_callback:
       _target_: my_app.CustomCallback
-      param1: value1
-      param2: value2
+      callback_name: custom_callback

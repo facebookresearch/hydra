@@ -2,10 +2,9 @@
 import logging
 from typing import Any, Optional, Sequence
 
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
 from .config import RQLauncherConf
@@ -21,20 +20,21 @@ class RQLauncher(Launcher):
         https://python-rq.org
         """
         self.config: Optional[DictConfig] = None
-        self.config_loader: Optional[ConfigLoader] = None
         self.task_function: Optional[TaskFunction] = None
+        self.hydra_context: Optional[HydraContext] = None
 
         self.rq = OmegaConf.structured(RQLauncherConf(**params))
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
         self.task_function = task_function
+        self.hydra_context = hydra_context
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int

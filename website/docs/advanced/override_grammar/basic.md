@@ -118,7 +118,7 @@ group@pkg1:pkg2   # A config group changing the package from pkg1 to pkg2
 ### Quoted values
 Hydra supports both double quotes and single quoted values.
 Quoted strings can accept any value between the quotes.
-To include a single quote in a single quoted string escape it : `\'`. Same for double quote in a double quoted string.
+To include a single quote in a single quoted string escape it : `\'`. Same for double quotes in a double quoted string.
 
 <div className="row">
 <div className="col col--6">

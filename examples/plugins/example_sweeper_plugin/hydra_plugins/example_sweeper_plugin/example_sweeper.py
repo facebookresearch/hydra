@@ -6,7 +6,7 @@ import logging
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Sequence
 
-from hydra.core.config_loader import ConfigLoader
+from hydra.types import HydraContext
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
@@ -45,21 +45,23 @@ class ExampleSweeper(Sweeper):
         self.max_batch_size = max_batch_size
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
+        self.hydra_context: Optional[HydraContext] = None
         self.job_results = None
         self.foo = foo
         self.bar = bar
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.config = config
-        self.config_loader = config_loader
         self.launcher = Plugins.instance().instantiate_launcher(
-            config=config, config_loader=config_loader, task_function=task_function
+            hydra_context=hydra_context, task_function=task_function, config=config
         )
+        self.hydra_context = hydra_context
 
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None

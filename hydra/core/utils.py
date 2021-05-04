@@ -18,7 +18,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraJobException
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -83,15 +83,16 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
 
 
 def run_job(
-    config: DictConfig,
+    *,
+    hydra_context: HydraContext,
     task_function: TaskFunction,
+    config: DictConfig,
     job_dir_key: str,
     job_subdir_key: Optional[str],
     configure_logging: bool = True,
 ) -> "JobReturn":
-    from hydra.core.callbacks import Callbacks
 
-    callbacks = Callbacks(config)
+    callbacks = hydra_context.callbacks
 
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg

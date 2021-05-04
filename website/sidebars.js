@@ -8,7 +8,6 @@ module.exports = {
     docs: {
         About: [
             'intro',
-            'terminology',
         ],
         Tutorials: [
           'tutorials/intro',
@@ -61,6 +60,7 @@ module.exports = {
         'Common Patterns': [
             'patterns/extending_configs',
             'patterns/configuring_experiments',
+            'patterns/configuring_plugins',
             'patterns/select_multiple_configs_from_config_group',
             'patterns/specializing_config',
             'patterns/write_protect_config_node',
@@ -94,6 +94,7 @@ module.exports = {
         ],
 
         'Reference manual': [
+            'advanced/terminology',
             'advanced/hydra-command-line-flags',
             {
                 type: 'category',
@@ -126,7 +127,7 @@ module.exports = {
             "experimental/intro",
         ],
 
-        'Development': [
+        'Developer Guide': [
             'development/overview',
             'development/testing',
             'development/style_guide',

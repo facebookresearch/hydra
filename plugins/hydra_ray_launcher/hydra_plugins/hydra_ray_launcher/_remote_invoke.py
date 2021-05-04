@@ -30,6 +30,7 @@ def launch_jobs(temp_dir: str) -> None:
     runs = []
     with open(os.path.join(temp_dir, JOB_SPEC_PICKLE), "rb") as f:
         job_spec = pickle.load(f)  # nosec
+        hydra_context = job_spec["hydra_context"]
         singleton_state = job_spec["singleton_state"]
         sweep_configs = job_spec["sweep_configs"]
         task_function = job_spec["task_function"]
@@ -55,7 +56,7 @@ def launch_jobs(temp_dir: str) -> None:
 
             start_ray(ray_init)
             ray_obj = launch_job_on_ray(
-                ray_remote, sweep_config, task_function, singleton_state
+                hydra_context, ray_remote, sweep_config, task_function, singleton_state
             )
             runs.append(ray_obj)
 

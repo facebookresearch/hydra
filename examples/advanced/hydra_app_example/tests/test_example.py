@@ -10,7 +10,7 @@ from hydra import compose, initialize, initialize_config_module
 
 # 1. initialize will add config_path the config search path within the context
 # 2. The module with your configs should be importable. it needs to have a __init__.py (can be empty).
-# 3. THe config path is relative to the file calling initialize (this file)
+# 3. The config path is relative to the file calling initialize (this file)
 def test_with_initialize() -> None:
     with initialize(config_path="../hydra_app/conf"):
         # config is relative to a module

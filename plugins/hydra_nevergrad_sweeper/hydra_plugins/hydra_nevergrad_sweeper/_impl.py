@@ -25,7 +25,7 @@ from hydra.core.plugins import Plugins
 from hydra.errors import HydraJobException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import TaskFunction
+from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
 from .config import OptimConf, ScalarConfigSpec
@@ -92,6 +92,7 @@ class NevergradSweeperImpl(Sweeper):
         self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
+        self.hydra_context: Optional[HydraContext] = None
         self.job_results = None
         self.parametrization: Dict[str, Any] = {}
         if parametrization is not None:
@@ -104,15 +105,16 @@ class NevergradSweeperImpl(Sweeper):
 
     def setup(
         self,
-        config: DictConfig,
-        config_loader: ConfigLoader,
+        *,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
+        config: DictConfig,
     ) -> None:
         self.job_idx = 0
         self.config = config
-        self.config_loader = config_loader
+        self.hydra_context = hydra_context
         self.launcher = Plugins.instance().instantiate_launcher(
-            config=config, config_loader=config_loader, task_function=task_function
+            hydra_context=hydra_context, task_function=task_function, config=config
         )
 
     def sweep(self, arguments: List[str]) -> None:

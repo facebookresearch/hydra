@@ -649,6 +649,34 @@ def test_help(
 
 
 @mark.parametrize(
+    "overrides,expected",
+    [
+        param(
+            ["--info", "searchpath", "hydra.searchpath=['pkg://additonal_conf']"],
+            r".*hydra.searchpath in command-line\s+|\s+pkg://additonal_conf.*",
+            id="searchpath config from command-line",
+        ),
+        param(
+            ["--info", "searchpath"],
+            r".*hydra.searchpath in main\s+|\s+pkg://additonal_conf.*",
+            id="print info with searchpath config",
+        ),
+        param(
+            ["--info", "all", "dataset=imagenet"],
+            r".*path:\s+/datasets/imagenet",
+            id="searchpath config from config file",
+        ),
+    ],
+)
+def test_searchpath_config(tmpdir: Path, overrides: List[str], expected: str) -> None:
+    cmd = ["examples/advanced/config_search_path/my_app.py"]
+    cmd.extend(overrides)
+    cmd.extend(["hydra.run.dir=" + str(tmpdir)])
+    result, _err = run_python_script(cmd)
+    assert re.match(expected, result, re.DOTALL)
+
+
+@mark.parametrize(
     "calling_file, calling_module",
     [
         ("tests/test_apps/interpolating_dir_hydra_to_app/my_app.py", None),
@@ -1227,10 +1255,31 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
           @hydra.main()
         """
     )
-
     assert_regex_match(
         from_line=expected,
         to_line=err,
         from_name="Expected error",
         to_name="Actual error",
     )
+
+
+@mark.parametrize(
+    "overrides,expected",
+    [
+        (["--cfg", "job", "-p", "baud_rate"], "19200"),
+        (["--cfg", "hydra", "-p", "hydra.job.name"], "frozen"),
+        (["--info", "config"], "baud_rate: 19200"),
+        (["--hydra-help"], "== Flags =="),
+        (["--help"], "frozen is powered by Hydra."),
+    ],
+)
+def test_frozen_primary_config(
+    tmpdir: Path, overrides: List[str], expected: str
+) -> None:
+    cmd = [
+        "examples/patterns/write_protect_config_node/frozen.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    cmd.extend(overrides)
+    ret, _err = run_python_script(cmd)
+    assert expected in ret

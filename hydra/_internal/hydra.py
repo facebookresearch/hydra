@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -26,10 +26,10 @@ from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
-from hydra.types import RunMode, TaskFunction
+from hydra.types import HydraContext, RunMode, TaskFunction
 
-from ..core.callbacks import Callbacks
 from ..core.default_element import DefaultsTreeNode, InputDefault
+from .callbacks import Callbacks
 from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
 
@@ -95,8 +95,11 @@ class Hydra:
         callbacks.on_run_start(config=cfg, config_name=config_name)
 
         ret = run_job(
-            config=cfg,
+            hydra_context=HydraContext(
+                config_loader=self.config_loader, callbacks=callbacks
+            ),
             task_function=task_function,
+            config=cfg,
             job_dir_key="hydra.run.dir",
             job_subdir_key=None,
             configure_logging=with_log_configuration,
@@ -125,7 +128,11 @@ class Hydra:
         callbacks.on_multirun_start(config=cfg, config_name=config_name)
 
         sweeper = Plugins.instance().instantiate_sweeper(
-            config=cfg, config_loader=self.config_loader, task_function=task_function
+            config=cfg,
+            hydra_context=HydraContext(
+                config_loader=self.config_loader, callbacks=callbacks
+            ),
+            task_function=task_function,
         )
         task_overrides = OmegaConf.to_container(cfg.hydra.overrides.task, resolve=False)
         assert isinstance(task_overrides, list)
@@ -136,7 +143,7 @@ class Hydra:
     @staticmethod
     def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:
         cfg = copy.deepcopy(src_cfg)
-        with open_dict(cfg):
+        with flag_override(cfg, ["struct", "readonly"], [False, False]):
             for key in list(cfg.keys()):
                 if key != "hydra":
                     del cfg[key]
@@ -160,7 +167,7 @@ class Hydra:
             with_log_configuration=with_log_configuration,
         )
         if cfg_type == "job":
-            with open_dict(cfg):
+            with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 del cfg["hydra"]
         elif cfg_type == "hydra":
             cfg = self.get_sanitized_hydra_cfg(cfg)
@@ -331,7 +338,8 @@ class Hydra:
         )
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
-        with open_dict(clean_cfg):
+
+        with flag_override(clean_cfg, ["struct", "readonly"], [False, False]):
             del clean_cfg["hydra"]
         help_text = self.get_help(help_cfg, clean_cfg, args_parser)
         print(help_text)
@@ -381,8 +389,17 @@ class Hydra:
 
         box: List[List[str]] = [["Provider", "Search path"]]
 
-        for sp in self.config_loader.get_sources():
-            box.append([sp.provider, sp.full_path()])
+        cfg = self._get_cfg(
+            config_name=config_name,
+            overrides=overrides,
+            cfg_type="hydra",
+            with_log_configuration=False,
+        )
+
+        sources = cfg.hydra.runtime.config_sources
+
+        for sp in sources:
+            box.append([sp.provider, f"{sp.schema}://{sp.path}"])
 
         provider_pad, search_path_pad = get_column_widths(box)
         header = "| {} | {} |".format(
@@ -390,11 +407,11 @@ class Hydra:
         )
         self._log_header(header=header, filler="-")
 
-        for source in self.config_loader.get_sources():
+        for source in sources:
             log.debug(
                 "| {} | {} |".format(
                     source.provider.ljust(provider_pad),
-                    source.full_path().ljust(search_path_pad),
+                    f"{source.schema}://{source.path}".ljust(search_path_pad),
                 )
             )
         self._log_footer(header=header, filler="-")
@@ -452,7 +469,7 @@ class Hydra:
             )
         )
         self._log_header(header="Config", filler="*")
-        with open_dict(cfg):
+        with flag_override(cfg, ["struct", "readonly"], [False, False]):
             del cfg["hydra"]
         log.info(OmegaConf.to_yaml(cfg))
 

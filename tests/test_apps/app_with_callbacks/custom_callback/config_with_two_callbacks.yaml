@@ -1,0 +1,8 @@
+hydra:
+  callbacks:
+    callback_1:
+      _target_: my_app.CustomCallback
+      callback_name: callback_1
+    callback_2:
+      _target_: my_app.CustomCallback
+      callback_name: callback_2
