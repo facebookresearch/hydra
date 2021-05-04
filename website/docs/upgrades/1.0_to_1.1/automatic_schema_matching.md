@@ -107,7 +107,7 @@ Steps:
 3. Update references to the config name accordingly, e.g. on the command-line `db=mysql` would become `db=custom_mysql`, and in a defaults list `db: mysql` would become `db: custom_mysql`.
 
 
-<details><summary>Click to expand</summary>
+<details><summary>Click to show an example</summary>
 
 #### Hydra 1.0
 <div className="row">
