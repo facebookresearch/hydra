@@ -774,6 +774,23 @@ def test_key(value: str, expected: Any) -> None:
             QuotedString(text=r"a \'${b}\'", quote=Quote.single),
             id="value:backaslash_quotes_and_interpolation:quoted",
         ),
+        param(
+            r"'${foo:\'b,a,r\'}'",
+            QuotedString(text="${foo:'b,a,r'}", quote=Quote.single),
+            id="value:interpolation_with_quoted_string:quoted",
+        ),
+        param(
+            r"""'${foo:${a}, \'\${bar}\\\'\', {x: "${y}"}}'""",
+            QuotedString(
+                text=r"""${foo:${a}, '\${bar}\'', {x: "${y}"}}""", quote=Quote.single
+            ),
+            id="value:nested_interpolation:quoted",
+        ),
+        param(
+            r"""'${foo:"\' }"}'""",
+            QuotedString(text=r"""${foo:"' }"}""", quote=Quote.single),
+            id="value:interpolation_apparent_brace_mismatch:quoted",
+        ),
         # interpolations:
         param("${a}", "${a}", id="primitive:interpolation"),
         param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
