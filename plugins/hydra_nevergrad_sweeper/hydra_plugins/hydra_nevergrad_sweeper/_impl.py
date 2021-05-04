@@ -167,7 +167,7 @@ class NevergradSweeperImpl(Sweeper):
             to_tell: List[Tuple[ng.p.Parameter, float]] = []
             for cand, ret in zip(candidates, returns):
                 if ret.status != utils.JobStatus.COMPLETED:
-                    to_tell.append((cand, float("inf")))
+                    to_tell.append((cand, math.inf))
                     failures += 1
                     try:
                         ret.return_value
