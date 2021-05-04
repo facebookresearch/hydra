@@ -1,5 +1,7 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import math
 from typing import (
     Any,
     Dict,
@@ -13,7 +15,6 @@ from typing import (
 
 import nevergrad as ng
 from hydra.core import utils
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -166,17 +167,19 @@ class NevergradSweeperImpl(Sweeper):
             self.job_idx += len(returns)
             # check job status and prepare losses
             failures = 0
-            to_tell: List[Tuple[ng.p.Parameter, float]] = []
             for cand, ret in zip(candidates, returns):
                 if ret.status != utils.JobStatus.COMPLETED:
-                    to_tell.append((cand, math.inf))
+                    rectified_loss = math.inf
                     failures += 1
                     try:
                         ret.return_value
                     except HydraJobException as e:
                         log.warning(f"Returning infinity for failed experiment: {e}")
-                else:
-                    to_tell.append((cand, direction * ret.return_value))
+                else:  # tell to the optimizer
+                    rectified_loss = direction * ret.return_value
+                optimizer.tell(cand, rectified_loss)
+                if rectified_loss < best[0]:
+                    best = (rectified_loss, cand)
             # raise if too many failures
             if failures / len(returns) > self.opt_config.max_failure_rate:
                 log.error(
@@ -185,11 +188,6 @@ class NevergradSweeperImpl(Sweeper):
                 )
                 for ret in returns:
                     ret.return_value  # delegate raising to JobReturn, with actual traceback
-            # tell to the optimizer
-            for cand, loss in to_tell:
-                optimizer.tell(cand, loss)
-                if loss < best[0]:
-                    best = (loss, cand)
             all_returns.extend(returns)
         recom = optimizer.provide_recommendation()
         results_to_serialize = {
