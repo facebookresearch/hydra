@@ -8,6 +8,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from antlr4.tree.Tree import TerminalNodeImpl
 
 from hydra._internal.grammar.functions import FunctionCall, Functions
+from hydra._internal.grammar.utils import _ESC_QUOTED_STR
 from hydra.core.override_parser.types import (
     ChoiceSweep,
     Glob,
@@ -277,16 +278,13 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             if node.symbol.type == OverrideLexer.QUOTED_VALUE:
                 text = node.getText()
                 qc = text[0]
-                text = text[1:-1]
                 if qc == "'":
                     quote = Quote.single
-                    text = text.replace("\\'", "'")
                 elif qc == '"':
                     quote = Quote.double
-                    text = text.replace('\\"', '"')
                 else:
                     assert False
-                text = text.replace("\\\\", "\\")
+                text = self._unescape_quoted_string(text)
                 return QuotedString(text=text, quote=quote)
             elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
                 ret = node.symbol.text
@@ -309,6 +307,52 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             else:
                 return node.getText()  # type: ignore
         return ret
+
+    def _unescape_quoted_string(self, text: str) -> str:
+        """
+        Unescape a quoted string, by looking at backslashes that either:
+            * precede a quote, or
+            * end the string content
+
+        The input string should contain enclosing quotes, which are stripped away
+        by this function.
+
+        Examples (with double quotes, but the same logic applies to single quotes):
+            * "abc\"def"    -> abc"def
+            * "abc\\\"def"  -> abc\"def
+            * "abc\\"       -> abc\
+            * "abc\\\\"     -> abc\\"
+        """
+        qc = text[0]  # quote character
+        text = text[1:]  # remove first quote *but* keep the last one
+        pattern = _ESC_QUOTED_STR[qc]
+        match = pattern.search(text)
+
+        if match is None:
+            return text[0:-1]  # remove last quote
+
+        tokens = []
+        while match is not None:
+            start, stop = match.span()
+            # Add characters before the escaped sequence.
+            tokens.append(text[0:start])
+            # Un-escaping. Note that this works both for escaped quotes in the middle of
+            # a string, as well as trailing backslashes:
+            #   \"    -> "  (escaped quote in the middle)
+            #   \\"   -> \  (escaped trailing backslash)
+            #   \\\"  -> \" (escaped backslash followed by escaped quote in the middle)
+            #   \\\\" -> \\ (two escaped trailing backslashes)
+            #   ...
+            tokens.append(text[start + 1 : stop : 2])
+            # Move on to next match.
+            text = text[stop:]
+            match = pattern.search(text)
+
+        if text:
+            # Add characters after the last match, removing the end quote.
+            tokens.append(text[:-1])
+
+        return "".join(tokens)
 
 
 class HydraErrorListener(ErrorListener):  # type: ignore

@@ -119,7 +119,8 @@ group@pkg1:pkg2   # A config group changing the package from pkg1 to pkg2
 Hydra supports both double quotes and single quoted values.
 Quoted strings can accept any value between the quotes, but some characters need escaping:
 * to include a single quote in a single quoted string, use `\'` (for double quotes in a double quoted string, use `\"`)
-* the `\` character may also be escaped with `\\`, which can be required e.g. for strings ending with `\`
+* any sequence of `\` characters preceding a quote (either an escaped quote as described in the previous point, or the closing quote)
+  must be escaped by doubling the number of `\`
 
 <div className="row">
 <div className="col col--6">
@@ -127,7 +128,7 @@ Quoted strings can accept any value between the quotes, but some characters need
 ```python title="Double quotes"
 "hello there"
 "escaped \"double quote\""
-"the Windows root is C:\\"
+"the path is C:\\\"some folder\"\\"
 "1,2,3"
 "{a:10} ${xyz}"
 "'single quoted string'"
@@ -140,7 +141,7 @@ Quoted strings can accept any value between the quotes, but some characters need
 ```python title="Single quotes"
 'hello there'
 'escaped \'single quote\''
-'the Windows root is C:\\'
+'the path is C:\\\'some folder\'\\'
 '1,2,3'
 '{a:10} ${xyz}'
 '"double quoted string"'

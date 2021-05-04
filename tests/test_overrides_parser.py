@@ -636,20 +636,35 @@ def test_key(value: str, expected: Any) -> None:
             id="value:escape_double_quote_x3",
         ),
         param(
-            r"'foo\\bar'",
+            r"'foo\bar'",
             QuotedString(text=r"foo\bar", quote=Quote.single),
-            id="value:escape_backslash",
+            id="value:one_backslash_single",
+        ),
+        param(
+            r'"foo\bar"',
+            QuotedString(text=r"foo\bar", quote=Quote.double),
+            id="value:one_backslash_double",
+        ),
+        param(
+            r"'foo\\bar'",
+            QuotedString(text=r"foo\\bar", quote=Quote.single),
+            id="value:noesc_backslash",
         ),
         param(
             r"'foo\\\\bar'",
-            QuotedString(text=r"foo\\bar", quote=Quote.single),
-            id="value:escape_backslash_x4",
+            QuotedString(text=r"foo\\\\bar", quote=Quote.single),
+            id="value:noesc_backslash_x4",
         ),
         param(
             r"'foo bar\\'",
             # Note: raw strings do not allow trailing \, adding a space and stripping it.
             QuotedString(text=r" foo bar\ ".strip(), quote=Quote.single),
             id="value:escape_backslash_trailing",
+        ),
+        param(
+            r"'foo \\\\\'bar\' \\\\\\'",
+            QuotedString(text=r" foo \\'bar' \\\ ".strip(), quote=Quote.single),
+            id="value:escape_mixed",
         ),
         param(
             "'\t []{},=+~'",
@@ -730,8 +745,18 @@ def test_key(value: str, expected: Any) -> None:
             id="value:interpolation:quoted",
         ),
         param(
-            r"'a \\${b}'",
+            r"'a \${b}'",
             QuotedString(text=r"a \${b}", quote=Quote.single),
+            id="value:esc_interpolation:quoted",
+        ),
+        param(
+            r"'a \'\${b}\''",
+            QuotedString(text=r"a '\${b}'", quote=Quote.single),
+            id="value:quotes_and_esc_interpolation:quoted",
+        ),
+        param(
+            r"'a \\${b}'",
+            QuotedString(text=r"a \\${b}", quote=Quote.single),
             id="value:backslash_and_interpolation:quoted",
         ),
         param(
@@ -741,7 +766,7 @@ def test_key(value: str, expected: Any) -> None:
         ),
         param(
             r"'a \'\\${b}\''",
-            QuotedString(text=r"a '\${b}'", quote=Quote.single),
+            QuotedString(text=r"a '\\${b}'", quote=Quote.single),
             id="value:quotes_backslash_and_interpolation:quoted",
         ),
         param(
@@ -763,44 +788,6 @@ def test_primitive(value: str, expected: Any) -> None:
         assert value == ret.with_quotes()
 
     assert eq(ret, expected)
-
-
-@mark.parametrize(
-    ("value", "expected", "with_quotes"),
-    [
-        param(
-            r"'foo\bar'",
-            QuotedString(text=r"foo\bar", quote=Quote.single),
-            r"'foo\\bar'",
-            id="value:one_backslash_single",
-        ),
-        param(
-            r'"foo\bar"',
-            QuotedString(text=r"foo\bar", quote=Quote.double),
-            r'"foo\\bar"',
-            id="value:one_backslash_double",
-        ),
-        param(
-            r"'a \${b}'",
-            QuotedString(text=r"a \${b}", quote=Quote.single),
-            r"'a \\${b}'",
-            id="value:esc_interpolation:quoted",
-        ),
-        param(
-            r"'a \'\${b}\''",
-            QuotedString(text=r"a '\${b}'", quote=Quote.single),
-            r"'a \'\\${b}\''",
-            id="value:quotes_and_esc_interpolation:quoted",
-        ),
-    ],
-)
-def test_with_quotes_one_backslash(value: str, expected: Any, with_quotes: str) -> None:
-    # This test's objective is to test the case where a quoted string contains a single
-    # (i.e., non-escaped) backslash. This case can't be included in `test_primitive()`
-    # because the backslash is escaped by `with_quotes()` => value != ret.with_quotes()
-    ret = parse_rule(value, "primitive")
-    assert eq(ret, expected)
-    assert ret.with_quotes() == with_quotes
 
 
 @mark.parametrize(
