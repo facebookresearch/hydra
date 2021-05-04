@@ -119,12 +119,10 @@ This option is a bit more disruptive. Use it if you only control the config file
 # @package _group_
 host: localhost
 port: 3306
-
-
-
-
-
-
+```
+```yaml title="config.yaml"
+defaults:
+  - db: mysql
 ```
 </div>
 <div className="col col--6">
@@ -139,12 +137,13 @@ cs = ConfigStore.instance()
 cs.store(group="db",
          name="mysql", 
          node=MySQLConfig)
+
 ```
 </div>
 </div>
 
 #### Hydra 1.1
-Rename `db/mysql.yaml` to `db/custom_mysql.yaml` and explicitly add the schema to the Defaults List:
+Rename `db/mysql.yaml` to `db/custom_mysql.yaml` and explicitly add the schema to the Defaults List.
 <div className="row">
 
 <div className="col col--6">
@@ -155,15 +154,17 @@ defaults:
 
 host: localhost
 port: 3306
-
-
-
-
 ```
+```yaml title="config.yaml" {2}
+defaults:
+  - db: custom_mysql
+```
+
 </div>
 <div className="col col--6">
 
 ```python title="db/mysql schema in the ConfigStore"
+
 
 
 
@@ -173,8 +174,11 @@ port: 3306
 
 
 
+
+
 ```
 </div>
 </div>
 
+Don't forget to also update your command line overrides from `db=mysql` to `db=custom_mysql`.
 </details>
