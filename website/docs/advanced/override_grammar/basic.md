@@ -187,7 +187,7 @@ $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 Constants (null, true, false, inf, nan) are case-insensitive.
 
 :::important
-Always single-quote interpolations in the shell, to prevent the shell from replacing them with environment variables:
+Always single-quote interpolations in the shell, to prevent replacement with shell variables:
 ```shell
 $ python my_app.py 'dir=/root/${name}'
 ```
