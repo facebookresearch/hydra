@@ -772,7 +772,7 @@ def test_key(value: str, expected: Any) -> None:
         param(
             r"'a \\\'${b}\\\''",
             QuotedString(text=r"a \'${b}\'", quote=Quote.single),
-            id="value:backaslash_quotes_and_interpolation:quoted",
+            id="value:backslash_quotes_and_interpolation:quoted",
         ),
         param(
             r"'${foo:\'b,a,r\'}'",

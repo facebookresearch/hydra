@@ -309,13 +309,16 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         return ret
 
     def _unescape_quoted_string(self, text: str) -> str:
-        """
-        Unescape a quoted string, by looking at backslashes that either:
-            * precede a quote, or
-            * end the string content
+        r"""
+        Unescape a quoted string, by looking at \ that precede a quote.
 
         The input string should contain enclosing quotes, which are stripped away
         by this function.
+
+        Due to the grammar definition of quoted strings, it is assumed that:
+            * if there are \ preceding the closing quote, their number must be even
+            * if there are \ preceding a quote in the middle of the string, their
+              number must be odd
 
         Examples (with double quotes, but the same logic applies to single quotes):
             * "abc\"def"    -> abc"def
@@ -337,7 +340,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             # Add characters before the escaped sequence.
             tokens.append(text[0:start])
             # Un-escaping. Note that this works both for escaped quotes in the middle of
-            # a string, as well as trailing backslashes:
+            # a string, as well as trailing backslashes where the end quote is stripped:
             #   \"    -> "  (escaped quote in the middle)
             #   \\"   -> \  (escaped trailing backslash)
             #   \\\"  -> \" (escaped backslash followed by escaped quote in the middle)
@@ -348,9 +351,9 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             text = text[stop:]
             match = pattern.search(text)
 
-        if text:
+        if len(text) > 1:
             # Add characters after the last match, removing the end quote.
-            tokens.append(text[:-1])
+            tokens.append(text[0:-1])
 
         return "".join(tokens)
 

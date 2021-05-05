@@ -31,7 +31,7 @@ class QuotedString:
 
     def with_quotes(self) -> str:
         qc = "'" if self.quote == Quote.single else '"'
-        esc_qc = f"\\{qc}"
+        esc_qc = rf"\{qc}"
 
         match = None
         if "\\" in self.text:
@@ -62,7 +62,7 @@ class QuotedString:
             text = text[stop:]
             match = pattern.search(text)
 
-        if text:
+        if len(text) > 1:
             tokens.append(text[0:-1])  # remaining characters without the end quote
 
         # Concatenate all fragments and escape quotes.

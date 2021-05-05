@@ -1,1 +1,1 @@
-The override grammar now requires that, in quoted strings, any sequence of \ preceding a (possibly escaped) quote must be escaped
+The override grammar now requires that, in quoted strings, any sequence of \ preceding a quote (either an escaped quote or the closing quote) must be escaped
