@@ -126,7 +126,7 @@ class Plugins(metaclass=Singleton):
 
         param_keys = signature(plugin.setup).parameters.keys()
 
-        if "config_loader" in param_keys:
+        if "hydra_context" not in param_keys:
             warnings.warn(
                 message=(
                     "\n"
