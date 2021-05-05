@@ -191,7 +191,8 @@ Always single-quote interpolations in the shell, to prevent replacement with she
 ```shell
 $ python my_app.py 'dir=/root/${name}'
 ```
-In addition, more complex interpolations containing special characters may require being passed within a quoted value:
+In addition, more complex interpolations containing special characters may require being passed within a quoted value
+(note the extra double quotes surrounding the interpolation):
 ```shell
 $ python my_app.py 'dir="${get_dir: {root: /root, name: ${name}}}"'
 ```
