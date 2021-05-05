@@ -462,6 +462,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             id="error:left_overs",
         ),
         param(
+            "listContainer",
+            r"['a\', 'b']",
+            raises(HydraException, match=re.escape("token recognition error at: '']'")),
+            id="error:list_bad_escaping",
+        ),
+        param(
             "override",
             "key=[1,2,3]'",
             raises(HydraException, match=re.escape("token recognition error at: '''")),
@@ -472,6 +478,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "{'0a': 0, \"1b\": 1}",
             raises(HydraException, match=re.escape("mismatched input ''0a''")),
             id="error:dict_quoted_key_dictContainer",
+        ),
+        param(
+            "dictContainer",
+            r"{a: 'a\', b: 'b'}",
+            raises(HydraException, match=re.escape("token recognition error at: ''}'")),
+            id="error:dict_bad_escaping",
         ),
         param(
             "override",
