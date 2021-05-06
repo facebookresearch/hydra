@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
+from textwrap import dedent
 from typing import Any, List, Sequence, Union
 from unittest.mock import Mock
 
@@ -72,11 +73,12 @@ def test_setup_plugins(
     monkeypatch.setattr(Plugins, "check_usage", lambda _: None)
     monkeypatch.setattr(plugin_instance, "_instantiate", lambda _: plugin)
 
-    msg = (
-        "\n"
-        "\tPlugin's setup() signature has changed in Hydra 1.1.\n"
-        "\tSupport for the old style will be removed in Hydra 1.2.\n"
-        "\tFor more info, check https://github.com/facebookresearch/hydra/pull/1581.\n"
+    msg = dedent(
+        """
+                    Plugin's setup() signature has changed in Hydra 1.1.
+                    Support for the old style will be removed in Hydra 1.2.
+                    For more info, check https://github.com/facebookresearch/hydra/pull/1581.
+                    """
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
@@ -96,11 +98,12 @@ def test_setup_plugins(
 
 def test_run_job() -> None:
     hydra_context = None
-    msg = (
-        "\n"
-        "\trun_job's signature has changed in Hydra 1.1.\n"
-        "\tSupport for the old style will be removed in Hydra 1.2.\n"
-        "\tFor more info, check https://github.com/facebookresearch/hydra/pull/1581.\n"
+    msg = dedent(
+        """
+            run_job's signature has changed in Hydra 1.1.
+            Support for the old style will be removed in Hydra 1.2.
+            For more info, check https://github.com/facebookresearch/hydra/pull/1581.
+            """
     )
     with warns(expected_warning=UserWarning, match=msg):
         _get_callbacks_for_run_job(hydra_context)

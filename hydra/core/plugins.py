@@ -7,6 +7,7 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from inspect import signature
+from textwrap import dedent
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional, Tuple, Type
 
@@ -128,11 +129,12 @@ class Plugins(metaclass=Singleton):
 
         if "hydra_context" not in param_keys:
             warnings.warn(
-                message=(
-                    "\n"
-                    "\tPlugin's setup() signature has changed in Hydra 1.1.\n"
-                    "\tSupport for the old style will be removed in Hydra 1.2.\n"
-                    "\tFor more info, check https://github.com/facebookresearch/hydra/pull/1581.\n"
+                message=dedent(
+                    """
+                    Plugin's setup() signature has changed in Hydra 1.1.
+                    Support for the old style will be removed in Hydra 1.2.
+                    For more info, check https://github.com/facebookresearch/hydra/pull/1581.
+                    """
                 ),
                 category=UserWarning,
             )
@@ -148,6 +150,7 @@ class Plugins(metaclass=Singleton):
             )
         else:
             if hydra_context is None:
+                # hydra_context could be None when an incompatible Sweeper tried to compatible Launcher
                 assert config_loader is not None
                 hydra_context = HydraContext(
                     config_loader=config_loader, callbacks=Callbacks()
