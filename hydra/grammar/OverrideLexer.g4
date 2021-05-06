@@ -67,8 +67,20 @@ ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |
       '\\:' | '\\=' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;
 
+// Quoted values for both types of quotes.
+// A quoted value is made of the enclosing quotes, and either:
+//   - nothing else
+//   - an even number of backslashes (meaning they are escaped)
+//   - an optional sequence of any character, followed by any non-backslash character,
+//     and optionally an even number of backslashes (i.e., also escaped)
+// Examples (right hand side: expected content of the resulting string, after un-escaping):
+//    ""                      -> <empty>
+//    '\\'                    -> \
+//    "\\\\"                  -> \\
+//    'abc\\'                 -> abc\
+//    "abc\\\"def\\\'ghi\\\\" -> abc\"def\\\'ghi\\
 QUOTED_VALUE:
-      '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
-    | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
+      '"' (('\\\\')* | (.)*? ~[\\] ('\\\\')*) '"'     // double quotes
+    | '\'' (('\\\\')* | (.)*? ~[\\] ('\\\\')*) '\'';  // single quotes
 
 INTERPOLATION: '${' ~('}')+ '}';

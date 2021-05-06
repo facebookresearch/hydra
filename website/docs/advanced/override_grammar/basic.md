@@ -117,8 +117,10 @@ group@pkg1:pkg2   # A config group changing the package from pkg1 to pkg2
 
 ### Quoted values
 Hydra supports both double quotes and single quoted values.
-Quoted strings can accept any value between the quotes.
-To include a single quote in a single quoted string escape it : `\'`. Same for double quotes in a double quoted string.
+Quoted strings can accept any value between the quotes, but some characters need escaping:
+* to include a single quote in a single quoted string, use `\'` (for double quotes in a double quoted string, use `\"`)
+* any sequence of `\` characters preceding a quote (either an escaped quote as described in the previous point, or the closing quote)
+  must be escaped by doubling the number of `\`
 
 <div className="row">
 <div className="col col--6">
@@ -126,6 +128,7 @@ To include a single quote in a single quoted string escape it : `\'`. Same for d
 ```python title="Double quotes"
 "hello there"
 "escaped \"double quote\""
+"the path is C:\\\"some folder\"\\"
 "1,2,3"
 "{a:10} ${xyz}"
 "'single quoted string'"
@@ -138,6 +141,7 @@ To include a single quote in a single quoted string escape it : `\'`. Same for d
 ```python title="Single quotes"
 'hello there'
 'escaped \'single quote\''
+'the path is C:\\\'some folder\'\\'
 '1,2,3'
 '{a:10} ${xyz}'
 '"double quoted string"'
@@ -178,12 +182,20 @@ $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 - `float`: 3.14, -10e6, inf, -inf, nan.
 - `bool`: true, false
 - `dot_path`: foo.bar
-- `interpolation`: ${foo.bar}, ${co.env:USER,me}
+- `interpolation`: ${foo.bar}, ${oc.env:USER,me}
 
 Constants (null, true, false, inf, nan) are case-insensitive.
 
 :::important
-Always single-quote interpolations in the shell.
+Always single-quote interpolations in the shell, to prevent replacement with shell variables:
+```shell
+$ python my_app.py 'dir=/root/${name}'
+```
+In addition, more complex interpolations containing special characters may require being passed within a quoted value
+(note the extra double quotes surrounding the interpolation):
+```shell
+$ python my_app.py 'dir="${get_dir: {root: /root, name: ${name}}}"'
+```
 :::
 
 ## Dictionaries and Lists

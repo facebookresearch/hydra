@@ -11,6 +11,13 @@ _ESC = "\\()[]{}:=, \t"
 # Regular expression that matches any sequence of characters in `_ESC`.
 _ESC_REGEX = re.compile(f"[{re.escape(_ESC)}]+")
 
+# Regular expression that matches \ that must be escaped in a quoted string, i.e.,
+# any number of \ followed by a quote.
+_ESC_QUOTED_STR = {
+    "'": re.compile(r"(\\)+'"),  # single quote
+    '"': re.compile(r'(\\)+"'),  # double quote
+}
+
 
 def escape_special_characters(s: str) -> str:
     """Escape special characters in `s`"""

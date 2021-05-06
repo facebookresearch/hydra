@@ -202,6 +202,22 @@ def test_value(value: str, expected: Any) -> None:
         param("[[a]]", [["a"]], id="list:nested_list"),
         param("[[[a]]]", [[["a"]]], id="list:double_nested_list"),
         param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
+        param(
+            r"['a\\', 'b\\']",
+            [
+                QuotedString(text="a\\", quote=Quote.single),
+                QuotedString(text="b\\", quote=Quote.single),
+            ],
+            id="list:str_trailing_backslash_single",
+        ),
+        param(
+            r'["a\\", "b\\"]',
+            [
+                QuotedString(text="a\\", quote=Quote.double),
+                QuotedString(text="b\\", quote=Quote.double),
+            ],
+            id="list:str_trailing_backslash_double",
+        ),
     ],
 )
 def test_list_container(value: str, expected: Any) -> None:
@@ -300,6 +316,22 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
                 None: 5,
             },
             id="dict_mixed_keys",
+        ),
+        param(
+            r"{a: 'a\\', b: 'b\\'}",
+            {
+                "a": QuotedString(text="a\\", quote=Quote.single),
+                "b": QuotedString(text="b\\", quote=Quote.single),
+            },
+            id="dict_str_trailing_backslash_single",
+        ),
+        param(
+            r'{a: "a\\", b: "b\\"}',
+            {
+                "a": QuotedString(text="a\\", quote=Quote.double),
+                "b": QuotedString(text="b\\", quote=Quote.double),
+            },
+            id="dict_str_trailing_backslash_double",
         ),
     ],
 )
@@ -430,6 +462,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             id="error:left_overs",
         ),
         param(
+            "listContainer",
+            r"['a\', 'b']",
+            raises(HydraException, match=re.escape("token recognition error at: '']'")),
+            id="error:list_bad_escaping",
+        ),
+        param(
             "override",
             "key=[1,2,3]'",
             raises(HydraException, match=re.escape("token recognition error at: '''")),
@@ -440,6 +478,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "{'0a': 0, \"1b\": 1}",
             raises(HydraException, match=re.escape("mismatched input ''0a''")),
             id="error:dict_quoted_key_dictContainer",
+        ),
+        param(
+            "dictContainer",
+            r"{a: 'a\', b: 'b'}",
+            raises(HydraException, match=re.escape("token recognition error at: ''}'")),
+            id="error:dict_bad_escaping",
         ),
         param(
             "override",
@@ -582,90 +626,6 @@ def test_key(value: str, expected: Any) -> None:
         # bool
         param("true", True, id="primitive:bool"),
         param("false", False, id="primitive:bool"),
-        # quoted string
-        param(
-            "'foo \\'bar'",
-            QuotedString(text="foo 'bar", quote=Quote.single),
-            id="value:escape_single_quote",
-        ),
-        param(
-            '"foo \\"bar"',
-            QuotedString(text='foo "bar', quote=Quote.double),
-            id="value:escape_double_quote",
-        ),
-        param(
-            "'\t []{},=+~'",
-            QuotedString(text="\t []{},=+~", quote=Quote.single),
-            id="value:quoted_specials",
-        ),
-        param(
-            '"\t []{},=+~"',
-            QuotedString(text="\t []{},=+~", quote=Quote.double),
-            id="value:quoted_specials",
-        ),
-        param(
-            "'a b c'",
-            QuotedString(text="a b c", quote=Quote.single),
-            id="value:quoted_with_whitespace",
-        ),
-        param(
-            "'a,b'",
-            QuotedString(text="a,b", quote=Quote.single),
-            id="value:quoted_with_comma",
-        ),
-        param(
-            "'[1,2,3]'",
-            QuotedString(text="[1,2,3]", quote=Quote.single),
-            id="value:quoted_list",
-        ),
-        param(
-            '"[1,2,3]"',
-            QuotedString(text="[1,2,3]", quote=Quote.double),
-            id="value:quoted_list",
-        ),
-        param(
-            "\"[1,'2',3]\"",
-            QuotedString(text="[1,'2',3]", quote=Quote.double),
-            id="value:quoted_list_with_quoted_element",
-        ),
-        param(
-            "'null'",
-            QuotedString(text="null", quote=Quote.single),
-            id="value:null:quoted",
-        ),
-        param(
-            "'100'", QuotedString(text="100", quote=Quote.single), id="value:int:quoted"
-        ),
-        param(
-            "'3.14'",
-            QuotedString(text="3.14", quote=Quote.single),
-            id="value:float:quoted",
-        ),
-        param(
-            "'nan'",
-            QuotedString(text="nan", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'inf'",
-            QuotedString(text="inf", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'nan'",
-            QuotedString(text="nan", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'true'",
-            QuotedString(text="true", quote=Quote.single),
-            id="value:bool:quoted",
-        ),
-        param(
-            "'false'",
-            QuotedString(text="false", quote=Quote.single),
-            id="value:bool:quoted",
-        ),
         # interpolations:
         param("${a}", "${a}", id="primitive:interpolation"),
         param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
@@ -676,10 +636,193 @@ def test_key(value: str, expected: Any) -> None:
 )
 def test_primitive(value: str, expected: Any) -> None:
     ret = parse_rule(value, "primitive")
-    if isinstance(ret, QuotedString):
-        assert value == ret.with_quotes()
-
     assert eq(ret, expected)
+
+
+@mark.parametrize(
+    ("value", "expected"),
+    [
+        param(
+            r"'foo \'bar'",
+            QuotedString(text="foo 'bar", quote=Quote.single),
+            id="escape_single_quote",
+        ),
+        param(
+            r'"foo \"bar"',
+            QuotedString(text='foo "bar', quote=Quote.double),
+            id="escape_double_quote",
+        ),
+        param(
+            r"'foo \\\'bar'",
+            QuotedString(text=r"foo \'bar", quote=Quote.single),
+            id="escape_single_quote_x3",
+        ),
+        param(
+            r'"foo \\\"bar"',
+            QuotedString(text=r"foo \"bar", quote=Quote.double),
+            id="escape_double_quote_x3",
+        ),
+        param(
+            r"'foo\bar'",
+            QuotedString(text=r"foo\bar", quote=Quote.single),
+            id="one_backslash_single",
+        ),
+        param(
+            r'"foo\bar"',
+            QuotedString(text=r"foo\bar", quote=Quote.double),
+            id="one_backslash_double",
+        ),
+        param(
+            r"'foo\\bar'",
+            QuotedString(text=r"foo\\bar", quote=Quote.single),
+            id="noesc_backslash",
+        ),
+        param(
+            r"'foo\\\\bar'",
+            QuotedString(text=r"foo\\\\bar", quote=Quote.single),
+            id="noesc_backslash_x4",
+        ),
+        param(
+            r"'foo bar\\'",
+            # Note: raw strings do not allow trailing \, adding a space and stripping it.
+            QuotedString(text=r" foo bar\ ".strip(), quote=Quote.single),
+            id="escape_backslash_trailing",
+        ),
+        param(
+            r"'foo \\\\\'bar\' \\\\\\'",
+            QuotedString(text=r" foo \\'bar' \\\ ".strip(), quote=Quote.single),
+            id="escape_mixed",
+        ),
+        param(
+            "'\t []{},=+~'",
+            QuotedString(text="\t []{},=+~", quote=Quote.single),
+            id="quoted_specials",
+        ),
+        param(
+            '"\t []{},=+~"',
+            QuotedString(text="\t []{},=+~", quote=Quote.double),
+            id="quoted_specials",
+        ),
+        param(
+            "'a b c'",
+            QuotedString(text="a b c", quote=Quote.single),
+            id="quoted_with_whitespace",
+        ),
+        param(
+            "'a,b'",
+            QuotedString(text="a,b", quote=Quote.single),
+            id="quoted_with_comma",
+        ),
+        param(
+            "'[1,2,3]'",
+            QuotedString(text="[1,2,3]", quote=Quote.single),
+            id="quoted_list",
+        ),
+        param(
+            '"[1,2,3]"',
+            QuotedString(text="[1,2,3]", quote=Quote.double),
+            id="quoted_list",
+        ),
+        param(
+            "\"[1,'2',3]\"",
+            QuotedString(text="[1,'2',3]", quote=Quote.double),
+            id="quoted_list_with_quoted_element",
+        ),
+        param(
+            "'null'",
+            QuotedString(text="null", quote=Quote.single),
+            id="null",
+        ),
+        param("'100'", QuotedString(text="100", quote=Quote.single), id="int"),
+        param(
+            "'3.14'",
+            QuotedString(text="3.14", quote=Quote.single),
+            id="float",
+        ),
+        param(
+            "'nan'",
+            QuotedString(text="nan", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'inf'",
+            QuotedString(text="inf", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'nan'",
+            QuotedString(text="nan", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'true'",
+            QuotedString(text="true", quote=Quote.single),
+            id="bool",
+        ),
+        param(
+            "'false'",
+            QuotedString(text="false", quote=Quote.single),
+            id="bool",
+        ),
+        param(
+            "'a ${b}'",
+            QuotedString(text="a ${b}", quote=Quote.single),
+            id="interpolation",
+        ),
+        param(
+            r"'a \${b}'",
+            QuotedString(text=r"a \${b}", quote=Quote.single),
+            id="esc_interpolation",
+        ),
+        param(
+            r"'a \'\${b}\''",
+            QuotedString(text=r"a '\${b}'", quote=Quote.single),
+            id="quotes_and_esc_interpolation",
+        ),
+        param(
+            r"'a \\${b}'",
+            QuotedString(text=r"a \\${b}", quote=Quote.single),
+            id="backslash_and_interpolation",
+        ),
+        param(
+            r"'a \'${b}\''",
+            QuotedString(text=r"a '${b}'", quote=Quote.single),
+            id="quotes_and_interpolation",
+        ),
+        param(
+            r"'a \'\\${b}\''",
+            QuotedString(text=r"a '\\${b}'", quote=Quote.single),
+            id="quotes_backslash_and_interpolation",
+        ),
+        param(
+            r"'a \\\'${b}\\\''",
+            QuotedString(text=r"a \'${b}\'", quote=Quote.single),
+            id="backslash_quotes_and_interpolation",
+        ),
+        param(
+            r"'${foo:\'b,a,r\'}'",
+            QuotedString(text="${foo:'b,a,r'}", quote=Quote.single),
+            id="interpolation_with_quoted_string",
+        ),
+        param(
+            r"""'${foo:${a}, \'\${bar}\\\'\', {x: "${y}"}}'""",
+            QuotedString(
+                text=r"""${foo:${a}, '\${bar}\'', {x: "${y}"}}""", quote=Quote.single
+            ),
+            id="nested_interpolation",
+        ),
+        param(
+            r"""'${foo:"\' }"}'""",
+            QuotedString(text=r"""${foo:"' }"}""", quote=Quote.single),
+            id="interpolation_apparent_brace_mismatch",
+        ),
+    ],
+)
+def test_primitive_quoted_string(value: str, expected: Any) -> None:
+    ret = parse_rule(value, "primitive")
+    assert isinstance(ret, QuotedString)
+    assert eq(ret, expected)
+    assert value == ret.with_quotes()  # round-trip
 
 
 @mark.parametrize(
