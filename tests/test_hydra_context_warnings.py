@@ -75,10 +75,9 @@ def test_setup_plugins(
 
     msg = dedent(
         """
-                    Plugin's setup() signature has changed in Hydra 1.1.
-                    Support for the old style will be removed in Hydra 1.2.
-                    For more info, check https://github.com/facebookresearch/hydra/pull/1581.
-                    """
+        Plugin's setup() signature has changed in Hydra 1.1.
+        Support for the old style will be removed in Hydra 1.2.
+        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
@@ -100,10 +99,9 @@ def test_run_job() -> None:
     hydra_context = None
     msg = dedent(
         """
-            run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
-            Support for the old style will be removed in Hydra 1.2.
-            For more info, check https://github.com/facebookresearch/hydra/pull/1581.
-            """
+        run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
+        Support for the old style will be removed in Hydra 1.2.
+        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
     )
     with warns(expected_warning=UserWarning, match=msg):
         _get_callbacks_for_run_job(hydra_context)

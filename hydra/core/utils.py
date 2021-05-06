@@ -94,10 +94,9 @@ def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callba
         warnings.warn(
             message=dedent(
                 """
-            run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
-            Support for the old style will be removed in Hydra 1.2.
-            For more info, check https://github.com/facebookresearch/hydra/pull/1581.
-            """
+                run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
+                Support for the old style will be removed in Hydra 1.2.
+                For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
             ),
         )
         from hydra._internal.callbacks import Callbacks

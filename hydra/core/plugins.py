@@ -135,8 +135,7 @@ class Plugins(metaclass=Singleton):
                     """
                     Plugin's setup() signature has changed in Hydra 1.1.
                     Support for the old style will be removed in Hydra 1.2.
-                    For more info, check https://github.com/facebookresearch/hydra/pull/1581.
-                    """
+                    For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
                 ),
                 category=UserWarning,
             )
