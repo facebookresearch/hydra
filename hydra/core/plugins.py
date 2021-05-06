@@ -152,7 +152,7 @@ class Plugins(metaclass=Singleton):
             )
         else:
             if hydra_context is None:
-                # hydra_context could be None when an incompatible Sweeper tried to compatible Launcher
+                # hydra_context could be None when an incompatible Sweeper instantiates a compatible Launcher
                 assert config_loader is not None
                 hydra_context = HydraContext(
                     config_loader=config_loader, callbacks=Callbacks()
