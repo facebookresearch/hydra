@@ -100,7 +100,7 @@ def test_run_job() -> None:
     hydra_context = None
     msg = dedent(
         """
-            run_job's signature has changed in Hydra 1.1.
+            run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
             Support for the old style will be removed in Hydra 1.2.
             For more info, check https://github.com/facebookresearch/hydra/pull/1581.
             """

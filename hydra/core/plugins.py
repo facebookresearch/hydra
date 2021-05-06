@@ -128,6 +128,8 @@ class Plugins(metaclass=Singleton):
         param_keys = signature(plugin.setup).parameters.keys()
 
         if "hydra_context" not in param_keys:
+            # DEPRECATED: remove in 1.2
+            # hydra_context will be required in 1.2
             warnings.warn(
                 message=dedent(
                     """

@@ -89,10 +89,12 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
 
 def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callbacks":
     if hydra_context is None:
+        # DEPRECATED: remove in 1.2
+        # hydra_context will be required in 1.2
         warnings.warn(
             message=dedent(
                 """
-            run_job's signature has changed in Hydra 1.1.
+            run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
             Support for the old style will be removed in Hydra 1.2.
             For more info, check https://github.com/facebookresearch/hydra/pull/1581.
             """
