@@ -1,20 +1,21 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import warnings
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 if TYPE_CHECKING:
     from hydra.core.utils import JobReturn
 
 
 class Callbacks:
-    def __init__(self, config: DictConfig) -> None:
+    def __init__(self, config: Optional[DictConfig] = None) -> None:
         self.callbacks = []
         from hydra.utils import instantiate
 
-        for params in config.hydra.callbacks.values():
-            self.callbacks.append(instantiate(params))
+        if config is not None and OmegaConf.select(config, "hydra.callbacks"):
+            for params in config.hydra.callbacks.values():
+                self.callbacks.append(instantiate(params))
 
     def _notify(self, function_name: str, reverse: bool = False, **kwargs: Any) -> None:
         callbacks = reversed(self.callbacks) if reverse else self.callbacks
