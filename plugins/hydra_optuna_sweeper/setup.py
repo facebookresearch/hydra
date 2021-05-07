@@ -27,7 +27,7 @@ setup(
     ],
     install_requires=[
         # TODO(toshihikoyanase): Change version restriction to hydra-core>=1.1 after hydra-core=1.1.0 is released.
-        "hydra-core>1.0",
+        "hydra-core>=1.1.0.dev7",
         "optuna<2.5.0",
         "numpy<1.20.0",  # remove once optuna is upgraded to support numpy 1.20
     ],
