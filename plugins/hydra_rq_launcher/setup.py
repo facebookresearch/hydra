@@ -27,7 +27,7 @@ setup(
     install_requires=[
         "cloudpickle",
         "fakeredis",
-        "hydra-core>=1.0.0",
+        "hydra-core>=1.1.0.dev7",
         "rq>=1.5.1",
     ],
     include_package_data=True,

@@ -24,6 +24,9 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Development Status :: 4 - Beta",
     ],
-    install_requires=["hydra-core>=1.0.0", "submitit>=1.0.0"],
+    install_requires=[
+        "hydra-core>=1.1.0.dev7",
+        "submitit>=1.0.0",
+    ],
     include_package_data=True,
 )

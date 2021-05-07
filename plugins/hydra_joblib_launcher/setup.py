@@ -24,6 +24,9 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
     ],
-    install_requires=["hydra-core>=1.0.0", "joblib>=0.14.0"],
+    install_requires=[
+        "hydra-core>=1.1.0.dev7",
+        "joblib>=0.14.0",
+    ],
     include_package_data=True,
 )
