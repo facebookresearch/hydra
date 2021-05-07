@@ -1,2 +1,3 @@
 hydra_ray_launcher:
   path: plugins/${.name}
+  version_file: hydra_plugins/${.name}/__init__.py

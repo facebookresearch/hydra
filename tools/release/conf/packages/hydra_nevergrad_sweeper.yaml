@@ -1,2 +1,3 @@
 hydra_nevergrad_sweeper:
   path: plugins/${.name}
+  version_file: hydra_plugins/${.name}/__init__.py
