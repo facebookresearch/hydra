@@ -26,8 +26,8 @@ with open("README.md", "r") as fh:
             "Operating System :: OS Independent",
         ],
         install_requires=[
-            # consider pinning to a specific major version of Hydra to avoid unexpected
-            # if a new major versio nof Hydra introduces introduces breaking changes for plugins.
+            # consider pinning to a specific major version of Hydra to avoid unexpected problems
+            # if a new major version of Hydra introduces breaking changes for plugins.
             # e.g: "hydra-core==1.0.*",
             "hydra-core",
         ],
