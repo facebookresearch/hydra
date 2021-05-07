@@ -87,7 +87,6 @@ class RsyncConf:
 
     source_dir: Optional[str] = None
     target_dir: Optional[str] = None
-    include: List[str] = field(default_factory=list)
     exclude: List[str] = field(default_factory=list)
 
 
@@ -243,6 +242,43 @@ class RayAWSLauncherConf:
     # This can be used to download jobs output to local machine avoid the hassle to log on remote machine.
     # source is remote dir, target is local dir
     sync_down: RsyncConf = RsyncConf()
+
+    # Ray sdk.configure_logging parameters: log_style, color_mode, verbosity
+    # If 'pretty', outputs with formatting and color.
+    # If 'record', outputs record-style without formatting.
+    # 'auto' defaults to 'pretty', and disables pretty logging
+    # if stdin is *not* a TTY. Defaults to "auto".
+    log_style: str = "auto"
+
+    # Enables or disables `colorful`. Can be "true", "false", or "auto".
+    color_mode: str = "auto"
+
+    # Low verbosity will disable `verbose` and `very_verbose` messages.
+    # can be (0, 1, 2, 3).
+    verbosity: int = 1
+
+    # Ray sdk.create_or_update_cluster parameters: no_restart, restart_only, no_config_cache
+    # Whether to skip restarting Ray services during the
+    # update. This avoids interrupting running jobs and can be used to
+    # dynamically adjust autoscaler configuration.
+    update_cluster_no_restart: bool = False
+
+    # Whether to skip running setup commands and only
+    # restart Ray. This cannot be used with 'no-restart'.
+    update_cluster_restart_only: bool = False
+
+    # Whether to disable the config cache and fully
+    # resolve all environment settings from the Cloud provider again.
+    update_cluster_no_config_cache: bool = False
+
+    # Ray sdk.teardown parameters: workers_only, keep_min_workers
+    # Whether to keep the head node running and only
+    # teardown worker nodes.
+    teardown_workers_only: bool = False
+
+    # Whether to keep min_workers (as specified
+    # in the RayClusterConf) still running.
+    teardown_keep_min_workers: bool = False
 
 
 config_store = ConfigStore.instance()

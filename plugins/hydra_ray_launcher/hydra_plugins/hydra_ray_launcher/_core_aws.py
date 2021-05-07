@@ -10,17 +10,12 @@ import pickle5 as pickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
+from ray.autoscaler import sdk  # type: ignore
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
     JOB_SPEC_PICKLE,
-    ray_down,
-    ray_exec,
-    ray_rsync_down,
-    ray_rsync_up,
     ray_tmp_dir,
-    ray_up,
-    rsync,
 )
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
     RayAWSLauncher,
@@ -71,7 +66,14 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
+    sdk.configure_logging(
+        log_style=launcher.log_style,
+        color_mode=launcher.color_mode,
+        verbosity=launcher.verbosity,
+    )
 
+    log.info("Creating Ray Cluster with the following configuration:")
+    log.info(OmegaConf.to_yaml(launcher.ray_cfg.cluster))
     log.info(f"Ray Launcher is launching {len(job_overrides)} jobs, ")
 
     with tempfile.TemporaryDirectory() as local_tmp_dir:
@@ -96,39 +98,36 @@ def launch(
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
         )
-
-        with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
-            with open(f.name, "w") as file:
-                OmegaConf.save(
-                    config=launcher.ray_cfg.cluster, f=file.name, resolve=True
-                )
-            launcher.ray_yaml_path = f.name
-            log.info(
-                f"Saving RayClusterConf in a temp yaml file: {launcher.ray_yaml_path}."
-            )
-
-            return launch_jobs(
-                launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
-            )
+        return launch_jobs(
+            launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
+        )
 
 
 def launch_jobs(
     launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
 ) -> Sequence[JobReturn]:
-    ray_up(launcher.ray_yaml_path)
+    config = OmegaConf.to_container(
+        launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
+    )
+    sdk.create_or_update_cluster(
+        config,
+        no_restart=launcher.update_cluster_no_restart,
+        restart_only=launcher.update_cluster_restart_only,
+        no_config_cache=launcher.update_cluster_no_config_cache,
+    )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
-        with ray_tmp_dir(
-            launcher.ray_yaml_path, launcher.ray_cfg.run_env.name
-        ) as remote_tmp_dir:
-
-            ray_rsync_up(
-                launcher.ray_yaml_path, os.path.join(local_tmp_dir, ""), remote_tmp_dir
+        with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
+            sdk.rsync(
+                config,
+                source=os.path.join(local_tmp_dir, ""),
+                target=remote_tmp_dir,
+                down=False,
             )
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            ray_rsync_up(launcher.ray_yaml_path, script_path, remote_script_path)
+            sdk.rsync(config, source=script_path, target=remote_script_path, down=False)
 
             if launcher.sync_up.source_dir:
                 source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
@@ -137,25 +136,26 @@ def launch_jobs(
                     if launcher.sync_up.target_dir
                     else remote_tmp_dir
                 )
-                rsync(
-                    launcher.ray_yaml_path,
-                    launcher.sync_up.include,
-                    launcher.sync_up.exclude,
-                    os.path.join(source_dir, ""),
-                    target_dir,
+                config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
+                    launcher.sync_up.exclude, resolve=True
                 )
-
-            ray_exec(
-                launcher.ray_yaml_path,
-                launcher.ray_cfg.run_env.name,
-                remote_script_path,
-                remote_tmp_dir,
+                sdk.rsync(
+                    config,
+                    source=os.path.join(source_dir, ""),
+                    target=target_dir,
+                    down=False,
+                )
+            sdk.run_on_cluster(
+                config,
+                run_env=launcher.ray_cfg.run_env.name,
+                cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
-            ray_rsync_down(
-                launcher.ray_yaml_path,
-                os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
-                local_tmp_download_dir,
+            sdk.rsync(
+                config,
+                source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
+                target=local_tmp_download_dir,
+                down=True,
             )
 
             sync_down_cfg = launcher.sync_down
@@ -163,25 +163,25 @@ def launch_jobs(
             if (
                 sync_down_cfg.target_dir
                 or sync_down_cfg.source_dir
-                or sync_down_cfg.include
                 or sync_down_cfg.exclude
             ):
                 source_dir = (
                     sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
                 )
                 target_dir = (
-                    sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
+                    sync_down_cfg.target_dir if sync_down_cfg.target_dir else sweep_dir
                 )
                 target_dir = Path(_get_abs_code_dir(target_dir))
                 target_dir.mkdir(parents=True, exist_ok=True)
 
-                rsync(
-                    launcher.ray_yaml_path,
-                    launcher.sync_down.include,
-                    launcher.sync_down.exclude,
-                    os.path.join(source_dir),
-                    str(target_dir),
-                    up=False,
+                config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
+                    launcher.sync_down.exclude, resolve=True
+                )
+                sdk.rsync(
+                    config,
+                    source=os.path.join(source_dir, ""),
+                    target=str(target_dir),
+                    down=True,
                 )
                 log.info(
                     f"Syncing outputs from remote dir: {source_dir} to local dir: {target_dir.absolute()} "
@@ -193,7 +193,11 @@ def launch_jobs(
                 log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
-            ray_down(launcher.ray_yaml_path)
+            sdk.teardown_cluster(
+                config,
+                workers_only=launcher.teardown_workers_only,
+                keep_min_workers=launcher.keep_min_workers,
+            )
         else:
             log.warning(
                 "NOT stopping cluster, this may incur extra cost for you. (stop_cluster=false)"
