@@ -196,7 +196,7 @@ def launch_jobs(
             sdk.teardown_cluster(
                 config,
                 workers_only=launcher.teardown_workers_only,
-                keep_min_workers=launcher.keep_min_workers,
+                keep_min_workers=launcher.teardown_keep_min_workers,
             )
         else:
             log.warning(
