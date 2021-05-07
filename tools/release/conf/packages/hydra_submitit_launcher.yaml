@@ -1,2 +1,3 @@
 hydra_submitit_launcher:
   path: plugins/${.name}
+  version_file: hydra_plugins/${.name}/__init__.py
