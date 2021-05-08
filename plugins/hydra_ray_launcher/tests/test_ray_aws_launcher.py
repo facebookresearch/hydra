@@ -154,7 +154,7 @@ def upload_and_install_wheels(
     log.info(f"Install hydra-core wheel {core_wheel}")
     sdk.run_on_cluster(
         connect_config,
-        cmd=f"pip install --force-reinstall"
+        cmd=f"pip install --force-reinstall "
         f"--no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
     )
 
