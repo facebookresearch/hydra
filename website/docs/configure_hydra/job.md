@@ -1,9 +1,7 @@
 ---
 id: job
-sidebar_label: Job Configuration
-hide_title: true
+title: Job Configuration
 ---
-## Job configuration
 
 import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 
@@ -54,7 +52,6 @@ class JobConf:
 ```
 </details>
 
-## Documentation
 ### hydra.job.name
 <ExampleGithubLink text="Example application" to="examples/configure_hydra/job_name"/>
 
@@ -64,28 +61,28 @@ You can override it via the command line, or your config file.
 
 ### hydra.job.override_dirname
 Enables the creation of an output directory which is based on command line overrides.
-See [this](/configure_hydra/workdir.md) for more information.
+Learn more at the [Customizing Working Directory](/configure_hydra/workdir.md) page.
 
 ### hydra.job.id
-The job ID is populated by active Hydra launcher. For the basic launcher, the job ID is just a serial job number, but
-for other systems this could be the SLURM job ID or the AWS Instance ID.
+The job ID is populated by the active Hydra launcher. For the basic launcher, the job ID is just a serial job number. 
+Other launchers will set it to an ID that makes sense like SLURM job ID. 
 
 ### hydra.job.num
-Serial job number within this current sweep run. (0 to n-1)
+Serial job number within this current sweep run. (0 to n-1).
 
 ### hydra.job.config_name
-The config name used by the job, this is populated automatically to match the config name in @hydra.main()
+The config name used by the job, this is populated automatically to match the config name in `@hydra.main()`.
 
 ### hydra.job.env_set
-A Dict[str, str] that is used to set the environment variables of the running job.
-Some common use cases are to set environment variables that are affecting underlying libraries, for example
+A `Dict[str, str]` that is used to set the environment variables of the running job.
+Some common use cases are to automatically set environment variables that are affecting underlying libraries.
+For example, the following will disables multithreading in Intel IPP and MKL:
 ```yaml
 hydra:
   job:
     env_set:
       OMP_NUM_THREADS: 1
 ```
-Disables multithreading in Intel IPP and MKL.
 
 Another example, is to use interpolation to automatically set the rank 
 for [Torch Distributed](https://pytorch.org/tutorials/intermediate/dist_tuto.html) run to match the job number 
