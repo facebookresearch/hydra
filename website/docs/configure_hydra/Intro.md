@@ -6,8 +6,7 @@ sidebar_label: Introduction
 
 import GithubLink from "@site/src/components/GithubLink"
 
-Hydra is highly configurable. Many of its aspects and sub systems can be configured. 
-This includes:
+Hydra is highly configurable. Many of its aspects and subsystems can be configured, including:
 * The Launcher
 * The Sweeper
 * Logging
