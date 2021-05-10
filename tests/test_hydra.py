@@ -1211,7 +1211,7 @@ def test_job_exception(
 def test_job_exception_full_error(tmpdir: Any) -> None:
     ret = run_with_error(
         ["tests/test_apps/app_exception/my_app.py", f"hydra.run.dir={tmpdir}"],
-        env={"HYDRA_FULL_ERROR": "1"},
+        env={**os.environ, "HYDRA_FULL_ERROR": "1"},
     )
 
     assert "ZeroDivisionError: division by zero" in ret
