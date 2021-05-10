@@ -6,21 +6,17 @@ sidebar_label: Introduction
 
 import GithubLink from "@site/src/components/GithubLink"
 
-Many things in Hydra can be customized. This includes:
-* Launcher configurations
-* Sweeper configuration
-* Logging configuration
-* Run and Multirun output directory patterns
+Hydra is highly configurable. Many of its aspects and subsystems can be configured, including:
+* The Launcher
+* The Sweeper
+* Logging
+* Output directory patterns
 * Application help (--help and --hydra-help)
 
-Hydra can be customized using the same methods you are already familiar with from the tutorial.
+The Hydra config can be customized using the same methods you are already familiar with from the tutorial.
 You can include some Hydra config snippet in your own config to override it directly, or compose in different
 configurations provided by plugins or by your own code. You can also override everything in Hydra from the command 
 line just like with your own configuration.
-
-The Hydra configuration actually lives in the same config object as your configuration, but is removed prior to running
-your function to reduce confusion.
-You can view the configuration with `--cfg hydra|job|all`
 
 The Hydra configuration itself is composed from multiple config files. here is a partial list:
 ```yaml title="hydra/config"
@@ -33,7 +29,10 @@ defaults:
 You can view the Hydra config structure <GithubLink to="hydra/conf/__init__.py">here</GithubLink>.
 
 You can view the Hydra config using `--cfg hydra`:
-```yaml title="$ python my_app.py --cfg hydra"
+<details>
+<summary> $ python my_app.p <b>--cfg hydra</b> (Click to expand)</summary>
+
+```yaml
 hydra:
   run:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
@@ -50,8 +49,10 @@ hydra:
     formatters:
     ...
 ```
+</details>
 
-## Runtime variables
+
+## Accessing the Hydra config
 The Hydra config is large. To reduce clutter in your own config it's being deleted from the config object
 Hydra is passing to the function annotated by `@hydra.main()`.
 
@@ -75,6 +76,10 @@ def my_app(cfg: DictConfig) -> None:
 The following variables are populated at runtime.  
 
 ### hydra.job:
+The **hydra.job** node is used for configuring some aspects of your job. 
+Below is a short summary of the fields in **hydra.job**. 
+You can find more details in the [Job Configuration](job.md) page.
+
 Fields under **hydra.job**:
 - **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
 - **override_dirname** : Pathname derived from the overrides for this job
@@ -86,14 +91,14 @@ Fields under **hydra.job**:
 - **config**: fine-grained configuration for job
 
 ### hydra.runtime:
-Fields under **hydra.runtime**:
+Fields under **hydra.runtime** are populated automatically and should not be overridden.
 - **version**: Hydra's version
 - **cwd**: Original working directory the app was executed from
 - **choices**: A dictionary containing the final config group choices.
 - **config_sources**: The final list of config sources used to compose the config.
 
-### Hydra resolvers
-Hydra supports several [OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
+### Resolvers provided by Hydra
+Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers) by default.
 
 **hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
 
