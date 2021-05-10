@@ -98,7 +98,7 @@ Fields under **hydra.runtime** are populated automatically and should not be ove
 - **config_sources**: The final list of config sources used to compose the config.
 
 ### Resolvers provided by Hydra
-Hydra provides the following[OmegaConf resolvers](https://github.com/facebookresearch/hydra/blob/master/hydra/core/utils.py) by default.
+Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers) by default.
 
 **hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
 
