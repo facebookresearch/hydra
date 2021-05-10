@@ -18,12 +18,10 @@ from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
-from hydra.errors import HydraJobException
+from hydra.types import HydraContext, TaskFunction
 
 if TYPE_CHECKING:
     from hydra._internal.callbacks import Callbacks
-
-from hydra.types import HydraContext, TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -229,9 +227,10 @@ class JobReturn:
         if self.status == JobStatus.COMPLETED:
             return self._return_value
         else:
-            raise HydraJobException(
-                f"Error executing job with overrides: {self.overrides}"
-            ) from self._return_value
+            sys.stderr.write(
+                f"Error executing job with overrides: {self.overrides}" + os.linesep
+            )
+            raise self._return_value
 
     @return_value.setter
     def return_value(self, value: Any) -> None:
