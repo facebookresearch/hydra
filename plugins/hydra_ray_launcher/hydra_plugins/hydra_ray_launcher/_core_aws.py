@@ -7,10 +7,10 @@ from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
+import ray
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
-from ray.autoscaler import sdk
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -66,7 +66,7 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
-    sdk.configure_logging(
+    ray.autoscaler.sdk.configure_logging(
         log_style=launcher.log_style,
         color_mode=launcher.color_mode,
         verbosity=launcher.verbosity,
@@ -109,8 +109,8 @@ def launch_jobs(
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
-    sdk.create_or_update_cluster(
-        config,  # type: ignore
+    ray.autoscaler.sdk.create_or_update_cluster(
+        config,
         no_restart=launcher.update_cluster_no_restart,
         restart_only=launcher.update_cluster_restart_only,
         no_config_cache=launcher.update_cluster_no_config_cache,
@@ -118,8 +118,8 @@ def launch_jobs(
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
-            sdk.rsync(
-                config,  # type: ignore
+            ray.autoscaler.sdk.rsync(
+                config,
                 source=os.path.join(local_tmp_dir, ""),
                 target=remote_tmp_dir,
                 down=False,
@@ -127,8 +127,8 @@ def launch_jobs(
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            sdk.rsync(
-                config,  # type: ignore
+            ray.autoscaler.sdk.rsync(
+                config,
                 source=script_path,
                 target=remote_script_path,
                 down=False,
@@ -144,20 +144,20 @@ def launch_jobs(
                 config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_up.exclude, resolve=True
                 )
-                sdk.rsync(
-                    config,  # type: ignore
+                ray.autoscaler.sdk.rsync(
+                    config,
                     source=os.path.join(source_dir, ""),
                     target=target_dir,
                     down=False,
                 )
-            sdk.run_on_cluster(
-                config,  # type: ignore
+            ray.autoscaler.sdk.run_on_cluster(
+                config,
                 run_env=launcher.ray_cfg.run_env.name,
                 cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
-            sdk.rsync(
-                config,  # type: ignore
+            ray.autoscaler.sdk.rsync(
+                config,
                 source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
                 target=local_tmp_download_dir,
                 down=True,
@@ -182,8 +182,8 @@ def launch_jobs(
                 config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_down.exclude, resolve=True
                 )
-                sdk.rsync(
-                    config,  # type: ignore
+                ray.autoscaler.sdk.rsync(
+                    config,
                     source=os.path.join(source_dir, ""),
                     target=str(target_dir),
                     down=True,
@@ -198,8 +198,8 @@ def launch_jobs(
                 log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
-            sdk.teardown_cluster(
-                config,  # type: ignore
+            ray.autoscaler.sdk.teardown_cluster(
+                config,
                 workers_only=launcher.teardown_workers_only,
                 keep_min_workers=launcher.teardown_keep_min_workers,
             )
