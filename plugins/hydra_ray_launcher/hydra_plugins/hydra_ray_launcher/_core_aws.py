@@ -7,7 +7,6 @@ from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
 import pickle5 as pickle  # type: ignore
-import ray
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
@@ -20,6 +19,15 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
     RayAWSLauncher,
 )
+
+# mypy complains about "unused type: ignore comment" on macos
+# workaround adapted from: https://github.com/twisted/twisted/pull/1416
+try:
+    import importlib
+
+    sdk = importlib.import_module("ray.autoscaler.sdk")
+except ModuleNotFoundError as e:
+    raise ImportError(e)
 
 log = logging.getLogger(__name__)
 
@@ -66,7 +74,7 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
-    ray.autoscaler.sdk.configure_logging(
+    sdk.configure_logging(  # type: ignore[attr-defined]
         log_style=launcher.log_style,
         color_mode=launcher.color_mode,
         verbosity=launcher.verbosity,
@@ -109,7 +117,7 @@ def launch_jobs(
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
-    ray.autoscaler.sdk.create_or_update_cluster(
+    sdk.create_or_update_cluster(  # type: ignore[attr-defined]
         config,
         no_restart=launcher.update_cluster_no_restart,
         restart_only=launcher.update_cluster_restart_only,
@@ -118,7 +126,7 @@ def launch_jobs(
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
-            ray.autoscaler.sdk.rsync(
+            sdk.rsync(  # type: ignore[attr-defined]
                 config,
                 source=os.path.join(local_tmp_dir, ""),
                 target=remote_tmp_dir,
@@ -127,7 +135,7 @@ def launch_jobs(
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            ray.autoscaler.sdk.rsync(
+            sdk.rsync(  # type: ignore[attr-defined]
                 config,
                 source=script_path,
                 target=remote_script_path,
@@ -144,19 +152,19 @@ def launch_jobs(
                 config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_up.exclude, resolve=True
                 )
-                ray.autoscaler.sdk.rsync(
+                sdk.rsync(  # type: ignore[attr-defined]
                     config,
                     source=os.path.join(source_dir, ""),
                     target=target_dir,
                     down=False,
                 )
-            ray.autoscaler.sdk.run_on_cluster(
+            sdk.run_on_cluster(  # type: ignore[attr-defined]
                 config,
                 run_env=launcher.ray_cfg.run_env.name,
                 cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
-            ray.autoscaler.sdk.rsync(
+            sdk.rsync(  # type: ignore[attr-defined]
                 config,
                 source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
                 target=local_tmp_download_dir,
@@ -182,7 +190,7 @@ def launch_jobs(
                 config["rsync_exclude"] = OmegaConf.to_container(  # type: ignore
                     launcher.sync_down.exclude, resolve=True
                 )
-                ray.autoscaler.sdk.rsync(
+                sdk.rsync(  # type: ignore[attr-defined]
                     config,
                     source=os.path.join(source_dir, ""),
                     target=str(target_dir),
@@ -198,7 +206,7 @@ def launch_jobs(
                 log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
-            ray.autoscaler.sdk.teardown_cluster(
+            sdk.teardown_cluster(  # type: ignore[attr-defined]
                 config,
                 workers_only=launcher.teardown_workers_only,
                 keep_min_workers=launcher.teardown_keep_min_workers,

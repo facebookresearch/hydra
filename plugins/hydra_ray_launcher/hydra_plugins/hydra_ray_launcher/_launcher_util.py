@@ -10,6 +10,15 @@ from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig
 
+# mypy complains about "unused type: ignore comment" on macos
+# workaround adapted from: https://github.com/twisted/twisted/pull/1416
+try:
+    import importlib
+
+    sdk = importlib.import_module("ray.autoscaler.sdk")
+except ModuleNotFoundError as e:
+    raise ImportError(e)
+
 log = logging.getLogger(__name__)
 
 JOB_SPEC_PICKLE = "job_spec.pkl"
@@ -68,7 +77,7 @@ def launch_job_on_ray(
 
 @contextmanager
 def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, None]:
-    out = ray.autoscaler.sdk.run_on_cluster(
+    out = sdk.run_on_cluster(  # type: ignore[attr-defined]
         config, run_env=run_env, cmd="echo $(mktemp -d)", with_output=True
     ).decode()
 
@@ -81,4 +90,4 @@ def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, No
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
-    ray.autoscaler.sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")
+    sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")  # type: ignore[attr-defined]
