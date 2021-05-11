@@ -21,6 +21,10 @@ from hydra.test_utils.launcher_common_tests import (
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
 from pytest import fixture, mark
 
+from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
+    RayAWSLauncher,
+)
+
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
 try:
@@ -30,9 +34,6 @@ try:
 except ModuleNotFoundError as e:
     raise ImportError(e)
 
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
-    RayAWSLauncher,
-)
 
 temp_remote_dir = "/tmp/hydra_test/"  # nosec
 temp_remote_wheel_dir = "/tmp/wheels/"  # nosec
