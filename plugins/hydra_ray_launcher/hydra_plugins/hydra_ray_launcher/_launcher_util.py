@@ -9,7 +9,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig
-from ray.autoscaler import sdk  # type: ignore
+from ray.autoscaler import sdk
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def launch_job_on_ray(
 
 @contextmanager
 def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, None]:
-    out = sdk.run_on_cluster(
+    out = sdk.run_on_cluster(  # type: ignore
         config, run_env=run_env, cmd="echo $(mktemp -d)", with_output=True
     ).decode()
 

@@ -10,7 +10,7 @@ import pickle5 as pickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
-from ray.autoscaler import sdk  # type: ignore
+from ray.autoscaler import sdk
 
 from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     JOB_RETURN_PICKLE,
@@ -110,7 +110,7 @@ def launch_jobs(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
     sdk.create_or_update_cluster(
-        config,
+        config,  # type: ignore
         no_restart=launcher.update_cluster_no_restart,
         restart_only=launcher.update_cluster_restart_only,
         no_config_cache=launcher.update_cluster_no_config_cache,
@@ -119,7 +119,7 @@ def launch_jobs(
 
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
             sdk.rsync(
-                config,
+                config,  # type: ignore
                 source=os.path.join(local_tmp_dir, ""),
                 target=remote_tmp_dir,
                 down=False,
@@ -127,7 +127,12 @@ def launch_jobs(
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            sdk.rsync(config, source=script_path, target=remote_script_path, down=False)
+            sdk.rsync(
+                config,  # type: ignore
+                source=script_path,
+                target=remote_script_path,
+                down=False,
+            )
 
             if launcher.sync_up.source_dir:
                 source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
@@ -140,19 +145,19 @@ def launch_jobs(
                     launcher.sync_up.exclude, resolve=True
                 )
                 sdk.rsync(
-                    config,
+                    config,  # type: ignore
                     source=os.path.join(source_dir, ""),
                     target=target_dir,
                     down=False,
                 )
             sdk.run_on_cluster(
-                config,
+                config,  # type: ignore
                 run_env=launcher.ray_cfg.run_env.name,
                 cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
             sdk.rsync(
-                config,
+                config,  # type: ignore
                 source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
                 target=local_tmp_download_dir,
                 down=True,
@@ -178,7 +183,7 @@ def launch_jobs(
                     launcher.sync_down.exclude, resolve=True
                 )
                 sdk.rsync(
-                    config,
+                    config,  # type: ignore
                     source=os.path.join(source_dir, ""),
                     target=str(target_dir),
                     down=True,
@@ -194,7 +199,7 @@ def launch_jobs(
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
             sdk.teardown_cluster(
-                config,
+                config,  # type: ignore
                 workers_only=launcher.teardown_workers_only,
                 keep_min_workers=launcher.teardown_keep_min_workers,
             )
