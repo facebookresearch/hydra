@@ -1193,19 +1193,29 @@ class TestTaskRunnerLogging:
         ),
     ],
 )
-def test_hydra_exception(
-    monkeypatch: Any,
+def test_job_exception(
     tmpdir: Any,
     expected: str,
 ) -> None:
-    monkeypatch.chdir("tests/test_apps/app_exception")
-    ret = run_with_error(["my_app.py", f"hydra.run.dir={tmpdir}"])
+    ret = run_with_error(
+        ["tests/test_apps/app_exception/my_app.py", f"hydra.run.dir={tmpdir}"]
+    )
     assert_regex_match(
         from_line=expected,
         to_line=ret,
         from_name="Expected output",
         to_name="Actual output",
     )
+
+
+def test_job_exception_full_error(tmpdir: Any) -> None:
+    ret = run_with_error(
+        ["tests/test_apps/app_exception/my_app.py", f"hydra.run.dir={tmpdir}"],
+        env={**os.environ, "HYDRA_FULL_ERROR": "1"},
+    )
+
+    assert "ZeroDivisionError: division by zero" in ret
+    assert "Set the environment variable HYDRA_FULL_ERROR=1" not in ret
 
 
 def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
