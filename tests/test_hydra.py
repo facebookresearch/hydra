@@ -382,31 +382,31 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     assert OmegaConf.create(result) == {"normal_yaml_config": True}
 
 
-@mark.parametrize("cfg_flag", ["--cfg=", "--resolve="])
+@mark.parametrize("resolve", [True, False])
 @mark.parametrize(
-    "cfg_arg,expected_keys",
-    [("all", ["db", "hydra"]), ("hydra", ["hydra"]), ("job", ["db"])],
+    "flag,expected_keys",
+    [("--cfg=all", ["db", "hydra"]), ("--cfg=hydra", ["hydra"]), ("--cfg=job", ["db"])],
 )
-def test_cfg(
-    tmpdir: Path, cfg_flag: str, cfg_arg: str, expected_keys: List[str]
-) -> None:
+def test_cfg(tmpdir: Path, flag: str, resolve: bool, expected_keys: List[str]) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        cfg_flag + cfg_arg,
+        flag,
     ]
+    if resolve:
+        cmd.append("--resolve")
     result, _err = run_python_script(cmd)
     conf = OmegaConf.create(result)
     for key in expected_keys:
         assert key in conf
 
 
-@mark.parametrize("cfg_flag", ["--cfg=job", "--resolve=job"])
+@mark.parametrize("resolve", [True, False])
 @mark.parametrize(
     "flags,expected",
     [
         param(
-            [],
+            ["--cfg=job"],
             dedent(
                 """\
                 db:
@@ -418,7 +418,7 @@ def test_cfg(
             id="no-package",
         ),
         param(
-            ["--package=_global_"],
+            ["--cfg=job", "--package=_global_"],
             dedent(
                 """\
                 db:
@@ -430,7 +430,7 @@ def test_cfg(
             id="package=_global_",
         ),
         param(
-            ["--package=db"],
+            ["--cfg=job", "--package=db"],
             dedent(
                 """\
                 # @package db
@@ -441,27 +441,28 @@ def test_cfg(
             ),
             id="package=db",
         ),
-        param(["--package=db.driver"], "mysql\n", id="package=db.driver"),
+        param(["--cfg=job", "--package=db.driver"], "mysql\n", id="package=db.driver"),
     ],
 )
 def test_cfg_with_package(
-    tmpdir: Path, cfg_flag: str, flags: List[str], expected: str
+    tmpdir: Path, flags: List[str], resolve: bool, expected: str
 ) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        cfg_flag,
     ] + flags
+    if resolve:
+        cmd.append("--resolve")
 
     result, _err = run_python_script(cmd)
     assert normalize_newlines(result) == expected.rstrip()
 
 
 @mark.parametrize(
-    "cfg_flag,expected",
+    "resolve,expected",
     [
         param(
-            "--cfg=job",
+            False,
             dedent(
                 """\
                 node:
@@ -474,7 +475,7 @@ def test_cfg_with_package(
             id="cfg",
         ),
         param(
-            "--resolve=job",
+            True,
             dedent(
                 """\
                 node:
@@ -488,15 +489,30 @@ def test_cfg_with_package(
         ),
     ],
 )
-def test_cfg_resolve_interpolation(tmpdir: Path, cfg_flag: str, expected: str) -> None:
+def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        cfg_flag,
+        "--cfg=job",
     ]
+    if resolve:
+        cmd.append("--resolve")
 
     result, _err = run_python_script(cmd)
     assert normalize_newlines(result) == expected.rstrip()
+
+
+def test_resolve_flag_without_cfg_flag(tmpdir: Path) -> None:
+    cmd = [
+        "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "--resolve",
+    ]
+
+    _result, err = run_python_script(cmd, print_error=False, raise_exception=False)
+    assert normalize_newlines(err).endswith(
+        "ValueError: The --resolve flag can only be used in conjunction with --cfg"
+    )
 
 
 @mark.parametrize(
@@ -597,7 +613,7 @@ def test_sweep_complex_defaults(
                 --hydra-help : Hydra's help
                 --version : Show Hydra's version and exit
                 --cfg,-c : Show config instead of running [job|hydra|all]
-                --resolve : Show resolved config instead of running [job|hydra|all]
+                --resolve : Used in conjunction with --cfg, resolve config interpolations before printing.
                 --package,-p : Config package to show
                 --run,-r : Run a job
                 --multirun,-m : Run multiple jobs with the configured launcher and sweeper
@@ -654,7 +670,7 @@ for details.
                 --hydra-help : Hydra's help
                 --version : Show Hydra's version and exit
                 --cfg,-c : Show config instead of running [job|hydra|all]
-                --resolve : Show resolved config instead of running [job|hydra|all]
+                --resolve : Used in conjunction with --cfg, resolve config interpolations before printing.
                 --package,-p : Config package to show
                 --run,-r : Run a job
                 --multirun,-m : Run multiple jobs with the configured launcher and sweeper
@@ -1329,8 +1345,8 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
     [
         (["--cfg", "job", "-p", "baud_rate"], "19200"),
         (["--cfg", "hydra", "-p", "hydra.job.name"], "frozen"),
-        (["--resolve", "job", "-p", "baud_rate"], "19200"),
-        (["--resolve", "hydra", "-p", "hydra.job.name"], "frozen"),
+        (["--cfg", "job", "--resolve", "-p", "baud_rate"], "19200"),
+        (["--cfg", "hydra", "--resolve", "-p", "hydra.job.name"], "frozen"),
         (["--info", "config"], "baud_rate: 19200"),
         (["--hydra-help"], "== Flags =="),
         (["--help"], "frozen is powered by Hydra."),

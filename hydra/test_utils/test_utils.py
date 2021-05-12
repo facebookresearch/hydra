@@ -365,12 +365,13 @@ def run_python_script(
     env: Any = None,
     allow_warnings: bool = False,
     print_error: bool = True,
+    raise_exception: bool = True,
 ) -> Tuple[str, str]:
     if allow_warnings:
         cmd = [sys.executable] + cmd
     else:
         cmd = [sys.executable, "-Werror"] + cmd
-    return run_process(cmd, env, print_error)
+    return run_process(cmd, env, print_error, raise_exception)
 
 
 def run_process(
