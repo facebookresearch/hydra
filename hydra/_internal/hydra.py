@@ -179,6 +179,7 @@ class Hydra:
         overrides: List[str],
         cfg_type: str,
         package: Optional[str],
+        resolve: bool = False,
     ) -> None:
         cfg = self._get_cfg(
             config_name=config_name,
@@ -196,10 +197,14 @@ class Hydra:
             else:
                 if isinstance(ret, Container):
                     print(f"# @package {package}")
+                    if resolve:
+                        OmegaConf.resolve(ret)
                     sys.stdout.write(OmegaConf.to_yaml(ret))
                 else:
                     print(ret)
         else:
+            if resolve:
+                OmegaConf.resolve(cfg)
             sys.stdout.write(OmegaConf.to_yaml(cfg))
 
     @staticmethod
