@@ -355,10 +355,14 @@ def _run_hydra(
         )
         if num_commands > 1:
             raise ValueError(
-                "Only one of --run, --multirun,  -cfg, --info and --shell_completion can be specified"
+                "Only one of --run, --multirun, --cfg, --info and --shell_completion can be specified"
             )
         if num_commands == 0:
             args.run = True
+        if args.resolve and not has_show_cfg:
+            raise ValueError(
+                "The --resolve flag can only be used in conjunction with --cfg"
+            )
         if args.run:
             run_and_report(
                 lambda: hydra.run(
@@ -382,6 +386,7 @@ def _run_hydra(
                     overrides=args.overrides,
                     cfg_type=args.cfg,
                     package=args.package,
+                    resolve=args.resolve,
                 )
             )
         elif args.shell_completion:
@@ -451,6 +456,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         "-c",
         choices=["job", "hydra", "all"],
         help="Show config instead of running [job|hydra|all]",
+    )
+    parser.add_argument(
+        "--resolve",
+        action="store_true",
+        help="Used in conjunction with --cfg, resolve config interpolations before printing.",
     )
 
     parser.add_argument("--package", "-p", help="Config package to show")

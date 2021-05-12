@@ -20,6 +20,7 @@ Information provided by the Hydra app:
 
 Debugging assistance:
 - **--cfg,-c**: Show config instead of running. Takes as parameter one of `job`, `hydra` or `all`.
+- **--resolve**: Used in conjunction with the `--cfg` flag; resolve interpolations in the config before printing it.
 - **--package,-p**: Used in conjunction with --cfg to select a specific config package to show.
 - **--info,-i**: Print Hydra information. This includes installed plugins, Config Search Path, Defaults List, generated config and more.
 
