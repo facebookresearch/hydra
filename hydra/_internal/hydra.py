@@ -202,9 +202,7 @@ class Hydra:
                 return
             print(f"# @package {package}")
 
-        if resolve:
-            OmegaConf.resolve(ret)
-        sys.stdout.write(OmegaConf.to_yaml(ret))
+        sys.stdout.write(OmegaConf.to_yaml(ret, resolve=resolve))
 
     @staticmethod
     def get_shell_to_plugin_map(
