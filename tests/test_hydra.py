@@ -465,11 +465,8 @@ def test_cfg_with_package(
             False,
             dedent(
                 """\
-                node:
-                  loompa: 10
-                  zippity: ${node.loompa}
-                  do: oompa ${node.loompa}
-                  waldo: ???
+                a: ${b}
+                b: 10
                 """
             ),
             id="cfg",
@@ -478,11 +475,8 @@ def test_cfg_with_package(
             True,
             dedent(
                 """\
-                node:
-                  loompa: 10
-                  zippity: 10
-                  do: oompa 10
-                  waldo: ???
+                a: 10
+                b: 10
                 """
             ),
             id="resolve",
@@ -491,7 +485,7 @@ def test_cfg_with_package(
 )
 def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -> None:
     cmd = [
-        "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
+        "tests/test_apps/simple_interpolation/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         "--cfg=job",
     ]
