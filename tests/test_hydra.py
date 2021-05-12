@@ -493,7 +493,7 @@ def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -
         cmd.append("--resolve")
 
     result, _err = run_python_script(cmd)
-    assert normalize_newlines(result) == expected.rstrip()
+    assert_text_same(result, expected)
 
 
 def test_resolve_flag_without_cfg_flag(tmpdir: Path) -> None:
