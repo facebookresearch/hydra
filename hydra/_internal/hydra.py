@@ -189,23 +189,22 @@ class Hydra:
         )
         if package == "_global_":
             package = None
-        if package is not None:
+
+        if package is None:
+            ret = cfg
+        else:
             ret = OmegaConf.select(cfg, package)
             if ret is None:
                 sys.stderr.write(f"package '{package}' not found in config\n")
                 sys.exit(1)
-            else:
-                if isinstance(ret, Container):
-                    print(f"# @package {package}")
-                    if resolve:
-                        OmegaConf.resolve(ret)
-                    sys.stdout.write(OmegaConf.to_yaml(ret))
-                else:
-                    print(ret)
-        else:
-            if resolve:
-                OmegaConf.resolve(cfg)
-            sys.stdout.write(OmegaConf.to_yaml(cfg))
+            if not isinstance(ret, Container):
+                print(ret)
+                return
+            print(f"# @package {package}")
+
+        if resolve:
+            OmegaConf.resolve(ret)
+        sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
     def get_shell_to_plugin_map(
