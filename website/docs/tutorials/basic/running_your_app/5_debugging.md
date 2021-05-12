@@ -43,6 +43,10 @@ config_name: config
 ...
 ```
 
+If the configuration contains any interpolations, these will not be resolved by default.
+To resolve variable interpolations before the config is printed,
+use the `--resolve` flag in addition to the `--cfg` flag.
+
 ### Info
 The `--info` flag can provide information about various aspects of Hydra and your application:
  - `--info all`: Default behavior, prints everything
