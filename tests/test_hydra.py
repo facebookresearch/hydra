@@ -503,7 +503,7 @@ def test_resolve_flag_without_cfg_flag(tmpdir: Path) -> None:
         "--resolve",
     ]
 
-    _result, err = run_python_script(cmd, print_error=False, raise_exception=False)
+    err = run_with_error(cmd)
     assert normalize_newlines(err).endswith(
         "ValueError: The --resolve flag can only be used in conjunction with --cfg"
     )
