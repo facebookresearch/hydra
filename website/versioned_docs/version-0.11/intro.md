@@ -21,13 +21,14 @@ The name Hydra comes from its ability to run multiple similar jobs - much like a
 
 ## Versions
 
-Hydra supports Linux, Mac and Windows.
-
-|        |          Version          | Docs                          | Release notes                                                                                                       | Python Version   |
-| -------|---------------------------|------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------------- |
-|        | 1.0 (Stable)              | <Link to={useBaseUrl("/docs/intro")}>**Switch to 1.0 Docs**</Link>      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)       | 3.6+             | 
-| &#9658;| 0.11                      | 0.11 Doc                                                                | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)          | **2.7, 3.5+**    |
-
+Hydra supports Linux, Mac and Windows.  
+Use the version switcher in the top bar to switch between documentation versions.
+ 
+|        |          Version          |  Release notes                                                                      | Python Versions    |
+| -------|---------------------------|-------------------------------------------------------------------------------------| -------------------|
+|        | 1.1 (Release candidate)   | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.rc1)  | **3.6 - 3.9**      |
+|        | 1.0 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)   | **3.6 - 3.8**      |
+| &#9658;| 0.11                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)      | **2.7, 3.5 - 3.8** |
 
 ## Quick start guide
 This guide will show you some of the most important features of Hydra.
