@@ -1,1 +1,0 @@
-Add support for %f directive (microseconds) to the ${now:} resolver

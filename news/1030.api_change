@@ -1,1 +1,0 @@
-Promote hydra.experimental.{compose,initialize,initialize_config_dir,initialize_config_module} out from the hydra.experimental module to the hydra module.
