@@ -1,1 +1,0 @@
-Fixed a bug where tab completion did not work if the Defaults List had a missing (???) item.
