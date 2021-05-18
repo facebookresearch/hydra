@@ -40,6 +40,8 @@ defaults:
 
 Alternatively, add `hydra/sweeper=optuna` option to your command line.
 
+
+
 The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py">here</GithubLink>.
 
 ## Example 1: Single-Objective Optimization
