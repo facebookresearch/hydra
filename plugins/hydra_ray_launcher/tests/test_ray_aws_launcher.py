@@ -93,14 +93,14 @@ pip_lib_skip = [
 common_overrides = [
     f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
     "hydra.launcher.stop_cluster=False",
-    "hydra.launcher.log_style='auto'",
-    "hydra.launcher.color_mode='auto'",
-    "hydra.launcher.verbosity=1",
-    "hydra.launcher.update_cluster_no_restart=False",
-    "hydra.launcher.update_cluster_restart_only=False",
-    "hydra.launcher.update_cluster_no_config_cache=False",
-    "hydra.launcher.teardown_workers_only=False",
-    "hydra.launcher.teardown_keep_min_workers=False",
+    "hydra.launcher.logging.log_style='auto'",
+    "hydra.launcher.logging.color_mode='auto'",
+    "hydra.launcher.logging.verbosity=1",
+    "hydra.launcher.create_update_cluster.no_restart=False",
+    "hydra.launcher.create_update_cluster.restart_only=False",
+    "hydra.launcher.create_update_cluster.no_config_cache=False",
+    "hydra.launcher.teardown_cluster.workers_only=False",
+    "hydra.launcher.teardown_cluster.keep_min_workers=False",
     f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
     # Port 443 is blocked for testing instance, as a result, pip install would fail.
     # To get around this, we pre-install all the dependencies on the test AMI.

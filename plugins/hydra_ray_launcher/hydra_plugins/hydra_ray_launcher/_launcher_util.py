@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+import os
 from contextlib import contextmanager
-from typing import Any, Dict, Generator
+from subprocess import PIPE, Popen
+from typing import Any, Dict, Generator, List, Tuple
 
 import ray
 from hydra.core.hydra_config import HydraConfig
@@ -75,6 +77,16 @@ def launch_job_on_ray(
     return ret
 
 
+def _run_command(args: Any) -> Tuple[str, str]:
+    with Popen(args=args, stdout=PIPE, stderr=PIPE) as proc:
+        log.info(f"Running command: {' '.join(args)}")
+        out, err = proc.communicate()
+        out_str = out.decode().strip() if out is not None else ""
+        err_str = err.decode().strip() if err is not None else ""
+        log.info(f"Output: {out_str} \n Error: {err_str}")
+        return out_str, err_str
+
+
 @contextmanager
 def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, None]:
     out = sdk.run_on_cluster(  # type: ignore[attr-defined]
@@ -91,3 +103,43 @@ def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, No
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
     sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")  # type: ignore[attr-defined]
+
+
+def _get_pem(config: Any) -> Any:
+    key_name = config["auth"].get("ssh_private_key")
+    if key_name is not None:
+        return key_name
+    key_name = config["provider"].get("key_pair", {}).get("key_name")
+    if key_name:
+        return os.path.expanduser(os.path.expanduser(f"~/.ssh/{key_name}.pem"))
+    region = config["provider"]["region"]
+    key_pair_name = f"ray-autoscaler_{region}"
+    return os.path.expanduser(f"~/.ssh/{key_pair_name}.pem")
+
+
+def rsync(
+    config: Dict[Any, Any],
+    include: List[str],
+    exclude: List[str],
+    source: str,
+    target: str,
+    up: bool = True,
+) -> None:
+    keypair = _get_pem(config)
+    remote_ip = sdk.get_head_node_ip(config)
+    user = config["auth"]["ssh_user"]
+    args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
+
+    for i in include:
+        args += [f"--include={i}"]
+    for e in exclude:
+        args += [f"--exclude={e}"]
+
+    args += ["--prune-empty-dirs"]
+
+    if up:
+        target = f"{user}@{remote_ip}:{target}"
+    else:
+        source = f"{user}@{remote_ip}:{source}"
+    args += [source, target]
+    _run_command(args)

@@ -12,8 +12,10 @@ sync_up:
   # recommend to leave target_dir to be null if you are syncing code/artifacts
   # to remote cluster so you don't need
   # configure $PYTHONPATH on remote cluster
+  include: ['model', '*.py']
   # No need to sync up config files.
-  exclude: ['conf', 'multirun', "**/__pycache__"]
+  exclude: ['*']
 sync_down:
+  include: ['*.pt', '*/']
   # No need to sync down config files.
-  exclude: ['conf']
+  exclude: ['*']
