@@ -12,7 +12,7 @@ If you develop plugins, please join the <a href="https://hydra-framework.zulipch
 import GithubLink from "@site/src/components/GithubLink"
 
 When developing Hydra plugins, keep the following things in mind:
-- Hydra plugins can be either a standalone Python packaged, or a part of your existing Python package. 
+- Hydra plugins can be either a standalone Python package, or a part of your existing Python package. 
   In both cases - They should be in the namespace module `hydra_plugins` (This is a top level module, Your plugin will __NOT__ be discovered if you place it in `mylib.hydra_plugins`).
 - Do __NOT__ place an `__init__.py` file in `hydra_plugins` (doing so may break other installed Hydra plugins).
   

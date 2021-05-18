@@ -10,7 +10,7 @@ Hydra can be extended via plugins.
 The example plugins <GithubLink to="examples/plugins">here</GithubLink> can help you get started with plugin development.
 
 ## Plugin types
-Hydra have several plugin types:
+Hydra has several plugin types:
 ### Sweeper
 A sweeper is responsible for converting command line arguments list into multiple jobs.
 For example, the basic built-in sweeper takes arguments like:
