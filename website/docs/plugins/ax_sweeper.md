@@ -115,3 +115,4 @@ ax_config:
   is_noisy: true
   params: {}
 ```
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
