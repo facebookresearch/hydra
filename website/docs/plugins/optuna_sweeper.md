@@ -28,6 +28,7 @@ You can install the plugin via pip:
 ```commandline
 pip install hydra-optuna-sweeper --upgrade
 ```
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more info.
 
 ## Usage
 
@@ -39,8 +40,6 @@ defaults:
 ```
 
 Alternatively, add `hydra/sweeper=optuna` option to your command line.
-
-
 
 The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_plugins/hydra_optuna_sweeper/config.py">here</GithubLink>.
 

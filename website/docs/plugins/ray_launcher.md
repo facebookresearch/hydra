@@ -27,8 +27,7 @@ Once installed, add `hydra/launcher=ray_aws` or `hydra/launcher=ray` to your com
 defaults:
   - override hydra/launcher: ray_aws
 ```
-You have multiple options configuring the Plugin, check out [this page](../patterns/configuring_plugins) for more info.
-
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more info.
 
 ### `ray_aws` launcher
 
