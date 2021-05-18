@@ -117,7 +117,15 @@ module.exports = {
                 ]
             },
             'advanced/compose_api',
-            'advanced/plugins',
+            'advanced/search_path',
+            {
+                type: 'category',
+                label: 'Plugins',
+                items: [
+                    'advanced/plugins/overview',
+                    'advanced/plugins/develop',
+                ]
+            },            
             'advanced/app_packaging',
             'advanced/jupyter_notebooks',
             'advanced/unit_testing',
