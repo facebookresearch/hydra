@@ -27,7 +27,7 @@ defaults:
 ```
 
 The default configuration is <GithubLink to="plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py">here</GithubLink>.
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more info.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
 ## Example of training using Nevergrad hyperparameter search
 
 We include an example of how to use this plugin. The file <GithubLink to="plugins/hydra_nevergrad_sweeper/example/my_app.py">example/my_app.py</GithubLink> implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.

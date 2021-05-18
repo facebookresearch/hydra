@@ -28,7 +28,7 @@ defaults:
   - override hydra/hydra_logging: colorlog
 ```
 
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more info.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
 
 See included <GithubLink to="plugins/hydra_colorlog/example">example application</GithubLink>.
  

@@ -33,7 +33,7 @@ defaults:
 ```
 
 The configuration packaged with the plugin is defined <GithubLink to="plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py">here</GithubLink>.
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more info.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
 The default configuration is as follows:
 
 ```yaml title="$ python your_app.py hydra/launcher=rq --cfg hydra -p hydra.launcher"
