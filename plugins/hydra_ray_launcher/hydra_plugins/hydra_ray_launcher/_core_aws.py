@@ -172,6 +172,7 @@ def launch_jobs(
             if (
                 sync_down_cfg.target_dir
                 or sync_down_cfg.source_dir
+                or sync_down_cfg.include
                 or sync_down_cfg.exclude
             ):
                 source_dir = (
