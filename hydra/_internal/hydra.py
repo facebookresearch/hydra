@@ -179,6 +179,7 @@ class Hydra:
         overrides: List[str],
         cfg_type: str,
         package: Optional[str],
+        resolve: bool = False,
     ) -> None:
         cfg = self._get_cfg(
             config_name=config_name,
@@ -188,19 +189,23 @@ class Hydra:
         )
         if package == "_global_":
             package = None
-        if package is not None:
+
+        if package is None:
+            ret = cfg
+        else:
             ret = OmegaConf.select(cfg, package)
             if ret is None:
                 sys.stderr.write(f"package '{package}' not found in config\n")
                 sys.exit(1)
-            else:
-                if isinstance(ret, Container):
-                    print(f"# @package {package}")
-                    sys.stdout.write(OmegaConf.to_yaml(ret))
-                else:
-                    print(ret)
+
+        if not isinstance(ret, Container):
+            print(ret)
         else:
-            sys.stdout.write(OmegaConf.to_yaml(cfg))
+            if package is not None:
+                print(f"# @package {package}")
+            if resolve:
+                OmegaConf.resolve(ret)
+            sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
     def get_shell_to_plugin_map(

@@ -47,15 +47,15 @@
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
-#### Development release
-**Hydra 1.1** is still in active development and is getting close to a release candidate.
-New users and existing users that want to try the latest features are encouraged to use it and report issues.
+#### Release candidate
+**Hydra 1.1** is now a release candidate!
+
+Please try it out and report any issues.
 
 - [Documentation](https://hydra.cc/docs/next/intro)
-- [Provisional release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.dev6)
+- [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.rc1)
 - Installation : `pip install hydra-core --upgrade --pre`
-- Dev releases are more likely to have bugs, please report any issues.
-- APIs and behaviors are subject to change without notice between different dev releases.
+- Release candidates are more likely to have bugs, please report any issues.
 
 ### License
 Hydra is licensed under [MIT License](LICENSE).

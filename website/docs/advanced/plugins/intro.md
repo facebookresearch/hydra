@@ -1,7 +1,7 @@
 ---
-id: plugins
-title: Hydra plugins types
-sidebar_label: Hydra plugins
+id: overview
+title: Plugins Overview
+sidebar_label: Plugins Overview
 ---
 
 import GithubLink from "@site/src/components/GithubLink"
@@ -9,17 +9,8 @@ import GithubLink from "@site/src/components/GithubLink"
 Hydra can be extended via plugins.
 The example plugins <GithubLink to="examples/plugins">here</GithubLink> can help you get started with plugin development.
 
-:::info
-If you develop plugins, please join the <a href="https://hydra-framework.zulipchat.com/#narrow/stream/233935-Hydra-plugin.20dev.20announcements">Plugin developer announcement chat channel</a>.
-:::
-
-## Plugin discovery
-The plugin discovery process runs whenever Hydra starts. During plugin discovery, Hydra scans for plugins in all the submodules of `hydra_plugins`. Hydra will import each module and look for plugins defined in that module.
-Any module under `hydra_plugins` that is slow to import will slow down the startup of _ALL_ Hydra applicaitons.
-Plugins with expensive imports can exclude individual files from Hydra's plugin discovery process by prefixing them with `_` (but not `__`).
-For example, the file `_my_plugin_lib.py` would not be imported and scanned, while `my_plugin_lib.py` would be.
-
 ## Plugin types
+Hydra has several plugin types:
 ### Sweeper
 A sweeper is responsible for converting command line arguments list into multiple jobs.
 For example, the basic built-in sweeper takes arguments like:

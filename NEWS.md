@@ -1,3 +1,76 @@
+1.1.0.rc1 (2021-05-13)
+======================
+This is the biggest Hydra release yet.  
+#### Highlights
+- OmegaConf 2.1 supports relative interpolations, nested interpolations, more powerful resolvers and better compatibility with plain Python dict and list.
+- Recursive defaults list: Every config can now have a Defaults List.  
+- Recursive instantiation: When instantiating objects using the `instantiate` API, nested defined objects are instantiated automatically.
+
+There have also been many bug fixes and performance improvements, as well of as some breaking changes - both in Hydra and in OmegaConf.
+Please check the API changes and deprecation sections in these release notes and in the OmegaConf release notes.
+
+### Features
+#### General enhancements
+- Upgrade to OmegaConf 2.1. Please check the [release notes](https://github.com/omry/omegaconf/releases/tag/v2.1.0.rc1) for it ([#1426](https://github.com/facebookresearch/hydra/issues/1426))
+- Support for Python 3.9. ([#1062](https://github.com/facebookresearch/hydra/issues/1062))
+- Improve performance of config composition in a benchmark by 64% ([#1328](https://github.com/facebookresearch/hydra/issues/1328))
+- Allow `@`, `$` and `?` symbols in unquoted values in overrides ([#1074](https://github.com/facebookresearch/hydra/issues/1074), [#1437](https://github.com/facebookresearch/hydra/issues/1437), [#1597](https://github.com/facebookresearch/hydra/issues/1597))
+- Add a --resolve flag that can be used with the --cfg flag to resolve interpolations before the config is printed. ([#1585](https://github.com/facebookresearch/hydra/issues/1585))
+- It is now possible to disable Hydra's logging configuration ([#1130](https://github.com/facebookresearch/hydra/issues/1130))
+- Support for Zsh tab completion ([#347](https://github.com/facebookresearch/hydra/issues/347))
+- Support for force-add of config values via `++key=value` (force-add overrides if the value exists and adds it otherwise) ([#1049](https://github.com/facebookresearch/hydra/issues/1049))
+
+#### Config composition enhancements
+- Support for Defaults List in any config (Recursive relative defaults) ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- Composition order of a config with a Defaults List can be specified with the `_self_` keyword. ([#326](https://github.com/facebookresearch/hydra/issues/326))
+- Support for configuring the config search path from the primary config ([#274](https://github.com/facebookresearch/hydra/issues/274))
+- Add support for selecting multiple configs from the same Config Group ([#499](https://github.com/facebookresearch/hydra/issues/499))  
+- Final choices of defaults list are retained in the dictionary hydra.runtime.choices ([#956](https://github.com/facebookresearch/hydra/issues/956))
+
+#### Object Instantiation enhancements
+- Support for recursive instantiation with `hydra.utils.instantiate()` ([#566](https://github.com/facebookresearch/hydra/issues/566))
+- Instantiate now fully supports positional arguments ([#1432](https://github.com/facebookresearch/hydra/issues/1432))
+- Support for converting parameters to primitive containers during instantiation ([#1015](https://github.com/facebookresearch/hydra/issues/1015))
+- It is now possible to override the `_target_` of instantiation with a Python type or a string ([#1017](https://github.com/facebookresearch/hydra/issues/1017))
+
+### API Change (Renames, deprecations and removals)
+#### General changes
+- Default composition order change, see [this](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_composition_order) for details ([#1217](https://github.com/facebookresearch/hydra/issues/1217))
+- Remove deprecated strict flag from `@hydra.main` and the `Compose API` ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
+- Passing a config name as config_path to `@hydra.main` is now an error ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
+- Promote `hydra.experimental.{compose,initialize,initialize_config_dir,initialize_config_module}` out from the `hydra.experimental` module to the hydra module. ([#1030](https://github.com/facebookresearch/hydra/issues/1030))
+- The override grammar now requires that, in quoted strings, any sequence of \ preceding a quote (either an escaped quote, or the closing quote) must be escaped ([#1600](https://github.com/facebookresearch/hydra/issues/1600))
+#### Instantiate changes
+- Instantiate is now recursive by default, use `_recursive_=False` to disable recursive instantiation. ([#566](https://github.com/facebookresearch/hydra/issues/566))
+- Deprecated TargetConf, you should no longer be extending or annotating with it ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
+- Remove ObjectConf and deprecated params support that was deprecated in Hydra 1.0 ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
+#### Plugins API changes
+- HydraContext required in run_job, Launcher and Sweeper's setup methods, see issue for details ([#1498](https://github.com/facebookresearch/hydra/issues/1498))
+- ConfigSourcePlugins needs to be modified to support recursive defaults, see link for details ([#1080](https://github.com/facebookresearch/hydra/issues/1080))
+
+### Bug Fixes
+
+- Hydra no longer erroneously changes the USER environment variable in pytest unit tests once installed ([#1059](https://github.com/facebookresearch/hydra/issues/1059))
+- Fix a bug where Structured Config has a field like `list : Optional[List[int]] = None` ([#1117](https://github.com/facebookresearch/hydra/issues/1117))
+- No longer modifies exception stack trace when running under a debugger ([#1237](https://github.com/facebookresearch/hydra/issues/1237))
+- `hydra.job.{id,num}` are now properly passed to jobs in multirun ([#1270](https://github.com/facebookresearch/hydra/issues/1270))
+- Add support for `%f` directive (microseconds) to the `${now:PATTERN}` resolver ([#1287](https://github.com/facebookresearch/hydra/issues/1287))
+- Fixed a bug where tab completion did not work if the Defaults List had a missing (???) item. ([#1381](https://github.com/facebookresearch/hydra/issues/1381))
+- Fix `+` overrides to properly insert new values into Structured Configs. ([#1515](https://github.com/facebookresearch/hydra/issues/1515))
+- Fix edge cases where using the command line to set a key to a value containing a string ending with a backslash could crash ([#1600](https://github.com/facebookresearch/hydra/issues/1600))
+
+### Plugins
+
+- Add [Optuna](https://optuna.org/) Sweeper plugin
+
+### Improved Documentation
+
+- New Defaults List [page](https://hydra.cc/docs/next/advanced/defaults_list) ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- New [Extending Configs](https://hydra.cc/docs/next/patterns/extending_configs/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- Major updates to the [Packages](https://hydra.cc/docs/next/advanced/overriding_packages) page ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- New [Configuring Experiments](https://hydra.cc/docs/next/patterns/configuring_experiments/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+
+
 1.0.6 (2021-01-29)
 ==================
 

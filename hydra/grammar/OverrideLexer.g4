@@ -25,7 +25,8 @@ COLON: ':';
 SLASH: '/';
 
 KEY_ID: ID -> type(ID);
-DOT_PATH: (ID | INT_UNSIGNED) ('.' (ID | INT_UNSIGNED))+;
+KEY_SPECIAL: (CHAR|'_'|'$') (CHAR|DIGIT|'_'|'$')*;  // same as ID but allowing $
+DOT_PATH: (KEY_SPECIAL | INT_UNSIGNED) ('.' (KEY_SPECIAL | INT_UNSIGNED))+;
 
 ////////////////
 // VALUE_MODE //
@@ -58,7 +59,7 @@ BOOL:
 
 NULL: [Nn][Uu][Ll][Ll];
 
-UNQUOTED_CHAR: [/\-\\+.$%*@];  // other characters allowed in unquoted strings
+UNQUOTED_CHAR: [/\-\\+.$%*@?];  // other characters allowed in unquoted strings
 ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
 // Note: when adding more characters to the ESC rule below, also add them to
 // the `_ESC` string in `_internal/grammar/utils.py`.
@@ -66,8 +67,20 @@ ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |
       '\\:' | '\\=' | '\\,' | '\\ ' | '\\\t')+;
 WS: [ \t]+;
 
+// Quoted values for both types of quotes.
+// A quoted value is made of the enclosing quotes, and either:
+//   - nothing else
+//   - an even number of backslashes (meaning they are escaped)
+//   - an optional sequence of any character, followed by any non-backslash character,
+//     and optionally an even number of backslashes (i.e., also escaped)
+// Examples (right hand side: expected content of the resulting string, after un-escaping):
+//    ""                      -> <empty>
+//    '\\'                    -> \
+//    "\\\\"                  -> \\
+//    'abc\\'                 -> abc\
+//    "abc\\\"def\\\'ghi\\\\" -> abc\"def\\\'ghi\\
 QUOTED_VALUE:
-      '\'' ('\\\''|.)*? '\'' // Single quotes, can contain escaped single quote : /'
-    | '"' ('\\"'|.)*? '"' ;  // Double quotes, can contain escaped double quote : /"
+      '"' (('\\\\')* | (.)*? ~[\\] ('\\\\')*) '"'     // double quotes
+    | '\'' (('\\\\')* | (.)*? ~[\\] ('\\\\')*) '\'';  // single quotes
 
 INTERPOLATION: '${' ~('}')+ '}';

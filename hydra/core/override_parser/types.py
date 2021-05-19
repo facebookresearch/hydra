@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
-from hydra._internal.grammar.utils import escape_special_characters
+from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
@@ -30,15 +30,46 @@ class QuotedString:
     quote: Quote
 
     def with_quotes(self) -> str:
-        if self.quote == Quote.single:
-            q = "'"
-            text = self.text.replace("'", "\\'")
-        elif self.quote == Quote.double:
-            q = '"'
-            text = self.text.replace('"', '\\"')
-        else:
-            assert False
-        return f"{q}{text}{q}"
+        qc = "'" if self.quote == Quote.single else '"'
+        esc_qc = rf"\{qc}"
+
+        match = None
+        if "\\" in self.text:
+            text = self.text + qc  # add the closing quote
+            # Are there \ preceding a quote (including the closing one)?
+            pattern = _ESC_QUOTED_STR[qc]
+            match = pattern.search(text)
+
+        if match is None:
+            # Simple case: we only need to escape the quotes.
+            esc_text = self.text.replace(qc, esc_qc)
+            return f"{qc}{esc_text}{qc}"
+
+        # Escape the \ preceding a quote.
+        tokens = []
+        while match is not None:
+            start, stop = match.span()
+            # Add characters before the sequence to escape.
+            tokens.append(text[0:start])
+            # Escape the \ (we double the number of backslashes, which is equal to
+            # the length of the matched pattern, minus one for the quote).
+            new_n_backslashes = (stop - start - 1) * 2
+            tokens.append("\\" * new_n_backslashes)
+            if stop < len(text):
+                # We only append the matched quote if it is not the closing quote
+                # (because we will add back the closing quote in the final step).
+                tokens.append(qc)
+            text = text[stop:]
+            match = pattern.search(text)
+
+        if len(text) > 1:
+            tokens.append(text[0:-1])  # remaining characters without the end quote
+
+        # Concatenate all fragments and escape quotes.
+        esc_text = "".join(tokens).replace(qc, esc_qc)
+
+        # Finally add the enclosing quotes.
+        return f"{qc}{esc_text}{qc}"
 
 
 @dataclass

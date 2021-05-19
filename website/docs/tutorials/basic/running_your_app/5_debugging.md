@@ -43,6 +43,7 @@ config_name: config
 ...
 ```
 
+By default, config interpolations are not resolved. To print resolved config use the `--resolve` flag in addition to the `--cfg` flag
 ### Info
 The `--info` flag can provide information about various aspects of Hydra and your application:
  - `--info all`: Default behavior, prints everything

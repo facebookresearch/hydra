@@ -25,9 +25,9 @@ setup(
         "Development Status :: 4 - Beta",
     ],
     install_requires=[
-        "hydra-core>=1.0.0",
+        "hydra-core>=1.1.0.dev7",
         "ax-platform>=0.1.20",
-        "torch<1.8.0",  # remove once torch 1.8.0 issue is addressed in Ax.
+        "torch",
     ],
     include_package_data=True,
 )

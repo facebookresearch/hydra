@@ -17,7 +17,6 @@ from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
 from hydra.core.utils import get_valid_filename, validate_config_path
 from hydra.errors import (
     CompactHydraException,
-    HydraException,
     InstantiationException,
     SearchPathException,
 )
@@ -224,12 +223,6 @@ def run_and_report(func: Any) -> Any:
                 # It is possible to add additional libraries to sanitize from the bottom later,
                 # maybe even make it configurable.
 
-                # If got a HydraException that is caused by another exception,
-                # print the message of the HydraException and unwrap the cause.
-                if isinstance(ex, HydraException) and ex.__cause__ is not None:
-                    sys.stderr.write(str(ex) + os.linesep)
-                    ex = ex.__cause__  # type: ignore
-
                 tb: Any = ex.__traceback__
                 search_max = 10
                 # strip Hydra frames from start of stack
@@ -362,10 +355,14 @@ def _run_hydra(
         )
         if num_commands > 1:
             raise ValueError(
-                "Only one of --run, --multirun,  -cfg, --info and --shell_completion can be specified"
+                "Only one of --run, --multirun, --cfg, --info and --shell_completion can be specified"
             )
         if num_commands == 0:
             args.run = True
+        if args.resolve and not has_show_cfg:
+            raise ValueError(
+                "The --resolve flag can only be used in conjunction with --cfg"
+            )
         if args.run:
             run_and_report(
                 lambda: hydra.run(
@@ -389,6 +386,7 @@ def _run_hydra(
                     overrides=args.overrides,
                     cfg_type=args.cfg,
                     package=args.package,
+                    resolve=args.resolve,
                 )
             )
         elif args.shell_completion:
@@ -458,6 +456,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         "-c",
         choices=["job", "hydra", "all"],
         help="Show config instead of running [job|hydra|all]",
+    )
+    parser.add_argument(
+        "--resolve",
+        action="store_true",
+        help="Used in conjunction with --cfg, resolve config interpolations before printing.",
     )
 
     parser.add_argument("--package", "-p", help="Config package to show")

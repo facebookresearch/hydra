@@ -31,6 +31,8 @@ from hydra.core.override_parser.types import (
 )
 from hydra.errors import HydraException
 
+UNQUOTED_SPECIAL = r"/-\+.$%*@?"  # special characters allowed in unquoted strings
+
 parser = OverridesParser(create_functions())
 
 
@@ -200,6 +202,22 @@ def test_value(value: str, expected: Any) -> None:
         param("[[a]]", [["a"]], id="list:nested_list"),
         param("[[[a]]]", [[["a"]]], id="list:double_nested_list"),
         param("[1,[a]]", [1, ["a"]], id="list:simple_and_list_elements"),
+        param(
+            r"['a\\', 'b\\']",
+            [
+                QuotedString(text="a\\", quote=Quote.single),
+                QuotedString(text="b\\", quote=Quote.single),
+            ],
+            id="list:str_trailing_backslash_single",
+        ),
+        param(
+            r'["a\\", "b\\"]',
+            [
+                QuotedString(text="a\\", quote=Quote.double),
+                QuotedString(text="b\\", quote=Quote.double),
+            ],
+            id="list:str_trailing_backslash_double",
+        ),
     ],
 )
 def test_list_container(value: str, expected: Any) -> None:
@@ -277,7 +295,11 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
         param("{123: 1, 0: 2, -1: 3}", {123: 1, 0: 2, -1: 3}, id="dict_int_key"),
         param("{3.14: 0, 1e3: 1}", {3.14: 0, 1000.0: 1}, id="dict_float_key"),
         param("{true: 1, fAlSe: 0}", {True: 1, False: 0}, id="dict_bool_key"),
-        param("{/-\\+.$%*@: 1}", {"/-\\+.$%*@": 1}, id="dict_unquoted_char_key"),
+        param(
+            "{%s: 1}" % UNQUOTED_SPECIAL,
+            {UNQUOTED_SPECIAL: 1},
+            id="dict_unquoted_char_key",
+        ),
         param(
             "{\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 1}",
             {"\\()[]{}:= \t,": 1},
@@ -294,6 +316,22 @@ def test_shuffle_sequence(value: str, expected: Any) -> None:
                 None: 5,
             },
             id="dict_mixed_keys",
+        ),
+        param(
+            r"{a: 'a\\', b: 'b\\'}",
+            {
+                "a": QuotedString(text="a\\", quote=Quote.single),
+                "b": QuotedString(text="b\\", quote=Quote.single),
+            },
+            id="dict_str_trailing_backslash_single",
+        ),
+        param(
+            r'{a: "a\\", b: "b\\"}',
+            {
+                "a": QuotedString(text="a\\", quote=Quote.double),
+                "b": QuotedString(text="b\\", quote=Quote.double),
+            },
+            id="dict_str_trailing_backslash_double",
         ),
     ],
 )
@@ -424,6 +462,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             id="error:left_overs",
         ),
         param(
+            "listContainer",
+            r"['a\', 'b']",
+            raises(HydraException, match=re.escape("token recognition error at: '']'")),
+            id="error:list_bad_escaping",
+        ),
+        param(
             "override",
             "key=[1,2,3]'",
             raises(HydraException, match=re.escape("token recognition error at: '''")),
@@ -434,6 +478,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "{'0a': 0, \"1b\": 1}",
             raises(HydraException, match=re.escape("mismatched input ''0a''")),
             id="error:dict_quoted_key_dictContainer",
+        ),
+        param(
+            "dictContainer",
+            r"{a: 'a\', b: 'b'}",
+            raises(HydraException, match=re.escape("token recognition error at: ''}'")),
+            id="error:dict_bad_escaping",
         ),
         param(
             "override",
@@ -453,6 +503,12 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             ),
             id="error:dict_quoted_key_override_double",
         ),
+        param(
+            "override",
+            "$foo/bar=foobar",
+            raises(HydraException, match=re.escape("mismatched input '/'")),
+            id="error:dollar_in_group",
+        ),
     ],
 )
 def test_parse_errors(rule: str, value: str, expected: Any) -> None:
@@ -465,6 +521,8 @@ def test_parse_errors(rule: str, value: str, expected: Any) -> None:
     [
         param("abc", "abc", id="package"),
         param("abc.cde", "abc.cde", id="package"),
+        param("$foo", "$foo", id="package_dollar"),
+        param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
     ],
 )
 def test_package(value: str, expected: Any) -> None:
@@ -477,6 +535,8 @@ def test_package(value: str, expected: Any) -> None:
     [
         param("abc", "abc", id="package"),
         param("abc.cde", "abc.cde", id="package"),
+        param("$foo", "$foo", id="package_dollar"),
+        param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
         param("a/b/c", "a/b/c", id="group"),
     ],
 )
@@ -491,6 +551,8 @@ def test_package_or_group(value: str, expected: Any) -> None:
         param("abc", Key(key_or_group="abc"), id="abc"),
         param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
         param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
+        param("$foo", Key(key_or_group="$foo"), id="dollar"),
+        param("$foo.bar$.x$z", Key(key_or_group="$foo.bar$.x$z"), id="dollar_dotpath"),
         param("list.0", Key(key_or_group="list.0"), id="list.0"),
         param(
             "package_or_group@pkg1",
@@ -501,6 +563,11 @@ def test_package_or_group(value: str, expected: Any) -> None:
             "package_or_group@",
             Key(key_or_group="package_or_group", package=""),
             id="package_or_group@",
+        ),
+        param(
+            "package_or_group@$pkg1",
+            Key(key_or_group="package_or_group", package="$pkg1"),
+            id="package_dollar",
         ),
     ],
 )
@@ -513,7 +580,7 @@ def test_key(value: str, expected: Any) -> None:
     "value,expected",
     [
         param("a", "a", id="a"),
-        param("/:-\\+.$%*@", "/:-\\+.$%*@", id="accepted_specials"),
+        param(UNQUOTED_SPECIAL, UNQUOTED_SPECIAL, id="accepted_specials"),
         param("abc10", "abc10", id="abc10"),
         param("a.b.c", "a.b.c", id="a.b.c"),
         param("list.0.bar", "list.0.bar", id="list.0.bar"),
@@ -559,90 +626,6 @@ def test_key(value: str, expected: Any) -> None:
         # bool
         param("true", True, id="primitive:bool"),
         param("false", False, id="primitive:bool"),
-        # quoted string
-        param(
-            "'foo \\'bar'",
-            QuotedString(text="foo 'bar", quote=Quote.single),
-            id="value:escape_single_quote",
-        ),
-        param(
-            '"foo \\"bar"',
-            QuotedString(text='foo "bar', quote=Quote.double),
-            id="value:escape_double_quote",
-        ),
-        param(
-            "'\t []{},=+~'",
-            QuotedString(text="\t []{},=+~", quote=Quote.single),
-            id="value:quoted_specials",
-        ),
-        param(
-            '"\t []{},=+~"',
-            QuotedString(text="\t []{},=+~", quote=Quote.double),
-            id="value:quoted_specials",
-        ),
-        param(
-            "'a b c'",
-            QuotedString(text="a b c", quote=Quote.single),
-            id="value:quoted_with_whitespace",
-        ),
-        param(
-            "'a,b'",
-            QuotedString(text="a,b", quote=Quote.single),
-            id="value:quoted_with_comma",
-        ),
-        param(
-            "'[1,2,3]'",
-            QuotedString(text="[1,2,3]", quote=Quote.single),
-            id="value:quoted_list",
-        ),
-        param(
-            '"[1,2,3]"',
-            QuotedString(text="[1,2,3]", quote=Quote.double),
-            id="value:quoted_list",
-        ),
-        param(
-            "\"[1,'2',3]\"",
-            QuotedString(text="[1,'2',3]", quote=Quote.double),
-            id="value:quoted_list_with_quoted_element",
-        ),
-        param(
-            "'null'",
-            QuotedString(text="null", quote=Quote.single),
-            id="value:null:quoted",
-        ),
-        param(
-            "'100'", QuotedString(text="100", quote=Quote.single), id="value:int:quoted"
-        ),
-        param(
-            "'3.14'",
-            QuotedString(text="3.14", quote=Quote.single),
-            id="value:float:quoted",
-        ),
-        param(
-            "'nan'",
-            QuotedString(text="nan", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'inf'",
-            QuotedString(text="inf", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'nan'",
-            QuotedString(text="nan", quote=Quote.single),
-            id="value:float:constant:quoted",
-        ),
-        param(
-            "'true'",
-            QuotedString(text="true", quote=Quote.single),
-            id="value:bool:quoted",
-        ),
-        param(
-            "'false'",
-            QuotedString(text="false", quote=Quote.single),
-            id="value:bool:quoted",
-        ),
         # interpolations:
         param("${a}", "${a}", id="primitive:interpolation"),
         param("${a.b.c}", "${a.b.c}", id="primitive:interpolation"),
@@ -653,10 +636,193 @@ def test_key(value: str, expected: Any) -> None:
 )
 def test_primitive(value: str, expected: Any) -> None:
     ret = parse_rule(value, "primitive")
-    if isinstance(ret, QuotedString):
-        assert value == ret.with_quotes()
-
     assert eq(ret, expected)
+
+
+@mark.parametrize(
+    ("value", "expected"),
+    [
+        param(
+            r"'foo \'bar'",
+            QuotedString(text="foo 'bar", quote=Quote.single),
+            id="escape_single_quote",
+        ),
+        param(
+            r'"foo \"bar"',
+            QuotedString(text='foo "bar', quote=Quote.double),
+            id="escape_double_quote",
+        ),
+        param(
+            r"'foo \\\'bar'",
+            QuotedString(text=r"foo \'bar", quote=Quote.single),
+            id="escape_single_quote_x3",
+        ),
+        param(
+            r'"foo \\\"bar"',
+            QuotedString(text=r"foo \"bar", quote=Quote.double),
+            id="escape_double_quote_x3",
+        ),
+        param(
+            r"'foo\bar'",
+            QuotedString(text=r"foo\bar", quote=Quote.single),
+            id="one_backslash_single",
+        ),
+        param(
+            r'"foo\bar"',
+            QuotedString(text=r"foo\bar", quote=Quote.double),
+            id="one_backslash_double",
+        ),
+        param(
+            r"'foo\\bar'",
+            QuotedString(text=r"foo\\bar", quote=Quote.single),
+            id="noesc_backslash",
+        ),
+        param(
+            r"'foo\\\\bar'",
+            QuotedString(text=r"foo\\\\bar", quote=Quote.single),
+            id="noesc_backslash_x4",
+        ),
+        param(
+            r"'foo bar\\'",
+            # Note: raw strings do not allow trailing \, adding a space and stripping it.
+            QuotedString(text=r" foo bar\ ".strip(), quote=Quote.single),
+            id="escape_backslash_trailing",
+        ),
+        param(
+            r"'foo \\\\\'bar\' \\\\\\'",
+            QuotedString(text=r" foo \\'bar' \\\ ".strip(), quote=Quote.single),
+            id="escape_mixed",
+        ),
+        param(
+            "'\t []{},=+~'",
+            QuotedString(text="\t []{},=+~", quote=Quote.single),
+            id="quoted_specials",
+        ),
+        param(
+            '"\t []{},=+~"',
+            QuotedString(text="\t []{},=+~", quote=Quote.double),
+            id="quoted_specials",
+        ),
+        param(
+            "'a b c'",
+            QuotedString(text="a b c", quote=Quote.single),
+            id="quoted_with_whitespace",
+        ),
+        param(
+            "'a,b'",
+            QuotedString(text="a,b", quote=Quote.single),
+            id="quoted_with_comma",
+        ),
+        param(
+            "'[1,2,3]'",
+            QuotedString(text="[1,2,3]", quote=Quote.single),
+            id="quoted_list",
+        ),
+        param(
+            '"[1,2,3]"',
+            QuotedString(text="[1,2,3]", quote=Quote.double),
+            id="quoted_list",
+        ),
+        param(
+            "\"[1,'2',3]\"",
+            QuotedString(text="[1,'2',3]", quote=Quote.double),
+            id="quoted_list_with_quoted_element",
+        ),
+        param(
+            "'null'",
+            QuotedString(text="null", quote=Quote.single),
+            id="null",
+        ),
+        param("'100'", QuotedString(text="100", quote=Quote.single), id="int"),
+        param(
+            "'3.14'",
+            QuotedString(text="3.14", quote=Quote.single),
+            id="float",
+        ),
+        param(
+            "'nan'",
+            QuotedString(text="nan", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'inf'",
+            QuotedString(text="inf", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'nan'",
+            QuotedString(text="nan", quote=Quote.single),
+            id="float:constant",
+        ),
+        param(
+            "'true'",
+            QuotedString(text="true", quote=Quote.single),
+            id="bool",
+        ),
+        param(
+            "'false'",
+            QuotedString(text="false", quote=Quote.single),
+            id="bool",
+        ),
+        param(
+            "'a ${b}'",
+            QuotedString(text="a ${b}", quote=Quote.single),
+            id="interpolation",
+        ),
+        param(
+            r"'a \${b}'",
+            QuotedString(text=r"a \${b}", quote=Quote.single),
+            id="esc_interpolation",
+        ),
+        param(
+            r"'a \'\${b}\''",
+            QuotedString(text=r"a '\${b}'", quote=Quote.single),
+            id="quotes_and_esc_interpolation",
+        ),
+        param(
+            r"'a \\${b}'",
+            QuotedString(text=r"a \\${b}", quote=Quote.single),
+            id="backslash_and_interpolation",
+        ),
+        param(
+            r"'a \'${b}\''",
+            QuotedString(text=r"a '${b}'", quote=Quote.single),
+            id="quotes_and_interpolation",
+        ),
+        param(
+            r"'a \'\\${b}\''",
+            QuotedString(text=r"a '\\${b}'", quote=Quote.single),
+            id="quotes_backslash_and_interpolation",
+        ),
+        param(
+            r"'a \\\'${b}\\\''",
+            QuotedString(text=r"a \'${b}\'", quote=Quote.single),
+            id="backslash_quotes_and_interpolation",
+        ),
+        param(
+            r"'${foo:\'b,a,r\'}'",
+            QuotedString(text="${foo:'b,a,r'}", quote=Quote.single),
+            id="interpolation_with_quoted_string",
+        ),
+        param(
+            r"""'${foo:${a}, \'\${bar}\\\'\', {x: "${y}"}}'""",
+            QuotedString(
+                text=r"""${foo:${a}, '\${bar}\'', {x: "${y}"}}""", quote=Quote.single
+            ),
+            id="nested_interpolation",
+        ),
+        param(
+            r"""'${foo:"\' }"}'""",
+            QuotedString(text=r"""${foo:"' }"}""", quote=Quote.single),
+            id="interpolation_apparent_brace_mismatch",
+        ),
+    ],
+)
+def test_primitive_quoted_string(value: str, expected: Any) -> None:
+    ret = parse_rule(value, "primitive")
+    assert isinstance(ret, QuotedString)
+    assert eq(ret, expected)
+    assert value == ret.with_quotes()  # round-trip
 
 
 @mark.parametrize(
@@ -955,8 +1121,9 @@ def test_get_key_element(override: str, expected: str) -> None:
         param("key={a:10,b:20}", "{a: 10, b: 20}", True, id="dict"),
         param("key={a:10,b:[1,2,3]}", "{a: 10, b: [1, 2, 3]}", True, id="dict"),
         param(
-            "key={/-\\+.$%*@: 1}",
-            "{/-\\\\+.$%*@: 1}",  # note that \ gets escaped
+            "key={%s: 1}" % UNQUOTED_SPECIAL,
+            # Note that \ gets escaped.
+            "{%s: 1}" % UNQUOTED_SPECIAL.replace("\\", "\\\\"),
             True,
             id="dict_unquoted_key_special",
         ),
@@ -1001,7 +1168,11 @@ def test_override_get_value_element_method(
         param("key={a:10,b:20}", {"a": 10, "b": 20}, id="dict"),
         param("key={a:10,b:[1,2,3]}", {"a": 10, "b": [1, 2, 3]}, id="dict"),
         param("key={123id: 0}", {"123id": 0}, id="dict_key_int_plus_id"),
-        param("key={a/-\\+.$%*@: 0}", {"a/-\\+.$%*@": 0}, id="dict_key_noquote"),
+        param(
+            "key={%s: 0}" % UNQUOTED_SPECIAL,
+            {UNQUOTED_SPECIAL: 0},
+            id="dict_key_noquote",
+        ),
         param("key={w s: 0}", {"w s": 0}, id="dict_key_ws"),
         param(
             "key={\\\\\\(\\)\\[\\]\\{\\}\\:\\=\\ \\\t\\,: 0}",

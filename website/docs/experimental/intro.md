@@ -3,7 +3,6 @@ id: intro
 title: Introduction
 sidebar_label: Introduction
 ---
-## Introduction
 Experimental features are new features in Hydra that are considered experimental because their API may have not yet
 stabilized.
 

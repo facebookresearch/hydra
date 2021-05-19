@@ -28,6 +28,7 @@ You can install the plugin via pip:
 ```commandline
 pip install hydra-optuna-sweeper --upgrade
 ```
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
 
 ## Usage
 

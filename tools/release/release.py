@@ -107,7 +107,6 @@ def get_package_info(path: str) -> Package:
 
 
 def build_package(cfg: Config, pkg_path: str, build_dir: str) -> None:
-
     try:
         prev = os.getcwd()
         os.chdir(pkg_path)
@@ -127,15 +126,15 @@ def _next_version(version: str) -> str:
     if cur.is_devrelease:
         prefix = "dev"
         num = cur.dev + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
     elif cur.is_prerelease:
         prefix = cur.pre[0]
         num = cur.pre[1] + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
     elif cur.is_postrelease:
         prefix = cur.post[0]
         num = cur.post[1] + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}{prefix}{num}"
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
     else:
         micro = cur.micro + 1
         new_version = f"{cur.major}.{cur.minor}.{micro}"
@@ -143,16 +142,16 @@ def _next_version(version: str) -> str:
     return str(new_version)
 
 
-def bump_version_in_file(cfg: Config, ver_file: Path) -> None:
+def bump_version_in_file(cfg: Config, name: str, ver_file: Path) -> None:
     loaded = ver_file.read_text("utf-8")
-    # https://regex101.com/r/7jDVs1/7
+    # https://regex101.com/r/DoxaSI/1
     regex = r"((?:__)?version(?:__)?\s*=\s*)((?:\"|\')(.*?)(?:\"|\'))"
 
     matches = re.search(regex, loaded)
 
     if matches:
         new_version = _next_version(matches.group(3))
-        log.info(f"Bumping {matches.group(2)} to {new_version}")
+        log.info(f"Bumping version of {name} from {matches.group(2)} to {new_version}")
         subst = f'{matches.group(1)}"{new_version}"'
         result = re.sub(regex, subst, loaded, 0)
         if not cfg.dry_run:
@@ -161,19 +160,15 @@ def bump_version_in_file(cfg: Config, ver_file: Path) -> None:
         raise ValueError(f"Could not find version in {ver_file}")
 
 
-def bump_version(cfg: Config, package: Package) -> None:
+def bump_version(cfg: Config, package: Package, hydra_root: str) -> None:
     if package.version_type == VersionType.SETUP:
-        ver_file = Path(HYDRA_ROOT) / package.path / "setup.py"
-        bump_version_in_file(cfg, ver_file)
-        log.info(f"Bumping version: {ver_file}")
+        ver_file = Path(hydra_root) / package.path / "setup.py"
+        bump_version_in_file(cfg, package.name, ver_file)
     elif package.version_type == VersionType.FILE:
-        ver_file = Path(HYDRA_ROOT) / package.version_file
-        bump_version_in_file(cfg, ver_file)
+        ver_file = Path(hydra_root) / package.path / package.version_file
+        bump_version_in_file(cfg, package.name, ver_file)
     else:
         raise ValueError()
-
-
-HYDRA_ROOT = None
 
 
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
@@ -181,14 +176,14 @@ OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
 
 @hydra.main(config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
-    HYDRA_ROOT = find_parent_dir_containing(target="ATTRIBUTION")
+    hydra_root = find_parent_dir_containing(target="ATTRIBUTION")
     build_dir = f"{os.getcwd()}/{cfg.build_dir}"
     Path(build_dir).mkdir(parents=True)
     log.info(f"Build outputs : {build_dir}")
     if cfg.action == Action.check:
         log.info("Checking for unpublished packages")
         for package in cfg.packages.values():
-            pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
+            pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version == ret.latest_version:
                 log.info(f"\U0000274a : {ret.name} : match ({ret.latest_version})")
@@ -203,17 +198,17 @@ def main(cfg: Config) -> None:
     elif cfg.action == Action.build:
         log.info("Building unpublished packages")
         for package in cfg.packages.values():
-            pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
+            pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version > ret.latest_version:
                 build_package(cfg, pkg_path, build_dir)
     elif cfg.action == Action.bump:
         log.info("Bumping version of published packages")
         for package in cfg.packages.values():
-            pkg_path = os.path.normpath(os.path.join(HYDRA_ROOT, package.path))
+            pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
             ret = get_package_info(pkg_path)
             if ret.local_version == ret.latest_version:
-                bump_version(cfg, package)
+                bump_version(cfg, package, hydra_root)
 
     else:
         raise ValueError("Unexpected action type")

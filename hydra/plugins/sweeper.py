@@ -51,9 +51,15 @@ class Sweeper(Plugin):
         This repeat work the launcher will do, but as the launcher may be performing this in a different
         process/machine it's important to do it here as well to detect failures early.
         """
-        assert self.hydra_context is not None
+        config_loader = (
+            self.hydra_context.config_loader
+            if hasattr(self, "hydra_context") and self.hydra_context is not None
+            else self.config_loader  # type: ignore
+        )
+        assert config_loader is not None
+
         assert self.config is not None
         for overrides in batch:
-            self.hydra_context.config_loader.load_sweep_config(
+            config_loader.load_sweep_config(
                 master_config=self.config, sweep_overrides=list(overrides)
             )
