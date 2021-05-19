@@ -22,7 +22,6 @@ from hydra.core.override_parser.types import (
     Transformer,
 )
 from hydra.core.plugins import Plugins
-from hydra.errors import HydraJobException
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
@@ -174,7 +173,7 @@ class NevergradSweeperImpl(Sweeper):
                     failures += 1
                     try:
                         ret.return_value
-                    except HydraJobException as e:
+                    except Exception as e:
                         log.warning(f"Returning infinity for failed experiment: {e}")
                 optimizer.tell(cand, rectified_loss)
                 if rectified_loss < best[0]:
