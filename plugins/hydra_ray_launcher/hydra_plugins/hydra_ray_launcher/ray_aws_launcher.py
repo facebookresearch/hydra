@@ -9,10 +9,10 @@ from omegaconf import DictConfig
 
 from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore
     RayAWSConf,
-    RsyncConf,
-    RayLoggingConf,
     RayCreateOrUpdateClusterConf,
+    RayLoggingConf,
     RayTeardownCluster,
+    RsyncConf,
 )
 
 log = logging.getLogger(__name__)

@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from importlib import import_module
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf
