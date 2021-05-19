@@ -40,25 +40,27 @@ The default configuration is as follows:
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher
 enqueue:
-  job_timeout: null                  # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-  ttl: null                          # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-  result_ttl: null                   # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-  failure_ttl: null                  # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
-  at_front: false                    # place job at the front of the queue, instead of the back
-  job_id: null                       # job id, will be overidden automatically by a uuid unless specified explicitly
-  description: null                  # description, will be overidden automatically unless specified explicitly
-queue: default                       # queue name
+  job_timeout: null                               # maximum runtime of the job before it's killed (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  ttl: null                                       # maximum queued time before the job before is discarded (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  result_ttl: null                                # how long successful jobs and their results are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  failure_ttl: null                               # specifies how long failed jobs are kept (e.g. "1d" for 1 day, units: d/h/m/s), default: no limit
+  at_front: false                                 # place job at the front of the queue, instead of the back
+  job_id: null                                    # job id, will be overidden automatically by a uuid unless specified explicitly
+  description: null                               # description, will be overidden automatically unless specified explicitly
+queue: default                                    # queue name
 redis:
-  host: ${oc.env:REDIS_HOST,localhost}  # host address via REDIS_HOST environment variable, default: localhost
-  port: ${oc.env:REDIS_PORT,6379}       # port via REDIS_PORT environment variable, default: 6379
-  db: ${oc.env:REDIS_DB,0}              # database via REDIS_DB environment variable, default: 0
-  password: ${oc.env:REDIS_PASSWORD,}   # password via REDIS_PASSWORD environment variable, default: no password
-  mock: ${oc.env:REDIS_MOCK,False}      # switch to run without redis server in single thread, for testing purposes only
-stop_after_enqueue: false            # stop after enqueueing by raising custom exception
-wait_polling: 1.0                    # wait time in seconds when polling results
+  host: ${oc.env:REDIS_HOST,localhost}            # host address via REDIS_HOST environment variable, default: localhost
+  port: ${oc.env:REDIS_PORT,6379}                 # port via REDIS_PORT environment variable, default: 6379
+  db: ${oc.env:REDIS_DB,0}                        # database via REDIS_DB environment variable, default: 0
+  password: ${oc.env:REDIS_PASSWORD,}             # password via REDIS_PASSWORD environment variable, default: no password    
+  ssl: ${oc.env:REDIS_SSL,False}                  # enable/disable SSL, via REDIS_SSL environment variable, default False  
+  ssl_ca_certs: ${oc.env:REDIS_SSL_CA_CERTS,null} # path to custom certs, via REDIS_SSL_CA_CERTS env veriable, default none
+  mock: ${oc.env:REDIS_MOCK,False}                # switch to run without redis server in single thread, for testing purposes only
+stop_after_enqueue: false                         # stop after enqueueing by raising custom exception
+wait_polling: 1.0                                 # wait time in seconds when polling results
 ```
 
-The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively.
+The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively. Support for Redis SSL connections is controlled through `REDIS_SSL` and `REDIS_SSL_CA_CERTS`; see [redis-py](https://github.com/andymccurdy/redis-py#ssl-connections) documentation.
 
 For example, they might be set as follows when using `bash` or `zsh` as a shell:
 
@@ -67,6 +69,12 @@ export REDIS_HOST="localhost"
 export REDIS_PORT="6379"
 export REDIS_DB="0"
 export REDIS_PASSWORD=""
+```
+
+SSL can be enabled like so:
+```commandline
+export REDIS_SSL="True"
+export REDIS_SSL_CA_CERTS="/etc/ssl/certs/ca-certificates.crt"
 ```
 
 Assuming configured environment variables, workers connecting to the Redis server can be launched using:
