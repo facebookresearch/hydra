@@ -126,7 +126,7 @@ def rsync(
     up: bool = True,
 ) -> None:
     keypair = _get_pem(config)
-    remote_ip = sdk.get_head_node_ip(config)
+    remote_ip = sdk.get_head_node_ip(config)  # type: ignore[attr-defined]
     user = config["auth"]["ssh_user"]
     args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
 

@@ -75,7 +75,7 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
-    logging_config = OmegaConf.to_container(  # type: ignore
+    logging_config = OmegaConf.to_container(
         launcher.logging, resolve=True, enum_to_str=True
     )
     sdk.configure_logging(**logging_config)  # type: ignore[attr-defined]
