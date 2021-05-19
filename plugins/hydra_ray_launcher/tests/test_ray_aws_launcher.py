@@ -30,7 +30,7 @@ from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
 try:
     import importlib
 
-    sdk = importlib.import_module("ray.autoscaler.sdk")
+    sdk: Any = importlib.import_module("ray.autoscaler.sdk")
 except ModuleNotFoundError as e:
     raise ImportError(e)
 
@@ -154,20 +154,20 @@ def upload_and_install_wheels(
     core_wheel: str,
     plugin_wheel: str,
 ) -> None:
-    sdk.rsync(  # type: ignore[attr-defined]
+    sdk.rsync(
         connect_config,
         source=tmp_wheel_dir + "/",
         target=temp_remote_wheel_dir,
         down=False,
     )
     log.info(f"Install hydra-core wheel {core_wheel}")
-    sdk.run_on_cluster(  # type: ignore[attr-defined]
+    sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
     )
 
     log.info(f"Install plugin wheel {plugin_wheel}")
-    sdk.run_on_cluster(  # type: ignore[attr-defined]
+    sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
     )
@@ -178,7 +178,7 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     libs = ["ray", "cloudpickle", "pickle5"]
     for lib in libs:
         local_version = f"{pkg_resources.get_distribution(lib).version}"
-        out = sdk.run_on_cluster(  # type: ignore[attr-defined]
+        out = sdk.run_on_cluster(
             connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
         ).decode()
         assert local_version in out, f"{lib} version mismatch"
@@ -186,7 +186,7 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # validate python version
     info = sys.version_info
     local_python = f"{info.major}.{info.minor}.{info.micro}"
-    out = sdk.run_on_cluster(  # type: ignore[attr-defined]
+    out = sdk.run_on_cluster(
         connect_config, cmd="python --version", with_output=True
     ).decode()
     remote_python = out.split()[1]
@@ -230,19 +230,19 @@ def manage_cluster() -> Generator[None, None, None]:
         "head_node": ray_nodes_conf,
         "worker_nodes": ray_nodes_conf,
     }
-    sdk.create_or_update_cluster(  # type: ignore[attr-defined]
+    sdk.create_or_update_cluster(
         connect_config,
     )
-    sdk.run_on_cluster(  # type: ignore[attr-defined]
+    sdk.run_on_cluster(
         connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_dir}"
     )
-    sdk.run_on_cluster(  # type: ignore[attr-defined]
+    sdk.run_on_cluster(
         connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_wheel_dir}"
     )
     upload_and_install_wheels(tmpdir, connect_config, core_wheel, plugin_wheel)
     validate_lib_version(connect_config)
     yield
-    sdk.teardown_cluster(connect_config)  # type: ignore[attr-defined]
+    sdk.teardown_cluster(connect_config)
 
 
 launcher_test_suites_overrides = [
