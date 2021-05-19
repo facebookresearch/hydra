@@ -26,7 +26,7 @@ from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
 try:
     import importlib
 
-    sdk = importlib.import_module("ray.autoscaler.sdk")
+    sdk: Any = importlib.import_module("ray.autoscaler.sdk")
 except ModuleNotFoundError as e:
     raise ImportError(e)
 
@@ -78,7 +78,7 @@ def launch(
     logging_config = OmegaConf.to_container(
         launcher.logging, resolve=True, enum_to_str=True
     )
-    sdk.configure_logging(**logging_config)  # type: ignore[attr-defined]
+    sdk.configure_logging(**logging_config)
 
     log.info("Creating Ray Cluster with the following configuration:")
     log.info(OmegaConf.to_yaml(launcher.ray_cfg.cluster))
@@ -117,14 +117,14 @@ def launch_jobs(
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
-    sdk.create_or_update_cluster(  # type: ignore[attr-defined]
+    sdk.create_or_update_cluster(
         config,
         **launcher.create_update_cluster,
     )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
 
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
-            sdk.rsync(  # type: ignore[attr-defined]
+            sdk.rsync(
                 config,
                 source=os.path.join(local_tmp_dir, ""),
                 target=remote_tmp_dir,
@@ -133,7 +133,7 @@ def launch_jobs(
 
             script_path = os.path.join(os.path.dirname(__file__), "_remote_invoke.py")
             remote_script_path = os.path.join(remote_tmp_dir, "_remote_invoke.py")
-            sdk.rsync(  # type: ignore[attr-defined]
+            sdk.rsync(
                 config,
                 source=script_path,
                 target=remote_script_path,
@@ -154,13 +154,13 @@ def launch_jobs(
                     os.path.join(source_dir, ""),
                     target_dir,
                 )
-            sdk.run_on_cluster(  # type: ignore[attr-defined]
+            sdk.run_on_cluster(
                 config,
                 run_env=launcher.ray_cfg.run_env.name,
                 cmd=f"python {remote_script_path} {remote_tmp_dir}",
             )
 
-            sdk.rsync(  # type: ignore[attr-defined]
+            sdk.rsync(
                 config,
                 source=os.path.join(remote_tmp_dir, JOB_RETURN_PICKLE),
                 target=local_tmp_download_dir,
@@ -202,7 +202,7 @@ def launch_jobs(
                 log.info("NOT deleting the cluster (provider.cache_stopped_nodes=true)")
             else:
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
-            sdk.teardown_cluster(  # type: ignore[attr-defined]
+            sdk.teardown_cluster(
                 config,
                 **launcher.teardown_cluster,
             )

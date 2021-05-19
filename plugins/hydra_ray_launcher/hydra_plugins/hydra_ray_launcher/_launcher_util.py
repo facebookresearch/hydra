@@ -17,7 +17,7 @@ from omegaconf import DictConfig
 try:
     import importlib
 
-    sdk = importlib.import_module("ray.autoscaler.sdk")
+    sdk: Any = importlib.import_module("ray.autoscaler.sdk")
 except ModuleNotFoundError as e:
     raise ImportError(e)
 
@@ -89,7 +89,7 @@ def _run_command(args: Any) -> Tuple[str, str]:
 
 @contextmanager
 def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, None]:
-    out = sdk.run_on_cluster(  # type: ignore[attr-defined]
+    out = sdk.run_on_cluster(
         config, run_env=run_env, cmd="echo $(mktemp -d)", with_output=True
     ).decode()
 
@@ -102,7 +102,7 @@ def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, No
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
-    sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")  # type: ignore[attr-defined]
+    sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")
 
 
 def _get_pem(config: Any) -> Any:
@@ -126,7 +126,7 @@ def rsync(
     up: bool = True,
 ) -> None:
     keypair = _get_pem(config)
-    remote_ip = sdk.get_head_node_ip(config)  # type: ignore[attr-defined]
+    remote_ip = sdk.get_head_node_ip(config)
     user = config["auth"]["ssh_user"]
     args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
 
