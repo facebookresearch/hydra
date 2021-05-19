@@ -47,13 +47,14 @@ class TestRQLauncherIntegration(IntegrationTestSuite):
 
 # https://github.com/rq/rq/issues/1244
 @mark.filterwarnings("ignore::DeprecationWarning")
-def test_example_app(hydra_sweep_runner: TSweepRunner) -> None:
+@mark.parametrize("config_name", ["config", "config_redis_ssl"])
+def test_example_app(hydra_sweep_runner: TSweepRunner, config_name: str) -> None:
     with hydra_sweep_runner(
         calling_file="example/my_app.py",
         calling_module=None,
         task_function=None,
         config_path=".",
-        config_name="config",
+        config_name=config_name,
         overrides=["task=1,2,3,4"],
     ) as sweep:
         overrides = {("task=1",), ("task=2",), ("task=3",), ("task=4",)}
