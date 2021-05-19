@@ -13,7 +13,7 @@ hydra:
       client:
         random_seed: 1
 
-      max_trials: 2
+      max_trials: 5
 
       experiment:
         minimize: true
