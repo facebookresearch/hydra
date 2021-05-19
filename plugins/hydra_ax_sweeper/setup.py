@@ -25,7 +25,7 @@ setup(
     ],
     install_requires=[
         "ax-platform>=0.1.20",
-        "torch<1.8.0",  # remove once torch 1.8.0 issue is addressed in Ax.
+        "torch",
         "hydra-core==1.0.*",
     ],
     include_package_data=True,
