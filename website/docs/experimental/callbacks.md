@@ -169,17 +169,15 @@ After each job `on_job_end` is called, and finally either `on_run_end` or
 `on_multirun_end` is called one time before the application exits.
 
 In the `hydra.callbacks` section of your config, you can use a list to register multiple callbacks. They will be called in the final composed order for `start` events and
-in reversed order for `end` events. So, for example, suppose we are using the config file below:
-```commandline title="conf/hydra/callbacks/my_callback.yaml"
-# @package _global_
-hydra:
-  callbacks:
-    - my_callback1:
-        _target_: my_app.MyCallback1
-        params: ...
-    - my_callback2:
-        _target_: my_app.MyCallback2
-        params: ...
+in reversed order for `end` events. So, for example, suppose have the following composed config:
+```commandline title="python my_app.py --cfg hydra -p hydra.callbacks"
+# @package hydra.callbacks
+my_callback1:
+  _target_: my_app.MyCallback1
+  param1: val1
+my_callback2:
+  _target_: my_app.MyCallback2
+  param2: val2
 ```
 Before each job starts, `MyCallback1.on_job_start` will get called first,
 followed by `MyCallback2.on_job_start`.
