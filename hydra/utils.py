@@ -29,7 +29,7 @@ def call(config: Any, *args: Any, **kwargs: Any) -> Any:
     :return: the return value from the specified class or method
     """
 
-    if OmegaConf.is_none(config):
+    if config is None or (OmegaConf.is_config(config) and config._is_none()):
         return None
 
     if isinstance(config, TargetConf) and config._target_ == "???":

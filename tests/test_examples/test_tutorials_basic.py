@@ -281,7 +281,7 @@ def test_sweeping_example(
     ],
 )
 def test_advanced_ad_hoc_composition(
-    monkeypatch: Any, tmpdir: Path, args: List[str], expected: Any
+    monkeypatch: Any, tmpdir: Path, args: List[str], expected: Any, recwarn: Any
 ) -> None:
 
     monkeypatch.setenv("USER", "test_user")
@@ -289,7 +289,8 @@ def test_advanced_ad_hoc_composition(
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
         "hydra.run.dir=" + str(tmpdir),
     ]
-    result, _err = get_run_output(cmd)
+    # usage oc ${env:...} resolver is causing a deprecation warning on OmegaConf 2.1
+    result, _err = get_run_output(cmd, allow_warnings=True)
     assert OmegaConf.create(result) == OmegaConf.create(expected)
 
 

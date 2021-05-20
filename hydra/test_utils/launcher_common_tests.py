@@ -221,6 +221,7 @@ class LauncherTestSuite:
         launcher_name: str,
         overrides: List[str],
         tmpdir: Path,
+        recwarn: Any,
     ) -> None:
 
         overrides1 = ["hydra/launcher=" + launcher_name] + overrides
