@@ -1,0 +1,1 @@
+`--cfg=hydra` now works for top-level read-only config
