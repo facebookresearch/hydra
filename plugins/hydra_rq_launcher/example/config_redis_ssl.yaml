@@ -1,9 +1,0 @@
-defaults:
-  - override hydra/launcher: rq
-
-task: 1
-
-hydra:
-  launcher:
-    redis:
-      ssl: true
