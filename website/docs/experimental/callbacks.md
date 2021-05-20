@@ -45,7 +45,7 @@ class Callback:
 
     def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
         """
-        Called in MULTIRUN mode after all job end.
+        Called in MULTIRUN mode after all jobs end.
         """
         ...
 
