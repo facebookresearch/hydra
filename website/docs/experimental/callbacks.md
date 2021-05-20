@@ -1,0 +1,157 @@
+---
+id: callbacks
+title: Callbacks
+sidebar_label: Callbacks
+---
+
+import GithubLink from "@site/src/components/GithubLink"
+
+
+The <GithubLink to="hydra/experimental/callback.py">Callback interface</GithubLink> enables running custom
+code at different Hydra event time.
+
+
+<details><summary>Events supported (Click to expand)</summary>
+
+```python
+class Callback:
+    def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
+        """
+        Called in RUN mode before job starts.
+        """
+        ...
+
+    def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
+        """
+        Called in RUN mode after job ends.
+        """
+        ...
+
+    def on_multirun_start(self, config: DictConfig, **kwargs: Any) -> None:
+        """
+        Called in MULTIRUN mode before any job starts.
+        """
+        ...
+
+    def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
+        """
+        Called in MULTIRUN mode after all job end.
+        """
+        ...
+
+    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+        """
+        Called in both RUN and MULTIRUN modes inside a Hydra job; before running
+        application code.
+        """
+        ...
+
+    def on_job_end(
+        self, config: DictConfig, job_return: JobReturn, **kwargs: Any
+    ) -> None:
+        """
+        Called in both RUN and MULTIRUN modes inside a Hydra job; after running
+        application code.
+        """
+        ...
+
+```
+</details>
+
+### Configure Callback
+
+Say we have `MyCallback` so after every job ends we can upload a certain file to a S3 bucket.
+For simplicity we include this Callback class within the application, in real life you should have the
+Callback in a separate file.
+Running the application, we can see our custom method `on_job_end` was called.
+
+<div className="row">
+<div className="col col--9">
+
+```python title="my_app.py"
+class MyCallback(Callback):
+   def __init__(self, bucket: str, file_path: str) -> None:
+        self.bucket = bucket
+        self.file_path = file_path
+
+   def on_job_end(self, config: DictConfig, **kwargs: Any) -> None:
+        print(f"Job ended,uploading...")
+        # uploading...
+
+@hydra.main(config_path="conf", config_name="config")
+def my_app(cfg: DictConfig) -> None:
+    print(OmegaConf.to_yaml(cfg))
+
+
+if __name__ == "__main__":
+    my_app()
+``` 
+</div>
+<div className="col col--3" >
+
+```commandline title="output"
+
+$ python  my_app.py
+foo: bar
+
+Job ended,uploading...
+
+
+
+
+
+
+
+
+
+
+
+```
+</div>
+</div>
+
+Now let's take a look at the configurations. 
+
+<div className="row">
+<div className="col col--4">
+
+```commandline title="$ tree conf"
+conf
+├── config.yaml
+└── hydra
+    └── callbacks
+        └── my_callback.yaml
+
+
+```
+</div>
+<div className="col  col--3">
+
+```commandline title="conf/config.yaml"
+defaults:
+ - /hydra/callbacks:
+    - my_callback
+
+foo: bar
+
+
+```
+</div>
+<div className="col  col--5">
+
+```commandline title="conf/hydra/callbacks/my_callback.yaml"
+# @package _global_
+hydra:
+  callbacks:
+    my_callback:
+      _target_: my_app.MyCallback
+      bucket: my_s3_bucket
+      file_path: ./test.pt
+```
+</div>
+</div>
+
+
+### Callback ordering
+You can have a list of Callbacks. They will be called in the final composed order for `start` events and 
+reversed order for `end` events.
