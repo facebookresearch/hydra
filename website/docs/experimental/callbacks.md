@@ -7,9 +7,19 @@ sidebar_label: Callbacks
 import GithubLink from "@site/src/components/GithubLink"
 
 
-The <GithubLink to="hydra/experimental/callback.py">Callback interface</GithubLink> enables running custom
-code at different Hydra event time.
+The <GithubLink to="hydra/experimental/callback.py">Callback interface</GithubLink> enables custom
+code to be triggered by various Hydra events.
 
+To use the callback API, one should import Hydra's `Callback` class:
+```python
+from hydra.experimental.callback import Callback
+```
+Users can then create subclasses of this `Callback` class, overriding one or more of
+the methods defined by `Callback`. For the methods of a subclass to be called at the
+appropriate time, the subclass must be registered with Hydra in the `hydra.callbacks`
+section of one's app config (see examples below).
+
+The full API exposed by the `hydra.experimental.callback.Callback` class is listed below:
 
 <details><summary>Events supported (Click to expand)</summary>
 
