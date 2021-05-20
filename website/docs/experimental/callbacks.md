@@ -181,5 +181,5 @@ my_callback2:
 ```
 Before each job starts, `MyCallback1.on_job_start` will get called first,
 followed by `MyCallback2.on_job_start`.
-After the job ends, `MyCallback2.on_job_end` will get called first,
+After each job ends, `MyCallback2.on_job_end` will get called first,
 followed by `MyCallback1.on_job_end`.
