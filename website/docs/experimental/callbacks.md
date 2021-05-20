@@ -16,8 +16,8 @@ from hydra.experimental.callback import Callback
 ```
 Users can then create subclasses of this `Callback` class, overriding one or more of
 the methods defined by `Callback`. For the methods of a subclass to be called at the
-appropriate time, the subclass must be registered with Hydra in the `hydra.callbacks`
-section of one's app config (see examples below).
+appropriate time, the subclass must be registered with Hydra in the `hydra.callbacks` config
+ (see examples below).
 
 The full API exposed by the `hydra.experimental.callback.Callback` class is listed below:
 
@@ -169,7 +169,7 @@ After each job `on_job_end` is called, and finally either `on_run_end` or
 `on_multirun_end` is called one time before the application exits.
 
 In the `hydra.callbacks` section of your config, you can use a list to register multiple callbacks. They will be called in the final composed order for `start` events and
-in reversed order for `end` events. So, for example, suppose have the following composed config:
+in reversed order for `end` events. So, for example, suppose we have the following composed config:
 ```commandline title="python my_app.py --cfg hydra -p hydra.callbacks"
 # @package hydra.callbacks
 my_callback1:
