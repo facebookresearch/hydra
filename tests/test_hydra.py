@@ -1022,6 +1022,8 @@ bar: 100"""
         assert OmegaConf.create(ret) == OmegaConf.create(expected)
 
 
+# disabled to to a change in the error output from OmegaConf 2.1.
+
 # def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> None:
 #     monkeypatch.chdir("tests/test_apps/app_with_runtime_config_error")
 #     cmd = [

@@ -12,13 +12,9 @@ from pathlib import Path
 from time import localtime, strftime
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, cast
 
-from omegaconf import (
-    DictConfig,
-    OmegaConf,
-    open_dict,
-    read_write,
-    __version__ as oc_version,
-)
+from omegaconf import DictConfig, OmegaConf
+from omegaconf import __version__ as oc_version
+from omegaconf import open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -151,7 +147,7 @@ def setup_globals() -> None:
 
     def register(name: str, f: Any, cache: bool = False) -> None:
         if oc_major_ver >= (2, 1):
-            OmegaConf.register_new_resolver(name, f, replace=True, use_cache=cache)
+            OmegaConf.register_new_resolver(name, f, replace=True, use_cache=cache)  # type: ignore
         else:
             try:
                 OmegaConf.register_resolver(name, f)
