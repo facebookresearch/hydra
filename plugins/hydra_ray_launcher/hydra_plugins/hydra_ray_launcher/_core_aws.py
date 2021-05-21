@@ -80,8 +80,6 @@ def launch(
     )
     sdk.configure_logging(**logging_config)
 
-    log.info("Creating Ray Cluster with the following configuration:")
-    log.info(OmegaConf.to_yaml(launcher.ray_cfg.cluster))
     log.info(f"Ray Launcher is launching {len(job_overrides)} jobs, ")
 
     with tempfile.TemporaryDirectory() as local_tmp_dir:

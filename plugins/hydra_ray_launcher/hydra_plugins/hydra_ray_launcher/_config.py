@@ -81,7 +81,7 @@ class RayLoggingConf:
 
     log_style: RayLoggingStyle = RayLoggingStyle.auto
     color_mode: RayLoggingColorMode = RayLoggingColorMode.auto
-    verbosity: int = RayLoggingVerbosity.verbose.value
+    verbosity: int = RayLoggingVerbosity.minimal.value
 
 
 @dataclass
@@ -105,7 +105,7 @@ class RayCreateOrUpdateClusterConf:
 
 
 @dataclass
-class RayTeardownCluster:
+class RayTeardownClusterConf:
     """
     Ray sdk.teardown parameters: workers_only, keep_min_workers
     """
@@ -331,7 +331,7 @@ class RayAWSLauncherConf:
     create_update_cluster: RayCreateOrUpdateClusterConf = RayCreateOrUpdateClusterConf()
 
     # Ray sdk.teardown parameters: workers_only, keep_min_workers
-    teardown_cluster: RayTeardownCluster = RayTeardownCluster()
+    teardown_cluster: RayTeardownClusterConf = RayTeardownClusterConf()
 
 
 config_store = ConfigStore.instance()

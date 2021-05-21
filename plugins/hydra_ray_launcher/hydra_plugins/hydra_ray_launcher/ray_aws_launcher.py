@@ -11,7 +11,7 @@ from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore
     RayAWSConf,
     RayCreateOrUpdateClusterConf,
     RayLoggingConf,
-    RayTeardownCluster,
+    RayTeardownClusterConf,
     RsyncConf,
 )
 
@@ -28,7 +28,7 @@ class RayAWSLauncher(Launcher):
         sync_down: RsyncConf,
         logging: RayLoggingConf,
         create_update_cluster: RayCreateOrUpdateClusterConf,
-        teardown_cluster: RayTeardownCluster,
+        teardown_cluster: RayTeardownClusterConf,
     ) -> None:
         self.ray_cfg = ray
         self.stop_cluster = stop_cluster
