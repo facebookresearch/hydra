@@ -4,7 +4,7 @@ title: Changes to Package Header
 ---
 
 Hydra 1.0 introduced the package header and required everyone to specify it in their configs.
-This was done to facilitate a transition from a model where the packages are global to a model
+This was done to facilitate a transition from a model where the packages are global
 to a model where - by default - package are derived from the config group.
 
 e.g: Change of the default package for `server/db/mysql.yaml` from `_global_` to `server.db`.
