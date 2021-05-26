@@ -12,7 +12,7 @@ import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-ray-launcher.svg)](https://pypistats.org/packages/hydra-ray-launcher)<ExampleGithubLink text="Example application" to="plugins/hydra_ray_launcher/examples"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_ray_launcher"/>
 
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`. 
- `ray_aws` launches jobs remotely on AWS and is built on top of [Ray cluster launcher](https://docs.ray.io/en/latest/cluster/launcher.html). `ray` launches jobs on your local machine or existing ray cluster. 
+ `ray_aws` launches jobs remotely on AWS and is built on top of [ray autoscaler sdk](https://docs.ray.io/en/releases-1.3.0/cluster/sdk.html). `ray` launches jobs on your local machine or existing ray cluster. 
 
 ### Installation
 
@@ -32,12 +32,12 @@ There are several standard approaches for configuring plugins. Check [this page]
 ### `ray_aws` launcher
 
 :::important
-`ray_aws` launcher is built on top of ray's [cluster launcher cli](https://docs.ray.io/en/latest/cluster/launcher.html). To get started, you need to 
+`ray_aws` launcher is built on top of ray's [autoscaler sdk](https://docs.ray.io/en/releases-1.3.0/cluster/sdk.html). To get started, you need to 
 [config your AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).
-`ray cluster launcher` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
+`ray autoscaler sdk` expects your AWS credentials have certain permissions for [`EC2`](https://aws.amazon.com/ec2) and [`IAM`](https://aws.amazon.com/iam). Read [this](https://github.com/ray-project/ray/issues/9327) for more information.
 :::
 
-`ray cluster launcher` expects a yaml file to provide configuration for the EC2 cluster; we've schematized the configs in <GithubLink to="plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/_config.py">here</GithubLink>
+`ray autoscaler sdk` expects a configuration for the EC2 cluster; we've schematized the configs in <GithubLink to="plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/_config.py">here</GithubLink>
 
 <details><summary>Discover ray_aws launcher's config</summary>
 
@@ -47,12 +47,12 @@ $ python my_app.py hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
 env_setup:
   pip_packages:
-    omegaconf: 2.0.5
-    hydra_core: 1.0.4
-    ray: 1.0.1.post1
-    cloudpickle: 1.6.0
+    omegaconf: ${ray_pkg_version:omegaconf}
+    hydra_core: ${ray_pkg_version:hydra}
+    ray: ${ray_pkg_version:ray}
+    cloudpickle: ${ray_pkg_version:cloudpickle}
     pickle5: 0.0.11
-    hydra_ray_launcher: 0.1.2
+    hydra_ray_launcher: 1.1.0.dev3
   commands:
   - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
   - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"'
@@ -80,7 +80,7 @@ ray:
       availability_zone: us-west-2a,us-west-2b
       cache_stopped_nodes: false
       key_pair:
-        key_name: hydra
+        key_name: hydra-${oc.env:USER,user}
     auth:
       ssh_user: ubuntu
     head_node:
@@ -96,11 +96,12 @@ ray:
     worker_setup_commands: []
     head_start_ray_commands:
     - ray stop
-    - ulimit -n 65536; ray start --head --redis-port=6379 --object-manager-port=8076
+    - ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076
       --autoscaling-config=~/ray_bootstrap_config.yaml
     worker_start_ray_commands:
     - ray stop
     - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+  run_env: auto
 stop_cluster: true
 sync_up:
   source_dir: null
@@ -112,6 +113,17 @@ sync_down:
   target_dir: null
   include: []
   exclude: []
+logging:
+  log_style: auto
+  color_mode: auto
+  verbosity: 0
+create_update_cluster:
+  no_restart: false
+  restart_only: false
+  no_config_cache: false
+teardown_cluster:
+  workers_only: false
+  keep_min_workers: false
 ```
 </details>
 
@@ -129,16 +141,18 @@ $ python my_app.py --multirun task=1,2,3
 [HYDRA]        #1 : task=2
 [HYDRA]        #2 : task=3
 [HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpqqg4v4i7/job_spec.pkl
-[HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml.
+Cluster: default
 ...
-[HYDRA] Output: INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+INFO services.py:1172 -- View the Ray dashboard at http://localhost:8265
 (pid=3374) [__main__][INFO] - Executing task 1
 (pid=3374) [__main__][INFO] - Executing task 2
 (pid=3374) [__main__][INFO] - Executing task 3
 ...
 [HYDRA] Stopping cluster now. (stop_cluster=true)
 [HYDRA] Deleted the cluster (provider.cache_stopped_nodes=false)
-[HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpaa07pq3w.yaml']
+Destroying cluster. Confirm [y/N]: y [automatic, due to --yes]
+...
+No nodes remaining.
 
 ```
 </details>
@@ -150,17 +164,15 @@ If your application is dependent on multiple modules, you can configure `hydra.l
 You can also configure `hydra.launcher.sync_down` to download output from remote cluster if needed. This functionality is built on top of `rsync`, `include` and `exclude` is consistent with how it works in `rsync`.
 
 ```commandline
-
 $  python train.py --multirun random_seed=1,2,3
 [HYDRA] Ray Launcher is launching 3 jobs, 
 [HYDRA]        #0 : random_seed=1
 [HYDRA]        #1 : random_seed=2
 [HYDRA]        #2 : random_seed=3
 [HYDRA] Pickle for jobs: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmptdkye9of/job_spec.pkl
-[HYDRA] Saving RayClusterConf in a temp yaml file: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml.
-[HYDRA] Running command: ['ray', 'up', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmp2reaoixs.yaml']
+Cluster: default
 ...
-[HYDRA] Output: INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8265
+INFO services.py:1172 -- View the Ray dashboard at http://localhost:8265
 (pid=1772) [__main__][INFO] - Start training...
 (pid=1772) [INFO] - Init my model
 (pid=1772) [INFO] - Created dir for checkpoints. dir=checkpoint
@@ -185,31 +197,99 @@ Loaded cached provider configuration
 16-32-25/2/checkpoint/checkpoint_3.pt
 ...
 [HYDRA] Stopping cluster now. (stop_cluster=true)
-[HYDRA] NOT deleting the cluster (provider.cache_stopped_nodes=true)
-[HYDRA] Running command: ['ray', 'down', '-y', '/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpy430k4xr.yaml']
+[HYDRA] Deleted the cluster (provider.cache_stopped_nodes=false)
+Destroying cluster. Confirm [y/N]: y [automatic, due to --yes]
+...
+No nodes remaining.
+
 ```
 </details>
 
 
 ##### Manage Cluster LifeCycle
-You can manage the Ray EC2 cluster lifecycle by configuring the two flags provided by the plugin:
+You can manage the Ray EC2 cluster lifecycle by configuring the flags provided by the plugin:
 
-- Default setting (no need to specify on commandline): Delete cluster after job finishes remotely:
-```commandline
-hydra.launcher.stop_cluster=true
-hydra.launcher.ray.cluster.provider.cache_stopped_nodes=False
-```
+- Default setting (no need to specify on commandline): delete cluster after job finishes remotely:
+  ```commandline
+  hydra.launcher.stop_cluster=true
+  hydra.launcher.ray.cluster.provider.cache_stopped_nodes=false
+  hydra.launcher.teardown_cluster.workers_only=false
+  hydra.launcher.teardown_cluster.keep_min_workers=false
+  ```
 
 - Keep cluster running after jobs finishes remotely
-```commandline
-hydra.launcher.stop_cluster=False
-```
+  ```commandline
+  hydra.launcher.stop_cluster=false
+  ```
 
-- Power off EC2 instances without deletion
-```commandline
-hydra.launcher.ray.cluster.provider.cache_stopped_nodes=true
-```
+- Power off EC2 instances and control node termination using `hydra.launcher.ray.cluster.provider.cache_stopped_nodes`
+and `hydra.launcher.teardown_cluster.workers_only`
 
+  | cache_stopped_nodes | workers_only | behavior |
+  |---------------------|--------------|----------|
+  | false | false | All nodes are terminated |
+  | false | true | Keeps head node running and terminates only worker node |
+  | true | false | Keeps both head node and worker node and stops both of them |
+  | true | true | Keeps both head node and worker node and stops only worker node |
+
+- Keep `hydra.launcher.ray.cluster.min_workers` worker nodes
+and delete the rest of the worker nodes
+  ```commandline
+  hydra.launcher.teardown_cluster.keep_min_workers=true
+  ```
+
+Additionally, you can configure how to create or update the cluster:
+
+- Default config: run setup commands, restart Ray and use
+the config cache if available
+  ```commandline
+  hydra.launcher.create_update_cluster.no_restart=false
+  hydra.launcher.create_update_cluster.restart_only=false
+  hydra.launcher.create_update_cluster.no_config_cache=false
+  ```
+
+- Skip restarting Ray services when updating the cluster config
+  ```commandline
+  hydra.launcher.create_update_cluster.no_restart=true
+  ```
+
+- Skip running setup commands and only restart Ray (cannot be used with
+`hydra.launcher.create_update_cluster.no_restart`)
+  ```commandline
+  hydra.launcher.create_update_cluster.restart_only=true
+  ```
+
+- Fully resolve all environment settings from the cloud provider again
+  ```commandline
+  hydra.launcher.create_update_cluster.no_config_cache=true
+  ```
+
+
+##### Configure Ray Logging
+You can manage Ray specific logging by configuring the flags provided by the plugin:
+
+- Default config: use minimal verbosity and automatically
+detect whether to use pretty-print and color mode
+  ```commandline
+  hydra.launcher.logging.log_style="auto"
+  hydra.launcher.logging.color_mode="auto"
+  hydra.launcher.logging.verbosity=0
+  ```
+
+- Disable pretty-print
+  ```commandline
+  hydra.launcher.logging.log_style="record"
+  ```
+
+- Disable color mode
+  ```commandline
+  hydra.launcher.logging.color_mode="false"
+  ```
+
+- Increase Ray logging verbosity
+  ```commandline
+  hydra.launcher.logging.verbosity=3
+  ```
 
 ### `ray` launcher
 

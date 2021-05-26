@@ -10,7 +10,16 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
+
+# mypy complains about "unused type: ignore comment" on macos
+# workaround adapted from: https://github.com/twisted/twisted/pull/1416
+try:
+    import importlib
+
+    sdk: Any = importlib.import_module("ray.autoscaler.sdk")
+except ModuleNotFoundError as e:
+    raise ImportError(e)
 
 log = logging.getLogger(__name__)
 
@@ -78,18 +87,12 @@ def _run_command(args: Any) -> Tuple[str, str]:
         return out_str, err_str
 
 
-def ray_rsync_down(yaml_path: str, remote_dir: str, local_dir: str) -> None:
-    args = ["ray", "rsync-down"]
-    args += [yaml_path, remote_dir, local_dir]
-    _run_command(args)
-
-
 @contextmanager
-def ray_tmp_dir(yaml_path: str, run_env: str) -> Generator[Any, None, None]:
-    args = ["ray", "exec", f"--run-env={run_env}"]
+def ray_tmp_dir(config: Dict[Any, Any], run_env: str) -> Generator[Any, None, None]:
+    out = sdk.run_on_cluster(
+        config, run_env=run_env, cmd="echo $(mktemp -d)", with_output=True
+    ).decode()
 
-    mktemp_args = args + [yaml_path, "echo $(mktemp -d)"]
-    out, _ = _run_command(mktemp_args)
     tmppath = [
         x
         for x in out.strip().split()
@@ -99,68 +102,32 @@ def ray_tmp_dir(yaml_path: str, run_env: str) -> Generator[Any, None, None]:
     tmp_path = tmppath[0]
     log.info(f"Created temp path on remote server {tmp_path}")
     yield tmp_path
-    rmtemp_args = args + [yaml_path, f"rm -rf {tmp_path}"]
-    _run_command(rmtemp_args)
+    sdk.run_on_cluster(config, run_env=run_env, cmd=f"rm -rf {tmp_path}")
 
 
-def ray_new_dir(yaml_path: str, new_dir: str, run_env: str) -> None:
-    """
-    The output of exec os.getcwd() via ray on remote cluster.
-    """
-    args = ["ray", "exec", f"--run-env={run_env}"]
-    mktemp_args = args + [yaml_path, f"mkdir -p {new_dir}"]
-    _run_command(mktemp_args)
-
-
-def ray_rsync_up(yaml_path: str, local_dir: str, remote_dir: str) -> None:
-    _run_command(["ray", "rsync-up", yaml_path, local_dir, remote_dir])
-
-
-def ray_down(yaml_path: str) -> None:
-    _run_command(["ray", "down", "-y", yaml_path])
-
-
-def ray_up(yaml_path: str) -> None:
-    args = ["ray", "up", "-y", yaml_path]
-    _run_command(args)
-
-
-def ray_exec(yaml_path: str, run_env: str, file_path: str, pickle_path: str) -> None:
-    command = f"python {file_path} {pickle_path}"
-    args = ["ray", "exec", f"--run-env={run_env}"]
-    args += [yaml_path, command]
-    _run_command(args)
-
-
-def _ray_get_head_ip(yaml_path: str) -> str:
-    out, _ = _run_command(["ray", "get-head-ip", yaml_path])
-    return out.strip()
-
-
-def _get_pem(ray_cluster: Any) -> Any:
-    key_name = ray_cluster.auth.get("ssh_private_key")
+def _get_pem(config: Any) -> Any:
+    key_name = config["auth"].get("ssh_private_key")
     if key_name is not None:
         return key_name
-    key_name = ray_cluster.provider.get("key_pair", {}).get("key_name")
+    key_name = config["provider"].get("key_pair", {}).get("key_name")
     if key_name:
         return os.path.expanduser(os.path.expanduser(f"~/.ssh/{key_name}.pem"))
-    region = ray_cluster.provider.region
+    region = config["provider"]["region"]
     key_pair_name = f"ray-autoscaler_{region}"
     return os.path.expanduser(f"~/.ssh/{key_pair_name}.pem")
 
 
 def rsync(
-    yaml_path: str,
+    config: Dict[Any, Any],
     include: List[str],
     exclude: List[str],
     source: str,
     target: str,
     up: bool = True,
 ) -> None:
-    ray_cluster = OmegaConf.load(yaml_path)
-    keypair = _get_pem(ray_cluster)
-    remote_ip = _ray_get_head_ip(yaml_path)
-    user = ray_cluster.auth.ssh_user
+    keypair = _get_pem(config)
+    remote_ip = sdk.get_head_node_ip(config)
+    user = config["auth"]["ssh_user"]
     args = ["rsync", "--rsh", f"ssh -i {keypair}  -o StrictHostKeyChecking=no", "-avz"]
 
     for i in include:

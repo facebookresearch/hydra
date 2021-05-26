@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Generator, Optional
+from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
@@ -19,19 +19,21 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
-from omegaconf import OmegaConf
 from pytest import fixture, mark
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
-    _run_command,
-    ray_down,
-    ray_new_dir,
-    ray_rsync_up,
-    ray_up,
-)
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
     RayAWSLauncher,
 )
+
+# mypy complains about "unused type: ignore comment" on macos
+# workaround adapted from: https://github.com/twisted/twisted/pull/1416
+try:
+    import importlib
+
+    sdk: Any = importlib.import_module("ray.autoscaler.sdk")
+except ModuleNotFoundError as e:
+    raise ImportError(e)
+
 
 temp_remote_dir = "/tmp/hydra_test/"  # nosec
 temp_remote_wheel_dir = "/tmp/wheels/"  # nosec
@@ -54,7 +56,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-074e55e3f371ada90")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0e96acce4111ef8bb")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -91,6 +93,14 @@ pip_lib_skip = [
 common_overrides = [
     f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
     "hydra.launcher.stop_cluster=False",
+    "hydra.launcher.logging.log_style='auto'",
+    "hydra.launcher.logging.color_mode='auto'",
+    "hydra.launcher.logging.verbosity=1",
+    "hydra.launcher.create_update_cluster.no_restart=False",
+    "hydra.launcher.create_update_cluster.restart_only=False",
+    "hydra.launcher.create_update_cluster.no_config_cache=False",
+    "hydra.launcher.teardown_cluster.workers_only=False",
+    "hydra.launcher.teardown_cluster.keep_min_workers=False",
     f"hydra.launcher.ray.cluster.provider.key_pair.key_name=hydra_test_{cluster_name}",
     # Port 443 is blocked for testing instance, as a result, pip install would fail.
     # To get around this, we pre-install all the dependencies on the test AMI.
@@ -140,58 +150,45 @@ def build_core_wheel(tmp_wheel_dir: str) -> str:
 
 def upload_and_install_wheels(
     tmp_wheel_dir: str,
-    yaml: str,
+    connect_config: Dict[Any, Any],
     core_wheel: str,
     plugin_wheel: str,
 ) -> None:
-    ray_rsync_up(yaml, tmp_wheel_dir + "/", temp_remote_wheel_dir)
+    sdk.rsync(
+        connect_config,
+        source=tmp_wheel_dir + "/",
+        target=temp_remote_wheel_dir,
+        down=False,
+    )
     log.info(f"Install hydra-core wheel {core_wheel}")
-    _run_command(
-        [
-            "ray",
-            "exec",
-            yaml,
-            f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
-        ]
+    sdk.run_on_cluster(
+        connect_config,
+        cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
     )
 
     log.info(f"Install plugin wheel {plugin_wheel}")
-    _run_command(
-        [
-            "ray",
-            "exec",
-            yaml,
-            f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
-        ]
+    sdk.run_on_cluster(
+        connect_config,
+        cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
     )
 
 
-def validate_lib_version(yaml: str) -> None:
+def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
     for lib in libs:
         local_version = f"{pkg_resources.get_distribution(lib).version}"
-        out, _ = _run_command(
-            [
-                "ray",
-                "exec",
-                yaml,
-                f"pip show {lib} | grep Version",
-            ]
-        )
+        out = sdk.run_on_cluster(
+            connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
+        ).decode()
         assert local_version in out, f"{lib} version mismatch"
 
     # validate python version
     info = sys.version_info
     local_python = f"{info.major}.{info.minor}.{info.micro}"
-    out, _ = _run_command(
-        [
-            "ray",
-            "exec",
-            yaml,
-            "python --version",
-        ]
-    )
+    out = sdk.run_on_cluster(
+        connect_config, cmd="python --version", with_output=True
+    ).decode()
     remote_python = out.split()[1]
     assert (
         local_python == remote_python
@@ -233,17 +230,19 @@ def manage_cluster() -> Generator[None, None, None]:
         "head_node": ray_nodes_conf,
         "worker_nodes": ray_nodes_conf,
     }
-    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
-        with open(f.name, "w") as file:
-            OmegaConf.save(config=connect_config, f=file.name, resolve=True)
-        temp_yaml = f.name
-        ray_up(temp_yaml)
-        ray_new_dir(temp_yaml, temp_remote_dir, "auto")
-        ray_new_dir(temp_yaml, temp_remote_wheel_dir, "auto")
-        upload_and_install_wheels(tmpdir, temp_yaml, core_wheel, plugin_wheel)
-        validate_lib_version(temp_yaml)
-        yield
-        ray_down(f.name)
+    sdk.create_or_update_cluster(
+        connect_config,
+    )
+    sdk.run_on_cluster(
+        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_dir}"
+    )
+    sdk.run_on_cluster(
+        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_wheel_dir}"
+    )
+    upload_and_install_wheels(tmpdir, connect_config, core_wheel, plugin_wheel)
+    validate_lib_version(connect_config)
+    yield
+    sdk.teardown_cluster(connect_config)
 
 
 launcher_test_suites_overrides = [

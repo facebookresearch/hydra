@@ -9,6 +9,9 @@ from omegaconf import DictConfig
 
 from hydra_plugins.hydra_ray_launcher._config import (  # type: ignore
     RayAWSConf,
+    RayCreateOrUpdateClusterConf,
+    RayLoggingConf,
+    RayTeardownClusterConf,
     RsyncConf,
 )
 
@@ -23,11 +26,17 @@ class RayAWSLauncher(Launcher):
         stop_cluster: bool,
         sync_up: RsyncConf,
         sync_down: RsyncConf,
+        logging: RayLoggingConf,
+        create_update_cluster: RayCreateOrUpdateClusterConf,
+        teardown_cluster: RayTeardownClusterConf,
     ) -> None:
         self.ray_cfg = ray
         self.stop_cluster = stop_cluster
         self.sync_up = sync_up
         self.sync_down = sync_down
+        self.logging = logging
+        self.create_update_cluster = create_update_cluster
+        self.teardown_cluster = teardown_cluster
         self.config: Optional[DictConfig] = None
         self.hydra_context: Optional[HydraContext] = None
         self.task_function: Optional[TaskFunction] = None
