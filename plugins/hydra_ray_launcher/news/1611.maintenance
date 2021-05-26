@@ -1,1 +1,1 @@
-Remove code utilizing the Ray CLI
+Use autoscaler sdk instead of the CLI
