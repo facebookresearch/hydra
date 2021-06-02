@@ -10,7 +10,7 @@ from .config import OptimConf
 
 
 class NevergradSweeper(Sweeper):
-    """Class to interface with the Ax Platform"""
+    """Class to interface with Nevergrad"""
 
     def __init__(self, optim: OptimConf, parametrization: Optional[DictConfig]):
         from ._impl import NevergradSweeperImpl
