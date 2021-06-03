@@ -177,7 +177,7 @@ server:
   port: 8080
 ```
 
-To run all the experiment, use the [glob](../../advanced/override_grammar/extended#glob-choice-sweep) syntax:
+To run all the experiments, use the [glob](../advanced/override_grammar/extended.md#glob-choice-sweep) syntax:
 ```text title="$ python my_app.py --multirun '+experiment=glob(*)'"
 [HYDRA]        #0 : +experiment=aplite
 ...

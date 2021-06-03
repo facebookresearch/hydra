@@ -58,7 +58,7 @@ stop_after_enqueue: false
 wait_polling: 1.0
 ```
 
-Further descriptions on the variables can be found in the plugin config file, defined <GithubLink to="plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py">here</GithubLink>. There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
+Further descriptions on the variables can be found in the plugin config file, defined <GithubLink to="plugins/hydra_rq_launcher/hydra_plugins/hydra_rq_launcher/config.py">here</GithubLink>. There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
 The plugin is using environment variables to store Redis connection information. The environment variables `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`, and `REDIS_PASSWORD`, are used for the host address, port, database, and password of the server, respectively. Support for Redis SSL connections is controlled through `REDIS_SSL` and `REDIS_SSL_CA_CERTS`; see [redis-py](https://github.com/andymccurdy/redis-py#ssl-connections) documentation.
 

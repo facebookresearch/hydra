@@ -79,5 +79,5 @@ Config files that are not part of a config group will always be loaded. They can
 Prefer using a config group.
 
 :::info
-For more information about the Defaults List see [Reference Manual/The Defaults List](../../../advanced/defaults_list).
+For more information about the Defaults List see [Reference Manual/The Defaults List](../../../advanced/defaults_list.md).
 :::

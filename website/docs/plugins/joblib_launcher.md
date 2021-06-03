@@ -45,7 +45,7 @@ temp_folder: null
 max_nbytes: null
 mmap_mode: r
 ```
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
 See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details about the parameters above.
 
