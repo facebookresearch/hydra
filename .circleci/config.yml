@@ -98,7 +98,7 @@ commands:
             conda activate hydra
             pip install nox dataclasses pywin32==300 --progress-bar off
             curl.exe -o pywin32_postinstall.py https://raw.githubusercontent.com/mhammond/pywin32/master/pywin32_postinstall.py
-            python.exe pywin32_postinstall.py
+            python.exe pywin32_postinstall.py -install
       - save_cache:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
           paths:
