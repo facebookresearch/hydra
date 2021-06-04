@@ -1,1 +1,1 @@
-Add fault tolerance in nevergrad sweeper through `max_failure_rate` parameter
+Add fault tolerance via `max_failure_rate` parameter
