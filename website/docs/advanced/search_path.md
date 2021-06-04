@@ -145,7 +145,7 @@ python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
 
 #### Overriding `--config-dir` from the command line
 This is a less flexible alternative to `hydra.searchpath`. 
-See this [page](/docs/advanced/hydra-command-line-flags) for more info.
+See this [page](hydra-command-line-flags.md) for more info.
 
 
 #### Creating a `SearchPathPlugin`

@@ -39,7 +39,7 @@ class User:
 **Output Config**: A config composed from the [Input Configs](#input-configs) and [Overrides](#overrides) by **@hydra.main()**, or the Compose API.
 
 ## Overrides
-[Overrides](override_grammar/basic) are strings that can be used to manipulate the config composition process.
+[Overrides](override_grammar/basic.md) are strings that can be used to manipulate the config composition process.
 This includes updating, adding and deleting config values and [Defaults List](#defaults-list) options.  
 
 Overrides can be used in the command line and in the [Compose API](compose_api.md).  
