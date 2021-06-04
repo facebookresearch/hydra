@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 
 import nox
+import system
 from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
@@ -473,6 +474,9 @@ def test_jupyter_notebooks(session):
         )
 
     session.install("jupyter", "nbval", "pyzmq")
+    if sys.platform.system() == "Windows":
+        session.install("pywin32=300")
+
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
