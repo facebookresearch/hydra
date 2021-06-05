@@ -474,7 +474,7 @@ def test_jupyter_notebooks(session):
 
     session.install("jupyter", "nbval", "pyzmq")
     if platform.system() == "Windows":
-        session.install("pywin32==300")
+        session.install("pywin32==225")
 
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
