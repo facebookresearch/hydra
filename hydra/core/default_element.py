@@ -235,7 +235,11 @@ class InputDefault:
             assert isinstance(ret, str)
             return ret
         except InterpolationResolutionError:
-            options = [x for x in known_choices.keys() if x != "defaults"]
+            options = [
+                x
+                for x in known_choices.keys()
+                if x != "defaults" and isinstance(x, str)
+            ]
             if len(options) > 0:
                 options_str = ", ".join(options)
                 msg = f"Error resolving interpolation '{val}', possible interpolation keys: {options_str}"
