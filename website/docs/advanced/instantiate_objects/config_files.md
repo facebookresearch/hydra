@@ -51,7 +51,6 @@ Config files:
 <div className="col col--6">
 
 ```yaml title="db/mysql.yaml"
-# @package _group_
 _target_: my_app.MySQLConnection
 host: localhost
 user: root
@@ -64,7 +63,6 @@ password: 1234
 <div className="col col--6">
 
 ```yaml title="db/postgresql.yaml"
-# @package _group_
 _target_: my_app.PostgreSQLConnection
 host: localhost
 user: root

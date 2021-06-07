@@ -23,7 +23,6 @@ defaults:
 ```
 
 ```yaml title="hydra/job_logging/custom.yaml"
-# @package _group_
 version: 1
 formatters:
   simple:

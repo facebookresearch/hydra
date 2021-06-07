@@ -43,8 +43,6 @@ Use --hydra-help to view Hydra specific help
 
 This output is generated from the following config group option (selected in `config.yaml` to be used by default): 
 ```yaml title="hydra/help/my_app_help.yaml"
-# @package _group_
-
 # App name, override to match the name your app is known by
 app_name: AwesomeApp
 
