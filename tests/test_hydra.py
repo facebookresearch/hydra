@@ -496,16 +496,22 @@ def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -
     assert_text_same(result, expected)
 
 
-def test_resolve_flag_without_cfg_flag(tmpdir: Path) -> None:
+@mark.parametrize(
+    "other_flag",
+    [None, "--run", "--multirun", "--info", "--shell-completion", "--hydra-help"],
+)
+def test_resolve_flag_errmsg(tmpdir: Path, other_flag: Optional[str]) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
         "--resolve",
     ]
+    if other_flag is not None:
+        cmd.append(other_flag)
 
     err = run_with_error(cmd)
     assert normalize_newlines(err).endswith(
-        "ValueError: The --resolve flag can only be used in conjunction with --cfg"
+        "ValueError: The --resolve flag can only be used in conjunction with --cfg or --help"
     )
 
 
@@ -567,25 +573,25 @@ def test_sweep_complex_defaults(
 
 
 @mark.parametrize(
-    "script, flag, overrides,expected",
+    "script, flags, overrides,expected",
     [
         param(
             "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
-            "--help",
+            ["--help"],
             ["hydra.help.template=foo"],
             "foo\n",
             id="simple_cli_app",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "--help",
+            ["--help"],
             ["hydra.help.template=foo"],
             "foo\n",
             id="overriding_help_template",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "--help",
+            ["--help"],
             ["hydra.help.template=$CONFIG", "db.user=root"],
             dedent(
                 """\
@@ -599,7 +605,35 @@ def test_sweep_complex_defaults(
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "--help",
+            ["--help", "--resolve"],
+            ["hydra.help.template=$CONFIG", "db.user=${db.driver}"],
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: mysql
+                  password: secret
+                """
+            ),
+            id="overriding_help_template:$CONFIG,interp,yes_resolve",
+        ),
+        param(
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+            ["--help"],
+            ["hydra.help.template=$CONFIG", "db.user=${db.driver}"],
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: ${{db.driver}}
+                  password: secret
+                """
+            ),
+            id="overriding_help_template:$CONFIG,interp,no_resolve",
+        ),
+        param(
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+            ["--help"],
             ["hydra.help.template=$FLAGS_HELP"],
             dedent(
                 """\
@@ -642,21 +676,21 @@ for details.
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
-            "--help",
+            ["--help"],
             ["hydra.help.template=$APP_CONFIG_GROUPS"],
             "db: mysql, postgresql",
             id="overriding_help_template:$APP_CONFIG_GROUPS",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "--hydra-help",
+            ["--hydra-help"],
             ["hydra.hydra_help.template=foo"],
             "foo\n",
             id="overriding_hydra_help_template",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-            "--hydra-help",
+            ["--hydra-help"],
             ["hydra.hydra_help.template=$FLAGS_HELP"],
             dedent(
                 """\
@@ -700,11 +734,11 @@ for details.
     ],
 )
 def test_help(
-    tmpdir: Path, script: str, flag: str, overrides: List[str], expected: Any
+    tmpdir: Path, script: str, flags: List[str], overrides: List[str], expected: Any
 ) -> None:
     cmd = [script, "hydra.run.dir=" + str(tmpdir)]
     cmd.extend(overrides)
-    cmd.append(flag)
+    cmd.extend(flags)
     result, _err = run_python_script(cmd)
     assert_text_same(result, expected.format(script=script))
 
