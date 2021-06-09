@@ -615,3 +615,32 @@ def test_initialize_without_config_path(tmpdir: Path) -> None:
     with warns(expected_warning=UserWarning, match=re.escape(expected)):
         with initialize():
             pass
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+@mark.parametrize(
+    ("overrides", "expected"),
+    [
+        param(
+            ["hydra.hydra_logging=null"],
+            raises(
+                ConfigCompositionException,
+                match="Error merging override hydra.hydra_logging=null",
+            ),
+            id="hydra.hydra_logging=null",
+        ),
+        param(
+            ["hydra.job_logging=null"],
+            raises(
+                ConfigCompositionException,
+                match="Error merging override hydra.job_logging=null",
+            ),
+            id="hydra.job_logging=null",
+        ),
+    ],
+)
+def test_error_assigning_null_to_logging_config(
+    hydra_restore_singletons: Any, overrides: List[str], expected: Any
+) -> None:
+    with expected:
+        compose(overrides=overrides)
