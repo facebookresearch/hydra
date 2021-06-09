@@ -1368,6 +1368,15 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
     )
 
 
+def test_app_with_unicode_config(tmpdir: Path) -> None:
+    cmd = [
+        "tests/test_apps/app_with_unicode_in_config/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    out, _ = run_python_script(cmd)
+    assert out == "config: 数据库"
+
+
 @mark.parametrize(
     "overrides,expected",
     [
