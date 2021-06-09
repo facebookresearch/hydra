@@ -73,7 +73,7 @@ def configure_log(
 
 def _save_config(cfg: DictConfig, filename: str, output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    with open(str(output_dir / filename), "w") as file:
+    with open(str(output_dir / filename), "w", encoding="utf-8") as file:
         file.write(OmegaConf.to_yaml(cfg))
 
 
