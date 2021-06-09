@@ -15,7 +15,7 @@ import Script from '@site/src/components/Script.jsx';
 
 
 ### Install tab completion
-Get the exact command to install the completion from `--hydra-help`.
+Get the exact command to install the completion from `python <your-hydra-main> --hydra-help`.
 Currently, Bash and Fish are supported. We are relying on the community to implement completion plugins for additional shells.
 
 Fish support requires version >= 3.1.2.
