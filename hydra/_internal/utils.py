@@ -339,13 +339,17 @@ def _run_hydra(
         if args.help:
             hydra.app_help(config_name=config_name, args_parser=args_parser, args=args)
             sys.exit(0)
+        has_show_cfg = args.cfg is not None
+        if args.resolve and (not has_show_cfg and not args.help):
+            raise ValueError(
+                "The --resolve flag can only be used in conjunction with --cfg or --help"
+            )
         if args.hydra_help:
             hydra.hydra_help(
                 config_name=config_name, args_parser=args_parser, args=args
             )
             sys.exit(0)
 
-        has_show_cfg = args.cfg is not None
         num_commands = (
             args.run
             + has_show_cfg
@@ -359,10 +363,6 @@ def _run_hydra(
             )
         if num_commands == 0:
             args.run = True
-        if args.resolve and not has_show_cfg:
-            raise ValueError(
-                "The --resolve flag can only be used in conjunction with --cfg"
-            )
         if args.run:
             run_and_report(
                 lambda: hydra.run(

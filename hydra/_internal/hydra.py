@@ -300,7 +300,11 @@ class Hydra:
         return s
 
     def get_help(
-        self, help_cfg: DictConfig, cfg: DictConfig, args_parser: ArgumentParser
+        self,
+        help_cfg: DictConfig,
+        cfg: DictConfig,
+        args_parser: ArgumentParser,
+        resolve: bool,
     ) -> str:
         s = string.Template(help_cfg.template)
 
@@ -314,7 +318,7 @@ class Hydra:
             FLAGS_HELP=self.format_args_help(args_parser),
             HYDRA_CONFIG_GROUPS=self.format_config_groups(is_hydra_group),
             APP_CONFIG_GROUPS=self.format_config_groups(is_not_hydra_group),
-            CONFIG=OmegaConf.to_yaml(cfg, resolve=False),
+            CONFIG=OmegaConf.to_yaml(cfg, resolve=resolve),
         )
         return help_text
 
@@ -329,7 +333,7 @@ class Hydra:
         )
         help_cfg = cfg.hydra.hydra_help
         cfg = self.get_sanitized_hydra_cfg(cfg)
-        help_text = self.get_help(help_cfg, cfg, args_parser)
+        help_text = self.get_help(help_cfg, cfg, args_parser, resolve=False)
         print(help_text)
 
     def app_help(
@@ -346,7 +350,9 @@ class Hydra:
 
         with flag_override(clean_cfg, ["struct", "readonly"], [False, False]):
             del clean_cfg["hydra"]
-        help_text = self.get_help(help_cfg, clean_cfg, args_parser)
+        help_text = self.get_help(
+            help_cfg, clean_cfg, args_parser, resolve=args.resolve
+        )
         print(help_text)
 
     @staticmethod
