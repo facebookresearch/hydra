@@ -1,3 +1,19 @@
+1.1.5 (2021-06-10)
+==================
+
+### Features
+
+- Add support for SLURM parameters `cpus_per_gpu`, `gpus_per_task`, `mem_per_gpu` and `mem_per_cpu` ([#1366](https://github.com/facebookresearch/hydra/issues/1366))
+
+
+1.1.5 (2021-06-10)
+==================
+
+### Features
+
+- Add support for SLURM parameters `cpus_per_gpu`, `gpus_per_task`, `mem_per_gpu` and `mem_per_cpu` ([#1366](https://github.com/facebookresearch/hydra/issues/1366))
+
+
 1.1.1 (2021-03-30)
 ==================
 
