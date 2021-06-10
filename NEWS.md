@@ -1,3 +1,29 @@
+1.1.0 (2021-06-09)
+==================
+
+### Features
+
+- Add Callback API ([#1402](https://github.com/facebookresearch/hydra/issues/1402))
+- Add support for resolving interpolations in the config printed by `--help` via the `--resolve` flag. ([#1482](https://github.com/facebookresearch/hydra/issues/1482))
+
+### API Change (Renames, deprecations and removals)
+
+- Support partial failures in MULTIRUN mode ([#1377](https://github.com/facebookresearch/hydra/issues/1377))
+- Add `HydraContext` to `run_job` and Launcher/Sweeper's `setup` ([#1498](https://github.com/facebookresearch/hydra/issues/1498))
+
+### Bug Fixes
+
+- `--cfg=hydra` now works for read-only config ([#1461](https://github.com/facebookresearch/hydra/issues/1461))
+- Change hydra.job_logging and hydra.hydra_logging to be non-optional ([#1656](https://github.com/facebookresearch/hydra/issues/1656))
+- Unicode in config now works on Windows ([#1659](https://github.com/facebookresearch/hydra/issues/1659))
+
+### Improved Documentation
+
+- Documentation updates for configuring search path ([#1449](https://github.com/facebookresearch/hydra/issues/1449))
+- Documentation for `hydra.callbacks` ([#1526](https://github.com/facebookresearch/hydra/issues/1526))
+- Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
+
+
 1.1.0.rc1 (2021-05-13)
 ======================
 This is the biggest Hydra release yet.  
