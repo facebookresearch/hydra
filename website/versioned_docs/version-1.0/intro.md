@@ -26,8 +26,8 @@ Use the version switcher in the top bar to switch between documentation versions
  
 |        |          Version          |  Release notes                                                                      | Python Versions    |
 | -------|---------------------------|-------------------------------------------------------------------------------------| -------------------|
-|        | 1.1 (Release candidate)   | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.rc1)  | **3.6 - 3.9**      |
-| &#9658;| 1.0 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)   | **3.6 - 3.8**      |
+|        | 1.1 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0)      | **3.6 - 3.9**      |
+| &#9658;| 1.0                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)   | **3.6 - 3.8**      |
 |        | 0.11                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)      | **2.7, 3.5 - 3.8** |
 
 ## Quick start guide
