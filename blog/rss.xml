@@ -4,9 +4,16 @@
         <title>Hydra Blog</title>
         <link>https://hydra.cc/blog</link>
         <description>Hydra Blog</description>
-        <lastBuildDate>Tue, 22 Dec 2020 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 13 Jun 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Hydra 1.1]]></title>
+            <link>https://hydra.cc/blog/2021/06/13/Hydra_1.1</link>
+            <guid>Hydra 1.1</guid>
+            <pubDate>Sun, 13 Jun 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[After many months and a lot of hard work by many people, Hydra 1.1 is finally out!]]></description>
+        </item>
         <item>
             <title><![CDATA[Hydra Ray Launcher]]></title>
             <link>https://hydra.cc/blog/2020/12/22/Hydra_Ray_Launcher</link>

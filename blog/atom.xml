@@ -2,11 +2,18 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hydra.cc/blog</id>
     <title>Hydra Blog</title>
-    <updated>2020-12-22T00:00:00.000Z</updated>
+    <updated>2021-06-13T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hydra.cc/blog"/>
     <subtitle>Hydra Blog</subtitle>
     <icon>https://hydra.cc/img/Hydra-head.svg</icon>
+    <entry>
+        <title type="html"><![CDATA[Hydra 1.1]]></title>
+        <id>Hydra 1.1</id>
+        <link href="https://hydra.cc/blog/2021/06/13/Hydra_1.1"/>
+        <updated>2021-06-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[After many months and a lot of hard work by many people, Hydra 1.1 is finally out!]]></summary>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hydra Ray Launcher]]></title>
         <id>Hydra Ray Launcher</id>
