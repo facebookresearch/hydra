@@ -102,6 +102,7 @@ num=range(5)                          # 0,1,2,3,4
 num=range(0,5)                        # 0,1,2,3,4
 num=range(0,5,2)                      # 0,2,4
 num=range(0,10,3.3)                   # 0.0,3.3,6.6,9.9
+num=range(-5,step=-1)                 # 0,-1,-2,-3,-4
 ```
 
 ### Interval sweep
