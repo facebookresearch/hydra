@@ -1,31 +1,5 @@
 1.1.0 (2021-06-09)
 ==================
-
-### Features
-
-- Add Callback API ([#1402](https://github.com/facebookresearch/hydra/issues/1402))
-- Add support for resolving interpolations in the config printed by `--help` via the `--resolve` flag. ([#1482](https://github.com/facebookresearch/hydra/issues/1482))
-
-### API Change (Renames, deprecations and removals)
-
-- Support partial failures in MULTIRUN mode ([#1377](https://github.com/facebookresearch/hydra/issues/1377))
-- Add `HydraContext` to `run_job` and Launcher/Sweeper's `setup` ([#1498](https://github.com/facebookresearch/hydra/issues/1498))
-
-### Bug Fixes
-
-- `--cfg=hydra` now works for read-only config ([#1461](https://github.com/facebookresearch/hydra/issues/1461))
-- Change hydra.job_logging and hydra.hydra_logging to be non-optional ([#1656](https://github.com/facebookresearch/hydra/issues/1656))
-- Unicode in config now works on Windows ([#1659](https://github.com/facebookresearch/hydra/issues/1659))
-
-### Improved Documentation
-
-- Documentation updates for configuring search path ([#1449](https://github.com/facebookresearch/hydra/issues/1449))
-- Documentation for `hydra.callbacks` ([#1526](https://github.com/facebookresearch/hydra/issues/1526))
-- Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
-
-
-1.1.0.rc1 (2021-05-13)
-======================
 This is the biggest Hydra release yet.  
 #### Highlights
 - OmegaConf 2.1 supports relative interpolations, nested interpolations, more powerful resolvers and better compatibility with plain Python dict and list.
@@ -41,10 +15,11 @@ Please check the API changes and deprecation sections in these release notes and
 - Support for Python 3.9. ([#1062](https://github.com/facebookresearch/hydra/issues/1062))
 - Improve performance of config composition in a benchmark by 64% ([#1328](https://github.com/facebookresearch/hydra/issues/1328))
 - Allow `@`, `$` and `?` symbols in unquoted values in overrides ([#1074](https://github.com/facebookresearch/hydra/issues/1074), [#1437](https://github.com/facebookresearch/hydra/issues/1437), [#1597](https://github.com/facebookresearch/hydra/issues/1597))
-- Add a --resolve flag that can be used with the --cfg flag to resolve interpolations before the config is printed. ([#1585](https://github.com/facebookresearch/hydra/issues/1585))
+- Add a --resolve flag that can be used with the --cfg and --help flags to resolve interpolations before the config is printed. ([#1585](https://github.com/facebookresearch/hydra/issues/1585),[#1482](https://github.com/facebookresearch/hydra/issues/1482))
 - It is now possible to disable Hydra's logging configuration ([#1130](https://github.com/facebookresearch/hydra/issues/1130))
 - Support for Zsh tab completion ([#347](https://github.com/facebookresearch/hydra/issues/347))
 - Support for force-add of config values via `++key=value` (force-add overrides if the value exists and adds it otherwise) ([#1049](https://github.com/facebookresearch/hydra/issues/1049))
+- New experimental Callback API ([#1402](https://github.com/facebookresearch/hydra/issues/1402))
 
 #### Config composition enhancements
 - Support for Defaults List in any config (Recursive relative defaults) ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
@@ -66,6 +41,8 @@ Please check the API changes and deprecation sections in these release notes and
 - Passing a config name as config_path to `@hydra.main` is now an error ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
 - Promote `hydra.experimental.{compose,initialize,initialize_config_dir,initialize_config_module}` out from the `hydra.experimental` module to the hydra module. ([#1030](https://github.com/facebookresearch/hydra/issues/1030))
 - The override grammar now requires that, in quoted strings, any sequence of \ preceding a quote (either an escaped quote, or the closing quote) must be escaped ([#1600](https://github.com/facebookresearch/hydra/issues/1600))
+- Support partial failures in MULTIRUN mode ([#1377](https://github.com/facebookresearch/hydra/issues/1377))
+- Add `HydraContext` to `run_job` and Launcher/Sweeper's `setup` ([#1498](https://github.com/facebookresearch/hydra/issues/1498))
 #### Instantiate changes
 - Instantiate is now recursive by default, use `_recursive_=False` to disable recursive instantiation. ([#566](https://github.com/facebookresearch/hydra/issues/566))
 - Deprecated TargetConf, you should no longer be extending or annotating with it ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
@@ -84,6 +61,9 @@ Please check the API changes and deprecation sections in these release notes and
 - Fixed a bug where tab completion did not work if the Defaults List had a missing (???) item. ([#1381](https://github.com/facebookresearch/hydra/issues/1381))
 - Fix `+` overrides to properly insert new values into Structured Configs. ([#1515](https://github.com/facebookresearch/hydra/issues/1515))
 - Fix edge cases where using the command line to set a key to a value containing a string ending with a backslash could crash ([#1600](https://github.com/facebookresearch/hydra/issues/1600))
+- `--cfg=hydra` now works for read-only config ([#1461](https://github.com/facebookresearch/hydra/issues/1461))
+- Change hydra.job_logging and hydra.hydra_logging to be non-optional ([#1656](https://github.com/facebookresearch/hydra/issues/1656))
+- Configs with unicode characters are now working on Windows ([#1659](https://github.com/facebookresearch/hydra/issues/1659))
 
 ### Plugins
 
@@ -95,6 +75,9 @@ Please check the API changes and deprecation sections in these release notes and
 - New [Extending Configs](https://hydra.cc/docs/next/patterns/extending_configs/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
 - Major updates to the [Packages](https://hydra.cc/docs/next/advanced/overriding_packages) page ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
 - New [Configuring Experiments](https://hydra.cc/docs/next/patterns/configuring_experiments/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- Documentation updates for configuring search path ([#1449](https://github.com/facebookresearch/hydra/issues/1449))
+- Documentation for `hydra.callbacks` ([#1526](https://github.com/facebookresearch/hydra/issues/1526))
+- Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
 
 
 1.0.6 (2021-01-29)
