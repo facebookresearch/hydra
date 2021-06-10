@@ -184,7 +184,9 @@ def choice(
 
 
 def range(
-    start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
+    start: Union[int, float],
+    stop: Optional[Union[int, float]] = None,
+    step: Union[int, float] = 1,
 ) -> RangeSweep:
     """
     Range is defines a sweeep over a range of integer or floating-point values.
@@ -193,6 +195,9 @@ def range(
     For a negative step, the contents of the range are still determined by the formula
      r[i] = start + step*i, but the constraints are i >= 0 and r[i] > stop.
     """
+    if stop is None:
+        stop = start
+        start = 0
     return RangeSweep(start=start, stop=stop, step=step)
 
 

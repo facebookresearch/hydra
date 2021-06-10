@@ -46,6 +46,7 @@ from hydra.test_utils.test_utils import assert_regex_match, run_process
             id="batches_of_2",
         ),
         param(["a=range(0,3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range"),
+        param(["a=range(3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range_no_start"),
     ],
 )
 def test_split(
