@@ -71,8 +71,8 @@ def my_app(cfg: DictConfig) -> None:
     # )
 
     # non recursive instantiation
-    optimizer = instantiate(cfg.trainer, _recursive_=False)
-    print(optimizer)
+    trainer = instantiate(cfg.trainer, _recursive_=False)
+    print(trainer)
     # Trainer(
     #     optimizer={'_target_': 'my_app.Optimizer', 'algo': 'SGD', 'lr': 0.01},
     #     dataset={'_target_': 'my_app.Dataset', 'name': 'Imagenet', 'path': '/datasets/imagenet'}
