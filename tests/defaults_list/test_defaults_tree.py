@@ -1502,6 +1502,24 @@ def test_placeholder(
             id="interpolation_in_nested",
         ),
         param(
+            "interpolation_resolver_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_resolver_in_nested"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="resolver"),
+                        children=[
+                            GroupDefault(group="group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_resolver_in_nested",
+        ),
+        param(
             "interpolation_config_default",
             [],
             DefaultsTreeNode(

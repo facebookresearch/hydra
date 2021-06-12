@@ -218,7 +218,7 @@ e.g. If *db* is overridden to *sqlite*, *combination_specific_config* will becom
 
  - Defaults List interpolation is only supported in the primary config.
  - The subtree expanded by an Interpolated Config may not contain overrides.
- - Interpolation Keys in the Defaults List cannot reference values in the Final Config Object (it does not yet).
+ - Interpolation Keys in the Defaults List cannot reference values in the Final Config Object (it does not exist yet).
 
 See [Patterns/Specializing Configs](/patterns/specializing_config.md) for more information.
 
