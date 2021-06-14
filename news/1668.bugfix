@@ -1,0 +1,1 @@
+Allow Defaults List interpolation in nested configs and document that the interpolation keys must be absolute
