@@ -1,3 +1,2 @@
 defaults:
-  - group2: file1
-  - group3: ${group2}
+  - group2: ${group1}_ext
