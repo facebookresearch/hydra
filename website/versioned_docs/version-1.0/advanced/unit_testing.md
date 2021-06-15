@@ -7,7 +7,7 @@ Use `initialize()`, `initialize_config_module()` or `initialize_config_dir()` in
 to compose configs inside your unit tests.  
 Be sure to read the [Compose API documentation](../experimental/hydra_compose.md).
 
-The Hydra example application contains c complete [example test](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/advanced/hydra_app_example/tests/test_example.py).
+The Hydra example application contains complete [example test](https://github.com/facebookresearch/hydra/tree/1.0_branch/examples/advanced/hydra_app_example/tests/test_example.py).
 
 ```python title="Testing example with initialize()"
 from hydra.experimental import initialize, compose

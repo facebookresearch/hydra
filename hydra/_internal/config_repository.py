@@ -205,6 +205,7 @@ class ConfigRepository(IConfigRepository):
                     raise ValueError(f"In {config_path}: Missing group name in {item}")
 
                 key = keys[0]
+                assert isinstance(key, str)
                 config_group, package, _package2 = self._split_group(key)
                 keywords = ConfigRepository.Keywords()
                 self._extract_keywords_from_config_group(config_group, keywords)

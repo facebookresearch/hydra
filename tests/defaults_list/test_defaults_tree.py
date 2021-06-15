@@ -1493,13 +1493,38 @@ def test_placeholder(
         param(
             "interpolation_in_nested",
             [],
-            raises(
-                ConfigCompositionException,
-                match=re.escape(
-                    "In 'group1/interpolation': Defaults List interpolation is only supported in the primary config"
-                ),
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_in_nested"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="interpolation"),
+                        children=[
+                            GroupDefault(group="group2", value="interpolation_ext"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
             ),
             id="interpolation_in_nested",
+        ),
+        param(
+            "interpolation_resolver_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_resolver_in_nested"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="resolver"),
+                        children=[
+                            GroupDefault(group="group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_resolver_in_nested",
         ),
         param(
             "interpolation_config_default",

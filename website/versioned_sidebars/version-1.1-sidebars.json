@@ -1,0 +1,446 @@
+{
+  "version-1.1/docs": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "About",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/intro"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Tutorials",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/tutorials/intro"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Basic Tutorial",
+          "items": [
+            {
+              "collapsed": true,
+              "type": "category",
+              "label": "Your first Hydra app",
+              "items": [
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/simple_cli"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/config_file"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/using_config"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/config_groups"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/defaults"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/your_first_app/composition"
+                }
+              ]
+            },
+            {
+              "collapsed": true,
+              "type": "category",
+              "label": "Running your Hydra app",
+              "items": [
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/running_your_app/multi-run"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/running_your_app/working_directory"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/running_your_app/logging"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/running_your_app/debugging"
+                },
+                {
+                  "type": "doc",
+                  "id": "version-1.1/tutorials/basic/running_your_app/tab_completion"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Structured Configs Tutorial",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/intro"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/minimal_example"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/hierarchical_static_config"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/config_groups"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/defaults"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/schema"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/config_store"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Common Patterns",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/extending_configs"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/configuring_experiments"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/configuring_plugins"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/select_multiple_configs_from_config_group"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/specializing_config"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/patterns/write_protect_config_node"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Configuring Hydra",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/configure_hydra/intro"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/configure_hydra/job"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/configure_hydra/logging"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/configure_hydra/workdir"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/configure_hydra/app_help"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Available Plugins",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/plugins/colorlog"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Launchers",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/joblib_launcher"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/ray_launcher"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/rq_launcher"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/submitit_launcher"
+            }
+          ]
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Sweepers",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/ax_sweeper"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/nevergrad_sweeper"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/plugins/optuna_sweeper"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Reference manual",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/terminology"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/hydra-command-line-flags"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Override grammar",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/override_grammar/basic"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/override_grammar/extended"
+            }
+          ]
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/defaults_list"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/overriding_packages"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/search_path"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Instantiating Objects",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/instantiate_objects/overview"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/instantiate_objects/config_files"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/instantiate_objects/structured_config"
+            }
+          ]
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/compose_api"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/search_path"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "Plugins",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/plugins/overview"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/advanced/plugins/develop"
+            }
+          ]
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/app_packaging"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/jupyter_notebooks"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/advanced/unit_testing"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Experimental",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/experimental/intro"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/experimental/callbacks"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Developer Guide",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/development/overview"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/development/testing"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/development/style_guide"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/development/documentation"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.1/development/release"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Upgrade Guide",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.1/upgrades/intro"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "1.0 to 1.1",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/default_composition_order"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/defaults_list_override"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/defaults_list_interpolation"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/changes_to_package_header"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/1.0_to_1.1/automatic_schema_matching"
+            }
+          ]
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "0.11 to 1.0",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/0.11_to_1.0/config_path_changes"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/0.11_to_1.0/adding_a_package_directive"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.1/upgrades/0.11_to_1.0/object_instantiation_changes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "FB Only",
+      "items": []
+    }
+  ]
+}

@@ -1,3 +1,27 @@
+1.1.0 (2021-06-10)
+==================
+
+### Features
+
+- Add support for SSL Redis connections in the RQ launcher plugin ([#1586](https://github.com/facebookresearch/hydra/issues/1586))
+
+
+1.1.0 (2021-06-10)
+==================
+
+### Features
+
+- Add support for SSL Redis connections in the RQ launcher plugin ([#1586](https://github.com/facebookresearch/hydra/issues/1586))
+
+
+1.1.0 (2021-06-10)
+==================
+
+### Features
+
+- Add support for SSL Redis connections in the RQ launcher plugin ([#1586](https://github.com/facebookresearch/hydra/issues/1586))
+
+
 1.0.2 (2021-03-30)
 ==================
 

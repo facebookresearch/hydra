@@ -473,6 +473,11 @@ def test_jupyter_notebooks(session):
         )
 
     session.install("jupyter", "nbval", "pyzmq")
+    if platform.system() == "Windows":
+        # Newer versions of pywin32 are causing CI issues on Windows.
+        # see https://github.com/mhammond/pywin32/issues/1709
+        session.install("pywin32==225")
+
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
