@@ -2,7 +2,7 @@ version: '5.5'
 
 services:
   tip-generator:
-    container_name: vue-3-todo
+    container_name: vue-5-todo
     build:
       context: .
       dockerfile: Dockerfile
