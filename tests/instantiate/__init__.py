@@ -55,6 +55,11 @@ class BClass:
 
 
 @dataclass
+class TargetInParamsClass:
+    target: Any
+
+
+@dataclass
 class UntypedPassthroughConf:
     _target_: str = "tests.instantiate.UntypedPassthroughClass"
     a: Any = MISSING

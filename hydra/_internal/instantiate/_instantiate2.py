@@ -45,7 +45,7 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
-def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
+def _call_target(_target_: Callable, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(*args, **kwargs)
@@ -59,10 +59,10 @@ def _call_target(target: Callable, *args, **kwargs) -> Any:  # type: ignore
             if OmegaConf.is_config(v):
                 v._set_parent(None)
 
-        return target(*args, **kwargs)
+        return _target_(*args, **kwargs)
     except Exception as e:
         raise type(e)(
-            f"Error instantiating '{_convert_target_to_string(target)}' : {e}"
+            f"Error instantiating '{_convert_target_to_string(_target_)}' : {e}"
         ).with_traceback(sys.exc_info()[2])
 
 
@@ -237,7 +237,7 @@ def instantiate_node(
     elif OmegaConf.is_dict(node):
         exclude_keys = set({"_target_", "_convert_", "_recursive_"})
         if _is_target(node):
-            target = _resolve_target(node.get(_Keys.TARGET))
+            _target_ = _resolve_target(node.get(_Keys.TARGET))
             kwargs = {}
             for key, value in node.items():
                 if key not in exclude_keys:
@@ -246,7 +246,7 @@ def instantiate_node(
                             value, convert=convert, recursive=recursive
                         )
                     kwargs[key] = _convert_node(value, convert)
-            return _call_target(target, *args, **kwargs)
+            return _call_target(_target_, *args, **kwargs)
         else:
             # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
