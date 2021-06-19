@@ -459,9 +459,10 @@ def test_cfg_with_package(
 
 
 @mark.parametrize(
-    "resolve,expected",
+    "script,resolve,expected",
     [
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             False,
             dedent(
                 """\
@@ -472,6 +473,7 @@ def test_cfg_with_package(
             id="cfg",
         ),
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             True,
             dedent(
                 """\
@@ -481,11 +483,23 @@ def test_cfg_with_package(
             ),
             id="resolve",
         ),
+        param(
+            "tests/test_apps/interpolation_to_hydra_config/my_app.py",
+            True,
+            dedent(
+                """\
+                a: my_app
+                """
+            ),
+            id="resolve_hydra_config",
+        ),
     ],
 )
-def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -> None:
+def test_cfg_resolve_interpolation(
+    tmpdir: Path, script: str, resolve: bool, expected: str
+) -> None:
     cmd = [
-        "tests/test_apps/simple_interpolation/my_app.py",
+        script,
         "hydra.run.dir=" + str(tmpdir),
         "--cfg=job",
     ]
@@ -616,6 +630,20 @@ def test_sweep_complex_defaults(
                 """
             ),
             id="overriding_help_template:$CONFIG,interp,yes_resolve",
+        ),
+        param(
+            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+            ["--help", "--resolve"],
+            ["hydra.help.template=$CONFIG", "db.user=${hydra:job.name}"],
+            dedent(
+                """\
+                db:
+                  driver: mysql
+                  user: my_app
+                  password: secret
+                """
+            ),
+            id="overriding_help_template:$CONFIG,resolve_interp_to_hydra_config",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",

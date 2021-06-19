@@ -7,11 +7,12 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, flag_override, read_write
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,
@@ -147,7 +148,7 @@ class Hydra:
             for key in list(cfg.keys()):
                 if key != "hydra":
                     del cfg[key]
-        with open_dict(cfg.hydra):
+        with flag_override(cfg.hydra, ["struct", "readonly"], [False, False]):
             del cfg.hydra["hydra_help"]
             del cfg.hydra["help"]
         return cfg
@@ -156,16 +157,19 @@ class Hydra:
         self,
         config_name: Optional[str],
         overrides: List[str],
-        cfg_type: str,
         with_log_configuration: bool,
     ) -> DictConfig:
-        assert cfg_type in ["job", "hydra", "all"]
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
             run_mode=RunMode.RUN,
             with_log_configuration=with_log_configuration,
         )
+        HydraConfig.instance().set_config(cfg)
+        return cfg
+
+    def get_sanitized_cfg(self, cfg: DictConfig, cfg_type: str) -> DictConfig:
+        assert cfg_type in ["job", "hydra", "all"]
         if cfg_type == "job":
             with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 del cfg["hydra"]
@@ -184,7 +188,6 @@ class Hydra:
         cfg = self._get_cfg(
             config_name=config_name,
             overrides=overrides,
-            cfg_type=cfg_type,
             with_log_configuration=False,
         )
         if package == "_global_":
@@ -204,7 +207,9 @@ class Hydra:
             if package is not None:
                 print(f"# @package {package}")
             if resolve:
-                OmegaConf.resolve(ret)
+                with read_write(cfg.hydra):
+                    OmegaConf.resolve(ret)
+            cfg = self.get_sanitized_cfg(cfg, cfg_type)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
@@ -345,6 +350,7 @@ class Hydra:
             run_mode=RunMode.RUN,
             with_log_configuration=True,
         )
+        HydraConfig.instance().set_config(cfg)
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
 
@@ -403,9 +409,9 @@ class Hydra:
         cfg = self._get_cfg(
             config_name=config_name,
             overrides=overrides,
-            cfg_type="hydra",
             with_log_configuration=False,
         )
+        cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
 
         sources = cfg.hydra.runtime.config_sources
 
@@ -475,7 +481,6 @@ class Hydra:
             lambda: self._get_cfg(
                 config_name=config_name,
                 overrides=overrides,
-                cfg_type="all",
                 with_log_configuration=False,
             )
         )
