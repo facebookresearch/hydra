@@ -117,7 +117,6 @@ module.exports = {
                 ]
             },
             'advanced/compose_api',
-            'advanced/search_path',
             {
                 type: 'category',
                 label: 'Plugins',

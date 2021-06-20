@@ -297,10 +297,6 @@
           "id": "version-1.1/advanced/compose_api"
         },
         {
-          "type": "doc",
-          "id": "version-1.1/advanced/search_path"
-        },
-        {
           "collapsed": true,
           "type": "category",
           "label": "Plugins",
