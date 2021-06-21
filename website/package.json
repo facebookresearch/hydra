@@ -10,13 +10,13 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.72",
-    "@docusaurus/preset-classic": "2.0.0-alpha.72",
+    "@docusaurus/core": "2.0.0-beta.1",
+    "@docusaurus/preset-classic": "2.0.0-beta.1",
     "classnames": "^2.2.6",
-    "docusaurus-plugin-internaldocs-fb": "^0.7.4",
+    "docusaurus-plugin-internaldocs-fb": "^0.8.5",
     "is-svg": "4.3.1",
     "node-fetch": "^2.6.1",
-    "prism-react-renderer": "1.2.0",
+    "prism-react-renderer": "1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

@@ -4,7 +4,7 @@ author: Jieru Hu
 author_url: https://github.com/jieru-hu
 author_image_url: https://graph.facebook.com/733244046/picture/?height=200&width=200
 tags: [Hydra, Ray, Plugin]
-image: https://hydra.cc/img/Hydra-Readme-logo2.svg
+image: /img/Hydra-Readme-logo2.svg
 ---
 
 We are happy to announce that we are adding a [Ray Launcher](https://hydra.cc/docs/plugins/ray_launcher) to the Hydra Launchers family. 
