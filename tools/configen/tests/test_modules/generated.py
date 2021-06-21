@@ -96,6 +96,31 @@ class TuplesConf:
 
 
 @dataclass
+class ArgsConf:
+    _target_: str = "tests.test_modules.Args"
+    _args_: List[float] = MISSING
+    flag: bool = False
+
+
+@dataclass
+class ArgsNotFirstConf:
+    _target_: str = "tests.test_modules.ArgsNotFirst"
+    num: int = MISSING
+
+
+@dataclass
+class ArgsNoTypeConf:
+    _target_: str = "tests.test_modules.ArgsNoType"
+    _args_: List[Any] = MISSING
+
+
+@dataclass
+class KwargsConf:
+    _target_: str = "tests.test_modules.Kwargs"
+    num: int = MISSING
+
+
+@dataclass
 class PeskySentinelUsageConf:
     _target_: str = "tests.test_modules.PeskySentinelUsage"
     foo: Any = MISSING  # PeskySentinel
