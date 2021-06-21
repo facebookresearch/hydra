@@ -106,7 +106,6 @@ module.exports = {
             },
             'advanced/defaults_list',
             'advanced/overriding_packages',
-            'advanced/search_path',
             {
                 type: 'category',
                 label: 'Instantiating Objects',
@@ -117,6 +116,7 @@ module.exports = {
                 ]
             },
             'advanced/compose_api',
+            'advanced/search_path',
             {
                 type: 'category',
                 label: 'Plugins',
