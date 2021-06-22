@@ -390,7 +390,7 @@ def test_plugins_in_directory(
             os.path.join(directory, plugin.path),
             "--use-feature=in-tree-build",  # https://github.com/pypa/pip/issues/7555
         ]
-        session.run(*cmd, silent=SILENT)
+        session.run(*cmd, silent=False)
         if not SILENT:
             session.run("pipdeptree", "-p", plugin.name)
 
