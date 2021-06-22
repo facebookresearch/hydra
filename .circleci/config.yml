@@ -202,6 +202,10 @@ jobs:
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
             nox -s lint_plugins test_plugins -ts
+      - run:
+          name: Check memory usage
+          command: cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes
+          when: always
   test_plugin_win:
     parameters:
       py_version:
