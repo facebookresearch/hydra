@@ -191,7 +191,7 @@ jobs:
         type: string
     docker:
       - image: cimg/base:stable-18.04
-    resource_class: large
+    resource_class: medium+
     steps:
       - linux:
           py_version: << parameters.py_version >>
