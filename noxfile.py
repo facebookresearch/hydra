@@ -386,7 +386,10 @@ def test_plugins_in_directory(
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
     for plugin in selected_plugin:
-        cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
+        cmd = list(install_cmd) + [
+            os.path.join(directory, plugin.path),
+            "--use-feature=in-tree-build",
+        ]
         session.run(*cmd, silent=SILENT)
         if not SILENT:
             session.run("pipdeptree", "-p", plugin.name)
