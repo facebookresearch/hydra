@@ -191,6 +191,8 @@ jobs:
         type: string
     docker:
       - image: cimg/base:stable-18.04
+    # https://github.com/facebookresearch/hydra/pull/1691
+    resource_class: medium+
     steps:
       - linux:
           py_version: << parameters.py_version >>
