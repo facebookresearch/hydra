@@ -106,7 +106,6 @@ module.exports = {
             },
             'advanced/defaults_list',
             'advanced/overriding_packages',
-            'advanced/search_path',
             {
                 type: 'category',
                 label: 'Instantiating Objects',
