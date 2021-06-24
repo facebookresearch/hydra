@@ -20,7 +20,7 @@ def compose(
            (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
     :param return_hydra_config: True to return the hydra config node in the result
-    :param strict: DEPRECATED. If true, returned config has struct mode disabled.
+    :param strict: DEPRECATED. If false, returned config has struct mode disabled.
     :return: the composed config
     """
     assert (
