@@ -644,3 +644,25 @@ def test_error_assigning_null_to_logging_config(
 ) -> None:
     with expected:
         compose(overrides=overrides)
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+@mark.parametrize(
+    "strict", [param(True, id="strict=True"), param(False, id="strict=False")]
+)
+def test_deprecated_compose_strict_flag(strict: bool) -> None:
+    msg = dedent(
+        """\
+
+        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+        See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+        """
+    )
+
+    with warns(
+        expected_warning=UserWarning,
+        match=re.escape(msg),
+    ):
+        cfg = compose(overrides=[], strict=strict)
+    assert cfg == {}
+    assert OmegaConf.is_struct(cfg) is strict

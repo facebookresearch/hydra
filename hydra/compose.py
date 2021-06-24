@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import warnings
+from textwrap import dedent
 from typing import List, Optional
 
-from omegaconf import DictConfig, open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra.core.global_hydra import GlobalHydra
 from hydra.types import RunMode
@@ -11,12 +13,14 @@ def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
     return_hydra_config: bool = False,
+    strict: Optional[bool] = None,
 ) -> DictConfig:
     """
     :param config_name: the name of the config
            (usually the file name without the .yaml extension)
     :param overrides: list of overrides for config file
     :param return_hydra_config: True to return the hydra config node in the result
+    :param strict: DEPRECATED. If true, returned config has struct mode disabled.
     :return: the composed config
     """
     assert (
@@ -38,4 +42,18 @@ def compose(
         if "hydra" in cfg:
             with open_dict(cfg):
                 del cfg["hydra"]
+
+    if strict is not None:
+        # DEPRECATED: remove in 1.2
+        warnings.warn(
+            dedent(
+                """\
+
+        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+        See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+        """
+            )
+        )
+        OmegaConf.set_struct(cfg, strict)
+
     return cfg
