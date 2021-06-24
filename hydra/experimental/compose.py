@@ -10,6 +10,7 @@ def compose(
     config_name: Optional[str] = None,
     overrides: List[str] = [],
     return_hydra_config: bool = False,
+    strict: Optional[bool] = None,
 ) -> DictConfig:
     from hydra import compose as real_compose
 
@@ -22,4 +23,5 @@ def compose(
         config_name=config_name,
         overrides=overrides,
         return_hydra_config=return_hydra_config,
+        strict=strict,
     )
