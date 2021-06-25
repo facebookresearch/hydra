@@ -13,7 +13,7 @@ from hydra._internal.utils import (
 )
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
-from hydra.errors import HydraException
+from hydra.errors import HydraException, HydraUpgradeWarning
 
 
 def get_gh_backup() -> Any:
@@ -62,7 +62,7 @@ class initialize:
         if config_path is _UNSPECIFIED_:
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
             warn(
-                category=UserWarning,
+                category=HydraUpgradeWarning,
                 message=dedent(
                     f"""\
                 config_path is not specified in hydra.initialize().

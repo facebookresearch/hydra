@@ -9,7 +9,7 @@ from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
 import hydra
-from hydra.errors import InstantiationException
+from hydra.errors import HydraUpgradeWarning, InstantiationException
 from hydra.types import ConvertMode, TargetConf
 from tests.instantiate import (
     AClass,
@@ -362,7 +362,7 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
 
 def test_targetconf_deprecated() -> None:
     with warns(
-        expected_warning=UserWarning,
+        expected_warning=HydraUpgradeWarning,
         match=re.escape(
             "TargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
         ),

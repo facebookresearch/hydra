@@ -6,6 +6,7 @@ from typing import List, Optional
 from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra.core.global_hydra import GlobalHydra
+from hydra.errors import HydraUpgradeWarning
 from hydra.types import RunMode
 
 
@@ -53,7 +54,7 @@ def compose(
         See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
         """
             ),
-            category=UserWarning,
+            category=HydraUpgradeWarning,
         )
         OmegaConf.set_struct(cfg, strict)
 

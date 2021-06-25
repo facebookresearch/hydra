@@ -39,3 +39,7 @@ class MissingConfigException(IOError, ConfigCompositionException):
         super(MissingConfigException, self).__init__(message)
         self.missing_cfg_file = missing_cfg_file
         self.options = options
+
+
+class HydraUpgradeWarning(UserWarning):
+    """For warning about deprecated features of Hydra."""

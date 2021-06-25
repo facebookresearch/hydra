@@ -12,7 +12,7 @@ from hydra.core.default_element import (
     VirtualRoot,
 )
 from hydra.core.plugins import Plugins
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, HydraUpgradeWarning
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import _test_defaults_tree_impl
 
@@ -754,7 +754,7 @@ def test_legacy_hydra_overrides_from_primary_config(
         Default list overrides requires 'override' keyword.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override for more information."""
     )
-    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+    with warns(expected_warning=HydraUpgradeWarning, match=re.escape(msg)):
         _test_defaults_tree_impl(
             config_name=config_name,
             input_overrides=overrides,
@@ -1607,7 +1607,7 @@ def test_legacy_interpolation(
     Defaults list element '.*=.*' is using a deprecated interpolation form.
     See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
-    with warns(expected_warning=UserWarning, match=msg):
+    with warns(expected_warning=HydraUpgradeWarning, match=msg):
         _test_defaults_tree_impl(
             config_name=config_name,
             input_overrides=overrides,
@@ -2412,7 +2412,7 @@ def test_deprecated_package_header_keywords(
         In '{config_name}': Usage of deprecated keyword in package header '# @package {package_header}'.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
     )
-    with warns(UserWarning, match=re.escape(msg)):
+    with warns(HydraUpgradeWarning, match=re.escape(msg)):
         _test_defaults_tree_impl(
             config_name=config_name,
             input_overrides=overrides,

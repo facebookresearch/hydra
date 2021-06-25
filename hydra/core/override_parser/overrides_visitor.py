@@ -22,7 +22,7 @@ from hydra.core.override_parser.types import (
     RangeSweep,
     ValueType,
 )
-from hydra.errors import HydraException
+from hydra.errors import HydraException, HydraUpgradeWarning
 
 try:
     from hydra.grammar.gen.OverrideLexer import OverrideLexer
@@ -385,7 +385,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
     ) -> None:
         warnings.warn(
             message="reportAmbiguity: please file an issue with minimal repro instructions",
-            category=UserWarning,
+            category=HydraUpgradeWarning,
         )
 
     def reportAttemptingFullContext(
@@ -399,7 +399,7 @@ class HydraErrorListener(ErrorListener):  # type: ignore
     ) -> None:
         warnings.warn(
             message="reportAttemptingFullContext: please file an issue with a minimal repro instructions",
-            category=UserWarning,
+            category=HydraUpgradeWarning,
         )
 
     def reportContextSensitivity(
@@ -413,5 +413,5 @@ class HydraErrorListener(ErrorListener):  # type: ignore
     ) -> None:
         warnings.warn(
             message="reportContextSensitivity: please file an issue with minimal a repro instructions",
-            category=UserWarning,
+            category=HydraUpgradeWarning,
         )

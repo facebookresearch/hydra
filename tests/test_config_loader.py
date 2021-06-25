@@ -15,6 +15,7 @@ from hydra.core.utils import env_override, setup_globals
 from hydra.errors import (
     ConfigCompositionException,
     HydraException,
+    HydraUpgradeWarning,
     MissingConfigException,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -190,7 +191,7 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
         with warns(
-            UserWarning,
+            HydraUpgradeWarning,
             match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
         ):
             cfg = config_loader.load_configuration(
@@ -292,7 +293,7 @@ class TestConfigLoader:
           This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
           See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
         )
-        with warns(UserWarning, match=re.escape(msg)):
+        with warns(HydraUpgradeWarning, match=re.escape(msg)):
             cfg = config_loader.load_configuration(
                 config_name="config",
                 overrides=["+db=mysql"],

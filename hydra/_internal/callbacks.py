@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.errors import HydraUpgradeWarning
+
 if TYPE_CHECKING:
     from hydra.core.utils import JobReturn
 
@@ -25,7 +27,7 @@ class Callbacks:
             except Exception as e:
                 warnings.warn(
                     f"Callback {type(c).__name__}.{function_name} raised {type(e).__name__}: {e}",
-                    category=UserWarning,
+                    category=HydraUpgradeWarning,
                 )
 
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:

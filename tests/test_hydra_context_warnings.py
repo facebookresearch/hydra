@@ -14,6 +14,7 @@ from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
 from hydra.core.utils import JobReturn, _get_callbacks_for_run_job
+from hydra.errors import HydraUpgradeWarning
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -79,7 +80,7 @@ def test_setup_plugins(
         Support for the old style will be removed in Hydra 1.2.
         For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
     )
-    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+    with warns(expected_warning=HydraUpgradeWarning, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
             Plugins.instance().instantiate_launcher(
                 task_function=task_function,
@@ -103,5 +104,5 @@ def test_run_job() -> None:
         Support for the old style will be removed in Hydra 1.2.
         For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
     )
-    with warns(expected_warning=UserWarning, match=msg):
+    with warns(expected_warning=HydraUpgradeWarning, match=msg):
         _get_callbacks_for_run_job(hydra_context)

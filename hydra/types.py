@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any, Callable
 
 from omegaconf import MISSING
 
+from hydra.errors import HydraUpgradeWarning
+
 TaskFunction = Callable[[Any], Any]
 
 
@@ -34,7 +36,7 @@ class TargetConf:
     def __post_init__(self) -> None:
         # DEPRECATED: remove in 1.2
         msg = "\nTargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
-        warnings.warn(message=msg, category=UserWarning)
+        warnings.warn(message=msg, category=HydraUpgradeWarning)
 
 
 class RunMode(Enum):

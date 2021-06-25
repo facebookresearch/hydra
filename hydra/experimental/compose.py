@@ -5,6 +5,8 @@ from typing import List, Optional
 
 from omegaconf import DictConfig
 
+from hydra.errors import HydraUpgradeWarning
+
 
 def compose(
     config_name: Optional[str] = None,
@@ -15,7 +17,7 @@ def compose(
     from hydra import compose as real_compose
 
     warnings.warn(
-        category=UserWarning,
+        category=HydraUpgradeWarning,
         message="hydra.experimental.compose() is no longer experimental."
         " Use hydra.compose()",
     )

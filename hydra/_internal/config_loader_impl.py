@@ -31,7 +31,11 @@ from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override, ValueType
 from hydra.core.utils import JobRuntime
-from hydra.errors import ConfigCompositionException, MissingConfigException
+from hydra.errors import (
+    ConfigCompositionException,
+    HydraUpgradeWarning,
+    MissingConfigException,
+)
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 from hydra.types import RunMode
 
@@ -211,7 +215,7 @@ class ConfigLoaderImpl(ConfigLoader):
         for source in repo.get_sources():
             if not source.available():
                 warnings.warn(
-                    category=UserWarning,
+                    category=HydraUpgradeWarning,
                     message=f"provider={source.provider}, path={source.path} is not available.",
                 )
 
@@ -433,7 +437,7 @@ class ConfigLoaderImpl(ConfigLoader):
                                 This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
                                 See {url} for migration instructions."""
                             ),
-                            category=UserWarning,
+                            category=HydraUpgradeWarning,
                             stacklevel=11,
                         )
 

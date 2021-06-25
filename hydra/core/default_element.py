@@ -8,7 +8,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, HydraUpgradeWarning
 
 
 @dataclass
@@ -120,7 +120,7 @@ class InputDefault:
             path = self.get_config_path()
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
             warnings.warn(
-                category=UserWarning,
+                category=HydraUpgradeWarning,
                 message=dedent(
                     f"""\
                     In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
@@ -533,7 +533,7 @@ Defaults list element '{self.get_override_key()}={name}' is using a deprecated i
 See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
                 warnings.warn(
-                    category=UserWarning,
+                    category=HydraUpgradeWarning,
                     message=msg,
                 )
 

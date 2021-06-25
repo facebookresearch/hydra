@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from hydra.core.config_store import ConfigStore
 from hydra.core.object_type import ObjectType
+from hydra.errors import HydraUpgradeWarning
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 
@@ -21,7 +22,7 @@ class StructuredConfigSource(ConfigSource):
             except Exception as e:
                 warnings.warn(
                     f"Error importing {self.path} : some configs may not be available\n\n\tRoot cause: {e}\n",
-                    category=UserWarning,
+                    category=HydraUpgradeWarning,
                 )
                 raise e
 

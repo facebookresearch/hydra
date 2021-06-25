@@ -21,7 +21,7 @@ from hydra.core.default_element import (
 )
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, HydraUpgradeWarning
 
 cs = ConfigStore.instance()
 
@@ -386,7 +386,7 @@ def _update_overrides(
                     See {url} for more information.
                     """
                 )
-                warnings.warn(msg, UserWarning)
+                warnings.warn(msg, HydraUpgradeWarning)
 
             if d.override:
                 seen_override = True

@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from hydra.errors import HydraUpgradeWarning
 import warnings
 import re
 
@@ -121,7 +122,7 @@ class ConfigSource(Plugin):
             # DEPRECATED: remove in 1.2
             warnings.warn(
                 "Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
-                category=UserWarning,
+                category=HydraUpgradeWarning,
             )
         if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
             filename += ".yaml"

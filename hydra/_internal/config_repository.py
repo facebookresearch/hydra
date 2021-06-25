@@ -18,6 +18,7 @@ from omegaconf import (
 
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
+from hydra.errors import HydraUpgradeWarning
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 from ..core.default_element import ConfigDefault, GroupDefault, InputDefault
@@ -179,7 +180,7 @@ class ConfigRepository(IConfigRepository):
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
             warnings.warn(
-                category=UserWarning,
+                category=HydraUpgradeWarning,
                 message=dedent(
                     f"""\
                     In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
@@ -226,7 +227,7 @@ class ConfigRepository(IConfigRepository):
                         Support for the old style will be removed in Hydra 1.2"""
                     )
 
-                    warnings.warn(msg, UserWarning)
+                    warnings.warn(msg, HydraUpgradeWarning)
 
                 if config_value is not None and not isinstance(
                     config_value, (str, list)

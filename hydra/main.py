@@ -6,6 +6,8 @@ from warnings import warn
 
 from omegaconf import DictConfig
 
+from hydra.errors import HydraUpgradeWarning
+
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
@@ -27,7 +29,7 @@ def main(
     if config_path is _UNSPECIFIED_:
         url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
         warn(
-            category=UserWarning,
+            category=HydraUpgradeWarning,
             message=dedent(
                 f"""
             config_path is not specified in @hydra.main().

@@ -15,7 +15,7 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import ConfigCompositionException, HydraException
+from hydra.errors import ConfigCompositionException, HydraException, HydraUpgradeWarning
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -540,7 +540,7 @@ class TestConfigSearchPathOverride:
         config_name = "without_sp"
         override = "hydra.searchpath=['pkg://fakeconf']"
         with warns(
-            expected_warning=UserWarning,
+            expected_warning=HydraUpgradeWarning,
             match=re.escape(
                 "provider=hydra.searchpath in command-line, path=fakeconf is not available."
             ),
@@ -554,7 +554,7 @@ def test_deprecated_compose() -> None:
 
     with initialize(config_path=None):
         with warns(
-            expected_warning=UserWarning,
+            expected_warning=HydraUpgradeWarning,
             match=re.escape(
                 "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
             ),
@@ -566,7 +566,7 @@ def test_deprecated_initialize() -> None:
     from hydra.experimental import initialize as expr_initialize
 
     with warns(
-        expected_warning=UserWarning,
+        expected_warning=HydraUpgradeWarning,
         match=re.escape(
             "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
         ),
@@ -579,7 +579,7 @@ def test_deprecated_initialize_config_dir() -> None:
     from hydra.experimental import initialize_config_dir as expr_initialize_config_dir
 
     with warns(
-        expected_warning=UserWarning,
+        expected_warning=HydraUpgradeWarning,
         match=re.escape(
             "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
         ),
@@ -594,7 +594,7 @@ def test_deprecated_initialize_config_module() -> None:
     )
 
     with warns(
-        expected_warning=UserWarning,
+        expected_warning=HydraUpgradeWarning,
         match=re.escape(
             "hydra.experimental.initialize_config_module() is no longer experimental."
             " Use hydra.initialize_config_module()"
@@ -612,7 +612,7 @@ def test_initialize_without_config_path(tmpdir: Path) -> None:
         config_path is not specified in hydra.initialize().
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
     )
-    with warns(expected_warning=UserWarning, match=re.escape(expected)):
+    with warns(expected_warning=HydraUpgradeWarning, match=re.escape(expected)):
         with initialize():
             pass
 
@@ -660,7 +660,7 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
     )
 
     with warns(
-        expected_warning=UserWarning,
+        expected_warning=HydraUpgradeWarning,
         match=re.escape(msg),
     ):
         cfg = compose(overrides=[], strict=strict)

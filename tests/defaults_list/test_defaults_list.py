@@ -14,7 +14,7 @@ from hydra.core.default_element import (
 )
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, HydraUpgradeWarning
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import create_repo
 
@@ -96,7 +96,7 @@ def test_deprecated_optional(
             Support for the old style will be removed in Hydra 1.2"""
     )
     with warns(
-        UserWarning,
+        HydraUpgradeWarning,
         match=re.escape(warning),
     ):
         result = repo.load_config(config_path=config_path)
@@ -821,7 +821,7 @@ def test_include_nested_group_name_(
     url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
     msg = f"In {warning_file}: Defaults List contains deprecated keyword _name_, see {url}\n"
 
-    with warns(UserWarning, match=re.escape(msg)):
+    with warns(HydraUpgradeWarning, match=re.escape(msg)):
         _test_defaults_list_impl(
             config_name=config_name, overrides=overrides, expected=expected
         )

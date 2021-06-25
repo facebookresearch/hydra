@@ -15,7 +15,7 @@ from omegaconf._utils import is_structured_config
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
-from hydra.errors import HydraException
+from hydra.errors import HydraException, HydraUpgradeWarning
 
 
 class Quote(Enum):
@@ -486,7 +486,7 @@ class Override:
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
             warnings.warn(
-                category=UserWarning,
+                category=HydraUpgradeWarning,
                 message=dedent(
                     f"""\
                     In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}

@@ -17,6 +17,7 @@ from hydra._internal.callbacks import Callbacks
 from hydra._internal.sources_registry import SourcesRegistry
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
+from hydra.errors import HydraUpgradeWarning
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
 from hydra.plugins.launcher import Launcher
@@ -137,7 +138,7 @@ class Plugins(metaclass=Singleton):
                     Support for the old style will be removed in Hydra 1.2.
                     For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
                 ),
-                category=UserWarning,
+                category=HydraUpgradeWarning,
             )
             config_loader = (
                 config_loader
@@ -274,7 +275,7 @@ class Plugins(metaclass=Singleton):
                         f"\tPlugin is incompatible with this Hydra version or buggy.\n"
                         f"\tRecommended to uninstall or upgrade plugin.\n"
                         f"\t\t{type(e).__name__} : {e}",
-                        category=UserWarning,
+                        category=HydraUpgradeWarning,
                     )
 
         stats.total_time = timer() - stats.total_time

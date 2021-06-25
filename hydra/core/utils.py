@@ -18,6 +18,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
+from hydra.errors import HydraUpgradeWarning
 from hydra.types import HydraContext, TaskFunction
 
 if TYPE_CHECKING:
@@ -96,7 +97,7 @@ def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callba
                 Support for the old style will be removed in Hydra 1.2.
                 For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
             ),
-            category=UserWarning,
+            category=HydraUpgradeWarning,
         )
         from hydra._internal.callbacks import Callbacks
 

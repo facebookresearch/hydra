@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
+from hydra.errors import HydraUpgradeWarning
 from hydra.initialize import _UNSPECIFIED_
 
 
@@ -33,7 +34,7 @@ class initialize:
         from hydra import initialize as real_initialize
 
         warnings.warn(
-            category=UserWarning,
+            category=HydraUpgradeWarning,
             message="hydra.experimental.initialize() is no longer experimental."
             " Use hydra.initialize()",
         )
@@ -66,7 +67,7 @@ class initialize_config_module:
         from hydra import initialize_config_module as real_initialize_config_module
 
         warnings.warn(
-            category=UserWarning,
+            category=HydraUpgradeWarning,
             message="hydra.experimental.initialize_config_module() is no longer experimental."
             " Use hydra.initialize_config_module().",
         )
@@ -98,7 +99,7 @@ class initialize_config_dir:
         from hydra import initialize_config_dir as real_initialize_config_dir
 
         warnings.warn(
-            category=UserWarning,
+            category=HydraUpgradeWarning,
             message="hydra.experimental.initialize_config_dir() is no longer experimental."
             " Use hydra.initialize_config_dir().",
         )
