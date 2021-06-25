@@ -120,7 +120,8 @@ class ConfigSource(Plugin):
         if filename.endswith(".yml"):
             # DEPRECATED: remove in 1.2
             warnings.warn(
-                "Support for .yml files is deprecated. Use .yaml extension for Hydra config files"
+                "Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
+                category=UserWarning,
             )
         if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
             filename += ".yaml"

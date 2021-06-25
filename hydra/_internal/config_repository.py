@@ -226,7 +226,7 @@ class ConfigRepository(IConfigRepository):
                         Support for the old style will be removed in Hydra 1.2"""
                     )
 
-                    warnings.warn(msg)
+                    warnings.warn(msg, UserWarning)
 
                 if config_value is not None and not isinstance(
                     config_value, (str, list)

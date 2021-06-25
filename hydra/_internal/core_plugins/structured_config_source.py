@@ -20,7 +20,8 @@ class StructuredConfigSource(ConfigSource):
                 importlib.import_module(self.path)
             except Exception as e:
                 warnings.warn(
-                    f"Error importing {self.path} : some configs may not be available\n\n\tRoot cause: {e}\n"
+                    f"Error importing {self.path} : some configs may not be available\n\n\tRoot cause: {e}\n",
+                    category=UserWarning,
                 )
                 raise e
 

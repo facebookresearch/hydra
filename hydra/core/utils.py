@@ -96,6 +96,7 @@ def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callba
                 Support for the old style will be removed in Hydra 1.2.
                 For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
             ),
+            category=UserWarning,
         )
         from hydra._internal.callbacks import Callbacks
 

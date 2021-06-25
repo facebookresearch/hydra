@@ -24,7 +24,8 @@ class Callbacks:
                 getattr(c, function_name)(**kwargs)
             except Exception as e:
                 warnings.warn(
-                    f"Callback {type(c).__name__}.{function_name} raised {type(e).__name__}: {e}"
+                    f"Callback {type(c).__name__}.{function_name} raised {type(e).__name__}: {e}",
+                    category=UserWarning,
                 )
 
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
