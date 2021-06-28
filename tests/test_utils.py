@@ -1,14 +1,17 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import os
+import warnings
 from pathlib import Path
-from typing import Any
+from typing import Any, ContextManager, Type
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, raises
+from pytest import mark, raises, warns
 
 from hydra import utils
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraUpgradeWarning
 
 
 def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
@@ -60,3 +63,22 @@ def test_to_absolute_path_without_hydra(
     path = str(Path(path))
     expected = str(Path(expected).absolute())
     assert utils.to_absolute_path(path) == expected
+
+
+@mark.parametrize(
+    "category,as_errors,expected",
+    [
+        (Warning, False, warns(Warning, match="foo")),
+        (Warning, True, warns(Warning, match="foo")),
+        (HydraUpgradeWarning, False, warns(HydraUpgradeWarning, match="foo")),
+        (HydraUpgradeWarning, True, raises(HydraUpgradeWarning, match="foo")),
+    ],
+)
+def test_upgrade_warnings_as_errors(
+    category: Type[Warning], as_errors: bool, expected: ContextManager[None]
+) -> None:
+    with warnings.catch_warnings():
+        if as_errors:
+            utils.upgrade_warnings_as_errors()
+        with expected:
+            warnings.warn("foo", category=category)

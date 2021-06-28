@@ -2,6 +2,7 @@
 
 import logging.config
 import os
+import warnings
 from pathlib import Path
 from typing import Any, Callable
 
@@ -9,6 +10,7 @@ import hydra._internal.instantiate._instantiate2
 import hydra.types
 from hydra._internal.utils import _locate
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraUpgradeWarning
 
 log = logging.getLogger(__name__)
 
@@ -75,3 +77,7 @@ def to_absolute_path(path: str) -> str:
     else:
         ret = base / p
     return str(ret)
+
+
+def upgrade_warnings_as_errors() -> None:
+    warnings.simplefilter(action="error", category=HydraUpgradeWarning)
