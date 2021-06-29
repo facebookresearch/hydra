@@ -1399,3 +1399,52 @@ def test_frozen_primary_config(
     cmd.extend(overrides)
     ret, _err = run_python_script(cmd)
     assert expected in ret
+
+
+@mark.parametrize(
+    "overrides,expected",
+    [
+        param(
+            [],
+            dedent(
+                r"""
+                .*/my_app.py:12: HydraUpgradeWarning: Feature FooBarBaz is deprecated
+                  warnings\.warn(.*)
+                """
+            ),
+            id="default_upgrade_warning",
+        ),
+        param(
+            ["--upgrade_warnings_as_errors"],
+            dedent(
+                r"""
+                Error executing job with overrides: []
+                Traceback (most recent call last):
+                  File ".*/my_app.py", line 12, in my_app
+                    warnings\.warn(.*)
+                hydra\.errors\.HydraUpgradeWarning: Feature FooBarBaz is deprecated
+
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+                """
+            ),
+            id="warnings_as_errors_flag",
+        ),
+    ],
+)
+def test_hydra_upgrade_warnings_as_errors(
+    overrides: Any, expected: str, tmpdir: Path
+) -> None:
+    cmd = [
+        "tests/test_apps/hydra_upgrade_warning/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    cmd.extend(overrides)
+    _, err = run_python_script(
+        cmd, allow_warnings=True, print_error=False, raise_exception=False
+    )
+    assert_regex_match(
+        from_line=expected,
+        to_line=err,
+        from_name="Expected output",
+        to_name="Actual output",
+    )

@@ -9,6 +9,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises, warns
 
 from hydra import utils
+from hydra._internal.utils import upgrade_warnings_as_errors
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraUpgradeWarning
@@ -79,6 +80,6 @@ def test_upgrade_warnings_as_errors(
 ) -> None:
     with warnings.catch_warnings():
         if as_errors:
-            utils.upgrade_warnings_as_errors()
+            upgrade_warnings_as_errors()
         with expected:
             warnings.warn("foo", category=category)
