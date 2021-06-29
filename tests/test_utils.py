@@ -9,9 +9,9 @@ from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises, warns
 
 from hydra import utils
-from hydra._internal.utils import upgrade_warnings_as_errors
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.core.utils import upgrade_warnings_as_errors
 from hydra.errors import HydraUpgradeWarning
 
 

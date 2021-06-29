@@ -294,3 +294,7 @@ def _flush_loggers() -> None:
         except Exception:
             # ignore exceptions thrown during flushing
             pass
+
+
+def upgrade_warnings_as_errors() -> None:
+    warnings.simplefilter(action="error", category=HydraUpgradeWarning)

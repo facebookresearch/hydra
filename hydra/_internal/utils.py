@@ -4,7 +4,6 @@ import inspect
 import logging.config
 import os
 import sys
-import warnings
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
@@ -15,10 +14,13 @@ from omegaconf.errors import OmegaConfBaseException
 
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import ConfigSearchPath, SearchPathQuery
-from hydra.core.utils import get_valid_filename, validate_config_path
+from hydra.core.utils import (
+    get_valid_filename,
+    upgrade_warnings_as_errors,
+    validate_config_path,
+)
 from hydra.errors import (
     CompactHydraException,
-    HydraUpgradeWarning,
     InstantiationException,
     SearchPathException,
 )
@@ -609,7 +611,3 @@ def _get_cls_name(config: Any, pop: bool = True) -> str:
     if not isinstance(classname, str):
         raise InstantiationException("_target_ field type must be a string")
     return classname
-
-
-def upgrade_warnings_as_errors() -> None:
-    warnings.simplefilter(action="error", category=HydraUpgradeWarning)
