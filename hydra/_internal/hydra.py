@@ -153,21 +153,6 @@ class Hydra:
             del cfg.hydra["help"]
         return cfg
 
-    def _get_cfg(
-        self,
-        config_name: Optional[str],
-        overrides: List[str],
-        with_log_configuration: bool,
-    ) -> DictConfig:
-        cfg = self.compose_config(
-            config_name=config_name,
-            overrides=overrides,
-            run_mode=RunMode.RUN,
-            with_log_configuration=with_log_configuration,
-        )
-        HydraConfig.instance().set_config(cfg)
-        return cfg
-
     def get_sanitized_cfg(self, cfg: DictConfig, cfg_type: str) -> DictConfig:
         assert cfg_type in ["job", "hydra", "all"]
         if cfg_type == "job":
@@ -185,11 +170,13 @@ class Hydra:
         package: Optional[str],
         resolve: bool = False,
     ) -> None:
-        cfg = self._get_cfg(
+        cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
+            run_mode=RunMode.RUN,
             with_log_configuration=False,
         )
+        HydraConfig.instance().set_config(cfg)
         if package == "_global_":
             package = None
 
@@ -406,11 +393,13 @@ class Hydra:
 
         box: List[List[str]] = [["Provider", "Search path"]]
 
-        cfg = self._get_cfg(
+        cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
+            run_mode=RunMode.RUN,
             with_log_configuration=False,
         )
+        HydraConfig.instance().set_config(cfg)
         cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
 
         sources = cfg.hydra.runtime.config_sources
@@ -478,12 +467,14 @@ class Hydra:
         self._print_defaults_list(config_name=config_name, overrides=overrides)
 
         cfg = run_and_report(
-            lambda: self._get_cfg(
+            lambda: self.compose_config(
                 config_name=config_name,
                 overrides=overrides,
+                run_mode=RunMode.RUN,
                 with_log_configuration=False,
             )
         )
+        HydraConfig.instance().set_config(cfg)
         self._log_header(header="Config", filler="*")
         with flag_override(cfg, ["struct", "readonly"], [False, False]):
             del cfg["hydra"]
