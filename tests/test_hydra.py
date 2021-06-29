@@ -669,6 +669,7 @@ for details.
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
+                --upgrade_warnings_as_errors : Treat HydraUpgradeWarning as an error
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """
             ),
@@ -726,6 +727,7 @@ for details.
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
+                --upgrade_warnings_as_errors : Treat HydraUpgradeWarning as an error
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """
             ),
