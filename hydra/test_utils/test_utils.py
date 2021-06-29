@@ -465,6 +465,7 @@ def assert_regex_match(
                 to_name=to_name,
             )
 
+
 def assert_multiline_regex_match(
     pattern: str, string: str, from_name: str = "Expected", to_name: str = "Actual"
 ) -> None:
