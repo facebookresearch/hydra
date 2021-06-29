@@ -29,8 +29,8 @@ Running Hydra applications:
 - **--run,-r**: Run is the default mode and is not normally needed.
 - **--multirun,-m**: Run multiple jobs with the configured launcher and sweeper. See [Multi-run](/tutorials/basic/running_your_app/2_multirun.md).
   <br/><br/>
-- **--config-path,-cp**: Overrides the config_path specified in hydra.main(). The config_path is relative to the Python file declaring @hydra.main()
-- **--config-name,-cn**: Overrides the config_name specified in hydra.main()
+- **--config-path,-cp**: Overrides the `config_path` specified in `hydra.main()`. The `config_path` is relative to the Python file declaring `@hydra.main()`.
+- **--config-name,-cn**: Overrides the `config_name` specified in `hydra.main()`.
 - **--config-dir,-cd**: Adds an additional config directory to the [config search path](search_path.md).   
 This is useful for installed apps that want to allow their users to provide additional configs.
 
