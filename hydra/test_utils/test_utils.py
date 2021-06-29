@@ -476,10 +476,10 @@ def assert_multiline_regex_match(
     """
     pattern = normalize_newlines(pattern)
     string = normalize_newlines(string)
-    if re.match(pattern, string) is None:
-        assert_text_same(
-            from_line=pattern,
-            to_line=string,
-            from_name=from_name,
-            to_name=to_name,
-        )
+    if re.match(pattern, string, flags=re.MULTILINE) is None:
+        print("\n-------- PATTERN: -----------")
+        print(pattern)
+        print("---------- STRING: ------------")
+        print(string)
+        print("-------------------------------")
+        assert False, "Regex pattern did not match"

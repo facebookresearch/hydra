@@ -1422,7 +1422,7 @@ def test_frozen_primary_config(
                     warnings\.warn\(.*\)
                 hydra\.errors\.HydraUpgradeWarning: Feature FooBarBaz is deprecated
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                 """
             ).strip(),
             id="warnings_as_errors_flag",
