@@ -466,7 +466,7 @@ def assert_regex_match(
             )
 
 
-def assert_multiline_regex_match(
+def assert_multiline_regex_search(
     pattern: str, string: str, from_name: str = "Expected", to_name: str = "Actual"
 ) -> None:
     """Check that `pattern` (which can be a regex expression)
@@ -476,7 +476,7 @@ def assert_multiline_regex_match(
     """
     pattern = normalize_newlines(pattern)
     string = normalize_newlines(string)
-    if re.match(pattern, string, flags=re.MULTILINE) is None:
+    if re.search(pattern, string, flags=re.MULTILINE) is None:
         print("\n-------- PATTERN: -----------")
         print(pattern)
         print("---------- STRING: ------------")

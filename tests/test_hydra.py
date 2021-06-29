@@ -15,7 +15,7 @@ from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
-    assert_multiline_regex_match,
+    assert_multiline_regex_search,
     assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
@@ -1416,7 +1416,7 @@ def test_frozen_primary_config(
             ["--upgrade_warnings_as_errors"],
             dedent(
                 r"""
-                ^Error executing job with overrides: \[\]
+                ^Error executing job with overrides: \[\]\n?
                 Traceback \(most recent call last\):
                   File ".*/my_app.py", line 12, in my_app
                     warnings\.warn\(.*\)
@@ -1440,4 +1440,4 @@ def test_hydra_upgrade_warnings_as_errors(
     _, err = run_python_script(
         cmd, allow_warnings=True, print_error=False, raise_exception=False
     )
-    assert_multiline_regex_match(expected, err)
+    assert_multiline_regex_search(expected, err)
