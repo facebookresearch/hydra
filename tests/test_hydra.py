@@ -15,6 +15,7 @@ from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
+    assert_multiline_regex_match,
     assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
@@ -1423,7 +1424,7 @@ def test_frozen_primary_config(
 
                 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                 """
-            ),
+            ).strip(),
             id="warnings_as_errors_flag",
         ),
     ],
@@ -1439,4 +1440,4 @@ def test_hydra_upgrade_warnings_as_errors(
     _, err = run_python_script(
         cmd, allow_warnings=True, print_error=False, raise_exception=False
     )
-    assert re.match(expected.strip(), err.strip())
+    assert_multiline_regex_match(expected, err)

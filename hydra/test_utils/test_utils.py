@@ -464,3 +464,21 @@ def assert_regex_match(
                 from_name=from_name,
                 to_name=to_name,
             )
+
+def assert_multiline_regex_match(
+    pattern: str, string: str, from_name: str = "Expected", to_name: str = "Actual"
+) -> None:
+    """Check that `pattern` (which can be a regex expression)
+    matches the corresponding lines of `string` string.
+
+    In case the regex match fails, we display the diff as if `pattern` was a regular string.
+    """
+    pattern = normalize_newlines(pattern)
+    string = normalize_newlines(string)
+    if re.match(pattern, string) is None:
+        assert_text_same(
+            from_line=pattern,
+            to_line=string,
+            from_name=from_name,
+            to_name=to_name,
+        )
