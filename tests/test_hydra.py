@@ -1408,22 +1408,17 @@ def test_frozen_primary_config(
     [
         param(
             [],
-            dedent(
-                r"""
-                .*/my_app.py:12: HydraUpgradeWarning: Feature FooBarBaz is deprecated
-                  warnings\.warn(.*)
-                """
-            ),
+            r"^\S*/my_app.py:12: HydraUpgradeWarning: Feature FooBarBaz is deprecated",
             id="default_upgrade_warning",
         ),
         param(
             ["--upgrade_warnings_as_errors"],
             dedent(
                 r"""
-                Error executing job with overrides: []
-                Traceback (most recent call last):
+                ^Error executing job with overrides: \[\]
+                Traceback \(most recent call last\):
                   File ".*/my_app.py", line 12, in my_app
-                    warnings\.warn(.*)
+                    warnings\.warn\(.*\)
                 hydra\.errors\.HydraUpgradeWarning: Feature FooBarBaz is deprecated
 
                 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
@@ -1444,9 +1439,4 @@ def test_hydra_upgrade_warnings_as_errors(
     _, err = run_python_script(
         cmd, allow_warnings=True, print_error=False, raise_exception=False
     )
-    assert_regex_match(
-        from_line=expected,
-        to_line=err,
-        from_name="Expected output",
-        to_name="Actual output",
-    )
+    assert re.match(expected.strip(), err.strip())
