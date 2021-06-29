@@ -215,7 +215,7 @@ class ConfigLoaderImpl(ConfigLoader):
         for source in repo.get_sources():
             if not source.available():
                 warnings.warn(
-                    category=HydraUpgradeWarning,
+                    category=UserWarning,
                     message=f"provider={source.provider}, path={source.path} is not available.",
                 )
 

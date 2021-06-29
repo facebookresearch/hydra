@@ -275,7 +275,7 @@ class Plugins(metaclass=Singleton):
                         f"\tPlugin is incompatible with this Hydra version or buggy.\n"
                         f"\tRecommended to uninstall or upgrade plugin.\n"
                         f"\t\t{type(e).__name__} : {e}",
-                        category=HydraUpgradeWarning,
+                        category=UserWarning,
                     )
 
         stats.total_time = timer() - stats.total_time

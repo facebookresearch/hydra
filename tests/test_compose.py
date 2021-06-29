@@ -540,7 +540,7 @@ class TestConfigSearchPathOverride:
         config_name = "without_sp"
         override = "hydra.searchpath=['pkg://fakeconf']"
         with warns(
-            expected_warning=HydraUpgradeWarning,
+            expected_warning=UserWarning,
             match=re.escape(
                 "provider=hydra.searchpath in command-line, path=fakeconf is not available."
             ),
