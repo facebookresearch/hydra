@@ -33,6 +33,7 @@ Running Hydra applications:
 - **--config-name,-cn**: Overrides the config_name specified in hydra.main()
 - **--config-dir,-cd**: Adds an additional config directory to the [config search path](search_path.md).   
 This is useful for installed apps that want to allow their users to provide additional configs.
+- **--upgrade_warnings_as_errors**: Make Hydra raise an exception if any deprecated features are used.
 
 Misc:
 - **--shell-completion,-sc**: Install or Uninstall [shell tab completion](/tutorials/basic/running_your_app/6_tab_completion.md).
