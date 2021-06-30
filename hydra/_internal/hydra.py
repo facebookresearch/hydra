@@ -148,7 +148,7 @@ class Hydra:
             for key in list(cfg.keys()):
                 if key != "hydra":
                     del cfg[key]
-        with flag_override(cfg.hydra, ["struct", "readonly"], [False, False]):
+        with flag_override(cfg.hydra, ["struct", "readonly"], False):
             del cfg.hydra["hydra_help"]
             del cfg.hydra["help"]
         return cfg
