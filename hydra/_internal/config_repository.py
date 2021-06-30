@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
-import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from textwrap import dedent
@@ -22,6 +21,7 @@ from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 from ..core.default_element import ConfigDefault, GroupDefault, InputDefault
 from .sources_registry import SourcesRegistry
+from .utils2 import deprecation_warning
 
 
 class IConfigRepository(ABC):
@@ -178,8 +178,7 @@ class ConfigRepository(IConfigRepository):
         def issue_deprecated_name_warning() -> None:
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            warnings.warn(
-                category=UserWarning,
+            deprecation_warning(
                 message=dedent(
                     f"""\
                     In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
@@ -226,7 +225,7 @@ class ConfigRepository(IConfigRepository):
                         Support for the old style will be removed in Hydra 1.2"""
                     )
 
-                    warnings.warn(msg)
+                    deprecation_warning(msg)
 
                 if config_value is not None and not isinstance(
                     config_value, (str, list)

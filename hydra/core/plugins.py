@@ -15,6 +15,7 @@ from omegaconf import DictConfig
 
 from hydra._internal.callbacks import Callbacks
 from hydra._internal.sources_registry import SourcesRegistry
+from hydra._internal.utils2 import deprecation_warning
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin
@@ -130,14 +131,13 @@ class Plugins(metaclass=Singleton):
         if "hydra_context" not in param_keys:
             # DEPRECATED: remove in 1.2
             # hydra_context will be required in 1.2
-            warnings.warn(
+            deprecation_warning(
                 message=dedent(
                     """
                     Plugin's setup() signature has changed in Hydra 1.1.
                     Support for the old style will be removed in Hydra 1.2.
                     For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
                 ),
-                category=UserWarning,
             )
             config_loader = (
                 config_loader

@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import List, Optional, Pattern, Union
@@ -8,6 +7,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
+from hydra._internal.utils2 import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
 
@@ -119,8 +119,7 @@ class InputDefault:
         if "_group_" in package_header or "_name_" in package_header:
             path = self.get_config_path()
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            warnings.warn(
-                category=UserWarning,
+            deprecation_warning(
                 message=dedent(
                     f"""\
                     In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
@@ -532,8 +531,7 @@ class GroupDefault(InputDefault):
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
 See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
-                warnings.warn(
-                    category=UserWarning,
+                deprecation_warning(
                     message=msg,
                 )
 

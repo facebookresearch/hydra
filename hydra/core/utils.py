@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import sys
-import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -16,6 +15,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
+from hydra._internal.utils2 import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
@@ -89,7 +89,7 @@ def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callba
     if hydra_context is None:
         # DEPRECATED: remove in 1.2
         # hydra_context will be required in 1.2
-        warnings.warn(
+        deprecation_warning(
             message=dedent(
                 """
                 run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.

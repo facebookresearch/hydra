@@ -1,10 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import warnings
 from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable
 
 from omegaconf import MISSING
+
+from ._internal.utils2 import deprecation_warning
 
 TaskFunction = Callable[[Any], Any]
 
@@ -34,7 +35,7 @@ class TargetConf:
     def __post_init__(self) -> None:
         # DEPRECATED: remove in 1.2
         msg = "\nTargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
-        warnings.warn(message=msg, category=UserWarning)
+        deprecation_warning(message=msg)
 
 
 class RunMode(Enum):

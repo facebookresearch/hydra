@@ -3,7 +3,6 @@ import copy
 import os
 from textwrap import dedent
 from typing import Any, Optional
-from warnings import warn
 
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
@@ -11,6 +10,7 @@ from hydra._internal.utils import (
     detect_calling_file_or_module_from_stack_frame,
     detect_task_name,
 )
+from hydra._internal.utils2 import deprecation_warning
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException
@@ -61,8 +61,7 @@ class initialize:
         # in 1.2, the default config_path should be changed to None
         if config_path is _UNSPECIFIED_:
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-            warn(
-                category=UserWarning,
+            deprecation_warning(
                 message=dedent(
                     f"""\
                 config_path is not specified in hydra.initialize().
