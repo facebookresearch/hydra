@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, read_write
+from omegaconf import Container, DictConfig, OmegaConf, flag_override
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -177,6 +177,7 @@ class Hydra:
             with_log_configuration=False,
         )
         HydraConfig.instance().set_config(cfg)
+        OmegaConf.set_readonly(cfg.hydra, None)
         if package == "_global_":
             package = None
 
@@ -194,8 +195,7 @@ class Hydra:
             if package is not None:
                 print(f"# @package {package}")
             if resolve:
-                with read_write(cfg.hydra):
-                    OmegaConf.resolve(ret)
+                OmegaConf.resolve(ret)
             cfg = self.get_sanitized_cfg(cfg, cfg_type)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
@@ -341,8 +341,7 @@ class Hydra:
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
 
-        with flag_override(clean_cfg, ["struct", "readonly"], [False, False]):
-            del clean_cfg["hydra"]
+        clean_cfg = self.get_sanitized_cfg(clean_cfg, "job")
         help_text = self.get_help(
             help_cfg, clean_cfg, args_parser, resolve=args.resolve
         )
