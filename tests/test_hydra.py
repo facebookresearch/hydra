@@ -498,11 +498,7 @@ def test_cfg_with_package(
 def test_cfg_resolve_interpolation(
     tmpdir: Path, script: str, resolve: bool, expected: str
 ) -> None:
-    cmd = [
-        script,
-        "hydra.run.dir=" + str(tmpdir),
-        "--cfg=job",
-    ]
+    cmd = [script, "hydra.run.dir=" + str(tmpdir), "--cfg=job"]
     if resolve:
         cmd.append("--resolve")
 
