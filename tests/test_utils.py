@@ -2,8 +2,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict
-from unittest.mock import patch
+from typing import Any, Optional
 
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param, raises, warns
@@ -66,19 +65,22 @@ def test_to_absolute_path_without_hydra(
 
 
 @mark.parametrize(
-    "env,expected_error",
+    "env_setting,expected_error",
     [
-        param({}, False, id="env_unset"),
-        param({"HYDRA_DEPRECATION_WARNINGS_AS_ERRORS": ""}, False, id="env_empty"),
-        param({"HYDRA_DEPRECATION_WARNINGS_AS_ERRORS": "1"}, True, id="env_set"),
+        param(None, False, id="env_unset"),
+        param("", False, id="env_empty"),
+        param("1", True, id="env_set"),
     ],
 )
-def test_deprecation_warning(env: Dict[str, str], expected_error: bool) -> None:
+def test_deprecation_warning(
+    monkeypatch: Any, env_setting: Optional[str], expected_error: bool
+) -> None:
     msg = "Feature FooBar is deprecated"
-    with patch("os.environ", env):
-        if expected_error:
-            with raises(DeprecationWarning, match=re.escape(msg)):
-                deprecation_warning(msg)
-        else:
-            with warns(UserWarning, match=re.escape(msg)):
-                deprecation_warning(msg)
+    if env_setting is not None:
+        monkeypatch.setenv("HYDRA_DEPRECATION_WARNINGS_AS_ERRORS", env_setting)
+    if expected_error:
+        with raises(DeprecationWarning, match=re.escape(msg)):
+            deprecation_warning(msg)
+    else:
+        with warns(UserWarning, match=re.escape(msg)):
+            deprecation_warning(msg)
