@@ -15,6 +15,7 @@ from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
+    assert_multiline_regex_search,
     assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
@@ -1406,38 +1407,22 @@ def test_frozen_primary_config(
     [
         param(
             False,
-            dedent(
-                r"""
-                \S.*/my_app.py:10: UserWarning: Feature FooBar is deprecated
-                  deprecation_warning("Feature FooBar is deprecated")
-                """
-            ).strip(),
-            # r"\S*/my_app\.py:10: UserWarning: Feature FooBar is deprecated",
+            r"^\S*/my_app\.py:10: UserWarning: Feature FooBar is deprecated$",
             id="deprecation_warning",
         ),
         param(
             True,
             dedent(
-                # r"""
-                # Error executing job with overrides: []
-                # Traceback (most recent call last):
-                #   File "\S*/my_app.py", line 10, in my_app
-                #     deprecation_warning\("Feature FooBar is deprecated"\)
-                #   File "\S*\.py", line 9, in deprecation_warning
-                #     raise DeprecationWarning\(.*\)
-                # DeprecationWarning: Feature FooBar is deprecated
-                # Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
-                # """
                 r"""
-                Error executing job with overrides: []
-                Traceback (most recent call last):
+                ^Error executing job with overrides: \[\]\n?
+                Traceback \(most recent call last\):
                   File "\S*/my_app.py", line 10, in my_app
-                    deprecation_warning("Feature FooBar is deprecated")
-                  File "\S*/deprecation_warning.py", line 9, in deprecation_warning
-                    raise DeprecationWarning(message)
+                    deprecation_warning\("Feature FooBar is deprecated"\)
+                  File "\S*\.py", line 9, in deprecation_warning
+                    raise DeprecationWarning\(.*\)
                 DeprecationWarning: Feature FooBar is deprecated
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                 """
             ).strip(),
             id="deprecation_error",
@@ -1456,4 +1441,4 @@ def test_hydra_deprecation_warning(
     _, err = run_python_script(
         cmd, allow_warnings=True, print_error=False, raise_exception=False
     )
-    assert_regex_match(expected, err)
+    assert_multiline_regex_search(expected, err)
