@@ -22,7 +22,7 @@ from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 from hydra.errors import ConfigCompositionException
 
-from .utils2 import deprecation_warning
+from .deprecation_warning import deprecation_warning
 
 cs = ConfigStore.instance()
 

@@ -7,7 +7,7 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 from hydra.core.global_hydra import GlobalHydra
 from hydra.types import RunMode
 
-from ._internal.utils2 import deprecation_warning
+from ._internal.deprecation_warning import deprecation_warning
 
 
 def compose(

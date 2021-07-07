@@ -20,8 +20,8 @@ from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 from ..core.default_element import ConfigDefault, GroupDefault, InputDefault
+from .deprecation_warning import deprecation_warning
 from .sources_registry import SourcesRegistry
-from .utils2 import deprecation_warning
 
 
 class IConfigRepository(ABC):

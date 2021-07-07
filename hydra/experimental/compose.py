@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from omegaconf import DictConfig
 
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 
 
 def compose(

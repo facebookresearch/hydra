@@ -14,8 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 from omegaconf import DictConfig
 
 from hydra._internal.callbacks import Callbacks
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.sources_registry import SourcesRegistry
-from hydra._internal.utils2 import deprecation_warning
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin

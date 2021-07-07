@@ -2,11 +2,12 @@
 from omegaconf import DictConfig
 
 import hydra
+from hydra._internal.deprecation_warning import deprecation_warning
 
 
 @hydra.main(config_path=None)
 def my_app(cfg: DictConfig) -> None:
-    hydra._internal.utils2.deprecation_warning("Feature FooBar is deprecated")
+    deprecation_warning("Feature FooBar is deprecated")
 
 
 if __name__ == "__main__":

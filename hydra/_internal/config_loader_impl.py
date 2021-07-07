@@ -35,7 +35,7 @@ from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 from hydra.types import RunMode
 
-from .utils2 import deprecation_warning
+from .deprecation_warning import deprecation_warning
 
 
 @dataclass

@@ -10,7 +10,7 @@ from hydra.errors import HydraException
 from omegaconf import Container
 
 from hydra.core.object_type import ObjectType
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.plugins.plugin import Plugin
 
 

@@ -7,7 +7,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
 

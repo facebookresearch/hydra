@@ -4,13 +4,13 @@ import os
 from textwrap import dedent
 from typing import Any, Optional
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
     create_config_search_path,
     detect_calling_file_or_module_from_stack_frame,
     detect_task_name,
 )
-from hydra._internal.utils2 import deprecation_warning
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.errors import HydraException

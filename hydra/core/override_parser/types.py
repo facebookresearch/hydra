@@ -11,8 +11,8 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
-from hydra._internal.utils2 import deprecation_warning
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException

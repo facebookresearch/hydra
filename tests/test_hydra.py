@@ -1407,7 +1407,7 @@ def test_frozen_primary_config(
     [
         param(
             False,
-            r"^\S*/my_app\.py:9: UserWarning: Feature FooBar is deprecated$",
+            r"^\S*/my_app\.py:10: UserWarning: Feature FooBar is deprecated$",
             id="deprecation_warning",
         ),
         param(
@@ -1416,8 +1416,8 @@ def test_frozen_primary_config(
                 r"""
                 ^Error executing job with overrides: \[\]\n?
                 Traceback \(most recent call last\):
-                  File "\S*/my_app.py", line 9, in my_app
-                    hydra\.\S*\.deprecation_warning\("Feature FooBar is deprecated"\)
+                  File "\S*/my_app.py", line 10, in my_app
+                    deprecation_warning\("Feature FooBar is deprecated"\)
                   File "\S*\.py", line 9, in deprecation_warning
                     raise DeprecationWarning\(.*\)
                 DeprecationWarning: Feature FooBar is deprecated

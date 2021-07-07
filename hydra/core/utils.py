@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction

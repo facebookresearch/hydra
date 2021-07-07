@@ -3,7 +3,7 @@
 import copy
 from typing import Any, Optional
 
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.initialize import _UNSPECIFIED_

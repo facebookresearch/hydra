@@ -8,7 +8,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param, raises, warns
 
 from hydra import utils
-from hydra._internal.utils2 import deprecation_warning
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 

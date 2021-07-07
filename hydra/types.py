@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 from omegaconf import MISSING
 
-from ._internal.utils2 import deprecation_warning
+from ._internal.deprecation_warning import deprecation_warning
 
 TaskFunction = Callable[[Any], Any]
 

@@ -5,8 +5,8 @@ from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig
 
+from ._internal.deprecation_warning import deprecation_warning
 from ._internal.utils import _run_hydra, get_args_parser
-from ._internal.utils2 import deprecation_warning
 from .types import TaskFunction
 
 _UNSPECIFIED_: Any = object()
