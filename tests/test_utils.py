@@ -11,6 +11,7 @@ from hydra import utils
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraDeprecationError
 
 
 def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
@@ -79,7 +80,7 @@ def test_deprecation_warning(
     if env_setting is not None:
         monkeypatch.setenv("HYDRA_DEPRECATION_WARNINGS_AS_ERRORS", env_setting)
     if expected_error:
-        with raises(DeprecationWarning, match=re.escape(msg)):
+        with raises(HydraDeprecationError, match=re.escape(msg)):
             deprecation_warning(msg)
     else:
         with warns(UserWarning, match=re.escape(msg)):

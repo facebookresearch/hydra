@@ -2,10 +2,12 @@
 import os
 import warnings
 
+from hydra.errors import HydraDeprecationError
+
 
 def deprecation_warning(message: str, stacklevel: int = 1) -> None:
     warnings_as_errors = os.environ.get("HYDRA_DEPRECATION_WARNINGS_AS_ERRORS", None)
     if warnings_as_errors:
-        raise DeprecationWarning(message)
+        raise HydraDeprecationError(message)
     else:
         warnings.warn(message, stacklevel=stacklevel + 1)

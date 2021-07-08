@@ -1418,9 +1418,9 @@ def test_frozen_primary_config(
                 Traceback \(most recent call last\):
                   File "\S*/my_app.py", line 10, in my_app
                     deprecation_warning\("Feature FooBar is deprecated"\)
-                  File "\S*\.py", line 9, in deprecation_warning
-                    raise DeprecationWarning\(.*\)
-                DeprecationWarning: Feature FooBar is deprecated
+                  File "\S*\.py", line 11, in deprecation_warning
+                    raise HydraDeprecationError\(.*\)
+                hydra\.errors\.HydraDeprecationError: Feature FooBar is deprecated
 
                 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                 """
