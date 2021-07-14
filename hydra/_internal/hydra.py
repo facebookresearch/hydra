@@ -142,12 +142,8 @@ class Hydra:
         return ret
 
     @staticmethod
-    def sanitize_hydra_cfg(cfg: DictConfig) -> None:
-        """
-        Mutate the input cfg:
-          - delete all toplevel keys except "hydra".
-          - delete `hydra.help` and `hydra.hydra_help`.
-        """
+    def get_sanitized_hydra_cfg(src_cfg: DictConfig) -> DictConfig:
+        cfg = copy.deepcopy(src_cfg)
         with flag_override(cfg, ["struct", "readonly"], [False, False]):
             for key in list(cfg.keys()):
                 if key != "hydra":
@@ -155,15 +151,16 @@ class Hydra:
         with flag_override(cfg.hydra, ["struct", "readonly"], False):
             del cfg.hydra["hydra_help"]
             del cfg.hydra["help"]
+        return cfg
 
-    def sanitize_cfg(self, cfg: DictConfig, cfg_type: str) -> None:
-        """Mutate the input config, deleting some keys according to `cfg_type`."""
+    def get_sanitized_cfg(self, cfg: DictConfig, cfg_type: str) -> DictConfig:
         assert cfg_type in ["job", "hydra", "all"]
         if cfg_type == "job":
             with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 del cfg["hydra"]
         elif cfg_type == "hydra":
-            self.sanitize_hydra_cfg(cfg)
+            cfg = self.get_sanitized_hydra_cfg(cfg)
+        return cfg
 
     def show_cfg(
         self,
@@ -199,7 +196,7 @@ class Hydra:
                 print(f"# @package {package}")
             if resolve:
                 OmegaConf.resolve(ret)
-            self.sanitize_cfg(cfg, cfg_type)
+            cfg = self.get_sanitized_cfg(cfg, cfg_type)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
@@ -327,8 +324,7 @@ class Hydra:
             with_log_configuration=True,
         )
         help_cfg = cfg.hydra.hydra_help
-        cfg = copy.deepcopy(cfg)
-        self.sanitize_hydra_cfg(cfg)
+        cfg = self.get_sanitized_hydra_cfg(cfg)
         help_text = self.get_help(help_cfg, cfg, args_parser, resolve=False)
         print(help_text)
 
@@ -345,7 +341,7 @@ class Hydra:
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
 
-        self.sanitize_cfg(clean_cfg, "job")
+        clean_cfg = self.get_sanitized_cfg(clean_cfg, "job")
         help_text = self.get_help(
             help_cfg, clean_cfg, args_parser, resolve=args.resolve
         )
@@ -403,7 +399,7 @@ class Hydra:
             with_log_configuration=False,
         )
         HydraConfig.instance().set_config(cfg)
-        self.sanitize_cfg(cfg, cfg_type="hydra")
+        cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
 
         sources = cfg.hydra.runtime.config_sources
 
