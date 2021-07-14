@@ -178,6 +178,7 @@ class Hydra:
         )
         HydraConfig.instance().set_config(cfg)
         OmegaConf.set_readonly(cfg.hydra, None)
+        cfg = self.get_sanitized_cfg(cfg, cfg_type)
         if package == "_global_":
             package = None
 
@@ -196,7 +197,6 @@ class Hydra:
                 print(f"# @package {package}")
             if resolve:
                 OmegaConf.resolve(ret)
-            cfg = self.get_sanitized_cfg(cfg, cfg_type)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
