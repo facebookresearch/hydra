@@ -628,15 +628,14 @@ def test_sweep_complex_defaults(
             id="overriding_help_template:$CONFIG,interp,yes_resolve",
         ),
         param(
-            "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
+            "tests/test_apps/app_with_cfg/my_app.py",
             ["--help", "--resolve"],
-            ["hydra.help.template=$CONFIG", "db.user=${hydra:job.name}"],
+            ["hydra.help.template=$CONFIG", "dataset.name=${hydra:job.name}"],
             dedent(
                 """\
-                db:
-                  driver: mysql
-                  user: my_app
-                  password: secret
+                dataset:
+                  name: my_app
+                  path: /datasets/imagenet
                 """
             ),
             id="overriding_help_template:$CONFIG,resolve_interp_to_hydra_config",
