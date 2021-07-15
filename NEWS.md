@@ -80,6 +80,19 @@ Please check the API changes and deprecation sections in these release notes and
 - Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
 
 
+1.0.7 (2021-07-14)
+==================
+This release contains a few small changes to make Hydra 1.0 a bit more compatible with OmegaConf 2.1 and Hydra 1.1 to enable easier migration.
+There is no risk in using it if you are using 1.0.6 now as it just makes the migration a bit smoother in some scenarios:
+1. If you are upgrading OmegaConf to 2.1 before upgrading Hydra to 1.1.
+2. It enables some configs to be compatible with both versions in some rare cases related to the change in the default composition order in Hydra 1.1.
+
+### Maintenance Changes
+
+- Enables Hydra 1.0 to work with OmegaConf 2.1 (Manual installation of OmegaConf 2.1 is required) ([#1634](https://github.com/facebookresearch/hydra/issues/1634))
+- Hydra 1.0 ignores `_self_` in Defaults List for partial future compatibility with Hydra 1.1 ([#1712](https://github.com/facebookresearch/hydra/issues/1712))
+
+
 1.0.6 (2021-01-29)
 ==================
 
