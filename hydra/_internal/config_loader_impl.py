@@ -773,7 +773,7 @@ class ConfigLoaderImpl(ConfigLoader):
                     if job_cfg_load_trace is not None:
                         self.all_config_checked.append(job_cfg_load_trace)
                 elif default1.config_group is not None:
-                    if default1.config_name not in (None, "_SKIP_", "???"):
+                    if default1.config_name not in (None, "_SKIP_", "???", "_self_"):
                         merged_cfg = self._merge_config(
                             cfg=merged_cfg,
                             config_group=default1.config_group,
@@ -783,7 +783,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             package_override=default1.package,
                         )
                 else:
-                    if default1.config_name != "_SKIP_":
+                    if default1.config_name not in ("_SKIP_", "_self_"):
                         merged_cfg = self._merge_config(
                             cfg=merged_cfg,
                             config_group="",
