@@ -459,11 +459,12 @@ def test_cfg_with_package(
 
 
 @mark.parametrize(
-    "script,resolve,expected",
+    "script,resolve,flags,expected",
     [
         param(
             "tests/test_apps/simple_interpolation/my_app.py",
             False,
+            [],
             dedent(
                 """\
                 a: ${b}
@@ -475,6 +476,7 @@ def test_cfg_with_package(
         param(
             "tests/test_apps/simple_interpolation/my_app.py",
             True,
+            [],
             dedent(
                 """\
                 a: 10
@@ -484,8 +486,12 @@ def test_cfg_with_package(
             id="resolve",
         ),
         param(
-            "tests/test_apps/interpolation_to_hydra_config/my_app.py",
+            "tests/test_apps/simple_app/my_app.py",
             True,
+            [
+                "--config-name=interp_to_hydra",
+                "--config-dir=tests/test_apps/simple_app",
+            ],
             dedent(
                 """\
                 a: my_app
@@ -496,9 +502,9 @@ def test_cfg_with_package(
     ],
 )
 def test_cfg_resolve_interpolation(
-    tmpdir: Path, script: str, resolve: bool, expected: str
+    tmpdir: Path, script: str, resolve: bool, flags: List[str], expected: str
 ) -> None:
-    cmd = [script, "hydra.run.dir=" + str(tmpdir), "--cfg=job"]
+    cmd = [script, "hydra.run.dir=" + str(tmpdir), "--cfg=job"] + flags
     if resolve:
         cmd.append("--resolve")
 
