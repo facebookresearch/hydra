@@ -1,0 +1,1 @@
+Fix `--cfg=job --resolve` and `--help --resolve` so that the ${hydra:...} resolver now prints properly

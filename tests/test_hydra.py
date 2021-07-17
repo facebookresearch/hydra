@@ -459,10 +459,12 @@ def test_cfg_with_package(
 
 
 @mark.parametrize(
-    "resolve,expected",
+    "script,resolve,flags,expected",
     [
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             False,
+            [],
             dedent(
                 """\
                 a: ${b}
@@ -472,7 +474,9 @@ def test_cfg_with_package(
             id="cfg",
         ),
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             True,
+            [],
             dedent(
                 """\
                 a: 10
@@ -481,14 +485,26 @@ def test_cfg_with_package(
             ),
             id="resolve",
         ),
+        param(
+            "tests/test_apps/simple_app/my_app.py",
+            True,
+            [
+                "--config-name=interp_to_hydra",
+                "--config-dir=tests/test_apps/simple_app",
+            ],
+            dedent(
+                """\
+                a: my_app
+                """
+            ),
+            id="resolve_hydra_config",
+        ),
     ],
 )
-def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -> None:
-    cmd = [
-        "tests/test_apps/simple_interpolation/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-        "--cfg=job",
-    ]
+def test_cfg_resolve_interpolation(
+    tmpdir: Path, script: str, resolve: bool, flags: List[str], expected: str
+) -> None:
+    cmd = [script, "hydra.run.dir=" + str(tmpdir), "--cfg=job"] + flags
     if resolve:
         cmd.append("--resolve")
 
@@ -616,6 +632,19 @@ def test_sweep_complex_defaults(
                 """
             ),
             id="overriding_help_template:$CONFIG,interp,yes_resolve",
+        ),
+        param(
+            "tests/test_apps/app_with_cfg/my_app.py",
+            ["--help", "--resolve"],
+            ["hydra.help.template=$CONFIG", "dataset.name=${hydra:job.name}"],
+            dedent(
+                """\
+                dataset:
+                  name: my_app
+                  path: /datasets/imagenet
+                """
+            ),
+            id="overriding_help_template:$CONFIG,resolve_interp_to_hydra_config",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",

@@ -7,11 +7,12 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import Container, DictConfig, OmegaConf, flag_override
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
+from hydra.core.hydra_config import HydraConfig
 from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,
@@ -147,25 +148,13 @@ class Hydra:
             for key in list(cfg.keys()):
                 if key != "hydra":
                     del cfg[key]
-        with open_dict(cfg.hydra):
+        with flag_override(cfg.hydra, ["struct", "readonly"], False):
             del cfg.hydra["hydra_help"]
             del cfg.hydra["help"]
         return cfg
 
-    def _get_cfg(
-        self,
-        config_name: Optional[str],
-        overrides: List[str],
-        cfg_type: str,
-        with_log_configuration: bool,
-    ) -> DictConfig:
+    def get_sanitized_cfg(self, cfg: DictConfig, cfg_type: str) -> DictConfig:
         assert cfg_type in ["job", "hydra", "all"]
-        cfg = self.compose_config(
-            config_name=config_name,
-            overrides=overrides,
-            run_mode=RunMode.RUN,
-            with_log_configuration=with_log_configuration,
-        )
         if cfg_type == "job":
             with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 del cfg["hydra"]
@@ -181,12 +170,15 @@ class Hydra:
         package: Optional[str],
         resolve: bool = False,
     ) -> None:
-        cfg = self._get_cfg(
+        cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
-            cfg_type=cfg_type,
+            run_mode=RunMode.RUN,
             with_log_configuration=False,
         )
+        HydraConfig.instance().set_config(cfg)
+        OmegaConf.set_readonly(cfg.hydra, None)
+        cfg = self.get_sanitized_cfg(cfg, cfg_type)
         if package == "_global_":
             package = None
 
@@ -345,11 +337,11 @@ class Hydra:
             run_mode=RunMode.RUN,
             with_log_configuration=True,
         )
+        HydraConfig.instance().set_config(cfg)
         help_cfg = cfg.hydra.help
         clean_cfg = copy.deepcopy(cfg)
 
-        with flag_override(clean_cfg, ["struct", "readonly"], [False, False]):
-            del clean_cfg["hydra"]
+        clean_cfg = self.get_sanitized_cfg(clean_cfg, "job")
         help_text = self.get_help(
             help_cfg, clean_cfg, args_parser, resolve=args.resolve
         )
@@ -400,12 +392,14 @@ class Hydra:
 
         box: List[List[str]] = [["Provider", "Search path"]]
 
-        cfg = self._get_cfg(
+        cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
-            cfg_type="hydra",
+            run_mode=RunMode.RUN,
             with_log_configuration=False,
         )
+        HydraConfig.instance().set_config(cfg)
+        cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
 
         sources = cfg.hydra.runtime.config_sources
 
@@ -472,13 +466,14 @@ class Hydra:
         self._print_defaults_list(config_name=config_name, overrides=overrides)
 
         cfg = run_and_report(
-            lambda: self._get_cfg(
+            lambda: self.compose_config(
                 config_name=config_name,
                 overrides=overrides,
-                cfg_type="all",
+                run_mode=RunMode.RUN,
                 with_log_configuration=False,
             )
         )
+        HydraConfig.instance().set_config(cfg)
         self._log_header(header="Config", filler="*")
         with flag_override(cfg, ["struct", "readonly"], [False, False]):
             del cfg["hydra"]
