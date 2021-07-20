@@ -445,14 +445,16 @@ class ConfigLoaderImpl(ConfigLoader):
                         default.config_path is not None
                         and default.config_path.startswith("hydra/")
                     )
+                    config = ret.config
                     if (
                         default.primary
-                        and "hydra" in ret.config
+                        and "hydra" in config
                         and not hydra_config_group
+                        and isinstance(config, DictConfig)
                     ):
-                        hydra = ret.config.pop("hydra")
+                        hydra = config.pop("hydra")
 
-                    merged = OmegaConf.merge(schema.config, ret.config)
+                    merged = OmegaConf.merge(schema.config, config)
                     assert isinstance(merged, DictConfig)
 
                     if hydra is not None:
