@@ -98,6 +98,16 @@ class TestCompose:
             compose(config_file, overrides)
 
 
+@mark.usefixtures("initialize_hydra")
+@mark.parametrize("config_path", ["../hydra/test_utils/configs"])
+def test_top_level_config_is_list():
+    with raises(
+        HydraException,
+        match="primary config 'top_level_list/file1' must be a DictConfig, got ListConfig",
+    ):
+        compose("top_level_list/file1", overrides=[])
+
+
 @mark.usefixtures("hydra_restore_singletons")
 @mark.parametrize(
     "config_file, overrides, expected",

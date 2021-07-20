@@ -168,6 +168,11 @@ class ConfigLoaderImpl(ConfigLoader):
         else:
             primary_config = OmegaConf.create()
 
+        if not OmegaConf.is_dict(primary_config):
+            raise ConfigCompositionException(
+                f"primary config '{config_name}' must be a DictConfig, got {type(primary_config).__name__}"
+            )
+
         def is_searchpath_override(v: Override) -> bool:
             return v.get_key_element() == "hydra.searchpath"
 
