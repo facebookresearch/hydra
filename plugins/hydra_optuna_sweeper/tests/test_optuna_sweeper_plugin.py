@@ -28,8 +28,6 @@ from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 chdir_plugin_root()
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
@@ -46,8 +44,6 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
     assert set(expected.choices) == set(actual.choices)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize(
     "input, expected",
     [
@@ -81,8 +77,6 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
     check_distribution(expected, actual)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize(
     "input, expected",
     [
@@ -104,8 +98,6 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     check_distribution(expected, actual)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -124,15 +116,13 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_trials=100",
         "hydra.sweeper.n_jobs=8",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
@@ -154,8 +144,6 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     assert returns["best_value"] == 0
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
