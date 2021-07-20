@@ -448,9 +448,9 @@ class ConfigLoaderImpl(ConfigLoader):
                     config = ret.config
                     if (
                         default.primary
+                        and isinstance(config, DictConfig)
                         and "hydra" in config
                         and not hydra_config_group
-                        and isinstance(config, DictConfig)
                     ):
                         hydra = config.pop("hydra")
 
@@ -472,6 +472,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if (
             not default.primary
             and config_path != "hydra/config"
+            and isinstance(res.config, DictConfig)
             and OmegaConf.select(res.config, "hydra.searchpath") is not None
         ):
             raise ConfigCompositionException(
