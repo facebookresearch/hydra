@@ -34,11 +34,6 @@ Plugins.instance()
             id="one_item",
         ),
         param(
-            "group_default",
-            [GroupDefault(group="group1", value="file1")],
-            id="one_item",
-        ),
-        param(
             "self_leading",
             [
                 ConfigDefault(path="_self_"),
