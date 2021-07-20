@@ -100,7 +100,7 @@ class TestCompose:
 
 @mark.usefixtures("initialize_hydra")
 @mark.parametrize("config_path", ["../hydra/test_utils/configs"])
-def test_top_level_config_is_list():
+def test_top_level_config_is_list() -> None:
     with raises(
         HydraException,
         match="primary config 'top_level_list/file1' must be a DictConfig, got ListConfig",
