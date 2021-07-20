@@ -168,6 +168,11 @@ class ConfigLoaderImpl(ConfigLoader):
         else:
             primary_config = OmegaConf.create()
 
+        if not OmegaConf.is_dict(primary_config):
+            raise ConfigCompositionException(
+                f"primary config '{config_name}' must be a DictConfig, got {type(primary_config).__name__}"
+            )
+
         def is_searchpath_override(v: Override) -> bool:
             return v.get_key_element() == "hydra.searchpath"
 
@@ -395,9 +400,9 @@ class ConfigLoaderImpl(ConfigLoader):
         ret = repo.load_config(config_path=config_path)
         assert ret is not None
 
-        if not isinstance(ret.config, DictConfig):
+        if not OmegaConf.is_config(ret.config):
             raise ValueError(
-                f"Config {config_path} must be a Dictionary, got {type(ret).__name__}"
+                f"Config {config_path} must be an OmegaConf config, got {type(ret.config).__name__}"
             )
 
         if not ret.is_schema_source:
@@ -445,14 +450,16 @@ class ConfigLoaderImpl(ConfigLoader):
                         default.config_path is not None
                         and default.config_path.startswith("hydra/")
                     )
+                    config = ret.config
                     if (
                         default.primary
-                        and "hydra" in ret.config
+                        and isinstance(config, DictConfig)
+                        and "hydra" in config
                         and not hydra_config_group
                     ):
-                        hydra = ret.config.pop("hydra")
+                        hydra = config.pop("hydra")
 
-                    merged = OmegaConf.merge(schema.config, ret.config)
+                    merged = OmegaConf.merge(schema.config, config)
                     assert isinstance(merged, DictConfig)
 
                     if hydra is not None:
@@ -470,6 +477,7 @@ class ConfigLoaderImpl(ConfigLoader):
         if (
             not default.primary
             and config_path != "hydra/config"
+            and isinstance(res.config, DictConfig)
             and OmegaConf.select(res.config, "hydra.searchpath") is not None
         ):
             raise ConfigCompositionException(
