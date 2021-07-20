@@ -71,6 +71,12 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
         (None, ["+foo=bar"], {"foo": "bar"}),
         ("compose", [], {"foo": 10, "bar": 100}),
         ("compose", ["group1=file2"], {"foo": 20, "bar": 100}),
+        (None, ["+top_level_list=file1"], {"top_level_list": ["a"]}),
+        (
+            None,
+            ["+top_level_list=file1", "top_level_list.0=b"],
+            {"top_level_list": ["b"]},
+        ),
     ],
 )
 class TestCompose:

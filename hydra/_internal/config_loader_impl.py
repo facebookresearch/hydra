@@ -395,9 +395,9 @@ class ConfigLoaderImpl(ConfigLoader):
         ret = repo.load_config(config_path=config_path)
         assert ret is not None
 
-        if not isinstance(ret.config, DictConfig):
+        if not OmegaConf.is_config(ret.config):
             raise ValueError(
-                f"Config {config_path} must be a Dictionary, got {type(ret).__name__}"
+                f"Config {config_path} must be an OmegaConf config, got {type(ret.config).__name__}"
             )
 
         if not ret.is_schema_source:

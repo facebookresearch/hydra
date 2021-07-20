@@ -1,0 +1,1 @@
+Fixed composition where top level of a config composed from a config group is a list
