@@ -5,7 +5,6 @@ import re
 import sys
 import warnings
 from collections import defaultdict
-from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, Dict, List, MutableSequence, Optional
 
@@ -34,12 +33,6 @@ from hydra.core.utils import JobRuntime
 from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 from hydra.types import RunMode
-
-
-@dataclass
-class SplitOverrides:
-    config_group_overrides: List[Override]
-    config_overrides: List[Override]
 
 
 class ConfigLoaderImpl(ConfigLoader):
