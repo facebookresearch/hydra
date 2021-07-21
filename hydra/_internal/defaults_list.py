@@ -359,7 +359,12 @@ def _update_overrides(
             continue
         d.update_parent(parent.get_group_path(), parent.get_final_package())
 
-        if seen_override and not d.is_override():
+        legacy_hydra_override = False
+        if isinstance(d, GroupDefault):
+            assert d.group is not None
+            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
+
+        if seen_override and not (d.is_override() or legacy_hydra_override):
             assert isinstance(last_override_seen, GroupDefault)
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
@@ -373,8 +378,6 @@ def _update_overrides(
             )
 
         if isinstance(d, GroupDefault):
-            assert d.group is not None
-            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
             if legacy_hydra_override:
                 # DEPRECATED: remove in 1.2
                 d.override = True
