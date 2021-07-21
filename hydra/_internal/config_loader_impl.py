@@ -5,7 +5,6 @@ import re
 import sys
 import warnings
 from collections import defaultdict
-from dataclasses import dataclass
 from textwrap import dedent
 from typing import Any, Dict, List, MutableSequence, Optional
 
