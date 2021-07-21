@@ -36,12 +36,6 @@ from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSou
 from hydra.types import RunMode
 
 
-@dataclass
-class SplitOverrides:
-    config_group_overrides: List[Override]
-    config_overrides: List[Override]
-
-
 class ConfigLoaderImpl(ConfigLoader):
     """
     Configuration loader
