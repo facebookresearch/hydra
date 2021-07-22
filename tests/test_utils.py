@@ -172,6 +172,41 @@ def test_class_instantiate(
     "input_conf, passthrough, expected",
     [
         pytest.param(
+            {"_target_": "tests.AClass", "a": 10, "b": 20, "c": 30, "d": 40},
+            {},
+            AClass(10, 20, 30, 40),
+            id="class",
+        ),
+    ],
+)
+def test_class_instantiate__future_compat_recursive(
+    input_conf: Any, passthrough: Dict[str, Any], expected: Any
+) -> Any:
+    obj = utils.instantiate(input_conf, **passthrough, _recursive_=False)
+    assert obj == expected
+
+    with pytest.raises(
+        InstantiationException,
+        match="Hydra 1.0 does not support recursive instantiation, please upgrade to Hydra 1.1",
+    ):
+        utils.instantiate(input_conf, **passthrough, _recursive_=True)
+
+    input_conf["_recursive_"] = False
+    obj = utils.instantiate(input_conf, **passthrough)
+    assert obj == expected
+
+    input_conf["_recursive_"] = True
+    with pytest.raises(
+        InstantiationException,
+        match="Hydra 1.0 does not support recursive instantiation, please upgrade to Hydra 1.1",
+    ):
+        utils.instantiate(input_conf, **passthrough)
+
+
+@pytest.mark.parametrize(  # type: ignore
+    "input_conf, passthrough, expected",
+    [
+        pytest.param(
             {
                 "node": {
                     "_target_": "tests.AClass",

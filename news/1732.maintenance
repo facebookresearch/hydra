@@ -1,0 +1,1 @@
+Enable Hydra 1.0 instantiate method to receive `_recursive_=False` flag for facilitate easier migration to Hydra 1.0
