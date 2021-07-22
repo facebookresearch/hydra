@@ -608,6 +608,13 @@ def _get_kwargs(config: Union[ObjectConf, DictConfig], **kwargs: Any) -> Any:
 
     for k, v in passthrough.items():
         final_kwargs[k] = v
+
+    _recursive_ = final_kwargs.pop("_recursive_", False)
+    if _recursive_:
+        raise InstantiationException(
+            "Hydra 1.0 does not support recursive instantiation, please upgrade to Hydra 1.1"
+        )
+
     return final_kwargs
 
 
