@@ -741,6 +741,28 @@ def test_two_group_defaults_different_pkgs(
             ),
             id="legacy_override_hydra+external",
         ),
+        param(
+            "legacy_override_hydra2",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="disabled"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="legacy_override_hydra2"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="legacy_override_hydra+external",
+        ),
     ],
 )
 def test_legacy_hydra_overrides_from_primary_config(
@@ -761,6 +783,52 @@ def test_legacy_hydra_overrides_from_primary_config(
             expected=expected,
             prepend_hydra=True,
         )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "legacy_override_hydra2",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="disabled"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="legacy_override_hydra2"),
+                        children=[ConfigDefault(path="_self_")],
+                    ),
+                ],
+            ),
+            id="legacy_override_hydra+external",
+        ),
+    ],
+)
+def test_legacy_hydra_overrides_from_primary_config_2(
+    config_name: str, overrides: List[str], expected: DefaultsTreeNode, recwarn: Any
+) -> None:
+    """
+    Override two Hydra config groups using legacy notation
+    """
+
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+    assert len(recwarn) == 2
+    assert "Invalid overriding of hydra/help:" in recwarn.list[0].message.args[0]
+    assert "Invalid overriding of hydra/output:" in recwarn.list[1].message.args[0]
 
 
 @mark.parametrize(
