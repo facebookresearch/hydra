@@ -1,0 +1,1 @@
+Fix unexpected changes to defaults list in some cases when appending an experiment (+experiment=test)

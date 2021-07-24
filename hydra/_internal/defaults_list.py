@@ -98,6 +98,7 @@ class Overrides:
                         group=override.key_or_group,
                         package=override.package,
                         value=value,
+                        external_append=True,
                     )
                 )
             else:
@@ -364,7 +365,9 @@ def _update_overrides(
             assert d.group is not None
             legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
 
-        if seen_override and not (d.is_override() or legacy_hydra_override):
+        if seen_override and not (
+            d.is_override() or d.is_external_append() or legacy_hydra_override
+        ):
             assert isinstance(last_override_seen, GroupDefault)
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
@@ -467,14 +470,7 @@ def _create_defaults_tree_impl(
         self_added = _validate_self(containing_node=parent, defaults=defaults_list)
 
     if is_root_config:
-        # To ensure config overrides are last, insert the external overrides before the first config override.
-        insert_idx = len(defaults_list)
-        for idx, default in enumerate(defaults_list):
-            if default.is_override():
-                insert_idx = idx
-                break
-
-        defaults_list[insert_idx:insert_idx] = overrides.append_group_defaults
+        defaults_list.extend(overrides.append_group_defaults)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 

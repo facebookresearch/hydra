@@ -921,6 +921,52 @@ def test_group_default_with_appended_experiment(
     "config_name,overrides,expected",
     [
         param(
+            "override_hydra",
+            ["+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="default"),
+                            GroupDefault(group="output", value="disabled"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="override_hydra"),
+                        children=[
+                            GroupDefault(group="group1", value="file2"),
+                            ConfigDefault(path="_self_"),
+                            GroupDefault(
+                                group="experiment", value="override_config_group"
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            id="override_hydra_with_experiment",
+        ),
+    ],
+)
+def test_experiment_where_primary_config_has_override(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "group_default",
             ["+experiment=include_absolute_config"],
             DefaultsTreeNode(
