@@ -10,7 +10,7 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
@@ -64,7 +64,9 @@ def launch_job_on_ray(
     singleton_state: Any,
 ) -> Any:
     if ray_remote:
-        run_job_ray = ray.remote(**ray_remote)(_run_job)
+        run_job_ray = ray.remote(**OmegaConf.to_container(ray_remote, resolve=True))(
+            _run_job
+        )
     else:
         run_job_ray = ray.remote(_run_job)
 
