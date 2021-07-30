@@ -1430,15 +1430,14 @@ def test_frozen_primary_config(
     ],
 )
 def test_hydra_deprecation_warning(
-    monkeypatch: Any, env_deprecation_err: bool, expected: str, tmpdir: Path
+    env_deprecation_err: bool, expected: str, tmpdir: Path
 ) -> None:
     cmd = [
         "tests/test_apps/deprecation_warning/my_app.py",
         f"hydra.run.dir={tmpdir}",
     ]
-    if env_deprecation_err:
-        monkeypatch.setenv("HYDRA_DEPRECATION_WARNINGS_AS_ERRORS", "1")
+    env = {"HYDRA_DEPRECATION_WARNINGS_AS_ERRORS": "1"} if env_deprecation_err else {}
     _, err = run_python_script(
-        cmd, allow_warnings=True, print_error=False, raise_exception=False
+        cmd, env=env, allow_warnings=True, print_error=False, raise_exception=False
     )
     assert_multiline_regex_search(expected, err)
