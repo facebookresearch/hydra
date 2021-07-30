@@ -95,6 +95,14 @@ Available options:
         postgresql
 ```
 
+</div>
+</div>
 
-</div>
-</div>
+#### Merge order for combining a defaults list with other structured config fields
+
+Just like with defaults lists in `yaml` files, the `_self_` keyword can be used
+in a defaults list that is part of a structured config.
+Using `_self_` in a structured config's defaults list gives explicit control
+over the order in which the structured config's fields are merged with the
+configs from the defaults list
+(see [Compositon Order](advanced/defaults_list.md#composition-order)).

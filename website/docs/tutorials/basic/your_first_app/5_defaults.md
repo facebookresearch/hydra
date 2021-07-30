@@ -49,6 +49,11 @@ The defaults are ordered:
  * If multiple configs define the same value, the last one wins. 
  * If multiple configs contribute to the same dictionary, the result is the combined dictionary.
 
+If your `config.yaml` file defines additional keys and values (outside of the
+defaults list), you may wish to control the way that these keys/values are
+combined with the configs from the defaults list.
+This can be controlled by inserting the `_self_` keyword into the defaults list.
+See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
 
 #### Overriding a config group default
 
