@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 from pathlib import Path
 from typing import Any, List
 
@@ -11,6 +12,7 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
+import optuna
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
@@ -118,12 +120,16 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-optuna-example"
     cmd = [
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.n_trials=100",
-        "hydra.sweeper.n_jobs=8",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=1",
+        "hydra.sweeper.storage=" + storage,
+        "hydra.sweeper.study_name=" + study_name,
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
     ]
@@ -134,14 +140,16 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         ]
     run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    study = optuna.load_study(storage=storage, study_name=study_name)
+    best_trial = study.best_trial
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
-    assert returns["best_params"]["x"] == 0
+    assert returns["best_params"]["x"] == best_trial.params["x"]
     if with_commandline:
         assert "y" not in returns["best_params"]
     else:
-        assert returns["best_params"]["y"] == 0
-    assert returns["best_value"] == 0
+        assert returns["best_params"]["y"] == best_trial.params["y"]
+    assert returns["best_value"] == best_trial.value
 
 
 @mark.parametrize("with_commandline", (True, False))
