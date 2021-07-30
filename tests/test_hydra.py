@@ -1436,7 +1436,9 @@ def test_hydra_deprecation_warning(
         "tests/test_apps/deprecation_warning/my_app.py",
         f"hydra.run.dir={tmpdir}",
     ]
-    env = {"HYDRA_DEPRECATION_WARNINGS_AS_ERRORS": "1"} if env_deprecation_err else {}
+    env = os.environ.copy()
+    if env_deprecation_err:
+        env["HYDRA_DEPRECATION_WARNINGS_AS_ERRORS"] = "1"
     _, err = run_python_script(
         cmd, env=env, allow_warnings=True, print_error=False, raise_exception=False
     )
