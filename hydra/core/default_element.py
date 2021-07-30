@@ -261,6 +261,9 @@ class InputDefault:
     def is_override(self) -> bool:
         raise NotImplementedError()
 
+    def is_external_append(self) -> bool:
+        raise NotImplementedError()
+
 
 @dataclass
 class VirtualRoot(InputDefault):
@@ -304,6 +307,9 @@ class VirtualRoot(InputDefault):
         raise NotImplementedError()
 
     def is_override(self) -> bool:
+        return False
+
+    def is_external_append(self) -> bool:
         return False
 
 
@@ -420,6 +426,9 @@ class ConfigDefault(InputDefault):
     def is_override(self) -> bool:
         return False
 
+    def is_external_append(self) -> bool:
+        return False
+
 
 _legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
 
@@ -436,6 +445,8 @@ class GroupDefault(InputDefault):
     deleted: Optional[bool] = None
 
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
+    # True if this item was added using +foo=bar from the external overrides
+    external_append: bool = field(default=False, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
@@ -552,6 +563,9 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
         if default_pkg != self.get_package() and self.package is not None:
             key = f"{key}@{self.package}"
         return key
+
+    def is_external_append(self) -> bool:
+        return self.external_append
 
 
 @dataclass
