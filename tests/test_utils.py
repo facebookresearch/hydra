@@ -159,22 +159,34 @@ class TestRunAndReport:
         stderr_output = mock_stderr.read()
         assert_regex_match(expected_traceback_regex, stderr_output)
 
-    def test_getmodule_returns_none(self) -> None:
+    def test_simplified_traceback_failure(self) -> None:
+        """
+        Test that a full traceback is printed in the case where an exception
+        occurs during the simplified traceback logic.
+        """
         demo_func = self.DemoFunctions.omegaconf_job_wrapper
         expected_traceback_regex = dedent(
             r"""
-            .*
-            .*
-            .*
-            .*
-            .*
+            Traceback \(most recent call last\):$
+              File "[^"]+", line \d+, in run_and_report$
+                return func\(\)$
+              File "[^"]+", line \d+, in omegaconf_job_wrapper$
+                run_job\(\)$
+              File "[^"]+", line \d+, in run_job$
+                job_calling_omconf\(\)$
+              File "[^"]+", line \d+, in job_calling_omconf$
+                OmegaConf.resolve(123)  # type: ignore
+              File "[^"]+", line \d+, in resolve$
+                raise ValueError(
+            ValueError: Invalid config type \(int\), expected an OmegaConf Container$
             """
         )
         mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr), patch(
-            "inspect.getmodule", new=lambda *args: None
-        ):
-            run_and_report(demo_func)
+        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+            # patch `inspect.getmodule` so that an exception will occur in the
+            # simplified traceback logic:
+            with patch("inspect.getmodule", new=lambda *args: None):
+                run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
         assert_regex_match(expected_traceback_regex, stderr_output)
