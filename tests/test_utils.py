@@ -120,7 +120,7 @@ class TestRunAndReport:
                     assert False$
                     """
                 ),
-                id="simple_failure"
+                id="simple_failure_full_traceback",
             ),
             param(
                 DemoFunctions.run_job_wrapper,
@@ -134,7 +134,7 @@ class TestRunAndReport:
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                     """
                 ),
-                id="run_job_failure"
+                id="strip_run_job_from_top_of_stack",
             ),
             param(
                 DemoFunctions.omegaconf_job_wrapper,
@@ -147,7 +147,7 @@ class TestRunAndReport:
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                     """
                 ),
-                id="run_job_failure_with_omegaconf"
+                id="strip_omegaconf_from_bottom_of_stack",
             ),
         ],
     )
