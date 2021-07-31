@@ -158,3 +158,23 @@ class TestRunAndReport:
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
         assert_regex_match(expected_traceback_regex, stderr_output)
+
+    def test_getmodule_returns_none(self) -> None:
+        demo_func = self.DemoFunctions.omegaconf_job_wrapper
+        expected_traceback_regex = dedent(
+            r"""
+            .*
+            .*
+            .*
+            .*
+            .*
+            """
+        )
+        mock_stderr = io.StringIO()
+        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr), patch(
+            "inspect.getmodule", new=lambda *args: None
+        ):
+            run_and_report(demo_func)
+        mock_stderr.seek(0)
+        stderr_output = mock_stderr.read()
+        assert_regex_match(expected_traceback_regex, stderr_output)
