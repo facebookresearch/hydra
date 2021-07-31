@@ -7,7 +7,7 @@ from typing import Any
 from unittest.mock import patch
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, raises, param
+from pytest import mark, param, raises
 
 from hydra import utils
 from hydra._internal.utils import run_and_report
