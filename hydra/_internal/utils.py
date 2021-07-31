@@ -7,7 +7,7 @@ import sys
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
-from types import FrameType
+from types import FrameType, TracebackType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
 from omegaconf.errors import OmegaConfBaseException
@@ -223,7 +223,7 @@ def run_and_report(func: Any) -> Any:
                 # It is possible to add additional libraries to sanitize from the bottom later,
                 # maybe even make it configurable.
 
-                tb: Any = ex.__traceback__
+                tb = ex.__traceback__
                 search_max = 10
                 # strip Hydra frames from start of stack
                 # will strip until it hits run_job()
@@ -243,7 +243,7 @@ def run_and_report(func: Any) -> Any:
                     sys.exit(1)
 
                 # strip OmegaConf frames from bottom of stack
-                end = tb
+                end: Optional[TracebackType] = tb
                 num_frames = 0
                 while end is not None:
                     frame = end.tb_frame
@@ -276,6 +276,7 @@ def run_and_report(func: Any) -> Any:
                     added = added + 1
                     cur.tb_next = FakeTracebackType()
                     cur = cur.tb_next
+                    assert iter_tb.tb_next is not None
                     iter_tb = iter_tb.tb_next
 
                 print_exception(etype=None, value=ex, tb=final_tb)  # type: ignore
