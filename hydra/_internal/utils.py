@@ -248,8 +248,7 @@ def run_and_report(func: Any) -> Any:
                 while end is not None:
                     frame = end.tb_frame
                     mdl = inspect.getmodule(frame)
-                    if mdl is None:
-                        break
+                    assert mdl is not None
                     name = mdl.__name__
                     if name.startswith("omegaconf."):
                         break
