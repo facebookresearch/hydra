@@ -151,9 +151,7 @@ class TestRunAndReport:
             ),
         ],
     )
-    def test_failure(
-        self, demo_func: Any, expected_traceback_regex: str
-    ) -> None:
+    def test_failure(self, demo_func: Any, expected_traceback_regex: str) -> None:
         mock_stderr = io.StringIO()
         with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
             run_and_report(demo_func)
