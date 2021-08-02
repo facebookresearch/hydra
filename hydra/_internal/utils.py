@@ -294,7 +294,7 @@ def run_and_report(func: Any) -> Any:
                     lineno = ex2.__traceback__.tb_lineno
                     sys.stderr.write(repr(ex2) + f", {fname}:{lineno}" + os.linesep)
                 else:  # pragma: no cover
-                    sys.stderr.write(repr(ex2))
+                    sys.stderr.write(repr(ex2) + os.linesep)
                 raise ex
         sys.exit(1)
 
