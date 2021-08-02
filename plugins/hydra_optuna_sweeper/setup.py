@@ -27,7 +27,7 @@ setup(
     ],
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "optuna",
+        "optuna>=2.5.0",
     ],
     include_package_data=True,
 )
