@@ -168,7 +168,7 @@ class TestRunAndReport:
         expected_traceback_regex = dedent(
             r"""
             An error occurred during Hydra's exception formatting:$
-            AssertionError\(.*\), [^\s\d]+\.py:\d+$
+            AssertionError\(.*\), \S+\.py:\d+$
             """
         )
         mock_stderr = io.StringIO()
