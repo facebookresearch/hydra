@@ -175,9 +175,9 @@ class TestRunAndReport:
               File "[^"]+", line \d+, in run_job$
                 job_calling_omconf\(\)$
               File "[^"]+", line \d+, in job_calling_omconf$
-                OmegaConf.resolve(123)  # type: ignore
+                OmegaConf.resolve\(123\)  # type: ignore
               File "[^"]+", line \d+, in resolve$
-                raise ValueError(
+                raise ValueError\(
             ValueError: Invalid config type \(int\), expected an OmegaConf Container$
             """
         )
