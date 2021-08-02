@@ -161,28 +161,20 @@ class TestRunAndReport:
 
     def test_simplified_traceback_failure(self) -> None:
         """
-        Test that a full traceback is printed in the case where an exception
-        occurs during the simplified traceback logic.
+        Test that a warning is printed and the original exception is re-raised
+        when an exception occurs during the simplified traceback logic.
         """
-        demo_func = self.DemoFunctions.omegaconf_job_wrapper
+        demo_func = self.DemoFunctions.run_job_wrapper
         expected_traceback_regex = dedent(
             r"""
-            Traceback \(most recent call last\):$
-              File "[^"]+", line \d+, in run_and_report$
-                return func\(\)$
-              File "[^"]+", line \d+, in omegaconf_job_wrapper$
-                run_job\(\)$
-              File "[^"]+", line \d+, in run_job$
-                job_calling_omconf\(\)$
-              File "[^"]+", line \d+, in job_calling_omconf$
-                OmegaConf.resolve\(123\)  # type: ignore
-              File "[^"]+", line \d+, in resolve$
-                raise ValueError\(
-            ValueError: Invalid config type \(int\), expected an OmegaConf Container$
+            An error occurred during Hydra's exception formatting:$
+            AssertionError\(.*\), [^\s\d]+\.py:\d+$
             """
         )
         mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+        with raises(AssertionError, match="nested_err"), patch(
+            "sys.stderr", new=mock_stderr
+        ):
             # patch `inspect.getmodule` so that an exception will occur in the
             # simplified traceback logic:
             with patch("inspect.getmodule", new=lambda *args: None):

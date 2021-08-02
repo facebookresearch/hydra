@@ -284,8 +284,18 @@ def run_and_report(func: Any) -> Any:
                 sys.stderr.write(
                     "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
                 )
-            except Exception:
-                print_exception(etype=None, value=ex, tb=ex.__traceback__)
+            except Exception as ex2:
+                sys.stderr.write(
+                    "An error occurred during Hydra's exception formatting:"
+                    + os.linesep
+                )
+                if ex2.__traceback__ is not None:
+                    fname = ex2.__traceback__.tb_frame.f_code.co_filename
+                    lineno = ex2.__traceback__.tb_lineno
+                    sys.stderr.write(repr(ex2) + f", {fname}:{lineno}" + os.linesep)
+                else:  # pragma: no cover
+                    sys.stderr.write(repr(ex2))
+                raise ex
         sys.exit(1)
 
 
