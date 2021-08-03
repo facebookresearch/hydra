@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import Any, List
 
+import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -12,7 +13,6 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
-import optuna
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
