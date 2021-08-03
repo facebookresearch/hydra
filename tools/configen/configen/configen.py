@@ -237,7 +237,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     )
 
 
-@hydra.main(config_name="configen_schema")
+@hydra.main(config_path=None, config_name="configen_schema")
 def main(cfg: Config):
     if cfg.init_config_dir is not None:
         init_config(cfg.init_config_dir)

@@ -27,6 +27,7 @@ This will generate a basic config similar to:
 $ cat conf/configen.yaml
 defaults:
   - configen_schema
+  - _self_
 
 configen:
   # output directory

@@ -86,7 +86,7 @@ Unlike Python, Hydra's range can be used with both integer and floating-point nu
 In both cases, the range represents a discrete list of values.
 ```python title="Signature"
 def range(
-    start: Union[int, float], stop: Union[int, float], step: Union[int, float] = 1
+    start: Union[int, float], stop: Optional[Union[int, float]] = None, step: Union[int, float] = 1
 ) -> RangeSweep:
     """
     Range is defines a sweeep over a range of integer or floating-point values.
@@ -98,9 +98,11 @@ def range(
 ```
 
 ```python title="Examples"
+num=range(5)                          # 0,1,2,3,4
 num=range(0,5)                        # 0,1,2,3,4
 num=range(0,5,2)                      # 0,2,4
 num=range(0,10,3.3)                   # 0.0,3.3,6.6,9.9
+num=range(-5,step=-1)                 # 0,-1,-2,-3,-4
 ```
 
 ### Interval sweep

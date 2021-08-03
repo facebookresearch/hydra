@@ -1,8 +1,11 @@
 defaults:
   - db: mysql
+  - _self_
 
 app:
   user: ${oc.env:USER}
 
   num1: 10
   num2: 20
+
+db: ???
