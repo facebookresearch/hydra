@@ -354,6 +354,7 @@ def _update_overrides(
     interpolated_subtree: bool,
 ) -> None:
     seen_override = False
+    seen_legacy_override = False
     last_override_seen = None
     for d in defaults_list:
         if d.is_self():
@@ -365,20 +366,33 @@ def _update_overrides(
             assert d.group is not None
             legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
 
-        if seen_override and not (
+        if (seen_override or seen_legacy_override) and not (
             d.is_override() or d.is_external_append() or legacy_hydra_override
         ):
             assert isinstance(last_override_seen, GroupDefault)
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
             oval = last_override_seen.get_name()
-            raise ConfigCompositionException(
-                dedent(
-                    f"""\
-                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
-                    Overrides must be at the end of the defaults list"""
+            dkey = d.get_override_key()
+            dval = d.get_name()
+            if seen_override:
+                raise ConfigCompositionException(
+                    dedent(
+                        f"""\
+                        In {pcp}: Override '{okey} : {oval}' is defined before '{dkey}: {dval}'.
+                        Overrides must be at the end of the defaults list"""
+                    )
                 )
-            )
+            elif seen_legacy_override:
+                warnings.warn(
+                    dedent(
+                        f"""\
+                        In {pcp}: Legacy override '{okey} : {oval}' is defined before '{dkey} : {dval}'.
+                        Overrides should be at the end of the defaults list.
+                        """
+                    ),
+                    UserWarning,
+                )
 
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
@@ -395,7 +409,10 @@ def _update_overrides(
                 warnings.warn(msg, UserWarning)
 
             if d.override:
-                seen_override = True
+                if legacy_hydra_override:
+                    seen_legacy_override = True
+                else:
+                    seen_override = True
                 last_override_seen = d
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
