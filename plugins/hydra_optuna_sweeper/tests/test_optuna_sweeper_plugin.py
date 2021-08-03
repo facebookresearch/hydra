@@ -128,8 +128,8 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
-        "hydra.sweeper.storage=" + storage,
-        "hydra.sweeper.study_name=" + study_name,
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
     ]
