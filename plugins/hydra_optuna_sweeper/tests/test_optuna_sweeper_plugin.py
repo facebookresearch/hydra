@@ -150,6 +150,8 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     else:
         assert returns["best_params"]["y"] == best_trial.params["y"]
     assert returns["best_value"] == best_trial.value
+    # 95th percentile with 1000 different seed values.
+    assert returns["best_value"] <= 6.25
 
 
 @mark.parametrize("with_commandline", (True, False))
