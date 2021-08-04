@@ -173,6 +173,11 @@ def upload_and_install_wheels(
     )
 
 
+def parse_python_minor_version(version: str) -> str:
+    micro_start = version.rfind(".")
+    return version[:micro_start]
+
+
 def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
@@ -190,9 +195,11 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
         connect_config, cmd="python --version", with_output=True
     ).decode()
     remote_python = out.split()[1]
+
     assert (
-        local_python == remote_python
+        parse_python_minor_version(local_python) == parse_python_minor_version(remote_python)
     ), f"Python version mismatch, local={local_python}, remote={remote_python}"
+
 
 
 @mark.skipif(sys.platform.startswith("win"), reason=win_msg)
