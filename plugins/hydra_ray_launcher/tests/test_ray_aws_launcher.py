@@ -43,9 +43,7 @@ cluster_name = "IntegrationTest-" + "".join(
     [random.choice(string.ascii_letters + string.digits) for n in range(5)]
 )
 win_msg = "Ray doesn't support Windows."
-cur_py_version = (
-    f"{sys.version_info.major}.{sys.version_info.minor}"
-)
+cur_py_version = f"{sys.version_info.major}.{sys.version_info.minor}"
 
 aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
 try:
@@ -196,10 +194,9 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     ).decode()
     remote_python = out.split()[1]
 
-    assert (
-        parse_python_minor_version(local_python) == parse_python_minor_version(remote_python)
+    assert parse_python_minor_version(local_python) == parse_python_minor_version(
+        remote_python
     ), f"Python version mismatch, local={local_python}, remote={remote_python}"
-
 
 
 @mark.skipif(sys.platform.startswith("win"), reason=win_msg)
