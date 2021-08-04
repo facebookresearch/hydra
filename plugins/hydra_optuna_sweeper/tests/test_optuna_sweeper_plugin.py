@@ -126,11 +126,11 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_trials=40",
         "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
-        "hydra/sweeper/sampler=random",
+        "hydra/sweeper/sampler=tpe",
         "hydra.sweeper.sampler.seed=123",
     ]
     if with_commandline:
@@ -150,8 +150,8 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     else:
         assert returns["best_params"]["y"] == best_trial.params["y"]
     assert returns["best_value"] == best_trial.value
-    # 95th percentile with 1000 different seed values.
-    assert returns["best_value"] <= 6.25
+    # 99th percentile with 1000 different seed values.
+    assert returns["best_value"] <= 0.25
 
 
 @mark.parametrize("with_commandline", (True, False))
