@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import decimal
 import fnmatch
-import warnings
 from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
@@ -12,6 +11,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -485,8 +485,7 @@ class Override:
         if self.package is not None and "_name_" in self.package:
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            warnings.warn(
-                category=UserWarning,
+            deprecation_warning(
                 message=dedent(
                     f"""\
                     In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}

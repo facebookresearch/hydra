@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # DEPRECATED: remove in 1.2
 import copy
-import warnings
 from typing import Any, Optional
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
 from hydra.initialize import _UNSPECIFIED_
@@ -32,8 +32,7 @@ class initialize:
     ) -> None:
         from hydra import initialize as real_initialize
 
-        warnings.warn(
-            category=UserWarning,
+        deprecation_warning(
             message="hydra.experimental.initialize() is no longer experimental."
             " Use hydra.initialize()",
         )
@@ -65,8 +64,7 @@ class initialize_config_module:
     def __init__(self, config_module: str, job_name: str = "app") -> None:
         from hydra import initialize_config_module as real_initialize_config_module
 
-        warnings.warn(
-            category=UserWarning,
+        deprecation_warning(
             message="hydra.experimental.initialize_config_module() is no longer experimental."
             " Use hydra.initialize_config_module().",
         )
@@ -97,8 +95,7 @@ class initialize_config_dir:
     def __init__(self, config_dir: str, job_name: str = "app") -> None:
         from hydra import initialize_config_dir as real_initialize_config_dir
 
-        warnings.warn(
-            category=UserWarning,
+        deprecation_warning(
             message="hydra.experimental.initialize_config_dir() is no longer experimental."
             " Use hydra.initialize_config_dir().",
         )

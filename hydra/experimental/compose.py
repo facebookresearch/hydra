@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # DEPRECATED: remove in 1.2
-import warnings
 from typing import List, Optional
 
 from omegaconf import DictConfig
+
+from hydra._internal.deprecation_warning import deprecation_warning
 
 
 def compose(
@@ -14,8 +15,7 @@ def compose(
 ) -> DictConfig:
     from hydra import compose as real_compose
 
-    warnings.warn(
-        category=UserWarning,
+    deprecation_warning(
         message="hydra.experimental.compose() is no longer experimental."
         " Use hydra.compose()",
     )

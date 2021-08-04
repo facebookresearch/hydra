@@ -365,12 +365,13 @@ def run_python_script(
     env: Any = None,
     allow_warnings: bool = False,
     print_error: bool = True,
+    raise_exception: bool = True,
 ) -> Tuple[str, str]:
     if allow_warnings:
         cmd = [sys.executable] + cmd
     else:
         cmd = [sys.executable, "-Werror"] + cmd
-    return run_process(cmd, env, print_error)
+    return run_process(cmd, env, print_error, raise_exception)
 
 
 def run_process(
@@ -463,3 +464,21 @@ def assert_regex_match(
                 from_name=from_name,
                 to_name=to_name,
             )
+
+
+def assert_multiline_regex_search(
+    pattern: str, string: str, from_name: str = "Expected", to_name: str = "Actual"
+) -> None:
+    """Check that `pattern` (which can be a regex expression)
+    matches the corresponding lines of `string` string.
+    In case the regex match fails, we display the diff as if `pattern` was a regular string.
+    """
+    pattern = normalize_newlines(pattern)
+    string = normalize_newlines(string)
+    if re.search(pattern, string, flags=re.MULTILINE) is None:
+        print("\n-------- PATTERN: -----------")
+        print(pattern)
+        print("---------- STRING: ------------")
+        print(string)
+        print("-------------------------------")
+        assert False, "Regex pattern did not match"
