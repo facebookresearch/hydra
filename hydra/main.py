@@ -2,10 +2,10 @@
 import functools
 from textwrap import dedent
 from typing import Any, Callable, Optional
-from warnings import warn
 
 from omegaconf import DictConfig
 
+from ._internal.deprecation_warning import deprecation_warning
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
 
@@ -26,8 +26,7 @@ def main(
     # in 1.2, the default config_path should be changed to None
     if config_path is _UNSPECIFIED_:
         url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-        warn(
-            category=UserWarning,
+        deprecation_warning(
             message=dedent(
                 f"""
             config_path is not specified in @hydra.main().

@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import warnings
 from textwrap import dedent
 from typing import List, Optional
 
@@ -7,6 +6,8 @@ from omegaconf import DictConfig, OmegaConf, open_dict
 
 from hydra.core.global_hydra import GlobalHydra
 from hydra.types import RunMode
+
+from ._internal.deprecation_warning import deprecation_warning
 
 
 def compose(
@@ -45,13 +46,12 @@ def compose(
 
     if strict is not None:
         # DEPRECATED: remove in 1.2
-        warnings.warn(
+        deprecation_warning(
             dedent(
-                """\
-
-        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
-        See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
-        """
+                """
+                The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+                See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+                """
             )
         )
         OmegaConf.set_struct(cfg, strict)
