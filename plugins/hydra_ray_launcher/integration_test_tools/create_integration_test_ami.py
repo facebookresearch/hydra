@@ -34,6 +34,8 @@ def set_up_machine(cfg: DictConfig) -> None:
     security_group_id = cfg.security_group_id
     assert security_group_id != "", "Security group cannot be empty!"
 
+    python_versions = cfg.python_versions
+
     # set up security group rules to allow pip install
     _run_command(
         f"aws ec2 authorize-security-group-egress --group-id {security_group_id} "
@@ -49,19 +51,8 @@ def set_up_machine(cfg: DictConfig) -> None:
         _run_command(
             f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "
         )
-        _run_command("conda update --all -y")
-        output = _run_command("conda search python").split("\n")
 
-        # gather all the python versions and install conda envs
-        versions = set()
-        for o in output:
-            o = o.split()
-            if len(o) > 2 and o[0] == "python" and float(o[1][:3]) >= 3.6:
-
-                versions.add(o[1])
-        print(f"Found python versions {sorted( versions )}")
-
-        for v in versions:
+        for v in python_versions:
             print(f"Setting up conda env for py version {v}")
             _run_command(
                 f"ray exec {yaml} 'python ./setup_integration_test_ami.py {v}' "

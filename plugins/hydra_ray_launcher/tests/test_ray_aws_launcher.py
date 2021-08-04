@@ -44,7 +44,7 @@ cluster_name = "IntegrationTest-" + "".join(
 )
 win_msg = "Ray doesn't support Windows."
 cur_py_version = (
-    f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    f"{sys.version_info.major}.{sys.version_info.minor}"
 )
 
 aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
@@ -56,7 +56,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0e96acce4111ef8bb")
+ami = os.environ.get("AWS_RAY_AMI", "ami-01a4c55662261264a")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
