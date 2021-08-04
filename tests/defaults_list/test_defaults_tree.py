@@ -763,6 +763,31 @@ def test_two_group_defaults_different_pkgs(
             ),
             id="legacy_override_hydra+external",
         ),
+        param(
+            "legacy_override_hydra_wrong_order",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="legacy_override_hydra_wrong_order"),
+                        children=[
+                            GroupDefault(group="group1", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="legacy_override_hydra_wrong_order",
+        ),
     ],
 )
 def test_legacy_hydra_overrides_from_primary_config(
@@ -774,6 +799,7 @@ def test_legacy_hydra_overrides_from_primary_config(
         """\
         Invalid overriding of hydra/help:
         Default list overrides requires 'override' keyword.
+        Note: in Hydra 1.2, overrides will only be allowed to appear at the end of the defaults list.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
@@ -829,63 +855,6 @@ def test_legacy_hydra_overrides_from_primary_config_2(
     assert len(recwarn) == 2
     assert "Invalid overriding of hydra/help:" in recwarn.list[0].message.args[0]
     assert "Invalid overriding of hydra/output:" in recwarn.list[1].message.args[0]
-
-
-@mark.parametrize(
-    "config_name,overrides,expected",
-    [
-        param(
-            "legacy_override_hydra_wrong_order",
-            [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom1"),
-                            GroupDefault(group="output", value="default"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra_wrong_order"),
-                        children=[
-                            GroupDefault(group="group1", value="file1"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                ],
-            ),
-            id="legacy_override_hydra_wrong_order",
-        ),
-    ],
-)
-def test_legacy_hydra_overrides_from_primary_config_3(
-    config_name: str, overrides: List[str], expected: DefaultsTreeNode, recwarn: Any
-) -> None:
-    """
-    Override two Hydra config groups using legacy notation
-    """
-
-    _test_defaults_tree_impl(
-        config_name=config_name,
-        input_overrides=overrides,
-        expected=expected,
-        prepend_hydra=True,
-    )
-
-    assert len(recwarn) == 2
-    assert "Invalid overriding of hydra/help:" in recwarn.list[0].message.args[0]
-    assert (
-        dedent(
-            """\
-            Legacy override 'hydra/help : custom1' is defined before 'group1 : file1'.
-            Overrides should be at the end of the defaults list.
-            """
-        )
-        in recwarn.list[1].message.args[0]
-    )
 
 
 @mark.parametrize(
