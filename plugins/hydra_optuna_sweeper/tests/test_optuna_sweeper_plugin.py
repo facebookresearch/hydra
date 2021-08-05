@@ -126,7 +126,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
-        "hydra.sweeper.n_trials=40",
+        "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
@@ -150,8 +150,11 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     else:
         assert returns["best_params"]["y"] == best_trial.params["y"]
     assert returns["best_value"] == best_trial.value
-    # 99th percentile with 1000 different seed values.
-    assert returns["best_value"] <= 0.25
+    # Check the search performance of the TPE sampler.
+    # The threshold is the 95th percentile calculated with 1000 different seed values
+    # to make the test robust against the detailed implementation of the sampler.
+    # See https://github.com/facebookresearch/hydra/pull/1746#discussion_r681549830.
+    assert returns["best_value"] <= 2.27
 
 
 @mark.parametrize("with_commandline", (True, False))
