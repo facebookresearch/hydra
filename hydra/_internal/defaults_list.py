@@ -390,7 +390,6 @@ def _update_overrides(
                     f"""\
                     In {parent.get_config_path()}: Invalid overriding of {d.group}:
                     Default list overrides requires 'override' keyword.
-                    Note: in Hydra 1.2, overrides will only be allowed to appear at the end of the defaults list.
                     See {url} for more information.
                     """
                 )

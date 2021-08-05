@@ -799,7 +799,6 @@ def test_legacy_hydra_overrides_from_primary_config(
         """\
         Invalid overriding of hydra/help:
         Default list overrides requires 'override' keyword.
-        Note: in Hydra 1.2, overrides will only be allowed to appear at the end of the defaults list.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
