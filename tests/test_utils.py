@@ -68,8 +68,27 @@ def test_to_absolute_path_without_hydra(
 
 
 class TestRunAndReport:
+    """
+    Test the `hydra._internal.utils.run_and_report` function.
+
+    def run_and_report(func: Any) -> Any: ...
+
+    This class defines several test methods:
+      test_success:
+          a simple test case where `run_and_report(func)` succeeds.
+      test_failure:
+          test when `func` raises an exception, and `run_and_report(func)`
+          prints a nicely-formatted error message
+      test_simplified_traceback_failure:
+          test when printing a nicely-formatted error message fails, so
+          `run_and_report` falls back to re-raising the exception from `func`.
+    """
+
     class DemoFunctions:
-        """Demo inputs for `run_and_report`"""
+        """
+        The methods of this `DemoFunctions` class are passed to
+        `run_and_report` as the func argument.
+        """
 
         @staticmethod
         def success_func() -> Any:
@@ -81,6 +100,12 @@ class TestRunAndReport:
 
         @staticmethod
         def run_job_wrapper() -> None:
+            """
+            Trigger special logic in `run_and_report` that looks for a function
+            called "run_job" in the stack and strips away the leading stack
+            frames.
+            """
+
             def run_job() -> None:
                 def nested_error() -> None:
                     assert False, "nested_err"
@@ -91,10 +116,17 @@ class TestRunAndReport:
 
         @staticmethod
         def omegaconf_job_wrapper() -> None:
+            """
+            Trigger special logic in `run_and_report` that looks for the
+            `omegaconf` module in the stack and strips away the bottom stack
+            frames.
+            """
+
             def run_job() -> None:
                 def job_calling_omconf() -> None:
                     from omegaconf import OmegaConf
 
+                    # The below causes an exception:
                     OmegaConf.resolve(123)  # type: ignore
 
                 job_calling_omconf()
