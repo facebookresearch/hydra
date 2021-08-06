@@ -1,18 +1,21 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import io
 import os
+import re
 from pathlib import Path
 from textwrap import dedent
-from typing import Any
+from typing import Any, Optional
 from unittest.mock import patch
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, param, raises
+from pytest import mark, param, raises, warns
 
 from hydra import utils
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import run_and_report
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
+from hydra.errors import HydraDeprecationError
 from hydra.test_utils.test_utils import assert_regex_match
 
 
@@ -65,6 +68,28 @@ def test_to_absolute_path_without_hydra(
     path = str(Path(path))
     expected = str(Path(expected).absolute())
     assert utils.to_absolute_path(path) == expected
+
+
+@mark.parametrize(
+    "env_setting,expected_error",
+    [
+        param(None, False, id="env_unset"),
+        param("", False, id="env_empty"),
+        param("1", True, id="env_set"),
+    ],
+)
+def test_deprecation_warning(
+    monkeypatch: Any, env_setting: Optional[str], expected_error: bool
+) -> None:
+    msg = "Feature FooBar is deprecated"
+    if env_setting is not None:
+        monkeypatch.setenv("HYDRA_DEPRECATION_WARNINGS_AS_ERRORS", env_setting)
+    if expected_error:
+        with raises(HydraDeprecationError, match=re.escape(msg)):
+            deprecation_warning(msg)
+    else:
+        with warns(UserWarning, match=re.escape(msg)):
+            deprecation_warning(msg)
 
 
 class TestRunAndReport:

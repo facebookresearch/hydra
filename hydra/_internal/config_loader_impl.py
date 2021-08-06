@@ -34,6 +34,8 @@ from hydra.errors import ConfigCompositionException, MissingConfigException
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 from hydra.types import RunMode
 
+from .deprecation_warning import deprecation_warning
+
 
 class ConfigLoaderImpl(ConfigLoader):
     """
@@ -423,7 +425,7 @@ class ConfigLoaderImpl(ConfigLoader):
                             )
                         )
                     else:
-                        warnings.warn(
+                        deprecation_warning(
                             dedent(
                                 f"""\
 
@@ -431,7 +433,6 @@ class ConfigLoaderImpl(ConfigLoader):
                                 This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
                                 See {url} for migration instructions."""
                             ),
-                            category=UserWarning,
                             stacklevel=11,
                         )
 

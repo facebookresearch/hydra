@@ -43,9 +43,7 @@ cluster_name = "IntegrationTest-" + "".join(
     [random.choice(string.ascii_letters + string.digits) for n in range(5)]
 )
 win_msg = "Ray doesn't support Windows."
-cur_py_version = (
-    f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-)
+cur_py_version = f"{sys.version_info.major}.{sys.version_info.minor}"
 
 aws_not_configured_msg = "AWS credentials not configured correctly. Skipping AWS tests."
 try:
@@ -56,7 +54,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0e96acce4111ef8bb")
+ami = os.environ.get("AWS_RAY_AMI", "ami-01a4c55662261264a")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -173,6 +171,11 @@ def upload_and_install_wheels(
     )
 
 
+def parse_python_minor_version(version: str) -> str:
+    micro_start = version.rfind(".")
+    return version[:micro_start]
+
+
 def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
@@ -190,8 +193,9 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
         connect_config, cmd="python --version", with_output=True
     ).decode()
     remote_python = out.split()[1]
-    assert (
-        local_python == remote_python
+
+    assert parse_python_minor_version(local_python) == parse_python_minor_version(
+        remote_python
     ), f"Python version mismatch, local={local_python}, remote={remote_python}"
 
 

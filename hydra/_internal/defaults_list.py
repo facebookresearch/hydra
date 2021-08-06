@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import copy
-import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
@@ -22,6 +21,8 @@ from hydra.core.default_element import (
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 from hydra.errors import ConfigCompositionException
+
+from .deprecation_warning import deprecation_warning
 
 cs = ConfigStore.instance()
 
@@ -392,7 +393,7 @@ def _update_overrides(
                     See {url} for more information.
                     """
                 )
-                warnings.warn(msg, UserWarning)
+                deprecation_warning(msg)
 
             if d.override:
                 seen_override = True
