@@ -396,7 +396,8 @@ def _update_overrides(
                 deprecation_warning(msg)
 
             if d.override:
-                seen_override = True
+                if not legacy_hydra_override:
+                    seen_override = True
                 last_override_seen = d
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,

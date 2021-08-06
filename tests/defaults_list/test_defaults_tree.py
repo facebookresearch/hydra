@@ -763,6 +763,31 @@ def test_two_group_defaults_different_pkgs(
             ),
             id="legacy_override_hydra+external",
         ),
+        param(
+            "legacy_override_hydra_wrong_order",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="legacy_override_hydra_wrong_order"),
+                        children=[
+                            GroupDefault(group="group1", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="legacy_override_hydra_wrong_order",
+        ),
     ],
 )
 def test_legacy_hydra_overrides_from_primary_config(

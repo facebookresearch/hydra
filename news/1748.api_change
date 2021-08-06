@@ -1,0 +1,1 @@
+Relax handling of legacy hydra overrides in the defaults list to make migration from Hydra 1.0 to 1.1 easier
