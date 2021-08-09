@@ -68,7 +68,37 @@ db:
   ...
 ```
 
-#### Requiring users to specify a default list value
+### A Note about composition order
+The default composition order in Hydra is that values defined in a config are merged into values introduced from configs in the Defaults List - or in other words - overriding them.
+This behavior can be unintuitive when your primary config is a Structured Config, like in the example above.
+For example, if the primary config is:
+```python {6}
+@dataclass
+class Config:
+    defaults: List[Any] = field(default_factory=lambda:  [
+        "debug/activate",
+        # If you do not specify _self_, it will be appended to the end of the defaults list by default.
+        "_self_"
+    ])
+
+    debug: bool = False
+```
+And `debug/activate.yaml` is overriding the `debug` flag to `True`, the composition order would be such that debug ends up being `False`.  
+To get `debug/activate.yaml` to override this config, explicitly specify `_self_` before `debug/activate.yaml`:
+```python {4}
+@dataclass
+class Config:
+    defaults: List[Any] = field(default_factory=lambda:  [
+        "_self_",
+        "debug/activate",
+    ])
+
+    debug: bool = False
+```
+ 
+See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
+
+### Requiring users to specify a default list value
 
 Set `db` as `MISSING` to require the user to specify a value on the command line.
 

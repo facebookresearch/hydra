@@ -1,5 +1,6 @@
 defaults:
   - dataset: cifar10
+  - _self_
 
 hydra:
   searchpath:

@@ -68,6 +68,73 @@ $ python my_app.py ~db
 {}
 ```
 
+### Composition order of primary config
+Your primary config can contain both config values and a Defaults List.
+In such cases, you should add the `_self_` keyword to your defaults list to specify the composition order of the config file relative to the items in the defaults list.
+
+* If you want your primary config to override the values of configs from the Defaults List, append `_self_` to the end of the Defaults List.
+* If you want the configs from the Defaults List to override the values in your primary config, insert `_self_` as the first item in your Defaults List.
+ 
+
+<div className="row">
+
+<div className="col col--6">
+
+```yaml title="config.yaml" {3}
+defaults:
+  - db: mysql
+  - _self_
+
+db:
+  user: root
+```
+</div>
+<div className="col  col--6">
+
+```yaml title="Result config: db.user from config.yaml" {4}
+db:
+  driver: mysql  # db/mysql.yaml
+  pass: secret   # db/mysql.yaml 
+  user: root     # config.yaml
+
+
+```
+</div>
+<div className="col col--6">
+
+```yaml title="config.yaml" {2}
+defaults:
+  - _self_
+  - db: mysql
+
+db:
+  user: root
+```
+</div>
+<div className="col  col--6">
+
+```yaml title="Result config: All values from db/mysql" {4}
+db:
+  driver: mysql # db/mysql.yaml
+  pass: secret  # db/mysql.yaml
+  user: omry    # db/mysql.yaml
+
+
+```
+</div>
+</div>
+
+See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
+
+:::info
+The default composition order changed between Hydra 1.0 and Hydra 1.1.
+- **Hydra 1.0**: Configs from the defaults list are overriding the primary config
+- **Hydra 1.1**: A config is overriding the configs from the defaults list.
+
+To mitigate confusion, Hydra 1.1 issue a warning if the primary config contains both Default List and Config values, and `_self_` is not specified in the Defaults List.  
+ The warning will disappear if you add `_self_` to the Defaults List based on the desired behavior.
+:::
+
 ### Non-config group defaults
 Sometimes a config file does not belong in any config group.
 You can still load it by default. Here is an example for `some_file.yaml`.

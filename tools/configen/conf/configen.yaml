@@ -1,5 +1,6 @@
 defaults:
   - configen_schema
+  - _self_
 
 configen:
   # output directory
