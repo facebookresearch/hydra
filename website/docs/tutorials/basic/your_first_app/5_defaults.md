@@ -91,7 +91,7 @@ db:
 </div>
 <div className="col  col--6">
 
-```yaml title="Result config: db.user from config.yalm" {4}
+```yaml title="Result config: db.user from config.yaml" {4}
 db:
   driver: mysql  # db/mysql.yaml
   pass: secret   # db/mysql.yaml 
