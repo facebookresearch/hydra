@@ -8,7 +8,7 @@ import GithubLink from "@site/src/components/GithubLink"
 
 ## Basic Override syntax
 You can manipulate your configuration with overrides (via the command line or the Compose API). This includes:
-- Modifying the the `Defaults List`
+- Modifying the `Defaults List`
 - Modifying the config object
 
 Overrides matching a config group are modifying the `Defaults List`;
