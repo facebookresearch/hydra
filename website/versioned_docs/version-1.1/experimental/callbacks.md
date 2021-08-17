@@ -25,31 +25,31 @@ The full API exposed by the `hydra.experimental.callback.Callback` class is list
 
 ```python
 class Callback:
-    def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_run_start(self, config: DictConfig, **kwargs: any) -> None:
         """
         Called in RUN mode before job starts.
         """
         ...
 
-    def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_run_end(self, config: DictConfig, **kwargs: any) -> None:
         """
         Called in RUN mode after job ends.
         """
         ...
 
-    def on_multirun_start(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_multirun_start(self, config: DictConfig, **kwargs: any) -> None:
         """
         Called in MULTIRUN mode before any job starts.
         """
         ...
 
-    def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_multirun_end(self, config: DictConfig, **kwargs: any) -> None:
         """
         Called in MULTIRUN mode after all jobs end.
         """
         ...
 
-    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_job_start(self, config: DictConfig, **kwargs: any) -> None:
         """
         Called in both RUN and MULTIRUN modes, once for each Hydra job (before running
         application code).
@@ -57,7 +57,7 @@ class Callback:
         ...
 
     def on_job_end(
-        self, config: DictConfig, job_return: JobReturn, **kwargs: Any
+        self, config: DictConfig, job_return: JobReturn, **kwargs: any
     ) -> None:
         """
         Called in both RUN and MULTIRUN modes, once for each Hydra job (after running
@@ -84,7 +84,7 @@ class MyCallback(Callback):
         self.bucket = bucket
         self.file_path = file_path
 
-   def on_job_end(self, config: DictConfig, **kwargs: Any) -> None:
+   def on_job_end(self, config: DictConfig, **kwargs: any) -> None:
         print(f"Job ended,uploading...")
         # uploading...
 
