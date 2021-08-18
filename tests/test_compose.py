@@ -7,7 +7,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
-from omegaconf import OmegaConf
+from omegaconf import MISSING, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
 from hydra import compose, initialize, initialize_config_dir, initialize_config_module
@@ -682,3 +682,24 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
         cfg = compose(overrides=[], strict=strict)
     assert cfg == {}
     assert OmegaConf.is_struct(cfg) is strict
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+def test_missing_node_with_defaults_list(hydra_restore_singletons: Any) -> None:
+    @dataclass
+    class Reducer:
+        defaults: List[Any] = field(default_factory=lambda: [])
+
+    @dataclass
+    class Trainer:
+        reducer: Reducer = MISSING
+        defaults: List[Any] = field(
+            default_factory=lambda: [{"/reducer": "base_reducer"}]
+        )
+
+    cs = ConfigStore.instance()
+    cs.store(name="base_trainer", node=Trainer(), group="trainer")
+    cs.store(name="base_reducer", node=Reducer(), group="reducer")
+
+    cfg = compose("trainer/base_trainer")
+    assert cfg == {"trainer": {"reducer": {}}}
