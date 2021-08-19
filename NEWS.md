@@ -19,7 +19,7 @@
 - Fix `--cfg=job --resolve` and `--help --resolve` so that the ${hydra:...} resolver now prints properly ([#1681](https://github.com/facebookresearch/hydra/issues/1681))
 - Fix unexpected changes to defaults list in some cases when appending an experiment (+experiment=test) ([#1706](https://github.com/facebookresearch/hydra/issues/1706))
 - Fixed composition where top level of a config composed from a config group is a list ([#1724](https://github.com/facebookresearch/hydra/issues/1724))
-- Fix bug where overriding hyera config groups move than once without using the override keyword resulted in an error instead of deprecation warnings ([#1730](https://github.com/facebookresearch/hydra/issues/1730))
+- Fix bug where overriding hydra config groups more than once without using the override keyword resulted in an error instead of deprecation warnings ([#1730](https://github.com/facebookresearch/hydra/issues/1730))
 - Fix failure when sanitizing stack traces resulting from job exceptions ([#1739](https://github.com/facebookresearch/hydra/issues/1739))
 
 
