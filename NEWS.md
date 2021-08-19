@@ -127,7 +127,7 @@ There is no risk in using it if you are using 1.0.6 now as it just makes the mig
 
 ### Maintenance Changes
 
-- Limit OmegaConf depedency to 2.0 versions ([#1253](https://github.com/facebookresearch/hydra/issues/1253))
+- Limit OmegaConf dependency to 2.0 versions ([#1253](https://github.com/facebookresearch/hydra/issues/1253))
 
 
 
@@ -592,7 +592,7 @@ Hydra 1.0 is a major release introducing many new features and breaking some com
 - It is now possible to use ${override_dirname} in the output directory of a local job (#31)
 - Override_dirname separator changed from : to =, for example: foo/a:10,b:10 => foo/a=10,b=10 (#63)
 - Fixed automatic detection of missing copyright headers (#72)
-- fixed a bug that caused an empty config to be returned if specifed config file did not have a .yaml extension. (#80)
+- fixed a bug that caused an empty config to be returned if specified config file did not have a .yaml extension. (#80)
 - Multi change diff:
     - Logging config search path in verbose logging to assist debugging of config load issues
     - Saving hydra.yaml into the job dir to assist debugging hydra issues

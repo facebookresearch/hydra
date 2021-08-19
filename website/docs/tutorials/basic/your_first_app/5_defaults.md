@@ -124,7 +124,7 @@ db:
 </div>
 </div>
 
-See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
+See [Composition Order](advanced/defaults_list.md#composition-order) for more information.
 
 :::info
 The default composition order changed between Hydra 1.0 and Hydra 1.1.

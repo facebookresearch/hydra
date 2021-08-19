@@ -344,7 +344,7 @@ Below is the conversion matrix from various inputs to all supported types.
 Input are grouped by type.
 
 
-[//]: # (Convertion matrix source: https://docs.google.com/document/d/1JDZGHKk4PrZHqsTTS6ao-DQOu2eVD4ULR6uAxVUR-WI/edit#)
+[//]: # (Conversion matrix source: https://docs.google.com/document/d/1JDZGHKk4PrZHqsTTS6ao-DQOu2eVD4ULR6uAxVUR-WI/edit#)
 
 |                    	| int()       	| float()           	| str()             	| bool()                	|
 |--------------------	|-------------	|-------------------	|-------------------	|-----------------------	|

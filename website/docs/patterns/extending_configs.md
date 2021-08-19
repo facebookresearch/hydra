@@ -59,7 +59,7 @@ Output:
 ```yaml title="$ python my_app.py"
 db:
   host: localhost   # from db/base_mysql
-  port: 3307        # overriden by db/mysql.yaml 
+  port: 3307        # overridden by db/mysql.yaml 
   user: omry        # populated by db/mysql.yaml
   password: secret  # populated by db/mysql.yaml
   encoding: utf8    # added by db/mysql.yaml

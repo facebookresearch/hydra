@@ -96,7 +96,7 @@ class Config:
     debug: bool = False
 ```
  
-See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
+See [Composition Order](advanced/defaults_list.md#composition-order) for more information.
 
 ### Requiring users to specify a default list value
 
