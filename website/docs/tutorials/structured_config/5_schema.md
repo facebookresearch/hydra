@@ -287,4 +287,4 @@ This behavior is new in Hydra 1.1 and different from previous Hydra versions. As
 To address the warning while maintaining the new behavior, append `_self_` to the end of the Defaults List. Note that in some cases it may instead be desirable to add `_self_` directly after the schema and before other Defaults List elements. 
 
 
-See [Compositon Order](advanced/defaults_list.md#composition-order) for more information.
+See [Composition Order](advanced/defaults_list.md#composition-order) for more information.

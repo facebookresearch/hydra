@@ -113,4 +113,4 @@ class AdminConf:
 ```
 
 The generated code can be used by a Hydra application to instantiate the user object.
-See the [example aplication](example/my_app.py).
+See the [example application](example/my_app.py).
