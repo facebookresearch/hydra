@@ -198,7 +198,7 @@ class OptunaSweeperImpl(Sweeper):
         while n_trials_to_go > 0:
             batch_size = min(n_trials_to_go, batch_size)
 
-            trials = [study._ask() for _ in range(batch_size)]
+            trials = [study.ask() for _ in range(batch_size)]
             overrides = []
             for trial in trials:
                 for param_name, distribution in search_space.items():
@@ -234,10 +234,10 @@ class OptunaSweeperImpl(Sweeper):
                                 "The number of the values and the number of the objectives are"
                                 f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
-                    study._tell(trial, state, values)
+                    study.tell(trial=trial, state=state, values=values)
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
-                    study._tell(trial, state, values)
+                    study.tell(trial=trial, state=state, values=values)
                     raise e
 
             n_trials_to_go -= batch_size
