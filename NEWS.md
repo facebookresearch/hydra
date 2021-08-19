@@ -1,3 +1,28 @@
+1.1.1 (2021-08-19)
+==================
+
+### Features
+
+- Allow range() in override grammar to have only one argument (the stop value), e.g. range(3) ([#1664](https://github.com/facebookresearch/hydra/issues/1664))
+- Add support for a HYDRA_DEPRECATION_WARNINGS_AS_ERRORS envorinment variable. When it is set, using deprecated features causes an exception instead of a warning. ([#1689](https://github.com/facebookresearch/hydra/issues/1689))
+- To make migration from Hydra 1.0 to 1.1 easier, Hydra will now issue a warning if the primary config defines config values and Defaults List if the Defaults List does not specify `_self_` ([#1755](https://github.com/facebookresearch/hydra/issues/1755))
+
+### API Change (Renames, deprecations and removals)
+
+- Re-introduced a deprecated strict flag in the Compose API ([#1694](https://github.com/facebookresearch/hydra/issues/1694))
+- Relax handling of legacy hydra overrides in the defaults list to make migration from Hydra 1.0 to 1.1 easier ([#1748](https://github.com/facebookresearch/hydra/issues/1748))
+
+### Bug Fixes
+
+- Allow Defaults List interpolation in nested configs and document that the interpolation keys must be absolute ([#1668](https://github.com/facebookresearch/hydra/issues/1668))
+- instantiate API now supports `target` as a parameter name ([#1669](https://github.com/facebookresearch/hydra/issues/1669))
+- Fix `--cfg=job --resolve` and `--help --resolve` so that the ${hydra:...} resolver now prints properly ([#1681](https://github.com/facebookresearch/hydra/issues/1681))
+- Fix unexpected changes to defaults list in some cases when appending an experiment (+experiment=test) ([#1706](https://github.com/facebookresearch/hydra/issues/1706))
+- Fixed composition where top level of a config composed from a config group is a list ([#1724](https://github.com/facebookresearch/hydra/issues/1724))
+- Fix bug where overriding hydra config groups more than once without using the override keyword resulted in an error instead of deprecation warnings ([#1730](https://github.com/facebookresearch/hydra/issues/1730))
+- Fix failure when sanitizing stack traces resulting from job exceptions ([#1739](https://github.com/facebookresearch/hydra/issues/1739))
+
+
 1.1.0 (2021-06-09)
 ==================
 This is the biggest Hydra release yet.  
