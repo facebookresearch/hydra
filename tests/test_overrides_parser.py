@@ -402,6 +402,19 @@ def test_simple_choice_sweep(value: str, expected: Any) -> None:
             RangeSweep(start=1.0, stop=3.14, step=0.1),
             id="floats_with_step",
         ),
+        param("range(10)", RangeSweep(start=0, stop=10, step=1), id="no_start"),
+        param("range(-10)", RangeSweep(start=0, stop=-10, step=1), id="no_start_empty"),
+        param(
+            "range(-10, step=-1)",
+            RangeSweep(start=0, stop=-10, step=-1),
+            id="no_start_negative",
+        ),
+        param("range(5.5)", RangeSweep(start=0, stop=5.5, step=1), id="no_start_float"),
+        param(
+            "range(5.5, step=0.5)",
+            RangeSweep(start=0, stop=5.5, step=0.5),
+            id="no_start_step_float",
+        ),
     ],
 )
 def test_range_sweep(value: str, expected: Any) -> None:

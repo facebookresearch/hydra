@@ -51,7 +51,7 @@ In this example, we add a second config directory - `additional_conf`, next to t
 │   ├── config.yaml
 │   └── dataset
 │       └── cifar10.yaml
-├── additonal_conf
+├── additional_conf
 │   ├── __init__.py
 │   └── dataset
 │       └── imagenet.yaml
@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
 `conf/config.yaml` is the primary config for `my_app.py`, config groups `cifar10` and `imagenet` are 
 under different folders. 
-We can add `additonal_conf` to  `hydra.searchpath` for Hydra to discover `dataset/imagenet`.
+We can add `additional_conf` to  `hydra.searchpath` for Hydra to discover `dataset/imagenet`.
 
 <div className="row">
 <div className="col col--7">

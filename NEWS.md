@@ -1,3 +1,28 @@
+1.1.1 (2021-08-19)
+==================
+
+### Features
+
+- Allow range() in override grammar to have only one argument (the stop value), e.g. range(3) ([#1664](https://github.com/facebookresearch/hydra/issues/1664))
+- Add support for a HYDRA_DEPRECATION_WARNINGS_AS_ERRORS envorinment variable. When it is set, using deprecated features causes an exception instead of a warning. ([#1689](https://github.com/facebookresearch/hydra/issues/1689))
+- To make migration from Hydra 1.0 to 1.1 easier, Hydra will now issue a warning if the primary config defines config values and Defaults List if the Defaults List does not specify `_self_` ([#1755](https://github.com/facebookresearch/hydra/issues/1755))
+
+### API Change (Renames, deprecations and removals)
+
+- Re-introduced a deprecated strict flag in the Compose API ([#1694](https://github.com/facebookresearch/hydra/issues/1694))
+- Relax handling of legacy hydra overrides in the defaults list to make migration from Hydra 1.0 to 1.1 easier ([#1748](https://github.com/facebookresearch/hydra/issues/1748))
+
+### Bug Fixes
+
+- Allow Defaults List interpolation in nested configs and document that the interpolation keys must be absolute ([#1668](https://github.com/facebookresearch/hydra/issues/1668))
+- instantiate API now supports `target` as a parameter name ([#1669](https://github.com/facebookresearch/hydra/issues/1669))
+- Fix `--cfg=job --resolve` and `--help --resolve` so that the ${hydra:...} resolver now prints properly ([#1681](https://github.com/facebookresearch/hydra/issues/1681))
+- Fix unexpected changes to defaults list in some cases when appending an experiment (+experiment=test) ([#1706](https://github.com/facebookresearch/hydra/issues/1706))
+- Fixed composition where top level of a config composed from a config group is a list ([#1724](https://github.com/facebookresearch/hydra/issues/1724))
+- Fix bug where overriding hydra config groups more than once without using the override keyword resulted in an error instead of deprecation warnings ([#1730](https://github.com/facebookresearch/hydra/issues/1730))
+- Fix failure when sanitizing stack traces resulting from job exceptions ([#1739](https://github.com/facebookresearch/hydra/issues/1739))
+
+
 1.1.0 (2021-06-09)
 ==================
 This is the biggest Hydra release yet.  
@@ -80,6 +105,19 @@ Please check the API changes and deprecation sections in these release notes and
 - Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
 
 
+1.0.7 (2021-07-14)
+==================
+This release contains a few small changes to make Hydra 1.0 a bit more compatible with OmegaConf 2.1 and Hydra 1.1 to enable easier migration.
+There is no risk in using it if you are using 1.0.6 now as it just makes the migration a bit smoother in some scenarios:
+1. If you are upgrading OmegaConf to 2.1 before upgrading Hydra to 1.1.
+2. It enables some configs to be compatible with both versions in some rare cases related to the change in the default composition order in Hydra 1.1.
+
+### Maintenance Changes
+
+- Enables Hydra 1.0 to work with OmegaConf 2.1 (Manual installation of OmegaConf 2.1 is required) ([#1634](https://github.com/facebookresearch/hydra/issues/1634))
+- Hydra 1.0 ignores `_self_` in Defaults List for partial future compatibility with Hydra 1.1 ([#1712](https://github.com/facebookresearch/hydra/issues/1712))
+
+
 1.0.6 (2021-01-29)
 ==================
 
@@ -114,7 +152,7 @@ Please check the API changes and deprecation sections in these release notes and
 
 ### Maintenance Changes
 
-- Limit OmegaConf depedency to 2.0 versions ([#1253](https://github.com/facebookresearch/hydra/issues/1253))
+- Limit OmegaConf dependency to 2.0 versions ([#1253](https://github.com/facebookresearch/hydra/issues/1253))
 
 
 
@@ -579,7 +617,7 @@ Hydra 1.0 is a major release introducing many new features and breaking some com
 - It is now possible to use ${override_dirname} in the output directory of a local job (#31)
 - Override_dirname separator changed from : to =, for example: foo/a:10,b:10 => foo/a=10,b=10 (#63)
 - Fixed automatic detection of missing copyright headers (#72)
-- fixed a bug that caused an empty config to be returned if specifed config file did not have a .yaml extension. (#80)
+- fixed a bug that caused an empty config to be returned if specified config file did not have a .yaml extension. (#80)
 - Multi change diff:
     - Logging config search path in verbose logging to assist debugging of config load issues
     - Saving hydra.yaml into the job dir to assist debugging hydra issues

@@ -1,4 +1,5 @@
 defaults:
+  - _self_
   - group: null
 
 # a mapping item

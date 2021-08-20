@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 from pathlib import Path
 from typing import Any, List
 
+import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -28,8 +30,6 @@ from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 chdir_plugin_root()
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
@@ -46,8 +46,6 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
     assert set(expected.choices) == set(actual.choices)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize(
     "input, expected",
     [
@@ -81,8 +79,6 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
     check_distribution(expected, actual)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize(
     "input, expected",
     [
@@ -104,8 +100,6 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     check_distribution(expected, actual)
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -124,17 +118,19 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-optuna-example"
     cmd = [
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=8",
-        "hydra/sweeper/sampler=random",
+        "hydra.sweeper.n_jobs=1",
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
+        "hydra/sweeper/sampler=tpe",
         "hydra.sweeper.sampler.seed=123",
     ]
     if with_commandline:
@@ -144,18 +140,23 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         ]
     run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    study = optuna.load_study(storage=storage, study_name=study_name)
+    best_trial = study.best_trial
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
-    assert returns["best_params"]["x"] == 0
+    assert returns["best_params"]["x"] == best_trial.params["x"]
     if with_commandline:
         assert "y" not in returns["best_params"]
     else:
-        assert returns["best_params"]["y"] == 0
-    assert returns["best_value"] == 0
+        assert returns["best_params"]["y"] == best_trial.params["y"]
+    assert returns["best_value"] == best_trial.value
+    # Check the search performance of the TPE sampler.
+    # The threshold is the 95th percentile calculated with 1000 different seed values
+    # to make the test robust against the detailed implementation of the sampler.
+    # See https://github.com/facebookresearch/hydra/pull/1746#discussion_r681549830.
+    assert returns["best_value"] <= 2.27
 
 
-# https://github.com/pyreadline/pyreadline/issues/65
-@mark.filterwarnings("ignore::DeprecationWarning")
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [

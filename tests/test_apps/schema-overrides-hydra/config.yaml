@@ -7,4 +7,5 @@ hydra:
 
 defaults:
   - config_schema
+  - _self_
   - group: a

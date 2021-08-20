@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import List, Optional, Pattern, Union
@@ -8,6 +7,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
 
@@ -119,8 +119,7 @@ class InputDefault:
         if "_group_" in package_header or "_name_" in package_header:
             path = self.get_config_path()
             url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            warnings.warn(
-                category=UserWarning,
+            deprecation_warning(
                 message=dedent(
                     f"""\
                     In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
@@ -261,6 +260,9 @@ class InputDefault:
     def is_override(self) -> bool:
         raise NotImplementedError()
 
+    def is_external_append(self) -> bool:
+        raise NotImplementedError()
+
 
 @dataclass
 class VirtualRoot(InputDefault):
@@ -304,6 +306,9 @@ class VirtualRoot(InputDefault):
         raise NotImplementedError()
 
     def is_override(self) -> bool:
+        return False
+
+    def is_external_append(self) -> bool:
         return False
 
 
@@ -420,6 +425,9 @@ class ConfigDefault(InputDefault):
     def is_override(self) -> bool:
         return False
 
+    def is_external_append(self) -> bool:
+        return False
+
 
 _legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
 
@@ -436,6 +444,8 @@ class GroupDefault(InputDefault):
     deleted: Optional[bool] = None
 
     config_name_overridden: bool = field(default=False, compare=False, repr=False)
+    # True if this item was added using +foo=bar from the external overrides
+    external_append: bool = field(default=False, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
@@ -532,8 +542,7 @@ class GroupDefault(InputDefault):
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
 See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
-                warnings.warn(
-                    category=UserWarning,
+                deprecation_warning(
                     message=msg,
                 )
 
@@ -552,6 +561,9 @@ See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation fo
         if default_pkg != self.get_package() and self.package is not None:
             key = f"{key}@{self.package}"
         return key
+
+    def is_external_append(self) -> bool:
+        return self.external_append
 
 
 @dataclass

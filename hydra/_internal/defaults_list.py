@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import copy
+import os
 import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
@@ -22,6 +23,8 @@ from hydra.core.default_element import (
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 from hydra.errors import ConfigCompositionException
+
+from .deprecation_warning import deprecation_warning
 
 cs = ConfigStore.instance()
 
@@ -98,6 +101,7 @@ class Overrides:
                         group=override.key_or_group,
                         package=override.package,
                         value=value,
+                        external_append=True,
                     )
                 )
             else:
@@ -216,7 +220,11 @@ class DefaultsList:
     overrides: Overrides
 
 
-def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) -> bool:
+def _validate_self(
+    containing_node: InputDefault,
+    defaults: List[InputDefault],
+    has_config_content: bool,
+) -> bool:
     # check that self is present only once
     has_self = False
     has_non_override = False
@@ -231,6 +239,16 @@ def _validate_self(containing_node: InputDefault, defaults: List[InputDefault]) 
             has_self = True
 
     if not has_self and has_non_override or len(defaults) == 0:
+        # This check is here to make the migration from Hydra 1.0 to Hydra 1.1 smoother and should be removed in 1.2
+        # The warning should be removed in 1.2
+        if containing_node.primary and has_config_content and has_non_override:
+            msg = (
+                f"In '{containing_node.get_config_path()}': Defaults list is missing `_self_`. "
+                f"See https://hydra.cc/docs/upgrades/1.0_to_1.1/default_composition_order for more information"
+            )
+            if os.environ.get("SELF_WARNING_AS_ERROR") == "1":
+                raise ConfigCompositionException(msg)
+            warnings.warn(msg, UserWarning)
         defaults.append(ConfigDefault(path="_self_"))
 
     return not has_self
@@ -359,7 +377,14 @@ def _update_overrides(
             continue
         d.update_parent(parent.get_group_path(), parent.get_final_package())
 
-        if seen_override and not d.is_override():
+        legacy_hydra_override = False
+        if isinstance(d, GroupDefault):
+            assert d.group is not None
+            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
+
+        if seen_override and not (
+            d.is_override() or d.is_external_append() or legacy_hydra_override
+        ):
             assert isinstance(last_override_seen, GroupDefault)
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
@@ -373,8 +398,6 @@ def _update_overrides(
             )
 
         if isinstance(d, GroupDefault):
-            assert d.group is not None
-            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
             if legacy_hydra_override:
                 # DEPRECATED: remove in 1.2
                 d.override = True
@@ -386,10 +409,11 @@ def _update_overrides(
                     See {url} for more information.
                     """
                 )
-                warnings.warn(msg, UserWarning)
+                deprecation_warning(msg)
 
             if d.override:
-                seen_override = True
+                if not legacy_hydra_override:
+                    seen_override = True
                 last_override_seen = d
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
@@ -403,6 +427,16 @@ def _update_overrides(
                         )
                     )
                 overrides.add_override(parent.get_config_path(), d)
+
+
+def _has_config_content(cfg: DictConfig) -> bool:
+    if cfg._is_none() or cfg._is_missing():
+        return False
+
+    for key in cfg.keys():
+        if not OmegaConf.is_missing(cfg, key):
+            return True
+    return False
 
 
 def _create_defaults_tree_impl(
@@ -461,17 +495,18 @@ def _create_defaults_tree_impl(
         or is_root_config
         and len(overrides.append_group_defaults) > 0
     ):
-        self_added = _validate_self(containing_node=parent, defaults=defaults_list)
+        has_config_content = isinstance(
+            loaded.config, DictConfig
+        ) and _has_config_content(loaded.config)
+
+        self_added = _validate_self(
+            containing_node=parent,
+            defaults=defaults_list,
+            has_config_content=has_config_content,
+        )
 
     if is_root_config:
-        # To ensure config overrides are last, insert the external overrides before the first config override.
-        insert_idx = len(defaults_list)
-        for idx, default in enumerate(defaults_list):
-            if default.is_override():
-                insert_idx = idx
-                break
-
-        defaults_list[insert_idx:insert_idx] = overrides.append_group_defaults
+        defaults_list.extend(overrides.append_group_defaults)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 

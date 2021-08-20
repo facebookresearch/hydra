@@ -37,6 +37,7 @@ from tests.instantiate import (
     SimpleClassNonPrimitiveConf,
     SimpleClassPrimitiveConf,
     SimpleDataClass,
+    TargetInParamsClass,
     Tree,
     TreeConf,
     UntypedPassthroughClass,
@@ -187,6 +188,12 @@ def config(request: Any, src: Any) -> Any:
             {"a": IllegalType()},
             UntypedPassthroughClass(a=IllegalType()),
             id="untyped_passthrough",
+        ),
+        param(
+            TargetInParamsClass,
+            {"target": "test"},
+            TargetInParamsClass(target="test"),
+            id="target_in_params",
         ),
     ],
 )

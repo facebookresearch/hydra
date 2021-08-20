@@ -15,6 +15,7 @@ from hydra import MissingConfigException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
+    assert_multiline_regex_search,
     assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
@@ -459,10 +460,12 @@ def test_cfg_with_package(
 
 
 @mark.parametrize(
-    "resolve,expected",
+    "script,resolve,flags,expected",
     [
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             False,
+            [],
             dedent(
                 """\
                 a: ${b}
@@ -472,7 +475,9 @@ def test_cfg_with_package(
             id="cfg",
         ),
         param(
+            "tests/test_apps/simple_interpolation/my_app.py",
             True,
+            [],
             dedent(
                 """\
                 a: 10
@@ -481,14 +486,26 @@ def test_cfg_with_package(
             ),
             id="resolve",
         ),
+        param(
+            "tests/test_apps/simple_app/my_app.py",
+            True,
+            [
+                "--config-name=interp_to_hydra",
+                "--config-dir=tests/test_apps/simple_app",
+            ],
+            dedent(
+                """\
+                a: my_app
+                """
+            ),
+            id="resolve_hydra_config",
+        ),
     ],
 )
-def test_cfg_resolve_interpolation(tmpdir: Path, resolve: bool, expected: str) -> None:
-    cmd = [
-        "tests/test_apps/simple_interpolation/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
-        "--cfg=job",
-    ]
+def test_cfg_resolve_interpolation(
+    tmpdir: Path, script: str, resolve: bool, flags: List[str], expected: str
+) -> None:
+    cmd = [script, "hydra.run.dir=" + str(tmpdir), "--cfg=job"] + flags
     if resolve:
         cmd.append("--resolve")
 
@@ -616,6 +633,19 @@ def test_sweep_complex_defaults(
                 """
             ),
             id="overriding_help_template:$CONFIG,interp,yes_resolve",
+        ),
+        param(
+            "tests/test_apps/app_with_cfg/my_app.py",
+            ["--help", "--resolve"],
+            ["hydra.help.template=$CONFIG", "dataset.name=${hydra:job.name}"],
+            dedent(
+                """\
+                dataset:
+                  name: my_app
+                  path: /datasets/imagenet
+                """
+            ),
+            id="overriding_help_template:$CONFIG,resolve_interp_to_hydra_config",
         ),
         param(
             "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
@@ -1399,3 +1429,46 @@ def test_frozen_primary_config(
     cmd.extend(overrides)
     ret, _err = run_python_script(cmd)
     assert expected in ret
+
+
+@mark.parametrize(
+    "env_deprecation_err,expected",
+    [
+        param(
+            False,
+            r"^\S*/my_app\.py:10: UserWarning: Feature FooBar is deprecated$",
+            id="deprecation_warning",
+        ),
+        param(
+            True,
+            dedent(
+                r"""
+                ^Error executing job with overrides: \[\]\n?
+                Traceback \(most recent call last\):
+                  File "\S*/my_app.py", line 10, in my_app
+                    deprecation_warning\("Feature FooBar is deprecated"\)
+                  File "\S*\.py", line 11, in deprecation_warning
+                    raise HydraDeprecationError\(.*\)
+                hydra\.errors\.HydraDeprecationError: Feature FooBar is deprecated
+
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
+                """
+            ).strip(),
+            id="deprecation_error",
+        ),
+    ],
+)
+def test_hydra_deprecation_warning(
+    env_deprecation_err: bool, expected: str, tmpdir: Path
+) -> None:
+    cmd = [
+        "tests/test_apps/deprecation_warning/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+    ]
+    env = os.environ.copy()
+    if env_deprecation_err:
+        env["HYDRA_DEPRECATION_WARNINGS_AS_ERRORS"] = "1"
+    _, err = run_python_script(
+        cmd, env=env, allow_warnings=True, print_error=False, raise_exception=False
+    )
+    assert_multiline_regex_search(expected, err)

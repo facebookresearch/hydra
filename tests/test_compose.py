@@ -71,6 +71,12 @@ def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
         (None, ["+foo=bar"], {"foo": "bar"}),
         ("compose", [], {"foo": 10, "bar": 100}),
         ("compose", ["group1=file2"], {"foo": 20, "bar": 100}),
+        (None, ["+top_level_list=file1"], {"top_level_list": ["a"]}),
+        (
+            None,
+            ["+top_level_list=file1", "top_level_list.0=b"],
+            {"top_level_list": ["b"]},
+        ),
     ],
 )
 class TestCompose:
@@ -90,6 +96,16 @@ class TestCompose:
         overrides.append("fooooooooo=bar")
         with raises(HydraException):
             compose(config_file, overrides)
+
+
+@mark.usefixtures("initialize_hydra")
+@mark.parametrize("config_path", ["../hydra/test_utils/configs"])
+def test_top_level_config_is_list() -> None:
+    with raises(
+        HydraException,
+        match="primary config 'top_level_list/file1' must be a DictConfig, got ListConfig",
+    ):
+        compose("top_level_list/file1", overrides=[])
 
 
 @mark.usefixtures("hydra_restore_singletons")
@@ -644,3 +660,25 @@ def test_error_assigning_null_to_logging_config(
 ) -> None:
     with expected:
         compose(overrides=overrides)
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+@mark.parametrize(
+    "strict", [param(True, id="strict=True"), param(False, id="strict=False")]
+)
+def test_deprecated_compose_strict_flag(strict: bool) -> None:
+    msg = dedent(
+        """\
+
+        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+        See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+        """
+    )
+
+    with warns(
+        expected_warning=UserWarning,
+        match=re.escape(msg),
+    ):
+        cfg = compose(overrides=[], strict=strict)
+    assert cfg == {}
+    assert OmegaConf.is_struct(cfg) is strict

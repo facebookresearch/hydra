@@ -1,5 +1,6 @@
 defaults:
   - config_schema
+  - _self_
 
 user:
   age: 7
