@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+import math
 from typing import (
     Any,
     Dict,
@@ -12,6 +13,7 @@ from typing import (
 )
 
 import nevergrad as ng
+from hydra.core import utils
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -158,14 +160,32 @@ class NevergradSweeperImpl(Sweeper):
             )
             self.validate_batch_is_legal(overrides)
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
-            self.job_idx += len(returns)
             # would have been nice to avoid waiting for all jobs to finish
             # aka batch size Vs steady state (launching a new job whenever one is done)
+            self.job_idx += len(returns)
+            # check job status and prepare losses
+            failures = 0
             for cand, ret in zip(candidates, returns):
-                loss = direction * ret.return_value
-                optimizer.tell(cand, loss)
-                if loss < best[0]:
-                    best = (loss, cand)
+                if ret.status == utils.JobStatus.COMPLETED:
+                    rectified_loss = direction * ret.return_value
+                else:
+                    rectified_loss = math.inf
+                    failures += 1
+                    try:
+                        ret.return_value
+                    except Exception as e:
+                        log.warning(f"Returning infinity for failed experiment: {e}")
+                optimizer.tell(cand, rectified_loss)
+                if rectified_loss < best[0]:
+                    best = (rectified_loss, cand)
+            # raise if too many failures
+            if failures / len(returns) > self.opt_config.max_failure_rate:
+                log.error(
+                    f"Failed {failures} times out of {len(returns)} "
+                    f"with max_failure_rate={self.opt_config.max_failure_rate}"
+                )
+                for ret in returns:
+                    ret.return_value  # delegate raising to JobReturn, with actual traceback
             all_returns.extend(returns)
         recom = optimizer.provide_recommendation()
         results_to_serialize = {

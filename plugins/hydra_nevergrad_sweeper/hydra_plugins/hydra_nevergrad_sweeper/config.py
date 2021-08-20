@@ -63,6 +63,9 @@ class OptimConf:
     # optimization seed, for reproducibility
     seed: Optional[int] = None
 
+    # maximum authorized failure rate for a batch of parameters
+    max_failure_rate: float = 0.0
+
 
 @dataclass
 class NevergradSweeperConf:

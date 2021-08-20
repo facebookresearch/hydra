@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     chdir_plugin_root,
+    run_process,
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
@@ -155,3 +157,24 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
     # check that all job folders are created
     last_job = max(int(fp.name) for fp in Path(tmpdir).iterdir() if fp.name.isdigit())
     assert last_job == budget - 1
+
+
+@mark.parametrize("max_failure_rate", (0.5, 1.0))
+def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "example/my_app.py",
+        "-m",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.sweeper.optim.budget=2",  # small budget to test fast
+        "hydra.sweeper.optim.num_workers=2",
+        f"hydra.sweeper.optim.max_failure_rate={max_failure_rate}",
+        "error=true",
+    ]
+    out, err = run_process(cmd, print_error=False, raise_exception=False)
+    assert "Returning infinity for failed experiment" in out
+    error_string = "RuntimeError: cfg.error is True"
+    if max_failure_rate < 1.0:
+        assert error_string in err
+    else:
+        assert error_string not in err

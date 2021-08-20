@@ -26,8 +26,9 @@ defaults:
   - override hydra/sweeper: nevergrad
 ```
 
-The default configuration is <GithubLink to="plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py">here</GithubLink>.
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
+The default configuration is defined and documented <GithubLink to="plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py">here</GithubLink>.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
+
 ## Example of training using Nevergrad hyperparameter search
 
 We include an example of how to use this plugin. The file <GithubLink to="plugins/hydra_nevergrad_sweeper/example/my_app.py">example/my_app.py</GithubLink> implements an example of minimizing a (dummy) function using a mixture of continuous and discrete parameters.
@@ -43,8 +44,22 @@ optim:
   noisy: false
   maximize: false
   seed: null
-parametrization: {}
-version: 1
+  max_failure_rate: 0.0
+parametrization:
+  db:
+  - mnist
+  - cifar
+  lr:
+    init: 0.02
+    step: 2.0
+    log: true
+  dropout:
+    lower: 0.0
+    upper: 1.0
+  batch_size:
+    lower: 4
+    upper: 16
+    integer: true
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
