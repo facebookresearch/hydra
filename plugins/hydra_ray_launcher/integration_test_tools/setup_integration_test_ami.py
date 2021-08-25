@@ -6,7 +6,7 @@ from datetime import datetime
 dependencies = [
     "boto3==1.17.17",
     "hydra-core>=1.1.0.dev7",
-    "ray==1.3.0",
+    "ray[default]==1.6.0",
     "cloudpickle==1.6.0",
     "pickle5==0.0.11",
 ]
