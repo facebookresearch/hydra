@@ -1,0 +1,2 @@
+defaults:
+  - group1@_global_: file1
