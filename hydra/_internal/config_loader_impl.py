@@ -532,8 +532,8 @@ class ConfigLoaderImpl(ConfigLoader):
                         cfg.pop("defaults", None)
                         cfg.pop("__REMOVE_TOP_LEVEL_DEFAULTS__")
 
-                    for _key, value in cfg.items_ex(resolve=False):
-                        strip_defaults(value)
+                for _key, value in cfg.items_ex(resolve=False):
+                    strip_defaults(value)
 
         strip_defaults(cfg)
 
