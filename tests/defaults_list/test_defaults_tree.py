@@ -1303,6 +1303,31 @@ def test_extension_use_cases(
             id="with_missing:override",
         ),
         param(
+            "with_missing_at_foo",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=dedent(
+                    """\
+                You must specify 'db@foo', e.g, db@foo=<OPTION>
+                Available options:"""
+                ),
+            ),
+            id="with_missing_at_foo",
+        ),
+        param(
+            "with_missing_at_foo",
+            ["db@foo=base_db"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="with_missing_at_foo"),
+                children=[
+                    GroupDefault(group="db", value="base_db", package="foo"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="with_missing_at_foo:override",
+        ),
+        param(
             "empty",
             ["+group1=with_missing"],
             raises(
@@ -1332,6 +1357,37 @@ def test_extension_use_cases(
                 ],
             ),
             id="nested_missing:override",
+        ),
+        param(
+            "empty",
+            ["+group1=with_missing_at_foo"],
+            raises(
+                ConfigCompositionException,
+                match=dedent(
+                    """\
+                    You must specify 'group1/group2@group1.foo', e.g, group1/group2@group1.foo=<OPTION>
+                    Available options"""
+                ),
+            ),
+            id="nested_missing_at_foo",
+        ),
+        param(
+            "empty",
+            ["+group1=with_missing_at_foo", "group1/group2@group1.foo=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="with_missing_at_foo"),
+                        children=[
+                            GroupDefault(group="group2", value="file1", package="foo"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="nested_missing_at_foo:override",
         ),
     ],
 )
