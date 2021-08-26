@@ -6,7 +6,7 @@ sidebar_label: Release process
 
 The release process may be automated in the future.
 
-- Checkout master
+- Checkout main
 - Update the Hydra version in `hydra/__init__.py`
 - Update NEWS.md with towncrier
 - Create a wheel and source dist for hydra-core: `python -m build`

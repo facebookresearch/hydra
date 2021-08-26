@@ -3,7 +3,7 @@ name: Deploy website
 on:
    push:
     branches:
-      - master
+      - main
       - deploy_website_hydra
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
         # 1. The revision does not exist (squash/force push happened)
         # 2. There are changes between last deployed revision and HEAD
         if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
-          echo "Changes detected in directory $SUBDIR between origin/master and this diff"
+          echo "Changes detected in directory $SUBDIR between origin/main and this diff"
           cd $SUBDIR
           yarn --no-progress
           git config --global user.email omry@users.noreply.github.com
@@ -32,5 +32,5 @@ jobs:
           echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
           yarn install && GIT_USER=docusaurus-bot yarn deploy
         else
-          echo "No changes detected in directory $SUBDIR between origin/master and this diff"
+          echo "No changes detected in directory $SUBDIR between origin/main and this diff"
         fi

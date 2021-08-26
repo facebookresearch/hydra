@@ -26,7 +26,7 @@ This command generates static content into the `build` directory and can be serv
 
 ### Deployment
 
-Done automatically once a website change is landed to master.
+Done automatically once a website change is landed to main.
 
 
 ### Adding pages
