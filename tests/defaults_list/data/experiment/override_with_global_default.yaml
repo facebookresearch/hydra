@@ -1,2 +1,4 @@
+# @package _global_
+
 defaults:
-  - override /group1@_global_.group1: file2
+  - override /group1: file2
