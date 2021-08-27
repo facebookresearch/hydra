@@ -16,9 +16,9 @@ module.exports = {
     customFields: {
         githubLinkVersionToBaseUrl: {
             // TODO: Update once a branch is cut for 1.1
-            "1.1": "https://github.com/facebookresearch/hydra/blob/master/",
+            "1.1": "https://github.com/facebookresearch/hydra/blob/main/",
             "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",
-            current: "https://github.com/facebookresearch/hydra/blob/master/",
+            current: "https://github.com/facebookresearch/hydra/blob/main/",
         },
     },    
     themeConfig: {
@@ -117,7 +117,7 @@ module.exports = {
                     sidebarPath: require.resolve('./sidebars.js'),
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
-                    editUrl: 'https://github.com/facebookresearch/hydra/edit/master/website/',
+                    editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),

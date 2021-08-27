@@ -10,7 +10,7 @@ setup(
     entry_points={"console_scripts": ["configen = configen.configen:main"]},
     author="Omry Yadan, Rosario Scalise",
     author_email="omry@fb.com, rosario@cs.uw.edu",
-    url="https://github.com/facebookresearch/hydra/tree/master/tools/configen",
+    url="https://github.com/facebookresearch/hydra/tree/main/tools/configen",
     include_package_data=True,
     install_requires=[
         "hydra-core>=1.1.0",
