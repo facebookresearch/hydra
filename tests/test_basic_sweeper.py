@@ -107,3 +107,22 @@ def test_partial_failure(
         from_name="Expected error",
         to_name="Actual error",
     )
+
+
+def test_configured_overrides(tmpdir: Any) -> None:
+    cmd = [
+        sys.executable,
+        "-Werror",
+        "tests/test_apps/app_with_basic_sweeper_cfg/my_app.py",
+        "--multirun",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+    ]
+    out, err = run_process(cmd=cmd)
+
+    assert "letter=a number=-1" in out
+    assert "letter=b number=-1" in out
+    assert "letter=c number=-1" in out
+    assert "letter=a number=5" in out
+    assert "letter=b number=5" in out
+    assert "letter=c number=5" in out

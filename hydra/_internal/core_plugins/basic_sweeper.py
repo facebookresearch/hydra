@@ -19,9 +19,9 @@ python foo.py a=range(1,4) b=10,20
 import itertools
 import logging
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -39,6 +39,7 @@ from hydra.types import HydraContext, TaskFunction
 class BasicSweeperConf:
     _target_: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
     max_batch_size: Optional[int] = None
+    overrides: Dict[str, str] = field(default_factory=dict)
 
 
 ConfigStore.instance().store(
@@ -54,11 +55,14 @@ class BasicSweeper(Sweeper):
     Basic sweeper
     """
 
-    def __init__(self, max_batch_size: Optional[int]) -> None:
+    def __init__(
+        self, max_batch_size: Optional[int], overrides: Dict[str, str]
+    ) -> None:
         """
         Instantiates
         """
         super(BasicSweeper, self).__init__()
+        self.configured_overrides = overrides
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
@@ -133,7 +137,11 @@ class BasicSweeper(Sweeper):
         assert self.hydra_context is not None
 
         parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)
-        overrides = parser.parse_overrides(arguments)
+        configured_arguments = [
+            f"{key}={val}" for key, val in self.configured_overrides.items()
+        ]
+        override_exprs = configured_arguments + arguments
+        overrides = parser.parse_overrides(override_exprs)
 
         self.overrides = self.split_arguments(overrides, self.max_batch_size)
         returns: List[Sequence[JobReturn]] = []
