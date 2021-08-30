@@ -43,9 +43,11 @@ class SlurmQueueConf(BaseQueueConf):
     #
     # slurm partition to use on the cluster
     partition: Optional[str] = None
+    qos: Optional[str] = None
     comment: Optional[str] = None
     constraint: Optional[str] = None
     exclude: Optional[str] = None
+    gres: Optional[str] = None
     cpus_per_gpu: Optional[int] = None
     gpus_per_task: Optional[int] = None
     mem_per_gpu: Optional[str] = None

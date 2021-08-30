@@ -36,7 +36,7 @@ The Submitit Plugin implements 2 different launchers: `submitit_slurm` to run on
 
 ```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
-submitit_folder: $&#123;hydra.sweep.dir/.submitit/%j
+submitit_folder: ${hydra.sweep.dir}/.submitit/%j
 timeout_min: 60
 cpus_per_task: null
 gpus_per_node: null
@@ -46,9 +46,11 @@ nodes: 1
 name: ${hydra.job.name}
 _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
 partition: null
+qos: null
 comment: null
 constraint: null
 exclude: null
+gres: null
 cpus_per_gpu: null
 gpus_per_task: null
 mem_per_gpu: null
