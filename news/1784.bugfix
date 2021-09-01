@@ -1,0 +1,1 @@
+Fix an internal key collision to prevent an exception when `- group@_global_: choice` is used in the same defaults list as `- group: choice`.
