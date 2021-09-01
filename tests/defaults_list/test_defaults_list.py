@@ -732,7 +732,7 @@ def test_include_nested_group_global(
                     is_self=True,
                 ),
             ],
-            id="two_group_defaults_different_pkgs_global"
+            id="two_group_defaults_different_pkgs_global",
         ),
     ],
 )
