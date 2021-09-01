@@ -710,7 +710,7 @@ def test_include_nested_group_global(
                     parent="group_default_at_global",
                 ),
             ],
-            id="include_absolute_config:override_with_global_default2",
+            id="group_default_at_global:include_experiment_to_override_toplevel_package",
         ),
         param(
             "two_group_defaults_different_pkgs_global",
@@ -732,6 +732,7 @@ def test_include_nested_group_global(
                     is_self=True,
                 ),
             ],
+            id="two_group_defaults_different_pkgs_global"
         ),
     ],
 )
