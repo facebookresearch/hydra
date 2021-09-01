@@ -28,6 +28,7 @@ setup(
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "optuna>=2.5.0",
+        "alembic<1.7.0",  # https://github.com/facebookresearch/hydra/issues/1806
     ],
     include_package_data=True,
 )
