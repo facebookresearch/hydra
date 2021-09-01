@@ -1,3 +1,11 @@
+1.1.1 (2021-09-01)
+=======================
+
+### Maintenance Changes
+
+- Update optuna dependency ([#1746](https://github.com/facebookresearch/hydra/issues/1634))
+
+
 1.1.0.dev2 (2021-06-10)
 =======================
 
