@@ -16,11 +16,10 @@ This plugin enables Hydra applications to utilize [Optuna](https://optuna.org) f
 
 ## Installation
 
-This plugin requires `hydra-core>=1.1.0`. Currently, only the pre-release version is available.
-Please install it with the following command:
+This plugin requires `hydra-core>=1.1.0`. Please install it with the following command:
 
 ```commandline
-pip install --pre hydra-core
+pip install hydra-core --upgrade
 ```
 
 You can install the plugin via pip:
@@ -45,7 +44,7 @@ The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_
 
 ## Example 1: Single-Objective Optimization
 
-We include an example in this directory. `example/sphere.py` implements a simple benchmark function to be minimized.
+We include an example in [this directory](https://github.com/facebookresearch/hydra/tree/main/plugins/hydra_optuna_sweeper/example). `example/sphere.py` implements a simple benchmark function to be minimized.
 
 You can discover the Optuna sweeper parameters with:
 
@@ -99,6 +98,17 @@ You can also override the search space parametrization:
 ```commandline
 python example/sphere.py --multirun 'x=interval(-5.0, 5.0)' 'y=interval(0, 10)'
 ```
+
+You might find the `optimization_results.yaml` file (i.e. best params and best value) under `multirun` logs folder:
+
+```yaml
+name: optuna
+best_params:
+  x: 0.0
+  'y': 0
+best_value: 0.0
+```
+
 
 ## Sampler configuration
 This plugin supports Optuna's [samplers](https://optuna.readthedocs.io/en/stable/reference/samplers.html).
