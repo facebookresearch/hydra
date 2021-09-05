@@ -44,7 +44,7 @@ The default configuration is <GithubLink to="plugins/hydra_optuna_sweeper/hydra_
 
 ## Example 1: Single-Objective Optimization
 
-We include an example in [this directory](https://github.com/facebookresearch/hydra/tree/main/plugins/hydra_optuna_sweeper/example). `example/sphere.py` implements a simple benchmark function to be minimized.
+We include an example in <GithubLink to="plugins/hydra_optuna_sweeper/example">this directory</GithubLink>. `example/sphere.py` implements a simple benchmark function to be minimized.
 
 You can discover the Optuna sweeper parameters with:
 
