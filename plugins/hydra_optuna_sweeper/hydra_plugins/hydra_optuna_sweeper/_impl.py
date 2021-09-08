@@ -61,10 +61,10 @@ def create_optuna_distribution_from_config(
 
 
 def create_optuna_distribution_from_override(override: Override) -> Any:
-    value = override.value()
     if not override.is_sweep_override():
-        return value
+        return override.get_value_element_as_str()
 
+    value = override.value()
     choices: List[CategoricalChoiceType] = []
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
@@ -153,7 +153,7 @@ class OptunaSweeperImpl(Sweeper):
         assert self.hydra_context is not None
         assert self.job_idx is not None
 
-        parser = OverridesParser.create()
+        parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)
         parsed = parser.parse_overrides(arguments)
 
         search_space = dict(self.search_space)
