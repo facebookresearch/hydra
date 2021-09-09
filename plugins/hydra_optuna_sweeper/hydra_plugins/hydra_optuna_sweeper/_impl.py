@@ -153,7 +153,7 @@ class OptunaSweeperImpl(Sweeper):
         assert self.hydra_context is not None
         assert self.job_idx is not None
 
-        parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)
+        parser = OverridesParser.create()
         parsed = parser.parse_overrides(arguments)
 
         search_space = dict(self.search_space)
