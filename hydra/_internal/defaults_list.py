@@ -436,7 +436,7 @@ def _has_config_content(cfg: DictConfig) -> bool:
     for key in cfg.keys():
         if not OmegaConf.is_missing(cfg, key) and key not in (
             "defaults",
-            "__REMOVE_TOP_LEVEL_DEFAULTS__",
+            "__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__",
         ):
             return True
     return False

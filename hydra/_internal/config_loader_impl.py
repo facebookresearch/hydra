@@ -528,9 +528,9 @@ class ConfigLoaderImpl(ConfigLoader):
                 if cfg._is_missing() or cfg._is_none():
                     return
                 with flag_override(cfg, ["readonly", "struct"], False):
-                    if getattr(cfg, "__REMOVE_TOP_LEVEL_DEFAULTS__", False):
+                    if getattr(cfg, "__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__", False):
                         cfg.pop("defaults", None)
-                        cfg.pop("__REMOVE_TOP_LEVEL_DEFAULTS__")
+                        cfg.pop("__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__")
 
                 for _key, value in cfg.items_ex(resolve=False):
                     strip_defaults(value)

@@ -285,7 +285,7 @@ class ConfigRepository(IConfigRepository):
                     # It will be removed later.
                     # This is addressing an edge case where the defaults list re-appears once the dataclass is used
                     # as a prototype during OmegaConf merge.
-                    cfg["__REMOVE_TOP_LEVEL_DEFAULTS__"] = True
+                    cfg["__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__"] = True
                     defaults = cfg.get("defaults", empty)
         if not isinstance(defaults, ListConfig):
             if isinstance(defaults, DictConfig):
