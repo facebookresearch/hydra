@@ -278,7 +278,15 @@ class ConfigRepository(IConfigRepository):
         assert isinstance(cfg, DictConfig)
         with read_write(cfg):
             with open_dict(cfg):
-                defaults = cfg.pop("defaults", empty)
+                if not cfg._is_typed():
+                    defaults = cfg.pop("defaults", empty)
+                else:
+                    # If node is a backed by Structured Config, flag it and temporarily keep the defaults list in.
+                    # It will be removed later.
+                    # This is addressing an edge case where the defaults list re-appears once the dataclass is used
+                    # as a prototype during OmegaConf merge.
+                    cfg["__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__"] = True
+                    defaults = cfg.get("defaults", empty)
         if not isinstance(defaults, ListConfig):
             if isinstance(defaults, DictConfig):
                 type_str = "mapping"

@@ -522,6 +522,21 @@ class ConfigLoaderImpl(ConfigLoader):
                         f"In '{default.config_path}': Validation error while composing config:\n{e}"
                     ).with_traceback(sys.exc_info()[2])
 
+        # # remove remaining defaults lists from all nodes.
+        def strip_defaults(cfg: Any) -> None:
+            if isinstance(cfg, DictConfig):
+                if cfg._is_missing() or cfg._is_none():
+                    return
+                with flag_override(cfg, ["readonly", "struct"], False):
+                    if getattr(cfg, "__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__", False):
+                        cfg.pop("defaults", None)
+                        cfg.pop("__HYDRA_REMOVE_TOP_LEVEL_DEFAULTS__")
+
+                for _key, value in cfg.items_ex(resolve=False):
+                    strip_defaults(value)
+
+        strip_defaults(cfg)
+
         return cfg
 
     def get_sources(self) -> List[ConfigSource]:

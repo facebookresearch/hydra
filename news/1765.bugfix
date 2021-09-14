@@ -1,0 +1,1 @@
+Fix an edge case where a defaults list defined in a missing dataclass node causes a ConfigCompositionException.
