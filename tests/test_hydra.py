@@ -971,7 +971,6 @@ def test_config_name_and_path_overrides(
         f"--config-name={config_name}",
         f"--config-path={config_path}",
     ]
-    print(" ".join(cmd))
     result, _err = run_python_script(cmd)
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
