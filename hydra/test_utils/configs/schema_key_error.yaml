@@ -1,0 +1,5 @@
+defaults:
+  - base_mysql
+  - _self_
+
+foo: not_in_schema
