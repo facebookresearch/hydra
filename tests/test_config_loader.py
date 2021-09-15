@@ -331,7 +331,7 @@ class TestConfigLoader:
                 object_type=MySQLConfig"""
         )
         with raises(ConfigCompositionException, match=re.escape(msg)):
-            cfg = config_loader.load_configuration(
+            config_loader.load_configuration(
                 config_name="schema_validation_error",
                 overrides=[],
                 run_mode=RunMode.RUN,
@@ -356,7 +356,7 @@ class TestConfigLoader:
                 object_type=MySQLConfig"""
         )
         with raises(ConfigCompositionException, match=re.escape(msg)):
-            cfg = config_loader.load_configuration(
+            config_loader.load_configuration(
                 config_name="schema_key_error",
                 overrides=[],
                 run_mode=RunMode.RUN,
