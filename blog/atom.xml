@@ -13,6 +13,10 @@
         <link href="https://hydra.cc/blog/2021/06/13/Hydra_1.1"/>
         <updated>2021-06-13T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[After many months and a lot of hard work by many people, Hydra 1.1 is finally out!]]></summary>
+        <author>
+            <name>Omry Yadan</name>
+            <uri>https://github.com/omry</uri>
+        </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Hydra Ray Launcher]]></title>
@@ -20,6 +24,10 @@
         <link href="https://hydra.cc/blog/2020/12/22/Hydra_Ray_Launcher"/>
         <updated>2020-12-22T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[We are happy to announce that we are adding a Ray Launcher to the Hydra Launchers family.]]></summary>
+        <author>
+            <name>Jieru Hu</name>
+            <uri>https://github.com/jieru-hu</uri>
+        </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Hydra 1.0]]></title>
@@ -27,6 +35,10 @@
         <link href="https://hydra.cc/blog/2020/09/03/Hydra_1.0"/>
         <updated>2020-09-03T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[After many months and a lot of hard work by many people, Hydra 1.0 is finally out!]]></summary>
+        <author>
+            <name>Omry Yadan</name>
+            <uri>https://github.com/omry</uri>
+        </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[New Hydra blog]]></title>
@@ -34,5 +46,9 @@
         <link href="https://hydra.cc/blog/2020/05/04/New-blog"/>
         <updated>2020-05-04T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Welcome to the Hydra blog.]]></summary>
+        <author>
+            <name>Omry Yadan</name>
+            <uri>https://github.com/omry</uri>
+        </author>
     </entry>
 </feed>
