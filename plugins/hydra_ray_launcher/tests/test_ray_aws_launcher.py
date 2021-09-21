@@ -121,13 +121,12 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    version = subprocess.getoutput("python setup.py --version")
-    plugin_wheel = f"{plugin}-{version}-py3-none-any.whl"
     subprocess.getoutput(
-        f"python setup.py sdist bdist_wheel && cp dist/{plugin_wheel} {tmp_wheel_dir}"
+        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
     )
     log.info("Download all plugin dependency wheels.")
     subprocess.getoutput(f"pip download . -d {tmp_wheel_dir}")
+    plugin_wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
     return plugin_wheel
 
