@@ -171,6 +171,32 @@ base_completion_list: List[str] = [
             "group=dict ~group=", 2, ["~group=dict", "~group=list"], id="group_delete2"
         ),
         param("~", 2, ["~group", "~hydra", "~test_hydra/"], id="bare_tilde"),
+        param("+test_hydra/lau", 2, ["+test_hydra/launcher="], id="nested_plus"),
+        param(
+            "+test_hydra/launcher=",
+            2,
+            ["+test_hydra/launcher=fairtask"],
+            id="nested_plus_equal",
+        ),
+        param(
+            "+test_hydra/launcher=fa",
+            2,
+            ["+test_hydra/launcher=fairtask"],
+            id="nested_plus_equal_partial",
+        ),
+        param("~test_hydra/lau", 2, ["~test_hydra/launcher"], id="nested_tilde"),
+        param(
+            "~test_hydra/launcher=",
+            2,
+            ["~test_hydra/launcher=fairtask"],
+            id="nested_tilde_equal",
+        ),
+        param(
+            "~test_hydra/launcher=fa",
+            2,
+            ["~test_hydra/launcher=fairtask"],
+            id="nested_tilde_equal_partial",
+        ),
     ],
 )
 class TestRunCompletion:
