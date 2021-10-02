@@ -158,6 +158,10 @@ class CompletionPlugin(Plugin):
         return matches
 
     def _query_config_groups(self, word: str) -> Tuple[List[str], bool]:
+        if word.startswith("+") or word.startswith("~"):
+            prefix, word = word[0], word[1:]
+        else:
+            prefix = ""
         last_eq_index = word.rfind("=")
         last_slash_index = word.rfind("/")
         exact_match: bool = False
@@ -197,6 +201,7 @@ class CompletionPlugin(Plugin):
                         name = name + "/"
                     matched_groups.append(name)
 
+        matched_groups = [f"{prefix}{group}" for group in matched_groups]
         return matched_groups, exact_match
 
     def _query(self, config_name: Optional[str], line: str) -> List[str]:
