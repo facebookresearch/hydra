@@ -157,18 +157,20 @@ base_completion_list: List[str] = [
         param("group=dict group.dict=", 2, ["group.dict=true"], id="group"),
         param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
         param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
+        param("+", 2, ["+group=", "+hydra", "+test_hydra/"], id="bare_plus"),
         param("+gro", 2, ["+group="], id="append_group_partial"),
         param("+group=di", 2, ["+group=dict"], id="append_group_partial_option"),
         param("+group=", 2, ["+group=dict", "+group=list"], id="group_append"),
         param(
             "group=dict +group=", 2, ["+group=dict", "+group=list"], id="group_append2"
         ),
-        param("~gro", 2, ["~group="], id="delete_group_partial"),
+        param("~gro", 2, ["~group"], id="delete_group_partial"),
         param("~group=di", 2, ["~group=dict"], id="delete_group_partial_option"),
         param("~group=", 2, ["~group=dict", "~group=list"], id="group_delete"),
         param(
             "group=dict ~group=", 2, ["~group=dict", "~group=list"], id="group_delete2"
         ),
+        param("~", 2, ["~group", "~hydra", "~test_hydra/"], id="bare_tilde"),
     ],
 )
 class TestRunCompletion:

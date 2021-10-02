@@ -158,7 +158,9 @@ class CompletionPlugin(Plugin):
         return matches
 
     def _query_config_groups(self, word: str) -> Tuple[List[str], bool]:
-        if word.startswith("+") or word.startswith("~"):
+        is_addition = word.startswith("+")
+        is_deletion = word.startswith("~")
+        if is_addition or is_deletion:
             prefix, word = word[0], word[1:]
         else:
             prefix = ""
@@ -195,7 +197,7 @@ class CompletionPlugin(Plugin):
                     dirs = self.config_loader.get_group_options(
                         group_name=name, results_filter=ObjectType.GROUP
                     )
-                    if len(dirs) == 0 and len(files) > 0:
+                    if len(dirs) == 0 and len(files) > 0 and not is_deletion:
                         name = name + "="
                     elif len(dirs) > 0 and len(files) == 0:
                         name = name + "/"
