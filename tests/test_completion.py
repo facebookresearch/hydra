@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 from packaging import version
-from pytest import mark, param, skip
+from pytest import mark, param, skip, xfail
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
@@ -237,6 +237,8 @@ class TestRunCompletion:
             skip("fish is not installed or the version is too old")
         if shell == "zsh" and not is_zsh_supported():
             skip("zsh is not installed or the version is too old")
+        if shell == "zsh" and "~" in line:
+            xfail("zsh treats unquoted tilde symbols specially")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
