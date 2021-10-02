@@ -102,6 +102,17 @@ class MOTPESamplerConfig(SamplerConfig):
 
 
 @dataclass
+class GridSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.GridSampler.html
+    """
+
+    _target_: str = "optuna.samplers.GridSampler"
+
+    search_space: Optional[Dict[str, Any]] = None
+
+
+@dataclass
 class DistributionConfig:
 
     # Type of distribution. "int", "float" or "categorical"
@@ -200,5 +211,12 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="motpe",
     node=MOTPESamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="grid",
+    node=GridSamplerConfig,
     provider="optuna_sweeper",
 )
