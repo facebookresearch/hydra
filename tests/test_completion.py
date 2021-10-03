@@ -237,7 +237,9 @@ class TestRunCompletion:
             skip("fish is not installed or the version is too old")
         if shell == "zsh" and not is_zsh_supported():
             skip("zsh is not installed or the version is too old")
-        if shell in ("zsh", "fish") and "~" in line:
+        if shell in ("zsh", "fish") and any(
+            word.startswith("~") for word in line.split(" ")
+        ):
             xfail(f"{shell} treats words prefixed by the tilde symbol specially")
 
         # verify expect will be running the correct Python.
