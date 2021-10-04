@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
@@ -703,3 +704,23 @@ def test_missing_node_with_defaults_list(hydra_restore_singletons: Any) -> None:
 
     cfg = compose("trainer/base_trainer")
     assert cfg == {"trainer": {"reducer": {}}}
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+def test_enum_with_removed_defaults_list(hydra_restore_singletons: Any) -> None:
+    class Category(Enum):
+        X = 0
+        Y = 1
+        Z = 2
+
+    @dataclass
+    class Conf:
+        enum_dict: Dict[Category, str] = field(default_factory=dict)
+        int_dict: Dict[int, str] = field(default_factory=dict)
+        str_dict: Dict[str, str] = field(default_factory=dict)
+
+    cs = ConfigStore.instance()
+    cs.store(name="conf", node=Conf)
+
+    cfg = compose("conf")
+    assert cfg == {"enum_dict": {}, "int_dict": {}, "str_dict": {}}
