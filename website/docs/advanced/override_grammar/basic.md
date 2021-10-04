@@ -147,6 +147,19 @@ Quoted strings can accept any value between the quotes, but some characters need
 </div>
 </div>
 
+It may be necessary to use multiple pairs of quotes to prevent your
+shell from consuming quotation marks before they are passed to hydra.
+
+```shell
+$ python my_app.py +foo="{a: 10}"  # the string `+foo={a: 10}` is passed to Hydra by bash
+foo:
+  a: 10
+
+$ python my_app.py '+foo="{a: 10}"'  # the string `+foo="{a: 10}"` is passed to Hydra by bash
+foo: '{a: 10}'
+
+```
+
 ### Whitespaces in unquoted values
 Unquoted Override values can contain non leading or trailing whitespaces.
 For example, `msg=hello world` is a legal override (key is `msg` and value is the string `hello world`).
