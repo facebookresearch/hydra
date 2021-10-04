@@ -292,6 +292,7 @@ class OptunaSweeperImpl(Sweeper):
             state = optuna.trial.TrialState.PRUNED
         except Exception as e:
             state = optuna.trial.TrialState.FAIL
-            log.info(f"Trial {job_id} failed, reason: {e}", exc_info=1)
+            log.info(f"Trial {job_id} failed, reason: {e}")
+            log.debug("", exc_info=1)
         finally:
             study.tell(trial=trial, state=state, values=values)
