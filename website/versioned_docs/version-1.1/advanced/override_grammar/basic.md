@@ -186,6 +186,13 @@ As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
 $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 ```
 
+Some characters, such as the bar symbol `'|'`, are not legal in unquoted strings.
+Strings containing such characters must be quoted:
+
+```shell
+$ python my_app.py 'dir="A|B"'
+```
+
 ### Primitives
 - `id` : oompa10, loompa_12
 - `null`: null
