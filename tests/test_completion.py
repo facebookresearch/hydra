@@ -245,7 +245,8 @@ class TestRunCompletion:
         if shell == "zsh" and not is_zsh_supported():
             skip("zsh is not installed or the version is too old")
         if shell in ("fish", "zsh"):
-            line = re.sub(r"~", r"\~", line)  # shell escape
+            line = re.sub(r"~", r"\~", line)
+            expected = [re.sub(r"~", r"\\~", word) for word in expected]
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
