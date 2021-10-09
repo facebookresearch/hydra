@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 from packaging import version
-from pytest import mark, param, skip
+from pytest import mark, param, skip, xfail
 
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.bash_completion import BashCompletion
@@ -157,6 +157,46 @@ base_completion_list: List[str] = [
         param("group=dict group.dict=", 2, ["group.dict=true"], id="group"),
         param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
         param("group=dict group=", 2, ["group=dict", "group=list"], id="group"),
+        param("+", 2, ["+group=", "+hydra", "+test_hydra/"], id="bare_plus"),
+        param("+gro", 2, ["+group="], id="append_group_partial"),
+        param("+group=di", 2, ["+group=dict"], id="append_group_partial_option"),
+        param("+group=", 2, ["+group=dict", "+group=list"], id="group_append"),
+        param(
+            "group=dict +group=", 2, ["+group=dict", "+group=list"], id="group_append2"
+        ),
+        param("~gro", 2, ["~group"], id="delete_group_partial"),
+        param("~group=di", 2, ["~group=dict"], id="delete_group_partial_option"),
+        param("~group=", 2, ["~group=dict", "~group=list"], id="group_delete"),
+        param(
+            "group=dict ~group=", 2, ["~group=dict", "~group=list"], id="group_delete2"
+        ),
+        param("~", 2, ["~group", "~hydra", "~test_hydra/"], id="bare_tilde"),
+        param("+test_hydra/lau", 2, ["+test_hydra/launcher="], id="nested_plus"),
+        param(
+            "+test_hydra/launcher=",
+            2,
+            ["+test_hydra/launcher=fairtask"],
+            id="nested_plus_equal",
+        ),
+        param(
+            "+test_hydra/launcher=fa",
+            2,
+            ["+test_hydra/launcher=fairtask"],
+            id="nested_plus_equal_partial",
+        ),
+        param("~test_hydra/lau", 2, ["~test_hydra/launcher"], id="nested_tilde"),
+        param(
+            "~test_hydra/launcher=",
+            2,
+            ["~test_hydra/launcher=fairtask"],
+            id="nested_tilde_equal",
+        ),
+        param(
+            "~test_hydra/launcher=fa",
+            2,
+            ["~test_hydra/launcher=fairtask"],
+            id="nested_tilde_equal_partial",
+        ),
     ],
 )
 class TestRunCompletion:
@@ -197,6 +237,10 @@ class TestRunCompletion:
             skip("fish is not installed or the version is too old")
         if shell == "zsh" and not is_zsh_supported():
             skip("zsh is not installed or the version is too old")
+        if shell in ("zsh", "fish") and any(
+            word.startswith("~") for word in line.split(" ")
+        ):
+            xfail(f"{shell} treats words prefixed by the tilde symbol specially")
 
         # verify expect will be running the correct Python.
         # This preemptively detect a much harder to understand error from expect.
