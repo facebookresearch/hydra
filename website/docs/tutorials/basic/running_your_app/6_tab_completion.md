@@ -24,16 +24,16 @@ Fish support requires version >= 3.1.2.
 Previous versions will work but add an extra space after `.`.
 
 Because the fish shell implements special behavior for expanding words prefixed
-with a tilde character '~', command-line completion does not work for
+with a tilde character `~`, a backslash escape `\~` should be used when querying command-line completion for
 [tilde deletions](/advanced/override_grammar/basic.md#modifying-the-defaults-list).
 
 #### Zsh instructions
-Zsh is compatible with the existing Bash shell completion by appending
+Zsh completion requires appending
 ```
 autoload -Uz bashcompinit && bashcompinit
 ```
-to the `.zshrc` file after `compinit`, restarting the shell and then using the commands provided for Bash.
+to the `.zshrc` file after `compinit`, restarting the shell and then using the commands provided by `--hydra-help`.
 
 Because the zsh shell implements special behavior for expanding words prefixed
-with a tilde character '~', command-line completion does not work for
+with a tilde character `~`, a backslash escape `\~` should be used when querying command-line completion for
 [tilde deletions](/advanced/override_grammar/basic.md#modifying-the-defaults-list).
