@@ -107,16 +107,18 @@ base_completion_list: List[str] = [
 @mark.parametrize(
     "line,num_tabs,expected",
     [
-        ("", 2, base_completion_list),
-        (" ", 2, base_completion_list),
-        ("dict", 2, ["dict.", "dict_prefix="]),
-        ("dict.", 3, ["dict.key1=", "dict.key2=", "dict.key3="]),
-        ("dict.key", 2, ["dict.key1=", "dict.key2=", "dict.key3="]),
-        ("dict.key1=", 2, ["dict.key1=val1"]),
-        ("dict.key3=", 2, ["dict.key3="]),  # no value because dict.key3 is ???
-        ("list", 2, ["list.", "list_prefix="]),
-        ("list.", 2, ["list.0=", "list.1=", "list.2="]),
-        (
+        param("", 2, base_completion_list, id="empty_string"),
+        param(" ", 2, base_completion_list, id="space"),
+        param("dict", 2, ["dict.", "dict_prefix="], id="dict"),
+        param("dict.", 3, ["dict.key1=", "dict.key2=", "dict.key3="], id="dict_period"),
+        param("dict.key", 2, ["dict.key1=", "dict.key2=", "dict.key3="], id="key"),
+        param("dict.key1=", 2, ["dict.key1=val1"], id="key1"),
+        param(
+            "dict.key3=", 2, ["dict.key3="], id="key3"
+        ),  # no value because dict.key3 is ???
+        param("list", 2, ["list.", "list_prefix="], id="list"),
+        param("list.", 2, ["list.0=", "list.1=", "list.2="], id="list_period"),
+        param(
             "hydra/",
             3,
             [
@@ -129,10 +131,15 @@ base_completion_list: List[str] = [
                 "hydra/output=",
                 "hydra/sweeper=",
             ],
+            id="hydra_slash",
         ),
-        ("test_hydra/lau", 2, ["test_hydra/launcher="]),
-        ("test_hydra/launcher=", 2, ["test_hydra/launcher=fairtask"]),
-        ("test_hydra/launcher=fa", 2, ["test_hydra/launcher=fairtask"]),
+        param("test_hydra/lau", 2, ["test_hydra/launcher="], id="lau"),
+        param(
+            "test_hydra/launcher=", 2, ["test_hydra/launcher=fairtask"], id="launcer_eq"
+        ),
+        param(
+            "test_hydra/launcher=fa", 2, ["test_hydra/launcher=fairtask"], id="fairtask"
+        ),
         # loading groups
         param("gro", 2, ["group="], id="group"),
         param("group=di", 2, ["group=dict"], id="group"),
