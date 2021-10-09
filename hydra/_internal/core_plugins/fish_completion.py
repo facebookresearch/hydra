@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import os
+import re
 import sys
 from typing import List, Optional, Tuple
 
@@ -51,6 +52,7 @@ end
     def query(self, config_name: Optional[str]) -> None:
         line = os.environ["COMP_LINE"]
         line = self.strip_python_or_app_name(line)
+        line = re.sub(r"\\~", "~", line)
         print("\n".join(self._query(config_name=config_name, line=line)))
 
     @staticmethod

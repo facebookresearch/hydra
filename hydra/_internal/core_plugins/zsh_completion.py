@@ -1,5 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+import os
+import re
 from typing import Optional
 
 from hydra.core.config_loader import ConfigLoader
@@ -16,7 +18,7 @@ class ZshCompletion(CompletionPlugin):
         self.delegate = BashCompletion(config_loader)
 
     def install(self) -> None:
-        self.delegate.install()
+        self.delegate.install(shell="zsh")
 
     def uninstall(self) -> None:
         self.delegate.uninstall()
@@ -26,7 +28,12 @@ class ZshCompletion(CompletionPlugin):
         return "zsh"
 
     def query(self, config_name: Optional[str]) -> None:
-        self.delegate.query(config_name)
+        line = os.environ["COMP_LINE"]
+        line = self.strip_python_or_app_name(line)
+        line = re.sub(r"\\~", "~", line)
+        out = " ".join(self._query(config_name=config_name, line=line))
+        out = re.sub(r"~", r"\\\\~", out)
+        print(out)
 
     @staticmethod
     def help(command: str) -> str:
@@ -36,7 +43,7 @@ class ZshCompletion(CompletionPlugin):
             "(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions)"
             " for details.\n    "
         )
-        command_text = f'eval "$({{}} -sc {command}=bash)"'
+        command_text = f'eval "$({{}} -sc {command}=zsh)"'
         if command == "install":
             return extra_description + command_text
         return command_text

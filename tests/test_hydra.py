@@ -690,9 +690,9 @@ def test_sweep_complex_defaults(
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
 (https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
-                    eval "$(python {script} -sc install=bash)"
+                    eval "$(python {script} -sc install=zsh)"
                     Zsh - Uninstall:
-                    eval "$(python {script} -sc uninstall=bash)"
+                    eval "$(python {script} -sc uninstall=zsh)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
                                     The config_path is relative to the Python file declaring @hydra.main()
@@ -747,9 +747,9 @@ for details.
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
 (https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
-                    eval "$(python {script} -sc install=bash)"
+                    eval "$(python {script} -sc install=zsh)"
                     Zsh - Uninstall:
-                    eval "$(python {script} -sc uninstall=bash)"
+                    eval "$(python {script} -sc uninstall=zsh)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
                                     The config_path is relative to the Python file declaring @hydra.main()

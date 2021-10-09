@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 class BashCompletion(CompletionPlugin):
-    def install(self) -> None:
+    def install(self, shell: str = "bash") -> None:
         # Record the old rule for uninstalling
         script = (
             f"export _HYDRA_OLD_COMP=$(complete -p {self._get_exec()} 2> /dev/null)\n"
@@ -42,7 +42,9 @@ class BashCompletion(CompletionPlugin):
     fi
 
     if [ $? == 0 ]; then
-        choices=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query=bash)
+"""
+        script += f"        choices=$( COMP_POINT=$COMP_POINT COMP_LINE=$COMP_LINE $helper -sc query={shell})"
+        script += """
         word=${words[$COMP_CWORD]}
 
         if [ "$HYDRA_COMP_DEBUG" == "1" ]; then
