@@ -18,7 +18,7 @@ class ZshCompletion(CompletionPlugin):
         self.delegate = BashCompletion(config_loader)
 
     def install(self) -> None:
-        self.delegate.install(shell="zsh")
+        self.delegate.install("zsh")
 
     def uninstall(self) -> None:
         self.delegate.uninstall()
