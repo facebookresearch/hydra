@@ -84,6 +84,8 @@ def eq(item1: Any, item2: Any) -> bool:
         # bool
         param("true", True, id="value:bool"),
         param(".", ".", id="value:dot"),
+        param("|", "|", id="value:pipe"),
+        param("a|b", "a|b", id="value:a-pipe-b"),
     ],
 )
 def test_element(value: str, expected: Any) -> None:
