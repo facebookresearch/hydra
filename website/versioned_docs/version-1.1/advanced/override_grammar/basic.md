@@ -151,14 +151,27 @@ It may be necessary to use multiple pairs of quotes to prevent your
 shell from consuming quotation marks before they are passed to hydra.
 
 ```shell
-$ python my_app.py +foo="{a: 10}"  # the string `+foo={a: 10}` is passed to Hydra by bash
+$ python my_app.py '+foo="{a: 10}"'
+foo: '{a: 10}'
+
+$ python my_app.py '+foo={a: 10}'
 foo:
   a: 10
 
-$ python my_app.py '+foo="{a: 10}"'  # the string `+foo="{a: 10}"` is passed to Hydra by bash
-foo: '{a: 10}'
-
+$ python my_app.py +foo={a: 10}  # Two strings are passed to Hydra: `+foo={a:` and `10}`. This is an error.
+no viable alternative at input '{a:'.
+...
 ```
+
+Here are some best practices around quoting in CLI overrides:
+- Quote the whole key=value pair with single quotes, as in the first two
+  examples above. These quotes are for the benefit of the shell.
+- Do not quote keys.
+- Only quote values if they contain a space. It will work if you always quote
+  values, but it will turn numbers/dicts/lists into strings (as in the first
+  example above).
+- When you are quoting values, use double quotes to avoid collision with the
+  outer single quoted consumed by the shell.
 
 ### Whitespaces in unquoted values
 Unquoted Override values can contain non leading or trailing whitespaces.
