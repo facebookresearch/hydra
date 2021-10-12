@@ -31,7 +31,7 @@ from hydra.core.override_parser.types import (
 )
 from hydra.errors import HydraException
 
-UNQUOTED_SPECIAL = r"/-\+.$%*@?"  # special characters allowed in unquoted strings
+UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted strings
 
 parser = OverridesParser(create_functions())
 
@@ -84,8 +84,6 @@ def eq(item1: Any, item2: Any) -> bool:
         # bool
         param("true", True, id="value:bool"),
         param(".", ".", id="value:dot"),
-        param("|", "|", id="value:pipe"),
-        param("a|b", "a|b", id="value:a-pipe-b"),
     ],
 )
 def test_element(value: str, expected: Any) -> None:
