@@ -1,3 +1,11 @@
+1.1.6 (2021-10-13)
+==================
+
+### Features
+
+- Add support for SLURM parameters `qos`, `gres` ([#1800](https://github.com/facebookresearch/hydra/issues/1800))
+
+
 1.1.5 (2021-06-10)
 ==================
 
