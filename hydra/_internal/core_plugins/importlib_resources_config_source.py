@@ -63,7 +63,9 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def available(self) -> bool:
         try:
-            ret = resources.is_resource(self.path, "__init__.py")  # type:ignore
+            ret = any(
+                f.name == "__init__.py" and f.is_file() for f in resources.files(self.path).iterdir()  # type: ignore
+            )
             assert isinstance(ret, bool)
             return ret
         except ValueError:
