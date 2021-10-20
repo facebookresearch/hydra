@@ -68,13 +68,13 @@ class ImportlibResourcesConfigSource(ConfigSource):
             )
             assert isinstance(ret, bool)
             return ret
-        except Exception:
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
 
     def is_group(self, config_path: str) -> bool:
         try:
             files = resources.files(self.path)  # type:ignore
-        except Exception:
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
 
         res = files.joinpath(config_path)
@@ -86,7 +86,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
         config_path = self._normalize_file_name(config_path)
         try:
             files = resources.files(self.path)  # type:ignore
-        except Exception:
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
         res = files.joinpath(config_path)
         ret = res.exists() and res.is_file()
