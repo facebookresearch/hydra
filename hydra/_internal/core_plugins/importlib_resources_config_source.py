@@ -63,13 +63,10 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def available(self) -> bool:
         try:
-            ret = any(
-                f.name == "__init__.py" and f.is_file() for f in resources.files(self.path).iterdir()  # type: ignore
-            )
-            assert isinstance(ret, bool)
-            return ret
+            files = resources.files(self.path)  # type: ignore
         except (ValueError, ModuleNotFoundError, TypeError):
             return False
+        return any(f.name == "__init__.py" and f.is_file() for f in files.iterdir())
 
     def is_group(self, config_path: str) -> bool:
         try:
