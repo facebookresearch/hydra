@@ -68,9 +68,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
             )
             assert isinstance(ret, bool)
             return ret
-        except ValueError:
-            return False
-        except ModuleNotFoundError:
+        except Exception:
             return False
 
     def is_group(self, config_path: str) -> bool:
