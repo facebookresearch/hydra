@@ -4,8 +4,7 @@ from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import List, Optional, Pattern, Union
 
-from omegaconf import AnyNode, DictConfig, OmegaConf
-from omegaconf.errors import InterpolationResolutionError
+from omegaconf import AnyNode, DictConfig
 
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
@@ -227,24 +226,27 @@ class InputDefault:
     def _resolve_interpolation_impl(
         self, known_choices: DictConfig, val: Optional[str]
     ) -> str:
-        node = OmegaConf.create({"_dummy_": val})
-        node._set_parent(known_choices)
-        try:
-            ret = node["_dummy_"]
-            assert isinstance(ret, str)
-            return ret
-        except InterpolationResolutionError:
-            options = [
-                x
-                for x in known_choices.keys()
-                if x != "defaults" and isinstance(x, str)
-            ]
-            if len(options) > 0:
-                options_str = ", ".join(options)
-                msg = f"Error resolving interpolation '{val}', possible interpolation keys: {options_str}"
-            else:
-                msg = f"Error resolving interpolation '{val}'"
-            raise ConfigCompositionException(msg)
+        pattern = r'(\$\{.*?\})'
+        ret = ''
+        for substring in re.split(pattern, val):
+            if (match := re.fullmatch(pattern, substring)) is not None:
+                if (key := match.group().strip(r'${}')) not in known_choices:
+                    raise ConfigCompositionException((
+                        f"Error resolving interpolation '{key}'" + (
+                            f", possible interpolation keys: {', '.join(options)}"
+                            if len((options := [
+                                x
+                                for x in known_choices.keys()
+                                if x != "defaults" and isinstance(x, str)
+                            ])) > 0
+                            else ""
+                        )
+                    ))
+
+                substring = known_choices[key]
+            ret += substring
+
+        return ret
 
     def get_override_key(self) -> str:
         default_pkg = self.get_default_package()
