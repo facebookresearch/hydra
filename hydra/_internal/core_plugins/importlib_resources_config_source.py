@@ -63,18 +63,15 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def available(self) -> bool:
         try:
-            ret = resources.is_resource(self.path, "__init__.py")  # type:ignore
-            assert isinstance(ret, bool)
-            return ret
-        except ValueError:
+            files = resources.files(self.path)  # type: ignore
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
-        except ModuleNotFoundError:
-            return False
+        return any(f.name == "__init__.py" and f.is_file() for f in files.iterdir())
 
     def is_group(self, config_path: str) -> bool:
         try:
             files = resources.files(self.path)  # type:ignore
-        except Exception:
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
 
         res = files.joinpath(config_path)
@@ -86,7 +83,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
         config_path = self._normalize_file_name(config_path)
         try:
             files = resources.files(self.path)  # type:ignore
-        except Exception:
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
         res = files.joinpath(config_path)
         ret = res.exists() and res.is_file()
