@@ -227,6 +227,7 @@ def lint(session):
         "tools/configen/example/gen",
         "tools/configen/tests/test_modules/expected",
         "temp",
+        "build",
     ]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 

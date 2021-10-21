@@ -62,6 +62,7 @@ exclude = '''
     | .venv
     | _build
     | dist
+    | build
   )
 )
 '''
