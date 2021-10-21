@@ -7,6 +7,7 @@ exclude =
     ,tools/configen/example/gen
     ,tools/configen/tests/test_modules/expected
     ,temp
+    ,build
 
     # flake8-copyright does not support unicode, savoirfairelinux/flake8-copyright#15
     ,examples/plugins/example_configsource_plugin/hydra_plugins/example_configsource_plugin/example_configsource_plugin.py
