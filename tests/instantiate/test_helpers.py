@@ -20,7 +20,11 @@ from tests.instantiate import (
 @mark.parametrize(
     "name,expected",
     [
-        param("int", int, id="int"),
+        param(
+            "int",
+            raises(ImportError, match=re.escape("Error loading module 'int'")),
+            id="int",
+        ),
         param("builtins.int", int, id="builtins_explicit"),
         param("builtins.int.from_bytes", int.from_bytes, id="method_of_builtin"),
         param(

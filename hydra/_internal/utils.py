@@ -559,7 +559,6 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     """
     if path == "":
         raise ImportError("Empty path")
-    import builtins
     from importlib import import_module
     from types import ModuleType
 
@@ -570,10 +569,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
             obj = import_module(mod)
         except Exception as e:
             if n == 1:
-                if hasattr(builtins, parts[0]):
-                    obj = getattr(builtins, parts[0])
-                else:
-                    raise ImportError(f"Error loading module '{path}'") from e
+                raise ImportError(f"Error loading module '{path}'") from e
             continue
         if obj:
             break
