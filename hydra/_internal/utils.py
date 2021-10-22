@@ -567,28 +567,27 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         try:
             mod = ".".join(parts[:n])
             obj = import_module(mod)
-        except Exception as e:
+        except Exception as exc_import:
             if n == 1:
-                raise ImportError(f"Error loading module '{path}'") from e
+                raise ImportError(f"Error loading module '{path}'") from exc_import
             continue
         break
     for m in range(n, len(parts)):
         part = parts[m]
         try:
             obj = getattr(obj, part)
-        except AttributeError as e:
+        except AttributeError as exc_attr:
             if isinstance(obj, ModuleType):
                 try:
                     mod = ".".join(parts[: m + 1])
                     import_module(mod)
-                except Exception as e:
+                except ModuleNotFoundError:
+                    pass
+                except Exception as exc_import:
                     raise ImportError(
-                        f"Encountered error: `{repr(e)}` when loading module '{path}'"
-                    ) from e
-            else:
-                raise AttributeError(
-                    f"Could not get attribute '{part}' when loading '{path}'"
-                ) from e
+                        f"Error loading '{path}': '{repr(exc_import)}'"
+                    ) from exc_import
+            raise AttributeError(f"Error loading '{path}': {exc_attr}") from exc_attr
     if isinstance(obj, type):
         obj_type: type = obj
         return obj_type

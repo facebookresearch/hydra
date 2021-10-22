@@ -32,7 +32,7 @@ from tests.instantiate import (
             raises(
                 AttributeError,
                 match=re.escape(
-                    "Could not get attribute 'not_found' when loading 'builtins.int.not_found'"
+                    "Error loading 'builtins.int.not_found': type object 'int' has no attribute 'not_found'"
                 ),
             ),
             id="builtin_attribute_error",
@@ -58,7 +58,8 @@ from tests.instantiate import (
             raises(
                 AttributeError,
                 match=re.escape(
-                    "Could not get attribute 'not_found' when loading 'tests.instantiate.AClass.not_found'"
+                    "Error loading 'tests.instantiate.AClass.not_found':"
+                    + " type object 'AClass' has no attribute 'not_found'"
                 ),
             ),
             id="class_attribute_error",
@@ -74,7 +75,10 @@ from tests.instantiate import (
         param(
             "tests.instantiate.b.c.Door",
             raises(
-                ImportError, match=re.escape("No module named 'tests.instantiate.b'")
+                AttributeError,
+                match=re.escape(
+                    "Error loading 'tests.instantiate.b.c.Door': module 'tests.instantiate' has no attribute 'b'"
+                ),
             ),
             id="nested_not_found",
         ),
@@ -83,7 +87,7 @@ from tests.instantiate import (
             raises(
                 ImportError,
                 match=re.escape(
-                    "Encountered error: `AssertionError()` when loading module 'tests.instantiate.import_error'"
+                    "Error loading 'tests.instantiate.import_error': 'AssertionError()'"
                 ),
             ),
             id="import_assertion_error",
