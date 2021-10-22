@@ -31,7 +31,7 @@ from hydra.core.override_parser.types import (
 )
 from hydra.errors import HydraException
 
-UNQUOTED_SPECIAL = r"/-\+.$%*@?"  # special characters allowed in unquoted strings
+UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted strings
 
 parser = OverridesParser(create_functions())
 
