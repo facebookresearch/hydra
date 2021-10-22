@@ -564,8 +564,8 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
 
     parts = [part for part in path.split(".") if part]
     for n in reversed(range(1, len(parts) + 1)):
+        mod = ".".join(parts[:n])
         try:
-            mod = ".".join(parts[:n])
             obj = import_module(mod)
         except Exception as exc_import:
             if n == 1:
@@ -578,8 +578,8 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
             obj = getattr(obj, part)
         except AttributeError as exc_attr:
             if isinstance(obj, ModuleType):
+                mod = ".".join(parts[: m + 1])
                 try:
-                    mod = ".".join(parts[: m + 1])
                     import_module(mod)
                 except ModuleNotFoundError:
                     pass
