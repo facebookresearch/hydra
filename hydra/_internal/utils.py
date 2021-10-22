@@ -571,8 +571,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
             if n == 1:
                 raise ImportError(f"Error loading module '{path}'") from e
             continue
-        if obj:
-            break
+        break
     for m in range(n, len(parts)):
         part = parts[m]
         try:
