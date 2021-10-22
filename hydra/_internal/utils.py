@@ -588,7 +588,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
                     ) from e
             else:
                 raise AttributeError(
-                    f"Encountered AttributeError when loading '{path}'"
+                    f"Could not get attribute '{part}' when loading '{path}'"
                 ) from e
     if isinstance(obj, type):
         obj_type: type = obj

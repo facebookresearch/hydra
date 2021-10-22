@@ -28,11 +28,11 @@ from tests.instantiate import (
         param("builtins.int", int, id="builtins_explicit"),
         param("builtins.int.from_bytes", int.from_bytes, id="method_of_builtin"),
         param(
-            "builtins.int.from_boots",
+            "builtins.int.not_found",
             raises(
                 AttributeError,
                 match=re.escape(
-                    "Encountered AttributeError when loading 'builtins.int.from_boots'"
+                    "Could not get attribute 'not_found' when loading 'builtins.int.not_found'"
                 ),
             ),
             id="builtin_attribute_error",
@@ -58,7 +58,7 @@ from tests.instantiate import (
             raises(
                 AttributeError,
                 match=re.escape(
-                    "Encountered AttributeError when loading 'tests.instantiate.AClass.not_found'"
+                    "Could not get attribute 'not_found' when loading 'tests.instantiate.AClass.not_found'"
                 ),
             ),
             id="class_attribute_error",
