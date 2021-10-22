@@ -561,33 +561,39 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         raise ImportError("Empty path")
     import builtins
     from importlib import import_module
+    from types import ModuleType
 
     parts = [part for part in path.split(".") if part]
-    module = None
-    for n in reversed(range(len(parts))):
+    for n in reversed(range(1, len(parts) + 1)):
         try:
             mod = ".".join(parts[:n])
-            module = import_module(mod)
+            obj = import_module(mod)
         except Exception as e:
-            if n == 0:
-                raise ImportError(f"Error loading module '{path}'") from e
+            if n == 1:
+                if hasattr(builtins, parts[0]):
+                    obj = getattr(builtins, parts[0])
+                else:
+                    raise ImportError(f"Error loading module '{path}'") from e
             continue
-        if module:
+        if obj:
             break
-    if module:
-        obj = module
-    else:
-        obj = builtins
-    for part in parts[n:]:
-        mod = mod + "." + part
-        if not hasattr(obj, part):
-            try:
-                import_module(mod)
-            except Exception as e:
-                raise ImportError(
-                    f"Encountered error: `{e}` when loading module '{path}'"
+    for m in range(n, len(parts)):
+        part = parts[m]
+        try:
+            obj = getattr(obj, part)
+        except AttributeError as e:
+            if isinstance(obj, ModuleType):
+                try:
+                    mod = ".".join(parts[: m + 1])
+                    import_module(mod)
+                except Exception as e:
+                    raise ImportError(
+                        f"Encountered error: `{repr(e)}` when loading module '{path}'"
+                    ) from e
+            else:
+                raise AttributeError(
+                    f"Encountered AttributeError when loading '{path}'"
                 ) from e
-        obj = getattr(obj, part)
     if isinstance(obj, type):
         obj_type: type = obj
         return obj_type
