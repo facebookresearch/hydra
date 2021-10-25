@@ -587,7 +587,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
                     raise ImportError(
                         f"Error loading '{path}': '{repr(exc_import)}'"
                     ) from exc_import
-            raise AttributeError(f"Error loading '{path}': {exc_attr}") from exc_attr
+            raise ImportError(f"Encountered AttributeError while loading '{path}': {exc_attr}") from exc_attr
     if isinstance(obj, type):
         obj_type: type = obj
         return obj_type
