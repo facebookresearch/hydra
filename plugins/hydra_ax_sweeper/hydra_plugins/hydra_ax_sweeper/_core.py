@@ -312,6 +312,7 @@ def create_range_param_using_interval_override(override: Override) -> Dict[str, 
         "name": key,
         "type": "range",
         "bounds": [value.start, value.end],
+        "log_scale": "log" in value.tags,
     }
     return param
 
