@@ -597,7 +597,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         obj_callable: Callable[..., Any] = obj
         return obj_callable
     else:
-        # dummy case
+        # reject if not callable & not a type
         raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
 
 
