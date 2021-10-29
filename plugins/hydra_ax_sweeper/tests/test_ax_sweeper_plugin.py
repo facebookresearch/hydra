@@ -183,6 +183,32 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
 
+def test_configuration_set_via_cmd_and_default_config_with_logscale(
+    hydra_sweep_runner: TSweepRunner,
+) -> None:
+    sweep = hydra_sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=quadratic,
+        config_path="config",
+        config_name="config.yaml",
+        overrides=[
+            "hydra/launcher=basic",
+            "hydra.sweeper.ax_config.max_trials=2",
+            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=2",
+            "quadratic=basic",
+            "quadratic.x=tag(log, interval(-5, -2))",
+            "quadratic.y=tag(log, interval(-1, 1))",
+        ],
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        best_parameters = returns.ax
+        assert "quadratic.x" in best_parameters
+        assert "quadratic.y" in best_parameters
+
 
 @mark.parametrize(
     "cmd_arg, expected_str",
