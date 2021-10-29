@@ -107,6 +107,26 @@ def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
 
 
+def test_jobs_configured_via_config_logscale(hydra_sweep_runner: TSweepRunner) -> None:
+    sweep = hydra_sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=quadratic,
+        config_path="config",
+        config_name="config.yaml",
+        overrides=["hydra/launcher=basic", "params=logscale"],
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
+
+
 def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
@@ -132,6 +152,31 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
 
 
+def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> None:
+    sweep = hydra_sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=quadratic,
+        config_path="config",
+        config_name="config.yaml",
+        overrides=[
+            "hydra/launcher=basic",
+            "quadratic.x=int(interval(-5, -2))",
+            "quadratic.y=tag(log, interval(0.5, 1000))",
+            "params=logscale",
+        ],
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 0.5, abs_tol=1e-4)
+
+
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
@@ -144,6 +189,31 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
             "hydra.sweeper.ax_config.max_trials=2",
             "quadratic.x=int(interval(-5, -2))",
             "params=basic",
+        ],
+    )
+    with sweep:
+        assert sweep.returns is None
+        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
+        assert isinstance(returns, DictConfig)
+        assert returns["optimizer"] == "ax"
+        assert len(returns) == 2
+        best_parameters = returns.ax
+        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
+
+
+def test_jobs_configured_via_cmd_and_config_logscale(hydra_sweep_runner: TSweepRunner) -> None:
+    sweep = hydra_sweep_runner(
+        calling_file="tests/test_ax_sweeper_plugin.py",
+        calling_module=None,
+        task_function=quadratic,
+        config_path="config",
+        config_name="config.yaml",
+        overrides=[
+            "hydra/launcher=basic",
+            "hydra.sweeper.ax_config.max_trials=2",
+            "quadratic.x=int(interval(-5, -2))",
+            "params=logscale",
         ],
     )
     with sweep:
@@ -173,33 +243,6 @@ def test_configuration_set_via_cmd_and_default_config(
             "quadratic=basic",
             "quadratic.x=interval(-5, -2)",
             "quadratic.y=interval(-1, 1)",
-        ],
-    )
-    with sweep:
-        assert sweep.returns is None
-        returns = OmegaConf.load(f"{sweep.temp_dir}/optimization_results.yaml")
-        assert isinstance(returns, DictConfig)
-        best_parameters = returns.ax
-        assert "quadratic.x" in best_parameters
-        assert "quadratic.y" in best_parameters
-
-
-def test_configuration_set_via_cmd_and_default_config_with_logscale(
-    hydra_sweep_runner: TSweepRunner,
-) -> None:
-    sweep = hydra_sweep_runner(
-        calling_file="tests/test_ax_sweeper_plugin.py",
-        calling_module=None,
-        task_function=quadratic,
-        config_path="config",
-        config_name="config.yaml",
-        overrides=[
-            "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=2",
-            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=2",
-            "quadratic=basic",
-            "quadratic.x=tag(log, interval(-5, -2))",
-            "quadratic.y=tag(log, interval(-1, 1))",
         ],
     )
     with sweep:
