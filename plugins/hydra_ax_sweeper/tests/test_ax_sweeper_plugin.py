@@ -211,7 +211,9 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd_and_config_logscale(hydra_sweep_runner: TSweepRunner) -> None:
+def test_jobs_configured_via_cmd_and_config_logscale(
+    hydra_sweep_runner: TSweepRunner,
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
