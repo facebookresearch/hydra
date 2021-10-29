@@ -116,7 +116,7 @@ def test_jobs_configured_via_config_logscale(hydra_sweep_runner: TSweepRunner) -
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=10000",
+            "hydra.sweeper.ax_config.max_trials=100",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
             "params=logscale",
         ],
@@ -129,7 +129,7 @@ def test_jobs_configured_via_config_logscale(hydra_sweep_runner: TSweepRunner) -
         assert len(returns) == 2
         best_parameters = returns.ax
         assert math.isclose(best_parameters["quadratic.x"], 0.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-2)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-1)
 
 
 def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
@@ -167,7 +167,7 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=10000",
+            "hydra.sweeper.ax_config.max_trials=100",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
             "quadratic.x=int(interval(-5, -2))",
             "quadratic.y=tag(log, interval(0.5, 3))",
@@ -182,7 +182,7 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
         assert len(returns) == 2
         best_parameters = returns.ax
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 0.5, abs_tol=1e-2)
+        assert math.isclose(best_parameters["quadratic.y"], 0.5, abs_tol=1e-1)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -222,7 +222,7 @@ def test_jobs_configured_via_cmd_and_config_logscale(
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=10000",
+            "hydra.sweeper.ax_config.max_trials=100",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
             "quadratic.x=int(interval(-5, -2))",
             "params=logscale",
@@ -236,7 +236,7 @@ def test_jobs_configured_via_cmd_and_config_logscale(
         assert len(returns) == 2
         best_parameters = returns.ax
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-2)
+        assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-1)
 
 
 def test_configuration_set_via_cmd_and_default_config(
