@@ -116,8 +116,8 @@ def test_jobs_configured_via_config_logscale(hydra_sweep_runner: TSweepRunner) -
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=100",
-            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
+            "hydra.sweeper.ax_config.max_trials=1000",
+            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=3",
             "params=logscale",
         ],
     )
@@ -167,8 +167,8 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=100",
-            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
+            "hydra.sweeper.ax_config.max_trials=1000",
+            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=3",
             "quadratic.x=int(interval(-5, -2))",
             "quadratic.y=tag(log, interval(0.5, 1.5))",
             "params=logscale",
@@ -222,8 +222,8 @@ def test_jobs_configured_via_cmd_and_config_logscale(
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "hydra.sweeper.ax_config.max_trials=100",
-            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
+            "hydra.sweeper.ax_config.max_trials=1000",
+            "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=3",
             "quadratic.x=int(interval(-5, -2))",
             "params=logscale",
         ],
