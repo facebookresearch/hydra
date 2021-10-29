@@ -183,6 +183,7 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
 
+
 def test_configuration_set_via_cmd_and_default_config_with_logscale(
     hydra_sweep_runner: TSweepRunner,
 ) -> None:
