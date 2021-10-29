@@ -170,7 +170,7 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
             "hydra.sweeper.ax_config.max_trials=100",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=3",
             "quadratic.x=tag(log, interval(2, 8))",
-            "quadratic.y=interval(0.5, 1.5)",
+            "quadratic.y=int(interval(3, 7))",
             "params=logscale",
         ],
     )
@@ -182,7 +182,7 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
         assert len(returns) == 2
         best_parameters = returns.ax
         assert math.isclose(best_parameters["quadratic.x"], 2.0, abs_tol=1e-1)
-        assert math.isclose(best_parameters["quadratic.y"], 0.5, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], 3.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
