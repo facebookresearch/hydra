@@ -5,5 +5,5 @@ quadratic.x:
 
 quadratic.y:
   type: range
-  bounds: [1, 4]
+  bounds: [1, 2]
   log_scale: true

@@ -170,7 +170,7 @@ def test_jobs_configured_via_cmd_logscale(hydra_sweep_runner: TSweepRunner) -> N
             "hydra.sweeper.ax_config.max_trials=100",
             "hydra.sweeper.ax_config.early_stop.max_epochs_without_improvement=1000",
             "quadratic.x=int(interval(-5, -2))",
-            "quadratic.y=tag(log, interval(0.5, 3))",
+            "quadratic.y=tag(log, interval(0.5, 1.5))",
             "params=logscale",
         ],
     )
