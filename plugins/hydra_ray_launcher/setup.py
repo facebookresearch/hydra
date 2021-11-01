@@ -27,6 +27,7 @@ setup(
         "boto3==1.17.17",
         "hydra-core>=1.1.0.dev7",
         "ray[default]==1.6.0",
+        "aiohttp<3.8.0",
         "cloudpickle==1.6.0",
         "pickle5==0.0.11",
     ],
