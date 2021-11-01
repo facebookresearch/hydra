@@ -559,35 +559,37 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     """
     if path == "":
         raise ImportError("Empty path")
-    import builtins
     from importlib import import_module
+    from types import ModuleType
 
     parts = [part for part in path.split(".") if part]
-    module = None
-    for n in reversed(range(len(parts))):
+    for n in reversed(range(1, len(parts) + 1)):
+        mod = ".".join(parts[:n])
         try:
-            mod = ".".join(parts[:n])
-            module = import_module(mod)
-        except Exception as e:
-            if n == 0:
-                raise ImportError(f"Error loading module '{path}'") from e
+            obj = import_module(mod)
+        except Exception as exc_import:
+            if n == 1:
+                raise ImportError(f"Error loading module '{path}'") from exc_import
             continue
-        if module:
-            break
-    if module:
-        obj = module
-    else:
-        obj = builtins
-    for part in parts[n:]:
-        mod = mod + "." + part
-        if not hasattr(obj, part):
-            try:
-                import_module(mod)
-            except Exception as e:
-                raise ImportError(
-                    f"Encountered error: `{e}` when loading module '{path}'"
-                ) from e
-        obj = getattr(obj, part)
+        break
+    for m in range(n, len(parts)):
+        part = parts[m]
+        try:
+            obj = getattr(obj, part)
+        except AttributeError as exc_attr:
+            if isinstance(obj, ModuleType):
+                mod = ".".join(parts[: m + 1])
+                try:
+                    import_module(mod)
+                except ModuleNotFoundError:
+                    pass
+                except Exception as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}': '{repr(exc_import)}'"
+                    ) from exc_import
+            raise ImportError(
+                f"Encountered AttributeError while loading '{path}': {exc_attr}"
+            ) from exc_attr
     if isinstance(obj, type):
         obj_type: type = obj
         return obj_type
@@ -595,7 +597,7 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
         obj_callable: Callable[..., Any] = obj
         return obj_callable
     else:
-        # dummy case
+        # reject if not callable & not a type
         raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
 
 
