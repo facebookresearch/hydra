@@ -28,7 +28,7 @@ setup(
         "hydra-core>=1.1.0.dev7",
         "ray[default]==1.6.0",
         # https://github.com/aio-libs/aiohttp/issues/6203
-        "aiohttp<3.8.0",
+        "aiohttp!=3.8.0",
         "cloudpickle==1.6.0",
         "pickle5==0.0.11",
     ],
