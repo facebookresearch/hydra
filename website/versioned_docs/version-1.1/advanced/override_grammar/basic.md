@@ -190,7 +190,8 @@ $ python my_app.py 'msg=    hello world    '
 ```
 
 ### Escaped characters in unquoted values
-Some otherwise special characters may be included in unquoted values by escaping them with a `\`.
+Hydra's parser considers some characters to be illegal in unquoted strings.
+These otherwise special characters may be included in unquoted values by escaping them with a `\`.
 These characters are: `\()[]{}:=, \t` (the last two ones being the whitespace and tab characters).
 
 As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
@@ -199,11 +200,10 @@ As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
 $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 ```
 
-Hydra's parser considers some characters, such as the left-bracket symbol `'['`, to be illegal in unquoted strings.
-Strings containing such characters must be quoted, or the offending character(s) escaped with backslashes:
+As an alternative to escaping special characters with a backslash, the value containing the special character may be quoted:
 
 ```shell
-$ python my_app.py 'dir=A[B'    # error
+$ python my_app.py 'dir=A[B'    # parser error
 $ python my_app.py 'dir="A[B"'  # ok
 $ python my_app.py 'dir=A\[B'   # ok
 ```
