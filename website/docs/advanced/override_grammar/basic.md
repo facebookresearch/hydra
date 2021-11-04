@@ -196,11 +196,13 @@ As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
 $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
 ```
 
-Some characters, such as the bar symbol `'|'`, are not legal in unquoted strings.
-Strings containing such characters must be quoted:
+Hydra's parser considers some characters, such as the left-bracket symbol `'['`, to be illegal in unquoted strings.
+Strings containing such characters must be quoted, or the offending character(s) escaped with backslashes:
 
 ```shell
-$ python my_app.py 'dir="A|B"'
+$ python my_app.py 'dir=A[B'    # error
+$ python my_app.py 'dir="A[B"'  # ok
+$ python my_app.py 'dir=A\[B'   # ok
 ```
 
 ### Primitives
