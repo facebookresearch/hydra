@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import MutableSequence, Optional
+from typing import MutableSequence, Optional, Union
 
 
 class SearchPathElement:
@@ -49,7 +49,10 @@ class ConfigSearchPath(ABC):
 
     @abstractmethod
     def prepend(
-        self, provider: str, path: str, anchor: Optional[SearchPathQuery] = None
+        self,
+        provider: str,
+        path: str,
+        anchor: Optional[Union[SearchPathQuery, str]] = None,
     ) -> None:
         """
         Prepends to the search path.

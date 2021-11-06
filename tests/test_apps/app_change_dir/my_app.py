@@ -9,7 +9,7 @@ from hydra.core.hydra_config import HydraConfig
 
 
 @hydra.main(config_path=None)
-def main(_: DictConfig):
+def main(_: DictConfig) -> None:
     subdir = Path(HydraConfig.get().run.dir) / Path("subdir")
     subdir.mkdir(exist_ok=True, parents=True)
     os.chdir(subdir)

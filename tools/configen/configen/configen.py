@@ -57,6 +57,7 @@ def init_config(conf_dir: str) -> None:
         sys.exit(1)
 
     sample_config = pkgutil.get_data(__name__, "templates/sample_config.yaml")
+    assert sample_config is not None
     file.write_bytes(sample_config)
 
 
@@ -147,7 +148,7 @@ def get_default_flags(module: ModuleConf) -> List[Parameter]:
             Parameter(
                 name="_recursive_",
                 type_str="bool",
-                default=module.default_flags._recursive_,
+                default=str(module.default_flags._recursive_),
             )
         )
 
@@ -156,7 +157,7 @@ def get_default_flags(module: ModuleConf) -> List[Parameter]:
 
 def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
     classes_map: Dict[str, ClassInfo] = {}
-    imports = set()
+    imports: Set[Any] = set()
     string_imports: Set[str] = set()
 
     default_flags = get_default_flags(module)
@@ -165,7 +166,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         full_name = f"{module.name}.{class_name}"
         cls = hydra.utils.get_class(full_name)
         sig = inspect.signature(cls)
-        resolved_hints = get_type_hints(cls.__init__)
+        resolved_hints = get_type_hints(cls.__init__)  # type: ignore
         params: List[Parameter] = []
         params = params + default_flags
 
