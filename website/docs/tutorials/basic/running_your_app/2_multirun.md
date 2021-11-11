@@ -4,6 +4,10 @@ title: Multi-run
 sidebar_label: Multi-run
 ---
 
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/5_basic_sweep"/>
+
 Sometimes you want to run the same application with multiple different configurations.  
 E.g. running a performance test on each of the databases with each of the schemas.
 
@@ -20,6 +24,27 @@ The following sweeps over all combinations of the dbs and schemas.
 [2021-01-20 17:25:04,040][HYDRA]        #5 : db=postgresql schema=school
 ```
 The printed configurations have been omitted for brevity.
+
+You can also define sweeping in the input configs by overriding
+`hydra.sweeper.params`. Using the above example, the same multirun could be achieved via the following config.
+
+```yaml
+hydra:
+  sweeper:
+    params:
+      db: mysql,postgresql
+      schema: warehouse,support,school
+```
+
+The syntax are consistent for both input configs and commandline overrides. The commandline will override the definition 
+in input configs. If we run the same application with the above input config and a new commandline override:
+
+```text title="$ python my_app.py -m db=mysql"
+[2021-01-20 17:25:03,317][HYDRA] Launching 3 jobs locally
+[2021-01-20 17:25:03,318][HYDRA]        #0 : db=mysql schema=warehouse
+[2021-01-20 17:25:03,458][HYDRA]        #1 : db=mysql schema=support
+[2021-01-20 17:25:03,602][HYDRA]        #2 : db=mysql schema=school
+```
 
 ### Additional sweep types
 Hydra supports other kinds of sweeps, e.g:

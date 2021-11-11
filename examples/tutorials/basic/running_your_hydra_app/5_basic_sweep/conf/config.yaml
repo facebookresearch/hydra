@@ -1,0 +1,9 @@
+defaults:
+  - db: ???
+  - _self_
+
+hydra:
+  sweeper:
+    params:
+      db: glob(*)
+      db.timeout: 5,10

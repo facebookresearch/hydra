@@ -19,9 +19,10 @@ python foo.py a=range(1,4) b=10,20
 import itertools
 import logging
 import time
-from dataclasses import dataclass
+from collections import OrderedDict
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -39,6 +40,7 @@ from hydra.types import HydraContext, TaskFunction
 class BasicSweeperConf:
     _target_: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
     max_batch_size: Optional[int] = None
+    params: Dict[str, str] = field(default_factory=dict)
 
 
 ConfigStore.instance().store(
@@ -54,7 +56,7 @@ class BasicSweeper(Sweeper):
     Basic sweeper
     """
 
-    def __init__(self, max_batch_size: Optional[int]) -> None:
+    def __init__(self, max_batch_size: Optional[int], params: Dict[str, str]) -> None:
         """
         Instantiates
         """
@@ -62,6 +64,7 @@ class BasicSweeper(Sweeper):
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
+        self.params = params
 
         self.hydra_context: Optional[HydraContext] = None
         self.config: Optional[DictConfig] = None
@@ -101,12 +104,13 @@ class BasicSweeper(Sweeper):
     ) -> List[List[List[str]]]:
 
         lists = []
+        merged_overrides = OrderedDict()
         for override in overrides:
             if override.is_sweep_override():
                 if override.is_discrete_sweep():
                     key = override.get_key_element()
                     sweep = [f"{key}={val}" for val in override.sweep_string_iterator()]
-                    lists.append(sweep)
+                    merged_overrides[key] = sweep
                 else:
                     assert override.value_type is not None
                     raise HydraException(
@@ -115,7 +119,10 @@ class BasicSweeper(Sweeper):
             else:
                 key = override.get_key_element()
                 value = override.get_value_element_as_str()
-                lists.append([f"{key}={value}"])
+                merged_overrides[key] = [f"{key}={value}"]
+
+        for _, v in merged_overrides.items():
+            lists.append(v)
 
         all_batches = [list(x) for x in itertools.product(*lists)]
         assert max_batch_size is None or max_batch_size > 0
@@ -127,13 +134,22 @@ class BasicSweeper(Sweeper):
             )
             return [x for x in chunks_iter]
 
+    def _parse_config(self) -> List[str]:
+        params_conf = []
+        for k, v in self.params.items():
+            params_conf.append(f"{k}={v}")
+        return params_conf
+
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
         assert self.hydra_context is not None
 
+        params_conf = self._parse_config()
+        params_conf.extend(arguments)
+
         parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)
-        overrides = parser.parse_overrides(arguments)
+        overrides = parser.parse_overrides(params_conf)
 
         self.overrides = self.split_arguments(overrides, self.max_batch_size)
         returns: List[Sequence[JobReturn]] = []
