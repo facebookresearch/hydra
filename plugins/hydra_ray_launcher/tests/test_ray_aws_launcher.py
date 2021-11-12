@@ -162,14 +162,15 @@ def upload_and_install_wheels(
     sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
+        with_output=True,
     )
 
     log.info(f"Install plugin wheel {plugin_wheel}")
     sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
+        with_output=True,
     )
-    print("")
 
 
 def parse_python_minor_version(version: str) -> str:
@@ -239,10 +240,16 @@ def manage_cluster() -> Generator[None, None, None]:
         connect_config,
     )
     sdk.run_on_cluster(
-        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_dir}"
+        connect_config,
+        run_env="auto",
+        cmd=f"mkdir -p {temp_remote_dir}",
+        with_output=True,
     )
     sdk.run_on_cluster(
-        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_wheel_dir}"
+        connect_config,
+        run_env="auto",
+        cmd=f"mkdir -p {temp_remote_wheel_dir}",
+        with_output=True,
     )
     upload_and_install_wheels(tmpdir, connect_config, core_wheel, plugin_wheel)
     validate_lib_version(connect_config)
