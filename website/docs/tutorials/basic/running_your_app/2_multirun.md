@@ -36,8 +36,10 @@ hydra:
       schema: warehouse,support,school
 ```
 
-The syntax are consistent for both input configs and commandline overrides. The commandline will override the definition 
-in input configs. If we run the same application with the above input config and a new commandline override:
+The syntax are consistent for both input configs and commandline overrides.
+If a sweep is specified in both an input config and at the command line,
+then the commandline sweep will take precedence over the sweep defined 
+in the input config. If we run the same application with the above input config and a new commandline override:
 
 ```text title="$ python my_app.py -m db=mysql"
 [2021-01-20 17:25:03,317][HYDRA] Launching 3 jobs locally
