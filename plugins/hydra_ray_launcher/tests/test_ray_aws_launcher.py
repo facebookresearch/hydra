@@ -138,14 +138,10 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    run_command(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
-    )
+    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
 
     # download dependency wheel for hydra-core
-    run_command(
-        f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}"
-    )
+    run_command(f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}")
     wheel = run_command("ls dist/*.whl").split("/")[-1]
     return wheel
 
@@ -220,8 +216,8 @@ def manage_cluster() -> Generator[None, None, None]:
 
     # build all the wheels
     tmpdir = tempfile.mkdtemp()
-    plugin_wheel = build_ray_launcher_wheel(tmpdir)
     core_wheel = build_core_wheel(tmpdir)
+    plugin_wheel = build_ray_launcher_wheel(tmpdir)
     connect_config = {
         "cluster_name": cluster_name,
         "provider": {
