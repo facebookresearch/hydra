@@ -116,32 +116,37 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
+def run_command(commands: str) -> str:
+    log.info(f"running: {commands}")
+    output = subprocess.getoutput(commands)
+    log.info(f"outputs: {output}")
+    return output
+
+
 def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    subprocess.getoutput(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
-    )
+    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
     log.info("Download all plugin dependency wheels.")
-    subprocess.getoutput(f"pip download . -d {tmp_wheel_dir}")
-    plugin_wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
+    run_command(f"pip download . -d {tmp_wheel_dir}")
+    plugin_wheel = run_command("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
     return plugin_wheel
 
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    subprocess.getoutput(
+    run_command(
         f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
     )
 
     # download dependency wheel for hydra-core
-    subprocess.getoutput(
+    run_command(
         f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}"
     )
-    wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
+    wheel = run_command("ls dist/*.whl").split("/")[-1]
     return wheel
 
 
@@ -168,6 +173,7 @@ def upload_and_install_wheels(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
     )
+    print("")
 
 
 def parse_python_minor_version(version: str) -> str:
