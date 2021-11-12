@@ -40,7 +40,7 @@ from hydra.types import HydraContext, TaskFunction
 class BasicSweeperConf:
     _target_: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
     max_batch_size: Optional[int] = None
-    params: Dict[str, str] = field(default_factory=dict)
+    params: Optional[Dict[str, str]] = None
 
 
 ConfigStore.instance().store(
@@ -56,11 +56,14 @@ class BasicSweeper(Sweeper):
     Basic sweeper
     """
 
-    def __init__(self, max_batch_size: Optional[int], params: Dict[str, str]) -> None:
+    def __init__(self, max_batch_size: Optional[int], params: Optional[Dict[str, str]] = None) -> None:
         """
         Instantiates
         """
         super(BasicSweeper, self).__init__()
+
+        if params is None:
+            params = {}
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
@@ -104,13 +107,13 @@ class BasicSweeper(Sweeper):
     ) -> List[List[List[str]]]:
 
         lists = []
-        merged_overrides = OrderedDict()
+        final_overrides = OrderedDict()
         for override in overrides:
             if override.is_sweep_override():
                 if override.is_discrete_sweep():
                     key = override.get_key_element()
                     sweep = [f"{key}={val}" for val in override.sweep_string_iterator()]
-                    merged_overrides[key] = sweep
+                    final_overrides[key] = sweep
                 else:
                     assert override.value_type is not None
                     raise HydraException(
@@ -119,9 +122,9 @@ class BasicSweeper(Sweeper):
             else:
                 key = override.get_key_element()
                 value = override.get_value_element_as_str()
-                merged_overrides[key] = [f"{key}={value}"]
+                final_overrides[key] = [f"{key}={value}"]
 
-        for _, v in merged_overrides.items():
+        for _, v in final_overrides.items():
             lists.append(v)
 
         all_batches = [list(x) for x in itertools.product(*lists)]
