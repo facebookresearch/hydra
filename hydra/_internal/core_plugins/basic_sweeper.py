@@ -20,7 +20,7 @@ import itertools
 import logging
 import time
 from collections import OrderedDict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
@@ -56,7 +56,9 @@ class BasicSweeper(Sweeper):
     Basic sweeper
     """
 
-    def __init__(self, max_batch_size: Optional[int], params: Optional[Dict[str, str]] = None) -> None:
+    def __init__(
+        self, max_batch_size: Optional[int], params: Optional[Dict[str, str]] = None
+    ) -> None:
         """
         Instantiates
         """
