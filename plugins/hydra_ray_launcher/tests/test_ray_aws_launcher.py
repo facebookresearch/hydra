@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
-from omegaconf import OmegaConf
 import pkg_resources
 from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
@@ -20,6 +19,7 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
+from omegaconf import OmegaConf
 from pytest import fixture, mark
 
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
