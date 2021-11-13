@@ -165,13 +165,6 @@ def upload_and_install_wheels(
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
         with_output=True,
     )
-
-    sdk.run_on_cluster(
-        connect_config,
-        cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
-        with_output=True,
-    )
-
     log.info(f"Install plugin wheel {plugin_wheel} ")
     log.info(
         f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}"
