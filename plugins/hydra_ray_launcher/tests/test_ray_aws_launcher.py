@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
+from omegaconf import OmegaConf
 import pkg_resources
 from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
@@ -54,7 +55,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-049b5c7a3f6ae97c9")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0d65d5647e065a180")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -165,7 +166,16 @@ def upload_and_install_wheels(
         with_output=True,
     )
 
-    log.info(f"Install plugin wheel {plugin_wheel}")
+    sdk.run_on_cluster(
+        connect_config,
+        cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
+        with_output=True,
+    )
+
+    log.info(f"Install plugin wheel {plugin_wheel} ")
+    log.info(
+        f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}"
+    )
     sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
@@ -236,6 +246,14 @@ def manage_cluster() -> Generator[None, None, None]:
         "head_node": ray_nodes_conf,
         "worker_nodes": ray_nodes_conf,
     }
+
+    # save connect_config as yaml, this could be useful for debugging
+    # you can run `ray attach <connect_config>.yaml` and log on to the AWS cluster for debugging.
+    conf = OmegaConf.create(connect_config)
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as fp:
+        OmegaConf.save(config=conf, f=fp.name, resolve=True)
+        log.info(f"Saving config to {fp.name}")
+
     sdk.create_or_update_cluster(
         connect_config,
     )
