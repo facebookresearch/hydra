@@ -17,4 +17,5 @@ Sometimes it could take hours for a new AMI to be created. Proceed to the next s
 AMI becomes available.
 
 - Update the `AWS_RAY_AMI` env variable in `tests/test_ray_aws_launcher.py`
-- Create a PR and see how it goes!
+- Run the test locally and debug if needed.
+- Create a PR and make sure all CI pass!
