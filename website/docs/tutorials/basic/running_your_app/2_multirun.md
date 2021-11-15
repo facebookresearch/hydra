@@ -47,6 +47,10 @@ in the input config. If we run the same application with the above input config 
 [2021-01-20 17:25:03,458][HYDRA]        #1 : db=mysql schema=support
 [2021-01-20 17:25:03,602][HYDRA]        #2 : db=mysql schema=school
 ```
+:::info
+The above configuration methods only apply to Hydra's default `BasicSweeper` for now. For other sweepers, please checkout the 
+corresponding documentations.
+:::
 
 ### Additional sweep types
 Hydra supports other kinds of sweeps, e.g:
