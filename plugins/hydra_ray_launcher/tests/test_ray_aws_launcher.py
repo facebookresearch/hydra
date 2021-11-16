@@ -19,6 +19,7 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
+from omegaconf import OmegaConf
 from pytest import fixture, mark
 
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
@@ -54,7 +55,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0d03f5ce1006a7ed5")
+ami = os.environ.get("AWS_RAY_AMI", "ami-0436072b623a028fa")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -116,32 +117,33 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
+def run_command(commands: str) -> str:
+    log.info(f"running: {commands}")
+    output = subprocess.getoutput(commands)
+    log.info(f"outputs: {output}")
+    return output
+
+
 def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    subprocess.getoutput(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
-    )
+    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
     log.info("Download all plugin dependency wheels.")
-    subprocess.getoutput(f"pip download . -d {tmp_wheel_dir}")
-    plugin_wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
+    run_command(f"pip download . -d {tmp_wheel_dir}")
+    plugin_wheel = run_command("ls dist/*.whl").split("/")[-1]
     chdir_hydra_root()
     return plugin_wheel
 
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    subprocess.getoutput(
-        f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}"
-    )
+    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
 
     # download dependency wheel for hydra-core
-    subprocess.getoutput(
-        f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}"
-    )
-    wheel = subprocess.getoutput("ls dist/*.whl").split("/")[-1]
+    run_command(f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}")
+    wheel = run_command("ls dist/*.whl").split("/")[-1]
     return wheel
 
 
@@ -161,12 +163,16 @@ def upload_and_install_wheels(
     sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{core_wheel}",
+        with_output=True,
     )
-
-    log.info(f"Install plugin wheel {plugin_wheel}")
+    log.info(f"Install plugin wheel {plugin_wheel} ")
+    log.info(
+        f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}"
+    )
     sdk.run_on_cluster(
         connect_config,
         cmd=f"pip install --no-index --find-links={temp_remote_wheel_dir} {temp_remote_wheel_dir}{plugin_wheel}",
+        with_output=True,
     )
 
 
@@ -214,8 +220,8 @@ def manage_cluster() -> Generator[None, None, None]:
 
     # build all the wheels
     tmpdir = tempfile.mkdtemp()
-    plugin_wheel = build_ray_launcher_wheel(tmpdir)
     core_wheel = build_core_wheel(tmpdir)
+    plugin_wheel = build_ray_launcher_wheel(tmpdir)
     connect_config = {
         "cluster_name": cluster_name,
         "provider": {
@@ -233,14 +239,28 @@ def manage_cluster() -> Generator[None, None, None]:
         "head_node": ray_nodes_conf,
         "worker_nodes": ray_nodes_conf,
     }
+
+    # save connect_config as yaml, this could be useful for debugging
+    # you can run `ray attach <connect_config>.yaml` and log on to the AWS cluster for debugging.
+    conf = OmegaConf.create(connect_config)
+    with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as fp:
+        OmegaConf.save(config=conf, f=fp.name, resolve=True)
+        log.info(f"Saving config to {fp.name}")
+
     sdk.create_or_update_cluster(
         connect_config,
     )
     sdk.run_on_cluster(
-        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_dir}"
+        connect_config,
+        run_env="auto",
+        cmd=f"mkdir -p {temp_remote_dir}",
+        with_output=True,
     )
     sdk.run_on_cluster(
-        connect_config, run_env="auto", cmd=f"mkdir -p {temp_remote_wheel_dir}"
+        connect_config,
+        run_env="auto",
+        cmd=f"mkdir -p {temp_remote_wheel_dir}",
+        with_output=True,
     )
     upload_and_install_wheels(tmpdir, connect_config, core_wheel, plugin_wheel)
     validate_lib_version(connect_config)

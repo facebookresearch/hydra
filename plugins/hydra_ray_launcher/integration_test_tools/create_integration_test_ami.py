@@ -29,7 +29,7 @@ def _run_command(command: str) -> str:
     return output
 
 
-@hydra.main(config_name="create_integration_test_ami_config")
+@hydra.main(config_path=".", config_name="create_integration_test_ami_config")
 def set_up_machine(cfg: DictConfig) -> None:
     security_group_id = cfg.security_group_id
     assert security_group_id != "", "Security group cannot be empty!"

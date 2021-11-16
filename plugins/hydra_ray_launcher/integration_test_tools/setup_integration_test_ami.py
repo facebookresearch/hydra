@@ -9,6 +9,7 @@ dependencies = [
     "ray[default]==1.6.0",
     "cloudpickle==1.6.0",
     "pickle5==0.0.11",
+    "aiohttp!=3.8",
 ]
 
 
