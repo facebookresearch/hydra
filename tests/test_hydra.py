@@ -1557,12 +1557,16 @@ def test_disable_chdir(tmpdir: Path, multirun: bool, expected: List[str]) -> Non
         assert Path(path).exists()
 
 
-def test_disable_chdir_with_app_chdir(tmpdir: Path) -> None:
+@mark.parametrize(
+    "chdir",
+    [True, False],
+)
+def test_disable_chdir_with_app_chdir(tmpdir: Path, chdir: bool) -> None:
     cmd = [
         "tests/test_apps/app_change_dir/my_app.py",
         f"hydra.run.dir={tmpdir}",
-        "hydra.job.chdir=False",
+        f"hydra.job.chdir={chdir}",
     ]
     result, _err = run_python_script(cmd)
-    _path = Path(tmpdir) / "subdir"
+    _path = os.getcwd() if chdir else Path(tmpdir) / "subdir"
     assert f"current dir: {_path}" in result
