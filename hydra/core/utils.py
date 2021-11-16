@@ -119,17 +119,17 @@ def run_job(
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
 
-    working_dir = str(OmegaConf.select(config, job_dir_key))
+    output_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
         subdir = str(OmegaConf.select(config, job_subdir_key))
-        working_dir = os.path.join(working_dir, subdir)
+        output_dir = os.path.join(output_dir, subdir)
 
     with read_write(config.hydra.runtime):
         with open_dict(config.hydra.runtime):
-            config.hydra.runtime.output_dir = os.path.abspath(working_dir)
+            config.hydra.runtime.output_dir = os.path.abspath(output_dir)
 
     HydraConfig.instance().set_config(config)
     _chdir = None
@@ -148,7 +148,7 @@ def run_job(
         assert isinstance(overrides, list)
         ret.overrides = overrides
         # handle output directories here
-        Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
+        Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
 
         _chdir = hydra_cfg.hydra.job.chdir
 
@@ -165,10 +165,10 @@ def run_job(
             _chdir = True
 
         if _chdir:
-            os.chdir(working_dir)
-            ret.working_dir = working_dir
+            os.chdir(output_dir)
+            ret.working_dir = output_dir
         else:
-            ret.working_dir = "."
+            ret.working_dir = os.getcwd()
 
         if configure_logging:
             configure_log(config.hydra.job_logging, config.hydra.verbose)
