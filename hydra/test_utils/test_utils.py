@@ -342,9 +342,7 @@ if __name__ == "__main__":
                 expected_outputs
             ), f"Unexpected number of output lines from {task_file}, output lines:\n\n{file_str}"
             for idx in range(len(output)):
-                assert (
-                    output[idx] == expected_outputs[idx]
-                ), f"Unexpected output for {prints[idx]} : expected {expected_outputs[idx]}, got {output[idx]}"
+                assert_regex_match(expected_outputs[idx], output[idx])
         # some tests are parsing the file output for more specialized testing.
         return file_str
     finally:

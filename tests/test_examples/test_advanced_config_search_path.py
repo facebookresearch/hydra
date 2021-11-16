@@ -37,6 +37,7 @@ def test_config_search_path(
     cmd = [
         "examples/advanced/config_search_path/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     cmd.extend(args)
     if error is not None:

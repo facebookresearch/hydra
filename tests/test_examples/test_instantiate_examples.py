@@ -25,6 +25,7 @@ def test_instantiate_object(tmpdir: Path, overrides: List[str], output: str) -> 
     cmd = [
         "examples/instantiate/object/my_app.py",
         f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
@@ -46,6 +47,7 @@ def test_instantiate_object_recursive(
     cmd = [
         "examples/instantiate/object_recursive/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
@@ -62,6 +64,7 @@ def test_instantiate_schema(tmpdir: Path, overrides: List[str], output: str) -> 
     cmd = [
         "examples/instantiate/schema/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     assert result == output
@@ -90,6 +93,7 @@ def test_instantiate_schema_recursive(
     cmd = [
         "examples/instantiate/schema_recursive/my_app.py",
         f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     assert_text_same(result, expected)
@@ -128,6 +132,7 @@ def test_instantiate_docs_example(
     cmd = [
         "examples/instantiate/docs_example/my_app.py",
         f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     assert_text_same(result, expected)

@@ -205,6 +205,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "polynomial.x=interval(-5, -2)",
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
@@ -227,6 +228,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
     run_python_script(cmd)
@@ -260,6 +262,7 @@ def test_jobs_using_choice_between_lists(
         "tests/apps/polynomial_with_list_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
     result, _ = run_python_script(cmd)
@@ -296,6 +299,7 @@ def test_jobs_using_choice_between_dicts(
         "tests/apps/polynomial_with_dict_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
     result, _ = run_python_script(cmd)
@@ -309,6 +313,7 @@ def test_example_app(tmpdir: Path) -> None:
         "example/banana.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "banana.x=int(interval(-5, 5))",
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",

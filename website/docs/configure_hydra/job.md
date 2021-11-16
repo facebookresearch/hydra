@@ -17,6 +17,10 @@ class JobConf:
     # Job name, populated automatically unless specified by the user (in config or cli)
     name: str = MISSING
 
+    # Change current working dir to the output dir.
+    # Will default to False in Hydra 1.3
+    chdir: bool = True
+
     # Concatenation of job overrides that can be used as a part
     # of the directory name.
     # This can be configured in hydra.job.config.override_dirname
@@ -58,6 +62,12 @@ class JobConf:
 The job name is used by different things in Hydra, such as the log file name (`${hydra.job.name}.log`).
 It is normally derived from the Python file name (The job name of the file `train.py` is `train`).
 You can override it via the command line, or your config file. 
+
+### hydra.job.chdir
+
+Decides whether Hydra changes the current working directory to the output directory for each job.
+Learn more at the [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md) page.
+
 
 ### hydra.job.override_dirname
 Enables the creation of an output directory which is based on command line overrides.

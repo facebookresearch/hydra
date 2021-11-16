@@ -12,6 +12,7 @@ def test_advanced_package_override_simple(tmpdir: Path) -> None:
     cmd = [
         "examples/advanced/package_overrides/simple.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
@@ -23,6 +24,7 @@ def test_advanced_package_override_two_packages(tmpdir: Path) -> None:
     cmd = [
         "examples/advanced/package_overrides/two_packages.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {

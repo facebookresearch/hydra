@@ -40,6 +40,7 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
     cmd = [
         "examples/patterns/write_protect_config_node/frozen.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "data_bits=10",
     ]
 
@@ -68,7 +69,11 @@ def test_extending_configs(
     monkeypatch: Any, tmpdir: Path, overrides: List[str]
 ) -> None:
     monkeypatch.chdir("examples/patterns/extending_configs")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
         "db": {
@@ -105,7 +110,11 @@ def test_configuring_experiments(
     monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: Any
 ) -> None:
     monkeypatch.chdir("examples/patterns/configuring_experiments")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
 
@@ -172,6 +181,10 @@ def test_multi_select(
     monkeypatch: Any, tmpdir: Path, overrides: List[str], expected: Any
 ) -> None:
     monkeypatch.chdir("examples/patterns/multi-select")
-    cmd = ["my_app.py", "hydra.run.dir=" + str(tmpdir)] + overrides
+    cmd = [
+        "my_app.py",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ] + overrides
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == expected
