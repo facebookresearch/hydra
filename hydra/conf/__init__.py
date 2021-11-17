@@ -46,6 +46,10 @@ class JobConf:
     # Job name, populated automatically unless specified by the user (in config or cli)
     name: str = MISSING
 
+    # Change current working dir to the output dir.
+    # Will be non-optional and default to False in Hydra 1.3
+    chdir: Optional[bool] = None
+
     # Populated automatically by Hydra.
     # Concatenation of job overrides that can be used as a part
     # of the directory name.
@@ -93,6 +97,7 @@ class RuntimeConf:
     version: str = MISSING
     cwd: str = MISSING
     config_sources: List[ConfigSourceInfo] = MISSING
+    output_dir: str = MISSING
 
     # Composition choices dictionary
     # Ideally, the value type would be Union[str, List[str], None]

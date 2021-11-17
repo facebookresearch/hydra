@@ -17,6 +17,7 @@ def test_custom_help(tmpdir: Path) -> None:
         [
             "examples/configure_hydra/custom_help/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
             "--help",
         ]
     )
@@ -55,6 +56,7 @@ def test_job_name_no_config_override(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_name/no_config_file_override.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert result == "no_config_file_override"
@@ -64,6 +66,7 @@ def test_job_name_with_config_override(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_name/with_config_file_override.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert result == "name_from_config_file"
@@ -73,6 +76,7 @@ def test_job_override_dirname(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_override_dirname/my_app.py",
         "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "learning_rate=0.1,0.01",
         "batch_size=32",
         "seed=999",
@@ -87,6 +91,7 @@ def test_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert result == "[INFO] - Info level message"
@@ -96,6 +101,7 @@ def test_disabling_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra/job_logging=none",
         "hydra/hydra_logging=none",
     ]
@@ -106,11 +112,11 @@ def test_disabling_logging(tmpdir: Path) -> None:
 def test_workdir_config(monkeypatch: Any, tmpdir: Path) -> None:
     script = str(Path("examples/configure_hydra/workdir/my_app.py").absolute())
     monkeypatch.chdir(tmpdir)
-    result, _err = run_python_script([script])
+    result, _err = run_python_script([script, "hydra.job.chdir=True"])
     assert Path(result) == Path(tmpdir) / "run_dir"
 
     result, _err = run_python_script(
-        [script, "--multirun", "hydra/hydra_logging=disabled"]
+        [script, "--multirun", "hydra/hydra_logging=disabled", "hydra.job.chdir=True"]
     )
     assert Path(result) == Path(tmpdir) / "sweep_dir" / "0"
 
@@ -118,5 +124,11 @@ def test_workdir_config(monkeypatch: Any, tmpdir: Path) -> None:
 def test_workdir_override(monkeypatch: Any, tmpdir: Path) -> None:
     script = str(Path("examples/configure_hydra/workdir/my_app.py").absolute())
     monkeypatch.chdir(tmpdir)
-    result, _err = run_python_script([script, "hydra.run.dir=blah"])
+    result, _err = run_python_script(
+        [
+            script,
+            "hydra.run.dir=blah",
+            "hydra.job.chdir=True",
+        ]
+    )
     assert Path(result) == Path(tmpdir) / "blah"

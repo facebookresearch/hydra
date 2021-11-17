@@ -147,6 +147,13 @@ module.exports = {
             'upgrades/intro',
             {
                 type: 'category',
+                label: '1.1 to 1.2',
+                items: [
+                    'upgrades/1.1_to_1.2/changes_to_job_working_dir',
+                ],
+            },
+            {
+                type: 'category',
                 label: '1.0 to 1.1',
                 items: [
                     'upgrades/1.0_to_1.1/changes_to_hydra_main_config_path',
@@ -167,6 +174,7 @@ module.exports = {
                     'upgrades/0.11_to_1.0/object_instantiation_changes',
                 ],
             },
+
         ],
 
         'FB Only': FBInternalOnly([

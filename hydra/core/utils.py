@@ -118,17 +118,23 @@ def run_job(
 
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
-    HydraConfig.instance().set_config(config)
-    working_dir = str(OmegaConf.select(config, job_dir_key))
+
+    output_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
         subdir = str(OmegaConf.select(config, job_subdir_key))
-        working_dir = os.path.join(working_dir, subdir)
+        output_dir = os.path.join(output_dir, subdir)
+
+    with read_write(config.hydra.runtime):
+        with open_dict(config.hydra.runtime):
+            config.hydra.runtime.output_dir = os.path.abspath(output_dir)
+
+    HydraConfig.instance().set_config(config)
+    _chdir = None
     try:
         ret = JobReturn()
-        ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
         with read_write(task_cfg):
             with open_dict(task_cfg):
@@ -142,14 +148,35 @@ def run_job(
         assert isinstance(overrides, list)
         ret.overrides = overrides
         # handle output directories here
-        Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
-        os.chdir(working_dir)
+        Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
+
+        _chdir = hydra_cfg.hydra.job.chdir
+
+        if _chdir is None:
+            url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir"
+            deprecation_warning(
+                message=dedent(
+                    f"""\
+                    Hydra 1.3 will no longer change working directory at job runtime by default.
+                    See {url} for more information."""
+                ),
+                stacklevel=2,
+            )
+            _chdir = True
+
+        if _chdir:
+            os.chdir(output_dir)
+            ret.working_dir = output_dir
+        else:
+            ret.working_dir = os.getcwd()
 
         if configure_logging:
             configure_log(config.hydra.job_logging, config.hydra.verbose)
 
         if config.hydra.output_subdir is not None:
-            hydra_output = Path(config.hydra.output_subdir)
+            hydra_output = Path(config.hydra.runtime.output_dir) / Path(
+                config.hydra.output_subdir
+            )
             _save_config(task_cfg, "config.yaml", hydra_output)
             _save_config(hydra_cfg, "hydra.yaml", hydra_output)
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
@@ -172,7 +199,8 @@ def run_job(
         return ret
     finally:
         HydraConfig.instance().cfg = orig_hydra_cfg
-        os.chdir(old_cwd)
+        if _chdir:
+            os.chdir(old_cwd)
 
 
 def get_valid_filename(s: str) -> str:

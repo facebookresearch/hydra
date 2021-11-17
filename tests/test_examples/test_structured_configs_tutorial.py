@@ -21,6 +21,7 @@ def test_1_basic_run(tmpdir: Path) -> None:
         [
             "examples/tutorials/structured_configs/1_minimal/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
         ]
     )
     assert result == "Host: localhost, port: 3306"
@@ -37,6 +38,7 @@ def test_1_basic_run_with_override_error(tmpdir: Path) -> None:
         [
             "examples/tutorials/structured_configs/1_minimal/my_app_type_error.py",
             "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
         ]
     )
     assert re.search(re.escape(expected), err) is not None
@@ -47,6 +49,7 @@ def test_1_basic_override(tmpdir: Path) -> None:
         [
             "examples/tutorials/structured_configs/1_minimal/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
             "port=9090",
         ]
     )
@@ -57,6 +60,7 @@ def test_1_basic_override_type_error(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/structured_configs/1_minimal/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "port=foo",
     ]
 
@@ -76,6 +80,7 @@ def test_2_static_complex(tmpdir: Path) -> None:
         [
             "examples/tutorials/structured_configs/2_static_complex/my_app.py",
             "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
         ]
     )
     assert result == "Title=My app, size=1024x768 pixels"
@@ -95,6 +100,7 @@ def test_3_config_groups(tmpdir: Path, overrides: Any, expected: Any) -> None:
     cmd = [
         "examples/tutorials/structured_configs/3_config_groups/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     cmd.extend(overrides)
     result, _err = run_python_script(cmd)
@@ -129,6 +135,7 @@ def test_3_config_groups_with_inheritance(
     cmd = [
         "examples/tutorials/structured_configs/3_config_groups/my_app_with_inheritance.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
     res = OmegaConf.create(result)
@@ -139,6 +146,7 @@ def test_4_defaults(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/structured_configs/4_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
@@ -160,7 +168,7 @@ def test_4_defaults(tmpdir: Path) -> None:
     ],
 )
 def test_5_structured_config_schema(tmpdir: Path, path: str) -> None:
-    cmd = [path, "hydra.run.dir=" + str(tmpdir)]
+    cmd = [path, "hydra.run.dir=" + str(tmpdir), "hydra.job.chdir=True"]
     result, _err = run_python_script(cmd)
     assert OmegaConf.create(result) == {
         "db": {

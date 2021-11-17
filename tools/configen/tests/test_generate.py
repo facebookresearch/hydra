@@ -289,6 +289,7 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
     cmd = [
         "my_app.py",
         f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=True",
         "user.name=Batman",
     ]
     result, _err = run_python_script(cmd)
