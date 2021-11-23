@@ -39,7 +39,7 @@ hydra:
 
 Run output directory can contain override parameters for the job:
 
-See [Override dirname](./job#hydrajoboverride_dirname) in the Job configuration page for details on how to customize
+See [Override dirname](./job.md#hydrajoboverride_dirname) in the Job configuration page for details on how to customize
 `hydra.job.override_dirname`.
 
 ```yaml
