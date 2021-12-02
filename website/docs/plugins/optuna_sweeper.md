@@ -300,7 +300,7 @@ For problems with trade-offs between two different objectives, there may be no s
 
 ![Pareto-optimal solutions](/plugins/optuna_sweeper/multi_objective_result.png)
 
-## Example 3:  Custom-Search-Sppace Optimization
+## Example 3:  Custom-Search-Space Optimization
 
 In the same directory, `example/custom-search-space-objective.py` implements a simple benchmark function, which needs to be minimized. The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra. Part of the search space configuration is defined in config files, part of it is written in Python.
 
