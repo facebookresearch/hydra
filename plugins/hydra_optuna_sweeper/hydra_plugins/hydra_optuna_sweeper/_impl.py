@@ -1,9 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import importlib.util
-from pathlib import PurePath
 import logging
 import sys
-from typing import Any, Callable, Dict, List, MutableMapping, MutableSequence, Optional, Sequence, Tuple
+from importlib.abc import Loader
+from pathlib import PurePath
+from typing import (
+    Any,
+    Dict,
+    List,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -109,22 +119,34 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
-def get_function_from_path(import_string: str) -> Callable[[Trial], None]:
+
+def get_function_from_path(import_string: str) -> Any:
     method_path = import_string.split(".")
-    assert len(method_path) > 1, "The method path needs to be separated with '.' and\
+    assert (
+        len(method_path) > 1
+    ), "The method path needs to be separated with '.' and\
         contain at least both the module and function name"
     method_name = method_path[-1]
     module = method_path[-2]
     module_path = method_path[:-1]
-    spec = importlib.util.spec_from_file_location(module, to_absolute_path(str(PurePath(*module_path)) + ".py"))
+
+    spec = importlib.util.spec_from_file_location(
+        module, to_absolute_path(str(PurePath(*module_path)) + ".py")
+    )
     method_module = importlib.util.module_from_spec(spec)
+    assert isinstance(spec.loader, Loader)
     spec.loader.exec_module(method_module)
-    assert method_name in dir(method_module), "Configured method name is not present in the module"
-    return getattr(method_module, method_name)
+
+    assert method_name in dir(
+        method_module
+    ), "Configured method name is not present in the module"
+    function = getattr(method_module, method_name)
+    return function
+
 
 def create_params_from_overrides(
-    arguments: List[str]
-    ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
+    arguments: List[str],
+) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
     search_space = dict()
@@ -149,7 +171,7 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
-        custom_search_space: Optional[str]
+        custom_search_space: Optional[str],
     ) -> None:
         self.sampler = sampler
         self.direction = direction
@@ -187,9 +209,7 @@ class OptunaSweeperImpl(Sweeper):
     def _get_directions(self) -> List[str]:
         directions: List[str]
         if isinstance(self.direction, MutableSequence):
-            return [
-                d.name if isinstance(d, Direction) else d for d in self.direction
-            ]
+            return [d.name if isinstance(d, Direction) else d for d in self.direction]
         elif isinstance(self.direction, str):
             return [self.direction]
         return [self.direction.name]
@@ -198,8 +218,8 @@ class OptunaSweeperImpl(Sweeper):
         self,
         trials: List[Trial],
         search_space: Dict[str, BaseDistribution],
-        fixed_params: Dict[str, Any]
-        ) -> Sequence[Sequence[str]]:
+        fixed_params: Dict[str, Any],
+    ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
             for param_name, distribution in search_space.items():
@@ -211,8 +231,10 @@ class OptunaSweeperImpl(Sweeper):
                 self.custom_search_space(self.config, trial)
 
             overlap = trial.params.keys() & trial.user_attrs
-            assert len(overlap) == 0, "Overlapping fixed parameters and search space parameters found!"\
-                f"Overlapping parameters: {list(overlap.keys())}"
+            assert len(overlap) == 0, (
+                "Overlapping fixed parameters and search space parameters found!"
+                f"Overlapping parameters: {list(overlap)}"
+            )
             params = dict(trial.params)
             params.update(fixed_params)
             overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
