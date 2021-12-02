@@ -160,6 +160,11 @@ class OptunaSweeperConf:
 
     search_space: Dict[str, Any] = field(default_factory=dict)
 
+    # Allow custom trial configuration via Python methods
+    # Method should accept a DictConfig and a Trial
+    # https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html
+    custom_search_space: Optional[str] = None
+
 
 ConfigStore.instance().store(
     group="hydra/sweeper",

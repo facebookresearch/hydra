@@ -299,3 +299,52 @@ python example/multi-objective.py --multirun
 For problems with trade-offs between two different objectives, there may be no single solution that simultaneously minimizes both objectives. Instead, we obtained a set of solutions, namely [Pareto optimal solutions](https://en.wikipedia.org/wiki/Pareto_efficiency), that show the best trade-offs possible between the objectives. In the following figure, the blue dots show the Pareto optimal solutions in the optimization results.
 
 ![Pareto-optimal solutions](/plugins/optuna_sweeper/multi_objective_result.png)
+
+## Example 3:  Custom-Search-Sppace Optimization
+
+In the same directory, `example/custom-search-space-objective.py` implements a simple benchmark function, which needs to be minimized. The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra. Part of the search space configuration is defined in config files, part of it is written in Python.
+
+<details><summary>Configuration of the custom-search-space-objective optimization example</summary>
+
+```yaml
+defaults:
+  - override hydra/sweeper: optuna
+  - override hydra/sweeper/sampler: tpe
+
+hydra:
+  sweeper:
+    sampler:
+      seed: 123
+    direction: minimize
+    study_name: custom-search-space
+    storage: null
+    n_trials: 20
+    n_jobs: 1
+
+    search_space:
+      x:
+        type: float
+        low: -5.5
+        high: 5.5
+        step: 0.5
+      y:
+        type: categorical
+        choices: [-5, 0, 5]
+    custom_search_space: example.custom-search-space-objective.configure
+
+x: 1
+y: 1
+z: 100
+max_z_difference_from_x: 0.5
+```
+
+The `custom_search_space` configuration option refers to the `configure` function in `example/custom-search-space-objective.py`. This method accepts both a DictConfig with already set options and the trial object which needs further configuration. In this example we limit `z` the difference between `x` and `z` to be no more than 0.5.
+</details>
+
+### Order of trial configuration
+Configuring a trial object is done in the following sequence:
+  - `search_space` parameters from the config are set
+  - Command line overrides are set
+  - `custom_search_space` parameters are set
+
+It is not allowed to set search space parameters in the `custom_search_space` method for parameters which have a fixed value from command line overrides. [Trial.user_attrs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html#optuna.trial.Trial.user_attrs) can be inspected to find any of such fixed parameters.

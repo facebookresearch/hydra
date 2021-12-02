@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import importlib.util
+from pathlib import PurePath
 import logging
 import sys
-from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
+from typing import Any, Callable, Dict, List, MutableMapping, MutableSequence, Optional, Sequence, Tuple
 
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -15,6 +17,7 @@ from hydra.core.override_parser.types import (
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
+from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -26,6 +29,7 @@ from optuna.distributions import (
     LogUniformDistribution,
     UniformDistribution,
 )
+from optuna.trial import Trial
 
 from .config import Direction, DistributionConfig, DistributionType
 
@@ -105,6 +109,35 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
+def get_function_from_path(import_string: str) -> Callable[[Trial], None]:
+    method_path = import_string.split(".")
+    assert len(method_path) > 1, "The method path needs to be separated with '.' and\
+        contain at least both the module and function name"
+    method_name = method_path[-1]
+    module = method_path[-2]
+    module_path = method_path[:-1]
+    spec = importlib.util.spec_from_file_location(module, to_absolute_path(str(PurePath(*module_path)) + ".py"))
+    method_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(method_module)
+    assert method_name in dir(method_module), "Configured method name is not present in the module"
+    return getattr(method_module, method_name)
+
+def create_params_from_overrides(
+    arguments: List[str]
+    ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
+    parser = OverridesParser.create()
+    parsed = parser.parse_overrides(arguments)
+    search_space = dict()
+    fixed_params = dict()
+    for override in parsed:
+        param_name = override.get_key_element()
+        value = create_optuna_distribution_from_override(override)
+        if isinstance(value, BaseDistribution):
+            search_space[param_name] = value
+        else:
+            fixed_params[param_name] = value
+    return search_space, fixed_params
+
 
 class OptunaSweeperImpl(Sweeper):
     def __init__(
@@ -116,6 +149,7 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
+        custom_search_space: Optional[str]
     ) -> None:
         self.sampler = sampler
         self.direction = direction
@@ -130,6 +164,9 @@ class OptunaSweeperImpl(Sweeper):
                 str(x): create_optuna_distribution_from_config(y)
                 for x, y in search_space.items()
             }
+        self.custom_search_space = None
+        if custom_search_space:
+            self.custom_search_space = get_function_from_path(custom_search_space)
         self.job_idx: int = 0
 
     def setup(
@@ -147,38 +184,56 @@ class OptunaSweeperImpl(Sweeper):
         )
         self.sweep_dir = config.hydra.sweep.dir
 
+    def _get_directions(self) -> List[str]:
+        directions: List[str]
+        if isinstance(self.direction, MutableSequence):
+            return [
+                d.name if isinstance(d, Direction) else d for d in self.direction
+            ]
+        elif isinstance(self.direction, str):
+            return [self.direction]
+        return [self.direction.name]
+
+    def _configure_trials(
+        self,
+        trials: List[Trial],
+        search_space: Dict[str, BaseDistribution],
+        fixed_params: Dict[str, Any]
+        ) -> Sequence[Sequence[str]]:
+        overrides = []
+        for trial in trials:
+            for param_name, distribution in search_space.items():
+                trial._suggest(param_name, distribution)
+            for param_name, value in fixed_params.items():
+                trial.set_user_attr(param_name, value)
+
+            if self.custom_search_space:
+                self.custom_search_space(self.config, trial)
+
+            overlap = trial.params.keys() & trial.user_attrs
+            assert len(overlap) == 0, "Overlapping fixed parameters and search space parameters found!"\
+                f"Overlapping parameters: {list(overlap.keys())}"
+            params = dict(trial.params)
+            params.update(fixed_params)
+            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+        return overrides
+
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
         assert self.hydra_context is not None
         assert self.job_idx is not None
 
-        parser = OverridesParser.create()
-        parsed = parser.parse_overrides(arguments)
-
         search_space = dict(self.search_space)
-        fixed_params = dict()
-        for override in parsed:
-            value = create_optuna_distribution_from_override(override)
-            if isinstance(value, BaseDistribution):
-                search_space[override.get_key_element()] = value
-            else:
-                fixed_params[override.get_key_element()] = value
+        overrides_search_space, fixed_params = create_params_from_overrides(arguments)
+        search_space.update(overrides_search_space)
+
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
             if param_name in search_space:
                 del search_space[param_name]
 
-        directions: List[str]
-        if isinstance(self.direction, MutableSequence):
-            directions = [
-                d.name if isinstance(d, Direction) else d for d in self.direction
-            ]
-        else:
-            if isinstance(self.direction, str):
-                directions = [self.direction]
-            else:
-                directions = [self.direction.name]
+        directions = self._get_directions()
 
         study = optuna.create_study(
             study_name=self.study_name,
@@ -199,14 +254,7 @@ class OptunaSweeperImpl(Sweeper):
             batch_size = min(n_trials_to_go, batch_size)
 
             trials = [study.ask() for _ in range(batch_size)]
-            overrides = []
-            for trial in trials:
-                for param_name, distribution in search_space.items():
-                    trial._suggest(param_name, distribution)
-
-                params = dict(trial.params)
-                params.update(fixed_params)
-                overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+            overrides = self._configure_trials(trials, search_space, fixed_params)
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
