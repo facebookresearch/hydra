@@ -4,7 +4,7 @@ import copy
 import functools
 import sys
 from enum import Enum
-from typing import Any, Callable, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -47,7 +47,7 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
-def _call_target(_target_: Callable, partial: Optional[bool], *args, **kwargs) -> Any:  # type: ignore
+def _call_target(_target_: Callable, partial: bool, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(*args, **kwargs)
@@ -207,7 +207,7 @@ def instantiate_node(
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
-    partial: Optional[bool] = None,
+    partial: bool = False,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -227,7 +227,7 @@ def instantiate_node(
     if not isinstance(recursive, bool):
         raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
 
-    if partial is not None and not isinstance(partial, bool):
+    if not isinstance(partial, bool):
         raise TypeError(f"_partial_ flag must be a bool, got {type( partial )}")
 
     # If OmegaConf list, create new list of instances if recursive
