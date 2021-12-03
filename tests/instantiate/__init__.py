@@ -19,6 +19,9 @@ def _convert_type(obj: Any) -> Any:
 
 
 def partial_equal(obj1: Any, obj2: Any) -> bool:
+    if obj1 == obj2:
+        return True
+
     obj1, obj2 = _convert_type(obj1), _convert_type(obj2)
 
     if type(obj1) != type(obj2):
@@ -27,15 +30,14 @@ def partial_equal(obj1: Any, obj2: Any) -> bool:
         if len(obj1) != len(obj2):
             return False
         for i in obj1.keys():
-            if not (obj1[i] == obj2[i] or partial_equal(obj1[i], obj2[i])):
+            if not partial_equal(obj1[i], obj2[i]):
                 return False
         return True
     if not (isinstance(obj1, partial) and isinstance(obj2, partial)):
         return False
     return all(
         [
-            getattr(obj1, attr) == getattr(obj2, attr)
-            or partial_equal(getattr(obj1, attr), getattr(obj2, attr))
+            partial_equal(getattr(obj1, attr), getattr(obj2, attr))
             for attr in ["func", "args", "keywords"]
         ]
     )
@@ -229,8 +231,7 @@ class Compose:
                 return False
             return all(
                 [
-                    self.transforms[i] == other.transforms[i]
-                    or partial_equal(self.transforms[i], other.transforms[i])
+                    partial_equal(self.transforms[i], other.transforms[i])
                     for i in range(len(self.transforms))
                 ]
             )
@@ -252,11 +253,9 @@ class Tree:
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
             return (
-                (self.value == other.value or partial_equal(self.value, other.value))
-                and (self.left == other.left or partial_equal(self.left, other.left))
-                and (
-                    self.right == other.right or partial_equal(self.right, other.right)
-                )
+                (partial_equal(self.value, other.value))
+                and (partial_equal(self.left, other.left))
+                and (partial_equal(self.right, other.right))
             )
 
         else:
@@ -278,10 +277,9 @@ class Mapping:
 
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
-            return (
-                self.dictionary == other.dictionary
-                or partial_equal(self.dictionary, other.dictionary)
-            ) and (self.value == other.value or partial_equal(self.value, other.value))
+            return (partial_equal(self.dictionary, other.dictionary)) and (
+                partial_equal(self.value, other.value)
+            )
         else:
             return False
 
