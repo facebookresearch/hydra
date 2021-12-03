@@ -72,7 +72,7 @@ defaults:
 ```
 
 ## Config Group
-A Config Group is directory in the [Config Search Path](#config-search-path) that contains [Input Configs](#input-configs).
+A Config Group is a directory in the [Config Search Path](#config-search-path) that contains [Input Configs](#input-configs).
 Config Groups can be nested, and in that case the path elements are separated by a forward slash ('/') regardless of the operating system.
 
 ## Config Group Option
