@@ -4,7 +4,7 @@ import pickle
 import re
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import fixture, mark, param, raises, warns
@@ -31,6 +31,7 @@ from tests.instantiate import (
     MappingConf,
     NestedConf,
     NestingClass,
+    OuterClass,
     Parameters,
     Rotation,
     RotationConf,
@@ -46,6 +47,7 @@ from tests.instantiate import (
     User,
     add_values,
     module_function,
+    module_function2,
     partial_equal,
     recisinstance,
 )
@@ -577,6 +579,33 @@ def test_pass_extra_variables(instantiate_func: Any, is_partial: bool) -> None:
         )
     else:
         assert instantiate_func(cfg, c=30) == AClass(a=10, b=20, c=30)
+
+
+@mark.parametrize(
+    "target, expected",
+    [
+        param(module_function2, lambda x: x == "fn return", id="fn"),
+        param(OuterClass, lambda x: isinstance(x, OuterClass), id="OuterClass"),
+        param(
+            OuterClass.method,
+            lambda x: x == "OuterClass.method return",
+            id="classmethod",
+        ),
+        param(
+            OuterClass.Nested, lambda x: isinstance(x, OuterClass.Nested), id="nested"
+        ),
+        param(
+            OuterClass.Nested.method,
+            lambda x: x == "OuterClass.Nested.method return",
+            id="nested_method",
+        ),
+    ],
+)
+def test_instantiate_with_callable_target_keyword(
+    instantiate_func: Any, target: Callable[[], None], expected: Callable[[Any], bool]
+) -> None:
+    ret = instantiate_func({}, _target_=target)
+    assert expected(ret)
 
 
 @mark.parametrize(
