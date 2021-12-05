@@ -60,13 +60,19 @@ def _call_target(_target_: Callable, _partial_: bool, *args, **kwargs) -> Any:  
         for v in kwargs.values():
             if OmegaConf.is_config(v):
                 v._set_parent(None)
-        if _partial_:
-            return functools.partial(_target_, *args, **kwargs)
-        return _target_(*args, **kwargs)
     except Exception as e:
         raise type(e)(
             f"Error instantiating '{_convert_target_to_string(_target_)}' : {e}"
         ).with_traceback(sys.exc_info()[2])
+
+    try:
+        if _partial_:
+            return functools.partial(_target_, *args, **kwargs)
+        return _target_(*args, **kwargs)
+    except Exception as e:
+        raise InstantiationException(
+            f"Error instantiating '{_convert_target_to_string(_target_)}' : {repr(e)}"
+        ) from e
 
 
 def _convert_target_to_string(t: Any) -> Any:
