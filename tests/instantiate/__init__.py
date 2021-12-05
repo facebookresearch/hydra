@@ -3,7 +3,7 @@ import collections
 import collections.abc
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig
 
@@ -91,6 +91,16 @@ def module_function(x: int) -> int:
 
 def module_function2() -> str:
     return "fn return"
+
+
+class ExceptionTakingNoArgument(Exception):
+    def __init__(self) -> None:
+        """Init method taking only one argument (self)"""
+        super().__init__("Err message")
+
+
+def raise_exception_taking_no_argument() -> NoReturn:
+    raise ExceptionTakingNoArgument()
 
 
 @dataclass

@@ -460,7 +460,10 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
 
 @mark.parametrize("src", [{"_target_": "tests.instantiate.Adam"}])
 def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
-    with raises(TypeError):
+    with raises(
+        InstantiationException,
+        match=r"Error instantiating 'tests\.instantiate\.Adam' : TypeError\(.*\)",
+    ):
         # can't instantiate without passing params
         instantiate_func(config)
 
@@ -501,7 +504,10 @@ def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
 def test_instantiate_adam_conf(
     instantiate_func: Any, is_partial: bool, expected_params: Any
 ) -> None:
-    with raises(TypeError):
+    with raises(
+        InstantiationException,
+        match=r"Error instantiating 'tests\.instantiate\.Adam' : TypeError\(.*\)",
+    ):
         # can't instantiate without passing params
         instantiate_func(AdamConf())
 
@@ -556,11 +562,30 @@ def test_instantiate_bad_adam_conf(instantiate_func: Any, recwarn: Any) -> None:
 
 def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
 
+    _target_ = "tests.instantiate.ClassWithMissingModule"
     with raises(
-        ModuleNotFoundError, match=re.escape("No module named 'some_missing_module'")
+        InstantiationException,
+        match=re.escape(
+            f"Error instantiating '{_target_}' : "
+            + "ModuleNotFoundError(\"No module named 'some_missing_module'\")"
+        ),
     ):
         # can't instantiate when importing a missing module
-        instantiate_func({"_target_": "tests.instantiate.ClassWithMissingModule"})
+        instantiate_func({"_target_": _target_})
+
+
+def test_instantiate_target_raising_exception_taking_no_arguments(
+    instantiate_func: Any,
+) -> None:
+    _target_ = "tests.instantiate.raise_exception_taking_no_argument"
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            f"Error instantiating '{_target_}' : "
+            + "ExceptionTakingNoArgument('Err message')"
+        ),
+    ):
+        instantiate_func({}, _target_=_target_)
 
 
 @mark.parametrize("is_partial", [True, False])
