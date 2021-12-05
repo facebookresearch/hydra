@@ -565,10 +565,8 @@ def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
     _target_ = "tests.instantiate.ClassWithMissingModule"
     with raises(
         InstantiationException,
-        match=re.escape(
-            f"Error instantiating '{_target_}' : "
-            + "ModuleNotFoundError(\"No module named 'some_missing_module'\")"
-        ),
+        match=re.escape(f"Error instantiating '{_target_}' : ")
+        + r"ModuleNotFoundError\(\"No module named 'some_missing_module'\",?\)",
     ):
         # can't instantiate when importing a missing module
         instantiate_func({"_target_": _target_})
@@ -580,10 +578,8 @@ def test_instantiate_target_raising_exception_taking_no_arguments(
     _target_ = "tests.instantiate.raise_exception_taking_no_argument"
     with raises(
         InstantiationException,
-        match=re.escape(
-            f"Error instantiating '{_target_}' : "
-            + "ExceptionTakingNoArgument('Err message')"
-        ),
+        match=re.escape(f"Error instantiating '{_target_}' : ")
+        + r"ExceptionTakingNoArgument\('Err message',?\)",
     ):
         instantiate_func({}, _target_=_target_)
 
