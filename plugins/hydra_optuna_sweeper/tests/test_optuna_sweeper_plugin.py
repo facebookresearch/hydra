@@ -126,13 +126,6 @@ def test_create_params_from_overrides(input: Any, expected: Any) -> None:
     assert actual == expected
 
 
-def test_get_function_from_path() -> None:
-    loaded_function = _impl.get_function_from_path(
-        "example.custom-search-space-objective.configure"
-    )
-    assert loaded_function is not None
-
-
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,

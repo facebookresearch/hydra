@@ -21,7 +21,7 @@ hydra:
       y:
         type: categorical
         choices: [-5, 0, 5]
-    custom_search_space: example.custom-search-space-objective.configure
+    custom_search_space: .custom-search-space-objective.configure
 
 x: 1
 y: 1

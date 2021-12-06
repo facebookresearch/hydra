@@ -1,9 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import importlib.util
 import logging
 import sys
-from importlib.abc import Loader
-from pathlib import PurePath
 from typing import (
     Any,
     Dict,
@@ -27,7 +24,7 @@ from hydra.core.override_parser.types import (
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
-from hydra.utils import to_absolute_path
+from hydra.utils import get_method
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -120,30 +117,6 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
 
-def get_function_from_path(import_string: str) -> Any:
-    method_path = import_string.split(".")
-    assert (
-        len(method_path) > 1
-    ), "The method path needs to be separated with '.' and\
-        contain at least both the module and function name"
-    method_name = method_path[-1]
-    module = method_path[-2]
-    module_path = method_path[:-1]
-
-    spec = importlib.util.spec_from_file_location(
-        module, to_absolute_path(str(PurePath(*module_path)) + ".py")
-    )
-    method_module = importlib.util.module_from_spec(spec)
-    assert isinstance(spec.loader, Loader)
-    spec.loader.exec_module(method_module)
-
-    assert method_name in dir(
-        method_module
-    ), "Configured method name is not present in the module"
-    function = getattr(method_module, method_name)
-    return function
-
-
 def create_params_from_overrides(
     arguments: List[str],
 ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
@@ -188,7 +161,7 @@ class OptunaSweeperImpl(Sweeper):
             }
         self.custom_search_space = None
         if custom_search_space:
-            self.custom_search_space = get_function_from_path(custom_search_space)
+            self.custom_search_space = get_method(custom_search_space)
         self.job_idx: int = 0
 
     def setup(
@@ -207,7 +180,6 @@ class OptunaSweeperImpl(Sweeper):
         self.sweep_dir = config.hydra.sweep.dir
 
     def _get_directions(self) -> List[str]:
-        directions: List[str]
         if isinstance(self.direction, MutableSequence):
             return [d.name if isinstance(d, Direction) else d for d in self.direction]
         elif isinstance(self.direction, str):
