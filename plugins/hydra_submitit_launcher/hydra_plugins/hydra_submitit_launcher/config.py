@@ -54,7 +54,8 @@ class SlurmQueueConf(BaseQueueConf):
     gpus_per_task: Optional[int] = None
     mem_per_gpu: Optional[str] = None
     mem_per_cpu: Optional[str] = None
-    account: Optional[str] = None 
+    account: Optional[str] = None
+
     # Following parameters are submitit specifics
     #
     # USR1 signal delay before timeout
