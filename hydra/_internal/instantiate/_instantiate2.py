@@ -47,7 +47,7 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
-def _call_target(_target_: Callable, partial: bool, *args, **kwargs) -> Any:  # type: ignore
+def _call_target(_target_: Callable, _partial_: bool, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(*args, **kwargs)
@@ -60,7 +60,7 @@ def _call_target(_target_: Callable, partial: bool, *args, **kwargs) -> Any:  # 
         for v in kwargs.values():
             if OmegaConf.is_config(v):
                 v._set_parent(None)
-        if partial:
+        if _partial_:
             return functools.partial(_target_, *args, **kwargs)
         return _target_(*args, **kwargs)
     except Exception as e:
