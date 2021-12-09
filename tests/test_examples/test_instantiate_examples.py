@@ -60,7 +60,7 @@ def test_instantiate_object_partial(tmpdir: Path) -> None:
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
-    assert result == "Model(Optimizer=Optimizer(algo=SGD,lr=0.01),lr=0.01)"
+    assert result == "Model(Optimizer=Optimizer(algo=SGD,lr=0.1))"
 
 
 @mark.parametrize(

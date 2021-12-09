@@ -20,13 +20,12 @@ class Optimizer:
 
 
 class Model:
-    def __init__(self, optim_partial: Any, lr: float):
+    def __init__(self, optim_partial: Any):
         super().__init__()
-        self.optim = optim_partial(lr=lr)
-        self.lr = lr
+        self.optim = optim_partial(lr=0.1)
 
     def __repr__(self) -> str:
-        return f"Model(Optimizer={self.optim},lr={self.lr})"
+        return f"Model(Optimizer={self.optim})"
 
 
 @hydra.main(config_path=".", config_name="config")

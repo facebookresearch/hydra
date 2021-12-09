@@ -33,6 +33,10 @@ def partial_equal(obj1: Any, obj2: Any) -> bool:
             if not partial_equal(obj1[i], obj2[i]):
                 return False
         return True
+    if isinstance(obj1, list):
+        if len(obj1) != len(obj2):
+            return False
+        return all([partial_equal(obj1[i], obj2[i]) for i in range(len(obj1))])
     if not (isinstance(obj1, partial) and isinstance(obj2, partial)):
         return False
     return all(
@@ -227,17 +231,7 @@ class Compose:
         self.transforms = transforms
 
     def __eq__(self, other: Any) -> Any:
-        if isinstance(other, type(self)):
-            if len(self.transforms) != len(other.transforms):
-                return False
-            return all(
-                [
-                    partial_equal(self.transforms[i], other.transforms[i])
-                    for i in range(len(self.transforms))
-                ]
-            )
-        else:
-            return False
+        return partial_equal(self.transforms, other.transforms)
 
 
 class Tree:
