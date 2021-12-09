@@ -233,11 +233,7 @@ def instantiate_node(
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
         items = [
-            instantiate_node(
-                item,
-                convert=convert,
-                recursive=recursive,
-            )
+            instantiate_node(item, convert=convert, recursive=recursive)
             for item in node._iter_ex(resolve=True)
         ]
 
@@ -259,9 +255,7 @@ def instantiate_node(
                 if key not in exclude_keys:
                     if recursive:
                         value = instantiate_node(
-                            value,
-                            convert=convert,
-                            recursive=recursive,
+                            value, convert=convert, recursive=recursive
                         )
                     kwargs[key] = _convert_node(value, convert)
 
@@ -275,9 +269,7 @@ def instantiate_node(
                 for key, value in node.items():
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
-                        value,
-                        convert=convert,
-                        recursive=recursive,
+                        value, convert=convert, recursive=recursive
                     )
                 return dict_items
             else:
@@ -285,9 +277,7 @@ def instantiate_node(
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
                     cfg[key] = instantiate_node(
-                        value,
-                        convert=convert,
-                        recursive=recursive,
+                        value, convert=convert, recursive=recursive
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type

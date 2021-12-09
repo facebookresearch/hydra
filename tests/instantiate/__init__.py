@@ -253,9 +253,9 @@ class Tree:
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
             return (
-                (partial_equal(self.value, other.value))
-                and (partial_equal(self.left, other.left))
-                and (partial_equal(self.right, other.right))
+                partial_equal(self.value, other.value)
+                and partial_equal(self.left, other.left)
+                and partial_equal(self.right, other.right)
             )
 
         else:
@@ -277,8 +277,8 @@ class Mapping:
 
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
-            return (partial_equal(self.dictionary, other.dictionary)) and (
-                partial_equal(self.value, other.value)
+            return partial_equal(self.dictionary, other.dictionary) and partial_equal(
+                self.value, other.value
             )
         else:
             return False
