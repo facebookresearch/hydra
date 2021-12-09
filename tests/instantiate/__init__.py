@@ -89,8 +89,9 @@ class BClass:
 
 
 @dataclass
-class TargetInParamsClass:
+class KeywordsInParamsClass:
     target: Any
+    partial: Any
 
 
 @dataclass
