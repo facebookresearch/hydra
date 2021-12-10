@@ -2,11 +2,49 @@
 import collections
 import collections.abc
 from dataclasses import dataclass
+from functools import partial
 from typing import Any, Dict, List, Optional, Tuple
 
-from omegaconf import MISSING
+from omegaconf import MISSING, DictConfig, ListConfig
 
 from hydra.types import TargetConf
+
+
+def _convert_type(obj: Any) -> Any:
+    if isinstance(obj, DictConfig):
+        obj = dict(obj)
+    elif isinstance(obj, ListConfig):
+        obj = list(obj)
+    return obj
+
+
+def partial_equal(obj1: Any, obj2: Any) -> bool:
+    if obj1 == obj2:
+        return True
+
+    obj1, obj2 = _convert_type(obj1), _convert_type(obj2)
+
+    if type(obj1) != type(obj2):
+        return False
+    if isinstance(obj1, dict):
+        if len(obj1) != len(obj2):
+            return False
+        for i in obj1.keys():
+            if not partial_equal(obj1[i], obj2[i]):
+                return False
+        return True
+    if isinstance(obj1, list):
+        if len(obj1) != len(obj2):
+            return False
+        return all([partial_equal(obj1[i], obj2[i]) for i in range(len(obj1))])
+    if not (isinstance(obj1, partial) and isinstance(obj2, partial)):
+        return False
+    return all(
+        [
+            partial_equal(getattr(obj1, attr), getattr(obj2, attr))
+            for attr in ["func", "args", "keywords"]
+        ]
+    )
 
 
 class ArgsClass:
@@ -55,8 +93,9 @@ class BClass:
 
 
 @dataclass
-class TargetInParamsClass:
+class KeywordsInParamsClass:
     target: Any
+    partial: Any
 
 
 @dataclass
@@ -192,10 +231,7 @@ class Compose:
         self.transforms = transforms
 
     def __eq__(self, other: Any) -> Any:
-        if isinstance(other, type(self)):
-            return self.transforms == other.transforms
-        else:
-            return False
+        return partial_equal(self.transforms, other.transforms)
 
 
 class Tree:
@@ -212,9 +248,9 @@ class Tree:
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
             return (
-                self.value == other.value
-                and self.left == other.left
-                and self.right == other.right
+                partial_equal(self.value, other.value)
+                and partial_equal(self.left, other.left)
+                and partial_equal(self.right, other.right)
             )
 
         else:
@@ -236,7 +272,9 @@ class Mapping:
 
     def __eq__(self, other: Any) -> Any:
         if isinstance(other, type(self)):
-            return self.dictionary == other.dictionary and self.value == other.value
+            return partial_equal(self.dictionary, other.dictionary) and partial_equal(
+                self.value, other.value
+            )
         else:
             return False
 
@@ -253,6 +291,7 @@ class TransformConf:
 @dataclass
 class CenterCropConf(TransformConf):
     _target_: str = "tests.instantiate.CenterCrop"
+    _partial_: bool = False
     size: int = MISSING
 
 
@@ -265,12 +304,14 @@ class RotationConf(TransformConf):
 @dataclass
 class ComposeConf:
     _target_: str = "tests.instantiate.Compose"
+    _partial_: bool = False
     transforms: List[TransformConf] = MISSING
 
 
 @dataclass
 class TreeConf:
     _target_: str = "tests.instantiate.Tree"
+    _partial_: bool = False
     left: Optional["TreeConf"] = None
     right: Optional["TreeConf"] = None
     value: Any = MISSING
@@ -279,10 +320,16 @@ class TreeConf:
 @dataclass
 class MappingConf:
     _target_: str = "tests.instantiate.Mapping"
+    _partial_: bool = False
     dictionary: Optional[Dict[str, "MappingConf"]] = None
 
-    def __init__(self, dictionary: Optional[Dict[str, "MappingConf"]] = None):
+    def __init__(
+        self,
+        dictionary: Optional[Dict[str, "MappingConf"]] = None,
+        _partial_: bool = False,
+    ):
         self.dictionary = dictionary
+        self._partial_ = _partial_
 
 
 @dataclass
