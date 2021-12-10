@@ -38,6 +38,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   the exception of Structured Configs (and their fields).
                         all     : Passed objects are dicts, lists and primitives without
                                   a trace of OmegaConf containers
+                   _partial_: If True, return functools.partial wrapped method or object
+                              False by default. Configure per target.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -198,7 +200,7 @@ Trainer(
 )
 ```
 
-## Parameter conversion strategies
+### Parameter conversion strategies
 By default, the parameters passed to the target are either primitives (int, float, bool etc) or                                                                                                 
 OmegaConf containers (DictConfig, ListConfig).
 OmegaConf containers have many advantages over primitive dicts and lists but in some cases 
@@ -212,3 +214,63 @@ Supported values are:
 - `all` : Convert everything to primitive containers
 
 Note that the conversion strategy applies to all the parameters passed to the target.
+
+### Partial Instantiation
+Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
+`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
+the application code. Here is an example:
+
+```python title="Example classes"
+class Optimizer:
+    algo: str
+    lr: float
+
+    def __init__(self, algo: str, lr: float) -> None:
+        self.algo = algo
+        self.lr = lr
+
+    def __repr__(self) -> str:
+        return f"Optimizer(algo={self.algo},lr={self.lr})"
+
+
+class Model:
+    def __init__(self, optim_partial: Any, lr: float):
+        super().__init__()
+        self.optim = optim_partial(lr=lr)
+        self.lr = lr
+
+    def __repr__(self) -> str:
+        return f"Model(Optimizer={self.optim},lr={self.lr})"
+```
+
+<div className="row">
+
+<div className="col col--5">
+
+```yaml title="Config"
+model:
+  _target_: my_app.Model
+  optim_partial:
+    _partial_: true
+    _target_: my_app.Optimizer
+    algo: SGD
+  lr: 0.01
+```
+
+
+</div>
+
+<div className="col col--7">
+
+```python title="Instantiation"
+model = instantiate(cfg.model)
+print(model)
+# "Model(Optimizer=Optimizer(algo=SGD,lr=0.01),lr=0.01)
+
+
+
+
+```
+
+</div>
+</div>

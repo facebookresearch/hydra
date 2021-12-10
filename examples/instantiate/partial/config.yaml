@@ -1,0 +1,6 @@
+model:
+  _target_: my_app.Model
+  optim_partial:
+    _partial_: true
+    _target_: my_app.Optimizer
+    algo: SGD
