@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import re
 from typing import Any
 
-from pytest import mark, param
+from pytest import mark, param, raises
 
+from hydra.errors import InstantiationException
 from hydra.utils import instantiate
 from tests.instantiate import ArgsClass
 
@@ -45,6 +47,18 @@ from tests.instantiate import ArgsClass
 )
 def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
     assert instantiate(cfg) == expected
+
+
+def test_instantiate_unsupported_args_type() -> None:
+    cfg = {"_target_": "tests.instantiate.ArgsClass", "_args_": {"foo": "bar"}}
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            "Error instantiating 'tests.instantiate.ArgsClass' : "
+            + "Unsupported _args_ type: DictConfig. value: {'foo': 'bar'}"
+        ),
+    ):
+        instantiate(cfg)
 
 
 @mark.parametrize(
