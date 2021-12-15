@@ -1,0 +1,1 @@
+If user code raises an exception when called by `instantiate`, raise an `InstantiateError` exception instead of an instance of the same exception class that was raised by the user code.
