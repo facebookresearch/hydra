@@ -64,12 +64,33 @@ class ArgsClass:
             return NotImplemented
 
 
+class OuterClass:
+    def __init__(self) -> None:
+        pass
+
+    @classmethod
+    def method(self) -> str:
+        return "OuterClass.method return"
+
+    class Nested:
+        def __init__(self) -> None:
+            pass
+
+        @classmethod
+        def method(self) -> str:
+            return "OuterClass.Nested.method return"
+
+
 def add_values(a: int, b: int) -> int:
     return a + b
 
 
 def module_function(x: int) -> int:
     return x
+
+
+def module_function2() -> str:
+    return "fn return"
 
 
 @dataclass
