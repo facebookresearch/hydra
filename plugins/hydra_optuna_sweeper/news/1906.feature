@@ -1,0 +1,1 @@
+Add 'custom_search_space' configuration option to allow extending trial objects programmatically
