@@ -173,6 +173,9 @@ class OptunaSweeperConf:
     # Number of parallel workers
     n_jobs: int = 2
 
+    # Maximum authorized failure rate for a batch of parameters
+    max_failure_rate: float = 0.0
+
     search_space: Optional[Dict[str, Any]] = None
 
     params: Optional[Dict[str, str]] = None
