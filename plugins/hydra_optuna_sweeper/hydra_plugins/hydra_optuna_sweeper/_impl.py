@@ -155,6 +155,7 @@ class OptunaSweeperImpl(Sweeper):
         study_name: Optional[str],
         n_trials: int,
         n_jobs: int,
+        max_failure_rate: float,
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
@@ -165,6 +166,9 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
+        self.max_failure_rate = max_failure_rate
+        assert self.max_failure_rate >= 0.0
+        assert self.max_failure_rate <= 1.0
         self.custom_search_space_extender: Optional[
             Callable[[DictConfig, Trial], None]
         ] = None
@@ -286,9 +290,10 @@ class OptunaSweeperImpl(Sweeper):
         assert self.launcher is not None
         assert self.hydra_context is not None
         assert self.job_idx is not None
-        assert self.search_space is None
 
         self._process_searchspace_config()
+        assert self.search_space is None
+
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
 
@@ -348,6 +353,7 @@ class OptunaSweeperImpl(Sweeper):
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
+            failures = []
             for trial, ret in zip(trials, returns):
                 values: Optional[List[float]] = None
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
@@ -388,7 +394,18 @@ class OptunaSweeperImpl(Sweeper):
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
                     study.tell(trial=trial, state=state, values=values)
-                    raise e
+                    log.warning(f"Failed experiment: {e}")
+                    failures.append(e)
+
+            # raise if too many failures
+            if len(failures) / len(returns) > self.max_failure_rate:
+                log.error(
+                    f"Failed {failures} times out of {len(returns)} "
+                    f"with max_failure_rate={self.max_failure_rate}."
+                )
+                assert len(failures) > 0
+                for ret in returns:
+                    ret.return_value  # delegate raising to JobReturn, with actual traceback
 
             n_trials_to_go -= batch_size
 

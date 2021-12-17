@@ -1,6 +1,6 @@
-import os
-
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
+import sys
 from functools import partial
 from pathlib import Path
 from typing import Any, List, Optional
@@ -12,6 +12,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     chdir_plugin_root,
+    run_process,
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
@@ -329,6 +330,7 @@ def test_warnings(
         study_name="test",
         n_trials=1,
         n_jobs=1,
+        max_failure_rate=0.0,
         custom_search_space=None,
     )
     if search_space is not None:
@@ -344,3 +346,26 @@ def test_warnings(
             sweeper._process_searchspace_config()
     else:
         sweeper._process_searchspace_config()
+
+
+@mark.parametrize("max_failure_rate", (0.5, 1.0))
+def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
+    cmd = [
+        sys.executable,
+        "example/sphere.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=2",
+        "hydra/sweeper/sampler=random",
+        "hydra.sweeper.sampler.seed=123",
+        f"hydra.sweeper.max_failure_rate={max_failure_rate}",
+        "error=true",
+    ]
+    out, err = run_process(cmd, print_error=False, raise_exception=False)
+    error_string = "RuntimeError: cfg.error is True"
+    if max_failure_rate < 1.0:
+        assert error_string in err
+    else:
+        assert error_string not in err
