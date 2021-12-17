@@ -209,7 +209,7 @@ class OptunaSweeperImpl(Sweeper):
             )
             params = dict(trial.params)
             params.update(fixed_params)
-            overrides.append(tuple(f"++{name}={val}" for name, val in params.items()))
+            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
         return overrides
 
     def sweep(self, arguments: List[str]) -> None:

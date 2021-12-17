@@ -5,11 +5,12 @@ from optuna.trial import Trial
 
 
 @hydra.main(config_path="custom-search-space", config_name="config")
-def three_dimensional_sphere(cfg: DictConfig) -> float:
+def multi_dimensional_sphere(cfg: DictConfig) -> float:
+    w: float = cfg.w
     x: float = cfg.x
     y: float = cfg.y
     z: float = cfg.z
-    return x ** 2 + y ** 2 + z ** 2
+    return w ** 2 + x ** 2 + y ** 2 + z ** 2
 
 
 def configure(cfg: DictConfig, trial: Trial) -> None:
@@ -19,7 +20,8 @@ def configure(cfg: DictConfig, trial: Trial) -> None:
         x_value - cfg.max_z_difference_from_x,
         x_value + cfg.max_z_difference_from_x,
     )
+    trial.suggest_float("w", 0.0, 1.0)
 
 
 if __name__ == "__main__":
-    three_dimensional_sphere()
+    multi_dimensional_sphere()
