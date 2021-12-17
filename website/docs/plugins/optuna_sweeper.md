@@ -339,6 +339,7 @@ max_z_difference_from_x: 0.5
 ```
 
 The `custom_search_space` configuration option refers to the `configure` function in `example/custom-search-space-objective.py`. This method accepts both a DictConfig with already set options and the trial object which needs further configuration. In this example we limit `z` the difference between `x` and `z` to be no more than 0.5.
+Note that this `custom_search_space` API should be considered experimental and is subject to change.
 </details>
 
 ### Order of trial configuration
