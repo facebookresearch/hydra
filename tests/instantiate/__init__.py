@@ -68,16 +68,16 @@ class OuterClass:
     def __init__(self) -> None:
         pass
 
-    @classmethod
-    def method(self) -> str:
+    @staticmethod
+    def method() -> str:
         return "OuterClass.method return"
 
     class Nested:
         def __init__(self) -> None:
             pass
 
-        @classmethod
-        def method(self) -> str:
+        @staticmethod
+        def method() -> str:
             return "OuterClass.Nested.method return"
 
 
