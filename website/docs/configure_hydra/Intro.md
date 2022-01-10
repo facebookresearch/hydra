@@ -83,6 +83,7 @@ You can find more details in the [Job Configuration](job.md) page.
 Fields under **hydra.job**:
 - **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
 - **override_dirname** : Pathname derived from the overrides for this job
+- **chdir**: If `True`, Hydra calls `os.chdir(output_dir)` before calling back to the user's main function.
 - **id** : Job ID in the underlying jobs system (SLURM etc)
 - **num** : job serial number in sweep
 - **config_name** : The name of the config used by the job (Output only)
@@ -94,6 +95,8 @@ Fields under **hydra.job**:
 Fields under **hydra.runtime** are populated automatically and should not be overridden.
 - **version**: Hydra's version
 - **cwd**: Original working directory the app was executed from
+- **output_dir**: This is the directory created by Hydra for saving logs and
+  yaml config files, as configured by [customizing the working directory pattern](workdir.md).
 - **choices**: A dictionary containing the final config group choices.
 - **config_sources**: The final list of config sources used to compose the config.
 

@@ -8,6 +8,11 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink text="Example application" to="examples/configure_hydra/workdir"/>
 
+Hydra automatically creates an output directory used to store log files and
+save yaml configs. This directory can be configured by setting `hydra.run.dir`
+(for single hydra runs) or `hydra.sweep.dir`/`hydra.sweep.subdir` (for multirun
+sweeps). At runtime, the path of the output directory can be
+[accessed](Intro.md#accessing-the-hydra-config) via the `hydra.runtime.output_dir` variable.
 Below are a few examples of customizing output directory patterns.
 
 ### Configuration for run
