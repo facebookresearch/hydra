@@ -5,7 +5,7 @@ from typing import Any, List, Sequence, Union
 from unittest.mock import Mock
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, warns
+from pytest import mark, raises, warns
 
 from hydra import TaskFunction
 from hydra._internal.callbacks import Callbacks
@@ -73,19 +73,14 @@ def test_setup_plugins(
     monkeypatch.setattr(Plugins, "check_usage", lambda _: None)
     monkeypatch.setattr(plugin_instance, "_instantiate", lambda _: plugin)
 
-    msg = dedent(
-        """
-        Plugin's setup() signature has changed in Hydra 1.1.
-        Support for the old style will be removed in Hydra 1.2.
-        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-    )
-    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+    classname = type(plugin).__name__
+    msg = f"setup() got an unexpected keyword argument 'hydra_context'"
+    with raises(TypeError, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
             Plugins.instance().instantiate_launcher(
+                hydra_context=hydra_context,
                 task_function=task_function,
                 config=config,
-                config_loader=config_loader,
-                hydra_context=hydra_context,
             )
         else:
             Plugins.instance().instantiate_sweeper(
