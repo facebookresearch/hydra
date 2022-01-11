@@ -1,0 +1,1 @@
+Change the default value of the `@hydra.main` decorator's `config_path` argument from '.' to `None`.
