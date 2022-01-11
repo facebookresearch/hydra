@@ -73,8 +73,7 @@ def test_setup_plugins(
     monkeypatch.setattr(Plugins, "check_usage", lambda _: None)
     monkeypatch.setattr(plugin_instance, "_instantiate", lambda _: plugin)
 
-    classname = type(plugin).__name__
-    msg = f"setup() got an unexpected keyword argument 'hydra_context'"
+    msg = "setup() got an unexpected keyword argument 'hydra_context'"
     with raises(TypeError, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
             Plugins.instance().instantiate_launcher(
