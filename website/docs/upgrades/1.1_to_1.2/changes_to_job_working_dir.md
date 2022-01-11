@@ -10,3 +10,7 @@ In Hydra 1.3, `hydra.job.chdir` will default to `False`.
 
 If you want to keep the old Hydra behavior, please set `hydra.job.chdir=True` explicitly for you application so it will not
 be broken by future upgrades.
+
+For more information about `hydra.job.chdir`,
+see [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md#disable-changing-current-working-dir-to-jobs-output-dir)
+and [Job Configuration - hydra.job.chdir](/configure_hydra/job.md#hydrajobchdir).
