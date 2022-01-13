@@ -127,7 +127,7 @@ base_completion_list: List[str] = [
                 "hydra/job_logging=",
                 "hydra/launcher=",
                 "hydra/output=",
-                "hydra/sweeper=",
+                "hydra/sweeper",
             ],
         ),
         ("test_hydra/lau", 2, ["test_hydra/launcher="]),
