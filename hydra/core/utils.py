@@ -11,7 +11,7 @@ from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
@@ -19,9 +19,6 @@ from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
-
-if TYPE_CHECKING:
-    from hydra._internal.callbacks import Callbacks
 
 log = logging.getLogger(__name__)
 
@@ -85,25 +82,17 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
-def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callbacks":
+def _check_hydra_context(hydra_context: Optional[HydraContext]) -> None:
     if hydra_context is None:
-        # DEPRECATED: remove in 1.2
-        # hydra_context will be required in 1.2
-        deprecation_warning(
-            message=dedent(
+        # hydra_context is required as of Hydra 1.2.
+        # We can remove this check in Hydra 1.3.
+        raise TypeError(
+            dedent(
                 """
-                run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
-                Support for the old style will be removed in Hydra 1.2.
+                run_job's signature has changed: the `hydra_context` arg is now required.
                 For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
             ),
         )
-        from hydra._internal.callbacks import Callbacks
-
-        callbacks = Callbacks()
-    else:
-        callbacks = hydra_context.callbacks
-
-    return callbacks
 
 
 def run_job(
@@ -111,10 +100,11 @@ def run_job(
     config: DictConfig,
     job_dir_key: str,
     job_subdir_key: Optional[str],
+    hydra_context: HydraContext,
     configure_logging: bool = True,
-    hydra_context: Optional[HydraContext] = None,
 ) -> "JobReturn":
-    callbacks = _get_callbacks_for_run_job(hydra_context)
+    _check_hydra_context(hydra_context)
+    callbacks = hydra_context.callbacks
 
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
