@@ -1,0 +1,1 @@
+Remove support for deprecated arg `config_loader` to Plugin.setup, and update signature of `run_job` to require `hydra_context`.
