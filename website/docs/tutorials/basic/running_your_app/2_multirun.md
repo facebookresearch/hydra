@@ -21,6 +21,8 @@ The following sweeps over all combinations of the dbs and schemas.
 ```
 The printed configurations have been omitted for brevity.
 
+#### Sweeping via `hydra.sweeper.params`
+
 You can also define sweeping in the input configs by overriding
 `hydra.sweeper.params`. Using the above example, the same multirun could be achieved via the following config.
 
