@@ -1,0 +1,5 @@
+# @package _global_
+hydra:
+  sweeper:
+    params:
+      +foo: bar,baz

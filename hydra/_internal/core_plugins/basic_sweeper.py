@@ -20,7 +20,7 @@ import itertools
 import logging
 import time
 from collections import OrderedDict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
@@ -38,9 +38,11 @@ from hydra.types import HydraContext, TaskFunction
 
 @dataclass
 class BasicSweeperConf:
+    defaults: List[Any] = field(default_factory=lambda: [{"params": None}])
+
     _target_: str = "hydra._internal.core_plugins.basic_sweeper.BasicSweeper"
     max_batch_size: Optional[int] = None
-    params: Optional[Dict[str, str]] = None
+    params: Optional[Dict[str, str]] = field(default_factory=dict)  # type: ignore
 
 
 ConfigStore.instance().store(

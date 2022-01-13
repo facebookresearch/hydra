@@ -108,3 +108,76 @@ def test_partial_failure(
         from_name="Expected error",
         to_name="Actual error",
     )
+
+
+@mark.parametrize(
+    "cli_args, expected_out",
+    [
+        param(
+            ["--config-path=toplevel", "--config-name=config"],
+            dedent(
+                """\
+                [HYDRA] Launching 2 jobs locally
+                [HYDRA] \t#0 : +foo=bar
+                {'foo': 'bar'}
+                [HYDRA] \t#1 : +foo=baz
+                {'foo': 'baz'}
+                """
+            ),
+            id="toplevel",
+        ),
+        param(
+            ["--config-path=nested", "hydra/sweeper/params=grid_search"],
+            dedent(
+                """\
+                [HYDRA] Launching 2 jobs locally
+                [HYDRA] \t#0 : +foo=bar
+                {'foo': 'bar'}
+                [HYDRA] \t#1 : +foo=baz
+                {'foo': 'baz'}
+                """
+            ),
+            id="nested",
+        ),
+        param(
+            ["--config-path=experiment", "+exp=grid_search"],
+            dedent(
+                """\
+                [HYDRA] Launching 2 jobs locally
+                [HYDRA] \t#0 : +foo=bar +exp=grid_search
+                {'foo': 'bar'}
+                [HYDRA] \t#1 : +foo=baz +exp=grid_search
+                {'foo': 'baz'}
+                """
+            ),
+            id="experiment",
+        ),
+    ],
+)
+def test_sweeper_params(
+    tmpdir: Any,
+    cli_args: List[str],
+    expected_out: str,
+) -> None:
+    cmd = (
+        [
+            sys.executable,
+            "-Werror",
+            "tests/test_apps/basic_sweeper_params/my_app.py",
+            "--multirun",
+        ]
+        + cli_args
+        + [
+            "hydra.run.dir=" + str(tmpdir),
+            "hydra.job.chdir=True",
+            "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+        ]
+    )
+    out, _ = run_process(cmd=cmd)
+
+    assert_regex_match(
+        from_line=expected_out,
+        to_line=out,
+        from_name="Expected output",
+        to_name="Actual output",
+    )

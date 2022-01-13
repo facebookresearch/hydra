@@ -1,0 +1,4 @@
+hydra:
+  sweeper:
+    params:
+      +foo: bar,baz
