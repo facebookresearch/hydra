@@ -4,10 +4,6 @@ title: Multi-run
 sidebar_label: Multi-run
 ---
 
-import {ExampleGithubLink} from "@site/src/components/GithubLink"
-
-<ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/5_basic_sweep"/>
-
 Sometimes you want to run the same application with multiple different configurations.  
 E.g. running a performance test on each of the databases with each of the schemas.
 
@@ -27,6 +23,10 @@ The printed configurations have been omitted for brevity.
 
 You can also define sweeping in the input configs by overriding
 `hydra.sweeper.params`. Using the above example, the same multirun could be achieved via the following config.
+
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/5_basic_sweep"/>
 
 ```yaml
 hydra:
