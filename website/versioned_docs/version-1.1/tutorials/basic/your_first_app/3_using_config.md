@@ -18,6 +18,9 @@ node:                         # Config is hierarchical
 ```
 
 ```python title="main.py"
+from omegaconf import DictConfig, OmegaConf
+import hydra
+
 @hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig):
     assert cfg.node.loompa == 10          # attribute style access
@@ -28,6 +31,9 @@ def my_app(cfg: DictConfig):
     assert cfg.node.do == "oompa 10"      # string interpolation
 
     cfg.node.waldo                        # raises an exception
+
+if __name__ == "__main__":
+    my_app()
  ```
 Outputs:
 ```
