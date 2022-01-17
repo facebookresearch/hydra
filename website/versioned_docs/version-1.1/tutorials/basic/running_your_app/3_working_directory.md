@@ -71,6 +71,9 @@ def my_app(_cfg: DictConfig) -> None:
     print(f"Orig working directory    : {get_original_cwd()}")
     print(f"to_absolute_path('foo')   : {to_absolute_path('foo')}")
     print(f"to_absolute_path('/foo')  : {to_absolute_path('/foo')}")
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 ```text title="$ python examples/tutorial/8_working_directory/original_cwd.py"

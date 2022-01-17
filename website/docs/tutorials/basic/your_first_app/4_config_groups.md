@@ -55,9 +55,15 @@ timeout: 10
 Since we moved all the configs into the `conf` directory, we need to tell Hydra where to find them using the `config_path` parameter.
 **`config_path` is a directory relative to `my_app.py`**.
 ```python title="my_app.py" {1}
+from omegaconf import DictConfig, OmegaConf
+import hydra
+
 @hydra.main(config_path="conf")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 Running `my_app.py` without requesting a configuration will print an empty config.
