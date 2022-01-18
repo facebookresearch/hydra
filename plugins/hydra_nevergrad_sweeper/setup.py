@@ -26,7 +26,7 @@ setup(
     ],
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "nevergrad>=0.4.3.post2,<0.4.3.post7",  # https://github.com/facebookresearch/hydra/issues/1768
+        "nevergrad>=0.4.3.post9",
         "cma==3.0.3",  # https://github.com/facebookresearch/hydra/issues/1684
         "numpy<1.20.0",  # remove once nevergrad is upgraded to support numpy 1.20
     ],
