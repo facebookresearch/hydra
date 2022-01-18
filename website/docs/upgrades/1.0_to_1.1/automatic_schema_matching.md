@@ -27,7 +27,7 @@ You need to rename one of them. Depending on the circumstances and your preferen
 - If you control both configs, you can rename either of them.
 - If you only control the config file, rename it.
 
-You must make sure that the `ConfigStore` `name` references the schema.py Structured Config and the `@hydra.main` `config_name` references the yaml file.
+You must make sure that the `ConfigStore` `name` references the schema's Structured Config and the `@hydra.main` `config_name` references the yaml config file.
 
 ### Option 1: rename the Structured Config
 This option is less disruptive. Use it if you control the Structured Config.  
