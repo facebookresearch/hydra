@@ -157,7 +157,7 @@ def run_job(
             deprecation_warning(
                 message=dedent(
                     f"""\
-                    Hydra 1.3 will no longer change working directory at job runtime by default.
+                    Future Hydra versions will no longer change working directory at job runtime by default.
                     See {url} for more information."""
                 ),
                 stacklevel=2,

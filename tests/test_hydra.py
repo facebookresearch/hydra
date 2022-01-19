@@ -1442,7 +1442,7 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
 
     expected = dedent(
         """
-        .*UserWarning: Hydra 1.3 will no longer change working directory at job runtime by default.
+        .*UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
         See https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir for more information..*
         .*
         """
