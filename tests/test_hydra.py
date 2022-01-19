@@ -1570,3 +1570,18 @@ def test_disable_chdir_with_app_chdir(tmpdir: Path, chdir: bool) -> None:
     result, _err = run_python_script(cmd)
     _path = os.getcwd() if chdir else Path(tmpdir) / "subdir"
     assert f"current dir: {_path}" in result
+
+
+@mark.parametrize(
+    "multirun",
+    [False, True],
+)
+def test_hydra_verbose_1897(tmpdir: Path, multirun: bool) -> None:
+    cmd = [
+        "tests/test_apps/hydra_verbose/my_app.py",
+        f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=False",
+    ]
+    if multirun:
+        cmd += ["+a=1,2", "-m"]
+    run_python_script(cmd)
