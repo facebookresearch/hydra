@@ -91,6 +91,17 @@ Fields under **hydra.job**:
 - **env_copy**: Environment variable to copy from the launching machine
 - **config**: fine-grained configuration for job
 
+### hydra.run:
+Used in single-run mode (i.e. when the `--multirun` command-line flag is omitted).
+See [configuration for run](workdir.md#configuration-for-run).
+- **dir**: used to specify the output directory.
+
+### hydra.sweep:
+Used in multi-run mode (i.e. when the `--multirun` command-line flag is given)
+See [configuration for multirun](workdir.md#configuration-for-multirun).
+- **dir**: used to specify the output directory common to all jobs in the multirun sweep
+- **subdir**: used to specify the a pattern for creation of job-specific subdirectory
+
 ### hydra.runtime:
 Fields under **hydra.runtime** are populated automatically and should not be overridden.
 - **version**: Hydra's version
@@ -99,6 +110,7 @@ Fields under **hydra.runtime** are populated automatically and should not be ove
   yaml config files, as configured by [customizing the working directory pattern](workdir.md).
 - **choices**: A dictionary containing the final config group choices.
 - **config_sources**: The final list of config sources used to compose the config.
+
 
 ### Resolvers provided by Hydra
 Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers) by default.
