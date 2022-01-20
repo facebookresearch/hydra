@@ -113,6 +113,7 @@ Fields under **hydra.overrides** are populated automatically and should not be o
 - **task**: Contains a list of the command line overrides used, except `hydra` overrides.
   Contains the same information as the `.hydra/overrides.yaml` file
   See [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md).
+- **hydra**: Contains a list of the command-line hydra overrides used.
 
 ### Other Hydra settings
 The following fields are present at the top level of the Hydra Config.
