@@ -108,6 +108,29 @@ Fields under **hydra.runtime** are populated automatically and should not be ove
 - **choices**: A dictionary containing the final config group choices.
 - **config_sources**: The final list of config sources used to compose the config.
 
+### hydra.overrides
+Fields under **hydra.overrides** are populated automatically and should not be overridden.
+- **task**: Contains a list of the command line overrides used, except `hydra` overrides.
+  Contains the same information as the `.hydra/overrides.yaml` file
+  See [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md).
+
+### Other Hydra settings
+The following fields are present at the top level of the Hydra Config.
+- **searchpath**: A list of paths that Hydra searches in order to find configs.
+  See [overriding `hydra.searchpath`](advanced/search_path.md#overriding-hydrasearchpath-config)
+- **job_logging** and **hydra_logging**: Configure logging settings.
+  See [logging](/tutorials/basic/running_your_app/4_logging.md) and [customizing logging](logging.md).
+- **sweeper**: [Sweeper](/advanced/plugins/intro.md#sweeper) plugin settings. Defaults to basic sweeper.
+- **launcher**: [Launcher](/advanced/plugins/intro.md#launcher) plugin settings. Defaults to basic launcher.
+- **callbacks**: [Experimental callback support](/experimental/callbacks.md).
+- **help**: Configures your app's `--help` CLI flag. See [customizing application's help](app_help.md).
+- **hydra_help**: Configures the `--hydra-help` CLI flag.
+- **output_subdir**: Configures the `.hydra` subdirectory name.
+  See [changing or disabling the output subdir](/tutorials/basic/running_your_app/3_working_directory.md#changing-or-disabling-the-output-subdir).
+- **verbose**: Configures per-file DEBUG-level logging.
+  See [Logging](/tutorials/basic/running_your_app/4_logging.md).
+
+
 ### Resolvers provided by Hydra
 Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers) by default.
 
