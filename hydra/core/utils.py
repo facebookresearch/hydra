@@ -109,6 +109,9 @@ def run_job(
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
 
+    # init Hydra config for config evaluation
+    HydraConfig.instance().set_config(config)
+
     output_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
@@ -121,6 +124,7 @@ def run_job(
         with open_dict(config.hydra.runtime):
             config.hydra.runtime.output_dir = os.path.abspath(output_dir)
 
+    # update Hydra config
     HydraConfig.instance().set_config(config)
     _chdir = None
     try:

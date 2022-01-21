@@ -1585,3 +1585,30 @@ def test_hydra_verbose_1897(tmpdir: Path, multirun: bool) -> None:
     if multirun:
         cmd += ["+a=1,2", "-m"]
     run_python_script(cmd)
+
+
+@mark.parametrize(
+    "multirun",
+    [False, True],
+)
+def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
+    from hydra import __version__
+
+    output_dir = str(tmpdir) + "${val}"
+
+    cmd = [
+        "tests/test_apps/hydra_resolver_in_output_dir/my_app.py",
+        f"hydra.run.dir='{output_dir}'",
+        f"hydra.sweep.subdir='{output_dir}'",
+        "hydra.sweep.dir=.",
+        "hydra.job.chdir=False",
+    ]
+
+    if multirun:
+        cmd += ["-m"]
+
+    out, _ = run_python_script(cmd)
+
+    output_dir = os.path.join(str(tmpdir) + f"{__version__}")
+    assert Path(output_dir, "my_app.log").exists()
+    assert output_dir in out
