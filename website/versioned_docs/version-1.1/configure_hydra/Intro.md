@@ -110,10 +110,10 @@ Fields under **hydra.runtime** are populated automatically and should not be ove
 
 ### hydra.overrides
 Fields under **hydra.overrides** are populated automatically and should not be overridden.
-- **task**: Contains a list of the command line overrides used, except `hydra` overrides.
+- **task**: Contains a list of the command line overrides used, except `hydra` config overrides.
   Contains the same information as the `.hydra/overrides.yaml` file
   See [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md).
-- **hydra**: Contains a list of the command-line hydra overrides used.
+- **hydra**: Contains a list of the command-line `hydra` config overrides used.
 
 ### Other Hydra settings
 The following fields are present at the top level of the Hydra Config.
@@ -121,8 +121,8 @@ The following fields are present at the top level of the Hydra Config.
   See [overriding `hydra.searchpath`](advanced/search_path.md#overriding-hydrasearchpath-config)
 - **job_logging** and **hydra_logging**: Configure logging settings.
   See [logging](/tutorials/basic/running_your_app/4_logging.md) and [customizing logging](logging.md).
-- **sweeper**: [Sweeper](/advanced/plugins/intro.md#sweeper) plugin settings. Defaults to basic sweeper.
-- **launcher**: [Launcher](/advanced/plugins/intro.md#launcher) plugin settings. Defaults to basic launcher.
+- **sweeper**: [Sweeper](/tutorials/basic/running_your_app/2_multirun.md#sweeper) plugin settings. Defaults to basic sweeper.
+- **launcher**: [Launcher](/tutorials/basic/running_your_app/2_multirun.md#launcher) plugin settings. Defaults to basic launcher.
 - **callbacks**: [Experimental callback support](/experimental/callbacks.md).
 - **help**: Configures your app's `--help` CLI flag. See [customizing application's help](app_help.md).
 - **hydra_help**: Configures the `--hydra-help` CLI flag.
