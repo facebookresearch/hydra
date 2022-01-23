@@ -132,6 +132,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         f"hydra.sweeper.study_name={study_name}",
         "hydra/sweeper/sampler=tpe",
         "hydra.sweeper.sampler.seed=123",
+        "~z",
     ]
     if with_commandline:
         cmd += [
