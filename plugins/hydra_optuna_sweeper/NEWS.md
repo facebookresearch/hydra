@@ -1,3 +1,11 @@
+1.1.2 (2022-01-23)
+=======================
+
+### Bug Fixes
+
+- Fix a bug where Optuna Sweeper parses the override value incorrectly ([#1811](https://github.com/facebookresearch/hydra/issues/1811))
+
+
 1.1.1 (2021-09-01)
 =======================
 
