@@ -36,10 +36,16 @@ class ConfigStore(metaclass=Singleton):
 ### Example node values
 A few examples of supported node values parameters:
 ```python
+from dataclasses import dataclass
+
+from hydra.core.config_store import ConfigStore
+
 @dataclass
 class MySQLConfig:
     host: str = "localhost"
     port: int = 3306
+
+cs = ConfigStore.instance()
 
 # Using the type
 cs.store(name="config1", node=MySQLConfig)

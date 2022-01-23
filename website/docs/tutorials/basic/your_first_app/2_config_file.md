@@ -22,9 +22,15 @@ Specify the config name by passing a `config_name` parameter to the **@hydra.mai
 Note that you should omit the **.yaml** extension.
 Hydra also needs to know where to find your config. Specify the directory containing it relative to the application by passing `config_path`: 
 ```python title="my_app.py" {1}
+from omegaconf import DictConfig, OmegaConf
+import hydra
+
 @hydra.main(config_path=".", config_name="config")
 def my_app(cfg):
     print(OmegaConf.to_yaml(cfg))
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 `config.yaml` is loaded automatically when you run your application.
