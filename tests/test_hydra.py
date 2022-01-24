@@ -1609,6 +1609,6 @@ def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
 
     out, _ = run_python_script(cmd)
 
-    output_dir = os.path.join(str(tmpdir) + f"{__version__}")
-    assert Path(output_dir, "my_app.log").exists()
-    assert output_dir in out
+    expected_output_dir = os.path.join(str(tmpdir) + f"{__version__}")
+    assert Path(expected_output_dir, "my_app.log").exists()
+    assert expected_output_dir in out
