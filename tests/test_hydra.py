@@ -1594,13 +1594,13 @@ def test_hydra_verbose_1897(tmpdir: Path, multirun: bool) -> None:
 def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
     from hydra import __version__
 
-    output_dir = str(tmpdir) + "${val}"
+    output_dir = str(Path(tmpdir) / "${hydra:runtime.version}")
 
     cmd = [
         "tests/test_apps/hydra_resolver_in_output_dir/my_app.py",
         f"hydra.run.dir='{output_dir}'",
-        f"hydra.sweep.subdir='{output_dir}'",
-        "hydra.sweep.dir=.",
+        "hydra.sweep.subdir='${hydra:runtime.version}'",
+        f"hydra.sweep.dir={str(Path(tmpdir))}",
         "hydra.job.chdir=False",
     ]
 
@@ -1609,6 +1609,7 @@ def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
 
     out, _ = run_python_script(cmd)
 
-    expected_output_dir = os.path.join(str(tmpdir) + f"{__version__}")
-    assert Path(expected_output_dir, "my_app.log").exists()
+    expected_output_dir = str(Path(tmpdir) / f"{__version__}")
+    expected_log_file = Path(expected_output_dir) / "my_app.log"
+    assert expected_log_file.exists()
     assert expected_output_dir in out
