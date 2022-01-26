@@ -21,7 +21,6 @@ class Direction(Enum):
 @dataclass
 class SamplerConfig:
     _target_: str = MISSING
-    seed: Optional[int] = None
 
 
 @dataclass
@@ -31,7 +30,6 @@ class TPESamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.TPESampler"
-
     consider_prior: bool = True
     prior_weight: float = 1.0
     consider_magic_clip: bool = True
@@ -40,6 +38,7 @@ class TPESamplerConfig(SamplerConfig):
     n_ei_candidates: int = 24
     multivariate: bool = False
     warn_independent_sampling: bool = True
+    seed: Optional[int] = None
 
 
 @dataclass
@@ -49,6 +48,7 @@ class RandomSamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.RandomSampler"
+    seed: Optional[int] = None
 
 
 @dataclass
@@ -68,6 +68,7 @@ class CmaEsSamplerConfig(SamplerConfig):
     inc_popsize: int = 2
     use_separable_cma: bool = False
     source_trials: Optional[Any] = None
+    seed: Optional[int] = None
 
 
 @dataclass
@@ -83,6 +84,7 @@ class NSGAIISamplerConfig(SamplerConfig):
     crossover_prob: float = 0.9
     swapping_prob: float = 0.5
     constraints_func: Optional[Any] = None
+    seed: Optional[int] = None
 
 
 @dataclass
@@ -99,6 +101,18 @@ class MOTPESamplerConfig(SamplerConfig):
     consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ehvi_candidates: int = 24
+    seed: Optional[int] = None
+
+
+@dataclass
+class GridSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.GridSampler.html
+    """
+
+    _target_: str = "optuna.samplers.GridSampler"
+
+    search_space: Optional[Dict[str, Any]] = None
 
 
 @dataclass
@@ -202,3 +216,10 @@ ConfigStore.instance().store(
     node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )
+
+ConfigStore.instance().store(
+     group="hydra/sweeper/sampler",
+     name="grid",
+     node=GridSamplerConfig,
+     provider="optuna_sweeper",
+ )
