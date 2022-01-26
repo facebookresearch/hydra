@@ -147,7 +147,7 @@ class OptunaSweeperConf:
     # For example, you can use SQLite if you set 'sqlite:///example.db'
     # Please refer to the reference for further details
     # https://optuna.readthedocs.io/en/stable/reference/storages.html
-    storage: Optional[str] = None
+    storage: Optional[Any] = None
 
     # Name of study to persist optimization results
     study_name: Optional[str] = None

@@ -15,7 +15,7 @@ class OptunaSweeper(Sweeper):
         self,
         sampler: SamplerConfig,
         direction: Any,
-        storage: Optional[str],
+        storage: Optional[Any],
         study_name: Optional[str],
         n_trials: int,
         n_jobs: int,
