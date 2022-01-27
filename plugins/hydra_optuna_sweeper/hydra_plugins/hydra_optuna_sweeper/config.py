@@ -218,8 +218,8 @@ ConfigStore.instance().store(
 )
 
 ConfigStore.instance().store(
-     group="hydra/sweeper/sampler",
-     name="grid",
-     node=GridSamplerConfig,
-     provider="optuna_sweeper",
- )
+    group="hydra/sweeper/sampler",
+    name="grid",
+    node=GridSamplerConfig,
+    provider="optuna_sweeper",
+)
