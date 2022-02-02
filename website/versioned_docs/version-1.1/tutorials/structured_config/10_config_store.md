@@ -109,7 +109,7 @@ if __name__ == "__main__":
 ```
 </div>
 
-Awesome, now our application has access to both `db` config group options, let's run the application to verify:
+Now that our application has access to both `db` config group options, let's run the application to verify:
 
 <div className="row">
 
