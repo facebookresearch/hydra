@@ -33,8 +33,9 @@ Use the version switcher in the top bar to switch between documentation versions
 
 
 ## Quick start guide
-This guide will show you some of the most important features of Hydra.
-Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
+This guide will show you some of the most important features you get by writing your application as a Hydra app.
+If you only want to use Hydra for config composition, check out Hydra's [compose API](advanced/compose_api.md) for an alternative.
+Please also read the full [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
 ```commandline
