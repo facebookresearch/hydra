@@ -235,7 +235,7 @@ def lint(session):
 
     session.run("mypy", ".", "--strict", silent=SILENT)
     session.run("flake8", "--config", ".flake8")
-    session.run("yamllint", ".")
+    session.run("yamllint", "--strict", ".")
 
     example_dirs = [
         "examples/advanced/",
