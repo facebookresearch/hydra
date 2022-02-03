@@ -111,6 +111,3 @@ def initialize_config_dir(config_dir: str, job_name: str = "app") -> None:
     """
 ```
 
-For an idea about how to modify Hydra's search path when using `compose` in
-unit tests, see the page on
-[overriding the `hydra.searchpath` config](search_path.md#overriding-hydrasearchpath-config).
