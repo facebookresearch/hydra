@@ -13,7 +13,7 @@ def polynomial(cfg: DictConfig) -> Any:
     a = 100
     b = 10
     c = 1
-    result = a * (x ** 2) + b * y + c * z
+    result = a * (x**2) + b * y + c * z
     return result
 
 
