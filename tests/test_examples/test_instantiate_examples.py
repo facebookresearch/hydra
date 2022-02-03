@@ -55,7 +55,6 @@ def test_instantiate_object_partial(tmpdir: Path) -> None:
     cmd = [
         "examples/instantiate/partial/my_app.py",
         "hydra.run.dir=" + str(tmpdir),
-        "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
     assert result == "Model(Optimizer=Optimizer(algo=SGD,lr=0.1))"
