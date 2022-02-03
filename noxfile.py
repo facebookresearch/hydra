@@ -471,7 +471,7 @@ def test_jupyter_notebooks(session):
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
-
+    _upgrade_basic(session)
     session.install("jupyter", "nbval", "pyzmq")
     if platform.system() == "Windows":
         # Newer versions of pywin32 are causing CI issues on Windows.
