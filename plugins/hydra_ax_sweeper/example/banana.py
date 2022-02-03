@@ -14,7 +14,7 @@ def banana(cfg: DictConfig) -> Any:
     y = cfg.banana.y
     a = 1
     b = 100
-    z = (a - x) ** 2 + b * ((y - x ** 2) ** 2)
+    z = (a - x) ** 2 + b * ((y - x**2) ** 2)
     log.info(f"Banana_Function(x={x}, y={y})={z}")
     return z
 

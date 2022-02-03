@@ -30,7 +30,7 @@ def test_discovery() -> None:
 
 
 def quadratic(cfg: DictConfig) -> Any:
-    return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
+    return 100 * (cfg.quadratic.x**2) + 1 * cfg.quadratic.y
 
 
 @mark.parametrize(

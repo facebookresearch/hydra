@@ -112,7 +112,7 @@ def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -
 def test_tutorial_config_file_bad_key(
     tmpdir: Path, args: List[str], expected: Any
 ) -> None:
-    """ Similar to the previous test, but also tests exception values"""
+    """Similar to the previous test, but also tests exception values"""
 
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
