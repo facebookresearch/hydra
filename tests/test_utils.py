@@ -4,7 +4,7 @@ import os
 import re
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Optional
+from typing import Any, NoReturn, Optional
 from unittest.mock import patch
 
 from omegaconf import DictConfig, OmegaConf
@@ -216,25 +216,58 @@ class TestRunAndReport:
         stderr_output = mock_stderr.read()
         assert_regex_match(expected_traceback_regex, stderr_output)
 
+    def test_simplified_traceback_with_no_module(self) -> None:
+        """
+        Test that simplified traceback logic can succeed even if
+        `inspect.getmodule(frame)` returns `None` for one of
+        the frames in the stacktrace.
+        """
+        demo_func = self.DemoFunctions.run_job_wrapper
+        expected_traceback_regex = dedent(
+            r"""
+            Traceback \(most recent call last\):$
+              File "[^"]+", line \d+, in nested_error$
+                assert False, "nested_err"$
+            AssertionError: nested_err$
+            assert False$
+            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
+            """
+        )
+        mock_stderr = io.StringIO()
+        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+            # Patch `inspect.getmodule` so that it will return None. This simulates a
+            # situation where a python module cannot be identified from a traceback
+            # stack frame. This can occur when python extension modules or
+            # multithreading are involved.
+            with patch("inspect.getmodule", new=lambda *args: None):
+                run_and_report(demo_func)
+        mock_stderr.seek(0)
+        stderr_output = mock_stderr.read()
+        assert_regex_match(expected_traceback_regex, stderr_output)
+
     def test_simplified_traceback_failure(self) -> None:
         """
         Test that a warning is printed and the original exception is re-raised
         when an exception occurs during the simplified traceback logic.
         """
         demo_func = self.DemoFunctions.run_job_wrapper
+
+        def throws(*args: Any, **kwargs: Any) -> NoReturn:
+            assert False, "Error thrown"
+
         expected_traceback_regex = dedent(
             r"""
             An error occurred during Hydra's exception formatting:$
-            AssertionError\(.*\)$
+            AssertionError\(.*Error thrown.*\)$
             """
         )
         mock_stderr = io.StringIO()
         with raises(AssertionError, match="nested_err"), patch(
             "sys.stderr", new=mock_stderr
         ):
-            # patch `inspect.getmodule` so that an exception will occur in the
-            # simplified traceback logic:
-            with patch("inspect.getmodule", new=lambda *args: None):
+            # patch `traceback.print_exception` so that an exception will occur
+            # in the simplified traceback logic:
+            with patch("traceback.print_exception", new=throws):
                 run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
