@@ -25,4 +25,4 @@ repos:
     rev: v1.25.0
     hooks:
       - id: yamllint
-        args: [-c=.yamllint]
+        args: [-c=.yamllint, --strict]
