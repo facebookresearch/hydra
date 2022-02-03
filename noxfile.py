@@ -184,7 +184,6 @@ def select_plugins(session, directory: str) -> List[Plugin]:
 
 
 def install_dev_deps(session):
-    _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
 
 
@@ -204,6 +203,7 @@ def _isort_cmd():
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
+    _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
 
@@ -260,6 +260,7 @@ def lint(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
+    _upgrade_basic(session)
     lint_plugins_in_dir(session, "plugins")
 
 
@@ -312,8 +313,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_tools(session):
-    install_cmd = ["pip", "install"]
     _upgrade_basic(session)
+    install_cmd = ["pip", "install"]
     session.install("pytest")
     install_hydra(session, install_cmd)
 
@@ -371,6 +372,7 @@ def test_core(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_plugins(session):
+    _upgrade_basic(session)
     test_plugins_in_directory(
         session=session,
         install_cmd=INSTALL_COMMAND,
@@ -382,7 +384,6 @@ def test_plugins(session):
 def test_plugins_in_directory(
     session, install_cmd, directory: str, test_hydra_core: bool
 ):
-    _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
@@ -419,13 +420,13 @@ def test_plugins_in_directory(
 
 @nox.session(python="3.8")
 def coverage(session):
+    _upgrade_basic(session)
     coverage_env = {
         "COVERAGE_HOME": BASE,
         "COVERAGE_FILE": f"{BASE}/.coverage",
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    _upgrade_basic(session)
     session.install("coverage", "pytest")
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
@@ -467,6 +468,7 @@ def coverage(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_jupyter_notebooks(session):
+    _upgrade_basic(session)
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
         session.skip(
