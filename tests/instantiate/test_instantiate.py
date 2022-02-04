@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+
 import copy
 import pickle
 import re
@@ -111,6 +112,26 @@ def config(request: Any, src: Any) -> Any:
             {},
             partial(AClass, a=10, b=20, c=30),
             id="class+partial",
+        ),
+        param(
+            [
+                {
+                    "_target_": "tests.instantiate.AClass",
+                    "_partial_": True,
+                    "a": 10,
+                    "b": 20,
+                    "c": 30,
+                },
+                {
+                    "_target_": "tests.instantiate.BClass",
+                    "a": 50,
+                    "b": 60,
+                    "c": 70,
+                },
+            ],
+            {},
+            [partial(AClass, a=10, b=20, c=30), BClass(a=50, b=60, c=70)],
+            id="list_of_partial_class",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
@@ -316,6 +337,28 @@ def config(request: Any, src: Any) -> Any:
             KeywordsInParamsClass(target="foo", partial="bar"),
             id="keywords_in_params",
         ),
+        param([], {}, [], id="list_as_toplevel0"),
+        param(
+            [
+                {
+                    "_target_": "tests.instantiate.AClass",
+                    "a": 10,
+                    "b": 20,
+                    "c": 30,
+                    "d": 40,
+                },
+                {
+                    "_target_": "tests.instantiate.BClass",
+                    "a": 50,
+                    "b": 60,
+                    "c": 70,
+                    "d": 80,
+                },
+            ],
+            {},
+            [AClass(10, 20, 30, 40), BClass(50, 60, 70, 80)],
+            id="list_as_toplevel2",
+        ),
     ],
 )
 def test_class_instantiate(
@@ -327,10 +370,7 @@ def test_class_instantiate(
 ) -> Any:
     passthrough["_recursive_"] = recursive
     obj = instantiate_func(config, **passthrough)
-    if isinstance(expected, partial):
-        assert partial_equal(obj, expected)
-    else:
-        assert obj == expected
+    assert partial_equal(obj, expected)
 
 
 def test_none_cases(
@@ -582,6 +622,17 @@ def test_instantiate_target_raising_exception_taking_no_arguments(
         + r"ExceptionTakingNoArgument\('Err message',?\)",
     ):
         instantiate_func({}, _target_=_target_)
+
+
+def test_toplevel_list_partial_not_allowed(instantiate_func: Any) -> None:
+    config = [{"_target_": "tests.instantiate.ClassA", "a": 10, "b": 20, "c": 30}]
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            "The _partial_ keyword is not compatible with top-level list instantiation"
+        ),
+    ):
+        instantiate_func(config, _partial_=True)
 
 
 @mark.parametrize("is_partial", [True, False])
