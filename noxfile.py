@@ -79,6 +79,10 @@ def find_dirs(path: str):
             yield fullname
 
 
+def _install_pytest(session):
+    session.install("pytest<7.0.0")
+
+
 def install_hydra(session, cmd):
     # needed for build
     session.install("read-version", silent=SILENT)
@@ -314,8 +318,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
 @nox.session(python=PYTHON_VERSIONS)
 def test_tools(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     install_cmd = ["pip", "install"]
-    session.install("pytest")
     install_hydra(session, install_cmd)
 
     tools = [
@@ -345,8 +349,8 @@ def _get_standalone_apps_dirs():
 @nox.session(python=PYTHON_VERSIONS)
 def test_core(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
 
     if not SKIP_CORE_TESTS:
         run_pytest(session, "build_helpers", "tests", *session.posargs)
@@ -373,6 +377,7 @@ def test_core(session):
 @nox.session(python=PYTHON_VERSIONS)
 def test_plugins(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     test_plugins_in_directory(
         session=session,
         install_cmd=INSTALL_COMMAND,
@@ -384,7 +389,6 @@ def test_plugins(session):
 def test_plugins_in_directory(
     session, install_cmd, directory: str, test_hydra_core: bool
 ):
-    session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
     for plugin in selected_plugin:
@@ -421,13 +425,14 @@ def test_plugins_in_directory(
 @nox.session(python="3.8")
 def coverage(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     coverage_env = {
         "COVERAGE_HOME": BASE,
         "COVERAGE_FILE": f"{BASE}/.coverage",
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    session.install("coverage", "pytest")
+    session.install("coverage")
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
@@ -469,6 +474,7 @@ def coverage(session):
 @nox.session(python=PYTHON_VERSIONS)
 def test_jupyter_notebooks(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
         session.skip(
@@ -499,7 +505,7 @@ def test_jupyter_notebooks(session):
 @nox.session(python=PYTHON_VERSIONS)
 def benchmark(session):
     _upgrade_basic(session)
+    _install_pytest(session)
     install_dev_deps(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
     run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)

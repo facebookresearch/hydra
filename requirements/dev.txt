@@ -10,7 +10,7 @@ mypy==0.790
 nox
 packaging
 pre-commit
-pytest
+pytest<7.0.0
 pytest-benchmark
 pytest-snail
 read-version

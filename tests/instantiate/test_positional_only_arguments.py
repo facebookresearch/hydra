@@ -8,7 +8,7 @@ from hydra.utils import instantiate
 
 if sys.version_info < (3, 8):
     skip(
-        reason="Positional-only syntax is only supported in Python 3.8 or newer",
+        msg="Positional-only syntax is only supported in Python 3.8 or newer",
         allow_module_level=True,
     )
 
