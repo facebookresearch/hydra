@@ -214,7 +214,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         )
     else:
         raise InstantiationException(
-            "Top level config has to be OmegaConf DictConfig/ListConfig, plain dict/list, or a Structured Config class or instance"
+            "Top level config has to be OmegaConf DictConfig/ListConfig, "
+            + "plain dict/list, or a Structured Config class or instance."
         )
 
 
