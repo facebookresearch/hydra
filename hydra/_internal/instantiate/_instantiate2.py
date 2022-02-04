@@ -4,7 +4,7 @@ import copy
 import functools
 import sys
 from enum import Enum
-from typing import Any, Callable, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -82,7 +82,7 @@ def _convert_target_to_string(t: Any) -> Any:
         return t
 
 
-def _prepare_input_dict(d: Any) -> Any:
+def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
     res: Any
     if isinstance(d, dict):
         res = {}
@@ -90,13 +90,13 @@ def _prepare_input_dict(d: Any) -> Any:
             if k == "_target_":
                 v = _convert_target_to_string(d["_target_"])
             elif isinstance(v, (dict, list)):
-                v = _prepare_input_dict(v)
+                v = _prepare_input_dict_or_list(v)
             res[k] = v
     elif isinstance(d, list):
         res = []
         for v in d:
             if isinstance(v, (list, dict)):
-                v = _prepare_input_dict(v)
+                v = _prepare_input_dict_or_list(v)
             res.append(v)
     else:
         assert False
@@ -159,13 +159,13 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
         )
 
-    if isinstance(config, dict):
-        config = _prepare_input_dict(config)
+    if isinstance(config, (dict, list)):
+        config = _prepare_input_dict_or_list(config)
 
-    kwargs = _prepare_input_dict(kwargs)
+    kwargs = _prepare_input_dict_or_list(kwargs)
 
     # Structured Config always converted first to OmegaConf
-    if is_structured_config(config) or isinstance(config, dict):
+    if is_structured_config(config) or isinstance(config, (dict, list)):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
@@ -189,9 +189,33 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         return instantiate_node(
             config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
         )
+    elif OmegaConf.is_list(config):
+        # Finalize config (convert targets to strings, merge with kwargs)
+        config_copy = copy.deepcopy(config)
+        config_copy._set_flag(
+            flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
+        )
+        config_copy._set_parent(config._get_parent())
+        config = config_copy
+
+        OmegaConf.resolve(config)
+
+        _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
+        _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
+        _partial_ = kwargs.pop(_Keys.PARTIAL, False)
+
+        if _partial_:
+            raise InstantiationException(
+                "The _partial_ keyword is not compatible with top-level list instantiation"
+            )
+
+        return instantiate_node(
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+        )
     else:
         raise InstantiationException(
-            "Top level config has to be OmegaConf DictConfig, plain dict, or a Structured Config class or instance"
+            "Top level config has to be OmegaConf DictConfig/ListConfig, "
+            + "plain dict/list, or a Structured Config class or instance."
         )
 
 
