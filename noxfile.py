@@ -475,7 +475,9 @@ def test_jupyter_notebooks(session):
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
 
-    session.install("jupyter", "nbval", "pyzmq")
+    session.install(
+        "jupyter", "nbval", "pyzmq", "pytest<7.0.0"
+    )  # pytest pinned due to https://github.com/computationalmodelling/nbval/issues/180
     if platform.system() == "Windows":
         # Newer versions of pywin32 are causing CI issues on Windows.
         # see https://github.com/mhammond/pywin32/issues/1709
