@@ -181,10 +181,8 @@ class Plugins(metaclass=Singleton):
                     if module_name.startswith("_") and not module_name.startswith("__"):
                         continue
                     import_time = timer()
-                    m = importer.find_module(modname)  # type: ignore
-                    assert m is not None
                     with warnings.catch_warnings(record=True) as recorded_warnings:
-                        loaded_mod = m.load_module(modname)
+                        loaded_mod = importlib.import_module(modname)
                     import_time = timer() - import_time
                     if len(recorded_warnings) > 0:
                         sys.stderr.write(
