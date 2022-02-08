@@ -1,1 +1,1 @@
-Add the ability to sample values from the log scale.
+Support sampling in log scale.
