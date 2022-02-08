@@ -55,6 +55,7 @@ cpus_per_gpu: null
 gpus_per_task: null
 mem_per_gpu: null
 mem_per_cpu: null
+account: null
 signal_delay_s: 120
 max_num_timeout: 0
 additional_parameters: {}
