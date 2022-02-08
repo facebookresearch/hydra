@@ -9,6 +9,8 @@ quadratic:
   y: ???
 
 hydra:
+  job:
+    chdir: False
   sweeper:
     ax_config:
       client:
