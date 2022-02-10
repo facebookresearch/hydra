@@ -210,11 +210,12 @@ class OptunaSweeperImpl(Sweeper):
             params = dict(trial.params)
             params.update(fixed_params)
 
-            def create_override(name, value):
+            def create_override(name: str, value: Any) -> str:
                 override = f"{name}={value}"
                 if name in fixed_params:
                     return override
 
+                assert self.config is not None
                 if OmegaConf.select(self.config, name) is not None:
                     return override
 
