@@ -22,6 +22,15 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
 from hydra.utils import instantiate
 
+PLUGIN_TYPES: List[Type[Plugin]] = [
+    Plugin,
+    ConfigSource,
+    CompletionPlugin,
+    Launcher,
+    Sweeper,
+    SearchPathPlugin,
+]
+
 
 @dataclass
 class ScanStats:
@@ -54,19 +63,32 @@ class Plugins(metaclass=Singleton):
         except ImportError:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
-        self.plugin_type_to_subclass_list, self.stats = self._scan_all_plugins(
-            modules=top_level
-        )
-        self.class_name_to_class = {}
-        for plugin_type, plugins in self.plugin_type_to_subclass_list.items():
-            for clazz in plugins:
-                name = f"{clazz.__module__}.{clazz.__name__}"
-                self.class_name_to_class[name] = clazz
 
-        # Register config sources
-        for source in self.plugin_type_to_subclass_list[ConfigSource]:
-            assert issubclass(source, ConfigSource)
-            SourcesRegistry.instance().register(source)
+        self.plugin_type_to_subclass_list = defaultdict(list)
+        self.class_name_to_class = {}
+
+        scanned_plugins, self.stats = self._scan_all_plugins(modules=top_level)
+        for clazz in scanned_plugins:
+            self._register(clazz)
+
+    def register(self, clazz: Type[Plugin]) -> None:
+        """
+        Call Plugins.instance().register(MyPlugin) to manually register a plugin class.
+        """
+        if not _is_concrete_plugin_type(clazz):
+            raise ValueError("Not a valid Hydra Plugin")
+        self._register(clazz)
+
+    def _register(self, clazz: Type[Plugin]) -> None:
+        assert _is_concrete_plugin_type(clazz)
+        for plugin_type in PLUGIN_TYPES:
+            if issubclass(clazz, plugin_type):
+                if clazz not in self.plugin_type_to_subclass_list[plugin_type]:
+                    self.plugin_type_to_subclass_list[plugin_type].append(clazz)
+        name = f"{clazz.__module__}.{clazz.__name__}"
+        self.class_name_to_class[name] = clazz
+        if issubclass(clazz, ConfigSource):
+            SourcesRegistry.instance().register(clazz)
 
     def _instantiate(self, config: DictConfig) -> Plugin:
         from hydra._internal import utils as internal_utils
@@ -140,21 +162,13 @@ class Plugins(metaclass=Singleton):
     @staticmethod
     def _scan_all_plugins(
         modules: List[Any],
-    ) -> Tuple[Dict[Type[Plugin], List[Type[Plugin]]], ScanStats]:
+    ) -> Tuple[List[Type[Plugin]], ScanStats]:
 
         stats = ScanStats()
         stats.total_time = timer()
 
-        ret: Dict[Type[Plugin], List[Type[Plugin]]] = defaultdict(list)
+        scanned_plugins: List[Type[Plugin]] = []
 
-        plugin_types: List[Type[Plugin]] = [
-            Plugin,
-            ConfigSource,
-            CompletionPlugin,
-            Launcher,
-            Sweeper,
-            SearchPathPlugin,
-        ]
         for mdl in modules:
             for importer, modname, ispkg in pkgutil.walk_packages(
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
@@ -193,14 +207,8 @@ class Plugins(metaclass=Singleton):
 
                     if loaded_mod is not None:
                         for name, obj in inspect.getmembers(loaded_mod):
-                            if (
-                                inspect.isclass(obj)
-                                and issubclass(obj, Plugin)
-                                and not inspect.isabstract(obj)
-                            ):
-                                for plugin_type in plugin_types:
-                                    if issubclass(obj, plugin_type):
-                                        ret[plugin_type].append(obj)
+                            if _is_concrete_plugin_type(obj):
+                                scanned_plugins.append(obj)
                 except ImportError as e:
                     warnings.warn(
                         message=f"\n"
@@ -212,7 +220,7 @@ class Plugins(metaclass=Singleton):
                     )
 
         stats.total_time = timer() - stats.total_time
-        return ret, stats
+        return scanned_plugins, stats
 
     def get_stats(self) -> Optional[ScanStats]:
         return self.stats
@@ -242,3 +250,9 @@ class Plugins(metaclass=Singleton):
             raise ValueError(
                 f"Plugins is now a Singleton. usage: Plugins.instance().{inspect.stack()[1][3]}(...)"
             )
+
+
+def _is_concrete_plugin_type(obj: Any) -> bool:
+    return (
+        inspect.isclass(obj) and issubclass(obj, Plugin) and not inspect.isabstract(obj)
+    )
