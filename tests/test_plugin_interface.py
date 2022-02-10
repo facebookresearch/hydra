@@ -1,9 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Type
+from typing import Any, List, Type
 
 from pytest import mark
 
+from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
+from hydra.core.singleton import Singleton
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
@@ -31,3 +33,22 @@ def test_discover(plugin_type: Type[Plugin], expected: List[str]) -> None:
     expected_classes = [get_class(c) for c in expected]
     for ex in expected_classes:
         assert ex in plugins
+
+
+def test_automatic_plugin_subclass_discovery(hydra_restore_singletons: Any) -> None:
+    # hack to deinitialize the Plugins singleton:
+    Singleton._instances.pop(Plugins, None)
+
+    class MyPlugin(SearchPathPlugin):
+        def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
+            ...
+
+    class MyPluginSubclass(MyPlugin):
+        ...
+
+    assert MyPlugin in Plugins.instance().discover(Plugin)
+    assert MyPlugin in Plugins.instance().discover(SearchPathPlugin)
+    assert MyPlugin not in Plugins.instance().discover(Launcher)
+    assert MyPluginSubclass in Plugins.instance().discover(Plugin)
+    assert MyPluginSubclass in Plugins.instance().discover(SearchPathPlugin)
+    assert MyPluginSubclass not in Plugins.instance().discover(Launcher)

@@ -7,7 +7,7 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from timeit import default_timer as timer
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Dict, List, Optional, Set, Tuple, Type
 
 from omegaconf import DictConfig
 
@@ -210,6 +210,21 @@ class Plugins(metaclass=Singleton):
                         f"\t\t{type(e).__name__} : {e}",
                         category=UserWarning,
                     )
+
+        def all_subclasses(cls: Type[Plugin]) -> Set[Type[Plugin]]:
+            return set(cls.__subclasses__()).union(
+                [s for c in cls.__subclasses__() for s in all_subclasses(c)]
+            )
+
+        for cls in all_subclasses(Plugin):
+            if (
+                inspect.isclass(cls)
+                and issubclass(cls, Plugin)
+                and not inspect.isabstract(cls)
+            ):
+                for plugin_type in plugin_types:
+                    if issubclass(cls, plugin_type) and cls not in ret[plugin_type]:
+                        ret[plugin_type].append(cls)
 
         stats.total_time = timer() - stats.total_time
         return ret, stats
