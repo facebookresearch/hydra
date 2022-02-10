@@ -209,7 +209,22 @@ class OptunaSweeperImpl(Sweeper):
             )
             params = dict(trial.params)
             params.update(fixed_params)
-            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+
+            def create_override(name, value):
+                override = f"{name}={value}"
+                if name in fixed_params:
+                    return override
+
+                if OmegaConf.select(self.config, name) is not None:
+                    return override
+
+                # If the added a trial parameter using custom search space that is not part of the config yet,
+                # we have to add it as a new config value
+                return f"+{override}"
+
+            overrides.append(
+                tuple(create_override(name, val) for name, val in params.items())
+            )
         return overrides
 
     def sweep(self, arguments: List[str]) -> None:
