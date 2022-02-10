@@ -10,7 +10,7 @@ def multi_dimensional_sphere(cfg: DictConfig) -> float:
     x: float = cfg.x
     y: float = cfg.y
     z: float = cfg.z
-    return w ** 2 + x ** 2 + y ** 2 + z ** 2
+    return w**2 + x**2 + y**2 + z**2
 
 
 def configure(cfg: DictConfig, trial: Trial) -> None:
