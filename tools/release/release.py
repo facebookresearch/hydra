@@ -137,7 +137,7 @@ def _next_version(version: str) -> str:
     elif cur.is_postrelease:
         assert cur.post is not None
         num = cur.post + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{num}"
     else:
         micro = cur.micro + 1
         new_version = f"{cur.major}.{cur.minor}.{micro}"
