@@ -194,7 +194,7 @@ def test_generated_code_with_default_flags(
             {"param": "str"},
             [],
             {},
-            UnionArg(param="str"),
+            UnionArg(param="str"),  # type: ignore
             id="UnionArg:illegal_but_ok_arg",
         ),
         param(
@@ -280,7 +280,8 @@ def test_instantiate_classes(
     full_class = f"{MODULE_NAME}.generated.{classname}Conf"
     schema = OmegaConf.structured(get_class(full_class))
     cfg = OmegaConf.merge(schema, params)
-    obj = instantiate(config=cfg, *args, **kwargs)
+    kwargs["config"] = cfg
+    obj = instantiate(*args, **kwargs)
     assert obj == expected
 
 

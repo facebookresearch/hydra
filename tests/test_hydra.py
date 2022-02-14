@@ -1031,14 +1031,14 @@ def test_hydra_output_dir(
     "directory,file,module, error",
     [
         (
-            "tests/test_apps/run_as_module/1",
+            "tests/test_apps/run_as_module_1",
             "my_app.py",
             "my_app",
             "Primary config module is empty",
         ),
-        ("tests/test_apps/run_as_module/2", "my_app.py", "my_app", None),
-        ("tests/test_apps/run_as_module/3", "module/my_app.py", "module.my_app", None),
-        ("tests/test_apps/run_as_module/4", "module/my_app.py", "module.my_app", None),
+        ("tests/test_apps/run_as_module_2", "my_app.py", "my_app", None),
+        ("tests/test_apps/run_as_module_3", "module/my_app.py", "module.my_app", None),
+        ("tests/test_apps/run_as_module_4", "module/my_app.py", "module.my_app", None),
     ],
 )
 def test_module_run(
@@ -1285,7 +1285,7 @@ def test_config_dir_argument(
 
 
 def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
-    monkeypatch.chdir("tests/test_apps/schema-overrides-hydra")
+    monkeypatch.chdir("tests/test_apps/schema_overrides_hydra")
     cmd = [
         "my_app.py",
         "hydra.run.dir=" + str(tmpdir),

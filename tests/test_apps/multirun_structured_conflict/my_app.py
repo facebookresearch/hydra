@@ -17,7 +17,7 @@ config_store.store(group="test", name="default", node=TestConfig)
 
 
 @hydra.main(config_path=".", config_name="config")
-def run(config: DictConfig):
+def run(config: DictConfig) -> None:
     print(config.test.param)
 
 

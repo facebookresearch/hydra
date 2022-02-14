@@ -2,6 +2,8 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from omegaconf import DictConfig
+
 import hydra
 from hydra.core.config_store import ConfigStore
 
@@ -16,7 +18,7 @@ cs.store(name="config", node=Config)
 
 
 @hydra.main(config_path=None, config_name="config")
-def main(cfg):
+def main(cfg: DictConfig) -> None:
     print(cfg)
 
 
