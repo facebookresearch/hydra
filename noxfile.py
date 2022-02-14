@@ -233,11 +233,23 @@ def lint(session):
 
     session.run(*isort, silent=SILENT)
 
-    session.run("mypy", ".", "--strict", silent=SILENT)
+    session.run(
+        "mypy",
+        ".",
+        "--strict",
+        "--install-types",
+        "--non-interactive",
+        "--exclude=^examples/",
+        "--exclude=^tests/standalone_apps/",
+        "--exclude=^tests/test_apps/",
+        "--exclude=^tools/",
+        "--exclude=^plugins/",
+        silent=SILENT,
+    )
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", "--strict", ".")
 
-    example_dirs = [
+    mypy_check_subdirs = [
         "examples/advanced",
         "examples/configure_hydra",
         "examples/patterns",
@@ -245,11 +257,31 @@ def lint(session):
         "examples/tutorials/basic/your_first_hydra_app",
         "examples/tutorials/basic/running_your_hydra_app",
         "examples/tutorials/structured_configs",
+        "tests/standalone_apps",
+        "tests/test_apps",
     ]
-    for edir in example_dirs:
-        dirs = find_dirs(path=edir)
+    for sdir in mypy_check_subdirs:
+        dirs = find_dirs(path=sdir)
         for d in dirs:
-            session.run("mypy", d, "--strict", silent=SILENT)
+            session.run(
+                "mypy",
+                d,
+                "--strict",
+                "--install-types",
+                "--non-interactive",
+                silent=SILENT,
+            )
+
+    for sdir in ["tools"]:  # no --strict flag for tools
+        dirs = find_dirs(path=sdir)
+        for d in dirs:
+            session.run(
+                "mypy",
+                d,
+                "--install-types",
+                "--non-interactive",
+                silent=SILENT,
+            )
 
     # lint example plugins
     lint_plugins_in_dir(session=session, directory="examples/plugins")
@@ -295,6 +327,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
         session.run(
             "mypy",
             "--strict",
+            "--install-types",
+            "--non-interactive",
             f"{path}/hydra_plugins",
             "--config-file",
             f"{BASE}/.mypy.ini",
@@ -303,6 +337,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
         session.run(
             "mypy",
             "--strict",
+            "--install-types",
+            "--non-interactive",
             "--namespace-packages",
             "--config-file",
             f"{BASE}/.mypy.ini",
