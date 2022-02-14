@@ -238,13 +238,13 @@ def lint(session):
     session.run("yamllint", "--strict", ".")
 
     example_dirs = [
-        "examples/advanced/",
+        "examples/advanced",
         "examples/configure_hydra",
         "examples/patterns",
         "examples/instantiate",
         "examples/tutorials/basic/your_first_hydra_app",
         "examples/tutorials/basic/running_your_hydra_app",
-        "examples/tutorials/structured_configs/",
+        "examples/tutorials/structured_configs",
     ]
     for edir in example_dirs:
         dirs = find_dirs(path=edir)
