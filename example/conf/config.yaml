@@ -1,0 +1,15 @@
+defaults:
+  - override hydra/sweeper: wandb
+  - override hydra/launcher: ray
+hydra:
+  sweeper:
+    wandb_sweep_config:
+      name: "test"
+      metric:
+        name: "val_loss"
+        goal: "minimize"
+      method: "bayes"
+      num_agents: 2
+
+x: 1
+y: 1 
