@@ -1,14 +1,11 @@
+import os
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from functools import partial
-import os
 from pathlib import Path
 from typing import Any, List, Optional
 
-from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
-from hydra_plugins.hydra_optuna_sweeper.config import Direction
 import optuna
-from optuna.samplers import RandomSampler
-
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -27,9 +24,12 @@ from optuna.distributions import (
     LogUniformDistribution,
     UniformDistribution,
 )
+from optuna.samplers import RandomSampler
 from pytest import mark, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
+from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
+from hydra_plugins.hydra_optuna_sweeper.config import Direction
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()

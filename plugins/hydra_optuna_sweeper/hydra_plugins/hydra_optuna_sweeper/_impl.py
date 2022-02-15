@@ -1,12 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import sys
+import warnings
 from textwrap import dedent
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
-import warnings
 
 import optuna
-
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
@@ -138,13 +137,13 @@ class OptunaSweeperImpl(Sweeper):
         self.params = params
         self.job_idx: int = 0
 
-    def _process_searchspace_config(self):
+    def _process_searchspace_config(self) -> None:
         url = (
             "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
         )
         if self.params is None and self.search_space is None:
-            self.params = {}
-            self.search_space = {}
+            self.params = OmegaConf.create({})
+            self.search_space = OmegaConf.create({})
         elif self.search_space is not None:
             if self.params is not None:
                 warnings.warn(
@@ -152,7 +151,7 @@ class OptunaSweeperImpl(Sweeper):
                     "\nHydra will use hydra.sweeper.params for defining search space."
                     f"\n{url}"
                 )
-                self.search_space = {}
+                self.search_space = OmegaConf.create({})
             else:
                 deprecation_warning(
                     message=dedent(
@@ -163,15 +162,15 @@ class OptunaSweeperImpl(Sweeper):
                         """
                     ),
                 )
-                self.params = {}
+                self.params = OmegaConf.create({})
                 search_space = self.search_space
                 assert isinstance(self.search_space, DictConfig)
-                self.search_space = {
+                self.search_space = {  # type: ignore
                     str(x): create_optuna_distribution_from_config(y)
                     for x, y in search_space.items()
                 }
         else:
-            self.search_space = {}
+            self.search_space = OmegaConf.create({})
 
     def setup(
         self,
@@ -190,6 +189,7 @@ class OptunaSweeperImpl(Sweeper):
 
     def _parse_sweeper_params_config(self) -> List[str]:
         params_conf = []
+        assert self.params is not None
         for k, v in self.params.items():
             params_conf.append(f"{k}={v}")
         return params_conf
@@ -207,7 +207,7 @@ class OptunaSweeperImpl(Sweeper):
         parser = OverridesParser.create()
         parsed = parser.parse_overrides(params_conf)
 
-        search_space = dict(self.search_space)
+        search_space = dict(self.search_space)  # type: ignore
         fixed_params = dict()
         for override in parsed:
             value = create_optuna_distribution_from_override(override)
@@ -252,7 +252,7 @@ class OptunaSweeperImpl(Sweeper):
             trials = [study.ask() for _ in range(batch_size)]
             overrides = []
             for trial in trials:
-                for param_name, distribution in search_space.items():
+                for param_name, distribution in search_space.items():  # type: ignore
                     trial._suggest(param_name, distribution)
 
                 params = dict(trial.params)
