@@ -1,3 +1,5 @@
 ### Installing
 
-```$ pip install git+https://github.com/captain-pool/hydra-wandb-sweeper.git ```
+```bash
+$ pip install git+https://github.com/captain-pool/hydra-wandb-sweeper.git
+```
