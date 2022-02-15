@@ -1,9 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import sys
+from textwrap import dedent
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
+import warnings
 
 import optuna
+
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -86,6 +90,12 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
                 ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
                 choices.append(x)
             return CategoricalDistribution(choices)
+        if (
+            isinstance(value.start, float)
+            or isinstance(value.stop, float)
+            or isinstance(value.step, float)
+        ):
+            return DiscreteUniformDistribution(value.start, value.stop, value.step)
         return IntUniformDistribution(
             int(value.start), int(value.stop), step=int(value.step)
         )
@@ -116,6 +126,7 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
+        params: Optional[DictConfig],
     ) -> None:
         self.sampler = sampler
         self.direction = direction
@@ -123,14 +134,44 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
-        self.search_space = {}
-        if search_space:
-            assert isinstance(search_space, DictConfig)
-            self.search_space = {
-                str(x): create_optuna_distribution_from_config(y)
-                for x, y in search_space.items()
-            }
+        self.search_space = search_space
+        self.params = params
         self.job_idx: int = 0
+
+    def _process_searchspace_config(self):
+        url = (
+            "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
+        )
+        if self.params is None and self.search_space is None:
+            self.params = {}
+            self.search_space = {}
+        elif self.search_space is not None:
+            if self.params is not None:
+                warnings.warn(
+                    "Both hydra.sweeper.params and hydra.sweeper.search_space are configured."
+                    "\nHydra will use hydra.sweeper.params for defining search space."
+                    f"\n{url}"
+                )
+                self.search_space = {}
+            else:
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                        `hydra.sweeper.searchspace` is deprecated and will be removed in the next major release.
+                        Please configure with `hydra.sweeper.params`.
+                        {url}
+                        """
+                    ),
+                )
+                self.params = {}
+                search_space = self.search_space
+                assert isinstance(self.search_space, DictConfig)
+                self.search_space = {
+                    str(x): create_optuna_distribution_from_config(y)
+                    for x, y in search_space.items()
+                }
+        else:
+            self.search_space = {}
 
     def setup(
         self,
@@ -147,14 +188,24 @@ class OptunaSweeperImpl(Sweeper):
         )
         self.sweep_dir = config.hydra.sweep.dir
 
+    def _parse_sweeper_params_config(self) -> List[str]:
+        params_conf = []
+        for k, v in self.params.items():
+            params_conf.append(f"{k}={v}")
+        return params_conf
+
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
         assert self.hydra_context is not None
         assert self.job_idx is not None
 
+        self._process_searchspace_config()
+        params_conf = self._parse_sweeper_params_config()
+        params_conf.extend(arguments)
+
         parser = OverridesParser.create()
-        parsed = parser.parse_overrides(arguments)
+        parsed = parser.parse_overrides(params_conf)
 
         search_space = dict(self.search_space)
         fixed_params = dict()
