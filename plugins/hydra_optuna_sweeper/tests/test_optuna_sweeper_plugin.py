@@ -222,7 +222,7 @@ def _dominates(values_x: List[float], values_y: List[float]) -> bool:
             {},
             None,
             True,
-            r"`hydra.sweeper.searchspace` is deprecated and will be removed in the next major release.*",
+            r"`hydra.sweeper.search_space` is deprecated and will be removed in the next major release.*",
         ),
         (None, {}, False, None),
     ],

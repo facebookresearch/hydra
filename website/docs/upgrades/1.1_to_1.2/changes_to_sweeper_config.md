@@ -9,7 +9,7 @@ space will be defined under this config node.
 
 
 ### Optuna 
-For migration, move search space definition from `hydra.sweeper.searchspace` to `hydra.sweeper.params`. Change the search space
+For migration, move search space definition from `hydra.sweeper.search_space` to `hydra.sweeper.params`. Change the search space
 definition to be consistent with how you'd override a value from commandline. For example:
 
 <div className="row">

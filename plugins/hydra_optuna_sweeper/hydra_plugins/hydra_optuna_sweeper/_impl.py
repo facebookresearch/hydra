@@ -156,7 +156,7 @@ class OptunaSweeperImpl(Sweeper):
                 deprecation_warning(
                     message=dedent(
                         f"""\
-                        `hydra.sweeper.searchspace` is deprecated and will be removed in the next major release.
+                        `hydra.sweeper.search_space` is deprecated and will be removed in the next major release.
                         Please configure with `hydra.sweeper.params`.
                         {url}
                         """
