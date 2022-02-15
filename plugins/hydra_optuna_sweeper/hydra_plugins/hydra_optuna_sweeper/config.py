@@ -158,7 +158,9 @@ class OptunaSweeperConf:
     # Number of parallel workers
     n_jobs: int = 2
 
-    search_space: Dict[str, Any] = field(default_factory=dict)
+    search_space: Optional[Dict[str, Any]] = None
+
+    params: Optional[Dict[str, str]] = None
 
 
 ConfigStore.instance().store(

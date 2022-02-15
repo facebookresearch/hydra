@@ -150,6 +150,7 @@ module.exports = {
                 label: '1.1 to 1.2',
                 items: [
                     'upgrades/1.1_to_1.2/changes_to_job_working_dir',
+                    'upgrades/1.1_to_1.2/changes_to_sweeper_config',
                 ],
             },
             {
