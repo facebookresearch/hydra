@@ -9,7 +9,7 @@ from hydra.core import config_store
 class WandbConfig:
     name: str
     method: str
-    count: typing.Optional[int] = 1
+    count: typing.Optional[int] = None
     metric: typing.Optional[omegaconf.DictConfig] = omegaconf.DictConfig({})
     num_agents: typing.Optional[int] = 1
     sweep_id: typing.Optional[str] = None
