@@ -56,3 +56,60 @@ hydra:
 </div>
 
 Check out [Optuna Sweeper](/plugins/optuna_sweeper.md) for more info.
+
+### Nevergrad 
+Search space definition is moved from `hydra.sweeper.parametrization` to `hydra.sweeper.params`. 
+Change the search space definition to be consistent with how you'd override a value from commandline. 
+Nevergrad's Scalar supports a few unique way of defining `Scalar` (for example, a log scaled interval without upper bound).
+In this case, you can pass in your paremeters as a dict. 
+
+For example:
+
+<div className="row">
+<div className="col col--6">
+
+```yaml title="Hydra 1.1"
+hydra:
+  sweeper:
+    parametrization:
+      db:
+        - mnist
+        - cifar
+      lr:
+        init: 0.02
+        step: 2.0
+        log: true
+      dropout:
+        lower: 0.0
+        upper: 1.0
+      batch_size:
+        lower: 4
+        upper: 16
+        integer: true
+```
+</div>
+<div className="col  col--6">
+
+```bash title="Hydra 1.2"
+hydra:
+  sweeper:
+    params:
+      db: choice(mnist, cifar)
+      lr: {init: 0.02,step: 2.0,log: true}
+      dropout: interval(0, 1)
+      batch_size: range(4, 16)
+
+
+
+
+
+
+
+
+
+
+```
+</div>
+</div>
+
+Check out [Nevergrad Sweeper](/plugins/nevergrad_sweeper.md) for more info.

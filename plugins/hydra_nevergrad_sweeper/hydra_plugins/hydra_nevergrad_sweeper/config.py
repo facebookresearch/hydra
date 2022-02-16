@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
 from hydra.core.config_store import ConfigStore
@@ -81,7 +81,9 @@ class NevergradSweeperConf:
     # - as a string, like commandline arguments
     # - as a list, for categorical variables
     # - as a full scalar specification
-    parametrization: Dict[str, Any] = field(default_factory=dict)
+    parametrization: Optional[Dict[str, Any]] = None
+
+    params: Optional[Dict[str, str]] = None
 
 
 ConfigStore.instance().store(
