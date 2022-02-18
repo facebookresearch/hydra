@@ -51,12 +51,24 @@ function VideoContainer() {
     <div className="container text--center margin-bottom--xl margin-top--lg">
       <div className="row">
         <div className="col">
-          <h2>Check it out in the intro video</h2>
+          <h2>Hydra overview; 1 minute video</h2>
             <iframe
               width="560"
               height="315"
               src="https://www.youtube.com/embed/Slc3gRQpnBI"
               title="Explain Like I'm 5: Hydra"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+        </div>
+        <div className="col">
+          <h2>Hydra concepts; 30 minute video</h2>
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/tEsPyYnzt8s"
+              title="Hydra concepts explained"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
