@@ -6,7 +6,7 @@ import React from "react";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-import {useActiveVersion} from "@theme/hooks/useDocs";
+import {useActiveVersion} from "@docusaurus/plugin-content-docs/client";
 
 function createGitHubUrl(to) {
     const activeVersion = useActiveVersion();
