@@ -9,7 +9,7 @@ from hydra.core import plugins
 from hydra.core.override_parser import overrides_parser, types
 from hydra.plugins import sweeper
 
-from . import config
+from hydra_plugins.hydra_wandb_sweeper import config
 
 SUPPORTED_DISTRIBUTIONS = {
     "constant": ["value"],
@@ -89,10 +89,7 @@ class WandbSweeper(sweeper.Sweeper):
         self.wandb_sweep_config = wandb_sweep_config
         self._sweep_id = None
 
-        if not self.wandb_sweep_config.count:
-            raise ValueError(
-                "It is mandatory to have an agent run for a fixed number of times"
-            )
+        self.agent_run_count = self.wandb_sweep_config.get("count", None)
 
         self.job_idx = itertools.count(0)
 
@@ -102,7 +99,7 @@ class WandbSweeper(sweeper.Sweeper):
         self._task_function = functools.partial(
             self.wandb_task,
             task_function=task_function,
-            count=self.wandb_sweep_config.count,
+            count=self.agent_run_count,
         )
         self.hydra_context = hydra_context
 
@@ -157,14 +154,14 @@ class WandbSweeper(sweeper.Sweeper):
 
         self.launcher.launch(overrides, initial_job_idx=next(self.job_idx))
 
-    def wandb_task(self, config, task_function, count):
+    def wandb_task(self, base_config, task_function, count):
         def run():
             with wandb.init() as run:
                 run_id = run.id
-                config = run.config
-
-            hydra_conf = omegaconf.DictConfig(config.as_dict())
-            task_function(hydra_conf, run_id)
+                override_config = run.config
+            override_config = omegaconf.DictConfig(override_config.as_dict())
+            config = omegaconf.OmegaConf.merge(base_config, override_config)
+            task_function(config, run_id)
 
         if not self.sweep_id:
             raise ValueError(f"sweep_id cannot be {self.sweep_id}")
