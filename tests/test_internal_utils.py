@@ -1,10 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Any
+from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param
 
 from hydra._internal import utils
+from tests import data
 
 
 @mark.parametrize(
@@ -32,3 +33,23 @@ def test_get_column_widths(matrix: Any, expected: Any) -> None:
 )
 def test_get_class_name(config: DictConfig, expected: Any) -> None:
     assert utils._get_cls_name(config) == expected
+
+
+@mark.parametrize(
+    "task_function, expected_file, expected_module",
+    [
+        param(data.foo, None, "tests.data", id="function"),
+        param(data.foo_main_module, data.__file__, None, id="function-main-module"),
+        param(data.Bar, None, "tests.data", id="class"),
+        param(data.bar_instance, None, "tests.data", id="class_inst"),
+        param(data.bar_instance_main_module, None, None, id="class_inst-main-module"),
+    ],
+)
+def test_detect_calling_file_or_module_from_task_function(
+    task_function: Callable[..., None],
+    expected_file: Optional[str],
+    expected_module: Optional[str],
+) -> None:
+    file, module = utils.detect_calling_file_or_module_from_task_function(task_function)
+    assert file == expected_file
+    assert module == expected_module
