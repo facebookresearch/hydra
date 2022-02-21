@@ -1,0 +1,1 @@
+It is now possible to pass other callable objects (besides functions) to `hydra.main`.
