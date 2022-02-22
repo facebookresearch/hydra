@@ -146,8 +146,8 @@ There is a whole lot more to Hydra. Read the [tutorial](tutorial/1_simple_cli_ap
 
 ## Other stuff
 ### Community
-Ask questions in the chat or StackOverflow (Use the tag #fb-hydra):
-* [Zulip Chat](https://hydra-framework.zulipchat.com)
+Ask questions on github or StackOverflow (Use the tag #fb-hydra):
+* [github](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
 
 Follow Hydra on Twitter and Facebook:
