@@ -10,7 +10,7 @@ from .config import OrionClientConf, WorkerConf, AlgorithmConf, StorageConf
 
 
 class OrionSweeper(Sweeper):
-    """Class to interface with Nevergrad"""
+    """Class to interface with Orion"""
 
     def __init__(
         self,

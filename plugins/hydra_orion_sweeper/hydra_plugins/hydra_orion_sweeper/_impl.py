@@ -52,7 +52,7 @@ def to_objective(value):
     if isinstance(value, dict):
         return [value]
 
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
         return value
 
     raise InvalidResult(
@@ -297,7 +297,7 @@ class OrionSweeperImpl(Sweeper):
             if self.client.is_broken:
                 if len(failures) == 0:
                     log.error(
-                        "Experiment has reached is maximum amout of broken trials"
+                        "Experiment has reached is maximum amount of broken trials"
                     )
                     break
 
