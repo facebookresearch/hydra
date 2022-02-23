@@ -313,7 +313,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
 def test_tools(session):
     install_cmd = ["pip", "install"]
     _upgrade_basic(session)
-    session.install("pytest")
+    session.install("pytest<7")
     install_hydra(session, install_cmd)
 
     tools = [
@@ -425,7 +425,7 @@ def coverage(session):
     }
 
     _upgrade_basic(session)
-    session.install("coverage", "pytest")
+    session.install("coverage", "pytest<7")
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
@@ -500,5 +500,5 @@ def benchmark(session):
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
+    session.install("pytest<7")
     run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)
