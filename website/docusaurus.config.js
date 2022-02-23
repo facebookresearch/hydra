@@ -110,7 +110,7 @@ module.exports = {
                 alt: 'Facebook Open Source Logo',
                 src: 'https://docusaurus.io/img/oss_logo.png',
             },
-            copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
+            copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc`,
         },
     },
     presets: [
