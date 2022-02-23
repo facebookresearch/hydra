@@ -344,7 +344,7 @@ def _get_standalone_apps_dirs():
 def test_core(session):
     _upgrade_basic(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
+    session.install("pytest<7")
 
     if not SKIP_CORE_TESTS:
         run_pytest(session, "build_helpers", "tests", *session.posargs)
@@ -382,7 +382,7 @@ def test_plugins_in_directory(
     session, install_cmd, directory: str, test_hydra_core: bool
 ):
     _upgrade_basic(session)
-    session.install("pytest")
+    session.install("pytest<7")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
     for plugin in selected_plugin:
@@ -472,7 +472,7 @@ def test_jupyter_notebooks(session):
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
     _upgrade_basic(session)
-    session.install("jupyter", "nbval", "pyzmq")
+    session.install("jupyter", "nbval", "pyzmq", "pytest<7")
     if platform.system() == "Windows":
         # Newer versions of pywin32 are causing CI issues on Windows.
         # see https://github.com/mhammond/pywin32/issues/1709
