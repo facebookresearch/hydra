@@ -10,6 +10,7 @@ hydra:
                 goal: minimize
             method: bayes
             num_agents: 2
+            preemptible: true
 
 x: 1
 y: 1

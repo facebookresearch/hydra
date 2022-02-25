@@ -16,6 +16,7 @@ class WandbConfig:
     entity: typing.Optional[str] = None
     project: typing.Optional[str] = None
     early_terminate: typing.Optional[omegaconf.DictConfig] = omegaconf.DictConfig({})
+    preemptible: typing.Optional[bool] = False
 
 
 @dataclasses.dataclass
