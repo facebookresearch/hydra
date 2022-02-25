@@ -88,8 +88,7 @@ class WandbSweeper(sweeper.Sweeper):
     def __init__(self, wandb_sweep_config: omegaconf.DictConfig) -> None:
         self.wandb_sweep_config = wandb_sweep_config
         self._sweep_id = None
-
-        self.agent_run_count = self.wandb_sweep_config.get("count", None)
+        self.agent_run_count = self.wandb_sweep_config["count"]
 
         self.job_idx = itertools.count(0)
 
@@ -129,7 +128,9 @@ class WandbSweeper(sweeper.Sweeper):
         return self._sweep_id
 
     def sweep(self, arguments):
-        parser = overrides_parser.OverridesParser.create()
+        parser = overrides_parser.OverridesParser.create(
+            config_loader=self.hydra_context.config_loader
+        )
         parsed = parser.parse_overrides(arguments)
         sweep_id = self.wandb_sweep_config["sweep_id"]
 

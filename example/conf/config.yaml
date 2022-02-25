@@ -1,7 +1,6 @@
 ---
 defaults:
     - override hydra/sweeper: wandb
-    - override hydra/launcher: ray
 hydra:
     sweeper:
         wandb_sweep_config:
