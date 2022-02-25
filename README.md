@@ -1,4 +1,4 @@
-## WandB sweeper integration with Hydra (Work in progress)
+## WandB sweeper integration with Hydra
 
 ### Installing
 
