@@ -58,7 +58,7 @@ $ python3 /path/to/trainer/file hydra/sweeper=wandb model.batch_size=8,10,12,14
 Equivalently, the `choice()` command can also be expliclty used:
 ```
 $python3 /path/to/trainer/file hydra/sweep=wandb model.batch_size="choice(8,10,12,14)".
-
+```
 
 
 Categorical sweep can also be done using hydra's [`range()`](https://hydra.cc/docs/advanced/override_grammar/extended/#range-sweep) sweep. The previous task can be equivalently achieved as:
