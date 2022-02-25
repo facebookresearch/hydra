@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra.core.default_element import (
     ConfigDefault,
     DefaultsTreeNode,
@@ -711,6 +712,159 @@ def test_two_group_defaults_different_pkgs(
     "config_name,overrides,expected",
     [
         param(
+            "override_hydra2",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="override_hydra2"),
+                ],
+            ),
+            id="override_hydra2",
+        ),
+        param(
+            "override_hydra2",
+            ["hydra/help=custom2"],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom2"),
+                            GroupDefault(group="output", value="default"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="override_hydra2"),
+                ],
+            ),
+            id="override_hydra2+external",
+        ),
+        param(
+            "override_hydra3",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="custom1"),
+                            GroupDefault(group="output", value="disabled"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="override_hydra3"),
+                ],
+            ),
+            id="override_hydra3+external",
+        ),
+        param(
+            "override_hydra_wrong_order",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                    In override_hydra_wrong_order: Override 'hydra/help : custom1' is defined before 'group1: file1'"""
+                    )
+                ),
+            ),
+            id="override_hydra_wrong_order",
+        ),
+    ],
+)
+def test_hydra_overrides_from_primary_config(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "legacy_override_hydra",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Multiple values for hydra/help. To override a value use 'override hydra/help: custom1'"""
+                    )
+                ),
+            ),
+            id="legacy_override_hydra-error",
+        ),
+        param(
+            "legacy_override_hydra2",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Multiple values for hydra/output. To override a value use 'override hydra/output: disabled'"""
+                    )
+                ),
+            ),
+            id="legacy_override_hydra2-error",
+        ),
+        param(
+            "legacy_override_hydra_wrong_order",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Multiple values for hydra/help. To override a value use 'override hydra/help: custom1'"""
+                    )
+                ),
+            ),
+            id="legacy_override_hydra_wrong_order",
+        ),
+    ],
+)
+@mark.parametrize("version_base", ["1.2", None])
+def test_legacy_override_hydra_version_base_1_2(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+    version_base: Optional[str],
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase(version_base)
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "legacy_override_hydra",
             [],
             DefaultsTreeNode(
@@ -733,28 +887,6 @@ def test_two_group_defaults_different_pkgs(
             id="legacy_override_hydra",
         ),
         param(
-            "legacy_override_hydra",
-            ["hydra/help=custom2"],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom2"),
-                            GroupDefault(group="output", value="default"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
-                ],
-            ),
-            id="legacy_override_hydra+external",
-        ),
-        param(
             "legacy_override_hydra2",
             [],
             DefaultsTreeNode(
@@ -774,7 +906,7 @@ def test_two_group_defaults_different_pkgs(
                     ),
                 ],
             ),
-            id="legacy_override_hydra+external",
+            id="legacy_override_hydra2",
         ),
         param(
             "legacy_override_hydra_wrong_order",
@@ -803,11 +935,13 @@ def test_two_group_defaults_different_pkgs(
         ),
     ],
 )
-def test_legacy_hydra_overrides_from_primary_config(
+def test_legacy_override_hydra_version_base_1_1(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
+    hydra_restore_singletons: Any,
 ) -> None:
+    version.setbase("1.1")
     msg = dedent(
         """\
         Invalid overriding of hydra/help:
@@ -959,7 +1093,7 @@ def test_group_default_with_appended_experiment(
     "config_name,overrides,expected",
     [
         param(
-            "override_hydra",
+            "override_hydra1",
             ["+experiment=override_config_group"],
             DefaultsTreeNode(
                 node=VirtualRoot(),
@@ -973,7 +1107,7 @@ def test_group_default_with_appended_experiment(
                         ],
                     ),
                     DefaultsTreeNode(
-                        node=ConfigDefault(path="override_hydra"),
+                        node=ConfigDefault(path="override_hydra1"),
                         children=[
                             GroupDefault(group="group1", value="file2"),
                             ConfigDefault(path="_self_"),
@@ -993,6 +1127,54 @@ def test_experiment_where_primary_config_has_override(
     overrides: List[str],
     expected: DefaultsTreeNode,
 ) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "override_hydra4",
+            [],
+            DefaultsTreeNode(
+                node=VirtualRoot(),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="hydra/config"),
+                        children=[
+                            GroupDefault(group="help", value="default"),
+                            GroupDefault(group="output", value="disabled"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="override_hydra4"),
+                        children=[
+                            GroupDefault(group="group1", value="file1"),
+                            GroupDefault(group="hydra/run", value="custom1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="override_hydra4",
+        ),
+    ],
+)
+@mark.parametrize("version_base", ["1.2", None])
+def test_use_of_custom_subgroup_of_hydra(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+    version_base: Optional[str],
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase(version_base)
     _test_defaults_tree_impl(
         config_name=config_name,
         input_overrides=overrides,

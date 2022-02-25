@@ -1,0 +1,1 @@
+For version_base >= 1.2, support for the legacy hydra override syntax has been removed (see [this deprecation notice](https://hydra.cc/docs/upgrades/1.0_to_1.1/defaults_list_override/)).
