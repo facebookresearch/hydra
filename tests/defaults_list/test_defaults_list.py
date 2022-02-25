@@ -1223,29 +1223,42 @@ def test_overriding_package_header_from_defaults_list(
     "config_name,overrides,expected",
     [
         param(
-            "empty",
+            "legacy_override_hydra",
             [],
-            [
-                ResultDefault(
-                    config_path="hydra/help/default",
-                    parent="hydra/config",
-                    package="hydra.help",
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Multiple values for hydra/help. To override a value use 'override hydra/help: custom1'"""
+                    )
                 ),
-                ResultDefault(
-                    config_path="hydra/output/default",
-                    parent="hydra/config",
-                    package="hydra",
-                ),
-                ResultDefault(
-                    config_path="hydra/config",
-                    parent="<root>",
-                    package="hydra",
-                    is_self=True,
-                ),
-                ResultDefault(config_path="empty", parent="<root>", package=""),
-            ],
-            id="just_hydra_config",
+            ),
+            id="override_hydra",
         ),
+    ],
+)
+@mark.parametrize("version_base", ["1.2", None])
+def test_legacy_override_hydra_version_base_1_2(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    recwarn: Any,  # Testing deprecated behavior
+    version_base: Optional[str],
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase(version_base)
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
         param(
             "legacy_override_hydra",
             [],
@@ -1276,6 +1289,82 @@ def test_overriding_package_header_from_defaults_list(
                 ),
             ],
             id="override_hydra",
+        ),
+    ],
+)
+def test_legacy_override_hydra_version_base_1_1(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    recwarn: Any,  # Testing deprecated behavior
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase("1.1")
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "empty",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/help/default",
+                    parent="hydra/config",
+                    package="hydra.help",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    parent="hydra/config",
+                    package="hydra",
+                ),
+                ResultDefault(
+                    config_path="hydra/config",
+                    parent="<root>",
+                    package="hydra",
+                    is_self=True,
+                ),
+                ResultDefault(config_path="empty", parent="<root>", package=""),
+            ],
+            id="just_hydra_config",
+        ),
+        param(
+            "override_hydra2",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/help/custom1",
+                    parent="hydra/config",
+                    package="hydra.help",
+                    is_self=False,
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    parent="hydra/config",
+                    package="hydra",
+                    is_self=False,
+                ),
+                ResultDefault(
+                    config_path="hydra/config",
+                    parent="<root>",
+                    package="hydra",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="override_hydra2",
+                    parent="<root>",
+                    package="",
+                    primary=True,
+                ),
+            ],
+            id="override_hydra2",
         ),
     ],
 )

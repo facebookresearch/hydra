@@ -9,7 +9,7 @@ from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
 from omegaconf import DictConfig, OmegaConf
 
-from hydra import MissingConfigException
+from hydra import MissingConfigException, version
 from hydra._internal.config_repository import IConfigRepository
 from hydra.core.config_store import ConfigStore
 from hydra.core.default_element import (
@@ -381,7 +381,10 @@ def _update_overrides(
         legacy_hydra_override = False
         if isinstance(d, GroupDefault):
             assert d.group is not None
-            legacy_hydra_override = not d.is_override() and d.group.startswith("hydra/")
+            if not version.base_at_least("1.2"):
+                legacy_hydra_override = not d.is_override() and d.group.startswith(
+                    "hydra/"
+                )
 
         if seen_override and not (
             d.is_override() or d.is_external_append() or legacy_hydra_override
@@ -400,7 +403,6 @@ def _update_overrides(
 
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
-                # DEPRECATED: remove in 1.2
                 d.override = True
                 url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override"
                 msg = dedent(
