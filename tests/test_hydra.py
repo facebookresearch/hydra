@@ -525,6 +525,34 @@ def test_cfg_resolve_interpolation(
 
 
 @mark.parametrize(
+    "script,expected",
+    [
+        param(
+            "tests/test_apps/passes_callable_class_to_hydra_main/my_app.py",
+            dedent(
+                """\
+                123
+                my_app
+                """
+            ),
+            id="passes_callable_class_to_hydra_main",
+        ),
+    ],
+)
+def test_pass_callable_class_to_hydra_main(
+    tmpdir: Path, script: str, expected: str
+) -> None:
+    cmd = [
+        script,
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ]
+
+    result, _err = run_python_script(cmd)
+    assert_text_same(result, expected)
+
+
+@mark.parametrize(
     "other_flag",
     [None, "--run", "--multirun", "--info", "--shell-completion", "--hydra-help"],
 )

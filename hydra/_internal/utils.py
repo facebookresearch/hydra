@@ -35,7 +35,7 @@ def _get_module_name_override() -> Optional[str]:
 
 def detect_calling_file_or_module_from_task_function(
     task_function: Any,
-) -> Tuple[Optional[str], Optional[str], str]:
+) -> Tuple[Optional[str], Optional[str]]:
 
     mdl = task_function.__module__
     override = _get_module_name_override()
@@ -48,12 +48,13 @@ def detect_calling_file_or_module_from_task_function(
         calling_file = None
         calling_module = mdl
     else:
-        calling_file = task_function.__code__.co_filename
+        try:
+            calling_file = inspect.getfile(task_function)
+        except TypeError:
+            calling_file = None
         calling_module = None
 
-    task_name = detect_task_name(calling_file, mdl)
-
-    return calling_file, calling_module, task_name
+    return calling_file, calling_module
 
 
 def detect_calling_file_or_module_from_stack_frame(
@@ -300,6 +301,7 @@ def _run_hydra(
     task_function: TaskFunction,
     config_path: Optional[str],
     config_name: Optional[str],
+    caller_stack_depth: int = 2,
 ) -> None:
 
     from hydra.core.global_hydra import GlobalHydra
@@ -316,8 +318,13 @@ def _run_hydra(
     (
         calling_file,
         calling_module,
-        task_name,
     ) = detect_calling_file_or_module_from_task_function(task_function)
+    if calling_file is None and calling_module is None:
+        (
+            calling_file,
+            calling_module,
+        ) = detect_calling_file_or_module_from_stack_frame(caller_stack_depth + 1)
+    task_name = detect_task_name(calling_file, calling_module)
 
     validate_config_path(config_path)
 
