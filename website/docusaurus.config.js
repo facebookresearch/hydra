@@ -26,9 +26,6 @@ module.exports = {
         },
     },    
     themeConfig: {
-        googleAnalytics: {
-            trackingID: 'UA-149862507-1',
-        },
         algolia: {
             apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
             indexName: 'hydra',
@@ -122,6 +119,9 @@ module.exports = {
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                     editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
+                },
+                googleAnalytics: {
+                    trackingID: 'UA-149862507-1',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
