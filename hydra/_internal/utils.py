@@ -570,16 +570,11 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     from types import ModuleType
 
     parts = [part for part in path.split(".") if part]
-    for n in reversed(range(1, len(parts) + 1)):
-        mod = ".".join(parts[:n])
-        try:
-            obj = import_module(mod)
-        except Exception as exc_import:
-            if n == 1:
-                raise ImportError(f"Error loading module '{path}'") from exc_import
-            continue
-        break
-    for m in range(n, len(parts)):
+    try:
+        obj = import_module(parts[0])
+    except Exception as exc_import:
+        raise ImportError(f"Error loading module '{path}'") from exc_import
+    for m in range(1, len(parts)):
         part = parts[m]
         try:
             obj = getattr(obj, part)
@@ -587,7 +582,8 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
             if isinstance(obj, ModuleType):
                 mod = ".".join(parts[: m + 1])
                 try:
-                    import_module(mod)
+                    obj = import_module(mod)
+                    continue
                 except ModuleNotFoundError:
                     pass
                 except Exception as exc_import:

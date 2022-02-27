@@ -8,6 +8,9 @@ from typing import Any, Dict, List, NoReturn, Optional, Tuple
 from omegaconf import MISSING, DictConfig, ListConfig
 
 from hydra.types import TargetConf
+from tests.instantiate.module_shadowed_by_function import a_function
+
+module_shadowed_by_function = a_function
 
 
 def _convert_type(obj: Any) -> Any:
