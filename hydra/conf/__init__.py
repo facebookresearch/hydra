@@ -96,6 +96,7 @@ class ConfigSourceInfo:
 @dataclass
 class RuntimeConf:
     version: str = MISSING
+    version_base: str = MISSING
     cwd: str = MISSING
     config_sources: List[ConfigSourceInfo] = MISSING
     output_dir: str = MISSING

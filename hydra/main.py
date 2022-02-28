@@ -5,6 +5,7 @@ from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig
 
+from . import version
 from ._internal.deprecation_warning import deprecation_warning
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
@@ -15,12 +16,15 @@ _UNSPECIFIED_: Any = object()
 def main(
     config_path: Optional[str] = _UNSPECIFIED_,
     config_name: Optional[str] = None,
+    version_base: Optional[str] = _UNSPECIFIED_,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: The config path, a directory relative to the declaring python file.
                         If config_path is None no directory is added to the Config search path.
     :param config_name: The name of the config (usually the file name without the .yaml extension)
     """
+
+    version.setbase(version_base)
 
     # DEPRECATED: remove in 1.2
     # in 1.2, the default config_path should be changed to None
