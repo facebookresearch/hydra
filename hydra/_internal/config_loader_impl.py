@@ -224,7 +224,7 @@ class ConfigLoaderImpl(ConfigLoader):
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
     ) -> DictConfig:
-        from hydra import __version__
+        from hydra import __version__, version
 
         self.ensure_main_config_source_available()
         caching_repo = CachingConfigRepository(self.repository)
@@ -277,6 +277,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 cfg.hydra.job.env_set[key] = os.environ[key]
 
         cfg.hydra.runtime.version = __version__
+        cfg.hydra.runtime.version_base = version.getbase()
         cfg.hydra.runtime.cwd = os.getcwd()
 
         cfg.hydra.runtime.config_sources = [
