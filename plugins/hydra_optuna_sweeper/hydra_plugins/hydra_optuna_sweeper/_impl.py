@@ -187,7 +187,7 @@ class OptunaSweeperImpl(Sweeper):
                 search_space[override.get_key_element()] = value
             else:
                 fixed_params[override.get_key_element()] = value
-
+        
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
             if param_name in search_space:
@@ -261,10 +261,10 @@ class OptunaSweeperImpl(Sweeper):
         params = dict(trial.params)
         params.update(fixed_params)
         params.update(create_optuna_trial_override(trial, dir=self.sweep_dir))
-
+            
         overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
 
-        returns = self.launcher.launch(overrides, initial_job_idx=job_id)[0]
+        returns = self.launcher.launch(overrides, initial_job_idx=job_id)
 
         values: Optional[List[float]] = None
         state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
@@ -272,8 +272,7 @@ class OptunaSweeperImpl(Sweeper):
         try:
             try:
                 values = [float(v) for v in (
-                    [returns.return_value] if len(directions=1)
-                    else returns.return_value
+                    [returns.return_value] if len(directions) == 1 else returns.return_value
                 )]
             except (ValueError, TypeError):
                 raise ValueError(
@@ -288,10 +287,8 @@ class OptunaSweeperImpl(Sweeper):
                     f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                 )
         except optuna.exceptions.TrialPruned:
-            log.info(f"Trial {job_id} pruned")
             state = optuna.trial.TrialState.PRUNED
         except Exception as e:
             state = optuna.trial.TrialState.FAIL
-            log.info(f"Trial {job_id} failed, reason: {e}", exc_info=1)
         finally:
             study.tell(trial=trial, state=state, values=values)
