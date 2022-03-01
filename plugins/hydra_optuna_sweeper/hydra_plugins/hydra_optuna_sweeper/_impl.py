@@ -1,12 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import sys
-import pickle
-from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
 
-from joblib import Parallel, delayed
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
@@ -19,7 +15,6 @@ from hydra.core.override_parser.types import (
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
-from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -110,19 +105,6 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
-def create_optuna_trial_override(trial, dir: str):
-    with NamedTemporaryFile(delete=False, dir=dir, prefix='optuna_trial_') as f:
-        pickle.dump(trial, f)
-        fname = f.name
-
-    return {'+trial': '{'
-        '_target_:pickle.load,'
-        'file:{'
-            '_target_:io.open,'
-            'mode:rb,'
-            f'file:{fname}'
-        '}}'
-    }
 
 class OptunaSweeperImpl(Sweeper):
     def __init__(
@@ -134,7 +116,6 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
-        pruner: Optional[Any],
     ) -> None:
         self.sampler = sampler
         self.direction = direction
@@ -142,7 +123,6 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
-        self.pruner = pruner if pruner is not None else optuna.pruners.NopPruner()
         self.search_space = {}
         if search_space:
             assert isinstance(search_space, DictConfig)
@@ -165,10 +145,7 @@ class OptunaSweeperImpl(Sweeper):
         self.launcher = Plugins.instance().instantiate_launcher(
             config=config, hydra_context=hydra_context, task_function=task_function
         )
-
-        sweep_dir = Path(config.hydra.sweep.dir).absolute()
-        sweep_dir.mkdir(parents=True, exist_ok=True)
-        self.sweep_dir = str(sweep_dir)
+        self.sweep_dir = config.hydra.sweep.dir
 
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
@@ -187,17 +164,21 @@ class OptunaSweeperImpl(Sweeper):
                 search_space[override.get_key_element()] = value
             else:
                 fixed_params[override.get_key_element()] = value
-        
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
             if param_name in search_space:
                 del search_space[param_name]
 
-        directions: List[str] = ([
-            d.name if isinstance(d, Direction) else d for d in (
-                self.direction if isinstance(self.direction, MutableSequence) else [self.direction]
-            )
-        ])
+        directions: List[str]
+        if isinstance(self.direction, MutableSequence):
+            directions = [
+                d.name if isinstance(d, Direction) else d for d in self.direction
+            ]
+        else:
+            if isinstance(self.direction, str):
+                directions = [self.direction]
+            else:
+                directions = [self.direction.name]
 
         study = optuna.create_study(
             study_name=self.study_name,
@@ -205,23 +186,59 @@ class OptunaSweeperImpl(Sweeper):
             sampler=self.sampler,
             directions=directions,
             load_if_exists=True,
-            pruner=self.pruner
         )
-
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.storage}")
         log.info(f"Sampler: {type(self.sampler).__name__}")
         log.info(f"Directions: {directions}")
 
-        Parallel(n_jobs=self.n_jobs, prefer='threads', require='sharedmem')(
-            delayed(self.__run_trial)(
-                study=study,
-                search_space=search_space,
-                fixed_params=fixed_params,
-                directions=directions,
-                job_id=i
-            ) for i in range(self.n_trials)
-        )
+        batch_size = self.n_jobs
+        n_trials_to_go = self.n_trials
+
+        while n_trials_to_go > 0:
+            batch_size = min(n_trials_to_go, batch_size)
+
+            trials = [study.ask() for _ in range(batch_size)]
+            overrides = []
+            for trial in trials:
+                for param_name, distribution in search_space.items():
+                    trial._suggest(param_name, distribution)
+
+                params = dict(trial.params)
+                params.update(fixed_params)
+                overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+
+            returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
+            self.job_idx += len(returns)
+            for trial, ret in zip(trials, returns):
+                values: Optional[List[float]] = None
+                state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
+                try:
+                    try:
+                        values = [float(v) for v in (
+                            [ret.return_values] if len(directions) == 1 else ret.return_values
+                        )]
+                    except (ValueError, TypeError):
+                        raise ValueError(
+                            "Return value(s) must be float-castable,"
+                            " and a sequence if multiple objectives are used."
+                            f" Got '{ret.return_value}'."
+                        ).with_traceback(sys.exc_info()[2])
+
+                    if len(values) != len(directions):
+                        raise ValueError(
+                            "The number of the values and the number of the objectives are"
+                            f" mismatched. Expect {len(directions)}, but actually {len(values)}."
+                        )
+
+                    study.tell(trial=trial, state=state, values=values)
+
+                except Exception as e:
+                    state = optuna.trial.TrialState.FAIL
+                    study.tell(trial=trial, state=state, values=values)
+                    raise e
+
+            n_trials_to_go -= batch_size
 
         results_to_serialize: Dict[str, Any]
         if len(directions) < 2:
@@ -249,46 +266,3 @@ class OptunaSweeperImpl(Sweeper):
             OmegaConf.create(results_to_serialize),
             f"{self.config.hydra.sweep.dir}/optimization_results.yaml",
         )
-
-    def __run_trial(self, study, search_space, fixed_params, directions, job_id):
-        self.job_idx += 1
-
-        trial = study.ask()
-        overrides = []
-        for param_name, distribution in search_space.items():
-            trial._suggest(param_name, distribution)
-
-        params = dict(trial.params)
-        params.update(fixed_params)
-        params.update(create_optuna_trial_override(trial, dir=self.sweep_dir))
-            
-        overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
-
-        returns = self.launcher.launch(overrides, initial_job_idx=job_id)
-
-        values: Optional[List[float]] = None
-        state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
-
-        try:
-            try:
-                values = [float(v) for v in (
-                    [returns.return_value] if len(directions) == 1 else returns.return_value
-                )]
-            except (ValueError, TypeError):
-                raise ValueError(
-                    "Return value(s) must be float-castable,"
-                    " and a sequence if multiple objectives are used."
-                    f" Got '{returns.return_value}'."
-                ).with_traceback(sys.exc_info()[2])
-
-            if len(values) != len(directions):
-                raise ValueError(
-                    "The number of the values and the number of the objectives are"
-                    f" mismatched. Expect {len(directions)}, but actually {len(values)}."
-                )
-        except optuna.exceptions.TrialPruned:
-            state = optuna.trial.TrialState.PRUNED
-        except Exception as e:
-            state = optuna.trial.TrialState.FAIL
-        finally:
-            study.tell(trial=trial, state=state, values=values)

@@ -25,16 +25,6 @@ class SamplerConfig:
 
 
 @dataclass
-class HyperbandPrunerConfig:
-    _target_: str = "optuna.pruners.HyperbandPruner"
-
-    min_resource: int = 1
-    max_resource: str = 'auto' # Union[str, int]
-    reduction_factor: int = 3
-    bootstrap_count: int = 0
-
-
-@dataclass
 class TPESamplerConfig(SamplerConfig):
     """
     https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.TPESampler.html
@@ -170,8 +160,6 @@ class OptunaSweeperConf:
 
     search_space: Dict[str, Any] = field(default_factory=dict)
 
-    pruner: Optional[Dict[str, Any]] = None
-
 
 ConfigStore.instance().store(
     group="hydra/sweeper",
@@ -212,12 +200,5 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="motpe",
     node=MOTPESamplerConfig,
-    provider="optuna_sweeper",
-)
-
-ConfigStore.instance().store(
-    group="hydra/sweeper/pruner",
-    name="hyperband",
-    node=HyperbandPrunerConfig,
     provider="optuna_sweeper",
 )
