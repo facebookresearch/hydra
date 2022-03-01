@@ -214,25 +214,27 @@ class OptunaSweeperImpl(Sweeper):
                 values: Optional[List[float]] = None
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
                 try:
-                    try:
-                        values = [float(v) for v in (
-                            [ret.return_values] if len(directions) == 1 else ret.return_values
-                        )]
-                    except (ValueError, TypeError):
-                        raise ValueError(
-                            "Return value(s) must be float-castable,"
-                            " and a sequence if multiple objectives are used."
-                            f" Got '{ret.return_value}'."
-                        ).with_traceback(sys.exc_info()[2])
-
-                    if len(values) != len(directions):
-                        raise ValueError(
-                            "The number of the values and the number of the objectives are"
-                            f" mismatched. Expect {len(directions)}, but actually {len(values)}."
-                        )
-
+                    if len(directions) == 1:
+                        try:
+                            values = [float(ret.return_value)]
+                        except (ValueError, TypeError):
+                            raise ValueError(
+                                f"Return value must be float-castable. Got '{ret.return_value}'."
+                            ).with_traceback(sys.exc_info()[2])
+                    else:
+                        try:
+                            values = [float(v) for v in ret.return_value]
+                        except (ValueError, TypeError):
+                            raise ValueError(
+                                "Return value must be a list or tuple of float-castable values."
+                                f" Got '{ret.return_value}'."
+                            ).with_traceback(sys.exc_info()[2])
+                        if len(values) != len(directions):
+                            raise ValueError(
+                                "The number of the values and the number of the objectives are"
+                                f" mismatched. Expect {len(directions)}, but actually {len(values)}."
+                            )
                     study.tell(trial=trial, state=state, values=values)
-
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
                     study.tell(trial=trial, state=state, values=values)
