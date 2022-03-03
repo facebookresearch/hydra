@@ -25,9 +25,6 @@
   <a href="https://lgtm.com/projects/g/facebookresearch/hydra/context:python">
     <img src="https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18" alt="Language grade: Python" />
   </a>
-  <a href="https://hydra-framework.zulipchat.com">
-    <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="zulip" />
-  </a>
   <p align="center">
     <i>A framework for elegantly configuring complex applications.</i>
   </p>
