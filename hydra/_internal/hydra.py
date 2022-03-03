@@ -5,6 +5,7 @@ import string
 import sys
 from argparse import ArgumentParser
 from collections import defaultdict
+from pathlib import Path
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
 from omegaconf import Container, DictConfig, OmegaConf, flag_override
@@ -43,7 +44,7 @@ class Hydra:
         cls: Type["Hydra"],
         calling_file: Optional[str],
         calling_module: Optional[str],
-        config_path: Optional[str],
+        config_path: Optional[Union[str, Path]],
         job_name: str,
     ) -> "Hydra":
         config_search_path = create_automatic_config_search_path(

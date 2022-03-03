@@ -275,7 +275,7 @@ class JobRuntime(metaclass=Singleton):
         self.conf[key] = value
 
 
-def validate_config_path(config_path: Optional[str]) -> None:
+def validate_config_path(config_path: Optional[Union[str, Path]]) -> None:
     if config_path is not None:
         split_file = splitext(config_path)
         if split_file[1] in (".yaml", ".yml"):

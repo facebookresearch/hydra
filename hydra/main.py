@@ -1,7 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
+from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from omegaconf import DictConfig
 
@@ -13,7 +14,7 @@ _UNSPECIFIED_: Any = object()
 
 
 def main(
-    config_path: Optional[str] = _UNSPECIFIED_,
+    config_path: Optional[Union[str, Path]] = _UNSPECIFIED_,
     config_name: Optional[str] = None,
 ) -> Callable[[TaskFunction], Any]:
     """

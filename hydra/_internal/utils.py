@@ -6,6 +6,7 @@ import os
 import sys
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
+from pathlib import Path
 from traceback import print_exc, print_exception
 from types import FrameType, TracebackType
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
@@ -116,7 +117,7 @@ def detect_task_name(calling_file: Optional[str], calling_module: Optional[str])
 def compute_search_path_dir(
     calling_file: Optional[str],
     calling_module: Optional[str],
-    config_path: Optional[str],
+    config_path: Optional[Union[str, Path]],
 ) -> Optional[str]:
     if calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
@@ -135,6 +136,7 @@ def compute_search_path_dir(
             calling_module = ""
 
         if config_path is not None:
+            config_path = str(config_path)
             config_path = config_path.replace(os.path.sep, "/")
             while str.startswith(config_path, "../"):
                 config_path = config_path[len("../") :]
@@ -176,13 +178,15 @@ def is_under_debugger() -> bool:
 def create_automatic_config_search_path(
     calling_file: Optional[str],
     calling_module: Optional[str],
-    config_path: Optional[str],
+    config_path: Optional[Union[str, Path]],
 ) -> ConfigSearchPath:
     search_path_dir = compute_search_path_dir(calling_file, calling_module, config_path)
     return create_config_search_path(search_path_dir)
 
 
-def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPath:
+def create_config_search_path(
+    search_path_dir: Optional[Union[str, Path]]
+) -> ConfigSearchPath:
     from hydra.core.plugins import Plugins
     from hydra.plugins.search_path_plugin import SearchPathPlugin
 
@@ -190,7 +194,7 @@ def create_config_search_path(search_path_dir: Optional[str]) -> ConfigSearchPat
     search_path.append("hydra", "pkg://hydra.conf")
 
     if search_path_dir is not None:
-        search_path.append("main", search_path_dir)
+        search_path.append("main", str(search_path_dir))
 
     search_path_plugins = Plugins.instance().discover(SearchPathPlugin)
     for spp in search_path_plugins:
@@ -299,7 +303,7 @@ def run_and_report(func: Any) -> Any:
 def _run_hydra(
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
-    config_path: Optional[str],
+    config_path: Optional[Union[str, Path]],
     config_name: Optional[str],
     caller_stack_depth: int = 2,
 ) -> None:

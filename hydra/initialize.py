@@ -1,8 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
+from pathlib import Path
 from textwrap import dedent
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.hydra import Hydra
@@ -51,7 +52,7 @@ class initialize:
 
     def __init__(
         self,
-        config_path: Optional[str] = _UNSPECIFIED_,
+        config_path: Optional[Union[str, Path]] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:
@@ -135,7 +136,7 @@ class initialize_config_dir:
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 
-    def __init__(self, config_dir: str, job_name: str = "app") -> None:
+    def __init__(self, config_dir: Union[str, Path], job_name: str = "app") -> None:
         self._gh_backup = get_gh_backup()
         # Relative here would be interpreted as relative to cwd, which - depending on when it run
         # may have unexpected meaning. best to force an absolute path to avoid confusion.
