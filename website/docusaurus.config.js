@@ -26,6 +26,14 @@ module.exports = {
         },
     },    
     themeConfig: {
+        announcementBar: {
+            id: 'support_ukraine',
+            content:
+              'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.fb.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
+            backgroundColor: '#20232a',
+            textColor: '#fff',
+            isCloseable: false,
+        },
         googleAnalytics: {
             trackingID: 'UA-149862507-1',
         },
@@ -34,11 +42,11 @@ module.exports = {
             indexName: 'hydra',
             algoliaOptions: {},
         },
-        announcementBar: {
-          id: 'supportus',
-          content:
-            '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
-        },        
+        // announcementBar: {
+        //   id: 'supportus',
+        //   content:
+        //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
+        // },        
 		prism: {
 		  additionalLanguages: ['antlr4'],
 		},
