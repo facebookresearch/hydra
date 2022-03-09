@@ -135,6 +135,7 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides: List[str],
         run_mode: RunMode,
         from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
     ) -> DictConfig:
         try:
             return self._load_configuration_impl(
@@ -142,6 +143,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 overrides=overrides,
                 run_mode=run_mode,
                 from_shell=from_shell,
+                validate_sweep_overrides=validate_sweep_overrides,
             )
         except OmegaConfBaseException as e:
             raise ConfigCompositionException().with_traceback(sys.exc_info()[2]) from e
@@ -220,6 +222,7 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides: List[str],
         run_mode: RunMode,
         from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
     ) -> DictConfig:
         from hydra import __version__
 
@@ -231,9 +234,10 @@ class ConfigLoaderImpl(ConfigLoader):
 
         self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
 
-        self.validate_sweep_overrides_legal(
-            overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
-        )
+        if validate_sweep_overrides:
+            self.validate_sweep_overrides_legal(
+                overrides=parsed_overrides, run_mode=run_mode, from_shell=from_shell
+            )
 
         defaults_list = create_defaults_list(
             repo=caching_repo,

@@ -78,6 +78,23 @@ class Hydra:
         self.config_loader = config_loader
         JobRuntime().set("name", task_name)
 
+    def get_mode(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+    ) -> Any:
+        try:
+            cfg = self.compose_config(
+                config_name=config_name,
+                overrides=overrides,
+                with_log_configuration=False,
+                run_mode=RunMode.MULTIRUN,
+                validate_sweep_overrides=False,
+            )
+            return cfg.hydra.mode
+        except Exception:
+            return None
+
     def run(
         self,
         config_name: Optional[str],
@@ -91,6 +108,10 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
         )
+        if cfg.hydra.mode is None:
+            cfg.hydra.mode = RunMode.RUN
+        else:
+            assert cfg.hydra.mode == RunMode.RUN
 
         callbacks = Callbacks(cfg)
         callbacks.on_run_start(config=cfg, config_name=config_name)
@@ -125,6 +146,7 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
+
         callbacks = Callbacks(cfg)
         callbacks.on_multirun_start(config=cfg, config_name=config_name)
 
@@ -558,6 +580,7 @@ class Hydra:
         run_mode: RunMode,
         with_log_configuration: bool = False,
         from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
     ) -> DictConfig:
         """
         :param config_name:
@@ -573,6 +596,7 @@ class Hydra:
             overrides=overrides,
             run_mode=run_mode,
             from_shell=from_shell,
+            validate_sweep_overrides=validate_sweep_overrides,
         )
         if with_log_configuration:
             configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)

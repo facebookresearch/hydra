@@ -7,10 +7,14 @@ sidebar_label: Multi-run
 Sometimes you want to run the same application with multiple different configurations.  
 E.g. running a performance test on each of the databases with each of the schemas.
 
-Use the `--multirun` (`-m`) flag and pass a comma separated list specifying the values for each dimension you want to sweep.
+You can multirun a Hydra application via either commandline or configuration:
 
-The following sweeps over all combinations of the dbs and schemas.
-```text title="$ python my_app.py -m db=mysql,postgresql schema=warehouse,support,school"
+### Configure `hydra.mode` (new in Hydra 1.2)
+You can configure `hydra.mode` in any supported way. The legal values are `RUN` and `MULTIRUN`.
+The following shows how to override from the command-line and sweep over all combinations of the dbs and schemas.
+Setting `hydra.mode=MULTIRUN` in your input config would make your application multi-run by default.
+
+```text title="$ python my_app.py hydra.mode=MULTIRUN db=mysql,postgresql schema=warehouse,support,school"
 [2021-01-20 17:25:03,317][HYDRA] Launching 6 jobs locally
 [2021-01-20 17:25:03,318][HYDRA]        #0 : db=mysql schema=warehouse
 [2021-01-20 17:25:03,458][HYDRA]        #1 : db=mysql schema=support
@@ -21,12 +25,37 @@ The following sweeps over all combinations of the dbs and schemas.
 ```
 The printed configurations have been omitted for brevity.
 
+### `--multirun (-m)` from the command-line
+You can achieve the above from command-line as well:
+```commandline
+python my_app.py --multirun db=mysql,postgresql schema=warehouse,support,school
+```
+or 
+```commandline
+python my_app.py -m db=mysql,postgresql schema=warehouse,support,school
+```
+
+You can access `hydra.mode` at runtime to determine whether the application is in RUN or MULTIRUN mode. Check [here](/configure_hydra/Intro.md)
+on how to access Hydra config at run time.
+
+If conflicts arise (eg, `hydra.mode=RUN` and the application was run with `--multirun`), Hydra will determine the value of `hydra.mode`
+at run time. The following table shows what runtime `hydra.mode` value you'd get with different input configs and commandline combinations.
+
+[//]: # (Conversion matrix)
+
+|                    	   | No multirun commandline flag      	 | --multirun ( -m)                    |
+|--------------------	   |-------------------------------------|-------------------------------------|
+|hydra.mode=RUN            | RunMode.RUN          	              | RunMode.MULTIRUN (with UserWarning) |
+|hydra.mode=MULTIRUN       | RunMode.MULTIRUN          	         | RunMode.MULTIRUN                    |
+|hydra.mode=None (default) | RunMode.RUN          	              | RunMode.MULTIRUN                    |
+
+
 :::important
 Hydra composes configs lazily at job launching time. If you change code or configs after launching a job/sweep, the final 
 composed configs might be impacted.
 :::
 
-#### Sweeping via `hydra.sweeper.params`
+### Sweeping via `hydra.sweeper.params`
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 

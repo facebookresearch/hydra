@@ -4,6 +4,7 @@ import inspect
 import logging.config
 import os
 import sys
+import warnings
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
@@ -20,7 +21,7 @@ from hydra.errors import (
     InstantiationException,
     SearchPathException,
 )
-from hydra.types import TaskFunction
+from hydra.types import RunMode, TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -380,21 +381,19 @@ def _run_hydra(
             )
         if num_commands == 0:
             args.run = True
-        if args.run:
-            run_and_report(
-                lambda: hydra.run(
-                    config_name=config_name,
-                    task_function=task_function,
-                    overrides=args.overrides,
-                )
-            )
-        elif args.multirun:
-            run_and_report(
-                lambda: hydra.multirun(
-                    config_name=config_name,
-                    task_function=task_function,
-                    overrides=args.overrides,
-                )
+
+        overrides = args.overrides
+
+        if args.run or args.multirun:
+            run_mode = hydra.get_mode(config_name=config_name, overrides=overrides)
+            _run_app(
+                run=args.run,
+                multirun=args.multirun,
+                mode=run_mode,
+                hydra=hydra,
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
             )
         elif args.cfg:
             run_and_report(
@@ -421,6 +420,50 @@ def _run_hydra(
             sys.exit(1)
     finally:
         GlobalHydra.instance().clear()
+
+
+def _run_app(
+    run: bool,
+    multirun: bool,
+    mode: Optional[RunMode],
+    hydra: Any,
+    config_name: Optional[str],
+    task_function: TaskFunction,
+    overrides: List[str],
+) -> None:
+    if mode is None:
+        if run:
+            mode = RunMode.RUN
+            overrides.extend(["hydra.mode=RUN"])
+        else:
+            mode = RunMode.MULTIRUN
+            overrides.extend(["hydra.mode=MULTIRUN"])
+    else:
+        if multirun and mode == RunMode.RUN:
+            warnings.warn(
+                message="\n"
+                "\tRunning Hydra app with --multirun, setting `hydra.mode=MULTIRUN`.",
+                category=UserWarning,
+            )
+            mode = RunMode.MULTIRUN
+            overrides.extend(["hydra.mode=MULTIRUN"])
+
+    if mode == RunMode.RUN:
+        run_and_report(
+            lambda: hydra.run(
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
+            )
+        )
+    else:
+        run_and_report(
+            lambda: hydra.multirun(
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
+            )
+        )
 
 
 def _get_exec_command() -> str:

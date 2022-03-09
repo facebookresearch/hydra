@@ -118,6 +118,9 @@ Fields under **hydra.overrides** are populated automatically and should not be o
   See [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md).
 - **hydra**: Contains a list of the command-line `hydra` config overrides used.
 
+### hydra.mode
+See [multirun](/tutorials/basic/running_your_app/2_multirun.md) for more info.
+
 ### Other Hydra settings
 The following fields are present at the top level of the Hydra Config.
 - **searchpath**: A list of paths that Hydra searches in order to find configs.

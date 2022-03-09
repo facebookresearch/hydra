@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import RunMode
 
 
 @dataclass
@@ -121,6 +122,7 @@ class HydraConf:
         ]
     )
 
+    mode: Optional[RunMode] = None
     # Elements to append to the config search path.
     # Note: This can only be configured in the primary config.
     searchpath: List[str] = field(default_factory=list)
