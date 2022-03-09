@@ -204,14 +204,68 @@ OmegaConf containers (DictConfig, ListConfig).
 OmegaConf containers have many advantages over primitive dicts and lists but in some cases 
 it's desired to pass a real dicts and lists (for example, for performance reasons).
 
-You can change the parameter conversion strategy using the `_convert_` parameter (in your config or the call-site).
+You can change the parameter conversion strategy using the `_convert_` parameter.
 Supported values are:
 
 - `none` : Default behavior, Use OmegaConf containers
 - `partial` : Convert OmegaConf containers to dict and list, except Structured Configs.
 - `all` : Convert everything to primitive containers
 
-Note that the conversion strategy applies to all the parameters passed to the target.
+The conversion strategy applies recursively to all subconfigs of the instantiation target.
+Here is an example demonstrating the various conversion strategies:
+
+```python
+from dataclasses import dataclass
+from omegaconf import DictConfig, OmegaConf
+from hydra.utils import instantiate
+
+@dataclass
+class Foo:
+    a: int = 123
+
+class MyTarget:
+    def __init__(self, foo, bar):
+        self.foo = foo
+        self.bar = bar
+
+cfg = OmegaConf.create(
+    {
+        "_target_": "__main__.MyTarget",
+        "foo": Foo(),
+        "bar": {"b": 456},
+    }
+)
+
+obj_none = instantiate(cfg, _convert_="none")
+assert isinstance(obj_none, MyTarget)
+assert isinstance(obj_none.foo, DictConfig)
+assert isinstance(obj_none.bar, DictConfig)
+
+obj_partial = instantiate(cfg, _convert_="partial")
+assert isinstance(obj_partial, MyTarget)
+assert isinstance(obj_partial.foo, DictConfig)
+assert isinstance(obj_partial.bar, dict)
+
+obj_all = instantiate(cfg, _convert_="all")
+assert isinstance(obj_none, MyTarget)
+assert isinstance(obj_all.foo, dict)
+assert isinstance(obj_all.bar, dict)
+```
+
+Passing the `_convert_` keyword argument to `instantiate` has the same effect as defining
+a `_convert_` attribute on your config object. Here is an example creating
+instances of `MyTarget` that are equivalent to the above:
+
+```python
+cfg_none = OmegaConf.create({..., "_convert_": "none"})
+obj_none = instantiate(cfg_none)
+
+cfg_partial = OmegaConf.create({..., "_convert_": "partial"})
+obj_partial = instantiate(cfg_partial)
+
+cfg_all = OmegaConf.create({..., "_convert_": "all"})
+obj_all = instantiate(cfg_all)
+```
 
 ### Partial Instantiation (for Hydra version >= 1.1.2)
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
