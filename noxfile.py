@@ -41,6 +41,7 @@ class Plugin:
     name: str
     path: str
     module: str
+    source_dir: str
 
 
 def get_current_os() -> str:
@@ -167,11 +168,19 @@ def select_plugins(session, directory: str) -> List[Plugin]:
             )
             continue
 
+        if "hydra_plugins" in os.listdir(os.path.join(BASE, directory, plugin["path"])):
+            module = "hydra_plugins." + plugin["dir_name"]
+            source_dir = "hydra_plugins"
+        else:
+            module = plugin["dir_name"]
+            source_dir = plugin["dir_name"]
+
         ret.append(
             Plugin(
                 name=plugin_name,
                 path=plugin["path"],
-                module="hydra_plugins." + plugin["dir_name"],
+                source_dir=source_dir,
+                module=module,
             )
         )
 
@@ -313,6 +322,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
     # Mypy for plugins
     for plugin in plugins:
         path = os.path.join(directory, plugin.path)
+        source_dir = plugin.source_dir
         session.chdir(path)
         session.run(*_black_cmd(), silent=SILENT)
         session.run(*_isort_cmd(), silent=SILENT)
@@ -329,7 +339,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
             "--strict",
             "--install-types",
             "--non-interactive",
-            f"{path}/hydra_plugins",
+            f"{path}/{source_dir}",
             "--config-file",
             f"{BASE}/.mypy.ini",
             silent=SILENT,

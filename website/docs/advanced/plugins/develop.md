@@ -11,16 +11,36 @@ If you develop plugins, please join the <a href="https://hydra-framework.zulipch
 
 import GithubLink from "@site/src/components/GithubLink"
 
-When developing Hydra plugins, keep the following things in mind:
+Hydra plugins must be registered before they can be used. There are two ways to register a plugin:
+- via the automatic plugin discovery process, which discovers plugins located in the `hydra_plugins` namespace package
+- by calling the `register` method on Hydra's `Plugins` singleton class
+
+## Automatic Plugin discovery process
+
+If you create a Plugin and want it to be discovered automatically by Hydra, keep the following things in mind:
 - Hydra plugins can be either a standalone Python package, or a part of your existing Python package. 
   In both cases - They should be in the namespace module `hydra_plugins` (This is a top level module, Your plugin will __NOT__ be discovered if you place it in `mylib.hydra_plugins`).
 - Do __NOT__ place an `__init__.py` file in `hydra_plugins` (doing so may break other installed Hydra plugins).
   
-## Plugin discovery process
 The plugin discovery process runs whenever Hydra starts. During plugin discovery, Hydra scans for plugins in all the submodules of `hydra_plugins`. Hydra will import each module and look for plugins defined in that module.
 Any module under `hydra_plugins` that is slow to import will slow down the startup of __ALL__ Hydra applications.
 Plugins with expensive imports can exclude individual files from Hydra's plugin discovery process by prefixing them with `_` (but not `__`).
 For example, the file `_my_plugin_lib.py` would not be imported and scanned, while `my_plugin_lib.py` would be.
+
+## Plugin registration via the `Plugins.register` method
+
+Plugins can be manually registered by calling the `register` method on the instance of Hydra's `Plugins` singleton class.
+```python
+from hydra.core.plugins import Plugins
+from hydra.plugins.plugin import Plugin
+
+class MyPlugin(Plugin):
+  ...
+
+def register_my_plugin() -> None:
+    """Hydra users should call this function before invoking @hydra.main"""
+    Plugins.instance().register(MyPlugin)
+```
 
 ## Getting started
 
