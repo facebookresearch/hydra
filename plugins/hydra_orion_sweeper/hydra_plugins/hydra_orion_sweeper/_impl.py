@@ -1,39 +1,148 @@
+import logging
+import os
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import asdict
-import logging
-from typing import List, Optional, Sequence
-import os
+from typing import Any, List, Optional, Sequence, Union
 
 from hydra.core import utils
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import Override
+from hydra.core.override_parser.types import Override, QuotedString
 from hydra.core.plugins import Plugins
+from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
-from hydra.core.utils import JobReturn
-
 from omegaconf import DictConfig, OmegaConf
-
-from orion.core.utils.flatten import flatten
+from orion.algo.space import Dimension, Space
 from orion.client import create_experiment
 from orion.client.experiment import ExperimentClient
-from orion.core.worker.trial import Trial, AlreadyReleased
-from orion.algo.space import Space, Dimension
 from orion.core.io.space_builder import DimensionBuilder, SpaceBuilder
 from orion.core.utils.exceptions import (
+    BrokenExperiment,
     CompletedExperiment,
+    InvalidResult,
     ReservationRaceCondition,
     WaitingForTrials,
-    BrokenExperiment,
-    InvalidResult,
 )
+from orion.core.utils.flatten import flatten
+from orion.core.worker.trial import AlreadyReleased, Trial
 
-from .config import OrionClientConf, WorkerConf, AlgorithmConf, StorageConf
+from .config import AlgorithmConf, OrionClientConf, StorageConf, WorkerConf
 
 log = logging.getLogger(__name__)
+
+
+class SpaceFunction:
+    """Type to recognize orion functions parsed by the override parser"""
+
+    def __init__(self, fun) -> None:
+        self.fun = fun
+
+    def __call__(self, name: str) -> Any:
+        return self.fun(name)
+
+
+def uniform(
+    low: Union[int, float],
+    high: Union[int, float],
+    discrete: bool = False,
+    precision: int = 4,
+    shape: Optional[List] = None,
+) -> SpaceFunction:
+    """Builds a uniform dimension"""
+
+    def dim(name):
+        builder = DimensionBuilder()
+        builder.name = name
+        return builder.uniform(
+            low, high, discrete=discrete, precision=precision, shape=shape
+        )
+
+    return SpaceFunction(dim)
+
+
+def loguniform(
+    low: Union[int, float],
+    high: Union[int, float],
+    discrete: bool = False,
+    precision: int = 4,
+    shape: Optional[List] = None,
+) -> SpaceFunction:
+    """Builds a uniform dimension"""
+
+    def dim(name):
+        builder = DimensionBuilder()
+        builder.name = name
+        return builder.loguniform(
+            low, high, discrete=discrete, precision=precision, shape=shape
+        )
+
+    return SpaceFunction(dim)
+
+
+def normal(
+    loc: Union[int, float],
+    scale: Union[int, float],
+    discrete: bool = False,
+    precision: int = 4,
+    shape: Optional[List] = None,
+) -> SpaceFunction:
+    """Builds a normal dimension"""
+
+    def dim(name):
+        builder = DimensionBuilder()
+        builder.name = name
+        return builder.normal(
+            loc, scale, discrete=discrete, precision=precision, shape=shape
+        )
+
+    return SpaceFunction(dim)
+
+
+def fidelity(
+    low: Union[int, float], high: Union[int, float], base: Union[int, float] = 2
+) -> SpaceFunction:
+    """Builds a fidelity dimension"""
+
+    def dim(name):
+        builder = DimensionBuilder()
+        builder.name = name
+        return builder.fidelity(low, high, base=base)
+
+    return SpaceFunction(dim)
+
+
+def choices(options) -> SpaceFunction:
+    """Builds a choices dimension"""
+
+    def tovalue(v):
+        if isinstance(v, QuotedString):
+            return v.text
+        return v
+
+    if isinstance(options, list):
+        options = [tovalue(option) for option in options]
+
+    def dim(name):
+        builder = DimensionBuilder()
+        builder.name = name
+        return builder.choices(options)
+
+    return SpaceFunction(dim)
+
+
+def override_parser():
+    """Create an override parser with Orion's functions"""
+    parser = OverridesParser.create()
+    parser.functions.register(name="uniform", func=uniform)
+    parser.functions.register(name="loguniform", func=loguniform)
+    parser.functions.register(name="normal", func=normal)
+    parser.functions.register(name="choices", func=choices)
+    parser.functions.register(name="fidelity", func=fidelity)
+    return parser
 
 
 def as_overrides(trial, additional):
@@ -89,7 +198,7 @@ class SpaceParser:
 
     def add_from_overrides(self, arguments: List[str]) -> None:
         """Create a dictionary of overrides to modify the research space"""
-        parser = OverridesParser.create()
+        parser = override_parser()
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
@@ -110,7 +219,10 @@ class SpaceParser:
             builder.name = name
             return builder
 
-        if override.is_choice_sweep():
+        if isinstance(values, SpaceFunction):
+            return override(name)
+
+        elif override.is_choice_sweep():
             return build_dim(name).choices(*values.list)
 
         elif override.is_range_sweep():

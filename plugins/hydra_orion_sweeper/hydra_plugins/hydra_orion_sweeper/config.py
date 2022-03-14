@@ -13,6 +13,7 @@ class OrionClientConf:
     version: Optional[str] = None
     branching: Optional[str] = None
     debug: Optional[str] = False
+    workspace: Optional[str] = None
 
 
 @dataclass

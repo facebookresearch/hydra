@@ -2,9 +2,7 @@
 import sys
 from copy import deepcopy
 from pathlib import Path
-from typing import Any
 
-from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
@@ -47,6 +45,9 @@ nevergrad_overrides = [
     "b0=tag(log, interval(0.001, 1.0))",
     "d0=a,b,c,d",
     "r1=234",
+    # Nevergrad does not have an equivalent
+    'e1="fidelity(2, 10, base=4)"',
+    'c0="normal(2, 10)"',
 ]
 
 orion_overrides = [
@@ -56,6 +57,8 @@ orion_overrides = [
     'a1="uniform(1, 2, discrete=True)"',
     'b0="loguniform(0.001, 1.0)"',
     "d0=\"choices(['a', 'b', 'c', 'd'])\"",
+    'e1="fidelity(2, 10, base=4)"',
+    'c0="normal(2, 10)"',
     "r1=234",
 ]
 
@@ -66,6 +69,8 @@ overriden_parametrization = dict(
     a1="uniform(1, 2, discrete=True)",
     b0="loguniform(0.001, 1.0)",
     d0="choices(['a', 'b', 'c', 'd'])",
+    e1="fidelity(2, 10, base=4)",
+    c0="normal(2, 10)",
 )
 
 
@@ -99,6 +104,34 @@ def test_space_parser(overrides):
         assert args == dict(r1=234), "Regular argument was overriden"
 
 
+orion_functions_overrides = [
+    "a0=uniform(1, 2)",
+    "a01=uniform(1, 2, discrete=True)",
+    "a02=choices([4, 6, 8])",
+    "a1=uniform(1, 2, discrete=True)",
+    "b0=loguniform(0.001, 1.0)",
+    "d0=choices(['a', 'b', 'c', 'd'])",
+    "e1=fidelity(2, 10, base=4)",
+    "c0=normal(2, 10)",
+]
+
+
+def test_override_parser():
+    parser = _impl.override_parser()
+    parsed = parser.parse_overrides(orion_functions_overrides)
+
+    for override in parsed:
+        values = override.value()
+        name = override.get_key_element()
+
+        target = overriden_parametrization.get(name)
+
+        assert isinstance(values, _impl.SpaceFunction)
+        dim = values(name)
+
+        assert dim.get_prior_string() == target
+
+
 def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     budget = 8
     sweep = hydra_sweep_runner(
@@ -121,11 +154,11 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         assert sweep.returns is None
 
 
-@mark.parametrize("with_commandline", (True, False))
-def test_orion_example(with_commandline: bool, tmpdir: Path) -> None:
+@mark.parametrize("with_commandline, with_orion_format", [(True, False), (True, False)])
+def test_orion_example(
+    with_commandline: bool, with_orion_format: bool, tmpdir: Path
+) -> None:
     budget = 32 if with_commandline else 1  # make a full test only once (faster)
-
-    with_orion_format = False
 
     cmd = [
         "example/my_app.py",
@@ -142,7 +175,7 @@ def test_orion_example(with_commandline: bool, tmpdir: Path) -> None:
                 "opt='\"choices(['Adam', 'SGD'])\"'",
                 "batch_size='\"choices([4,8,12,16])\"'",
                 "lr='\"loguniform(0.001, 1.0)\"'",
-                "dropout='\"uniform(0,1)\"'",
+                "dropout=uniform(0,1)",
             ]
         else:
             cmd += [

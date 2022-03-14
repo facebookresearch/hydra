@@ -152,9 +152,9 @@ Orion supports multiple [research dimension](https://orion.readthedocs.io/en/sta
 * `loguniform(low, high)`: sample a value from the loguniform distribution
 * `normal(loc, scale)`: sample a value from the normal distribution
 * `choices(options)`: select among the given value
-* `fidelity(low, high, base=2)`: This prior is a special placeholder to define a Fidelity dimension. 
-The algorithms will not use this prior to sample, but rather for multi-fidelity optimization. 
-For an example of an algorithm using multi-fidelity, 
+* `fidelity(low, high, base=2)`: This prior is a special placeholder to define a Fidelity dimension.
+The algorithms will not use this prior to sample, but rather for multi-fidelity optimization.
+For an example of an algorithm using multi-fidelity,
 you can look at the documentation of [ASHA](https://orion.readthedocs.io/en/stable/user/algorithms.html#asha)
 
 Special arguments can also be added to the priors to constraint the sampled values;
@@ -168,26 +168,16 @@ They can be defined either through config file or commandline override.
 
 ### Defining through commandline override
 
-Hydra provides a override parser that support rich syntax. 
-More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). 
+Hydra provides a override parser that support rich syntax.
+More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)).
 We recommend you go through them first before proceeding with this doc.
 
 #### Scalar
 ```commandline
-'key=1,5'                               # Choices
-`key="uniform(1, 12)"`                  # Interval are float by default
-`key="uniform(1, 8, discrete=True)"`    # Scalar bounds cast to a int
-`key="loguniform(1,12)"`                
-```
-
-**Note:** When adding overrides through the command line you should be careful with escapting.
-Hydra need to receive the space definition as string.
-
-
-For example, for bash you will need to provide the overrides as below.
-
-```bash
-python example/my_app.py -m hydra.sweeper.worker.max_trials=32 hydra.sweeper.worker.n_workers=8 opt='"choices(['Adam', 'SGD'])"' batch_size='"choices([4,8,12,16])"' lr='"loguniform(0.001, 1.0)"' dropout='"uniform(0,1)"'
+'key=1,5'                             # Choices
+`key=uniform(1, 12)`                  # Interval are float by default
+`key=uniform(1, 8, discrete=True)`    # Scalar bounds cast to a int
+`key=loguniform(1,12)`
 ```
 
 ### Defining through config file

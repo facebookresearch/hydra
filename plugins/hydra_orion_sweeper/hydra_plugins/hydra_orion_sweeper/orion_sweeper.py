@@ -6,7 +6,7 @@ from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext
 from omegaconf import DictConfig
 
-from .config import OrionClientConf, WorkerConf, AlgorithmConf, StorageConf
+from .config import AlgorithmConf, OrionClientConf, StorageConf, WorkerConf
 
 
 class OrionSweeper(Sweeper):
