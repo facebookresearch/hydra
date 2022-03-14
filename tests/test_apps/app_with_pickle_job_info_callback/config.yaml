@@ -1,0 +1,6 @@
+foo: bar
+
+hydra:
+  callbacks:
+    save_job_info:
+      _target_: hydra.experimental.pikcle_job_info_callback.PickleJobInfoCallback
