@@ -11,7 +11,7 @@ from typing import Any, List, Optional, Set
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param, raises
 
-from hydra import MissingConfigException
+from hydra import MissingConfigException, version
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
@@ -1446,7 +1446,12 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
     _, err = run_python_script(cmd, allow_warnings=True)
 
     expected = dedent(
-        """
+        f"""
+        .*my_app.py:7: UserWarning:
+        The version_base parameter is not specified.
+        Please specify a compatability version level, or None.
+        Will assume defaults for version {version.__compat_version__}
+          @hydra.main()
         .*my_app.py:7: UserWarning:
         config_path is not specified in @hydra.main().
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.

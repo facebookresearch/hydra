@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
-from hydra import compose, initialize, initialize_config_dir, initialize_config_module
+from hydra import compose, initialize, initialize_config_dir, initialize_config_module, version, __version__
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
@@ -46,6 +46,47 @@ def test_initialize(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
     initialize(config_path=None)
     assert GlobalHydra().is_initialized()
+
+
+def test_initialize_old_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        HydraException,
+        match=f'version_base must be >= "{version.__compat_version__}"',
+    ):
+        initialize(version_base="1.0")
+
+
+def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        TypeError,
+        match="expected string or bytes-like object",
+    ):
+        initialize(version_base=1.1)  # type: ignore
+
+
+def test_initialize_dev_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    # packaging will compare "1.2.0.dev2" < "1.2", so need to ensure handled correctly
+    initialize(version_base="1.2.0.dev2")
+    assert version.base_at_least("1.2")
+
+
+def test_initialize_cur_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    initialize(version_base=None)
+    assert version.base_at_least(__version__)
+
+
+def test_initialize_compat_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        UserWarning,
+        match=f"Will assume defaults for version {version.__compat_version__}",
+    ):
+        initialize()
+    assert version.base_at_least(str(version.__compat_version__))
 
 
 def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
