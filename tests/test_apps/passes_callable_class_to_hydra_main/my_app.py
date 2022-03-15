@@ -15,7 +15,7 @@ class MyCallable:
 
 
 my_callable = MyCallable()
-my_app = hydra.main(config_path=None)(my_callable)
+my_app = hydra.main(version_base=None)(my_callable)
 
 if __name__ == "__main__":
     my_app()

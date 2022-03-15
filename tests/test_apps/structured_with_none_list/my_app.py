@@ -17,7 +17,7 @@ cs = ConfigStore.instance()
 cs.store(name="config", node=Config)
 
 
-@hydra.main(config_path=None, config_name="config")
+@hydra.main(version_base=None, config_name="config")
 def main(cfg: DictConfig) -> None:
     print(cfg)
 
