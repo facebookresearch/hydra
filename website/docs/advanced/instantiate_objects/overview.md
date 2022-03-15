@@ -266,11 +266,38 @@ model:
 model = instantiate(cfg.model)
 print(model)
 # "Model(Optimizer=Optimizer(algo=SGD,lr=0.01),lr=0.01)
-
-
-
-
 ```
 
 </div>
 </div>
+
+If you are repeatedly instantiating the same config,
+using `_partial_=True` may provide a significant speedup as compared with regular (non-partial) instantiation.
+```python
+factory = instantiate(config, _partial_=True)
+obj = factory()
+```
+In the above example, repeatedly calling `factory` would be faster than repeatedly calling `instantiate(config)`.
+A caveat of this approach is that the same keyword arguments would be re-used in each call to `factory`.
+```python
+class Foo:
+    ...
+
+class Bar:
+    def __init__(self, foo):
+        self.foo = foo
+
+bar_conf = {
+    "_target_": "__main__.Bar",
+    "foo": {"_target_": "__main__.Foo"},
+}
+
+bar_factory = instantiate(bar_conf, _partial_=True)
+bar1 = bar_factory()
+bar2 = bar_factory()
+
+assert bar1 is not bar2
+assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
+```
+This does not apply if `_partial_=False`,
+in which case a new `Foo` instance would be created with each call to `instantiate`.
