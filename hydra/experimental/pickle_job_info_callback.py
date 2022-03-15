@@ -22,17 +22,17 @@ class PickleJobInfoCallback(Callback):
         )
         filename = "config.pickle"
         self._save_pickle(obj=config, filename=filename, output_dir=self.output_dir)
-        log.info(f"Saving job configs in {str(self.output_dir / filename)}")
+        log.info(f"Saving job configs in {self.output_dir / filename}")
 
     def on_job_end(
         self, config: DictConfig, job_return: JobReturn, **kwargs: Any
     ) -> None:
         filename = "job_return.pickle"
         self._save_pickle(obj=job_return, filename=filename, output_dir=self.output_dir)
-        log.info(f"Saving job_return in {str(self.output_dir / filename)}")
+        log.info(f"Saving job_return in {self.output_dir / filename}")
 
     def _save_pickle(self, obj: Any, filename: str, output_dir: Path) -> None:
         output_dir.mkdir(parents=True, exist_ok=True)
         assert output_dir is not None
         with open(str(output_dir / filename), "wb") as file:
-            pickle.dump(obj, file)
+            pickle.dump(obj, file, protocol=pickle.HIGHEST_PROTOCOL)
