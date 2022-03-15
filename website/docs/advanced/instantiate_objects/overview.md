@@ -300,4 +300,4 @@ assert bar1 is not bar2
 assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
 ```
 This does not apply if `_partial_=False`,
-in which case a new Foo instance would be created with each call to `instantiate`.
+in which case a new `Foo` instance would be created with each call to `instantiate`.
