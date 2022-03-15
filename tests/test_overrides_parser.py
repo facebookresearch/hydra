@@ -552,8 +552,8 @@ def test_package(value: str, expected: Any) -> None:
         param("$foo", "$foo", id="package_dollar"),
         param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
         param("a/b/c", "a/b/c", id="group"),
-        param("a-b/c", "a-b/c", id="group"),
-        param("a-b", "a-b", id="package"),
+        param("a-b/c", "a-b/c", id="group_with_dash"),
+        param("a-b", "a-b", id="package_with_dash"),
     ],
 )
 def test_package_or_group(value: str, expected: Any) -> None:
