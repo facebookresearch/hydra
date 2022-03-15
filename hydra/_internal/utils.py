@@ -442,7 +442,7 @@ def _run_app(
         if multirun and mode == RunMode.RUN:
             warnings.warn(
                 message="\n"
-                "\tRunning Hydra app with --multirun, setting `hydra.mode=MULTIRUN`.",
+                "\tRunning Hydra app with --multirun, overriding with `hydra.mode=MULTIRUN`.",
                 category=UserWarning,
             )
             mode = RunMode.MULTIRUN

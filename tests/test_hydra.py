@@ -1758,7 +1758,7 @@ def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
             dedent(
                 """
                 .*: UserWarning:
-                \tRunning Hydra app with --multirun, setting `hydra.mode=MULTIRUN`.
+                \tRunning Hydra app with --multirun, overriding with `hydra.mode=MULTIRUN`.
                 .*
                 """
             ),
