@@ -9,7 +9,7 @@ import hydra
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path=None)
+@hydra.main(version_base=None)
 def my_app(_: DictConfig) -> None:
     assert os.getenv("FOO") == "bar"
 

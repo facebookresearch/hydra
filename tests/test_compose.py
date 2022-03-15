@@ -11,7 +11,14 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
-from hydra import compose, initialize, initialize_config_dir, initialize_config_module, version, __version__
+from hydra import (
+    compose,
+    initialize,
+    initialize_config_dir,
+    initialize_config_module,
+    version,
+    __version__,
+)
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
@@ -35,7 +42,7 @@ def initialize_hydra(config_path: Optional[str]) -> Any:
 @fixture
 def initialize_hydra_no_path() -> Any:
     try:
-        init = initialize(config_path=None)
+        init = initialize(version_base=None)
         init.__enter__()
         yield
     finally:
@@ -44,7 +51,7 @@ def initialize_hydra_no_path() -> Any:
 
 def test_initialize(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(config_path=None)
+    initialize(version_base=None)
     assert GlobalHydra().is_initialized()
 
 
@@ -610,7 +617,7 @@ def test_deprecated_compose() -> None:
     from hydra import initialize
     from hydra.experimental import compose as expr_compose
 
-    with initialize(config_path=None):
+    with initialize(version_base=None):
         with warns(
             expected_warning=UserWarning,
             match=re.escape(
