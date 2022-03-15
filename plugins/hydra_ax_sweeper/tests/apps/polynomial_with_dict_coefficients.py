@@ -5,7 +5,9 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path=".", config_name="polynomial_with_dict_coefficients")
+@hydra.main(
+    version_base=None, config_path=".", config_name="polynomial_with_dict_coefficients"
+)
 def polynomial_with_dict_coefficients(cfg: DictConfig) -> Any:
     coeff = cfg.polynomial.coefficients
     a = 100

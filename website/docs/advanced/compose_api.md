@@ -45,12 +45,12 @@ from omegaconf import OmegaConf
 
 if __name__ == "__main__":
     # context initialization
-    with initialize(config_path="conf", job_name="test_app"):
+    with initialize(version_base=None, config_path="conf", job_name="test_app"):
         cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
         print(OmegaConf.to_yaml(cfg))
 
     # global initialization
-    initialize(config_path="conf", job_name="test_app")
+    initialize(version_base=None, config_path="conf", job_name="test_app")
     cfg = compose(config_name="config", overrides=["db=mysql", "db.user=me"])
     print(OmegaConf.to_yaml(cfg))
 ```

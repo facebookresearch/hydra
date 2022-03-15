@@ -10,7 +10,7 @@ from omegaconf import DictConfig
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     env = submitit.JobEnvironment()
     log.info(f"Process ID {os.getpid()} executing task {cfg.task}, with {env}")

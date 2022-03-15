@@ -5,7 +5,7 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path="multi-objective-conf", config_name="config")
+@hydra.main(version_base=None, config_path="multi-objective-conf", config_name="config")
 def binh_and_korn(cfg: DictConfig) -> Tuple[float, float]:
     x: float = cfg.x
     y: float = cfg.y

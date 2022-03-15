@@ -58,7 +58,7 @@ Since we moved all the configs into the `conf` directory, we need to tell Hydra 
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
-@hydra.main(config_path="conf")
+@hydra.main(version_base=None, config_path="conf")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

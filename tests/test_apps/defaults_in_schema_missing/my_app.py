@@ -34,7 +34,7 @@ cs.store(group="db", name="mysql", node=MySQLConfig, provider="main")
 cs.store(name="config", node=Config, provider="main")
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

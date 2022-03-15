@@ -177,7 +177,7 @@ def bump_version(cfg: Config, package: Package, hydra_root: str) -> None:
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
     hydra_root = find_parent_dir_containing(target="ATTRIBUTION")
     build_dir = f"{os.getcwd()}/{cfg.build_dir}"

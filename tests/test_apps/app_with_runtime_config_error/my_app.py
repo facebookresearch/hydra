@@ -8,7 +8,7 @@ def foo(cfg: DictConfig) -> None:
     cfg.foo = "bar"  # does not exist in the config
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     foo(cfg)
 
