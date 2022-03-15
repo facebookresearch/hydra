@@ -14,7 +14,7 @@ def add(app_cfg: DictConfig, key1: str, key2: str) -> Any:
     return ret
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: DictConfig) -> None:
     add(cfg.app, "num1", "num2")
 

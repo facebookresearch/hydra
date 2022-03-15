@@ -25,7 +25,7 @@ Hydra also needs to know where to find your config. Specify the directory contai
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg):
     print(OmegaConf.to_yaml(cfg))
 

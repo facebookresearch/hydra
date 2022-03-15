@@ -28,7 +28,7 @@ class Model:
         return f"Model(Optimizer={self.optim})"
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     model = instantiate(cfg.model)
     print(model)

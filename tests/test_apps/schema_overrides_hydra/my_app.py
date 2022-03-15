@@ -19,7 +19,7 @@ class Config:
 ConfigStore.instance().store(name="config_schema", node=Config)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: Config) -> None:
     print(
         f"job_name: {HydraConfig().get().job.name}, "

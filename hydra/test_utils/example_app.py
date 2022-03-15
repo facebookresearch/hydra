@@ -4,7 +4,7 @@ from omegaconf import DictConfig, OmegaConf
 import hydra
 
 
-@hydra.main(config_path="configs", config_name="db_conf")
+@hydra.main(version_base=None, config_path="configs", config_name="db_conf")
 def run_cli(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

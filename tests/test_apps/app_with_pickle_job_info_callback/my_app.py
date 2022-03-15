@@ -13,7 +13,7 @@ from hydra.core.hydra_config import HydraConfig
 log = logging.getLogger(__name__)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> str:
     def pickle_cfg(path: Path, obj: Any) -> Any:
         with open(str(path), "wb") as file:

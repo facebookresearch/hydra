@@ -38,7 +38,7 @@ class CustomCallback(Callback):
         log.info(f"{self.name} on_multirun_end")
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     log.info(OmegaConf.to_yaml(cfg))
 

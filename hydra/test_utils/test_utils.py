@@ -290,7 +290,7 @@ from hydra.core.hydra_config import HydraConfig
 
 $PROLOG
 
-@hydra.main(config_path='.', config_name='config')
+@hydra.main(version_base=None, config_path='.', config_name='config')
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
 $PRINTS
