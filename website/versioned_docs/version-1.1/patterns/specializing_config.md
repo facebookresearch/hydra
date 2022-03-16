@@ -54,6 +54,8 @@ We want the model for alexnet, when trained on cifar - to have 5 layers.
 
 ### dataset_model/cifar10_alexnet.yaml
 ```yaml
+# @package _global_
+
 model:
   num_layers: 5
 ```
