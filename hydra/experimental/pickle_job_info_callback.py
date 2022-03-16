@@ -35,4 +35,4 @@ class PickleJobInfoCallback(Callback):
         output_dir.mkdir(parents=True, exist_ok=True)
         assert output_dir is not None
         with open(str(output_dir / filename), "wb") as file:
-            pickle.dump(obj, file, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(obj, file, protocol=4)
