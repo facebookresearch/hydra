@@ -1,10 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import copy
+import pickle
 from pathlib import Path
 from textwrap import dedent
-from typing import List
+from typing import Any, List
 
+from omegaconf import open_dict, read_write
 from pytest import mark
 
+from hydra.core.utils import JobReturn, JobStatus
 from hydra.test_utils.test_utils import (
     assert_regex_match,
     chdir_hydra_root,
@@ -94,3 +98,50 @@ def test_app_with_callbacks(
         from_name="Expected output",
         to_name="Actual output",
     )
+
+
+@mark.parametrize("multirun", [True, False])
+def test_experimental_save_job_info_callback(tmpdir: Path, multirun: bool) -> None:
+    app_path = "tests/test_apps/app_with_pickle_job_info_callback/my_app.py"
+
+    cmd = [
+        app_path,
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ]
+    if multirun:
+        cmd.append("-m")
+    _, _err = run_python_script(cmd)
+
+    def load_pickle(path: Path) -> Any:
+        with open(str(path), "rb") as input:
+            obj = pickle.load(input)  # nosec
+        return obj
+
+    # load pickles from callbacks
+    callback_output = tmpdir / Path("0") / ".hydra" if multirun else tmpdir / ".hydra"
+    config_on_job_start = load_pickle(callback_output / "config.pickle")
+    job_return_on_job_end: JobReturn = load_pickle(
+        callback_output / "job_return.pickle"
+    )
+
+    task_cfg_from_callback = copy.deepcopy(config_on_job_start)
+    with read_write(task_cfg_from_callback):
+        with open_dict(task_cfg_from_callback):
+            del task_cfg_from_callback["hydra"]
+
+    # load pickles generated from the application
+    app_output_dir = tmpdir / "0" if multirun else tmpdir
+    task_cfg_from_app = load_pickle(app_output_dir / "task_cfg.pickle")
+    hydra_cfg_from_app = load_pickle(app_output_dir / "hydra_cfg.pickle")
+
+    # verify the cfg pickles are the same on_job_start
+    assert task_cfg_from_callback == task_cfg_from_app
+    assert config_on_job_start.hydra == hydra_cfg_from_app
+
+    # verify pickled object are the same on_job_end
+    assert job_return_on_job_end.cfg == task_cfg_from_app
+    assert job_return_on_job_end.hydra_cfg.hydra == hydra_cfg_from_app  # type: ignore
+    assert job_return_on_job_end.return_value == "hello world"
+    assert job_return_on_job_end.status == JobStatus.COMPLETED
