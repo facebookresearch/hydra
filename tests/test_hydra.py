@@ -738,6 +738,7 @@ for details.
                                     The config_path is relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
+                --experimental-rerun : Rerun a job from a previous config pickle
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """
@@ -795,6 +796,7 @@ for details.
                                     The config_path is relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
+                --experimental-rerun : Rerun a job from a previous config pickle
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """

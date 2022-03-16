@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
+import os
 import pickle
 import sys
 from pathlib import Path
@@ -174,3 +175,52 @@ def test_save_job_return_callback(tmpdir: Path, multirun: bool) -> None:
         with open(p, "r") as file:
             logs = file.readlines()
             assert log_msg in logs
+
+
+@mark.parametrize(
+    "warning_msg,overrides",
+    [
+        ("Experimental rerun CLI option", []),
+        ("Config overrides are not supported as of now", ["+x=1"]),
+    ],
+)
+def test_experimental_rerun(
+    tmpdir: Path, warning_msg: str, overrides: List[str]
+) -> None:
+    app_path = "tests/test_apps/app_with_pickle_job_info_callback/my_app.py"
+
+    cmd = [
+        app_path,
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=False",
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+        "hydra.job_logging.formatters.simple.format='[JOB] %(message)s'",
+    ]
+    run_python_script(cmd)
+
+    config_file = tmpdir / ".hydra" / "config.pickle"
+    log_file = tmpdir / "my_app.log"
+    assert config_file.exists()
+    assert log_file.exists()
+
+    with open(log_file, "r") as file:
+        logs = file.read().splitlines()
+        assert "[JOB] Running my_app" in logs
+
+    os.remove(str(log_file))
+    assert not log_file.exists()
+
+    # then rerun the application and verify log file is created again
+    cmd = [
+        app_path,
+        "--experimental-rerun",
+        str(config_file),
+    ]
+    cmd.extend(overrides)
+    result, err = run_python_script(cmd, allow_warnings=True)
+    assert warning_msg in err
+
+    with open(log_file, "r") as file:
+        logs = file.read().splitlines()
+        assert "[JOB] Running my_app" in logs

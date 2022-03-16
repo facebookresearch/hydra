@@ -133,6 +133,7 @@ module.exports = {
         "Experimental": [
             "experimental/intro",
             "experimental/callbacks",
+            "experimental/rerun",
         ],
 
         'Developer Guide': [
