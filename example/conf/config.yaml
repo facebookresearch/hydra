@@ -1,16 +1,12 @@
----
 defaults:
-    - override hydra/sweeper: wandb
-hydra:
-    sweeper:
-        wandb_sweep_config:
-            name: test
-            metric:
-                name: val_loss
-                goal: minimize
-            method: bayes
-            num_agents: 2
-            preemptible: true
+  - _self_
 
-x: 1
-y: 1
+experiment:
+  name: test_experiment
+  db: cifar
+  lr: 0.01
+  batch_size: 8
+
+model:
+  name: test_model
+  dropout: 0.6
