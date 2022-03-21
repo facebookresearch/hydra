@@ -23,7 +23,7 @@ hydra.initialize(config_path="conf")
 ### No config directory
 For applications that do not define config files next to the Python script (typically applications using only Structured Configs), it is recommended that
 you pass `None` as the config_path, indicating that no directory should be added to the config search path.
-This will become the default in Hydra 1.2.
+This will become the default with version_base >= "1.2"
 ```python
 @hydra.main(config_path=None)
 # or:
