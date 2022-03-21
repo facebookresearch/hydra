@@ -61,19 +61,22 @@ class initialize:
 
         version.setbase(version_base)
 
-        # DEPRECATED: remove in 1.2
-        # in 1.2, the default config_path should be changed to None
         if config_path is _UNSPECIFIED_:
-            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-            deprecation_warning(
-                message=dedent(
-                    f"""\
-                config_path is not specified in hydra.initialize().
-                See {url} for more information."""
-                ),
-                stacklevel=2,
-            )
-            config_path = "."
+            if version.base_at_least("1.2"):
+                config_path = None
+            elif version_base is _UNSPECIFIED_:
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                    config_path is not specified in hydra.initialize().
+                    See {url} for more information."""
+                    ),
+                    stacklevel=2,
+                )
+                config_path = "."
+            else:
+                config_path = "."
 
         if config_path is not None and os.path.isabs(config_path):
             raise HydraException("config_path in initialize() must be relative")
