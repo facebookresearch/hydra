@@ -881,15 +881,19 @@ def test_sys_exit(tmpdir: Path) -> None:
 @mark.parametrize(
     "task_config, overrides, expected_dir",
     [
-        ({"hydra": {"run": {"dir": "foo"}}}, [], "foo"),
-        ({}, ["hydra.run.dir=bar"], "bar"),
-        ({"hydra": {"run": {"dir": "foo"}}}, ["hydra.run.dir=boom"], "boom"),
+        ({"hydra": {"run": {"dir": "foo"}}}, ["hydra.job.chdir=True"], "foo"),
+        ({}, ["hydra.run.dir=bar", "hydra.job.chdir=True"], "bar"),
+        (
+            {"hydra": {"run": {"dir": "foo"}}},
+            ["hydra.run.dir=boom", "hydra.job.chdir=True"],
+            "boom",
+        ),
         (
             {
                 "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
                 "app": {"a": 1, "b": 2},
             },
-            ["app.a=20"],
+            ["app.a=20", "hydra.job.chdir=True"],
             "foo-app.a=20",
         ),
         (
@@ -897,7 +901,7 @@ def test_sys_exit(tmpdir: Path) -> None:
                 "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
                 "app": {"a": 1, "b": 2},
             },
-            ["app.b=10", "app.a=20"],
+            ["app.b=10", "app.a=20", "hydra.job.chdir=True"],
             "foo-app.a=20,app.b=10",
         ),
     ],

@@ -18,7 +18,6 @@ class JobConf:
     name: str = MISSING
 
     # Change current working dir to the output dir.
-    # Will default to False in Hydra 1.3
     chdir: bool = True
 
     # Concatenation of job overrides that can be used as a part

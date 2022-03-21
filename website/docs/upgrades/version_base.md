@@ -16,4 +16,4 @@ Also in this case, a warning is issued to indicate an explicit `version_base` is
 For example for Hydra 1.2, then would imply `config_path=None` and `hydra.job.chdir=False`.
 
 3. If the `version_base` parameter is an **explicit version string** like "1.1",
-then the default appropriate to that version are used.
+then the defaults appropriate to that version are used.
