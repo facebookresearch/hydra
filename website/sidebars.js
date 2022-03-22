@@ -145,6 +145,7 @@ module.exports = {
 
         'Upgrade Guide': [
             'upgrades/intro',
+            'upgrades/version_base',
             {
                 type: 'category',
                 label: '1.1 to 1.2',
