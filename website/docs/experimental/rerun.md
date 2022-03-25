@@ -36,6 +36,7 @@ def my_app(cfg: DictConfig) -> None:
 
 Run the example app:
 ```commandline
+$ python my_app.py
 [2022-03-16 14:51:30,905][hydra.experimental.pickle_job_info_callback][INFO] - Saving job configs in /Users/jieru/workspace/hydra/examples/experimental/outputs/2022-03-16/14-51-30/.hydra/config.pickle
 [2022-03-16 14:51:30,906][__main__][INFO] - Output_dir=/Users/jieru/workspace/hydra/examples/experimental/outputs/2022-03-16/14-51-30
 [2022-03-16 14:51:30,906][__main__][INFO] - cfg.foo=bar
@@ -45,10 +46,8 @@ The Callback saves `config.pickle` in `.hydra` sub dir, this is what we will use
 
 Now rerun the app
 ```commandline
-# OUTPUT_DIR=/Users/jieru/workspace/hydra/examples/experimental/outputs/2022-03-16/14-51-30/.hydra/
-
+$ OUTPUT_DIR=/Users/jieru/workspace/hydra/examples/experimental/outputs/2022-03-16/14-51-30/.hydra/
 $ python my_app.py --experimental-rerun $OUTPUT_DIR/config.pickle
-
 /Users/jieru/workspace/hydra/hydra/main.py:23: UserWarning: Experimental rerun CLI option.
   warnings.warn(msg, UserWarning)
 [2022-03-16 14:59:21,666][__main__][INFO] - Output_dir=/Users/jieru/workspace/hydra/examples/experimental/outputs/2022-03-16/14-51-30

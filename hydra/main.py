@@ -32,14 +32,14 @@ def _get_rerun_conf(file_path: str, overrides: List[str]) -> DictConfig:
 
     with open(str(file), "rb") as input:
         config = pickle.load(input)  # nosec
-        configure_log(config.hydra.job_logging, config.hydra.verbose)
-        HydraConfig.instance().set_config(config)
-        task_cfg = copy.deepcopy(config)
-        with read_write(task_cfg):
-            with open_dict(task_cfg):
-                del task_cfg["hydra"]
-        assert isinstance(task_cfg, DictConfig)
-        return task_cfg
+    configure_log(config.hydra.job_logging, config.hydra.verbose)
+    HydraConfig.instance().set_config(config)
+    task_cfg = copy.deepcopy(config)
+    with read_write(task_cfg):
+        with open_dict(task_cfg):
+            del task_cfg["hydra"]
+    assert isinstance(task_cfg, DictConfig)
+    return task_cfg
 
 
 def main(
