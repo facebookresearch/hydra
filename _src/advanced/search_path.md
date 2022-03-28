@@ -69,7 +69,7 @@ In this example, we add a second config directory - `additional_conf`, next to t
 
 ```python title="my_app.py"
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

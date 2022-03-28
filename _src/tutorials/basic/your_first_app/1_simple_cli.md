@@ -17,7 +17,7 @@ The examples in this tutorial are available <GithubLink to="examples/tutorials/b
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
-@hydra.main(config_path=None)
+@hydra.main(version_base=None)
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
@@ -37,7 +37,7 @@ db:
 ```
 
 :::info
-We will learn more about the `config_path` in the following pages. 
+See the [version_base page](../../../upgrades/version_base.md) for details on the version_base parameter.
 :::
 
 See [Hydra's command line flags](advanced/hydra-command-line-flags.md) and

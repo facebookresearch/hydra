@@ -35,7 +35,7 @@ class MyConfig:
 cs = ConfigStore.instance()
 cs.store(name="config", node=MyConfig)
 
-@hydra.main(config_path=None, config_name="config")
+@hydra.main(version_base=None, config_name="config")
 def my_app(cfg: MyConfig) -> None:
     print(f"Title={cfg.ui.title}, size={cfg.ui.width}x{cfg.ui.height} pixels")
 

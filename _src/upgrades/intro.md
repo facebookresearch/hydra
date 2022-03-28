@@ -5,7 +5,9 @@ sidebar_label: Introduction
 ---
 
 Upgrading to a new Hydra version is usually an easy process.
-
+Also since Hydra version 1.2, backwards compatibility is improved
+by giving the user more control over appropriate defaults
+through the use of the [version_base parameter](version_base.md).
 
 :::info NOTE
 Hydra versioning has only major versions and patch versions. A bump of the first two version digits is considered a major release.

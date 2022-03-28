@@ -21,7 +21,7 @@ node:                         # Config is hierarchical
 from omegaconf import DictConfig, OmegaConf
 import hydra
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig):
     assert cfg.node.loompa == 10          # attribute style access
     assert cfg["node"]["loompa"] == 10    # dictionary style access
