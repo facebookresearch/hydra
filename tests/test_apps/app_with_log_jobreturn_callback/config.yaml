@@ -3,4 +3,4 @@ foo: bar
 hydra:
   callbacks:
     log_job_return:
-      _target_: hydra.experimental.log_job_return_callback.LogJobReturnCallback
+      _target_: hydra.experimental.callbacks.LogJobReturnCallback
