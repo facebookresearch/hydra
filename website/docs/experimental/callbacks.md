@@ -5,9 +5,6 @@ sidebar_label: Callbacks
 ---
 
 import GithubLink from "@site/src/components/GithubLink"
-import {ExampleGithubLink} from "@site/src/components/GithubLink"
-
-<ExampleGithubLink text="Examples" to="hydra/experimental"/>
 
 The <GithubLink to="hydra/experimental/callback.py">Callback interface</GithubLink> enables custom
 code to be triggered by various Hydra events.
