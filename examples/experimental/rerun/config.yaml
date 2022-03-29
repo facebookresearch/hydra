@@ -3,6 +3,6 @@ foo: bar
 hydra:
   callbacks:
     save_job_info:
-      _target_: hydra.experimental.pickle_job_info_callback.PickleJobInfoCallback
+      _target_: hydra.experimental.callbacks.PickleJobInfoCallback
   job:
     chdir: false
