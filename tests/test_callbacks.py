@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
-import pickle
 import sys
 from pathlib import Path
 from textwrap import dedent
