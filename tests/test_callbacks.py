@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import pickle
+import sys
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, List
@@ -12,6 +13,7 @@ from hydra.core.utils import JobReturn, JobStatus
 from hydra.test_utils.test_utils import (
     assert_regex_match,
     chdir_hydra_root,
+    run_process,
     run_python_script,
 )
 
@@ -145,3 +147,30 @@ def test_experimental_save_job_info_callback(tmpdir: Path, multirun: bool) -> No
     assert job_return_on_job_end.hydra_cfg.hydra == hydra_cfg_from_app  # type: ignore
     assert job_return_on_job_end.return_value == "hello world"
     assert job_return_on_job_end.status == JobStatus.COMPLETED
+
+
+@mark.parametrize("multirun", [True, False])
+def test_save_job_return_callback(tmpdir: Path, multirun: bool) -> None:
+    app_path = "tests/test_apps/app_with_log_jobreturn_callback/my_app.py"
+    cmd = [
+        sys.executable,
+        app_path,
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+    ]
+    if multirun:
+        extra = ["+x=0,1", "-m"]
+        cmd.extend(extra)
+    log_msg = "omegaconf.errors.ConfigAttributeError: Key 'divisor' is not in struct\n"
+    run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    if multirun:
+        log_paths = [tmpdir / "0" / "my_app.log", tmpdir / "1" / "my_app.log"]
+    else:
+        log_paths = [tmpdir / "my_app.log"]
+
+    for p in log_paths:
+        with open(p, "r") as file:
+            logs = file.readlines()
+            assert log_msg in logs
