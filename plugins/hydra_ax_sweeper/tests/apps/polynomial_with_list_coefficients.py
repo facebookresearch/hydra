@@ -11,7 +11,7 @@ def polynomial_with_list_coefficients(cfg: DictConfig) -> Any:
     a = 100
     b = 10
     c = 1
-    return a * (x ** 2) + b * y + c * z
+    return a * (x**2) + b * y + c * z
 
 
 if __name__ == "__main__":

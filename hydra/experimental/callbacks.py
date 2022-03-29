@@ -22,4 +22,3 @@ class LogJobReturnCallback(Callback):
             self.log.error("", exc_info=job_return._return_value)
         else:
             self.log.error("Status unknown. This should never happen.")
-
