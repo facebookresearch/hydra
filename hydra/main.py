@@ -24,7 +24,7 @@ def _get_rerun_conf(file_path: str, overrides: List[str]) -> DictConfig:
     warnings.warn(msg, UserWarning)
     file = Path(file_path)
     if not file.exists():
-        raise ValueError(f"{file} does not exist!")
+        raise ValueError(f"File {file} does not exist!")
 
     if len(overrides) > 0:
         msg = "Config overrides are not supported as of now."
@@ -82,9 +82,8 @@ def main(
                 args = args_parser.parse_args()
                 if args.experimental_rerun is not None:
                     cfg = _get_rerun_conf(args.experimental_rerun, args.overrides)
-                    ret = task_function(cfg)
+                    task_function(cfg)
                     _flush_loggers()
-                    return ret
                 else:
                     # no return value from run_hydra() as it may sometime actually run the task_function
                     # multiple times (--multirun)
