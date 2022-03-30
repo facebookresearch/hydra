@@ -20,7 +20,7 @@ _UNSPECIFIED_: Any = object()
 
 
 def _get_rerun_conf(file_path: str, overrides: List[str]) -> DictConfig:
-    msg = "Experimental rerun CLI option."
+    msg = "Experimental rerun CLI option, other command line args are ignored."
     warnings.warn(msg, UserWarning)
     file = Path(file_path)
     if not file.exists():
