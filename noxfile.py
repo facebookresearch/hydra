@@ -12,7 +12,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8", "3.9"]
+DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8", "3.9", "3.10"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -546,6 +546,7 @@ def test_jupyter_notebooks(session):
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
         "--nbval",
+        "-W ignore::DeprecationWarning",
         "-W ignore::ResourceWarning",
         "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
@@ -555,7 +556,12 @@ def test_jupyter_notebooks(session):
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args("--nbval", "-W ignore::ResourceWarning", str(notebook))
+        args = pytest_args(
+            "--nbval",
+            "-W ignore::DeprecationWarning",
+            "-W ignore::ResourceWarning",
+            str(notebook),
+        )
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
 

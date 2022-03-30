@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import importlib
+import importlib.util
 import inspect
 import pkgutil
 import sys
@@ -181,10 +182,23 @@ class Plugins(metaclass=Singleton):
                     if module_name.startswith("_") and not module_name.startswith("__"):
                         continue
                     import_time = timer()
-                    m = importer.find_module(modname)  # type: ignore
-                    assert m is not None
+
                     with warnings.catch_warnings(record=True) as recorded_warnings:
-                        loaded_mod = m.load_module(modname)
+                        if sys.version_info < (3, 10):
+                            m = importer.find_module(modname)  # type: ignore
+                            assert m is not None
+                            loaded_mod = m.load_module(modname)
+                        else:
+                            spec = importer.find_spec(modname)
+                            assert spec is not None
+                            if modname in sys.modules:
+                                loaded_mod = sys.modules[modname]
+                            else:
+                                loaded_mod = importlib.util.module_from_spec(spec)
+                            if loaded_mod is not None:
+                                spec.loader.exec_module(loaded_mod)
+                                sys.modules[modname] = loaded_mod
+
                     import_time = timer() - import_time
                     if len(recorded_warnings) > 0:
                         sys.stderr.write(
