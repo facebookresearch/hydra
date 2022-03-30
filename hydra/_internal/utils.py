@@ -282,7 +282,7 @@ def run_and_report(func: Any) -> Any:
                         assert iter_tb.tb_next is not None
                         iter_tb = iter_tb.tb_next
 
-                    print_exception(etype=None, value=ex, tb=final_tb)  # type: ignore
+                    print_exception(None, value=ex, tb=final_tb)  # type: ignore
                 sys.stderr.write(
                     "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
                 )
