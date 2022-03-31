@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from textwrap import dedent
 from typing import Any
 
-from pytest import mark, param
+from pytest import mark, param, raises
 
+from hydra.errors import InstantiationException
 from hydra.utils import instantiate
 from tests.instantiate import ArgsClass
 
@@ -45,6 +47,43 @@ from tests.instantiate import ArgsClass
 )
 def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
     assert instantiate(cfg) == expected
+
+
+@mark.parametrize(
+    "cfg, msg",
+    [
+        param(
+            {"_target_": "tests.instantiate.ArgsClass", "_args_": {"foo": "bar"}},
+            dedent(
+                """\
+                Error in collecting args and kwargs for 'tests\\.instantiate\\.ArgsClass':
+                InstantiationException\\("Unsupported _args_ type: 'DictConfig'\\. value: '{'foo': 'bar'}'",?\\)"""
+            ),
+            id="unsupported-args-type",
+        ),
+        param(
+            {
+                "foo": {
+                    "_target_": "tests.instantiate.ArgsClass",
+                    "_args_": {"foo": "bar"},
+                }
+            },
+            dedent(
+                """\
+                Error in collecting args and kwargs for 'tests\\.instantiate\\.ArgsClass':
+                InstantiationException\\("Unsupported _args_ type: 'DictConfig'\\. value: '{'foo': 'bar'}'",?\\)
+                full_key: foo"""
+            ),
+            id="unsupported-args-type-nested",
+        ),
+    ],
+)
+def test_instantiate_unsupported_args_type(cfg: Any, msg: str) -> None:
+    with raises(
+        InstantiationException,
+        match=msg,
+    ):
+        instantiate(cfg)
 
 
 @mark.parametrize(

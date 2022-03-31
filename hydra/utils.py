@@ -34,12 +34,13 @@ def get_class(path: str) -> type:
 
 def get_method(path: str) -> Callable[..., Any]:
     try:
-        cl = _locate(path)
-        if not callable(cl):
+        obj = _locate(path)
+        if not callable(obj):
             raise ValueError(
-                f"Located non-callable of type '{type(cl).__name__}'"
+                f"Located non-callable of type '{type(obj).__name__}'"
                 + f" while loading '{path}'"
             )
+        cl: Callable[..., Any] = obj
         return cl
     except Exception as e:
         log.error(f"Error getting callable at {path} : {e}")

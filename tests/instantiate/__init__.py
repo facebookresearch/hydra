@@ -3,11 +3,14 @@ import collections
 import collections.abc
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig
 
 from hydra.types import TargetConf
+from tests.instantiate.module_shadowed_by_function import a_function
+
+module_shadowed_by_function = a_function
 
 
 def _convert_type(obj: Any) -> Any:
@@ -70,6 +73,16 @@ def add_values(a: int, b: int) -> int:
 
 def module_function(x: int) -> int:
     return x
+
+
+class ExceptionTakingNoArgument(Exception):
+    def __init__(self) -> None:
+        """Init method taking only one argument (self)"""
+        super().__init__("Err message")
+
+
+def raise_exception_taking_no_argument() -> NoReturn:
+    raise ExceptionTakingNoArgument()
 
 
 @dataclass

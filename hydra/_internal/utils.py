@@ -7,8 +7,8 @@ import sys
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
-from types import FrameType, TracebackType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
+from types import FrameType, ModuleType, TracebackType
+from typing import Any, List, Optional, Sequence, Tuple
 
 from omegaconf.errors import OmegaConfBaseException
 
