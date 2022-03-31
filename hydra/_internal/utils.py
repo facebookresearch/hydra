@@ -551,7 +551,7 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
     return widths
 
 
-def _locate(path: str) -> Union[type, Callable[..., Any]]:
+def _locate(path: str) -> Any:
     """
     Locate an object by name or dotted path, importing as necessary.
     This is similar to the pydoc function `locate`, except that it checks for
@@ -562,41 +562,47 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     import builtins
     from importlib import import_module
 
-    parts = [part for part in path.split(".") if part]
-    module = None
-    for n in reversed(range(len(parts))):
+    parts = [part for part in path.split(".")]
+    for part in parts:
+        if not len(part):
+            raise ValueError(
+                f"Error loading '{path}': invalid dotstring."
+                + "\nRelative imports are not supported."
+            )
+    assert len(parts) > 0
+    part0 = parts[0]
+    try:
+        obj = import_module(part0)
+    except Exception as exc_import:
+        raise ImportError(
+            f"Error loading '{path}':\n{repr(exc_import)}"
+            + f"\nAre you sure that module '{part0}' is installed?"
+        ) from exc_import
+    for m in range(1, len(parts)):
+        part = parts[m]
         try:
-            mod = ".".join(parts[:n])
-            module = import_module(mod)
-        except Exception as e:
-            if n == 0:
-                raise ImportError(f"Error loading module '{path}'") from e
-            continue
-        if module:
-            break
-    if module:
-        obj = module
-    else:
-        obj = builtins
-    for part in parts[n:]:
-        mod = mod + "." + part
-        if not hasattr(obj, part):
-            try:
-                import_module(mod)
-            except Exception as e:
-                raise ImportError(
-                    f"Encountered error: `{e}` when loading module '{path}'"
-                ) from e
-        obj = getattr(obj, part)
-    if isinstance(obj, type):
-        obj_type: type = obj
-        return obj_type
-    elif callable(obj):
-        obj_callable: Callable[..., Any] = obj
-        return obj_callable
-    else:
-        # dummy case
-        raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
+            obj = getattr(obj, part)
+        except AttributeError as exc_attr:
+            parent_dotpath = ".".join(parts[:m])
+            if isinstance(obj, ModuleType):
+                mod = ".".join(parts[: m + 1])
+                try:
+                    obj = import_module(mod)
+                    continue
+                except ModuleNotFoundError as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}':\n{repr(exc_import)}"
+                        + f"\nAre you sure that '{part}' is importable from module '{parent_dotpath}'?"
+                    ) from exc_import
+                except Exception as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}':\n{repr(exc_import)}"
+                    ) from exc_import
+            raise ImportError(
+                f"Error loading '{path}':\n{repr(exc_attr)}"
+                + f"\nAre you sure that '{part}' is an attribute of '{parent_dotpath}'?"
+            ) from exc_attr
+    return obj
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:
