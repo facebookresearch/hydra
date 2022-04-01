@@ -257,9 +257,7 @@ class OptunaSweeperImpl(Sweeper):
             params = dict(trial.params)
             params.update(fixed_params)
 
-            overrides.append(
-                tuple(f"{name}={value}" for name, val in params.items())
-            )
+            overrides.append(tuple(f"{name}={value}" for name, val in params.items()))
         return overrides
 
     def _parse_sweeper_params_config(self) -> List[str]:
