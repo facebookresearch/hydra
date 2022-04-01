@@ -25,6 +25,8 @@ class BaseQueueConf:
     nodes: int = 1
     # name of the job
     name: str = "${hydra.job.name}"
+    # redirect stderr to stdout
+    stderr_to_stdout: bool = False
 
 
 @dataclass
@@ -52,6 +54,7 @@ class SlurmQueueConf(BaseQueueConf):
     gpus_per_task: Optional[int] = None
     mem_per_gpu: Optional[str] = None
     mem_per_cpu: Optional[str] = None
+    account: Optional[str] = None
 
     # Following parameters are submitit specifics
     #

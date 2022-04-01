@@ -55,7 +55,8 @@ And in the main output directory:
 
 ### Disable changing current working dir to job's output dir
 
-Set `hydra.job.chdir=False` to disable the behavior. 
+By default, Hydra's `@hydra.main` decorator makes a call to `os.chdir` before passing control to the user's decorated main function.
+Set `hydra.job.chdir=False` to disable this behavior.
 ```bash
 # check current working dir
 $ pwd  
@@ -65,7 +66,7 @@ $ pwd
 $ python my_app.py hydra.job.chdir=False
 Working directory : /home/omry/dev/hydra
 
-# output dir and files created
+# output dir and files are still created, even if `chdir` is disabled:
 $ tree -a outputs/2021-10-25/09-46-26/
 outputs/2021-10-25/09-46-26/
 ├── .hydra
@@ -94,6 +95,9 @@ def my_app(_cfg: DictConfig) -> None:
     print(f"Orig working directory    : {get_original_cwd()}")
     print(f"to_absolute_path('foo')   : {to_absolute_path('foo')}")
     print(f"to_absolute_path('/foo')  : {to_absolute_path('/foo')}")
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 ```text title="$ python examples/tutorial/8_working_directory/original_cwd.py"

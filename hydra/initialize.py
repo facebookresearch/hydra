@@ -4,6 +4,7 @@ import os
 from textwrap import dedent
 from typing import Any, Optional
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
@@ -52,24 +53,30 @@ class initialize:
     def __init__(
         self,
         config_path: Optional[str] = _UNSPECIFIED_,
+        version_base: Optional[str] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
     ) -> None:
         self._gh_backup = get_gh_backup()
 
-        # DEPRECATED: remove in 1.2
-        # in 1.2, the default config_path should be changed to None
+        version.setbase(version_base)
+
         if config_path is _UNSPECIFIED_:
-            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-            deprecation_warning(
-                message=dedent(
-                    f"""\
-                config_path is not specified in hydra.initialize().
-                See {url} for more information."""
-                ),
-                stacklevel=2,
-            )
-            config_path = "."
+            if version.base_at_least("1.2"):
+                config_path = None
+            elif version_base is _UNSPECIFIED_:
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                    config_path is not specified in hydra.initialize().
+                    See {url} for more information."""
+                    ),
+                    stacklevel=2,
+                )
+                config_path = "."
+            else:
+                config_path = "."
 
         if config_path is not None and os.path.isabs(config_path):
             raise HydraException("config_path in initialize() must be relative")
@@ -106,8 +113,15 @@ class initialize_config_module:
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 
-    def __init__(self, config_module: str, job_name: str = "app"):
+    def __init__(
+        self,
+        config_module: str,
+        version_base: Optional[str] = _UNSPECIFIED_,
+        job_name: str = "app",
+    ):
         self._gh_backup = get_gh_backup()
+
+        version.setbase(version_base)
 
         Hydra.create_main_hydra_file_or_module(
             calling_file=None,
@@ -135,8 +149,16 @@ class initialize_config_dir:
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 
-    def __init__(self, config_dir: str, job_name: str = "app") -> None:
+    def __init__(
+        self,
+        config_dir: str,
+        version_base: Optional[str] = _UNSPECIFIED_,
+        job_name: str = "app",
+    ) -> None:
         self._gh_backup = get_gh_backup()
+
+        version.setbase(version_base)
+
         # Relative here would be interpreted as relative to cwd, which - depending on when it run
         # may have unexpected meaning. best to force an absolute path to avoid confusion.
         # Can consider using hydra.utils.to_absolute_path() to convert it at a future point if there is demand.

@@ -16,6 +16,8 @@ from tests.instantiate import (
     Parameters,
 )
 
+from .module_shadowed_by_function import a_function
+
 
 @mark.parametrize(
     "name,expected",
@@ -68,6 +70,7 @@ from tests.instantiate import (
         ("tests.instantiate.ASubclass", ASubclass),
         ("tests.instantiate.NestingClass", NestingClass),
         ("tests.instantiate.AnotherClass", AnotherClass),
+        ("tests.instantiate.module_shadowed_by_function", a_function),
         ("", raises(ImportError, match=re.escape("Empty path"))),
         (
             "not_found",

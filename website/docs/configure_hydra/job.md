@@ -18,7 +18,6 @@ class JobConf:
     name: str = MISSING
 
     # Change current working dir to the output dir.
-    # Will default to False in Hydra 1.3
     chdir: bool = True
 
     # Concatenation of job overrides that can be used as a part
@@ -66,7 +65,7 @@ You can override it via the command line, or your config file.
 ### hydra.job.chdir
 
 Decides whether Hydra changes the current working directory to the output directory for each job.
-Learn more at the [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md) page.
+Learn more at the [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md#disable-changing-current-working-dir-to-jobs-output-dir) page.
 
 
 ### hydra.job.override_dirname

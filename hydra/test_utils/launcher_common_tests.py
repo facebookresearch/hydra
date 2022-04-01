@@ -620,7 +620,7 @@ class IntegrationTestSuite:
         integration_test(
             tmpdir=self.get_test_scratch_dir(tmpdir),
             task_config=cfg,
-            overrides=overrides,
+            overrides=overrides + ["hydra.job.chdir=True"],
             prints="os.getcwd()",
             expected_outputs=expected_outputs,
             generate_custom_cmd=self.generate_custom_cmd(),
@@ -649,6 +649,7 @@ class IntegrationTestSuite:
     ) -> None:
         expected_dir = "cli_dir/cli_dir_0"
         overrides = extra_flags + [
+            "hydra.job.chdir=True",
             "hydra.sweep.dir=cli_dir",
             "hydra.sweep.subdir=cli_dir_${hydra.job.num}",
         ]

@@ -5,7 +5,7 @@ title: Specializing configuration
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
-<ExampleGithubLink text="Example application" to="examples/patterns/specializing_config-select"/>
+<ExampleGithubLink text="Example application" to="examples/patterns/specializing_config"/>
 
 In some cases the desired configuration should depend on other configuration choices.
 For example, You may want to use only 5 layers in your Alexnet model if the dataset of choice is cifar10, and the dafault 7 otherwise.
@@ -54,6 +54,8 @@ We want the model for alexnet, when trained on cifar - to have 5 layers.
 
 ### dataset_model/cifar10_alexnet.yaml
 ```yaml
+# @package _global_
+
 model:
   num_layers: 5
 ```

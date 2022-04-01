@@ -1,3 +1,8 @@
 defaults:
   - config_schema
   - set: all
+  - _self_
+
+hydra:
+  job:
+    chdir: true

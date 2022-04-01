@@ -75,6 +75,11 @@ The primary Defaults List will come from `config.yaml`.
 <details><summary>my_app.py (Click to expand)</summary>
 
 ```python {28-30}
+from dataclasses import dataclass
+
+import hydra
+from hydra.core.config_store import ConfigStore
+
 @dataclass
 class DBConfig:
     driver: str = MISSING
@@ -106,7 +111,7 @@ cs.store(name="base_config", node=Config)
 cs.store(group="db", name="base_mysql", node=MySQLConfig)
 cs.store(group="db", name="base_postgresql", node=PostGreSQLConfig)
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
 
@@ -190,6 +195,11 @@ we want to validate against.
 <div className="col col--6">
 
 ```python title="my_app.py"
+from dataclasses import dataclass
+
+import hydra
+from hydra.core.config_store import ConfigStore
+
 import database_lib
 
 
@@ -221,6 +231,10 @@ if __name__ == "__main__":
 <div className="col col--6">
 
 ```python title="database_lib.py" {17,22}
+from dataclasses import dataclass
+
+from hydra.core.config_store import ConfigStore
+
 @dataclass
 class DBConfig:
   ...

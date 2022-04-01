@@ -1,7 +1,9 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from functools import partial
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional
 
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -22,9 +24,12 @@ from optuna.distributions import (
     LogUniformDistribution,
     UniformDistribution,
 )
-from pytest import mark
+from optuna.samplers import RandomSampler
+from pytest import mark, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
+from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
+from hydra_plugins.hydra_optuna_sweeper.config import Direction
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
@@ -91,6 +96,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
         ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
+        ("key=range(0.5, 5.5, step=1)", DiscreteUniformDistribution(0.5, 5.5, 1)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
@@ -253,3 +259,53 @@ def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
     w = returns["best_params"]["w"]
     assert w >= 0
     assert w <= 1
+
+
+@mark.parametrize(
+    "search_space,params,raise_warning,msg",
+    [
+        (None, None, False, None),
+        (
+            {},
+            {},
+            True,
+            r"Both hydra.sweeper.params and hydra.sweeper.search_space are configured.*",
+        ),
+        (
+            {},
+            None,
+            True,
+            r"`hydra.sweeper.search_space` is deprecated and will be removed in the next major release.*",
+        ),
+        (None, {}, False, None),
+    ],
+)
+def test_warnings(
+    tmpdir: Path,
+    search_space: Optional[DictConfig],
+    params: Optional[DictConfig],
+    raise_warning: bool,
+    msg: Optional[str],
+) -> None:
+    partial_sweeper = partial(
+        OptunaSweeperImpl,
+        sampler=RandomSampler(),
+        direction=Direction.minimize,
+        storage=None,
+        study_name="test",
+        n_trials=1,
+        n_jobs=1,
+    )
+    if search_space is not None:
+        search_space = OmegaConf.create(search_space)
+    if params is not None:
+        params = OmegaConf.create(params)
+    sweeper = partial_sweeper(search_space=search_space, params=params)
+    if raise_warning:
+        with warns(
+            UserWarning,
+            match=msg,
+        ):
+            sweeper._process_searchspace_config()
+    else:
+        sweeper._process_searchspace_config()

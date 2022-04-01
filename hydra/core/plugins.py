@@ -6,17 +6,12 @@ import sys
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
-from inspect import signature
-from textwrap import dedent
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional, Tuple, Type
 
 from omegaconf import DictConfig
 
-from hydra._internal.callbacks import Callbacks
-from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.sources_registry import SourcesRegistry
-from hydra.core.config_loader import ConfigLoader
 from hydra.core.singleton import Singleton
 from hydra.plugins.completion_plugin import CompletionPlugin
 from hydra.plugins.config_source import ConfigSource
@@ -26,6 +21,15 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
 from hydra.utils import instantiate
+
+PLUGIN_TYPES: List[Type[Plugin]] = [
+    Plugin,
+    ConfigSource,
+    CompletionPlugin,
+    Launcher,
+    Sweeper,
+    SearchPathPlugin,
+]
 
 
 @dataclass
@@ -59,19 +63,32 @@ class Plugins(metaclass=Singleton):
         except ImportError:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
-        self.plugin_type_to_subclass_list, self.stats = self._scan_all_plugins(
-            modules=top_level
-        )
-        self.class_name_to_class = {}
-        for plugin_type, plugins in self.plugin_type_to_subclass_list.items():
-            for clazz in plugins:
-                name = f"{clazz.__module__}.{clazz.__name__}"
-                self.class_name_to_class[name] = clazz
 
-        # Register config sources
-        for source in self.plugin_type_to_subclass_list[ConfigSource]:
-            assert issubclass(source, ConfigSource)
-            SourcesRegistry.instance().register(source)
+        self.plugin_type_to_subclass_list = defaultdict(list)
+        self.class_name_to_class = {}
+
+        scanned_plugins, self.stats = self._scan_all_plugins(modules=top_level)
+        for clazz in scanned_plugins:
+            self._register(clazz)
+
+    def register(self, clazz: Type[Plugin]) -> None:
+        """
+        Call Plugins.instance().register(MyPlugin) to manually register a plugin class.
+        """
+        if not _is_concrete_plugin_type(clazz):
+            raise ValueError("Not a valid Hydra Plugin")
+        self._register(clazz)
+
+    def _register(self, clazz: Type[Plugin]) -> None:
+        assert _is_concrete_plugin_type(clazz)
+        for plugin_type in PLUGIN_TYPES:
+            if issubclass(clazz, plugin_type):
+                if clazz not in self.plugin_type_to_subclass_list[plugin_type]:
+                    self.plugin_type_to_subclass_list[plugin_type].append(clazz)
+        name = f"{clazz.__module__}.{clazz.__name__}"
+        self.class_name_to_class[name] = clazz
+        if issubclass(clazz, ConfigSource):
+            SourcesRegistry.instance().register(clazz)
 
     def _instantiate(self, config: DictConfig) -> Plugin:
         from hydra._internal import utils as internal_utils
@@ -108,59 +125,6 @@ class Plugins(metaclass=Singleton):
             "hydra._internal.core_plugins."
         )
 
-    @staticmethod
-    def _setup_plugin(
-        plugin: Any,
-        task_function: TaskFunction,
-        config: DictConfig,
-        config_loader: Optional[ConfigLoader] = None,
-        hydra_context: Optional[HydraContext] = None,
-    ) -> Any:
-        """
-        With HydraContext introduced in #1581, we need to set up the plugins in a way
-        that's compatible with both Hydra 1.0 and Hydra 1.1 syntax.
-        This method should be deleted in the next major release.
-        """
-        assert isinstance(plugin, Sweeper) or isinstance(plugin, Launcher)
-        assert (
-            config_loader is not None or hydra_context is not None
-        ), "config_loader and hydra_context cannot both be None"
-
-        param_keys = signature(plugin.setup).parameters.keys()
-
-        if "hydra_context" not in param_keys:
-            # DEPRECATED: remove in 1.2
-            # hydra_context will be required in 1.2
-            deprecation_warning(
-                message=dedent(
-                    """
-                    Plugin's setup() signature has changed in Hydra 1.1.
-                    Support for the old style will be removed in Hydra 1.2.
-                    For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-                ),
-            )
-            config_loader = (
-                config_loader
-                if config_loader is not None
-                else hydra_context.config_loader  # type: ignore
-            )
-            plugin.setup(  # type: ignore
-                config=config,
-                config_loader=config_loader,
-                task_function=task_function,
-            )
-        else:
-            if hydra_context is None:
-                # hydra_context could be None when an incompatible Sweeper instantiates a compatible Launcher
-                assert config_loader is not None
-                hydra_context = HydraContext(
-                    config_loader=config_loader, callbacks=Callbacks()
-                )
-            plugin.setup(
-                config=config, hydra_context=hydra_context, task_function=task_function
-            )
-        return plugin
-
     def instantiate_sweeper(
         self,
         *,
@@ -172,56 +136,39 @@ class Plugins(metaclass=Singleton):
         if config.hydra.sweeper is None:
             raise RuntimeError("Hydra sweeper is not configured")
         sweeper = self._instantiate(config.hydra.sweeper)
-        sweeper = self._setup_plugin(
-            plugin=sweeper,
-            task_function=task_function,
-            config=config,
-            config_loader=None,
-            hydra_context=hydra_context,
-        )
         assert isinstance(sweeper, Sweeper)
+        sweeper.setup(
+            hydra_context=hydra_context, task_function=task_function, config=config
+        )
         return sweeper
 
     def instantiate_launcher(
         self,
+        hydra_context: HydraContext,
         task_function: TaskFunction,
         config: DictConfig,
-        config_loader: Optional[ConfigLoader] = None,
-        hydra_context: Optional[HydraContext] = None,
     ) -> Launcher:
         Plugins.check_usage(self)
         if config.hydra.launcher is None:
             raise RuntimeError("Hydra launcher is not configured")
 
         launcher = self._instantiate(config.hydra.launcher)
-        launcher = self._setup_plugin(
-            plugin=launcher,
-            config=config,
-            task_function=task_function,
-            config_loader=config_loader,
-            hydra_context=hydra_context,
-        )
         assert isinstance(launcher, Launcher)
+        launcher.setup(
+            hydra_context=hydra_context, task_function=task_function, config=config
+        )
         return launcher
 
     @staticmethod
     def _scan_all_plugins(
         modules: List[Any],
-    ) -> Tuple[Dict[Type[Plugin], List[Type[Plugin]]], ScanStats]:
+    ) -> Tuple[List[Type[Plugin]], ScanStats]:
 
         stats = ScanStats()
         stats.total_time = timer()
 
-        ret: Dict[Type[Plugin], List[Type[Plugin]]] = defaultdict(list)
+        scanned_plugins: List[Type[Plugin]] = []
 
-        plugin_types: List[Type[Plugin]] = [
-            Plugin,
-            ConfigSource,
-            CompletionPlugin,
-            Launcher,
-            Sweeper,
-            SearchPathPlugin,
-        ]
         for mdl in modules:
             for importer, modname, ispkg in pkgutil.walk_packages(
                 path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
@@ -234,7 +181,8 @@ class Plugins(metaclass=Singleton):
                     if module_name.startswith("_") and not module_name.startswith("__"):
                         continue
                     import_time = timer()
-                    m = importer.find_module(modname)
+                    m = importer.find_module(modname)  # type: ignore
+                    assert m is not None
                     with warnings.catch_warnings(record=True) as recorded_warnings:
                         loaded_mod = m.load_module(modname)
                     import_time = timer() - import_time
@@ -259,14 +207,8 @@ class Plugins(metaclass=Singleton):
 
                     if loaded_mod is not None:
                         for name, obj in inspect.getmembers(loaded_mod):
-                            if (
-                                inspect.isclass(obj)
-                                and issubclass(obj, Plugin)
-                                and not inspect.isabstract(obj)
-                            ):
-                                for plugin_type in plugin_types:
-                                    if issubclass(obj, plugin_type):
-                                        ret[plugin_type].append(obj)
+                            if _is_concrete_plugin_type(obj):
+                                scanned_plugins.append(obj)
                 except ImportError as e:
                     warnings.warn(
                         message=f"\n"
@@ -278,7 +220,7 @@ class Plugins(metaclass=Singleton):
                     )
 
         stats.total_time = timer() - stats.total_time
-        return ret, stats
+        return scanned_plugins, stats
 
     def get_stats(self) -> Optional[ScanStats]:
         return self.stats
@@ -308,3 +250,9 @@ class Plugins(metaclass=Singleton):
             raise ValueError(
                 f"Plugins is now a Singleton. usage: Plugins.instance().{inspect.stack()[1][3]}(...)"
             )
+
+
+def _is_concrete_plugin_type(obj: Any) -> bool:
+    return (
+        inspect.isclass(obj) and issubclass(obj, Plugin) and not inspect.isabstract(obj)
+    )

@@ -147,7 +147,7 @@ class OptunaSweeperConf:
     # For example, you can use SQLite if you set 'sqlite:///example.db'
     # Please refer to the reference for further details
     # https://optuna.readthedocs.io/en/stable/reference/storages.html
-    storage: Optional[str] = None
+    storage: Optional[Any] = None
 
     # Name of study to persist optimization results
     study_name: Optional[str] = None
@@ -158,7 +158,9 @@ class OptunaSweeperConf:
     # Number of parallel workers
     n_jobs: int = 2
 
-    search_space: Dict[str, Any] = field(default_factory=dict)
+    search_space: Optional[Dict[str, Any]] = None
+
+    params: Optional[Dict[str, str]] = None
 
     # Allow custom trial configuration via Python methods
     # Method should accept a DictConfig and a Trial

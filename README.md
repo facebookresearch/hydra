@@ -25,9 +25,6 @@
   <a href="https://lgtm.com/projects/g/facebookresearch/hydra/context:python">
     <img src="https://img.shields.io/lgtm/grade/python/g/facebookresearch/hydra.svg?logo=lgtm&logoWidth=18" alt="Language grade: Python" />
   </a>
-  <a href="https://hydra-framework.zulipchat.com">
-    <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="zulip" />
-  </a>
   <p align="center">
     <i>A framework for elegantly configuring complex applications.</i>
   </p>
@@ -43,26 +40,18 @@
 
 #### Stable
 
-**Hydra 1.0** is the stable version of Hydra.
+**Hydra 1.1** is the stable version of Hydra.
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
-#### Release candidate
-**Hydra 1.1** is now a release candidate!
-
-Please try it out and report any issues.
-
-- [Documentation](https://hydra.cc/docs/next/intro)
-- [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0.rc1)
-- Installation : `pip install hydra-core --upgrade --pre`
-- Release candidates are more likely to have bugs, please report any issues.
 
 ### License
 Hydra is licensed under [MIT License](LICENSE).
 
 ## Community
-Ask questions in the chat or StackOverflow (Use the tag #fb-hydra or #omegaconf):
-* [Chat](https://hydra-framework.zulipchat.com)
+
+Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
+* [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 

@@ -1,0 +1,1 @@
+Fix a resolution error occurring when a nested class is passed as a `_target_` keyword argument to `instantiate`

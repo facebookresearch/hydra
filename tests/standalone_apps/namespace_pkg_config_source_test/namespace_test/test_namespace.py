@@ -27,7 +27,9 @@ class TestCoreConfigSources(ConfigSourceTestSuite):
 
 
 def test_config_in_dir() -> None:
-    with initialize(config_path="../some_namespace/namespace_test/dir"):
+    with initialize(
+        version_base=None, config_path="../some_namespace/namespace_test/dir"
+    ):
         config_loader = GlobalHydra.instance().config_loader()
         assert "cifar10" in config_loader.get_group_options("dataset")
         assert "imagenet" in config_loader.get_group_options("dataset")

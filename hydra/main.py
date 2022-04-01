@@ -5,6 +5,7 @@ from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig
 
+from . import version
 from ._internal.deprecation_warning import deprecation_warning
 from ._internal.utils import _run_hydra, get_args_parser
 from .types import TaskFunction
@@ -15,6 +16,7 @@ _UNSPECIFIED_: Any = object()
 def main(
     config_path: Optional[str] = _UNSPECIFIED_,
     config_name: Optional[str] = None,
+    version_base: Optional[str] = _UNSPECIFIED_,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: The config path, a directory relative to the declaring python file.
@@ -22,19 +24,24 @@ def main(
     :param config_name: The name of the config (usually the file name without the .yaml extension)
     """
 
-    # DEPRECATED: remove in 1.2
-    # in 1.2, the default config_path should be changed to None
+    version.setbase(version_base)
+
     if config_path is _UNSPECIFIED_:
-        url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-        deprecation_warning(
-            message=dedent(
-                f"""
-            config_path is not specified in @hydra.main().
-            See {url} for more information."""
-            ),
-            stacklevel=2,
-        )
-        config_path = "."
+        if version.base_at_least("1.2"):
+            config_path = None
+        elif version_base is _UNSPECIFIED_:
+            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+            deprecation_warning(
+                message=dedent(
+                    f"""
+                config_path is not specified in @hydra.main().
+                See {url} for more information."""
+                ),
+                stacklevel=2,
+            )
+            config_path = "."
+        else:
+            config_path = "."
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
         @functools.wraps(task_function)

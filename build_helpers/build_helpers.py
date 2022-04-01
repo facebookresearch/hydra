@@ -10,7 +10,7 @@ from os.path import abspath, basename, dirname, exists, isdir, join
 from typing import List, Optional
 
 from setuptools import Command
-from setuptools.command import build_py, develop, sdist  # type: ignore
+from setuptools.command import build_py, develop, sdist
 
 
 def find_version(*file_paths: str) -> str:
@@ -143,7 +143,7 @@ def run_antlr(cmd: Command) -> None:
             raise
 
 
-class BuildPyCommand(build_py.build_py):  # type: ignore
+class BuildPyCommand(build_py.build_py):
     def run(self) -> None:
         if not self.dry_run:
             self.run_command("clean")
@@ -151,16 +151,16 @@ class BuildPyCommand(build_py.build_py):  # type: ignore
         build_py.build_py.run(self)
 
 
-class Develop(develop.develop):  # type: ignore
-    def run(self) -> None:
+class Develop(develop.develop):
+    def run(self) -> None:  # type: ignore
         if not self.dry_run:
             run_antlr(self)
         develop.develop.run(self)
 
 
-class SDistCommand(sdist.sdist):  # type: ignore
+class SDistCommand(sdist.sdist):
     def run(self) -> None:
-        if not self.dry_run:
+        if not self.dry_run:  # type: ignore
             self.run_command("clean")
             run_antlr(self)
         sdist.sdist.run(self)

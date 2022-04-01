@@ -70,18 +70,9 @@ storage: null
 study_name: sphere
 n_trials: 20
 n_jobs: 1
-search_space:
-  x:
-    type: float
-    low: -5.5
-    high: 5.5
-    step: 0.5
-  'y':
-    type: categorical
-    choices:
-    - -5
-    - 0
-    - 5
+params:
+  x: range(-5.5,5.5,step=0.5)
+  y: choice(-5,0,5)
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -156,6 +147,7 @@ The output is as follows:
 #### Range override
 
 `range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
+If any of `range`'s start, stop or step is of type float, it will be converted to [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html)
 
 <details><summary>Example for range override</summary>
 
@@ -211,39 +203,8 @@ The output is as follows:
 
 ### Configuring through config file
 
-#### Int parameters
-
-`int` parameters can be defined with the following fields:
-
-- `type`: `int`
-- `low`: lower bound
-- `high`: upper bound
-- `step`: discretization step (optional)
-- `log`: if `true`, space is converted to the log domain
-
-If `log` is `false`, the parameter is mapped to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). Otherwise, the parameter is mapped to [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html). Please note that `step` can not be set if `log=true`.
-
-#### Float parameters
-
-`float` parameters can be defined with the following fields:
-
-- `type`: `float`
-- `low`: lower bound
-- `high`: upper bound
-- `step`: discretization step
-- `log`: if `true`, space is converted to the log domain
-
-If `log` is `false`, the parameter is mapped to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html) or [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html) depending on the presence or absence of the `step` field, respectively. Otherwise, the parameter is mapped to [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html). Please note that `step` can not be set if `log=true`.
-
-#### Categorical parameters
-
-`categorical` parameters can be defined with the following fields:
-
-  - `type`: `categorical`
-  - `choices`: a list of parameter value candidates
-
-The parameters are mapped to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
-
+The syntax in config file is consistent with the above commandline override. For example, a commandline override 
+`x=range(1,4)` can be expressed in config file as `x: range(1,4)` under the `hydra.sweeper.params` node.
 
 ## Example 2:  Multi-Objective Optimization
 
@@ -275,17 +236,9 @@ storage: null
 study_name: multi-objective
 n_trials: 20
 n_jobs: 1
-search_space:
-  x:
-    type: float
-    low: 0
-    high: 5
-    step: 0.5
-  'y':
-    type: float
-    low: 0
-    high: 3
-    step: 0.5
+params:
+  x: range(0, 5, step=0.5)
+  y: range(0, 3, step=0.5)
 ```
 </details>
 

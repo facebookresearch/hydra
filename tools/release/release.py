@@ -72,7 +72,7 @@ def get_releases(metadata: DictConfig) -> List[Version]:
 
 
 @dataclass
-class Package:
+class PackageInfo:
     name: str
     local_version: Version
     latest_version: Version
@@ -84,7 +84,7 @@ def parse_version(ver: str) -> Version:
     return v
 
 
-def get_package_info(path: str) -> Package:
+def get_package_info(path: str) -> PackageInfo:
     try:
         prev = os.getcwd()
         path = os.path.abspath(path)
@@ -101,7 +101,7 @@ def get_package_info(path: str) -> Package:
 
     remote_metadata = get_metadata(package_name)
     latest = get_releases(remote_metadata)[-1]
-    return Package(
+    return PackageInfo(
         name=package_name, local_version=local_version, latest_version=latest
     )
 
@@ -123,18 +123,21 @@ def build_package(cfg: Config, pkg_path: str, build_dir: str) -> None:
 
 def _next_version(version: str) -> str:
     cur = parse(version)
+    assert isinstance(cur, Version)
     if cur.is_devrelease:
         prefix = "dev"
+        assert cur.dev is not None
         num = cur.dev + 1
         new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
     elif cur.is_prerelease:
+        assert cur.pre is not None
         prefix = cur.pre[0]
         num = cur.pre[1] + 1
         new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
     elif cur.is_postrelease:
-        prefix = cur.post[0]
-        num = cur.post[1] + 1
-        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{prefix}{num}"
+        assert cur.post is not None
+        num = cur.post + 1
+        new_version = f"{cur.major}.{cur.minor}.{cur.micro}.{num}"
     else:
         micro = cur.micro + 1
         new_version = f"{cur.major}.{cur.minor}.{micro}"
@@ -174,7 +177,7 @@ def bump_version(cfg: Config, package: Package, hydra_root: str) -> None:
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
     hydra_root = find_parent_dir_containing(target="ATTRIBUTION")
     build_dir = f"{os.getcwd()}/{cfg.build_dir}"

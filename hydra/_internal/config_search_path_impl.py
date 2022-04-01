@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, MutableSequence, Optional
+from typing import List, MutableSequence, Optional, Union
 
 from hydra.core.config_search_path import (
     ConfigSearchPath,
@@ -63,7 +63,10 @@ class ConfigSearchPathImpl(ConfigSearchPath):
                 self.append(provider, path, anchor=None)
 
     def prepend(
-        self, provider: str, path: str, anchor: Optional[SearchPathQuery] = None
+        self,
+        provider: str,
+        path: str,
+        anchor: Optional[Union[SearchPathQuery, str]] = None,
     ) -> None:
         """
         Prepends to the search path.

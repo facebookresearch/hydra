@@ -10,7 +10,7 @@ repos:
         files: 'tools/.*'
 
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 22.1.0
     hooks:
       - id: black
         language_version: python3.6
@@ -25,4 +25,4 @@ repos:
     rev: v1.25.0
     hooks:
       - id: yamllint
-        args: [-c=.yamllint]
+        args: [-c=.yamllint, --strict]

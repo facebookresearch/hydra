@@ -47,12 +47,12 @@ module.exports = {
                 label: 'Structured Configs Tutorial',
                 items: [
                     'tutorials/structured_config/intro',
+                    'tutorials/structured_config/config_store',
                     'tutorials/structured_config/minimal_example',
                     'tutorials/structured_config/hierarchical_static_config',
                     'tutorials/structured_config/config_groups',
                     'tutorials/structured_config/defaults',
                     'tutorials/structured_config/schema',
-                    'tutorials/structured_config/config_store',
                 ],
             },
         ],
@@ -145,11 +145,14 @@ module.exports = {
 
         'Upgrade Guide': [
             'upgrades/intro',
+            'upgrades/version_base',
             {
                 type: 'category',
                 label: '1.1 to 1.2',
                 items: [
+                    'upgrades/1.1_to_1.2/changes_to_hydra_main_config_path',
                     'upgrades/1.1_to_1.2/changes_to_job_working_dir',
+                    'upgrades/1.1_to_1.2/changes_to_sweeper_config',
                 ],
             },
             {

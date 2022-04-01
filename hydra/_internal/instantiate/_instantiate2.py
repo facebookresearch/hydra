@@ -1,9 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import copy
+import functools
 import sys
 from enum import Enum
-from typing import Any, Callable, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -20,6 +21,7 @@ class _Keys(str, Enum):
     CONVERT = "_convert_"
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
+    PARTIAL = "_partial_"
 
 
 def _is_target(x: Any) -> bool:
@@ -45,7 +47,7 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
-def _call_target(_target_: Callable, *args, **kwargs) -> Any:  # type: ignore
+def _call_target(_target_: Callable, _partial_: bool, *args, **kwargs) -> Any:  # type: ignore
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(*args, **kwargs)
@@ -58,24 +60,29 @@ def _call_target(_target_: Callable, *args, **kwargs) -> Any:  # type: ignore
         for v in kwargs.values():
             if OmegaConf.is_config(v):
                 v._set_parent(None)
-
-        return _target_(*args, **kwargs)
     except Exception as e:
         raise type(e)(
             f"Error instantiating '{_convert_target_to_string(_target_)}' : {e}"
         ).with_traceback(sys.exc_info()[2])
 
+    try:
+        if _partial_:
+            return functools.partial(_target_, *args, **kwargs)
+        return _target_(*args, **kwargs)
+    except Exception as e:
+        raise InstantiationException(
+            f"Error instantiating '{_convert_target_to_string(_target_)}' : {repr(e)}"
+        ) from e
+
 
 def _convert_target_to_string(t: Any) -> Any:
-    if isinstance(t, type):
-        return f"{t.__module__}.{t.__name__}"
-    elif callable(t):
+    if callable(t):
         return f"{t.__module__}.{t.__qualname__}"
     else:
         return t
 
 
-def _prepare_input_dict(d: Any) -> Any:
+def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
     res: Any
     if isinstance(d, dict):
         res = {}
@@ -83,13 +90,13 @@ def _prepare_input_dict(d: Any) -> Any:
             if k == "_target_":
                 v = _convert_target_to_string(d["_target_"])
             elif isinstance(v, (dict, list)):
-                v = _prepare_input_dict(v)
+                v = _prepare_input_dict_or_list(v)
             res[k] = v
     elif isinstance(d, list):
         res = []
         for v in d:
             if isinstance(v, (list, dict)):
-                v = _prepare_input_dict(v)
+                v = _prepare_input_dict_or_list(v)
             res.append(v)
     else:
         assert False
@@ -128,7 +135,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   the exception of Structured Configs (and their fields).
                         all     : Passed objects are dicts, lists and primitives without
                                   a trace of OmegaConf containers
-                   _args_: List-like of positional arguments
+                   _partial_: If True, return functools.partial wrapped method or object
+                              False by default. Configure per target.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -151,13 +159,13 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
         )
 
-    if isinstance(config, dict):
-        config = _prepare_input_dict(config)
+    if isinstance(config, (dict, list)):
+        config = _prepare_input_dict_or_list(config)
 
-    kwargs = _prepare_input_dict(kwargs)
+    kwargs = _prepare_input_dict_or_list(kwargs)
 
     # Structured Config always converted first to OmegaConf
-    if is_structured_config(config) or isinstance(config, dict):
+    if is_structured_config(config) or isinstance(config, (dict, list)):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
@@ -176,11 +184,38 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
+        _partial_ = config.pop(_Keys.PARTIAL, False)
 
-        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_)
+        return instantiate_node(
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+        )
+    elif OmegaConf.is_list(config):
+        # Finalize config (convert targets to strings, merge with kwargs)
+        config_copy = copy.deepcopy(config)
+        config_copy._set_flag(
+            flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
+        )
+        config_copy._set_parent(config._get_parent())
+        config = config_copy
+
+        OmegaConf.resolve(config)
+
+        _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
+        _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
+        _partial_ = kwargs.pop(_Keys.PARTIAL, False)
+
+        if _partial_:
+            raise InstantiationException(
+                "The _partial_ keyword is not compatible with top-level list instantiation"
+            )
+
+        return instantiate_node(
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+        )
     else:
         raise InstantiationException(
-            "Top level config has to be OmegaConf DictConfig, plain dict, or a Structured Config class or instance"
+            "Top level config has to be OmegaConf DictConfig/ListConfig, "
+            + "plain dict/list, or a Structured Config class or instance."
         )
 
 
@@ -200,6 +235,7 @@ def instantiate_node(
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
+    partial: bool = False,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -214,9 +250,13 @@ def instantiate_node(
         # if the key type is incompatible on get.
         convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
         recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
+        partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
 
     if not isinstance(recursive, bool):
         raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
+
+    if not isinstance(partial, bool):
+        raise TypeError(f"_partial_ flag must be a bool, got {type( partial )}")
 
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
@@ -235,7 +275,7 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({"_target_", "_convert_", "_recursive_"})
+        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET))
             kwargs = {}
@@ -246,7 +286,8 @@ def instantiate_node(
                             value, convert=convert, recursive=recursive
                         )
                     kwargs[key] = _convert_node(value, convert)
-            return _call_target(_target_, *args, **kwargs)
+
+            return _call_target(_target_, partial, *args, **kwargs)
         else:
             # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (

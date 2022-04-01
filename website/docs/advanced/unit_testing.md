@@ -18,7 +18,7 @@ from hydra import initialize, compose
 #    it needs to have a __init__.py (can be empty).
 # 3. THe config path is relative to the file calling initialize (this file)
 def test_with_initialize() -> None:
-    with initialize(config_path="../hydra_app/conf"):
+    with initialize(version_base=None, config_path="../hydra_app/conf"):
         # config is relative to a module
         cfg = compose(config_name="config", overrides=["app.user=test_user"])
         assert cfg == {
@@ -26,3 +26,7 @@ def test_with_initialize() -> None:
             "db": {"host": "localhost", "port": 3306},
         }
 ```
+
+For an idea about how to modify Hydra's search path when using `compose` in
+unit tests, see the page on
+[overriding the `hydra.searchpath` config](search_path.md#overriding-hydrasearchpath-config).

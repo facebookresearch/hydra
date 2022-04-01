@@ -21,6 +21,11 @@ The following sweeps over all combinations of the dbs and schemas.
 ```
 The printed configurations have been omitted for brevity.
 
+:::important
+Hydra composes configs lazily at job launching time. If you change code or configs after launching a job/sweep, the final 
+composed configs might be impacted.
+:::
+
 ### Additional sweep types
 Hydra supports other kinds of sweeps, e.g:
 ```python
