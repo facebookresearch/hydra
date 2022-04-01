@@ -45,21 +45,11 @@ optim:
   maximize: false
   seed: null
   max_failure_rate: 0.0
-parametrization:
-  db:
-  - mnist
-  - cifar
-  lr:
-    init: 0.02
-    step: 2.0
-    log: true
-  dropout:
-    lower: 0.0
-    upper: 1.0
-  batch_size:
-    lower: 4
-    upper: 16
-    integer: true
+params:
+  db: choice(mnist, cifar)
+  lr: {init: 0.02, step: 2.0, log: true}
+  dropout: interval(0, 1)
+  batch_size: range(4, 16)
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -130,7 +120,7 @@ name: nevergrad
 The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
 
 ### Defining through commandline override
-Hydra provides a override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
+Hydra provides an override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
 
 #### Choices
 To override a field with choices:
@@ -147,22 +137,23 @@ You can tag an override with ```ordered``` to indicate it's a [```TransitionChoi
 
 #### Scalar
 ```commandline
-`key=interval(1,12)`             # Interval are float by default
-`key=int(interval(1,8))`         # Scalar bounds cast to a int
-`key=tag(log, interval(1,12))`   # call ng.p.Log if tagged with log
+`key=interval(1,12)`                      # Interval are float by default
+`key=int(interval(1,8))`                  # Scalar bounds cast to a int
+`key=tag(log, interval(1,12))`            # call ng.p.Log if tagged with log
+`key={init: 0.02, step: 2.0, log: true}`  # Unbounded log scale scaler
 ```
 
 ### Defining through config file
-#### Choices
-Choices are defined with a list in a config file.
+The search space can be defined under `hydra.sweeper.params`. 
+The definition is consistent with how you'd override from the commandline.
 
-```yaml
-db:
-  - mnist
-  - cifar
-```
+#### Choices
+Choices are defined the same way as how you'd override. For example, you'd translate `key=shuffle(range(1, 8))` from the 
+commandline to `key: shuffle(range(1, 8))` in the config file.
+
 #### Scalars
-Scalars can be defined in config files, with fields:
+`Scalar` definitions are supported in override syntax as well (see above).  
+Following are the supported keys that can be passed in via a `dict` for defining unbounded Scalars:
   - `init`: optional initial value
   - `lower` : optional lower bound
   - `upper`: optional upper bound
@@ -171,4 +162,3 @@ Scalars can be defined in config files, with fields:
   - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
 Providing only `lower` and `upper` bound will set the initial value to the middle of the range and the step to a sixth of the range.
-**Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.

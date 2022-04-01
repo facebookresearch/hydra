@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import math
+from textwrap import dedent
 from typing import (
     Any,
-    Dict,
     List,
     MutableMapping,
     MutableSequence,
@@ -11,8 +11,11 @@ from typing import (
     Tuple,
     Union,
 )
+import warnings
 
 import nevergrad as ng
+
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core import utils
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
@@ -60,7 +63,10 @@ def create_nevergrad_param_from_config(
 def create_nevergrad_parameter_from_override(override: Override) -> Any:
     val = override.value()
     if not override.is_sweep_override():
-        return val
+        if isinstance(override.value(), dict):
+            return create_nevergrad_param_from_config(override.value())
+        else:
+            return val
     if override.is_choice_sweep():
         assert isinstance(val, ChoiceSweep)
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
@@ -87,20 +93,53 @@ class NevergradSweeperImpl(Sweeper):
         self,
         optim: OptimConf,
         parametrization: Optional[DictConfig],
+        params: Optional[DictConfig],
     ):
         self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
         self.hydra_context: Optional[HydraContext] = None
         self.job_results = None
-        self.parametrization: Dict[str, Any] = {}
-        if parametrization is not None:
-            assert isinstance(parametrization, DictConfig)
-            self.parametrization = {
-                str(x): create_nevergrad_param_from_config(y)
-                for x, y in parametrization.items()
-            }
+        self.parametrization = parametrization
+        self.params = params
         self.job_idx: Optional[int] = None
+
+    def _process_parameter_config(self) -> None:
+        url = (
+            "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
+        )
+        if self.params is None and self.parametrization is None:
+            self.params = OmegaConf.create({})
+            self.parametrization = OmegaConf.create({})
+        elif self.parametrization is not None:
+            if self.params is not None:
+                warnings.warn(
+                    "Both hydra.sweeper.params and hydra.sweeper.parametrization are configured."
+                    "\nHydra will use hydra.sweeper.params for defining search space."
+                    f"\n{url}"
+                )
+                self.parametrization = OmegaConf.create({})
+            else:
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                        `hydra.sweeper.parametrization` is deprecated and will be removed in the next major release.
+                        Please configure with `hydra.sweeper.params`.
+                        {url}
+                        """
+                    ),
+                )
+                self.params = OmegaConf.create({})
+
+                parametrization = self.parametrization
+                if parametrization is not None:
+                    assert isinstance(parametrization, DictConfig)
+                    self.parametrization = {
+                        str(x): create_nevergrad_param_from_config(y)
+                        for x, y in parametrization.items()
+                    }
+        else:
+            self.parametrization = OmegaConf.create({})
 
     def setup(
         self,
@@ -121,13 +160,18 @@ class NevergradSweeperImpl(Sweeper):
         assert self.config is not None
         assert self.launcher is not None
         assert self.job_idx is not None
+
+        self._process_parameter_config()
+        params_conf = self._parse_sweeper_params_config()
+        params_conf.extend(arguments)
+
         direction = -1 if self.opt_config.maximize else 1
         name = "maximization" if self.opt_config.maximize else "minimization"
         # Override the parametrization from commandline
         params = dict(self.parametrization)
 
         parser = OverridesParser.create()
-        parsed = parser.parse_overrides(arguments)
+        parsed = parser.parse_overrides(params_conf)
 
         for override in parsed:
             params[

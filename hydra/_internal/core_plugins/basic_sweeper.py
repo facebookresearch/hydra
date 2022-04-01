@@ -57,7 +57,7 @@ class BasicSweeper(Sweeper):
     """
 
     def __init__(
-        self, max_batch_size: Optional[int], params: Optional[Dict[str, str]] = None
+        self, max_batch_size: Optional[int], params: Optional[DictConfig] = None
     ) -> None:
         """
         Instantiates
@@ -65,7 +65,7 @@ class BasicSweeper(Sweeper):
         super(BasicSweeper, self).__init__()
 
         if params is None:
-            params = {}
+            params = OmegaConf.create({})
         self.overrides: Optional[Sequence[Sequence[Sequence[str]]]] = None
         self.batch_index = 0
         self.max_batch_size = max_batch_size
@@ -139,18 +139,12 @@ class BasicSweeper(Sweeper):
             )
             return [x for x in chunks_iter]
 
-    def _parse_config(self) -> List[str]:
-        params_conf = []
-        for k, v in self.params.items():
-            params_conf.append(f"{k}={v}")
-        return params_conf
-
     def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
         assert self.hydra_context is not None
 
-        params_conf = self._parse_config()
+        params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
 
         parser = OverridesParser.create(config_loader=self.hydra_context.config_loader)

@@ -23,6 +23,7 @@ class Sweeper(Plugin):
     hydra_context: Optional[HydraContext]
     config: Optional[DictConfig]
     launcher: Optional[Launcher]
+    params: Optional[DictConfig]
 
     @abstractmethod
     def setup(
@@ -63,3 +64,11 @@ class Sweeper(Plugin):
             config_loader.load_sweep_config(
                 master_config=self.config, sweep_overrides=list(overrides)
             )
+
+    def _parse_sweeper_params_config(self) -> List[str]:
+        params_conf = []
+        assert self.params is not None
+        for k, v in self.params.items():
+            param = f"{k}={v}".replace("'", "")
+            params_conf.append(param)
+        return params_conf

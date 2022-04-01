@@ -1,9 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
+from functools import partial
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import nevergrad as ng
+from _pytest.recwarn import warns
+
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -18,6 +21,13 @@ from pytest import mark
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
+
+from plugins.hydra_nevergrad_sweeper.hydra_plugins.hydra_nevergrad_sweeper._impl import (
+    NevergradSweeperImpl,
+)
+from plugins.hydra_nevergrad_sweeper.hydra_plugins.hydra_nevergrad_sweeper.config import (
+    OptimConf,
+)
 
 chdir_plugin_root()
 
@@ -61,6 +71,10 @@ def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Sc
             {"lower": 1, "upper": 12, "log": True, "integer": True},
             get_scalar_with_integer_bounds(1, 12, ng.p.Log),
         ),
+        (
+            {"init": 0.02, "step": 2.0, "log": True},
+            ng.p.Log(init=0.02, lower=None, upper=None, exponent=2.0),
+        ),
     ],
 )
 def test_create_nevergrad_parameter_from_config(
@@ -93,6 +107,10 @@ def test_create_nevergrad_parameter_from_config(
         (
             "key=tag(log, int(interval(1,12)))",
             get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Log),
+        ),
+        (
+            "key={init: 0.02, step: 2.0, log: true}",
+            ng.p.Log(init=0.02, lower=None, upper=None, exponent=2.0),
         ),
     ],
 )
@@ -179,3 +197,47 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         assert error_string in err
     else:
         assert error_string not in err
+
+
+@mark.parametrize(
+    "parametrization,params,raise_warning,msg",
+    [
+        (None, None, False, None),
+        (
+            {},
+            {},
+            True,
+            r"Both hydra.sweeper.params and hydra.sweeper.parametrization are configured.*",
+        ),
+        (
+            {},
+            None,
+            True,
+            r"`hydra.sweeper.parametrization` is deprecated and will be removed in the next major release.*",
+        ),
+        (None, {}, False, None),
+    ],
+)
+def test_warnings(
+    parametrization: Optional[DictConfig],
+    params: Optional[DictConfig],
+    raise_warning: bool,
+    msg: Optional[str],
+) -> None:
+    partial_sweeper = partial(
+        NevergradSweeperImpl,
+        optim=OptimConf(),
+    )
+    if parametrization is not None:
+        parametrization = OmegaConf.create(parametrization)
+    if params is not None:
+        params = OmegaConf.create(params)
+    sweeper = partial_sweeper(parametrization=parametrization, params=params)
+    if raise_warning:
+        with warns(
+            UserWarning,
+            match=msg,
+        ):
+            sweeper._process_parameter_config()
+    else:
+        sweeper._process_parameter_config()

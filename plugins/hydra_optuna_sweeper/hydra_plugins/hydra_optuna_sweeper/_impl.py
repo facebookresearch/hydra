@@ -187,13 +187,6 @@ class OptunaSweeperImpl(Sweeper):
         )
         self.sweep_dir = config.hydra.sweep.dir
 
-    def _parse_sweeper_params_config(self) -> List[str]:
-        params_conf = []
-        assert self.params is not None
-        for k, v in self.params.items():
-            params_conf.append(f"{k}={v}")
-        return params_conf
-
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
