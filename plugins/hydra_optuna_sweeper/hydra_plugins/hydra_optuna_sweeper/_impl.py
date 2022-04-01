@@ -157,11 +157,8 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
-<<<<<<< HEAD
         custom_search_space: Optional[str],
-=======
         params: Optional[DictConfig],
->>>>>>> main
     ) -> None:
         self.sampler = sampler
         self.direction = direction
@@ -169,7 +166,6 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
-<<<<<<< HEAD
         self.search_space = {}
         if search_space:
             assert isinstance(search_space, DictConfig)
@@ -180,10 +176,8 @@ class OptunaSweeperImpl(Sweeper):
         self.custom_search_space = None
         if custom_search_space:
             self.custom_search_space = get_method(custom_search_space)
-=======
         self.search_space = search_space
         self.params = params
->>>>>>> main
         self.job_idx: int = 0
 
     def _process_searchspace_config(self) -> None:
