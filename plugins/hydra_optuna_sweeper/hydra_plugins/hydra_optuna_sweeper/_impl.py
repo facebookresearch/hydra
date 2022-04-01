@@ -1,7 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 import sys
-<<<<<<< HEAD
+import warnings
+from textwrap import dedent
 from typing import (
     Any,
     Dict,
@@ -12,11 +13,6 @@ from typing import (
     Sequence,
     Tuple,
 )
-=======
-import warnings
-from textwrap import dedent
-from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
->>>>>>> main
 
 import optuna
 from hydra._internal.deprecation_warning import deprecation_warning

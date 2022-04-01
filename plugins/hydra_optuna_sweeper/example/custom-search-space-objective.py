@@ -20,7 +20,7 @@ def configure(cfg: DictConfig, trial: Trial) -> None:
         x_value - cfg.max_z_difference_from_x,
         x_value + cfg.max_z_difference_from_x,
     )
-    trial.suggest_float("+w", 0.0, 1.0) # note +w here, not w as w is a new parameter
+    trial.suggest_float("+w", 0.0, 1.0)  # note +w here, not w as w is a new parameter
 
 
 if __name__ == "__main__":
