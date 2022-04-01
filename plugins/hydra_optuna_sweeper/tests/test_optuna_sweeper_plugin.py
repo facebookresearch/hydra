@@ -295,6 +295,7 @@ def test_warnings(
         study_name="test",
         n_trials=1,
         n_jobs=1,
+        custom_search_space=None,
     )
     if search_space is not None:
         search_space = OmegaConf.create(search_space)
