@@ -162,13 +162,6 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
-        self.search_space = {}
-        if search_space:
-            assert isinstance(search_space, DictConfig)
-            self.search_space = {
-                str(x): create_optuna_distribution_from_config(y)
-                for x, y in search_space.items()
-            }
         self.custom_search_space = None
         if custom_search_space:
             self.custom_search_space = get_method(custom_search_space)
@@ -236,12 +229,13 @@ class OptunaSweeperImpl(Sweeper):
     def _configure_trials(
         self,
         trials: List[Trial],
-        search_space: Dict[str, BaseDistribution],
+        search_space: DictConfig,
         fixed_params: Dict[str, Any],
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
             for param_name, distribution in search_space.items():
+                assert type(param_name) is str
                 trial._suggest(param_name, distribution)
             for param_name, value in fixed_params.items():
                 trial.set_user_attr(param_name, value)
@@ -273,11 +267,12 @@ class OptunaSweeperImpl(Sweeper):
         assert self.hydra_context is not None
         assert self.job_idx is not None
 
-        search_space = dict(self.search_space)
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
         overrides_search_space, fixed_params = create_params_from_overrides(params_conf)
+        assert self.search_space is not None
+        search_space = self.search_space.copy()
         search_space.update(overrides_search_space)
 
         # Remove fixed parameters from Optuna search space.
