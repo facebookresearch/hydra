@@ -531,7 +531,9 @@ def test_jupyter_notebooks(session):
 
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
+        "--nbval",
+        "-W ignore::ResourceWarning",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     session.run(*args, silent=SILENT)
 
@@ -539,7 +541,7 @@ def test_jupyter_notebooks(session):
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args("--nbval", str(notebook))
+        args = pytest_args("--nbval", "-W ignore::ResourceWarning", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
 
