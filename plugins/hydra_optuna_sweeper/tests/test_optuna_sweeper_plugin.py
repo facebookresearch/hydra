@@ -256,7 +256,7 @@ def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
         returns["best_params"]["x"] - returns["best_params"]["z"]
         <= max_z_difference_from_x
     )
-    w = returns["best_params"]["w"]
+    w = returns["best_params"]["+w"]
     assert w >= 0
     assert w <= 1
 

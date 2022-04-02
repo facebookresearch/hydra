@@ -175,7 +175,6 @@ class OptunaSweeperImpl(Sweeper):
         )
         if self.params is None and self.search_space is None:
             self.params = OmegaConf.create({})
-            self.search_space = OmegaConf.create({})
         elif self.search_space is not None:
             if self.params is not None:
                 warnings.warn(
@@ -183,7 +182,7 @@ class OptunaSweeperImpl(Sweeper):
                     "\nHydra will use hydra.sweeper.params for defining search space."
                     f"\n{url}"
                 )
-                self.search_space = OmegaConf.create({})
+                self.search_space = None
             else:
                 deprecation_warning(
                     message=dedent(
@@ -194,15 +193,14 @@ class OptunaSweeperImpl(Sweeper):
                         """
                     ),
                 )
-                self.params = OmegaConf.create({})
-                search_space = self.search_space
-                assert isinstance(self.search_space, DictConfig)
-                self.search_space = {  # type: ignore
-                    str(x): create_optuna_distribution_from_config(y)
-                    for x, y in search_space.items()
-                }
-        else:
-            self.search_space = OmegaConf.create({})
+                self.params = OmegaConf.create(
+                    {
+                        str(x): create_optuna_distribution_from_config(y)
+                        for x, y in self.search_space.items()
+                    }
+                )
+                self.search_space = None
+        assert self.search_space is None
 
     def setup(
         self,
@@ -229,7 +227,7 @@ class OptunaSweeperImpl(Sweeper):
     def _configure_trials(
         self,
         trials: List[Trial],
-        search_space: DictConfig,
+        search_space: Dict[str, BaseDistribution],
         fixed_params: Dict[str, Any],
     ) -> Sequence[Sequence[str]]:
         overrides = []
@@ -251,7 +249,7 @@ class OptunaSweeperImpl(Sweeper):
             params = dict(trial.params)
             params.update(fixed_params)
 
-            overrides.append(tuple(f"{name}={value}" for name, val in params.items()))
+            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
         return overrides
 
     def _parse_sweeper_params_config(self) -> List[str]:
@@ -266,19 +264,17 @@ class OptunaSweeperImpl(Sweeper):
         assert self.launcher is not None
         assert self.hydra_context is not None
         assert self.job_idx is not None
+        assert self.search_space is None
 
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
-        overrides_search_space, fixed_params = create_params_from_overrides(params_conf)
-        assert self.search_space is not None
-        search_space = self.search_space.copy()
-        search_space.update(overrides_search_space)
+        params, fixed_params = create_params_from_overrides(params_conf)
 
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
-            if param_name in search_space:
-                del search_space[param_name]
+            if param_name in params:
+                del params[param_name]
 
         directions = self._get_directions()
 
@@ -301,7 +297,7 @@ class OptunaSweeperImpl(Sweeper):
             batch_size = min(n_trials_to_go, batch_size)
 
             trials = [study.ask() for _ in range(batch_size)]
-            overrides = self._configure_trials(trials, search_space, fixed_params)
+            overrides = self._configure_trials(trials, params, fixed_params)
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)

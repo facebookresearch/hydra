@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 from optuna.trial import Trial
 
 
-@hydra.main(config_path="custom-search-space", config_name="config")
+@hydra.main(version_base=None, config_path="custom-search-space", config_name="config")
 def multi_dimensional_sphere(cfg: DictConfig) -> float:
     w: float = cfg.w
     x: float = cfg.x
