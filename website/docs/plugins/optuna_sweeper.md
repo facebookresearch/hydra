@@ -255,6 +255,11 @@ For problems with trade-offs between two different objectives, there may be no s
 
 ## EXPERIMENTAL:  Custom-Search-Space Optimization
 
+Hydra's Optuna Sweeper allows users to provide a hook for custom search space configuration.
+This means you can work directly with the `optuna.trial.Trial` object to suggest parameters.
+To use this feature, define a python function with signature `Callable[[DictConfig, optuna.trial.Trial], None]`
+and set the `hydra.sweeper.custom_search_space` key in your config to target that function.
+
 You can find a full example in the same directory as before, where `example/custom-search-space-objective.py` implements a benchmark function to be minimized.
 The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra.
 Part of the search space configuration is defined in config files, and part of it is written in Python.
