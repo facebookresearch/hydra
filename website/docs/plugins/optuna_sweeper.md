@@ -269,7 +269,6 @@ Part of the search space configuration is defined in config files, and part of i
 ```yaml
 defaults:
   - override hydra/sweeper: optuna
-  - override hydra/sweeper/sampler: tpe
 
 hydra:
   sweeper:
