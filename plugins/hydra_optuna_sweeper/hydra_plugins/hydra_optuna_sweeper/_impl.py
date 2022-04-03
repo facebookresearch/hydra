@@ -5,6 +5,7 @@ import warnings
 from textwrap import dedent
 from typing import (
     Any,
+    Callable,
     Dict,
     List,
     MutableMapping,
@@ -162,10 +163,11 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
-        self.custom_search_space = None
-        self.custom_search_space: Optional[Callable[[DictConfig, Trial], None]] = None
+        self.custom_search_space_extender: Optional[
+            Callable[[DictConfig, Trial], None]
+        ] = None
         if custom_search_space:
-            self.custom_search_space = get_method(custom_search_space)
+            self.custom_search_space_extender = get_method(custom_search_space)
         self.search_space = search_space
         self.params = params
         self.job_idx: int = 0
@@ -228,25 +230,27 @@ class OptunaSweeperImpl(Sweeper):
     def _configure_trials(
         self,
         trials: List[Trial],
-        search_space: Dict[str, BaseDistribution],
+        search_space_distributions: Dict[str, BaseDistribution],
         fixed_params: Dict[str, Any],
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
-            for param_name, distribution in search_space.items():
+            for param_name, distribution in search_space_distributions.items():
                 assert type(param_name) is str
                 trial._suggest(param_name, distribution)
             for param_name, value in fixed_params.items():
                 trial.set_user_attr(param_name, value)
 
-            if self.custom_search_space:
-                self.custom_search_space(self.config, trial)
+            if self.custom_search_space_extender:
+                assert self.config is not None
+                self.custom_search_space_extender(self.config, trial)
 
             overlap = trial.params.keys() & trial.user_attrs
-            assert len(overlap) == 0, (
-                "Overlapping fixed parameters and search space parameters found!"
-                f"Overlapping parameters: {list(overlap)}"
-            )
+            if len(overlap):
+                raise ValueError(
+                    "Overlapping fixed parameters and search space parameters found!"
+                    f"Overlapping parameters: {list(overlap)}"
+                )
             params = dict(trial.params)
             params.update(fixed_params)
 
@@ -270,12 +274,14 @@ class OptunaSweeperImpl(Sweeper):
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
-        params, fixed_params = create_params_from_overrides(params_conf)
+        search_space_distributions, fixed_params = create_params_from_overrides(
+            params_conf
+        )
 
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
-            if param_name in params:
-                del params[param_name]
+            if param_name in search_space_distributions:
+                del search_space_distributions[param_name]
 
         directions = self._get_directions()
 
@@ -298,7 +304,9 @@ class OptunaSweeperImpl(Sweeper):
             batch_size = min(n_trials_to_go, batch_size)
 
             trials = [study.ask() for _ in range(batch_size)]
-            overrides = self._configure_trials(trials, params, fixed_params)
+            overrides = self._configure_trials(
+                trials, search_space_distributions, fixed_params
+            )
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
