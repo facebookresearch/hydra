@@ -163,6 +163,7 @@ class OptunaSweeperImpl(Sweeper):
         self.n_trials = n_trials
         self.n_jobs = n_jobs
         self.custom_search_space = None
+        self.custom_search_space: Optional[Callable[[DictConfig, Trial], None]] = None
         if custom_search_space:
             self.custom_search_space = get_method(custom_search_space)
         self.search_space = search_space
