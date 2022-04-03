@@ -559,7 +559,6 @@ def _locate(path: str) -> Any:
     """
     if path == "":
         raise ImportError("Empty path")
-    import builtins
     from importlib import import_module
 
     parts = [part for part in path.split(".")]

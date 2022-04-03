@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass
 from functools import partial
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import fixture, mark, param, raises, warns
