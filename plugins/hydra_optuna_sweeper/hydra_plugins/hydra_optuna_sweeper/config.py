@@ -162,8 +162,9 @@ class OptunaSweeperConf:
 
     params: Optional[Dict[str, str]] = None
 
-    # Allow custom trial configuration via Python methods
-    # Method should accept a DictConfig and a Trial
+    # Allow custom trial configuration via Python methods.
+    # If given, `custom_search_space` should be a an instantiate-style dotpath targeting
+    # a callable with signature Callable[[DictConfig, optuna.trial.Trial], None].
     # https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html
     custom_search_space: Optional[str] = None
 
