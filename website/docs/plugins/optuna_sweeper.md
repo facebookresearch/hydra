@@ -281,16 +281,12 @@ hydra:
     n_trials: 20
     n_jobs: 1
 
-    search_space:
-      x:
-        type: float
-        low: -5.5
-        high: 5.5
-        step: 0.5
-      y:
-        type: categorical
-        choices: [-5, 0, 5]
-    custom_search_space: example.custom-search-space-objective.configure
+    params:
+      x: range(-5.5, 5.5, 0.5)
+      y: choice(-5, 0, 5)
+    # `custom_search_space` should be a dotpath pointing to a
+    # callable that provides search-space configuration logic:
+    custom_search_space: .custom-search-space-objective.configure
 
 x: 1
 y: 1
