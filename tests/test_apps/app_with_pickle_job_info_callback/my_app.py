@@ -23,6 +23,7 @@ def my_app(cfg: DictConfig) -> str:
     output_dir = Path(hydra_cfg.runtime.output_dir)
     pickle_cfg(Path(output_dir) / "task_cfg.pickle", cfg)
     pickle_cfg(Path(output_dir) / "hydra_cfg.pickle", hydra_cfg)
+    log.info("Running my_app")
 
     return "hello world"
 

@@ -298,6 +298,7 @@ def run_and_report(func: Any) -> Any:
 
 
 def _run_hydra(
+    args: argparse.Namespace,
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
@@ -309,7 +310,6 @@ def _run_hydra(
 
     from .hydra import Hydra
 
-    args = args_parser.parse_args()
     if args.config_name is not None:
         config_name = args.config_name
 
@@ -563,6 +563,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--config-dir",
         "-cd",
         help="Adds an additional config dir to the config search path",
+    )
+
+    parser.add_argument(
+        "--experimental-rerun",
+        help="Rerun a job from a previous config pickle",
     )
 
     info_choices = [
