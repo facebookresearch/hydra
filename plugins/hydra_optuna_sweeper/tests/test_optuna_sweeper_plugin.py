@@ -236,7 +236,7 @@ def _dominates(values_x: List[float], values_y: List[float]) -> bool:
 
 
 def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
-    max_z_difference_from_x = 0.5
+    max_z_difference_from_x = 0.3
     cmd = [
         "example/custom-search-space-objective.py",
         "--multirun",
