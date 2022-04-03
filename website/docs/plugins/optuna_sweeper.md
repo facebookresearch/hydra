@@ -304,7 +304,7 @@ Note that this `custom_search_space` API should be considered experimental and i
 
 ### Order of trial configuration
 Configuring a trial object is done in the following sequence:
-  - `search_space` parameters from the config are set
+  - search space parameters are set from the `hydra.sweeper.params` key in the config
   - Command line overrides are set
   - `custom_search_space` parameters are set
 
