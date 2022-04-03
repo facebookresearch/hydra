@@ -259,7 +259,7 @@ You can find a full example in the same directory as before, where `example/cust
 The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra.
 Part of the search space configuration is defined in config files, and part of it is written in Python.
 
-<details><summary>Configuration of the custom-search-space-objective optimization example</summary>
+<details><summary>Example: Custom search space configuration</summary>
 
 ```yaml
 defaults:
