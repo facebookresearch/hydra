@@ -297,6 +297,22 @@ y: 1
 z: 100
 max_z_difference_from_x: 0.5
 ```
+```python
+# example/custom-search-space-objective.py
+
+...
+
+def configure(cfg: DictConfig, trial: Trial) -> None:
+    x_value = trial.params["x"]
+    trial.suggest_float(
+        "z",
+        x_value - cfg.max_z_difference_from_x,
+        x_value + cfg.max_z_difference_from_x,
+    )
+    trial.suggest_float("+w", 0.0, 1.0)  # note +w here, not w as w is a new parameter
+
+...
+```
 
 </details>
 
