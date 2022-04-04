@@ -47,7 +47,13 @@ def _extract_pos_args(input_args: Any, kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
-def _call_target(_target_: Callable, _partial_: bool, args, kwargs, full_key) -> Any:  # type: ignore
+def _call_target(
+    _target_: Callable[..., Any],
+    _partial_: bool,
+    args: Tuple[Any, ...],
+    kwargs: Dict[str, Any],
+    full_key: str,
+) -> Any:
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(args, kwargs)
