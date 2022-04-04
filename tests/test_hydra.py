@@ -1832,3 +1832,31 @@ def test_hydra_mode(
             from_name="Expected output",
             to_name="Actual output",
         )
+
+
+def test_hydra_runtime_choice_1882(tmpdir: Path) -> None:
+    cmd = [
+        "tests/test_apps/app_with_cfg_groups/my_app_with_runtime_choices_print.py",
+        "--multirun",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+        "hydra.job_logging.formatters.simple.format='[JOB] %(message)s'",
+        "hydra.job.chdir=False",
+        "optimizer=adam,nesterov",
+    ]
+    expected_output = dedent(
+        """
+                [HYDRA] Launching 2 jobs locally
+                [HYDRA] \t#0 : optimizer=adam
+                adam
+                [HYDRA] \t#1 : optimizer=nesterov
+                nesterov"""
+    )
+
+    out, _ = run_python_script(cmd)
+    assert_regex_match(
+        from_line=expected_output,
+        to_line=out,
+        from_name="Expected output",
+        to_name="Actual output",
+    )
