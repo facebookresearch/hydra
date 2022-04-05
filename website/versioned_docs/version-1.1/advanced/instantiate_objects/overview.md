@@ -199,17 +199,25 @@ Trainer(
 ```
 
 ## Parameter conversion strategies
-By default, the parameters passed to the target are either primitives (int, float, bool etc) or                                                                                                 
-OmegaConf containers (DictConfig, ListConfig).
-OmegaConf containers have many advantages over primitive dicts and lists but in some cases 
-it's desired to pass a real dicts and lists (for example, for performance reasons).
+By default, the parameters passed to the target are either primitives (int,
+float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`).
+OmegaConf containers have many advantages over primitive dicts and lists,
+including convenient attribute access for keys,
+[duck-typing as instances of dataclasses or attrs classes](https://omegaconf.readthedocs.io/en/latest/structured_config.html), and
+support for [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation)
+and [custom resolvers](https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html).
+If the callable targeted by `instantiate` leverages OmegaConf's features, it
+will make sense to pass `DictConfig` and `ListConfig` instances directly to
+that callable.
 
-You can change the parameter conversion strategy using the `_convert_` parameter.
-Supported values are:
+That being said, in many cases it's desired to pass normal Python dicts and
+lists, rather than `DictConfig` or `ListConfig` instances, as arguments to your
+callable. You can change instantiate's argument conversion strategy using the
+`_convert_` parameter. Supported values are:
 
-- `none` : Default behavior, Use OmegaConf containers
-- `partial` : Convert OmegaConf containers to dict and list, except Structured Configs.
-- `all` : Convert everything to primitive containers
+- `"none"` : Default behavior, Use OmegaConf containers
+- `"partial"` : Convert OmegaConf containers to dict and list, except Structured Configs.
+- `"all"` : Convert everything to primitive containers
 
 The conversion strategy applies recursively to all subconfigs of the instantiation target.
 Here is an example demonstrating the various conversion strategies:
