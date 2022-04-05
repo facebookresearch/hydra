@@ -212,3 +212,90 @@ Supported values are:
 - `all` : Convert everything to primitive containers
 
 Note that the conversion strategy applies to all the parameters passed to the target.
+
+### Partial Instantiation (for Hydra version >= 1.1.2)
+Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
+`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
+the application code. Here is an example:
+
+```python title="Example classes"
+class Optimizer:
+    algo: str
+    lr: float
+
+    def __init__(self, algo: str, lr: float) -> None:
+        self.algo = algo
+        self.lr = lr
+
+    def __repr__(self) -> str:
+        return f"Optimizer(algo={self.algo},lr={self.lr})"
+
+
+class Model:
+    def __init__(self, optim_partial: Any, lr: float):
+        super().__init__()
+        self.optim = optim_partial(lr=lr)
+        self.lr = lr
+
+    def __repr__(self) -> str:
+        return f"Model(Optimizer={self.optim},lr={self.lr})"
+```
+
+<div className="row">
+
+<div className="col col--5">
+
+```yaml title="Config"
+model:
+  _target_: my_app.Model
+  optim_partial:
+    _partial_: true
+    _target_: my_app.Optimizer
+    algo: SGD
+  lr: 0.01
+```
+
+
+</div>
+
+<div className="col col--7">
+
+```python title="Instantiation"
+model = instantiate(cfg.model)
+print(model)
+# "Model(Optimizer=Optimizer(algo=SGD,lr=0.01),lr=0.01)
+```
+
+</div>
+</div>
+
+If you are repeatedly instantiating the same config,
+using `_partial_=True` may provide a significant speedup as compared with regular (non-partial) instantiation.
+```python
+factory = instantiate(config, _partial_=True)
+obj = factory()
+```
+In the above example, repeatedly calling `factory` would be faster than repeatedly calling `instantiate(config)`.
+A caveat of this approach is that the same keyword arguments would be re-used in each call to `factory`.
+```python
+class Foo:
+    ...
+
+class Bar:
+    def __init__(self, foo):
+        self.foo = foo
+
+bar_conf = {
+    "_target_": "__main__.Bar",
+    "foo": {"_target_": "__main__.Foo"},
+}
+
+bar_factory = instantiate(bar_conf, _partial_=True)
+bar1 = bar_factory()
+bar2 = bar_factory()
+
+assert bar1 is not bar2
+assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
+```
+This does not apply if `_partial_=False`,
+in which case a new `Foo` instance would be created with each call to `instantiate`.
