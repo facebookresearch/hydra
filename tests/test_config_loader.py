@@ -7,6 +7,7 @@ from typing import Any, List
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -189,6 +190,8 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
+        curr_base = version.getbase()
+        version.setbase("1.1")
         with warns(
             UserWarning,
             match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
@@ -198,6 +201,7 @@ class TestConfigLoader:
                 overrides=[],
                 run_mode=RunMode.RUN,
             )
+        version.setbase(str(curr_base))
 
         with open_dict(cfg):
             del cfg["hydra"]
