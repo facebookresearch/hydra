@@ -269,6 +269,11 @@ cfg_all = OmegaConf.create({..., "_convert_": "all"})
 obj_all = instantiate(cfg_all)
 ```
 
+If performance is a concern, note that the `_convert_="none"` strategy does the
+least work -- no conversion (from `DictConfig`/`ListConfig` to native python
+containers) is taking place. The `_convert_="partial"` strategy does more work,
+and `_convert_="all"` does more work yet.
+
 ### Partial Instantiation
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
 `_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
