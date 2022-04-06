@@ -132,7 +132,7 @@ def create_params_from_overrides(
 ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
-    search_space = dict()
+    search_space_distributions = dict()
     fixed_params = dict()
     for override in parsed:
         param_name = override.get_key_element()
