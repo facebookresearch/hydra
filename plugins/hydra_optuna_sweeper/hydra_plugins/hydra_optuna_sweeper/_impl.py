@@ -138,7 +138,7 @@ def create_params_from_overrides(
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
         if isinstance(value, BaseDistribution):
-            search_space[param_name] = value
+            search_space_distributions[param_name] = value
         else:
             fixed_params[param_name] = value
     return search_space_distributions, fixed_params
