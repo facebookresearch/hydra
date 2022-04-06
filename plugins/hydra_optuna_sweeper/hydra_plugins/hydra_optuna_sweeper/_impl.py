@@ -4,7 +4,7 @@ import sys
 import warnings
 from textwrap import dedent
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional
-
+import functools
 import optuna
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -63,7 +63,7 @@ def create_optuna_distribution_from_config(
     raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
-def create_optuna_distribution_from_override(override: Override) -> Any:
+def create_optuna_distribution_from_override(override: Override, grid: False) -> Any:
     if not override.is_sweep_override():
         return override.get_value_element_as_str()
 
@@ -76,19 +76,19 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
                 x, (str, int, float, bool, type(None))
             ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
             choices.append(x)
-        return CategoricalDistribution(choices)
+        return choices if grid else CategoricalDistribution(choices)
 
     if override.is_range_sweep():
         assert isinstance(value, RangeSweep)
         assert value.start is not None
         assert value.stop is not None
-        if value.shuffle:
+        if value.shuffle or grid:
             for x in override.sweep_iterator(transformer=Transformer.encode):
                 assert isinstance(
                     x, (str, int, float, bool, type(None))
                 ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
                 choices.append(x)
-            return CategoricalDistribution(choices)
+            return choices if grid else CategoricalDistribution(choices)
         if (
             isinstance(value.start, float)
             or isinstance(value.stop, float)
@@ -209,9 +209,14 @@ class OptunaSweeperImpl(Sweeper):
 
         search_space = dict(self.search_space)  # type: ignore
         fixed_params = dict()
+        grid_sampler = (
+            isinstance(self.sampler, functools.partial)
+            and self.sampler.func == optuna.samplers.GridSampler
+        )
+
         for override in parsed:
-            value = create_optuna_distribution_from_override(override)
-            if isinstance(value, BaseDistribution):
+            value = create_optuna_distribution_from_override(override, grid_sampler)
+            if isinstance(value, BaseDistribution) or grid_sampler:
                 search_space[override.get_key_element()] = value
             else:
                 fixed_params[override.get_key_element()] = value
@@ -230,6 +235,9 @@ class OptunaSweeperImpl(Sweeper):
                 directions = [self.direction]
             else:
                 directions = [self.direction.name]
+
+        if grid_sampler:
+            self.sampler = self.sampler(search_space)
 
         study = optuna.create_study(
             study_name=self.study_name,

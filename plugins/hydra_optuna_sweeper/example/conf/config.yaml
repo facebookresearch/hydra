@@ -1,11 +1,11 @@
 defaults:
   - override hydra/sweeper: optuna
-  - override hydra/sweeper/sampler: tpe
+  - override hydra/sweeper/sampler: grid
 
 hydra:
   sweeper:
-    sampler:
-      seed: 123
+#    sampler:
+#      seed: 123
     direction: minimize
     study_name: sphere
     storage: null
