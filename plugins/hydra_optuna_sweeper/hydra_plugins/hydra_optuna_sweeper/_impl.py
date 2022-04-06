@@ -141,7 +141,7 @@ def create_params_from_overrides(
             search_space[param_name] = value
         else:
             fixed_params[param_name] = value
-    return search_space, fixed_params
+    return search_space_distributions, fixed_params
 
 
 class OptunaSweeperImpl(Sweeper):
