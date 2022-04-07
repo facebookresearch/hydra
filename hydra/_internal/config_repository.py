@@ -250,8 +250,9 @@ class ConfigRepository(IConfigRepository):
                         options.append(vv)
                     config_value = options
 
-                if package is not None and "_name_" in package:
-                    issue_deprecated_name_warning()
+                if not version.base_at_least("1.2"):
+                    if package is not None and "_name_" in package:
+                        issue_deprecated_name_warning()
 
                 default = GroupDefault(
                     group=keywords.group,
@@ -263,8 +264,9 @@ class ConfigRepository(IConfigRepository):
 
             elif isinstance(item, str):
                 path, package, _package2 = self._split_group(item)
-                if package is not None and "_name_" in package:
-                    issue_deprecated_name_warning()
+                if not version.base_at_least("1.2"):
+                    if package is not None and "_name_" in package:
+                        issue_deprecated_name_warning()
 
                 default = ConfigDefault(path=path, package=package)
             else:

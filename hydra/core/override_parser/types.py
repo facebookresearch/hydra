@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, ca
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
 from hydra.core.config_loader import ConfigLoader
@@ -482,13 +483,13 @@ class Override:
         )
 
     def validate(self) -> None:
-        if self.package is not None and "_name_" in self.package:
-            # DEPRECATED: remove in 1.2
-            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            deprecation_warning(
-                message=dedent(
-                    f"""\
-                    In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
-                    """
-                ),
-            )
+        if not version.base_at_least("1.2"):
+            if self.package is not None and "_name_" in self.package:
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                        In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
+                        """
+                    ),
+                )
