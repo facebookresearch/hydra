@@ -746,16 +746,22 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
     msg = dedent(
         """\
 
-        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+        The strict flag in the compose API is deprecated.
         See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
         """
     )
+
+    curr_base = version.getbase()
+    version.setbase("1.1")
 
     with warns(
         expected_warning=UserWarning,
         match=re.escape(msg),
     ):
         cfg = compose(overrides=[], strict=strict)
+
+    version.setbase(str(curr_base))
+
     assert cfg == {}
     assert OmegaConf.is_struct(cfg) is strict
 

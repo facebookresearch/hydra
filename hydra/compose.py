@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from omegaconf import DictConfig, OmegaConf, open_dict
 
+from hydra import version
 from hydra.core.global_hydra import GlobalHydra
 from hydra.types import RunMode
 
@@ -45,15 +46,17 @@ def compose(
                 del cfg["hydra"]
 
     if strict is not None:
-        # DEPRECATED: remove in 1.2
-        deprecation_warning(
-            dedent(
-                """
-                The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
-                See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
-                """
+        if version.base_at_least("1.2"):
+            raise TypeError("got an unexpected 'strict' argument")
+        else:
+            deprecation_warning(
+                dedent(
+                    """
+                    The strict flag in the compose API is deprecated.
+                    See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+                    """
+                )
             )
-        )
-        OmegaConf.set_struct(cfg, strict)
+            OmegaConf.set_struct(cfg, strict)
 
     return cfg
