@@ -7,6 +7,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
@@ -116,19 +117,20 @@ class InputDefault:
         if package_header is None:
             return
 
-        if "_group_" in package_header or "_name_" in package_header:
-            path = self.get_config_path()
-            url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
-            deprecation_warning(
-                message=dedent(
-                    f"""\
-                    In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
-                    See {url} for more information"""
-                ),
-            )
+        if not version.base_at_least("1.2"):
+            if "_group_" in package_header or "_name_" in package_header:
+                path = self.get_config_path()
+                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+                deprecation_warning(
+                    message=dedent(
+                        f"""\
+                        In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
+                        See {url} for more information"""
+                    ),
+                )
 
-        if package_header == "_group_":
-            return
+            if package_header == "_group_":
+                return
 
         # package header is always interpreted as absolute.
         # if it does not have a _global_ prefix, add it.
@@ -138,7 +140,10 @@ class InputDefault:
             else:
                 package_header = f"_global_.{package_header}"
 
-        package_header = package_header.replace("_group_", self.get_default_package())
+        if not version.base_at_least("1.2"):
+            package_header = package_header.replace(
+                "_group_", self.get_default_package()
+            )
         self.__dict__["package_header"] = package_header
 
     def get_package_header(self) -> Optional[str]:
@@ -168,9 +173,9 @@ class InputDefault:
         if isinstance(name, str):
             # name computation should be deferred to after the final config group choice is done
 
-            if "_name_" in package:
-                # DEPRECATED: remove in 1.2 (Warning in config_repository.py)
-                package = package.replace("_name_", name)
+            if not version.base_at_least("1.2"):
+                if "_name_" in package:
+                    package = package.replace("_name_", name)
 
         if parent_package == "":
             ret = package

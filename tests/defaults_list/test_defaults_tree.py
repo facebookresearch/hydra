@@ -2824,12 +2824,16 @@ def test_deprecated_package_header_keywords(
     overrides: List[str],
     package_header: str,
     expected: DefaultsTreeNode,
+    hydra_restore_singletons: Any,
 ) -> None:
     msg = dedent(
         f"""\
         In '{config_name}': Usage of deprecated keyword in package header '# @package {package_header}'.
         See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
     )
+
+    version.setbase("1.1")
+
     with warns(UserWarning, match=re.escape(msg)):
         _test_defaults_tree_impl(
             config_name=config_name,

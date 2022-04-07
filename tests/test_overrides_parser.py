@@ -8,6 +8,7 @@ from typing import Any, Callable, Dict, List, Union
 from _pytest.python_api import RaisesContext
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra._internal.grammar.functions import Functions
 from hydra._internal.grammar.utils import escape_special_characters
 from hydra.core.override_parser.overrides_parser import (
@@ -991,11 +992,14 @@ def test_override(
     assert ret == expected
 
 
-def test_deprecated_name_package() -> None:
+def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
     msg = (
         "In override key@_name_=value: _name_ keyword is deprecated in packages, "
         "see https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
     )
+
+    version.setbase("1.1")
+
     with warns(
         UserWarning,
         match=re.escape(msg),
