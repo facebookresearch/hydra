@@ -63,7 +63,7 @@ def create_optuna_distribution_from_config(
     raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
-def create_optuna_distribution_from_override(override: Override, grid: False) -> Any:
+def create_optuna_distribution_from_override(override: Override) -> Any:
     if not override.is_sweep_override():
         return override.get_value_element_as_str()
 
@@ -76,19 +76,19 @@ def create_optuna_distribution_from_override(override: Override, grid: False) ->
                 x, (str, int, float, bool, type(None))
             ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
             choices.append(x)
-        return choices if grid else CategoricalDistribution(choices)
+        return CategoricalDistribution(choices)
 
     if override.is_range_sweep():
         assert isinstance(value, RangeSweep)
         assert value.start is not None
         assert value.stop is not None
-        if value.shuffle or grid:
+        if value.shuffle:
             for x in override.sweep_iterator(transformer=Transformer.encode):
                 assert isinstance(
                     x, (str, int, float, bool, type(None))
                 ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
                 choices.append(x)
-            return choices if grid else CategoricalDistribution(choices)
+            return CategoricalDistribution(choices)
         if (
             isinstance(value.start, float)
             or isinstance(value.stop, float)
@@ -215,7 +215,7 @@ class OptunaSweeperImpl(Sweeper):
         )
 
         for override in parsed:
-            value = create_optuna_distribution_from_override(override, grid_sampler)
+            value = create_optuna_distribution_from_override(override)
             if isinstance(value, BaseDistribution) or grid_sampler:
                 search_space[override.get_key_element()] = value
             else:
