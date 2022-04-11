@@ -106,6 +106,32 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     check_distribution(expected, actual)
 
 
+@mark.parametrize(
+    "input, expected",
+    [
+        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
+        (["key=5"], ({}, {"key": "5"})),
+        (
+            ["key1=choice(1,2)", "key2=5"],
+            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
+        ),
+        (
+            ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
+            (
+                {
+                    "key1": CategoricalDistribution([1, 2]),
+                    "key3": IntUniformDistribution(1, 3),
+                },
+                {"key2": "5"},
+            ),
+        ),
+    ],
+)
+def test_create_params_from_overrides(input: Any, expected: Any) -> None:
+    actual = _impl.create_params_from_overrides(input)
+    assert actual == expected
+
+
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file=None,
@@ -155,6 +181,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     assert returns["best_params"]["x"] == best_trial.params["x"]
     if with_commandline:
         assert "y" not in returns["best_params"]
+        assert "y" not in best_trial.params
     else:
         assert returns["best_params"]["y"] == best_trial.params["y"]
     assert returns["best_value"] == best_trial.value
@@ -208,6 +235,31 @@ def _dominates(values_x: List[float], values_y: List[float]) -> bool:
     )
 
 
+def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
+    max_z_difference_from_x = 0.3
+    cmd = [
+        "example/custom-search-space-objective.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=1",
+        "hydra/sweeper/sampler=random",
+        "hydra.sweeper.sampler.seed=123",
+        f"max_z_difference_from_x={max_z_difference_from_x}",
+    ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
+    assert returns.name == "optuna"
+    assert (
+        abs(returns["best_params"]["x"] - returns["best_params"]["z"])
+        <= max_z_difference_from_x
+    )
+    w = returns["best_params"]["+w"]
+    assert 0 <= w <= 1
+
+
 @mark.parametrize(
     "search_space,params,raise_warning,msg",
     [
@@ -242,6 +294,7 @@ def test_warnings(
         study_name="test",
         n_trials=1,
         n_jobs=1,
+        custom_search_space=None,
     )
     if search_space is not None:
         search_space = OmegaConf.create(search_space)
