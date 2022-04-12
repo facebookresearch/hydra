@@ -1,3 +1,21 @@
+
+### Features
+
+- Add support to Hydra's instantiation API for creation of `functools.partial` instances via a `_partial_` keyword. ([#1283](https://github.com/facebookresearch/hydra/issues/1283))
+- The `instantiate` API now accepts `ListConfig`/`list`-type config as top-level input. ([#1950](https://github.com/facebookresearch/hydra/issues/1950))
+- Improve error messages raised in case of instantiation failure. ([#2099](https://github.com/facebookresearch/hydra/issues/2099))
+- Add callback for logging JobReturn. ([#2100](https://github.com/facebookresearch/hydra/issues/2100))
+
+### API Change (Renames, deprecations and removals)
+
+- Fix an internal key collision to prevent an exception when `- group@_global_: choice` is used in the same defaults list as `- group: choice`. ([#1784](https://github.com/facebookresearch/hydra/issues/1784))
+
+### Bug Fixes
+
+- Improve error message when a missing default must be specified at the command line ([#1742](https://github.com/facebookresearch/hydra/issues/1742))
+- Fix an edge case where a defaults list defined in a missing dataclass node causes a ConfigCompositionException. ([#1765](https://github.com/facebookresearch/hydra/issues/1765))
+
+
 1.1.1 (2021-08-19)
 ==================
 
