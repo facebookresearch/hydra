@@ -330,11 +330,11 @@ class TestConfigLoader:
         msg = dedent(
             """\
             In 'schema_validation_error': ValidationError raised while composing config:
-            Value 'not_an_int' could not be converted to Integer
+            Value 'not_an_int'( of type 'str')? could not be converted to Integer
                 full_key: port
                 object_type=MySQLConfig"""
         )
-        with raises(ConfigCompositionException, match=re.escape(msg)):
+        with raises(ConfigCompositionException, match=msg):
             config_loader.load_configuration(
                 config_name="schema_validation_error",
                 overrides=[],

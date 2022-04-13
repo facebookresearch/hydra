@@ -1102,28 +1102,28 @@ def test_module_run(
             ["test.param=1,2"],
             True,
             dedent(
-                """\
-            Ambiguous value for argument 'test.param=1,2'
-            1. To use it as a list, use key=[value1,value2]
-            2. To use it as string, quote the value: key=\\'value1,value2\\'
-            3. To sweep over it, add --multirun to your command line
+                r"""
+                Ambiguous value for argument 'test\.param=1,2'
+                1\. To use it as a list, use key=\[value1,value2\]
+                2\. To use it as string, quote the value: key=\\'value1,value2\\'
+                3\. To sweep over it, add --multirun to your command line
 
-            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-            ),
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+            ).strip(),
             id="run:choice_sweep",
         ),
         param(
             ["test.param=[1,2]"],
             True,
             dedent(
-                """\
-                Error merging override test.param=[1,2]
-                Value '[1, 2]' could not be converted to Integer
-                    full_key: test.param
+                r"""
+                Error merging override test.param=\[1,2\]
+                Value '\[1, 2\]'( of type 'list')? could not be converted to Integer
+                    full_key: test\.param
                     object_type=TestConfig
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-            ),
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+            ).strip(),
             id="run:list_value",
         ),
         param(["test.param=1", "-m"], False, "1", id="multirun:value"),
@@ -1142,9 +1142,9 @@ def test_multirun_structured_conflict(
     if error:
         expected = normalize_newlines(expected)
         ret = run_with_error(cmd)
-        assert_regex_match(
-            from_line=expected,
-            to_line=ret,
+        assert_multiline_regex_search(
+            pattern=expected,
+            string=ret,
             from_name="Expected output",
             to_name="Actual output",
         )

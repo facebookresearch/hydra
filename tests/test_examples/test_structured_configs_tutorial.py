@@ -66,13 +66,13 @@ def test_1_basic_override_type_error(tmpdir: Path) -> None:
 
     expected = dedent(
         """\
-        Value 'foo' could not be converted to Integer
+        Value 'foo'( of type 'str')? could not be converted to Integer
             full_key: port
             object_type=MySQLConfig"""
     )
 
     err = run_with_error(cmd)
-    assert re.search(re.escape(expected), err) is not None
+    assert re.search(expected, err) is not None
 
 
 def test_2_static_complex(tmpdir: Path) -> None:
