@@ -336,7 +336,8 @@ def instantiate_node(
         else:
             # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
-                convert == ConvertMode.PARTIAL and node._metadata.object_type is None
+                convert == ConvertMode.PARTIAL
+                and node._metadata.object_type in (None, dict)
             ):
                 dict_items = {}
                 for key, value in node.items():
