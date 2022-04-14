@@ -366,3 +366,16 @@ assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
 ```
 This does not apply if `_partial_=False`,
 in which case a new `Foo` instance would be created with each call to `instantiate`.
+
+
+### Instantiation of builtins
+
+The value of `_target_` passed to `instantiate` should be a "dotpath" pointing
+to some callable that can be looked up via a combination of `import` and `getattr`.
+If you want to target one of Python's [built-in functions](https://docs.python.org/3/library/functions.html) (such as `len` or `print` or `divmod`),
+you will need to provide a dotpath looking up that function in Python's [`builtins`](https://docs.python.org/3/library/builtins.html) module.
+```python
+from hydra.utils import instantiate
+# instantiate({"_target_": "len"}, [1,2,3])  # this gives an InstantiationException
+instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
+```
