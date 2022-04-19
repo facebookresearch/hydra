@@ -1,0 +1,9 @@
+# @package hydra.sweeper.ax_config.params
+quadratic.x:
+  type: range
+  bounds: [1e-6, 1]
+  log_scale: true
+
+quadratic.y:
+  type: range
+  bounds: [-1, 1]

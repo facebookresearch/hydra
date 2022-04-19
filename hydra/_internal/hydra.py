@@ -78,6 +78,23 @@ class Hydra:
         self.config_loader = config_loader
         JobRuntime().set("name", task_name)
 
+    def get_mode(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+    ) -> Any:
+        try:
+            cfg = self.compose_config(
+                config_name=config_name,
+                overrides=overrides,
+                with_log_configuration=False,
+                run_mode=RunMode.MULTIRUN,
+                validate_sweep_overrides=False,
+            )
+            return cfg.hydra.mode
+        except Exception:
+            return None
+
     def run(
         self,
         config_name: Optional[str],
@@ -91,6 +108,10 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
         )
+        if cfg.hydra.mode is None:
+            cfg.hydra.mode = RunMode.RUN
+        else:
+            assert cfg.hydra.mode == RunMode.RUN
 
         callbacks = Callbacks(cfg)
         callbacks.on_run_start(config=cfg, config_name=config_name)
@@ -125,6 +146,7 @@ class Hydra:
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
         )
+
         callbacks = Callbacks(cfg)
         callbacks.on_multirun_start(config=cfg, config_name=config_name)
 
@@ -384,7 +406,10 @@ class Hydra:
                 log.debug("\t\t{}".format(plugin_name))
 
     def _print_search_path(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         assert log is not None
         log.debug("")
@@ -395,7 +420,7 @@ class Hydra:
         cfg = self.compose_config(
             config_name=config_name,
             overrides=overrides,
-            run_mode=RunMode.RUN,
+            run_mode=run_mode,
             with_log_configuration=False,
         )
         HydraConfig.instance().set_config(cfg)
@@ -458,10 +483,15 @@ class Hydra:
         self._log_footer(header=header, filler="-")
 
     def _print_config_info(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         assert log is not None
-        self._print_search_path(config_name=config_name, overrides=overrides)
+        self._print_search_path(
+            config_name=config_name, overrides=overrides, run_mode=run_mode
+        )
         self._print_defaults_tree(config_name=config_name, overrides=overrides)
         self._print_defaults_list(config_name=config_name, overrides=overrides)
 
@@ -469,7 +499,7 @@ class Hydra:
             lambda: self.compose_config(
                 config_name=config_name,
                 overrides=overrides,
-                run_mode=RunMode.RUN,
+                run_mode=run_mode,
                 with_log_configuration=False,
             )
         )
@@ -480,13 +510,16 @@ class Hydra:
         log.info(OmegaConf.to_yaml(cfg))
 
     def _print_defaults_list(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         assert log is not None
         defaults = self.config_loader.compute_defaults_list(
             config_name=config_name,
             overrides=overrides,
-            run_mode=RunMode.RUN,
+            run_mode=run_mode,
         )
 
         box: List[List[str]] = [
@@ -534,10 +567,11 @@ class Hydra:
         self,
         config_name: Optional[str],
         overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         assert log is not None
         if log.isEnabledFor(logging.DEBUG):
-            self._print_all_info(config_name, overrides)
+            self._print_all_info(config_name, overrides, run_mode)
 
     def compose_config(
         self,
@@ -546,6 +580,7 @@ class Hydra:
         run_mode: RunMode,
         with_log_configuration: bool = False,
         from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
     ) -> DictConfig:
         """
         :param config_name:
@@ -561,26 +596,36 @@ class Hydra:
             overrides=overrides,
             run_mode=run_mode,
             from_shell=from_shell,
+            validate_sweep_overrides=validate_sweep_overrides,
         )
         if with_log_configuration:
             configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
             global log
             log = logging.getLogger(__name__)
-            self._print_debug_info(config_name, overrides)
+            self._print_debug_info(config_name, overrides, run_mode)
         return cfg
 
     def _print_plugins_info(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         self._print_plugins()
         self._print_plugins_profiling_info(top_n=10)
 
-    def _print_all_info(self, config_name: Optional[str], overrides: List[str]) -> None:
+    def _print_all_info(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
+    ) -> None:
+
         from .. import __version__
 
         self._log_header(f"Hydra {__version__}", filler="=")
         self._print_plugins()
-        self._print_config_info(config_name, overrides)
+        self._print_config_info(config_name, overrides, run_mode)
 
     def _print_defaults_tree_impl(
         self,
@@ -616,20 +661,27 @@ class Hydra:
             log.info(pad + to_str(tree))
 
     def _print_defaults_tree(
-        self, config_name: Optional[str], overrides: List[str]
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         assert log is not None
         defaults = self.config_loader.compute_defaults_list(
             config_name=config_name,
             overrides=overrides,
-            run_mode=RunMode.RUN,
+            run_mode=run_mode,
         )
         log.info("")
         self._log_header("Defaults Tree", filler="*")
         self._print_defaults_tree_impl(defaults.defaults_tree)
 
     def show_info(
-        self, info: str, config_name: Optional[str], overrides: List[str]
+        self,
+        info: str,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode = RunMode.RUN,
     ) -> None:
         options = {
             "all": self._print_all_info,
@@ -647,4 +699,6 @@ class Hydra:
             opts = sorted(options.keys())
             log.error(f"Info usage: --info [{'|'.join(opts)}]")
         else:
-            options[info](config_name=config_name, overrides=overrides)
+            options[info](
+                config_name=config_name, overrides=overrides, run_mode=run_mode
+            )

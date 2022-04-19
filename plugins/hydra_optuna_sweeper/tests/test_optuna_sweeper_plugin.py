@@ -1,7 +1,9 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
+
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from functools import partial
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Optional
 
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -22,9 +24,12 @@ from optuna.distributions import (
     LogUniformDistribution,
     UniformDistribution,
 )
-from pytest import mark
+from optuna.samplers import RandomSampler
+from pytest import mark, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
+from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
+from hydra_plugins.hydra_optuna_sweeper.config import Direction
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
@@ -91,6 +96,7 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
         ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
         ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
+        ("key=range(0.5, 5.5, step=1)", DiscreteUniformDistribution(0.5, 5.5, 1)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
@@ -98,6 +104,32 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
     parsed = parser.parse_overrides([input])[0]
     actual = _impl.create_optuna_distribution_from_override(parsed)
     check_distribution(expected, actual)
+
+
+@mark.parametrize(
+    "input, expected",
+    [
+        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
+        (["key=5"], ({}, {"key": "5"})),
+        (
+            ["key1=choice(1,2)", "key2=5"],
+            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
+        ),
+        (
+            ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
+            (
+                {
+                    "key1": CategoricalDistribution([1, 2]),
+                    "key3": IntUniformDistribution(1, 3),
+                },
+                {"key2": "5"},
+            ),
+        ),
+    ],
+)
+def test_create_params_from_overrides(input: Any, expected: Any) -> None:
+    actual = _impl.create_params_from_overrides(input)
+    assert actual == expected
 
 
 def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
@@ -126,6 +158,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/sphere.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
@@ -148,6 +181,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     assert returns["best_params"]["x"] == best_trial.params["x"]
     if with_commandline:
         assert "y" not in returns["best_params"]
+        assert "y" not in best_trial.params
     else:
         assert returns["best_params"]["y"] == best_trial.params["y"]
     assert returns["best_value"] == best_trial.value
@@ -164,6 +198,7 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
         "example/multi-objective.py",
         "--multirun",
         "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
         "hydra/sweeper/sampler=random",
@@ -198,3 +233,79 @@ def _dominates(values_x: List[float], values_y: List[float]) -> bool:
     return all(x <= y for x, y in zip(values_x, values_y)) and any(
         x < y for x, y in zip(values_x, values_y)
     )
+
+
+def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
+    max_z_difference_from_x = 0.3
+    cmd = [
+        "example/custom-search-space-objective.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.n_trials=20",
+        "hydra.sweeper.n_jobs=1",
+        "hydra/sweeper/sampler=random",
+        "hydra.sweeper.sampler.seed=123",
+        f"max_z_difference_from_x={max_z_difference_from_x}",
+    ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
+    assert returns.name == "optuna"
+    assert (
+        abs(returns["best_params"]["x"] - returns["best_params"]["z"])
+        <= max_z_difference_from_x
+    )
+    w = returns["best_params"]["+w"]
+    assert 0 <= w <= 1
+
+
+@mark.parametrize(
+    "search_space,params,raise_warning,msg",
+    [
+        (None, None, False, None),
+        (
+            {},
+            {},
+            True,
+            r"Both hydra.sweeper.params and hydra.sweeper.search_space are configured.*",
+        ),
+        (
+            {},
+            None,
+            True,
+            r"`hydra.sweeper.search_space` is deprecated and will be removed in the next major release.*",
+        ),
+        (None, {}, False, None),
+    ],
+)
+def test_warnings(
+    tmpdir: Path,
+    search_space: Optional[DictConfig],
+    params: Optional[DictConfig],
+    raise_warning: bool,
+    msg: Optional[str],
+) -> None:
+    partial_sweeper = partial(
+        OptunaSweeperImpl,
+        sampler=RandomSampler(),
+        direction=Direction.minimize,
+        storage=None,
+        study_name="test",
+        n_trials=1,
+        n_jobs=1,
+        custom_search_space=None,
+    )
+    if search_space is not None:
+        search_space = OmegaConf.create(search_space)
+    if params is not None:
+        params = OmegaConf.create(params)
+    sweeper = partial_sweeper(search_space=search_space, params=params)
+    if raise_warning:
+        with warns(
+            UserWarning,
+            match=msg,
+        ):
+            sweeper._process_searchspace_config()
+    else:
+        sweeper._process_searchspace_config()

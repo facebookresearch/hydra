@@ -134,6 +134,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         "example/my_app.py",
         "-m",
         "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         f"hydra.sweeper.optim.budget={budget}",  # small budget to test fast
         f"hydra.sweeper.optim.num_workers={min(8, budget)}",
         "hydra.sweeper.optim.seed=12",  # avoid random failures

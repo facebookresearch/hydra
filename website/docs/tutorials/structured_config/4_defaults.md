@@ -15,6 +15,10 @@ NOTE: You can still place your defaults list in your primary (YAML) config file 
 </div><br/>
 
 ```python {11-14,19,25}
+from dataclasses import dataclass
+
+import hydra
+from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING, OmegaConf
 
 @dataclass
@@ -44,7 +48,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 cs.store(name="config", node=Config)
 
 
-@hydra.main(config_path=None, config_name="config")
+@hydra.main(version_base=None, config_name="config")
 def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
 

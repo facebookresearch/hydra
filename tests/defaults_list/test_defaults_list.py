@@ -5,6 +5,7 @@ from typing import Any, List, Optional
 
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra._internal.defaults_list import create_defaults_list
 from hydra.core.default_element import (
     ConfigDefault,
@@ -80,23 +81,47 @@ def test_loaded_defaults_list(
         ),
     ],
 )
-def test_deprecated_optional(
-    config_path: str, expected_list: List[InputDefault]
-) -> None:
-    repo = create_repo()
-    warning = dedent(
-        """
-            In optional_deprecated: 'optional: true' is deprecated.
-            Use 'optional group1: file1' instead.
-            Support for the old style will be removed in Hydra 1.2"""
-    )
-    with warns(
-        UserWarning,
-        match=re.escape(warning),
-    ):
-        result = repo.load_config(config_path=config_path)
-    assert result is not None
-    assert result.defaults_list == expected_list
+class TestDeprecatedOptional:
+    def test_version_base_1_1(
+        self,
+        config_path: str,
+        expected_list: List[InputDefault],
+    ) -> None:
+        curr_base = version.getbase()
+        version.setbase("1.1")
+        repo = create_repo()
+        warning = dedent(
+            """
+                In optional_deprecated: 'optional: true' is deprecated.
+                Use 'optional group1: file1' instead.
+                Support for the old style is removed for Hydra version_base >= 1.2"""
+        )
+        with warns(
+            UserWarning,
+            match=re.escape(warning),
+        ):
+            result = repo.load_config(config_path=config_path)
+        assert result is not None
+        assert result.defaults_list == expected_list
+        version.setbase(str(curr_base))
+
+    @mark.parametrize("version_base", ["1.2", None])
+    def test_version_base_1_2(
+        self,
+        config_path: str,
+        expected_list: List[InputDefault],
+        version_base: Optional[str],
+    ) -> None:
+        curr_base = version.getbase()
+        version.setbase(version_base)
+        repo = create_repo()
+        err = "In optional_deprecated: Too many keys in default item {'group1': 'file1', 'optional': True}"
+        with raises(
+            ValueError,
+            match=re.escape(err),
+        ):
+            repo.load_config(config_path=config_path)
+        version.setbase(str(curr_base))
 
 
 def _test_defaults_list_impl(

@@ -96,6 +96,10 @@
             },
             {
               "type": "doc",
+              "id": "version-1.1/tutorials/structured_config/config_store"
+            },
+            {
+              "type": "doc",
               "id": "version-1.1/tutorials/structured_config/minimal_example"
             },
             {
@@ -113,10 +117,6 @@
             {
               "type": "doc",
               "id": "version-1.1/tutorials/structured_config/schema"
-            },
-            {
-              "type": "doc",
-              "id": "version-1.1/tutorials/structured_config/config_store"
             }
           ]
         }

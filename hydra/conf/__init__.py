@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING
 
 from hydra.core.config_store import ConfigStore
+from hydra.types import RunMode
 
 
 @dataclass
@@ -45,6 +46,10 @@ class OverridesConf:
 class JobConf:
     # Job name, populated automatically unless specified by the user (in config or cli)
     name: str = MISSING
+
+    # Change current working dir to the output dir.
+    # Will be non-optional and default to False in Hydra 1.3
+    chdir: Optional[bool] = None
 
     # Populated automatically by Hydra.
     # Concatenation of job overrides that can be used as a part
@@ -91,8 +96,10 @@ class ConfigSourceInfo:
 @dataclass
 class RuntimeConf:
     version: str = MISSING
+    version_base: str = MISSING
     cwd: str = MISSING
     config_sources: List[ConfigSourceInfo] = MISSING
+    output_dir: str = MISSING
 
     # Composition choices dictionary
     # Ideally, the value type would be Union[str, List[str], None]
@@ -116,6 +123,7 @@ class HydraConf:
         ]
     )
 
+    mode: Optional[RunMode] = None
     # Elements to append to the config search path.
     # Note: This can only be configured in the primary config.
     searchpath: List[str] = field(default_factory=list)

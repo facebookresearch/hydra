@@ -70,18 +70,9 @@ storage: null
 study_name: sphere
 n_trials: 20
 n_jobs: 1
-search_space:
-  x:
-    type: float
-    low: -5.5
-    high: 5.5
-    step: 0.5
-  'y':
-    type: categorical
-    choices:
-    - -5
-    - 0
-    - 5
+params:
+  x: range(-5.5,5.5,step=0.5)
+  y: choice(-5,0,5)
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -156,6 +147,7 @@ The output is as follows:
 #### Range override
 
 `range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
+If any of `range`'s start, stop or step is of type float, it will be converted to [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html)
 
 <details><summary>Example for range override</summary>
 
@@ -211,39 +203,8 @@ The output is as follows:
 
 ### Configuring through config file
 
-#### Int parameters
-
-`int` parameters can be defined with the following fields:
-
-- `type`: `int`
-- `low`: lower bound
-- `high`: upper bound
-- `step`: discretization step (optional)
-- `log`: if `true`, space is converted to the log domain
-
-If `log` is `false`, the parameter is mapped to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). Otherwise, the parameter is mapped to [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html). Please note that `step` can not be set if `log=true`.
-
-#### Float parameters
-
-`float` parameters can be defined with the following fields:
-
-- `type`: `float`
-- `low`: lower bound
-- `high`: upper bound
-- `step`: discretization step
-- `log`: if `true`, space is converted to the log domain
-
-If `log` is `false`, the parameter is mapped to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html) or [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html) depending on the presence or absence of the `step` field, respectively. Otherwise, the parameter is mapped to [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html). Please note that `step` can not be set if `log=true`.
-
-#### Categorical parameters
-
-`categorical` parameters can be defined with the following fields:
-
-  - `type`: `categorical`
-  - `choices`: a list of parameter value candidates
-
-The parameters are mapped to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
-
+The syntax in config file is consistent with the above commandline override. For example, a commandline override 
+`x=range(1,4)` can be expressed in config file as `x: range(1,4)` under the `hydra.sweeper.params` node.
 
 ## Example 2:  Multi-Objective Optimization
 
@@ -275,17 +236,9 @@ storage: null
 study_name: multi-objective
 n_trials: 20
 n_jobs: 1
-search_space:
-  x:
-    type: float
-    low: 0
-    high: 5
-    step: 0.5
-  'y':
-    type: float
-    low: 0
-    high: 3
-    step: 0.5
+params:
+  x: range(0, 5, step=0.5)
+  y: range(0, 3, step=0.5)
 ```
 </details>
 
@@ -299,3 +252,72 @@ python example/multi-objective.py --multirun
 For problems with trade-offs between two different objectives, there may be no single solution that simultaneously minimizes both objectives. Instead, we obtained a set of solutions, namely [Pareto optimal solutions](https://en.wikipedia.org/wiki/Pareto_efficiency), that show the best trade-offs possible between the objectives. In the following figure, the blue dots show the Pareto optimal solutions in the optimization results.
 
 ![Pareto-optimal solutions](/plugins/optuna_sweeper/multi_objective_result.png)
+
+## EXPERIMENTAL:  Custom-Search-Space Optimization
+
+Hydra's Optuna Sweeper allows users to provide a hook for custom search space configuration.
+This means you can work directly with the `optuna.trial.Trial` object to suggest parameters.
+To use this feature, define a python function with signature `Callable[[DictConfig, optuna.trial.Trial], None]`
+and set the `hydra.sweeper.custom_search_space` key in your config to target that function.
+
+You can find a full example in the same directory as before, where `example/custom-search-space-objective.py` implements a benchmark function to be minimized.
+The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra.
+Part of the search space configuration is defined in config files, and part of it is written in Python.
+
+<details><summary>Example: Custom search space configuration</summary>
+
+```yaml
+defaults:
+  - override hydra/sweeper: optuna
+
+hydra:
+  sweeper:
+    sampler:
+      seed: 123
+    direction: minimize
+    study_name: custom-search-space
+    storage: null
+    n_trials: 20
+    n_jobs: 1
+
+    params:
+      x: range(-5.5, 5.5, 0.5)
+      y: choice(-5, 0, 5)
+    # `custom_search_space` should be a dotpath pointing to a
+    # callable that provides search-space configuration logic:
+    custom_search_space: .custom-search-space-objective.configure
+
+x: 1
+y: 1
+z: 100
+max_z_difference_from_x: 0.5
+```
+```python
+# example/custom-search-space-objective.py
+
+...
+
+def configure(cfg: DictConfig, trial: Trial) -> None:
+    x_value = trial.params["x"]
+    trial.suggest_float(
+        "z",
+        x_value - cfg.max_z_difference_from_x,
+        x_value + cfg.max_z_difference_from_x,
+    )
+    trial.suggest_float("+w", 0.0, 1.0)  # note +w here, not w as w is a new parameter
+
+...
+```
+
+</details>
+
+The method that `custom_search_space` points to must accepts both a DictConfig with already set options and a trial object which needs further configuration. In this example we limit `z` the difference between `x` and `z` to be no more than 0.5.
+Note that this `custom_search_space` API should be considered experimental and is subject to change.
+
+### Order of trial configuration
+Configuring a trial object is done in the following sequence:
+  - search space parameters are set from the `hydra.sweeper.params` key in the config
+  - Command line overrides are set
+  - `custom_search_space` parameters are set
+
+It is not allowed to set search space parameters in the `custom_search_space` method for parameters which have a fixed value from command line overrides. [Trial.user_attrs](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.trial.Trial.html#optuna.trial.Trial.user_attrs) can be inspected to find any of such fixed parameters.

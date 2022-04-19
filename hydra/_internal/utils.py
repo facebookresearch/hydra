@@ -4,11 +4,12 @@ import inspect
 import logging.config
 import os
 import sys
+import warnings
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType, TracebackType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
+from typing import Any, List, Optional, Sequence, Tuple
 
 from omegaconf.errors import OmegaConfBaseException
 
@@ -20,7 +21,7 @@ from hydra.errors import (
     InstantiationException,
     SearchPathException,
 )
-from hydra.types import TaskFunction
+from hydra.types import RunMode, TaskFunction
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ def _get_module_name_override() -> Optional[str]:
 
 def detect_calling_file_or_module_from_task_function(
     task_function: Any,
-) -> Tuple[Optional[str], Optional[str], str]:
+) -> Tuple[Optional[str], Optional[str]]:
 
     mdl = task_function.__module__
     override = _get_module_name_override()
@@ -48,12 +49,13 @@ def detect_calling_file_or_module_from_task_function(
         calling_file = None
         calling_module = mdl
     else:
-        calling_file = task_function.__code__.co_filename
+        try:
+            calling_file = inspect.getfile(task_function)
+        except TypeError:
+            calling_file = None
         calling_module = None
 
-    task_name = detect_task_name(calling_file, mdl)
-
-    return calling_file, calling_module, task_name
+    return calling_file, calling_module
 
 
 def detect_calling_file_or_module_from_stack_frame(
@@ -296,17 +298,18 @@ def run_and_report(func: Any) -> Any:
 
 
 def _run_hydra(
+    args: argparse.Namespace,
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
     config_name: Optional[str],
+    caller_stack_depth: int = 2,
 ) -> None:
 
     from hydra.core.global_hydra import GlobalHydra
 
     from .hydra import Hydra
 
-    args = args_parser.parse_args()
     if args.config_name is not None:
         config_name = args.config_name
 
@@ -316,8 +319,13 @@ def _run_hydra(
     (
         calling_file,
         calling_module,
-        task_name,
     ) = detect_calling_file_or_module_from_task_function(task_function)
+    if calling_file is None and calling_module is None:
+        (
+            calling_file,
+            calling_module,
+        ) = detect_calling_file_or_module_from_stack_frame(caller_stack_depth + 1)
+    task_name = detect_task_name(calling_file, calling_module)
 
     validate_config_path(config_path)
 
@@ -373,21 +381,19 @@ def _run_hydra(
             )
         if num_commands == 0:
             args.run = True
-        if args.run:
-            run_and_report(
-                lambda: hydra.run(
-                    config_name=config_name,
-                    task_function=task_function,
-                    overrides=args.overrides,
-                )
-            )
-        elif args.multirun:
-            run_and_report(
-                lambda: hydra.multirun(
-                    config_name=config_name,
-                    task_function=task_function,
-                    overrides=args.overrides,
-                )
+
+        overrides = args.overrides
+
+        if args.run or args.multirun:
+            run_mode = hydra.get_mode(config_name=config_name, overrides=overrides)
+            _run_app(
+                run=args.run,
+                multirun=args.multirun,
+                mode=run_mode,
+                hydra=hydra,
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
             )
         elif args.cfg:
             run_and_report(
@@ -414,6 +420,50 @@ def _run_hydra(
             sys.exit(1)
     finally:
         GlobalHydra.instance().clear()
+
+
+def _run_app(
+    run: bool,
+    multirun: bool,
+    mode: Optional[RunMode],
+    hydra: Any,
+    config_name: Optional[str],
+    task_function: TaskFunction,
+    overrides: List[str],
+) -> None:
+    if mode is None:
+        if run:
+            mode = RunMode.RUN
+            overrides.extend(["hydra.mode=RUN"])
+        else:
+            mode = RunMode.MULTIRUN
+            overrides.extend(["hydra.mode=MULTIRUN"])
+    else:
+        if multirun and mode == RunMode.RUN:
+            warnings.warn(
+                message="\n"
+                "\tRunning Hydra app with --multirun, overriding with `hydra.mode=MULTIRUN`.",
+                category=UserWarning,
+            )
+            mode = RunMode.MULTIRUN
+            overrides.extend(["hydra.mode=MULTIRUN"])
+
+    if mode == RunMode.RUN:
+        run_and_report(
+            lambda: hydra.run(
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
+            )
+        )
+    else:
+        run_and_report(
+            lambda: hydra.multirun(
+                config_name=config_name,
+                task_function=task_function,
+                overrides=overrides,
+            )
+        )
 
 
 def _get_exec_command() -> str:
@@ -515,6 +565,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Adds an additional config dir to the config search path",
     )
 
+    parser.add_argument(
+        "--experimental-rerun",
+        help="Rerun a job from a previous config pickle",
+    )
+
     info_choices = [
         "all",
         "config",
@@ -551,7 +606,7 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
     return widths
 
 
-def _locate(path: str) -> Union[type, Callable[..., Any]]:
+def _locate(path: str) -> Any:
     """
     Locate an object by name or dotted path, importing as necessary.
     This is similar to the pydoc function `locate`, except that it checks for
@@ -559,44 +614,50 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     """
     if path == "":
         raise ImportError("Empty path")
-    import builtins
     from importlib import import_module
+    from types import ModuleType
 
-    parts = [part for part in path.split(".") if part]
-    module = None
-    for n in reversed(range(len(parts))):
+    parts = [part for part in path.split(".")]
+    for part in parts:
+        if not len(part):
+            raise ValueError(
+                f"Error loading '{path}': invalid dotstring."
+                + "\nRelative imports are not supported."
+            )
+    assert len(parts) > 0
+    part0 = parts[0]
+    try:
+        obj = import_module(part0)
+    except Exception as exc_import:
+        raise ImportError(
+            f"Error loading '{path}':\n{repr(exc_import)}"
+            + f"\nAre you sure that module '{part0}' is installed?"
+        ) from exc_import
+    for m in range(1, len(parts)):
+        part = parts[m]
         try:
-            mod = ".".join(parts[:n])
-            module = import_module(mod)
-        except Exception as e:
-            if n == 0:
-                raise ImportError(f"Error loading module '{path}'") from e
-            continue
-        if module:
-            break
-    if module:
-        obj = module
-    else:
-        obj = builtins
-    for part in parts[n:]:
-        mod = mod + "." + part
-        if not hasattr(obj, part):
-            try:
-                import_module(mod)
-            except Exception as e:
-                raise ImportError(
-                    f"Encountered error: `{e}` when loading module '{path}'"
-                ) from e
-        obj = getattr(obj, part)
-    if isinstance(obj, type):
-        obj_type: type = obj
-        return obj_type
-    elif callable(obj):
-        obj_callable: Callable[..., Any] = obj
-        return obj_callable
-    else:
-        # dummy case
-        raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
+            obj = getattr(obj, part)
+        except AttributeError as exc_attr:
+            parent_dotpath = ".".join(parts[:m])
+            if isinstance(obj, ModuleType):
+                mod = ".".join(parts[: m + 1])
+                try:
+                    obj = import_module(mod)
+                    continue
+                except ModuleNotFoundError as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}':\n{repr(exc_import)}"
+                        + f"\nAre you sure that '{part}' is importable from module '{parent_dotpath}'?"
+                    ) from exc_import
+                except Exception as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}':\n{repr(exc_import)}"
+                    ) from exc_import
+            raise ImportError(
+                f"Error loading '{path}':\n{repr(exc_attr)}"
+                + f"\nAre you sure that '{part}' is an attribute of '{parent_dotpath}'?"
+            ) from exc_attr
+    return obj
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:

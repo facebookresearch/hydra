@@ -1,16 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
-from hydra.core.default_element import InputDefault
-from hydra.errors import HydraException
 from omegaconf import Container
 
-from hydra.core.object_type import ObjectType
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
+from hydra.core.default_element import InputDefault
+from hydra.core.object_type import ObjectType
+from hydra.errors import HydraException
 from hydra.plugins.plugin import Plugin
 
 
@@ -117,12 +117,14 @@ class ConfigSource(Plugin):
 
     @staticmethod
     def _normalize_file_name(filename: str) -> str:
-        if filename.endswith(".yml"):
-            # DEPRECATED: remove in 1.2
-            deprecation_warning(
-                "Support for .yml files is deprecated. Use .yaml extension for Hydra config files"
-            )
-        if not any(filename.endswith(ext) for ext in [".yaml", ".yml"]):
+        supported_extensions = [".yaml"]
+        if not version.base_at_least("1.2"):
+            supported_extensions.append(".yml")
+            if filename.endswith(".yml"):
+                deprecation_warning(
+                    "Support for .yml files is deprecated. Use .yaml extension for Hydra config files"
+                )
+        if not any(filename.endswith(ext) for ext in supported_extensions):
             filename += ".yaml"
         return filename
 

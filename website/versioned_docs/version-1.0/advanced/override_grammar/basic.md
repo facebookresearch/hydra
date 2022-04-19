@@ -225,7 +225,7 @@ key="a,b","c,d"               # Elements can be quoted strings, ChoiceSweep("a,b
 key=[a,b],[c,d]               # Elements can be real lists, ChoiceSweep([a,b], [c,d])
 key={a:10, b:20},{c:30,d:40}  # And dictionaries: ChoiceSweep({a:10, b:20}, {c:30,d:40})
 ```
-More sweeping options are described in the [Extended Grammar page](extended).
+More sweeping options are described in the [Extended Grammar page](extended.md).
 
 :::important
 You may need to quote your choice sweep in the shell.
@@ -234,7 +234,7 @@ You may need to quote your choice sweep in the shell.
 
 ### Functions
 Hydra supports several functions in the command line.
-See the [Extended Grammar page](extended) for more information.
+See the [Extended Grammar page](extended.md) for more information.
 
 ## Working with your shell
 All shells interprets command line inputs and may change what is passed to the process.

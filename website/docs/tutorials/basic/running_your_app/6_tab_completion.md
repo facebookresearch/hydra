@@ -16,11 +16,16 @@ import Script from '@site/src/components/Script.jsx';
 
 ### Install tab completion
 Get the exact command to install the completion from `--hydra-help`.
-Currently, Bash, zsh and Fish are supported.   
+Currently, Bash, zsh and Fish are supported.
 We are relying on the community to implement tab completion plugins for additional shells.
 
+#### Fish instructions
 Fish support requires version >= 3.1.2.
 Previous versions will work but add an extra space after `.`.
+
+Because the fish shell implements special behavior for expanding words prefixed
+with a tilde character '~', command-line completion does not work for
+[tilde deletions](/advanced/override_grammar/basic.md#modifying-the-defaults-list).
 
 #### Zsh instructions
 Zsh is compatible with the existing Bash shell completion by appending
@@ -28,3 +33,7 @@ Zsh is compatible with the existing Bash shell completion by appending
 autoload -Uz bashcompinit && bashcompinit
 ```
 to the `.zshrc` file after `compinit`, restarting the shell and then using the commands provided for Bash.
+
+Because the zsh shell implements special behavior for expanding words prefixed
+with a tilde character '~', command-line completion does not work for
+[tilde deletions](/advanced/override_grammar/basic.md#modifying-the-defaults-list).

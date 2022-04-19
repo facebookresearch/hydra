@@ -22,6 +22,7 @@ class ConfigLoader(ABC):
         overrides: List[str],
         run_mode: RunMode,
         from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
     ) -> DictConfig:
         ...
 

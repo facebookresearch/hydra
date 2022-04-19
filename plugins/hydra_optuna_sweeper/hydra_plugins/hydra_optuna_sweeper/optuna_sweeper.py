@@ -15,16 +15,26 @@ class OptunaSweeper(Sweeper):
         self,
         sampler: SamplerConfig,
         direction: Any,
-        storage: Optional[str],
+        storage: Optional[Any],
         study_name: Optional[str],
         n_trials: int,
         n_jobs: int,
         search_space: Optional[DictConfig],
+        custom_search_space: Optional[str],
+        params: Optional[DictConfig],
     ) -> None:
         from ._impl import OptunaSweeperImpl
 
         self.sweeper = OptunaSweeperImpl(
-            sampler, direction, storage, study_name, n_trials, n_jobs, search_space
+            sampler,
+            direction,
+            storage,
+            study_name,
+            n_trials,
+            n_jobs,
+            search_space,
+            custom_search_space,
+            params,
         )
 
     def setup(

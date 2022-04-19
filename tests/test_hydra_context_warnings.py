@@ -5,7 +5,7 @@ from typing import Any, List, Sequence, Union
 from unittest.mock import Mock
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, warns
+from pytest import mark, raises
 
 from hydra import TaskFunction
 from hydra._internal.callbacks import Callbacks
@@ -13,7 +13,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
-from hydra.core.utils import JobReturn, _get_callbacks_for_run_job
+from hydra.core.utils import JobReturn, _check_hydra_context
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -73,19 +73,13 @@ def test_setup_plugins(
     monkeypatch.setattr(Plugins, "check_usage", lambda _: None)
     monkeypatch.setattr(plugin_instance, "_instantiate", lambda _: plugin)
 
-    msg = dedent(
-        """
-        Plugin's setup() signature has changed in Hydra 1.1.
-        Support for the old style will be removed in Hydra 1.2.
-        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-    )
-    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+    msg = "setup() got an unexpected keyword argument 'hydra_context'"
+    with raises(TypeError, match=re.escape(msg)):
         if isinstance(plugin, Launcher):
             Plugins.instance().instantiate_launcher(
+                hydra_context=hydra_context,
                 task_function=task_function,
                 config=config,
-                config_loader=config_loader,
-                hydra_context=hydra_context,
             )
         else:
             Plugins.instance().instantiate_sweeper(
@@ -99,9 +93,8 @@ def test_run_job() -> None:
     hydra_context = None
     msg = dedent(
         """
-        run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
-        Support for the old style will be removed in Hydra 1.2.
+        run_job's signature has changed: the `hydra_context` arg is now required.
         For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
     )
-    with warns(expected_warning=UserWarning, match=msg):
-        _get_callbacks_for_run_job(hydra_context)
+    with raises(TypeError, match=msg):
+        _check_hydra_context(hydra_context)

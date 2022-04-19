@@ -31,6 +31,7 @@ PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
+USE_OMEGACONF_DEV_VERSION = os.environ.get("USE_OMEGACONF_DEV_VERSION", "0") != "0"
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
@@ -41,6 +42,7 @@ class Plugin:
     name: str
     path: str
     module: str
+    source_dir: str
 
 
 def get_current_os() -> str:
@@ -57,6 +59,7 @@ print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
 print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
+print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session):
@@ -79,19 +82,30 @@ def find_dirs(path: str):
             yield fullname
 
 
+def _print_installed_omegaconf_version(session):
+    pip_list: str = session.run("pip", "list", silent=True)
+    for line in pip_list.split("\n"):
+        if "omegaconf" in line:
+            print(f"Installed omegaconf version: {line}")
+
+
 def install_hydra(session, cmd):
     # needed for build
     session.install("read-version", silent=SILENT)
     # clean install hydra
     session.chdir(BASE)
+    if USE_OMEGACONF_DEV_VERSION:
+        session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
+    if USE_OMEGACONF_DEV_VERSION:
+        _print_installed_omegaconf_version(session)
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
 
 
 def pytest_args(*args):
-    ret = ["pytest", "-Werror"]
+    ret = ["pytest"]
     ret.extend(args)
     return ret
 
@@ -167,11 +181,19 @@ def select_plugins(session, directory: str) -> List[Plugin]:
             )
             continue
 
+        if "hydra_plugins" in os.listdir(os.path.join(BASE, directory, plugin["path"])):
+            module = "hydra_plugins." + plugin["dir_name"]
+            source_dir = "hydra_plugins"
+        else:
+            module = plugin["dir_name"]
+            source_dir = plugin["dir_name"]
+
         ret.append(
             Plugin(
                 name=plugin_name,
                 path=plugin["path"],
-                module="hydra_plugins." + plugin["dir_name"],
+                source_dir=source_dir,
+                module=module,
             )
         )
 
@@ -184,7 +206,6 @@ def select_plugins(session, directory: str) -> List[Plugin]:
 
 
 def install_dev_deps(session):
-    _upgrade_basic(session)
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
 
 
@@ -204,6 +225,7 @@ def _isort_cmd():
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint(session):
+    _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
 
@@ -227,28 +249,61 @@ def lint(session):
         "tools/configen/example/gen",
         "tools/configen/tests/test_modules/expected",
         "temp",
+        "build",
     ]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 
     session.run(*isort, silent=SILENT)
 
-    session.run("mypy", ".", "--strict", silent=SILENT)
+    session.run(
+        "mypy",
+        ".",
+        "--strict",
+        "--install-types",
+        "--non-interactive",
+        "--exclude=^examples/",
+        "--exclude=^tests/standalone_apps/",
+        "--exclude=^tests/test_apps/",
+        "--exclude=^tools/",
+        "--exclude=^plugins/",
+        silent=SILENT,
+    )
     session.run("flake8", "--config", ".flake8")
-    session.run("yamllint", ".")
+    session.run("yamllint", "--strict", ".")
 
-    example_dirs = [
-        "examples/advanced/",
+    mypy_check_subdirs = [
+        "examples/advanced",
         "examples/configure_hydra",
         "examples/patterns",
         "examples/instantiate",
         "examples/tutorials/basic/your_first_hydra_app",
         "examples/tutorials/basic/running_your_hydra_app",
-        "examples/tutorials/structured_configs/",
+        "examples/tutorials/structured_configs",
+        "tests/standalone_apps",
+        "tests/test_apps",
     ]
-    for edir in example_dirs:
-        dirs = find_dirs(path=edir)
+    for sdir in mypy_check_subdirs:
+        dirs = find_dirs(path=sdir)
         for d in dirs:
-            session.run("mypy", d, "--strict", silent=SILENT)
+            session.run(
+                "mypy",
+                d,
+                "--strict",
+                "--install-types",
+                "--non-interactive",
+                silent=SILENT,
+            )
+
+    for sdir in ["tools"]:  # no --strict flag for tools
+        dirs = find_dirs(path=sdir)
+        for d in dirs:
+            session.run(
+                "mypy",
+                d,
+                "--install-types",
+                "--non-interactive",
+                silent=SILENT,
+            )
 
     # lint example plugins
     lint_plugins_in_dir(session=session, directory="examples/plugins")
@@ -259,6 +314,7 @@ def lint(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def lint_plugins(session):
+    _upgrade_basic(session)
     lint_plugins_in_dir(session, "plugins")
 
 
@@ -279,6 +335,7 @@ def lint_plugins_in_dir(session, directory: str) -> None:
     # Mypy for plugins
     for plugin in plugins:
         path = os.path.join(directory, plugin.path)
+        source_dir = plugin.source_dir
         session.chdir(path)
         session.run(*_black_cmd(), silent=SILENT)
         session.run(*_isort_cmd(), silent=SILENT)
@@ -293,7 +350,9 @@ def lint_plugins_in_dir(session, directory: str) -> None:
         session.run(
             "mypy",
             "--strict",
-            f"{path}/hydra_plugins",
+            "--install-types",
+            "--non-interactive",
+            f"{path}/{source_dir}",
             "--config-file",
             f"{BASE}/.mypy.ini",
             silent=SILENT,
@@ -301,6 +360,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
         session.run(
             "mypy",
             "--strict",
+            "--install-types",
+            "--non-interactive",
             "--namespace-packages",
             "--config-file",
             f"{BASE}/.mypy.ini",
@@ -311,8 +372,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_tools(session):
-    install_cmd = ["pip", "install"]
     _upgrade_basic(session)
+    install_cmd = ["pip", "install"]
     session.install("pytest")
     install_hydra(session, install_cmd)
 
@@ -370,6 +431,7 @@ def test_core(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_plugins(session):
+    _upgrade_basic(session)
     test_plugins_in_directory(
         session=session,
         install_cmd=INSTALL_COMMAND,
@@ -381,7 +443,6 @@ def test_plugins(session):
 def test_plugins_in_directory(
     session, install_cmd, directory: str, test_hydra_core: bool
 ):
-    _upgrade_basic(session)
     session.install("pytest")
     install_hydra(session, install_cmd)
     selected_plugin = select_plugins(session=session, directory=directory)
@@ -418,13 +479,13 @@ def test_plugins_in_directory(
 
 @nox.session(python="3.8")
 def coverage(session):
+    _upgrade_basic(session)
     coverage_env = {
         "COVERAGE_HOME": BASE,
         "COVERAGE_FILE": f"{BASE}/.coverage",
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    _upgrade_basic(session)
     session.install("coverage", "pytest")
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
@@ -466,13 +527,16 @@ def coverage(session):
 
 @nox.session(python=PYTHON_VERSIONS)
 def test_jupyter_notebooks(session):
+    _upgrade_basic(session)
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
         session.skip(
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
 
-    session.install("jupyter", "nbval", "pyzmq")
+    session.install(
+        "jupyter", "nbval", "pyzmq", "pytest<7.0.0"
+    )  # pytest pinned due to https://github.com/computationalmodelling/nbval/issues/180
     if platform.system() == "Windows":
         # Newer versions of pywin32 are causing CI issues on Windows.
         # see https://github.com/mhammond/pywin32/issues/1709
@@ -480,17 +544,17 @@ def test_jupyter_notebooks(session):
 
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
+        "--nbval",
+        "-W ignore::ResourceWarning",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
-    # Jupyter notebook test on Windows yield warnings
-    args = [x for x in args if x != "-Werror"]
     session.run(*args, silent=SILENT)
 
     notebooks_dir = Path("tests/jupyter")
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args("--nbval", str(notebook))
+        args = pytest_args("--nbval", "-W ignore::ResourceWarning", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
 

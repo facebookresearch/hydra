@@ -53,14 +53,38 @@ Inside the Hydra output directory we have:
 And in the main output directory:
 * `my_app.log`: A log file created for this run
 
-### Changing or disabling the output subdir 
+### Disable changing current working dir to job's output dir
+
+By default, Hydra's `@hydra.main` decorator makes a call to `os.chdir` before passing control to the user's decorated main function.
+Set `hydra.job.chdir=False` to disable this behavior.
+```bash
+# check current working dir
+$ pwd  
+/home/omry/dev/hydra
+
+# working dir remains the same
+$ python my_app.py hydra.job.chdir=False
+Working directory : /home/omry/dev/hydra
+
+# output dir and files are still created, even if `chdir` is disabled:
+$ tree -a outputs/2021-10-25/09-46-26/
+outputs/2021-10-25/09-46-26/
+├── .hydra
+│   ├── config.yaml
+│   ├── hydra.yaml
+│   └── overrides.yaml
+└── my_app.log
+```
+
+
+### Changing or disabling Hydra's output subdir 
 You can change the `.hydra` subdirectory name by overriding `hydra.output_subdir`.
 You can disable its creation by overriding `hydra.output_subdir` to `null`. 
 
 
-### Original working directory
+### Accessing the original working directory in your application
 
-You can still access the original working directory via `get_original_cwd()` and `to_absolute_path()` in `hydra.utils`:
+With `hydra.job.chdir=True`, you can still access the original working directory by importing `get_original_cwd()` and `to_absolute_path()` in `hydra.utils`:
 
 ```python
 from hydra.utils import get_original_cwd, to_absolute_path
@@ -71,6 +95,9 @@ def my_app(_cfg: DictConfig) -> None:
     print(f"Orig working directory    : {get_original_cwd()}")
     print(f"to_absolute_path('foo')   : {to_absolute_path('foo')}")
     print(f"to_absolute_path('/foo')  : {to_absolute_path('/foo')}")
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 ```text title="$ python examples/tutorial/8_working_directory/original_cwd.py"

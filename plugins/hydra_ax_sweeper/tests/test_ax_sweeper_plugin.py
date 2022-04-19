@@ -30,7 +30,7 @@ def test_discovery() -> None:
 
 
 def quadratic(cfg: DictConfig) -> Any:
-    return 100 * (cfg.quadratic.x ** 2) + 1 * cfg.quadratic.y
+    return 100 * (cfg.quadratic.x**2) + 1 * cfg.quadratic.y
 
 
 @mark.parametrize(
@@ -87,14 +87,17 @@ def test_jobs_dirs(hydra_sweep_runner: TSweepRunner) -> None:
         assert len(dirs) == 6  # and a total of 6 unique output directories
 
 
-def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
+@mark.parametrize("test_conf", ["basic", "logscale"])
+def test_jobs_configured_via_config(
+    hydra_sweep_runner: TSweepRunner, test_conf: str
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
         task_function=quadratic,
         config_path="config",
         config_name="config.yaml",
-        overrides=["hydra/launcher=basic", "params=basic"],
+        overrides=["hydra/launcher=basic", f"params={test_conf}"],
     )
     with sweep:
         assert sweep.returns is None
@@ -107,7 +110,16 @@ def test_jobs_configured_via_config(hydra_sweep_runner: TSweepRunner) -> None:
         assert math.isclose(best_parameters["quadratic.y"], -1.0, abs_tol=1e-4)
 
 
-def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
+@mark.parametrize(
+    "test_conf, override, expected_x",
+    [
+        ("basic", "int(interval(1, 5))", 1.0),
+        ("logscale", "tag(log, interval(0.00001, 1))", 0.00001),
+    ],
+)
+def test_jobs_configured_via_cmd(
+    hydra_sweep_runner: TSweepRunner, test_conf: str, override: str, expected_x: float
+) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
         calling_module=None,
@@ -116,9 +128,9 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         config_name="config.yaml",
         overrides=[
             "hydra/launcher=basic",
-            "quadratic.x=int(interval(-5, -2))",
+            f"quadratic.x={override}",
             "quadratic.y=int(interval(-2, 2))",
-            "params=basic",
+            f"params={test_conf}",
         ],
     )
     with sweep:
@@ -128,8 +140,8 @@ def test_jobs_configured_via_cmd(hydra_sweep_runner: TSweepRunner) -> None:
         assert returns["optimizer"] == "ax"
         assert len(returns) == 2
         best_parameters = returns.ax
-        assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
-        assert math.isclose(best_parameters["quadratic.y"], 2.0, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.x"], expected_x, abs_tol=1e-4)
+        assert math.isclose(best_parameters["quadratic.y"], -2.0, abs_tol=1e-4)
 
 
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
@@ -205,6 +217,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "polynomial.x=interval(-5, -2)",
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
@@ -227,6 +240,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "tests/apps/polynomial.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
     run_python_script(cmd)
@@ -260,6 +274,7 @@ def test_jobs_using_choice_between_lists(
         "tests/apps/polynomial_with_list_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
     result, _ = run_python_script(cmd)
@@ -296,6 +311,7 @@ def test_jobs_using_choice_between_dicts(
         "tests/apps/polynomial_with_dict_coefficients.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
     result, _ = run_python_script(cmd)
@@ -309,6 +325,7 @@ def test_example_app(tmpdir: Path) -> None:
         "example/banana.py",
         "-m",
         "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
         "banana.x=int(interval(-5, 5))",
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",

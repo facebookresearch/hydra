@@ -3,13 +3,16 @@ import copy
 import pickle
 import re
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from functools import partial
+from textwrap import dedent
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
 import hydra
 from hydra.errors import InstantiationException
+from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
 from tests.instantiate import (
     AClass,
@@ -25,10 +28,12 @@ from tests.instantiate import (
     Compose,
     ComposeConf,
     IllegalType,
+    KeywordsInParamsClass,
     Mapping,
     MappingConf,
     NestedConf,
     NestingClass,
+    OuterClass,
     Parameters,
     Rotation,
     RotationConf,
@@ -37,12 +42,15 @@ from tests.instantiate import (
     SimpleClassNonPrimitiveConf,
     SimpleClassPrimitiveConf,
     SimpleDataClass,
-    TargetInParamsClass,
     Tree,
     TreeConf,
     UntypedPassthroughClass,
     UntypedPassthroughConf,
     User,
+    add_values,
+    module_function,
+    module_function2,
+    partial_equal,
     recisinstance,
 )
 
@@ -95,10 +103,58 @@ def config(request: Any, src: Any) -> Any:
             id="class",
         ),
         param(
+            {
+                "_target_": "tests.instantiate.AClass",
+                "_partial_": True,
+                "a": 10,
+                "b": 20,
+                "c": 30,
+            },
+            {},
+            partial(AClass, a=10, b=20, c=30),
+            id="class+partial",
+        ),
+        param(
+            [
+                {
+                    "_target_": "tests.instantiate.AClass",
+                    "_partial_": True,
+                    "a": 10,
+                    "b": 20,
+                    "c": 30,
+                },
+                {
+                    "_target_": "tests.instantiate.BClass",
+                    "a": 50,
+                    "b": 60,
+                    "c": 70,
+                },
+            ],
+            {},
+            [partial(AClass, a=10, b=20, c=30), BClass(a=50, b=60, c=70)],
+            id="list_of_partial_class",
+        ),
+        param(
             {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
             {"a": 10, "d": 40},
             AClass(10, 20, 30, 40),
             id="class+override",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
+            {"a": 10, "_partial_": True},
+            partial(AClass, a=10, b=20, c=30),
+            id="class+override+partial1",
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.AClass",
+                "_partial_": True,
+                "c": 30,
+            },
+            {"a": 10, "d": 40},
+            partial(AClass, a=10, c=30, d=40),
+            id="class+override+partial2",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
@@ -106,12 +162,41 @@ def config(request: Any, src: Any) -> Any:
             AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
+        param(
+            {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
+            {"a": 10, "b": 99, "_partial_": True},
+            partial(AClass, a=10, b=99, c=99),
+            id="class+override+interpolation+partial1",
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.AClass",
+                "b": 200,
+                "_partial_": True,
+                "c": "${b}",
+            },
+            {"a": 10, "b": 99},
+            partial(AClass, a=10, b=99, c=99),
+            id="class+override+interpolation+partial2",
+        ),
         # Check class and static methods
+        param(
+            {"_target_": "tests.instantiate.ASubclass.class_method", "_partial_": True},
+            {},
+            partial(ASubclass.class_method),
+            id="class_method+partial",
+        ),
         param(
             {"_target_": "tests.instantiate.ASubclass.class_method", "y": 10},
             {},
             ASubclass(11),
             id="class_method",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass.static_method", "_partial_": True},
+            {},
+            partial(AClass.static_method),
+            id="static_method+partial",
         ),
         param(
             {"_target_": "tests.instantiate.AClass.static_method", "z": 43},
@@ -127,10 +212,25 @@ def config(request: Any, src: Any) -> Any:
             id="class_with_nested_class",
         ),
         param(
+            {"_target_": "tests.instantiate.nesting.a.class_method", "_partial_": True},
+            {},
+            partial(ASubclass.class_method),
+            id="class_method_on_an_object_nested_in_a_global+partial",
+        ),
+        param(
             {"_target_": "tests.instantiate.nesting.a.class_method", "y": 10},
             {},
             ASubclass(11),
             id="class_method_on_an_object_nested_in_a_global",
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.nesting.a.static_method",
+                "_partial_": True,
+            },
+            {},
+            partial(ASubclass.static_method),
+            id="static_method_on_an_object_nested_in_a_global+partial",
         ),
         param(
             {"_target_": "tests.instantiate.nesting.a.static_method", "z": 43},
@@ -141,11 +241,26 @@ def config(request: Any, src: Any) -> Any:
         # Check that default value is respected
         param(
             {"_target_": "tests.instantiate.AClass"},
+            {"a": 10, "b": 20, "_partial_": True, "d": "new_default"},
+            partial(AClass, a=10, b=20, d="new_default"),
+            id="instantiate_respects_default_value+partial",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass"},
             {"a": 10, "b": 20, "c": 30},
             AClass(10, 20, 30, "default_value"),
             id="instantiate_respects_default_value",
         ),
         # call a function from a module
+        param(
+            {
+                "_target_": "tests.instantiate.module_function",
+                "_partial_": True,
+            },
+            {},
+            partial(module_function),
+            id="call_function_in_module",
+        ),
         param(
             {"_target_": "tests.instantiate.module_function", "x": 43},
             {},
@@ -153,6 +268,12 @@ def config(request: Any, src: Any) -> Any:
             id="call_function_in_module",
         ),
         # Check builtins
+        param(
+            {"_target_": "builtins.int", "base": 2, "_partial_": True},
+            {},
+            partial(int, base=2),
+            id="builtin_types+partial",
+        ),
         param(
             {"_target_": "builtins.str", "object": 43},
             {},
@@ -168,9 +289,31 @@ def config(request: Any, src: Any) -> Any:
         ),
         param(
             {"_target_": "tests.instantiate.AClass"},
+            {"a": 10, "b": 20, "_partial_": True},
+            partial(AClass, a=10, b=20),
+            id="passthrough+partial",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass"},
             {"a": 10, "b": 20, "c": 30, "d": {"x": IllegalType()}},
             AClass(a=10, b=20, c=30, d={"x": IllegalType()}),
             id="oc_incompatible_passthrough",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass", "_partial_": True},
+            {"a": 10, "b": 20, "d": {"x": IllegalType()}},
+            partial(AClass, a=10, b=20, d={"x": IllegalType()}),
+            id="oc_incompatible_passthrough+partial",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass", "_partial_": True},
+            {
+                "a": 10,
+                "b": 20,
+                "d": {"x": [10, IllegalType()]},
+            },
+            partial(AClass, a=10, b=20, d={"x": [10, IllegalType()]}),
+            id="passthrough:list+partial",
         ),
         param(
             {"_target_": "tests.instantiate.AClass"},
@@ -190,10 +333,32 @@ def config(request: Any, src: Any) -> Any:
             id="untyped_passthrough",
         ),
         param(
-            TargetInParamsClass,
-            {"target": "test"},
-            TargetInParamsClass(target="test"),
-            id="target_in_params",
+            KeywordsInParamsClass,
+            {"target": "foo", "partial": "bar"},
+            KeywordsInParamsClass(target="foo", partial="bar"),
+            id="keywords_in_params",
+        ),
+        param([], {}, [], id="list_as_toplevel0"),
+        param(
+            [
+                {
+                    "_target_": "tests.instantiate.AClass",
+                    "a": 10,
+                    "b": 20,
+                    "c": 30,
+                    "d": 40,
+                },
+                {
+                    "_target_": "tests.instantiate.BClass",
+                    "a": 50,
+                    "b": 60,
+                    "c": 70,
+                    "d": 80,
+                },
+            ],
+            {},
+            [AClass(10, 20, 30, 40), BClass(50, 60, 70, 80)],
+            id="list_as_toplevel2",
         ),
     ],
 )
@@ -206,7 +371,7 @@ def test_class_instantiate(
 ) -> Any:
     passthrough["_recursive_"] = recursive
     obj = instantiate_func(config, **passthrough)
-    assert obj == expected
+    assert partial_equal(obj, expected)
 
 
 def test_none_cases(
@@ -260,6 +425,33 @@ def test_none_cases(
         ),
         param(
             {
+                "node": {
+                    "_target_": "tests.instantiate.AClass",
+                    "_partial_": True,
+                    "a": "${value}",
+                    "b": 20,
+                },
+                "value": 99,
+            },
+            {},
+            partial(AClass, a=99, b=20),
+            id="interpolation_into_parent_partial",
+        ),
+        param(
+            {
+                "A": {"_target_": "tests.instantiate.add_values", "a": 1, "b": 2},
+                "node": {
+                    "_target_": "tests.instantiate.add_values",
+                    "_partial_": True,
+                    "a": "${A}",
+                },
+            },
+            {},
+            partial(add_values, a=3),
+            id="interpolation_from_recursive_partial",
+        ),
+        param(
+            {
                 "A": {"_target_": "tests.instantiate.add_values", "a": 1, "b": 2},
                 "node": {
                     "_target_": "tests.instantiate.add_values",
@@ -274,12 +466,18 @@ def test_none_cases(
     ],
 )
 def test_interpolation_accessing_parent(
-    instantiate_func: Any, input_conf: Any, passthrough: Dict[str, Any], expected: Any
+    instantiate_func: Any,
+    input_conf: Any,
+    passthrough: Dict[str, Any],
+    expected: Any,
 ) -> Any:
     cfg_copy = OmegaConf.create(input_conf)
     input_conf = OmegaConf.create(input_conf)
     obj = instantiate_func(input_conf.node, **passthrough)
-    assert obj == expected
+    if isinstance(expected, partial):
+        assert partial_equal(obj, expected)
+    else:
+        assert obj == expected
     assert input_conf == cfg_copy
 
 
@@ -303,7 +501,10 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
 
 @mark.parametrize("src", [{"_target_": "tests.instantiate.Adam"}])
 def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
-    with raises(TypeError):
+    with raises(
+        InstantiationException,
+        match=r"Error in call to target 'tests\.instantiate\.Adam':\nTypeError\(.*\)",
+    ):
         # can't instantiate without passing params
         instantiate_func(config)
 
@@ -312,7 +513,8 @@ def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
     assert res == Adam(params=adam_params)
 
 
-def test_regression_1483(instantiate_func: Any) -> None:
+@mark.parametrize("is_partial", [True, False])
+def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
     """
     In 1483, pickle is failing because the parent node of lst node contains
     a generator, which is not picklable.
@@ -325,21 +527,38 @@ def test_regression_1483(instantiate_func: Any) -> None:
 
     res: ArgsClass = instantiate_func(
         {"_target_": "tests.instantiate.ArgsClass"},
+        _partial_=is_partial,
         gen=gen(),
         lst=[1, 2],
     )
-    pickle.dumps(res.kwargs["lst"])
+    if is_partial:
+        # res is of type functools.partial
+        pickle.dumps(res.keywords["lst"])  # type: ignore
+    else:
+        pickle.dumps(res.kwargs["lst"])
 
 
-def test_instantiate_adam_conf(instantiate_func: Any) -> None:
-    with raises(TypeError):
+@mark.parametrize(
+    "is_partial,expected_params",
+    [(True, Parameters([1, 2, 3])), (False, partial(Parameters))],
+)
+def test_instantiate_adam_conf(
+    instantiate_func: Any, is_partial: bool, expected_params: Any
+) -> None:
+    with raises(
+        InstantiationException,
+        match=r"Error in call to target 'tests\.instantiate\.Adam':\nTypeError\(.*\)",
+    ):
         # can't instantiate without passing params
         instantiate_func(AdamConf())
 
-    adam_params = Parameters([1, 2, 3])
+    adam_params = expected_params
     res = instantiate_func(AdamConf(lr=0.123), params=adam_params)
     expected = Adam(lr=0.123, params=adam_params)
-    assert res.params == expected.params
+    if is_partial:
+        partial_equal(res.params, expected.params)
+    else:
+        assert res.params == expected.params
     assert res.lr == expected.lr
     assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
     assert res.eps == expected.eps
@@ -371,29 +590,127 @@ def test_targetconf_deprecated() -> None:
 
 
 def test_instantiate_bad_adam_conf(instantiate_func: Any, recwarn: Any) -> None:
-    msg = (
-        "Missing value for BadAdamConf._target_. Check that it's properly annotated and overridden."
-        "\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
+    msg = re.escape(
+        dedent(
+            """\
+            Config has missing value for key `_target_`, cannot instantiate.
+            Config type: BadAdamConf
+            Check that the `_target_` key in your dataclass is properly annotated and overridden.
+            A common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"""
+        )
     )
     with raises(
         InstantiationException,
-        match=re.escape(msg),
+        match=msg,
     ):
         instantiate_func(BadAdamConf())
 
 
 def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
 
+    _target_ = "tests.instantiate.ClassWithMissingModule"
     with raises(
-        ModuleNotFoundError, match=re.escape("No module named 'some_missing_module'")
+        InstantiationException,
+        match=dedent(
+            rf"""
+            Error in call to target '{re.escape(_target_)}':
+            ModuleNotFoundError\("No module named 'some_missing_module'",?\)"""
+        ).strip(),
     ):
         # can't instantiate when importing a missing module
-        instantiate_func({"_target_": "tests.instantiate.ClassWithMissingModule"})
+        instantiate_func({"_target_": _target_})
 
 
-def test_pass_extra_variables(instantiate_func: Any) -> None:
-    cfg = OmegaConf.create({"_target_": "tests.instantiate.AClass", "a": 10, "b": 20})
-    assert instantiate_func(cfg, c=30) == AClass(a=10, b=20, c=30)
+def test_instantiate_target_raising_exception_taking_no_arguments(
+    instantiate_func: Any,
+) -> None:
+    _target_ = "tests.instantiate.raise_exception_taking_no_argument"
+    with raises(
+        InstantiationException,
+        match=(
+            dedent(
+                rf"""
+                Error in call to target '{re.escape(_target_)}':
+                ExceptionTakingNoArgument\('Err message',?\)"""
+            ).strip()
+        ),
+    ):
+        instantiate_func({}, _target_=_target_)
+
+
+def test_instantiate_target_raising_exception_taking_no_arguments_nested(
+    instantiate_func: Any,
+) -> None:
+    _target_ = "tests.instantiate.raise_exception_taking_no_argument"
+    with raises(
+        InstantiationException,
+        match=(
+            dedent(
+                rf"""
+                Error in call to target '{re.escape(_target_)}':
+                ExceptionTakingNoArgument\('Err message',?\)
+                full_key: foo
+                """
+            ).strip()
+        ),
+    ):
+        instantiate_func({"foo": {"_target_": _target_}})
+
+
+def test_toplevel_list_partial_not_allowed(instantiate_func: Any) -> None:
+    config = [{"_target_": "tests.instantiate.ClassA", "a": 10, "b": 20, "c": 30}]
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            "The _partial_ keyword is not compatible with top-level list instantiation"
+        ),
+    ):
+        instantiate_func(config, _partial_=True)
+
+
+@mark.parametrize("is_partial", [True, False])
+def test_pass_extra_variables(instantiate_func: Any, is_partial: bool) -> None:
+    cfg = OmegaConf.create(
+        {
+            "_target_": "tests.instantiate.AClass",
+            "a": 10,
+            "b": 20,
+            "_partial_": is_partial,
+        }
+    )
+    if is_partial:
+        assert partial_equal(
+            instantiate_func(cfg, c=30), partial(AClass, a=10, b=20, c=30)
+        )
+    else:
+        assert instantiate_func(cfg, c=30) == AClass(a=10, b=20, c=30)
+
+
+@mark.parametrize(
+    "target, expected",
+    [
+        param(module_function2, lambda x: x == "fn return", id="fn"),
+        param(OuterClass, lambda x: isinstance(x, OuterClass), id="OuterClass"),
+        param(
+            OuterClass.method,
+            lambda x: x == "OuterClass.method return",
+            id="classmethod",
+        ),
+        param(
+            OuterClass.Nested, lambda x: isinstance(x, OuterClass.Nested), id="nested"
+        ),
+        param(
+            OuterClass.Nested.method,
+            lambda x: x == "OuterClass.Nested.method return",
+            id="nested_method",
+        ),
+    ],
+)
+def test_instantiate_with_callable_target_keyword(
+    instantiate_func: Any, target: Callable[[], None], expected: Callable[[Any], bool]
+) -> None:
+    ret = instantiate_func({}, _target_=target)
+    assert expected(ret)
 
 
 @mark.parametrize(
@@ -592,6 +909,195 @@ def test_recursive_instantiation(
 ) -> None:
     obj = instantiate_func(config, **passthrough)
     assert obj == expected
+
+
+@mark.parametrize(
+    "src, passthrough, expected",
+    [
+        # direct
+        param(
+            {
+                "_target_": "tests.instantiate.Tree",
+                "_partial_": True,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 21,
+                },
+                "right": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 22,
+                },
+            },
+            {},
+            partial(Tree, left=Tree(value=21), right=Tree(value=22)),
+        ),
+        param(
+            {"_target_": "tests.instantiate.Tree", "_partial_": True},
+            {"value": 1},
+            partial(Tree, value=1),
+        ),
+        param(
+            {"_target_": "tests.instantiate.Tree"},
+            {
+                "value": 1,
+                "left": {"_target_": "tests.instantiate.Tree", "_partial_": True},
+            },
+            Tree(value=1, left=partial(Tree)),
+        ),
+        param(
+            {"_target_": "tests.instantiate.Tree"},
+            {
+                "value": 1,
+                "left": {"_target_": "tests.instantiate.Tree", "_partial_": True},
+                "right": {"_target_": "tests.instantiate.Tree", "value": 3},
+            },
+            Tree(value=1, left=partial(Tree), right=Tree(3)),
+        ),
+        param(
+            TreeConf(
+                value=1,
+                left=TreeConf(value=21, _partial_=True),
+                right=TreeConf(value=22),
+            ),
+            {},
+            Tree(
+                value=1,
+                left=partial(Tree, value=21, left=None, right=None),
+                right=Tree(value=22),
+            ),
+        ),
+        param(
+            TreeConf(
+                _partial_=True,
+                value=1,
+                left=TreeConf(value=21, _partial_=True),
+                right=TreeConf(value=22, _partial_=True),
+            ),
+            {},
+            partial(
+                Tree,
+                value=1,
+                left=partial(Tree, value=21, left=None, right=None),
+                right=partial(Tree, value=22, left=None, right=None),
+            ),
+        ),
+        param(
+            TreeConf(
+                _partial_=True,
+                value=1,
+                left=TreeConf(
+                    value=21,
+                ),
+                right=TreeConf(value=22, left=TreeConf(_partial_=True, value=42)),
+            ),
+            {},
+            partial(
+                Tree,
+                value=1,
+                left=Tree(value=21),
+                right=Tree(
+                    value=22, left=partial(Tree, value=42, left=None, right=None)
+                ),
+            ),
+        ),
+        # list
+        # note that passthrough to a list element is not currently supported
+        param(
+            ComposeConf(
+                _partial_=True,
+                transforms=[
+                    CenterCropConf(size=10),
+                    RotationConf(degrees=45),
+                ],
+            ),
+            {},
+            partial(
+                Compose,
+                transforms=[
+                    CenterCrop(size=10),
+                    Rotation(degrees=45),
+                ],
+            ),
+        ),
+        param(
+            ComposeConf(
+                transforms=[
+                    CenterCropConf(_partial_=True, size=10),
+                    RotationConf(degrees=45),
+                ],
+            ),
+            {},
+            Compose(
+                transforms=[
+                    partial(CenterCrop, size=10),  # type: ignore
+                    Rotation(degrees=45),
+                ],
+            ),
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.Compose",
+                "transforms": [
+                    {"_target_": "tests.instantiate.CenterCrop", "_partial_": True},
+                    {"_target_": "tests.instantiate.Rotation", "degrees": 45},
+                ],
+            },
+            {},
+            Compose(
+                transforms=[
+                    partial(CenterCrop),  # type: ignore
+                    Rotation(degrees=45),
+                ]
+            ),
+            id="recursive:list:dict",
+        ),
+        # map
+        param(
+            MappingConf(
+                dictionary={
+                    "a": MappingConf(_partial_=True),
+                    "b": MappingConf(),
+                }
+            ),
+            {},
+            Mapping(
+                dictionary={
+                    "a": partial(Mapping, dictionary=None),  # type: ignore
+                    "b": Mapping(),
+                }
+            ),
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.Mapping",
+                "_partial_": True,
+                "dictionary": {
+                    "a": {"_target_": "tests.instantiate.Mapping", "_partial_": True},
+                },
+            },
+            {
+                "dictionary": {
+                    "b": {"_target_": "tests.instantiate.Mapping", "_partial_": True},
+                },
+            },
+            partial(
+                Mapping,
+                dictionary={
+                    "a": partial(Mapping),
+                    "b": partial(Mapping),
+                },
+            ),
+        ),
+    ],
+)
+def test_partial_instantiate(
+    instantiate_func: Any,
+    config: Any,
+    passthrough: Dict[str, Any],
+    expected: Any,
+) -> None:
+    obj = instantiate_func(config, **passthrough)
+    assert obj == expected or partial_equal(obj, expected)
 
 
 @mark.parametrize(
@@ -848,26 +1354,65 @@ def test_instantiate_from_class_in_dict(
 
 
 @mark.parametrize(
-    "config, passthrough, expected",
+    "config, passthrough, err_msg",
     [
         param(
             OmegaConf.create({"_target_": AClass}),
             {},
-            AClass(10, 20, 30, 40),
-            id="class_in_config_dict",
+            re.escape(
+                "Expected a callable target, got"
+                + " '{'a': '???', 'b': '???', 'c': '???', 'd': 'default_value'}' of type 'DictConfig'"
+            ),
+            id="instantiate-from-dataclass-in-dict-fails",
+        ),
+        param(
+            OmegaConf.create({"foo": {"_target_": AClass}}),
+            {},
+            re.escape(
+                "Expected a callable target, got"
+                + " '{'a': '???', 'b': '???', 'c': '???', 'd': 'default_value'}' of type 'DictConfig'"
+                + "\nfull_key: foo"
+            ),
+            id="instantiate-from-dataclass-in-dict-fails-nested",
         ),
     ],
 )
 def test_instantiate_from_dataclass_in_dict_fails(
-    instantiate_func: Any, config: Any, passthrough: Any, expected: Any
+    instantiate_func: Any, config: Any, passthrough: Any, err_msg: str
 ) -> None:
-    # not the best error, but it will get the user to check their input config.
-    msg = "Unsupported target type: DictConfig. value: {'a': '???', 'b': '???', 'c': '???', 'd': 'default_value'}"
     with raises(
         InstantiationException,
-        match=re.escape(msg),
+        match=err_msg,
     ):
-        assert instantiate_func(config, **passthrough) == expected
+        instantiate_func(config, **passthrough)
+
+
+def test_cannot_locate_target(instantiate_func: Any) -> None:
+    cfg = OmegaConf.create({"foo": {"_target_": "not_found"}})
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            dedent(
+                """\
+                Error locating target 'not_found', see chained exception above.
+                full_key: foo"""
+            )
+        ),
+    ) as exc_info:
+        instantiate_func(cfg)
+    err = exc_info.value
+    assert hasattr(err, "__cause__")
+    chained = err.__cause__
+    assert isinstance(chained, ImportError)
+    assert_multiline_regex_search(
+        dedent(
+            """\
+            Error loading 'not_found':
+            ModuleNotFoundError\\("No module named 'not_found'",?\\)
+            Are you sure that module 'not_found' is installed\\?"""
+        ),
+        chained.args[0],
+    )
 
 
 @mark.parametrize(

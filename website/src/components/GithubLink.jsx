@@ -30,12 +30,12 @@ export default function GithubLink(props) {
 }
 
 export function ExampleGithubLink(props) {
-    const text = props.text ?? "Example" 
+    const text = props.text ?? "Example (Click Here)" 
     return (
         <GithubLink {...props}>
             <span>&nbsp;</span><img
                 src={"https://img.shields.io/badge/-" + text + "-informational"}
-                alt="Example"
+                alt="Example (Click Here)"
             />
         </GithubLink>
     );

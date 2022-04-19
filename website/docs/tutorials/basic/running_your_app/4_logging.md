@@ -42,7 +42,8 @@ You can enable DEBUG level logging from the command line  by overriding `hydra.v
 
 Examples:
 * `hydra.verbose=true` : Sets the log level of **all** loggers to `DEBUG`
-* `hydra.verbose=NAME` : Sets the log level of the logger `NAME` to `DEBUG`
+* `hydra.verbose=NAME` : Sets the log level of the logger `NAME` to `DEBUG`.
+  Equivalent to `import logging; logging.getLogger(NAME).setLevel(logging.DEBUG)`.
 * `hydra.verbose=[NAME1,NAME2]`: Sets the log level of the loggers `NAME1` and `NAME2` to `DEBUG`
 
 Example output:

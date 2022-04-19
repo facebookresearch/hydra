@@ -2,19 +2,17 @@
 import os
 import sys
 import zipfile
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from omegaconf import OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-if sys.version_info.major >= 4 or (
-    sys.version_info.major >= 3 and sys.version_info.minor >= 9
-):
-    from importlib import resources
+if TYPE_CHECKING or (sys.version_info < (3, 9)):
+    import importlib_resources as resources
 else:
-    import importlib_resources as resources  # type:ignore
+    from importlib import resources
 
     # Relevant issue: https://github.com/python/mypy/issues/1153
     # Use importlib backport for Python older than 3.9
@@ -55,7 +53,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
-        res = resources.files(self.path).joinpath(normalized_config_path)  # type:ignore
+        res = resources.files(self.path).joinpath(normalized_config_path)
         if not res.exists():
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
@@ -63,18 +61,15 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def available(self) -> bool:
         try:
-            ret = resources.is_resource(self.path, "__init__.py")  # type:ignore
-            assert isinstance(ret, bool)
-            return ret
-        except ValueError:
+            files = resources.files(self.path)
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
-        except ModuleNotFoundError:
-            return False
+        return any(f.name == "__init__.py" and f.is_file() for f in files.iterdir())
 
     def is_group(self, config_path: str) -> bool:
         try:
-            files = resources.files(self.path)  # type:ignore
-        except Exception:
+            files = resources.files(self.path)
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
 
         res = files.joinpath(config_path)
@@ -85,8 +80,8 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def is_config(self, config_path: str) -> bool:
         config_path = self._normalize_file_name(config_path)
         try:
-            files = resources.files(self.path)  # type:ignore
-        except Exception:
+            files = resources.files(self.path)
+        except (ValueError, ModuleNotFoundError, TypeError):
             return False
         res = files.joinpath(config_path)
         ret = res.exists() and res.is_file()
@@ -95,9 +90,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         files: List[str] = []
-        for file in (
-            resources.files(self.path).joinpath(config_path).iterdir()  # type:ignore
-        ):
+        for file in resources.files(self.path).joinpath(config_path).iterdir():
             fname = file.name
             fpath = os.path.join(config_path, fname)
             self._list_add_result(

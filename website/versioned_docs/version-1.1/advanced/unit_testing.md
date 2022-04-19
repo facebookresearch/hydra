@@ -26,3 +26,7 @@ def test_with_initialize() -> None:
             "db": {"host": "localhost", "port": 3306},
         }
 ```
+
+For an idea about how to modify Hydra's search path when using `compose` in
+unit tests, see the page on
+[overriding the `hydra.searchpath` config](search_path.md#overriding-hydrasearchpath-config).

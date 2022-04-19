@@ -4,8 +4,6 @@ title: Hydra's command line flags
 ---
 
 Hydra is using the command line for two things:
-
-Hydra is using the command line for two things:
 - Controlling Hydra
 - Configuring your application (See [Override Grammar](override_grammar/basic.md))
 

@@ -5,7 +5,7 @@ import hydra
 from hydra._internal.deprecation_warning import deprecation_warning
 
 
-@hydra.main(config_path=None)
+@hydra.main(version_base=None)
 def my_app(cfg: DictConfig) -> None:
     deprecation_warning("Feature FooBar is deprecated")
 

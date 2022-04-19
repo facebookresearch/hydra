@@ -27,14 +27,15 @@ Use the version switcher in the top bar to switch between documentation versions
  
 |        |          Version          |  Release notes                                                                      | Python Versions    |
 | -------|---------------------------|-------------------------------------------------------------------------------------| -------------------|
-| &#9658;| 1.1 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.0)      | **3.6 - 3.9**      |
-|        | 1.0                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.0rc1)   | **3.6 - 3.8**      |
-|        | 0.11                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/0.11.0)      | **2.7, 3.5 - 3.8** |
+| &#9658;| 1.1 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.1)      | **3.6 - 3.9**      |
+|        | 1.0                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.7)      | **3.6 - 3.8**      |
+|        | 0.11                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v0.11.3)     | **2.7, 3.5 - 3.8** |
 
 
 ## Quick start guide
-This guide will show you some of the most important features of Hydra.
-Read the [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
+This guide will show you some of the most important features you get by writing your application as a Hydra app.
+If you only want to use Hydra for config composition, check out Hydra's [compose API](advanced/compose_api.md) for an alternative.
+Please also read the full [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
 ```commandline
@@ -141,8 +142,8 @@ There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/your_fir
 
 ## Other stuff
 ### Community
-Ask questions in the chat or StackOverflow (Use the tag #fb-hydra):
-* [Zulip Chat](https://hydra-framework.zulipchat.com)
+Ask questions on github or StackOverflow (Use the tag #fb-hydra):
+* [github](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
 
 Follow Hydra on Twitter and Facebook:

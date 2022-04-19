@@ -7,6 +7,7 @@ from typing import Any, List
 from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -189,6 +190,8 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
+        curr_base = version.getbase()
+        version.setbase("1.1")
         with warns(
             UserWarning,
             match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
@@ -198,6 +201,7 @@ class TestConfigLoader:
                 overrides=[],
                 run_mode=RunMode.RUN,
             )
+        version.setbase(str(curr_base))
 
         with open_dict(cfg):
             del cfg["hydra"]
@@ -326,11 +330,11 @@ class TestConfigLoader:
         msg = dedent(
             """\
             In 'schema_validation_error': ValidationError raised while composing config:
-            Value 'not_an_int' could not be converted to Integer
+            Value 'not_an_int'( of type 'str')? could not be converted to Integer
                 full_key: port
                 object_type=MySQLConfig"""
         )
-        with raises(ConfigCompositionException, match=re.escape(msg)):
+        with raises(ConfigCompositionException, match=msg):
             config_loader.load_configuration(
                 config_name="schema_validation_error",
                 overrides=[],

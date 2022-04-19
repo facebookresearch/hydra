@@ -87,14 +87,13 @@ commands:
       - run:
           name: Preparing environment - system
           command: |
-            choco install -y --no-progress miniconda3
+            choco install -y --no-progress miniconda3 --params '"/AddToPath:1"'
             C:\tools\miniconda3\Scripts\conda.exe init powershell
             choco install -y --no-progress openssl javaruntime
       - run:
           name: Preparing environment - Hydra
-          # Using virtualenv==20.0.33 higher versions of virtualenv are not compatible with conda on windows. Relevant issue: https://github.com/ContinuumIO/anaconda-issues/issues/12094
           command: |
-            conda create -n hydra python=<< parameters.py_version >> virtualenv==20.0.33 -qy
+            conda create -n hydra python=<< parameters.py_version >> -qy
             conda activate hydra
             pip install nox dataclasses --progress-bar off
       - save_cache:
@@ -224,6 +223,23 @@ jobs:
               conda activate hydra
               nox -s lint_plugins test_plugins -ts
               exit $LASTEXITCODE
+  test_linux_omc_dev:
+    parameters:
+      py_version:
+        type: string
+    docker:
+      - image: cimg/base:stable-18.04
+    steps:
+      - linux:
+          py_version: << parameters.py_version >>
+      - run:
+          name: Testing Hydra
+          command: |
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+            export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            export USE_OMEGACONF_DEV_VERSION=1
+            pip install nox dataclasses --progress-bar off
+            nox -s test_core -ts
   # Misc
   coverage:
     docker:
@@ -250,7 +266,11 @@ workflows:
       - test_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
+      - test_linux_omc_dev:
+          matrix:
+            parameters:
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
 
 
   plugin_tests:
@@ -269,7 +289,7 @@ workflows:
       - test_plugin_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8",]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 

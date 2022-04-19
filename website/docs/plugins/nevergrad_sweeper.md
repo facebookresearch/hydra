@@ -27,7 +27,7 @@ defaults:
 ```
 
 The default configuration is defined and documented <GithubLink to="plugins/hydra_nevergrad_sweeper/hydra_plugins/hydra_nevergrad_sweeper/config.py">here</GithubLink>.
-There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins) for more information.
+There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
 ## Example of training using Nevergrad hyperparameter search
 

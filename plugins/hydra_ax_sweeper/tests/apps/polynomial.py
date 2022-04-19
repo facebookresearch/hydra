@@ -5,7 +5,7 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(config_path=".", config_name="polynomial")
+@hydra.main(version_base=None, config_path=".", config_name="polynomial")
 def polynomial(cfg: DictConfig) -> Any:
     x = cfg.polynomial.x
     y = cfg.polynomial.y
@@ -13,7 +13,7 @@ def polynomial(cfg: DictConfig) -> Any:
     a = 100
     b = 10
     c = 1
-    result = a * (x ** 2) + b * y + c * z
+    result = a * (x**2) + b * y + c * z
     return result
 
 

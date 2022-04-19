@@ -3,6 +3,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
@@ -10,7 +11,14 @@ from typing import Any, Dict, List, Optional
 from omegaconf import MISSING, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
-from hydra import compose, initialize, initialize_config_dir, initialize_config_module
+from hydra import (
+    __version__,
+    compose,
+    initialize,
+    initialize_config_dir,
+    initialize_config_module,
+    version,
+)
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
@@ -24,7 +32,7 @@ chdir_hydra_root()
 @fixture
 def initialize_hydra(config_path: Optional[str]) -> Any:
     try:
-        init = initialize(config_path=config_path)
+        init = initialize(version_base=None, config_path=config_path)
         init.__enter__()
         yield
     finally:
@@ -34,7 +42,7 @@ def initialize_hydra(config_path: Optional[str]) -> Any:
 @fixture
 def initialize_hydra_no_path() -> Any:
     try:
-        init = initialize(config_path=None)
+        init = initialize(version_base=None)
         init.__enter__()
         yield
     finally:
@@ -43,13 +51,54 @@ def initialize_hydra_no_path() -> Any:
 
 def test_initialize(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(config_path=None)
+    initialize(version_base=None)
     assert GlobalHydra().is_initialized()
+
+
+def test_initialize_old_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        HydraException,
+        match=f'version_base must be >= "{version.__compat_version__}"',
+    ):
+        initialize(version_base="1.0")
+
+
+def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        TypeError,
+        match="expected string or bytes-like object",
+    ):
+        initialize(version_base=1.1)  # type: ignore
+
+
+def test_initialize_dev_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    # packaging will compare "1.2.0.dev2" < "1.2", so need to ensure handled correctly
+    initialize(version_base="1.2.0.dev2")
+    assert version.base_at_least("1.2")
+
+
+def test_initialize_cur_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    initialize(version_base=None)
+    assert version.base_at_least(__version__)
+
+
+def test_initialize_compat_version_base(hydra_restore_singletons: Any) -> None:
+    assert not GlobalHydra().is_initialized()
+    with raises(
+        UserWarning,
+        match=f"Will assume defaults for version {version.__compat_version__}",
+    ):
+        initialize()
+    assert version.base_at_least(str(version.__compat_version__))
 
 
 def test_initialize_with_config_path(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(config_path="../hydra/test_utils/configs")
+    initialize(version_base=None, config_path="../hydra/test_utils/configs")
     assert GlobalHydra().is_initialized()
 
     gh = GlobalHydra.instance()
@@ -181,7 +230,10 @@ class TestComposeInits:
     def test_initialize_ctx(
         self, config_file: str, overrides: List[str], expected: Any
     ) -> None:
-        with initialize(config_path="../examples/jupyter_notebooks/cloud_app/conf"):
+        with initialize(
+            version_base=None,
+            config_path="../examples/jupyter_notebooks/cloud_app/conf",
+        ):
             ret = compose(config_file, overrides)
             assert ret == expected
 
@@ -196,6 +248,7 @@ class TestComposeInits:
         ):
             with initialize_config_dir(
                 config_dir="../examples/jupyter_notebooks/cloud_app/conf",
+                version_base=None,
                 job_name="job_name",
             ):
                 ret = compose(config_file, overrides)
@@ -206,6 +259,7 @@ class TestComposeInits:
     ) -> None:
         with initialize_config_module(
             config_module="examples.jupyter_notebooks.cloud_app.conf",
+            version_base=None,
             job_name="job_name",
         ):
             ret = compose(config_file, overrides)
@@ -218,7 +272,7 @@ def test_initialize_ctx_with_absolute_dir(
     with raises(
         HydraException, match=re.escape("config_path in initialize() must be relative")
     ):
-        with initialize(config_path=str(tmpdir)):
+        with initialize(version_base=None, config_path=str(tmpdir)):
             compose(overrides=["+test_group=test"])
 
 
@@ -233,7 +287,10 @@ def test_initialize_config_dir_ctx_with_absolute_dir(
     with open(str(cfg_file), "w") as f:
         OmegaConf.save(cfg, f)
 
-    with initialize_config_dir(config_dir=str(tmpdir)):
+    with initialize_config_dir(
+        config_dir=str(tmpdir),
+        version_base=None,
+    ):
         ret = compose(overrides=["+test_group=test"])
         assert ret == {"test_group": cfg}
 
@@ -245,7 +302,9 @@ def test_jobname_override_initialize_ctx(
     hydra_restore_singletons: Any, job_name: Optional[str], expected: str
 ) -> None:
     with initialize(
-        config_path="../examples/jupyter_notebooks/cloud_app/conf", job_name=job_name
+        version_base=None,
+        config_path="../examples/jupyter_notebooks/cloud_app/conf",
+        job_name=job_name,
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == expected
@@ -254,26 +313,33 @@ def test_jobname_override_initialize_ctx(
 def test_jobname_override_initialize_config_dir_ctx(
     hydra_restore_singletons: Any, tmpdir: Any
 ) -> None:
-    with initialize_config_dir(config_dir=str(tmpdir), job_name="test_job"):
+    with initialize_config_dir(
+        config_dir=str(tmpdir), version_base=None, job_name="test_job"
+    ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "test_job"
 
 
 def test_initialize_config_module_ctx(hydra_restore_singletons: Any) -> None:
     with initialize_config_module(
-        config_module="examples.jupyter_notebooks.cloud_app.conf"
+        config_module="examples.jupyter_notebooks.cloud_app.conf",
+        version_base=None,
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "app"
 
     with initialize_config_module(
-        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
+        config_module="examples.jupyter_notebooks.cloud_app.conf",
+        job_name="test_job",
+        version_base=None,
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "test_job"
 
     with initialize_config_module(
-        config_module="examples.jupyter_notebooks.cloud_app.conf", job_name="test_job"
+        config_module="examples.jupyter_notebooks.cloud_app.conf",
+        job_name="test_job",
+        version_base=None,
     ):
         ret = compose(return_hydra_config=True)
         assert ret.hydra.job.name == "test_job"
@@ -287,7 +353,8 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
 
     with raises(Exception, match=re.escape(expected)):
         with initialize_config_module(
-            config_module="hydra.test_utils.configs.missing_init_py"
+            config_module="hydra.test_utils.configs.missing_init_py",
+            version_base=None,
         ):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
@@ -301,7 +368,10 @@ def test_missing_bad_config_dir_error(hydra_restore_singletons: Any) -> None:
     )
 
     with raises(Exception, match=re.escape(expected)):
-        with initialize_config_dir(config_dir="/no_way_in_hell_1234567890"):
+        with initialize_config_dir(
+            config_dir="/no_way_in_hell_1234567890",
+            version_base=None,
+        ):
             hydra = GlobalHydra.instance().hydra
             assert hydra is not None
             compose(config_name="test.yaml", overrides=[])
@@ -309,7 +379,9 @@ def test_missing_bad_config_dir_error(hydra_restore_singletons: Any) -> None:
 
 def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
     with initialize_config_module(
-        config_module="tests.test_apps.app_with_cfg_groups.conf", job_name="my_pp"
+        config_module="tests.test_apps.app_with_cfg_groups.conf",
+        job_name="my_pp",
+        version_base=None,
     ):
         assert compose(config_name="config") == {
             "optimizer": {"type": "nesterov", "lr": 0.001}
@@ -317,7 +389,9 @@ def test_initialize_with_module(hydra_restore_singletons: Any) -> None:
 
 
 def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
-    with initialize(config_path="test_apps/app_with_cfg_groups/conf"):
+    with initialize(
+        version_base=None, config_path="test_apps/app_with_cfg_groups/conf"
+    ):
         from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
 
         cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
@@ -568,7 +642,7 @@ def test_deprecated_compose() -> None:
     from hydra import initialize
     from hydra.experimental import compose as expr_compose
 
-    with initialize(config_path=None):
+    with initialize(version_base=None):
         with warns(
             expected_warning=UserWarning,
             match=re.escape(
@@ -600,7 +674,9 @@ def test_deprecated_initialize_config_dir() -> None:
             "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
         ),
     ):
-        with expr_initialize_config_dir(config_dir=str(Path(".").absolute())):
+        with expr_initialize_config_dir(
+            config_dir=str(Path(".").absolute()),
+        ):
             assert compose() == {}
 
 
@@ -617,7 +693,7 @@ def test_deprecated_initialize_config_module() -> None:
         ),
     ):
         with expr_initialize_config_module(
-            config_module="examples.jupyter_notebooks.cloud_app.conf"
+            config_module="examples.jupyter_notebooks.cloud_app.conf",
         ):
             assert compose() == {}
 
@@ -670,16 +746,22 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
     msg = dedent(
         """\
 
-        The strict flag in the compose API is deprecated and will be removed in the next version of Hydra.
+        The strict flag in the compose API is deprecated.
         See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
         """
     )
+
+    curr_base = version.getbase()
+    version.setbase("1.1")
 
     with warns(
         expected_warning=UserWarning,
         match=re.escape(msg),
     ):
         cfg = compose(overrides=[], strict=strict)
+
+    version.setbase(str(curr_base))
+
     assert cfg == {}
     assert OmegaConf.is_struct(cfg) is strict
 
@@ -703,3 +785,23 @@ def test_missing_node_with_defaults_list(hydra_restore_singletons: Any) -> None:
 
     cfg = compose("trainer/base_trainer")
     assert cfg == {"trainer": {"reducer": {}}}
+
+
+@mark.usefixtures("initialize_hydra_no_path")
+def test_enum_with_removed_defaults_list(hydra_restore_singletons: Any) -> None:
+    class Category(Enum):
+        X = 0
+        Y = 1
+        Z = 2
+
+    @dataclass
+    class Conf:
+        enum_dict: Dict[Category, str] = field(default_factory=dict)
+        int_dict: Dict[int, str] = field(default_factory=dict)
+        str_dict: Dict[str, str] = field(default_factory=dict)
+
+    cs = ConfigStore.instance()
+    cs.store(name="conf", node=Conf)
+
+    cfg = compose("conf")
+    assert cfg == {"enum_dict": {}, "int_dict": {}, "str_dict": {}}

@@ -11,6 +11,11 @@ Structured Configs can be used to implement config groups. Special care needs to
 default value for fields populated by a config group. We will look at why below.
 
 ```python title="Defining a config group for database" {16-17,22-23}
+from dataclasses import dataclass
+
+import hydra
+from hydra.core.config_store import ConfigStore
+
 @dataclass
 class MySQLConfig:
     driver: str = "mysql"
@@ -35,9 +40,12 @@ cs.store(name="config", node=Config)
 cs.store(group="db", name="mysql", node=MySQLConfig)
 cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
-@hydra.main(config_path=None, config_name="config")
+@hydra.main(version_base=None, config_name="config")
 def my_app(cfg: Config) -> None:
     print(OmegaConf.to_yaml(cfg))
+
+if __name__ == "__main__":
+    my_app()
 ```
 
 :::caution

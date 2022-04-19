@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import Callable, Generator, List, Optional
 
 from pytest import fixture
 
@@ -10,8 +10,8 @@ from hydra.test_utils.test_utils import SweepTaskFunction, TaskTestFunction
 from hydra.types import TaskFunction
 
 
-@fixture(scope="function")  # type: ignore
-def hydra_restore_singletons() -> None:
+@fixture(scope="function")
+def hydra_restore_singletons() -> Generator[None, None, None]:
     """
     Restore singletons state after the function returns
     """
@@ -20,7 +20,7 @@ def hydra_restore_singletons() -> None:
     Singleton.set_state(state)
 
 
-@fixture(scope="function")  # type: ignore
+@fixture(scope="function")
 def hydra_sweep_runner() -> Callable[
     [
         Optional[str],
@@ -29,7 +29,6 @@ def hydra_sweep_runner() -> Callable[
         Optional[str],
         Optional[str],
         Optional[List[str]],
-        Optional[bool],
         Optional[Path],
         bool,
     ],
@@ -42,7 +41,6 @@ def hydra_sweep_runner() -> Callable[
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]],
-        strict: Optional[bool] = None,
         temp_dir: Optional[Path] = None,
         configure_logging: bool = False,
     ) -> SweepTaskFunction:
@@ -52,7 +50,6 @@ def hydra_sweep_runner() -> Callable[
         sweep.task_function = task_function
         sweep.config_path = config_path
         sweep.config_name = config_name
-        sweep.strict = strict
         sweep.overrides = overrides or []
         sweep.temp_dir = str(temp_dir)
         sweep.configure_logging = configure_logging
@@ -61,7 +58,7 @@ def hydra_sweep_runner() -> Callable[
     return _
 
 
-@fixture(scope="function")  # type: ignore
+@fixture(scope="function")
 def hydra_task_runner() -> Callable[
     [
         Optional[str],
@@ -69,7 +66,6 @@ def hydra_task_runner() -> Callable[
         Optional[str],
         Optional[str],
         Optional[List[str]],
-        Optional[bool],
         bool,
     ],
     TaskTestFunction,
@@ -80,7 +76,6 @@ def hydra_task_runner() -> Callable[
         config_path: Optional[str],
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
-        strict: Optional[bool] = None,
         configure_logging: bool = False,
     ) -> TaskTestFunction:
         task = TaskTestFunction()
@@ -89,7 +84,6 @@ def hydra_task_runner() -> Callable[
         task.config_name = config_name
         task.calling_module = calling_module
         task.config_path = config_path
-        task.strict = strict
         task.configure_logging = configure_logging
         return task
 

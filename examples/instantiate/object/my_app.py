@@ -31,7 +31,7 @@ class PostgreSQLConnection(DBConnection):
         print(f"PostgreSQL connecting to {self.host}")
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     connection = instantiate(cfg.db)
     connection.connect()

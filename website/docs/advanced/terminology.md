@@ -72,7 +72,7 @@ defaults:
 ```
 
 ## Config Group
-A Config Group is directory in the [Config Search Path](#config-search-path) that contains [Input Configs](#input-configs).
+A Config Group is a directory in the [Config Search Path](#config-search-path) that contains [Input Configs](#input-configs).
 Config Groups can be nested, and in that case the path elements are separated by a forward slash ('/') regardless of the operating system.
 
 ## Config Group Option
@@ -128,4 +128,4 @@ The [Config Search Path](search_path.md) is a list of paths that are searched in
 the Python [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH).
 
 ## Plugins
-[Plugins](plugins/intro.md) extend Hydra's capabilities. Hydra has several plugin types, for examples Launcher and Sweeper.
+[Plugins](plugins/intro.md) extend Hydra's capabilities. Hydra has several plugin types, for example Launcher and Sweeper.

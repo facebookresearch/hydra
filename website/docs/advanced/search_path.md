@@ -34,8 +34,15 @@ Using the  `config_path` parameter `@hydra.main()`.  The `config_path` is relati
 
 In some cases you may want to add multiple locations to the search path. 
 For example, an app may want to read the configs from an additional Python module or 
-an additional directory on the file system.  
-Configure this using `hydra.searchpath` in your primary config or your command line.
+an additional directory on the file system. Another example is in unit testing,
+where the defaults list in a config loaded from the `tests/configs` folder may
+make reference to another config from the `app/configs` folder. If the
+`config_path` or `config_dir` argument passed to `@hydra.main` or to one of the
+[initialization methods](compose_api.md#initialization-methods) points to
+`tests/configs`, the configs located in `app/configs` will not be discoverable
+unless Hydra's search path is modified.
+
+You can configure `hydra.searchpath` in your primary config or from the command line.
 :::info
 hydra.searchpath can **only** be configured in the primary config. Attempting  to configure it in other configs will result in an error.
 :::
@@ -62,7 +69,7 @@ In this example, we add a second config directory - `additional_conf`, next to t
 
 ```python title="my_app.py"
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

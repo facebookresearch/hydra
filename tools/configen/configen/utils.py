@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple, Type
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 from omegaconf._utils import (
     _resolve_optional,
@@ -65,7 +65,7 @@ def is_tuple_annotation(type_: Any) -> bool:
         return origin is tuple  # pragma: no cover
 
 
-def convert_imports(imports: Set[Type], string_imports: List[str]) -> List[str]:
+def convert_imports(imports: Set[Any], string_imports: Iterable[str]) -> List[str]:
     tmp = set()
     for imp in string_imports:
         tmp.add(imp)
@@ -94,7 +94,7 @@ def convert_imports(imports: Set[Type], string_imports: List[str]) -> List[str]:
     return sorted(list(tmp))
 
 
-def collect_imports(imports: Set[Type], type_: Type) -> None:
+def collect_imports(imports: Set[Any], type_: Any) -> None:
     if is_list_annotation(type_):
         collect_imports(imports, get_list_element_type(type_))
         type_ = List

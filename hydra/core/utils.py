@@ -11,17 +11,15 @@ from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
-
-if TYPE_CHECKING:
-    from hydra._internal.callbacks import Callbacks
 
 log = logging.getLogger(__name__)
 
@@ -85,25 +83,17 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
-def _get_callbacks_for_run_job(hydra_context: Optional[HydraContext]) -> "Callbacks":
+def _check_hydra_context(hydra_context: Optional[HydraContext]) -> None:
     if hydra_context is None:
-        # DEPRECATED: remove in 1.2
-        # hydra_context will be required in 1.2
-        deprecation_warning(
-            message=dedent(
+        # hydra_context is required as of Hydra 1.2.
+        # We can remove this check in Hydra 1.3.
+        raise TypeError(
+            dedent(
                 """
-                run_job's signature has changed in Hydra 1.1. Please pass in hydra_context.
-                Support for the old style will be removed in Hydra 1.2.
+                run_job's signature has changed: the `hydra_context` arg is now required.
                 For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
             ),
         )
-        from hydra._internal.callbacks import Callbacks
-
-        callbacks = Callbacks()
-    else:
-        callbacks = hydra_context.callbacks
-
-    return callbacks
 
 
 def run_job(
@@ -111,24 +101,35 @@ def run_job(
     config: DictConfig,
     job_dir_key: str,
     job_subdir_key: Optional[str],
+    hydra_context: HydraContext,
     configure_logging: bool = True,
-    hydra_context: Optional[HydraContext] = None,
 ) -> "JobReturn":
-    callbacks = _get_callbacks_for_run_job(hydra_context)
+    _check_hydra_context(hydra_context)
+    callbacks = hydra_context.callbacks
 
     old_cwd = os.getcwd()
     orig_hydra_cfg = HydraConfig.instance().cfg
+
+    # init Hydra config for config evaluation
     HydraConfig.instance().set_config(config)
-    working_dir = str(OmegaConf.select(config, job_dir_key))
+
+    output_dir = str(OmegaConf.select(config, job_dir_key))
     if job_subdir_key is not None:
         # evaluate job_subdir_key lazily.
         # this is running on the client side in sweep and contains things such as job:id which
         # are only available there.
         subdir = str(OmegaConf.select(config, job_subdir_key))
-        working_dir = os.path.join(working_dir, subdir)
+        output_dir = os.path.join(output_dir, subdir)
+
+    with read_write(config.hydra.runtime):
+        with open_dict(config.hydra.runtime):
+            config.hydra.runtime.output_dir = os.path.abspath(output_dir)
+
+    # update Hydra config
+    HydraConfig.instance().set_config(config)
+    _chdir = None
     try:
         ret = JobReturn()
-        ret.working_dir = working_dir
         task_cfg = copy.deepcopy(config)
         with read_write(task_cfg):
             with open_dict(task_cfg):
@@ -142,14 +143,39 @@ def run_job(
         assert isinstance(overrides, list)
         ret.overrides = overrides
         # handle output directories here
-        Path(str(working_dir)).mkdir(parents=True, exist_ok=True)
-        os.chdir(working_dir)
+        Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
+
+        _chdir = hydra_cfg.hydra.job.chdir
+
+        if _chdir is None:
+            if version.base_at_least("1.2"):
+                _chdir = False
+
+        if _chdir is None:
+            url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir"
+            deprecation_warning(
+                message=dedent(
+                    f"""\
+                    Future Hydra versions will no longer change working directory at job runtime by default.
+                    See {url} for more information."""
+                ),
+                stacklevel=2,
+            )
+            _chdir = True
+
+        if _chdir:
+            os.chdir(output_dir)
+            ret.working_dir = output_dir
+        else:
+            ret.working_dir = os.getcwd()
 
         if configure_logging:
             configure_log(config.hydra.job_logging, config.hydra.verbose)
 
         if config.hydra.output_subdir is not None:
-            hydra_output = Path(config.hydra.output_subdir)
+            hydra_output = Path(config.hydra.runtime.output_dir) / Path(
+                config.hydra.output_subdir
+            )
             _save_config(task_cfg, "config.yaml", hydra_output)
             _save_config(hydra_cfg, "hydra.yaml", hydra_output)
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
@@ -172,7 +198,8 @@ def run_job(
         return ret
     finally:
         HydraConfig.instance().cfg = orig_hydra_cfg
-        os.chdir(old_cwd)
+        if _chdir:
+            os.chdir(old_cwd)
 
 
 def get_valid_filename(s: str) -> str:

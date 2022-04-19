@@ -19,7 +19,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        # "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.9",
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
     ],
@@ -27,6 +27,8 @@ setup(
         "boto3==1.17.17",
         "hydra-core>=1.1.0.dev7",
         "ray[default]==1.6.0",
+        # https://github.com/aio-libs/aiohttp/issues/6203
+        "aiohttp!=3.8.0",
         "cloudpickle==1.6.0",
         "pickle5==0.0.11",
     ],

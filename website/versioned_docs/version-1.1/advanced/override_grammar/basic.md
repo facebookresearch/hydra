@@ -147,6 +147,32 @@ Quoted strings can accept any value between the quotes, but some characters need
 </div>
 </div>
 
+It may be necessary to use multiple pairs of quotes to prevent your
+shell from consuming quotation marks before they are passed to hydra.
+
+```shell
+$ python my_app.py '+foo="{a: 10}"'
+foo: '{a: 10}'
+
+$ python my_app.py '+foo={a: 10}'
+foo:
+  a: 10
+
+$ python my_app.py +foo={a: 10}  # Two strings are passed to Hydra: `+foo={a:` and `10}`. This is an error.
+no viable alternative at input '{a:'.
+...
+```
+
+Here are some best practices around quoting in CLI overrides:
+- Quote the whole key=value pair with single quotes, as in the first two
+  examples above. These quotes are for the benefit of the shell.
+- Do not quote keys.
+- Only quote values if they contain a space. It will work if you always quote
+  values, but it will turn numbers/dicts/lists into strings (as in the first
+  example above).
+- When you are quoting values, use double quotes to avoid collision with the
+  outer single quoted consumed by the shell.
+
 ### Whitespaces in unquoted values
 Unquoted Override values can contain non leading or trailing whitespaces.
 For example, `msg=hello world` is a legal override (key is `msg` and value is the string `hello world`).
@@ -164,13 +190,22 @@ $ python my_app.py 'msg=    hello world    '
 ```
 
 ### Escaped characters in unquoted values
-Some otherwise special characters may be included in unquoted values by escaping them with a `\`.
+Hydra's parser considers some characters to be illegal in unquoted strings.
+These otherwise special characters may be included in unquoted values by escaping them with a `\`.
 These characters are: `\()[]{}:=, \t` (the last two ones being the whitespace and tab characters).
 
 As an example, in the following `dir` is set to the string `job{a=1,b=2,c=3}`:
 
 ```shell
 $ python my_app.py 'dir=job\{a\=1\,b\=2\,c\=3\}'
+```
+
+As an alternative to escaping special characters with a backslash, the value containing the special character may be quoted:
+
+```shell
+$ python my_app.py 'dir=A[B'    # parser error
+$ python my_app.py 'dir="A[B"'  # ok
+$ python my_app.py 'dir=A\[B'   # ok
 ```
 
 ### Primitives

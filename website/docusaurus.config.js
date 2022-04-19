@@ -10,18 +10,30 @@ module.exports = {
     tagline: 'A framework for elegantly configuring complex applications',
     url: 'https://hydra.cc',
     baseUrl: '/',
+    onBrokenLinks: 'throw',
+    onBrokenMarkdownLinks: 'warn',
+    trailingSlash: true,
     favicon: 'img/Hydra-head.svg',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
     customFields: {
         githubLinkVersionToBaseUrl: {
-            // TODO: Update once a branch is cut for 1.1
-            "1.1": "https://github.com/facebookresearch/hydra/blob/main/",
+            // TODO: Update once a branch is cut for 1.2
+            "1.2": "https://github.com/facebookresearch/hydra/blob/main/",
+            "1.1": "https://github.com/facebookresearch/hydra/blob/1.1_branch/",
             "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",
             current: "https://github.com/facebookresearch/hydra/blob/main/",
         },
     },    
     themeConfig: {
+        announcementBar: {
+            id: 'support_ukraine',
+            content:
+              'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.fb.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
+            backgroundColor: '#20232a',
+            textColor: '#fff',
+            isCloseable: false,
+        },
         googleAnalytics: {
             trackingID: 'UA-149862507-1',
         },
@@ -30,11 +42,11 @@ module.exports = {
             indexName: 'hydra',
             algoliaOptions: {},
         },
-        announcementBar: {
-          id: 'supportus',
-          content:
-            '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
-        },        
+        // announcementBar: {
+        //   id: 'supportus',
+        //   content:
+        //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
+        // },        
 		prism: {
 		  additionalLanguages: ['antlr4'],
 		},
@@ -106,7 +118,7 @@ module.exports = {
                 alt: 'Facebook Open Source Logo',
                 src: 'https://docusaurus.io/img/oss_logo.png',
             },
-            copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc.`,
+            copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc`,
         },
     },
     presets: [

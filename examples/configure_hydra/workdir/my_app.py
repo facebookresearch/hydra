@@ -6,7 +6,7 @@ from omegaconf import DictConfig
 import hydra
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="conf", config_name="config")
 def experiment(_cfg: DictConfig) -> None:
     print(os.getcwd())
 

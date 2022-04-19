@@ -158,6 +158,12 @@ class CompletionPlugin(Plugin):
         return matches
 
     def _query_config_groups(self, word: str) -> Tuple[List[str], bool]:
+        is_addition = word.startswith("+")
+        is_deletion = word.startswith("~")
+        if is_addition or is_deletion:
+            prefix, word = word[0], word[1:]
+        else:
+            prefix = ""
         last_eq_index = word.rfind("=")
         last_slash_index = word.rfind("/")
         exact_match: bool = False
@@ -191,12 +197,13 @@ class CompletionPlugin(Plugin):
                     dirs = self.config_loader.get_group_options(
                         group_name=name, results_filter=ObjectType.GROUP
                     )
-                    if len(dirs) == 0 and len(files) > 0:
+                    if len(dirs) == 0 and len(files) > 0 and not is_deletion:
                         name = name + "="
                     elif len(dirs) > 0 and len(files) == 0:
                         name = name + "/"
                     matched_groups.append(name)
 
+        matched_groups = [f"{prefix}{group}" for group in matched_groups]
         return matched_groups, exact_match
 
     def _query(self, config_name: Optional[str], line: str) -> List[str]:
