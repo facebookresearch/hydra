@@ -742,7 +742,9 @@ def test_error_assigning_null_to_logging_config(
 @mark.parametrize(
     "strict", [param(True, id="strict=True"), param(False, id="strict=False")]
 )
-def test_deprecated_compose_strict_flag(strict: bool) -> None:
+def test_deprecated_compose_strict_flag(
+    strict: bool, hydra_restore_singletons: Any
+) -> None:
     msg = dedent(
         """\
 
@@ -751,7 +753,6 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
         """
     )
 
-    curr_base = version.getbase()
     version.setbase("1.1")
 
     with warns(
@@ -759,8 +760,6 @@ def test_deprecated_compose_strict_flag(strict: bool) -> None:
         match=re.escape(msg),
     ):
         cfg = compose(overrides=[], strict=strict)
-
-    version.setbase(str(curr_base))
 
     assert cfg == {}
     assert OmegaConf.is_struct(cfg) is strict
