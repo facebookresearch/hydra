@@ -86,8 +86,8 @@ class TestDeprecatedOptional:
         self,
         config_path: str,
         expected_list: List[InputDefault],
+        hydra_restore_singletons: Any,
     ) -> None:
-        curr_base = version.getbase()
         version.setbase("1.1")
         repo = create_repo()
         warning = dedent(
@@ -103,7 +103,6 @@ class TestDeprecatedOptional:
             result = repo.load_config(config_path=config_path)
         assert result is not None
         assert result.defaults_list == expected_list
-        version.setbase(str(curr_base))
 
     @mark.parametrize("version_base", ["1.2", None])
     def test_version_base_1_2(
@@ -111,8 +110,8 @@ class TestDeprecatedOptional:
         config_path: str,
         expected_list: List[InputDefault],
         version_base: Optional[str],
+        hydra_restore_singletons: Any,
     ) -> None:
-        curr_base = version.getbase()
         version.setbase(version_base)
         repo = create_repo()
         err = "In optional_deprecated: Too many keys in default item {'group1': 'file1', 'optional': True}"
@@ -121,7 +120,6 @@ class TestDeprecatedOptional:
             match=re.escape(err),
         ):
             repo.load_config(config_path=config_path)
-        version.setbase(str(curr_base))
 
 
 def _test_defaults_list_impl(

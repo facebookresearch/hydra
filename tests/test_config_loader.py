@@ -186,11 +186,10 @@ class TestConfigLoader:
                 run_mode=RunMode.RUN,
             )
 
-    def test_load_yml_file(self, path: str) -> None:
+    def test_load_yml_file(self, path: str, hydra_restore_singletons: Any) -> None:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        curr_base = version.getbase()
         version.setbase("1.1")
         with warns(
             UserWarning,
@@ -201,7 +200,6 @@ class TestConfigLoader:
                 overrides=[],
                 run_mode=RunMode.RUN,
             )
-        version.setbase(str(curr_base))
 
         with open_dict(cfg):
             del cfg["hydra"]
