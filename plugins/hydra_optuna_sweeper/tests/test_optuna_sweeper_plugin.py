@@ -107,16 +107,18 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 
 
 @mark.parametrize(
-    "input, expected",
+    "input, is_grid_sampler, expected,",
     [
-        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
-        (["key=5"], ({}, {"key": "5"})),
+        (["key=choice(1,2)"], False, ({"key": CategoricalDistribution([1, 2])}, {})),
+        (["key=5"], False, ({}, {"key": "5"})),
         (
             ["key1=choice(1,2)", "key2=5"],
+            False,
             ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
         ),
         (
             ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
+            False,
             (
                 {
                     "key1": CategoricalDistribution([1, 2]),
@@ -125,10 +127,25 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
                 {"key2": "5"},
             ),
         ),
+        (
+            ["key1=choice(1,2,3)", "key2=5", "key3=choice(0.0, 1.0)"],
+            True,
+            (
+                {
+                    "key1": [1, 2, 3],
+                    "key3": [0.0, 1.0],
+                },
+                {"key2": "5"},
+            ),
+        ),
     ],
 )
-def test_create_params_from_overrides(input: Any, expected: Any) -> None:
-    actual = _impl.create_params_from_overrides(input)
+def test_create_params_from_overrides(
+    input: Any, is_grid_sampler, expected: Any
+) -> None:
+    actual = _impl.create_params_from_overrides(input, is_grid_sampler)
+    print(f"{actual=}")
+    print(f"{expected=}")
     assert actual == expected
 
 
@@ -190,6 +207,38 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     # to make the test robust against the detailed implementation of the sampler.
     # See https://github.com/facebookresearch/hydra/pull/1746#discussion_r681549830.
     assert returns["best_value"] <= 2.27
+
+
+@mark.parametrize("num_trials", (10, 1))
+def test_example_with_grid_sampler(
+    tmpdir: Path,
+    num_trials: int,
+) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-grid-sampler"
+    cmd = [
+        "example/sphere.py",
+        "--multirun",
+        "--config-dir=tests/conf",
+        "--config-name=test_grid",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=False",
+        f"hydra.sweeper.n_trials={num_trials}",
+        "hydra.sweeper.n_jobs=1",
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
+    ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    bv, bx, by = (
+        returns["best_value"],
+        returns["best_params"]["x"],
+        returns["best_params"]["y"],
+    )
+    if num_trials >= 6:
+        assert bv == 1 and abs(bx) == 1 and by == 0
+    else:
+        assert bx in [-1, 1] and by in [5, 0, -5]
 
 
 @mark.parametrize("with_commandline", (True, False))

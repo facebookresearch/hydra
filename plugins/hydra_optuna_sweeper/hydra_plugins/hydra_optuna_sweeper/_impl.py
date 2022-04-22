@@ -2,6 +2,7 @@
 import logging
 import sys
 import warnings
+import functools
 from textwrap import dedent
 from typing import (
     Any,
@@ -13,6 +14,7 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
+    Union,
 )
 
 import optuna
@@ -129,16 +131,27 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
 def create_params_from_overrides(
     arguments: List[str],
+    is_grid_sampler: bool,
 ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
     search_space_distributions = dict()
     fixed_params = dict()
+
     for override in parsed:
+        if is_grid_sampler and (
+            override.is_sweep_override() and not override.is_choice_sweep()
+        ):
+            raise ValueError(
+                f"GridSampler only support choice sweep: override={override}."
+            )
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
         if isinstance(value, BaseDistribution):
-            search_space_distributions[param_name] = value
+            if is_grid_sampler:
+                search_space_distributions[param_name] = list(value.choices)  # type: ignore
+            else:
+                search_space_distributions[param_name] = value
         else:
             fixed_params[param_name] = value
     return search_space_distributions, fixed_params
@@ -227,17 +240,38 @@ class OptunaSweeperImpl(Sweeper):
             return [self.direction]
         return [self.direction.name]
 
+    def _suggest_for_grid_sampler(
+        self, distribution: List[Any], trial: Trial, param_name: str
+    ):
+        assert len(distribution) > 0
+        e = distribution[0]
+        if isinstance(e, int):
+            trial.suggest_int(param_name, high=max(distribution), low=min(distribution))
+        elif isinstance(e, float):
+            trial.suggest_float(
+                param_name, high=max(distribution), low=min(distribution)
+            )
+        else:
+            raise ValueError(f"Unknown type: {type(e)}")
+
     def _configure_trials(
         self,
         trials: List[Trial],
-        search_space_distributions: Dict[str, BaseDistribution],
+        search_space_distributions: Dict[str, Union[BaseDistribution, List]],
         fixed_params: Dict[str, Any],
+        is_grid_sampler: bool,
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
+            num_grid_trials = 1
             for param_name, distribution in search_space_distributions.items():
                 assert type(param_name) is str
-                trial._suggest(param_name, distribution)
+                if is_grid_sampler:
+                    num_grid_trials *= len(distribution)
+                    self._suggest_for_grid_sampler(distribution, trial, param_name)
+                else:
+                    trial._suggest(param_name, distribution)
+            self.n_trials = min(self.n_trials, num_grid_trials)
             for param_name, value in fixed_params.items():
                 trial.set_user_attr(param_name, value)
 
@@ -274,9 +308,25 @@ class OptunaSweeperImpl(Sweeper):
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
-        search_space_distributions, fixed_params = create_params_from_overrides(
-            params_conf
+
+        is_grid_sampler = (
+            isinstance(self.sampler, functools.partial)
+            and self.sampler.func == optuna.samplers.GridSampler
         )
+
+        search_space_distributions, fixed_params = create_params_from_overrides(
+            params_conf, is_grid_sampler
+        )
+
+        if is_grid_sampler:
+            self.sampler = self.sampler(search_space_distributions)
+            n_trial = 1
+            for _, v in search_space_distributions.items():
+                n_trial *= len(v)
+            self.n_trials = min(self.n_trials, n_trial)
+            log.info(
+                f"Updating num of trials to {self.n_trials} due to using GridSampler."
+            )
 
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
@@ -305,7 +355,7 @@ class OptunaSweeperImpl(Sweeper):
 
             trials = [study.ask() for _ in range(batch_size)]
             overrides = self._configure_trials(
-                trials, search_space_distributions, fixed_params
+                trials, search_space_distributions, fixed_params, is_grid_sampler
             )
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
@@ -334,7 +384,18 @@ class OptunaSweeperImpl(Sweeper):
                                 "The number of the values and the number of the objectives are"
                                 f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
-                    study.tell(trial=trial, state=state, values=values)
+                    try:
+                        study.tell(trial=trial, state=state, values=values)
+                    except RuntimeError as e:
+                        if (
+                            is_grid_sampler
+                            and "`Study.stop` is supposed to be invoked inside an objective function or a callback."
+                            in str(e)
+                        ):
+                            pass
+                        else:
+                            raise e
+
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
                     study.tell(trial=trial, state=state, values=values)
