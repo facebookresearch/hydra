@@ -107,18 +107,16 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 
 
 @mark.parametrize(
-    "input, is_grid_sampler, expected,",
+    "input, expected",
     [
-        (["key=choice(1,2)"], False, ({"key": CategoricalDistribution([1, 2])}, {})),
-        (["key=5"], False, ({}, {"key": "5"})),
+        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
+        (["key=5"], ({}, {"key": "5"})),
         (
             ["key1=choice(1,2)", "key2=5"],
-            False,
             ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
         ),
         (
             ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
-            False,
             (
                 {
                     "key1": CategoricalDistribution([1, 2]),
@@ -127,25 +125,10 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
                 {"key2": "5"},
             ),
         ),
-        (
-            ["key1=choice(1,2,3)", "key2=5", "key3=choice(0.0, 1.0)"],
-            True,
-            (
-                {
-                    "key1": [1, 2, 3],
-                    "key3": [0.0, 1.0],
-                },
-                {"key2": "5"},
-            ),
-        ),
     ],
 )
-def test_create_params_from_overrides(
-    input: Any, is_grid_sampler, expected: Any
-) -> None:
-    actual = _impl.create_params_from_overrides(input, is_grid_sampler)
-    print(f"{actual=}")
-    print(f"{expected=}")
+def test_create_params_from_overrides(input: Any, expected: Any) -> None:
+    actual = _impl.create_params_from_overrides(input)
     assert actual == expected
 
 
@@ -230,15 +213,18 @@ def test_example_with_grid_sampler(
     ]
     run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
-    bv, bx, by = (
+    assert isinstance(returns, DictConfig)
+    bv, bx, by, bz = (
         returns["best_value"],
         returns["best_params"]["x"],
         returns["best_params"]["y"],
+        returns["best_params"]["z"],
     )
-    if num_trials >= 6:
+    if num_trials >= 12:
         assert bv == 1 and abs(bx) == 1 and by == 0
     else:
-        assert bx in [-1, 1] and by in [5, 0, -5]
+        assert bx in [-1, 1] and by in [-1, 0]
+    assert bz in ["foo", "bar"]
 
 
 @mark.parametrize("with_commandline", (True, False))

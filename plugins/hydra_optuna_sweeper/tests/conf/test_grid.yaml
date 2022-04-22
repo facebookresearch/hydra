@@ -11,7 +11,9 @@ hydra:
     n_jobs: 1
     params:
       x: choice(-1, 1)
-      y: choice(-5.0 ,0.0 ,5.0)
+      y: range(-1.0, 1.0, step=1)
+      z: choice("foo", "bar")
 
 x: 1
 y: 1
+z: foo

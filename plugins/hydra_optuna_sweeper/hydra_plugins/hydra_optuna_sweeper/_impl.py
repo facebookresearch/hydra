@@ -1,8 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import functools
 import logging
 import sys
 import warnings
-import functools
 from textwrap import dedent
 from typing import (
     Any,
@@ -14,7 +14,6 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
-    Union,
 )
 
 import optuna
@@ -131,7 +130,6 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
 def create_params_from_overrides(
     arguments: List[str],
-    is_grid_sampler: bool,
 ) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
@@ -139,19 +137,10 @@ def create_params_from_overrides(
     fixed_params = dict()
 
     for override in parsed:
-        if is_grid_sampler and (
-            override.is_sweep_override() and not override.is_choice_sweep()
-        ):
-            raise ValueError(
-                f"GridSampler only support choice sweep: override={override}."
-            )
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
         if isinstance(value, BaseDistribution):
-            if is_grid_sampler:
-                search_space_distributions[param_name] = list(value.choices)  # type: ignore
-            else:
-                search_space_distributions[param_name] = value
+            search_space_distributions[param_name] = value
         else:
             fixed_params[param_name] = value
     return search_space_distributions, fixed_params
@@ -240,38 +229,17 @@ class OptunaSweeperImpl(Sweeper):
             return [self.direction]
         return [self.direction.name]
 
-    def _suggest_for_grid_sampler(
-        self, distribution: List[Any], trial: Trial, param_name: str
-    ):
-        assert len(distribution) > 0
-        e = distribution[0]
-        if isinstance(e, int):
-            trial.suggest_int(param_name, high=max(distribution), low=min(distribution))
-        elif isinstance(e, float):
-            trial.suggest_float(
-                param_name, high=max(distribution), low=min(distribution)
-            )
-        else:
-            raise ValueError(f"Unknown type: {type(e)}")
-
     def _configure_trials(
         self,
         trials: List[Trial],
-        search_space_distributions: Dict[str, Union[BaseDistribution, List]],
+        search_space_distributions: Dict[str, BaseDistribution],
         fixed_params: Dict[str, Any],
-        is_grid_sampler: bool,
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
-            num_grid_trials = 1
             for param_name, distribution in search_space_distributions.items():
                 assert type(param_name) is str
-                if is_grid_sampler:
-                    num_grid_trials *= len(distribution)
-                    self._suggest_for_grid_sampler(distribution, trial, param_name)
-                else:
-                    trial._suggest(param_name, distribution)
-            self.n_trials = min(self.n_trials, num_grid_trials)
+                trial._suggest(param_name, distribution)
             for param_name, value in fixed_params.items():
                 trial.set_user_attr(param_name, value)
 
@@ -298,6 +266,21 @@ class OptunaSweeperImpl(Sweeper):
             params_conf.append(f"{k}={v}")
         return params_conf
 
+    def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
+        if isinstance(distribution, CategoricalDistribution):
+            return distribution.choices
+        elif isinstance(distribution, IntUniformDistribution):
+            assert (
+                distribution.step is not None
+            ), "`step` of IntUniformDistribution must be a positive integer."
+            n_items = (distribution.high - distribution.low) // distribution.step
+            return [distribution.low + i * distribution.step for i in range(n_items)]
+        elif isinstance(distribution, DiscreteUniformDistribution):
+            n_items = int((distribution.high - distribution.low) // distribution.q)
+            return [distribution.low + i * distribution.q for i in range(n_items)]
+        else:
+            raise ValueError("GridSampler only supports discrete distributions.")
+
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
@@ -311,17 +294,22 @@ class OptunaSweeperImpl(Sweeper):
 
         is_grid_sampler = (
             isinstance(self.sampler, functools.partial)
-            and self.sampler.func == optuna.samplers.GridSampler
+            and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
         )
 
         search_space_distributions, fixed_params = create_params_from_overrides(
-            params_conf, is_grid_sampler
+            params_conf
         )
 
         if is_grid_sampler:
-            self.sampler = self.sampler(search_space_distributions)
+            search_space_for_grid_sampler = {
+                name: self._to_grid_sampler_choices(distribution)
+                for name, distribution in search_space_distributions.items()
+            }
+
+            self.sampler = self.sampler(search_space_for_grid_sampler)
             n_trial = 1
-            for _, v in search_space_distributions.items():
+            for v in search_space_for_grid_sampler.values():
                 n_trial *= len(v)
             self.n_trials = min(self.n_trials, n_trial)
             log.info(
@@ -355,7 +343,7 @@ class OptunaSweeperImpl(Sweeper):
 
             trials = [study.ask() for _ in range(batch_size)]
             overrides = self._configure_trials(
-                trials, search_space_distributions, fixed_params, is_grid_sampler
+                trials, search_space_distributions, fixed_params
             )
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
@@ -384,6 +372,7 @@ class OptunaSweeperImpl(Sweeper):
                                 "The number of the values and the number of the objectives are"
                                 f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
+
                     try:
                         study.tell(trial=trial, state=state, values=values)
                     except RuntimeError as e:
