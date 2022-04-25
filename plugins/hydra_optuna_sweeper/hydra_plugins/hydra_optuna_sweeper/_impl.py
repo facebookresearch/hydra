@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import functools
 import logging
 import sys
 import warnings
@@ -134,6 +135,7 @@ def create_params_from_overrides(
     parsed = parser.parse_overrides(arguments)
     search_space_distributions = dict()
     fixed_params = dict()
+
     for override in parsed:
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
@@ -264,6 +266,21 @@ class OptunaSweeperImpl(Sweeper):
             params_conf.append(f"{k}={v}")
         return params_conf
 
+    def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
+        if isinstance(distribution, CategoricalDistribution):
+            return distribution.choices
+        elif isinstance(distribution, IntUniformDistribution):
+            assert (
+                distribution.step is not None
+            ), "`step` of IntUniformDistribution must be a positive integer."
+            n_items = (distribution.high - distribution.low) // distribution.step
+            return [distribution.low + i * distribution.step for i in range(n_items)]
+        elif isinstance(distribution, DiscreteUniformDistribution):
+            n_items = int((distribution.high - distribution.low) // distribution.q)
+            return [distribution.low + i * distribution.q for i in range(n_items)]
+        else:
+            raise ValueError("GridSampler only supports discrete distributions.")
+
     def sweep(self, arguments: List[str]) -> None:
         assert self.config is not None
         assert self.launcher is not None
@@ -274,9 +291,30 @@ class OptunaSweeperImpl(Sweeper):
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
         params_conf.extend(arguments)
+
+        is_grid_sampler = (
+            isinstance(self.sampler, functools.partial)
+            and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
+        )
+
         search_space_distributions, fixed_params = create_params_from_overrides(
             params_conf
         )
+
+        if is_grid_sampler:
+            search_space_for_grid_sampler = {
+                name: self._to_grid_sampler_choices(distribution)
+                for name, distribution in search_space_distributions.items()
+            }
+
+            self.sampler = self.sampler(search_space_for_grid_sampler)
+            n_trial = 1
+            for v in search_space_for_grid_sampler.values():
+                n_trial *= len(v)
+            self.n_trials = min(self.n_trials, n_trial)
+            log.info(
+                f"Updating num of trials to {self.n_trials} due to using GridSampler."
+            )
 
         # Remove fixed parameters from Optuna search space.
         for param_name in fixed_params:
@@ -334,7 +372,19 @@ class OptunaSweeperImpl(Sweeper):
                                 "The number of the values and the number of the objectives are"
                                 f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
-                    study.tell(trial=trial, state=state, values=values)
+
+                    try:
+                        study.tell(trial=trial, state=state, values=values)
+                    except RuntimeError as e:
+                        if (
+                            is_grid_sampler
+                            and "`Study.stop` is supposed to be invoked inside an objective function or a callback."
+                            in str(e)
+                        ):
+                            pass
+                        else:
+                            raise e
+
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
                     study.tell(trial=trial, state=state, values=values)

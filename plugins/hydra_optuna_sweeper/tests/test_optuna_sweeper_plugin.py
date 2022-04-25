@@ -192,6 +192,41 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     assert returns["best_value"] <= 2.27
 
 
+@mark.parametrize("num_trials", (10, 1))
+def test_example_with_grid_sampler(
+    tmpdir: Path,
+    num_trials: int,
+) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-grid-sampler"
+    cmd = [
+        "example/sphere.py",
+        "--multirun",
+        "--config-dir=tests/conf",
+        "--config-name=test_grid",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=False",
+        f"hydra.sweeper.n_trials={num_trials}",
+        "hydra.sweeper.n_jobs=1",
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
+    ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    assert isinstance(returns, DictConfig)
+    bv, bx, by, bz = (
+        returns["best_value"],
+        returns["best_params"]["x"],
+        returns["best_params"]["y"],
+        returns["best_params"]["z"],
+    )
+    if num_trials >= 12:
+        assert bv == 1 and abs(bx) == 1 and by == 0
+    else:
+        assert bx in [-1, 1] and by in [-1, 0]
+    assert bz in ["foo", "bar"]
+
+
 @mark.parametrize("with_commandline", (True, False))
 def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) -> None:
     cmd = [
