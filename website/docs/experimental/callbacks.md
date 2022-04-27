@@ -29,32 +29,37 @@ The full API exposed by the `hydra.experimental.callback.Callback` class is list
 class Callback:
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
         """
-        Called in RUN mode before job starts.
+        Called in RUN mode before job/application code starts. `config` is composed with overrides.
+        Some `hydra.runtime` configs are not populated yet.
+        See hydra.core.utils.run_job for more info.
         """
         ...
 
     def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
         """
-        Called in RUN mode after job ends.
+        Called in RUN mode after job/application code returns.
         """
         ...
 
     def on_multirun_start(self, config: DictConfig, **kwargs: Any) -> None:
         """
         Called in MULTIRUN mode before any job starts.
+        When using a launcher, this will be executed on local machine before any Sweeper/Launcher is initialized.
         """
         ...
 
     def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
         """
-        Called in MULTIRUN mode after all jobs end.
+        Called in MULTIRUN mode after all jobs returns.
+        When using a launcher, this will be executed on local machine.
         """
         ...
 
     def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
         """
-        Called in both RUN and MULTIRUN modes, once for each Hydra job (before running
-        application code).
+        Called in both RUN and MULTIRUN modes, once for each Hydra job (before running application code).
+        This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
+        on the remote server along with your application code.
         """
         ...
 
@@ -64,9 +69,13 @@ class Callback:
         """
         Called in both RUN and MULTIRUN modes, once for each Hydra job (after running
         application code).
+        This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
+        on the remote server after your application code.
+
+        `job_return` contains info that could be useful for logging or post-processing.
+        See hydra.core.utils.JobReturn for more.
         """
         ...
-
 ```
 </details>
 
@@ -185,3 +194,10 @@ Before each job starts, `MyCallback1.on_job_start` will get called first,
 followed by `MyCallback2.on_job_start`.
 After each job ends, `MyCallback2.on_job_end` will get called first,
 followed by `MyCallback1.on_job_end`.
+
+
+### Example callbacks
+
+We've included some example callbacks  <GithubLink to="hydra/experimental/callbacks.py">here</GithubLink>:
+- `LogJobReturnCallback` is especially useful for logging errors when running on a remote cluster (e.g. slurm.) 
+- `PickleJobInfoCallback` can be used to reproduce a Hydra job. See [here](/experimental/rerun.md) for more.
