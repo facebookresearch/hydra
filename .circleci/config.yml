@@ -12,6 +12,18 @@ parameters:
     default: v1
 
 commands:
+  early_return_for_forked_pull_requests:
+    description: >-
+      If this build is from a fork, stop executing the current job and return success.
+      This is useful to avoid steps that will fail due to missing credentials.
+    steps:
+      - run:
+          name: Early return if this build is from a forked PR
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Nothing to do for forked PRs, so marking this step successful"
+              circleci step halt
+            fi
   macos:
     description: Commands run on MacOS
     parameters:
@@ -152,10 +164,11 @@ jobs:
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             exit $LASTEXITCODE
-  trigger_plugin_piplines:
+  trigger_plugin_pipelines:
     docker:
       - image: circleci/python:3.8
     steps:
+      - early_return_for_forked_pull_requests
       - checkout
       - run:
           name: Kick off Plugin tests
@@ -254,7 +267,7 @@ workflows:
   core_tests:
     unless: << pipeline.parameters.plugin_test >>
     jobs:
-      - trigger_plugin_piplines
+      - trigger_plugin_pipelines
       - test_macos:
           matrix:
             parameters:
