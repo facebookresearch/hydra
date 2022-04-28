@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
 from traceback import print_exc, print_exception
 from types import FrameType, TracebackType
-from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
+from typing import Any, List, Optional, Sequence, Tuple
 
 from omegaconf.errors import OmegaConfBaseException
 
@@ -298,6 +298,7 @@ def run_and_report(func: Any) -> Any:
 
 
 def _run_hydra(
+    args: argparse.Namespace,
     args_parser: argparse.ArgumentParser,
     task_function: TaskFunction,
     config_path: Optional[str],
@@ -309,7 +310,6 @@ def _run_hydra(
 
     from .hydra import Hydra
 
-    args = args_parser.parse_args()
     if args.config_name is not None:
         config_name = args.config_name
 
@@ -565,6 +565,11 @@ def get_args_parser() -> argparse.ArgumentParser:
         help="Adds an additional config dir to the config search path",
     )
 
+    parser.add_argument(
+        "--experimental-rerun",
+        help="Rerun a job from a previous config pickle",
+    )
+
     info_choices = [
         "all",
         "config",
@@ -601,7 +606,7 @@ def get_column_widths(matrix: List[List[str]]) -> List[int]:
     return widths
 
 
-def _locate(path: str) -> Union[type, Callable[..., Any]]:
+def _locate(path: str) -> Any:
     """
     Locate an object by name or dotted path, importing as necessary.
     This is similar to the pydoc function `locate`, except that it checks for
@@ -612,39 +617,47 @@ def _locate(path: str) -> Union[type, Callable[..., Any]]:
     from importlib import import_module
     from types import ModuleType
 
-    parts = [part for part in path.split(".") if part]
+    parts = [part for part in path.split(".")]
+    for part in parts:
+        if not len(part):
+            raise ValueError(
+                f"Error loading '{path}': invalid dotstring."
+                + "\nRelative imports are not supported."
+            )
+    assert len(parts) > 0
+    part0 = parts[0]
     try:
-        obj = import_module(parts[0])
+        obj = import_module(part0)
     except Exception as exc_import:
-        raise ImportError(f"Error loading module '{path}'") from exc_import
+        raise ImportError(
+            f"Error loading '{path}':\n{repr(exc_import)}"
+            + f"\nAre you sure that module '{part0}' is installed?"
+        ) from exc_import
     for m in range(1, len(parts)):
         part = parts[m]
         try:
             obj = getattr(obj, part)
         except AttributeError as exc_attr:
+            parent_dotpath = ".".join(parts[:m])
             if isinstance(obj, ModuleType):
                 mod = ".".join(parts[: m + 1])
                 try:
                     obj = import_module(mod)
                     continue
-                except ModuleNotFoundError:
-                    pass
+                except ModuleNotFoundError as exc_import:
+                    raise ImportError(
+                        f"Error loading '{path}':\n{repr(exc_import)}"
+                        + f"\nAre you sure that '{part}' is importable from module '{parent_dotpath}'?"
+                    ) from exc_import
                 except Exception as exc_import:
                     raise ImportError(
-                        f"Error loading '{path}': '{repr(exc_import)}'"
+                        f"Error loading '{path}':\n{repr(exc_import)}"
                     ) from exc_import
             raise ImportError(
-                f"Encountered AttributeError while loading '{path}': {exc_attr}"
+                f"Error loading '{path}':\n{repr(exc_attr)}"
+                + f"\nAre you sure that '{part}' is an attribute of '{parent_dotpath}'?"
             ) from exc_attr
-    if isinstance(obj, type):
-        obj_type: type = obj
-        return obj_type
-    elif callable(obj):
-        obj_callable: Callable[..., Any] = obj
-        return obj_callable
-    else:
-        # reject if not callable & not a type
-        raise ValueError(f"Invalid type ({type(obj)}) found for {path}")
+    return obj
 
 
 def _get_cls_name(config: Any, pop: bool = True) -> str:

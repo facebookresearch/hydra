@@ -22,18 +22,25 @@ def get_class(path: str) -> type:
     try:
         cls = _locate(path)
         if not isinstance(cls, type):
-            raise ValueError(f"Located non-class in {path} : {type(cls).__name__}")
+            raise ValueError(
+                f"Located non-class of type '{type(cls).__name__}'"
+                + f" while loading '{path}'"
+            )
         return cls
     except Exception as e:
-        log.error(f"Error initializing class at {path} : {e}")
+        log.error(f"Error initializing class at {path}: {e}")
         raise e
 
 
 def get_method(path: str) -> Callable[..., Any]:
     try:
-        cl = _locate(path)
-        if not callable(cl):
-            raise ValueError(f"Non callable object located : {type(cl).__name__}")
+        obj = _locate(path)
+        if not callable(obj):
+            raise ValueError(
+                f"Located non-callable of type '{type(obj).__name__}'"
+                + f" while loading '{path}'"
+            )
+        cl: Callable[..., Any] = obj
         return cl
     except Exception as e:
         log.error(f"Error getting callable at {path} : {e}")

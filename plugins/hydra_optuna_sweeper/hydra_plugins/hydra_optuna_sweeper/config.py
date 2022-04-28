@@ -21,7 +21,17 @@ class Direction(Enum):
 @dataclass
 class SamplerConfig:
     _target_: str = MISSING
-    seed: Optional[int] = None
+
+
+@dataclass
+class GridSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.GridSampler.html
+    """
+
+    _target_: str = "optuna.samplers.GridSampler"
+    # search_space will be populated at run time based on hydra.sweeper.params
+    _partial_: bool = True
 
 
 @dataclass
@@ -31,6 +41,7 @@ class TPESamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.TPESampler"
+    seed: Optional[int] = None
 
     consider_prior: bool = True
     prior_weight: float = 1.0
@@ -49,6 +60,7 @@ class RandomSamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.RandomSampler"
+    seed: Optional[int] = None
 
 
 @dataclass
@@ -58,6 +70,7 @@ class CmaEsSamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.CmaEsSampler"
+    seed: Optional[int] = None
 
     x0: Optional[Dict[str, Any]] = None
     sigma0: Optional[float] = None
@@ -77,6 +90,7 @@ class NSGAIISamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.NSGAIISampler"
+    seed: Optional[int] = None
 
     population_size: int = 50
     mutation_prob: Optional[float] = None
@@ -92,6 +106,7 @@ class MOTPESamplerConfig(SamplerConfig):
     """
 
     _target_: str = "optuna.samplers.MOTPESampler"
+    seed: Optional[int] = None
 
     consider_prior: bool = True
     prior_weight: float = 1.0
@@ -162,6 +177,12 @@ class OptunaSweeperConf:
 
     params: Optional[Dict[str, str]] = None
 
+    # Allow custom trial configuration via Python methods.
+    # If given, `custom_search_space` should be a an instantiate-style dotpath targeting
+    # a callable with signature Callable[[DictConfig, optuna.trial.Trial], None].
+    # https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html
+    custom_search_space: Optional[str] = None
+
 
 ConfigStore.instance().store(
     group="hydra/sweeper",
@@ -202,5 +223,12 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="motpe",
     node=MOTPESamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="grid",
+    node=GridSamplerConfig,
     provider="optuna_sweeper",
 )

@@ -201,19 +201,86 @@ Trainer(
 ```
 
 ### Parameter conversion strategies
-By default, the parameters passed to the target are either primitives (int, float, bool etc) or                                                                                                 
-OmegaConf containers (DictConfig, ListConfig).
-OmegaConf containers have many advantages over primitive dicts and lists but in some cases 
-it's desired to pass a real dicts and lists (for example, for performance reasons).
+By default, the parameters passed to the target are either primitives (int,
+float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`).
+OmegaConf containers have many advantages over primitive dicts and lists,
+including convenient attribute access for keys,
+[duck-typing as instances of dataclasses or attrs classes](https://omegaconf.readthedocs.io/en/latest/structured_config.html), and
+support for [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation)
+and [custom resolvers](https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html).
+If the callable targeted by `instantiate` leverages OmegaConf's features, it
+will make sense to pass `DictConfig` and `ListConfig` instances directly to
+that callable.
 
-You can change the parameter conversion strategy using the `_convert_` parameter (in your config or the call-site).
-Supported values are:
+That being said, in many cases it's desired to pass normal Python dicts and
+lists, rather than `DictConfig` or `ListConfig` instances, as arguments to your
+callable. You can change instantiate's argument conversion strategy using the
+`_convert_` parameter. Supported values are:
 
-- `none` : Default behavior, Use OmegaConf containers
-- `partial` : Convert OmegaConf containers to dict and list, except Structured Configs.
-- `all` : Convert everything to primitive containers
+- `"none"` : Default behavior, Use OmegaConf containers
+- `"partial"` : Convert OmegaConf containers to dict and list, except Structured Configs.
+- `"all"` : Convert everything to primitive containers
 
-Note that the conversion strategy applies to all the parameters passed to the target.
+The conversion strategy applies recursively to all subconfigs of the instantiation target.
+Here is an example demonstrating the various conversion strategies:
+
+```python
+from dataclasses import dataclass
+from omegaconf import DictConfig, OmegaConf
+from hydra.utils import instantiate
+
+@dataclass
+class Foo:
+    a: int = 123
+
+class MyTarget:
+    def __init__(self, foo, bar):
+        self.foo = foo
+        self.bar = bar
+
+cfg = OmegaConf.create(
+    {
+        "_target_": "__main__.MyTarget",
+        "foo": Foo(),
+        "bar": {"b": 456},
+    }
+)
+
+obj_none = instantiate(cfg, _convert_="none")
+assert isinstance(obj_none, MyTarget)
+assert isinstance(obj_none.foo, DictConfig)
+assert isinstance(obj_none.bar, DictConfig)
+
+obj_partial = instantiate(cfg, _convert_="partial")
+assert isinstance(obj_partial, MyTarget)
+assert isinstance(obj_partial.foo, DictConfig)
+assert isinstance(obj_partial.bar, dict)
+
+obj_all = instantiate(cfg, _convert_="all")
+assert isinstance(obj_none, MyTarget)
+assert isinstance(obj_all.foo, dict)
+assert isinstance(obj_all.bar, dict)
+```
+
+Passing the `_convert_` keyword argument to `instantiate` has the same effect as defining
+a `_convert_` attribute on your config object. Here is an example creating
+instances of `MyTarget` that are equivalent to the above:
+
+```python
+cfg_none = OmegaConf.create({..., "_convert_": "none"})
+obj_none = instantiate(cfg_none)
+
+cfg_partial = OmegaConf.create({..., "_convert_": "partial"})
+obj_partial = instantiate(cfg_partial)
+
+cfg_all = OmegaConf.create({..., "_convert_": "all"})
+obj_all = instantiate(cfg_all)
+```
+
+If performance is a concern, note that the `_convert_="none"` strategy does the
+least work -- no conversion (from `DictConfig`/`ListConfig` to native python
+containers) is taking place. The `_convert_="partial"` strategy does more work,
+and `_convert_="all"` does more work yet.
 
 ### Partial Instantiation
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
@@ -301,3 +368,16 @@ assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
 ```
 This does not apply if `_partial_=False`,
 in which case a new `Foo` instance would be created with each call to `instantiate`.
+
+
+### Instantiation of builtins
+
+The value of `_target_` passed to `instantiate` should be a "dotpath" pointing
+to some callable that can be looked up via a combination of `import` and `getattr`.
+If you want to target one of Python's [built-in functions](https://docs.python.org/3/library/functions.html) (such as `len` or `print` or `divmod`),
+you will need to provide a dotpath looking up that function in Python's [`builtins`](https://docs.python.org/3/library/builtins.html) module.
+```python
+from hydra.utils import instantiate
+# instantiate({"_target_": "len"}, [1,2,3])  # this gives an InstantiationException
+instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
+```

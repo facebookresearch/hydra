@@ -738,6 +738,7 @@ for details.
                                     The config_path is relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
+                --experimental-rerun : Rerun a job from a previous config pickle
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """
@@ -795,6 +796,7 @@ for details.
                                     The config_path is relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
+                --experimental-rerun : Rerun a job from a previous config pickle
                 --info,-i : Print Hydra information [all|config|defaults|defaults-tree|plugins|searchpath]
                 Overrides : Any key=value arguments to override config values (use dots for.nested=overrides)
                 """
@@ -1100,28 +1102,28 @@ def test_module_run(
             ["test.param=1,2"],
             True,
             dedent(
-                """\
-            Ambiguous value for argument 'test.param=1,2'
-            1. To use it as a list, use key=[value1,value2]
-            2. To use it as string, quote the value: key=\\'value1,value2\\'
-            3. To sweep over it, add --multirun to your command line
+                r"""
+                Ambiguous value for argument 'test\.param=1,2'
+                1\. To use it as a list, use key=\[value1,value2\]
+                2\. To use it as string, quote the value: key=\\'value1,value2\\'
+                3\. To sweep over it, add --multirun to your command line
 
-            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-            ),
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+            ).strip(),
             id="run:choice_sweep",
         ),
         param(
             ["test.param=[1,2]"],
             True,
             dedent(
-                """\
-                Error merging override test.param=[1,2]
-                Value '[1, 2]' could not be converted to Integer
-                    full_key: test.param
+                r"""
+                Error merging override test.param=\[1,2\]
+                Value '\[1, 2\]'( of type 'list')? could not be converted to Integer
+                    full_key: test\.param
                     object_type=TestConfig
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-            ),
+                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+            ).strip(),
             id="run:list_value",
         ),
         param(["test.param=1", "-m"], False, "1", id="multirun:value"),
@@ -1140,9 +1142,9 @@ def test_multirun_structured_conflict(
     if error:
         expected = normalize_newlines(expected)
         ret = run_with_error(cmd)
-        assert_regex_match(
-            from_line=expected,
-            to_line=ret,
+        assert_multiline_regex_search(
+            pattern=expected,
+            string=ret,
             from_name="Expected output",
             to_name="Actual output",
         )
@@ -1480,7 +1482,7 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
     expected = dedent(
         """
         .*UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
-        See https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir for more information..*
+        See https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
         .*
         """
     )
@@ -1830,3 +1832,31 @@ def test_hydra_mode(
             from_name="Expected output",
             to_name="Actual output",
         )
+
+
+def test_hydra_runtime_choice_1882(tmpdir: Path) -> None:
+    cmd = [
+        "tests/test_apps/app_with_cfg_groups/my_app_with_runtime_choices_print.py",
+        "--multirun",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+        "hydra.job_logging.formatters.simple.format='[JOB] %(message)s'",
+        "hydra.job.chdir=False",
+        "optimizer=adam,nesterov",
+    ]
+    expected_output = dedent(
+        """
+                [HYDRA] Launching 2 jobs locally
+                [HYDRA] \t#0 : optimizer=adam
+                adam
+                [HYDRA] \t#1 : optimizer=nesterov
+                nesterov"""
+    )
+
+    out, _ = run_python_script(cmd)
+    assert_regex_match(
+        from_line=expected_output,
+        to_line=out,
+        from_name="Expected output",
+        to_name="Actual output",
+    )

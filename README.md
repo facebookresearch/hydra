@@ -29,7 +29,13 @@
     <i>A framework for elegantly configuring complex applications.</i>
   </p>
   <p align="center">
-    <i>Check the <a href="https://hydra.cc/">website</a> for more information.</i>
+    <i>Check the <a href="https://hydra.cc/">website</a> for more information,<br>
+    or click the thumbnail below for a one-minute video introduction to Hydra.</i>
+  </p>
+  <p align="center">
+   <a href="http://www.youtube.com/watch?feature=player_embedded&v=Slc3gRQpnBI" target="_blank">
+     <img src="http://img.youtube.com/vi/Slc3gRQpnBI/hqdefault.jpg" alt="1 minute overview" width="240" height="180" border="10" />
+   </a>
   </p>
 </p>
 

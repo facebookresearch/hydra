@@ -31,6 +31,7 @@ PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
+USE_OMEGACONF_DEV_VERSION = os.environ.get("USE_OMEGACONF_DEV_VERSION", "0") != "0"
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
@@ -58,6 +59,7 @@ print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
 print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
+print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session):
@@ -80,12 +82,23 @@ def find_dirs(path: str):
             yield fullname
 
 
+def _print_installed_omegaconf_version(session):
+    pip_list: str = session.run("pip", "list", silent=True)
+    for line in pip_list.split("\n"):
+        if "omegaconf" in line:
+            print(f"Installed omegaconf version: {line}")
+
+
 def install_hydra(session, cmd):
     # needed for build
     session.install("read-version", silent=SILENT)
     # clean install hydra
     session.chdir(BASE)
+    if USE_OMEGACONF_DEV_VERSION:
+        session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
+    if USE_OMEGACONF_DEV_VERSION:
+        _print_installed_omegaconf_version(session)
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
@@ -237,6 +250,7 @@ def lint(session):
         "tools/configen/tests/test_modules/expected",
         "temp",
         "build",
+        "contrib",
     ]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 
@@ -531,7 +545,9 @@ def test_jupyter_notebooks(session):
 
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
-        "--nbval", "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb"
+        "--nbval",
+        "-W ignore::ResourceWarning",
+        "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     session.run(*args, silent=SILENT)
 
@@ -539,7 +555,7 @@ def test_jupyter_notebooks(session):
     for notebook in [
         file for file in notebooks_dir.iterdir() if str(file).endswith(".ipynb")
     ]:
-        args = pytest_args("--nbval", str(notebook))
+        args = pytest_args("--nbval", "-W ignore::ResourceWarning", str(notebook))
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
 

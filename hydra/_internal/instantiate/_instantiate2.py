@@ -2,8 +2,8 @@
 
 import copy
 import functools
-import sys
 from enum import Enum
+from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
@@ -32,7 +32,7 @@ def _is_target(x: Any) -> bool:
     return False
 
 
-def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
+def _extract_pos_args(input_args: Any, kwargs: Any) -> Tuple[Any, Any]:
     config_args = kwargs.pop(_Keys.ARGS, ())
     output_args = config_args
 
@@ -41,16 +41,22 @@ def _extract_pos_args(*input_args: Any, **kwargs: Any) -> Tuple[Any, Any]:
             output_args = input_args
     else:
         raise InstantiationException(
-            f"Unsupported _args_ type: {type(config_args).__name__}. value: {config_args}"
+            f"Unsupported _args_ type: '{type(config_args).__name__}'. value: '{config_args}'"
         )
 
     return output_args, kwargs
 
 
-def _call_target(_target_: Callable, _partial_: bool, *args, **kwargs) -> Any:  # type: ignore
+def _call_target(
+    _target_: Callable[..., Any],
+    _partial_: bool,
+    args: Tuple[Any, ...],
+    kwargs: Dict[str, Any],
+    full_key: str,
+) -> Any:
     """Call target (type) with args and kwargs."""
     try:
-        args, kwargs = _extract_pos_args(*args, **kwargs)
+        args, kwargs = _extract_pos_args(args, kwargs)
         # detaching configs from parent.
         # At this time, everything is resolved and the parent link can cause
         # issues when serializing objects in some scenarios.
@@ -61,18 +67,34 @@ def _call_target(_target_: Callable, _partial_: bool, *args, **kwargs) -> Any:  
             if OmegaConf.is_config(v):
                 v._set_parent(None)
     except Exception as e:
-        raise type(e)(
-            f"Error instantiating '{_convert_target_to_string(_target_)}' : {e}"
-        ).with_traceback(sys.exc_info()[2])
+        msg = (
+            f"Error in collecting args and kwargs for '{_convert_target_to_string(_target_)}':"
+            + f"\n{repr(e)}"
+        )
+        if full_key:
+            msg += f"\nfull_key: {full_key}"
 
-    try:
-        if _partial_:
+        raise InstantiationException(msg) from e
+
+    if _partial_:
+        try:
             return functools.partial(_target_, *args, **kwargs)
-        return _target_(*args, **kwargs)
-    except Exception as e:
-        raise InstantiationException(
-            f"Error instantiating '{_convert_target_to_string(_target_)}' : {repr(e)}"
-        ) from e
+        except Exception as e:
+            msg = (
+                f"Error in creating partial({_convert_target_to_string(_target_)}, ...) object:"
+                + f"\n{repr(e)}"
+            )
+            if full_key:
+                msg += f"\nfull_key: {full_key}"
+            raise InstantiationException(msg) from e
+    else:
+        try:
+            return _target_(*args, **kwargs)
+        except Exception as e:
+            msg = f"Error in call to target '{_convert_target_to_string(_target_)}':\n{repr(e)}"
+            if full_key:
+                msg += f"\nfull_key: {full_key}"
+            raise InstantiationException(msg) from e
 
 
 def _convert_target_to_string(t: Any) -> Any:
@@ -104,18 +126,23 @@ def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
 
 
 def _resolve_target(
-    target: Union[str, type, Callable[..., Any]]
+    target: Union[str, type, Callable[..., Any]], full_key: str
 ) -> Union[type, Callable[..., Any]]:
     """Resolve target string, type or callable into type or callable."""
     if isinstance(target, str):
-        return _locate(target)
-    if isinstance(target, type):
-        return target
-    if callable(target):
-        return target
-    raise InstantiationException(
-        f"Unsupported target type: {type(target).__name__}. value: {target}"
-    )
+        try:
+            target = _locate(target)
+        except Exception as e:
+            msg = f"Error locating target '{target}', see chained exception above."
+            if full_key:
+                msg += f"\nfull_key: {full_key}"
+            raise InstantiationException(msg) from e
+    if not callable(target):
+        msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"
+        if full_key:
+            msg += f"\nfull_key: {full_key}"
+        raise InstantiationException(msg)
+    return target
 
 
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
@@ -155,9 +182,15 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     if isinstance(config, TargetConf) and config._target_ == "???":
         # Specific check to give a good warning about failure to annotate _target_ as a string.
         raise InstantiationException(
-            f"Missing value for {type(config).__name__}._target_. Check that it's properly annotated and overridden."
-            f"\nA common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"
+            dedent(
+                f"""\
+                Config has missing value for key `_target_`, cannot instantiate.
+                Config type: {type(config).__name__}
+                Check that the `_target_` key in your dataclass is properly annotated and overridden.
+                A common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"""
+            )
         )
+        # TODO: print full key
 
     if isinstance(config, (dict, list)):
         config = _prepare_input_dict_or_list(config)
@@ -214,8 +247,12 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         )
     else:
         raise InstantiationException(
-            "Top level config has to be OmegaConf DictConfig/ListConfig, "
-            + "plain dict/list, or a Structured Config class or instance."
+            dedent(
+                f"""\
+                Cannot instantiate config of type {type(config).__name__}.
+                Top level config must be an OmegaConf DictConfig/ListConfig object,
+                a plain dict/list, or a Structured Config class or instance."""
+            )
         )
 
 
@@ -252,11 +289,19 @@ def instantiate_node(
         recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
         partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
 
+    full_key = node._get_full_key(None)
+
     if not isinstance(recursive, bool):
-        raise TypeError(f"_recursive_ flag must be a bool, got {type(recursive)}")
+        msg = f"Instantiation: _recursive_ flag must be a bool, got {type(recursive)}"
+        if full_key:
+            msg += f"\nfull_key: {full_key}"
+        raise TypeError(msg)
 
     if not isinstance(partial, bool):
-        raise TypeError(f"_partial_ flag must be a bool, got {type( partial )}")
+        msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
+        if node and full_key:
+            msg += f"\nfull_key: {full_key}"
+        raise TypeError(msg)
 
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
@@ -277,7 +322,7 @@ def instantiate_node(
     elif OmegaConf.is_dict(node):
         exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
         if _is_target(node):
-            _target_ = _resolve_target(node.get(_Keys.TARGET))
+            _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
             for key, value in node.items():
                 if key not in exclude_keys:
@@ -287,11 +332,12 @@ def instantiate_node(
                         )
                     kwargs[key] = _convert_node(value, convert)
 
-            return _call_target(_target_, partial, *args, **kwargs)
+            return _call_target(_target_, partial, args, kwargs, full_key)
         else:
             # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
-                convert == ConvertMode.PARTIAL and node._metadata.object_type is None
+                convert == ConvertMode.PARTIAL
+                and node._metadata.object_type in (None, dict)
             ):
                 dict_items = {}
                 for key, value in node.items():

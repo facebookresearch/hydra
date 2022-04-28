@@ -1,0 +1,3 @@
+defaults:
+  - override hydra/help: custom1
+  - override hydra/output: disabled

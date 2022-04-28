@@ -5,6 +5,7 @@ from typing import Any, List, Optional
 
 from pytest import mark, param, raises, warns
 
+from hydra import version
 from hydra._internal.defaults_list import create_defaults_list
 from hydra.core.default_element import (
     ConfigDefault,
@@ -80,23 +81,45 @@ def test_loaded_defaults_list(
         ),
     ],
 )
-def test_deprecated_optional(
-    config_path: str, expected_list: List[InputDefault]
-) -> None:
-    repo = create_repo()
-    warning = dedent(
-        """
-            In optional_deprecated: 'optional: true' is deprecated.
-            Use 'optional group1: file1' instead.
-            Support for the old style will be removed in Hydra 1.2"""
-    )
-    with warns(
-        UserWarning,
-        match=re.escape(warning),
-    ):
-        result = repo.load_config(config_path=config_path)
-    assert result is not None
-    assert result.defaults_list == expected_list
+class TestDeprecatedOptional:
+    def test_version_base_1_1(
+        self,
+        config_path: str,
+        expected_list: List[InputDefault],
+        hydra_restore_singletons: Any,
+    ) -> None:
+        version.setbase("1.1")
+        repo = create_repo()
+        warning = dedent(
+            """
+                In optional_deprecated: 'optional: true' is deprecated.
+                Use 'optional group1: file1' instead.
+                Support for the old style is removed for Hydra version_base >= 1.2"""
+        )
+        with warns(
+            UserWarning,
+            match=re.escape(warning),
+        ):
+            result = repo.load_config(config_path=config_path)
+        assert result is not None
+        assert result.defaults_list == expected_list
+
+    @mark.parametrize("version_base", ["1.2", None])
+    def test_version_base_1_2(
+        self,
+        config_path: str,
+        expected_list: List[InputDefault],
+        version_base: Optional[str],
+        hydra_restore_singletons: Any,
+    ) -> None:
+        version.setbase(version_base)
+        repo = create_repo()
+        err = "In optional_deprecated: Too many keys in default item {'group1': 'file1', 'optional': True}"
+        with raises(
+            ValueError,
+            match=re.escape(err),
+        ):
+            repo.load_config(config_path=config_path)
 
 
 def _test_defaults_list_impl(
@@ -1198,29 +1221,42 @@ def test_overriding_package_header_from_defaults_list(
     "config_name,overrides,expected",
     [
         param(
-            "empty",
+            "legacy_override_hydra",
             [],
-            [
-                ResultDefault(
-                    config_path="hydra/help/default",
-                    parent="hydra/config",
-                    package="hydra.help",
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent(
+                        """\
+                        Multiple values for hydra/help. To override a value use 'override hydra/help: custom1'"""
+                    )
                 ),
-                ResultDefault(
-                    config_path="hydra/output/default",
-                    parent="hydra/config",
-                    package="hydra",
-                ),
-                ResultDefault(
-                    config_path="hydra/config",
-                    parent="<root>",
-                    package="hydra",
-                    is_self=True,
-                ),
-                ResultDefault(config_path="empty", parent="<root>", package=""),
-            ],
-            id="just_hydra_config",
+            ),
+            id="override_hydra",
         ),
+    ],
+)
+@mark.parametrize("version_base", ["1.2", None])
+def test_legacy_override_hydra_version_base_1_2(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    recwarn: Any,  # Testing deprecated behavior
+    version_base: Optional[str],
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase(version_base)
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
         param(
             "legacy_override_hydra",
             [],
@@ -1251,6 +1287,82 @@ def test_overriding_package_header_from_defaults_list(
                 ),
             ],
             id="override_hydra",
+        ),
+    ],
+)
+def test_legacy_override_hydra_version_base_1_1(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    recwarn: Any,  # Testing deprecated behavior
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase("1.1")
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+        prepend_hydra=True,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "empty",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/help/default",
+                    parent="hydra/config",
+                    package="hydra.help",
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    parent="hydra/config",
+                    package="hydra",
+                ),
+                ResultDefault(
+                    config_path="hydra/config",
+                    parent="<root>",
+                    package="hydra",
+                    is_self=True,
+                ),
+                ResultDefault(config_path="empty", parent="<root>", package=""),
+            ],
+            id="just_hydra_config",
+        ),
+        param(
+            "override_hydra2",
+            [],
+            [
+                ResultDefault(
+                    config_path="hydra/help/custom1",
+                    parent="hydra/config",
+                    package="hydra.help",
+                    is_self=False,
+                ),
+                ResultDefault(
+                    config_path="hydra/output/default",
+                    parent="hydra/config",
+                    package="hydra",
+                    is_self=False,
+                ),
+                ResultDefault(
+                    config_path="hydra/config",
+                    parent="<root>",
+                    package="hydra",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="override_hydra2",
+                    parent="<root>",
+                    package="",
+                    primary=True,
+                ),
+            ],
+            id="override_hydra2",
         ),
     ],
 )
