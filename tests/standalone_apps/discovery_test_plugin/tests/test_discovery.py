@@ -2,6 +2,8 @@
 import os
 from pathlib import Path
 
+from hydra_plugins.discovery_test.import_test_plugin import ImportTestPlugin
+
 from hydra.core.plugins import Plugins
 from hydra.plugins.plugin import Plugin
 
@@ -25,3 +27,10 @@ def test_skipped_imports(tmpdir: Path) -> None:
     assert "HiddenTestPlugin" not in discovered_plugins
 
     assert "NotHiddenTestPlugin" in discovered_plugins
+
+
+def test_imported_plugin_is_discovered_plugin() -> None:
+    # Tests that discovered object is the same object as imported object
+    discovered_plugins = {x.__name__: x for x in Plugins.instance().discover(Plugin)}
+    assert "ImportTestPlugin" in discovered_plugins
+    assert ImportTestPlugin is discovered_plugins["ImportTestPlugin"]
