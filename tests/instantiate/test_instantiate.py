@@ -7,7 +7,7 @@ from functools import partial
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
+from omegaconf import MISSING, DictConfig, ListConfig, MissingMandatoryValue, OmegaConf
 from pytest import fixture, mark, param, raises, warns
 
 import hydra
@@ -115,6 +115,18 @@ def config(request: Any, src: Any) -> Any:
             id="class+partial",
         ),
         param(
+            {
+                "_target_": "tests.instantiate.AClass",
+                "_partial_": True,
+                "a": "???",
+                "b": 20,
+                "c": 30,
+            },
+            {},
+            partial(AClass, b=20, c=30),
+            id="class+partial+missing",
+        ),
+        param(
             [
                 {
                     "_target_": "tests.instantiate.AClass",
@@ -135,6 +147,26 @@ def config(request: Any, src: Any) -> Any:
             id="list_of_partial_class",
         ),
         param(
+            [
+                {
+                    "_target_": "tests.instantiate.AClass",
+                    "_partial_": True,
+                    "a": "???",
+                    "b": 20,
+                    "c": 30,
+                },
+                {
+                    "_target_": "tests.instantiate.BClass",
+                    "a": 50,
+                    "b": 60,
+                    "c": 70,
+                },
+            ],
+            {},
+            [partial(AClass, b=20, c=30), BClass(a=50, b=60, c=70)],
+            id="list_of_partial_class+missing",
+        ),
+        param(
             {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
             {"a": 10, "d": 40},
             AClass(10, 20, 30, 40),
@@ -145,6 +177,12 @@ def config(request: Any, src: Any) -> Any:
             {"a": 10, "_partial_": True},
             partial(AClass, a=10, b=20, c=30),
             id="class+override+partial1",
+        ),
+        param(
+            {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
+            {"a": "???", "_partial_": True},
+            partial(AClass, b=20, c=30),
+            id="class+override+partial1+missing",
         ),
         param(
             {
@@ -197,6 +235,16 @@ def config(request: Any, src: Any) -> Any:
             {},
             partial(AClass.static_method),
             id="static_method+partial",
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.AClass.static_method",
+                "_partial_": True,
+                "y": "???",
+            },
+            {},
+            partial(AClass.static_method),
+            id="static_method+partial+missing",
         ),
         param(
             {"_target_": "tests.instantiate.AClass.static_method", "z": 43},
@@ -372,6 +420,31 @@ def test_class_instantiate(
     passthrough["_recursive_"] = recursive
     obj = instantiate_func(config, **passthrough)
     assert partial_equal(obj, expected)
+
+
+def test_partial_with_missing(instantiate_func: Any) -> Any:
+    config = {
+        "_target_": "tests.instantiate.AClass",
+        "_partial_": True,
+        "a": "???",
+        "b": 20,
+        "c": 30,
+    }
+    partial_obj = instantiate_func(config)
+    assert partial_equal(partial_obj, partial(AClass, b=20, c=30))
+    obj = partial_obj(a=10)
+    assert partial_equal(obj, AClass(a=10, b=20, c=30))
+
+
+def test_instantiate_with_missing(instantiate_func: Any) -> Any:
+    config = {
+        "_target_": "tests.instantiate.AClass",
+        "a": "???",
+        "b": 20,
+        "c": 30,
+    }
+    with raises(MissingMandatoryValue, match=re.escape("Missing mandatory value: a")):
+        instantiate_func(config)
 
 
 def test_none_cases(
