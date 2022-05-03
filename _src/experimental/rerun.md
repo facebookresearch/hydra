@@ -27,7 +27,7 @@ hydra:
 
 
 ```python title="Example function"
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     log.info(f"output_dir={HydraConfig.get().runtime.output_dir}")
     log.info(f"cfg.foo={cfg.foo}")
@@ -82,7 +82,7 @@ time_now: ${now:%H-%M-%S}
 <div className="col col--7">
 
 ```python title="Example function"
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     val = cfg.time_now
     # the rest of the application
