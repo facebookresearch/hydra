@@ -55,7 +55,7 @@ except (NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
-ami = os.environ.get("AWS_RAY_AMI", "ami-0436072b623a028fa")
+ami = os.environ.get("AWS_RAY_AMI", "ami-05783271555147544")
 security_group_id = os.environ.get("AWS_RAY_SECURITY_GROUP", "sg-0a12b09a5ff961aee")
 subnet_id = os.environ.get("AWS_RAY_SUBNET", "subnet-acd2cfe7")
 instance_role = os.environ.get(
@@ -69,14 +69,27 @@ assert (
     f"instance_role={instance_role}"
 )
 
-
-ray_nodes_conf = {
+node_config = {
     "InstanceType": "m5.large",
     "ImageId": ami,
     "SubnetId": f"{subnet_id}",
     "SecurityGroupIds": [security_group_id],
     "IamInstanceProfile": {"Arn": instance_role},
 }
+
+ray_nodes_conf = {
+    "ray.head.default": {
+        "resources": {},
+        "node_config": node_config,
+    },
+    "ray.worker.default": {
+        "min_workers": 0,
+        "max_workers": 2,
+        "resources": {},
+        "node_config": node_config,
+    },
+}
+
 
 ray_nodes_conf_override = str(ray_nodes_conf).replace("'", "").replace(" ", "")
 
@@ -105,8 +118,7 @@ common_overrides = [
     # To get around this, we pre-install all the dependencies on the test AMI.
     "hydra.launcher.ray.cluster.setup_commands=[]",
     "hydra.launcher.env_setup.commands=[]",
-    f"+hydra.launcher.ray.cluster.worker_nodes={ray_nodes_conf_override}",
-    f"+hydra.launcher.ray.cluster.head_node={ray_nodes_conf_override}",
+    f"+hydra.launcher.ray.cluster.available_node_types={ray_nodes_conf_override}",
 ]
 common_overrides.extend(
     [f"~hydra.launcher.env_setup.pip_packages.{lib}" for lib in pip_lib_skip]
@@ -236,8 +248,12 @@ def manage_cluster() -> Generator[None, None, None]:
             f"echo 'export PATH=\"$HOME/anaconda3/envs/hydra_{cur_py_version}/bin:$PATH\"' >> ~/.bashrc"
         ],
         "head_setup_commands": [],
-        "head_node": ray_nodes_conf,
-        "worker_nodes": ray_nodes_conf,
+        "available_node_types": ray_nodes_conf,
+        "head_node_type": "ray.head.default",
+        "head_start_ray_commands": [
+            "ray stop",
+            "ray start --head",
+        ],
     }
 
     # save connect_config as yaml, this could be useful for debugging

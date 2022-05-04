@@ -31,7 +31,7 @@ def start_ray(init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
         log.info(f"Initializing ray with config: {init_cfg}")
         if init_cfg:
-            ray.init(**init_cfg)
+            ray.init(**OmegaConf.to_container(init_cfg, resolve=True))
         else:
             ray.init()
     else:

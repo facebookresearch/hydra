@@ -3,7 +3,7 @@
 To run the tool:
 
 - Make sure the dependencies in `setup_integration_test_ami.py` matches exactly ray launcher's `setup.py`.
-
+- Install AWS CLI, check AWS documentation for more details.
 - Before running the tool, set up your aws profile with admin access to the Hydra test AWS account.
 ```
 AWS_PROFILE=jieru python create_integration_test_ami.py
