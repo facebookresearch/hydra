@@ -44,6 +44,7 @@ There are several standard approaches for configuring plugins. Check [this page]
 ```commandline
 $ python my_app.py hydra/launcher=ray_aws --cfg hydra -p hydra.launcher
 # @package hydra.launcher
+# @package hydra.launcher
 _target_: hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher
 env_setup:
   pip_packages:
@@ -52,7 +53,7 @@ env_setup:
     ray: ${ray_pkg_version:ray}
     cloudpickle: ${ray_pkg_version:cloudpickle}
     pickle5: 0.0.11
-    hydra_ray_launcher: 1.1.0.dev3
+    hydra_ray_launcher: 1.2.0.dev1
   commands:
   - conda create -n hydra_${python_version:micro} python=${python_version:micro} -y
   - echo 'export PATH="$HOME/anaconda3/envs/hydra_${python_version:micro}/bin:$PATH"'
@@ -64,6 +65,7 @@ ray:
   cluster:
     cluster_name: default
     min_workers: 0
+    upscaling_speed: 1.0
     max_workers: 1
     initial_workers: 0
     autoscaling_mode: default
@@ -83,21 +85,31 @@ ray:
         key_name: hydra-${oc.env:USER,user}
     auth:
       ssh_user: ubuntu
-    head_node:
-      InstanceType: m5.large
-      ImageId: ami-008d8ed4bd7dc2485
-    worker_nodes:
-      InstanceType: m5.large
-      ImageId: ami-008d8ed4bd7dc2485
+    available_node_types:
+      ray.head.default:
+        resources: {}
+        node_config:
+          InstanceType: m5.large
+          ImageId: ami-0a2363a9cff180a64
+      ray.worker.default:
+        min_workers: 0
+        max_workers: 2
+        resources: {}
+        node_config:
+          InstanceType: m5.large
+          ImageId: ami-0a2363a9cff180a64
+          InstanceMarketOptions:
+            MarketType: spot
+    head_node_type: ray.head.default
     file_mounts: {}
     initialization_commands: []
+    cluster_synced_files: []
     setup_commands: []
     head_setup_commands: []
     worker_setup_commands: []
     head_start_ray_commands:
     - ray stop
-    - ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076
-      --autoscaling-config=~/ray_bootstrap_config.yaml
+    - ulimit -n 65536;ray start --head --port=6379 --object-manager-port=8076             --autoscaling-config=~/ray_bootstrap_config.yaml
     worker_start_ray_commands:
     - ray stop
     - ulimit -n 65536; ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
