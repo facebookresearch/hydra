@@ -15,7 +15,7 @@ import hydra
 from jinja2 import Environment, PackageLoader, Template
 from omegaconf import OmegaConf, ValidationError
 from omegaconf._utils import (
-    _is_union,
+    is_union_annotation,
     _resolve_optional,
     get_dict_key_value_types,
     get_list_element_type,
@@ -92,7 +92,7 @@ def is_incompatible(type_: Type[Any]) -> bool:
 
     opt = _resolve_optional(type_)
     # Unions are not supported (Except Optional)
-    if not opt[0] and _is_union(type_):
+    if not opt[0] and is_union_annotation(type_):
         return True
 
     type_ = opt[1]
