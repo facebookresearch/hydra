@@ -9,7 +9,7 @@ from omegaconf._utils import (
     get_list_element_type,
     is_dict_annotation,
     is_list_annotation,
-    is_primitive_type,
+    is_primitive_type_annotation,
 )
 
 
@@ -86,7 +86,7 @@ def convert_imports(imports: Set[Any], string_imports: Iterable[str]) -> List[st
             else:
                 classname = t.__name__
 
-        if not is_primitive_type(t) or issubclass(t, Enum):
+        if not is_primitive_type_annotation(t) or issubclass(t, Enum):
             s = f"from {t.__module__} import {classname}"
 
         if s is not None:
