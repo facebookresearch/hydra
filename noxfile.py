@@ -97,8 +97,7 @@ def install_hydra(session, cmd):
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
-    if USE_OMEGACONF_DEV_VERSION:
-        _print_installed_omegaconf_version(session)
+    _print_installed_omegaconf_version(session)
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
