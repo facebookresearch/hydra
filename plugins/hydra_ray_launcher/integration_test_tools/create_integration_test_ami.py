@@ -29,9 +29,7 @@ def _run_command(command: str) -> str:
     return output
 
 
-@hydra.main(
-    version_base=None, config_path=".", config_name="create_integration_test_ami_config"
-)
+@hydra.main(config_path=".", config_name="create_integration_test_ami_config")
 def set_up_machine(cfg: DictConfig) -> None:
     security_group_id = cfg.security_group_id
     assert security_group_id != "", "Security group cannot be empty!"
@@ -48,7 +46,7 @@ def set_up_machine(cfg: DictConfig) -> None:
         with open(f.name, "w") as file:
             OmegaConf.save(config=cfg.ray_yaml, f=file.name, resolve=True)
         yaml = f.name
-        _run_command(f"ray up {yaml} -y")
+        _run_command(f"ray up {yaml} -y --no-config-cache")
         os.chdir(hydra.utils.get_original_cwd())
         _run_command(
             f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "

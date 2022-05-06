@@ -217,6 +217,12 @@ class RayClusterConf:
     # node. This number should be >= 0.
     min_workers: int = 0
 
+    # The autoscaler will scale up the cluster faster with higher upscaling speed.
+    # E.g., if the task requires adding more nodes then autoscaler will gradually
+    # scale up the cluster in chunks of upscaling_speed*currently_running_nodes.
+    # This number should be > 0.
+    upscaling_speed: float = 1.0
+
     # The maximum number of workers nodes to launch in addition to the head
     # node. This takes precedence over min_workers.
     max_workers: int = 1
@@ -250,25 +256,45 @@ class RayClusterConf:
     Additional options in boto docs.
     https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html
     """
-    head_node: Dict[str, Any] = field(
+
+    # Tell the autoscaler the allowed node types and the resources they provide.
+    # The key is the name of the node type, which is just for debugging purposes.
+    # The node config specifies the launch config and physical instance type.
+    available_node_types: Dict[str, Any] = field(
         default_factory=lambda: {
-            "InstanceType": "m5.large",
-            "ImageId": "ami-008d8ed4bd7dc2485",
+            "ray.head.default": {
+                "resources": {},
+                "node_config": {
+                    "InstanceType": "m5.large",
+                    "ImageId": "ami-0a2363a9cff180a64",
+                },
+            },
+            "ray.worker.default": {
+                "min_workers": 0,
+                "max_workers": 2,
+                "resources": {},
+                "node_config": {
+                    "InstanceType": "m5.large",
+                    "ImageId": "ami-0a2363a9cff180a64",
+                    "InstanceMarketOptions": {"MarketType": "spot"},
+                },
+            },
         }
     )
 
-    worker_nodes: Dict[str, Any] = field(
-        default_factory=lambda: {
-            "InstanceType": "m5.large",
-            "ImageId": "ami-008d8ed4bd7dc2485",
-        }
-    )
+    head_node_type: str = "ray.head.default"
 
     # Files or directories to copy to the head and worker nodes. The format is a
     # dictionary from REMOTE_PATH: LOCAL_PATH, e.g.
     file_mounts: Dict[str, str] = field(default_factory=dict)
 
     initialization_commands: List[str] = field(default_factory=list)
+
+    # Files or directories to copy from the head node to the worker nodes. The format is a
+    # list of paths. The same path on the head node will be copied to the worker node.
+    # This behavior is a subset of the file_mounts behavior. In the vast majority of cases
+    # you should just use file_mounts. Only use this if you know what you're doing!
+    cluster_synced_files: List[str] = field(default_factory=list)
 
     # populated automatically
     setup_commands: List[str] = field(default_factory=list)
