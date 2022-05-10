@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any, Callable
 
 from omegaconf import MISSING
 
+from hydra import version
+
 from ._internal.deprecation_warning import deprecation_warning
 
 TaskFunction = Callable[[Any], Any]
@@ -33,9 +35,11 @@ class TargetConf:
     _target_: str = MISSING
 
     def __post_init__(self) -> None:
-        # DEPRECATED: remove in 1.2
-        msg = "\nTargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
-        deprecation_warning(message=msg)
+        if version.base_at_least("1.2"):
+            raise TypeError("TargetConf is unsupported since Hydra 1.2")
+        else:
+            msg = "\nTargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
+            deprecation_warning(message=msg)
 
 
 class RunMode(Enum):
