@@ -11,6 +11,7 @@ from omegaconf import MISSING, DictConfig, ListConfig, MissingMandatoryValue, Om
 from pytest import fixture, mark, param, raises, warns
 
 import hydra
+from hydra import version
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
@@ -652,12 +653,22 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
     assert res.amsgrad == expected.amsgrad
 
 
-def test_targetconf_deprecated() -> None:
+def test_targetconf_deprecated(hydra_restore_singletons: Any) -> None:
+    version.setbase("1.1")
     with warns(
         expected_warning=UserWarning,
         match=re.escape(
             "TargetConf is deprecated since Hydra 1.1 and will be removed in Hydra 1.2."
         ),
+    ):
+        TargetConf()
+
+
+def test_targetconf_disabled(hydra_restore_singletons: Any) -> None:
+    version.setbase("1.2")
+    with raises(
+        TypeError,
+        match=re.escape("TargetConf is unsupported since Hydra 1.2"),
     ):
         TargetConf()
 
