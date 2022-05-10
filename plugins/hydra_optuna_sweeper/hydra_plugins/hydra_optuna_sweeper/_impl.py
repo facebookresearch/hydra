@@ -263,7 +263,7 @@ class OptunaSweeperImpl(Sweeper):
         params_conf = []
         assert self.params is not None
         for k, v in self.params.items():
-            params_conf.append(f"{k}={v}")
+            params_conf.append(f"{k!s}={v}")
         return params_conf
 
     def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
