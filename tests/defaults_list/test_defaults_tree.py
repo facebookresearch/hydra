@@ -2019,13 +2019,23 @@ def test_legacy_interpolation(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
+    hydra_restore_singletons: Any,
 ) -> None:
     msg = dedent(
         """
     Defaults list element '.*=.*' is using a deprecated interpolation form.
     See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
+    version.setbase("1.1")
     with warns(expected_warning=UserWarning, match=msg):
+        _test_defaults_tree_impl(
+            config_name=config_name,
+            input_overrides=overrides,
+            expected=expected,
+        )
+
+    version.setbase("1.2")
+    with raises(ConfigCompositionException, match=msg):
         _test_defaults_tree_impl(
             config_name=config_name,
             input_overrides=overrides,
