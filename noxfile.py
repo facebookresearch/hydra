@@ -28,6 +28,7 @@ INSTALL_COMMAND = (
 # Allow limiting testing to specific plugins
 # The list ['ALL'] indicates all plugins
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
+SKIP_PLUGINS = os.environ.get("SKIP_PLUGINS", "")
 
 SKIP_CORE_TESTS = "0"
 SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
@@ -55,6 +56,7 @@ def get_current_os() -> str:
 print(f"Operating system\t:\t{get_current_os()}")
 print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
 print(f"PLUGINS\t\t\t:\t{PLUGINS}")
+print(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
 print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
 print(f"FIX\t\t\t:\t{FIX}")
 print(f"VERBOSE\t\t\t:\t{VERBOSE}")
@@ -150,7 +152,10 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     ret = []
     skipped = []
     for plugin in plugins:
-        if not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"]):
+        if (
+            not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"])
+            or plugin["dir_name"] in SKIP_PLUGINS
+        ):
             skipped.append(f"Deselecting {plugin['dir_name']}: User request")
             continue
 
