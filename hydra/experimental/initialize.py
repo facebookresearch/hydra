@@ -1,8 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# DEPRECATED: remove in 1.2
 import copy
 from typing import Any, Optional
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.singleton import Singleton
@@ -32,10 +32,15 @@ class initialize:
     ) -> None:
         from hydra import initialize as real_initialize
 
-        deprecation_warning(
-            message="hydra.experimental.initialize() is no longer experimental."
-            " Use hydra.initialize()",
+        message = (
+            "hydra.experimental.initialize() is no longer experimental. "
+            "Use hydra.initialize()"
         )
+
+        if version.base_at_least("1.2"):
+            raise ImportError(message)
+
+        deprecation_warning(message=message)
 
         self.delegate = real_initialize(
             config_path=config_path,
@@ -64,10 +69,15 @@ class initialize_config_module:
     def __init__(self, config_module: str, job_name: str = "app") -> None:
         from hydra import initialize_config_module as real_initialize_config_module
 
-        deprecation_warning(
-            message="hydra.experimental.initialize_config_module() is no longer experimental."
-            " Use hydra.initialize_config_module().",
+        message = (
+            "hydra.experimental.initialize_config_module() is no longer experimental. "
+            "Use hydra.initialize_config_module()."
         )
+
+        if version.base_at_least("1.2"):
+            raise ImportError(message)
+
+        deprecation_warning(message=message)
 
         self.delegate = real_initialize_config_module(
             config_module=config_module, job_name=job_name
@@ -95,10 +105,15 @@ class initialize_config_dir:
     def __init__(self, config_dir: str, job_name: str = "app") -> None:
         from hydra import initialize_config_dir as real_initialize_config_dir
 
-        deprecation_warning(
-            message="hydra.experimental.initialize_config_dir() is no longer experimental."
-            " Use hydra.initialize_config_dir().",
+        message = (
+            "hydra.experimental.initialize_config_dir() is no longer experimental. "
+            "Use hydra.initialize_config_dir()."
         )
+
+        if version.base_at_least("1.2"):
+            raise ImportError(message)
+
+        deprecation_warning(message=message)
 
         self.delegate = real_initialize_config_dir(
             config_dir=config_dir, job_name=job_name
