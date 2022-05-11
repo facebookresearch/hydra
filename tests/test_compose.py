@@ -638,41 +638,62 @@ class TestConfigSearchPathOverride:
             compose(config_name=config_name, overrides=[override])
 
 
-def test_deprecated_compose() -> None:
+def test_deprecated_compose(hydra_restore_singletons: Any) -> None:
     from hydra import initialize
     from hydra.experimental import compose as expr_compose
 
-    with initialize(version_base=None):
+    msg = "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
+
+    with initialize(version_base="1.1"):
         with warns(
             expected_warning=UserWarning,
-            match=re.escape(
-                "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
-            ),
+            match=re.escape(msg),
+        ):
+            assert expr_compose() == {}
+
+    with initialize(version_base="1.2"):
+        with raises(
+            ImportError,
+            match=re.escape(msg),
         ):
             assert expr_compose() == {}
 
 
-def test_deprecated_initialize() -> None:
+def test_deprecated_initialize(hydra_restore_singletons: Any) -> None:
     from hydra.experimental import initialize as expr_initialize
 
-    with warns(
-        expected_warning=UserWarning,
-        match=re.escape(
-            "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
-        ),
-    ):
+    msg = "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
+
+    version.setbase("1.1")
+    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+        with expr_initialize():
+            assert compose() == {}
+
+    version.setbase("1.2")
+    with raises(ImportError, match=re.escape(msg)):
         with expr_initialize():
             assert compose() == {}
 
 
-def test_deprecated_initialize_config_dir() -> None:
+def test_deprecated_initialize_config_dir(hydra_restore_singletons: Any) -> None:
     from hydra.experimental import initialize_config_dir as expr_initialize_config_dir
 
+    msg = "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
+
+    version.setbase("1.1")
     with warns(
         expected_warning=UserWarning,
-        match=re.escape(
-            "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
-        ),
+        match=re.escape(msg),
+    ):
+        with expr_initialize_config_dir(
+            config_dir=str(Path(".").absolute()),
+        ):
+            assert compose() == {}
+
+    version.setbase("1.2")
+    with raises(
+        ImportError,
+        match=re.escape(msg),
     ):
         with expr_initialize_config_dir(
             config_dir=str(Path(".").absolute()),
@@ -680,18 +701,25 @@ def test_deprecated_initialize_config_dir() -> None:
             assert compose() == {}
 
 
-def test_deprecated_initialize_config_module() -> None:
+def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> None:
     from hydra.experimental import (
         initialize_config_module as expr_initialize_config_module,
     )
 
-    with warns(
-        expected_warning=UserWarning,
-        match=re.escape(
-            "hydra.experimental.initialize_config_module() is no longer experimental."
-            " Use hydra.initialize_config_module()"
-        ),
-    ):
+    msg = (
+        "hydra.experimental.initialize_config_module() is no longer experimental."
+        " Use hydra.initialize_config_module()"
+    )
+
+    version.setbase("1.1")
+    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+        with expr_initialize_config_module(
+            config_module="examples.jupyter_notebooks.cloud_app.conf",
+        ):
+            assert compose() == {}
+
+    version.setbase("1.2")
+    with raises(ImportError, match=re.escape(msg)):
         with expr_initialize_config_module(
             config_module="examples.jupyter_notebooks.cloud_app.conf",
         ):

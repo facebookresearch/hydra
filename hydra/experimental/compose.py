@@ -1,9 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# DEPRECATED: remove in 1.2
 from typing import List, Optional
 
 from omegaconf import DictConfig
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 
 
@@ -15,10 +15,14 @@ def compose(
 ) -> DictConfig:
     from hydra import compose as real_compose
 
-    deprecation_warning(
-        message="hydra.experimental.compose() is no longer experimental."
-        " Use hydra.compose()",
+    message = (
+        "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
     )
+
+    if version.base_at_least("1.2"):
+        raise ImportError(message)
+
+    deprecation_warning(message=message)
     return real_compose(
         config_name=config_name,
         overrides=overrides,
