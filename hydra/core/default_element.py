@@ -7,6 +7,7 @@ from typing import List, Optional, Pattern, Union
 from omegaconf import AnyNode, DictConfig, OmegaConf
 from omegaconf.errors import InterpolationResolutionError
 
+from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
@@ -537,16 +538,18 @@ class GroupDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
-            # DEPRECATED: remove in 1.2
             if re.match(_legacy_interpolation_pattern, name) is not None:
                 msg = dedent(
                     f"""
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
 See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
-                deprecation_warning(
-                    message=msg,
-                )
+                if not version.base_at_least("1.2"):
+                    deprecation_warning(
+                        message=msg,
+                    )
+                else:
+                    raise ConfigCompositionException(msg)
 
             self.value = self._resolve_interpolation_impl(known_choices, name)
 
