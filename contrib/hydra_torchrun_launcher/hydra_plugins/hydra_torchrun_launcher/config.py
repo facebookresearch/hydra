@@ -21,7 +21,7 @@ from hydra.core.config_store import ConfigStore
 @dataclass
 class LauncherConfig:
     _target_: str = (
-        "hydra_plugins.distributed_launcher.TorchDistributedLauncher"
+        "hydra_plugins.hydra_torchrun_launcher.distributed_launcher.TorchDistributedLauncher"
     )
     min_nodes: int = 1
     max_nodes: int = 1

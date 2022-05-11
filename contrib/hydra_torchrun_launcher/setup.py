@@ -17,7 +17,7 @@
 from setuptools import find_namespace_packages, setup
 
 setup(
-    name="hydra-torch-dist-launcher",
+    name="hydra-torchrun-launcher",
     version="0.1",
     author="Jan Baczek",
     author_email="jbaczek@nvidia.com",
