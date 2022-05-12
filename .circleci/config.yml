@@ -99,9 +99,9 @@ commands:
       - run:
           name: Preparing environment - system
           command: |
-            choco install -y --no-progress miniconda3 --params '"/AddToPath:1"'
-            C:\tools\miniconda3\Scripts\conda.exe init powershell
+            choco install -y --no-progress miniconda3
             choco install -y --no-progress openssl javaruntime
+            C:\tools\miniconda3\Scripts\conda.exe init powershell
       - run:
           name: Preparing environment - Hydra
           command: |
@@ -165,7 +165,7 @@ jobs:
           name: Testing Hydra
           no_output_timeout: 10m
           command: |
-            $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+            $env:NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -315,4 +315,4 @@ workflows:
 
 
 orbs:
-  win: circleci/windows@1.0.0
+  win: circleci/windows@2.2.0
