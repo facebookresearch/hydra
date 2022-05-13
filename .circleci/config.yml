@@ -289,7 +289,7 @@ workflows:
       - test_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
       - test_linux_omc_dev:
           matrix:
             parameters:
@@ -312,7 +312,7 @@ workflows:
       - test_plugin_win:
           matrix:
             parameters:
-              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+              py_version: ["3.6", "3.7", "3.8", "3.9"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 
