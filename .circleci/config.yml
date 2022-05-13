@@ -170,7 +170,7 @@ jobs:
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            If ($CIRCLE_PR_NUMBER) {SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins -ts}
+            If ($env:CIRCLE_PR_NUMBER) {$env:SKIP_PLUGINS="hydra_ray_launcher"; nox -s lint_plugins test_plugins -ts}
             exit $LASTEXITCODE
   trigger_plugin_pipelines:
     docker:
