@@ -239,6 +239,7 @@ jobs:
           no_output_timeout: 10m
           command: |
               $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              $env:ConEmuDefaultCp=65001
               $env:PYTHONIOENCODING="utf_8"
               $env:PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
