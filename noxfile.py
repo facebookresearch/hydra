@@ -37,6 +37,8 @@ FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
 
+nox.options.error_on_missing_interpreters = True
+
 
 @dataclass
 class Plugin:
@@ -65,16 +67,8 @@ print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session):
-    session.run(
-        "python",
-        "-m",
-        "pip",
-        "install",
-        "--upgrade",
-        "setuptools",
-        "pip",
-        silent=SILENT,
-    )
+    session.install("--upgrade", "pip", silent=SILENT)
+    session.install("--upgrade", "setuptools", silent=SILENT)
 
 
 def find_dirs(path: str):
