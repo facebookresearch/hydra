@@ -166,6 +166,7 @@ jobs:
           no_output_timeout: 10m
           command: |
             $env:NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
+            $env:ConEmuDefaultCp=65001
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -238,7 +239,7 @@ jobs:
           name: << parameters.test_plugin >>
           no_output_timeout: 10m
           command: |
-              $env:NOX_PYTHON_VERSIONS=<< parameters.py_version >>
+              $env:NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
               $env:ConEmuDefaultCp=65001
               $env:PYTHONIOENCODING="utf_8"
               $env:PLUGINS="<< parameters.test_plugin >>"
