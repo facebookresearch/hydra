@@ -290,7 +290,7 @@ workflows:
           matrix:
             parameters:
               # skipping py3.10 for windows https://github.com/facebookresearch/hydra/issues/2209
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
       - test_linux_omc_dev:
           matrix:
             parameters:
@@ -314,7 +314,7 @@ workflows:
           matrix:
             parameters:
               # skipping py3.10 for windows https://github.com/facebookresearch/hydra/issues/2209
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 

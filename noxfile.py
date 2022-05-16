@@ -38,6 +38,7 @@ VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
 
 nox.options.error_on_missing_interpreters = True
+nox.options.default_venv_backend = "conda"
 
 
 @dataclass
