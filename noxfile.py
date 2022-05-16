@@ -38,7 +38,7 @@ VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
 
 nox.options.error_on_missing_interpreters = True
-nox.options.default_venv_backend = "conda"
+# nox.options.default_venv_backend = "conda"
 
 
 @dataclass
@@ -222,7 +222,7 @@ def _isort_cmd():
     return isort
 
 
-@nox.session(python=PYTHON_VERSIONS)
+@nox.session(python=PYTHON_VERSIONS, venv_backend="conda")
 def lint(session):
     _upgrade_basic(session)
     install_dev_deps(session)
