@@ -1,3 +1,12 @@
+1.2.0 (2022-05-17)
+======================
+
+### Features
+
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
+- Support sampling in log scale. ([#1870](https://github.com/facebookresearch/hydra/issues/1870))
+
+
 1.1.5.rc1 (2021-05-18)
 ======================
 

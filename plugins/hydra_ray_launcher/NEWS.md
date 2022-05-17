@@ -1,3 +1,12 @@
+1.2.0 (2022-05-17)
+======================
+
+### Features
+
+- Add support for python 3.9 ([#1205](https://github.com/facebookresearch/hydra/issues/1205))
+- Upgrade to ray 1.12.0 ([#2190](https://github.com/facebookresearch/hydra/issues/2190))
+
+
 1.1.0 (2021-06-10)
 =======================
 

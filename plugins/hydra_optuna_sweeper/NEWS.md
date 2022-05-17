@@ -1,3 +1,17 @@
+1.2.0 (2022-05-17)
+======================
+
+### Features
+
+- Add support for GridSampler ([#1815](https://github.com/facebookresearch/hydra/issues/1815))
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
+- Add experimental 'custom_search_space' configuration node to allow extending trial objects programmatically. ([#1906](https://github.com/facebookresearch/hydra/issues/1906))
+
+### Configuration structure changes
+
+- Add hydra.sweeper.params and deprecate hydra.sweeper.search_space ([#1890](https://github.com/facebookresearch/hydra/issues/1890))
+
+
 1.1.2 (2022-01-23)
 =======================
 

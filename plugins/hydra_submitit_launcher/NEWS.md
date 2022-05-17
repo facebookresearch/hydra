@@ -1,9 +1,12 @@
-1.1.5 (2021-06-10)
-==================
+1.2.0 (2022-05-17)
+======================
 
 ### Features
 
-- Add support for SLURM parameters `cpus_per_gpu`, `gpus_per_task`, `mem_per_gpu` and `mem_per_cpu` ([#1366](https://github.com/facebookresearch/hydra/issues/1366))
+- Add support for SLURM parameters `qos`, `gres` ([#1800](https://github.com/facebookresearch/hydra/issues/1800))
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
+- Add support for submitit parameter `account` ([#1920](https://github.com/facebookresearch/hydra/issues/1920))
+- Add support for submitit parameter `stderr_to_stdout` ([#1967](https://github.com/facebookresearch/hydra/issues/1967))
 
 
 1.1.5 (2021-06-10)

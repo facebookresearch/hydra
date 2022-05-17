@@ -1,3 +1,11 @@
+1.2.0 (2022-05-17)
+======================
+
+### Features
+
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
+
+
 1.1.2 (2021-03-30)
 ==================
 
