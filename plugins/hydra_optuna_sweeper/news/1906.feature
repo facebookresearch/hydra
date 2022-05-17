@@ -1,1 +1,0 @@
-Add experimental 'custom_search_space' configuration node to allow extending trial objects programmatically.

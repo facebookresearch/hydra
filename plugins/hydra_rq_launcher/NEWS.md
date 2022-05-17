@@ -1,17 +1,10 @@
-1.1.0 (2021-06-10)
-==================
+1.2.0 (2022-05-17)
+======================
 
 ### Features
 
 - Add support for SSL Redis connections in the RQ launcher plugin ([#1586](https://github.com/facebookresearch/hydra/issues/1586))
-
-
-1.1.0 (2021-06-10)
-==================
-
-### Features
-
-- Add support for SSL Redis connections in the RQ launcher plugin ([#1586](https://github.com/facebookresearch/hydra/issues/1586))
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
 
 
 1.1.0 (2021-06-10)
