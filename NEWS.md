@@ -1,3 +1,51 @@
+1.2.0 (2022-05-17)
+==================
+
+### Bug fixes
+
+- `hydra.runtime.choices` is now updated correctly during multi-run ([#1882](https://github.com/facebookresearch/hydra/issues/1882))
+- `hydra.verbose=True` now works with multirun. ([#1897](https://github.com/facebookresearch/hydra/issues/1897))
+- Fix a resolution error occurring when a nested class is passed as a `_target_` keyword argument to `instantiate` ([#1914](https://github.com/facebookresearch/hydra/issues/1914))
+- It is now possible to pass other callable objects (besides functions) to `hydra.main`. ([#2042](https://github.com/facebookresearch/hydra/issues/2042))
+
+### New features
+
+- Add support to Hydra's instantiation API for creation of `functools.partial` instances via a `_partial_` keyword. ([#1283](https://github.com/facebookresearch/hydra/issues/1283))
+- Support defining basic sweeping in input config. ([#1376](https://github.com/facebookresearch/hydra/issues/1376))
+- Improve error message with more context when an omegaconf exception occurs during the config merge step. ([#1697](https://github.com/facebookresearch/hydra/issues/1697))
+- Add `--experimental-rerun` command-line option to reproduce pickled single runs ([#1805](https://github.com/facebookresearch/hydra/issues/1805))
+- Add experimental Callback for pickling job info. ([#2092](https://github.com/facebookresearch/hydra/issues/2092))
+- Implement tab completions for appending to the defaults list (+group=option) and deleting from the defaults list (~group). ([#1841](https://github.com/facebookresearch/hydra/issues/1841))
+- Enable the use of the pipe symbol `|` in unquoted strings when parsing command-line overrides. ([#1850](https://github.com/facebookresearch/hydra/issues/1850))
+- Support for Python 3.10 ([#1856](https://github.com/facebookresearch/hydra/issues/1856))
+- Improve clarity of error messages when `hydra.utils.instantiate` encounters a `_target_` that cannot be located ([#1863](https://github.com/facebookresearch/hydra/issues/1863))
+- The `instantiate` API now accepts `ListConfig`/`list`-type config as top-level input. ([#1950](https://github.com/facebookresearch/hydra/issues/1950))
+- Improve error messages raised in case of instantiation failure. ([#2099](https://github.com/facebookresearch/hydra/issues/2099))
+- Add callback for logging JobReturn. ([#2100](https://github.com/facebookresearch/hydra/issues/2100))
+- Support disable changing working directory at runtime. ([#910](https://github.com/facebookresearch/hydra/issues/910))
+- Support setting hydra.mode through config. ([#394](https://github.com/facebookresearch/hydra/issues/394))
+
+### Behavior changes
+
+- The antlr version requirement is updated from 4.8 to 4.9, to align better with current antlr versions
+- If user code raises an exception when called by `instantiate`, raise an `InstantiateError` exception instead of an instance of the same exception class that was raised by the user code. ([#1911](https://github.com/facebookresearch/hydra/issues/1911))
+- Remove support for deprecated arg `config_loader` to Plugin.setup, and update signature of `run_job` to require `hydra_context`. ([#1953](https://github.com/facebookresearch/hydra/issues/1953))
+
+The remaining changes are protected by the new [version_base](https://hydra.cc/docs/next/upgrades/version_base/) support,
+which allows one to either configure Hydra to support older setups / config, or configure Hydra to use the following more modern defaults:
+
+- Remove deprecated "old optional" defaults list syntax ([#1952](https://github.com/facebookresearch/hydra/issues/1952))
+- Remove support for the legacy hydra override syntax (see [deprecation notice](https://hydra.cc/docs/upgrades/1.0_to_1.1/defaults_list_override/)). ([#2056](https://github.com/facebookresearch/hydra/issues/2056))
+- Remove support for old hydra.experimental.{compose,initialize} interface
+- Remove support for `_name_` and `_group_` from package header (see [deprecation notice](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header))
+- Remove support for legacy default list interpolation format (see [deprecation notice](http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation))
+- Remove support for TargetConf class
+- Remove support for strict flag from compose API (see [deprecation notice](https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated))
+- Remove support for "*.yml" extensions, requiring "*.yaml" instead.
+- Default to not changing the working directory at runtime. Use `hydra.job.chdir=True` to reinstate old behavior.
+- Default to not adding any directory to the config path. (see [`config_path` options](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path))
+
+
 1.1.1 (2021-08-19)
 ==================
 
