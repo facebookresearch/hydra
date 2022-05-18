@@ -4,9 +4,65 @@
         <title>Hydra Blog</title>
         <link>https://hydra.cc/blog</link>
         <description>Hydra Blog</description>
-        <lastBuildDate>Sun, 13 Jun 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 18 May 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Hydra 1.2]]></title>
+            <link>https://hydra.cc/blog/2022/05/18/Hydra_1.2</link>
+            <guid>/2022/05/18/Hydra_1.2</guid>
+            <pubDate>Wed, 18 May 2022 00:00:00 GMT</pubDate>
+            <description><![CDATA[After many months and a lot of hard work by many people, Hydra 1.2 is released!]]></description>
+            <content:encoded><![CDATA[<p align="center"><img src="/img/Hydra-Readme-logo2.svg" alt="logo" width="70%"/></p><p>After many months and a lot of hard work by many people, Hydra 1.2 is released!
+Hydra 1.2 comes with OmegaConf 2.2, which has its own share of improvements.</p><p>This blog post highlights some of the most prominent features, check the release notes for a complete list of changes:</p><ul><li>Hydra 1.2 <a href="https://github.com/facebookresearch/hydra/releases/tag/v1.2.0">release notes</a></li><li>OmegaConf 2.2 <a href="https://github.com/omry/omegaconf/releases/tag/v2.2.1">release notes</a></li></ul><h3>Major new features in Hydra 1.2</h3><ul><li>Easier integration with existing systems<ul><li>Support not changing working directory at runtime</li><li>Default to not implicitly adding directories to the config path</li></ul></li><li>Improved support for reproducible experiments<ul><li>Support defining multirun mode and sweeping parameters through config</li><li>Improved callback support for logging / persisting job runs</li><li>A new <code>--experimental-rerun</code> option to reproduce persisted single runs</li></ul></li><li>Improved instantiate API functionality<ul><li>Support for instances partially defined from config, via a <code>_partial_</code> keyword</li><li>Accept <code>ListConfig</code>/<code>list</code>-type config as top-level input</li></ul></li><li>Better alignment with ecosystem versions<ul><li>Support for Python 3.10, and ANTLR 4.9</li></ul></li><li>OmegaConf 2.2:<ul><li>More flexible type hints in structured configs</li><li>Native support for bytes and pathlib.Path</li></ul></li></ul><h4>Object instantiation enhancements</h4><ul><li>Lists can now be passed directly to the instantiate API.
+For example one can now do:</li></ul><pre><code class="language-python">from hydra.utils import instantiate
+
+lst = [
+    {&quot;_target_&quot;: &quot;pathlib.Path&quot;, &quot;_args_&quot;: [&quot;foo&quot;]},
+    {&quot;_target_&quot;: &quot;pathlib.Path&quot;, &quot;_args_&quot;: [&quot;bar&quot;]},
+]
+
+paths = instantiate(lst)
+print(paths)
+</code></pre><p>Resulting in:</p><pre><code class="language-python">$ python demo.py
+[PosixPath(&#x27;foo&#x27;), PosixPath(&#x27;bar&#x27;)]
+</code></pre><ul><li>Instances can now be partially defined in config with the <code>_partial_</code> keyword.
+Please see the <a href="/docs/advanced/instantiate_objects/overview/#partial-instantiation">Instantiate API - Partial Instantiation</a> docs
+for a detailed example.</li></ul><h3>OmegaConf 2.2 highlights</h3><h4>More flexible type hints in structured configs</h4><p>OmegaConf 2.2&#x27;s structured configs support runtime type checking for an expanded set of type hints.
+It is now possible to use nested container types (e.g. dict-of-dict or list-of-list),
+unions of primitive types, and containers with optional element types.</p><p>Here is an example demonstrating these new capabilities:</p><pre><code class="language-python">from dataclasses import dataclass
+from typing import Dict, List, Optional, Union
+from omegaconf import OmegaConf
+
+@dataclass
+class DemoConfig:
+    union: Union[int, str, bool]
+    dict_of_union: Dict[str, Union[int, str]]
+    list_of_dict: List[Dict[int, float]]
+    dict_of_optional: Dict[str, Optional[int]]
+
+cfg = OmegaConf.structured({&quot;foo&quot;: DemoConfig})
+cfg.foo.dict_of_union = {&quot;abc&quot;: 123}  # ok
+cfg.foo.dict_of_union = {&quot;abc&quot;: 10.1}  # raises ValidationError!
+# Value &#x27;10.1&#x27; of type &#x27;float&#x27; is incompatible with type hint &#x27;Union[int, str]&#x27;
+</code></pre><h4>Native support for bytes and pathlib.Path</h4><p>OmegaConf now supports binary data via Python&#x27;s bytes type.</p><pre><code class="language-python">cfg = OmegaConf.create({b&quot;binary_key&quot;: b&quot;binary_value&quot;})
+</code></pre><p>In addition, OmegaConf now supports <code>pathlib.Path</code> instances as config values, easing workflows that involve the file system.</p><pre><code class="language-python">from pathlib import Path
+cfg.my_homedir = Path.home()
+assert cfg.my_homedir.is_dir()
+</code></pre><p>The <code>bytes</code> and <code>pathlib.Path</code> types can be used as type hints in structured config class definitions,
+and configs containing binary and Path data can be round-tripped to/from yaml files via OmegaConf&#x27;s save/load/to_yaml/create methods.</p><pre><code class="language-python">yaml_data = OmegaConf.to_yaml(cfg)
+cfg2 = OmegaConf.create(yaml_data)
+assert cfg2[b&quot;binary_key&quot;] == b&quot;binary_value&quot;
+assert isinstance(cfg2.my_homedir, Path)
+</code></pre><h3>Migrating from 1.1</h3><p>Hydra 1.2 is a major release. For most people, migrating from 1.1 to 1.2 will be smooth.
+In addition, for this release we introduce support for more compatible upgrades
+through the <a href="/docs/upgrades/version_base/">version_base</a> mechanism.
+New users are encouraged to use the latest defaults by setting <code>version_base=None</code> with <code>@hydra.main()</code> and <code>hydra.initialize()</code>,
+while existing users have more control over what potentially incompatible changes are introduced when upgrading to Hydra 1.2.
+Please see the &quot;Behavior changes&quot; section of the <a href="https://github.com/facebookresearch/hydra/releases/tag/v1.2.0">Hydra 1.2 release notes</a> for details.
+OmegaConf 2.2 also has some API changes and deprecations (not protected by version_base), detailed in its <a href="https://github.com/omry/omegaconf/releases/tag/v2.2.1">release notes</a>.
+Please feel free to reach out for <a href="/docs/intro#community">help</a> if you see a change in behavior that is not mentioned in the release notes.</p><p>That&#x27;s it for now, take Hydra 1.2 for a spin!</p>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[Hydra 1.1]]></title>
             <link>https://hydra.cc/blog/2021/06/13/Hydra_1.1</link>
