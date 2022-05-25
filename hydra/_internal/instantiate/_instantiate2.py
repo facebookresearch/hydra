@@ -68,8 +68,9 @@ def _call_target(
                 v._set_parent(None)
     except Exception as e:
         msg = (
-            f"Error in collecting args and kwargs for '{_convert_target_to_string(_target_)}':"
-            + f"\n{repr(e)}"
+            f"Error in collecting args and kwargs for '{_convert_target_to_string(_target_)}' \n"
+            f"with args: {args}, kwargs: {kwargs}. \n"
+            f"Error details: {repr(e)}, "
         )
         if full_key:
             msg += f"\nfull_key: {full_key}"
