@@ -16,16 +16,18 @@ describe your configuration structure and types. They enable:
 * **Static type checking** when using static type checkers (mypy, PyCharm, etc.)
 
 #### Structured Configs supports:
-- Primitive types (`int`, `bool`, `float`, `str`, `Enums`) 
+- Primitive types (`int`, `bool`, `float`, `str`, `Enums`, `bytes`, `pathlib.Path`) 
 - Nesting of Structured Configs
-- Containers (List and Dict) containing primitives or Structured Configs
+- Containers (List and Dict) containing primitives, Structured Configs, or other lists/dicts
 - Optional fields
 
 #### Structured Configs Limitations:
-- `Union` types are not supported (except `Optional`)
+- `Union` types are only partially supported (see [OmegaConf docs on unions](https://omegaconf.readthedocs.io/en/latest/structured_config.html#union-types))
 - User methods are not supported
 
-#### There are two primary patterns for using Structured configs
+See the [OmegaConf docs on Structured Configs](https://omegaconf.readthedocs.io/en/latest/structured_config.html) for more details.
+
+#### There are two primary patterns for using Structured configs with Hydra
 
 - As a [config](/tutorials/structured_config/1_minimal_example.md), in place of configuration files (often a starting place)
 - As a [config schema](/tutorials/structured_config/5_schema.md) validating configuration files (better for complex use cases)
