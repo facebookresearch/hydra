@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import builtins
 import math
 import re
 from builtins import isinstance
@@ -1433,7 +1434,7 @@ class CastResults:
     ]
 
     @staticmethod
-    def error(msg: str) -> Any:
+    def error(msg: builtins.str) -> Any:
         return raises(HydraException, match=f"^{re.escape(msg)}")
 
 
