@@ -227,7 +227,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         return instantiate_node(
             config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
-            resolve=_resolve,
+            resolve=_resolve_,
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -251,7 +251,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         return instantiate_node(
             config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
-            resolve=_resolve,
+            resolve=_resolve_,
         )
     else:
         raise InstantiationException(
