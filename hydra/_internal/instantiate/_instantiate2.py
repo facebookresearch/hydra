@@ -348,7 +348,7 @@ def instantiate_node(
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
-            is_resolve = node.get("_resolve_", True) or resolve
+            is_resolve = node.get("_resolve_", True) and resolve
             for key in node.keys():
                 if key not in exclude_keys:
                     if OmegaConf.is_missing(node, key) and is_partial:
