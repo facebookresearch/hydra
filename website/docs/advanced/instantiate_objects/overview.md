@@ -40,6 +40,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   a trace of OmegaConf containers
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _resolve_: If to resolve the OmegaConf configuration (bool) 
+                              True by default.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -368,6 +370,9 @@ assert bar1.foo is bar2.foo  # the `Foo` instance is re-used here
 ```
 This does not apply if `_partial_=False`,
 in which case a new `Foo` instance would be created with each call to `instantiate`.
+
+### OmegaConf resolution
+By default, the configuration is resolved via `OmegaConf.resolve`. This can be turned off, using `_resolve_=False`.
 
 
 ### Instantiation of builtins
