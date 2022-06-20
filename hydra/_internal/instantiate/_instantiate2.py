@@ -243,6 +243,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
+        _resolve_ = True
 
         if _partial_:
             raise InstantiationException(
