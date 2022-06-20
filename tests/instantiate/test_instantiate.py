@@ -106,6 +106,19 @@ def config(request: Any, src: Any) -> Any:
         param(
             {
                 "_target_": "tests.instantiate.AClass",
+                "a": "${somethingthatisjustpassed}",
+                "b": 20,
+                "c": 30,
+                "d": 40,
+                "_resolve_": False
+            },
+            {},
+            AClass("somethingthatisjustpassed", 20, 30, 40),
+            id="class+not_resolve",
+        ),
+        param(
+            {
+                "_target_": "tests.instantiate.AClass",
                 "_partial_": True,
                 "a": 10,
                 "b": 20,
