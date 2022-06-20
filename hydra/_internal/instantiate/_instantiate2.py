@@ -22,6 +22,7 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    RESOLVE = "_resolve_"
 
 
 def _is_target(x: Any) -> bool:
@@ -164,6 +165,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   a trace of OmegaConf containers
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _resolve_: If to resolve the OmegaConf configuration (bool) 
+                              True by default.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -212,8 +215,11 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
-
-        OmegaConf.resolve(config)
+        
+        _resolve_ = config.pop(_Keys.RESOLVE, True)
+            
+        if _resolve_:
+            OmegaConf.resolve(config)
 
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
@@ -231,7 +237,10 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         config_copy._set_parent(config._get_parent())
         config = config_copy
 
-        OmegaConf.resolve(config)
+        _resolve_ = config.pop(_Keys.RESOLVE, True)
+            
+        if _resolve_:
+            OmegaConf.resolve(config)
 
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
