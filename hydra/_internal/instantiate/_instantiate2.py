@@ -237,10 +237,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         config_copy._set_parent(config._get_parent())
         config = config_copy
 
-        _resolve_ = config.pop(_Keys.RESOLVE, True)
-            
-        if _resolve_:
-            OmegaConf.resolve(config)
+        OmegaConf.resolve(config)
 
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
