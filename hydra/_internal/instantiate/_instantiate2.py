@@ -165,7 +165,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   a trace of OmegaConf containers
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
-                   _resolve_: If to resolve the OmegaConf configuration (bool) 
+                   _resolve_: If to resolve the OmegaConf configuration (bool)
                               True by default.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
@@ -215,9 +215,9 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
-        
+
         _resolve_ = config.pop(_Keys.RESOLVE, True)
-            
+
         if _resolve_:
             OmegaConf.resolve(config)
 
@@ -308,7 +308,7 @@ def instantiate_node(
         if full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
-        
+
     if not isinstance(resolve, bool):
         msg = f"Instantiation: _resolve_ flag must be a bool, got {type(recursive)}"
         if full_key:
