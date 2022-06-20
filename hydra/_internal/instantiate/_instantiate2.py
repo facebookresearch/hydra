@@ -226,7 +226,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            resolve=_resolve,
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -249,7 +250,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            resolve=_resolve,
         )
     else:
         raise InstantiationException(
@@ -265,7 +267,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 def _convert_node(
     node: Any,
     convert: Union[ConvertMode, str],
-    resolve: bool = True
+    resolve: bool = True,
 ) -> Any:
     if OmegaConf.is_config(node):
         if convert == ConvertMode.ALL:
@@ -329,7 +331,7 @@ def instantiate_node(
                 convert=convert,
                 recursive=recursive,
                 resolve=resolve)
-            for item in node._iter_ex(resolve=True)
+            for item in node._iter_ex(resolve=resolve)
         ]
 
         if convert in (ConvertMode.ALL, ConvertMode.PARTIAL):
