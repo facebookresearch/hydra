@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import distutils.spawn
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -20,11 +20,11 @@ chdir_hydra_root()
 
 
 def is_expect_exists() -> bool:
-    return distutils.spawn.find_executable("expect") is not None
+    return shutil.which("expect") is not None
 
 
 def is_fish_supported() -> bool:
-    if distutils.spawn.find_executable("fish") is None:
+    if shutil.which("fish") is None:
         return False
 
     proc = subprocess.run(
@@ -46,7 +46,7 @@ def is_fish_supported() -> bool:
 
 
 def is_zsh_supported() -> bool:
-    if distutils.spawn.find_executable("zsh") is None:
+    if shutil.which("zsh") is None:
         return False
 
     proc = subprocess.run(
