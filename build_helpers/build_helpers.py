@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import codecs
-import distutils.log
 import errno
+import logging
 import os
 import re
 import shutil
@@ -11,6 +11,8 @@ from typing import List, Optional
 
 from setuptools import Command
 from setuptools.command import build_py, develop, sdist
+
+log = logging.getLogger(__name__)
 
 
 def find_version(*file_paths: str) -> str:
@@ -131,13 +133,13 @@ class CleanCommand(Command):  # type: ignore
 
 def run_antlr(cmd: Command) -> None:
     try:
-        cmd.announce("Generating parsers with antlr4", level=distutils.log.INFO)
+        log.info("Generating parsers with antlr4")
         cmd.run_command("antlr")
     except OSError as e:
         if e.errno == errno.ENOENT:
             msg = f"| Unable to generate parsers: {e} |"
             msg = "=" * len(msg) + "\n" + msg + "\n" + "=" * len(msg)
-            cmd.announce(f"{msg}", level=distutils.log.FATAL)
+            log.critical(f"{msg}")
             exit(1)
         else:
             raise
@@ -192,9 +194,7 @@ class ANTLRCommand(Command):  # type: ignore
                 join(project_root, grammar),
             ]
 
-            self.announce(
-                f"Generating parser for Python3: {command}", level=distutils.log.INFO
-            )
+            log.info(f"Generating parser for Python3: {command}")
 
             subprocess.check_call(command)
 
