@@ -387,7 +387,7 @@ class OptunaSweeperImpl(Sweeper):
 
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
-                    study.tell(trial=trial, state=state, values=values)
+                    study.tell(trial=trial, state=state, values=None)
                     raise e
 
             n_trials_to_go -= batch_size
