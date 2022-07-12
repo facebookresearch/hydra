@@ -1478,7 +1478,7 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
         match=re.escape(
             dedent(
                 """\
-                Error locating target 'not_found', see chained exception above.
+                Error locating target 'not_found', set env var HYDRA_FULL_ERROR=1 to see chained exception.
                 full_key: foo"""
             )
         ),
