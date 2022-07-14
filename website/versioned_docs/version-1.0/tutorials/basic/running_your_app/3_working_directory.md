@@ -20,6 +20,7 @@ Every time you run the app, a new working directory is created:
 Python file: `my_app.py`
 ```python
 import os
+import hydra
 from omegaconf import DictConfig
 
 @hydra.main()
