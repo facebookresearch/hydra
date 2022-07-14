@@ -4,9 +4,8 @@ import os
 import re
 import sys
 import warnings
-from collections import defaultdict
 from textwrap import dedent
-from typing import Any, Dict, List, MutableSequence, Optional
+from typing import Any, List, MutableSequence, Optional
 
 from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
