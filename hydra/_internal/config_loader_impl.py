@@ -311,13 +311,10 @@ class ConfigLoaderImpl(ConfigLoader):
             run_mode=RunMode.RUN,
         )
 
-        # Partial copy of master config cache, to ensure we get the same resolved values for timestamps
-        cache: Dict[str, Any] = defaultdict(dict, {})
-        cache_master_config = OmegaConf.get_cache(master_config)
-        for k in ["now"]:
-            if k in cache_master_config:
-                cache[k] = cache_master_config[k]
-        OmegaConf.set_cache(sweep_config, cache)
+        # Copy old config cache to ensure we get the same resolved values (for things
+        # like timestamps etc). Since `oc.env` does not cache environment variables
+        # (but the deprecated `env` resolver did), the entire config should be copied
+        OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
 
         return sweep_config
 

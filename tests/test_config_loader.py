@@ -380,6 +380,21 @@ class TestConfigLoader:
     ) -> None:
         setup_globals()
 
+        # pseudorandom resolvers with/without value caching
+        pseudorandom_values = iter(["1st", "2nd", "3rd", "4th"])
+        OmegaConf.register_new_resolver(
+            "cached",
+            lambda: next(pseudorandom_values),
+            use_cache=True,
+            replace=True
+        )
+        OmegaConf.register_new_resolver(
+            "uncached",
+            lambda: next(pseudorandom_values),
+            use_cache=False,
+            replace=True
+        )
+
         monkeypatch.setenv("TEST_ENV", "test_env")
 
         config_loader = ConfigLoaderImpl(
@@ -387,30 +402,53 @@ class TestConfigLoader:
         )
         master_cfg = config_loader.load_configuration(
             config_name="config.yaml",
-            overrides=["+time=${now:%H-%M-%S}", "+test_env=${oc.env:TEST_ENV}"],
+            overrides=[
+                "+time=${now:%H-%M-%S}",
+                "+test_env=${oc.env:TEST_ENV}",
+                "+test_cached=${cached:}",
+                "+test_uncached=${uncached:}",
+            ],
             run_mode=RunMode.RUN,
         )
 
         # trigger resolution by type assertion
         assert type(master_cfg.time) == str
         assert type(master_cfg.test_env) == str
+        assert type(master_cfg.test_cached) == str  # "1st"
+        assert type(master_cfg.test_uncached) == str  # "2nd"
 
         master_cfg_cache = OmegaConf.get_cache(master_cfg)
         assert "now" in master_cfg_cache.keys()
         # oc.env is not cached as of OmegaConf 2.1
         assert "oc.env" not in master_cfg_cache.keys()
         assert master_cfg.test_env == "test_env"
+        assert "cached" in master_cfg_cache.keys()
+        assert master_cfg.test_cached == "1st"  # use cached value
+        assert "uncached" not in master_cfg_cache.keys()
+        assert master_cfg.test_uncached == "3rd"  # use `next` value
 
         sweep_cfg = config_loader.load_sweep_config(
             master_config=master_cfg,
-            sweep_overrides=["+time=${now:%H-%M-%S}", "+test_env=${oc.env:TEST_ENV}"],
+            sweep_overrides=[
+                "+time=${now:%H-%M-%S}",
+                "+test_env=${oc.env:TEST_ENV}",
+                "+test_cached=${cached:}",
+                "+test_uncached=${uncached:}",
+            ],
         )
 
         sweep_cfg_cache = OmegaConf.get_cache(sweep_cfg)
-        assert len(sweep_cfg_cache.keys()) == 1 and "now" in sweep_cfg_cache.keys()
+        assert len(sweep_cfg_cache.keys()) == 2  # "now", and "cached"
+        assert "now" in sweep_cfg_cache.keys()
+        assert "oc.env" not in sweep_cfg_cache.keys()
+        assert "cached" in sweep_cfg_cache.keys()
+        assert "uncached" not in sweep_cfg_cache.keys()
         assert sweep_cfg_cache["now"] == master_cfg_cache["now"]
+        assert sweep_cfg_cache["cached"] == master_cfg_cache["cached"]
         monkeypatch.setenv("TEST_ENV", "test_env2")
         assert sweep_cfg.test_env == "test_env2"
+        assert master_cfg.test_cached == "1st"  # use cached value
+        assert master_cfg.test_uncached == "4th"  # use `next` value
 
 
 def test_defaults_not_list_exception() -> None:
