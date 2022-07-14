@@ -13,13 +13,11 @@ repos:
     rev: 22.6.0
     hooks:
       - id: black
-        language_version: python3.6
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
     hooks:
       - id: flake8
-        additional_dependencies: [-e, "git+git://github.com/pycqa/pyflakes.git@1911c20#egg=pyflakes"]
 
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.27.1

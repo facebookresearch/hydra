@@ -20,22 +20,20 @@ from hydra.core.config_store import ConfigStore
 
 @dataclass
 class LauncherConfig:
-    _target_: str = (
-        "hydra_plugins.hydra_torchrun_launcher.distributed_launcher.TorchDistributedLauncher"
-    )
+    _target_: str = "hydra_plugins.hydra_torchrun_launcher.distributed_launcher.TorchDistributedLauncher"
     min_nodes: int = 1
     max_nodes: int = 1
     nproc_per_node: int = 8
-    rdzv_id: str = 'none'
-    role: str = 'default'
-    rdzv_endpoint: str = '127.0.0.1:29500'
-    rdzv_backend: str = 'static'
+    rdzv_id: str = "none"
+    role: str = "default"
+    rdzv_endpoint: str = "127.0.0.1:29500"
+    rdzv_backend: str = "static"
     rdzv_timeout: int = -1
     max_restarts: int = 0
     monitor_interval: int = 5
     log_dir = None
-    redirects: str = '0'
-    tee: str = '0'
+    redirects: str = "0"
+    tee: str = "0"
 
 
 ConfigStore.instance().store(
