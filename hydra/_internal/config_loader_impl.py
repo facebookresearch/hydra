@@ -59,7 +59,8 @@ class ConfigLoaderImpl(ConfigLoader):
                 if run_mode == RunMode.MULTIRUN:
                     if x.is_hydra_override():
                         raise ConfigCompositionException(
-                            f"Sweeping over Hydra's configuration is not supported : '{x.input_line}'"
+                            "Sweeping over Hydra's configuration is not supported :"
+                            f" '{x.input_line}'"
                         )
                 elif run_mode == RunMode.RUN:
                     if x.value_type == ValueType.SIMPLE_CHOICE_SWEEP:
@@ -111,18 +112,19 @@ class ConfigLoaderImpl(ConfigLoader):
                     if source.scheme() == "pkg":
                         if source.path == "":
                             msg = (
-                                "Primary config module is empty."
-                                "\nPython requires resources to be in a module with an __init__.py file"
+                                "Primary config module is empty.\nPython requires"
+                                " resources to be in a module with an __init__.py file"
                             )
                         else:
                             msg = (
-                                f"Primary config module '{source.path}' not found."
-                                f"\nCheck that it's correct and contains an __init__.py file"
+                                f"Primary config module '{source.path}' not"
+                                " found.\nCheck that it's correct and contains an"
+                                " __init__.py file"
                             )
                     else:
                         msg = (
-                            f"Primary config directory not found."
-                            f"\nCheck that the config directory '{source.path}' exists and readable"
+                            "Primary config directory not found.\nCheck that the"
+                            f" config directory '{source.path}' exists and readable"
                         )
 
                     self._missing_config_error(
@@ -166,7 +168,8 @@ class ConfigLoaderImpl(ConfigLoader):
 
         if not OmegaConf.is_dict(primary_config):
             raise ConfigCompositionException(
-                f"primary config '{config_name}' must be a DictConfig, got {type(primary_config).__name__}"
+                f"primary config '{config_name}' must be a DictConfig, got"
+                f" {type(primary_config).__name__}"
             )
 
         def is_searchpath_override(v: Override) -> bool:
@@ -213,7 +216,10 @@ class ConfigLoaderImpl(ConfigLoader):
             if not source.available():
                 warnings.warn(
                     category=UserWarning,
-                    message=f"provider={source.provider}, path={source.path} is not available.",
+                    message=(
+                        f"provider={source.provider}, path={source.path} is not"
+                        " available."
+                    ),
                 )
 
     def _load_configuration_impl(
@@ -326,8 +332,9 @@ class ConfigLoaderImpl(ConfigLoader):
         for override in overrides:
             if override.package is not None:
                 raise ConfigCompositionException(
-                    f"Override {override.input_line} looks like a config group override, "
-                    f"but config group '{override.key_or_group}' does not exist."
+                    f"Override {override.input_line} looks like a config group"
+                    f" override, but config group '{override.key_or_group}' does not"
+                    " exist."
                 )
 
             key = override.key_or_group
@@ -337,12 +344,14 @@ class ConfigLoaderImpl(ConfigLoader):
                     config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
                     if config_val is None:
                         raise ConfigCompositionException(
-                            f"Could not delete from config. '{override.key_or_group}' does not exist."
+                            f"Could not delete from config. '{override.key_or_group}'"
+                            " does not exist."
                         )
                     elif value is not None and value != config_val:
                         raise ConfigCompositionException(
-                            f"Could not delete from config."
-                            f" The value of '{override.key_or_group}' is {config_val} and not {value}."
+                            "Could not delete from config. The value of"
+                            f" '{override.key_or_group}' is {config_val} and not"
+                            f" {value}."
                         )
 
                     last_dot = key.rfind(".")
@@ -395,7 +404,8 @@ class ConfigLoaderImpl(ConfigLoader):
 
         if not OmegaConf.is_config(ret.config):
             raise ValueError(
-                f"Config {config_path} must be an OmegaConf config, got {type(ret.config).__name__}"
+                f"Config {config_path} must be an OmegaConf config, got"
+                f" {type(ret.config).__name__}"
             )
 
         if not ret.is_schema_source:
@@ -473,7 +483,8 @@ class ConfigLoaderImpl(ConfigLoader):
             and OmegaConf.select(res.config, "hydra.searchpath") is not None
         ):
             raise ConfigCompositionException(
-                f"In '{config_path}': Overriding hydra.searchpath is only supported from the primary config"
+                f"In '{config_path}': Overriding hydra.searchpath is only supported"
+                " from the primary config"
             )
 
         return res
@@ -517,7 +528,8 @@ class ConfigLoaderImpl(ConfigLoader):
                     cfg.merge_with(loaded.config)
                 except OmegaConfBaseException as e:
                     raise ConfigCompositionException(
-                        f"In '{default.config_path}': {type(e).__name__} raised while composing config:\n{e}"
+                        f"In '{default.config_path}': {type(e).__name__} raised while"
+                        f" composing config:\n{e}"
                     ).with_traceback(sys.exc_info()[2])
 
         # # remove remaining defaults lists from all nodes.

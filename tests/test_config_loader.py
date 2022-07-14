@@ -193,7 +193,10 @@ class TestConfigLoader:
         version.setbase("1.1")
         with warns(
             UserWarning,
-            match="Support for .yml files is deprecated. Use .yaml extension for Hydra config files",
+            match=(
+                "Support for .yml files is deprecated. Use .yaml extension for Hydra"
+                " config files"
+            ),
         ):
             cfg = config_loader.load_configuration(
                 config_name="config.yml",
@@ -235,7 +238,6 @@ class TestConfigLoader:
     def test_load_config_with_schema(
         self, hydra_restore_singletons: Any, path: str
     ) -> None:
-
         ConfigStore.instance().store(
             name="config_with_schema", node=TopLevelConfig, provider="this_test"
         )
@@ -279,7 +281,6 @@ class TestConfigLoader:
     def test_load_config_file_with_schema_validation(
         self, hydra_restore_singletons: Any, path: str
     ) -> None:
-
         with ConfigStoreWithProvider("this_test") as cs:
             cs.store(name="config", node=TopLevelConfig)
             cs.store(group="db", name="mysql", node=MySQLConfig, package="db")
@@ -317,7 +318,6 @@ class TestConfigLoader:
     def test_load_config_with_validation_error(
         self, hydra_restore_singletons: Any, path: str
     ) -> None:
-
         ConfigStore.instance().store(
             name="base_mysql", node=MySQLConfig, provider="this_test"
         )
@@ -342,7 +342,6 @@ class TestConfigLoader:
     def test_load_config_with_key_error(
         self, hydra_restore_singletons: Any, path: str
     ) -> None:
-
         ConfigStore.instance().store(
             name="base_mysql", node=MySQLConfig, provider="this_test"
         )
@@ -383,16 +382,10 @@ class TestConfigLoader:
         # pseudorandom resolvers with/without value caching
         pseudorandom_values = iter(["1st", "2nd", "3rd", "4th"])
         OmegaConf.register_new_resolver(
-            "cached",
-            lambda: next(pseudorandom_values),
-            use_cache=True,
-            replace=True
+            "cached", lambda: next(pseudorandom_values), use_cache=True, replace=True
         )
         OmegaConf.register_new_resolver(
-            "uncached",
-            lambda: next(pseudorandom_values),
-            use_cache=False,
-            replace=True
+            "uncached", lambda: next(pseudorandom_values), use_cache=False, replace=True
         )
 
         monkeypatch.setenv("TEST_ENV", "test_env")
@@ -563,7 +556,6 @@ class Config:
 
 
 def test_overlapping_schemas(hydra_restore_singletons: Any) -> None:
-
     cs = ConfigStore.instance()
     cs.store(name="config", node=Config)
     cs.store(group="plugin", name="concrete", node=ConcretePlugin)
@@ -766,7 +758,8 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
             raises(
                 HydraException,
                 match=re.escape(
-                    "Override foo@bar=10 looks like a config group override, but config group 'foo' does not exist."
+                    "Override foo@bar=10 looks like a config group override, but config"
+                    " group 'foo' does not exist."
                 ),
             ),
             id="config_group_missing",
