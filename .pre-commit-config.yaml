@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pycqa/isort
-    rev: 5.5.2
+    rev: 5.10.1
     hooks:
       - id: isort
         files: 'hydra/.*'
@@ -10,19 +10,19 @@ repos:
         files: 'tools/.*'
 
   - repo: https://github.com/psf/black
-    rev: 22.1.0
+    rev: 22.6.0
     hooks:
       - id: black
         language_version: python3.6
 
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9
+    rev: 3.9.2
     hooks:
       - id: flake8
         additional_dependencies: [-e, "git+git://github.com/pycqa/pyflakes.git@1911c20#egg=pyflakes"]
 
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.25.0
+    rev: v1.27.1
     hooks:
       - id: yamllint
         args: [-c=.yamllint, --strict]
