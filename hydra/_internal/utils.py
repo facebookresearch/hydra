@@ -38,6 +38,10 @@ def detect_calling_file_or_module_from_task_function(
     task_function: Any,
 ) -> Tuple[Optional[str], Optional[str]]:
 
+    # if function is decorated, unwrap it
+    while hasattr(task_function, "__wrapped__"):
+        task_function = task_function.__wrapped__
+
     mdl = task_function.__module__
     override = _get_module_name_override()
     if override is not None:

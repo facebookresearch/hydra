@@ -216,7 +216,7 @@ def test_app_with_config_path_backward_compatibility(
         (None, "tests.test_apps.app_with_cfg.my_app"),
     ],
 )
-def test_app_with_config_file__with_overide(
+def test_app_with_config_file__with_override(
     hydra_restore_singletons: Any,
     hydra_task_runner: TTaskRunner,
     calling_file: str,
@@ -234,6 +234,32 @@ def test_app_with_config_file__with_overide(
             dataset=dict(name="imagenet", path="/datasets/imagenet2")
         )
         verify_dir_outputs(task.job_ret, task.overrides)
+
+
+@mark.parametrize(
+    "calling_file, calling_module",
+    [
+        ("tests/test_apps/app_with_cfg_decorated/my_app.py", None),
+        (None, "tests.test_apps.app_with_cfg_decorated.my_app"),
+    ],
+)
+def test_app_with_config_file__with_decorators(
+    hydra_restore_singletons: Any,
+    hydra_task_runner: TTaskRunner,
+    calling_file: str,
+    calling_module: str,
+) -> None:
+    with hydra_task_runner(
+        calling_file=calling_file,
+        calling_module=calling_module,
+        config_path=".",
+        config_name="config.yaml",
+        configure_logging=True,
+    ) as task:
+        assert task.job_ret is not None and task.job_ret.cfg == dict(
+            dataset=dict(name="imagenet", path="/datasets/imagenet")
+        )
+        verify_dir_outputs(task.job_ret)
 
 
 @mark.parametrize(

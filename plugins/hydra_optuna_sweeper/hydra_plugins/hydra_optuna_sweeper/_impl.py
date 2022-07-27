@@ -155,6 +155,7 @@ class OptunaSweeperImpl(Sweeper):
         study_name: Optional[str],
         n_trials: int,
         n_jobs: int,
+        max_failure_rate: float,
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
@@ -165,6 +166,9 @@ class OptunaSweeperImpl(Sweeper):
         self.study_name = study_name
         self.n_trials = n_trials
         self.n_jobs = n_jobs
+        self.max_failure_rate = max_failure_rate
+        assert self.max_failure_rate >= 0.0
+        assert self.max_failure_rate <= 1.0
         self.custom_search_space_extender: Optional[
             Callable[[DictConfig, Trial], None]
         ] = None
@@ -173,6 +177,7 @@ class OptunaSweeperImpl(Sweeper):
         self.search_space = search_space
         self.params = params
         self.job_idx: int = 0
+        self.search_space_distributions: Optional[Dict[str, BaseDistribution]] = None
 
     def _process_searchspace_config(self) -> None:
         url = (
@@ -187,7 +192,6 @@ class OptunaSweeperImpl(Sweeper):
                     "\nHydra will use hydra.sweeper.params for defining search space."
                     f"\n{url}"
                 )
-                self.search_space = None
             else:
                 deprecation_warning(
                     message=dedent(
@@ -198,14 +202,10 @@ class OptunaSweeperImpl(Sweeper):
                         """
                     ),
                 )
-                self.params = OmegaConf.create(
-                    {
-                        str(x): create_optuna_distribution_from_config(y)
-                        for x, y in self.search_space.items()
-                    }
-                )
-                self.search_space = None
-        assert self.search_space is None
+                self.search_space_distributions = {
+                    str(x): create_optuna_distribution_from_config(y)
+                    for x, y in self.search_space.items()
+                }
 
     def setup(
         self,
@@ -260,11 +260,10 @@ class OptunaSweeperImpl(Sweeper):
         return overrides
 
     def _parse_sweeper_params_config(self) -> List[str]:
-        params_conf = []
-        assert self.params is not None
-        for k, v in self.params.items():
-            params_conf.append(f"{k!s}={v}")
-        return params_conf
+        if not self.params:
+            return []
+
+        return [f"{k!s}={v}" for k, v in self.params.items()]
 
     def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
         if isinstance(distribution, CategoricalDistribution):
@@ -286,7 +285,6 @@ class OptunaSweeperImpl(Sweeper):
         assert self.launcher is not None
         assert self.hydra_context is not None
         assert self.job_idx is not None
-        assert self.search_space is None
 
         self._process_searchspace_config()
         params_conf = self._parse_sweeper_params_config()
@@ -297,9 +295,15 @@ class OptunaSweeperImpl(Sweeper):
             and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
         )
 
-        search_space_distributions, fixed_params = create_params_from_overrides(
-            params_conf
-        )
+        (
+            override_search_space_distributions,
+            fixed_params,
+        ) = create_params_from_overrides(params_conf)
+
+        search_space_distributions = dict()
+        if self.search_space_distributions:
+            search_space_distributions = self.search_space_distributions.copy()
+        search_space_distributions.update(override_search_space_distributions)
 
         if is_grid_sampler:
             search_space_for_grid_sampler = {
@@ -348,6 +352,7 @@ class OptunaSweeperImpl(Sweeper):
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
             self.job_idx += len(returns)
+            failures = []
             for trial, ret in zip(trials, returns):
                 values: Optional[List[float]] = None
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
@@ -388,7 +393,18 @@ class OptunaSweeperImpl(Sweeper):
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
                     study.tell(trial=trial, state=state, values=values)
-                    raise e
+                    log.warning(f"Failed experiment: {e}")
+                    failures.append(e)
+
+            # raise if too many failures
+            if len(failures) / len(returns) > self.max_failure_rate:
+                log.error(
+                    f"Failed {failures} times out of {len(returns)} "
+                    f"with max_failure_rate={self.max_failure_rate}."
+                )
+                assert len(failures) > 0
+                for ret in returns:
+                    ret.return_value  # delegate raising to JobReturn, with actual traceback
 
             n_trials_to_go -= batch_size
 

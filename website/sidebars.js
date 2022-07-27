@@ -124,8 +124,9 @@ module.exports = {
                     'advanced/plugins/overview',
                     'advanced/plugins/develop',
                 ]
-            },            
+            },
             'advanced/app_packaging',
+            'advanced/decorating_main',
             'advanced/jupyter_notebooks',
             'advanced/unit_testing',
         ],

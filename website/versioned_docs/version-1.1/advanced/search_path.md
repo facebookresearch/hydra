@@ -5,14 +5,14 @@ title: Config Search Path
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
-The Config Search Path is a list of paths that Hydra searches in order to find configs. It is similar to
-the Python `PYTHONPATH`. 
+The Config Search Path is a list of paths that Hydra searches in order to find **non-primary** configs. It is
+similar to the Python `PYTHONPATH`.
  - When a config is requested, The first matching config in the search path is used.
  - Each search path element has a schema prefix such as `file://` or `pkg://` that corresponds to a `ConfigSourcePlugin`.
     - `file://` points to a file system path. It can either be an absolute path or a relative path.
     Relative path will be resolved to absolute based on the current working dir. Path separator is `/` on all Operating
     Systems.
-    - `pkg://` points to an importable Python module, with `.` being the separator. `__init__.py` files are needed in 
+    - `pkg://` points to an importable Python module, with `.` being the separator. `__init__.py` files are needed in
     directories for Python to treat them as packages.
 
 You can inspect the search path and the configurations loaded by Hydra via the `--info` flag:
@@ -21,7 +21,7 @@ You can inspect the search path and the configurations loaded by Hydra via the `
 $ python my_app.py --info searchpath
 ```
 
-There are a few ways to modify the config search path, enabling Hydra to access configuration in 
+There are a few ways to modify the config search path, enabling Hydra to access configuration in
 different locations.
 Use a combination of the methods described below:
 
@@ -32,8 +32,8 @@ Using the  `config_path` parameter `@hydra.main()`.  The `config_path` is relati
 
 <ExampleGithubLink text="Example application" to="examples/advanced/config_search_path"/>
 
-In some cases you may want to add multiple locations to the search path. 
-For example, an app may want to read the configs from an additional Python module or 
+In some cases you may want to add multiple locations to the search path.
+For example, an app may want to read the configs from an additional Python module or
 an additional directory on the file system. Another example is in unit testing,
 where the defaults list in a config loaded from the `tests/configs` folder may
 make reference to another config from the `app/configs` folder. If the
@@ -44,7 +44,8 @@ unless Hydra's search path is modified.
 
 You can configure `hydra.searchpath` in your primary config or from the command line.
 :::info
-hydra.searchpath can **only** be configured in the primary config. Attempting  to configure it in other configs will result in an error.
+hydra.searchpath can **only** be configured in the primary config. Attempting  to configure it in other
+configs will result in an error.
 :::
 
 In this example, we add a second config directory - `additional_conf`, next to the first config directory:
@@ -151,7 +152,7 @@ python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
 ```
 
 #### Overriding `--config-dir` from the command line
-This is a less flexible alternative to `hydra.searchpath`. 
+This is a less flexible alternative to `hydra.searchpath`.
 See this [page](hydra-command-line-flags.md) for more info.
 
 
