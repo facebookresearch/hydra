@@ -9,7 +9,10 @@ from typing import List
 from urllib.request import urlopen
 
 import cloudpickle  # type: ignore
-import pickle5 as pickle  # type: ignore
+if sys.version_info < (3, 8):
+    import pickle5 as pickle  # type: ignore
+else:
+    import pickle
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
