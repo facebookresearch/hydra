@@ -29,7 +29,7 @@ setup(
         "ray[default]==1.12.0",
         "aiohttp==3.8.1",
         "cloudpickle==2.0.0",
-        "pickle5==0.0.11",
+        "pickle5==0.0.11; python_version < '3.8'",
     ],
     include_package_data=True,
 )

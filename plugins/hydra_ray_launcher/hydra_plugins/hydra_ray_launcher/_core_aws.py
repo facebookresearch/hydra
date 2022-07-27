@@ -6,7 +6,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
-import pickle5 as pickle  # type: ignore
+if sys.version_info < (3, 8):
+    import pickle5 as pickle  # type: ignore
+else:
+    import pickle
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
