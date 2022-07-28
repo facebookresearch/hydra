@@ -82,7 +82,7 @@ primitive:
         | NULL                                   // null, NULL
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
-        | BOOL                                   // true, TrUe, false, False
+        | BOOL                                   // true, True, false, False
         | INTERPOLATION                          // ${foo.bar}, ${oc.env:USER,me}
         | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @, ?, |
         | COLON                                  // :
@@ -96,7 +96,7 @@ dictKey:
       | NULL                                   // null, NULL
       | INT                                    // 0, 10, -20, 1_000_000
       | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
-      | BOOL                                   // true, TrUe, false, False
+      | BOOL                                   // true, True, false, False
       | UNQUOTED_CHAR                          // /, -, \, +, ., $, %, *, @, ?, |
       | ESC                                    // \\, \(, \), \[, \], \{, \}, \:, \=, \ , \\t, \,
       | WS                                     // whitespaces
