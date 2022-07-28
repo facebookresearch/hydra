@@ -10,9 +10,9 @@ from urllib.request import urlopen
 
 import cloudpickle  # type: ignore
 
-if sys.version_info < (3, 8):
+try:
     import pickle5 as pickle  # type: ignore
-else:
+except ModuleNotFoundError:
     import pickle
 import ray
 from hydra.core.hydra_config import HydraConfig

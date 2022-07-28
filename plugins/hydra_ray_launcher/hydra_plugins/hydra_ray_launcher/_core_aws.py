@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
 
-if sys.version_info < (3, 8):
+try:
     import pickle5 as pickle  # type: ignore
-else:
+except ModuleNotFoundError:
     import pickle
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
