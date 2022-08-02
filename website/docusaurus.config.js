@@ -131,6 +131,7 @@ module.exports = {
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                     editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
+                    lastVersion: 'current',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
