@@ -247,6 +247,27 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
 
 
 @mark.parametrize(
+    "cmd_args",
+    [
+        ["polynomial.y=choice(-1, 0, 1)", "polynomial.x=range(2,4)"],
+        ["polynomial.y=1", "polynomial.x=range(2,4)"],
+    ],
+)
+def test_search_space_with_constraint_metric(tmpdir: Path, cmd_args: List[str]) -> None:
+    # test that outcome_constraints experiment parameter `outcome_constraints`
+    # works correctly, and that the ax_sweeper supports outputting a dictionary
+    # from the evaluation function so that multiple metrics can be supported.
+    cmd = [
+        "tests/apps/polynomial_with_constraint.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.ax_config.max_trials=2",
+    ] + cmd_args
+    results, _ = run_python_script(cmd)
+
+
+@mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",
     [
         (
