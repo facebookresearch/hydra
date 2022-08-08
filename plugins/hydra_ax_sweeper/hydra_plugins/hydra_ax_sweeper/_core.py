@@ -221,8 +221,11 @@ class CoreAxSweeper(Sweeper):
             for idx in range(len(batch)):
                 val: Any = rets[idx].return_value
                 # Ax expects a measured value (int or float), which can optionally
-                # be given in a tuple along with the error of that measurement
-                assert isinstance(val, (int, float, tuple))
+                # be given in a tuple along with the error of that measurement.
+                # Alternatively, the task function can return a dict whose values
+                # represent multiple metrics, where each key is the name of the metric
+                # and the item can be an int, float or tuple.
+                assert isinstance(val, (int, float, tuple, dict))
                 # is_noisy specifies how Ax should behave when not given an error value.
                 # if true (default), the error of each measurement is inferred by Ax.
                 # if false, the error of each measurement is set to 0.
