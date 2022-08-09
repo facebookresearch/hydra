@@ -31,19 +31,19 @@
 - If user code raises an exception when called by `instantiate`, raise an `InstantiateError` exception instead of an instance of the same exception class that was raised by the user code. ([#1911](https://github.com/facebookresearch/hydra/issues/1911))
 - Remove support for deprecated arg `config_loader` to Plugin.setup, and update signature of `run_job` to require `hydra_context`. ([#1953](https://github.com/facebookresearch/hydra/issues/1953))
 
-The remaining changes are protected by the new [version_base](https://hydra.cc/docs/next/upgrades/version_base/) support,
+The remaining changes are protected by the new [version_base](https://hydra.cc/docs/upgrades/version_base/) support,
 which allows one to either configure Hydra to support older setups / config, or configure Hydra to use the following more modern defaults:
 
 - Remove deprecated "old optional" defaults list syntax ([#1952](https://github.com/facebookresearch/hydra/issues/1952))
 - Remove support for the legacy hydra override syntax (see [deprecation notice](https://hydra.cc/docs/upgrades/1.0_to_1.1/defaults_list_override/)). ([#2056](https://github.com/facebookresearch/hydra/issues/2056))
 - Remove support for old hydra.experimental.{compose,initialize} interface
-- Remove support for `_name_` and `_group_` from package header (see [deprecation notice](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header))
-- Remove support for legacy default list interpolation format (see [deprecation notice](http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation))
+- Remove support for `_name_` and `_group_` from package header (see [deprecation notice](https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header))
+- Remove support for legacy default list interpolation format (see [deprecation notice](http://hydra.cc/docs/upgrades/1.0_to_1.1/defaults_list_interpolation))
 - Remove support for TargetConf class
 - Remove support for strict flag from compose API (see [deprecation notice](https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated))
 - Remove support for "*.yml" extensions, requiring "*.yaml" instead.
 - Default to not changing the working directory at runtime. Use `hydra.job.chdir=True` to reinstate old behavior.
-- Default to not adding any directory to the config path. (see [`config_path` options](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path))
+- Default to not adding any directory to the config path. (see [`config_path` options](https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path))
 
 
 1.1.1 (2021-08-19)
@@ -109,7 +109,7 @@ Please check the API changes and deprecation sections in these release notes and
 
 ### API Change (Renames, deprecations and removals)
 #### General changes
-- Default composition order change, see [this](https://hydra.cc/docs/next/upgrades/1.0_to_1.1/default_composition_order) for details ([#1217](https://github.com/facebookresearch/hydra/issues/1217))
+- Default composition order change, see [this](https://hydra.cc/docs/upgrades/1.0_to_1.1/default_composition_order) for details ([#1217](https://github.com/facebookresearch/hydra/issues/1217))
 - Remove deprecated strict flag from `@hydra.main` and the `Compose API` ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
 - Passing a config name as config_path to `@hydra.main` is now an error ([#1010](https://github.com/facebookresearch/hydra/issues/1010))
 - Promote `hydra.experimental.{compose,initialize,initialize_config_dir,initialize_config_module}` out from the `hydra.experimental` module to the hydra module. ([#1030](https://github.com/facebookresearch/hydra/issues/1030))
@@ -144,10 +144,10 @@ Please check the API changes and deprecation sections in these release notes and
 
 ### Improved Documentation
 
-- New Defaults List [page](https://hydra.cc/docs/next/advanced/defaults_list) ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
-- New [Extending Configs](https://hydra.cc/docs/next/patterns/extending_configs/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
-- Major updates to the [Packages](https://hydra.cc/docs/next/advanced/overriding_packages) page ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
-- New [Configuring Experiments](https://hydra.cc/docs/next/patterns/configuring_experiments/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- New Defaults List [page](https://hydra.cc/docs/advanced/defaults_list) ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- New [Extending Configs](https://hydra.cc/docs/patterns/extending_configs/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- Major updates to the [Packages](https://hydra.cc/docs/advanced/overriding_packages) page ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
+- New [Configuring Experiments](https://hydra.cc/docs/patterns/configuring_experiments/) pattern ([#1170](https://github.com/facebookresearch/hydra/issues/1170))
 - Documentation updates for configuring search path ([#1449](https://github.com/facebookresearch/hydra/issues/1449))
 - Documentation for `hydra.callbacks` ([#1526](https://github.com/facebookresearch/hydra/issues/1526))
 - Document how to configure Hydra plugins ([#1582](https://github.com/facebookresearch/hydra/issues/1582))
@@ -326,7 +326,7 @@ Be aware that `cfg.pretty()` is now deprecated and you should use `OmegaConf.to_
 
 ### API Change (Renames, deprecations and removals)
 
-- ObjectConf is deprecated for TargetConf. See [upgrade page](https://hydra.cc/docs/next/upgrades/0.11_to_1.0/object_instantiation_changes). ([#882](https://github.com/facebookresearch/hydra/issues/882))
+- ObjectConf is deprecated for TargetConf. See [upgrade page](https://hydra.cc/docs/upgrades/0.11_to_1.0/object_instantiation_changes). ([#882](https://github.com/facebookresearch/hydra/issues/882))
 - All plugins updated to use TargetConf. Be sure to update all your Hydra plugins ([#882](https://github.com/facebookresearch/hydra/issues/882))
 - Instantiated objects no longer have a params node in the conf. keys like hydra.launcher.params.foo are changed to hydra.launcher.foo. Update your configs and overrides if you were overriding such parameters. ([#882](https://github.com/facebookresearch/hydra/issues/882))
 
@@ -380,10 +380,10 @@ Be aware that `cfg.pretty()` is now deprecated and you should use `OmegaConf.to_
 ### Improved Documentation
 
 - Add a unit testing example in the [Hydra example application](https://github.com/facebookresearch/hydra/blob/master/examples/advanced/hydra_app_example/tests/test_example.py) ([#687](https://github.com/facebookresearch/hydra/issues/687))
-- New [Terminology](https://hydra.cc/docs/next/terminology) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
-- New [Advanced/Hydra in Jupyter Notebooks](https://hydra.cc/docs/next/advanced/jupyter_notebooks) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
-- New [Advanced/Hydra in Unit Tests](https://hydra.cc/docs/next/advanced/unit_testing) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
-- New [Advanced/Override Grammar/Basic](https://hydra.cc/docs/next/advanced/override_grammar/basic) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
+- New [Terminology](https://hydra.cc/docs/terminology) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
+- New [Advanced/Hydra in Jupyter Notebooks](https://hydra.cc/docs/advanced/jupyter_notebooks) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
+- New [Advanced/Hydra in Unit Tests](https://hydra.cc/docs/advanced/unit_testing) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
+- New [Advanced/Override Grammar/Basic](https://hydra.cc/docs/advanced/override_grammar/basic) page ([#795](https://github.com/facebookresearch/hydra/issues/795))
 
 ### Maintenance Changes
 

@@ -13,13 +13,12 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional, Sequence, Union, cast
 
-from omegaconf import DictConfig, OmegaConf, open_dict, read_write
-
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
+from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 log = logging.getLogger(__name__)
 
@@ -152,7 +151,9 @@ def run_job(
                 _chdir = False
 
         if _chdir is None:
-            url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
+            url = (
+                "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
+            )
             deprecation_warning(
                 message=dedent(
                     f"""\
@@ -287,7 +288,7 @@ def validate_config_path(config_path: Optional[str]) -> None:
             msg = dedent(
                 """\
             Using config_path to specify the config name is not supported, specify the config name via config_name.
-            See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+            See https://hydra.cc/docs/upgrades/0.11_to_1.0/config_path_changes
             """
             )
             raise ValueError(msg)

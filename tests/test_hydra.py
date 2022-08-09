@@ -192,7 +192,7 @@ def test_app_with_config_path_backward_compatibility(
     msg = dedent(
         """\
     Using config_path to specify the config name is not supported, specify the config name via config_name.
-    See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+    See https://hydra.cc/docs/upgrades/0.11_to_1.0/config_path_changes
     """
     )
 
@@ -754,7 +754,7 @@ def test_sweep_complex_defaults(
 
                     Zsh - Install:
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
-(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+(https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
                     eval "$(python {script} -sc install=bash)"
                     Zsh - Uninstall:
@@ -812,7 +812,7 @@ for details.
 
                     Zsh - Install:
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
-(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+(https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
                     eval "$(python {script} -sc install=bash)"
                     Zsh - Uninstall:
@@ -1486,7 +1486,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
           @hydra.main()
         .*my_app.py:7: UserWarning:
         config_path is not specified in @hydra.main().
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
+        See https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
           @hydra.main()
         """
     )

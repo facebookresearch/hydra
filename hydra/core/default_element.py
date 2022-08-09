@@ -120,7 +120,7 @@ class InputDefault:
         if not version.base_at_least("1.2"):
             if "_group_" in package_header or "_name_" in package_header:
                 path = self.get_config_path()
-                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+                url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
                     message=dedent(
                         f"""\

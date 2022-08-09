@@ -181,7 +181,7 @@ class OptunaSweeperImpl(Sweeper):
 
     def _process_searchspace_config(self) -> None:
         url = (
-            "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
+            "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
         )
         if self.params is None and self.search_space is None:
             self.params = OmegaConf.create({})
