@@ -152,7 +152,7 @@ def run_job(
                 _chdir = False
 
         if _chdir is None:
-            url = "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
+            url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
             deprecation_warning(
                 message=dedent(
                     f"""\
