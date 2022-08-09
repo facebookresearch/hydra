@@ -2024,7 +2024,7 @@ def test_legacy_interpolation(
     msg = dedent(
         """
     Defaults list element '.*=.*' is using a deprecated interpolation form.
-    See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+    See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
     version.setbase("1.1")
     with warns(expected_warning=UserWarning, match=msg):

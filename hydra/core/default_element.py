@@ -546,7 +546,7 @@ class GroupDefault(InputDefault):
                 msg = dedent(
                     f"""
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
-See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
                 if not version.base_at_least("1.2"):
                     deprecation_warning(
