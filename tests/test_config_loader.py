@@ -292,7 +292,7 @@ class TestConfigLoader:
             """\
           'config' is validated against ConfigStore schema with the same name.
           This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-          See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
+          See https://hydra.cc/docs/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
         )
         with warns(UserWarning, match=re.escape(msg)):
             cfg = config_loader.load_configuration(

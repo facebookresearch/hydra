@@ -31,4 +31,4 @@ Done automatically once a website change is landed to main.
 
 ### Adding pages
 
-New pages, e.g., for a new plugin, should be added to `docs/`. They can be accessed on a local server via `http://localhost:3000/docs/next/page_name`.
+New pages, e.g., for a new plugin, should be added to `docs/`. They can be accessed on a local server via `http://localhost:3000/docs/page_name`.

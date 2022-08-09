@@ -485,7 +485,7 @@ class Override:
     def validate(self) -> None:
         if not version.base_at_least("1.2"):
             if self.package is not None and "_name_" in self.package:
-                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+                url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
                     message=dedent(
                         f"""\
