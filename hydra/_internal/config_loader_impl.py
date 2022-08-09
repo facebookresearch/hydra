@@ -413,7 +413,7 @@ class ConfigLoaderImpl(ConfigLoader):
 
             if schema is not None:
                 try:
-                    url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/automatic_schema_matching"
+                    url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/automatic_schema_matching"
                     if "defaults" in schema.config:
                         raise ConfigCompositionException(
                             dedent(

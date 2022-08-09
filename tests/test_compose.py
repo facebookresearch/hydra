@@ -730,7 +730,7 @@ def test_initialize_without_config_path(tmpdir: Path) -> None:
     expected = dedent(
         """\
         config_path is not specified in hydra.initialize().
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
+        See https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(expected)):
         with initialize():
