@@ -13,12 +13,13 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional, Sequence, Union, cast
 
+from omegaconf import DictConfig, OmegaConf, open_dict, read_write
+
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
-from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 log = logging.getLogger(__name__)
 
