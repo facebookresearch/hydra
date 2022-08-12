@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import sys
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from importlib import import_module
@@ -171,18 +172,24 @@ class RsyncConf:
     exclude: List[str] = field(default_factory=list)
 
 
+def _pip_pkgs_default_factory():
+    d = {
+        "omegaconf": "${ray_pkg_version:omegaconf}",
+        "hydra_core": "${ray_pkg_version:hydra}",
+        "ray": "${ray_pkg_version:ray}",
+        "cloudpickle": "${ray_pkg_version:cloudpickle}",
+        "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
+    }
+
+    if sys.version_info < (3, 8)
+        d["pickle5"] = get_distribution("pickle5").version,
+
+    return d
+
+
 @dataclass
 class EnvSetupConf:
-    pip_packages: Dict[str, str] = field(
-        default_factory=lambda: {
-            "omegaconf": "${ray_pkg_version:omegaconf}",
-            "hydra_core": "${ray_pkg_version:hydra}",
-            "ray": "${ray_pkg_version:ray}",
-            "cloudpickle": "${ray_pkg_version:cloudpickle}",
-            "pickle5": get_distribution("pickle5").version,
-            "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
-        }
-    )
+    pip_packages: Dict[str, str] = field(default_factory=_pip_pkgs_default_factory)
 
     commands: List[str] = field(
         default_factory=lambda: [
