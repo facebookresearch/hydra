@@ -181,7 +181,7 @@ def _pip_pkgs_default_factory():
         "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
     }
 
-    if sys.version_info < (3, 8)
+    if sys.version_info < (3, 8):
         d["pickle5"] = get_distribution("pickle5").version,
 
     return d
