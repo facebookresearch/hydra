@@ -182,7 +182,7 @@ def _pip_pkgs_default_factory():
     }
 
     if sys.version_info < (3, 8):
-        d["pickle5"] = get_distribution("pickle5").version,
+        d["pickle5"] = get_distribution("pickle5").version
 
     return d
 
