@@ -546,6 +546,7 @@ def test_jupyter_notebooks(session):
         "--nbval",
         "-W ignore::DeprecationWarning",
         "-W ignore::ResourceWarning",
+        "-W ignore::pytest.PytestAssertRewriteWarning",
         "examples/jupyter_notebooks/compose_configs_in_notebook.ipynb",
     )
     session.run(*args, silent=SILENT)
@@ -558,6 +559,7 @@ def test_jupyter_notebooks(session):
             "--nbval",
             "-W ignore::DeprecationWarning",
             "-W ignore::ResourceWarning",
+            "-W ignore::pytest.PytestAssertRewriteWarning",
             str(notebook),
         )
         args = [x for x in args if x != "-Werror"]
