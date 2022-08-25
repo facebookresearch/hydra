@@ -130,9 +130,11 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox dataclasses --progress-bar off
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins test_plugins_vs_core -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+                test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            else
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
             fi
   test_linux:
     parameters:
@@ -149,9 +151,11 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox dataclasses --progress-bar off
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins test_plugins_vs_core -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+                test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            else
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
             fi
   test_win:
     parameters:
@@ -169,8 +173,12 @@ jobs:
             $env:ConEmuDefaultCp=65001
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            If ($env:CIRCLE_PR_NUMBER) {$env:SKIP_PLUGINS="hydra_ray_launcher"; nox -s lint_plugins test_plugins test_plugins_vs_core -ts}
+            If ($env:CIRCLE_PR_NUMBER) {
+              $env:SKIP_PLUGINS="hydra_ray_launcher"
+              nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            } else {
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
+            }
             exit $LASTEXITCODE
   trigger_plugin_pipelines:
     docker:
