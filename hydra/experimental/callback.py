@@ -5,6 +5,7 @@ from typing import Any
 from omegaconf import DictConfig
 
 from hydra.core.utils import JobReturn
+from hydra.types import TaskFunction
 
 logger = logging.getLogger(__name__)
 
@@ -38,11 +39,14 @@ class Callback:
         """
         ...
 
-    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_job_start(
+        self, config: DictConfig, *, task_function: TaskFunction, **kwargs: Any
+    ) -> None:
         """
         Called in both RUN and MULTIRUN modes, once for each Hydra job (before running application code).
         This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
-        on the remote server along with your application code.
+        on the remote server along with your application code. The `task_function` argument is the function
+        decorated with `@hydra.main`.
         """
         ...
 
