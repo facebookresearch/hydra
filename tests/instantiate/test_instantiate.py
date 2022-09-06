@@ -12,6 +12,7 @@ from pytest import fixture, mark, param, raises, warns
 
 import hydra
 from hydra import version
+from hydra._internal.instantiate._instantiate2 import Boxed
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
@@ -1735,6 +1736,74 @@ def test_convert_and_recursive_node(
     ],
 )
 def test_instantiate_convert_dataclasses(
+    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any]
+) -> None:
+    """Instantiate on nested dataclass + dataclass."""
+    modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
+    for exp, mode in zip(expected, modes):
+        # create DictConfig to ensure interpolations are working correctly when we pass a cfg.obj
+        cfg = OmegaConf.create(config)
+        instance = instantiate_func(cfg.obj, _convert_=mode)
+        assert instance == exp
+        assert recisinstance(instance, exp)
+
+
+@mark.parametrize(
+    "src,expected",
+    [
+        param(
+            {
+                "obj": {
+                    "_target_": "tests.instantiate.SimpleDataClass",
+                    "a": Boxed(SimpleDataClass(a={"foo": 99}, b=[1, 99])),
+                    "b": None,
+                },
+            },
+            (
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+            ),
+            id="dataclass+dataclass",
+        ),
+        param(
+            {
+                "obj": {
+                    "_target_": "tests.instantiate.SimpleClass",
+                    "a": Boxed(SimpleDataClass(a={"foo": 99}, b=[1, 99])),
+                    "b": None,
+                },
+            },
+            (
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+            ),
+            id="class+dataclass",
+        ),
+        param(
+            {
+                "obj": {
+                    "a": Boxed(SimpleDataClass(a={"foo": 99}, b=[1, 99])),
+                    "b": None,
+                },
+            },
+            (
+                # a is a DictConfig because of top level DictConfig
+                OmegaConf.create(
+                    {
+                        "a": SimpleDataClass(a={"foo": 99}, b=[1, 99]),
+                        "b": None,
+                    }
+                ),
+                {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
+                {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
+            ),
+            id="dict+dataclass",
+        ),
+    ],
+)
+def test_instantiate_preserves_dataclasses(
     instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any]
 ) -> None:
     """Instantiate on nested dataclass + dataclass."""

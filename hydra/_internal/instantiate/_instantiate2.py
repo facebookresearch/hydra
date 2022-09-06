@@ -24,6 +24,11 @@ class _Keys(str, Enum):
     PARTIAL = "_partial_"
 
 
+def Boxed(item):
+    # TODO Fill in
+    return item
+
+
 def _is_target(x: Any) -> bool:
     if isinstance(x, dict):
         return "_target_" in x
