@@ -53,9 +53,9 @@ class initialize:
     def __init__(
         self,
         config_path: Optional[str] = _UNSPECIFIED_,
-        version_base: Optional[str] = _UNSPECIFIED_,
         job_name: Optional[str] = None,
         caller_stack_depth: int = 1,
+        version_base: Optional[str] = _UNSPECIFIED_,
     ) -> None:
         self._gh_backup = get_gh_backup()
 
@@ -116,8 +116,8 @@ class initialize_config_module:
     def __init__(
         self,
         config_module: str,
-        version_base: Optional[str] = _UNSPECIFIED_,
         job_name: str = "app",
+        version_base: Optional[str] = _UNSPECIFIED_,
     ):
         self._gh_backup = get_gh_backup()
 
@@ -152,8 +152,8 @@ class initialize_config_dir:
     def __init__(
         self,
         config_dir: str,
-        version_base: Optional[str] = _UNSPECIFIED_,
         job_name: str = "app",
+        version_base: Optional[str] = _UNSPECIFIED_,
     ) -> None:
         self._gh_backup = get_gh_backup()
 
