@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from omegaconf import DictConfig, OmegaConf
 
+from hydra.types import TaskFunction
+
 if TYPE_CHECKING:
     from hydra.core.utils import JobReturn
 
@@ -41,8 +43,15 @@ class Callbacks:
             function_name="on_multirun_end", reverse=True, config=config, **kwargs
         )
 
-    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
-        self._notify(function_name="on_job_start", config=config, **kwargs)
+    def on_job_start(
+        self, config: DictConfig, *, task_function: TaskFunction, **kwargs: Any
+    ) -> None:
+        self._notify(
+            function_name="on_job_start",
+            config=config,
+            task_function=task_function,
+            **kwargs,
+        )
 
     def on_job_end(
         self, config: DictConfig, job_return: "JobReturn", **kwargs: Any

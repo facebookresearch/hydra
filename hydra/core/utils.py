@@ -183,7 +183,7 @@ def run_job(
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         with env_override(hydra_cfg.hydra.job.env_set):
-            callbacks.on_job_start(config=config)
+            callbacks.on_job_start(config=config, task_function=task_function)
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
