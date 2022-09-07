@@ -26,6 +26,8 @@ The full API exposed by the `hydra.experimental.callback.Callback` class is list
 <details><summary>Events supported (Click to expand)</summary>
 
 ```python
+from hydra.types import TaskFunction
+
 class Callback:
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
         """
@@ -55,11 +57,12 @@ class Callback:
         """
         ...
 
-    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+    def on_job_start(self, config: DictConfig, *, task_function: TaskFunction, **kwargs: Any) -> None:
         """
         Called in both RUN and MULTIRUN modes, once for each Hydra job (before running application code).
         This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
-        on the remote server along with your application code.
+        on the remote server along with your application code. The `task_function` argument is the function
+        decorated with `@hydra.main`.
         """
         ...
 
