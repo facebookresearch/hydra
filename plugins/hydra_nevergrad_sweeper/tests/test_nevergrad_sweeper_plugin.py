@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -123,8 +124,17 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
             "bar=4:8",
         ],
     )
-    with sweep:
-        assert sweep.returns is None
+    with warnings.catch_warnings():  # ignore specific warnings raised by sweep:
+        warnings.filterwarnings(
+            "ignore", category=ng.common.errors.InefficientSettingsWarning
+        )
+        warnings.filterwarnings(
+            "ignore",
+            category=UserWarning,
+            message=r"Could not import matplotlib\.pyplot",
+        )
+        with sweep:
+            assert sweep.returns is None
 
 
 @mark.parametrize("with_commandline", (True, False))
