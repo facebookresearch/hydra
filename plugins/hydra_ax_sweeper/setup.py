@@ -29,6 +29,7 @@ setup(
         "hydra-core>=1.1.0.dev7",
         "ax-platform>=0.1.20,<0.2.1",  # https://github.com/facebookresearch/hydra/issues/1767
         "torch",
+        "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
     ],
     include_package_data=True,
 )
