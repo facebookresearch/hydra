@@ -85,7 +85,7 @@ chdir_hydra_root()
         param(
             "tests/test_apps/app_with_callbacks/on_job_start_accepts_task_function/my_app.py",
             [],
-            r"\[JOB\] on_job_start task_function: <function my_app at 0x[0-9a-f]+>",
+            r"\[JOB\] on_job_start task_function: <function my_app at 0x[0-9a-fA-F]+>",
             id="on_job_start_task_function",
         ),
     ],
