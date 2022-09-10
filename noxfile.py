@@ -319,7 +319,7 @@ def lint_plugins(session):
 
 def lint_plugins_in_dir(session, directory: str) -> None:
 
-    install_cmd = ["pip", "install", "-e"]
+    install_cmd = ["pip", "install"]
     install_hydra(session, install_cmd)
     plugins = select_plugins(session=session, directory=directory)
 
@@ -361,7 +361,6 @@ def lint_plugins_in_dir(session, directory: str) -> None:
             "--strict",
             "--install-types",
             "--non-interactive",
-            "--namespace-packages",
             "--config-file",
             f"{BASE}/.mypy.ini",
             *files,

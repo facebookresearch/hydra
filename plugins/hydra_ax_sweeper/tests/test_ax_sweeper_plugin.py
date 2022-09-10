@@ -14,7 +14,7 @@ from hydra.test_utils.test_utils import (
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises
 
-from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
 
@@ -44,7 +44,7 @@ def quadratic(cfg: DictConfig) -> Any:
     ],
 )
 def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> None:
-    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper  # type: ignore
+    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
