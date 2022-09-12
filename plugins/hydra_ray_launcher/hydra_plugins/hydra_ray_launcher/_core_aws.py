@@ -6,11 +6,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Sequence
 
 import cloudpickle  # type: ignore
-
-try:
-    import pickle5 as pickle  # type: ignore
-except ModuleNotFoundError:
-    import pickle
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
@@ -24,6 +19,12 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
     RayAWSLauncher,
 )
+
+try:
+    import pickle5 as pickle  # type: ignore
+except ModuleNotFoundError:
+    import pickle
+
 
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
