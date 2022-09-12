@@ -1,3 +1,4 @@
 global-exclude *.pyc
 global-exclude __pycache__
 recursive-include arbitrary_package/* *.yaml
+recursive-include hydra_plugins/* *.yaml py.typed
