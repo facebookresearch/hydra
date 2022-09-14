@@ -3,6 +3,7 @@ python_versions:
   - 3.7
   - 3.8
   - 3.9
+  - 3.10
 ray_yaml:
   cluster_name: ray_test_base_AMI
   min_workers: 0
