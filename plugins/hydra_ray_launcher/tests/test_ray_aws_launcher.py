@@ -140,6 +140,7 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
+    run_command("pip install wheel")
     run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
     log.info("Download all plugin dependency wheels.")
     run_command(f"pip download . -d {tmp_wheel_dir}")
@@ -150,6 +151,7 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
+    run_command("pip install wheel")
     run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
 
     # download dependency wheel for hydra-core
