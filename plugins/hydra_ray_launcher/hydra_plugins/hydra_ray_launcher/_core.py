@@ -8,11 +8,9 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import open_dict
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
-    launch_job_on_ray,
-    start_ray,
-)
-from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher  # type: ignore
+from hydra_plugins.hydra_ray_launcher._launcher_util import launch_job_on_ray, start_ray
+
+from .ray_launcher import RayLauncher
 
 log = logging.getLogger(__name__)
 

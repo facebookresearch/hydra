@@ -172,7 +172,7 @@ class RsyncConf:
     exclude: List[str] = field(default_factory=list)
 
 
-def _pip_pkgs_default_factory():
+def _pip_pkgs_default_factory() -> Dict[str, str]:
     d = {
         "omegaconf": "${ray_pkg_version:omegaconf}",
         "hydra_core": "${ray_pkg_version:hydra}",

@@ -3,27 +3,26 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Sequence
+from typing import Any, List, Sequence
 
 import cloudpickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
 from omegaconf import OmegaConf, open_dict, read_write
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
+from hydra_plugins.hydra_ray_launcher._launcher_util import (
     JOB_RETURN_PICKLE,
     JOB_SPEC_PICKLE,
     ray_tmp_dir,
     rsync,
 )
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
-    RayAWSLauncher,
-)
+
+from .ray_aws_launcher import RayAWSLauncher
 
 try:
     import pickle5 as pickle  # type: ignore
 except ModuleNotFoundError:
-    import pickle
+    import pickle  # type: ignore
 
 
 # mypy complains about "unused type: ignore comment" on macos
@@ -48,7 +47,7 @@ def _get_abs_code_dir(code_dir: str) -> str:
         return ""
 
 
-def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
+def _pickle_jobs(tmp_dir: str, **jobspec: Any) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
@@ -76,8 +75,7 @@ def launch(
         )
         setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)
 
-    with read_write(launcher.ray_cfg.cluster):
-        launcher.ray_cfg.cluster.setup_commands = setup_commands
+    launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
     logging_config = OmegaConf.to_container(
@@ -105,21 +103,20 @@ def launch(
         _pickle_jobs(
             tmp_dir=local_tmp_dir,
             hydra_context=launcher.hydra_context,
-            sweep_configs=sweep_configs,  # type: ignore
+            sweep_configs=sweep_configs,
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
         )
-        return launch_jobs(
-            launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
-        )
+        return launch_jobs(launcher, local_tmp_dir, launcher.config.hydra.sweep.dir)
 
 
 def launch_jobs(
-    launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
+    launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: str
 ) -> Sequence[JobReturn]:
     config = OmegaConf.to_container(
         launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
     )
+    assert isinstance(config, dict)
     sdk.create_or_update_cluster(
         config,
         **launcher.create_update_cluster,
@@ -191,7 +188,7 @@ def launch_jobs(
                     config,
                     launcher.sync_down.include,
                     launcher.sync_down.exclude,
-                    os.path.join(source_dir),
+                    source_dir,
                     str(target_dir),
                     up=False,
                 )
