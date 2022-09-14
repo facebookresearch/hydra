@@ -10,7 +10,7 @@ dependencies = [
     # https://github.com/aio-libs/aiohttp/issues/6203
     "aiohttp==3.8.1",
     "cloudpickle==2.0.0",
-    "pickle5==0.0.11; python_version < '3.8.0'",
+    "pickle5==0.0.11; python_version < '3.8'",
 ]
 
 

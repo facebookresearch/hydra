@@ -96,9 +96,10 @@ pip_lib_skip = [
     "hydra_core",
     "ray",
     "cloudpickle",
-    "pickle5",
     "hydra_ray_launcher",
 ]
+if sys.version_info < (3, 8):
+    pip_lib_skip.append("pickle5")
 
 common_overrides = [
     f"hydra.launcher.ray.cluster.cluster_name={cluster_name}",
@@ -193,7 +194,10 @@ def parse_python_minor_version(version: str) -> str:
 
 def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
-    libs = ["ray", "cloudpickle", "pickle5"]
+    libs = ["ray", "cloudpickle"]
+    if sys.version_info < (3, 8):
+        libs.append("pickle5")
+
     for lib in libs:
         local_version = f"{pkg_resources.get_distribution(lib).version}"
         out = sdk.run_on_cluster(
