@@ -11,20 +11,33 @@ conda env on demand.
 
 Please update env variable AWS_RAY_AMI locally and on circleCI with the new AMI id when the new AMI is available.
 """
+import logging
 import os
 import subprocess
 import tempfile
 import time
 from datetime import datetime
+from typing import List
 
 import boto3
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
+log = logging.getLogger(__name__)
 
-def _run_command(command: str) -> str:
-    print(f"{str(datetime.now())} - Running: {command}")
-    output = subprocess.getoutput(command)
+
+def _run_command(args: List[str]) -> str:
+    print(f"{str(datetime.now())} - Running: {args}")
+    try:
+        output = subprocess.check_output(args, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        log.exception(
+            f"cmd: {e.cmd}"
+            + f"\n\nreturncode: {e.returncode}"
+            + f"\n\nstdout: {e.stdout}"
+            + f"\n\nstderr: {e.stderr}"
+        )
+        raise
     print(f"{str(datetime.now())} - {output}")
     return output
 
@@ -40,30 +53,55 @@ def set_up_machine(cfg: DictConfig) -> None:
 
     # set up security group rules to allow pip install
     _run_command(
-        f"aws ec2 authorize-security-group-egress --group-id {security_group_id} "
-        f"--ip-permissions IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges=[{{CidrIp=0.0.0.0/0}}]"
+        [
+            "aws",
+            "ec2",
+            "authorize-security-group-egress",
+            "--group-id",
+            f"{security_group_id}",
+            "--ip-permissions",
+            "IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges=[{CidrIp=0.0.0.0/0}]",
+        ]
     )
 
     with tempfile.NamedTemporaryFile(suffix=".yaml", delete=False) as f:
         with open(f.name, "w") as file:
             OmegaConf.save(config=cfg.ray_yaml, f=file.name, resolve=True)
         yaml = f.name
-        _run_command(f"ray up {yaml} -y --no-config-cache")
+        _run_command(["ray", "up", f"{yaml}", "-y", "--no-config-cache"])
         os.chdir(hydra.utils.get_original_cwd())
         _run_command(
-            f"ray rsync_up {yaml} './setup_integration_test_ami.py' '/home/ubuntu/' "
+            [
+                "ray",
+                "rsync_up",
+                f"{yaml}",
+                "./setup_integration_test_ami.py",
+                "/home/ubuntu/",
+            ]
         )
 
         for v in python_versions:
             print(f"Setting up conda env for py version {v}")
             _run_command(
-                f"ray exec {yaml} 'python ./setup_integration_test_ami.py {v}' "
+                [
+                    "ray",
+                    "exec",
+                    f"{yaml}",
+                    f"python ./setup_integration_test_ami.py {v}",
+                ]
             )
 
         # remove security group egress rules
         _run_command(
-            f"aws ec2 revoke-security-group-egress --group-id {security_group_id} "
-            f"--ip-permissions IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges=[{{CidrIp=0.0.0.0/0}}]"
+            [
+                "aws",
+                "ec2",
+                "revoke-security-group-egress",
+                "--group-id",
+                f"{security_group_id}",
+                "--ip-permissions",
+                "IpProtocol=tcp,FromPort=443,ToPort=443,IpRanges=[{CidrIp=0.0.0.0/0}]",
+            ]
         )
 
         # export the instance to an AMI

@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, Generator, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 import boto3  # type: ignore
 import pkg_resources
@@ -128,9 +128,20 @@ log = logging.getLogger(__name__)
 chdir_plugin_root()
 
 
-def run_command(commands: str) -> str:
-    log.info(f"running: {commands}")
-    output = subprocess.getoutput(commands)
+def run_command(args: List[str], shell: bool = False) -> str:
+    log.info(f"running: {args}")
+    try:
+        output = subprocess.check_output(
+            args, universal_newlines=True, shell=shell  # nosec: B602
+        )
+    except subprocess.CalledProcessError as e:
+        log.exception(
+            f"cmd: {e.cmd}"
+            + f"\n\nreturncode: {e.returncode}"
+            + f"\n\nstdout: {e.stdout}"
+            + f"\n\nstderr: {e.stderr}"
+        )
+        raise
     log.info(f"outputs: {output}")
     return output
 
@@ -140,23 +151,36 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    run_command("pip install wheel")
-    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
+    run_command(["pip", "install", "wheel"])
+    run_command(["python", "setup.py", "sdist", "bdist_wheel"])
+    run_command([f"cp dist/*.whl {tmp_wheel_dir}"], shell=True)  # nosec: B604
     log.info("Download all plugin dependency wheels.")
-    run_command(f"pip download . -d {tmp_wheel_dir}")
-    plugin_wheel = run_command("ls dist/*.whl").split("/")[-1]
+    run_command(["pip", "download", ".", "-d", tmp_wheel_dir])
+    plugin_wheel = run_command(["ls dist/*.whl"], shell=True).split("/")[  # nosec B604
+        -1
+    ]
     chdir_hydra_root()
     return plugin_wheel
 
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    run_command("pip install wheel")
-    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
+    run_command(["pip", "install", "wheel"])
+    run_command(["python", "setup.py", "sdist", "bdist_wheel"])
+    run_command([f"cp dist/*.whl {tmp_wheel_dir}"], shell=True)  # nosec: B604
 
     # download dependency wheel for hydra-core
-    run_command(f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}")
-    wheel = run_command("ls dist/*.whl").split("/")[-1]
+    run_command(
+        [
+            "pip",
+            "download",
+            "-r",
+            "requirements/requirements.txt",
+            "-d",
+            tmp_wheel_dir,
+        ]
+    )
+    wheel = run_command(["ls dist/*.whl"], shell=True).split("/")[-1]  # nosec: B604
     return wheel
 
 
