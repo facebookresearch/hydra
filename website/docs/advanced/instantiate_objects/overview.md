@@ -45,7 +45,9 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                              and cannot be used as passthrough
+                              and cannot be used as passthrough by default. To pass through
+                              `dataclass` instances, they need to be wrapped in the
+                              `hydra.utils.Boxed` object.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
@@ -174,7 +176,7 @@ Similarly, positional arguments of nested objects can be overridden:
 obj = instantiate(
     cfg.object,
     # pass 1 and 2 as positional arguments to the target object
-    1, 2,  
+    1, 2,
     # pass 3 and 4 as positional arguments to a nested child object
     child={"_args_": [3, 4]},
 )
@@ -282,9 +284,45 @@ least work -- no conversion (from `DictConfig`/`ListConfig` to native python
 containers) is taking place. The `_convert_="partial"` strategy does more work,
 and `_convert_="all"` does more work yet.
 
+
+### Passthrough Dataclass instances
+
+Dataclass instances passed in as an additional keyword arguments are interpreted as
+config and converted to `DictConfig` by default. To preserve already instantiated
+dataclasses, they need to be wrapped using the `Boxed` type.
+
+
+```python
+from dataclasses import dataclass
+from hydra.utils import instantiate, Boxed
+from omegaconf import DictConfig
+
+@dataclass
+class Foo:
+    a: int
+
+@dataclass
+class Bar:
+    b: Foo
+
+foo = Foo(123)
+cfg = {"_target_": "__main__.Bar"}
+obj = instantiate(cfg, b=foo)
+assert isinstance(obj.b, DictConfig)
+
+foo = Foo(123)
+cfg = {"_target_": "__main__.Bar"}
+obj = instantiate(cfg, b=Boxed(foo))
+assert isinstance(obj.b, Foo)
+assert obj.b is foo
+```
+
+The `Boxed`-wrapper will be removed before the dataclass-instances in being passed
+to the constructor of the `_target_` object.
+
 ### Partial Instantiation
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
-`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
+`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in
 the application code. Here is an example:
 
 ```python title="Example classes"
