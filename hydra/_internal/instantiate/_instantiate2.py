@@ -4,15 +4,16 @@ import copy
 import functools
 from enum import Enum
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
-from omegaconf.base import Box, DictKeyType, Metadata, Node
 
 from hydra._internal.utils import _locate
 from hydra.errors import InstantiationException
 from hydra.types import ConvertMode, TargetConf
+
+from ._wrappers import Boxed
 
 
 class _Keys(str, Enum):
@@ -23,74 +24,6 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
-
-
-# We can't use a ValueNode because omegaconf will automatically unpack those
-class Boxed(Node):
-    def __init__(
-        self,
-        value: Any = None,
-        key: Any = None,
-        parent: Optional[Box] = None,
-        flags: Optional[Dict[str, bool]] = None,
-    ):
-        super().__init__(
-            parent=parent,
-            metadata=Metadata(
-                ref_type=Any, object_type=None, key=key, optional=True, flags=flags
-            ),
-        )
-        self._val = value
-
-    def _value(self) -> Any:
-        return self._val
-
-    def _set_value(self, value: Any, flags: Optional[Dict[str, bool]] = None) -> None:
-        assert flags is None
-        self._val = value
-
-    def __eq__(self, other: Any) -> bool:
-        if isinstance(other, Boxed):
-            return self._val == other._val
-        return False
-
-    def __hash__(self) -> int:
-        return self._val.__hash__()
-
-    def __ne__(self, other: Any) -> bool:
-        return not self.__eq__(other)
-
-    def _is_interpolation(self) -> bool:
-        return False
-
-    def _is_optional(self) -> bool:
-        return False
-
-    def _get_full_key(self, key: Optional[Union[DictKeyType, int]]) -> str:
-        parent = self._get_parent()
-        if parent is None:
-            if self._metadata.key is None:
-                return ""
-            else:
-                return str(self._metadata.key)
-        else:
-            return parent._get_full_key(self._metadata.key)
-
-    def __repr__(self) -> str:
-        return f"Boxed({self._val.__repr__()})"
-
-    def _deepcopy_impl(self, res: Any, memo: Dict[int, Any]) -> None:
-        res.__dict__["_metadata"] = copy.deepcopy(self._metadata, memo=memo)
-        # shallow copy for value to support non-copyable value
-        res.__dict__["_val"] = self._val
-
-        # parent is retained, but not copied
-        res.__dict__["_parent"] = self._parent
-
-    def __deepcopy__(self, memo: Dict[int, Any]) -> "Boxed":
-        res = Boxed()
-        self._deepcopy_impl(res, memo)
-        return res
 
 
 def _is_target(x: Any) -> bool:
@@ -114,6 +47,10 @@ def _extract_pos_args(input_args: Any, kwargs: Any) -> Tuple[Any, Any]:
         )
 
     return output_args, kwargs
+
+
+def _strip_boxed(value: Any) -> Any:
+    return value if not isinstance(value, Boxed) else value._value()
 
 
 def _call_target(
@@ -174,10 +111,6 @@ def _convert_target_to_string(t: Any) -> Any:
         return f"{t.__module__}.{t.__qualname__}"
     else:
         return t
-
-
-def _strip_boxed(value: Any) -> Any:
-    return value if not isinstance(value, Boxed) else value._value()
 
 
 def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
@@ -245,7 +178,9 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
                    IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                              and cannot be used as passthrough
+                              and cannot be used as passthrough by default. To pass through
+                              `dataclass` instances, they need to be wrapped in the
+                              `hydra.utils.Boxed` object.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """

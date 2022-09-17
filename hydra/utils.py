@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import hydra._internal.instantiate._instantiate2
+import hydra._internal.instantiate._wrappers
 import hydra.types
 from hydra._internal.utils import _locate
 from hydra.core.hydra_config import HydraConfig
@@ -16,6 +17,7 @@ log = logging.getLogger(__name__)
 instantiate = hydra._internal.instantiate._instantiate2.instantiate
 call = instantiate
 ConvertMode = hydra.types.ConvertMode
+Boxed = hydra._internal.instantiate._instantiate2.Boxed
 
 
 def get_class(path: str) -> type:
