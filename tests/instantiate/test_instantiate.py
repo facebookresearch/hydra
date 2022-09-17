@@ -1789,13 +1789,9 @@ def test_instantiate_convert_dataclasses(
                 },
             },
             (
-                # a is a DictConfig because of top level DictConfig
-                OmegaConf.create(
-                    {
-                        "a": SimpleDataClass(a={"foo": 99}, b=[1, 99]),
-                        "b": None,
-                    }
-                ),
+                # We can't express this test case since the dataclass
+                # would be converted to a OmegaDict here
+                None,
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
             ),
@@ -1804,15 +1800,25 @@ def test_instantiate_convert_dataclasses(
     ],
 )
 def test_instantiate_preserves_dataclasses(
-    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any]
+    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any], src
 ) -> None:
     """Instantiate on nested dataclass + dataclass."""
+    assert isinstance(config["obj"]["a"], Boxed)
+
     modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
     for exp, mode in zip(expected, modes):
+        if exp is None:
+            continue
         # create DictConfig to ensure interpolations are working correctly when we pass a cfg.obj
         cfg = OmegaConf.create(config)
+        assert id(cfg["obj"]["a"]._val) == id(config["obj"]["a"]._val)
+        assert isinstance(cfg["obj"]["a"], Boxed)
+
         instance = instantiate_func(cfg.obj, _convert_=mode)
         assert instance == exp
+        instance_a = instance["a"] if isinstance(instance, dict) else instance.a
+
+        assert id(instance_a) == id(config["obj"]["a"]._val)
         assert recisinstance(instance, exp)
 
 
