@@ -113,7 +113,7 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.end is not None
         if "log" in value.tags:
             if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntDistribution(int(value.start), int(value.end))
+                return IntDistribution(int(value.start), int(value.end), log=True)
             return FloatDistribution(value.start, value.end, log=True)
         else:
             if isinstance(value.start, int) and isinstance(value.end, int):
