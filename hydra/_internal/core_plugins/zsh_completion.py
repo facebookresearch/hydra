@@ -33,7 +33,7 @@ class ZshCompletion(CompletionPlugin):
         assert command in ["install", "uninstall"]
         extra_description = (
             "Zsh is compatible with the Bash shell completion, see the [documentation]"
-            "(https://hydra.cc/docs/tutorials/basic/running_your_app/tab_completion#zsh-instructions)"
+            "(https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/tab_completion#zsh-instructions)"
             " for details.\n    "
         )
         command_text = f'eval "$({{}} -sc {command}=bash)"'

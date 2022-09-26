@@ -996,7 +996,7 @@ def test_override(
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
     msg = (
         "In override key@_name_=value: _name_ keyword is deprecated in packages, "
-        "see https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header"
+        "see https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
     )
 
     version.setbase("1.1")

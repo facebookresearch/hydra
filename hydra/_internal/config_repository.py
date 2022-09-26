@@ -178,7 +178,7 @@ class ConfigRepository(IConfigRepository):
     ) -> List[InputDefault]:
         def issue_deprecated_name_warning() -> None:
             # DEPRECATED: remove in 1.2
-            url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header"
+            url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
             deprecation_warning(
                 message=dedent(
                     f"""\
