@@ -78,7 +78,7 @@ dictKeyValuePair: dictKey COLON element;
 
 primitive:
       QUOTED_VALUE                               // 'hello world', "hello world"
-    | (   ID                                     // foo_10
+    | (   ID                                     // foo-bar_10
         | NULL                                   // null, NULL
         | INT                                    // 0, 10, -20, 1_000_000
         | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
@@ -92,7 +92,7 @@ primitive:
 
 // Same as `primitive` except that `COLON` and `INTERPOLATION` are not allowed.
 dictKey:
-    (   ID                                     // foo_10
+    (   ID                                     // foo-bar_10
       | NULL                                   // null, NULL
       | INT                                    // 0, 10, -20, 1_000_000
       | FLOAT                                  // 3.14, -20.0, 1e-1, -10e3
