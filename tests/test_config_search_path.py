@@ -156,6 +156,7 @@ def test_prepend(
         ("foo/bar.py", None, None, None),
         ("foo/bar.py", None, "conf", realpath("foo/conf")),
         ("foo/bar.py", None, "../conf", realpath("conf")),
+        ("foo/bar.py", None, realpath("conf"), realpath("conf")),
         ("c:/foo/bar.py", None, "conf", realpath("c:/foo/conf")),
         ("c:/foo/bar.py", None, "../conf", realpath("c:/conf")),
         (None, "module", None, "pkg://"),
@@ -169,7 +170,7 @@ def test_prepend(
             "foo",
             "package1.rename_package_to.module",
             "../conf",
-            os.path.realpath(os.path.join(os.getcwd(), "../conf")),
+            realpath(os.path.join(os.getcwd(), "../conf")),
         ),
     ],
 )

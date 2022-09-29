@@ -761,7 +761,7 @@ for details.
                     eval "$(python {script} -sc uninstall=bash)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
-                                    The config_path is relative to the Python file declaring @hydra.main()
+                                    The config_path is absolute or relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --experimental-rerun : Rerun a job from a previous config pickle
@@ -819,7 +819,7 @@ for details.
                     eval "$(python {script} -sc uninstall=bash)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
-                                    The config_path is relative to the Python file declaring @hydra.main()
+                                    The config_path is absolute or relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --experimental-rerun : Rerun a job from a previous config pickle
@@ -1033,7 +1033,14 @@ def test_override_with_invalid_group_choice(
     assert re.search(msg, str(e.value)) is not None
 
 
-@mark.parametrize("config_path", ["dir1", "dir2"])
+@mark.parametrize(
+    "config_path",
+    [
+        "dir1",
+        "dir2",
+        os.path.abspath("tests/test_apps/app_with_multiple_config_dirs/dir2"),
+    ],
+)
 @mark.parametrize("config_name", ["cfg1", "cfg2"])
 def test_config_name_and_path_overrides(
     tmpdir: Path, config_path: str, config_name: str
@@ -1048,7 +1055,7 @@ def test_config_name_and_path_overrides(
     result, _err = run_python_script(cmd)
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
-    assert result == f"{config_path}_{config_name}: true"
+    assert result == f"{os.path.basename(config_path)}_{config_name}: true"
 
 
 @mark.parametrize(
