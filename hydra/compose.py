@@ -53,7 +53,7 @@ def compose(
                 dedent(
                     """
                     The strict flag in the compose API is deprecated.
-                    See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+                    See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
                     """
                 )
             )

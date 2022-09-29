@@ -910,7 +910,7 @@ def test_include_nested_group_name_(
     expected: List[ResultDefault],
     warning_file: str,
 ) -> None:
-    url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_package_header"
+    url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
     msg = f"In {warning_file}: Defaults List contains deprecated keyword _name_, see {url}\n"
 
     with warns(UserWarning, match=re.escape(msg)):

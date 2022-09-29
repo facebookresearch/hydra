@@ -65,7 +65,7 @@ class initialize:
             if version.base_at_least("1.2"):
                 config_path = None
             elif version_base is _UNSPECIFIED_:
-                url = "https://hydra.cc/docs/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
+                url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
                 deprecation_warning(
                     message=dedent(
                         f"""\
