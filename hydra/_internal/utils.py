@@ -123,7 +123,9 @@ def compute_search_path_dir(
     calling_module: Optional[str],
     config_path: Optional[str],
 ) -> Optional[str]:
-    if calling_file is not None:
+    if config_path is not None and os.path.isabs(config_path):
+        search_path_dir = config_path
+    elif calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
 
         if config_path is not None:
@@ -554,7 +556,7 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--config-path",
         "-cp",
         help="""Overrides the config_path specified in hydra.main().
-                    The config_path is relative to the Python file declaring @hydra.main()""",
+                    The config_path is absolute or relative to the Python file declaring @hydra.main()""",
     )
 
     parser.add_argument(
