@@ -1,4 +1,6 @@
 include hydra/py.typed
+include requirements/requirements.txt
 global-exclude *.pyc
 global-exclude __pycache__
 recursive-include hydra/* *
+recursive-include build_helpers *.py *.jar
