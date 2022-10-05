@@ -546,26 +546,22 @@ def _create_defaults_tree_impl(
 
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
-                if d.is_options():
-                    for item in reversed(d.get_options()):
-                        if "${" in item:
-                            raise ConfigCompositionException(
-                                f"In '{path}': Defaults List interpolation is not supported in options list items"
-                            )
+                for item in reversed(d.get_options()):
+                    if "${" in item:
+                        raise ConfigCompositionException(
+                            f"In '{path}': Defaults List interpolation is not supported in options list items"
+                        )
 
-                        assert d.group is not None
-                        node = ConfigDefault(
-                            path=d.group + "/" + item,
-                            package=d.package,
-                            optional=d.is_optional(),
-                        )
-                        node.update_parent(
-                            parent.get_group_path(), parent.get_final_package()
-                        )
-                        new_root = DefaultsTreeNode(node=node, parent=root)
-                        add_child(children, new_root)
-                else:
-                    new_root = DefaultsTreeNode(node=d, parent=root)
+                    assert d.group is not None
+                    node = ConfigDefault(
+                        path=d.group + "/" + item,
+                        package=d.package,
+                        optional=d.is_optional(),
+                    )
+                    node.update_parent(
+                        parent.get_group_path(), parent.get_final_package()
+                    )
+                    new_root = DefaultsTreeNode(node=node, parent=root)
                     add_child(children, new_root)
 
             else:
