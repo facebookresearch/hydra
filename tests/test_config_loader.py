@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import Any, List
 
@@ -37,7 +37,7 @@ class MySQLConfig:
 @dataclass
 class TopLevelConfig:
     normal_yaml_config: bool = MISSING
-    db: MySQLConfig = MySQLConfig()
+    db: MySQLConfig = field(default_factory=MySQLConfig)
 
 
 @mark.parametrize(
@@ -541,7 +541,7 @@ class ConcretePlugin(Plugin):
     class FoobarParams:
         foo: int = 10
 
-    params: FoobarParams = FoobarParams()
+    params: FoobarParams = field(default_factory=FoobarParams)
 
 
 @dataclass
@@ -552,7 +552,7 @@ class InvalidPlugin:
 
 @dataclass
 class Config:
-    plugin: Plugin = Plugin()
+    plugin: Plugin = field(default_factory=Plugin)
 
 
 def test_overlapping_schemas(hydra_restore_singletons: Any) -> None:

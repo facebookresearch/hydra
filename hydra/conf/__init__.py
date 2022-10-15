@@ -81,9 +81,9 @@ class JobConf:
             item_sep: str = ","
             exclude_keys: List[str] = field(default_factory=list)
 
-        override_dirname: OverrideDirname = OverrideDirname()
+        override_dirname: OverrideDirname = field(default_factory=OverrideDirname)
 
-    config: JobConfig = JobConfig()
+    config: JobConfig = field(default_factory=JobConfig)
 
 
 @dataclass
@@ -129,9 +129,9 @@ class HydraConf:
     searchpath: List[str] = field(default_factory=list)
 
     # Normal run output configuration
-    run: RunDir = RunDir()
+    run: RunDir = field(default_factory=RunDir)
     # Multi-run output configuration
-    sweep: SweepDir = SweepDir()
+    sweep: SweepDir = field(default_factory=SweepDir)
     # Logging configuration for Hydra
     hydra_logging: Dict[str, Any] = MISSING
     # Logging configuration for the job
@@ -145,9 +145,9 @@ class HydraConf:
     callbacks: Dict[str, Any] = field(default_factory=dict)
 
     # Program Help template
-    help: HelpConf = HelpConf()
+    help: HelpConf = field(default_factory=HelpConf)
     # Hydra's Help template
-    hydra_help: HydraHelpConf = HydraHelpConf()
+    hydra_help: HydraHelpConf = field(default_factory=HydraHelpConf)
 
     # Output directory for produced configuration files and overrides.
     # E.g., hydra.yaml, overrides.yaml will go here. Useful for debugging
@@ -156,12 +156,12 @@ class HydraConf:
     output_subdir: Optional[str] = ".hydra"
 
     # Those lists will contain runtime overrides
-    overrides: OverridesConf = OverridesConf()
+    overrides: OverridesConf = field(default_factory=OverridesConf)
 
-    job: JobConf = JobConf()
+    job: JobConf = field(default_factory=JobConf)
 
     # populated at runtime
-    runtime: RuntimeConf = RuntimeConf()
+    runtime: RuntimeConf = field(default_factory=RuntimeConf)
 
     # Can be a boolean, string or a list of strings
     # If a boolean, setting to true will set the log level for the root logger to debug

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import collections
 import collections.abc
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
@@ -189,7 +189,7 @@ class Adam:
 
 @dataclass
 class NestingClass:
-    a: ASubclass = ASubclass(10)
+    a: ASubclass = field(default_factory=lambda: ASubclass(10))
 
 
 nesting = NestingClass()
@@ -412,8 +412,8 @@ class SimpleClassDefaultPrimitiveConf:
 @dataclass
 class NestedConf:
     _target_: str = "tests.instantiate.SimpleClass"
-    a: Any = User(name="a", age=1)
-    b: Any = User(name="b", age=2)
+    a: Any = field(default_factory=lambda: User(name="a", age=1))
+    b: Any = field(default_factory=lambda: User(name="b", age=2))
 
 
 def recisinstance(got: Any, expected: Any) -> bool:
