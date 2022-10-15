@@ -13,9 +13,9 @@ def test_number_of_imports(tmpdir: Path) -> None:
         x.__name__ for x in Plugins.instance().discover(Plugin)
     ]
 
-    with Path(os.environ["TMP_FILE"]) as f:
-        txt = str(f.read_text())
-        assert txt.split("\n").count("imported") == 1
+    f = Path(os.environ["TMP_FILE"])
+    txt = str(f.read_text())
+    assert txt.split("\n").count("imported") == 1
 
 
 def test_skipped_imports(tmpdir: Path) -> None:
