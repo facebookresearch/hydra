@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
+from hydra.core.utils import JobReturn, JobStatus, filter_overrides, run_job, setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
@@ -105,7 +105,7 @@ class BaseSubmititLauncher(Launcher):
                 if x in specific_init_keys
             }
         )
-        init_keys = specific_init_keys | {"submitit_folder"}
+        init_keys = specific_init_keys | {"submitit_folder", "submitit_nonblocking"}
         executor = submitit.AutoExecutor(cluster=self._EXECUTOR, **init_params)
 
         # specify resources/parameters
@@ -143,6 +143,13 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
+        if self.config.hydra.launcher.submitit_nonblocking:
+            null_returns = []
+            for _ in jobs:
+                null_returns.append(JobReturn())
+                null_returns[-1].status = JobStatus.COMPLETED
+            return null_returns
+
         return [j.results()[0] for j in jobs]
 
 

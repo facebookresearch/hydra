@@ -73,6 +73,8 @@ class SlurmQueueConf(BaseQueueConf):
     array_parallelism: int = 256
     # A list of commands to run in sbatch befure running srun
     setup: Optional[List[str]] = None
+    # non-blocking job submission
+    submitit_nonblocking: bool = False
 
 
 @dataclass
