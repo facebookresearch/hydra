@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+import time
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
@@ -143,6 +144,8 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
+        # prevent sacct provide old jobid information
+        time.sleep(1)
         return [j.results()[0] for j in jobs]
 
 
