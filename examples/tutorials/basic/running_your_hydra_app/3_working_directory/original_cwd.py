@@ -7,7 +7,7 @@ import hydra
 from hydra.utils import get_original_cwd, to_absolute_path
 
 
-@hydra.main()
+@hydra.main(version_base=None)
 def my_app(_cfg: DictConfig) -> None:
     print(f"Current working directory : {os.getcwd()}")
     print(f"Orig working directory    : {get_original_cwd()}")
