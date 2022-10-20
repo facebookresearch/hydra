@@ -46,7 +46,11 @@ class ConfigLoader(ABC):
 
     @abstractmethod
     def get_group_options(
-        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+        self,
+        group_name: str,
+        results_filter: Optional[ObjectType] = ObjectType.CONFIG,
+        config_name: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
     ) -> List[str]:
         ...
 

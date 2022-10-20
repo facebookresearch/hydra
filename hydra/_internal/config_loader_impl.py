@@ -510,9 +510,19 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     def get_group_options(
-        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+        self,
+        group_name: str,
+        results_filter: Optional[ObjectType] = ObjectType.CONFIG,
+        config_name: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
     ) -> List[str]:
-        return self.repository.get_group_options(group_name, results_filter)
+        if overrides is None:
+            overrides = []
+        parser = OverridesParser.create()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
+        repo = CachingConfigRepository(self.repository)
+        self._process_config_searchpath(config_name, parsed_overrides, repo)
+        return repo.get_group_options(group_name, results_filter)
 
     def _compose_config_from_defaults_list(
         self,
