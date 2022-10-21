@@ -23,7 +23,7 @@ import os
 import hydra
 from omegaconf import DictConfig
 
-@hydra.main()
+@hydra.main(version_base=None)
 def my_app(cfg: DictConfig) -> None:
     print("Working directory : {}".format(os.getcwd()))
 
@@ -90,7 +90,7 @@ With `hydra.job.chdir=True`, you can still access the original working directory
 ```python
 from hydra.utils import get_original_cwd, to_absolute_path
 
-@hydra.main()
+@hydra.main(version_base=None)
 def my_app(_cfg: DictConfig) -> None:
     print(f"Current working directory : {os.getcwd()}")
     print(f"Orig working directory    : {get_original_cwd()}")
