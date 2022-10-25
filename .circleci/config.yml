@@ -132,7 +132,7 @@ jobs:
             pip install nox dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins test_plugins_vs_core -ts
             fi
   test_linux:
     parameters:
@@ -151,7 +151,7 @@ jobs:
             pip install nox dataclasses --progress-bar off
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins test_plugins_vs_core -ts
             fi
   test_win:
     parameters:
@@ -170,7 +170,7 @@ jobs:
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            If ($env:CIRCLE_PR_NUMBER) {$env:SKIP_PLUGINS="hydra_ray_launcher"; nox -s lint_plugins test_plugins -ts}
+            If ($env:CIRCLE_PR_NUMBER) {$env:SKIP_PLUGINS="hydra_ray_launcher"; nox -s lint_plugins test_plugins test_plugins_vs_core -ts}
             exit $LASTEXITCODE
   trigger_plugin_pipelines:
     docker:
@@ -202,7 +202,7 @@ jobs:
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
               pip install nox dataclasses --progress-bar off
-              nox -s lint_plugins test_plugins -ts
+              nox -s lint_plugins test_plugins test_plugins_vs_core -ts
   test_plugin_linux:
     parameters:
       py_version:
@@ -223,7 +223,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
-            nox -s lint_plugins test_plugins -ts
+            nox -s lint_plugins test_plugins test_plugins_vs_core -ts
   test_plugin_win:
     parameters:
       py_version:
@@ -243,7 +243,7 @@ jobs:
               $env:PYTHONIOENCODING="utf_8"
               $env:PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
-              nox -s lint_plugins test_plugins -ts
+              nox -s lint_plugins test_plugins test_plugins_vs_core -ts
               exit $LASTEXITCODE
   test_linux_omc_dev:
     parameters:
