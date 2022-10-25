@@ -202,7 +202,6 @@ jobs:
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
               pip install nox dataclasses --progress-bar off
-              
               nox -s lint_plugins test_plugins -ts
   test_plugin_linux:
     parameters:
