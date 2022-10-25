@@ -1,13 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-# type: ignore
 import copy
+import functools
 import os
 import platform
+import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import Iterator, List
 
 import nox
+from nox import Session
 from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
@@ -30,8 +33,7 @@ INSTALL_COMMAND = (
 PLUGINS = os.environ.get("PLUGINS", "ALL").split(",")
 SKIP_PLUGINS = os.environ.get("SKIP_PLUGINS", "")
 
-SKIP_CORE_TESTS = "0"
-SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", SKIP_CORE_TESTS) != "0"
+SKIP_CORE_TESTS = os.environ.get("SKIP_CORE_TESTS", "0") != "0"
 USE_OMEGACONF_DEV_VERSION = os.environ.get("USE_OMEGACONF_DEV_VERSION", "0") != "0"
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
@@ -46,6 +48,8 @@ class Plugin:
     path: str
     module: str
     source_dir: str
+    dir_name: str
+    setup_py: str
 
 
 def get_current_os() -> str:
@@ -66,26 +70,26 @@ print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
 print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
-def _upgrade_basic(session):
+def _upgrade_basic(session: Session) -> None:
     session.install("--upgrade", "pip", silent=SILENT)
     session.install("--upgrade", "setuptools", silent=SILENT)
 
 
-def find_dirs(path: str):
+def find_dirs(path: str) -> Iterator[str]:
     for file in os.listdir(path):
         fullname = os.path.join(path, file)
         if os.path.isdir(fullname):
             yield fullname
 
 
-def _print_installed_omegaconf_version(session):
+def _print_installed_omegaconf_version(session: Session) -> None:
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
         if "omegaconf" in line:
             print(f"Installed omegaconf version: {line}")
 
 
-def install_hydra(session, cmd):
+def install_hydra(session: Session, cmd: List[str]) -> None:
     # needed for build
     session.install("read-version", silent=SILENT)
     # clean install hydra
@@ -99,20 +103,20 @@ def install_hydra(session, cmd):
         session.run("pipdeptree", "-p", "hydra-core")
 
 
-def pytest_args(*args):
+def pytest_args(*args: str) -> List[str]:
     ret = ["pytest"]
     ret.extend(args)
     return ret
 
 
-def run_pytest(session, directory=".", *args):
+def run_pytest(session: Session, directory: str = ".", *args: str) -> None:
     pytest_cmd = pytest_args(directory, *args)
     # silent=False to enable some output on CI
     # (otherwise we risk no-output timeout)
     session.run(*pytest_cmd, silent=False)
 
 
-def get_setup_python_versions(classifiers):
+def get_setup_python_versions(classifiers: List[str]) -> List[str]:
     pythons = filter(lambda line: "Programming Language :: Python" in line, classifiers)
     return [p[len("Programming Language :: Python :: ") :] for p in pythons]
 
@@ -129,35 +133,76 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
         return [p.split("::")[-1].strip() for p in oses]
 
 
-def select_plugins(session, directory: str) -> List[Plugin]:
-    """
-    Select all plugins that should be tested in this session.
-    Considers the current Python version and operating systems against the supported ones,
-    as well as the user plugins selection (via the PLUGINS environment variable).
-    """
-    assert session.python is not None, "Session python version is not specified"
+@functools.lru_cache()
+def list_plugins(directory: str) -> List[Plugin]:
     blacklist = [".isort.cfg", "examples"]
-    plugins = [
+    _plugins = [
         {"dir_name": x, "path": x}
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
 
+    plugins: List[Plugin] = []
+    for plugin in _plugins:
+
+        setup_py = os.path.join(BASE, directory, plugin["path"], "setup.py")
+        plugin_name = subprocess.run(
+            [sys.executable, setup_py, "--name"],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+
+        if "hydra_plugins" in os.listdir(os.path.join(BASE, directory, plugin["path"])):
+            module = "hydra_plugins." + plugin["dir_name"]
+            source_dir = "hydra_plugins"
+        else:
+            module = plugin["dir_name"]
+            source_dir = plugin["dir_name"]
+
+        plugins.append(
+            Plugin(
+                name=plugin_name,
+                path=plugin["path"],
+                source_dir=source_dir,
+                module=module,
+                dir_name=plugin["dir_name"],
+                setup_py=setup_py,
+            )
+        )
+    return plugins
+
+
+def select_plugins_under_directory(session: Session, directory: str) -> List[Plugin]:
+    """
+    Select all plugins under the current directory that should be tested in this session.
+    """
+    plugins_under_directory: List[Plugin] = list_plugins(directory)
+    return filter_incompatible_plugins(session, plugins_under_directory)
+
+
+def filter_incompatible_plugins(
+    session: Session, plugins: List[Plugin]
+) -> List[Plugin]:
+    """
+    Considers the current Python version and operating systems against the supported ones,
+    as well as the user plugins selection (via the PLUGINS environment variable).
+    """
+    assert session.python is not None, "Session python version is not specified"
+
     ret = []
     skipped = []
     for plugin in plugins:
         if (
-            not (plugin["dir_name"] in PLUGINS or PLUGINS == ["ALL"])
-            or plugin["dir_name"] in SKIP_PLUGINS
+            not (plugin.dir_name in PLUGINS or PLUGINS == ["ALL"])
+            or plugin.dir_name in SKIP_PLUGINS
         ):
-            skipped.append(f"Deselecting {plugin['dir_name']}: User request")
+            skipped.append(f"Deselecting {plugin.dir_name}: User request")
             continue
 
-        setup_py = os.path.join(BASE, directory, plugin["path"], "setup.py")
         classifiers = session.run(
-            "python", setup_py, "--name", "--classifiers", silent=True
+            "python", plugin.setup_py, "--classifiers", silent=True
         ).splitlines()
-        plugin_name = classifiers.pop(0)
         plugin_python_versions = get_setup_python_versions(classifiers)
         python_supported = session.python in plugin_python_versions
 
@@ -167,7 +212,7 @@ def select_plugins(session, directory: str) -> List[Plugin]:
         if not python_supported:
             py_str = ", ".join(plugin_python_versions)
             skipped.append(
-                f"Deselecting {plugin['dir_name']} : Incompatible Python {session.python}. Supports [{py_str}]"
+                f"Deselecting {plugin.dir_name} : Incompatible Python {session.python}. Supports [{py_str}]"
             )
             continue
 
@@ -175,25 +220,11 @@ def select_plugins(session, directory: str) -> List[Plugin]:
         if not os_supported:
             os_str = ", ".join(plugin_os_names)
             skipped.append(
-                f"Deselecting {plugin['dir_name']}: Incompatible OS {get_current_os()}. Supports [{os_str}]"
+                f"Deselecting {plugin.dir_name}: Incompatible OS {get_current_os()}. Supports [{os_str}]"
             )
             continue
 
-        if "hydra_plugins" in os.listdir(os.path.join(BASE, directory, plugin["path"])):
-            module = "hydra_plugins." + plugin["dir_name"]
-            source_dir = "hydra_plugins"
-        else:
-            module = plugin["dir_name"]
-            source_dir = plugin["dir_name"]
-
-        ret.append(
-            Plugin(
-                name=plugin_name,
-                path=plugin["path"],
-                source_dir=source_dir,
-                module=module,
-            )
-        )
+        ret.append(plugin)
 
     for msg in skipped:
         logger.warn(msg)
@@ -203,26 +234,26 @@ def select_plugins(session, directory: str) -> List[Plugin]:
     return ret
 
 
-def install_dev_deps(session):
+def install_dev_deps(session: Session) -> None:
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
 
 
-def _black_cmd():
+def _black_cmd() -> List[str]:
     black = ["black", "."]
     if not FIX:
         black += ["--check"]
     return black
 
 
-def _isort_cmd():
+def _isort_cmd() -> List[str]:
     isort = ["isort", "."]
     if not FIX:
         isort += ["--check", "--diff"]
     return isort
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def lint(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def lint(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
@@ -311,17 +342,17 @@ def lint(session):
     session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".", silent=SILENT)
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def lint_plugins(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def lint_plugins(session: Session) -> None:
     _upgrade_basic(session)
     lint_plugins_in_dir(session, "plugins")
 
 
-def lint_plugins_in_dir(session, directory: str) -> None:
+def lint_plugins_in_dir(session: Session, directory: str) -> None:
 
     install_cmd = ["pip", "install"]
     install_hydra(session, install_cmd)
-    plugins = select_plugins(session=session, directory=directory)
+    plugins = select_plugins_under_directory(session, directory)
 
     # plugin linting requires the plugins and their dependencies to be installed
     for plugin in plugins:
@@ -368,8 +399,8 @@ def lint_plugins_in_dir(session, directory: str) -> None:
         )
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def test_tools(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def test_tools(session: Session) -> None:
     _upgrade_basic(session)
     install_cmd = ["pip", "install"]
     session.install("pytest")
@@ -392,15 +423,15 @@ def test_tools(session):
     session.chdir(BASE)
 
 
-def _get_standalone_apps_dirs():
+def _get_standalone_apps_dirs() -> List[Path]:
     standalone_apps_dir = Path(f"{BASE}/tests/standalone_apps")
     apps = [standalone_apps_dir / subdir for subdir in os.listdir(standalone_apps_dir)]
-    apps.append(f"{BASE}/examples/advanced/hydra_app_example")
+    apps.append(Path(f"{BASE}/examples/advanced/hydra_app_example"))
     return apps
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def test_core(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def test_core(session: Session) -> None:
     _upgrade_basic(session)
     install_hydra(session, INSTALL_COMMAND)
     session.install("pytest")
@@ -427,8 +458,8 @@ def test_core(session):
     )
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def test_plugins(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def test_plugins(session: Session) -> None:
     _upgrade_basic(session)
     test_plugins_in_directory(
         session=session,
@@ -439,11 +470,11 @@ def test_plugins(session):
 
 
 def test_plugins_in_directory(
-    session, install_cmd, directory: str, test_hydra_core: bool
-):
+    session: Session, install_cmd: List[str], directory: str, test_hydra_core: bool
+) -> None:
     session.install("pytest")
     install_hydra(session, install_cmd)
-    selected_plugin = select_plugins(session=session, directory=directory)
+    selected_plugin = select_plugins_under_directory(session, directory)
     for plugin in selected_plugin:
         cmd = list(install_cmd) + [os.path.join(directory, plugin.path)]
         session.run(*cmd, silent=SILENT)
@@ -475,8 +506,8 @@ def test_plugins_in_directory(
         run_pytest(session)
 
 
-@nox.session(python="3.8")
-def coverage(session):
+@nox.session(python="3.8")  # type: ignore
+def coverage(session: Session) -> None:
     _upgrade_basic(session)
     coverage_env = {
         "COVERAGE_HOME": BASE,
@@ -489,7 +520,7 @@ def coverage(session):
     session.run("coverage", "erase", env=coverage_env)
 
     for directory in ["plugins", "examples/plugins"]:
-        selected_plugins = select_plugins(session=session, directory=directory)
+        selected_plugins = select_plugins_under_directory(session, directory)
         for plugin in selected_plugins:
             session.run(
                 "pip",
@@ -523,8 +554,8 @@ def coverage(session):
     session.run("coverage", "erase", env=coverage_env)
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def test_jupyter_notebooks(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def test_jupyter_notebooks(session: Session) -> None:
     _upgrade_basic(session)
     versions = copy.copy(DEFAULT_PYTHON_VERSIONS)
     if session.python not in versions:
@@ -563,8 +594,8 @@ def test_jupyter_notebooks(session):
         session.run(*args, silent=SILENT)
 
 
-@nox.session(python=PYTHON_VERSIONS)
-def benchmark(session):
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+def benchmark(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, INSTALL_COMMAND)
