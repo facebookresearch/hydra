@@ -1,0 +1,8 @@
+defaults:
+  - _self_
+  - group: null
+
+hydra:
+  searchpath:
+    - pkg://hydra.test_utils.configs.completion_test_additional_package
+    - file://hydra/test_utils/configs/completion_test_additional_file
