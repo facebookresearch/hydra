@@ -61,6 +61,7 @@ max_num_timeout: 0
 additional_parameters: {}
 array_parallelism: 256
 setup: null
+srun_args: null
 ```
 </details>
 <details><summary>Discover the Local Launcher parameters <b>(Expand)</b></summary>
