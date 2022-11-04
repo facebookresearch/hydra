@@ -290,7 +290,7 @@ class OptunaSweeperImpl(Sweeper):
 
         is_grid_sampler = (
             isinstance(self.sampler, functools.partial)
-            and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
+            and self.sampler.func == optuna.samplers.GridSampler
         )
 
         (
