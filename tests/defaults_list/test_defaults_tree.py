@@ -1488,6 +1488,89 @@ def test_extension_use_cases(
     "config_name,overrides,expected",
     [
         param(
+            "config_with_same_name_as_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="config_with_same_name_as_group"),
+                children=[
+                    GroupDefault(
+                        group="config_with_same_name_as_group",
+                        value="item",
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="config_with_same_name_as_group",
+        ),
+        param(
+            "include_group_with_same_name_as_config",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="include_group_with_same_name_as_config"),
+                children=[
+                    GroupDefault(
+                        group="config_with_same_name_as_group",
+                        value="item",
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="include_group_with_same_name_as_config",
+        ),
+        param(
+            "test_extend_from_config_with_same_name_as_group",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="test_extend_from_config_with_same_name_as_group"
+                ),
+                children=[
+                    DefaultsTreeNode(
+                        node=ConfigDefault(path="config_with_same_name_as_group"),
+                        children=[
+                            GroupDefault(
+                                group="config_with_same_name_as_group", value="item"
+                            ),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="test_extend_from_config_with_same_name_as_group",
+        ),
+        param(
+            "test_extend_from_group_with_same_name_as_config",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="test_extend_from_group_with_same_name_as_config"
+                ),
+                children=[
+                    ConfigDefault(path="config_with_same_name_as_group/item"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="test_extend_from_group_with_same_name_as_config",
+        ),
+    ],
+)
+def test_name_collision(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "with_missing",
             [],
             raises(
