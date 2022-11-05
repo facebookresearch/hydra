@@ -8,7 +8,7 @@ from textwrap import dedent
 from typing import Any, List
 
 from omegaconf import open_dict, read_write
-from pytest import mark
+from pytest import mark, param
 
 from hydra.core.utils import JobReturn, JobStatus
 from hydra.test_utils.test_utils import (
@@ -22,9 +22,10 @@ chdir_hydra_root()
 
 
 @mark.parametrize(
-    "args,expected",
+    "app_path,args,expected",
     [
-        (
+        param(
+            "tests/test_apps/app_with_callbacks/custom_callback/my_app.py",
             [],
             dedent(
                 """\
@@ -36,8 +37,10 @@ chdir_hydra_root()
                 [JOB] custom_callback on_job_end
                 [JOB] custom_callback on_run_end"""
             ),
+            id="custom_callback",
         ),
-        (
+        param(
+            "tests/test_apps/app_with_callbacks/custom_callback/my_app.py",
             [
                 "foo=bar",
                 "-m",
@@ -54,8 +57,10 @@ chdir_hydra_root()
                 [JOB] custom_callback on_job_end
                 [HYDRA] custom_callback on_multirun_end"""
             ),
+            id="custom_callback_multirun",
         ),
-        (
+        param(
+            "tests/test_apps/app_with_callbacks/custom_callback/my_app.py",
             [
                 "--config-name",
                 "config_with_two_callbacks",
@@ -75,16 +80,22 @@ chdir_hydra_root()
                 [JOB] callback_2 on_run_end
                 [JOB] callback_1 on_run_end"""
             ),
+            id="two_custom_callbacks",
+        ),
+        param(
+            "tests/test_apps/app_with_callbacks/on_job_start_accepts_task_function/my_app.py",
+            [],
+            r"\[JOB\] on_job_start task_function: <function my_app at 0x[0-9a-fA-F]+>",
+            id="on_job_start_task_function",
         ),
     ],
 )
 def test_app_with_callbacks(
     tmpdir: Path,
+    app_path: str,
     args: List[str],
     expected: str,
 ) -> None:
-    app_path = "tests/test_apps/app_with_callbacks/custom_callback/my_app.py"
-
     cmd = [
         app_path,
         "hydra.run.dir=" + str(tmpdir),

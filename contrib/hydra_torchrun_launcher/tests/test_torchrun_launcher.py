@@ -13,18 +13,18 @@
 # limitations under the License.
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import Any
-
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import chdir_plugin_root
 from pytest import mark
 
-from hydra_plugins.hydra_torchrun_launcher.distributed_launcher import TorchDistributedLauncher
+from hydra_plugins.hydra_torchrun_launcher.distributed_launcher import (
+    TorchDistributedLauncher,
+)
 
 chdir_plugin_root()
 

@@ -73,6 +73,8 @@ class SlurmQueueConf(BaseQueueConf):
     array_parallelism: int = 256
     # A list of commands to run in sbatch befure running srun
     setup: Optional[List[str]] = None
+    # Any additional arguments that should be passed to srun
+    srun_args: Optional[List[str]] = None
 
 
 @dataclass

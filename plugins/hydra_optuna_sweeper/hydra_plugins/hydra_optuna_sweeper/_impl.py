@@ -180,9 +180,7 @@ class OptunaSweeperImpl(Sweeper):
         self.search_space_distributions: Optional[Dict[str, BaseDistribution]] = None
 
     def _process_searchspace_config(self) -> None:
-        url = (
-            "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
-        )
+        url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
         if self.params is None and self.search_space is None:
             self.params = OmegaConf.create({})
         elif self.search_space is not None:
@@ -292,7 +290,7 @@ class OptunaSweeperImpl(Sweeper):
 
         is_grid_sampler = (
             isinstance(self.sampler, functools.partial)
-            and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
+            and self.sampler.func == optuna.samplers.GridSampler
         )
 
         (

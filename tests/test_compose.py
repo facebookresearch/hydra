@@ -730,7 +730,7 @@ def test_initialize_without_config_path(tmpdir: Path) -> None:
     expected = dedent(
         """\
         config_path is not specified in hydra.initialize().
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
+        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(expected)):
         with initialize():
@@ -777,7 +777,7 @@ def test_deprecated_compose_strict_flag(
         """\
 
         The strict flag in the compose API is deprecated.
-        See https://hydra.cc/docs/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
+        See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
         """
     )
 

@@ -25,7 +25,7 @@ COLON: ':';
 SLASH: '/';
 
 KEY_ID: ID -> type(ID);
-KEY_SPECIAL: (CHAR|'_'|'$') (CHAR|DIGIT|'_'|'$')*;  // same as ID but allowing $
+KEY_SPECIAL: (CHAR|'_'|'$') (CHAR|DIGIT|'_'|'-'|'$')*;  // same as ID but allowing $
 DOT_PATH: (KEY_SPECIAL | INT_UNSIGNED) ('.' (KEY_SPECIAL | INT_UNSIGNED))+;
 
 ////////////////
@@ -60,7 +60,7 @@ BOOL:
 NULL: [Nn][Uu][Ll][Ll];
 
 UNQUOTED_CHAR: [/\-\\+.$%*@?|];  // other characters allowed in unquoted strings
-ID: (CHAR|'_') (CHAR|DIGIT|'_')*;
+ID: (CHAR|'_') (CHAR|DIGIT|'_'|'-')*;
 // Note: when adding more characters to the ESC rule below, also add them to
 // the `_ESC` string in `_internal/grammar/utils.py`.
 ESC: (ESC_BACKSLASH | '\\(' | '\\)' | '\\[' | '\\]' | '\\{' | '\\}' |

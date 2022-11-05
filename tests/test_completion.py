@@ -344,6 +344,39 @@ def test_missing_default_value(line: str, expected: List[str]) -> None:
     assert ret == expected
 
 
+@mark.parametrize(
+    "line,expected",
+    [
+        param(
+            "",
+            ["additional_group=", "group=", "hydra", "hydra.", "test_hydra/"],
+            id="empty",
+        ),
+        param("group", ["group="], id="group"),
+        param(
+            "group=",
+            ["group=dict", "group=file_opt", "group=list", "group=pkg_opt"],
+            id="group_eq",
+        ),
+        param("add", ["additional_group="], id="add"),
+        param("additional_group", ["additional_group="], id="additional_group"),
+        param(
+            "additional_group=",
+            [
+                "additional_group=file_opt_additional",
+                "additional_group=pkg_opt_additional",
+            ],
+            id="additional_group_eq",
+        ),
+    ],
+)
+def test_searchpath_addition(line: str, expected: List[str]) -> None:
+    config_loader = create_config_loader()
+    bc = DefaultCompletionPlugin(config_loader)
+    ret = bc._query(config_name="additional_searchpath", line=line)
+    assert ret == expected
+
+
 @mark.parametrize("relative", [True, False])
 @mark.parametrize("line_prefix", ["", "dict.key1=val1 "])
 @mark.parametrize(

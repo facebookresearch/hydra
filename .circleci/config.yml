@@ -119,7 +119,7 @@ jobs:
       py_version:
         type: string
     macos:
-      xcode: "12.0.0"
+      xcode: "13.4.1"
     steps:
       - macos:
           py_version: << parameters.py_version >>
@@ -130,9 +130,11 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             conda activate hydra
             pip install nox dataclasses --progress-bar off
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+                test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            else
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
             fi
   test_linux:
     parameters:
@@ -149,9 +151,11 @@ jobs:
             export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox dataclasses --progress-bar off
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint_plugins test_plugins -ts
+              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+                test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            else
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
             fi
   test_win:
     parameters:
@@ -169,8 +173,12 @@ jobs:
             $env:ConEmuDefaultCp=65001
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
-            nox -s lint test_tools test_core test_jupyter_notebooks -ts
-            If ($env:CIRCLE_PR_NUMBER) {$env:SKIP_PLUGINS="hydra_ray_launcher"; nox -s lint_plugins test_plugins -ts}
+            If ($env:CIRCLE_PR_NUMBER) {
+              $env:SKIP_PLUGINS="hydra_ray_launcher"
+              nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            } else {
+              nox -s lint test_tools test_core test_jupyter_notebooks -ts
+            }
             exit $LASTEXITCODE
   trigger_plugin_pipelines:
     docker:
@@ -190,7 +198,7 @@ jobs:
       test_plugin:
         type: string
     macos:
-      xcode: "12.0.0"
+      xcode: "13.4.1"
     steps:
       - macos:
           py_version: << parameters.py_version >>
@@ -202,8 +210,7 @@ jobs:
               export PLUGINS=<< parameters.test_plugin >>
               conda activate hydra
               pip install nox dataclasses --progress-bar off
-              
-              nox -s lint_plugins test_plugins -ts
+              nox -s lint_plugins test_plugins test_plugins_vs_core -ts
   test_plugin_linux:
     parameters:
       py_version:
@@ -224,7 +231,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             export PLUGINS=<< parameters.test_plugin >>
             pip install nox dataclasses --progress-bar off
-            nox -s lint_plugins test_plugins -ts
+            nox -s lint_plugins test_plugins test_plugins_vs_core -ts
   test_plugin_win:
     parameters:
       py_version:
@@ -244,7 +251,7 @@ jobs:
               $env:PYTHONIOENCODING="utf_8"
               $env:PLUGINS="<< parameters.test_plugin >>"
               conda activate hydra
-              nox -s lint_plugins test_plugins -ts
+              nox -s lint_plugins test_plugins test_plugins_vs_core -ts
               exit $LASTEXITCODE
   test_linux_omc_dev:
     parameters:
@@ -289,8 +296,7 @@ workflows:
       - test_win:
           matrix:
             parameters:
-              # skipping py3.10 for windows https://github.com/facebookresearch/hydra/issues/2209
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
       - test_linux_omc_dev:
           matrix:
             parameters:
@@ -313,8 +319,7 @@ workflows:
       - test_plugin_win:
           matrix:
             parameters:
-              # skipping py3.10 for windows https://github.com/facebookresearch/hydra/issues/2209
-              py_version: ["3.6", "3.7", "3.8", "3.9"]
+              py_version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
               test_plugin: [<< pipeline.parameters.test_plugins >>]
 
 

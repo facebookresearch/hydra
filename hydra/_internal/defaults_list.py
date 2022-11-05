@@ -244,7 +244,7 @@ def _validate_self(
         if containing_node.primary and has_config_content and has_non_override:
             msg = (
                 f"In '{containing_node.get_config_path()}': Defaults list is missing `_self_`. "
-                f"See https://hydra.cc/docs/upgrades/1.0_to_1.1/default_composition_order for more information"
+                f"See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information"
             )
             if os.environ.get("SELF_WARNING_AS_ERROR") == "1":
                 raise ConfigCompositionException(msg)
@@ -404,7 +404,7 @@ def _update_overrides(
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
                 d.override = True
-                url = "https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override"
+                url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override"
                 msg = dedent(
                     f"""\
                     In {parent.get_config_path()}: Invalid overriding of {d.group}:
@@ -546,26 +546,22 @@ def _create_defaults_tree_impl(
 
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
-                if d.is_options():
-                    for item in reversed(d.get_options()):
-                        if "${" in item:
-                            raise ConfigCompositionException(
-                                f"In '{path}': Defaults List interpolation is not supported in options list items"
-                            )
+                for item in reversed(d.get_options()):
+                    if "${" in item:
+                        raise ConfigCompositionException(
+                            f"In '{path}': Defaults List interpolation is not supported in options list items"
+                        )
 
-                        assert d.group is not None
-                        node = ConfigDefault(
-                            path=d.group + "/" + item,
-                            package=d.package,
-                            optional=d.is_optional(),
-                        )
-                        node.update_parent(
-                            parent.get_group_path(), parent.get_final_package()
-                        )
-                        new_root = DefaultsTreeNode(node=node, parent=root)
-                        add_child(children, new_root)
-                else:
-                    new_root = DefaultsTreeNode(node=d, parent=root)
+                    assert d.group is not None
+                    node = ConfigDefault(
+                        path=d.group + "/" + item,
+                        package=d.package,
+                        optional=d.is_optional(),
+                    )
+                    node.update_parent(
+                        parent.get_group_path(), parent.get_final_package()
+                    )
+                    new_root = DefaultsTreeNode(node=node, parent=root)
                     add_child(children, new_root)
 
             else:

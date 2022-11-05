@@ -152,7 +152,7 @@ def run_job(
                 _chdir = False
 
         if _chdir is None:
-            url = "https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
+            url = "https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
             deprecation_warning(
                 message=dedent(
                     f"""\
@@ -181,7 +181,7 @@ def run_job(
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
         with env_override(hydra_cfg.hydra.job.env_set):
-            callbacks.on_job_start(config=config)
+            callbacks.on_job_start(config=config, task_function=task_function)
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
@@ -287,7 +287,7 @@ def validate_config_path(config_path: Optional[str]) -> None:
             msg = dedent(
                 """\
             Using config_path to specify the config name is not supported, specify the config name via config_name.
-            See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+            See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/config_path_changes
             """
             )
             raise ValueError(msg)

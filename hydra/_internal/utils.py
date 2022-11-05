@@ -4,10 +4,10 @@ import inspect
 import logging.config
 import os
 import sys
+import traceback
 import warnings
 from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
-from traceback import print_exc, print_exception
 from types import FrameType, TracebackType
 from typing import Any, List, Optional, Sequence, Tuple
 
@@ -123,7 +123,9 @@ def compute_search_path_dir(
     calling_module: Optional[str],
     config_path: Optional[str],
 ) -> Optional[str]:
-    if calling_file is not None:
+    if config_path is not None and os.path.isabs(config_path):
+        search_path_dir = config_path
+    elif calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
 
         if config_path is not None:
@@ -246,7 +248,7 @@ def run_and_report(func: Any) -> Any:
                     if search_max == 0 or tb is None:
                         # could not detect run_job, probably a runtime exception before we got there.
                         # do not sanitize the stack trace.
-                        print_exc()
+                        traceback.print_exc()
                         sys.exit(1)
 
                     # strip OmegaConf frames from bottom of stack
@@ -255,8 +257,7 @@ def run_and_report(func: Any) -> Any:
                     while end is not None:
                         frame = end.tb_frame
                         mdl = inspect.getmodule(frame)
-                        assert mdl is not None
-                        name = mdl.__name__
+                        name = mdl.__name__ if mdl is not None else ""
                         if name.startswith("omegaconf."):
                             break
                         end = end.tb_next
@@ -286,7 +287,7 @@ def run_and_report(func: Any) -> Any:
                         assert iter_tb.tb_next is not None
                         iter_tb = iter_tb.tb_next
 
-                    print_exception(None, value=ex, tb=final_tb)  # type: ignore
+                    traceback.print_exception(None, value=ex, tb=final_tb)  # type: ignore
                 sys.stderr.write(
                     "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
                 )
@@ -554,7 +555,7 @@ def get_args_parser() -> argparse.ArgumentParser:
         "--config-path",
         "-cp",
         help="""Overrides the config_path specified in hydra.main().
-                    The config_path is relative to the Python file declaring @hydra.main()""",
+                    The config_path is absolute or relative to the Python file declaring @hydra.main()""",
     )
 
     parser.add_argument(

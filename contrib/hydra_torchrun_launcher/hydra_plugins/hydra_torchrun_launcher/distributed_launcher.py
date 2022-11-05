@@ -39,11 +39,18 @@ class TorchDistributedLauncher(Launcher):
     ) -> None:
         from . import _core
 
-        return _core.setup(launcher=self, hydra_context=hydra_context, task_function=task_function, config=config)
+        return _core.setup(
+            launcher=self,
+            hydra_context=hydra_context,
+            task_function=task_function,
+            config=config,
+        )
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
         from . import _core
 
-        return _core.launch(launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx)
+        return _core.launch(
+            launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
+        )

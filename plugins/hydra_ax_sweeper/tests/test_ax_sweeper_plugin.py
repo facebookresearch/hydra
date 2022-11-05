@@ -14,7 +14,7 @@ from hydra.test_utils.test_utils import (
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises
 
-from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper  # type: ignore
+from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
 
@@ -44,7 +44,7 @@ def quadratic(cfg: DictConfig) -> Any:
     ],
 )
 def test_chunk_method_for_valid_inputs(n: int, expected: List[List[int]]) -> None:
-    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper  # type: ignore
+    from hydra_plugins.hydra_ax_sweeper._core import CoreAxSweeper
 
     chunk_func = CoreAxSweeper.chunks
     batch = [1, 2, 3, 4, 5]
@@ -244,6 +244,27 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
     run_python_script(cmd)
+
+
+@mark.parametrize(
+    "cmd_args",
+    [
+        ["polynomial.y=choice(-1, 0, 1)", "polynomial.x=range(2,4)"],
+        ["polynomial.y=1", "polynomial.x=range(2,4)"],
+    ],
+)
+def test_search_space_with_constraint_metric(tmpdir: Path, cmd_args: List[str]) -> None:
+    # test that outcome_constraints experiment parameter `outcome_constraints`
+    # works correctly, and that the ax_sweeper supports outputting a dictionary
+    # from the evaluation function so that multiple metrics can be supported.
+    cmd = [
+        "tests/apps/polynomial_with_constraint.py",
+        "-m",
+        "hydra.run.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.ax_config.max_trials=2",
+    ] + cmd_args
+    results, _ = run_python_script(cmd)
 
 
 @mark.parametrize(

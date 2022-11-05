@@ -37,4 +37,4 @@
 
 ### API Change (Renames, deprecations and removals)
 
-- Config structure changes, please refer to the [docs](https://hydra.cc/docs/next/plugins/optuna_sweeper/) ([#1472](https://github.com/facebookresearch/hydra/issues/1472))
+- Config structure changes, please refer to the [docs](https://hydra.cc/docs/plugins/optuna_sweeper/) ([#1472](https://github.com/facebookresearch/hydra/issues/1472))

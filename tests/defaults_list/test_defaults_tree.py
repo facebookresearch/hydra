@@ -946,7 +946,7 @@ def test_legacy_override_hydra_version_base_1_1(
         """\
         Invalid overriding of hydra/help:
         Default list overrides requires 'override' keyword.
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_override for more information."""
+        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information."""
     )
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
         _test_defaults_tree_impl(
@@ -2024,7 +2024,7 @@ def test_legacy_interpolation(
     msg = dedent(
         """
     Defaults list element '.*=.*' is using a deprecated interpolation form.
-    See http://hydra.cc/docs/next/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+    See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
     version.setbase("1.1")
     with warns(expected_warning=UserWarning, match=msg):
@@ -2839,7 +2839,7 @@ def test_deprecated_package_header_keywords(
     msg = dedent(
         f"""\
         In '{config_name}': Usage of deprecated keyword in package header '# @package {package_header}'.
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
+        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
     )
 
     version.setbase("1.1")

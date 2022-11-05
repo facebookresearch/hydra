@@ -21,14 +21,13 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "nevergrad>=0.4.3.post9",
-        "cma==3.0.3",  # https://github.com/facebookresearch/hydra/issues/1684
-        "numpy<1.20.0",  # remove once nevergrad is upgraded to support numpy 1.20
     ],
     include_package_data=True,
 )

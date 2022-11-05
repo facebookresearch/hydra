@@ -29,6 +29,6 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    install_requires=["torch>=1.11.0","hydra-core>=1.1.1"],
+    install_requires=["torch>=1.11.0", "hydra-core>=1.1.1"],
     include_package_data=True,
 )

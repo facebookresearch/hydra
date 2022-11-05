@@ -192,7 +192,7 @@ def test_app_with_config_path_backward_compatibility(
     msg = dedent(
         """\
     Using config_path to specify the config name is not supported, specify the config name via config_name.
-    See https://hydra.cc/docs/next/upgrades/0.11_to_1.0/config_path_changes
+    See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/config_path_changes
     """
     )
 
@@ -754,14 +754,14 @@ def test_sweep_complex_defaults(
 
                     Zsh - Install:
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
-(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+(https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
                     eval "$(python {script} -sc install=bash)"
                     Zsh - Uninstall:
                     eval "$(python {script} -sc uninstall=bash)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
-                                    The config_path is relative to the Python file declaring @hydra.main()
+                                    The config_path is absolute or relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --experimental-rerun : Rerun a job from a previous config pickle
@@ -812,14 +812,14 @@ for details.
 
                     Zsh - Install:
                     Zsh is compatible with the Bash shell completion, see the [documentation]\
-(https://hydra.cc/docs/next/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
+(https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/tab_completion#zsh-instructions) \
 for details.
                     eval "$(python {script} -sc install=bash)"
                     Zsh - Uninstall:
                     eval "$(python {script} -sc uninstall=bash)"
 
                 --config-path,-cp : Overrides the config_path specified in hydra.main().
-                                    The config_path is relative to the Python file declaring @hydra.main()
+                                    The config_path is absolute or relative to the Python file declaring @hydra.main()
                 --config-name,-cn : Overrides the config_name specified in hydra.main()
                 --config-dir,-cd : Adds an additional config dir to the config search path
                 --experimental-rerun : Rerun a job from a previous config pickle
@@ -1033,7 +1033,14 @@ def test_override_with_invalid_group_choice(
     assert re.search(msg, str(e.value)) is not None
 
 
-@mark.parametrize("config_path", ["dir1", "dir2"])
+@mark.parametrize(
+    "config_path",
+    [
+        "dir1",
+        "dir2",
+        os.path.abspath("tests/test_apps/app_with_multiple_config_dirs/dir2"),
+    ],
+)
 @mark.parametrize("config_name", ["cfg1", "cfg2"])
 def test_config_name_and_path_overrides(
     tmpdir: Path, config_path: str, config_name: str
@@ -1048,7 +1055,7 @@ def test_config_name_and_path_overrides(
     result, _err = run_python_script(cmd)
     # normalize newlines on Windows to make testing easier
     result = result.replace("\r\n", "\n")
-    assert result == f"{config_path}_{config_name}: true"
+    assert result == f"{os.path.basename(config_path)}_{config_name}: true"
 
 
 @mark.parametrize(
@@ -1486,7 +1493,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
           @hydra.main()
         .*my_app.py:7: UserWarning:
         config_path is not specified in @hydra.main().
-        See https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
+        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
           @hydra.main()
         """
     )
@@ -1508,7 +1515,7 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
     expected = dedent(
         """
         .*UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
-        See https://hydra.cc/docs/next/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
+        See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
         .*
         """
     )

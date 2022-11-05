@@ -1,0 +1,1 @@
+recursive-include example_registered_plugin/* py.typed

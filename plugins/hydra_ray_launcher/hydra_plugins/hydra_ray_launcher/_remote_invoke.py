@@ -9,7 +9,6 @@ from typing import List
 from urllib.request import urlopen
 
 import cloudpickle  # type: ignore
-import pickle5 as pickle  # type: ignore
 import ray
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -22,6 +21,12 @@ from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
     launch_job_on_ray,
     start_ray,
 )
+
+try:
+    import pickle5 as pickle  # type: ignore
+except ModuleNotFoundError:
+    import pickle
+
 
 log = logging.getLogger(__name__)
 

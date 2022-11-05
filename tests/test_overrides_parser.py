@@ -538,6 +538,7 @@ def test_parse_errors(rule: str, value: str, expected: Any) -> None:
         param("abc.cde", "abc.cde", id="package"),
         param("$foo", "$foo", id="package_dollar"),
         param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
+        param("ab-c", "ab-c", id="package"),
     ],
 )
 def test_package(value: str, expected: Any) -> None:
@@ -553,6 +554,8 @@ def test_package(value: str, expected: Any) -> None:
         param("$foo", "$foo", id="package_dollar"),
         param("$foo.bar$.x$z", "$foo.bar$.x$z", id="package_dollar_dotpath"),
         param("a/b/c", "a/b/c", id="group"),
+        param("a-b/c", "a-b/c", id="group_with_dash"),
+        param("a-b", "a-b", id="package_with_dash"),
     ],
 )
 def test_package_or_group(value: str, expected: Any) -> None:
@@ -566,6 +569,8 @@ def test_package_or_group(value: str, expected: Any) -> None:
         param("abc", Key(key_or_group="abc"), id="abc"),
         param("abc/cde", Key(key_or_group="abc/cde"), id="abc/cde"),
         param("abc.cde", Key(key_or_group="abc.cde"), id="abc.cde"),
+        param("ab-c/d-ef", Key(key_or_group="ab-c/d-ef"), id="ab-c/d-ef"),
+        param("ab-c.d-ef", Key(key_or_group="ab-c.d-ef"), id="ab-c.d-ef"),
         param("$foo", Key(key_or_group="$foo"), id="dollar"),
         param("$foo.bar$.x$z", Key(key_or_group="$foo.bar$.x$z"), id="dollar_dotpath"),
         param("list.0", Key(key_or_group="list.0"), id="list.0"),
@@ -996,7 +1001,7 @@ def test_override(
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
     msg = (
         "In override key@_name_=value: _name_ keyword is deprecated in packages, "
-        "see https://hydra.cc/docs/next/upgrades/1.0_to_1.1/changes_to_package_header"
+        "see https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
     )
 
     version.setbase("1.1")
