@@ -60,7 +60,12 @@ class ConvertMode(Enum):
 
     If "partial", config-like configs will be converted to native python
     containers (list and dict), unless they are structured configs (
-    dataclasses or attr instances).
+    dataclasses or attr instances). Structured configs remain as DictConfig objects.
+
+    If "object", config-like configs will be converted to native python
+    containers (list and dict), unless they are structured configs (
+    dataclasses or attr instances). Structured configs are converted to instances
+    of the backing dataclass or attr class using OmegaConf.to_object.
 
     If "all", config-like configs will all be converted to native python
     containers (list and dict).
@@ -70,6 +75,9 @@ class ConvertMode(Enum):
     NONE = "none"
     # Convert the OmegaConf config to primitive container, Structured Configs are preserved
     PARTIAL = "partial"
+    # Convert the OmegaConf config to primitive container, Structured Configs are converted to
+    # dataclass / attr class instances.
+    OBJECT = "object"
     # Fully convert the OmegaConf config to primitive containers (dict, list and primitives).
     ALL = "all"
 

@@ -160,8 +160,12 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                         none    : Passed objects are DictConfig and ListConfig, default
                         partial : Passed objects are converted to dict and list, with
                                   the exception of Structured Configs (and their fields).
+                        object  : Passed objects are converted to dict and list.
+                                  Structured Configs are converted to instances of the
+                                  backing dataclass / attr class.
                         all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers
+                                  a trace of OmegaConf containers. Structured configs
+                                  are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
     :param args: Optional positional parameters pass-through
@@ -264,6 +268,10 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
             node = OmegaConf.to_container(
                 node, resolve=True, structured_config_mode=SCMode.DICT_CONFIG
             )
+        elif convert == ConvertMode.OBJECT:
+            node = OmegaConf.to_container(
+                node, resolve=True, structured_config_mode=SCMode.INSTANTIATE
+            )
     return node
 
 
@@ -310,8 +318,8 @@ def instantiate_node(
             for item in node._iter_ex(resolve=True)
         ]
 
-        if convert in (ConvertMode.ALL, ConvertMode.PARTIAL):
-            # If ALL or PARTIAL, use plain list as container
+        if convert in (ConvertMode.ALL, ConvertMode.PARTIAL, ConvertMode.OBJECT):
+            # If ALL or PARTIAL or OBJECT, use plain list as container
             return items
         else:
             # Otherwise, use ListConfig as container
@@ -338,9 +346,10 @@ def instantiate_node(
 
             return _call_target(_target_, partial, args, kwargs, full_key)
         else:
-            # If ALL or PARTIAL non structured, instantiate in dict and resolve interpolations eagerly.
+            # If ALL or PARTIAL non structured or OBJECT non structured,
+            # instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
-                convert == ConvertMode.PARTIAL
+                convert in (ConvertMode.PARTIAL, ConvertMode.OBJECT)
                 and node._metadata.object_type in (None, dict)
             ):
                 dict_items = {}
@@ -359,6 +368,8 @@ def instantiate_node(
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type
+                if convert == ConvertMode.OBJECT:
+                    return OmegaConf.to_object(cfg)
                 return cfg
 
     else:
