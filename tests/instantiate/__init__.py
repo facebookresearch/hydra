@@ -385,6 +385,10 @@ class SimpleClass:
             return self.a == other.a and self.b == other.b
         return False
 
+    @property
+    def _fields(self) -> List[str]:
+        return ["a", "b"]
+
 
 @dataclass
 class SimpleClassPrimitiveConf:
@@ -422,6 +426,13 @@ def recisinstance(got: Any, expected: Any) -> bool:
         return False
     if isinstance(expected, collections.abc.Mapping):
         return all(recisinstance(got[key], expected[key]) for key in expected)
-    elif isinstance(expected, collections.abc.Iterable):
+    elif isinstance(expected, collections.abc.Iterable) and not isinstance(
+        expected, str
+    ):
         return all(recisinstance(got[idx], exp) for idx, exp in enumerate(expected))
+    elif hasattr(expected, "_fields"):
+        return all(
+            recisinstance(getattr(got, key), getattr(expected, key))
+            for key in expected._fields  # type: ignore
+        )
     return True
