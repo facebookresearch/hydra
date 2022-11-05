@@ -36,8 +36,12 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                         none    : Passed objects are DictConfig and ListConfig, default
                         partial : Passed objects are converted to dict and list, with
                                   the exception of Structured Configs (and their fields).
+                        object  : Passed objects are converted to dict and list.
+                                  Structured Configs are converted to instances of the
+                                  backing dataclass / attr class.
                         all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers
+                                  a trace of OmegaConf containers. Structured configs
+                                  are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
     :param args: Optional positional parameters pass-through
@@ -218,7 +222,11 @@ callable. You can change instantiate's argument conversion strategy using the
 `_convert_` parameter. Supported values are:
 
 - `"none"` : Default behavior, Use OmegaConf containers
-- `"partial"` : Convert OmegaConf containers to dict and list, except Structured Configs.
+- `"partial"` : Convert OmegaConf containers to dict and list, except
+  Structured Configs, which remain as DictConfig instances.
+- `"object"` : Convert OmegaConf containers to dict and list, except Structured
+  Configs, which are converted to instances of the backing dataclass / attr
+  class using `OmegaConf.to_object`.
 - `"all"` : Convert everything to primitive containers
 
 The conversion strategy applies recursively to all subconfigs of the instantiation target.
@@ -256,6 +264,11 @@ assert isinstance(obj_partial, MyTarget)
 assert isinstance(obj_partial.foo, DictConfig)
 assert isinstance(obj_partial.bar, dict)
 
+obj_object = instantiate(cfg, _convert_="object")
+assert isinstance(obj_object, MyTarget)
+assert isinstance(obj_object.foo, Foo)
+assert isinstance(obj_object.bar, dict)
+
 obj_all = instantiate(cfg, _convert_="all")
 assert isinstance(obj_none, MyTarget)
 assert isinstance(obj_all.foo, dict)
@@ -272,6 +285,9 @@ obj_none = instantiate(cfg_none)
 
 cfg_partial = OmegaConf.create({..., "_convert_": "partial"})
 obj_partial = instantiate(cfg_partial)
+
+cfg_object = OmegaConf.create({..., "_convert_": "object"})
+obj_object = instantiate(cfg_object)
 
 cfg_all = OmegaConf.create({..., "_convert_": "all"})
 obj_all = instantiate(cfg_all)
