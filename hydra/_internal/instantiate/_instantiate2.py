@@ -226,7 +226,11 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
             resolve=_resolve_,
         )
     elif OmegaConf.is_list(config):
@@ -251,7 +255,11 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
             resolve=_resolve_,
         )
     else:
@@ -328,10 +336,8 @@ def instantiate_node(
     if OmegaConf.is_list(node):
         items = [
             instantiate_node(
-                item,
-                convert=convert,
-                recursive=recursive,
-                resolve=resolve)
+                item, convert=convert, recursive=recursive, resolve=resolve
+            )
             for item in node._iter_ex(resolve=resolve)
         ]
 
@@ -345,15 +351,16 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({
-            "_target_", "_convert_", "_recursive_", "_partial_", "_resolve_"})
+        exclude_keys = set(
+            {"_target_", "_convert_", "_recursive_", "_partial_", "_resolve_"}
+        )
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
-            is_resolve = (
-                (node.get("_resolve_", None) is None and resolve)
-                or node.get("_resolve_", False))
+            is_resolve = (node.get("_resolve_", None) is None and resolve) or node.get(
+                "_resolve_", False
+            )
             for key in node.keys():
                 if key not in exclude_keys:
                     if OmegaConf.is_missing(node, key) and is_partial:
@@ -361,7 +368,9 @@ def instantiate_node(
                     value = node[key]
                     if recursive:
                         value = instantiate_node(
-                            value, convert=convert, recursive=recursive,
+                            value,
+                            convert=convert,
+                            recursive=recursive,
                             resolve=is_resolve,
                         )
                     kwargs[key] = _convert_node(value, convert, resolve=is_resolve)
@@ -377,7 +386,10 @@ def instantiate_node(
                 for key, value in node.items():
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive, resolve=resolve,
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        resolve=resolve,
                     )
                 return dict_items
             else:
@@ -385,7 +397,10 @@ def instantiate_node(
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
                     cfg[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive, resolve=resolve,
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        resolve=resolve,
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type

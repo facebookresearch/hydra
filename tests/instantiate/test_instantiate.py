@@ -110,7 +110,7 @@ def config(request: Any, src: Any) -> Any:
                 "b": 20,
                 "c": 30,
                 "d": 40,
-                "_resolve_": False
+                "_resolve_": False,
             },
             {},
             AClass("somethingthatisjustpassed", 20, 30, 40),
