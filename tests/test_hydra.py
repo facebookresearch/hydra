@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
 from textwrap import dedent
@@ -1893,3 +1894,16 @@ def test_hydra_runtime_choice_1882(tmpdir: Path) -> None:
         from_name="Expected output",
         to_name="Actual output",
     )
+
+
+@mark.skipif(sys.version_info > (3, 11), reason="mutable defaults not allowed in 3.11")
+def test_dataclass_with_assigned_mutable_default():
+    @dataclass
+    class Y:
+        pass
+
+    @dataclass
+    class X:
+        y: Y = Y()
+
+    OmegaConf.create(X)
