@@ -2,7 +2,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Sequence
+from typing import List, Optional, Sequence, Union
 
 from omegaconf import DictConfig, open_dict
 
@@ -14,6 +14,7 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
+from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
 
@@ -49,7 +50,7 @@ class BasicLauncher(Launcher):
         self.task_function = task_function
 
     def launch(
-        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+        self, job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence], initial_job_idx: int
     ) -> Sequence[JobReturn]:
         setup_globals()
         assert self.hydra_context is not None
@@ -65,6 +66,7 @@ class BasicLauncher(Launcher):
             idx = initial_job_idx + idx
             lst = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {lst}")
+            print(overrides)
             sweep_config = self.hydra_context.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
@@ -79,5 +81,7 @@ class BasicLauncher(Launcher):
                 job_subdir_key="hydra.sweep.subdir",
             )
             runs.append(ret)
+            if isinstance(job_overrides, ExperimentSequence):
+                job_overrides.update_sequence((overrides, ret))
             configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs

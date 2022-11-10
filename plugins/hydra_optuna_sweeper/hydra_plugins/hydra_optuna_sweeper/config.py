@@ -170,9 +170,6 @@ class OptunaSweeperConf:
     # Total number of function evaluations
     n_trials: int = 20
 
-    # Number of parallel workers
-    n_jobs: int = 2
-
     # Maximum authorized failure rate for a batch of parameters
     max_failure_rate: float = 0.0
 
@@ -185,6 +182,8 @@ class OptunaSweeperConf:
     # a callable with signature Callable[[DictConfig, optuna.trial.Trial], None].
     # https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html
     custom_search_space: Optional[str] = None
+
+    experiment_sequence: str = "hydra_plugins.hydra_optuna_sweeper._impl.OptunaExperimentSequence"
 
 
 ConfigStore.instance().store(

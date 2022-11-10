@@ -27,9 +27,10 @@ from hydra.core.override_parser.types import (
     Transformer,
 )
 from hydra.core.plugins import Plugins
-from hydra.plugins.sweeper import Sweeper
+from hydra.plugins.sweeper import Sweeper 
+from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.types import HydraContext, TaskFunction
-from hydra.utils import get_method
+from hydra.utils import get_method, instantiate
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -146,6 +147,124 @@ def create_params_from_overrides(
     return search_space_distributions, fixed_params
 
 
+class OptunaExperimentSequence(ExperimentSequence):
+    def __init__(self, 
+                study, 
+                num_experiments, 
+                search_space_distributions, 
+                fixed_params, 
+                directions, 
+                custom_search_space_extender, 
+                max_failure_rate=0.0, 
+                is_grid_sampler=False,
+                config=None) -> None:
+        self.study = study 
+        self.num_experiments = num_experiments
+        self.search_space_distributions = search_space_distributions
+        self.fixed_params = fixed_params
+        self.directions = directions
+        self.custom_search_space_extender = custom_search_space_extender
+        self.max_failure_rate = max_failure_rate
+        self.fault_tolerance = int(num_experiments * max_failure_rate)
+        self.is_grid_sampler = is_grid_sampler
+        self.config = config
+        self.idx = -1
+        self.override_trial_mapping = {}
+    
+    def _configure_trial(
+        self,
+        trial: Trial,
+        search_space_distributions: Dict[str, BaseDistribution],
+        fixed_params: Dict[str, Any],
+    ) -> Sequence[str]:
+        for param_name, distribution in search_space_distributions.items():
+            assert type(param_name) is str
+            trial._suggest(param_name, distribution)
+        for param_name, value in fixed_params.items():
+            trial.set_user_attr(param_name, value)
+
+        if self.custom_search_space_extender:
+            assert self.config is not None
+            self.custom_search_space_extender(self.config, trial)
+
+        overlap = trial.params.keys() & trial.user_attrs
+        if len(overlap):
+            raise ValueError(
+                "Overlapping fixed parameters and search space parameters found!"
+                f"Overlapping parameters: {list(overlap)}"
+            )
+        params = dict(trial.params)
+        params.update(fixed_params)
+
+        return tuple(f"{name}={val}" for name, val in params.items())
+    
+    def update_sequence(self, experiment_result: Tuple[Sequence[str], Any]):
+        override, ret = experiment_result
+        trial = self.override_trial_mapping[override]
+        values: Optional[List[float]] = None
+        state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
+        try:
+            if len(self.directions) == 1:
+                try:
+                    values = [float(ret.return_value)]
+                except (ValueError, TypeError):
+                    raise ValueError(
+                        f"Return value must be float-castable. Got '{ret.return_value}'."
+                    ).with_traceback(sys.exc_info()[2])
+            else:
+                try:
+                    values = [float(v) for v in ret.return_value]
+                except (ValueError, TypeError):
+                    raise ValueError(
+                        "Return value must be a list or tuple of float-castable values."
+                        f" Got '{ret.return_value}'."
+                    ).with_traceback(sys.exc_info()[2])
+                if len(values) != len(self.directions):
+                    raise ValueError(
+                        "The number of the values and the number of the objectives are"
+                        f" mismatched. Expect {len(self.directions)}, but actually {len(values)}."
+                    )
+
+            try:
+                self.study.tell(trial=trial, state=state, values=values)
+            except RuntimeError as e:
+                if (
+                    self.is_grid_sampler
+                    and "`Study.stop` is supposed to be invoked inside an objective function or a callback."
+                    in str(e)
+                ):
+                    pass
+                else:
+                    raise e
+
+        except Exception as e:
+            state = optuna.trial.TrialState.FAIL
+            self.study.tell(trial=trial, state=state, values=values)
+            log.warning(f"Failed experiment: {e}")
+            self.fault_tolerance -= 1
+
+        # raise if too many failures
+        if self.fault_tolerance < 0:
+            log.error(
+                f"Failed {int(self.num_experiments * self.max_failure_rate)} times out of {self.num_experiments} "
+                f"with max_failure_rate={self.max_failure_rate}."
+            )
+            ret.return_value  # delegate raising to JobReturn, with actual traceback
+    
+    def __next__(self) -> Sequence[str]:
+        self.idx += 1
+        if self.idx < self.num_experiments:
+            trial = self.study.ask()
+            override = self._configure_trial(trial, self.search_space_distributions, self.fixed_params)
+            self.override_trial_mapping[override] = trial
+            return override
+        else:
+            raise StopIteration
+    
+    def __len__(self):
+        return self.num_experiments
+
+
 class OptunaSweeperImpl(Sweeper):
     def __init__(
         self,
@@ -154,18 +273,17 @@ class OptunaSweeperImpl(Sweeper):
         storage: Optional[Any],
         study_name: Optional[str],
         n_trials: int,
-        n_jobs: int,
         max_failure_rate: float,
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
+        experiment_sequence: str,
     ) -> None:
         self.sampler = sampler
         self.direction = direction
         self.storage = storage
         self.study_name = study_name
         self.n_trials = n_trials
-        self.n_jobs = n_jobs
         self.max_failure_rate = max_failure_rate
         assert self.max_failure_rate >= 0.0
         assert self.max_failure_rate <= 1.0
@@ -178,6 +296,7 @@ class OptunaSweeperImpl(Sweeper):
         self.params = params
         self.job_idx: int = 0
         self.search_space_distributions: Optional[Dict[str, BaseDistribution]] = None
+        self.experiment_sequence_inst = experiment_sequence
 
     def _process_searchspace_config(self) -> None:
         url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
@@ -227,36 +346,6 @@ class OptunaSweeperImpl(Sweeper):
             return [self.direction]
         return [self.direction.name]
 
-    def _configure_trials(
-        self,
-        trials: List[Trial],
-        search_space_distributions: Dict[str, BaseDistribution],
-        fixed_params: Dict[str, Any],
-    ) -> Sequence[Sequence[str]]:
-        overrides = []
-        for trial in trials:
-            for param_name, distribution in search_space_distributions.items():
-                assert type(param_name) is str
-                trial._suggest(param_name, distribution)
-            for param_name, value in fixed_params.items():
-                trial.set_user_attr(param_name, value)
-
-            if self.custom_search_space_extender:
-                assert self.config is not None
-                self.custom_search_space_extender(self.config, trial)
-
-            overlap = trial.params.keys() & trial.user_attrs
-            if len(overlap):
-                raise ValueError(
-                    "Overlapping fixed parameters and search space parameters found!"
-                    f"Overlapping parameters: {list(overlap)}"
-                )
-            params = dict(trial.params)
-            params.update(fixed_params)
-
-            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
-        return overrides
-
     def _parse_sweeper_params_config(self) -> List[str]:
         if not self.params:
             return []
@@ -290,7 +379,7 @@ class OptunaSweeperImpl(Sweeper):
 
         is_grid_sampler = (
             isinstance(self.sampler, functools.partial)
-            and self.sampler.func == optuna.samplers.GridSampler
+            and self.sampler.func == optuna.samplers.GridSampler  # type: ignore
         )
 
         (
@@ -337,74 +426,21 @@ class OptunaSweeperImpl(Sweeper):
         log.info(f"Sampler: {type(self.sampler).__name__}")
         log.info(f"Directions: {directions}")
 
-        batch_size = self.n_jobs
         n_trials_to_go = self.n_trials
-
-        while n_trials_to_go > 0:
-            batch_size = min(n_trials_to_go, batch_size)
-
-            trials = [study.ask() for _ in range(batch_size)]
-            overrides = self._configure_trials(
-                trials, search_space_distributions, fixed_params
-            )
-
-            returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
-            self.job_idx += len(returns)
-            failures = []
-            for trial, ret in zip(trials, returns):
-                values: Optional[List[float]] = None
-                state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
-                try:
-                    if len(directions) == 1:
-                        try:
-                            values = [float(ret.return_value)]
-                        except (ValueError, TypeError):
-                            raise ValueError(
-                                f"Return value must be float-castable. Got '{ret.return_value}'."
-                            ).with_traceback(sys.exc_info()[2])
-                    else:
-                        try:
-                            values = [float(v) for v in ret.return_value]
-                        except (ValueError, TypeError):
-                            raise ValueError(
-                                "Return value must be a list or tuple of float-castable values."
-                                f" Got '{ret.return_value}'."
-                            ).with_traceback(sys.exc_info()[2])
-                        if len(values) != len(directions):
-                            raise ValueError(
-                                "The number of the values and the number of the objectives are"
-                                f" mismatched. Expect {len(directions)}, but actually {len(values)}."
-                            )
-
-                    try:
-                        study.tell(trial=trial, state=state, values=values)
-                    except RuntimeError as e:
-                        if (
-                            is_grid_sampler
-                            and "`Study.stop` is supposed to be invoked inside an objective function or a callback."
-                            in str(e)
-                        ):
-                            pass
-                        else:
-                            raise e
-
-                except Exception as e:
-                    state = optuna.trial.TrialState.FAIL
-                    study.tell(trial=trial, state=state, values=values)
-                    log.warning(f"Failed experiment: {e}")
-                    failures.append(e)
-
-            # raise if too many failures
-            if len(failures) / len(returns) > self.max_failure_rate:
-                log.error(
-                    f"Failed {failures} times out of {len(returns)} "
-                    f"with max_failure_rate={self.max_failure_rate}."
-                )
-                assert len(failures) > 0
-                for ret in returns:
-                    ret.return_value  # delegate raising to JobReturn, with actual traceback
-
-            n_trials_to_go -= batch_size
+        from copy import deepcopy as copy
+        experiment_sequence = instantiate({
+            "_target_": self.experiment_sequence_inst,
+            "study": study, 
+            "num_experiments": n_trials_to_go,
+            "search_space_distributions": search_space_distributions,
+            "fixed_params": fixed_params,
+            "directions": directions,
+            "custom_search_space_extender": self.custom_search_space_extender,
+            "max_failure_rate": self.max_failure_rate,
+            "is_grid_sampler": is_grid_sampler,
+            #"config": self.config
+        })
+        self.launcher.launch(experiment_sequence, 0)
 
         results_to_serialize: Dict[str, Any]
         if len(directions) < 2:

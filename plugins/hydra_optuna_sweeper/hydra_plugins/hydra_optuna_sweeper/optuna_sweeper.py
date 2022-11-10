@@ -18,11 +18,11 @@ class OptunaSweeper(Sweeper):
         storage: Optional[Any],
         study_name: Optional[str],
         n_trials: int,
-        n_jobs: int,
         max_failure_rate: float,
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
+        experiment_sequence: str
     ) -> None:
         from ._impl import OptunaSweeperImpl
 
@@ -32,11 +32,11 @@ class OptunaSweeper(Sweeper):
             storage,
             study_name,
             n_trials,
-            n_jobs,
             max_failure_rate,
             search_space,
             custom_search_space,
             params,
+            experiment_sequence,
         )
 
     def setup(

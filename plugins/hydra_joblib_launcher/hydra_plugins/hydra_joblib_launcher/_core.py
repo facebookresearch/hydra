@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence
+from typing import Any, Dict, Union, List, Sequence
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -12,9 +12,11 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
+from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.types import HydraContext, TaskFunction
 from joblib import Parallel, delayed  # type: ignore
 from omegaconf import DictConfig, open_dict
+import multiprocessing as mp
 
 from .joblib_launcher import JoblibLauncher
 
@@ -63,13 +65,22 @@ def process_joblib_cfg(joblib_cfg: Dict[str, Any]) -> None:
                 pass
 
 
+def _batch_sequence(sequence, batch_size=1):
+    while True:
+        overrides = [experiment_config for _, experiment_config in zip(range(batch_size), sequence)]
+        if overrides:
+            yield overrides
+        if len(overrides) != batch_size:
+            raise StopIteration
+
+
 def launch(
     launcher: JoblibLauncher,
-    job_overrides: Sequence[Sequence[str]],
+    job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence],
     initial_job_idx: int,
 ) -> Sequence[JobReturn]:
     """
-    :param job_overrides: a List of List<String>, where each inner list is the arguments for one job run.
+    :param job_overrides: an Iterable of List<String>, where each inner list is the arguments for one job run.
     :param initial_job_idx: Initial job idx in batch.
     :return: an array of return values from run_job with indexes corresponding to the input list indexes.
     """
@@ -87,30 +98,54 @@ def launch(
     joblib_cfg = launcher.joblib
     joblib_cfg["backend"] = "loky"
     process_joblib_cfg(joblib_cfg)
-
-    log.info(
-        "Joblib.Parallel({}) is launching {} jobs".format(
-            ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
-            len(job_overrides),
-        )
-    )
-    log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))
-    for idx, overrides in enumerate(job_overrides):
-        log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
-
     singleton_state = Singleton.get_state()
 
-    runs = Parallel(**joblib_cfg)(
-        delayed(execute_job)(
-            initial_job_idx + idx,
-            overrides,
-            launcher.hydra_context,
-            launcher.config,
-            launcher.task_function,
-            singleton_state,
+    if isinstance(job_overrides, ExperimentSequence):
+        log.info(
+            "Joblib.Parallel({}) is launching {} jobs".format(
+                ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
+                'generator of',
+            )
         )
-        for idx, overrides in enumerate(job_overrides)
-    )
+        batch_size = v if (v := joblib_cfg['n_jobs']) != -1 else mp.cpu_count()
+        runs = []
+        overrides = []
+        for idx, overrides in enumerate(_batch_sequence(job_overrides, batch_size)):
+            results = Parallel(**joblib_cfg)(
+                delayed(execute_job)(
+                    initial_job_idx + idx,
+                    override,
+                    launcher.hydra_context,
+                    launcher.config,
+                    launcher.task_function,
+                    singleton_state,
+                )
+                for override in overrides
+            )
+            for experiment_result in zip(overrides, results):
+                job_overrides.update_sequence(experiment_result)
+    else:
+        log.info(
+            "Joblib.Parallel({}) is launching {} jobs".format(
+                ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
+                len(job_overrides),
+            )
+        )
+        log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))
+        for idx, overrides in enumerate(job_overrides):
+            log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
+
+        runs = Parallel(**joblib_cfg)(
+            delayed(execute_job)(
+                initial_job_idx + idx,
+                overrides,
+                launcher.hydra_context,
+                launcher.config,
+                launcher.task_function,
+                singleton_state,
+            )
+            for idx, overrides in enumerate(job_overrides)
+        )
 
     assert isinstance(runs, List)
     for run in runs:

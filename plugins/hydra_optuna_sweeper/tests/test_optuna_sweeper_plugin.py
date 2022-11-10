@@ -144,7 +144,6 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
             "hydra/sweeper=optuna",
             "hydra/launcher=basic",
             "hydra.sweeper.n_trials=8",
-            "hydra.sweeper.n_jobs=3",
         ],
     )
     with sweep:
@@ -161,7 +160,6 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
         "hydra/sweeper/sampler=tpe",
@@ -208,7 +206,6 @@ def test_example_with_grid_sampler(
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=False",
         f"hydra.sweeper.n_trials={num_trials}",
-        "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
     ]
@@ -236,7 +233,6 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=1",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
     ]
@@ -279,7 +275,6 @@ def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=1",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
         f"max_z_difference_from_x={max_z_difference_from_x}",
@@ -329,8 +324,8 @@ def test_warnings(
         storage=None,
         study_name="test",
         n_trials=1,
-        n_jobs=1,
         max_failure_rate=0.0,
+        experiment_sequence='hydra_plugins.hydra_optuna_sweeper._impl.OptunaExperimentSequence',
         custom_search_space=None,
     )
     if search_space is not None:
@@ -357,7 +352,6 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=2",
         "hydra/sweeper/sampler=random",
         "hydra.sweeper.sampler.seed=123",
         f"hydra.sweeper.max_failure_rate={max_failure_rate}",
@@ -383,7 +377,6 @@ def test_example_with_deprecated_search_space(
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
-        "hydra.sweeper.n_jobs=1",
     ]
 
     run_python_script(cmd)
