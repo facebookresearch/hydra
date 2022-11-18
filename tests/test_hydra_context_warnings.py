@@ -50,7 +50,7 @@ class IncompatibleLauncher(Launcher):
     ) -> None:
         pass
 
-    def launch(
+    def launch(  # type: ignore[empty-body]
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
         pass
