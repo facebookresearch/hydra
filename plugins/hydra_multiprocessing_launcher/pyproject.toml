@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.towncrier]
-    package = "hydra_plugins.hydra_loky_launcher"
+    package = "hydra_plugins.hydra_multiprocessing_launcher"
     filename = "NEWS.md"
     directory = "news/"
     title_format = "{version} ({project_date})"

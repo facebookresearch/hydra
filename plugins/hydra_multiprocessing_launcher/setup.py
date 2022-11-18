@@ -20,10 +20,11 @@ from read_version import read_version
 from setuptools import find_namespace_packages, setup
 
 setup(
-    name="hydra-loky-launcher",
-    version=read_version("hydra_plugins/hydra_loky_launcher", "__init__.py"),
+    name="hydra-multiprocessing-launcher",
+    version=read_version("hydra_plugins/hydra_multiprocessing_launcher", "__init__.py"),
     author="Dima Zhylko, Jan Bączek",
     author_email="dzhylko@nvidia.com, jbaczek@nvidia.com",
+    description="Multiprocessing Launcher for Hydra apps",
     long_description=(Path(__file__).parent / "README.md").read_text(),
     long_description_content_type="text/markdown",
     url="https://github.com/facebookresearch/hydra/",
@@ -40,7 +41,7 @@ setup(
     ],
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "loky>=3.2.0",
+        "cloudpickle",
     ],
     include_package_data=True,
 )

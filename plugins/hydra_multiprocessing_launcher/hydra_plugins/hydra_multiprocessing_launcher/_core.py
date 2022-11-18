@@ -14,10 +14,13 @@
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
+from multiprocessing import context
 from pathlib import Path
 from typing import Any, Dict, Union, List, Sequence
 from itertools import repeat
-from concurrent.futures import wait, FIRST_COMPLETED, ALL_COMPLETED
+from enum import Enum
+
+import cloudpickle
 
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -30,13 +33,17 @@ from hydra.core.utils import (
 )
 from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.types import HydraContext, TaskFunction
-from loky import get_reusable_executor
 from omegaconf import DictConfig, open_dict
 import multiprocessing as mp
 
-from .loky_launcher import LokyLauncher
+from .multiprocessing_launcher import MultiprocessingLauncher
 
 log = logging.getLogger(__name__)
+
+
+class WaitingStrategy(Enum):
+    FIRST_COMPLETED = 'first_completed'
+    ALL_COMPLETED = 'all_completed'
 
 
 def execute_job(
@@ -70,19 +77,32 @@ def execute_job(
     return ret
 
 
-def process_loky_cfg(loky_cfg: Dict[str, Any]) -> None:
+def _proxy_fn_call(*args):
+    args = [cloudpickle.loads(obj) for obj in args]
+    return cloudpickle.dumps(args[0](*args[1:]))
+
+
+def process_multiprocessing_cfg(mp_cfg: Dict[str, Any]) -> None:
     for k in ["timeout", "max_workers"]:
-        if k in loky_cfg.keys():
+        if k in mp_cfg.keys():
             try:
-                val = loky_cfg.get(k)
+                val = mp_cfg.get(k)
                 if val:
-                    loky_cfg[k] = int(val)
+                    mp_cfg[k] = int(val)
             except ValueError:
                 pass
 
 
+def wait(async_result_iter, condition, return_when=WaitingStrategy.ALL_COMPLETED):
+    waiting_strategy = all if return_when is WaitingStrategy.ALL_COMPLETED else any
+    with condition:
+        condition.wait_for(lambda: waiting_strategy([res.ready() for res in async_result_iter]))
+        finished = [res for res in async_result_iter if res.ready()]
+    return finished
+
+
 def launch(
-    launcher: LokyLauncher,
+    launcher: MultiprocessingLauncher,
     job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence],
     initial_job_idx: int,
 ) -> Sequence[JobReturn]:
@@ -100,47 +120,55 @@ def launch(
     sweep_dir = Path(str(launcher.config.hydra.sweep.dir))
     sweep_dir.mkdir(parents=True, exist_ok=True)
 
-    loky_cfg = launcher.loky
-    process_loky_cfg(loky_cfg)
+    # ProcessPoolExecutor's backend is hard-coded to loky since the threading
+    # backend is incompatible with Hydra
     singleton_state = Singleton.get_state()
-
-    worker_pool = get_reusable_executor(**loky_cfg)
-    batch_size = v if (v := loky_cfg['max_workers']) is not None else mp.cpu_count()
+    batch_size = v if (v := launcher.mp_config['processes']) else mp.cpu_count()
 
     runs = [None for _ in range(len(job_overrides))]
     log.info(
-        "ReusableExectutor({}) is launching {} jobs".format(
-            ",".join([f"{k}={v}" for k, v in loky_cfg.items()]),
+        "NestablePool({}) is launching {} jobs".format(
+            ",".join([f"{k}={v}" for k, v in launcher.mp_config.items()]),
             'generator of' if isinstance(job_overrides, ExperimentSequence) else len(job_overrides),
         )
     )
     running_tasks = {}
+
+    def notify_complete(_):
+        with launcher.condition:
+            launcher.condition.notify()
+
     for idx, override in enumerate(job_overrides):
         log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(override))))
-        running_tasks[worker_pool.submit(
-            execute_job,
-            initial_job_idx + idx,
-            override,
-            launcher.hydra_context,
-            launcher.config,
-            launcher.task_function,
-            singleton_state
+        running_tasks[launcher.executor.apply_async(
+            _proxy_fn_call,
+            [cloudpickle.dumps(obj)
+            for obj in (execute_job,
+             initial_job_idx + idx,
+             override,
+             launcher.hydra_context,
+             launcher.config,
+             launcher.task_function,
+             singleton_state)],
+             callback=notify_complete,
+             error_callback=notify_complete
         )] = (override, idx)
 
         if len(running_tasks) == batch_size:
-            finished, non_finished = wait(running_tasks, return_when=FIRST_COMPLETED)
+            finished = wait(running_tasks, condition=launcher.condition, return_when=WaitingStrategy.FIRST_COMPLETED)
             overrides = [running_tasks[f] for f in finished]
-            results = [f.result() for f in finished]
-            running_tasks = {task: running_tasks[task] for task in non_finished}
+            results = [cloudpickle.loads(f.get()) for f in finished]
+            running_tasks = {task: running_tasks[task] for task in running_tasks if task not in finished}
+
             for (_, idx), res in zip(overrides, results):
                 runs[idx] = res
             if isinstance(job_overrides, ExperimentSequence):
                 for (override, _), res in zip(overrides, results):
                     job_overrides.update_sequence((override, res))
     
-    finished, _ = wait(running_tasks, return_when=ALL_COMPLETED)
+    finished = wait(running_tasks, condition=launcher.condition, return_when=WaitingStrategy.ALL_COMPLETED)
     overrides = [running_tasks[f] for f in finished]
-    results = [f.result() for f in finished]
+    results = [cloudpickle.loads(f.get()) for f in finished]
 
     for (_, idx), res in zip(overrides, results):
         runs[idx] = res
@@ -148,6 +176,7 @@ def launch(
         for (override, _), res in zip(overrides, results):
                 job_overrides.update_sequence((override, res))
     
+    #launcher.executor.close()
     assert isinstance(runs, List)
     for run in runs:
         assert isinstance(run, JobReturn)
