@@ -392,7 +392,7 @@ def test_hydra_main_passthrough(hydra_restore_singletons: Any) -> None:
     with initialize(
         version_base=None, config_path="test_apps/app_with_cfg_groups/conf"
     ):
-        from tests.test_apps.app_with_cfg_groups.my_app import my_app  # type: ignore
+        from tests.test_apps.app_with_cfg_groups.my_app import my_app
 
         cfg = compose(config_name="config", overrides=["optimizer.lr=1.0"])
         assert my_app(cfg) == {"optimizer": {"type": "nesterov", "lr": 1.0}}

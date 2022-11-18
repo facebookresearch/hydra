@@ -433,6 +433,6 @@ def recisinstance(got: Any, expected: Any) -> bool:
     elif hasattr(expected, "_fields"):
         return all(
             recisinstance(getattr(got, key), getattr(expected, key))
-            for key in expected._fields  # type: ignore
+            for key in expected._fields
         )
     return True

@@ -288,18 +288,18 @@ class DefaultCompletionPlugin(CompletionPlugin):
     """
 
     def install(self) -> None:
-        ...
+        raise NotImplementedError
 
     def uninstall(self) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def provides() -> str:
-        ...
+        raise NotImplementedError
 
     def query(self, config_name: Optional[str]) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def help(command: str) -> str:
-        ...
+        raise NotImplementedError
