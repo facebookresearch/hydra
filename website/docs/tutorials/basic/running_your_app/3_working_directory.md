@@ -8,7 +8,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/3_working_directory"/>
 
-Hydra solves the problem of your needing to specify a new output directory for each run, by 
+Hydra solves the problem of you needing to specify a new output directory for each run, by 
 creating a directory for each run and executing your code within that working directory.
 
 The working directory is used to:
