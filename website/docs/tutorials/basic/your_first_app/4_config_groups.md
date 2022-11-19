@@ -13,7 +13,7 @@ A _**Config Group**_ is a named group with a set of valid options.
 Selecting a non-existent config option generates an error message with the valid options.
 
 ### Creating config groups
-To create a config group, create a directory. e.g. `db` to hold a file for each database configuration option. 
+To create a config group, create a directory, e.g. `db`, to hold a file for each database configuration option. 
 Since we are expecting to have multiple config groups, we will proactively move all the configuration files 
 into a `conf` directory.
 
