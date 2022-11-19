@@ -5,7 +5,7 @@ title: Configuring Plugins
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
-Hydra plugins usually comes with sensible defaults which works with minimal configuration.
+Hydra plugins usually come with sensible defaults which work with minimal configuration.
 There are two primary ways to customize the configuration of a plugin:
 - Overriding it directly in your primary config
 - Extending the config and using it from your primary config.
@@ -14,7 +14,7 @@ The first method is the simpler, but it makes it harder to switch to a different
 The second method is a bit more complicated, but makes it easier to switch between different plugin configurations.
 
 
-The following methods apply to all Hydra plugins. In the following examples, we will configure a imaginary Launcher plugin
+The following methods apply to all Hydra plugins. In the following examples, we will configure an imaginary Launcher plugin
 `MoonLauncher`. The Launcher has two modes: `falcon9`, which actually launches the application to the Moon and 
 `sim` which simulates a launch.
 
