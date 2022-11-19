@@ -130,7 +130,7 @@ name: nevergrad
 The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
 
 ### Defining through commandline override
-Hydra provides a override parser that support rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
+Hydra provides an override parser that supports rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
 
 #### Choices
 To override a field with choices:
@@ -148,7 +148,7 @@ You can tag an override with ```ordered``` to indicate it's a [```TransitionChoi
 #### Scalar
 ```commandline
 `key=interval(1,12)`             # Interval are float by default
-`key=int(interval(1,8))`         # Scalar bounds cast to a int
+`key=int(interval(1,8))`         # Scalar bounds cast to an int
 `key=tag(log, interval(1,12))`   # call ng.p.Log if tagged with log
 ```
 
