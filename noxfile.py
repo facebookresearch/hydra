@@ -312,6 +312,7 @@ def lint(session: Session) -> None:
     session.run(
         "mypy",
         ".",
+        "--python-version=3.7",
         "--strict",
         "--install-types",
         "--non-interactive",
@@ -342,6 +343,7 @@ def lint(session: Session) -> None:
             session.run(
                 "mypy",
                 d,
+                "--python-version=3.7",
                 "--strict",
                 "--install-types",
                 "--non-interactive",
@@ -354,6 +356,7 @@ def lint(session: Session) -> None:
             session.run(
                 "mypy",
                 d,
+                "--python-version=3.7",
                 "--install-types",
                 "--non-interactive",
                 silent=SILENT,
@@ -407,6 +410,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
     # Mypy for plugin
     session.run(
         "mypy",
+        "--python-version=3.7",
         "--strict",
         "--install-types",
         "--non-interactive",
@@ -417,6 +421,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
     )
     session.run(
         "mypy",
+        "--python-version=3.7",
         "--strict",
         "--install-types",
         "--non-interactive",
