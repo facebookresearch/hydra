@@ -3,7 +3,7 @@ bandit
 black>=22.1.0
 build
 coverage
-flake8
+flake8<6  # pinned due to https://github.com/savoirfairelinux/flake8-copyright/issues/19
 flake8-copyright
 isort==5.5.2
 mypy
