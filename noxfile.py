@@ -276,6 +276,20 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
+def _mypy_cmd(strict: bool) -> List[str]:
+    mypy = [
+        "mypy",
+        "--python-version=3.7",
+        "--install-types",
+        "--non-interactive",
+        "--config-file",
+        f"{BASE}/.mypy.ini",
+    ]
+    if strict:
+        mypy.append("--strict")
+    return mypy
+
+
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 def lint(session: Session) -> None:
     _upgrade_basic(session)
@@ -310,12 +324,8 @@ def lint(session: Session) -> None:
     session.run(*isort, silent=SILENT)
 
     session.run(
-        "mypy",
+        *_mypy_cmd(strict=True),
         ".",
-        "--python-version=3.7",
-        "--strict",
-        "--install-types",
-        "--non-interactive",
         "--exclude=^examples/",
         "--exclude=^tests/standalone_apps/",
         "--exclude=^tests/test_apps/",
@@ -341,24 +351,17 @@ def lint(session: Session) -> None:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                "mypy",
+                *_mypy_cmd(strict=True),
                 d,
-                "--python-version=3.7",
-                "--strict",
-                "--install-types",
-                "--non-interactive",
                 silent=SILENT,
             )
 
-    for sdir in ["tools"]:  # no --strict flag for tools
+    for sdir in ["tools"]:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                "mypy",
+                *_mypy_cmd(strict=False),  # no --strict flag for tools
                 d,
-                "--python-version=3.7",
-                "--install-types",
-                "--non-interactive",
                 silent=SILENT,
             )
 
@@ -409,24 +412,12 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 
     # Mypy for plugin
     session.run(
-        "mypy",
-        "--python-version=3.7",
-        "--strict",
-        "--install-types",
-        "--non-interactive",
+        *_mypy_cmd(strict=True),
         f"{path}/{source_dir}",
-        "--config-file",
-        f"{BASE}/.mypy.ini",
         silent=SILENT,
     )
     session.run(
-        "mypy",
-        "--python-version=3.7",
-        "--strict",
-        "--install-types",
-        "--non-interactive",
-        "--config-file",
-        f"{BASE}/.mypy.ini",
+        *_mypy_cmd(strict=True),
         *files,
         silent=SILENT,
     )
