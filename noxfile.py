@@ -7,7 +7,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, List, Union
+from typing import Iterator, List, Optional, Union
 
 import nox
 from nox import Session
@@ -276,10 +276,9 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _mypy_cmd(strict: bool) -> List[str]:
+def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.7") -> List[str]:
     mypy = [
         "mypy",
-        "--python-version=3.7",
         "--install-types",
         "--non-interactive",
         "--config-file",
@@ -287,6 +286,8 @@ def _mypy_cmd(strict: bool) -> List[str]:
     ]
     if strict:
         mypy.append("--strict")
+    if python_version is not None:
+        mypy.append(f"--python-version={python_version}")
     return mypy
 
 
@@ -412,12 +413,16 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 
     # Mypy for plugin
     session.run(
-        *_mypy_cmd(strict=True),
+        *_mypy_cmd(
+            strict=True,
+            # Don't pass --python-version flag when linting plugins, as mypy may
+            # report syntax errors if the passed --python-version is different
+            # from the python version that was used to install the plugin's
+            # dependencies.
+            python_version=None,
+        ),
+        "--follow-imports=silent",
         f"{path}/{source_dir}",
-        silent=SILENT,
-    )
-    session.run(
-        *_mypy_cmd(strict=True),
         *files,
         silent=SILENT,
     )
