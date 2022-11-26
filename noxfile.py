@@ -50,6 +50,7 @@ class Plugin:
     source_dir: str
     dir_name: str
     setup_py: str
+    classifiers: List[str]
 
 
 def get_current_os() -> str:
@@ -109,17 +110,18 @@ def install_selected_plugins(
     selected_plugins: List[Plugin],
 ) -> None:
     for plugin in selected_plugins:
-        cmd = install_cmd + [plugin.abspath]
-        session.run(*cmd, silent=SILENT)
-        if not SILENT:
-            session.run("pipdeptree", "-p", plugin.name)
-
+        install_plugin(session, install_cmd, plugin)
     # Test that we can import Hydra
     session.run("python", "-c", "from hydra import main", silent=SILENT)
 
+
+def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> None:
+    cmd = install_cmd + [plugin.abspath]
+    session.run(*cmd, silent=SILENT)
+    if not SILENT:
+        session.run("pipdeptree", "-p", plugin.name)
     # Test that we can import all installed plugins
-    for plugin in selected_plugins:
-        session.run("python", "-c", f"import {plugin.module}")
+    session.run("python", "-c", f"import {plugin.module}")
 
 
 def pytest_args(*args: str) -> List[str]:
@@ -175,6 +177,10 @@ def list_plugins(directory: str) -> List[Plugin]:
             [sys.executable, setup_py, "--name"],
             universal_newlines=True,
         ).strip()
+        classifiers = subprocess.check_output(
+            [sys.executable, setup_py, "--classifiers"],
+            universal_newlines=True,
+        ).splitlines()
 
         if "hydra_plugins" in os.listdir(abspath):
             module = "hydra_plugins." + plugin["dir_name"]
@@ -191,6 +197,7 @@ def list_plugins(directory: str) -> List[Plugin]:
                 module=module,
                 dir_name=plugin["dir_name"],
                 setup_py=setup_py,
+                classifiers=classifiers,
             )
         )
     return plugins
@@ -227,13 +234,10 @@ def is_plugin_compatible(session: Session, plugin: Plugin) -> bool:
         logger.warn(f"Deselecting {plugin.dir_name}: User request")
         return False
 
-    classifiers = session.run(
-        "python", plugin.setup_py, "--classifiers", silent=True
-    ).splitlines()
-    plugin_python_versions = get_setup_python_versions(classifiers)
+    plugin_python_versions = get_setup_python_versions(plugin.classifiers)
     python_supported = session.python in plugin_python_versions
 
-    plugin_os_names = get_plugin_os_names(classifiers)
+    plugin_os_names = get_plugin_os_names(plugin.classifiers)
     os_supported = get_current_os() in plugin_os_names
 
     if not python_supported:
@@ -362,61 +366,65 @@ def lint(session: Session) -> None:
     session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".", silent=SILENT)
 
 
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
-def lint_plugins(session: Session) -> None:
-    _upgrade_basic(session)
-    lint_plugins_in_dir(session, "plugins")
-
-
 def lint_plugins_in_dir(session: Session, directory: str) -> None:
+    plugins = select_plugins_under_directory(session, directory)
+    for plugin in plugins:
+        lint_plugin(session, plugin)
 
+
+@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+@nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
+def lint_plugins(session: Session, plugin: Plugin) -> None:
+    if not is_plugin_compatible(session, plugin):
+        session.skip(f"Skipping session {session.name}")
+    _upgrade_basic(session)
+    lint_plugin(session, plugin)
+
+
+def lint_plugin(session: Session, plugin: Plugin) -> None:
     install_cmd = ["pip", "install"]
     install_hydra(session, install_cmd)
-    plugins = select_plugins_under_directory(session, directory)
 
-    # plugin linting requires the plugins and their dependencies to be installed
-    install_selected_plugins(
-        session=session, install_cmd=install_cmd, selected_plugins=plugins
-    )
+    # plugin linting requires the plugin and its dependencies to be installed
+    install_plugin(session=session, install_cmd=install_cmd, plugin=plugin)
 
     install_dev_deps(session)
 
-    session.run("flake8", "--config", ".flake8", directory)
-    # Mypy for plugins
-    for plugin in plugins:
-        path = plugin.abspath
-        source_dir = plugin.source_dir
-        session.chdir(path)
-        session.run(*_black_cmd(), silent=SILENT)
-        session.run(*_isort_cmd(), silent=SILENT)
-        session.chdir(BASE)
+    session.run("flake8", "--config", ".flake8", plugin.abspath)
+    path = plugin.abspath
+    source_dir = plugin.source_dir
+    session.chdir(path)
+    session.run(*_black_cmd(), silent=SILENT)
+    session.run(*_isort_cmd(), silent=SILENT)
+    session.chdir(BASE)
 
-        files = []
-        for file in ["tests", "example"]:
-            abs = os.path.join(path, file)
-            if os.path.exists(abs):
-                files.append(abs)
+    files = []
+    for file in ["tests", "example"]:
+        abs = os.path.join(path, file)
+        if os.path.exists(abs):
+            files.append(abs)
 
-        session.run(
-            "mypy",
-            "--strict",
-            "--install-types",
-            "--non-interactive",
-            f"{path}/{source_dir}",
-            "--config-file",
-            f"{BASE}/.mypy.ini",
-            silent=SILENT,
-        )
-        session.run(
-            "mypy",
-            "--strict",
-            "--install-types",
-            "--non-interactive",
-            "--config-file",
-            f"{BASE}/.mypy.ini",
-            *files,
-            silent=SILENT,
-        )
+    # Mypy for plugin
+    session.run(
+        "mypy",
+        "--strict",
+        "--install-types",
+        "--non-interactive",
+        f"{path}/{source_dir}",
+        "--config-file",
+        f"{BASE}/.mypy.ini",
+        silent=SILENT,
+    )
+    session.run(
+        "mypy",
+        "--strict",
+        "--install-types",
+        "--non-interactive",
+        "--config-file",
+        f"{BASE}/.mypy.ini",
+        *files,
+        silent=SILENT,
+    )
 
 
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
@@ -512,7 +520,7 @@ def test_plugins(session: Session, plugin: Plugin) -> None:
     session.install("pytest")
     install_hydra(session, INSTALL_COMMAND)
     if not is_plugin_compatible(session, plugin):
-        session.skip(f"Skipping session {session.name} due to incompatible plugin")
+        session.skip(f"Skipping session {session.name}")
     else:
         install_selected_plugins(
             session=session, install_cmd=INSTALL_COMMAND, selected_plugins=[plugin]
