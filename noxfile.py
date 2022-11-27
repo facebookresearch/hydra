@@ -7,7 +7,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator, List, Optional, Union
+from typing import Iterator, List, Optional, Tuple, Union
 
 import nox
 from nox import Session
@@ -140,6 +140,12 @@ def run_pytest(session: Session, directory: str = ".", *args: str) -> None:
 def get_setup_python_versions(classifiers: List[str]) -> List[str]:
     pythons = filter(lambda line: "Programming Language :: Python" in line, classifiers)
     return [p[len("Programming Language :: Python :: ") :] for p in pythons]
+
+
+def session_python_as_tuple(session: Session) -> Tuple[int, int]:
+    major_str, minor_str = session.python.split(".")
+    major, minor = int(major_str), int(minor_str)
+    return major, minor
 
 
 def get_plugin_os_names(classifiers: List[str]) -> List[str]:
@@ -293,6 +299,8 @@ def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.7") -> List[str]:
 
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 def lint(session: Session) -> None:
+    if session_python_as_tuple(session) <= (3, 6):
+        session.skip(f"Skipping session {session.name} as python >= 3.7 is required")
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
@@ -382,6 +390,8 @@ def lint_plugins_in_dir(session: Session, directory: str) -> None:
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 @nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
 def lint_plugins(session: Session, plugin: Plugin) -> None:
+    if session_python_as_tuple(session) <= (3, 6):
+        session.skip(f"Skipping session {session.name} as python >= 3.7 is required")
     if not is_plugin_compatible(session, plugin):
         session.skip(f"Skipping session {session.name}")
     _upgrade_basic(session)
