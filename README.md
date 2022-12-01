@@ -54,13 +54,19 @@
 ### License
 Hydra is licensed under [MIT License](LICENSE).
 
-## Community
+## Hydra Ecosystem
 
-Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
+#### Check out these third-party libraries that build on Hydra's functionality:
+* [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen): Configurable, reproducible, and scalable Python programs, via Hydra
+* [hydra-torch](https://github.com/pytorch/hydra-torch): ...
+* [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): ...
+
+#### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
+## Hydra
 
 ### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
