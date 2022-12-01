@@ -66,8 +66,6 @@ Hydra is licensed under [MIT License](LICENSE).
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
-## Hydra
-
 ### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
 ```BibTeX
